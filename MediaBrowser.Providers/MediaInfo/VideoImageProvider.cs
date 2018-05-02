@@ -64,7 +64,7 @@ namespace MediaBrowser.Providers.MediaInfo
         {
             var protocol = item.PathProtocol ?? MediaProtocol.File;
 
-            var inputPath = MediaEncoderHelpers.GetInputArgument(_fileSystem, item.Path, protocol, null, item.GetPlayableStreamFileNames());
+            var inputPath = MediaEncoderHelpers.GetInputArgument(_fileSystem, item.Path, protocol, null, item.GetPlayableStreamFileNames(_mediaEncoder));
 
             var mediaStreams =
                 item.GetMediaStreams();

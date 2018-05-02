@@ -89,10 +89,16 @@ namespace Emby.Server.Implementations.UserViews
 
             if (isUsingCollectionStrip)
             {
-                return GetFinalItems(items.Where(i => i.HasImage(ImageType.Primary) || i.HasImage(ImageType.Thumb)), 8);
+                return items
+                    .Where(i => i.HasImage(ImageType.Primary) || i.HasImage(ImageType.Thumb))
+                    .OrderBy(i => Guid.NewGuid())
+                    .ToList();
             }
 
-            return GetFinalItems(items.Where(i => i.HasImage(ImageType.Primary)));
+            return items
+                .Where(i => i.HasImage(ImageType.Primary))
+                .OrderBy(i => Guid.NewGuid())
+                .ToList();
         }
 
         protected override bool Supports(BaseItem item)

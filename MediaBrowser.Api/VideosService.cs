@@ -80,7 +80,7 @@ namespace MediaBrowser.Api
 
             var item = string.IsNullOrEmpty(request.Id)
                            ? (!string.IsNullOrWhiteSpace(request.UserId)
-                                  ? user.RootFolder
+                                  ? _libraryManager.GetUserRootFolder()
                                   : _libraryManager.RootFolder)
                            : _libraryManager.GetItemById(request.Id);
 

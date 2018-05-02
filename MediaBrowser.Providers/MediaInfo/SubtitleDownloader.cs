@@ -31,6 +31,8 @@ namespace MediaBrowser.Providers.MediaInfo
             bool skipIfAudioTrackMatches,
             bool requirePerfectMatch,
             IEnumerable<string> languages,
+            string[] disabledSubtitleFetchers,
+            string[] subtitleFetcherOrder,
             CancellationToken cancellationToken)
         {
             var downloadedLanguages = new List<string>();
@@ -38,7 +40,7 @@ namespace MediaBrowser.Providers.MediaInfo
             foreach (var lang in languages)
             {
                 var downloaded = await DownloadSubtitles(video, mediaStreams, skipIfEmbeddedSubtitlesPresent,
-                    skipIfAudioTrackMatches, requirePerfectMatch, lang, cancellationToken).ConfigureAwait(false);
+                    skipIfAudioTrackMatches, requirePerfectMatch, lang, disabledSubtitleFetchers, subtitleFetcherOrder, cancellationToken).ConfigureAwait(false);
 
                 if (downloaded)
                 {
@@ -55,6 +57,8 @@ namespace MediaBrowser.Providers.MediaInfo
             bool skipIfAudioTrackMatches,
             bool requirePerfectMatch,
             string lang,
+            string[] disabledSubtitleFetchers,
+            string[] subtitleFetcherOrder,
             CancellationToken cancellationToken)
         {
             if (video.VideoType != VideoType.VideoFile)
@@ -84,7 +88,7 @@ namespace MediaBrowser.Providers.MediaInfo
             }
 
             return DownloadSubtitles(video, mediaStreams, skipIfEmbeddedSubtitlesPresent, skipIfAudioTrackMatches,
-                requirePerfectMatch, lang, mediaType, cancellationToken);
+                requirePerfectMatch, lang, disabledSubtitleFetchers, subtitleFetcherOrder, mediaType, cancellationToken);
         }
 
         private async Task<bool> DownloadSubtitles(Video video,
@@ -93,6 +97,8 @@ namespace MediaBrowser.Providers.MediaInfo
             bool skipIfAudioTrackMatches,
             bool requirePerfectMatch,
             string language,
+            string[] disabledSubtitleFetchers,
+            string[] subtitleFetcherOrder,
             VideoContentType mediaType,
             CancellationToken cancellationToken)
         {
@@ -139,7 +145,9 @@ namespace MediaBrowser.Providers.MediaInfo
                 // Stop as soon as we find something
                 SearchAllProviders = false,
 
-                IsPerfectMatch = requirePerfectMatch
+                IsPerfectMatch = requirePerfectMatch,
+                DisabledSubtitleFetchers = disabledSubtitleFetchers,
+                SubtitleFetcherOrder = subtitleFetcherOrder
             };
 
             var episode = video as Episode;
@@ -158,8 +166,7 @@ namespace MediaBrowser.Providers.MediaInfo
 
                 if (result != null)
                 {
-                    await _subtitleManager.DownloadSubtitles(video, result.Id, cancellationToken)
-                            .ConfigureAwait(false);
+                    await _subtitleManager.DownloadSubtitles(video, result.Id, cancellationToken).ConfigureAwait(false);
 
                     return true;
                 }

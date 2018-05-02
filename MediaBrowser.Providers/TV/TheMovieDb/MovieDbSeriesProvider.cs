@@ -410,7 +410,6 @@ namespace MediaBrowser.Providers.TV
             return mainResult;
         }
 
-        private readonly Task _cachedTask = Task.FromResult(true);
         internal Task EnsureSeriesInfo(string tmdbId, string language, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(tmdbId))
@@ -427,7 +426,7 @@ namespace MediaBrowser.Providers.TV
                 // If it's recent or automatic updates are enabled, don't re-download
                 if ((DateTime.UtcNow - _fileSystem.GetLastWriteTimeUtc(fileInfo)).TotalDays <= 3)
                 {
-                    return _cachedTask;
+                    return Task.CompletedTask;
                 }
             }
 
@@ -656,8 +655,8 @@ namespace MediaBrowser.Providers.TV
         {
             get
             {
-                // After Omdb and Tvdb
-                return 2;
+                // After Tvdb
+                return 1;
             }
         }
 

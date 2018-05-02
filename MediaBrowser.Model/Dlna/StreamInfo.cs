@@ -21,7 +21,7 @@ namespace MediaBrowser.Model.Dlna
             AudioCodecs = new string[] { };
             VideoCodecs = new string[] { };
             SubtitleCodecs = new string[] { };
-            TranscodeReasons = new List<TranscodeReason>();
+            TranscodeReasons = new TranscodeReason[] { };
             StreamOptions = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
 
@@ -123,8 +123,7 @@ namespace MediaBrowser.Model.Dlna
         public string SubtitleFormat { get; set; }
 
         public string PlaySessionId { get; set; }
-        public List<MediaSourceInfo> AllMediaSources { get; set; }
-        public List<TranscodeReason> TranscodeReasons { get; set; }
+        public TranscodeReason[] TranscodeReasons { get; set; }
 
         public Dictionary<string, string> StreamOptions { get; private set; }
 
@@ -434,7 +433,7 @@ namespace MediaBrowser.Model.Dlna
 
         private SubtitleStreamInfo GetSubtitleStreamInfo(MediaStream stream, string baseUrl, string accessToken, long startPositionTicks, SubtitleProfile[] subtitleProfiles, ITranscoderSupport transcoderSupport)
         {
-            SubtitleProfile subtitleProfile = StreamBuilder.GetSubtitleProfile(MediaSource, stream, subtitleProfiles, PlayMethod, transcoderSupport, SubProtocol, Container);
+            SubtitleProfile subtitleProfile = StreamBuilder.GetSubtitleProfile(MediaSource, stream, subtitleProfiles, PlayMethod, transcoderSupport, Container, SubProtocol);
             SubtitleStreamInfo info = new SubtitleStreamInfo
             {
                 IsForced = stream.IsForced,

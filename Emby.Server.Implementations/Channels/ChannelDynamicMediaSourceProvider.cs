@@ -18,24 +18,14 @@ namespace Emby.Server.Implementations.Channels
             _channelManager = (ChannelManager)channelManager;
         }
 
-        public async Task<IEnumerable<MediaSourceInfo>> GetMediaSources(IHasMediaSources item, CancellationToken cancellationToken)
+        public Task<IEnumerable<MediaSourceInfo>> GetMediaSources(BaseItem item, CancellationToken cancellationToken)
         {
-            var baseItem = (BaseItem)item;
-
-            if (baseItem.SourceType == SourceType.Channel)
+            if (item.SourceType == SourceType.Channel)
             {
-                var result = await _channelManager.GetDynamicMediaSources(baseItem, cancellationToken).ConfigureAwait(false);
-
-                foreach (var info in result)
-                {
-                    // There could be hls streams here and this isn't supported via direct stream through the server
-                    info.SupportsDirectStream = false;
-                }
-
-                return result;
+                return _channelManager.GetDynamicMediaSources(item, cancellationToken);
             }
 
-            return new List<MediaSourceInfo>();
+            return Task.FromResult<IEnumerable<MediaSourceInfo>>(new List<MediaSourceInfo>());
         }
 
         public Task<Tuple<MediaSourceInfo, IDirectStreamProvider, bool>> OpenMediaSource(string openToken, CancellationToken cancellationToken)

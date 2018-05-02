@@ -6,7 +6,6 @@ using MediaBrowser.Controller.Devices;
 using MediaBrowser.Controller.Net;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Plugins;
-using MediaBrowser.Model.Registration;
 using MediaBrowser.Model.Serialization;
 using System;
 using System.Collections.Generic;
@@ -15,6 +14,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Model.Services;
+using MediaBrowser.Common.Plugins;
 
 namespace MediaBrowser.Api
 {
@@ -111,6 +111,14 @@ namespace MediaBrowser.Api
     {
         [ApiMember(Name = "Name", Description = "Feature Name", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
         public string Name { get; set; }
+    }
+
+    public class RegistrationInfo
+    {
+        public string Name { get; set; }
+        public DateTime ExpirationDate { get; set; }
+        public bool IsTrial { get; set; }
+        public bool IsRegistered { get; set; }
     }
 
     [Route("/Appstore/Register", "POST", Summary = "Registers an appstore sale", IsHidden = true)]
@@ -243,7 +251,7 @@ namespace MediaBrowser.Api
         public object Get(GetPluginConfiguration request)
         {
             var guid = new Guid(request.Id);
-            var plugin = _appHost.Plugins.First(p => p.Id == guid);
+            var plugin = _appHost.Plugins.First(p => p.Id == guid) as IHasPluginConfiguration;
 
             return ToOptimizedResult(plugin.Configuration);
         }
@@ -269,21 +277,18 @@ namespace MediaBrowser.Api
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public void Post(RegisterAppstoreSale request)
+        public Task Post(RegisterAppstoreSale request)
         {
-            var task = _securityManager.RegisterAppStoreSale(request.Parameters);
-
-            Task.WaitAll(task);
+            return _securityManager.RegisterAppStoreSale(request.Parameters);
         }
 
         /// <summary>
         /// Posts the specified request.
         /// </summary>
         /// <param name="request">The request.</param>
-        public void Post(UpdatePluginSecurityInfo request)
+        public Task Post(UpdatePluginSecurityInfo request)
         {
-            var task = _securityManager.UpdateSupporterKey(request.SupporterKey);
-            Task.WaitAll(task);
+            return _securityManager.UpdateSupporterKey(request.SupporterKey);
         }
 
         /// <summary>
@@ -296,7 +301,12 @@ namespace MediaBrowser.Api
             // https://code.google.com/p/servicestack/source/browse/trunk/Common/ServiceStack.Text/ServiceStack.Text/Controller/PathInfo.cs
             var id = new Guid(GetPathValue(1));
 
-            var plugin = _appHost.Plugins.First(p => p.Id == id);
+            var plugin = _appHost.Plugins.First(p => p.Id == id) as IHasPluginConfiguration;
+
+            if (plugin == null)
+            {
+                throw new FileNotFoundException();
+            }
 
             var configuration = _jsonSerializer.DeserializeFromStream(request.RequestStream, plugin.ConfigurationType) as BasePluginConfiguration;
 

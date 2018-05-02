@@ -54,7 +54,7 @@
     <Compile Include="NatProtocol.cs" />
     <Compile Include="Pmp\PmpConstants.cs" />
     <Compile Include="Pmp\PmpNatDevice.cs" />
-    <Compile Include="Pmp\Searchers\PmpSearcher.cs" />
+    <Compile Include="Pmp\PmpSearcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Upnp\Messages\GetServicesMessage.cs" />
     <Compile Include="Upnp\Messages\Requests\CreatePortMappingMessage.cs" />

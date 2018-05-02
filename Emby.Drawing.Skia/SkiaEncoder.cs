@@ -72,7 +72,7 @@ namespace Emby.Drawing.Skia
         {
             get
             {
-                return new[] { ImageFormat.Webp, ImageFormat.Gif, ImageFormat.Jpg, ImageFormat.Png, ImageFormat.Bmp };
+                return new[] { ImageFormat.Webp, ImageFormat.Jpg, ImageFormat.Png };
             }
         }
 
@@ -228,6 +228,7 @@ namespace Emby.Drawing.Skia
 
             var tempPath = Path.Combine(_appPaths.TempDirectory, Guid.NewGuid() + Path.GetExtension(path) ?? string.Empty);
 
+            fileSystem.CreateDirectory(fileSystem.GetDirectoryName(tempPath));
             fileSystem.CopyFile(path, tempPath, true);
 
             return tempPath;
@@ -290,7 +291,7 @@ namespace Emby.Drawing.Skia
                         {
                             // decode
                             codec.GetPixels(bitmap.Info, bitmap.GetPixels());
-
+                            
                             origin = codec.Origin;
                         }
                         else

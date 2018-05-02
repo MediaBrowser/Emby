@@ -76,7 +76,7 @@ namespace MediaBrowser.XbmcMetadata.Savers
             var video = item as Video;
 
             // Check parent for null to avoid running this against things like video backdrops
-            if (video != null && !(item is Episode) && !video.IsOwnedItem)
+            if (video != null && !(item is Episode) && !video.ExtraType.HasValue)
             {
                 return updateType >= MinimumUpdateType;
             }

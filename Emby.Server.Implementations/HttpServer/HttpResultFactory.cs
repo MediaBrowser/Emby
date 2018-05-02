@@ -66,7 +66,7 @@ namespace Emby.Server.Implementations.HttpServer
             var responseHeaders = new Dictionary<string, string>();
             responseHeaders["Location"] = url;
 
-            var result = new HttpResult(new byte[] { }, "text/plain", HttpStatusCode.Redirect);
+            var result = new HttpResult(Array.Empty<byte>(), "text/plain", HttpStatusCode.Redirect);
 
             AddResponseHeaders(result, responseHeaders);
 
@@ -229,7 +229,7 @@ namespace Emby.Server.Implementations.HttpServer
 
             if (isHeadRequest)
             {
-                return GetHttpResult(request, new byte[] { }, contentType, true, responseHeaders);
+                return GetHttpResult(request, Array.Empty<byte>(), contentType, true, responseHeaders);
             }
 
             return GetHttpResult(request, ms, contentType, true, responseHeaders);
@@ -258,7 +258,7 @@ namespace Emby.Server.Implementations.HttpServer
 
             if (isHeadRequest)
             {
-                var result = new StreamWriter(new byte[] { }, contentType, _logger);
+                var result = new StreamWriter(Array.Empty<byte>(), contentType, _logger);
                 AddResponseHeaders(result, responseHeaders);
                 return result;
             }
@@ -351,7 +351,7 @@ namespace Emby.Server.Implementations.HttpServer
         public object GetOptimizedResultUsingCache<T>(IRequest requestContext, Guid cacheKey, DateTime? lastDateModified, TimeSpan? cacheDuration, Func<T> factoryFn, IDictionary<string, string> responseHeaders = null)
                where T : class
         {
-            if (cacheKey == Guid.Empty)
+            if (cacheKey.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("cacheKey");
             }
@@ -394,7 +394,7 @@ namespace Emby.Server.Implementations.HttpServer
         public object GetCachedResult<T>(IRequest requestContext, Guid cacheKey, DateTime? lastDateModified, TimeSpan? cacheDuration, Func<T> factoryFn, string contentType, IDictionary<string, string> responseHeaders = null)
           where T : class
         {
-            if (cacheKey == Guid.Empty)
+            if (cacheKey.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("cacheKey");
             }
@@ -448,7 +448,7 @@ namespace Emby.Server.Implementations.HttpServer
                     AddAgeHeader(responseHeaders, lastDateModified);
                     AddExpiresHeader(responseHeaders, cacheKeyString, cacheDuration);
 
-                    var result = new HttpResult(new byte[] { }, contentType ?? "text/html", HttpStatusCode.NotModified);
+                    var result = new HttpResult(Array.Empty<byte>(), contentType ?? "text/html", HttpStatusCode.NotModified);
 
                     AddResponseHeaders(result, responseHeaders);
 
@@ -551,7 +551,7 @@ namespace Emby.Server.Implementations.HttpServer
             options.ResponseHeaders = options.ResponseHeaders ?? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             var contentType = options.ContentType;
 
-            if (cacheKey == Guid.Empty)
+            if (cacheKey.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("cacheKey");
             }
@@ -610,7 +610,7 @@ namespace Emby.Server.Implementations.HttpServer
                 {
                     stream.Dispose();
 
-                    return GetHttpResult(requestContext, new byte[] { }, contentType, true, responseHeaders);
+                    return GetHttpResult(requestContext, Array.Empty<byte>(), contentType, true, responseHeaders);
                 }
 
                 var hasHeaders = new StreamWriter(stream, contentType, _logger)

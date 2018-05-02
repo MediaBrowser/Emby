@@ -12,7 +12,7 @@ using MediaBrowser.Model.IO;
 
 namespace MediaBrowser.Providers.LiveTv
 {
-    public class ProgramMetadataService : MetadataService<LiveTvProgram, LiveTvProgramLookupInfo>
+    public class ProgramMetadataService : MetadataService<LiveTvProgram, ItemLookupInfo>
     {
         protected override void MergeData(MetadataResult<LiveTvProgram> source, MetadataResult<LiveTvProgram> target, MetadataFields[] lockedFields, bool replaceData, bool mergeMetadataSettings)
         {
@@ -20,6 +20,17 @@ namespace MediaBrowser.Providers.LiveTv
         }
 
         public ProgramMetadataService(IServerConfigurationManager serverConfigurationManager, ILogger logger, IProviderManager providerManager, IFileSystem fileSystem, IUserDataManager userDataManager, ILibraryManager libraryManager) : base(serverConfigurationManager, logger, providerManager, fileSystem, userDataManager, libraryManager)
+        {
+        }
+    }
+    public class LiveTvMetadataService : MetadataService<LiveTvChannel, ItemLookupInfo>
+    {
+        protected override void MergeData(MetadataResult<LiveTvChannel> source, MetadataResult<LiveTvChannel> target, MetadataFields[] lockedFields, bool replaceData, bool mergeMetadataSettings)
+        {
+            ProviderUtils.MergeBaseItemData(source, target, lockedFields, replaceData, mergeMetadataSettings);
+        }
+
+        public LiveTvMetadataService(IServerConfigurationManager serverConfigurationManager, ILogger logger, IProviderManager providerManager, IFileSystem fileSystem, IUserDataManager userDataManager, ILibraryManager libraryManager) : base(serverConfigurationManager, logger, providerManager, fileSystem, userDataManager, libraryManager)
         {
         }
     }

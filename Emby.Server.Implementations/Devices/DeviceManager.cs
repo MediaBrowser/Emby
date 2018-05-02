@@ -19,6 +19,10 @@ using System.Threading.Tasks;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
+using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Configuration;
+using MediaBrowser.Controller.Plugins;
+using MediaBrowser.Model.Globalization;
 
 namespace Emby.Server.Implementations.Devices
 {
@@ -31,6 +35,8 @@ namespace Emby.Server.Implementations.Devices
         private readonly IServerConfigurationManager _config;
         private readonly ILogger _logger;
         private readonly INetworkManager _network;
+        private readonly ILibraryManager _libraryManager;
+        private readonly ILocalizationManager _localizationManager;
 
         public event EventHandler<GenericEventArgs<CameraImageUploadInfo>> CameraImageUploaded;
 
@@ -39,7 +45,7 @@ namespace Emby.Server.Implementations.Devices
         /// </summary>
         public event EventHandler<GenericEventArgs<DeviceInfo>> DeviceOptionsUpdated;
 
-        public DeviceManager(IDeviceRepository repo, IUserManager userManager, IFileSystem fileSystem, ILibraryMonitor libraryMonitor, IServerConfigurationManager config, ILogger logger, INetworkManager network)
+        public DeviceManager(IDeviceRepository repo, ILibraryManager libraryManager, ILocalizationManager localizationManager, IUserManager userManager, IFileSystem fileSystem, ILibraryMonitor libraryMonitor, IServerConfigurationManager config, ILogger logger, INetworkManager network)
         {
             _repo = repo;
             _userManager = userManager;
@@ -48,6 +54,8 @@ namespace Emby.Server.Implementations.Devices
             _config = config;
             _logger = logger;
             _network = network;
+            _libraryManager = libraryManager;
+            _localizationManager = localizationManager;
         }
 
         public DeviceInfo RegisterDevice(string reportedId, string name, string appName, string appVersion, string usedByUserId, string usedByUserName)
@@ -177,7 +185,9 @@ namespace Emby.Server.Implementations.Devices
         public async Task AcceptCameraUpload(string deviceId, Stream stream, LocalFileInfo file)
         {
             var device = GetDevice(deviceId);
-            var path = GetUploadPath(device);
+            var uploadPathInfo = GetUploadPath(device);
+
+            var path = uploadPathInfo.Item1;
 
             if (!string.IsNullOrWhiteSpace(file.Album))
             {
@@ -187,9 +197,11 @@ namespace Emby.Server.Implementations.Devices
             path = Path.Combine(path, file.Name);
             path = Path.ChangeExtension(path, MimeTypes.ToExtension(file.MimeType) ?? "jpg");
 
-            _libraryMonitor.ReportFileSystemChangeBeginning(path);
-
             _fileSystem.CreateDirectory(_fileSystem.GetDirectoryName(path));
+
+            await EnsureLibraryFolder(uploadPathInfo.Item2, uploadPathInfo.Item3).ConfigureAwait(false);
+
+            _libraryMonitor.ReportFileSystemChangeBeginning(path);
 
             try
             {
@@ -218,23 +230,71 @@ namespace Emby.Server.Implementations.Devices
             }
         }
 
-        private string GetUploadPath(DeviceInfo device)
+        internal Task EnsureLibraryFolder(string path, string name)
+        {
+            var existingFolders = _libraryManager
+                .RootFolder
+                .Children
+                .OfType<Folder>()
+                .Where(i => _fileSystem.AreEqual(path, i.Path) || _fileSystem.ContainsSubPath(i.Path, path))
+                .ToList();
+
+            if (existingFolders.Count > 0)
+            {
+                return Task.CompletedTask;
+            }
+
+            _fileSystem.CreateDirectory(path);
+
+            var libraryOptions = new LibraryOptions
+            {
+                PathInfos = new[] { new MediaPathInfo { Path = path } },
+                EnablePhotos = true,
+                EnableRealtimeMonitor = false,
+                SaveLocalMetadata = true
+            };
+
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                name = _localizationManager.GetLocalizedString("HeaderCameraUploads");
+            }
+
+            return _libraryManager.AddVirtualFolder(name, CollectionType.HomeVideos, libraryOptions, true);
+        }
+
+        private Tuple<string, string, string> GetUploadPath(DeviceInfo device)
         {
             if (!string.IsNullOrWhiteSpace(device.CameraUploadPath))
             {
-                return device.CameraUploadPath;
+                return new Tuple<string, string, string>(device.CameraUploadPath, device.CameraUploadPath, _fileSystem.GetDirectoryName(device.CameraUploadPath));
             }
 
             var config = _config.GetUploadOptions();
             var path = config.CameraUploadPath;
+
             if (string.IsNullOrWhiteSpace(path))
             {
                 path = DefaultCameraUploadsPath;
             }
 
+            var topLibraryPath = path;
+
             if (config.EnableCameraUploadSubfolders)
             {
                 path = Path.Combine(path, _fileSystem.GetValidFilename(device.Name));
+            }
+
+            return new Tuple<string, string, string>(path, topLibraryPath, null);
+        }
+
+        internal string GetUploadsPath()
+        {
+            var config = _config.GetUploadOptions();
+            var path = config.CameraUploadPath;
+
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                path = DefaultCameraUploadsPath;
             }
 
             return path;
@@ -299,11 +359,85 @@ namespace Emby.Server.Implementations.Devices
         }
     }
 
+    public class DeviceManagerEntryPoint : IServerEntryPoint
+    {
+        private readonly DeviceManager _deviceManager;
+        private readonly IServerConfigurationManager _config;
+        private readonly IFileSystem _fileSystem;
+        private ILogger _logger;
+
+        public DeviceManagerEntryPoint(IDeviceManager deviceManager, IServerConfigurationManager config, IFileSystem fileSystem, ILogger logger)
+        {
+            _deviceManager = (DeviceManager)deviceManager;
+            _config = config;
+            _fileSystem = fileSystem;
+            _logger = logger;
+        }
+
+        public async void Run()
+        {
+            if (!_config.Configuration.CameraUploadUpgraded && _config.Configuration.IsStartupWizardCompleted)
+            {
+                var path = _deviceManager.GetUploadsPath();
+
+                if (_fileSystem.DirectoryExists(path))
+                {
+                    try
+                    {
+                        await _deviceManager.EnsureLibraryFolder(path, null).ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.ErrorException("Error creating camera uploads library", ex);
+                    }
+
+                    _config.Configuration.CameraUploadUpgraded = true;
+                    _config.SaveConfiguration();
+                }
+            }
+        }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects).
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // TODO: set large fields to null.
+
+                disposedValue = true;
+            }
+        }
+
+        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        // ~DeviceManagerEntryPoint() {
+        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+        //   Dispose(false);
+        // }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            // GC.SuppressFinalize(this);
+        }
+        #endregion
+    }
+
     public class DevicesConfigStore : IConfigurationFactory
     {
         public IEnumerable<ConfigurationStore> GetConfigurations()
         {
-            return new List<ConfigurationStore>
+            return new ConfigurationStore[]
             {
                 new ConfigurationStore
                 {

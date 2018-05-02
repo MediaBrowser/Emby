@@ -89,21 +89,6 @@ namespace MediaBrowser.XbmcMetadata.Savers
                     writer.WriteElementString("displayseason", specialSeason.Value.ToString(UsCulture));
                 }
             }
-
-            if (episode.DvdEpisodeNumber.HasValue)
-            {
-                writer.WriteElementString("DVD_episodenumber", episode.DvdEpisodeNumber.Value.ToString(UsCulture));
-            }
-
-            if (episode.DvdSeasonNumber.HasValue)
-            {
-                writer.WriteElementString("DVD_season", episode.DvdSeasonNumber.Value.ToString(UsCulture));
-            }
-
-            if (episode.AbsoluteEpisodeNumber.HasValue)
-            {
-                writer.WriteElementString("absolute_number", episode.AbsoluteEpisodeNumber.Value.ToString(UsCulture));
-            }
         }
 
         private readonly CultureInfo UsCulture = new CultureInfo("en-US");
@@ -120,9 +105,6 @@ namespace MediaBrowser.XbmcMetadata.Savers
                 "airsafter_season",
                 "airsbefore_episode",
                 "airsbefore_season",
-                "DVD_episodenumber",
-                "DVD_season",
-                "absolute_number",
                 "displayseason",
                 "displayepisode"
             });

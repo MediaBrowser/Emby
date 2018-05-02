@@ -52,7 +52,7 @@ namespace Emby.Server.Implementations.Library.Resolvers.TV
 
                 var season = new Season
                 {
-                    IndexNumber = new SeasonPathParser(namingOptions, new RegexProvider()).Parse(path, true, true).SeasonNumber,
+                    IndexNumber = new SeasonPathParser(namingOptions).Parse(path, true, true).SeasonNumber,
                     SeriesId = series.Id,
                     SeriesName = series.Name
                 };
@@ -70,7 +70,7 @@ namespace Emby.Server.Implementations.Library.Resolvers.TV
                     {
                         if (episodeInfo.EpisodeNumber.HasValue && episodeInfo.SeasonNumber.HasValue)
                         {
-                            _logger.Info("Found folder underneath series with episode number: {0}. Season {1}. Episode {2}", 
+                            _logger.Debug("Found folder underneath series with episode number: {0}. Season {1}. Episode {2}", 
                                 path,
                                 episodeInfo.SeasonNumber.Value,
                                 episodeInfo.EpisodeNumber.Value);

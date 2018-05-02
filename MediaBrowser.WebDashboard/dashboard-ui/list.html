@@ -5,34 +5,49 @@
 
     <div class="flex-grow padded-left padded-right pageContainerTopPadding">
 
-        <div class="flex align-items-center justify-content-center focuscontainer-x itemsViewSettingsContainer padded-top padded-bottom">
-            <div class="listPageButtons hide">
-                <button is="emby-button" class="btnPlay raised">
-                    <span>${PlayAll}</span>
-                </button>
-                <button is="emby-button" class="btnQueue raised">
-                    <span>${Queue}</span>
-                </button>
-                <button is="emby-button" class="btnShuffle raised">
-                    <span>${Shuffle}</span>
-                </button>
-                <button is="emby-button" class="btnInstantMix raised ">
-                    <span>${InstantMix}</span>
-                </button>
-            </div>
-
-            <button is="emby-button" class="btnSort hide button-flat">
-                <span class="btnSortText"></span>
-                <i class="md-icon btnSortIcon">&#xE5C5;</i>
+        <div class="flex align-items-center focuscontainer-x itemsViewSettingsContainer padded-top padded-bottom flex-wrap-wrap" style="padding-bottom:2em;">
+            <button is="emby-button" class="btnPlay raised raised-mini hide listTextButton-autohide">
+                <span>${HeaderPlayAll}</span>
             </button>
-            <button is="emby-button" class="btnNewItem hide button-flat">
-                <i class="md-icon">&#xE145;</i>
+            <button is="paper-icon-button-light" class="btnPlay listIconButton-autohide">
+                <i class="md-icon">&#xE037;</i>
+            </button>
+            <button is="emby-button" class="btnQueue raised raised-mini hide listTextButton-autohide">
+                <span>${Queue}</span>
+            </button>
+            <button is="paper-icon-button-light" class="btnQueue listIconButton-autohide">
+                <i class="md-icon">&#xE03B;</i>
+            </button>
+            <button is="emby-button" class="btnShuffle raised raised-mini hide listTextButton-autohide">
+                <span>${Shuffle}</span>
+            </button>
+            <button is="paper-icon-button-light" class="btnShuffle listIconButton-autohide">
+                <i class="md-icon">&#xE043;</i>
+            </button>
+            <button is="emby-button" class="btnNewItem hide raised raised-mini listTextButton-autohide">
                 <span>${New}</span>
             </button>
-            <button is="emby-button" class="btnFilter button-flat hide">
+            <button is="paper-icon-button-light" class="btnNewItem listIconButton-autohide">
+                <i class="md-icon">&#xE145;</i>
+            </button>
+
+            <button is="emby-button" class="btnSort hide raised raised-mini listTextButton-autohide">
+                <span class="btnSortText"></span>
+                <i class="md-icon btnSortIcon viewSettingsButtonIcon">&#xE5D8;</i>
+            </button>
+            <button is="paper-icon-button-light" class="btnSort hide listIconButton-autohide">
+                <i class="md-icon">&#xE164;</i>
+            </button>
+            <button is="emby-button" class="btnFilter raised raised-mini listTextButton-autohide">
+                <span>${Filter}</span>
+            </button>
+            <button is="paper-icon-button-light" class="btnFilter listIconButton-autohide" data-ripple="false" style="overflow:visible;">
                 <i class="md-icon">&#xE152;</i>
             </button>
-            <button is="emby-button" class="btnViewSettings button-flat">
+            <button is="emby-button" class="btnViewSettings raised raised-mini listTextButton-autohide">
+                <i class="md-icon viewSettingsButtonIcon">&#xE5D3;</i>
+            </button>
+            <button is="paper-icon-button-light" class="btnViewSettings listIconButton-autohide">
                 <i class="md-icon">&#xE5D3;</i>
             </button>
         </div>

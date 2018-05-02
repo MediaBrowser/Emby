@@ -141,7 +141,6 @@ namespace MediaBrowser.Providers.TV
             return _jsonSerializer.DeserializeFromFile<RootObject>(dataFilePath);
         }
 
-        private readonly Task _cachedTask = Task.FromResult(true);
         internal Task EnsureSeasonInfo(string tmdbId, int seasonNumber, string language, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(tmdbId))
@@ -162,7 +161,7 @@ namespace MediaBrowser.Providers.TV
                 // If it's recent or automatic updates are enabled, don't re-download
                 if ((DateTime.UtcNow - _fileSystem.GetLastWriteTimeUtc(fileInfo)).TotalDays <= 3)
                 {
-                    return _cachedTask;
+                    return Task.CompletedTask;
                 }
             }
 

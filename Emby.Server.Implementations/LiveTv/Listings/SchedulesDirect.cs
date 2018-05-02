@@ -16,6 +16,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Model.Extensions;
+using MediaBrowser.Controller.Entities.TV;
+using MediaBrowser.Controller.Providers;
+using MediaBrowser.Model.Entities;
 
 namespace Emby.Server.Implementations.LiveTv.Listings
 {
@@ -246,8 +249,6 @@ namespace Emby.Server.Implementations.LiveTv.Listings
             DateTime endAt = startAt.AddSeconds(programInfo.duration);
             ProgramAudio audioType = ProgramAudio.Stereo;
 
-            bool repeat = programInfo.@new == null;
-
             var programId = programInfo.programID ?? string.Empty;
 
             string newID = programId + "T" + startAt.Ticks + "C" + channelId;
@@ -293,14 +294,17 @@ namespace Emby.Server.Implementations.LiveTv.Listings
                 CommunityRating = null,
                 EpisodeTitle = episodeTitle,
                 Audio = audioType,
-                IsRepeat = repeat,
+                //IsNew = programInfo.@new ?? false,
+                IsRepeat = programInfo.@new == null,
                 IsSeries = string.Equals(details.entityType, "episode", StringComparison.OrdinalIgnoreCase),
                 ImageUrl = details.primaryImage,
                 ThumbImageUrl = details.thumbImage,
                 IsKids = string.Equals(details.audience, "children", StringComparison.OrdinalIgnoreCase),
                 IsSports = string.Equals(details.entityType, "sports", StringComparison.OrdinalIgnoreCase),
                 IsMovie = IsMovie(details),
-                Etag = programInfo.md5
+                Etag = programInfo.md5,
+                IsLive = string.Equals(programInfo.liveTapeDelay, "live", StringComparison.OrdinalIgnoreCase),
+                IsPremiere = programInfo.premiere
             };
 
             var showId = programId;
@@ -356,6 +360,8 @@ namespace Emby.Server.Implementations.LiveTv.Listings
             {
                 info.SeriesId = programId.Substring(0, 10);
 
+                info.SeriesProviderIds[MetadataProviders.Zap2It.ToString()] = info.SeriesId;
+
                 if (details.metadata != null)
                 {
                     foreach (var metadataProgram in details.metadata)
@@ -376,10 +382,19 @@ namespace Emby.Server.Implementations.LiveTv.Listings
                 }
             }
 
-            if (!string.IsNullOrWhiteSpace(details.originalAirDate) && (!info.IsSeries || info.IsRepeat))
+            if (!string.IsNullOrWhiteSpace(details.originalAirDate))
             {
                 info.OriginalAirDate = DateTime.Parse(details.originalAirDate);
                 info.ProductionYear = info.OriginalAirDate.Value.Year;
+            }
+
+            if (details.movie != null)
+            {
+                int year;
+                if (!string.IsNullOrEmpty(details.movie.year) && int.TryParse(details.movie.year, out year))
+                {
+                    info.ProductionYear = year;
+                }
             }
 
             if (details.genres != null)
@@ -1111,6 +1126,9 @@ namespace Emby.Server.Implementations.LiveTv.Listings
                 public List<Rating> ratings { get; set; }
                 public bool? @new { get; set; }
                 public Multipart multipart { get; set; }
+                public string liveTapeDelay { get; set; }
+                public bool premiere { get; set; }
+                public bool repeat { get; set; }
             }
 
 

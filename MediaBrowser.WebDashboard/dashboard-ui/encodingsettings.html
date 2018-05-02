@@ -8,6 +8,7 @@
                 <div class="selectContainer">
                     <select is="emby-select" id="selectVideoDecoder" label="${LabelHardwareAccelerationType}">
                         <option value="">${OptionNone}</option>
+                        <option value="amf">AMD AMF (experimental)</option>
                         <option value="qsv">Intel Quick Sync (experimental)</option>
                         <option value="mediacodec">MediaCodec Android (experimental)</option>
                         <option value="omx">OpenMAX OMX (experimental)</option>
@@ -126,13 +127,6 @@
                 <div class="inputContainer">
                     <input is="emby-input" type="number" id="txtH264Crf" pattern="[0-9]*" min="0" max="51" step="1" label="${LabelH264Crf}" />
                     <div class="fieldDescription">${H264CrfHelp}</div>
-                </div>
-
-                <div class="selectContainer">
-                    <select is="emby-select" id="selectDeinterlaceMethod" label="${LabelDeinterlacingMethod}">
-                        <option value="">${Standard}</option>
-                        <option value="bobandweave">${BobAndWeaveWithHelp}</option>
-                    </select>
                 </div>
 
                 <div class="checkboxContainer checkboxContainer-withDescription">

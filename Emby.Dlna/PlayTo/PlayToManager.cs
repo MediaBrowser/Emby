@@ -230,7 +230,8 @@ namespace Emby.Dlna.PlayTo
                             GeneralCommandType.ToggleMute.ToString(),
                             GeneralCommandType.SetVolume.ToString(),
                             GeneralCommandType.SetAudioStreamIndex.ToString(),
-                            GeneralCommandType.SetSubtitleStreamIndex.ToString()
+                            GeneralCommandType.SetSubtitleStreamIndex.ToString(),
+                            GeneralCommandType.PlayMediaSource.ToString()
                     },
 
                     SupportsMediaControl = true,
@@ -257,7 +258,6 @@ namespace Emby.Dlna.PlayTo
             }
 
             _disposed = true;
-            GC.SuppressFinalize(this);
         }
     }
 }

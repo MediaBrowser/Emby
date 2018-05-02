@@ -18,8 +18,8 @@ namespace MediaBrowser.Controller.Entities.TV
         public Episode()
         {
             RemoteTrailers = EmptyMediaUrlArray;
-            LocalTrailerIds = EmptyGuidArray;
-            RemoteTrailerIds = EmptyGuidArray;
+            LocalTrailerIds = new Guid[] {};
+            RemoteTrailerIds = new Guid[] {};
         }
 
         public Guid[] LocalTrailerIds { get; set; }
@@ -33,23 +33,6 @@ namespace MediaBrowser.Controller.Entities.TV
         public int? AirsBeforeSeasonNumber { get; set; }
         public int? AirsAfterSeasonNumber { get; set; }
         public int? AirsBeforeEpisodeNumber { get; set; }
-
-        /// <summary>
-        /// Gets or sets the DVD season number.
-        /// </summary>
-        /// <value>The DVD season number.</value>
-        public int? DvdSeasonNumber { get; set; }
-        /// <summary>
-        /// Gets or sets the DVD episode number.
-        /// </summary>
-        /// <value>The DVD episode number.</value>
-        public float? DvdEpisodeNumber { get; set; }
-
-        /// <summary>
-        /// Gets or sets the absolute episode number.
-        /// </summary>
-        /// <value>The absolute episode number.</value>
-        public int? AbsoluteEpisodeNumber { get; set; }
 
         /// <summary>
         /// This is the ending episode number for double episodes.
@@ -348,6 +331,7 @@ namespace MediaBrowser.Controller.Entities.TV
             if (series != null)
             {
                 id.SeriesProviderIds = series.ProviderIds;
+                id.SeriesDisplayOrder = series.DisplayOrder;
             }
 
             id.IsMissingEpisode = IsMissingEpisode;
@@ -356,31 +340,24 @@ namespace MediaBrowser.Controller.Entities.TV
             return id;
         }
 
-        public override bool BeforeMetadataRefresh()
+        public override bool BeforeMetadataRefresh(bool replaceAllMetdata)
         {
-            var hasChanges = base.BeforeMetadataRefresh();
+            var hasChanges = base.BeforeMetadataRefresh(replaceAllMetdata);
 
-            try
+            if (!IsLocked)
             {
-                if (LibraryManager.FillMissingEpisodeNumbersFromPath(this))
+                if (SourceType == SourceType.Library)
                 {
-                    hasChanges = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.ErrorException("Error in FillMissingEpisodeNumbersFromPath. Episode: {0}", ex, Path ?? Name ?? Id.ToString());
-            }
-
-            if (!ParentIndexNumber.HasValue)
-            {
-                var season = Season;
-                if (season != null)
-                {
-                    if (season.ParentIndexNumber.HasValue)
+                    try
                     {
-                        ParentIndexNumber = season.ParentIndexNumber;
-                        hasChanges = true;
+                        if (LibraryManager.FillMissingEpisodeNumbersFromPath(this, replaceAllMetdata))
+                        {
+                            hasChanges = true;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.ErrorException("Error in FillMissingEpisodeNumbersFromPath. Episode: {0}", ex, Path ?? Name ?? Id.ToString());
                     }
                 }
             }

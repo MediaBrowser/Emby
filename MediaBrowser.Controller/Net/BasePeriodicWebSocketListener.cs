@@ -173,7 +173,7 @@ namespace MediaBrowser.Controller.Net
 
         protected void SendData(bool force)
         {
-            List<Tuple<IWebSocketConnection, CancellationTokenSource, ITimer, TStateType>> tuples;
+            Tuple<IWebSocketConnection, CancellationTokenSource, ITimer, TStateType>[] tuples;
 
             lock (ActiveConnections)
             {
@@ -192,7 +192,7 @@ namespace MediaBrowser.Controller.Net
 
                         return false;
                     })
-                    .ToList();
+                    .ToArray();
             }
 
             foreach (var tuple in tuples)
@@ -301,7 +301,7 @@ namespace MediaBrowser.Controller.Net
             {
                 lock (ActiveConnections)
                 {
-                    foreach (var connection in ActiveConnections.ToList())
+                    foreach (var connection in ActiveConnections.ToArray())
                     {
                         DisposeConnection(connection);
                     }
@@ -315,7 +315,6 @@ namespace MediaBrowser.Controller.Net
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
     }
 

@@ -33,17 +33,17 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
             return header.Substring(ap + 1, end - ap - 1);
         }
 
-        async Task LoadMultiPart()
+        async Task LoadMultiPart(WebROCollection form)
         {
             string boundary = GetParameter(ContentType, "; boundary=");
             if (boundary == null)
                 return;
 
-            using (var requestStream = GetSubStream(InputStream, _memoryStreamProvider))
+            using (var requestStream = InputStream)
             {
                 //DB: 30/01/11 - Hack to get around non-seekable stream and received HTTP request
                 //Not ending with \r\n?
-                var ms = _memoryStreamProvider.CreateNew(32 * 1024);
+                var ms = new MemoryStream(32 * 1024);
                 await requestStream.CopyToAsync(ms).ConfigureAwait(false);
 
                 var input = ms;
@@ -83,28 +83,19 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
             }
         }
 
-        public QueryParamCollection Form
+        public async Task<QueryParamCollection> GetFormData()
         {
-            get
+            var form = new WebROCollection();
+            files = new Dictionary<string, HttpPostedFile>();
+
+            if (IsContentType("multipart/form-data", true))
             {
-                if (form == null)
-                {
-                    form = new WebROCollection();
-                    files = new Dictionary<string, HttpPostedFile>();
-
-                    if (IsContentType("multipart/form-data", true))
-                    {
-                        var task = LoadMultiPart();
-                        Task.WaitAll(task);
-                    }
-                    else if (IsContentType("application/x-www-form-urlencoded", true))
-                    {
-                        var task = LoadWwwForm();
-                        Task.WaitAll(task);
-                    }
-
-                    form.Protect();
-                }
+                await LoadMultiPart(form).ConfigureAwait(false);
+            }
+            else if (IsContentType("application/x-www-form-urlencoded", true))
+            {
+                await LoadWwwForm(form).ConfigureAwait(false);
+            }
 
 #if NET_4_0
 				if (validateRequestNewMode && !checked_form) {
@@ -114,14 +105,13 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
 					ValidateNameValueCollection ("Form", query_string_nvc, RequestValidationSource.Form);
 				} else
 #endif
-                if (validate_form && !checked_form)
-                {
-                    checked_form = true;
-                    ValidateNameValueCollection("Form", form);
-                }
-
-                return form;
+            if (validate_form && !checked_form)
+            {
+                checked_form = true;
+                ValidateNameValueCollection("Form", form);
             }
+
+            return form;
         }
 
         public string Accept
@@ -228,11 +218,11 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
             return string.Equals(ContentType, ct, StringComparison.OrdinalIgnoreCase);
         }
 
-        async Task LoadWwwForm()
+        async Task LoadWwwForm(WebROCollection form)
         {
-            using (Stream input = GetSubStream(InputStream, _memoryStreamProvider))
+            using (Stream input = InputStream)
             {
-                using (var ms = _memoryStreamProvider.CreateNew())
+                using (var ms = new MemoryStream())
                 {
                     await input.CopyToAsync(ms).ConfigureAwait(false);
                     ms.Position = 0;
@@ -252,7 +242,7 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
                                 {
                                     if (c == '&')
                                     {
-                                        AddRawKeyValue(key, value);
+                                        AddRawKeyValue(form, key, value);
                                         break;
                                     }
                                     else
@@ -260,23 +250,23 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
                                 }
                                 if (c == -1)
                                 {
-                                    AddRawKeyValue(key, value);
+                                    AddRawKeyValue(form, key, value);
                                     return;
                                 }
                             }
                             else if (c == '&')
-                                AddRawKeyValue(key, value);
+                                AddRawKeyValue(form, key, value);
                             else
                                 key.Append((char)c);
                         }
                         if (c == -1)
-                            AddRawKeyValue(key, value);
+                            AddRawKeyValue(form, key, value);
                     }
                 }
             }
         }
 
-        void AddRawKeyValue(StringBuilder key, StringBuilder value)
+        void AddRawKeyValue(WebROCollection form, StringBuilder key, StringBuilder value)
         {
             string decodedKey = WebUtility.UrlDecode(key.ToString());
             form.Add(decodedKey,
@@ -286,39 +276,10 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
             value.Length = 0;
         }
 
-        WebROCollection form;
-
         Dictionary<string, HttpPostedFile> files;
 
         class WebROCollection : QueryParamCollection
         {
-            bool got_id;
-            int id;
-
-            public bool GotID
-            {
-                get { return got_id; }
-            }
-
-            public int ID
-            {
-                get { return id; }
-                set
-                {
-                    got_id = true;
-                    id = value;
-                }
-            }
-            public void Protect()
-            {
-                //IsReadOnly = true;
-            }
-
-            public void Unprotect()
-            {
-                //IsReadOnly = false;
-            }
-
             public override string ToString()
             {
                 StringBuilder result = new StringBuilder();

@@ -368,7 +368,7 @@ namespace Emby.Dlna.PlayTo
         {
             var command = avCommands.ServiceActions.FirstOrDefault(c => c.Name == "Play");
             if (command == null)
-                return Task.FromResult(true);
+                return Task.CompletedTask;
 
             var service = GetAvTransportService();
 
@@ -1147,7 +1147,6 @@ namespace Emby.Dlna.PlayTo
                 _disposed = true;
 
                 DisposeTimer();
-                GC.SuppressFinalize(this);
             }
         }
 

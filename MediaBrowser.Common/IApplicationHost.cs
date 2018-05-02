@@ -84,18 +84,6 @@ namespace MediaBrowser.Common
         bool IsFirstRun { get; }
 
         /// <summary>
-        /// Gets the failed assemblies.
-        /// </summary>
-        /// <value>The failed assemblies.</value>
-        List<string> FailedAssemblies { get; }
-
-        /// <summary>
-        /// Gets all concrete types.
-        /// </summary>
-        /// <value>All concrete types.</value>
-        Type[] AllConcreteTypes { get; }
-
-        /// <summary>
         /// Gets the exports.
         /// </summary>
         /// <typeparam name="T"></typeparam>

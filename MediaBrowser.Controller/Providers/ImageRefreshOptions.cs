@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using MediaBrowser.Model.Entities;
+using System;
+using System.Linq;
 
 namespace MediaBrowser.Controller.Providers
 {
@@ -10,16 +12,15 @@ namespace MediaBrowser.Controller.Providers
 
         public bool ReplaceAllImages { get; set; }
 
-        public List<ImageType> ReplaceImages { get; set; }
+        public ImageType[] ReplaceImages { get; set; }
         public bool IsAutomated { get; set; }
-        public bool ForceEnableInternetMetadata { get; set; }
 
         public ImageRefreshOptions(IDirectoryService directoryService)
         {
             ImageRefreshMode = MetadataRefreshMode.Default;
             DirectoryService = directoryService;
 
-            ReplaceImages = new List<ImageType>();
+            ReplaceImages = new ImageType[] { };
             IsAutomated = true;
         }
 

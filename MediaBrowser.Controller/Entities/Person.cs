@@ -41,7 +41,7 @@ namespace MediaBrowser.Controller.Entities
 
         public IList<BaseItem> GetTaggedItems(InternalItemsQuery query)
         {
-            query.PersonIds = new[] { Id.ToString("N") };
+            query.PersonIds = new[] { Id };
 
             return LibraryManager.GetItemList(query);
         }
@@ -72,19 +72,6 @@ namespace MediaBrowser.Controller.Entities
 
         [IgnoreDataMember]
         public override bool EnableAlphaNumericSorting
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether this instance is owned item.
-        /// </summary>
-        /// <value><c>true</c> if this instance is owned item; otherwise, <c>false</c>.</value>
-        [IgnoreDataMember]
-        public override bool IsOwnedItem
         {
             get
             {
@@ -159,9 +146,9 @@ namespace MediaBrowser.Controller.Entities
         /// <summary>
         /// This is called before any metadata refresh and returns true or false indicating if changes were made
         /// </summary>
-        public override bool BeforeMetadataRefresh()
+        public override bool BeforeMetadataRefresh(bool replaceAllMetdata)
         {
-            var hasChanges = base.BeforeMetadataRefresh();
+            var hasChanges = base.BeforeMetadataRefresh(replaceAllMetdata);
 
             var newPath = GetRebasedPath();
             if (!string.Equals(Path, newPath, StringComparison.Ordinal))

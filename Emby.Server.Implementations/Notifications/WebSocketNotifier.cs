@@ -50,7 +50,6 @@ namespace Emby.Server.Implementations.Notifications
         public void Dispose()
         {
             _notificationsRepo.NotificationAdded -= _notificationsRepo_NotificationAdded;
-            GC.SuppressFinalize(this);
         }
     }
 }

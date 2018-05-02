@@ -140,7 +140,7 @@ namespace Emby.Server.Implementations.MediaEncoder
 
                             var protocol = MediaProtocol.File;
 
-                            var inputPath = MediaEncoderHelpers.GetInputArgument(_fileSystem, video.Path, protocol, null, new string[] { });
+                            var inputPath = MediaEncoderHelpers.GetInputArgument(_fileSystem, video.Path, protocol, null, Array.Empty<string>());
 
                             _fileSystem.CreateDirectory(_fileSystem.GetDirectoryName(path));
 

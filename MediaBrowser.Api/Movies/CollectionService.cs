@@ -77,10 +77,10 @@ namespace MediaBrowser.Api.Movies
 
             var dto = _dtoService.GetBaseItemDto(item, dtoOptions);
 
-            return ToOptimizedResult(new CollectionCreationResult
+            return new CollectionCreationResult
             {
                 Id = dto.Id
-            });
+            };
         }
 
         public void Post(AddToCollection request)

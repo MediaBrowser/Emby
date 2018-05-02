@@ -200,7 +200,7 @@ namespace MediaBrowser.Api.Music
 
             result.Items = returnList;
 
-            return ToOptimizedResult(result);
+            return result;
         }
 
     }

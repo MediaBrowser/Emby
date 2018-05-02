@@ -24,6 +24,7 @@ using MediaBrowser.Controller.IO;
 using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Model.MediaInfo;
 using MediaBrowser.Model.Extensions;
+using MediaBrowser.Controller.Channels;
 
 namespace MediaBrowser.Providers.Manager
 {
@@ -74,11 +75,12 @@ namespace MediaBrowser.Providers.Manager
 
             var result = new RefreshResult { UpdateType = ItemUpdateType.None };
 
-            var providerIds = new List<Guid>();
+            var typeName = item.GetType().Name;
+            var typeOptions = libraryOptions.GetTypeOptions(typeName) ?? new TypeOptions { Type = typeName };
 
             // In order to avoid duplicates, only download these if there are none already
-            var backdropLimit = savedOptions.GetLimit(ImageType.Backdrop);
-            var screenshotLimit = savedOptions.GetLimit(ImageType.Screenshot);
+            var backdropLimit = typeOptions.GetLimit(ImageType.Backdrop);
+            var screenshotLimit = typeOptions.GetLimit(ImageType.Screenshot);
             var downloadedImages = new List<ImageType>();
 
             foreach (var provider in providers)
@@ -87,8 +89,7 @@ namespace MediaBrowser.Providers.Manager
 
                 if (remoteProvider != null)
                 {
-                    await RefreshFromProvider(item, libraryOptions, remoteProvider, refreshOptions, savedOptions, backdropLimit, screenshotLimit, downloadedImages, result, cancellationToken).ConfigureAwait(false);
-                    providerIds.Add(provider.GetType().FullName.GetMD5());
+                    await RefreshFromProvider(item, libraryOptions, remoteProvider, refreshOptions, typeOptions, backdropLimit, screenshotLimit, downloadedImages, result, cancellationToken).ConfigureAwait(false);
                     continue;
                 }
 
@@ -96,12 +97,9 @@ namespace MediaBrowser.Providers.Manager
 
                 if (dynamicImageProvider != null)
                 {
-                    await RefreshFromProvider(item, dynamicImageProvider, refreshOptions, savedOptions, downloadedImages, result, cancellationToken).ConfigureAwait(false);
-                    providerIds.Add(provider.GetType().FullName.GetMD5());
+                    await RefreshFromProvider(item, dynamicImageProvider, refreshOptions, typeOptions, libraryOptions, downloadedImages, result, cancellationToken).ConfigureAwait(false);
                 }
             }
-
-            result.Providers = providerIds;
 
             return result;
         }
@@ -109,18 +107,11 @@ namespace MediaBrowser.Providers.Manager
         /// <summary>
         /// Refreshes from provider.
         /// </summary>
-        /// <param name="item">The item.</param>
-        /// <param name="provider">The provider.</param>
-        /// <param name="refreshOptions">The refresh options.</param>
-        /// <param name="savedOptions">The saved options.</param>
-        /// <param name="downloadedImages">The downloaded images.</param>
-        /// <param name="result">The result.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
         private async Task RefreshFromProvider(BaseItem item,
             IDynamicImageProvider provider,
             ImageRefreshOptions refreshOptions,
-            MetadataOptions savedOptions,
+            TypeOptions savedOptions,
+            LibraryOptions libraryOptions,
             ICollection<ImageType> downloadedImages,
             RefreshResult result,
             CancellationToken cancellationToken)
@@ -216,7 +207,7 @@ namespace MediaBrowser.Providers.Manager
         /// <param name="backdropLimit">The backdrop limit.</param>
         /// <param name="screenshotLimit">The screenshot limit.</param>
         /// <returns><c>true</c> if the specified item contains images; otherwise, <c>false</c>.</returns>
-        private bool ContainsImages(BaseItem item, List<ImageType> images, MetadataOptions savedOptions, int backdropLimit, int screenshotLimit)
+        private bool ContainsImages(BaseItem item, List<ImageType> images, TypeOptions savedOptions, int backdropLimit, int screenshotLimit)
         {
             if (_singularImages.Any(i => images.Contains(i) && !HasImage(item, i) && savedOptions.GetLimit(i) > 0))
             {
@@ -252,7 +243,7 @@ namespace MediaBrowser.Providers.Manager
         private async Task RefreshFromProvider(BaseItem item, LibraryOptions libraryOptions,
             IRemoteImageProvider provider,
             ImageRefreshOptions refreshOptions,
-            MetadataOptions savedOptions,
+            TypeOptions savedOptions,
             int backdropLimit,
             int screenshotLimit,
             ICollection<ImageType> downloadedImages,
@@ -267,7 +258,7 @@ namespace MediaBrowser.Providers.Manager
                 }
 
                 if (!refreshOptions.ReplaceAllImages &&
-                    refreshOptions.ReplaceImages.Count == 0 &&
+                    refreshOptions.ReplaceImages.Length == 0 &&
                     ContainsImages(item, provider.GetSupportedImages(item).ToList(), savedOptions, backdropLimit, screenshotLimit))
                 {
                     return;
@@ -323,7 +314,7 @@ namespace MediaBrowser.Providers.Manager
             }
         }
 
-        private bool IsEnabled(MetadataOptions options, ImageType type, BaseItem item)
+        private bool IsEnabled(TypeOptions options, ImageType type, BaseItem item)
         {
             return options.IsEnabled(type);
         }
@@ -348,7 +339,7 @@ namespace MediaBrowser.Providers.Manager
                 }
                 catch (FileNotFoundException)
                 {
-                    
+
                 }
             }
 

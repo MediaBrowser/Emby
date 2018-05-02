@@ -53,12 +53,14 @@ namespace MediaBrowser.Common.Net
         /// <returns><c>true</c> if [is in local network] [the specified endpoint]; otherwise, <c>false</c>.</returns>
         bool IsInLocalNetwork(string endpoint);
 
-        List<IpAddressInfo> GetLocalIpAddresses();
+        IpAddressInfo[] GetLocalIpAddresses();
 
         IpAddressInfo ParseIpAddress(string ipAddress);
 
         bool TryParseIpAddress(string ipAddress, out IpAddressInfo ipAddressInfo);
 
         Task<IpAddressInfo[]> GetHostAddressesAsync(string host);
+
+        bool IsAddressInSubnets(string addressString, string[] subnets);
     }
 }

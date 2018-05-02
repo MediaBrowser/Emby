@@ -121,15 +121,10 @@ namespace MediaBrowser.Providers.TV
 
             var hasNewEpisodes = false;
 
-            if (addNewItems && series.IsInternetMetadataEnabled())
+            if (addNewItems && series.IsMetadataFetcherEnabled(_libraryManager.GetLibraryOptions(series) ,TvdbSeriesProvider.Current.Name))
             {
-                var seriesConfig = _config.Configuration.MetadataOptions.FirstOrDefault(i => string.Equals(i.ItemType, typeof(Series).Name, StringComparison.OrdinalIgnoreCase));
-
-                if (seriesConfig == null || !seriesConfig.DisabledMetadataFetchers.Contains(TvdbSeriesProvider.Current.Name, StringComparer.OrdinalIgnoreCase))
-                {
-                    hasNewEpisodes = await AddMissingEpisodes(series, allRecursiveChildren, addMissingEpisodes, seriesDataPath, episodeLookup, cancellationToken)
-                        .ConfigureAwait(false);
-                }
+                hasNewEpisodes = await AddMissingEpisodes(series, allRecursiveChildren, addMissingEpisodes, seriesDataPath, episodeLookup, cancellationToken)
+                    .ConfigureAwait(false);
             }
 
             if (hasNewEpisodes || anySeasonsRemoved || anyEpisodesRemoved)

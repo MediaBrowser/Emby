@@ -224,7 +224,7 @@ namespace MediaBrowser.Api.Library
         /// Posts the specified request.
         /// </summary>
         /// <param name="request">The request.</param>
-        public void Post(AddVirtualFolder request)
+        public Task Post(AddVirtualFolder request)
         {
             var libraryOptions = request.LibraryOptions ?? new LibraryOptions();
 
@@ -233,7 +233,7 @@ namespace MediaBrowser.Api.Library
                 libraryOptions.PathInfos = request.Paths.Select(i => new MediaPathInfo { Path = i }).ToArray();
             }
 
-            _libraryManager.AddVirtualFolder(request.Name, request.CollectionType, libraryOptions, request.RefreshLibrary);
+            return _libraryManager.AddVirtualFolder(request.Name, request.CollectionType, libraryOptions, request.RefreshLibrary);
         }
 
         /// <summary>
@@ -283,6 +283,8 @@ namespace MediaBrowser.Api.Library
             }
             finally
             {
+                CollectionFolder.OnCollectionFolderChange();
+
                 Task.Run(() =>
                 {
                     // No need to start if scanning the library because it will handle it
@@ -307,9 +309,9 @@ namespace MediaBrowser.Api.Library
         /// Deletes the specified request.
         /// </summary>
         /// <param name="request">The request.</param>
-        public void Delete(RemoveVirtualFolder request)
+        public Task Delete(RemoveVirtualFolder request)
         {
-            _libraryManager.RemoveVirtualFolder(request.Name, request.RefreshLibrary);
+            return _libraryManager.RemoveVirtualFolder(request.Name, request.RefreshLibrary);
         }
 
         /// <summary>

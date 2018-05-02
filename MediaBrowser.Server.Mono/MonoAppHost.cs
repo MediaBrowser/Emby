@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Emby.Server.CinemaMode;
 using Emby.Server.Connect;
 using Emby.Server.Implementations;
 using Emby.Server.Sync;
@@ -48,7 +47,6 @@ namespace MediaBrowser.Server.Mono
             var list = new List<Assembly>();
 
             list.Add(GetType().Assembly);
-            list.Add(typeof(DefaultIntroProvider).Assembly);
             list.Add(typeof(ConnectManager).Assembly);
             list.Add(typeof(SyncManager).Assembly);
 

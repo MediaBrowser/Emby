@@ -23,8 +23,8 @@ namespace MediaBrowser.Controller.Entities.TV
         public Series()
         {
             RemoteTrailers = EmptyMediaUrlArray;
-            LocalTrailerIds = EmptyGuidArray;
-            RemoteTrailerIds = EmptyGuidArray;
+            LocalTrailerIds = new Guid[] {};
+            RemoteTrailerIds = new Guid[] {};
             AirDays = new DayOfWeek[] { };
         }
 
@@ -369,7 +369,6 @@ namespace MediaBrowser.Controller.Entities.TV
             }
 
             refreshOptions = new MetadataRefreshOptions(refreshOptions);
-            refreshOptions.IsPostRecursiveRefresh = true;
             await ProviderManager.RefreshSingleItem(this, refreshOptions, cancellationToken).ConfigureAwait(false);
         }
 
@@ -491,9 +490,9 @@ namespace MediaBrowser.Controller.Entities.TV
             return info;
         }
 
-        public override bool BeforeMetadataRefresh()
+        public override bool BeforeMetadataRefresh(bool replaceAllMetadata)
         {
-            var hasChanges = base.BeforeMetadataRefresh();
+            var hasChanges = base.BeforeMetadataRefresh(replaceAllMetadata);
 
             if (!ProductionYear.HasValue)
             {

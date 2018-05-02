@@ -113,8 +113,6 @@ namespace Rssdp.Infrastructure
             {
                 //_MinCacheTime = minCacheTime;
 
-                ConnectToDeviceEvents(device);
-
                 WriteTrace("Device Added", device);
 
                 SetRebroadcastAliveNotificationsTimer(minCacheTime);
@@ -151,8 +149,6 @@ namespace Rssdp.Infrastructure
             if (wasRemoved)
             {
                 //_MinCacheTime = minCacheTime;
-
-                DisconnectFromDeviceEvents(device);
 
                 WriteTrace("Device Removed", device);
 
@@ -527,9 +523,8 @@ namespace Rssdp.Infrastructure
             var message = BuildMessage(header, values);
 
             var sendCount = IsDisposed ? 1 : 3;
+            WriteTrace(String.Format("Sent byebye notification"), device);
             return _CommsServer.SendMulticastMessage(message, sendCount, cancellationToken);
-
-            //WriteTrace(String.Format("Sent byebye notification"), device);
         }
 
         #endregion
@@ -580,7 +575,7 @@ namespace Rssdp.Infrastructure
             //_RebroadcastAliveNotificationsTimeSpan = rebroadCastInterval;
             _RebroadcastAliveNotificationsTimer = _timerFactory.Create(SendAllAliveNotifications, null, nextBroadcastInterval, rebroadCastInterval);
 
-            WriteTrace(String.Format("Rebroadcast Interval = {0}, Next Broadcast At = {1}", rebroadCastInterval.ToString(), nextBroadcastInterval.ToString()));
+            //WriteTrace(String.Format("Rebroadcast Interval = {0}, Next Broadcast At = {1}", rebroadCastInterval.ToString(), nextBroadcastInterval.ToString()));
         }
 
         private TimeSpan GetMinimumNonZeroCacheLifetime()
@@ -630,49 +625,9 @@ namespace Rssdp.Infrastructure
                 WriteTrace(text + " " + device.DeviceType + " - " + device.Uuid);
         }
 
-        private void ConnectToDeviceEvents(SsdpDevice device)
-        {
-            device.DeviceAdded += device_DeviceAdded;
-            device.DeviceRemoved += device_DeviceRemoved;
-
-            foreach (var childDevice in device.Devices)
-            {
-                ConnectToDeviceEvents(childDevice);
-            }
-        }
-
-        private void DisconnectFromDeviceEvents(SsdpDevice device)
-        {
-            device.DeviceAdded -= device_DeviceAdded;
-            device.DeviceRemoved -= device_DeviceRemoved;
-
-            foreach (var childDevice in device.Devices)
-            {
-                DisconnectFromDeviceEvents(childDevice);
-            }
-        }
-
         #endregion
 
         #region Event Handlers
-
-        private void device_DeviceAdded(object sender, DeviceEventArgs e)
-        {
-            if (IsDisposed)
-            {
-                return;
-            }
-
-            SendAliveNotifications(e.Device, false, CancellationToken.None);
-            ConnectToDeviceEvents(e.Device);
-        }
-
-        private void device_DeviceRemoved(object sender, DeviceEventArgs e)
-        {
-            var task = SendByeByeNotifications(e.Device, false, CancellationToken.None);
-            Task.WaitAll(task);
-            DisconnectFromDeviceEvents(e.Device);
-        }
 
         private void CommsServer_RequestReceived(object sender, RequestReceivedEventArgs e)
         {

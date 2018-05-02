@@ -28,44 +28,12 @@ namespace MediaBrowser.Controller.Connect
         /// <returns>Task.</returns>
         Task RemoveConnect(string userId);
 
-        /// <summary>
-        /// Invites the user.
-        /// </summary>
-        /// <param name="request">The request.</param>
-        /// <returns>Task&lt;UserLinkResult&gt;.</returns>
-        Task<UserLinkResult> InviteUser(ConnectAuthorizationRequest request);
-
-        /// <summary>
-        /// Gets the pending guests.
-        /// </summary>
-        /// <returns>Task&lt;List&lt;ConnectAuthorization&gt;&gt;.</returns>
-        Task<List<ConnectAuthorization>> GetPendingGuests();
-
-        /// <summary>
-        /// Gets the user from exchange token.
-        /// </summary>
-        /// <param name="token">The token.</param>
-        /// <returns>User.</returns>
         User GetUserFromExchangeToken(string token);
-
-        /// <summary>
-        /// Cancels the authorization.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns>Task.</returns>
-        Task CancelAuthorization(string id);
 
         /// <summary>
         /// Authenticates the specified username.
         /// </summary>
         Task<ConnectAuthenticationResult> Authenticate(string username, string password, string passwordMd5);
-
-        /// <summary>
-        /// Gets the local user.
-        /// </summary>
-        /// <param name="connectUserId">The connect user identifier.</param>
-        /// <returns>Task&lt;User&gt;.</returns>
-        Task<User> GetLocalUser(string connectUserId);
 
         /// <summary>
         /// Determines whether [is authorization token valid] [the specified token].

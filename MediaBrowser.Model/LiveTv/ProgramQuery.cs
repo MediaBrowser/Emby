@@ -11,10 +11,10 @@ namespace MediaBrowser.Model.LiveTv
     {
         public ProgramQuery()
         {
-            ChannelIds = new string[] { };
+            ChannelIds = new Guid[] { };
             OrderBy = new Tuple<string, SortOrder>[] { };
-            Genres = new string[] { };
-            GenreIds = new string[] { };
+            Genres = new string[] {};
+            GenreIds = new Guid[] { };
             EnableTotalRecordCount = true;
             EnableUserData = true;
         }
@@ -35,7 +35,7 @@ namespace MediaBrowser.Model.LiveTv
         /// Gets or sets the channel ids.
         /// </summary>
         /// <value>The channel ids.</value>
-        public string[] ChannelIds { get; set; }
+        public Guid[] ChannelIds { get; set; }
 
         /// <summary>
         /// Gets or sets the user identifier.
@@ -111,7 +111,7 @@ namespace MediaBrowser.Model.LiveTv
         /// Limit results to items containing specific genres
         /// </summary>
         /// <value>The genres.</value>
-        public string[] GenreIds { get; set; }
+        public Guid[] GenreIds { get; set; }
         public string[] Genres { get; set; }
     }
 }

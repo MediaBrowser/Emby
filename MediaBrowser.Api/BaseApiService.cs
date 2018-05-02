@@ -55,7 +55,7 @@ namespace MediaBrowser.Api
             return Request.Headers[name];
         }
 
-        private static readonly string[] EmptyStringArray = new string[] { };
+        private static readonly string[] EmptyStringArray = Array.Empty<string>();
         public static string[] SplitValue(string value, char delim)
         {
             if (string.IsNullOrWhiteSpace(value))
@@ -64,6 +64,12 @@ namespace MediaBrowser.Api
             }
 
             return value.Split(new[] { delim }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        public static Guid[] GetGuids(string value)
+        {
+            // Unfortunately filtermenu.js was using |. This can be deprecated after a while.
+            return (value ?? string.Empty).Split(new[] { ',', '|' }, StringSplitOptions.RemoveEmptyEntries).Select(i => new Guid(i)).ToArray();
         }
 
         /// <summary>
@@ -133,38 +139,37 @@ namespace MediaBrowser.Api
         {
             var options = new DtoOptions();
 
-            var authInfo = authContext.GetAuthorizationInfo(Request);
-
-            options.DeviceId = authInfo.DeviceId;
-
             var hasFields = request as IHasItemFields;
             if (hasFields != null)
             {
                 options.Fields = hasFields.GetItemFields();
             }
 
-            var client = authInfo.Client ?? string.Empty;
-            if (client.IndexOf("kodi", StringComparison.OrdinalIgnoreCase) != -1 ||
-                client.IndexOf("wmc", StringComparison.OrdinalIgnoreCase) != -1 ||
-                client.IndexOf("media center", StringComparison.OrdinalIgnoreCase) != -1 ||
-                client.IndexOf("classic", StringComparison.OrdinalIgnoreCase) != -1)
+            if (!options.Fields.Contains(Model.Querying.ItemFields.RecursiveItemCount) || !options.Fields.Contains(Model.Querying.ItemFields.ChildCount))
             {
-                var list = options.Fields.ToList();
-                list.Add(Model.Querying.ItemFields.RecursiveItemCount);
-                options.Fields = list.ToArray(list.Count);
-            }
+                var client = authContext.GetAuthorizationInfo(Request).Client ?? string.Empty;
+                if (client.IndexOf("kodi", StringComparison.OrdinalIgnoreCase) != -1 ||
+                    client.IndexOf("wmc", StringComparison.OrdinalIgnoreCase) != -1 ||
+                    client.IndexOf("media center", StringComparison.OrdinalIgnoreCase) != -1 ||
+                    client.IndexOf("classic", StringComparison.OrdinalIgnoreCase) != -1)
+                {
+                    var list = options.Fields.ToList();
+                    list.Add(Model.Querying.ItemFields.RecursiveItemCount);
+                    options.Fields = list.ToArray(list.Count);
+                }
 
-            if (client.IndexOf("kodi", StringComparison.OrdinalIgnoreCase) != -1 ||
-               client.IndexOf("wmc", StringComparison.OrdinalIgnoreCase) != -1 ||
-               client.IndexOf("media center", StringComparison.OrdinalIgnoreCase) != -1 ||
-               client.IndexOf("classic", StringComparison.OrdinalIgnoreCase) != -1 ||
-               client.IndexOf("roku", StringComparison.OrdinalIgnoreCase) != -1 ||
-               client.IndexOf("samsung", StringComparison.OrdinalIgnoreCase) != -1 ||
-               client.IndexOf("androidtv", StringComparison.OrdinalIgnoreCase) != -1)
-            {
-                var list = options.Fields.ToList();
-                list.Add(Model.Querying.ItemFields.ChildCount);
-                options.Fields = list.ToArray(list.Count);
+                if (client.IndexOf("kodi", StringComparison.OrdinalIgnoreCase) != -1 ||
+                   client.IndexOf("wmc", StringComparison.OrdinalIgnoreCase) != -1 ||
+                   client.IndexOf("media center", StringComparison.OrdinalIgnoreCase) != -1 ||
+                   client.IndexOf("classic", StringComparison.OrdinalIgnoreCase) != -1 ||
+                   client.IndexOf("roku", StringComparison.OrdinalIgnoreCase) != -1 ||
+                   client.IndexOf("samsung", StringComparison.OrdinalIgnoreCase) != -1 ||
+                   client.IndexOf("androidtv", StringComparison.OrdinalIgnoreCase) != -1)
+                {
+                    var list = options.Fields.ToList();
+                    list.Add(Model.Querying.ItemFields.ChildCount);
+                    options.Fields = list.ToArray(list.Count);
+                }
             }
 
             var hasDtoOptions = request as IHasDtoOptions;

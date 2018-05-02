@@ -335,6 +335,11 @@ namespace Emby.Server.Implementations.EntryPoints
                     return;
                 }
 
+                if (info.IsEmpty)
+                {
+                    continue;
+                }
+
                 var userIdString = userId.ToString("N");
 
                 try
@@ -435,7 +440,7 @@ namespace Emby.Server.Implementations.EntryPoints
             // If the physical root changed, return the user root
             if (item is AggregateFolder)
             {
-                return new[] { user.RootFolder as T };
+                return new[] { _libraryManager.GetUserRootFolder() as T };
             }
 
             // Return it only if it's in the user's library
@@ -453,7 +458,6 @@ namespace Emby.Server.Implementations.EntryPoints
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         /// <summary>

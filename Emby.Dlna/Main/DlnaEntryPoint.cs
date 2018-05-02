@@ -28,7 +28,7 @@ using System.Threading;
 
 namespace Emby.Dlna.Main
 {
-    public class DlnaEntryPoint : IServerEntryPoint
+    public class DlnaEntryPoint : IServerEntryPoint, IRunBeforeStartup
     {
         private readonly IServerConfigurationManager _config;
         private readonly ILogger _logger;
@@ -248,7 +248,7 @@ namespace Emby.Dlna.Main
                 SetProperies(device, fullService);
                 _Publisher.AddDevice(device);
 
-                var embeddedDevices = new List<string>
+                var embeddedDevices = new []
                 {
                     "urn:schemas-upnp-org:service:ContentDirectory:1",
                     "urn:schemas-upnp-org:service:ConnectionManager:1",
@@ -364,7 +364,6 @@ namespace Emby.Dlna.Main
                 _communicationsServer.Dispose();
                 _communicationsServer = null;
             }
-            GC.SuppressFinalize(this);
         }
 
         public void DisposeDevicePublisher()

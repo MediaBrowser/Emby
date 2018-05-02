@@ -400,7 +400,7 @@ namespace Emby.Dlna.PlayTo
                     return SetPlaylistIndex(_currentPlaylistIndex - 1);
             }
 
-            return Task.FromResult(true);
+            return Task.CompletedTask;
         }
 
         private async Task Seek(long newPosition)
@@ -465,7 +465,7 @@ namespace Emby.Dlna.PlayTo
 
             var hasMediaSources = item as IHasMediaSources;
             var mediaSources = hasMediaSources != null
-                ? (_mediaSourceManager.GetStaticMediaSources(hasMediaSources, true, user))
+                ? (_mediaSourceManager.GetStaticMediaSources(item, true, user))
                 : new List<MediaSourceInfo>();
 
             var playlistItem = GetPlaylistItem(item, mediaSources, profile, _session.DeviceId, mediaSourceId, audioStreamIndex, subtitleStreamIndex);
@@ -644,7 +644,6 @@ namespace Emby.Dlna.PlayTo
                 _device.OnDeviceUnavailable = null;
 
                 _device.Dispose();
-                GC.SuppressFinalize(this);
             }
         }
 
@@ -723,11 +722,11 @@ namespace Emby.Dlna.PlayTo
                             throw new ArgumentException("Volume argument cannot be null");
                         }
                     default:
-                        return Task.FromResult(true);
+                        return Task.CompletedTask;
                 }
             }
 
-            return Task.FromResult(true);
+            return Task.CompletedTask;
         }
 
         private async Task SetAudioStreamIndex(int? newIndex)
@@ -831,7 +830,7 @@ namespace Emby.Dlna.PlayTo
                     return null;
                 }
 
-                MediaSource = await _mediaSourceManager.GetMediaSource(hasMediaSources, MediaSourceId, LiveStreamId, false, cancellationToken).ConfigureAwait(false);
+                MediaSource = await _mediaSourceManager.GetMediaSource(Item, MediaSourceId, LiveStreamId, false, cancellationToken).ConfigureAwait(false);
 
                 return MediaSource;
             }
@@ -933,7 +932,7 @@ namespace Emby.Dlna.PlayTo
             return 0;
         }
 
-        public Task SendMessage<T>(string name, T data, CancellationToken cancellationToken)
+        public Task SendMessage<T>(string name, string messageId, T data, ISessionController[] allControllers, CancellationToken cancellationToken)
         {
             if (_disposed)
             {
@@ -942,7 +941,7 @@ namespace Emby.Dlna.PlayTo
 
             if (_device == null)
             {
-                return Task.FromResult(true);
+                return Task.CompletedTask;
             }
 
             if (string.Equals(name, "Play", StringComparison.OrdinalIgnoreCase))
@@ -959,7 +958,7 @@ namespace Emby.Dlna.PlayTo
             }
 
             // Not supported or needed right now
-            return Task.FromResult(true);
+            return Task.CompletedTask;
         }
     }
 }

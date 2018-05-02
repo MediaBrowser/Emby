@@ -148,6 +148,49 @@ namespace Emby.Server.Implementations.IO
             return null;
         }
 
+        public string MakeAbsolutePath(string folderPath, string filePath)
+        {
+            if (String.IsNullOrWhiteSpace(filePath)) return filePath;
+
+            if (filePath.Contains(@"://")) return filePath; //stream
+            if (filePath.Length > 3 && filePath[1] == ':' && filePath[2] == '/') return filePath; //absolute local path
+
+            // unc path
+            if (filePath.StartsWith("\\\\"))
+            {
+                return filePath;
+            }
+
+            var firstChar = filePath[0];
+            if (firstChar == '/')
+            {
+                // For this we don't really know. 
+                return filePath;
+            }
+            if (firstChar == '\\') //relative path
+            {
+                filePath = filePath.Substring(1);
+            }
+            try
+            {
+                string path = System.IO.Path.Combine(folderPath, filePath);
+                path = System.IO.Path.GetFullPath(path);
+                return path;
+            }
+            catch (ArgumentException ex)
+            {
+                return filePath;
+            }
+            catch (PathTooLongException)
+            {
+                return filePath;
+            }
+            catch (NotSupportedException)
+            {
+                return filePath;
+            }
+        }
+
         /// <summary>
         /// Creates the shortcut.
         /// </summary>
@@ -288,10 +331,12 @@ namespace Emby.Server.Implementations.IO
 
             if (result.Exists)
             {
-                var attributes = info.Attributes;
-                result.IsDirectory = info is DirectoryInfo || (attributes & FileAttributes.Directory) == FileAttributes.Directory;
-                result.IsHidden = (attributes & FileAttributes.Hidden) == FileAttributes.Hidden;
-                result.IsReadOnly = (attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly;
+                result.IsDirectory = info is DirectoryInfo || (info.Attributes & FileAttributes.Directory) == FileAttributes.Directory;
+
+                //if (!result.IsDirectory)
+                //{
+                //    result.IsHidden = (info.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden;
+                //}
 
                 var fileInfo = info as FileInfo;
                 if (fileInfo != null)
@@ -306,6 +351,25 @@ namespace Emby.Server.Implementations.IO
             else
             {
                 result.IsDirectory = info is DirectoryInfo;
+            }
+
+            return result;
+        }
+
+        private ExtendedFileSystemInfo GetExtendedFileSystemInfo(string path)
+        {
+            var result = new ExtendedFileSystemInfo();
+
+            var info = new FileInfo(path);
+
+            if (info.Exists)
+            {
+                result.Exists = true;
+
+                var attributes = info.Attributes;
+
+                result.IsHidden = (attributes & FileAttributes.Hidden) == FileAttributes.Hidden;
+                result.IsReadOnly = (attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly;
             }
 
             return result;
@@ -514,7 +578,7 @@ namespace Emby.Server.Implementations.IO
                 return;
             }
 
-            var info = GetFileInfo(path);
+            var info = GetExtendedFileSystemInfo(path);
 
             if (info.Exists && info.IsHidden != isHidden)
             {
@@ -544,7 +608,7 @@ namespace Emby.Server.Implementations.IO
                 return;
             }
 
-            var info = GetFileInfo(path);
+            var info = GetExtendedFileSystemInfo(path);
 
             if (info.Exists && info.IsReadOnly != isReadOnly)
             {
@@ -574,7 +638,7 @@ namespace Emby.Server.Implementations.IO
                 return;
             }
 
-            var info = GetFileInfo(path);
+            var info = GetExtendedFileSystemInfo(path);
 
             if (!info.Exists)
             {

@@ -39,7 +39,6 @@
     </Compile>
     <Compile Include="Books\AudioBookMetadataService.cs" />
     <Compile Include="Books\BookMetadataService.cs" />
-    <Compile Include="Books\GoogleBooksProvider.cs" />
     <Compile Include="BoxSets\BoxSetMetadataService.cs" />
     <Compile Include="BoxSets\MovieDbBoxSetImageProvider.cs" />
     <Compile Include="BoxSets\MovieDbBoxSetProvider.cs" />
@@ -52,9 +51,7 @@
     <Compile Include="Games\GameMetadataService.cs" />
     <Compile Include="Games\GameSystemMetadataService.cs" />
     <Compile Include="Genres\GenreMetadataService.cs" />
-    <Compile Include="LiveTv\AudioRecordingService.cs" />
     <Compile Include="LiveTv\ProgramMetadataService.cs" />
-    <Compile Include="LiveTv\VideoRecordingService.cs" />
     <Compile Include="Manager\GenericPriorityQueue.cs" />
     <Compile Include="Manager\GenericPriorityQueueNode.cs" />
     <Compile Include="Manager\IFixedSizePriorityQueue.cs" />
@@ -111,7 +108,6 @@
     <Compile Include="Manager\ProviderUtils.cs" />
     <Compile Include="Studios\StudiosImageProvider.cs" />
     <Compile Include="Studios\StudioMetadataService.cs" />
-    <Compile Include="Subtitles\SubDB.cs" />
     <Compile Include="Subtitles\SubtitleManager.cs" />
     <Compile Include="TV\DummySeasonProvider.cs" />
     <Compile Include="TV\EpisodeMetadataService.cs" />
@@ -169,7 +165,6 @@
       <Name>MediaBrowser.Model</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

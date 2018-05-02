@@ -49,16 +49,14 @@ namespace MediaBrowser.Controller.Channels
         /// </summary>
         /// <param name="query">The query.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task&lt;QueryResult&lt;Channel&gt;&gt;.</returns>
-        Task<QueryResult<Channel>> GetChannelsInternal(ChannelQuery query, CancellationToken cancellationToken);
+        QueryResult<Channel> GetChannelsInternal(ChannelQuery query);
 
         /// <summary>
         /// Gets the channels.
         /// </summary>
         /// <param name="query">The query.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task{QueryResult{BaseItemDto}}.</returns>
-        Task<QueryResult<BaseItemDto>> GetChannels(ChannelQuery query, CancellationToken cancellationToken);
+        QueryResult<BaseItemDto> GetChannels(ChannelQuery query);
 
         /// <summary>
         /// Gets the latest media.

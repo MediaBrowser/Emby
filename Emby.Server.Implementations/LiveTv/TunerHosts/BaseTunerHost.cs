@@ -57,10 +57,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
             if (enableCache && !string.IsNullOrEmpty(key) && _channelCache.TryGetValue(key, out cache))
             {
-                if (DateTime.UtcNow - cache.Date < TimeSpan.FromMinutes(60))
-                {
-                    return cache.Channels.ToList();
-                }
+                return cache.Channels.ToList();
             }
 
             var result = await GetChannelsInternal(tuner, cancellationToken).ConfigureAwait(false);
@@ -70,7 +67,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             if (!string.IsNullOrEmpty(key) && list.Count > 0)
             {
                 cache = cache ?? new ChannelCache();
-                cache.Date = DateTime.UtcNow;
                 cache.Channels = list;
                 _channelCache.AddOrUpdate(key, cache, (k, v) => cache);
             }
@@ -255,7 +251,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
         private class ChannelCache
         {
-            public DateTime Date;
             public List<ChannelInfo> Channels;
         }
     }

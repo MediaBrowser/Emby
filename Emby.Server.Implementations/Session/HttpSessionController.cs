@@ -57,15 +57,14 @@ namespace Emby.Server.Implementations.Session
             get { return true; }
         }
 
-        private Task SendMessage(string name, CancellationToken cancellationToken)
+        private Task SendMessage(string name, string messageId, CancellationToken cancellationToken)
         {
-            return SendMessage(name, new Dictionary<string, string>(), cancellationToken);
+            return SendMessage(name, messageId, new Dictionary<string, string>(), cancellationToken);
         }
 
-        private async Task SendMessage(string name,
-            Dictionary<string, string> args,
-            CancellationToken cancellationToken)
+        private async Task SendMessage(string name, string messageId, Dictionary<string, string> args, CancellationToken cancellationToken)
         {
+            args["messageId"] = messageId;
             var url = PostUrl + "/" + name + ToQueryString(args);
 
             using ((await _httpClient.Post(new HttpRequestOptions
@@ -80,7 +79,7 @@ namespace Emby.Server.Implementations.Session
             }
         }
 
-        private Task SendPlayCommand(PlayRequest command, CancellationToken cancellationToken)
+        private Task SendPlayCommand(PlayRequest command, string messageId, CancellationToken cancellationToken)
         {
             var dict = new Dictionary<string, string>();
 
@@ -107,10 +106,10 @@ namespace Emby.Server.Implementations.Session
                 dict["MediaSourceId"] = command.MediaSourceId;
             }
 
-            return SendMessage(command.PlayCommand.ToString(), dict, cancellationToken);
+            return SendMessage(command.PlayCommand.ToString(), messageId, dict, cancellationToken);
         }
 
-        private Task SendPlaystateCommand(PlaystateRequest command, CancellationToken cancellationToken)
+        private Task SendPlaystateCommand(PlaystateRequest command, string messageId, CancellationToken cancellationToken)
         {
             var args = new Dictionary<string, string>();
 
@@ -124,41 +123,39 @@ namespace Emby.Server.Implementations.Session
                 args["SeekPositionTicks"] = command.SeekPositionTicks.Value.ToString(CultureInfo.InvariantCulture);
             }
 
-            return SendMessage(command.Command.ToString(), args, cancellationToken);
+            return SendMessage(command.Command.ToString(), messageId, args, cancellationToken);
         }
 
-        private Task SendGeneralCommand(GeneralCommand command, CancellationToken cancellationToken)
-        {
-            return SendMessage(command.Name, command.Arguments, cancellationToken);
-        }
-
-        private string[] _supportedMessages = new string[] { "LibraryChanged", "ServerRestarting", "ServerShuttingDown", "RestartRequired" };
-        public Task SendMessage<T>(string name, T data, CancellationToken cancellationToken)
+        private string[] _supportedMessages = new string[] {  };
+        public Task SendMessage<T>(string name, string messageId, T data, ISessionController[] allControllers, CancellationToken cancellationToken)
         {
             if (!IsSessionActive)
             {
-                return Task.FromResult(true);
+                return Task.CompletedTask;
             }
 
             if (string.Equals(name, "Play", StringComparison.OrdinalIgnoreCase))
             {
-                return SendPlayCommand(data as PlayRequest, cancellationToken);
+                return SendPlayCommand(data as PlayRequest, messageId, cancellationToken);
             }
             if (string.Equals(name, "PlayState", StringComparison.OrdinalIgnoreCase))
             {
-                return SendPlaystateCommand(data as PlaystateRequest, cancellationToken);
+                return SendPlaystateCommand(data as PlaystateRequest, messageId, cancellationToken);
             }
             if (string.Equals(name, "GeneralCommand", StringComparison.OrdinalIgnoreCase))
             {
-                return SendGeneralCommand(data as GeneralCommand, cancellationToken);
+                var command = data as GeneralCommand;
+                return SendMessage(command.Name, messageId, command.Arguments, cancellationToken);
             }
 
             if (!_supportedMessages.Contains(name, StringComparer.OrdinalIgnoreCase))
             {
-                return Task.FromResult(true);
+                return Task.CompletedTask;
             }
 
             var url = PostUrl + "/" + name;
+
+            url += "?messageId=" + messageId;
 
             var options = new HttpRequestOptions
             {

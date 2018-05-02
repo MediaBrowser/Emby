@@ -56,7 +56,6 @@ namespace Emby.Server.Implementations.EntryPoints
             values.Add(config.PublicPort.ToString(CultureInfo.InvariantCulture));
             values.Add(_appHost.HttpPort.ToString(CultureInfo.InvariantCulture));
             values.Add(_appHost.HttpsPort.ToString(CultureInfo.InvariantCulture));
-            values.Add((config.EnableHttps || config.RequireHttps).ToString());
             values.Add(_appHost.EnableHttps.ToString());
             values.Add((config.EnableRemoteAccess).ToString());
 
@@ -91,7 +90,6 @@ namespace Emby.Server.Implementations.EntryPoints
             {
                 _natManager = new NatManager(_logger, _httpClient);
                 _natManager.DeviceFound += NatUtility_DeviceFound;
-                _natManager.DeviceLost += NatUtility_DeviceLost;
                 _natManager.StartDiscovery();
             }
 
@@ -177,7 +175,12 @@ namespace Emby.Server.Implementations.EntryPoints
                     return;
                 }
 
-                _logger.Debug("Calling Nat.Handle on " + identifier);
+                // This should never happen, but the Handle method will throw ArgumentNullException if it does
+                if (localAddress == null)
+                {
+                    return;
+                }
+
                 var natManager = _natManager;
                 if (natManager != null)
                 {
@@ -208,7 +211,6 @@ namespace Emby.Server.Implementations.EntryPoints
             try
             {
                 var device = e.Device;
-                _logger.Debug("NAT device found: {0}", device.LocalAddress.ToString());
 
                 CreateRules(device);
             }
@@ -230,13 +232,15 @@ namespace Emby.Server.Implementations.EntryPoints
 
             // On some systems the device discovered event seems to fire repeatedly
             // This check will help ensure we're not trying to port map the same device over and over
-            var address = device.LocalAddress.ToString();
+            var address = device.LocalAddress;
+
+            var addressString = address.ToString();
 
             lock (_createdRules)
             {
-                if (!_createdRules.Contains(address))
+                if (!_createdRules.Contains(addressString))
                 {
-                    _createdRules.Add(address);
+                    _createdRules.Add(addressString);
                 }
                 else
                 {
@@ -244,40 +248,32 @@ namespace Emby.Server.Implementations.EntryPoints
                 }
             }
 
-            var success = await CreatePortMap(device, _appHost.HttpPort, _config.Configuration.PublicPort).ConfigureAwait(false);
-
-            if (success)
-            {
-                await CreatePortMap(device, _appHost.HttpsPort, _config.Configuration.PublicHttpsPort).ConfigureAwait(false);
-            }
-        }
-
-        private async Task<bool> CreatePortMap(INatDevice device, int privatePort, int publicPort)
-        {
-            _logger.Debug("Creating port map on port {0}", privatePort);
-
             try
             {
-                await device.CreatePortMap(new Mapping(Protocol.Tcp, privatePort, publicPort)
-                {
-                    Description = _appHost.Name
-
-                }).ConfigureAwait(false);
-
-                return true;
+                await CreatePortMap(device, _appHost.HttpPort, _config.Configuration.PublicPort).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                _logger.Error("Error creating port map: " + ex.Message);
+                return;
+            }
 
-                return false;
+            try
+            {
+                await CreatePortMap(device, _appHost.HttpsPort, _config.Configuration.PublicHttpsPort).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
             }
         }
 
-        void NatUtility_DeviceLost(object sender, DeviceEventArgs e)
+        private Task CreatePortMap(INatDevice device, int privatePort, int publicPort)
         {
-            var device = e.Device;
-            _logger.Debug("NAT device lost: {0}", device.LocalAddress.ToString());
+            _logger.Debug("Creating port map on local port {0} to public port {1} with device {2}", privatePort, publicPort, device.LocalAddress.ToString());
+
+            return device.CreatePortMap(new Mapping(Protocol.Tcp, privatePort, publicPort)
+            {
+                Description = _appHost.Name
+            });
         }
 
         private bool _disposed = false;
@@ -285,7 +281,6 @@ namespace Emby.Server.Implementations.EntryPoints
         {
             _disposed = true;
             DisposeNat();
-            GC.SuppressFinalize(this);
         }
 
         private void DisposeNat()
@@ -312,7 +307,6 @@ namespace Emby.Server.Implementations.EntryPoints
                     {
                         natManager.StopDiscovery();
                         natManager.DeviceFound -= NatUtility_DeviceFound;
-                        natManager.DeviceLost -= NatUtility_DeviceLost;
                     }
                     catch (Exception ex)
                     {

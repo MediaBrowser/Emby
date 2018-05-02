@@ -1,4 +1,4 @@
-﻿<div id="editUserPage" data-role="page" class="page type-interior userProfilesPage" data-helpurl="https://github.com/MediaBrowser/Wiki/wiki/Users" data-require="scripts/useredit,emby-linkbutton,emby-input,emby-checkbox,emby-button">
+﻿<div id="editUserPage" data-role="page" class="page type-interior userProfilesPage" data-helpurl="https://github.com/MediaBrowser/Wiki/wiki/Users" data-require="scripts/useredit,emby-select,emby-linkbutton,emby-input,emby-checkbox,emby-button">
 
     <div>
         <div class="content-primary">
@@ -39,7 +39,17 @@
                         </div>
                     </div>
                 </div>
-                <br />
+                <div class="selectContainer fldSelectLoginProvider hide">
+                    <select class="selectLoginProvider" is="emby-select" label="${LabelAuthProvider}"></select>
+                    <div class="fieldDescription">${AuthProviderHelp}</div>
+                </div>
+                <div class="checkboxContainer checkboxContainer-withDescription fldRemoteAccess hide">
+                    <label>
+                        <input type="checkbox" is="emby-checkbox" id="chkRemoteAccess" />
+                        <span>${AllowRemoteAccess}</span>
+                    </label>
+                    <div class="fieldDescription checkboxFieldDescription">${AllowRemoteAccessHelp}</div>
+                </div>
                 <label class="checkboxContainer">
                     <input type="checkbox" is="emby-checkbox" id="chkIsAdmin" />
                     <span>${OptionAllowUserToManageServer}</span>
@@ -98,7 +108,7 @@
                         </div>
                     </div>
                 </div>
-                <div>
+                <div class="verticalSection">
                     <h2 class="checkboxListLabel">${HeaderRemoteControl}</h2>
                     <div class="checkboxList paperList" style="padding:.5em 1em;">
                         <label>
@@ -113,9 +123,8 @@
                     </div>
                     <div class="fieldDescription">${OptionAllowRemoteSharedDevicesHelp}</div>
                 </div>
-                <div>
-                    <br />
-                    <h2 class="checkboxListLabel">${Downloading}</h2>
+                <div class="verticalSection">
+                    <h2 class="checkboxListLabel">${HeaderDownloadSync}</h2>
                     <div class="checkboxList paperList" style="padding:.5em 1em;">
                         <label>
                             <input type="checkbox" is="emby-checkbox" id="chkEnableDownloading" />
@@ -126,7 +135,13 @@
                             <span>${OptionAllowSyncTranscoding}</span>
                         </label>
                     </div>
-                    <br />
+                </div>
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label>
+                        <input type="checkbox" is="emby-checkbox" id="chkEnableConversion" />
+                        <span>${AllowMediaConversion}</span>
+                    </label>
+                    <div class="fieldDescription checkboxFieldDescription">${AllowMediaConversionHelp}</div>
                 </div>
                 <div class="checkboxContainer checkboxContainer-withDescription">
                     <label>

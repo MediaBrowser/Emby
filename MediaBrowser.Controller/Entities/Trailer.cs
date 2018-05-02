@@ -4,6 +4,7 @@ using MediaBrowser.Model.Entities;
 using System.Collections.Generic;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Model.Serialization;
+using System;
 
 namespace MediaBrowser.Controller.Entities
 {
@@ -14,13 +15,10 @@ namespace MediaBrowser.Controller.Entities
     {
         public Trailer()
         {
-            RemoteTrailers = new List<MediaUrl>();
-            TrailerTypes = new List<TrailerType>();
+            TrailerTypes = new TrailerType[] { };
         }
 
-        public List<TrailerType> TrailerTypes { get; set; }
-
-        public List<MediaUrl> RemoteTrailers { get; set; }
+        public TrailerType[] TrailerTypes { get; set; }
 
         public override double? GetDefaultPrimaryImageAspectRatio()
         {
@@ -47,9 +45,9 @@ namespace MediaBrowser.Controller.Entities
             return info;
         }
 
-        public override bool BeforeMetadataRefresh()
+        public override bool BeforeMetadataRefresh(bool replaceAllMetdata)
         {
-            var hasChanges = base.BeforeMetadataRefresh();
+            var hasChanges = base.BeforeMetadataRefresh(replaceAllMetdata);
 
             if (!ProductionYear.HasValue)
             {

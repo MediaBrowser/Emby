@@ -211,7 +211,6 @@ namespace MediaBrowser.Providers.Movies
             _jsonSerializer.SerializeToFile(mainResult, dataFilePath);
         }
 
-        private readonly Task _cachedTask = Task.FromResult(true);
         internal Task EnsureMovieInfo(string tmdbId, string language, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(tmdbId))
@@ -228,7 +227,7 @@ namespace MediaBrowser.Providers.Movies
                 // If it's recent or automatic updates are enabled, don't re-download
                 if ((DateTime.UtcNow - _fileSystem.GetLastWriteTimeUtc(fileInfo)).TotalDays <= 3)
                 {
-                    return _cachedTask;
+                    return Task.CompletedTask;
                 }
             }
 
@@ -640,7 +639,7 @@ namespace MediaBrowser.Providers.Movies
         {
             get
             {
-                return 0;
+                return 1;
             }
         }
 

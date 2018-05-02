@@ -13,6 +13,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Extensions;
+using MediaBrowser.Common.Configuration;
+using MediaBrowser.Controller.Configuration;
+using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Configuration;
+using MediaBrowser.Controller.Plugins;
+using MediaBrowser.Model.Globalization;
 
 namespace Emby.Server.Implementations.Collections
 {
@@ -23,30 +29,76 @@ namespace Emby.Server.Implementations.Collections
         private readonly ILibraryMonitor _iLibraryMonitor;
         private readonly ILogger _logger;
         private readonly IProviderManager _providerManager;
+        private readonly ILocalizationManager _localizationManager;
+        private IApplicationPaths _appPaths;
 
         public event EventHandler<CollectionCreatedEventArgs> CollectionCreated;
         public event EventHandler<CollectionModifiedEventArgs> ItemsAddedToCollection;
         public event EventHandler<CollectionModifiedEventArgs> ItemsRemovedFromCollection;
 
-        public CollectionManager(ILibraryManager libraryManager, IFileSystem fileSystem, ILibraryMonitor iLibraryMonitor, ILogger logger, IProviderManager providerManager)
+        public CollectionManager(ILibraryManager libraryManager, IApplicationPaths appPaths, ILocalizationManager localizationManager, IFileSystem fileSystem, ILibraryMonitor iLibraryMonitor, ILogger logger, IProviderManager providerManager)
         {
             _libraryManager = libraryManager;
             _fileSystem = fileSystem;
             _iLibraryMonitor = iLibraryMonitor;
             _logger = logger;
             _providerManager = providerManager;
+            _localizationManager = localizationManager;
+            _appPaths = appPaths;
         }
 
-        public Folder GetCollectionsFolder(string userId)
+        private IEnumerable<Folder> FindFolders(string path)
         {
-            return _libraryManager.RootFolder.Children.OfType<ManualCollectionsFolder>()
-                .FirstOrDefault() ?? _libraryManager.GetUserRootFolder().Children.OfType<ManualCollectionsFolder>()
-                .FirstOrDefault();
+            return _libraryManager
+                .RootFolder
+                .Children
+                .OfType<Folder>()
+                .Where(i => _fileSystem.AreEqual(path, i.Path) || _fileSystem.ContainsSubPath(i.Path, path));
         }
 
-        public IEnumerable<BoxSet> GetCollections(User user)
+        internal async Task<Folder> EnsureLibraryFolder(string path, string name)
         {
-            var folder = GetCollectionsFolder(user.Id.ToString("N"));
+            var existingFolders = FindFolders(path)
+                .ToList();
+
+            if (existingFolders.Count > 0)
+            {
+                return existingFolders[0];
+            }
+
+            _fileSystem.CreateDirectory(path);
+
+            var libraryOptions = new LibraryOptions
+            {
+                PathInfos = new[] { new MediaPathInfo { Path = path } },
+                EnableRealtimeMonitor = false,
+                SaveLocalMetadata = true
+            };
+
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                name = _localizationManager.GetLocalizedString("Collections");
+            }
+
+            await _libraryManager.AddVirtualFolder(name, CollectionType.BoxSets, libraryOptions, true).ConfigureAwait(false);
+
+            return FindFolders(path).First();
+        }
+
+        internal string GetCollectionsFolderPath()
+        {
+            return Path.Combine(_appPaths.DataPath, "collections");
+        }
+
+        private Task<Folder> GetCollectionsFolder(bool createIfNeeded)
+        {
+            return EnsureLibraryFolder(GetCollectionsFolderPath(), null);
+        }
+
+        private IEnumerable<BoxSet> GetCollections(User user)
+        {
+            var folder = GetCollectionsFolder(false).Result;
+
             return folder == null ?
                 new List<BoxSet>() :
                 folder.GetChildren(user, true).OfType<BoxSet>();
@@ -61,7 +113,7 @@ namespace Emby.Server.Implementations.Collections
             // This could cause it to get re-resolved as a plain folder
             var folderName = _fileSystem.GetValidFilename(name) + " [boxset]";
 
-            var parentFolder = GetParentFolder(options.ParentId);
+            var parentFolder = GetCollectionsFolder(true).Result;
 
             if (parentFolder == null)
             {
@@ -82,12 +134,6 @@ namespace Emby.Server.Implementations.Collections
                     Path = path,
                     IsLocked = options.IsLocked,
                     ProviderIds = options.ProviderIds,
-                    Shares = options.UserIds.Select(i => new Share
-                    {
-                        UserId = i,
-                        CanEdit = true
-
-                    }).ToList(),
                     DateCreated = DateTime.UtcNow
                 };
 
@@ -121,33 +167,6 @@ namespace Emby.Server.Implementations.Collections
                 // Refresh handled internally
                 _iLibraryMonitor.ReportFileSystemChangeComplete(path, false);
             }
-        }
-
-        private Folder GetParentFolder(Guid? parentId)
-        {
-            if (parentId.HasValue)
-            {
-                if (parentId.Value == Guid.Empty)
-                {
-                    throw new ArgumentNullException("parentId");
-                }
-
-                var folder = _libraryManager.GetItemById(parentId.Value) as Folder;
-
-                // Find an actual physical folder
-                if (folder is CollectionFolder)
-                {
-                    var child = _libraryManager.RootFolder.Children.OfType<Folder>()
-                        .FirstOrDefault(i => folder.PhysicalLocations.Contains(i.Path, StringComparer.OrdinalIgnoreCase));
-
-                    if (child != null)
-                    {
-                        return child;
-                    }
-                }
-            }
-
-            return GetCollectionsFolder(string.Empty);
         }
 
         public void AddToCollection(Guid collectionId, IEnumerable<string> ids)
@@ -185,10 +204,10 @@ namespace Emby.Server.Implementations.Collections
                     throw new ArgumentException("No item exists with the supplied Id");
                 }
 
-                itemList.Add(item);
-
                 if (!currentLinkedChildrenIds.Contains(guidId))
                 {
+                    itemList.Add(item);
+
                     list.Add(LinkedChild.Create(item));
                     linkedChildrenList.Add(item);
                 }
@@ -294,7 +313,7 @@ namespace Emby.Server.Implementations.Collections
                     var itemId = item.Id;
 
                     var currentBoxSets = allBoxsets
-                        .Where(i => i.GetLinkedChildren().Any(j => j.Id == itemId))
+                        .Where(i => i.ContainsLinkedChildByItemId(itemId))
                         .ToList();
 
                     if (currentBoxSets.Count > 0)
@@ -313,5 +332,79 @@ namespace Emby.Server.Implementations.Collections
 
             return results.Values;
         }
+    }
+
+    public class CollectionManagerEntryPoint : IServerEntryPoint
+    {
+        private readonly CollectionManager _collectionManager;
+        private readonly IServerConfigurationManager _config;
+        private readonly IFileSystem _fileSystem;
+        private ILogger _logger;
+
+        public CollectionManagerEntryPoint(ICollectionManager collectionManager, IServerConfigurationManager config, IFileSystem fileSystem, ILogger logger)
+        {
+            _collectionManager = (CollectionManager)collectionManager;
+            _config = config;
+            _fileSystem = fileSystem;
+            _logger = logger;
+        }
+
+        public async void Run()
+        {
+            if (!_config.Configuration.CollectionsUpgraded && _config.Configuration.IsStartupWizardCompleted)
+            {
+                var path = _collectionManager.GetCollectionsFolderPath();
+
+                if (_fileSystem.DirectoryExists(path))
+                {
+                    try
+                    {
+                        await _collectionManager.EnsureLibraryFolder(path, null).ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.ErrorException("Error creating camera uploads library", ex);
+                    }
+
+                    _config.Configuration.CollectionsUpgraded = true;
+                    _config.SaveConfiguration();
+                }
+            }
+        }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects).
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // TODO: set large fields to null.
+
+                disposedValue = true;
+            }
+        }
+
+        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        // ~CollectionManagerEntryPoint() {
+        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+        //   Dispose(false);
+        // }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            // GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 }

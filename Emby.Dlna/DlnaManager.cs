@@ -531,7 +531,7 @@ namespace Emby.Dlna
         }
     }
 
-    class DlnaProfileEntryPoint : IServerEntryPoint
+    class DlnaProfileEntryPoint /*: IServerEntryPoint*/
     {
         private readonly IApplicationPaths _appPaths;
         private readonly IFileSystem _fileSystem;
@@ -546,7 +546,7 @@ namespace Emby.Dlna
 
         public void Run()
         {
-            //DumpProfiles();
+            DumpProfiles();
         }
 
         private void DumpProfiles()
@@ -595,7 +595,6 @@ namespace Emby.Dlna
 
         public void Dispose()
         {
-            GC.SuppressFinalize(this);
         }
     }
 }

@@ -53,7 +53,6 @@
     <Compile Include="Channels\RefreshChannelsScheduledTask.cs" />
     <Compile Include="Collections\CollectionImageProvider.cs" />
     <Compile Include="Collections\CollectionManager.cs" />
-    <Compile Include="Collections\CollectionsDynamicFolder.cs" />
     <Compile Include="Configuration\ServerConfigurationManager.cs" />
     <Compile Include="Cryptography\CryptographyProvider.cs" />
     <Compile Include="Data\ManagedConnection.cs" />
@@ -62,8 +61,6 @@
     <Compile Include="Data\SqliteUserDataRepository.cs" />
     <Compile Include="Data\SqliteUserRepository.cs" />
     <Compile Include="Data\TypeMapper.cs" />
-    <Compile Include="Devices\CameraUploadsDynamicFolder.cs" />
-    <Compile Include="Devices\CameraUploadsFolder.cs" />
     <Compile Include="Devices\DeviceId.cs" />
     <Compile Include="Devices\DeviceManager.cs" />
     <Compile Include="Devices\SqliteDeviceRepository.cs" />
@@ -107,6 +104,7 @@
     <Compile Include="HttpServer\SocketSharp\WebSocketSharpResponse.cs" />
     <Compile Include="HttpServer\StreamWriter.cs" />
     <Compile Include="Images\BaseDynamicImageProvider.cs" />
+    <Compile Include="IO\ExtendedFileSystemInfo.cs" />
     <Compile Include="IO\FileRefresher.cs" />
     <Compile Include="IO\IsoManager.cs" />
     <Compile Include="IO\LibraryMonitor.cs" />
@@ -339,9 +337,11 @@
     <Compile Include="IO\SharpCifs\Util\Transport\TransportException.cs" />
     <Compile Include="IO\ThrottledStream.cs" />
     <Compile Include="Library\CoreResolutionIgnoreRule.cs" />
+    <Compile Include="Library\DefaultAuthenticationProvider.cs" />
     <Compile Include="Library\LibraryManager.cs" />
     <Compile Include="Library\LocalTrailerPostScanTask.cs" />
     <Compile Include="Library\MediaSourceManager.cs" />
+    <Compile Include="Library\MediaStreamSelector.cs" />
     <Compile Include="Library\MusicManager.cs" />
     <Compile Include="Library\PathExtensions.cs" />
     <Compile Include="Library\ResolverHelper.cs" />
@@ -387,7 +387,6 @@
     <Compile Include="LiveTv\EmbyTV\SeriesTimerManager.cs" />
     <Compile Include="LiveTv\EmbyTV\TimerManager.cs" />
     <Compile Include="LiveTv\Listings\SchedulesDirect.cs" />
-    <Compile Include="LiveTv\Listings\XmlTvProvider.cs" />
     <Compile Include="LiveTv\LiveStreamHelper.cs" />
     <Compile Include="LiveTv\LiveTvConfigurationFactory.cs" />
     <Compile Include="LiveTv\LiveTvDtoService.cs" />
@@ -408,7 +407,10 @@
     <Compile Include="Logging\SimpleLogManager.cs" />
     <Compile Include="Logging\UnhandledExceptionWriter.cs" />
     <Compile Include="MediaEncoder\EncodingManager.cs" />
-    <Compile Include="Migrations\IVersionMigration.cs" />
+    <Compile Include="Networking\IPNetwork\BigIntegerExt.cs" />
+    <Compile Include="Networking\IPNetwork\IPAddressCollection.cs" />
+    <Compile Include="Networking\IPNetwork\IPNetwork.cs" />
+    <Compile Include="Networking\IPNetwork\IPNetworkCollection.cs" />
     <Compile Include="Networking\NetworkManager.cs" />
     <Compile Include="Net\DisposableManagedObjectBase.cs" />
     <Compile Include="Net\SocketFactory.cs" />
@@ -429,7 +431,6 @@
     <Compile Include="Playlists\ManualPlaylistsFolder.cs" />
     <Compile Include="Playlists\PlaylistImageProvider.cs" />
     <Compile Include="Playlists\PlaylistManager.cs" />
-    <Compile Include="Playlists\PlaylistsDynamicFolder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflection\AssemblyInfo.cs" />
     <Compile Include="ResourceFileManager.cs" />
@@ -621,8 +622,8 @@
       <Project>{1d74413b-e7cf-455b-b021-f52bdf881542}</Project>
       <Name>SocketHttpListener</Name>
     </ProjectReference>
-    <Reference Include="Emby.Naming">
-      <HintPath>..\ThirdParty\emby\Emby.Naming.dll</HintPath>
+    <Reference Include="Emby.Naming, Version=1.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaBrowser.Naming.1.1.4\lib\netstandard1.3\Emby.Naming.dll</HintPath>
     </Reference>
     <Reference Include="Emby.Server.MediaEncoding">
       <HintPath>..\ThirdParty\emby\Emby.Server.MediaEncoding.dll</HintPath>
@@ -652,6 +653,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />

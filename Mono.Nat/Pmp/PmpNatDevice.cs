@@ -44,6 +44,11 @@ namespace Mono.Nat.Pmp
 
         internal PmpNatDevice(IPAddress localAddress, IPAddress publicAddress, ILogger logger)
         {
+            if (localAddress == null)
+            {
+                throw new ArgumentNullException("localAddress");
+            }
+
             this.localAddress = localAddress;
             this.publicAddress = publicAddress;
             _logger = logger;
@@ -100,8 +105,7 @@ namespace Mono.Nat.Pmp
 
                     while (attempt < PmpConstants.RetryAttempts)
                     {
-                        await udpClient.SendAsync(buffer, buffer.Length,
-                                new IPEndPoint(LocalAddress, PmpConstants.ServerPort));
+                        await udpClient.SendAsync(buffer, buffer.Length, new IPEndPoint(LocalAddress, PmpConstants.ServerPort));
 
                         if (attempt == 0)
                         {

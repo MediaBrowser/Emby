@@ -12,6 +12,7 @@ using IHttpFile = MediaBrowser.Model.Services.IHttpFile;
 using IHttpRequest = MediaBrowser.Model.Services.IHttpRequest;
 using IHttpResponse = MediaBrowser.Model.Services.IHttpResponse;
 using IResponse = MediaBrowser.Model.Services.IResponse;
+using System.Threading.Tasks;
 
 namespace Emby.Server.Implementations.HttpServer.SocketSharp
 {
@@ -259,7 +260,7 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
             var serverDefaultContentType = "application/json";
 
             var acceptContentTypes = httpReq.AcceptTypes;
-            var defaultContentType = httpReq.ContentType;
+            string defaultContentType = null;
             if (HasAnyOfContentTypes(httpReq, FormUrlEncoded, MultiPartFormData))
             {
                 defaultContentType = serverDefaultContentType;
@@ -384,8 +385,6 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
             return fullPath;
         }
 
-
-
         private static string ResolvePathInfoFromMappedPath(string fullPath, string mappedPathRoot)
         {
             if (mappedPathRoot == null) return null;
@@ -454,12 +453,6 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
         public QueryParamCollection QueryString
         {
             get { return queryString ?? (queryString = MyHttpUtility.ParseQueryString(request.Url.Query)); }
-        }
-
-        private QueryParamCollection formData;
-        public QueryParamCollection FormData
-        {
-            get { return formData ?? (formData = this.Form); }
         }
 
         public bool IsLocal
@@ -550,23 +543,6 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
                 }
                 return httpFiles;
             }
-        }
-
-        static Stream GetSubStream(Stream stream, IMemoryStreamFactory streamProvider)
-        {
-            if (stream is MemoryStream)
-            {
-                var other = (MemoryStream)stream;
-
-                byte[] buffer;
-                if (streamProvider.TryGetBuffer(other, out buffer))
-                {
-                    return streamProvider.CreateNew(buffer);
-                }
-                return streamProvider.CreateNew(other.ToArray());
-            }
-
-            return stream;
         }
 
         public static string NormalizePathInfo(string pathInfo, string handlerPath)

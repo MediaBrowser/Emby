@@ -110,7 +110,7 @@ namespace MediaBrowser.Model.Dto
         }
 
         [IgnoreDataMember]
-        public List<TranscodeReason> TranscodeReasons { get; set; }
+        public TranscodeReason[] TranscodeReasons { get; set; }
 
         public int? DefaultAudioStreamIndex { get; set; }
         public int? DefaultSubtitleStreamIndex { get; set; }

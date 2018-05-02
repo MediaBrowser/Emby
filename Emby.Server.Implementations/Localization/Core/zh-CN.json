@@ -1,4 +1,5 @@
 {
+    "HeaderCameraUploads": "\u76f8\u673a\u4e0a\u4f20",
     "Latest": "\u6700\u65b0",
     "ValueSpecialEpisodeName": "\u7279\u5178 - {0}",
     "Inherit": "\u7ee7\u627f",
@@ -24,7 +25,7 @@
     "Channels": "\u9891\u9053",
     "Movies": "\u7535\u5f71",
     "Albums": "\u4e13\u8f91",
-    "NameSeasonUnknown": "Season Unknown",
+    "NameSeasonUnknown": "\u672a\u77e5\u5b63",
     "Artists": "\u827a\u672f\u5bb6",
     "Folders": "\u6587\u4ef6\u5939",
     "Songs": "\u6b4c\u66f2",

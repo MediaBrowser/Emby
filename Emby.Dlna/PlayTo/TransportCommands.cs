@@ -108,7 +108,7 @@ namespace Emby.Dlna.PlayTo
             {
                 Name = container.GetValue(uPnpNamespaces.svc + "name"),
                 DataType = container.GetValue(uPnpNamespaces.svc + "dataType"),
-                AllowedValues = allowedValues
+                AllowedValues = allowedValues.ToArray()
             };
         }
 

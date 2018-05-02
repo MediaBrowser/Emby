@@ -1,6 +1,8 @@
 ﻿using MediaBrowser.Model.LiveTv;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using MediaBrowser.Model.Serialization;
 
 namespace MediaBrowser.Controller.LiveTv
 {
@@ -12,10 +14,12 @@ namespace MediaBrowser.Controller.LiveTv
             KeepUntil = KeepUntil.UntilDeleted;
             ProviderIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             SeriesProviderIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            Tags = new string[] {};
         }
 
         public Dictionary<string, string> ProviderIds { get; set; }
         public Dictionary<string, string> SeriesProviderIds { get; set; }
+        public string[] Tags { get; set; }
 
         /// <summary>
         /// Id of the recording.
@@ -115,8 +119,29 @@ namespace MediaBrowser.Controller.LiveTv
         public bool IsSports { get; set; }
         public bool IsNews { get; set; }
         public bool IsSeries { get; set; }
-        public bool IsLive { get; set; }
-        public bool IsPremiere { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is live.
+        /// </summary>
+        /// <value><c>true</c> if this instance is live; otherwise, <c>false</c>.</value>
+        [IgnoreDataMember]
+        public bool IsLive
+        {
+            get
+            {
+                return Tags.Contains("Live", StringComparer.OrdinalIgnoreCase);
+            }
+        }
+
+        [IgnoreDataMember]
+        public bool IsPremiere
+        {
+            get
+            {
+                return Tags.Contains("Premiere", StringComparer.OrdinalIgnoreCase);
+            }
+        }
+
         public int? ProductionYear { get; set; }
         public string EpisodeTitle { get; set; }
         public DateTime? OriginalAirDate { get; set; }

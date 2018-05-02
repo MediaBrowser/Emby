@@ -116,7 +116,7 @@ namespace Emby.Server.Implementations.Data
                     {
                         var id = row[0].ReadGuidFromBlob();
 
-                        using (var stream = _memoryStreamProvider.CreateNew(row[1].ToBlob()))
+                        using (var stream = new MemoryStream(row[1].ToBlob()))
                         {
                             stream.Position = 0;
                             var user = _jsonSerializer.DeserializeFromStream<User>(stream);

@@ -92,15 +92,15 @@ namespace MediaBrowser.Api.UserLibrary
 
             var options = GetDtoOptions(_authContext, request);
 
-            var ancestorIds = new List<string>();
+            var ancestorIds = new List<Guid>();
 
             var excludeFolderIds = user.Configuration.LatestItemsExcludes;
             if (!parentIdGuid.HasValue && excludeFolderIds.Length > 0)
             {
-                ancestorIds = user.RootFolder.GetChildren(user, true)
+                ancestorIds = _libraryManager.GetUserRootFolder().GetChildren(user, true)
                     .Where(i => i is Folder)
                     .Where(i => !excludeFolderIds.Contains(i.Id.ToString("N")))
-                    .Select(i => i.Id.ToString("N"))
+                    .Select(i => i.Id)
                     .ToList();
             }
 
@@ -207,7 +207,7 @@ namespace MediaBrowser.Api.UserLibrary
             if (item == null)
             {
                 item = string.IsNullOrEmpty(request.ParentId) ?
-                    user == null ? _libraryManager.RootFolder : user.RootFolder :
+                    user == null ? _libraryManager.RootFolder : _libraryManager.GetUserRootFolder() :
                     _libraryManager.GetItemById(request.ParentId);
             }
 
@@ -217,6 +217,15 @@ namespace MediaBrowser.Api.UserLibrary
             if (folder == null)
             {
                 folder = user == null ? _libraryManager.RootFolder : _libraryManager.GetUserRootFolder();
+            }
+
+            var hasCollectionType = folder as IHasCollectionType;
+            var isPlaylistQuery = (hasCollectionType != null && string.Equals(hasCollectionType.CollectionType, CollectionType.Playlists, StringComparison.OrdinalIgnoreCase));
+
+            if (isPlaylistQuery)
+            {
+                request.Recursive = true;
+                request.IncludeItemTypes = "Playlist";
             }
 
             if (request.Recursive || !string.IsNullOrEmpty(request.Ids) || user == null)
@@ -263,7 +272,6 @@ namespace MediaBrowser.Api.UserLibrary
                 HasImdbId = request.HasImdbId,
                 IsPlaceHolder = request.IsPlaceHolder,
                 IsLocked = request.IsLocked,
-                IsInBoxSet = request.IsInBoxSet,
                 IsHD = request.IsHD,
                 Is3D = request.Is3D,
                 HasTvdbId = request.HasTvdbId,
@@ -279,17 +287,17 @@ namespace MediaBrowser.Api.UserLibrary
                 Tags = request.GetTags(),
                 OfficialRatings = request.GetOfficialRatings(),
                 Genres = request.GetGenres(),
-                ArtistIds = request.GetArtistIds(),
-                GenreIds = request.GetGenreIds(),
-                StudioIds = request.GetStudioIds(),
+                ArtistIds = GetGuids(request.ArtistIds),
+                GenreIds = GetGuids(request.GenreIds),
+                StudioIds = GetGuids(request.StudioIds),
                 Person = request.Person,
-                PersonIds = request.GetPersonIds(),
+                PersonIds = GetGuids(request.PersonIds),
                 PersonTypes = request.GetPersonTypes(),
                 Years = request.GetYears(),
                 ImageTypes = request.GetImageTypes(),
                 VideoTypes = request.GetVideoTypes(),
                 AdjacentTo = request.AdjacentTo,
-                ItemIds = request.GetItemIds(),
+                ItemIds = GetGuids(request.Ids),
                 MinPlayers = request.MinPlayers,
                 MaxPlayers = request.MaxPlayers,
                 MinCommunityRating = request.MinCommunityRating,
@@ -298,7 +306,7 @@ namespace MediaBrowser.Api.UserLibrary
                 ParentIndexNumber = request.ParentIndexNumber,
                 AiredDuringSeason = request.AiredDuringSeason,
                 EnableTotalRecordCount = request.EnableTotalRecordCount,
-                ExcludeItemIds = request.GetExcludeItemIds(),
+                ExcludeItemIds = GetGuids(request.ExcludeItemIds),
                 DtoOptions = dtoOptions
             };
 
@@ -413,18 +421,18 @@ namespace MediaBrowser.Api.UserLibrary
                     {
                         return null;
                     }
-                }).Where(i => i != null).Select(i => i.Id.ToString("N")).ToArray();
+                }).Where(i => i != null).Select(i => i.Id).ToArray();
             }
 
             // ExcludeArtistIds
             if (!string.IsNullOrWhiteSpace(request.ExcludeArtistIds))
             {
-                query.ExcludeArtistIds = request.ExcludeArtistIds.Split('|');
+                query.ExcludeArtistIds = GetGuids(request.ExcludeArtistIds);
             }
 
             if (!string.IsNullOrWhiteSpace(request.AlbumIds))
             {
-                query.AlbumIds = request.AlbumIds.Split('|');
+                query.AlbumIds = GetGuids(request.AlbumIds);
             }
 
             // Albums
@@ -438,7 +446,7 @@ namespace MediaBrowser.Api.UserLibrary
                         Name = i,
                         Limit = 1
 
-                    }).Select(albumId => albumId.ToString("N"));
+                    }).Select(albumId => albumId);
 
                 }).ToArray();
             }
@@ -456,7 +464,7 @@ namespace MediaBrowser.Api.UserLibrary
                     {
                         return null;
                     }
-                }).Where(i => i != null).Select(i => i.Id.ToString("N")).ToArray();
+                }).Where(i => i != null).Select(i => i.Id).ToArray();
             }
 
             // Apply default sorting if none requested

@@ -82,14 +82,7 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
         {
             get
             {
-                WebSocketState commonState;
-
-                if (!Enum.TryParse(WebSocket.ReadyState.ToString(), true, out commonState))
-                {
-                    _logger.Warn("Unrecognized WebSocketState: {0}", WebSocket.ReadyState.ToString());
-                }
-
-                return commonState;
+                return WebSocket.ReadyState;
             }
         }
 
@@ -123,7 +116,6 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         /// <summary>

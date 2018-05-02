@@ -1,5 +1,6 @@
-﻿using MediaBrowser.Common.Net;
-using MediaBrowser.Controller.Session;
+﻿using MediaBrowser.Controller.Session;
+using MediaBrowser.Model.Net;
+using MediaBrowser.Common.Net;
 using MediaBrowser.Model.Serialization;
 using System;
 using System.Threading;
@@ -58,7 +59,7 @@ namespace Emby.Server.Implementations.Session
             get { return true; }
         }
 
-        public async Task SendMessage<T>(string name, T data, CancellationToken cancellationToken)
+        public async Task SendMessage<T>(string name, string messageId, T data, ISessionController[] allControllers, CancellationToken cancellationToken)
         {
             if (!IsSessionActive)
             {
@@ -70,14 +71,27 @@ namespace Emby.Server.Implementations.Session
                 return;
             }
 
-            string strData = _json.SerializeToString(data);
-            var req = new FirebaseBody
+            foreach (var controller in allControllers)
+            {
+                // Don't send if there's an active web socket connection
+                if ((controller is WebSocketController) && controller.IsSessionActive)
+                {
+                    return;
+                }
+            }
+
+            var msg = new WebSocketMessage<T>
+            {
+                Data = data,
+                MessageType = name,
+                MessageId = messageId,
+                ServerId = _appHost.SystemId
+            };
+
+            var req = new FirebaseBody<T>
             {
                 to = _token,
-                data = new FirebaseData
-                {
-                    msgdata = strData
-                }
+                data = msg
             };
 
             var byteArray = Encoding.UTF8.GetBytes(_json.SerializeToString(req));
@@ -109,13 +123,9 @@ namespace Emby.Server.Implementations.Session
         }
     }
 
-    internal class FirebaseBody
+    internal class FirebaseBody<T>
     {
         public string to { get; set; }
-        public FirebaseData data { get; set; }
-    }
-    internal class FirebaseData
-    {
-        public string msgdata { get; set; }
+        public WebSocketMessage<T> data { get; set; }
     }
 }

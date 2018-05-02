@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices.ComTypes;
-using Emby.Server.CinemaMode;
 using Emby.Server.Connect;
 using Emby.Server.Implementations;
 using Emby.Server.Implementations.EntryPoints;
@@ -54,7 +53,6 @@ namespace MediaBrowser.ServerApplication
         {
             var list = new List<Assembly>();
 
-            list.Add(typeof(DefaultIntroProvider).Assembly);
             list.Add(typeof(ConnectManager).Assembly);
             list.Add(typeof(SyncManager).Assembly);
             list.Add(GetType().Assembly);

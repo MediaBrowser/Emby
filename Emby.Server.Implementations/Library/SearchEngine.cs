@@ -99,7 +99,7 @@ namespace Emby.Server.Implementations.Library
             var terms = GetWords(searchTerm);
 
             var excludeItemTypes = query.ExcludeItemTypes.ToList();
-            var includeItemTypes = (query.IncludeItemTypes ?? new string[] { }).ToList();
+            var includeItemTypes = (query.IncludeItemTypes ?? Array.Empty<string>()).ToList();
 
             excludeItemTypes.Add(typeof(Year).Name);
             excludeItemTypes.Add(typeof(Folder).Name);
@@ -202,11 +202,11 @@ namespace Emby.Server.Implementations.Library
             {
                 if (searchQuery.ParentId.HasValue)
                 {
-                    searchQuery.AncestorIds = new string[] { searchQuery.ParentId.Value.ToString("N") };
+                    searchQuery.AncestorIds = new Guid[] { searchQuery.ParentId.Value };
                 }
                 searchQuery.ParentId = null;
                 searchQuery.IncludeItemsByName = true;
-                searchQuery.IncludeItemTypes = new string[] { };
+                searchQuery.IncludeItemTypes = Array.Empty<string>();
                 mediaItems = _libraryManager.GetAllArtists(searchQuery).Items.Select(i => i.Item1).ToList();
             }
             else

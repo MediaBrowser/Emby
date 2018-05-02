@@ -1,5 +1,6 @@
 ﻿using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Querying;
+using System;
 
 namespace MediaBrowser.Model.LiveTv
 {
@@ -13,14 +14,14 @@ namespace MediaBrowser.Model.LiveTv
         public bool? EnableImages { get; set; }
         public int? ImageTypeLimit { get; set; }
         public ImageType[] EnableImageTypes { get; set; }
-        public string[] GenreIds { get; set; }
+        public Guid[] GenreIds { get; set; }
 
         public bool EnableTotalRecordCount { get; set; }
 
         public RecommendedProgramQuery()
         {
             EnableTotalRecordCount = true;
-            GenreIds = new string[] { };
+            GenreIds = new Guid[] { };
         }
 
         /// <summary>

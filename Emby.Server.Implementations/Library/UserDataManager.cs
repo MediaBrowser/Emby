@@ -51,7 +51,7 @@ namespace Emby.Server.Implementations.Library
             {
                 throw new ArgumentNullException("item");
             }
-            if (userId == Guid.Empty)
+            if (userId.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("userId");
             }
@@ -92,7 +92,7 @@ namespace Emby.Server.Implementations.Library
             {
                 throw new ArgumentNullException("userData");
             }
-            if (userId == Guid.Empty)
+            if (userId.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("userId");
             }
@@ -109,7 +109,7 @@ namespace Emby.Server.Implementations.Library
         /// <returns></returns>
         public List<UserItemData> GetAllUserData(Guid userId)
         {
-            if (userId == Guid.Empty)
+            if (userId.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("userId");
             }
@@ -119,7 +119,7 @@ namespace Emby.Server.Implementations.Library
 
         public UserItemData GetUserData(Guid userId, Guid itemId, List<string> keys)
         {
-            if (userId == Guid.Empty)
+            if (userId.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("userId");
             }

@@ -143,7 +143,7 @@ namespace MediaBrowser.Api.Movies
             var user = !string.IsNullOrWhiteSpace(request.UserId) ? _userManager.GetUserById(request.UserId) : null;
 
             var item = string.IsNullOrEmpty(request.Id) ?
-                (!string.IsNullOrWhiteSpace(request.UserId) ? user.RootFolder :
+                (!string.IsNullOrWhiteSpace(request.UserId) ? _libraryManager.GetUserRootFolder() :
                 _libraryManager.RootFolder) : _libraryManager.GetItemById(request.Id);
 
             var itemTypes = new List<string> { typeof(Movie).Name };
@@ -217,7 +217,7 @@ namespace MediaBrowser.Api.Movies
                 OrderBy = new[] { ItemSortBy.Random }.Select(i => new Tuple<string, SortOrder>(i, SortOrder.Descending)).ToArray(),
                 Limit = 10,
                 IsFavoriteOrLiked = true,
-                ExcludeItemIds = recentlyPlayedMovies.Select(i => i.Id.ToString("N")).ToArray(recentlyPlayedMovies.Count),
+                ExcludeItemIds = recentlyPlayedMovies.Select(i => i.Id).ToArray(recentlyPlayedMovies.Count),
                 EnableGroupByMetadataKey = true,
                 ParentId = parentIdGuid,
                 Recursive = true,
@@ -405,7 +405,7 @@ namespace MediaBrowser.Api.Movies
         {
             var people = _libraryManager.GetPeople(new InternalPeopleQuery
             {
-                ExcludePersonTypes = new List<string>
+                ExcludePersonTypes = new []
                 {
                     PersonType.Director
                 },

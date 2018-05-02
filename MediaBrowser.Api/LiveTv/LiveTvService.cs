@@ -23,6 +23,8 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Model.Services;
 using MediaBrowser.Model.System;
 using MediaBrowser.Model.Extensions;
+using MediaBrowser.Model.Cryptography;
+using System.Text;
 
 namespace MediaBrowser.Api.LiveTv
 {
@@ -122,7 +124,7 @@ namespace MediaBrowser.Api.LiveTv
 
             if (string.IsNullOrEmpty(val))
             {
-                return new string[] { };
+                return Array.Empty<string>();
             }
 
             return val.Split(',');
@@ -158,9 +160,6 @@ namespace MediaBrowser.Api.LiveTv
 
         [ApiMember(Name = "UserId", Description = "Optional filter by user and attach user data.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
         public string UserId { get; set; }
-
-        [ApiMember(Name = "GroupId", Description = "Optional filter by recording group.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public string GroupId { get; set; }
 
         [ApiMember(Name = "StartIndex", Description = "Optional. The record index to start at. All items with a lower index will be dropped from the results.", IsRequired = false, DataType = "int", ParameterType = "query", Verb = "GET")]
         public int? StartIndex { get; set; }
@@ -608,6 +607,7 @@ namespace MediaBrowser.Api.LiveTv
     {
         public bool ValidateLogin { get; set; }
         public bool ValidateListings { get; set; }
+        public string Pw { get; set; }
     }
 
     [Route("/LiveTv/ListingProviders", "DELETE", Summary = "Deletes a listing provider")]
@@ -667,14 +667,6 @@ namespace MediaBrowser.Api.LiveTv
         public string ProviderName { get; set; }
     }
 
-    [Route("/LiveTv/Registration", "GET")]
-    [Authenticated]
-    public class GetLiveTvRegistrationInfo : IReturn<MBRegistrationRecord>
-    {
-        [ApiMember(Name = "Feature", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public string Feature { get; set; }
-    }
-
     [Route("/LiveTv/LiveStreamFiles/{Id}/stream.{Container}", "GET", Summary = "Gets a live tv channel")]
     public class GetLiveStreamFile
     {
@@ -714,8 +706,9 @@ namespace MediaBrowser.Api.LiveTv
         private readonly IAuthorizationContext _authContext;
         private readonly ISessionContext _sessionContext;
         private readonly IEnvironmentInfo _environment;
+        private ICryptoProvider _cryptographyProvider;
 
-        public LiveTvService(ILiveTvManager liveTvManager, IUserManager userManager, IServerConfigurationManager config, IHttpClient httpClient, ILibraryManager libraryManager, IDtoService dtoService, IFileSystem fileSystem, IAuthorizationContext authContext, ISessionContext sessionContext, IEnvironmentInfo environment)
+        public LiveTvService(ICryptoProvider crypto, ILiveTvManager liveTvManager, IUserManager userManager, IServerConfigurationManager config, IHttpClient httpClient, ILibraryManager libraryManager, IDtoService dtoService, IFileSystem fileSystem, IAuthorizationContext authContext, ISessionContext sessionContext, IEnvironmentInfo environment)
         {
             _liveTvManager = liveTvManager;
             _userManager = userManager;
@@ -727,6 +720,7 @@ namespace MediaBrowser.Api.LiveTv
             _authContext = authContext;
             _sessionContext = sessionContext;
             _environment = environment;
+            _cryptographyProvider = crypto;
         }
 
         public object Get(GetTunerHostTypes request)
@@ -792,13 +786,6 @@ namespace MediaBrowser.Api.LiveTv
         public object Get(GetDefaultListingProvider request)
         {
             return ToOptimizedResult(new ListingsProviderInfo());
-        }
-
-        public async Task<object> Get(GetLiveTvRegistrationInfo request)
-        {
-            var result = await _liveTvManager.GetRegistrationInfo(request.Feature).ConfigureAwait(false);
-
-            return ToOptimizedResult(result);
         }
 
         public async Task<object> Post(SetChannelMapping request)
@@ -872,8 +859,24 @@ namespace MediaBrowser.Api.LiveTv
 
         public async Task<object> Post(AddListingProvider request)
         {
+            if (request.Pw != null)
+            {
+                request.Password = GetHashedString(request.Pw);
+            }
+
+            request.Pw = null;
+
             var result = await _liveTvManager.SaveListingProvider(request, request.ValidateLogin, request.ValidateListings).ConfigureAwait(false);
             return ToOptimizedResult(result);
+        }
+
+        /// <summary>
+        /// Gets the hashed string.
+        /// </summary>
+        private string GetHashedString(string str)
+        {
+            // legacy
+            return BitConverter.ToString(_cryptographyProvider.ComputeSHA1(Encoding.UTF8.GetBytes(str))).Replace("-", string.Empty).ToLower();
         }
 
         public void Delete(DeleteListingProvider request)
@@ -915,9 +918,9 @@ namespace MediaBrowser.Api.LiveTv
             return ToOptimizedSerializedResultUsingCache(info);
         }
 
-        public async Task<object> Get(GetLiveTvInfo request)
+        public object Get(GetLiveTvInfo request)
         {
-            var info = await _liveTvManager.GetLiveTvInfo(CancellationToken.None).ConfigureAwait(false);
+            var info = _liveTvManager.GetLiveTvInfo(CancellationToken.None);
 
             return ToOptimizedSerializedResultUsingCache(info);
         }
@@ -979,7 +982,7 @@ namespace MediaBrowser.Api.LiveTv
         {
             var user = _userManager.GetUserById(request.UserId);
 
-            var item = string.IsNullOrEmpty(request.Id) ? user.RootFolder : _libraryManager.GetItemById(request.Id);
+            var item = string.IsNullOrEmpty(request.Id) ? _libraryManager.GetUserRootFolder() : _libraryManager.GetItemById(request.Id);
 
             var dtoOptions = GetDtoOptions(_authContext, request);
 
@@ -997,7 +1000,7 @@ namespace MediaBrowser.Api.LiveTv
         {
             var query = new ProgramQuery
             {
-                ChannelIds = ApiEntryPoint.Split(request.ChannelIds, ',', true),
+                ChannelIds = ApiEntryPoint.Split(request.ChannelIds, ',', true).Select(i => new Guid(i)).ToArray(),
                 UserId = request.UserId,
                 HasAired = request.HasAired,
                 EnableTotalRecordCount = request.EnableTotalRecordCount
@@ -1033,7 +1036,7 @@ namespace MediaBrowser.Api.LiveTv
             query.IsSports = request.IsSports;
             query.SeriesTimerId = request.SeriesTimerId;
             query.Genres = (request.Genres ?? String.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-            query.GenreIds = (request.GenreIds ?? String.Empty).Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+            query.GenreIds = GetGuids(request.GenreIds);
 
             if (!string.IsNullOrWhiteSpace(request.LibrarySeriesId))
             {
@@ -1067,7 +1070,7 @@ namespace MediaBrowser.Api.LiveTv
                 EnableTotalRecordCount = request.EnableTotalRecordCount
             };
 
-            query.GenreIds = (request.GenreIds ?? String.Empty).Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+            query.GenreIds = GetGuids(request.GenreIds);
 
             var result = _liveTvManager.GetRecommendedPrograms(query, GetDtoOptions(_authContext, request), CancellationToken.None);
 
@@ -1079,16 +1082,14 @@ namespace MediaBrowser.Api.LiveTv
             return Get(request);
         }
 
-        public async Task<object> Get(GetRecordings request)
+        public object Get(GetRecordings request)
         {
             var options = GetDtoOptions(_authContext, request);
-            options.DeviceId = _authContext.GetAuthorizationInfo(Request).DeviceId;
 
-            var result = await _liveTvManager.GetRecordings(new RecordingQuery
+            var result = _liveTvManager.GetRecordings(new RecordingQuery
             {
                 ChannelId = request.ChannelId,
                 UserId = request.UserId,
-                GroupId = request.GroupId,
                 StartIndex = request.StartIndex,
                 Limit = request.Limit,
                 Status = request.Status,
@@ -1102,38 +1103,21 @@ namespace MediaBrowser.Api.LiveTv
                 IsSports = request.IsSports,
                 IsLibraryItem = request.IsLibraryItem
 
-            }, options, CancellationToken.None).ConfigureAwait(false);
+            }, options);
 
             return ToOptimizedResult(result);
         }
 
         public object Get(GetRecordingSeries request)
         {
-            var options = GetDtoOptions(_authContext, request);
-            options.DeviceId = _authContext.GetAuthorizationInfo(Request).DeviceId;
-
-            var result = _liveTvManager.GetRecordingSeries(new RecordingQuery
-            {
-                ChannelId = request.ChannelId,
-                UserId = request.UserId,
-                GroupId = request.GroupId,
-                StartIndex = request.StartIndex,
-                Limit = request.Limit,
-                Status = request.Status,
-                SeriesTimerId = request.SeriesTimerId,
-                IsInProgress = request.IsInProgress,
-                EnableTotalRecordCount = request.EnableTotalRecordCount
-
-            }, options, CancellationToken.None);
-
-            return ToOptimizedResult(result);
+            return ToOptimizedResult(new QueryResult<BaseItemDto>());
         }
 
         public async Task<object> Get(GetRecording request)
         {
             var user = _userManager.GetUserById(request.UserId);
 
-            var item = string.IsNullOrEmpty(request.Id) ? user.RootFolder : _libraryManager.GetItemById(request.Id);
+            var item = string.IsNullOrEmpty(request.Id) ? _libraryManager.GetUserRootFolder() : _libraryManager.GetItemById(request.Id);
 
             var dtoOptions = GetDtoOptions(_authContext, request);
 
@@ -1173,22 +1157,18 @@ namespace MediaBrowser.Api.LiveTv
             });
         }
 
-        public void Delete(CancelTimer request)
+        public Task Delete(CancelTimer request)
         {
             AssertUserCanManageLiveTv();
 
-            var task = _liveTvManager.CancelTimer(request.Id);
-
-            Task.WaitAll(task);
+            return _liveTvManager.CancelTimer(request.Id);
         }
 
-        public void Post(UpdateTimer request)
+        public Task Post(UpdateTimer request)
         {
             AssertUserCanManageLiveTv();
 
-            var task = _liveTvManager.UpdateTimer(request, CancellationToken.None);
-
-            Task.WaitAll(task);
+            return _liveTvManager.UpdateTimer(request, CancellationToken.None);
         }
 
         public async Task<object> Get(GetSeriesTimers request)
@@ -1210,22 +1190,18 @@ namespace MediaBrowser.Api.LiveTv
             return ToOptimizedSerializedResultUsingCache(result);
         }
 
-        public void Delete(CancelSeriesTimer request)
+        public Task Delete(CancelSeriesTimer request)
         {
             AssertUserCanManageLiveTv();
 
-            var task = _liveTvManager.CancelSeriesTimer(request.Id);
-
-            Task.WaitAll(task);
+            return _liveTvManager.CancelSeriesTimer(request.Id);
         }
 
-        public void Post(UpdateSeriesTimer request)
+        public Task Post(UpdateSeriesTimer request)
         {
             AssertUserCanManageLiveTv();
 
-            var task = _liveTvManager.UpdateSeriesTimer(request, CancellationToken.None);
-
-            Task.WaitAll(task);
+            return _liveTvManager.UpdateSeriesTimer(request, CancellationToken.None);
         }
 
         public async Task<object> Get(GetDefaultTimer request)
@@ -1253,42 +1229,28 @@ namespace MediaBrowser.Api.LiveTv
             return ToOptimizedSerializedResultUsingCache(result);
         }
 
-        public void Post(CreateSeriesTimer request)
+        public Task Post(CreateSeriesTimer request)
         {
             AssertUserCanManageLiveTv();
 
-            var task = _liveTvManager.CreateSeriesTimer(request, CancellationToken.None);
-
-            Task.WaitAll(task);
+            return _liveTvManager.CreateSeriesTimer(request, CancellationToken.None);
         }
 
-        public void Post(CreateTimer request)
+        public Task Post(CreateTimer request)
         {
             AssertUserCanManageLiveTv();
 
-            var task = _liveTvManager.CreateTimer(request, CancellationToken.None);
-
-            Task.WaitAll(task);
+            return _liveTvManager.CreateTimer(request, CancellationToken.None);
         }
 
-        public async Task<object> Get(GetRecordingGroups request)
+        public object Get(GetRecordingGroups request)
         {
-            var result = await _liveTvManager.GetRecordingGroups(new RecordingGroupQuery
-            {
-                UserId = request.UserId
-
-            }, CancellationToken.None).ConfigureAwait(false);
-
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(new QueryResult<BaseItemDto>());
         }
 
         public async Task<object> Get(GetRecordingGroup request)
         {
-            var result = await _liveTvManager.GetRecordingGroups(new RecordingGroupQuery(), CancellationToken.None).ConfigureAwait(false);
-
-            var group = result.Items.FirstOrDefault(i => string.Equals(i.Id, request.Id, StringComparison.OrdinalIgnoreCase));
-
-            return ToOptimizedSerializedResultUsingCache(group);
+            throw new FileNotFoundException();
         }
 
         public object Get(GetGuideInfo request)
@@ -1296,13 +1258,11 @@ namespace MediaBrowser.Api.LiveTv
             return ToOptimizedResult(_liveTvManager.GetGuideInfo());
         }
 
-        public void Post(ResetTuner request)
+        public Task Post(ResetTuner request)
         {
             AssertUserCanManageLiveTv();
 
-            var task = _liveTvManager.ResetTuner(request.Id, CancellationToken.None);
-
-            Task.WaitAll(task);
+            return _liveTvManager.ResetTuner(request.Id, CancellationToken.None);
         }
     }
 }

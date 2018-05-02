@@ -80,7 +80,8 @@ namespace MediaBrowser.XbmcMetadata.Savers
                 "episodeguide",
                 "season",
                 "episode",
-                "status"
+                "status",
+                "displayorder"
             });
             return list;
         }

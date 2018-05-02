@@ -126,7 +126,7 @@ namespace MediaBrowser.Api
             // Non recursive not yet supported for library folders
             if ((request.Recursive ?? true) || parentItem is UserView || parentItem is ICollectionFolder)
             {
-                genreQuery.AncestorIds = parentItem == null ? new string[] { } : new string[] { parentItem.Id.ToString("N") };
+                genreQuery.AncestorIds = parentItem == null ? Array.Empty<Guid>() : new Guid[] { parentItem.Id };
             }
             else
             {
@@ -182,7 +182,7 @@ namespace MediaBrowser.Api
             }
 
             var item = string.IsNullOrEmpty(request.ParentId) ?
-               user == null ? _libraryManager.RootFolder : user.RootFolder :
+               user == null ? _libraryManager.RootFolder : _libraryManager.GetUserRootFolder() :
                parentItem;
 
             var result = ((Folder)item).GetItemList(GetItemsQuery(request, user));

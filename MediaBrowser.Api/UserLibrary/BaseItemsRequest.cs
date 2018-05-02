@@ -103,9 +103,6 @@ namespace MediaBrowser.Api.UserLibrary
         [ApiMember(Name = "HasTvdbId", Description = "Optional filter by items that have a tvdb id or not.", IsRequired = false, DataType = "bool", ParameterType = "query", Verb = "GET")]
         public bool? HasTvdbId { get; set; }
 
-        [ApiMember(Name = "IsInBoxSet", Description = "Optional filter by items that are in boxsets, or not.", IsRequired = false, DataType = "bool", ParameterType = "query", Verb = "GET")]
-        public bool? IsInBoxSet { get; set; }
-
         public string ExcludeItemIds { get; set; }
 
         public bool EnableTotalRecordCount { get; set; }
@@ -369,11 +366,6 @@ namespace MediaBrowser.Api.UserLibrary
             return (IncludeItemTypes ?? string.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        public string[] GetExcludeItemIds()
-        {
-            return (ExcludeItemIds ?? string.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-        }
-
         public string[] GetExcludeItemTypes()
         {
             return (ExcludeItemTypes ?? string.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
@@ -389,34 +381,9 @@ namespace MediaBrowser.Api.UserLibrary
             return (Studios ?? string.Empty).Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        public string[] GetArtistIds()
-        {
-            return (ArtistIds ?? string.Empty).Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-        }
-
-        public string[] GetStudioIds()
-        {
-            return (StudioIds ?? string.Empty).Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-        }
-
-        public string[] GetGenreIds()
-        {
-            return (GenreIds ?? string.Empty).Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-        }
-
         public string[] GetPersonTypes()
         {
             return (PersonTypes ?? string.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-        }
-
-        public string[] GetPersonIds()
-        {
-            return (PersonIds ?? string.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-        }
-
-        public string[] GetItemIds()
-        {
-            return (Ids ?? string.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
         }
 
         public VideoType[] GetVideoTypes()

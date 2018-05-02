@@ -29,7 +29,7 @@ namespace Emby.Server.Implementations.Channels
             CleanDatabase(cancellationToken);
 
             progress.Report(100);
-            return Task.FromResult(true);
+            return Task.CompletedTask;
         }
 
         public static string GetUserDistinctValue(User user)
@@ -69,7 +69,7 @@ namespace Emby.Server.Implementations.Channels
             // Delete all channel items
             var allIds = _libraryManager.GetItemIds(new InternalItemsQuery
             {
-                ChannelIds = new[] { id.ToString("N") }
+                ChannelIds = new[] { id }
             });
 
             foreach (var deleteId in allIds)

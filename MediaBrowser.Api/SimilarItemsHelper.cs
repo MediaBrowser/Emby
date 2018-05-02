@@ -76,7 +76,7 @@ namespace MediaBrowser.Api
             var user = !string.IsNullOrWhiteSpace(request.UserId) ? userManager.GetUserById(request.UserId) : null;
 
             var item = string.IsNullOrEmpty(request.Id) ?
-                (!string.IsNullOrWhiteSpace(request.UserId) ? user.RootFolder :
+                (!string.IsNullOrWhiteSpace(request.UserId) ? libraryManager.GetUserRootFolder() :
                 libraryManager.RootFolder) : libraryManager.GetItemById(request.Id);
 
             var query = new InternalItemsQuery(user)
@@ -89,7 +89,7 @@ namespace MediaBrowser.Api
             // ExcludeArtistIds
             if (!string.IsNullOrEmpty(request.ExcludeArtistIds))
             {
-                query.ExcludeArtistIds = request.ExcludeArtistIds.Split('|');
+                query.ExcludeArtistIds = BaseApiService.GetGuids(request.ExcludeArtistIds);
             }
 
             var inputItems = libraryManager.GetItemList(query);

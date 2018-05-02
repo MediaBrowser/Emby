@@ -48,14 +48,6 @@ namespace MediaBrowser.Api.Subtitles
         public bool? IsPerfectMatch { get; set; }
     }
 
-    [Route("/Items/{Id}/RemoteSearch/Subtitles/Providers", "GET")]
-    [Authenticated]
-    public class GetSubtitleProviders : IReturn<SubtitleProviderInfo[]>
-    {
-        [ApiMember(Name = "Id", Description = "Item Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
-        public string Id { get; set; }
-    }
-
     [Route("/Items/{Id}/RemoteSearch/Subtitles/{SubtitleId}", "POST")]
     [Authenticated]
     public class DownloadRemoteSubtitles : IReturnVoid
@@ -237,7 +229,9 @@ namespace MediaBrowser.Api.Subtitles
 
         private Task<Stream> GetSubtitles(GetSubtitle request)
         {
-            return _subtitleEncoder.GetSubtitles(request.Id,
+            var item = _libraryManager.GetItemById(request.Id);
+
+            return _subtitleEncoder.GetSubtitles(item,
                 request.MediaSourceId,
                 request.Index,
                 request.Format,
@@ -251,23 +245,13 @@ namespace MediaBrowser.Api.Subtitles
         {
             var video = (Video)_libraryManager.GetItemById(request.Id);
 
-            var response = await _subtitleManager.SearchSubtitles(video, request.Language, request.IsPerfectMatch, CancellationToken.None).ConfigureAwait(false);
-
-            return ToOptimizedResult(response);
+           return await _subtitleManager.SearchSubtitles(video, request.Language, request.IsPerfectMatch, CancellationToken.None).ConfigureAwait(false);
         }
 
-        public void Delete(DeleteSubtitle request)
+        public Task Delete(DeleteSubtitle request)
         {
-            var task = _subtitleManager.DeleteSubtitles(request.Id, request.Index);
-
-            Task.WaitAll(task);
-        }
-
-        public object Get(GetSubtitleProviders request)
-        {
-            var result = _subtitleManager.GetProviders(request.Id);
-
-            return ToOptimizedResult(result);
+            var item = _libraryManager.GetItemById(request.Id);
+            return _subtitleManager.DeleteSubtitles(item, request.Index);
         }
 
         public async Task<object> Get(GetRemoteSubtitles request)

@@ -21,9 +21,6 @@
         <div id="resumableSection" class="verticalSection hide">
             <div class="sectionTitleContainer">
                 <h2 class="sectionTitle sectionTitle-cards padded-left">${HeaderContinueWatching}</h2>
-                <button is="emby-button" type="button" class="raised submit raised-mini categorySyncButton button-accent sectionTitleButton" data-category="Resume">
-                    <span>${ButtonDownload}</span>
-                </button>
             </div>
 
             <div is="emby-itemscontainer" id="resumableItems" class="itemsContainer padded-left padded-right">
@@ -33,8 +30,8 @@
         <div class="verticalSection">
             <div class="sectionTitleContainer">
                 <h2 class="sectionTitle sectionTitle-cards padded-left">${HeaderLatestMovies}</h2>
-                <button is="emby-button" type="button" class="raised submit raised-mini categorySyncButton button-accent sectionTitleButton" data-category="Latest">
-                    <span>${ButtonDownload}</span>
+                <button is="emby-button" type="button" class="fab submit categorySyncButton button-submit sectionTitleButton" data-category="Latest" title="${ButtonDownload}">
+                    <i class="md-icon">&#xE2C4;</i>
                 </button>
             </div>
 

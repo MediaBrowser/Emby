@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Services;
-using SocketHttpListener.Net;
 using HttpListenerResponse = SocketHttpListener.Net.HttpListenerResponse;
 using IHttpResponse = MediaBrowser.Model.Services.IHttpResponse;
 using IRequest = MediaBrowser.Model.Services.IRequest;
+using System.Net.Sockets;
 
 namespace Emby.Server.Implementations.HttpServer.SocketSharp
 {
@@ -97,30 +97,23 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
 
                 try
                 {
-                    CloseOutputStream(this._response);
+                    var response = this._response;
+
+                    var outputStream = response.OutputStream;
+
+                    // This is needed with compression
+                    outputStream.Flush();
+                    outputStream.Dispose();
+
+                    response.Close();
+                }
+                catch (SocketException)
+                {
                 }
                 catch (Exception ex)
                 {
-                    _logger.ErrorException("Error closing HttpListener output stream", ex);
+                    _logger.ErrorException("Error in HttpListenerResponseWrapper: " + ex.Message, ex);
                 }
-            }
-        }
-
-        public void CloseOutputStream(HttpListenerResponse response)
-        {
-            try
-            {
-                var outputStream = response.OutputStream;
-
-                // This is needed with compression
-                outputStream.Flush();
-                outputStream.Dispose();
-
-                response.Close();
-            }
-            catch (Exception ex)
-            {
-                _logger.ErrorException("Error in HttpListenerResponseWrapper: " + ex.Message, ex);
             }
         }
 

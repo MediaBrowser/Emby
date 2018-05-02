@@ -86,7 +86,7 @@ namespace MediaBrowser.WebDashboard.Api
             {
                 string html;
 
-                using (var memoryStream = _memoryStreamFactory.CreateNew())
+                using (var memoryStream = new MemoryStream())
                 {
                     await sourceStream.CopyToAsync(memoryStream).ConfigureAwait(false);
 
@@ -138,7 +138,7 @@ namespace MediaBrowser.WebDashboard.Api
 
                 var bytes = Encoding.UTF8.GetBytes(html);
 
-                return _memoryStreamFactory.CreateNew(bytes);
+                return new MemoryStream(bytes);
             }
         }
 

@@ -79,8 +79,6 @@ namespace MediaBrowser.Controller.Dto
         /// <summary>
         /// Gets the item by name dto.
         /// </summary>
-        BaseItemDto GetItemByNameDto(BaseItem item, DtoOptions options, List<BaseItem> taggedItems, Dictionary<string, SyncedItemProgress> syncProgress, User user = null);
-
-        Dictionary<string, SyncedItemProgress> GetSyncedItemProgress(DtoOptions options);
+        BaseItemDto GetItemByNameDto(BaseItem item, DtoOptions options, List<BaseItem> taggedItems, User user = null);
     }
 }

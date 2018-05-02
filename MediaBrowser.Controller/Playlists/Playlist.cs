@@ -9,18 +9,58 @@ using MediaBrowser.Model.Serialization;
 using System.Threading.Tasks;
 using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Providers;
+using System.Threading;
 
 namespace MediaBrowser.Controller.Playlists
 {
     public class Playlist : Folder, IHasShares
     {
-        public string OwnerUserId { get; set; }
+        public static string[] SupportedExtensions = new string[] {
 
-        public List<Share> Shares { get; set; }
+            ".m3u",
+            ".m3u8",
+            ".pls",
+            ".wpl",
+            ".zpl"
+        };
+
+        public Guid OwnerUserId { get; set; }
+
+        public Share[] Shares { get; set; }
 
         public Playlist()
         {
-            Shares = new List<Share>();
+            Shares = new Share[] { };
+        }
+
+        [IgnoreDataMember]
+        public bool IsFile
+        {
+            get
+            {
+                return IsPlaylistFile(Path);
+            }
+        }
+
+        public static bool IsPlaylistFile(string path)
+        {
+            return System.IO.Path.HasExtension(path);
+        }
+
+        [IgnoreDataMember]
+        public override string ContainingFolderPath
+        {
+            get
+            {
+                var path = Path;
+
+                if (IsPlaylistFile(path))
+                {
+                    return FileSystem.GetDirectoryName(path);
+                }
+
+                return path;
+            }
         }
 
         [IgnoreDataMember]
@@ -89,6 +129,11 @@ namespace MediaBrowser.Controller.Playlists
             return new List<BaseItem>();
         }
 
+        protected override Task ValidateChildrenInternal(IProgress<double> progress, CancellationToken cancellationToken, bool recursive, bool refreshChildMetadata, MetadataRefreshOptions refreshOptions, IDirectoryService directoryService)
+        {
+            return Task.FromResult(true);
+        }
+
         public override List<BaseItem> GetChildren(User user, bool includeLinkedChildren)
         {
             return GetPlayableItems(user, new DtoOptions(true));
@@ -148,7 +193,7 @@ namespace MediaBrowser.Controller.Playlists
                 {
                     Recursive = true,
                     IncludeItemTypes = new[] { typeof(Audio).Name },
-                    GenreIds = new[] { musicGenre.Id.ToString("N") },
+                    GenreIds = new[] { musicGenre.Id },
                     OrderBy = new[] { ItemSortBy.AlbumArtist, ItemSortBy.Album, ItemSortBy.SortName }.Select(i => new Tuple<string, SortOrder>(i, SortOrder.Ascending)).ToArray(),
                     DtoOptions = options
                 });
@@ -161,7 +206,7 @@ namespace MediaBrowser.Controller.Playlists
                 {
                     Recursive = true,
                     IncludeItemTypes = new[] { typeof(Audio).Name },
-                    ArtistIds = new[] { musicArtist.Id.ToString("N") },
+                    ArtistIds = new[] { musicArtist.Id },
                     OrderBy = new[] { ItemSortBy.AlbumArtist, ItemSortBy.Album, ItemSortBy.SortName }.Select(i => new Tuple<string, SortOrder>(i, SortOrder.Ascending)).ToArray(),
                     DtoOptions = options
                 });
@@ -213,10 +258,27 @@ namespace MediaBrowser.Controller.Playlists
 
         public override bool IsVisible(User user)
         {
-            var userId = user.Id.ToString("N");
+            if (user.Id == OwnerUserId)
+            {
+                return true;
+            }
 
-            return Shares.Any(i => string.Equals(userId, i.UserId, StringComparison.OrdinalIgnoreCase)) ||
-                string.Equals(OwnerUserId, userId, StringComparison.OrdinalIgnoreCase);
+            var shares = Shares;
+            if (shares.Length == 0)
+            {
+                return base.IsVisible(user);
+            }
+
+            var userId = user.Id.ToString("N");
+            foreach (var share in shares)
+            {
+                if (string.Equals(share.UserId, userId, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public override bool IsVisibleStandalone(User user)

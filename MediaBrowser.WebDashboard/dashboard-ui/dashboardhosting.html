@@ -21,6 +21,7 @@
                     <input is="emby-input" type="number" id="txtHttpsPort" pattern="[0-9]*" required="required" min="1" max="65535" label="${LabelHttpsPort}" />
                     <div class="fieldDescription">${LabelHttpsPortHelp}</div>
                 </div>
+
                 <div class="checkboxContainer checkboxContainer-withDescription">
                     <label>
                         <input type="checkbox" is="emby-checkbox" id="chkRemoteAccess" />
@@ -28,21 +29,31 @@
                     </label>
                     <div class="fieldDescription checkboxFieldDescription">${AllowRemoteAccessHelp}</div>
                 </div>
-                <div class="inputContainer">
+                <div class="inputContainer fldExternalAddressFilter hide">
+                    <input is="emby-input" type="text" id="txtExternalAddressFilter" label="${LabelAllowedRemoteAddresses}" />
+                    <div class="fieldDescription">${AllowedRemoteAddressesHelp}</div>
+                </div>
+                <div class="selectContainer fldExternalAddressFilterMode hide">
+                    <select is="emby-select" id="selectExternalAddressFilterMode" label="${LabelAllowedRemoteAddressesMode}">
+                        <option value="whitelist">${Whitelist}</option>
+                        <option value="blacklist">${Blacklist}</option>
+                    </select>
+                </div>
+                <div class="inputContainer fldPublicPort hide">
                     <input is="emby-input" type="number" label="${LabelPublicHttpPort}" id="txtPublicPort" pattern="[0-9]*" required="required" min="1" max="65535" />
                     <div class="fieldDescription">${LabelPublicHttpPortHelp}</div>
                 </div>
-                <div class="inputContainer">
+                <div class="inputContainer fldPublicHttpsPort hide">
                     <input is="emby-input" type="number" id="txtPublicHttpsPort" pattern="[0-9]*" required="required" min="1" max="65535" label="${LabelPublicHttpsPort}" />
                     <div class="fieldDescription">${LabelPublicHttpsPortHelp}</div>
                 </div>
 
-                <div class="inputContainer">
+                <div class="inputContainer fldDdns hide">
                     <input is="emby-input" id="txtDdns" type="text" label="${LabelExternalDDNS}" />
                     <div class="fieldDescription">${LabelExternalDDNSHelp}</div>
                 </div>
 
-                <div class="inputContainer">
+                <div class="inputContainer fldCertificatePath hide">
                     <div style="display: flex; align-items: center;">
                         <div style="flex-grow:1;">
                             <input is="emby-input" type="text" id="txtCertificatePath" label="${LabelCustomCertificatePath}" autocomplete="off" />
@@ -52,19 +63,21 @@
                     <div class="fieldDescription">${LabelCustomCertificatePathHelp}</div>
                 </div>
 
-                <div class="inputContainer">
+                <div class="inputContainer fldCertPassword hide">
                     <input is="emby-input" id="txtCertPassword" type="password" label="${LabelCertificatePassword}" autocomplete="new-password" />
                     <div class="fieldDescription">${LabelCertificatePasswordHelp}</div>
                 </div>
 
-                <div class="checkboxContainer checkboxContainer-withDescription">
-                    <label>
-                        <input type="checkbox" is="emby-checkbox" id="chkEnableHttps" />
-                        <span>${RequireHttps}</span>
-                    </label>
-                    <div class="fieldDescription checkboxFieldDescription">${RequireHttpsHelp}</div>
+                <div class="selectContainer fldHttpsMode hide">
+                    <select is="emby-select" id="selectHttpsMode" label="${LabelSecureConnectionsMode}">
+                        <option value="disabled">${Disabled}</option>
+                        <option value="enabled">${PreferredNotRequired}</option>
+                        <option value="required">${RequiredForAllRemoteConnections}</option>
+                        <option value="proxy">${HandledByProxy}</option>
+                    </select>
                 </div>
-                <div class="checkboxContainer checkboxContainer-withDescription">
+
+                <div class="checkboxContainer checkboxContainer-withDescription fldEnableUpnp hide">
                     <label>
                         <input type="checkbox" is="emby-checkbox" id="chkEnableUpnp" />
                         <span>${LabelEnableAutomaticPortMap}</span>

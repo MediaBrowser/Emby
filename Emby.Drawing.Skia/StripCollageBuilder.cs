@@ -83,7 +83,6 @@ namespace Emby.Drawing.Skia
 
                 for (int i = 0; i < 4; i++)
                 {
-                    SKCodecOrigin origin;
                     int newIndex;
 
                     using (var currentBitmap = GetNextValidImage(paths, imageIndex, out newIndex))
@@ -108,7 +107,12 @@ namespace Emby.Drawing.Skia
                                 using (var subset = image.Subset(SKRectI.Create(ix, 0, iSlice, iHeight)))
                                 {
                                     // draw image onto canvas
-                                    canvas.DrawImage(subset, (horizontalImagePadding * (i + 1)) + (iSlice * i), verticalSpacing);
+                                    canvas.DrawImage(subset ?? image, (horizontalImagePadding * (i + 1)) + (iSlice * i), verticalSpacing);
+
+                                    if (subset == null)
+                                    {
+                                        continue;
+                                    }
 
                                     using (var croppedBitmap = SKBitmap.FromImage(subset))
                                     {

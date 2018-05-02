@@ -293,19 +293,6 @@ namespace Emby.Server.Implementations.Images
             return true;
         }
 
-        protected List<BaseItem> GetFinalItems(IEnumerable<BaseItem> items)
-        {
-            return GetFinalItems(items, 4);
-        }
-
-        protected virtual List<BaseItem> GetFinalItems(IEnumerable<BaseItem> items, int limit)
-        {
-            return items
-                .OrderBy(i => Guid.NewGuid())
-                .Take(limit)
-                .ToList();
-        }
-
         public int Order
         {
             get

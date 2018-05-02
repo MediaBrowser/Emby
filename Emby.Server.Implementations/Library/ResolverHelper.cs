@@ -129,7 +129,7 @@ namespace Emby.Server.Implementations.Library
             }
 
             // See if a different path came out of the resolver than what went in
-            if (!string.Equals(args.Path, item.Path, StringComparison.OrdinalIgnoreCase))
+            if (!fileSystem.AreEqual(args.Path, item.Path))
             {
                 var childData = args.IsDirectory ? args.GetFileSystemEntryByPath(item.Path) : null;
 

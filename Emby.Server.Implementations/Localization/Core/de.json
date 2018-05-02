@@ -1,4 +1,5 @@
 {
+    "HeaderCameraUploads": "Kamera Uploads",
     "Latest": "Neueste",
     "ValueSpecialEpisodeName": "Special - {0}",
     "Inherit": "\u00dcbernehmen",
@@ -24,7 +25,7 @@
     "Channels": "Kan\u00e4le",
     "Movies": "Filme",
     "Albums": "Alben",
-    "NameSeasonUnknown": "Season Unknown",
+    "NameSeasonUnknown": "Staffel unbekannt",
     "Artists": "Interpreten",
     "Folders": "Verzeichnisse",
     "Songs": "Songs",
@@ -54,7 +55,7 @@
     "UserCreatedWithName": "Benutzer {0} wurde erstellt",
     "UserPasswordChangedWithName": "Das Passwort f\u00fcr Benutzer {0} wurde ge\u00e4ndert",
     "UserDeletedWithName": "Benutzer {0} wurde gel\u00f6scht",
-    "UserPolicyUpdatedWithName": "User policy has been updated for {0}",
+    "UserPolicyUpdatedWithName": "Benutzerrichtlinie wurde f\u00fcr {0} aktualisiert",
     "MessageServerConfigurationUpdated": "Server Einstellungen wurden aktualisiert",
     "MessageNamedServerConfigurationUpdatedWithValue": "Der Server Einstellungsbereich {0} wurde aktualisiert",
     "MessageApplicationUpdated": "Emby Server wurde auf den neusten Stand gebracht.",

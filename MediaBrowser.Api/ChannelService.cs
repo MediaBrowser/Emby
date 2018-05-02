@@ -208,9 +208,9 @@ namespace MediaBrowser.Api
             return ToOptimizedResult(result);
         }
 
-        public async Task<object> Get(GetChannels request)
+        public object Get(GetChannels request)
         {
-            var result = await _channelManager.GetChannels(new ChannelQuery
+            var result = _channelManager.GetChannels(new ChannelQuery
             {
                 Limit = request.Limit,
                 StartIndex = request.StartIndex,
@@ -218,8 +218,7 @@ namespace MediaBrowser.Api
                 SupportsLatestItems = request.SupportsLatestItems,
                 SupportsMediaDeletion = request.SupportsMediaDeletion,
                 IsFavorite = request.IsFavorite
-
-            }, CancellationToken.None).ConfigureAwait(false);
+            });
 
             return ToOptimizedResult(result);
         }
@@ -234,7 +233,7 @@ namespace MediaBrowser.Api
             {
                 Limit = request.Limit,
                 StartIndex = request.StartIndex,
-                ChannelIds = new string[] { request.Id },
+                ChannelIds = new Guid[] { new Guid(request.Id) },
                 ParentId = string.IsNullOrWhiteSpace(request.FolderId) ? (Guid?)null : new Guid(request.FolderId),
                 OrderBy = request.GetOrderBy(),
                 DtoOptions = new Controller.Dto.DtoOptions
@@ -293,7 +292,7 @@ namespace MediaBrowser.Api
             {
                 Limit = request.Limit,
                 StartIndex = request.StartIndex,
-                ChannelIds = (request.ChannelIds ?? string.Empty).Split(',').Where(i => !string.IsNullOrWhiteSpace(i)).ToArray(),
+                ChannelIds = (request.ChannelIds ?? string.Empty).Split(',').Where(i => !string.IsNullOrWhiteSpace(i)).Select(i => new Guid(i)).ToArray(),
                 DtoOptions = new Controller.Dto.DtoOptions
                 {
                     Fields = request.GetItemFields()

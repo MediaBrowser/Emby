@@ -285,7 +285,7 @@ namespace Emby.Server.Implementations.Session
             }
         }
 
-        private Task<MediaSourceInfo> GetMediaSource(IHasMediaSources item, string mediaSourceId, string liveStreamId)
+        private Task<MediaSourceInfo> GetMediaSource(BaseItem item, string mediaSourceId, string liveStreamId)
         {
             return _mediaSourceManager.GetMediaSource(item, mediaSourceId, liveStreamId, false, CancellationToken.None);
         }
@@ -312,7 +312,7 @@ namespace Emby.Server.Implementations.Session
                     var hasMediaSources = libraryItem as IHasMediaSources;
                     if (hasMediaSources != null)
                     {
-                        mediaSource = await GetMediaSource(hasMediaSources, info.MediaSourceId, info.LiveStreamId).ConfigureAwait(false);
+                        mediaSource = await GetMediaSource(libraryItem, info.MediaSourceId, info.LiveStreamId).ConfigureAwait(false);
 
                         if (mediaSource != null)
                         {
@@ -607,7 +607,8 @@ namespace Emby.Server.Implementations.Session
                 MediaInfo = info.Item,
                 DeviceName = session.DeviceName,
                 ClientName = session.AppName,
-                DeviceId = session.DeviceId
+                DeviceId = session.DeviceId,
+                Session = session
 
             }, _logger);
 
@@ -689,7 +690,8 @@ namespace Emby.Server.Implementations.Session
                 DeviceId = session.DeviceId,
                 IsPaused = info.IsPaused,
                 PlaySessionId = info.PlaySessionId,
-                IsAutomated = isAutomated
+                IsAutomated = isAutomated,
+                Session = session
 
             }, _logger);
 
@@ -784,7 +786,7 @@ namespace Emby.Server.Implementations.Session
                     var hasMediaSources = libraryItem as IHasMediaSources;
                     if (hasMediaSources != null)
                     {
-                        mediaSource = await GetMediaSource(hasMediaSources, info.MediaSourceId, info.LiveStreamId).ConfigureAwait(false);
+                        mediaSource = await GetMediaSource(libraryItem, info.MediaSourceId, info.LiveStreamId).ConfigureAwait(false);
                     }
 
                     info.Item = GetItemInfo(libraryItem, mediaSource);
@@ -841,7 +843,8 @@ namespace Emby.Server.Implementations.Session
                 MediaInfo = info.Item,
                 DeviceName = session.DeviceName,
                 ClientName = session.AppName,
-                DeviceId = session.DeviceId
+                DeviceId = session.DeviceId,
+                Session = session
 
             }, _logger);
         }
@@ -943,10 +946,11 @@ namespace Emby.Server.Implementations.Session
         private async Task SendMessageToSession<T>(SessionInfo session, string name, T data, CancellationToken cancellationToken)
         {
             var controllers = session.SessionControllers.ToArray();
+            var messageId = Guid.NewGuid().ToString("N");
 
             foreach (var controller in controllers)
             {
-                await controller.SendMessage(name, data, cancellationToken).ConfigureAwait(false);
+                await controller.SendMessage(name, messageId, data, controllers, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -1332,11 +1336,7 @@ namespace Emby.Server.Implementations.Session
 
             if (user != null)
             {
-                if (!user.IsParentalScheduleAllowed())
-                {
-                    throw new SecurityException("User is not allowed access at this time.");
-                }
-
+                // TODO: Move this to userManager?
                 if (!string.IsNullOrEmpty(request.DeviceId))
                 {
                     if (!_deviceManager.CanAccessDevice(user, request.DeviceId))
@@ -1379,7 +1379,6 @@ namespace Emby.Server.Implementations.Session
                 ServerId = _appHost.SystemId
             };
         }
-
 
         private string GetAuthorizationToken(string userId, string deviceId, string app, string appVersion, string deviceName)
         {
@@ -1506,13 +1505,13 @@ namespace Emby.Server.Implementations.Session
             {
                 EnsureHttpController(session, capabilities.MessageCallbackUrl);
             }
-            //if (!string.IsNullOrEmpty(capabilities.PushToken))
-            //{
-            //    if (string.Equals(capabilities.PushTokenType, "firebase", StringComparison.OrdinalIgnoreCase) && FirebaseSessionController.IsSupported(_appHost))
-            //    {
-            //        EnsureFirebaseController(session, capabilities.PushToken);
-            //    }
-            //}
+            if (!string.IsNullOrEmpty(capabilities.PushToken))
+            {
+                if (string.Equals(capabilities.PushTokenType, "firebase", StringComparison.OrdinalIgnoreCase) && FirebaseSessionController.IsSupported(_appHost))
+                {
+                    EnsureFirebaseController(session, capabilities.PushToken);
+                }
+            }
 
             if (saveCapabilities)
             {

@@ -99,34 +99,26 @@ namespace MediaBrowser.Api
 
         public object Get(GetNotificationTypes request)
         {
-            var result = _notificationManager.GetNotificationTypes();
-
-            return ToOptimizedResult(result);
+            return _notificationManager.GetNotificationTypes();
         }
 
         public object Get(GetNotificationServices request)
         {
-            var result = _notificationManager.GetNotificationServices().ToList();
-
-            return ToOptimizedResult(result);
+            return _notificationManager.GetNotificationServices().ToList();
         }
 
         public object Get(GetNotificationsSummary request)
         {
-            var result = _notificationsRepo.GetNotificationsSummary(request.UserId);
-
-            return ToOptimizedResult(result);
+            return _notificationsRepo.GetNotificationsSummary(request.UserId);
         }
 
-        public void Post(AddAdminNotification request)
+        public Task Post(AddAdminNotification request)
         {
             // This endpoint really just exists as post of a real with sickbeard
-            var task = AddNotification(request);
-
-            Task.WaitAll(task);
+            return AddNotification(request);
         }
 
-        private async Task AddNotification(AddAdminNotification request)
+        private Task AddNotification(AddAdminNotification request)
         {
             var notification = new NotificationRequest
             {
@@ -138,21 +130,17 @@ namespace MediaBrowser.Api
                 UserIds = _userManager.Users.Where(i => i.Policy.IsAdministrator).Select(i => i.Id.ToString("N")).ToList()
             };
 
-            await _notificationManager.SendNotification(notification, CancellationToken.None).ConfigureAwait(false);
+            return _notificationManager.SendNotification(notification, CancellationToken.None);
         }
 
-        public void Post(MarkRead request)
+        public Task Post(MarkRead request)
         {
-            var task = MarkRead(request.Ids, request.UserId, true);
-
-            Task.WaitAll(task);
+            return MarkRead(request.Ids, request.UserId, true);
         }
 
-        public void Post(MarkUnread request)
+        public Task Post(MarkUnread request)
         {
-            var task = MarkRead(request.Ids, request.UserId, false);
-
-            Task.WaitAll(task);
+            return MarkRead(request.Ids, request.UserId, false);
         }
 
         private Task MarkRead(string idList, string userId, bool read)

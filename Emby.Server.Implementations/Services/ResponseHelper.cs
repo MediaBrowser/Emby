@@ -46,18 +46,6 @@ namespace Emby.Server.Implementations.Services
                 //    httpResult.ContentType = defaultContentType;
                 //}
                 //response.ContentType = httpResult.ContentType;
-
-                if (httpResult.Cookies != null)
-                {
-                    var httpRes = response as IHttpResponse;
-                    if (httpRes != null)
-                    {
-                        foreach (var cookie in httpResult.Cookies)
-                        {
-                            httpRes.SetCookie(cookie);
-                        }
-                    }
-                }
             }
 
             var responseOptions = result as IHasHeaders;

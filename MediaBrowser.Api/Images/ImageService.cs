@@ -373,11 +373,7 @@ namespace MediaBrowser.Api.Images
         /// <returns>System.Object.</returns>
         public object Get(GetItemImage request)
         {
-            var item = string.IsNullOrEmpty(request.Id) ?
-                _libraryManager.RootFolder :
-                _libraryManager.GetItemById(request.Id);
-
-            return GetImage(request, item, false);
+            return GetImage(request, request.Id, null, false);
         }
 
         /// <summary>
@@ -387,11 +383,7 @@ namespace MediaBrowser.Api.Images
         /// <returns>System.Object.</returns>
         public object Head(GetItemImage request)
         {
-            var item = string.IsNullOrEmpty(request.Id) ?
-                _libraryManager.RootFolder :
-                _libraryManager.GetItemById(request.Id);
-
-            return GetImage(request, item, true);
+            return GetImage(request, request.Id, null, true);
         }
 
         /// <summary>
@@ -403,14 +395,14 @@ namespace MediaBrowser.Api.Images
         {
             var item = _userManager.GetUserById(request.Id);
 
-            return GetImage(request, item, false);
+            return GetImage(request, null, item, false);
         }
 
         public object Head(GetUserImage request)
         {
             var item = _userManager.GetUserById(request.Id);
 
-            return GetImage(request, item, true);
+            return GetImage(request, null, item, true);
         }
 
         public object Get(GetItemByNameImage request)
@@ -419,7 +411,7 @@ namespace MediaBrowser.Api.Images
 
             var item = GetItemByName(request.Name, type, _libraryManager, new DtoOptions(false));
 
-            return GetImage(request, item, false);
+            return GetImage(request, item.Id.ToString("N"), item, false);
         }
 
         public object Head(GetItemByNameImage request)
@@ -428,14 +420,14 @@ namespace MediaBrowser.Api.Images
 
             var item = GetItemByName(request.Name, type, _libraryManager, new DtoOptions(false));
 
-            return GetImage(request, item, true);
+            return GetImage(request, item.Id.ToString("N"), item, true);
         }
 
         /// <summary>
         /// Posts the specified request.
         /// </summary>
         /// <param name="request">The request.</param>
-        public void Post(PostUserImage request)
+        public Task Post(PostUserImage request)
         {
             var userId = GetPathValue(1);
             AssertCanUpdateUser(_authContext, _userManager, userId, true);
@@ -444,16 +436,14 @@ namespace MediaBrowser.Api.Images
 
             var item = _userManager.GetUserById(userId);
 
-            var task = PostImage(item, request.RequestStream, request.Type, Request.ContentType);
-
-            Task.WaitAll(task);
+            return PostImage(item, request.RequestStream, request.Type, Request.ContentType);
         }
 
         /// <summary>
         /// Posts the specified request.
         /// </summary>
         /// <param name="request">The request.</param>
-        public void Post(PostItemImage request)
+        public Task Post(PostItemImage request)
         {
             var id = GetPathValue(1);
 
@@ -461,9 +451,7 @@ namespace MediaBrowser.Api.Images
 
             var item = _libraryManager.GetItemById(id);
 
-            var task = PostImage(item, request.RequestStream, request.Type, Request.ContentType);
-
-            Task.WaitAll(task);
+            return PostImage(item, request.RequestStream, request.Type, Request.ContentType);
         }
 
         /// <summary>
@@ -523,7 +511,7 @@ namespace MediaBrowser.Api.Images
         /// <param name="isHeadRequest">if set to <c>true</c> [is head request].</param>
         /// <returns>System.Object.</returns>
         /// <exception cref="ResourceNotFoundException"></exception>
-        public Task<object> GetImage(ImageRequest request, BaseItem item, bool isHeadRequest)
+        public Task<object> GetImage(ImageRequest request, string itemId, BaseItem item, bool isHeadRequest)
         {
             if (request.PercentPlayed.HasValue)
             {
@@ -549,14 +537,34 @@ namespace MediaBrowser.Api.Images
                 }
             }
 
+            if (item == null)
+            {
+                item = _libraryManager.GetItemById(itemId);
+            }
+
             var imageInfo = GetImageInfo(request, item);
 
             if (imageInfo == null)
             {
-                throw new ResourceNotFoundException(string.Format("{0} does not have an image of type {1}", item.Name, request.Type));
+                var displayText = item == null ? itemId : item.Name;
+                throw new ResourceNotFoundException(string.Format("{0} does not have an image of type {1}", displayText, request.Type));
             }
 
-            var supportedImageEnhancers = request.EnableImageEnhancers ? _imageProcessor.GetSupportedEnhancers(item, request.Type) : new List<IImageEnhancer>();
+            IImageEnhancer[] supportedImageEnhancers;
+
+            if (_imageProcessor.ImageEnhancers.Length > 0)
+            {
+                if (item == null)
+                {
+                    item = _libraryManager.GetItemById(itemId);
+                }
+
+                supportedImageEnhancers = request.EnableImageEnhancers ? _imageProcessor.GetSupportedEnhancers(item, request.Type) : Array.Empty<IImageEnhancer>();
+            }
+            else
+            {
+                supportedImageEnhancers = Array.Empty<IImageEnhancer>();
+            }
 
             var cropwhitespace = request.Type == ImageType.Logo ||
                 request.Type == ImageType.Art;
@@ -582,6 +590,7 @@ namespace MediaBrowser.Api.Images
             };
 
             return GetImageResult(item,
+                itemId,
                 request,
                 imageInfo,
                 cropwhitespace,
@@ -593,11 +602,12 @@ namespace MediaBrowser.Api.Images
         }
 
         private async Task<object> GetImageResult(BaseItem item,
+            string itemId,
             ImageRequest request,
             ItemImageInfo image,
             bool cropwhitespace,
             ImageFormat[] supportedFormats,
-            List<IImageEnhancer> enhancers,
+            IImageEnhancer[] enhancers,
             TimeSpan? cacheDuration,
             IDictionary<string, string> headers,
             bool isHeadRequest)
@@ -610,8 +620,7 @@ namespace MediaBrowser.Api.Images
                 ImageIndex = request.Index ?? 0,
                 Image = image,
                 Item = item,
-                ItemId = item.Id.ToString("N"),
-                ItemType = item.GetType().Name,
+                ItemId = itemId,
                 MaxHeight = request.MaxHeight,
                 MaxWidth = request.MaxWidth,
                 Quality = request.Quality ?? 100,
@@ -659,21 +668,15 @@ namespace MediaBrowser.Api.Images
 
         private ImageFormat[] GetClientSupportedFormats()
         {
-            //Logger.Debug("Request types: {0}", string.Join(",", Request.AcceptTypes ?? new string[] { }));
-            var supportsWebP = (Request.AcceptTypes ?? new string[] { }).Contains("image/webp", StringComparer.OrdinalIgnoreCase);
+            //Logger.Debug("Request types: {0}", string.Join(",", Request.AcceptTypes ?? Array.Empty<string>()));
+            var supportedFormats = (Request.AcceptTypes ?? Array.Empty<string>()).Select(i => i.Split(';')[0]).ToArray();
+            var acceptParam = Request.QueryString["accept"];
 
-            var userAgent = Request.UserAgent ?? string.Empty;
-
-            if (!supportsWebP)
-            {
-                if (string.Equals(Request.QueryString["accept"], "webp", StringComparison.OrdinalIgnoreCase))
-                {
-                    supportsWebP = true;
-                }
-            }
+            var supportsWebP = SupportsFormat(supportedFormats, acceptParam, "webp", false);
 
             if (!supportsWebP)
             {
+                var userAgent = Request.UserAgent ?? string.Empty;
                 if (userAgent.IndexOf("crosswalk", StringComparison.OrdinalIgnoreCase) != -1 &&
                     userAgent.IndexOf("android", StringComparison.OrdinalIgnoreCase) != -1)
                 {
@@ -681,16 +684,39 @@ namespace MediaBrowser.Api.Images
                 }
             }
 
+            var formats = new List<ImageFormat>(4);
+
             if (supportsWebP)
             {
-                // Not displaying properly on iOS
-                if (userAgent.IndexOf("cfnetwork", StringComparison.OrdinalIgnoreCase) == -1)
-                {
-                    return new[] { ImageFormat.Webp, ImageFormat.Jpg, ImageFormat.Png };
-                }
+                formats.Add(ImageFormat.Webp);
             }
 
-            return new[] { ImageFormat.Jpg, ImageFormat.Png };
+            formats.Add(ImageFormat.Jpg);
+            formats.Add(ImageFormat.Png);
+
+            if (SupportsFormat(supportedFormats, acceptParam, "gif", true))
+            {
+                formats.Add(ImageFormat.Gif);
+            }
+
+            return formats.ToArray();
+        }
+
+        private bool SupportsFormat(string[] requestAcceptTypes, string acceptParam, string format, bool acceptAll)
+        {
+            var mimeType = "image/" + format;
+
+            if (requestAcceptTypes.Contains(mimeType))
+            {
+                return true;
+            }
+
+            if (acceptAll && requestAcceptTypes.Contains("*/*"))
+            {
+                return true;
+            }
+
+            return string.Equals(Request.QueryString["accept"], format, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>

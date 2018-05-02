@@ -18,6 +18,7 @@ using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.System;
 using System.IO;
+using MediaBrowser.Controller.Library;
 
 namespace Emby.Server.Implementations.LiveTv.TunerHosts
 {
@@ -27,13 +28,15 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
         private readonly IServerApplicationHost _appHost;
         private readonly IEnvironmentInfo _environment;
         private readonly INetworkManager _networkManager;
+        private readonly IMediaSourceManager _mediaSourceManager;
 
-        public M3UTunerHost(IServerConfigurationManager config, ILogger logger, IJsonSerializer jsonSerializer, IMediaEncoder mediaEncoder, IFileSystem fileSystem, IHttpClient httpClient, IServerApplicationHost appHost, IEnvironmentInfo environment, INetworkManager networkManager) : base(config, logger, jsonSerializer, mediaEncoder, fileSystem)
+        public M3UTunerHost(IServerConfigurationManager config, IMediaSourceManager mediaSourceManager, ILogger logger, IJsonSerializer jsonSerializer, IMediaEncoder mediaEncoder, IFileSystem fileSystem, IHttpClient httpClient, IServerApplicationHost appHost, IEnvironmentInfo environment, INetworkManager networkManager) : base(config, logger, jsonSerializer, mediaEncoder, fileSystem)
         {
             _httpClient = httpClient;
             _appHost = appHost;
             _environment = environment;
             _networkManager = networkManager;
+            _mediaSourceManager = mediaSourceManager;
         }
 
         public override string Type
@@ -131,27 +134,11 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
         protected virtual MediaSourceInfo CreateMediaSourceInfo(TunerHostInfo info, ChannelInfo channel)
         {
             var path = channel.Path;
-            MediaProtocol protocol = MediaProtocol.File;
-            if (path.StartsWith("http", StringComparison.OrdinalIgnoreCase))
-            {
-                protocol = MediaProtocol.Http;
-            }
-            else if (path.StartsWith("rtmp", StringComparison.OrdinalIgnoreCase))
-            {
-                protocol = MediaProtocol.Rtmp;
-            }
-            else if (path.StartsWith("rtsp", StringComparison.OrdinalIgnoreCase))
-            {
-                protocol = MediaProtocol.Rtsp;
-            }
-            else if (path.StartsWith("udp", StringComparison.OrdinalIgnoreCase))
-            {
-                protocol = MediaProtocol.Udp;
-            }
-            else if (path.StartsWith("rtp", StringComparison.OrdinalIgnoreCase))
-            {
-                protocol = MediaProtocol.Rtmp;
-            }
+
+            var supportsDirectPlay = !info.EnableStreamLooping && info.TunerCount == 0;
+            var supportsDirectStream = !info.EnableStreamLooping;
+
+            var protocol = _mediaSourceManager.GetPathProtocol(path);
 
             Uri uri;
             var isRemote = true;
@@ -159,8 +146,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             {
                 isRemote = !_networkManager.IsInLocalNetwork(uri.Host);
             }
-
-            var supportsDirectPlay = !info.EnableStreamLooping && info.TunerCount == 0;
 
             var httpHeaders = new Dictionary<string, string>();
 
@@ -204,6 +189,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
                 IgnoreDts = true,
                 SupportsDirectPlay = supportsDirectPlay,
+                SupportsDirectStream = supportsDirectStream,
 
                 RequiredHttpHeaders = httpHeaders
             };

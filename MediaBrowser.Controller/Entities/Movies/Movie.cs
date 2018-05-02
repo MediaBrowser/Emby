@@ -23,10 +23,10 @@ namespace MediaBrowser.Controller.Entities.Movies
 
         public Movie()
         {
-            SpecialFeatureIds = EmptyGuidArray;
+            SpecialFeatureIds = new Guid[] {};
             RemoteTrailers = EmptyMediaUrlArray;
-            LocalTrailerIds = EmptyGuidArray;
-            RemoteTrailerIds = EmptyGuidArray;
+            LocalTrailerIds = new Guid[] {};
+            RemoteTrailerIds = new Guid[] {};
         }
 
         public Guid[] LocalTrailerIds { get; set; }
@@ -67,7 +67,7 @@ namespace MediaBrowser.Controller.Entities.Movies
 
             // Must have a parent to have special features
             // In other words, it must be part of the Parent/Child tree
-            if (IsFileProtocol && GetParent() != null && !IsInMixedFolder)
+            if (IsFileProtocol && SupportsOwnedItems && !IsInMixedFolder)
             {
                 var specialFeaturesChanged = await RefreshSpecialFeatures(options, fileSystemChildren, cancellationToken).ConfigureAwait(false);
 
@@ -137,9 +137,9 @@ namespace MediaBrowser.Controller.Entities.Movies
             return info;
         }
 
-        public override bool BeforeMetadataRefresh()
+        public override bool BeforeMetadataRefresh(bool replaceAllMetdata)
         {
-            var hasChanges = base.BeforeMetadataRefresh();
+            var hasChanges = base.BeforeMetadataRefresh(replaceAllMetdata);
 
             if (!ProductionYear.HasValue)
             {

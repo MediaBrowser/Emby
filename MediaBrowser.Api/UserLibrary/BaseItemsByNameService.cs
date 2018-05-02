@@ -59,7 +59,7 @@ namespace MediaBrowser.Api.UserLibrary
             if (!string.IsNullOrWhiteSpace(request.UserId))
             {
                 var user = UserManager.GetUserById(request.UserId);
-                parentItem = string.IsNullOrEmpty(request.ParentId) ? user.RootFolder : LibraryManager.GetItemById(request.ParentId);
+                parentItem = string.IsNullOrEmpty(request.ParentId) ? LibraryManager.GetUserRootFolder() : LibraryManager.GetItemById(request.ParentId);
             }
             else
             {
@@ -98,7 +98,7 @@ namespace MediaBrowser.Api.UserLibrary
             if (!string.IsNullOrWhiteSpace(request.UserId))
             {
                 user = UserManager.GetUserById(request.UserId);
-                parentItem = string.IsNullOrEmpty(request.ParentId) ? user.RootFolder : LibraryManager.GetItemById(request.ParentId);
+                parentItem = string.IsNullOrEmpty(request.ParentId) ? LibraryManager.GetUserRootFolder() : LibraryManager.GetItemById(request.ParentId);
             }
             else
             {
@@ -123,10 +123,10 @@ namespace MediaBrowser.Api.UserLibrary
                 Tags = request.GetTags(),
                 OfficialRatings = request.GetOfficialRatings(),
                 Genres = request.GetGenres(),
-                GenreIds = request.GetGenreIds(),
-                StudioIds = request.GetStudioIds(),
+                GenreIds = GetGuids(request.GenreIds),
+                StudioIds = GetGuids(request.StudioIds),
                 Person = request.Person,
-                PersonIds = request.GetPersonIds(),
+                PersonIds = GetGuids(request.PersonIds),
                 PersonTypes = request.GetPersonTypes(),
                 Years = request.GetYears(),
                 MinCommunityRating = request.MinCommunityRating,
@@ -137,11 +137,11 @@ namespace MediaBrowser.Api.UserLibrary
             {
                 if (parentItem is Folder)
                 {
-                    query.AncestorIds = new[] { request.ParentId };
+                    query.AncestorIds = new[] { new Guid(request.ParentId) };
                 }
                 else
                 {
-                    query.ItemIds = new[] { request.ParentId };
+                    query.ItemIds = new[] { new Guid(request.ParentId) };
                 }
             }
 
@@ -158,7 +158,7 @@ namespace MediaBrowser.Api.UserLibrary
                     {
                         return null;
                     }
-                }).Where(i => i != null).Select(i => i.Id.ToString("N")).ToArray();
+                }).Where(i => i != null).Select(i => i.Id).ToArray();
             }
 
             foreach (var filter in request.GetFilters())
@@ -197,10 +197,9 @@ namespace MediaBrowser.Api.UserLibrary
 
             var result = GetItems(request, query);
 
-            var syncProgess = DtoService.GetSyncedItemProgress(dtoOptions);
             var dtos = result.Items.Select(i =>
             {
-                var dto = DtoService.GetItemByNameDto(i.Item1, dtoOptions, null, syncProgess, user);
+                var dto = DtoService.GetItemByNameDto(i.Item1, dtoOptions, null, user);
 
                 if (!string.IsNullOrWhiteSpace(request.IncludeItemTypes))
                 {
@@ -250,7 +249,7 @@ namespace MediaBrowser.Api.UserLibrary
             if (!string.IsNullOrWhiteSpace(request.UserId))
             {
                 user = UserManager.GetUserById(request.UserId);
-                parentItem = string.IsNullOrEmpty(request.ParentId) ? user.RootFolder : LibraryManager.GetItemById(request.ParentId);
+                parentItem = string.IsNullOrEmpty(request.ParentId) ? LibraryManager.GetUserRootFolder() : LibraryManager.GetItemById(request.ParentId);
             }
             else
             {
@@ -326,8 +325,7 @@ namespace MediaBrowser.Api.UserLibrary
 
             var tuples = ibnItems.Select(i => new Tuple<BaseItem, List<BaseItem>>(i, new List<BaseItem>()));
 
-            var syncProgess = DtoService.GetSyncedItemProgress(dtoOptions);
-            var dtos = tuples.Select(i => DtoService.GetItemByNameDto(i.Item1, dtoOptions, i.Item2, syncProgess, user));
+            var dtos = tuples.Select(i => DtoService.GetItemByNameDto(i.Item1, dtoOptions, i.Item2, user));
 
             result.Items = dtos.Where(i => i != null).ToArray();
 

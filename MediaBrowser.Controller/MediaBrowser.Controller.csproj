@@ -40,6 +40,7 @@
     <Compile Include="..\SharedVersion.cs">
       <Link>Properties\SharedVersion.cs</Link>
     </Compile>
+    <Compile Include="Authentication\IAuthenticationProvider.cs" />
     <Compile Include="Channels\ChannelItemInfo.cs" />
     <Compile Include="Channels\ChannelItemResult.cs" />
     <Compile Include="Channels\ChannelItemType.cs" />
@@ -58,8 +59,6 @@
     <Compile Include="Collections\CollectionCreationOptions.cs" />
     <Compile Include="Collections\CollectionEvents.cs" />
     <Compile Include="Collections\ICollectionManager.cs" />
-    <Compile Include="Collections\ManualCollectionsFolder.cs" />
-    <Compile Include="Connect\ConnectSupporterSummary.cs" />
     <Compile Include="Connect\IConnectManager.cs" />
     <Compile Include="Connect\UserLinkResult.cs" />
     <Compile Include="Devices\CameraImageUploadInfo.cs" />
@@ -104,7 +103,6 @@
     <Compile Include="Entities\IHasSpecialFeatures.cs" />
     <Compile Include="Entities\IHasStartDate.cs" />
     <Compile Include="Entities\IHasTrailers.cs" />
-    <Compile Include="Entities\IHiddenFromDisplay.cs" />
     <Compile Include="Entities\IItemByName.cs" />
     <Compile Include="Entities\IMetadataContainer.cs" />
     <Compile Include="Entities\InternalItemsQuery.cs" />
@@ -143,10 +141,7 @@
     <Compile Include="Library\UserDataSaveEventArgs.cs" />
     <Compile Include="LiveTv\IListingsProvider.cs" />
     <Compile Include="LiveTv\ITunerHost.cs" />
-    <Compile Include="LiveTv\RecordingGroup.cs" />
     <Compile Include="LiveTv\RecordingStatusChangedEventArgs.cs" />
-    <Compile Include="LiveTv\ILiveTvRecording.cs" />
-    <Compile Include="LiveTv\LiveTvAudioRecording.cs" />
     <Compile Include="LiveTv\LiveTvChannel.cs" />
     <Compile Include="LiveTv\ChannelInfo.cs" />
     <Compile Include="LiveTv\ILiveTvManager.cs" />
@@ -156,7 +151,6 @@
     <Compile Include="LiveTv\LiveTvServiceStatusInfo.cs" />
     <Compile Include="LiveTv\LiveTvTunerInfo.cs" />
     <Compile Include="LiveTv\LiveTvProgram.cs" />
-    <Compile Include="LiveTv\LiveTvVideoRecording.cs" />
     <Compile Include="LiveTv\ProgramInfo.cs" />
     <Compile Include="LiveTv\RecordingInfo.cs" />
     <Compile Include="LiveTv\SeriesTimerInfo.cs" />
@@ -171,7 +165,6 @@
     <Compile Include="MediaEncoding\IMediaEncoder.cs" />
     <Compile Include="MediaEncoding\ISubtitleEncoder.cs" />
     <Compile Include="MediaEncoding\MediaInfoRequest.cs" />
-    <Compile Include="MediaEncoding\MediaStreamSelector.cs" />
     <Compile Include="Net\AuthenticatedAttribute.cs" />
     <Compile Include="Net\AuthorizationInfo.cs" />
     <Compile Include="Net\BasePeriodicWebSocketListener.cs" />
@@ -185,7 +178,6 @@
     <Compile Include="Net\IWebSocket.cs" />
     <Compile Include="Net\IWebSocketConnection.cs" />
     <Compile Include="Net\IWebSocketListener.cs" />
-    <Compile Include="Net\LoggedAttribute.cs" />
     <Compile Include="Net\SecurityException.cs" />
     <Compile Include="Net\StaticResultOptions.cs" />
     <Compile Include="Net\WebSocketConnectEventArgs.cs" />
@@ -233,7 +225,6 @@
     <Compile Include="Providers\IRemoteMetadataProvider.cs" />
     <Compile Include="Providers\IRemoteSearchProvider.cs" />
     <Compile Include="Providers\ItemInfo.cs" />
-    <Compile Include="Providers\LiveTvProgramLookupInfo.cs" />
     <Compile Include="Providers\LocalImageInfo.cs" />
     <Compile Include="Providers\MetadataRefreshMode.cs" />
     <Compile Include="Providers\MetadataResult.cs" />
@@ -266,7 +257,6 @@
     <Compile Include="Entities\Folder.cs" />
     <Compile Include="Entities\Genre.cs" />
     <Compile Include="Entities\ICollectionFolder.cs" />
-    <Compile Include="Entities\IVirtualFolderCreator.cs" />
     <Compile Include="Entities\Movies\BoxSet.cs" />
     <Compile Include="Entities\Movies\Movie.cs" />
     <Compile Include="Entities\Person.cs" />
@@ -323,11 +313,9 @@
     <Compile Include="Sync\IHasDynamicAccess.cs" />
     <Compile Include="Sync\IRemoteSyncProvider.cs" />
     <Compile Include="Sync\IServerSyncProvider.cs" />
-    <Compile Include="Sync\ISyncDataProvider.cs" />
     <Compile Include="Sync\ISyncManager.cs" />
     <Compile Include="Sync\ISyncProvider.cs" />
     <Compile Include="Sync\SyncedFileInfo.cs" />
-    <Compile Include="Sync\SyncedItemProgress.cs" />
     <Compile Include="TV\ITVSeriesManager.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -339,6 +327,9 @@
       <Project>{7EEEB4BB-F3E8-48FC-B4C5-70F0FFF8329B}</Project>
       <Name>MediaBrowser.Model</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="MediaEncoding\DroidSansFallback.ttf" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <PropertyGroup>

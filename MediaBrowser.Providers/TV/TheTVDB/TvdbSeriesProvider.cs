@@ -58,6 +58,7 @@ namespace MediaBrowser.Providers.TV
         private const string SeriesSearchUrl = TvdbBaseUrl + "api/GetSeries.php?seriesname={0}&language={1}";
         private const string SeriesGetZip = TvdbBaseUrl + "api/{0}/series/{1}/all/{2}.zip";
         private const string GetSeriesByImdbId = TvdbBaseUrl + "api/GetSeriesByRemoteID.php?imdbid={0}&language={1}";
+        private const string GetSeriesByZap2ItId = TvdbBaseUrl + "api/GetSeriesByRemoteID.php?zap2it={0}&language={1}";
 
         private string NormalizeLanguage(string language)
         {
@@ -149,6 +150,11 @@ namespace MediaBrowser.Providers.TV
                 series.SetProviderId(MetadataProviders.Imdb, id);
             }
 
+            if (seriesProviderIds.TryGetValue(MetadataProviders.Zap2It.ToString(), out id) && !string.IsNullOrEmpty(id))
+            {
+                series.SetProviderId(MetadataProviders.Zap2It, id);
+            }
+
             var seriesDataPath = GetSeriesDataPath(_config.ApplicationPaths, seriesProviderIds);
 
             var seriesXmlPath = GetSeriesXmlPath(seriesProviderIds, metadataLanguage);
@@ -237,7 +243,7 @@ namespace MediaBrowser.Providers.TV
                     DeleteXmlFiles(seriesDataPath);
 
                     // Copy to memory stream because we need a seekable stream
-                    using (var ms = _memoryStreamProvider.CreateNew())
+                    using (var ms = new MemoryStream())
                     {
                         await zipStream.CopyToAsync(ms).ConfigureAwait(false);
 
@@ -268,7 +274,15 @@ namespace MediaBrowser.Providers.TV
 
         private async Task<string> GetSeriesByRemoteId(string id, string idType, string language, CancellationToken cancellationToken)
         {
-            var url = string.Format(GetSeriesByImdbId, id, NormalizeLanguage(language));
+            String url;
+            if (string.Equals(idType, MetadataProviders.Zap2It.ToString(), StringComparison.OrdinalIgnoreCase))
+            {
+                url = string.Format(GetSeriesByZap2ItId, id, NormalizeLanguage(language));
+            }
+            else
+            {
+                url = string.Format(GetSeriesByImdbId, id, NormalizeLanguage(language));
+            }
 
             using (var response = await _httpClient.SendAsync(new HttpRequestOptions
             {
@@ -395,6 +409,15 @@ namespace MediaBrowser.Providers.TV
                     return true;
                 }
             }
+
+            if (seriesProviderIds.TryGetValue(MetadataProviders.Zap2It.ToString(), out id))
+            {
+                // This check should ideally never be necessary but we're seeing some cases of this and haven't tracked them down yet.
+                if (!string.IsNullOrWhiteSpace(id))
+                {
+                    return true;
+                }
+            }
             return false;
         }
 
@@ -435,6 +458,28 @@ namespace MediaBrowser.Providers.TV
                         catch (ArgumentNullException)
                         {
                             // Unable to determine tvdb id based on imdb id
+                            return null;
+                        }
+                    }
+
+                    return seriesDataPath;
+                }
+
+                if (seriesProviderIds.TryGetValue(MetadataProviders.Zap2It.ToString(), out seriesId) && !string.IsNullOrWhiteSpace(seriesId))
+                {
+                    var seriesDataPath = GetSeriesDataPath(_config.ApplicationPaths, seriesProviderIds);
+
+                    // Only download if not already there
+                    // The post-scan task will take care of updates so we don't need to re-download here
+                    if (!IsCacheValid(seriesDataPath, preferredMetadataLanguage))
+                    {
+                        try
+                        {
+                            await DownloadSeriesZip(seriesId, MetadataProviders.Zap2It.ToString(), seriesName, seriesYear, seriesDataPath, null, preferredMetadataLanguage, cancellationToken).ConfigureAwait(false);
+                        }
+                        catch (ArgumentNullException)
+                        {
+                            // Unable to determine tvdb id based on Zap2It id
                             return null;
                         }
                     }
@@ -1120,26 +1165,26 @@ namespace MediaBrowser.Providers.TV
                             }
 
                         case "Airs_DayOfWeek":
-                        {
-                            var val = reader.ReadElementContentAsString();
-
-                            if (!string.IsNullOrWhiteSpace(val))
                             {
-                                item.AirDays = TVUtils.GetAirDays(val);
+                                var val = reader.ReadElementContentAsString();
+
+                                if (!string.IsNullOrWhiteSpace(val))
+                                {
+                                    item.AirDays = TVUtils.GetAirDays(val);
+                                }
+                                break;
                             }
-                            break;
-                        }
 
                         case "Airs_Time":
-                        {
-                            var val = reader.ReadElementContentAsString();
-
-                            if (!string.IsNullOrWhiteSpace(val))
                             {
-                                item.AirTime = val;
+                                var val = reader.ReadElementContentAsString();
+
+                                if (!string.IsNullOrWhiteSpace(val))
+                                {
+                                    item.AirTime = val;
+                                }
+                                break;
                             }
-                            break;
-                        }
 
                         case "ContentRating":
                             {
@@ -1389,6 +1434,9 @@ namespace MediaBrowser.Providers.TV
             var absoluteNumber = -1;
             var lastUpdateString = string.Empty;
 
+            var dvdSeasonNumber = -1;
+            var dvdEpisodeNumber = -1.0;
+
             using (var streamReader = new StringReader(xml))
             {
                 // Use XmlReader for best performance
@@ -1421,6 +1469,40 @@ namespace MediaBrowser.Providers.TV
                                                 episodeNumber = num;
                                             }
                                         }
+                                        break;
+                                    }
+
+                                case "Combined_episodenumber":
+                                    {
+                                        var val = reader.ReadElementContentAsString();
+
+                                        if (!string.IsNullOrWhiteSpace(val))
+                                        {
+                                            float num;
+
+                                            if (float.TryParse(val, NumberStyles.Any, _usCulture, out num))
+                                            {
+                                                dvdEpisodeNumber = num;
+                                            }
+                                        }
+
+                                        break;
+                                    }
+
+                                case "Combined_season":
+                                    {
+                                        var val = reader.ReadElementContentAsString();
+
+                                        if (!string.IsNullOrWhiteSpace(val))
+                                        {
+                                            float num;
+
+                                            if (float.TryParse(val, NumberStyles.Any, _usCulture, out num))
+                                            {
+                                                dvdSeasonNumber = Convert.ToInt32(num);
+                                            }
+                                        }
+
                                         break;
                                     }
 
@@ -1513,6 +1595,27 @@ namespace MediaBrowser.Providers.TV
                     }
                 }
             }
+
+            if (dvdSeasonNumber != -1 && dvdEpisodeNumber != -1 && (dvdSeasonNumber != seasonNumber || dvdEpisodeNumber != episodeNumber))
+            {
+                file = Path.Combine(seriesDataPath, string.Format("episode-dvd-{0}-{1}.xml", dvdSeasonNumber, dvdEpisodeNumber));
+
+                // Only save the file if not already there, or if the episode has changed
+                if (hasEpisodeChanged || !_fileSystem.FileExists(file))
+                {
+                    using (var fileStream = _fileSystem.GetFileStream(file, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.None, true))
+                    {
+                        using (var writer = XmlWriter.Create(fileStream, new XmlWriterSettings
+                        {
+                            Encoding = Encoding.UTF8,
+                            Async = true
+                        }))
+                        {
+                            await writer.WriteRawAsync(xml).ConfigureAwait(false);
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -1532,6 +1635,13 @@ namespace MediaBrowser.Providers.TV
             }
 
             if (seriesProviderIds.TryGetValue(MetadataProviders.Imdb.ToString(), out seriesId) && !string.IsNullOrEmpty(seriesId))
+            {
+                var seriesDataPath = Path.Combine(GetSeriesDataPath(appPaths), seriesId);
+
+                return seriesDataPath;
+            }
+
+            if (seriesProviderIds.TryGetValue(MetadataProviders.Zap2It.ToString(), out seriesId) && !string.IsNullOrEmpty(seriesId))
             {
                 var seriesDataPath = Path.Combine(GetSeriesDataPath(appPaths), seriesId);
 

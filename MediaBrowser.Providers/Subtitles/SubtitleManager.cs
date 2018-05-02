@@ -20,6 +20,7 @@ using MediaBrowser.Common.Configuration;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Globalization;
+using MediaBrowser.Model.Configuration;
 
 namespace MediaBrowser.Providers.Subtitles
 {
@@ -29,7 +30,6 @@ namespace MediaBrowser.Providers.Subtitles
         private readonly ILogger _logger;
         private readonly IFileSystem _fileSystem;
         private readonly ILibraryMonitor _monitor;
-        private readonly ILibraryManager _libraryManager;
         private readonly IMediaSourceManager _mediaSourceManager;
         private readonly IServerConfigurationManager _config;
 
@@ -38,12 +38,11 @@ namespace MediaBrowser.Providers.Subtitles
 
         private ILocalizationManager _localization;
 
-        public SubtitleManager(ILogger logger, IFileSystem fileSystem, ILibraryMonitor monitor, ILibraryManager libraryManager, IMediaSourceManager mediaSourceManager, IServerConfigurationManager config, ILocalizationManager localizationManager)
+        public SubtitleManager(ILogger logger, IFileSystem fileSystem, ILibraryMonitor monitor, IMediaSourceManager mediaSourceManager, IServerConfigurationManager config, ILocalizationManager localizationManager)
         {
             _logger = logger;
             _fileSystem = fileSystem;
             _monitor = monitor;
-            _libraryManager = libraryManager;
             _mediaSourceManager = mediaSourceManager;
             _config = config;
             _localization = localizationManager;
@@ -62,19 +61,25 @@ namespace MediaBrowser.Providers.Subtitles
 
         public async Task<RemoteSubtitleInfo[]> SearchSubtitles(SubtitleSearchRequest request, CancellationToken cancellationToken)
         {
-            var cultures = _localization.GetCultures();
-            foreach (var culture in cultures)
+            if (request.Language != null)
             {
-                if (string.Equals(culture.ThreeLetterISOLanguageName, request.Language, StringComparison.OrdinalIgnoreCase))
+                var culture = _localization.FindLanguageInfo(request.Language);
+
+                if (culture != null)
                 {
                     request.TwoLetterISOLanguageName = culture.TwoLetterISOLanguageName;
-                    break;
                 }
             }
 
             var contentType = request.ContentType;
             var providers = _subtitleProviders
                 .Where(i => i.SupportedMediaTypes.Contains(contentType))
+                .Where(i => !request.DisabledSubtitleFetchers.Contains(i.Name, StringComparer.OrdinalIgnoreCase))
+                .OrderBy(i =>
+                {
+                    var index = request.SubtitleFetcherOrder.ToList().IndexOf(i.Name);
+                    return index == -1 ? int.MaxValue : index;
+                })
                 .ToArray();
 
             // If not searching all, search one at a time until something is found
@@ -129,14 +134,22 @@ namespace MediaBrowser.Providers.Subtitles
             return _config.GetConfiguration<SubtitleOptions>("subtitles");
         }
 
+        public Task DownloadSubtitles(Video video, string subtitleId, CancellationToken cancellationToken)
+        {
+            var libraryOptions = BaseItem.LibraryManager.GetLibraryOptions(video);
+
+            return DownloadSubtitles(video, libraryOptions, subtitleId, cancellationToken);
+        }
+
         public async Task DownloadSubtitles(Video video,
+            LibraryOptions libraryOptions,
             string subtitleId,
             CancellationToken cancellationToken)
         {
             var parts = subtitleId.Split(new[] { '_' }, 2);
             var provider = GetProvider(parts.First());
 
-            var saveInMediaFolder = video.IsSaveLocalMetadataEnabled();
+            var saveInMediaFolder = libraryOptions.SaveSubtitlesWithMedia;
 
             try
             {
@@ -296,12 +309,12 @@ namespace MediaBrowser.Providers.Subtitles
             return _subtitleProviders.First(i => string.Equals(id, GetProviderId(i.Name)));
         }
 
-        public Task DeleteSubtitles(string itemId, int index)
+        public Task DeleteSubtitles(BaseItem item, int index)
         {
             var stream = _mediaSourceManager.GetMediaStreams(new MediaStreamQuery
             {
                 Index = index,
-                ItemId = new Guid(itemId),
+                ItemId = item.Id,
                 Type = MediaStreamType.Subtitle
 
             }).First();
@@ -318,7 +331,7 @@ namespace MediaBrowser.Providers.Subtitles
                 _monitor.ReportFileSystemChangeComplete(path, false);
             }
 
-            return _libraryManager.GetItemById(itemId).RefreshMetadata(CancellationToken.None);
+            return item.RefreshMetadata(CancellationToken.None);
         }
 
         public Task<SubtitleResponse> GetRemoteSubtitles(string id, CancellationToken cancellationToken)
@@ -331,9 +344,8 @@ namespace MediaBrowser.Providers.Subtitles
             return provider.GetSubtitles(id, cancellationToken);
         }
 
-        public SubtitleProviderInfo[] GetProviders(string itemId)
+        public SubtitleProviderInfo[] GetSupportedProviders(BaseItem video)
         {
-            var video = _libraryManager.GetItemById(itemId) as Video;
             VideoContentType mediaType;
 
             if (video is Episode)

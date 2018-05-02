@@ -62,10 +62,10 @@
     <Compile Include="Net\ChunkedInputStream.cs" />
     <Compile Include="Net\ChunkStream.cs" />
     <Compile Include="Net\CookieHelper.cs" />
-    <Compile Include="Net\EndPointListener.cs" />
-    <Compile Include="Net\EndPointManager.cs" />
     <Compile Include="Net\EntitySendFormat.cs" />
     <Compile Include="Net\HttpConnection.cs" />
+    <Compile Include="Net\HttpEndPointListener.cs" />
+    <Compile Include="Net\HttpEndPointManager.cs" />
     <Compile Include="Net\HttpListener.cs" />
     <Compile Include="Net\HttpListenerBasicIdentity.cs" />
     <Compile Include="Net\HttpListenerContext.cs" />
@@ -96,7 +96,6 @@
     <Compile Include="WebSocket.cs" />
     <Compile Include="WebSocketException.cs" />
     <Compile Include="WebSocketFrame.cs" />
-    <Compile Include="WebSocketState.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MediaBrowser.Common\MediaBrowser.Common.csproj">

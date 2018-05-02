@@ -56,6 +56,11 @@ namespace Mono.Nat.Upnp
 
         internal UpnpNatDevice(IPAddress localAddress, UpnpDeviceInfo deviceInfo, IPEndPoint hostEndPoint, string serviceType, ILogger logger, IHttpClient httpClient)
         {
+            if (localAddress == null)
+            {
+                throw new ArgumentNullException("localAddress");
+            }
+
             this.LastSeen = DateTime.Now;
             this.localAddress = localAddress;
 
@@ -77,8 +82,6 @@ namespace Mono.Nat.Upnp
                 locationDetails = locationDetails.Substring(7);
 
                 this.hostEndPoint = hostEndPoint;
-
-                _logger.Debug("Parsed device as: {0}", this.hostEndPoint.ToString());
 
                 // The service description URL is the remainder of the "locationDetails" string. The bit that was originally after the ip
                 // and port information
@@ -141,7 +144,6 @@ namespace Mono.Nat.Upnp
                     }
                 }
 
-                _logger.Debug("{0}: Parsed services list", HostEndPoint);
                 XmlNamespaceManager ns = new XmlNamespaceManager(xmldoc.NameTable);
                 ns.AddNamespace("ns", "urn:schemas-upnp-org:device-1-0");
                 XmlNodeList nodes = xmldoc.SelectNodes("//*/ns:serviceList", ns);
@@ -154,30 +156,34 @@ namespace Mono.Nat.Upnp
                         //If the service is a WANIPConnection, then we have what we want
                         string type = service["serviceType"].InnerText;
                         _logger.Debug("{0}: Found service: {1}", HostEndPoint, type);
-                        StringComparison c = StringComparison.OrdinalIgnoreCase;
+
                         // TODO: Add support for version 2 of UPnP.
-                        if (type.Equals("urn:schemas-upnp-org:service:WANPPPConnection:1", c) ||
-                            type.Equals("urn:schemas-upnp-org:service:WANIPConnection:1", c))
+                        if (string.Equals(type, "urn:schemas-upnp-org:service:WANPPPConnection:1", StringComparison.OrdinalIgnoreCase) ||
+                            string.Equals(type, "urn:schemas-upnp-org:service:WANIPConnection:1", StringComparison.OrdinalIgnoreCase))
                         {
                             this.controlUrl = service["controlURL"].InnerText;
                             _logger.Debug("{0}: Found upnp service at: {1}", HostEndPoint, controlUrl);
-                            try
+
+                            Uri u;
+                            if (Uri.TryCreate(controlUrl, UriKind.RelativeOrAbsolute, out u))
                             {
-                                Uri u = new Uri(controlUrl);
                                 if (u.IsAbsoluteUri)
                                 {
                                     EndPoint old = hostEndPoint;
-                                    this.hostEndPoint = new IPEndPoint(IPAddress.Parse(u.Host), u.Port);
-                                    _logger.Debug("{0}: Absolute URI detected. Host address is now: {1}", old, HostEndPoint);
-                                    this.controlUrl = controlUrl.Substring(u.GetLeftPart(UriPartial.Authority).Length);
-                                    _logger.Debug("{0}: New control url: {1}", HostEndPoint, controlUrl);
+                                    IPAddress parsedHostIpAddress;
+                                    if (IPAddress.TryParse(u.Host, out parsedHostIpAddress))
+                                    {
+                                        this.hostEndPoint = new IPEndPoint(parsedHostIpAddress, u.Port);
+                                        //_logger.Debug("{0}: Absolute URI detected. Host address is now: {1}", old, HostEndPoint);
+                                        this.controlUrl = controlUrl.Substring(u.GetLeftPart(UriPartial.Authority).Length);
+                                        //_logger.Debug("{0}: New control url: {1}", HostEndPoint, controlUrl);
+                                    }
                                 }
                             }
-                            catch
+                            else
                             {
                                 _logger.Debug("{0}: Assuming control Uri is relative: {1}", HostEndPoint, controlUrl);
                             }
-                            _logger.Debug("{0}: Handshake Complete", HostEndPoint);
                             return;
                         }
                     }

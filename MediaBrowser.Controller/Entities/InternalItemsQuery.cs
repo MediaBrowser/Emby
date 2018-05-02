@@ -52,15 +52,14 @@ namespace MediaBrowser.Controller.Entities
         public string Name { get; set; }
 
         public string Person { get; set; }
-        public string[] PersonIds { get; set; }
-        public string[] ItemIds { get; set; }
-        public string[] ExcludeItemIds { get; set; }
+        public Guid[] PersonIds { get; set; }
+        public Guid[] ItemIds { get; set; }
+        public Guid[] ExcludeItemIds { get; set; }
         public string AdjacentTo { get; set; }
         public string[] PersonTypes { get; set; }
 
         public bool? Is3D { get; set; }
         public bool? IsHD { get; set; }
-        public bool? IsInBoxSet { get; set; }
         public bool? IsLocked { get; set; }
         public bool? IsPlaceHolder { get; set; }
 
@@ -76,8 +75,8 @@ namespace MediaBrowser.Controller.Entities
         public bool? HasTrailer { get; set; }
         public bool? HasParentalRating { get; set; }
 
-        public string[] StudioIds { get; set; }
-        public string[] GenreIds { get; set; }
+        public Guid[] StudioIds { get; set; }
+        public Guid[] GenreIds { get; set; }
         public ImageType[] ImageTypes { get; set; }
         public VideoType[] VideoTypes { get; set; }
         public UnratedItem[] BlockUnratedItems { get; set; }
@@ -106,7 +105,7 @@ namespace MediaBrowser.Controller.Entities
         public double? MinCriticRating { get; set; }
         public double? MinCommunityRating { get; set; }
 
-        public string[] ChannelIds { get; set; }
+        public Guid[] ChannelIds { get; set; }
 
         public int? ParentIndexNumber { get; set; }
         public int? ParentIndexNumberNotEquals { get; set; }
@@ -119,8 +118,8 @@ namespace MediaBrowser.Controller.Entities
 
         public Guid? ParentId { get; set; }
         public string ParentType { get; set; }
-        public string[] AncestorIds { get; set; }
-        public string[] TopParentIds { get; set; }
+        public Guid[] AncestorIds { get; set; }
+        public Guid[] TopParentIds { get; set; }
 
         public BaseItem Parent
         {
@@ -147,9 +146,9 @@ namespace MediaBrowser.Controller.Entities
         public string ExternalSeriesId { get; set; }
         public string ExternalId { get; set; }
 
-        public string[] AlbumIds { get; set; }
-        public string[] ArtistIds { get; set; }
-        public string[] ExcludeArtistIds { get; set; }
+        public Guid[] AlbumIds { get; set; }
+        public Guid[] ArtistIds { get; set; }
+        public Guid[] ExcludeArtistIds { get; set; }
         public string AncestorWithPresentationUniqueKey { get; set; }
         public string SeriesPresentationUniqueKey { get; set; }
 
@@ -185,33 +184,33 @@ namespace MediaBrowser.Controller.Entities
             EnableTotalRecordCount = true;
 
             DtoOptions = new DtoOptions();
-            AlbumIds = new string[] { };
-            ArtistIds = new string[] { };
-            ExcludeArtistIds = new string[] { };
+            AlbumIds = new Guid[] {};
+            ArtistIds = new Guid[] {};
+            ExcludeArtistIds = new Guid[] {};
             ExcludeProviderIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
             BlockUnratedItems = new UnratedItem[] { };
-            Tags = new string[] { };
-            OfficialRatings = new string[] { };
-            MediaTypes = new string[] { };
-            IncludeItemTypes = new string[] { };
-            ExcludeItemTypes = new string[] { };
-            Genres = new string[] { };
-            StudioIds = new string[] { };
-            GenreIds = new string[] { };
+            Tags = new string[] {};
+            OfficialRatings = new string[] {};
+            MediaTypes = new string[] {};
+            IncludeItemTypes = new string[] {};
+            ExcludeItemTypes = new string[] {};
+            Genres = new string[] {};
+            StudioIds = new Guid[] {};
+            GenreIds = new Guid[] {};
             ImageTypes = new ImageType[] { };
             VideoTypes = new VideoType[] { };
             Years = new int[] { };
-            PersonTypes = new string[] { };
-            PersonIds = new string[] { };
-            ChannelIds = new string[] { };
-            ItemIds = new string[] { };
-            ExcludeItemIds = new string[] { };
-            AncestorIds = new string[] { };
-            TopParentIds = new string[] { };
-            ExcludeTags = new string[] { };
-            ExcludeInheritedTags = new string[] { };
-            PresetViews = new string[] { };
+            PersonTypes = new string[] {};
+            PersonIds = new Guid[] {};
+            ChannelIds = new Guid[] {};
+            ItemIds = new Guid[] {};
+            ExcludeItemIds = new Guid[] {};
+            AncestorIds = new Guid[] {};
+            TopParentIds = new Guid[] {};
+            ExcludeTags = new string[] {};
+            ExcludeInheritedTags = new string[] {};
+            PresetViews = new string[] {};
             TrailerTypes = new TrailerType[] { };
             SourceTypes = new SourceType[] { };
             SeriesStatuses = new SeriesStatus[] { };

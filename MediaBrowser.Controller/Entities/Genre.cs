@@ -72,22 +72,9 @@ namespace MediaBrowser.Controller.Entities
             return false;
         }
 
-        /// <summary>
-        /// Gets a value indicating whether this instance is owned item.
-        /// </summary>
-        /// <value><c>true</c> if this instance is owned item; otherwise, <c>false</c>.</value>
-        [IgnoreDataMember]
-        public override bool IsOwnedItem
-        {
-            get
-            {
-                return false;
-            }
-        }
-
         public IList<BaseItem> GetTaggedItems(InternalItemsQuery query)
         {
-            query.GenreIds = new[] { Id.ToString("N") };
+            query.GenreIds = new[] { Id };
             query.ExcludeItemTypes = new[] { typeof(Game).Name, typeof(MusicVideo).Name, typeof(Audio.Audio).Name, typeof(MusicAlbum).Name, typeof(MusicArtist).Name };
 
             return LibraryManager.GetItemList(query);
@@ -136,9 +123,9 @@ namespace MediaBrowser.Controller.Entities
         /// <summary>
         /// This is called before any metadata refresh and returns true or false indicating if changes were made
         /// </summary>
-        public override bool BeforeMetadataRefresh()
+        public override bool BeforeMetadataRefresh(bool replaceAllMetdata)
         {
-            var hasChanges = base.BeforeMetadataRefresh();
+            var hasChanges = base.BeforeMetadataRefresh(replaceAllMetdata);
 
             var newPath = GetRebasedPath();
             if (!string.Equals(Path, newPath, StringComparison.Ordinal))

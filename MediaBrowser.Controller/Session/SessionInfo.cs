@@ -48,7 +48,7 @@ namespace MediaBrowser.Controller.Session
             {
                 if (Capabilities == null)
                 {
-                    return new string[] { };
+                    return new string[] {};
                 }
                 return Capabilities.PlayableMediaTypes;
             }
@@ -140,7 +140,7 @@ namespace MediaBrowser.Controller.Session
             {
                 if (Capabilities == null)
                 {
-                    return new string[] { };
+                    return new string[] {};
                 }
                 return Capabilities.SupportedCommands;
             }
@@ -207,6 +207,7 @@ namespace MediaBrowser.Controller.Session
             }
 
             var newController = factory(this);
+            _logger.Debug("Creating new {0}", newController.GetType().Name);
             controllers.Add(newController);
 
             SessionControllers = controllers.ToArray();
@@ -360,7 +361,6 @@ namespace MediaBrowser.Controller.Session
             }
 
             _sessionManager = null;
-            GC.SuppressFinalize(this);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using MediaBrowser.Model.Updates;
 using System.Collections.Generic;
+using System;
 
 namespace MediaBrowser.Model.System
 {
@@ -33,12 +34,6 @@ namespace MediaBrowser.Model.System
         public bool SupportsLibraryMonitor { get; set; }
 
         /// <summary>
-        /// Gets or sets the in progress installations.
-        /// </summary>
-        /// <value>The in progress installations.</value>
-        public InstallationInfo[] InProgressInstallations { get; set; }
-
-        /// <summary>
         /// Gets or sets the web socket port number.
         /// </summary>
         /// <value>The web socket port number.</value>
@@ -63,12 +58,6 @@ namespace MediaBrowser.Model.System
         public bool CanSelfUpdate { get; set; }
 
         public bool CanLaunchWebBrowser { get; set; }
-
-        /// <summary>
-        /// Gets or sets plugin assemblies that failed to load.
-        /// </summary>
-        /// <value>The failed assembly loads.</value>
-        public string[] FailedPluginAssemblies { get; set; }
 
         /// <summary>
         /// Gets or sets the program data path.
@@ -145,11 +134,7 @@ namespace MediaBrowser.Model.System
         /// </summary>
         public SystemInfo()
         {
-            InProgressInstallations = new InstallationInfo[] { };
-
             CompletedInstallations = new InstallationInfo[] { };
-
-            FailedPluginAssemblies = new string[] { };
         }
     }
 }

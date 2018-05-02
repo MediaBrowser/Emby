@@ -36,8 +36,8 @@ namespace MediaBrowser.Controller.Entities.Audio
 
         public Audio()
         {
-            Artists = EmptyStringArray;
-            AlbumArtists = EmptyStringArray;
+            Artists = new string[] {};
+            AlbumArtists = new string[] {};
         }
 
         public override double? GetDefaultPrimaryImageAspectRatio()
@@ -186,14 +186,6 @@ namespace MediaBrowser.Controller.Entities.Audio
             return base.GetBlockUnratedType();
         }
 
-        public List<MediaStream> GetMediaStreams()
-        {
-            return MediaSourceManager.GetMediaStreams(new MediaStreamQuery
-            {
-                ItemId = Id
-            });
-        }
-
         public List<MediaStream> GetMediaStreams(MediaStreamType type)
         {
             return MediaSourceManager.GetMediaStreams(new MediaStreamQuery
@@ -214,60 +206,11 @@ namespace MediaBrowser.Controller.Entities.Audio
             return info;
         }
 
-        public virtual List<MediaSourceInfo> GetMediaSources(bool enablePathSubstitution)
+        protected override List<Tuple<BaseItem, MediaSourceType>> GetAllItemsForMediaSources()
         {
-            if (SourceType == SourceType.Channel)
-            {
-                var sources = ChannelManager.GetStaticMediaSources(this, CancellationToken.None)
-                           .ToList();
-
-                if (sources.Count > 0)
-                {
-                    return sources;
-                }
-            }
-
-            var result = new List<MediaSourceInfo>
-            {
-                GetVersionInfo(this, enablePathSubstitution)
-            };
-
-            return result;
-        }
-
-        private MediaSourceInfo GetVersionInfo(Audio i, bool enablePathSubstituion)
-        {
-            var protocol = i.PathProtocol;
-
-            var info = new MediaSourceInfo
-            {
-                Id = i.Id.ToString("N"),
-                Protocol = protocol ?? MediaProtocol.File,
-                MediaStreams = MediaSourceManager.GetMediaStreams(i.Id),
-                Name = i.Name,
-                Path = enablePathSubstituion ? GetMappedPath(i, i.Path, protocol) : i.Path,
-                RunTimeTicks = i.RunTimeTicks,
-                Container = i.Container,
-                Size = i.Size
-            };
-
-            if (info.Protocol == MediaProtocol.File)
-            {
-                info.ETag = i.DateModified.Ticks.ToString(CultureInfo.InvariantCulture).GetMD5().ToString("N");
-            }
-
-            if (string.IsNullOrEmpty(info.Container))
-            {
-                if (i.IsFileProtocol)
-                {
-                    info.Container = System.IO.Path.GetExtension(i.Path).TrimStart('.');
-                }
-            }
-
-            info.Bitrate = i.TotalBitrate;
-            info.InferTotalBitrate();
-
-            return info;
+            var list = new List<Tuple<BaseItem, MediaSourceType>>();
+            list.Add(new Tuple<BaseItem, MediaSourceType>(this, MediaSourceType.Default));
+            return list;
         }
     }
 }

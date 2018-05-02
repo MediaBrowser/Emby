@@ -78,15 +78,6 @@ namespace Emby.Server.Implementations.Data
                     AddColumn(db, "userdata", "AudioStreamIndex", "int", existingColumnNames);
                     AddColumn(db, "userdata", "SubtitleStreamIndex", "int", existingColumnNames);
                 }, TransactionMode);
-
-                try
-                {
-                    ImportUserDataIfNeeded(connection);
-                }
-                catch (Exception ex)
-                {
-                    Logger.ErrorException("Error in ImportUserDataIfNeeded", ex);
-                }
             }
         }
 
@@ -96,45 +87,6 @@ namespace Emby.Server.Implementations.Data
             {
                 return true;
             }
-        }
-
-        private void ImportUserDataIfNeeded(ManagedConnection connection)
-        {
-            if (!_fileSystem.FileExists(_importFile))
-            {
-                return;
-            }
-
-            var fileToImport = _importFile;
-            var isImported = connection.Query("select IsUserDataImported from DataSettings").SelectScalarBool().FirstOrDefault();
-
-            if (isImported)
-            {
-                return;
-            }
-
-            ImportUserData(connection, fileToImport);
-
-            connection.RunInTransaction(db =>
-            {
-                using (var statement = db.PrepareStatement("replace into DataSettings (IsUserDataImported) values (@IsUserDataImported)"))
-                {
-                    statement.TryBind("@IsUserDataImported", true);
-                    statement.MoveNext();
-                }
-            }, TransactionMode);
-        }
-
-        private void ImportUserData(ManagedConnection connection, string file)
-        {
-            SqliteExtensions.Attach(connection, file, "UserDataBackup");
-
-            var columns = "key, userId, rating, played, playCount, isFavorite, playbackPositionTicks, lastPlayedDate, AudioStreamIndex, SubtitleStreamIndex";
-
-            connection.RunInTransaction(db =>
-            {
-                db.Execute("REPLACE INTO userdata(" + columns + ") SELECT " + columns + " FROM UserDataBackup.userdata;");
-            }, TransactionMode);
         }
 
         /// <summary>
@@ -158,7 +110,7 @@ namespace Emby.Server.Implementations.Data
             {
                 throw new ArgumentNullException("userData");
             }
-            if (userId == Guid.Empty)
+            if (userId.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("userId");
             }
@@ -176,7 +128,7 @@ namespace Emby.Server.Implementations.Data
             {
                 throw new ArgumentNullException("userData");
             }
-            if (userId == Guid.Empty)
+            if (userId.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("userId");
             }
@@ -295,7 +247,7 @@ namespace Emby.Server.Implementations.Data
         /// </exception>
         public UserItemData GetUserData(Guid userId, string key)
         {
-            if (userId == Guid.Empty)
+            if (userId.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("userId");
             }
@@ -326,7 +278,7 @@ namespace Emby.Server.Implementations.Data
 
         public UserItemData GetUserData(Guid userId, List<string> keys)
         {
-            if (userId == Guid.Empty)
+            if (userId.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("userId");
             }
@@ -350,7 +302,7 @@ namespace Emby.Server.Implementations.Data
         /// <returns></returns>
         public List<UserItemData> GetAllUserData(Guid userId)
         {
-            if (userId == Guid.Empty)
+            if (userId.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("userId");
             }

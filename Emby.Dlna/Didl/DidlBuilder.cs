@@ -21,7 +21,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using MediaBrowser.Controller.MediaEncoding;
-using MediaBrowser.Model.Configuration;
+using Emby.Dlna.Configuration;
 using MediaBrowser.Model.Globalization;
 
 namespace Emby.Dlna.Didl
@@ -161,11 +161,11 @@ namespace Emby.Dlna.Didl
             {
                 if (string.Equals(item.MediaType, MediaType.Audio, StringComparison.OrdinalIgnoreCase))
                 {
-                    AddAudioResource(options, writer, hasMediaSources, deviceId, filter, streamInfo);
+                    AddAudioResource(options, writer, item, deviceId, filter, streamInfo);
                 }
                 else if (string.Equals(item.MediaType, MediaType.Video, StringComparison.OrdinalIgnoreCase))
                 {
-                    AddVideoResource(options, writer, hasMediaSources, deviceId, filter, streamInfo);
+                    AddVideoResource(options, writer, item, deviceId, filter, streamInfo);
                 }
             }
 
@@ -196,7 +196,7 @@ namespace Emby.Dlna.Didl
             return mime;
         }
 
-        private void AddVideoResource(DlnaOptions options, XmlWriter writer, IHasMediaSources video, string deviceId, Filter filter, StreamInfo streamInfo = null)
+        private void AddVideoResource(DlnaOptions options, XmlWriter writer, BaseItem video, string deviceId, Filter filter, StreamInfo streamInfo = null)
         {
             if (streamInfo == null)
             {
@@ -303,7 +303,7 @@ namespace Emby.Dlna.Didl
             return true;
         }
 
-        private void AddVideoResource(XmlWriter writer, IHasMediaSources video, string deviceId, Filter filter, string contentFeatures, StreamInfo streamInfo)
+        private void AddVideoResource(XmlWriter writer, BaseItem video, string deviceId, Filter filter, string contentFeatures, StreamInfo streamInfo)
         {
             writer.WriteStartElement(string.Empty, "res", NS_DIDL);
 
@@ -501,7 +501,7 @@ namespace Emby.Dlna.Didl
             return item.Name;
         }
 
-        private void AddAudioResource(DlnaOptions options, XmlWriter writer, IHasMediaSources audio, string deviceId, Filter filter, StreamInfo streamInfo = null)
+        private void AddAudioResource(DlnaOptions options, XmlWriter writer, BaseItem audio, string deviceId, Filter filter, StreamInfo streamInfo = null)
         {
             writer.WriteStartElement(string.Empty, "res", NS_DIDL);
 
@@ -1183,7 +1183,7 @@ namespace Emby.Dlna.Didl
             return id;
         }
 
-        public static string GetClientId(IHasMediaSources item)
+        public static string GetClientId(BaseItem item)
         {
             var id = item.Id.ToString("N");
 

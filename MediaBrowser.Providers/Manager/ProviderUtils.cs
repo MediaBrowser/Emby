@@ -201,7 +201,17 @@ namespace MediaBrowser.Providers.Manager
 
             if (mergeMetadataSettings)
             {
-                MergeMetadataSettings(source, target);
+                target.LockedFields = source.LockedFields;
+                target.IsLocked = source.IsLocked;
+
+                // Grab the value if it's there, but if not then don't overwrite the default
+                if (source.DateCreated != default(DateTime))
+                {
+                    target.DateCreated = source.DateCreated;
+                }
+
+                target.PreferredMetadataCountryCode = source.PreferredMetadataCountryCode;
+                target.PreferredMetadataLanguage = source.PreferredMetadataLanguage;
             }
         }
 
@@ -230,22 +240,6 @@ namespace MediaBrowser.Providers.Manager
             }
         }
 
-        public static void MergeMetadataSettings(BaseItem source,
-           BaseItem target)
-        {
-            target.LockedFields = source.LockedFields;
-            target.IsLocked = source.IsLocked;
-
-            // Grab the value if it's there, but if not then don't overwrite the default
-            if (source.DateCreated != default(DateTime))
-            {
-                target.DateCreated = source.DateCreated;
-            }
-
-            target.PreferredMetadataCountryCode = source.PreferredMetadataCountryCode;
-            target.PreferredMetadataLanguage = source.PreferredMetadataLanguage;
-        }
-
         private static void MergeDisplayOrder(BaseItem source, BaseItem target, MetadataFields[] lockedFields, bool replaceData)
         {
             var sourceHasDisplayOrder = source as IHasDisplayOrder;
@@ -253,7 +247,15 @@ namespace MediaBrowser.Providers.Manager
 
             if (sourceHasDisplayOrder != null && targetHasDisplayOrder != null)
             {
-                targetHasDisplayOrder.DisplayOrder = sourceHasDisplayOrder.DisplayOrder;
+                if (replaceData || string.IsNullOrEmpty(targetHasDisplayOrder.DisplayOrder))
+                {
+                    var displayOrder = sourceHasDisplayOrder.DisplayOrder;
+
+                    if (!string.IsNullOrWhiteSpace(displayOrder))
+                    {
+                        targetHasDisplayOrder.DisplayOrder = displayOrder;
+                    }
+                }
             }
         }
 

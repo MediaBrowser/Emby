@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Model.Users;
+using MediaBrowser.Controller.Authentication;
 
 namespace MediaBrowser.Controller.Library
 {
@@ -107,7 +108,7 @@ namespace MediaBrowser.Controller.Library
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns>Task.</returns>
-        void ResetPassword(User user);
+        Task ResetPassword(User user);
 
         /// <summary>
         /// Gets the offline user dto.
@@ -126,7 +127,7 @@ namespace MediaBrowser.Controller.Library
         /// <summary>
         /// Changes the password.
         /// </summary>
-        void ChangePassword(User user, string newPassword, string newPasswordSha1);
+        Task ChangePassword(User user, string newPassword);
 
         /// <summary>
         /// Changes the easy password.
@@ -152,14 +153,14 @@ namespace MediaBrowser.Controller.Library
         /// <param name="enteredUsername">The entered username.</param>
         /// <param name="isInNetwork">if set to <c>true</c> [is in network].</param>
         /// <returns>ForgotPasswordResult.</returns>
-        ForgotPasswordResult StartForgotPasswordProcess(string enteredUsername, bool isInNetwork);
+        Task<ForgotPasswordResult> StartForgotPasswordProcess(string enteredUsername, bool isInNetwork);
 
         /// <summary>
         /// Redeems the password reset pin.
         /// </summary>
         /// <param name="pin">The pin.</param>
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
-        PinRedeemResult RedeemPasswordResetPin(string pin);
+        Task<PinRedeemResult> RedeemPasswordResetPin(string pin);
 
         /// <summary>
         /// Gets the user policy.
@@ -198,5 +199,9 @@ namespace MediaBrowser.Controller.Library
         /// <param name="username">The username.</param>
         /// <returns>System.String.</returns>
         string MakeValidUsername(string username);
+
+        void AddParts(IEnumerable<IAuthenticationProvider> authenticationProviders);
+
+        NameIdPair[] GetAuthenticationProviders();
     }
 }

@@ -9,6 +9,7 @@ using MediaBrowser.Controller.Session;
 using System;
 using System.Linq;
 using MediaBrowser.Model.Services;
+using MediaBrowser.Common.Net;
 
 namespace Emby.Server.Implementations.HttpServer.Security
 {
@@ -16,21 +17,21 @@ namespace Emby.Server.Implementations.HttpServer.Security
     {
         private readonly IServerConfigurationManager _config;
 
-        public AuthService(IUserManager userManager, IAuthorizationContext authorizationContext, IServerConfigurationManager config, IConnectManager connectManager, ISessionManager sessionManager, IDeviceManager deviceManager)
+        public AuthService(IUserManager userManager, IAuthorizationContext authorizationContext, IServerConfigurationManager config, IConnectManager connectManager, ISessionManager sessionManager, INetworkManager networkManager)
         {
             AuthorizationContext = authorizationContext;
             _config = config;
-            DeviceManager = deviceManager;
             SessionManager = sessionManager;
             ConnectManager = connectManager;
             UserManager = userManager;
+            NetworkManager = networkManager;
         }
 
         public IUserManager UserManager { get; private set; }
         public IAuthorizationContext AuthorizationContext { get; private set; }
         public IConnectManager ConnectManager { get; private set; }
         public ISessionManager SessionManager { get; private set; }
-        public IDeviceManager DeviceManager { get; private set; }
+        public INetworkManager NetworkManager { get; private set; }
 
         /// <summary>
         /// Redirect the client to a specific URL if authentication failed.
@@ -108,6 +109,14 @@ namespace Emby.Server.Implementations.HttpServer.Security
                 };
             }
 
+            if (!user.Policy.EnableRemoteAccess && !NetworkManager.IsInLocalNetwork(request.RemoteIp))
+            {
+                throw new SecurityException("User account has been disabled.")
+                {
+                    SecurityExceptionType = SecurityExceptionType.Unauthenticated
+                };
+            }
+
             if (!user.Policy.IsAdministrator &&
                 !authAttribtues.EscapeParentalControl &&
                 !user.IsParentalScheduleAllowed())
@@ -118,17 +127,6 @@ namespace Emby.Server.Implementations.HttpServer.Security
                 {
                     SecurityExceptionType = SecurityExceptionType.ParentalControl
                 };
-            }
-
-            if (!string.IsNullOrEmpty(auth.DeviceId))
-            {
-                if (!DeviceManager.CanAccessDevice(user, auth.DeviceId))
-                {
-                    throw new SecurityException("User is not allowed access from this device.")
-                    {
-                        SecurityExceptionType = SecurityExceptionType.ParentalControl
-                    };
-                }
             }
         }
 
@@ -232,14 +230,9 @@ namespace Emby.Server.Implementations.HttpServer.Security
 
             var info = GetTokenInfo(request);
 
-            if (info == null)
+            if (info == null || !info.IsActive)
             {
                 throw new SecurityException("Access token is invalid or expired.");
-            }
-
-            if (!info.IsActive)
-            {
-                throw new SecurityException("Access token has expired.");
             }
 
             //if (!string.IsNullOrEmpty(info.UserId))

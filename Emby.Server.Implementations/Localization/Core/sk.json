@@ -1,4 +1,5 @@
 {
+    "HeaderCameraUploads": "Camera Uploads",
     "Latest": "Najnov\u0161ie",
     "ValueSpecialEpisodeName": "\u0160peci\u00e1l - {0}",
     "Inherit": "Zdedi\u0165",
@@ -49,7 +50,7 @@
     "LabelIpAddressValue": "IP adresa: {0}",
     "DeviceOnlineWithName": "{0} je pripojen\u00fd",
     "UserOnlineFromDevice": "{0} je online z {1}",
-    "ProviderValue": "Provider: {0}",
+    "ProviderValue": "Poskytovate\u013e: {0}",
     "SubtitlesDownloadedForItem": "Titulky pre {0} stiahnut\u00e9",
     "UserCreatedWithName": "Pou\u017e\u00edvate\u013e {0} bol vytvoren\u00fd",
     "UserPasswordChangedWithName": "Heslo pou\u017e\u00edvate\u013ea {0} zmenen\u00e9",

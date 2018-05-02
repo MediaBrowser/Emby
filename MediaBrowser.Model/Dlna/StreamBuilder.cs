@@ -438,7 +438,7 @@ namespace MediaBrowser.Model.Dlna
                     }
                 }
 
-                ApplyTranscodingConditions(playlistItem, audioTranscodingConditions, null, false);
+                ApplyTranscodingConditions(playlistItem, audioTranscodingConditions, null, true, true);
 
                 // Honor requested max channels
                 playlistItem.GlobalMaxAudioChannels = options.MaxAudioChannels;
@@ -458,7 +458,7 @@ namespace MediaBrowser.Model.Dlna
                 playlistItem.AudioBitrate = longBitrate > int.MaxValue ? int.MaxValue : Convert.ToInt32(longBitrate);
             }
 
-            playlistItem.TranscodeReasons = transcodeReasons;
+            playlistItem.TranscodeReasons = transcodeReasons.ToArray();
             return playlistItem;
         }
 
@@ -553,6 +553,9 @@ namespace MediaBrowser.Model.Dlna
 
             foreach (var profile in directPlayProfiles)
             {
+                audioSupported = false;
+                videoSupported = false;
+
                 // Check container type
                 if (profile.SupportsContainer(item.Container))
                 {
@@ -560,17 +563,7 @@ namespace MediaBrowser.Model.Dlna
 
                     if (videoStream != null)
                     {
-                        // Check video codec
-                        var videoCodecs = profile.GetVideoCodecs();
-                        if (videoCodecs.Length > 0)
-                        {
-                            string videoCodec = videoStream.Codec;
-                            if (!string.IsNullOrEmpty(videoCodec) && ListHelper.ContainsIgnoreCase(videoCodecs, videoCodec))
-                            {
-                                videoSupported = true;
-                            }
-                        }
-                        else
+                        if (profile.SupportsVideoCodec(videoStream.Codec))
                         {
                             videoSupported = true;
                         }
@@ -578,20 +571,15 @@ namespace MediaBrowser.Model.Dlna
 
                     if (audioStream != null)
                     {
-                        // Check audio codec
-                        var audioCodecs = profile.GetAudioCodecs();
-                        if (audioCodecs.Length > 0)
-                        {
-                            string audioCodec = audioStream.Codec;
-                            if (!string.IsNullOrEmpty(audioCodec) && ListHelper.ContainsIgnoreCase(audioCodecs, audioCodec))
-                            {
-                                audioSupported = true;
-                            }
-                        }
-                        else
+                        if (profile.SupportsAudioCodec(audioStream.Codec))
                         {
                             audioSupported = true;
                         }
+                    }
+
+                    if (videoSupported && audioSupported)
+                    {
+                        break;
                     }
                 }
             }
@@ -762,7 +750,7 @@ namespace MediaBrowser.Model.Dlna
 
                     if (subtitleStream != null)
                     {
-                        SubtitleProfile subtitleProfile = GetSubtitleProfile(item, subtitleStream, options.Profile.SubtitleProfiles, directPlay.Value, _transcoderSupport, null, null);
+                        SubtitleProfile subtitleProfile = GetSubtitleProfile(item, subtitleStream, options.Profile.SubtitleProfiles, directPlay.Value, _transcoderSupport, item.Container, null);
 
                         playlistItem.SubtitleDeliveryMethod = subtitleProfile.Method;
                         playlistItem.SubtitleFormat = subtitleProfile.Format;
@@ -804,7 +792,7 @@ namespace MediaBrowser.Model.Dlna
 
                 if (subtitleStream != null)
                 {
-                    SubtitleProfile subtitleProfile = GetSubtitleProfile(item, subtitleStream, options.Profile.SubtitleProfiles, PlayMethod.Transcode, _transcoderSupport, transcodingProfile.Protocol, transcodingProfile.Container);
+                    SubtitleProfile subtitleProfile = GetSubtitleProfile(item, subtitleStream, options.Profile.SubtitleProfiles, PlayMethod.Transcode, _transcoderSupport, transcodingProfile.Container, transcodingProfile.Protocol);
 
                     playlistItem.SubtitleDeliveryMethod = subtitleProfile.Method;
                     playlistItem.SubtitleFormat = subtitleProfile.Format;
@@ -859,7 +847,7 @@ namespace MediaBrowser.Model.Dlna
                             {
                                 if (i.ContainsAnyCodec(transcodingVideoCodec, transcodingProfile.Container))
                                 {
-                                    ApplyTranscodingConditions(playlistItem, i.Conditions, transcodingVideoCodec, !isFirstAppliedCodecProfile);
+                                    ApplyTranscodingConditions(playlistItem, i.Conditions, transcodingVideoCodec, true, isFirstAppliedCodecProfile);
                                     isFirstAppliedCodecProfile = false;
                                 }
                             }
@@ -867,10 +855,16 @@ namespace MediaBrowser.Model.Dlna
                     }
                 }
 
-                var audioTranscodingConditions = new List<ProfileCondition>();
+                // Honor requested max channels
+                playlistItem.GlobalMaxAudioChannels = options.MaxAudioChannels;
+
+                int audioBitrate = GetAudioBitrate(playlistItem.SubProtocol, options.GetMaxBitrate(false), playlistItem.TargetAudioCodec, audioStream, playlistItem);
+                playlistItem.AudioBitrate = Math.Min(playlistItem.AudioBitrate ?? audioBitrate, audioBitrate);
+
+                isFirstAppliedCodecProfile = true;
                 foreach (CodecProfile i in options.Profile.CodecProfiles)
                 {
-                    if (i.Type == CodecType.VideoAudio && i.ContainsAnyCodec(playlistItem.TargetAudioCodec, transcodingProfile.Container))
+                    if (i.Type == CodecType.VideoAudio && i.ContainsAnyCodec(transcodingProfile.AudioCodec, transcodingProfile.Container))
                     {
                         bool applyConditions = true;
                         foreach (ProfileCondition applyCondition in i.ApplyConditions)
@@ -892,43 +886,38 @@ namespace MediaBrowser.Model.Dlna
 
                         if (applyConditions)
                         {
-                            foreach (ProfileCondition c in i.Conditions)
+                            var transcodingAudioCodecs = ContainerProfile.SplitValue(transcodingProfile.AudioCodec);
+                            foreach (var transcodingAudioCodec in transcodingAudioCodecs)
                             {
-                                audioTranscodingConditions.Add(c);
+                                if (i.ContainsAnyCodec(transcodingAudioCodec, transcodingProfile.Container))
+                                {
+                                    ApplyTranscodingConditions(playlistItem, i.Conditions, transcodingAudioCodec, true, isFirstAppliedCodecProfile);
+                                    isFirstAppliedCodecProfile = false;
+                                }
                             }
-                            break;
                         }
                     }
                 }
-
-                // Honor requested max channels
-                playlistItem.GlobalMaxAudioChannels = options.MaxAudioChannels;
-
-                int audioBitrate = GetAudioBitrate(playlistItem.SubProtocol, options.GetMaxBitrate(false), playlistItem.TargetAudioCodec, audioStream, playlistItem);
-                playlistItem.AudioBitrate = Math.Min(playlistItem.AudioBitrate ?? audioBitrate, audioBitrate);
 
                 var maxBitrateSetting = options.GetMaxBitrate(false);
                 // Honor max rate
                 if (maxBitrateSetting.HasValue)
                 {
-                    var videoBitrate = maxBitrateSetting.Value;
+                    var availableBitrateForVideo = maxBitrateSetting.Value;
 
                     if (playlistItem.AudioBitrate.HasValue)
                     {
-                        videoBitrate -= playlistItem.AudioBitrate.Value;
+                        availableBitrateForVideo -= playlistItem.AudioBitrate.Value;
                     }
 
                     // Make sure the video bitrate is lower than bitrate settings but at least 64k
-                    long currentValue = playlistItem.VideoBitrate ?? videoBitrate;
-                    var longBitrate = Math.Max(Math.Min(videoBitrate, currentValue), 64000);
-                    playlistItem.VideoBitrate = longBitrate > int.MaxValue ? int.MaxValue : Convert.ToInt32(longBitrate);
+                    long currentValue = playlistItem.VideoBitrate ?? availableBitrateForVideo;
+                    var longBitrate = Math.Max(Math.Min(availableBitrateForVideo, currentValue), 64000);
+                    playlistItem.VideoBitrate = longBitrate >= int.MaxValue ? int.MaxValue : Convert.ToInt32(longBitrate);
                 }
-
-                // Do this after initial values are set to account for greater than/less than conditions
-                ApplyTranscodingConditions(playlistItem, audioTranscodingConditions, null, false);
             }
 
-            playlistItem.TranscodeReasons = transcodeReasons;
+            playlistItem.TranscodeReasons = transcodeReasons.ToArray();
 
             return playlistItem;
         }
@@ -954,16 +943,7 @@ namespace MediaBrowser.Model.Dlna
             // Reduce the bitrate if we're downmixing
             if (targetAudioChannels.HasValue && audioStream != null && audioStream.Channels.HasValue && targetAudioChannels.Value < audioStream.Channels.Value)
             {
-                defaultBitrate = StringHelper.EqualsIgnoreCase(targetAudioCodec, "ac3") ? 192000 : 128000;
-            }
-
-            if (StringHelper.EqualsIgnoreCase(subProtocol, "hls"))
-            {
-                defaultBitrate = Math.Min(384000, defaultBitrate);
-            }
-            else
-            {
-                defaultBitrate = Math.Min(448000, defaultBitrate);
+                defaultBitrate = targetAudioChannels.Value <= 2 ? 128000 : 192000;
             }
 
             int encoderAudioBitrateLimit = int.MaxValue;
@@ -984,13 +964,30 @@ namespace MediaBrowser.Model.Dlna
 
             if (maxTotalBitrate.HasValue)
             {
-                if (maxTotalBitrate.Value < 640000)
-                {
-                    defaultBitrate = Math.Min(128000, defaultBitrate);
-                }
+                defaultBitrate = Math.Min(GetMaxAudioBitrateForTotalBitrate(maxTotalBitrate.Value), defaultBitrate);
             }
 
             return Math.Min(defaultBitrate, encoderAudioBitrateLimit);
+        }
+
+        private int GetMaxAudioBitrateForTotalBitrate(long totalBitrate)
+        {
+            if (totalBitrate <= 640000)
+            {
+                return 128000;
+            }
+
+            if (totalBitrate <= 2000000)
+            {
+                return 384000;
+            }
+
+            if (totalBitrate <= 3000000)
+            {
+                return 448000;
+            }
+
+            return 640000;
         }
 
         private Tuple<PlayMethod?, List<TranscodeReason>> GetVideoDirectPlayProfile(VideoOptions options,
@@ -1208,7 +1205,7 @@ namespace MediaBrowser.Model.Dlna
         {
             if (subtitleStream != null)
             {
-                SubtitleProfile subtitleProfile = GetSubtitleProfile(item, subtitleStream, options.Profile.SubtitleProfiles, playMethod, _transcoderSupport, null, null);
+                SubtitleProfile subtitleProfile = GetSubtitleProfile(item, subtitleStream, options.Profile.SubtitleProfiles, playMethod, _transcoderSupport, item.Container, null);
 
                 if (subtitleProfile.Method != SubtitleDeliveryMethod.External && subtitleProfile.Method != SubtitleDeliveryMethod.Embed)
                 {
@@ -1227,7 +1224,7 @@ namespace MediaBrowser.Model.Dlna
             return new Tuple<bool, TranscodeReason?>(result, TranscodeReason.ContainerBitrateExceedsLimit);
         }
 
-        public static SubtitleProfile GetSubtitleProfile(MediaSourceInfo mediaSource, MediaStream subtitleStream, SubtitleProfile[] subtitleProfiles, PlayMethod playMethod, ITranscoderSupport transcoderSupport, string transcodingSubProtocol, string transcodingContainer)
+        public static SubtitleProfile GetSubtitleProfile(MediaSourceInfo mediaSource, MediaStream subtitleStream, SubtitleProfile[] subtitleProfiles, PlayMethod playMethod, ITranscoderSupport transcoderSupport, string outputContainer, string transcodingSubProtocol)
         {
             if (!subtitleStream.IsExternal && (playMethod != PlayMethod.Transcode || !string.Equals(transcodingSubProtocol, "hls", StringComparison.OrdinalIgnoreCase)))
             {
@@ -1244,7 +1241,12 @@ namespace MediaBrowser.Model.Dlna
                         continue;
                     }
 
-                    if (playMethod == PlayMethod.Transcode && !IsSubtitleEmbedSupported(subtitleStream, profile, transcodingSubProtocol, transcodingContainer))
+                    if (!ContainerProfile.ContainsContainer(profile.Container, outputContainer))
+                    {
+                        continue;
+                    }
+
+                    if (playMethod == PlayMethod.Transcode && !IsSubtitleEmbedSupported(subtitleStream, profile, transcodingSubProtocol, outputContainer))
                     {
                         continue;
                     }
@@ -1268,7 +1270,12 @@ namespace MediaBrowser.Model.Dlna
                         continue;
                     }
 
-                    if (playMethod == PlayMethod.Transcode && !IsSubtitleEmbedSupported(subtitleStream, profile, transcodingSubProtocol, transcodingContainer))
+                    if (!ContainerProfile.ContainsContainer(profile.Container, outputContainer))
+                    {
+                        continue;
+                    }
+
+                    if (playMethod == PlayMethod.Transcode && !IsSubtitleEmbedSupported(subtitleStream, profile, transcodingSubProtocol, outputContainer))
                     {
                         continue;
                     }
@@ -1431,7 +1438,33 @@ namespace MediaBrowser.Model.Dlna
             }
         }
 
-        private void ApplyTranscodingConditions(StreamInfo item, IEnumerable<ProfileCondition> conditions, string qualifier, bool qualifiedOnly)
+        private void ApplyTranscodingConditions(StreamInfo item, List<CodecProfile> codecProfiles)
+        {
+            foreach (var profile in codecProfiles)
+            {
+                ApplyTranscodingConditions(item, profile);
+            }
+        }
+
+        private void ApplyTranscodingConditions(StreamInfo item, CodecProfile codecProfile)
+        {
+            var codecs = ContainerProfile.SplitValue(codecProfile.Codec);
+            if (codecs.Length == 0)
+            {
+                ApplyTranscodingConditions(item, codecProfile.Conditions, null, true, true);
+                return;
+            }
+
+            var enableNonQualified = true;
+
+            foreach (var codec in codecs)
+            {
+                ApplyTranscodingConditions(item, codecProfile.Conditions, codec, true, enableNonQualified);
+                enableNonQualified = false;
+            }
+        }
+
+        private void ApplyTranscodingConditions(StreamInfo item, IEnumerable<ProfileCondition> conditions, string qualifier, bool enableQualifiedConditions, bool enableNonQualifiedConditions)
         {
             foreach (ProfileCondition condition in conditions)
             {
@@ -1452,7 +1485,7 @@ namespace MediaBrowser.Model.Dlna
                 {
                     case ProfileConditionValue.AudioBitrate:
                         {
-                            if (qualifiedOnly)
+                            if (!enableNonQualifiedConditions)
                             {
                                 continue;
                             }
@@ -1477,9 +1510,19 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.AudioChannels:
                         {
-                            if (qualifiedOnly && string.IsNullOrEmpty(qualifier))
+                            if (string.IsNullOrEmpty(qualifier))
                             {
-                                continue;
+                                if (!enableNonQualifiedConditions)
+                                {
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                if (!enableQualifiedConditions)
+                                {
+                                    continue;
+                                }
                             }
 
                             int num;
@@ -1502,7 +1545,7 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.IsAvc:
                         {
-                            if (qualifiedOnly)
+                            if (!enableNonQualifiedConditions)
                             {
                                 continue;
                             }
@@ -1523,7 +1566,7 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.IsAnamorphic:
                         {
-                            if (qualifiedOnly)
+                            if (!enableNonQualifiedConditions)
                             {
                                 continue;
                             }
@@ -1544,9 +1587,19 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.IsInterlaced:
                         {
-                            if (qualifiedOnly && string.IsNullOrEmpty(qualifier))
+                            if (string.IsNullOrEmpty(qualifier))
                             {
-                                continue;
+                                if (!enableNonQualifiedConditions)
+                                {
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                if (!enableQualifiedConditions)
+                                {
+                                    continue;
+                                }
                             }
 
                             bool isInterlaced;
@@ -1576,9 +1629,19 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.RefFrames:
                         {
-                            if (qualifiedOnly && string.IsNullOrEmpty(qualifier))
+                            if (string.IsNullOrEmpty(qualifier))
                             {
-                                continue;
+                                if (!enableNonQualifiedConditions)
+                                {
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                if (!enableQualifiedConditions)
+                                {
+                                    continue;
+                                }
                             }
 
                             int num;
@@ -1601,9 +1664,19 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.VideoBitDepth:
                         {
-                            if (qualifiedOnly && string.IsNullOrEmpty(qualifier))
+                            if (string.IsNullOrEmpty(qualifier))
                             {
-                                continue;
+                                if (!enableNonQualifiedConditions)
+                                {
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                if (!enableQualifiedConditions)
+                                {
+                                    continue;
+                                }
                             }
 
                             int num;
@@ -1648,7 +1721,7 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.Height:
                         {
-                            if (qualifiedOnly)
+                            if (!enableNonQualifiedConditions)
                             {
                                 continue;
                             }
@@ -1673,7 +1746,7 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.VideoBitrate:
                         {
-                            if (qualifiedOnly)
+                            if (!enableNonQualifiedConditions)
                             {
                                 continue;
                             }
@@ -1698,7 +1771,7 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.VideoFramerate:
                         {
-                            if (qualifiedOnly)
+                            if (!enableNonQualifiedConditions)
                             {
                                 continue;
                             }
@@ -1748,7 +1821,7 @@ namespace MediaBrowser.Model.Dlna
                         }
                     case ProfileConditionValue.Width:
                         {
-                            if (qualifiedOnly)
+                            if (!enableNonQualifiedConditions)
                             {
                                 continue;
                             }
@@ -1786,15 +1859,10 @@ namespace MediaBrowser.Model.Dlna
             }
 
             // Check audio codec
-            var audioCodecs = profile.GetAudioCodecs();
-            if (audioCodecs.Length > 0)
+            string audioCodec = audioStream == null ? null : audioStream.Codec;
+            if (!profile.SupportsAudioCodec(audioCodec))
             {
-                // Check audio codecs
-                string audioCodec = audioStream == null ? null : audioStream.Codec;
-                if (string.IsNullOrEmpty(audioCodec) || !ListHelper.ContainsIgnoreCase(audioCodecs, audioCodec))
-                {
-                    return false;
-                }
+                return false;
             }
 
             return true;
@@ -1809,28 +1877,19 @@ namespace MediaBrowser.Model.Dlna
             }
 
             // Check video codec
-            var videoCodecs = profile.GetVideoCodecs();
-            if (videoCodecs.Length > 0)
+            string videoCodec = videoStream == null ? null : videoStream.Codec;
+            if (!profile.SupportsVideoCodec(videoCodec))
             {
-                string videoCodec = videoStream == null ? null : videoStream.Codec;
-                if (string.IsNullOrEmpty(videoCodec) || !ListHelper.ContainsIgnoreCase(videoCodecs, videoCodec))
-                {
-                    return false;
-                }
+                return false;
             }
 
             // Check audio codec
             if (audioStream != null)
             {
-                var audioCodecs = profile.GetAudioCodecs();
-                if (audioCodecs.Length > 0)
+                string audioCodec = audioStream == null ? null : audioStream.Codec;
+                if (!profile.SupportsAudioCodec(audioCodec))
                 {
-                    // Check audio codecs
-                    string audioCodec = audioStream == null ? null : audioStream.Codec;
-                    if (string.IsNullOrEmpty(audioCodec) || !ListHelper.ContainsIgnoreCase(audioCodecs, audioCodec))
-                    {
-                        return false;
-                    }
+                    return false;
                 }
             }
 

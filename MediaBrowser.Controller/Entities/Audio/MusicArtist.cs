@@ -23,7 +23,7 @@ namespace MediaBrowser.Controller.Entities.Audio
         [IgnoreDataMember]
         public bool IsAccessedByName
         {
-            get { return ParentId == Guid.Empty; }
+            get { return ParentId.Equals(Guid.Empty); }
         }
 
         [IgnoreDataMember]
@@ -92,7 +92,7 @@ namespace MediaBrowser.Controller.Entities.Audio
             if (query.IncludeItemTypes.Length == 0)
             {
                 query.IncludeItemTypes = new[] { typeof(Audio).Name, typeof(MusicVideo).Name, typeof(MusicAlbum).Name };
-                query.ArtistIds = new[] { Id.ToString("N") };
+                query.ArtistIds = new[] { Id };
             }
 
             return LibraryManager.GetItemList(query);
@@ -162,19 +162,6 @@ namespace MediaBrowser.Controller.Entities.Audio
             get
             {
                 return Path;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether this instance is owned item.
-        /// </summary>
-        /// <value><c>true</c> if this instance is owned item; otherwise, <c>false</c>.</value>
-        [IgnoreDataMember]
-        public override bool IsOwnedItem
-        {
-            get
-            {
-                return false;
             }
         }
 
@@ -268,9 +255,9 @@ namespace MediaBrowser.Controller.Entities.Audio
         /// <summary>
         /// This is called before any metadata refresh and returns true or false indicating if changes were made
         /// </summary>
-        public override bool BeforeMetadataRefresh()
+        public override bool BeforeMetadataRefresh(bool replaceAllMetdata)
         {
-            var hasChanges = base.BeforeMetadataRefresh();
+            var hasChanges = base.BeforeMetadataRefresh(replaceAllMetdata);
 
             if (IsAccessedByName)
             {

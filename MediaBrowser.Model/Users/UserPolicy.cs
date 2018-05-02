@@ -1,4 +1,5 @@
 ﻿using MediaBrowser.Model.Configuration;
+using System;
 
 namespace MediaBrowser.Model.Users
 {
@@ -34,6 +35,7 @@ namespace MediaBrowser.Model.Users
         public UnratedItem[] BlockUnratedItems { get; set; }
         public bool EnableRemoteControlOfOtherUsers { get; set; }
         public bool EnableSharedDeviceControl { get; set; }
+        public bool EnableRemoteAccess { get; set; }
 
         public bool EnableLiveTvManagement { get; set; }
         public bool EnableLiveTvAccess { get; set; }
@@ -52,6 +54,7 @@ namespace MediaBrowser.Model.Users
         /// </summary>
         /// <value><c>true</c> if [enable synchronize]; otherwise, <c>false</c>.</value>
         public bool EnableSyncTranscoding { get; set; }
+        public bool EnableMediaConversion { get; set; }
 
         public string[] EnabledDevices { get; set; }
         public bool EnableAllDevices { get; set; }
@@ -70,6 +73,7 @@ namespace MediaBrowser.Model.Users
         public string[] BlockedChannels { get; set; }
 
         public int RemoteClientBitrateLimit { get; set; }
+        public string AuthenticationProviderId { get; set; }
 
         public UserPolicy()
         {
@@ -77,6 +81,7 @@ namespace MediaBrowser.Model.Users
             EnableContentDeletionFromFolders = new string[] { };
 
             EnableSyncTranscoding = true;
+            EnableMediaConversion = true;
 
             EnableMediaPlayback = true;
             EnableAudioPlaybackTranscoding = true;
@@ -110,6 +115,7 @@ namespace MediaBrowser.Model.Users
 
             EnableContentDownloading = true;
             EnablePublicSharing = true;
+            EnableRemoteAccess = true;
         }
     }
 }

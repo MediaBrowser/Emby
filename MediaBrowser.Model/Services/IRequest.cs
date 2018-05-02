@@ -57,7 +57,7 @@ namespace MediaBrowser.Model.Services
 
         QueryParamCollection QueryString { get; }
 
-        QueryParamCollection FormData { get; }
+        Task<QueryParamCollection> GetFormData();
 
         string RawUrl { get; }
 

@@ -19,11 +19,6 @@ namespace Emby.Server.Implementations.Session
     public class SessionWebSocketListener : IWebSocketListener, IDisposable
     {
         /// <summary>
-        /// The _true task result
-        /// </summary>
-        private readonly Task _trueTaskResult = Task.FromResult(true);
-
-        /// <summary>
         /// The _session manager
         /// </summary>
         private readonly ISessionManager _sessionManager;
@@ -93,7 +88,6 @@ namespace Emby.Server.Implementations.Session
         public void Dispose()
         {
             _serverManager.WebSocketConnected -= _serverManager_WebSocketConnected;
-            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -108,7 +102,7 @@ namespace Emby.Server.Implementations.Session
                 ProcessIdentityMessage(message);
             }
 
-            return _trueTaskResult;
+            return Task.CompletedTask;
         }
 
         /// <summary>

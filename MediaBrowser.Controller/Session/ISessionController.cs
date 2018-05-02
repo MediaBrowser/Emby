@@ -20,11 +20,6 @@ namespace MediaBrowser.Controller.Session
         /// <summary>
         /// Sends the message.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="name">The name.</param>
-        /// <param name="data">The data.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        Task SendMessage<T>(string name, T data, CancellationToken cancellationToken);
+        Task SendMessage<T>(string name, string messageId, T data, ISessionController[] allControllers, CancellationToken cancellationToken);
     }
 }

@@ -1,11 +1,12 @@
-﻿using MediaBrowser.Common;
+﻿using System;
+using MediaBrowser.Common;
 using MediaBrowser.Controller.Plugins;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace MediaBrowser.WebDashboard
 {
-    public class ServerEntryPoint : IServerEntryPoint
+    public class ServerEntryPoint : IServerEntryPoint, IRunBeforeStartup
     {
         /// <summary>
         /// Gets the list of plugin configuration pages
