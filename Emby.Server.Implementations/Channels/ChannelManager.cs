@@ -1020,7 +1020,7 @@ namespace Emby.Server.Implementations.Channels
             if (isNew)
             {
                 item.Name = info.Name;
-                item.Genres = info.Genres;
+                item.Genres = info.Genres.ToArray();
                 item.Studios = info.Studios.ToArray(info.Studios.Count);
                 item.CommunityRating = info.CommunityRating;
                 item.Overview = info.Overview;

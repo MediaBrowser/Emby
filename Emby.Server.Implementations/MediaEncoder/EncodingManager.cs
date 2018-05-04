@@ -133,6 +133,8 @@ namespace Emby.Server.Implementations.MediaEncoder
                 {
                     if (extractImages)
                     {
+                        cancellationToken.ThrowIfCancellationRequested();
+
                         try
                         {
                             // Add some time for the first chapter to make sure we don't end up with a black image

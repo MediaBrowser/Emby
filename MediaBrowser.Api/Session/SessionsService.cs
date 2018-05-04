@@ -344,7 +344,7 @@ namespace MediaBrowser.Api.Session
         /// <returns>System.Object.</returns>
         public object Get(GetSessions request)
         {
-            var result = _sessionManager.Sessions.Where(i => i.IsActive);
+            var result = _sessionManager.Sessions;
 
             if (!string.IsNullOrEmpty(request.DeviceId))
             {

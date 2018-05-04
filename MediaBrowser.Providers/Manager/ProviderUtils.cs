@@ -63,7 +63,7 @@ namespace MediaBrowser.Providers.Manager
 
             if (!lockedFields.Contains(MetadataFields.Genres))
             {
-                if (replaceData || target.Genres.Count == 0)
+                if (replaceData || target.Genres.Length == 0)
                 {
                     target.Genres = source.Genres;
                 }

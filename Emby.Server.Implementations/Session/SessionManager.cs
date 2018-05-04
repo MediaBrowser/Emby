@@ -269,6 +269,19 @@ namespace Emby.Server.Implementations.Session
             return session;
         }
 
+        public void CloseIfNeeded(SessionInfo session)
+        {
+            if (!session.SessionControllers.Any(i => i.IsSessionActive))
+            {
+                var key = GetSessionKey(session.AppName, session.DeviceId);
+
+                SessionInfo removed;
+                _activeConnections.TryRemove(key, out removed);
+
+                OnSessionEnded(session);
+            }
+        }
+
         public void ReportSessionEnded(string sessionId)
         {
             CheckDisposed();
@@ -997,11 +1010,6 @@ namespace Emby.Server.Implementations.Session
                 {
                     throw new ArgumentException(string.Format("{0} is not allowed to play media.", user.Name));
                 }
-            }
-
-            if (items.Any(i => !session.PlayableMediaTypes.Contains(i.MediaType, StringComparer.OrdinalIgnoreCase)))
-            {
-                throw new ArgumentException(string.Format("{0} is unable to play the requested media type.", session.DeviceName ?? session.Id));
             }
 
             if (user != null && command.ItemIds.Length == 1 && user.Configuration.EnableNextEpisodeAutoPlay)

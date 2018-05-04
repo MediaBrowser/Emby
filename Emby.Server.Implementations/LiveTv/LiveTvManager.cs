@@ -581,9 +581,8 @@ namespace Emby.Server.Implementations.LiveTv
 
             item.Tags = tags.ToArray();
 
-            item.Genres = info.Genres;
+            item.Genres = info.Genres.ToArray();
             item.IsHD = info.IsHD;
-            item.IsKids = info.IsKids;
             item.IsMovie = info.IsMovie;
             item.IsNews = info.IsNews;
             item.IsRepeat = info.IsRepeat;
@@ -1247,8 +1246,12 @@ namespace Emby.Server.Implementations.LiveTv
                     currentChannel.IsMovie = isMovie;
                     currentChannel.IsNews = isNews;
                     currentChannel.IsSports = isSports;
-                    currentChannel.IsKids = isKids;
                     currentChannel.IsSeries = iSSeries;
+
+                    if (isKids)
+                    {
+                        currentChannel.AddTag("Kids");
+                    }
 
                     //currentChannel.UpdateToRepository(ItemUpdateType.MetadataImport, cancellationToken);
                     await currentChannel.RefreshMetadata(new MetadataRefreshOptions(_fileSystem)
@@ -1914,6 +1917,12 @@ namespace Emby.Server.Implementations.LiveTv
             };
         }
 
+        public BaseItem GetLiveTvChannel(TimerInfo timer, ILiveTvService service)
+        {
+            var internalChannelId = _tvDtoService.GetInternalChannelId(service.Name, timer.ChannelId);
+            return _libraryManager.GetItemById(internalChannelId);
+        }
+
         public void AddChannelInfo(List<Tuple<BaseItemDto, LiveTvChannel>> tuples, DtoOptions options, User user)
         {
             var now = DateTime.UtcNow;
@@ -2006,7 +2015,7 @@ namespace Emby.Server.Implementations.LiveTv
                     CommunityRating = program.CommunityRating,
                     EndDate = program.EndDate ?? DateTime.MinValue,
                     EpisodeTitle = program.EpisodeTitle,
-                    Genres = program.Genres,
+                    Genres = program.Genres.ToList(),
                     Id = program.ExternalId,
                     IsHD = program.IsHD,
                     IsKids = program.IsKids,
@@ -2380,7 +2389,6 @@ namespace Emby.Server.Implementations.LiveTv
                 info.Id = Guid.NewGuid().ToString("N");
                 list.Add(info);
                 config.ListingProviders = list.ToArray(list.Count);
-                info.EnableNewProgramIds = true;
             }
             else
             {

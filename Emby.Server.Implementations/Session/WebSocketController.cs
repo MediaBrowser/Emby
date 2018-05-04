@@ -67,17 +67,13 @@ namespace Emby.Server.Implementations.Session
 
         void connection_Closed(object sender, EventArgs e)
         {
-            if (!GetActiveSockets().Any())
-            {
-                try
-                {
-                    _sessionManager.ReportSessionEnded(Session.Id);
-                }
-                catch (Exception ex)
-                {
-                    _logger.ErrorException("Error reporting session ended.", ex);
-                }
-            }
+            var connection = (IWebSocketConnection)sender;
+            var sockets = Sockets.ToList();
+            sockets.Remove(connection);
+
+            Sockets = sockets;
+
+            _sessionManager.CloseIfNeeded(Session);
         }
 
         public Task SendMessage<T>(string name, string messageId, T data, ISessionController[] allControllers, CancellationToken cancellationToken)

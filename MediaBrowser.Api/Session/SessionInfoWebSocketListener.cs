@@ -89,7 +89,7 @@ namespace MediaBrowser.Api.Session
         /// <returns>Task{SystemInfo}.</returns>
         protected override Task<IEnumerable<SessionInfoDto>> GetDataToSend(WebSocketListenerState state, CancellationToken cancellationToken)
         {
-            return Task.FromResult(_sessionManager.Sessions.Where(i => i.IsActive).Select(_sessionManager.GetSessionInfoDto));
+            return Task.FromResult(_sessionManager.Sessions.Select(_sessionManager.GetSessionInfoDto));
         }
 
         protected override bool SendOnTimer

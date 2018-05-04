@@ -347,7 +347,7 @@ namespace MediaBrowser.LocalMetadata.Savers
                 writer.WriteEndElement();
             }
 
-            if (item.Genres.Count > 0)
+            if (item.Genres.Length > 0)
             {
                 writer.WriteStartElement("Genres");
 

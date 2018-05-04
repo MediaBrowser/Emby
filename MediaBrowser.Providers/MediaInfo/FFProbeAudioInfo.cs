@@ -15,6 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using MediaBrowser.Model.Dto;
+using System;
 
 namespace MediaBrowser.Providers.MediaInfo
 {
@@ -129,7 +130,7 @@ namespace MediaBrowser.Providers.MediaInfo
 
             if (!audio.LockedFields.Contains(MetadataFields.Genres))
             {
-                audio.Genres.Clear();
+                audio.Genres = Array.Empty<string>();
 
                 foreach (var genre in data.Genres)
                 {

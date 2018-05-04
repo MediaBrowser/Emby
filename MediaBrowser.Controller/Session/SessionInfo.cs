@@ -169,7 +169,7 @@ namespace MediaBrowser.Controller.Session
                     return false;
                 }
 
-                return (DateTime.UtcNow - LastActivityDate).TotalMinutes <= 10;
+                return true;
             }
         }
 

@@ -53,7 +53,7 @@ namespace MediaBrowser.Controller.Entities
             ThemeSongIds = new Guid[] {};
             ThemeVideoIds = new Guid[] {};
             Tags = new string[] {};
-            Genres = new List<string>();
+            Genres = new string[] {};
             Studios = new string[] {};
             ProviderIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             LockedFields = EmptyMetadataFieldsArray;
@@ -970,7 +970,7 @@ namespace MediaBrowser.Controller.Entities
         /// </summary>
         /// <value>The genres.</value>
         [IgnoreDataMember]
-        public List<string> Genres { get; set; }
+        public string[] Genres { get; set; }
 
         /// <summary>
         /// Gets or sets the tags.
@@ -2143,9 +2143,12 @@ namespace MediaBrowser.Controller.Entities
                 throw new ArgumentNullException("name");
             }
 
-            if (!Genres.Contains(name, StringComparer.OrdinalIgnoreCase))
+            var genres = Genres;
+            if (!genres.Contains(name, StringComparer.OrdinalIgnoreCase))
             {
-                Genres.Add(name);
+                var list = genres.ToList();
+                list.Add(name);
+                Genres = list.ToArray();
             }
         }
 
@@ -2703,7 +2706,7 @@ namespace MediaBrowser.Controller.Entities
                 if (!item.Genres.SequenceEqual(ownedItem.Genres, StringComparer.Ordinal))
                 {
                     newOptions.ForceSave = true;
-                    ownedItem.Genres = item.Genres.ToList();
+                    ownedItem.Genres = item.Genres;
                 }
                 if (!item.Studios.SequenceEqual(ownedItem.Studios, StringComparer.Ordinal))
                 {

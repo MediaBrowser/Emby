@@ -373,7 +373,9 @@ namespace Emby.Server.Implementations.Library
 
         public void SetDefaultAudioAndSubtitleStreamIndexes(BaseItem item, MediaSourceInfo source, User user)
         {
-            if (item is Video)
+            var mediaType = item.MediaType;
+
+            if (string.Equals(mediaType, MediaType.Video, StringComparison.OrdinalIgnoreCase))
             {
                 var userData = item == null ? new UserItemData() : _userDataManager.GetUserData(user, item);
 
@@ -382,7 +384,7 @@ namespace Emby.Server.Implementations.Library
                 SetDefaultAudioStreamIndex(source, userData, user, allowRememberingSelection);
                 SetDefaultSubtitleStreamIndex(source, userData, user, allowRememberingSelection);
             }
-            else if (item is Audio)
+            else if (string.Equals(mediaType, MediaType.Audio, StringComparison.OrdinalIgnoreCase))
             {
                 var audio = source.MediaStreams.FirstOrDefault(i => i.Type == MediaStreamType.Audio);
 
@@ -417,7 +419,7 @@ namespace Emby.Server.Implementations.Library
         private readonly Dictionary<string, LiveStreamInfo> _openStreams = new Dictionary<string, LiveStreamInfo>(StringComparer.OrdinalIgnoreCase);
         private readonly SemaphoreSlim _liveStreamSemaphore = new SemaphoreSlim(1, 1);
 
-        public async Task<LiveStreamResponse> OpenLiveStream(LiveStreamRequest request, CancellationToken cancellationToken)
+        public async Task<Tuple<LiveStreamResponse, IDirectStreamProvider>> OpenLiveStreamInternal(LiveStreamRequest request, CancellationToken cancellationToken)
         {
             await _liveStreamSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
@@ -466,15 +468,22 @@ namespace Emby.Server.Implementations.Library
                     SetDefaultAudioAndSubtitleStreamIndexes(item, clone, user);
                 }
 
-                return new LiveStreamResponse
+                return new Tuple<LiveStreamResponse, IDirectStreamProvider>(new LiveStreamResponse
                 {
                     MediaSource = clone
-                };
+
+                }, info.DirectStreamProvider);
             }
             finally
             {
                 _liveStreamSemaphore.Release();
             }
+        }
+
+        public async Task<LiveStreamResponse> OpenLiveStream(LiveStreamRequest request, CancellationToken cancellationToken)
+        {
+            var result = await OpenLiveStreamInternal(request, cancellationToken).ConfigureAwait(false);
+            return result.Item1;
         }
 
         public async Task<MediaSourceInfo> GetLiveStreamMediaInfo(string id, CancellationToken cancellationToken)
@@ -549,7 +558,7 @@ namespace Emby.Server.Implementations.Library
                 {
                     _fileSystem.CreateDirectory(_fileSystem.GetDirectoryName(cacheFilePath));
                     _jsonSerializer.SerializeToFile(mediaInfo, cacheFilePath);
-                    
+
                     //_logger.Debug("Saved media info to {0}", cacheFilePath);
                 }
             }

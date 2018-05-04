@@ -78,7 +78,7 @@
                 </div>
 
                 <div class="dashboardSection" style="padding-left: 0;">
-                    <h3 style="margin-left:.3em;">${HeaderActiveDevices}</h3>
+                    <h3 style="margin-left:.4em;">${HeaderActiveDevices}</h3>
                     <div class="activeDevices itemsContainer vertical-wrap">
                     </div>
 
@@ -87,7 +87,10 @@
 
             <div class="dashboardColumn dashboardColumn-2-40 dashboardColumn-3-27">
                 <div class="dashboardSection">
-                    <h3>${HeaderRecentActivity}</h3>
+                    <a is="emby-linkbutton" href="serveractivity.html" class="button-flat sectionTitleTextButton">
+                        <h3>${HeaderRecentActivity}</h3>
+                        <i class="md-icon">&#xE5CC;</i>
+                    </a>
                     <div class="paperList activityItems">
                     </div>
                 </div>
@@ -101,7 +104,11 @@
                 </div>
 
                 <div class="dashboardSection">
-                    <h3>${HeaderLatestNews}</h3>
+
+                    <a is="emby-linkbutton" href="https://emby.media/community/index.php?/blog/1-emby-blog" class="button-flat sectionTitleTextButton" target="_blank">
+                        <h3>${HeaderLatestNews}</h3>
+                        <i class="md-icon">&#xE5CC;</i>
+                    </a>
                     <div class="paperList latestNewsItems">
                     </div>
                 </div>
@@ -109,25 +116,25 @@
                 <div class="dashboardSection">
                     <h3>${HeaderPaths}</h3>
                     <div class="paperList">
-                        <div class="listItem listItem-shaded">
+                        <div class="listItem listItem-border">
                             <div class="listItemBody two-line">
                                 <div class="listItemBodyText secondary" style="margin:0;">${LabelCache}</div>
                                 <div class="listItemBodyText" id="cachePath"></div>
                             </div>
                         </div>
-                        <div class="listItem listItem-shaded">
+                        <div class="listItem listItem-border">
                             <div class="listItemBody two-line">
                                 <div class="listItemBodyText secondary" style="margin:0;">${LabelLogs}</div>
                                 <div class="listItemBodyText" id="logPath"></div>
                             </div>
                         </div>
-                        <div class="listItem listItem-shaded">
+                        <div class="listItem listItem-border">
                             <div class="listItemBody two-line">
                                 <div class="listItemBodyText secondary" style="margin:0;">${LabelMetadata}</div>
                                 <div class="listItemBodyText" id="metadataPath"></div>
                             </div>
                         </div>
-                        <div class="listItem listItem-shaded">
+                        <div class="listItem listItem-border">
                             <div class="listItemBody two-line">
                                 <div class="listItemBodyText secondary" style="margin:0;">${LabelTranscodingTemporaryFiles}</div>
                                 <div class="listItemBodyText" id="transcodingTemporaryPath"></div>

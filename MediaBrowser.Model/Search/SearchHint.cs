@@ -79,6 +79,8 @@ namespace MediaBrowser.Model.Search
         /// <value>The type.</value>
         public string Type { get; set; }
 
+        public bool? IsFolder { get; set; }
+  
         /// <summary>
         /// Gets or sets the run time ticks.
         /// </summary>
