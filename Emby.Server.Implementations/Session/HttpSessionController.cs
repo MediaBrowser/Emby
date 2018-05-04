@@ -48,7 +48,7 @@ namespace Emby.Server.Implementations.Session
         {
             get
             {
-                return (DateTime.UtcNow - Session.LastActivityDate).TotalMinutes <= 10;
+                return (DateTime.UtcNow - Session.LastActivityDate).TotalMinutes <= 5;
             }
         }
 

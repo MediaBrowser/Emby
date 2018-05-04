@@ -1321,7 +1321,7 @@ namespace MediaBrowser.Providers.TV
 
                                     if (vals.Count > 0)
                                     {
-                                        item.Genres.Clear();
+                                        item.Genres = Array.Empty<string>();
 
                                         foreach (var genre in vals)
                                         {

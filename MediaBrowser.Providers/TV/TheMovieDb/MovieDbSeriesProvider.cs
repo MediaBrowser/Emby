@@ -237,7 +237,7 @@ namespace MediaBrowser.Providers.TV
 
             if (seriesInfo.genres != null)
             {
-                series.Genres = seriesInfo.genres.Select(i => i.name).ToList();
+                series.Genres = seriesInfo.genres.Select(i => i.name).ToArray();
             }
 
             series.HomePageUrl = seriesInfo.homepage;

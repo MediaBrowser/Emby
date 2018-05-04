@@ -75,7 +75,7 @@ namespace MediaBrowser.Providers.Music
 
             if (!string.IsNullOrEmpty(result.strGenre))
             {
-                item.Genres = new List<string> { result.strGenre };
+                item.Genres = new [] { result.strGenre };
             }
 
             item.SetProviderId(MetadataProviders.AudioDbArtist, result.idArtist);

@@ -168,7 +168,13 @@ namespace MediaBrowser.Controller.LiveTv
         /// </summary>
         /// <value><c>true</c> if this instance is kids; otherwise, <c>false</c>.</value>
         [IgnoreDataMember]
-        public bool IsKids { get; set; }
+        public bool IsKids
+        {
+            get
+            {
+                return Tags.Contains("Kids", StringComparer.OrdinalIgnoreCase);
+            }
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is premiere.

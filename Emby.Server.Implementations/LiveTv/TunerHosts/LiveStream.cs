@@ -70,7 +70,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
         public virtual Task Open(CancellationToken openCancellationToken)
         {
             DateOpened = DateTime.UtcNow;
-            return Task.FromResult(true);
+            return Task.CompletedTask;
         }
 
         public void Close()

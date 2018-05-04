@@ -886,8 +886,6 @@ namespace MediaBrowser.Api.LiveTv
 
         public async Task<object> Post(AddTunerHost request)
         {
-            request.EnableNewHdhrChannelIds = true;
-
             var result = await _liveTvManager.SaveTunerHost(request).ConfigureAwait(false);
             return ToOptimizedResult(result);
         }

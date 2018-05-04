@@ -174,7 +174,7 @@ namespace MediaBrowser.Model.Dto
         /// Gets or sets the genres.
         /// </summary>
         /// <value>The genres.</value>
-        public List<string> Genres { get; set; }
+        public string[] Genres { get; set; }
 
         /// <summary>
         /// Gets or sets the community rating.

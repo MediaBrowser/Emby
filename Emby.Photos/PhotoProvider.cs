@@ -137,7 +137,7 @@ namespace Emby.Photos
                                     item.ProductionYear = dateTaken.Value.Year;
                                 }
 
-                                item.Genres = image.ImageTag.Genres.ToList();
+                                item.Genres = image.ImageTag.Genres;
                                 item.Tags = image.ImageTag.Keywords;
                                 item.Software = image.ImageTag.Software;
 

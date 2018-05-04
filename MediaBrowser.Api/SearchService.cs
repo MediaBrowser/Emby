@@ -204,6 +204,11 @@ namespace MediaBrowser.Api
                 EndDate = item.EndDate
             };
 
+            if (item.IsFolder)
+            {
+                result.IsFolder = true;
+            }
+
             var primaryImageTag = _imageProcessor.GetImageCacheTag(item, ImageType.Primary);
 
             if (primaryImageTag != null)

@@ -327,5 +327,7 @@ namespace MediaBrowser.Controller.Session
         /// <param name="id">The identifier.</param>
         /// <returns>Task.</returns>
         void RevokeToken(string id);
+
+        void CloseIfNeeded(SessionInfo session);
     }
 }

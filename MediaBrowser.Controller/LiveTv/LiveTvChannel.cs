@@ -7,6 +7,8 @@ using MediaBrowser.Model.MediaInfo;
 using System.Collections.Generic;
 using System.Globalization;
 using MediaBrowser.Model.Serialization;
+using System;
+using System.Linq;
 
 namespace MediaBrowser.Controller.LiveTv
 {
@@ -174,7 +176,13 @@ namespace MediaBrowser.Controller.LiveTv
         /// </summary>
         /// <value><c>true</c> if this instance is kids; otherwise, <c>false</c>.</value>
         [IgnoreDataMember]
-        public bool IsKids { get; set; }
+        public bool IsKids
+        {
+            get
+            {
+                return Tags.Contains("Kids", StringComparer.OrdinalIgnoreCase);
+            }
+        }
 
         [IgnoreDataMember]
         public bool IsRepeat { get; set; }

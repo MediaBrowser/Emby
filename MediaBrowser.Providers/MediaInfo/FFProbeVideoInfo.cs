@@ -360,9 +360,9 @@ namespace MediaBrowser.Providers.MediaInfo
 
             if (!video.IsLocked && !video.LockedFields.Contains(MetadataFields.Genres))
             {
-                if (video.Genres.Count == 0 || isFullRefresh)
+                if (video.Genres.Length == 0 || isFullRefresh)
                 {
-                    video.Genres.Clear();
+                    video.Genres = Array.Empty<string>();
 
                     foreach (var genre in data.Genres)
                     {

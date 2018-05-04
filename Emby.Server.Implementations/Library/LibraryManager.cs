@@ -1080,20 +1080,19 @@ namespace Emby.Server.Implementations.Library
             _logger.Info("Validating media library");
 
             await ValidateTopLibraryFolders(cancellationToken).ConfigureAwait(false);
-            progress.Report(3);
 
             var innerProgress = new ActionableProgress<double>();
 
-            innerProgress.RegisterAction(pct => progress.Report(3 + pct * .72));
+            innerProgress.RegisterAction(pct => progress.Report(pct * .85));
 
             // Now validate the entire media library
             await RootFolder.ValidateChildren(innerProgress, cancellationToken, new MetadataRefreshOptions(_fileSystem), recursive: true).ConfigureAwait(false);
 
-            progress.Report(75);
+            progress.Report(85);
 
             innerProgress = new ActionableProgress<double>();
 
-            innerProgress.RegisterAction(pct => progress.Report(75 + pct * .25));
+            innerProgress.RegisterAction(pct => progress.Report(85 + pct * .15));
 
             // Run post-scan tasks
             await RunPostScanTasks(innerProgress, cancellationToken).ConfigureAwait(false);
@@ -1123,8 +1122,13 @@ namespace Emby.Server.Implementations.Library
 
                 innerProgress.RegisterAction(pct =>
                 {
-                    double innerPercent = currentNumComplete * 100 + pct;
+                    double innerPercent = pct;
+                    innerPercent /= 100;
+                    innerPercent += currentNumComplete;
+
                     innerPercent /= numTasks;
+                    innerPercent *= 100;
+
                     progress.Report(innerPercent);
                 });
 

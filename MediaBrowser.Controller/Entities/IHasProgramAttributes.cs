@@ -7,7 +7,7 @@ namespace MediaBrowser.Controller.Entities
         bool IsMovie { get; set; }
         bool IsSports { get; set; }
         bool IsNews { get; set; }
-        bool IsKids { get; set; }
+        bool IsKids { get; }
         bool IsRepeat { get; set; }
         bool? IsHD { get; set; }
         bool IsSeries { get; set; }

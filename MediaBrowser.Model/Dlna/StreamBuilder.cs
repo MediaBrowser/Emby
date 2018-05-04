@@ -443,11 +443,12 @@ namespace MediaBrowser.Model.Dlna
                 // Honor requested max channels
                 playlistItem.GlobalMaxAudioChannels = options.MaxAudioChannels;
 
-                long transcodingBitrate = options.AudioTranscodingBitrate ??
-                    options.Profile.MusicStreamingTranscodingBitrate ??
-                    128000;
-
                 var configuredBitrate = options.GetMaxBitrate(true);
+
+                long transcodingBitrate = options.AudioTranscodingBitrate ??
+                    (options.Context == EncodingContext.Streaming ? options.Profile.MusicStreamingTranscodingBitrate : null) ??
+                    configuredBitrate ??
+                    128000;
 
                 if (configuredBitrate.HasValue)
                 {
