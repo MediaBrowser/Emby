@@ -13,6 +13,8 @@ namespace MediaBrowser.Model.Search
         /// <value>The item id.</value>
         public string ItemId { get; set; }
 
+        public string Id { get; set; }
+ 
         /// <summary>
         /// Gets or sets the name.
         /// </summary>

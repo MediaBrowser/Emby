@@ -46,6 +46,7 @@ using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Model.Tasks;
 using Emby.Server.Implementations.Playlists;
 using MediaBrowser.Providers.MediaInfo;
+using MediaBrowser.Controller;
 
 namespace Emby.Server.Implementations.Library
 {
@@ -136,6 +137,7 @@ namespace Emby.Server.Implementations.Library
         private readonly Func<IProviderManager> _providerManagerFactory;
         private readonly Func<IUserViewManager> _userviewManager;
         public bool IsScanRunning { get; private set; }
+        private IServerApplicationHost _appHost;
 
         /// <summary>
         /// The _library items cache
@@ -163,7 +165,7 @@ namespace Emby.Server.Implementations.Library
         /// <param name="userManager">The user manager.</param>
         /// <param name="configurationManager">The configuration manager.</param>
         /// <param name="userDataRepository">The user data repository.</param>
-        public LibraryManager(ILogger logger, ITaskManager taskManager, IUserManager userManager, IServerConfigurationManager configurationManager, IUserDataManager userDataRepository, Func<ILibraryMonitor> libraryMonitorFactory, IFileSystem fileSystem, Func<IProviderManager> providerManagerFactory, Func<IUserViewManager> userviewManager)
+        public LibraryManager(IServerApplicationHost appHost, ILogger logger, ITaskManager taskManager, IUserManager userManager, IServerConfigurationManager configurationManager, IUserDataManager userDataRepository, Func<ILibraryMonitor> libraryMonitorFactory, IFileSystem fileSystem, Func<IProviderManager> providerManagerFactory, Func<IUserViewManager> userviewManager)
         {
             _logger = logger;
             _taskManager = taskManager;
@@ -174,6 +176,7 @@ namespace Emby.Server.Implementations.Library
             _fileSystem = fileSystem;
             _providerManagerFactory = providerManagerFactory;
             _userviewManager = userviewManager;
+            _appHost = appHost;
             _libraryItemsCache = new ConcurrentDictionary<Guid, BaseItem>();
 
             ConfigurationManager.ConfigurationUpdated += ConfigurationUpdated;
@@ -578,7 +581,7 @@ namespace Emby.Server.Implementations.Library
 
                 try
                 {
-                    files = FileData.GetFilteredFileSystemEntries(directoryService, args.Path, _fileSystem, _logger, args, flattenFolderDepth: flattenFolderDepth, resolveShortcuts: isPhysicalRoot || isVf);
+                    files = FileData.GetFilteredFileSystemEntries(directoryService, args.Path, _fileSystem, _appHost, _logger, args, flattenFolderDepth: flattenFolderDepth, resolveShortcuts: isPhysicalRoot || isVf);
                 }
                 catch (Exception ex)
                 {
@@ -1192,7 +1195,7 @@ namespace Emby.Server.Implementations.Library
                     {
                         try
                         {
-                            return _fileSystem.ResolveShortcut(i);
+                            return _appHost.ExpandVirtualPath(_fileSystem.ResolveShortcut(i));
                         }
                         catch (Exception ex)
                         {
@@ -2141,7 +2144,7 @@ namespace Emby.Server.Implementations.Library
             string viewType,
             string sortName)
         {
-            var path = Path.Combine(ConfigurationManager.ApplicationPaths.ItemsByNamePath, "views");
+            var path = Path.Combine(ConfigurationManager.ApplicationPaths.InternalMetadataPath, "views");
 
             path = Path.Combine(path, _fileSystem.GetValidFilename(viewType));
 
@@ -3006,7 +3009,7 @@ namespace Emby.Server.Implementations.Library
                 lnk = Path.Combine(virtualFolderPath, shortcutFilename + ShortcutFileExtension);
             }
 
-            _fileSystem.CreateShortcut(lnk, path);
+            _fileSystem.CreateShortcut(lnk, _appHost.ReverseVirtualPath(path));
 
             RemoveContentTypeOverrides(path);
 
@@ -3172,7 +3175,7 @@ namespace Emby.Server.Implementations.Library
 
             var shortcut = _fileSystem.GetFilePaths(virtualFolderPath, true)
                 .Where(i => string.Equals(ShortcutFileExtension, Path.GetExtension(i), StringComparison.OrdinalIgnoreCase))
-                .FirstOrDefault(f => _fileSystem.ResolveShortcut(f).Equals(mediaPath, StringComparison.OrdinalIgnoreCase));
+                .FirstOrDefault(f => _appHost.ExpandVirtualPath(_fileSystem.ResolveShortcut(f)).Equals(mediaPath, StringComparison.OrdinalIgnoreCase));
 
             if (!string.IsNullOrEmpty(shortcut))
             {

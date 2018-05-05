@@ -194,7 +194,7 @@ namespace MediaBrowser.Api
                 Name = item.Name,
                 IndexNumber = item.IndexNumber,
                 ParentIndexNumber = item.ParentIndexNumber,
-                ItemId = _dtoService.GetDtoId(item),
+                Id = _dtoService.GetDtoId(item),
                 Type = item.GetClientTypeName(),
                 MediaType = item.MediaType,
                 MatchedTerm = hintInfo.MatchedTerm,
@@ -203,6 +203,9 @@ namespace MediaBrowser.Api
                 ChannelId = item.ChannelId,
                 EndDate = item.EndDate
             };
+
+            // legacy
+            result.ItemId = result.Id;
 
             if (item.IsFolder)
             {
