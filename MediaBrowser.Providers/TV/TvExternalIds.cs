@@ -42,7 +42,7 @@ namespace MediaBrowser.Providers.TV
 
         public string UrlFormatString
         {
-            get { return TvdbPrescanTask.TvdbBaseUrl + "/index.php?tab=series&id={0}"; }
+            get { return TvdbPrescanTask.TvdbBaseUrl + "?tab=series&id={0}"; }
         }
 
         public bool Supports(IHasProviderIds item)
@@ -88,7 +88,7 @@ namespace MediaBrowser.Providers.TV
 
         public string UrlFormatString
         {
-            get { return TvdbPrescanTask.TvdbBaseUrl + "index.php?tab=episode&id={0}"; }
+            get { return TvdbPrescanTask.TvdbBaseUrl + "?tab=episode&id={0}"; }
         }
 
         public bool Supports(IHasProviderIds item)
