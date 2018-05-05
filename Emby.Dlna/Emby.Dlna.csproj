@@ -33,6 +33,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Api\DlnaServerService.cs" />
+    <Compile Include="Api\DlnaService.cs" />
     <Compile Include="Common\Argument.cs" />
     <Compile Include="Common\DeviceIcon.cs" />
     <Compile Include="Common\DeviceService.cs" />
