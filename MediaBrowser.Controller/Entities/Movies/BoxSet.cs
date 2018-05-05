@@ -21,6 +21,7 @@ namespace MediaBrowser.Controller.Entities.Movies
             LocalTrailerIds = new Guid[] {};
             RemoteTrailerIds = new Guid[] {};
 
+
             DisplayOrder = ItemSortBy.PremiereDate;
         }
 
@@ -168,6 +169,11 @@ namespace MediaBrowser.Controller.Entities.Movies
         {
             if (base.IsVisible(user))
             {
+                if (LinkedChildren.Length == 0)
+                {
+                    return true;
+                }
+
                 return base.GetChildren(user, true).Count > 0;
             }
 
