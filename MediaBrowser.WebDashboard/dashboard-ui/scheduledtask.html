@@ -1,13 +1,18 @@
-﻿<div id="scheduledTaskPage" data-role="page" class="page type-interior scheduledTasksConfigurationPage" data-helpurl="https://github.com/MediaBrowser/Wiki/wiki/Scheduled%20tasks">
+﻿<div id="scheduledTaskPage" data-role="page" class="page type-interior scheduledTasksConfigurationPage">
     <div>
         <div class="content-primary">
 
-            <div class="readOnlyContent">
-                <h1 class="taskName"></h1>
+            <div class="verticalSection">
+                <div class="sectionTitleContainer formSectionTitleContainer flex align-items-center">
+                    <h2 class="sectionTitle taskName"></h2>
+                    <a is="emby-linkbutton" class="raised button-alt headerHelpButton" target="_blank" href="https://github.com/MediaBrowser/Wiki/wiki/Scheduled%20tasks">${Help}</a>
+                </div>
                 <p id="pTaskDescription"></p>
+            </div>
+
+            <div class="readOnlyContent">
                 <div>
-                    <br />
-                    <h2 style="margin: .6em 0; vertical-align: middle; display: inline-block;">
+                    <h2 style="vertical-align: middle; display: inline-block;">
                         ${HeaderTaskTriggers}
                     </h2>
                     <button is="emby-button" type="button" class="fab fab-mini btnAddTrigger submit" style="margin-left: 1em;" title="${ButtonAddScheduledTaskTrigger}">
@@ -44,8 +49,7 @@
                     </select>
                 </div>
                 <div id="fldTimeOfDay" class="selectContainer">
-                    <select is="emby-select" id="selectTimeOfDay" label="${LabelTime}">
-                    </select>
+                    <select is="emby-select" id="selectTimeOfDay" label="${LabelTime}"></select>
                 </div>
                 <div id="fldSelectSystemEvent" class="selectContainer">
                     <select is="emby-select" id="selectSystemEvent" name="selectSystemEvent" label="${LabelEvent}">
@@ -67,7 +71,7 @@
                     </select>
                 </div>
                 <div class="inputContainer">
-                    <input is="emby-input" id="txtTimeLimit" type="number" pattern="[0-9]*" min="1" step=".5" label="${LabelTimeLimitHours}"/>
+                    <input is="emby-input" id="txtTimeLimit" type="number" pattern="[0-9]*" min="1" step=".5" label="${LabelTimeLimitHours}" />
                 </div>
                 <div>
                     <button type="submit" data-icon="check">

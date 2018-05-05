@@ -24,11 +24,13 @@ namespace MediaBrowser.Controller.Entities
     public class CollectionFolder : Folder, ICollectionFolder
     {
         public static IXmlSerializer XmlSerializer { get; set; }
+        public static IJsonSerializer JsonSerializer { get; set; }
+        public static IServerApplicationHost ApplicationHost { get; set; }
 
         public CollectionFolder()
         {
-            PhysicalLocationsList = new string[] {};
-            PhysicalFolderIds = new Guid[] {};
+            PhysicalLocationsList = new string[] { };
+            PhysicalFolderIds = new Guid[] { };
         }
 
         //public override double? GetDefaultPrimaryImageAspectRatio()
@@ -81,6 +83,14 @@ namespace MediaBrowser.Controller.Entities
                     return new LibraryOptions();
                 }
 
+                foreach (var mediaPath in result.PathInfos)
+                {
+                    if (!string.IsNullOrEmpty(mediaPath.Path))
+                    {
+                        mediaPath.Path = ApplicationHost.ExpandVirtualPath(mediaPath.Path);
+                    }
+                }
+
                 return result;
             }
             catch (FileNotFoundException)
@@ -130,7 +140,16 @@ namespace MediaBrowser.Controller.Entities
             {
                 LibraryOptions[path] = options;
 
-                XmlSerializer.SerializeToFile(options, GetLibraryOptionsPath(path));
+                var clone = JsonSerializer.DeserializeFromString<LibraryOptions>(JsonSerializer.SerializeToString(options));
+                foreach (var mediaPath in clone.PathInfos)
+                {
+                    if (!string.IsNullOrEmpty(mediaPath.Path))
+                    {
+                        mediaPath.Path = ApplicationHost.ReverseVirtualPath(mediaPath.Path);
+                    }
+                }
+
+                XmlSerializer.SerializeToFile(clone, GetLibraryOptionsPath(path));
             }
         }
 
@@ -290,7 +309,7 @@ namespace MediaBrowser.Controller.Entities
             {
                 var flattenFolderDepth = 0;
 
-                var files = FileData.GetFilteredFileSystemEntries(directoryService, args.Path, FileSystem, Logger, args, flattenFolderDepth: flattenFolderDepth, resolveShortcuts: true);
+                var files = FileData.GetFilteredFileSystemEntries(directoryService, args.Path, FileSystem, ApplicationHost, Logger, args, flattenFolderDepth: flattenFolderDepth, resolveShortcuts: true);
 
                 args.FileSystemChildren = files;
             }

@@ -45,7 +45,7 @@ using MediaBrowser.Common.Events;
 using MediaBrowser.Common.Extensions;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Common.Plugins;
-using MediaBrowser.Common.Progress;
+using MediaBrowser.Model.Extensions;
 using MediaBrowser.Common.Security;
 using MediaBrowser.Common.Updates;
 using MediaBrowser.Controller;
@@ -451,6 +451,22 @@ namespace Emby.Server.Implementations
             fileSystem.AddShortcutHandler(new MbLinkShortcutHandler(fileSystem));
 
             NetworkManager.NetworkChanged += NetworkManager_NetworkChanged;
+        }
+
+        public string ExpandVirtualPath(string path)
+        {
+            var appPaths = ApplicationPaths;
+
+            return path.Replace(appPaths.VirtualDataPath, appPaths.DataPath, StringComparison.OrdinalIgnoreCase)
+                .Replace(appPaths.VirtualInternalMetadataPath, appPaths.InternalMetadataPath, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public string ReverseVirtualPath(string path)
+        {
+            var appPaths = ApplicationPaths;
+
+            return path.Replace(appPaths.DataPath, appPaths.VirtualDataPath, StringComparison.OrdinalIgnoreCase)
+                .Replace(appPaths.InternalMetadataPath, appPaths.VirtualInternalMetadataPath, StringComparison.OrdinalIgnoreCase);
         }
 
         private string[] GetConfiguredLocalSubnets()
@@ -935,7 +951,7 @@ namespace Emby.Server.Implementations
             DisplayPreferencesRepository = displayPreferencesRepo;
             RegisterSingleInstance(DisplayPreferencesRepository);
 
-            var itemRepo = new SqliteItemRepository(ServerConfigurationManager, JsonSerializer, LogManager.GetLogger("SqliteItemRepository"), MemoryStreamFactory, assemblyInfo, FileSystemManager, EnvironmentInfo, TimerFactory);
+            var itemRepo = new SqliteItemRepository(ServerConfigurationManager, this, JsonSerializer, LogManager.GetLogger("SqliteItemRepository"), MemoryStreamFactory, assemblyInfo, FileSystemManager, EnvironmentInfo, TimerFactory);
             ItemRepository = itemRepo;
             RegisterSingleInstance(ItemRepository);
 
@@ -945,7 +961,7 @@ namespace Emby.Server.Implementations
             UserManager = new UserManager(LogManager.GetLogger("UserManager"), ServerConfigurationManager, UserRepository, XmlSerializer, NetworkManager, () => ImageProcessor, () => DtoService, () => ConnectManager, this, JsonSerializer, FileSystemManager, CryptographyProvider);
             RegisterSingleInstance(UserManager);
 
-            LibraryManager = new LibraryManager(Logger, TaskManager, UserManager, ServerConfigurationManager, UserDataManager, () => LibraryMonitor, FileSystemManager, () => ProviderManager, () => UserViewManager);
+            LibraryManager = new LibraryManager(this, Logger, TaskManager, UserManager, ServerConfigurationManager, UserDataManager, () => LibraryMonitor, FileSystemManager, () => ProviderManager, () => UserViewManager);
             RegisterSingleInstance(LibraryManager);
 
             var musicManager = new MusicManager(LibraryManager);
@@ -1355,6 +1371,8 @@ namespace Emby.Server.Implementations
             UserView.CollectionManager = CollectionManager;
             BaseItem.MediaSourceManager = MediaSourceManager;
             CollectionFolder.XmlSerializer = XmlSerializer;
+            CollectionFolder.JsonSerializer = JsonSerializer;
+            CollectionFolder.ApplicationHost = this;
             AuthenticatedAttribute.AuthService = AuthService;
         }
 
@@ -1940,7 +1958,7 @@ namespace Emby.Server.Implementations
                 Id = SystemId,
                 ProgramDataPath = ApplicationPaths.ProgramDataPath,
                 LogPath = ApplicationPaths.LogDirectoryPath,
-                ItemsByNamePath = ApplicationPaths.ItemsByNamePath,
+                ItemsByNamePath = ApplicationPaths.InternalMetadataPath,
                 InternalMetadataPath = ApplicationPaths.InternalMetadataPath,
                 CachePath = ApplicationPaths.CachePath,
                 HttpServerPortNumber = HttpPort,

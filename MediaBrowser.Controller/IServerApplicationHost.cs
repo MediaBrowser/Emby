@@ -93,5 +93,8 @@ namespace MediaBrowser.Controller
         string PackageRuntime { get; }
 
         WakeOnLanInfo[] GetWakeOnLanInfo();
+
+        string ExpandVirtualPath(string path);
+        string ReverseVirtualPath(string path);
     }
 }

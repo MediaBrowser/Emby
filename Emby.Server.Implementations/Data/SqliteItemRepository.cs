@@ -32,6 +32,7 @@ using SQLitePCL.pretty;
 using MediaBrowser.Model.System;
 using MediaBrowser.Model.Threading;
 using MediaBrowser.Model.Extensions;
+using MediaBrowser.Controller;
 
 namespace Emby.Server.Implementations.Data
 {
@@ -65,18 +66,17 @@ namespace Emby.Server.Implementations.Data
         /// </summary>
         private readonly IServerConfigurationManager _config;
 
-        private readonly string _criticReviewsPath;
-
         private readonly IMemoryStreamFactory _memoryStreamProvider;
         private readonly IFileSystem _fileSystem;
         private readonly IEnvironmentInfo _environmentInfo;
         private readonly ITimerFactory _timerFactory;
         private ITimer _shrinkMemoryTimer;
+        private IServerApplicationHost _appHost;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqliteItemRepository"/> class.
         /// </summary>
-        public SqliteItemRepository(IServerConfigurationManager config, IJsonSerializer jsonSerializer, ILogger logger, IMemoryStreamFactory memoryStreamProvider, IAssemblyInfo assemblyInfo, IFileSystem fileSystem, IEnvironmentInfo environmentInfo, ITimerFactory timerFactory)
+        public SqliteItemRepository(IServerConfigurationManager config, IServerApplicationHost appHost, IJsonSerializer jsonSerializer, ILogger logger, IMemoryStreamFactory memoryStreamProvider, IAssemblyInfo assemblyInfo, IFileSystem fileSystem, IEnvironmentInfo environmentInfo, ITimerFactory timerFactory)
             : base(logger)
         {
             if (config == null)
@@ -88,6 +88,7 @@ namespace Emby.Server.Implementations.Data
                 throw new ArgumentNullException("jsonSerializer");
             }
 
+            _appHost = appHost;
             _config = config;
             _jsonSerializer = jsonSerializer;
             _memoryStreamProvider = memoryStreamProvider;
@@ -96,7 +97,6 @@ namespace Emby.Server.Implementations.Data
             _timerFactory = timerFactory;
             _typeMapper = new TypeMapper(assemblyInfo);
 
-            _criticReviewsPath = Path.Combine(_config.ApplicationPaths.DataPath, "critic-reviews");
             DbFilePath = Path.Combine(_config.ApplicationPaths.DataPath, "library.db");
         }
 
@@ -736,6 +736,21 @@ namespace Emby.Server.Implementations.Data
             }
         }
 
+        private string GetPathToSave(string path)
+        {
+            if (path == null)
+            {
+                return null;
+            }
+
+            return _appHost.ReverseVirtualPath(path);
+        }
+
+        private string RestorePath(string path)
+        {
+            return _appHost.ExpandVirtualPath(path);
+        }
+
         private void SaveItem(BaseItem item, BaseItem topParent, string userDataKey, IStatement saveItemStatement)
         {
             saveItemStatement.TryBind("@guid", item.Id);
@@ -750,7 +765,7 @@ namespace Emby.Server.Implementations.Data
                 saveItemStatement.TryBindNull("@data");
             }
 
-            saveItemStatement.TryBind("@Path", item.Path);
+            saveItemStatement.TryBind("@Path", GetPathToSave(item.Path));
 
             var hasStartDate = item as IHasStartDate;
             if (hasStartDate != null)
@@ -1184,7 +1199,7 @@ namespace Emby.Server.Implementations.Data
                 path = string.Empty;
             }
 
-            return path +
+            return GetPathToSave(path) +
                    delimeter +
                    image.DateModified.Ticks.ToString(CultureInfo.InvariantCulture) +
                    delimeter +
@@ -1206,7 +1221,7 @@ namespace Emby.Server.Implementations.Data
 
             var image = new ItemImageInfo();
 
-            image.Path = parts[0];
+            image.Path = RestorePath(parts[0]);
 
             long ticks;
             if (long.TryParse(parts[1], NumberStyles.Any, CultureInfo.InvariantCulture, out ticks))
@@ -1555,7 +1570,7 @@ namespace Emby.Server.Implementations.Data
 
             if (!reader.IsDBNull(index))
             {
-                item.Path = reader.GetString(index);
+                item.Path = RestorePath(reader.GetString(index));
             }
             index++;
 
@@ -3684,7 +3699,7 @@ namespace Emby.Server.Implementations.Data
                 whereClauses.Add("(Path=@Path COLLATE NOCASE)");
                 if (statement != null)
                 {
-                    statement.TryBind("@Path", query.Path);
+                    statement.TryBind("@Path", GetPathToSave(query.Path));
                 }
             }
 
@@ -5712,7 +5727,7 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
                             paramList.Add(stream.ChannelLayout);
                             paramList.Add(stream.Profile);
                             paramList.Add(stream.AspectRatio);
-                            paramList.Add(stream.Path);
+                            paramList.Add(GetPathToSave(stream.Path));
 
                             paramList.Add(stream.IsInterlaced);
                             paramList.Add(stream.BitRate);
@@ -5794,7 +5809,7 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
 
             if (reader[8].SQLiteType != SQLiteType.Null)
             {
-                item.Path = reader[8].ToString();
+                item.Path = RestorePath(reader[8].ToString());
             }
 
             item.IsInterlaced = reader.GetBoolean(9);

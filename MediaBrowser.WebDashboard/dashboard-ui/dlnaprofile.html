@@ -1,11 +1,17 @@
-﻿<div id="dlnaProfilePage" data-role="page" class="page type-interior dlnaPage withTabs" data-helpurl="https://github.com/MediaBrowser/Wiki/wiki/Dlna%20profiles" data-require="jQuery,emby-collapse,jqmpopup,scripts/dlnaprofile,emby-button">
+﻿<div id="dlnaProfilePage" data-role="page" class="page type-interior dlnaPage withTabs" data-require="jQuery,emby-collapse,jqmpopup,scripts/dlnaprofile,emby-button">
 
     <div data-role="content">
         <div class="content-primary">
 
             <form class="dlnaProfileForm" style="max-width: 650px;">
 
-                <p>${HeaderProfileInformation}</p>
+                <div class="verticalSection">
+                    <div class="sectionTitleContainer formSectionTitleContainer flex align-items-center">
+                        <h2 class="sectionTitle">${HeaderProfileInformation}</h2>
+                        <a is="emby-linkbutton" class="raised button-alt headerHelpButton" target="_blank" href="https://github.com/MediaBrowser/Wiki/wiki/Dlna%20profiles">${Help}</a>
+                    </div>
+                </div>
+
                 <div data-role="controlgroup" data-type="horizontal" data-mini="true">
                     <a href="#" is="emby-linkbutton" data-role="button" class="radioTabButton" id="radioInfo" data-value="tabInfo">${TabInfo}</a>
                     <a href="#" is="emby-linkbutton" data-role="button" class="radioTabButton" id="radioDirectPlay" data-value="tabDirectPlayProfiles">${TabDirectPlay}</a>

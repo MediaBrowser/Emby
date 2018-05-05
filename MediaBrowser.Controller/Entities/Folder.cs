@@ -1565,7 +1565,7 @@ namespace MediaBrowser.Controller.Entities
                         {
                             Logger.Debug("Found shortcut at {0}", i.FullName);
 
-                            var resolvedPath = FileSystem.ResolveShortcut(i.FullName);
+                            var resolvedPath = CollectionFolder.ApplicationHost.ExpandVirtualPath(FileSystem.ResolveShortcut(i.FullName));
 
                             if (!string.IsNullOrEmpty(resolvedPath))
                             {
