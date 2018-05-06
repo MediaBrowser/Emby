@@ -164,11 +164,10 @@ namespace MediaBrowser.Providers.Manager
                 // TODO: Isolate this hack into the tvh plugin
                 if (string.IsNullOrEmpty(response.ContentType))
                 {
-                    if (response.ResponseUrl.IndexOf("/imagecache/", StringComparison.OrdinalIgnoreCase) != -1)
+                    if (url.IndexOf("/imagecache/", StringComparison.OrdinalIgnoreCase) != -1)
                     {
                         response.ContentType = "image/png";
                     }
-
                 }
 
                 await SaveImage(item, response.Content, response.ContentType, type, imageIndex, cancellationToken).ConfigureAwait(false);
