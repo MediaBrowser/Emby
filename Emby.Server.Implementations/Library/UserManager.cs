@@ -528,7 +528,7 @@ namespace Emby.Server.Implementations.Library
         /// <returns>IEnumerable{User}.</returns>
         private List<User> LoadUsers()
         {
-            var users = UserRepository.RetrieveAllUsers().ToList();
+            var users = UserRepository.RetrieveAllUsers();
 
             // There always has to be at least one user.
             if (users.Count == 0)

@@ -290,7 +290,7 @@ namespace MediaBrowser.Api
                 IsHidden = false,
                 IsDisabled = false
 
-            }, true);
+            }, true, true);
         }
 
         /// <summary>
@@ -300,10 +300,10 @@ namespace MediaBrowser.Api
         /// <returns>System.Object.</returns>
         public object Get(GetUsers request)
         {
-            return Get(request, false);
+            return Get(request, false, false);
         }
 
-        private object Get(GetUsers request, bool filterByDevice)
+        private object Get(GetUsers request, bool filterByDevice, bool filterByNetwork)
         {
             var users = _userManager.Users;
 
@@ -332,9 +332,12 @@ namespace MediaBrowser.Api
                 }
             }
 
-            if (!_networkManager.IsInLocalNetwork(Request.RemoteIp))
+            if (filterByNetwork)
             {
-                users = users.Where(i => i.Policy.EnableRemoteAccess);
+                if (!_networkManager.IsInLocalNetwork(Request.RemoteIp))
+                {
+                    users = users.Where(i => i.Policy.EnableRemoteAccess);
+                }
             }
 
             var result = users

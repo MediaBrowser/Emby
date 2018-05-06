@@ -29,6 +29,6 @@ namespace MediaBrowser.Controller.Persistence
         /// Retrieves all users.
         /// </summary>
         /// <returns>IEnumerable{User}.</returns>
-        IEnumerable<User> RetrieveAllUsers();
+        List<User> RetrieveAllUsers();
     }
 }

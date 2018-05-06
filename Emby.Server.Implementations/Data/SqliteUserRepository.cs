@@ -104,7 +104,7 @@ namespace Emby.Server.Implementations.Data
         /// Retrieve all users from the database
         /// </summary>
         /// <returns>IEnumerable{User}.</returns>
-        public IEnumerable<User> RetrieveAllUsers()
+        public List<User> RetrieveAllUsers()
         {
             var list = new List<User>();
 
