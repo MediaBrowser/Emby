@@ -636,10 +636,14 @@ namespace Emby.Server.Implementations.HttpServer
 
                 if (!string.IsNullOrEmpty(GlobalResponse))
                 {
-                    httpRes.StatusCode = 503;
-                    httpRes.ContentType = "text/html";
-                    Write(httpRes, GlobalResponse);
-                    return;
+                    // We don't want the address pings in ApplicationHost to fail
+                    if (localPath.IndexOf("system/ping", StringComparison.OrdinalIgnoreCase) == -1)
+                    {
+                        httpRes.StatusCode = 503;
+                        httpRes.ContentType = "text/html";
+                        Write(httpRes, GlobalResponse);
+                        return;
+                    }
                 }
 
                 var handler = GetServiceHandler(httpReq);
