@@ -98,15 +98,15 @@ namespace MediaBrowser.Controller.Entities
                 .GetUserItems(parent, this, CollectionType, query);
         }
 
-        public override List<BaseItem> GetChildren(User user, bool includeLinkedChildren)
+        public override List<BaseItem> GetChildren(User user, bool includeLinkedChildren, InternalItemsQuery query)
         {
-            var result = GetItemList(new InternalItemsQuery
+            if (query == null)
             {
-                User = user,
-                EnableTotalRecordCount = false,
-                DtoOptions = new DtoOptions(true)
+                query = new InternalItemsQuery(user);
+            }
 
-            });
+            query.EnableTotalRecordCount = false;
+            var result = GetItemList(query);
 
             return result.ToList();
         }

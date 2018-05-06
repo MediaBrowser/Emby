@@ -134,9 +134,9 @@ namespace MediaBrowser.Controller.Playlists
             return Task.FromResult(true);
         }
 
-        public override List<BaseItem> GetChildren(User user, bool includeLinkedChildren)
+        public override List<BaseItem> GetChildren(User user, bool includeLinkedChildren, InternalItemsQuery query)
         {
-            return GetPlayableItems(user, new DtoOptions(true));
+            return GetPlayableItems(user, query);
         }
 
         protected override IEnumerable<BaseItem> GetNonCachedChildren(IDirectoryService directoryService)
@@ -146,14 +146,7 @@ namespace MediaBrowser.Controller.Playlists
 
         public override IEnumerable<BaseItem> GetRecursiveChildren(User user, InternalItemsQuery query)
         {
-            var items = GetPlayableItems(user, query.DtoOptions);
-
-            if (query != null)
-            {
-                items = items.Where(i => UserViewBuilder.FilterItem(i, query)).ToList();
-            }
-
-            return items;
+            return GetPlayableItems(user, query);
         }
 
         public IEnumerable<Tuple<LinkedChild, BaseItem>> GetManageableItems()
@@ -161,9 +154,16 @@ namespace MediaBrowser.Controller.Playlists
             return GetLinkedChildrenInfos();
         }
 
-        private List<BaseItem> GetPlayableItems(User user, DtoOptions options)
+        private List<BaseItem> GetPlayableItems(User user, InternalItemsQuery query)
         {
-            return GetPlaylistItems(MediaType, base.GetChildren(user, true), user, options);
+            if (query == null)
+            {
+                query = new InternalItemsQuery(user);
+            }
+
+            query.IsFolder = false;
+
+            return base.GetChildren(user, true, query);
         }
 
         public static List<BaseItem> GetPlaylistItems(string playlistMediaType, IEnumerable<BaseItem> inputItems, User user, DtoOptions options)
@@ -256,8 +256,29 @@ namespace MediaBrowser.Controller.Playlists
             PlaylistMediaType = value;
         }
 
+        [IgnoreDataMember]
+        private bool IsSharedItem
+        {
+            get
+            {
+                var path = Path;
+
+                if (string.IsNullOrEmpty(path))
+                {
+                    return false;
+                }
+
+                return FileSystem.ContainsSubPath(ConfigurationManager.ApplicationPaths.DataPath, path);
+            }
+        }
+
         public override bool IsVisible(User user)
         {
+            if (!IsSharedItem)
+            {
+                return base.IsVisible(user);
+            }
+
             if (user.Id == OwnerUserId)
             {
                 return true;
@@ -283,6 +304,11 @@ namespace MediaBrowser.Controller.Playlists
 
         public override bool IsVisibleStandalone(User user)
         {
+            if (!IsSharedItem)
+            {
+                return base.IsVisibleStandalone(user);
+            }
+
             return IsVisible(user);
         }
     }

@@ -1251,7 +1251,12 @@ namespace MediaBrowser.Controller.Entities
             return true;
         }
 
-        public virtual List<BaseItem> GetChildren(User user, bool includeLinkedChildren)
+        public List<BaseItem> GetChildren(User user, bool includeLinkedChildren)
+        {
+            return GetChildren(user, includeLinkedChildren, null);
+        }
+
+        public virtual List<BaseItem> GetChildren(User user, bool includeLinkedChildren, InternalItemsQuery query)
         {
             if (user == null)
             {
@@ -1263,7 +1268,7 @@ namespace MediaBrowser.Controller.Entities
 
             var result = new Dictionary<Guid, BaseItem>();
 
-            AddChildren(user, includeLinkedChildren, result, false, null);
+            AddChildren(user, includeLinkedChildren, result, false, query);
 
             return result.Values.ToList();
         }
@@ -1281,13 +1286,20 @@ namespace MediaBrowser.Controller.Entities
         {
             foreach (var child in GetEligibleChildrenForRecursiveChildren(user))
             {
-                if (child.IsVisible(user))
+                bool? isVisibleToUser = null;
+
+                if (query == null || UserViewBuilder.FilterItem(child, query))
                 {
-                    if (query == null || UserViewBuilder.FilterItem(child, query))
+                    isVisibleToUser = child.IsVisible(user);
+
+                    if (isVisibleToUser.Value)
                     {
                         result[child.Id] = child;
                     }
+                }
 
+                if (isVisibleToUser ?? child.IsVisible(user))
+                {
                     if (recursive && child.IsFolder)
                     {
                         var folder = (Folder)child;
@@ -1301,9 +1313,9 @@ namespace MediaBrowser.Controller.Entities
             {
                 foreach (var child in GetLinkedChildren(user))
                 {
-                    if (child.IsVisible(user))
+                    if (query == null || UserViewBuilder.FilterItem(child, query))
                     {
-                        if (query == null || UserViewBuilder.FilterItem(child, query))
+                        if (child.IsVisible(user))
                         {
                             result[child.Id] = child;
                         }
