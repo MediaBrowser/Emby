@@ -305,9 +305,12 @@ namespace MediaBrowser.Providers.Manager
         {
             if (EnableUpdateMetadataFromChildren(item, isFullRefresh, updateType))
             {
-                var children = GetChildrenForMetadataUpdates(item);
+                if (isFullRefresh || updateType > ItemUpdateType.None)
+                {
+                    var children = GetChildrenForMetadataUpdates(item);
 
-                updateType = UpdateMetadataFromChildren(item, children, isFullRefresh, updateType);
+                    updateType = UpdateMetadataFromChildren(item, children, isFullRefresh, updateType);
+                }
             }
 
             var presentationUniqueKey = item.CreatePresentationUniqueKey();
