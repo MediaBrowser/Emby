@@ -1463,8 +1463,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     directStreamProvider = liveStreamResponse.Item2;
                 }
 
-                liveStreamId = mediaStreamInfo.Id;
-
                 var recorder = GetRecorder(mediaStreamInfo);
 
                 recordPath = recorder.GetOutputPath(mediaStreamInfo, recordPath);

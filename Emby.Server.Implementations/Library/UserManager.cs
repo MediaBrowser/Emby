@@ -45,7 +45,9 @@ namespace Emby.Server.Implementations.Library
         /// Gets the users.
         /// </summary>
         /// <value>The users.</value>
-        public IEnumerable<User> Users { get; private set; }
+        public IEnumerable<User> Users { get { return _users; } }
+
+        private User[] _users;
 
         /// <summary>
         /// The _logger
@@ -94,7 +96,7 @@ namespace Emby.Server.Implementations.Library
             _fileSystem = fileSystem;
             _cryptographyProvider = cryptographyProvider;
             ConfigurationManager = configurationManager;
-            Users = new List<User>();
+            _users = Array.Empty<User>();
 
             DeletePinFile();
         }
@@ -192,7 +194,7 @@ namespace Emby.Server.Implementations.Library
 
         public void Initialize()
         {
-            Users = LoadUsers();
+            _users = LoadUsers();
 
             var users = Users.ToList();
 
@@ -526,7 +528,7 @@ namespace Emby.Server.Implementations.Library
         /// Loads the users from the repository
         /// </summary>
         /// <returns>IEnumerable{User}.</returns>
-        private List<User> LoadUsers()
+        private User[] LoadUsers()
         {
             var users = UserRepository.RetrieveAllUsers();
 
@@ -554,7 +556,7 @@ namespace Emby.Server.Implementations.Library
                 UpdateUserPolicy(user, user.Policy, false);
             }
 
-            return users;
+            return users.ToArray();
         }
 
         public UserDto GetUserDto(User user, string remoteEndPoint = null)
@@ -745,7 +747,7 @@ namespace Emby.Server.Implementations.Library
 
                 var list = Users.ToList();
                 list.Add(user);
-                Users = list;
+                _users = list.ToArray();
 
                 user.DateLastSaved = DateTime.UtcNow;
 
@@ -816,7 +818,7 @@ namespace Emby.Server.Implementations.Library
 
                 DeleteUserPolicy(user);
 
-                Users = allUsers.Where(i => i.Id != user.Id).ToList();
+                _users = allUsers.Where(i => i.Id != user.Id).ToArray();
 
                 OnUserDeleted(user);
             }
