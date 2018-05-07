@@ -25,6 +25,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Extensions;
+using MediaBrowser.Controller.Playlists;
 
 namespace Emby.Server.Implementations.Dto
 {
@@ -427,7 +428,7 @@ namespace Emby.Server.Implementations.Dto
                 if (!dto.ChildCount.HasValue && item.SourceType == SourceType.Library)
                 {
                     // For these types we can try to optimize and assume these values will be equal
-                    if (item is MusicAlbum || item is Season)
+                    if (item is MusicAlbum || item is Season || item is Playlist)
                     {
                         dto.ChildCount = dto.RecursiveItemCount;
                     }
