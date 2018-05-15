@@ -240,7 +240,7 @@ namespace MediaBrowser.Api
                 }
             }
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         /// <summary>
@@ -269,7 +269,7 @@ namespace MediaBrowser.Api
                 SupporterKey = _securityManager.SupporterKey
             };
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         /// <summary>

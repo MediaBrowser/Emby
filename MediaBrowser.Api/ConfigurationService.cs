@@ -140,7 +140,7 @@ namespace MediaBrowser.Api
 
         public object Get(GetDefaultMetadataOptions request)
         {
-            return ToOptimizedSerializedResultUsingCache(new MetadataOptions());
+            return ToOptimizedResult(new MetadataOptions());
         }
     }
 }

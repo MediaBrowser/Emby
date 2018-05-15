@@ -20,12 +20,10 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
     {
         private readonly HttpListenerRequest request;
         private readonly IHttpResponse response;
-        private readonly IMemoryStreamFactory _memoryStreamProvider;
 
-        public WebSocketSharpRequest(HttpListenerContext httpContext, string operationName, ILogger logger, IMemoryStreamFactory memoryStreamProvider)
+        public WebSocketSharpRequest(HttpListenerContext httpContext, string operationName, ILogger logger)
         {
             this.OperationName = operationName;
-            _memoryStreamProvider = memoryStreamProvider;
             this.request = httpContext.Request;
             this.response = new WebSocketSharpResponse(logger, httpContext.Response, this);
 

@@ -138,7 +138,7 @@ namespace MediaBrowser.Api
         {
             var result = await GetSearchHintsAsync(request).ConfigureAwait(false);
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         /// <summary>

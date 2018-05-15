@@ -986,10 +986,10 @@ namespace MediaBrowser.Model.Dlna
                     double? maxHeight = MaxHeight.HasValue ? (double)MaxHeight.Value : (double?)null;
 
                     ImageSize newSize = DrawingUtils.Resize(size,
-                        null,
-                        null,
-                        maxWidth,
-                        maxHeight);
+                        0,
+                        0,
+                        maxWidth ?? 0,
+                        maxHeight ?? 0);
 
                     return Convert.ToInt32(newSize.Width);
                 }
@@ -1016,10 +1016,10 @@ namespace MediaBrowser.Model.Dlna
                     double? maxHeight = MaxHeight.HasValue ? (double)MaxHeight.Value : (double?)null;
 
                     ImageSize newSize = DrawingUtils.Resize(size,
-                        null,
-                        null,
-                        maxWidth,
-                        maxHeight);
+                        0,
+                        0,
+                        maxWidth ?? 0,
+                        maxHeight ?? 0);
 
                     return Convert.ToInt32(newSize.Height);
                 }

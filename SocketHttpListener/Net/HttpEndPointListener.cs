@@ -37,17 +37,17 @@ namespace SocketHttpListener.Net
         private readonly ICryptoProvider _cryptoProvider;
         private readonly ISocketFactory _socketFactory;
         private readonly ITextEncoding _textEncoding;
-        private readonly IMemoryStreamFactory _memoryStreamFactory;
+        private readonly IStreamHelper _streamHelper;
         private readonly IFileSystem _fileSystem;
         private readonly IEnvironmentInfo _environment;
 
-        public HttpEndPointListener(HttpListener listener, IPAddress addr, int port, bool secure, X509Certificate cert, ILogger logger, ICryptoProvider cryptoProvider, ISocketFactory socketFactory, IMemoryStreamFactory memoryStreamFactory, ITextEncoding textEncoding, IFileSystem fileSystem, IEnvironmentInfo environment)
+        public HttpEndPointListener(HttpListener listener, IPAddress addr, int port, bool secure, X509Certificate cert, ILogger logger, ICryptoProvider cryptoProvider, ISocketFactory socketFactory, IStreamHelper streamHelper, ITextEncoding textEncoding, IFileSystem fileSystem, IEnvironmentInfo environment)
         {
             this._listener = listener;
             _logger = logger;
             _cryptoProvider = cryptoProvider;
             _socketFactory = socketFactory;
-            _memoryStreamFactory = memoryStreamFactory;
+            _streamHelper = streamHelper;
             _textEncoding = textEncoding;
             _fileSystem = fileSystem;
             _environment = environment;
@@ -111,19 +111,18 @@ namespace SocketHttpListener.Net
             // This is the number TcpListener uses.
             _socket.Listen(2147483647);
 
-            Accept(_socket, this);
+            Accept();
 
             _closed = false;
         }
 
-        private static void Accept(Socket socket, HttpEndPointListener epl)
+        private void Accept()
         {
             var acceptEventArg = new SocketAsyncEventArgs();
-            acceptEventArg.UserToken = epl;
+            acceptEventArg.UserToken = this;
             acceptEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(OnAccept);
 
-            Socket dummy = null;
-            Accept(socket, acceptEventArg, ref dummy);
+            Accept(acceptEventArg);
         }
 
         private static void TryCloseAndDispose(Socket socket)
@@ -153,14 +152,14 @@ namespace SocketHttpListener.Net
             }
         }
 
-        private static void Accept(Socket socket, SocketAsyncEventArgs acceptEventArg, ref Socket accepted)
+        private void Accept(SocketAsyncEventArgs acceptEventArg)
         {
             // acceptSocket must be cleared since the context object is being reused
             acceptEventArg.AcceptSocket = null;
 
             try
             {
-                bool willRaiseEvent = socket.AcceptAsync(acceptEventArg);
+                bool willRaiseEvent = _socket.AcceptAsync(acceptEventArg);
 
                 if (!willRaiseEvent)
                 {
@@ -169,22 +168,12 @@ namespace SocketHttpListener.Net
             }
             catch (ObjectDisposedException)
             {
-                if (accepted != null)
-                {
-                    TryCloseAndDispose(accepted);
-                }
             }
             catch (Exception ex)
             {
                 HttpEndPointListener epl = (HttpEndPointListener)acceptEventArg.UserToken;
 
                 epl._logger.ErrorException("Error in socket.AcceptAsync", ex);
-
-                if (accepted != null)
-                {
-                    TryClose(accepted);
-                    accepted = null;
-                }
             }
         }
 
@@ -205,37 +194,56 @@ namespace SocketHttpListener.Net
                 return;
             }
 
-            var acceptSocket = args.AcceptSocket;
-
             // http://msdn.microsoft.com/en-us/library/system.net.sockets.acceptSocket.acceptasync%28v=vs.110%29.aspx
             // Under certain conditions ConnectionReset can occur
             // Need to attept to re-accept
-            if (args.SocketError == SocketError.ConnectionReset)
+            var socketError = args.SocketError;
+            var accepted = args.AcceptSocket;
+
+            epl.Accept(args);
+
+            if (socketError == SocketError.ConnectionReset)
             {
                 epl._logger.Error("SocketError.ConnectionReset reported. Attempting to re-accept.");
-                TryClose(acceptSocket);
-                Accept(epl._socket, epl);
                 return;
             }
 
-            if (acceptSocket != null)
+            if(accepted == null)
             {
-                try
-                {
-                    await epl.ProcessAccept(acceptSocket).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    epl._logger.ErrorException("Error in ProcessAccept", ex);
-
-                    TryClose(acceptSocket);
-                    Accept(epl._socket, epl);
-                    return;
-                }
+                return;
             }
 
-            // Accept the next connection request
-            Accept(epl._socket, args, ref acceptSocket);
+            if (epl._secure && epl._cert == null)
+            {
+                TryClose(accepted);
+                return;
+            }
+
+            try
+            {
+                var remoteEndPointString = accepted.RemoteEndPoint == null ? string.Empty : accepted.RemoteEndPoint.ToString();
+                var localEndPointString = accepted.LocalEndPoint == null ? string.Empty : accepted.LocalEndPoint.ToString();
+                //_logger.Info("HttpEndPointListener Accepting connection from {0} to {1} secure connection requested: {2}", remoteEndPointString, localEndPointString, _secure);
+
+                HttpConnection conn = new HttpConnection(epl._logger, accepted, epl, epl._secure, epl._cert, epl._cryptoProvider, epl._streamHelper, epl._textEncoding, epl._fileSystem, epl._environment);
+
+                await conn.Init().ConfigureAwait(false);
+
+                //_logger.Debug("Adding unregistered connection to {0}. Id: {1}", accepted.RemoteEndPoint, connectionId);
+                lock (epl._unregisteredConnections)
+                {
+                    epl._unregisteredConnections[conn] = conn;
+                }
+                conn.BeginReadRequest();
+            }
+            catch (Exception ex)
+            {
+                epl._logger.ErrorException("Error in ProcessAccept", ex);
+
+                TryClose(accepted);
+                epl.Accept();
+                return;
+            }
         }
 
         private Socket CreateSocket(AddressFamily addressFamily, bool dualMode)
@@ -267,32 +275,6 @@ namespace SocketHttpListener.Net
                     throw;
                 }
             }
-        }
-
-        private async Task ProcessAccept(Socket accepted)
-        {
-            var listener = this;
-
-            if (listener._secure && listener._cert == null)
-            {
-                accepted.Close();
-                return;
-            }
-
-            var remoteEndPointString = accepted.RemoteEndPoint == null ? string.Empty : accepted.RemoteEndPoint.ToString();
-            var localEndPointString = accepted.LocalEndPoint == null ? string.Empty : accepted.LocalEndPoint.ToString();
-            //_logger.Info("HttpEndPointListener Accepting connection from {0} to {1} secure connection requested: {2}", remoteEndPointString, localEndPointString, _secure);
-
-            HttpConnection conn = new HttpConnection(_logger, accepted, listener, _secure, _cert, _cryptoProvider, _memoryStreamFactory, _textEncoding, _fileSystem, _environment);
-
-            await conn.Init().ConfigureAwait(false);
-
-            //_logger.Debug("Adding unregistered connection to {0}. Id: {1}", accepted.RemoteEndPoint, connectionId);
-            lock (listener._unregisteredConnections)
-            {
-                listener._unregisteredConnections[conn] = conn;
-            }
-            conn.BeginReadRequest();
         }
 
         internal void RemoveConnection(HttpConnection conn)

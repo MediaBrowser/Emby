@@ -297,7 +297,7 @@ namespace MediaBrowser.Api
         {
             var result = GetSimilarItemsResult(request);
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         private QueryResult<BaseItemDto> GetSimilarItemsResult(BaseGetSimilarItemsFromItem request)
@@ -365,7 +365,7 @@ namespace MediaBrowser.Api
                 Items = returnItems
             };
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         /// <summary>
@@ -391,7 +391,7 @@ namespace MediaBrowser.Api
 
             var returnItems = _dtoService.GetBaseItemDtos(result.Items, options, user);
 
-            return ToOptimizedSerializedResultUsingCache(new QueryResult<BaseItemDto>
+            return ToOptimizedResult(new QueryResult<BaseItemDto>
             {
                 TotalRecordCount = result.TotalRecordCount,
                 Items = returnItems

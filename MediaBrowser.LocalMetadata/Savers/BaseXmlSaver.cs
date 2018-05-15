@@ -325,7 +325,7 @@ namespace MediaBrowser.LocalMetadata.Savers
             {
                 var timespan = TimeSpan.FromTicks(runTimeTicks.Value);
 
-                writer.WriteElementString("RunningTime", Convert.ToInt32(timespan.TotalMinutes).ToString(UsCulture));
+                writer.WriteElementString("RunningTime", Math.Floor(timespan.TotalMinutes).ToString(UsCulture));
             }
 
             if (item.ProviderIds != null)

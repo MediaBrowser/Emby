@@ -130,7 +130,7 @@ namespace MediaBrowser.Api.UserLibrary
                 Items = returnItems
             };
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace MediaBrowser.Api.UserLibrary
 
             var result = GetItems(request);
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         /// <summary>

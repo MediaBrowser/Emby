@@ -12,7 +12,7 @@ namespace MediaBrowser.Controller.Drawing
             if (originalImageSize.HasValue)
             {
                 // Determine the output size based on incoming parameters
-                var newSize = DrawingUtils.Resize(originalImageSize.Value, options.Width, options.Height, options.MaxWidth, options.MaxHeight);
+                var newSize = DrawingUtils.Resize(originalImageSize.Value, options.Width ?? 0, options.Height ?? 0, options.MaxWidth ?? 0, options.MaxHeight ?? 0);
 
                 return newSize;
             }

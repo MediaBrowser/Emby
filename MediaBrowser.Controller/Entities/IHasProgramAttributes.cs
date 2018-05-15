@@ -5,8 +5,8 @@ namespace MediaBrowser.Controller.Entities
     public interface IHasProgramAttributes
     {
         bool IsMovie { get; set; }
-        bool IsSports { get; set; }
-        bool IsNews { get; set; }
+        bool IsSports { get; }
+        bool IsNews { get; }
         bool IsKids { get; }
         bool IsRepeat { get; set; }
         bool? IsHD { get; set; }

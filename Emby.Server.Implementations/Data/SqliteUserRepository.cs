@@ -18,13 +18,11 @@ namespace Emby.Server.Implementations.Data
     public class SqliteUserRepository : BaseSqliteRepository, IUserRepository
     {
         private readonly IJsonSerializer _jsonSerializer;
-        private readonly IMemoryStreamFactory _memoryStreamProvider;
 
-        public SqliteUserRepository(ILogger logger, IServerApplicationPaths appPaths, IJsonSerializer jsonSerializer, IMemoryStreamFactory memoryStreamProvider)
+        public SqliteUserRepository(ILogger logger, IServerApplicationPaths appPaths, IJsonSerializer jsonSerializer)
             : base(logger)
         {
             _jsonSerializer = jsonSerializer;
-            _memoryStreamProvider = memoryStreamProvider;
 
             DbFilePath = Path.Combine(appPaths.DataPath, "users.db");
         }
@@ -79,7 +77,7 @@ namespace Emby.Server.Implementations.Data
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var serialized = _jsonSerializer.SerializeToBytes(user, _memoryStreamProvider);
+            var serialized = _jsonSerializer.SerializeToBytes(user);
 
             cancellationToken.ThrowIfCancellationRequested();
 

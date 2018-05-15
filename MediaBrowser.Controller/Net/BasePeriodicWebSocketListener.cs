@@ -57,11 +57,6 @@ namespace MediaBrowser.Controller.Net
         }
 
         /// <summary>
-        /// The null task result
-        /// </summary>
-        protected Task NullTaskResult = Task.FromResult(true);
-
-        /// <summary>
         /// Processes the message.
         /// </summary>
         /// <param name="message">The message.</param>
@@ -83,7 +78,7 @@ namespace MediaBrowser.Controller.Net
                 Stop(message);
             }
 
-            return NullTaskResult;
+            return Task.FromResult(true);
         }
 
         protected readonly CultureInfo UsCulture = new CultureInfo("en-US");

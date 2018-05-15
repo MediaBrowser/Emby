@@ -66,7 +66,6 @@ namespace Emby.Server.Implementations.Data
         /// </summary>
         private readonly IServerConfigurationManager _config;
 
-        private readonly IMemoryStreamFactory _memoryStreamProvider;
         private readonly IFileSystem _fileSystem;
         private readonly IEnvironmentInfo _environmentInfo;
         private readonly ITimerFactory _timerFactory;
@@ -76,7 +75,7 @@ namespace Emby.Server.Implementations.Data
         /// <summary>
         /// Initializes a new instance of the <see cref="SqliteItemRepository"/> class.
         /// </summary>
-        public SqliteItemRepository(IServerConfigurationManager config, IServerApplicationHost appHost, IJsonSerializer jsonSerializer, ILogger logger, IMemoryStreamFactory memoryStreamProvider, IAssemblyInfo assemblyInfo, IFileSystem fileSystem, IEnvironmentInfo environmentInfo, ITimerFactory timerFactory)
+        public SqliteItemRepository(IServerConfigurationManager config, IServerApplicationHost appHost, IJsonSerializer jsonSerializer, ILogger logger, IAssemblyInfo assemblyInfo, IFileSystem fileSystem, IEnvironmentInfo environmentInfo, ITimerFactory timerFactory)
             : base(logger)
         {
             if (config == null)
@@ -91,7 +90,6 @@ namespace Emby.Server.Implementations.Data
             _appHost = appHost;
             _config = config;
             _jsonSerializer = jsonSerializer;
-            _memoryStreamProvider = memoryStreamProvider;
             _fileSystem = fileSystem;
             _environmentInfo = environmentInfo;
             _timerFactory = timerFactory;
@@ -180,7 +178,6 @@ namespace Emby.Server.Implementations.Data
                     AddColumn(db, "TypedBaseItems", "EndDate", "DATETIME", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "ChannelId", "Text", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "IsMovie", "BIT", existingColumnNames);
-                    AddColumn(db, "TypedBaseItems", "IsSports", "BIT", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "CommunityRating", "Float", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "CustomRating", "Text", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "IndexNumber", "INT", existingColumnNames);
@@ -201,7 +198,6 @@ namespace Emby.Server.Implementations.Data
                     AddColumn(db, "TypedBaseItems", "DateCreated", "DATETIME", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "DateModified", "DATETIME", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "IsSeries", "BIT", existingColumnNames);
-                    AddColumn(db, "TypedBaseItems", "IsNews", "BIT", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "EpisodeTitle", "Text", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "IsRepeat", "BIT", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "PreferredMetadataLanguage", "Text", existingColumnNames);
@@ -395,9 +391,7 @@ namespace Emby.Server.Implementations.Data
             "EndDate",
             "ChannelId",
             "IsMovie",
-            "IsSports",
             "IsSeries",
-            "IsNews",
             "EpisodeTitle",
             "IsRepeat",
             "CommunityRating",
@@ -512,9 +506,7 @@ namespace Emby.Server.Implementations.Data
                 "EndDate",
                 "ChannelId",
                 "IsMovie",
-                "IsSports",
                 "IsSeries",
-                "IsNews",
                 "EpisodeTitle",
                 "IsRepeat",
                 "CommunityRating",
@@ -758,7 +750,7 @@ namespace Emby.Server.Implementations.Data
 
             if (TypeRequiresDeserialization(item.GetType()))
             {
-                saveItemStatement.TryBind("@data", _jsonSerializer.SerializeToBytes(item, _memoryStreamProvider));
+                saveItemStatement.TryBind("@data", _jsonSerializer.SerializeToBytes(item));
             }
             else
             {
@@ -792,18 +784,14 @@ namespace Emby.Server.Implementations.Data
             if (hasProgramAttributes != null)
             {
                 saveItemStatement.TryBind("@IsMovie", hasProgramAttributes.IsMovie);
-                saveItemStatement.TryBind("@IsSports", hasProgramAttributes.IsSports);
                 saveItemStatement.TryBind("@IsSeries", hasProgramAttributes.IsSeries);
-                saveItemStatement.TryBind("@IsNews", hasProgramAttributes.IsNews);
                 saveItemStatement.TryBind("@EpisodeTitle", hasProgramAttributes.EpisodeTitle);
                 saveItemStatement.TryBind("@IsRepeat", hasProgramAttributes.IsRepeat);
             }
             else
             {
                 saveItemStatement.TryBindNull("@IsMovie");
-                saveItemStatement.TryBindNull("@IsSports");
                 saveItemStatement.TryBindNull("@IsSeries");
-                saveItemStatement.TryBindNull("@IsNews");
                 saveItemStatement.TryBindNull("@EpisodeTitle");
                 saveItemStatement.TryBindNull("@IsRepeat");
             }
@@ -1462,19 +1450,7 @@ namespace Emby.Server.Implementations.Data
 
                     if (!reader.IsDBNull(index))
                     {
-                        hasProgramAttributes.IsSports = reader.GetBoolean(index);
-                    }
-                    index++;
-
-                    if (!reader.IsDBNull(index))
-                    {
                         hasProgramAttributes.IsSeries = reader.GetBoolean(index);
-                    }
-                    index++;
-
-                    if (!reader.IsDBNull(index))
-                    {
-                        hasProgramAttributes.IsNews = reader.GetBoolean(index);
                     }
                     index++;
 
@@ -1492,7 +1468,7 @@ namespace Emby.Server.Implementations.Data
                 }
                 else
                 {
-                    index += 6;
+                    index += 4;
                 }
             }
 
@@ -2485,9 +2461,7 @@ namespace Emby.Server.Implementations.Data
             if (!HasProgramAttributes(query))
             {
                 list.Remove("IsMovie");
-                list.Remove("IsSports");
                 list.Remove("IsSeries");
-                list.Remove("IsNews");
                 list.Remove("EpisodeTitle");
                 list.Remove("IsRepeat");
                 list.Remove("ShowId");
@@ -3491,16 +3465,10 @@ namespace Emby.Server.Implementations.Data
                 }
             }
 
-            var exclusiveProgramAttribtues = !(query.IsMovie ?? true) ||
-                                             !(query.IsSports ?? true) ||
-                                             !(query.IsKids ?? true) ||
-                                             !(query.IsNews ?? true) ||
-                                             !(query.IsSeries ?? true);
-
             var tags = query.Tags.ToList();
             var excludeTags = query.ExcludeTags.ToList();
 
-            if (exclusiveProgramAttribtues)
+            if (!(query.IsMovie ?? true) || !(query.IsSeries ?? true))
             {
                 if (query.IsMovie.HasValue)
                 {
@@ -3539,22 +3507,6 @@ namespace Emby.Server.Implementations.Data
                         statement.TryBind("@IsSeries", query.IsSeries);
                     }
                 }
-                if (query.IsNews.HasValue)
-                {
-                    whereClauses.Add("IsNews=@IsNews");
-                    if (statement != null)
-                    {
-                        statement.TryBind("@IsNews", query.IsNews);
-                    }
-                }
-                if (query.IsSports.HasValue)
-                {
-                    whereClauses.Add("IsSports=@IsSports");
-                    if (statement != null)
-                    {
-                        statement.TryBind("@IsSports", query.IsSports);
-                    }
-                }
             }
             else
             {
@@ -3585,22 +3537,6 @@ namespace Emby.Server.Implementations.Data
                         statement.TryBind("@IsMovie", true);
                     }
                 }
-                if (query.IsSports ?? false)
-                {
-                    programAttribtues.Add("IsSports=@IsSports");
-                    if (statement != null)
-                    {
-                        statement.TryBind("@IsSports", query.IsSports);
-                    }
-                }
-                if (query.IsNews ?? false)
-                {
-                    programAttribtues.Add("IsNews=@IsNews");
-                    if (statement != null)
-                    {
-                        statement.TryBind("@IsNews", query.IsNews);
-                    }
-                }
                 if (query.IsSeries ?? false)
                 {
                     programAttribtues.Add("IsSeries=@IsSeries");
@@ -3612,6 +3548,30 @@ namespace Emby.Server.Implementations.Data
                 if (programAttribtues.Count > 0)
                 {
                     whereClauses.Add("(" + string.Join(" OR ", programAttribtues.ToArray(programAttribtues.Count)) + ")");
+                }
+            }
+
+            if (query.IsSports.HasValue)
+            {
+                if (query.IsSports.HasValue)
+                {
+                    tags.Add("Sports");
+                }
+                else
+                {
+                    excludeTags.Add("Sports");
+                }
+            }
+
+            if (query.IsNews.HasValue)
+            {
+                if (query.IsNews.HasValue)
+                {
+                    tags.Add("News");
+                }
+                else
+                {
+                    excludeTags.Add("News");
                 }
             }
 

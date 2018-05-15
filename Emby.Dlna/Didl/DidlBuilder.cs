@@ -1214,7 +1214,7 @@ namespace Emby.Dlna.Didl
                     Height = height.Value,
                     Width = width.Value
 
-                }, null, null, maxWidth, maxHeight);
+                }, 0, 0, maxWidth, maxHeight);
 
                 width = Convert.ToInt32(newSize.Width);
                 height = Convert.ToInt32(newSize.Height);

@@ -24,7 +24,7 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
 
         private readonly ILogger _logger;
         private readonly X509Certificate _certificate;
-        private readonly IMemoryStreamFactory _memoryStreamProvider;
+        private readonly IStreamHelper _streamHelper;
         private readonly ITextEncoding _textEncoding;
         private readonly INetworkManager _networkManager;
         private readonly ISocketFactory _socketFactory;
@@ -36,11 +36,11 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
         private CancellationTokenSource _disposeCancellationTokenSource = new CancellationTokenSource();
         private CancellationToken _disposeCancellationToken;
 
-        public WebSocketSharpListener(ILogger logger, X509Certificate certificate, IMemoryStreamFactory memoryStreamProvider, ITextEncoding textEncoding, INetworkManager networkManager, ISocketFactory socketFactory, ICryptoProvider cryptoProvider, bool enableDualMode, IFileSystem fileSystem, IEnvironmentInfo environment)
+        public WebSocketSharpListener(ILogger logger, X509Certificate certificate, IStreamHelper streamHelper, ITextEncoding textEncoding, INetworkManager networkManager, ISocketFactory socketFactory, ICryptoProvider cryptoProvider, bool enableDualMode, IFileSystem fileSystem, IEnvironmentInfo environment)
         {
             _logger = logger;
             _certificate = certificate;
-            _memoryStreamProvider = memoryStreamProvider;
+            _streamHelper = streamHelper;
             _textEncoding = textEncoding;
             _networkManager = networkManager;
             _socketFactory = socketFactory;
@@ -52,7 +52,7 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
             _disposeCancellationToken = _disposeCancellationTokenSource.Token;
         }
 
-        public Action<Exception, IRequest, bool, bool> ErrorHandler { get; set; }
+        public Func<Exception, IRequest, bool, bool, Task> ErrorHandler { get; set; }
         public Func<IHttpRequest, string, string, string, CancellationToken, Task> RequestHandler { get; set; }
 
         public Action<WebSocketConnectingEventArgs> WebSocketConnecting { get; set; }
@@ -62,7 +62,7 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
         public void Start(IEnumerable<string> urlPrefixes)
         {
             if (_listener == null)
-                _listener = new HttpListener(_logger, _cryptoProvider, _socketFactory, _networkManager, _textEncoding, _memoryStreamProvider, _fileSystem, _environment);
+                _listener = new HttpListener(_logger, _cryptoProvider, _socketFactory, _networkManager, _textEncoding, _streamHelper, _fileSystem, _environment);
 
             _listener.EnableDualMode = _enableDualMode;
 
@@ -99,8 +99,7 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
                 {
                     LoggerUtils.LogRequest(_logger, request);
 
-                    ProcessWebSocketRequest(context);
-                    return Task.CompletedTask;
+                    return ProcessWebSocketRequest(context);
                 }
 
                 httpReq = GetRequest(context);
@@ -110,8 +109,7 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
                 _logger.ErrorException("Error processing request", ex);
 
                 httpReq = httpReq ?? GetRequest(context);
-                ErrorHandler(ex, httpReq, true, true);
-                return Task.CompletedTask;
+                return ErrorHandler(ex, httpReq, true, true);
             }
 
             var uri = request.Url;
@@ -119,17 +117,19 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
             return RequestHandler(httpReq, uri.OriginalString, uri.Host, uri.LocalPath, cancellationToken);
         }
 
-        private void ProcessWebSocketRequest(HttpListenerContext ctx)
+        private async Task ProcessWebSocketRequest(HttpListenerContext ctx)
         {
             try
             {
                 var endpoint = ctx.Request.RemoteEndPoint.ToString();
                 var url = ctx.Request.RawUrl;
 
+                var queryString = ctx.Request.QueryString;
+
                 var connectingArgs = new WebSocketConnectingEventArgs
                 {
                     Url = url,
-                    QueryString = ctx.Request.QueryString,
+                    QueryString = queryString,
                     Endpoint = endpoint
                 };
 
@@ -142,14 +142,14 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
                 {
                     _logger.Debug("Web socket connection allowed");
 
-                    var webSocketContext = ctx.AcceptWebSocket(null);
+                    var webSocketContext = await ctx.AcceptWebSocketAsync(null).ConfigureAwait(false);
 
                     if (WebSocketConnected != null)
                     {
                         WebSocketConnected(new WebSocketConnectEventArgs
                         {
                             Url = url,
-                            QueryString = ctx.Request.QueryString,
+                            QueryString = queryString,
                             WebSocket = new SharpWebSocket(webSocketContext.WebSocket, _logger),
                             Endpoint = endpoint
                         });
@@ -176,7 +176,7 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
 
             var operationName = urlSegments[urlSegments.Length - 1];
 
-            var req = new WebSocketSharpRequest(httpContext, operationName, _logger, _memoryStreamProvider);
+            var req = new WebSocketSharpRequest(httpContext, operationName, _logger);
 
             return req;
         }

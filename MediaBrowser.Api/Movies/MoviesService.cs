@@ -117,14 +117,14 @@ namespace MediaBrowser.Api.Movies
         {
             var result = GetSimilarItemsResult(request);
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         public object Get(GetSimilarTrailers request)
         {
             var result = GetSimilarItemsResult(request);
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         public object Get(GetMovieRecommendations request)

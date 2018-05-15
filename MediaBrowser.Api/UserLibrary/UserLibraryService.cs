@@ -291,7 +291,7 @@ namespace MediaBrowser.Api.UserLibrary
         {
             var result = GetAsync(request);
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         public object Get(GetLatestMedia request)
@@ -413,7 +413,7 @@ namespace MediaBrowser.Api.UserLibrary
                 .Select(i => _dtoService.GetBaseItemDto(i, dtoOptions, user, item))
                 .ToArray();
 
-            return ToOptimizedSerializedResultUsingCache(dtos);
+            return ToOptimizedResult(dtos);
         }
 
         /// <summary>
@@ -433,7 +433,7 @@ namespace MediaBrowser.Api.UserLibrary
 
             var result = _dtoService.GetBaseItemDto(item, dtoOptions, user);
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         private async Task RefreshItemOnDemandIfNeeded(BaseItem item)
@@ -472,7 +472,7 @@ namespace MediaBrowser.Api.UserLibrary
 
             var result = _dtoService.GetBaseItemDto(item, dtoOptions, user);
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         /// <summary>
@@ -498,7 +498,7 @@ namespace MediaBrowser.Api.UserLibrary
                 TotalRecordCount = dtos.Length
             };
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         /// <summary>

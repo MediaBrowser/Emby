@@ -134,7 +134,13 @@ namespace MediaBrowser.Controller.LiveTv
         /// </summary>
         /// <value><c>true</c> if this instance is sports; otherwise, <c>false</c>.</value>
         [IgnoreDataMember]
-        public bool IsSports { get; set; }
+        public bool IsSports
+        {
+            get
+            {
+                return Tags.Contains("Sports", StringComparer.OrdinalIgnoreCase);
+            }
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is series.
@@ -161,7 +167,13 @@ namespace MediaBrowser.Controller.LiveTv
         /// </summary>
         /// <value><c>true</c> if this instance is news; otherwise, <c>false</c>.</value>
         [IgnoreDataMember]
-        public bool IsNews { get; set; }
+        public bool IsNews
+        {
+            get
+            {
+                return Tags.Contains("News", StringComparer.OrdinalIgnoreCase);
+            }
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is kids.

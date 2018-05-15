@@ -93,9 +93,7 @@ namespace Emby.Server.Implementations.Services
 
             appHost.ApplyRequestFilters(httpReq, httpRes, request);
 
-            var rawResponse = await appHost.ServiceController.Execute(appHost, request, httpReq).ConfigureAwait(false);
-
-            var response = rawResponse;
+            var response = await appHost.ServiceController.Execute(appHost, request, httpReq).ConfigureAwait(false);
 
             // Apply response filters
             foreach (var responseFilter in appHost.ResponseFilters)

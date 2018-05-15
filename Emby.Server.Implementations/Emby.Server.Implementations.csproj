@@ -110,7 +110,6 @@
     <Compile Include="IO\LibraryMonitor.cs" />
     <Compile Include="IO\ManagedFileSystem.cs" />
     <Compile Include="IO\MbLinkShortcutHandler.cs" />
-    <Compile Include="IO\MemoryStreamProvider.cs" />
     <Compile Include="IO\SharpCifsFileSystem.cs" />
     <Compile Include="IO\SharpCifs\Config.cs" />
     <Compile Include="IO\SharpCifs\Dcerpc\DcerpcBind.cs" />
@@ -335,6 +334,7 @@
     <Compile Include="IO\SharpCifs\Util\Transport\Response.cs" />
     <Compile Include="IO\SharpCifs\Util\Transport\Transport.cs" />
     <Compile Include="IO\SharpCifs\Util\Transport\TransportException.cs" />
+    <Compile Include="IO\StreamHelper.cs" />
     <Compile Include="IO\ThrottledStream.cs" />
     <Compile Include="Library\CoreResolutionIgnoreRule.cs" />
     <Compile Include="Library\DefaultAuthenticationProvider.cs" />

@@ -109,7 +109,7 @@ namespace MediaBrowser.Api
                 .Select(i => GetSummary(i, user))
                 .ToArray();
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace MediaBrowser.Api
         {
             var result = GetSimilarItemsResult(request);
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         private QueryResult<BaseItemDto> GetSimilarItemsResult(BaseGetSimilarItemsFromItem request)

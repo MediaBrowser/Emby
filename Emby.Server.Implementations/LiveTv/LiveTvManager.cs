@@ -584,7 +584,6 @@ namespace Emby.Server.Implementations.LiveTv
             item.Genres = info.Genres.ToArray();
             item.IsHD = info.IsHD;
             item.IsMovie = info.IsMovie;
-            item.IsNews = info.IsNews;
             item.IsRepeat = info.IsRepeat;
 
             if (item.IsSeries != isSeries)
@@ -593,7 +592,6 @@ namespace Emby.Server.Implementations.LiveTv
             }
             item.IsSeries = isSeries;
 
-            item.IsSports = info.IsSports;
             item.Name = info.Name;
             item.OfficialRating = item.OfficialRating ?? info.OfficialRating;
             item.Overview = item.Overview ?? info.Overview;

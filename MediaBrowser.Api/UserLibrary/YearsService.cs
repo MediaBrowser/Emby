@@ -54,7 +54,7 @@ namespace MediaBrowser.Api.UserLibrary
         {
             var result = GetItem(request);
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace MediaBrowser.Api.UserLibrary
         {
             var result = GetResult(request);
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         /// <summary>

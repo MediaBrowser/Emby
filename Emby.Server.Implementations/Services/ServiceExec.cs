@@ -122,7 +122,13 @@ namespace Emby.Server.Implementations.Services
                     return null;
                 }
 
-                var result = type.GetDeclaredProperty("Result").GetValue(task);
+                var resultProperty = type.GetDeclaredProperty("Result");
+                if (resultProperty == null)
+                {
+                    return null;
+                }
+
+                var result = resultProperty.GetValue(task);
 
                 // hack alert
                 if (result.GetType().Name.IndexOf("voidtaskresult", StringComparison.OrdinalIgnoreCase) != -1)
