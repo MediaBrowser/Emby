@@ -265,7 +265,7 @@ namespace MediaBrowser.Api.Images
 
             var result = GetItemImageInfos(item);
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         /// <summary>

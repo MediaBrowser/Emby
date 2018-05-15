@@ -105,7 +105,7 @@ namespace MediaBrowser.Api
                 TotalRecordCount = items.Length
             };
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         public void Delete(DeleteAlternateSources request)

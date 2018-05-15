@@ -888,7 +888,7 @@ namespace MediaBrowser.Api.Library
                 .SelectMany(c => c.PhysicalLocations)
                 .ToList();
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         /// <summary>
@@ -900,7 +900,7 @@ namespace MediaBrowser.Api.Library
         {
             var result = GetAncestors(request);
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         /// <summary>
@@ -978,7 +978,7 @@ namespace MediaBrowser.Api.Library
                 BookCount = GetCount(typeof(Book), user, request)
             };
 
-            return ToOptimizedSerializedResultUsingCache(counts);
+            return ToOptimizedResult(counts);
         }
 
         private int GetCount(Type type, User user, GetItemCounts request)
@@ -1082,7 +1082,7 @@ namespace MediaBrowser.Api.Library
 
             });
 
-            return ToOptimizedSerializedResultUsingCache(new AllThemeMediaResult
+            return ToOptimizedResult(new AllThemeMediaResult
             {
                 ThemeSongsResult = themeSongs,
                 ThemeVideosResult = themeVideos,
@@ -1100,7 +1100,7 @@ namespace MediaBrowser.Api.Library
         {
             var result = GetThemeSongs(request);
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         private ThemeMediaResult GetThemeSongs(GetThemeSongs request)
@@ -1157,7 +1157,7 @@ namespace MediaBrowser.Api.Library
         {
             var result = GetThemeVideos(request);
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         public ThemeMediaResult GetThemeVideos(GetThemeVideos request)

@@ -119,13 +119,12 @@ namespace MediaBrowser.WebDashboard.Api
         private readonly ILocalizationManager _localization;
         private readonly IJsonSerializer _jsonSerializer;
         private readonly IAssemblyInfo _assemblyInfo;
-        private readonly IMemoryStreamFactory _memoryStreamFactory;
         private IResourceFileManager _resourceFileManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DashboardService" /> class.
         /// </summary>
-        public DashboardService(IServerApplicationHost appHost, IResourceFileManager resourceFileManager, IServerConfigurationManager serverConfigurationManager, IFileSystem fileSystem, ILocalizationManager localization, IJsonSerializer jsonSerializer, IAssemblyInfo assemblyInfo, ILogger logger, IHttpResultFactory resultFactory, IMemoryStreamFactory memoryStreamFactory)
+        public DashboardService(IServerApplicationHost appHost, IResourceFileManager resourceFileManager, IServerConfigurationManager serverConfigurationManager, IFileSystem fileSystem, ILocalizationManager localization, IJsonSerializer jsonSerializer, IAssemblyInfo assemblyInfo, ILogger logger, IHttpResultFactory resultFactory)
         {
             _appHost = appHost;
             _serverConfigurationManager = serverConfigurationManager;
@@ -135,7 +134,6 @@ namespace MediaBrowser.WebDashboard.Api
             _assemblyInfo = assemblyInfo;
             _logger = logger;
             _resultFactory = resultFactory;
-            _memoryStreamFactory = memoryStreamFactory;
             _resourceFileManager = resourceFileManager;
         }
 
@@ -371,7 +369,7 @@ namespace MediaBrowser.WebDashboard.Api
 
         private PackageCreator GetPackageCreator(string basePath)
         {
-            return new PackageCreator(basePath, _fileSystem, _logger, _serverConfigurationManager, _memoryStreamFactory, _resourceFileManager);
+            return new PackageCreator(basePath, _fileSystem, _logger, _serverConfigurationManager, _resourceFileManager);
         }
 
         public async Task<object> Get(GetDashboardPackage request)

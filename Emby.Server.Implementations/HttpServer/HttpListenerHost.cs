@@ -45,7 +45,7 @@ namespace Emby.Server.Implementations.HttpServer
 
         private readonly IServerConfigurationManager _config;
         private readonly INetworkManager _networkManager;
-        private readonly IMemoryStreamFactory _memoryStreamProvider;
+        private readonly IStreamHelper _streamHelper;
 
         private readonly IServerApplicationHost _appHost;
 
@@ -70,14 +70,14 @@ namespace Emby.Server.Implementations.HttpServer
             ILogger logger,
             IServerConfigurationManager config,
             string serviceName,
-            string defaultRedirectPath, INetworkManager networkManager, IMemoryStreamFactory memoryStreamProvider, ITextEncoding textEncoding, ISocketFactory socketFactory, ICryptoProvider cryptoProvider, IJsonSerializer jsonSerializer, IXmlSerializer xmlSerializer, IEnvironmentInfo environment, X509Certificate certificate, Func<Type, Func<string, object>> funcParseFn, bool enableDualModeSockets, IFileSystem fileSystem)
+            string defaultRedirectPath, INetworkManager networkManager, IStreamHelper streamHelper, ITextEncoding textEncoding, ISocketFactory socketFactory, ICryptoProvider cryptoProvider, IJsonSerializer jsonSerializer, IXmlSerializer xmlSerializer, IEnvironmentInfo environment, X509Certificate certificate, Func<Type, Func<string, object>> funcParseFn, bool enableDualModeSockets, IFileSystem fileSystem)
         {
             Instance = this;
 
             _appHost = applicationHost;
             DefaultRedirectPath = defaultRedirectPath;
             _networkManager = networkManager;
-            _memoryStreamProvider = memoryStreamProvider;
+            _streamHelper = streamHelper;
             _textEncoding = textEncoding;
             _socketFactory = socketFactory;
             _cryptoProvider = cryptoProvider;
@@ -180,7 +180,7 @@ namespace Emby.Server.Implementations.HttpServer
 
             return new WebSocketSharpListener(_logger,
                 _certificate,
-                _memoryStreamProvider,
+                _streamHelper,
                 _textEncoding,
                 _networkManager,
                 _socketFactory,
@@ -264,7 +264,7 @@ namespace Emby.Server.Implementations.HttpServer
             return statusCode;
         }
 
-        private void ErrorHandler(Exception ex, IRequest httpReq, bool logExceptionStackTrace, bool logExceptionMessage)
+        private async Task ErrorHandler(Exception ex, IRequest httpReq, bool logExceptionStackTrace, bool logExceptionMessage)
         {
             try
             {
@@ -290,7 +290,7 @@ namespace Emby.Server.Implementations.HttpServer
                 httpRes.StatusCode = statusCode;
 
                 httpRes.ContentType = "text/html";
-                Write(httpRes, NormalizeExceptionMessage(ex.Message));
+                await Write(httpRes, NormalizeExceptionMessage(ex.Message)).ConfigureAwait(false);
             }
             catch
             {
@@ -509,7 +509,7 @@ namespace Emby.Server.Implementations.HttpServer
                 {
                     httpRes.StatusCode = 503;
                     httpRes.ContentType = "text/plain";
-                    Write(httpRes, "Server shutting down");
+                    await Write(httpRes, "Server shutting down").ConfigureAwait(false);
                     return;
                 }
 
@@ -517,7 +517,7 @@ namespace Emby.Server.Implementations.HttpServer
                 {
                     httpRes.StatusCode = 400;
                     httpRes.ContentType = "text/plain";
-                    Write(httpRes, "Invalid host");
+                    await Write(httpRes, "Invalid host").ConfigureAwait(false);
                     return;
                 }
 
@@ -525,7 +525,7 @@ namespace Emby.Server.Implementations.HttpServer
                 {
                     httpRes.StatusCode = 403;
                     httpRes.ContentType = "text/plain";
-                    Write(httpRes, "Forbidden");
+                    await Write(httpRes, "Forbidden").ConfigureAwait(false);
                     return;
                 }
 
@@ -542,7 +542,7 @@ namespace Emby.Server.Implementations.HttpServer
                     httpRes.AddHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
                     httpRes.AddHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Range, X-MediaBrowser-Token, X-Emby-Authorization");
                     httpRes.ContentType = "text/plain";
-                    Write(httpRes, string.Empty);
+                    await Write(httpRes, string.Empty).ConfigureAwait(false);
                     return;
                 }
 
@@ -583,9 +583,9 @@ namespace Emby.Server.Implementations.HttpServer
 
                     if (!string.Equals(newUrl, urlString, StringComparison.OrdinalIgnoreCase))
                     {
-                        Write(httpRes,
+                        await Write(httpRes,
                             "<!doctype html><html><head><title>Emby</title></head><body>Please update your Emby bookmark to <a href=\"" +
-                            newUrl + "\">" + newUrl + "</a></body></html>");
+                            newUrl + "\">" + newUrl + "</a></body></html>").ConfigureAwait(false);
                         return;
                     }
                 }
@@ -600,9 +600,9 @@ namespace Emby.Server.Implementations.HttpServer
 
                     if (!string.Equals(newUrl, urlString, StringComparison.OrdinalIgnoreCase))
                     {
-                        Write(httpRes,
+                        await Write(httpRes,
                             "<!doctype html><html><head><title>Emby</title></head><body>Please update your Emby bookmark to <a href=\"" +
-                            newUrl + "\">" + newUrl + "</a></body></html>");
+                            newUrl + "\">" + newUrl + "</a></body></html>").ConfigureAwait(false);
                         return;
                     }
                 }
@@ -635,7 +635,7 @@ namespace Emby.Server.Implementations.HttpServer
                     {
                         httpRes.StatusCode = 503;
                         httpRes.ContentType = "text/html";
-                        Write(httpRes, GlobalResponse);
+                        await Write(httpRes, GlobalResponse).ConfigureAwait(false);
                         return;
                     }
                 }
@@ -720,13 +720,12 @@ namespace Emby.Server.Implementations.HttpServer
             return null;
         }
 
-        private void Write(IResponse response, string text)
+        private Task Write(IResponse response, string text)
         {
             var bOutput = Encoding.UTF8.GetBytes(text);
             response.SetContentLength(bOutput.Length);
 
-            var outputStream = response.OutputStream;
-            outputStream.Write(bOutput, 0, bOutput.Length);
+            return response.OutputStream.WriteAsync(bOutput, 0, bOutput.Length);
         }
 
         private void RedirectToSecureUrl(IHttpRequest httpReq, IResponse httpRes, string url)

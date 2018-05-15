@@ -75,7 +75,6 @@ namespace Emby.Server.Implementations.ServerManager
         /// </summary>
         /// <value>The query string.</value>
         public QueryParamCollection QueryString { get; set; }
-        private readonly IMemoryStreamFactory _memoryStreamProvider;
         private readonly ITextEncoding _textEncoding;
 
         /// <summary>
@@ -86,7 +85,7 @@ namespace Emby.Server.Implementations.ServerManager
         /// <param name="jsonSerializer">The json serializer.</param>
         /// <param name="logger">The logger.</param>
         /// <exception cref="System.ArgumentNullException">socket</exception>
-        public WebSocketConnection(IWebSocket socket, string remoteEndPoint, IJsonSerializer jsonSerializer, ILogger logger, IMemoryStreamFactory memoryStreamProvider, ITextEncoding textEncoding)
+        public WebSocketConnection(IWebSocket socket, string remoteEndPoint, IJsonSerializer jsonSerializer, ILogger logger, ITextEncoding textEncoding)
         {
             if (socket == null)
             {
@@ -112,7 +111,6 @@ namespace Emby.Server.Implementations.ServerManager
             _socket.OnReceive = OnReceiveInternal;
             RemoteEndPoint = remoteEndPoint;
             _logger = logger;
-            _memoryStreamProvider = memoryStreamProvider;
             _textEncoding = textEncoding;
 
             socket.Closed += socket_Closed;

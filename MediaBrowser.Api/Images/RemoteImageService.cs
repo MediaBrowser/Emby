@@ -129,7 +129,7 @@ namespace MediaBrowser.Api.Images
 
             var result = GetImageProviders(item);
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         private List<ImageProviderInfo> GetImageProviders(BaseItem item)

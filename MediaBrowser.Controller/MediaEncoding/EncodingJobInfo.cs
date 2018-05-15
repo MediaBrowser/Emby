@@ -366,10 +366,10 @@ namespace MediaBrowser.Controller.MediaEncoding
                     };
 
                     var newSize = DrawingUtils.Resize(size,
-                        BaseRequest.Width,
-                        BaseRequest.Height,
-                        BaseRequest.MaxWidth,
-                        BaseRequest.MaxHeight);
+                        BaseRequest.Width ?? 0,
+                        BaseRequest.Height ?? 0,
+                        BaseRequest.MaxWidth ?? 0,
+                        BaseRequest.MaxHeight ?? 0);
 
                     return Convert.ToInt32(newSize.Width);
                 }
@@ -396,10 +396,10 @@ namespace MediaBrowser.Controller.MediaEncoding
                     };
 
                     var newSize = DrawingUtils.Resize(size,
-                        BaseRequest.Width,
-                        BaseRequest.Height,
-                        BaseRequest.MaxWidth,
-                        BaseRequest.MaxHeight);
+                        BaseRequest.Width ?? 0,
+                        BaseRequest.Height ?? 0,
+                        BaseRequest.MaxWidth ?? 0,
+                        BaseRequest.MaxHeight ?? 0);
 
                     return Convert.ToInt32(newSize.Height);
                 }

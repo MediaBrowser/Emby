@@ -20,16 +20,14 @@ namespace MediaBrowser.WebDashboard.Api
         private readonly IFileSystem _fileSystem;
         private readonly ILogger _logger;
         private readonly IServerConfigurationManager _config;
-        private readonly IMemoryStreamFactory _memoryStreamFactory;
         private readonly string _basePath;
         private IResourceFileManager _resourceFileManager;
 
-        public PackageCreator(string basePath, IFileSystem fileSystem, ILogger logger, IServerConfigurationManager config, IMemoryStreamFactory memoryStreamFactory, IResourceFileManager resourceFileManager)
+        public PackageCreator(string basePath, IFileSystem fileSystem, ILogger logger, IServerConfigurationManager config, IResourceFileManager resourceFileManager)
         {
             _fileSystem = fileSystem;
             _logger = logger;
             _config = config;
-            _memoryStreamFactory = memoryStreamFactory;
             _basePath = basePath;
             _resourceFileManager = resourceFileManager;
         }

@@ -304,7 +304,7 @@ namespace Emby.Server.Implementations.LiveTv.Listings
                 IsMovie = IsMovie(details),
                 Etag = programInfo.md5,
                 IsLive = string.Equals(programInfo.liveTapeDelay, "live", StringComparison.OrdinalIgnoreCase),
-                IsPremiere = programInfo.premiere
+                IsPremiere = programInfo.premiere || (programInfo.isPremiereOrFinale ?? string.Empty).IndexOf("premiere", StringComparison.OrdinalIgnoreCase) != -1
             };
 
             var showId = programId;
@@ -1129,6 +1129,7 @@ namespace Emby.Server.Implementations.LiveTv.Listings
                 public string liveTapeDelay { get; set; }
                 public bool premiere { get; set; }
                 public bool repeat { get; set; }
+                public string isPremiereOrFinale { get; set; }
             }
 
 

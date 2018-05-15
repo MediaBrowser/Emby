@@ -34,7 +34,7 @@ namespace Emby.Server.Implementations
             ILogManager logManager,
             IServerConfigurationManager config,
             INetworkManager networkmanager,
-            IMemoryStreamFactory streamProvider,
+            IStreamHelper streamProvider,
             string serverName,
             string defaultRedirectpath,
             ITextEncoding textEncoding,

@@ -122,8 +122,20 @@ namespace MediaBrowser.Controller.LiveTv
                 return Tags.Contains("Kids", StringComparer.OrdinalIgnoreCase);
             }
         }
-        public bool IsSports { get; set; }
-        public bool IsNews { get; set; }
+        public bool IsSports
+        {
+            get
+            {
+                return Tags.Contains("Sports", StringComparer.OrdinalIgnoreCase);
+            }
+        }
+        public bool IsNews
+        {
+            get
+            {
+                return Tags.Contains("News", StringComparer.OrdinalIgnoreCase);
+            }
+        }
         public bool IsSeries { get; set; }
 
         /// <summary>

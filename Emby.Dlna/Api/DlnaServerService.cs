@@ -114,18 +114,16 @@ namespace Emby.Dlna.Api
         private readonly IMediaReceiverRegistrar _mediaReceiverRegistrar;
 
         private const string XMLContentType = "text/xml; charset=UTF-8";
-        private readonly IMemoryStreamFactory _memoryStreamProvider;
 
         public IRequest Request { get; set; }
         private IHttpResultFactory _resultFactory;
 
-        public DlnaServerService(IDlnaManager dlnaManager, IHttpResultFactory httpResultFactory, IContentDirectory contentDirectory, IConnectionManager connectionManager, IMediaReceiverRegistrar mediaReceiverRegistrar, IMemoryStreamFactory memoryStreamProvider)
+        public DlnaServerService(IDlnaManager dlnaManager, IHttpResultFactory httpResultFactory, IContentDirectory contentDirectory, IConnectionManager connectionManager, IMediaReceiverRegistrar mediaReceiverRegistrar)
         {
             _dlnaManager = dlnaManager;
             _contentDirectory = contentDirectory;
             _connectionManager = connectionManager;
             _mediaReceiverRegistrar = mediaReceiverRegistrar;
-            _memoryStreamProvider = memoryStreamProvider;
             _resultFactory = httpResultFactory;
         }
 
@@ -236,24 +234,12 @@ namespace Emby.Dlna.Api
 
         public object Get(GetIcon request)
         {
-            using (var response = _dlnaManager.GetIcon(request.Filename))
-            {
-                using (var ms = new MemoryStream())
-                {
-                    response.Stream.CopyTo(ms);
+            var contentType = "image/" + Path.GetExtension(request.Filename).TrimStart('.').ToLower();
 
-                    ms.Position = 0;
-                    var bytes = ms.ToArray();
+            var cacheLength = TimeSpan.FromDays(365);
+            var cacheKey = Request.RawUrl.GetMD5();
 
-                    var contentType = "image/" + response.Format.ToString().ToLower();
-
-                    var cacheLength = TimeSpan.FromDays(365);
-                    var cacheKey = Request.RawUrl.GetMD5();
-
-                    return _resultFactory.GetStaticResult(Request, cacheKey, null, cacheLength, contentType, ()=> Task.FromResult<Stream>(new MemoryStream(bytes)));
-                    //return ResultFactory.GetResult(bytes, contentType);
-                }
-            }
+            return _resultFactory.GetStaticResult(Request, cacheKey, null, cacheLength, contentType, () => Task.FromResult<Stream>(_dlnaManager.GetIcon(request.Filename).Stream));
         }
 
         public object Subscribe(ProcessContentDirectoryEventRequest request)

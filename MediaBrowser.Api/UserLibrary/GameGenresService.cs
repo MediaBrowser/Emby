@@ -46,7 +46,7 @@ namespace MediaBrowser.Api.UserLibrary
         {
             var result = GetItem(request);
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace MediaBrowser.Api.UserLibrary
         {
             var result = GetResultSlim(request);
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         protected override QueryResult<Tuple<BaseItem, ItemCounts>> GetItems(GetItemsByName request, InternalItemsQuery query)

@@ -366,7 +366,7 @@ namespace Emby.Server.Implementations.Library
 
             var preferredAudio = string.IsNullOrEmpty(user.Configuration.AudioLanguagePreference)
                 ? Array.Empty<string>()
-                : NormalizeLanguage(user.Configuration.SubtitleLanguagePreference);
+                : NormalizeLanguage(user.Configuration.AudioLanguagePreference);
 
             source.DefaultAudioStreamIndex = MediaStreamSelector.GetDefaultAudioStreamIndex(source.MediaStreams, preferredAudio, user.Configuration.PlayDefaultAudioTrack);
         }

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using MediaBrowser.Model.Diagnostics;
+using System.Threading;
 
 namespace Emby.Server.Implementations.Diagnostics
 {
@@ -48,8 +49,12 @@ namespace Emby.Server.Implementations.Diagnostics
             }
         }
 
+        private bool HasExited;
+
         private void _process_Exited(object sender, EventArgs e)
         {
+            HasExited = true;
+
             if (Exited != null)
             {
                 Exited(this, e);
@@ -98,7 +103,19 @@ namespace Emby.Server.Implementations.Diagnostics
 
         public Task<bool> WaitForExitAsync(int timeMs)
         {
-            return Task.FromResult(_process.WaitForExit(timeMs));
+            if (HasExited)
+            {
+                return Task.FromResult(true);
+            }
+
+            var tcs = new TaskCompletionSource<bool>();
+
+            var cancellationToken = new CancellationTokenSource(timeMs).Token;
+            _process.Exited += (sender, args) => tcs.TrySetResult(HasExited);
+
+            cancellationToken.Register(() => tcs.TrySetResult(HasExited));
+
+            return tcs.Task;
         }
 
         public void Dispose()

@@ -31,16 +31,14 @@ namespace Emby.Server.Implementations.HttpServer
         private readonly ILogger _logger;
         private readonly IFileSystem _fileSystem;
         private readonly IJsonSerializer _jsonSerializer;
-        private readonly IMemoryStreamFactory _memoryStreamFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HttpResultFactory" /> class.
         /// </summary>
-        public HttpResultFactory(ILogManager logManager, IFileSystem fileSystem, IJsonSerializer jsonSerializer, IMemoryStreamFactory memoryStreamFactory)
+        public HttpResultFactory(ILogManager logManager, IFileSystem fileSystem, IJsonSerializer jsonSerializer)
         {
             _fileSystem = fileSystem;
             _jsonSerializer = jsonSerializer;
-            _memoryStreamFactory = memoryStreamFactory;
             _logger = logManager.GetLogger("HttpResultFactory");
         }
 
@@ -51,12 +49,22 @@ namespace Emby.Server.Implementations.HttpServer
         /// <param name="contentType">Type of the content.</param>
         /// <param name="responseHeaders">The response headers.</param>
         /// <returns>System.Object.</returns>
-        public object GetResult(object content, string contentType, IDictionary<string, string> responseHeaders = null)
+        public object GetResult(byte[] content, string contentType, IDictionary<string, string> responseHeaders = null)
         {
             return GetHttpResult(null, content, contentType, true, responseHeaders);
         }
 
-        public object GetResult(IRequest requestContext, object content, string contentType, IDictionary<string, string> responseHeaders = null)
+        public object GetResult(string content, string contentType, IDictionary<string, string> responseHeaders = null)
+        {
+            return GetHttpResult(null, content, contentType, true, responseHeaders);
+        }
+
+        public object GetResult(Stream content, string contentType, IDictionary<string, string> responseHeaders = null)
+        {
+            return GetHttpResult(null, content, contentType, true, responseHeaders);
+        }
+
+        public object GetResult(IRequest requestContext, string content, string contentType, IDictionary<string, string> responseHeaders = null)
         {
             return GetHttpResult(requestContext, content, contentType, true, responseHeaders);
         }
@@ -140,19 +148,8 @@ namespace Emby.Server.Implementations.HttpServer
         /// Gets the optimized result.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="requestContext">The request context.</param>
-        /// <param name="result">The result.</param>
-        /// <param name="responseHeaders">The response headers.</param>
-        /// <returns>System.Object.</returns>
-        /// <exception cref="System.ArgumentNullException">result</exception>
-        public object GetOptimizedResult<T>(IRequest requestContext, T result, IDictionary<string, string> responseHeaders = null)
+        public object GetResult<T>(IRequest requestContext, T result, IDictionary<string, string> responseHeaders = null)
             where T : class
-        {
-            return GetOptimizedResultInternal<T>(requestContext, result, true, responseHeaders);
-        }
-
-        private object GetOptimizedResultInternal<T>(IRequest requestContext, T result, bool addCachePrevention, IDictionary<string, string> responseHeaders = null)
-          where T : class
         {
             if (result == null)
             {
@@ -164,10 +161,7 @@ namespace Emby.Server.Implementations.HttpServer
                 responseHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             }
 
-            if (addCachePrevention)
-            {
-                responseHeaders["Expires"] = "-1";
-            }
+            responseHeaders["Expires"] = "-1";
 
             return ToOptimizedResultInternal(requestContext, result, responseHeaders);
         }
@@ -332,50 +326,6 @@ namespace Emby.Server.Implementations.HttpServer
                     return reader.ReadToEnd();
                 }
             }
-        }
-
-        /// <summary>
-        /// Gets the optimized result using cache.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="requestContext">The request context.</param>
-        /// <param name="cacheKey">The cache key.</param>
-        /// <param name="lastDateModified">The last date modified.</param>
-        /// <param name="cacheDuration">Duration of the cache.</param>
-        /// <param name="factoryFn">The factory fn.</param>
-        /// <param name="responseHeaders">The response headers.</param>
-        /// <returns>System.Object.</returns>
-        /// <exception cref="System.ArgumentNullException">cacheKey
-        /// or
-        /// factoryFn</exception>
-        public object GetOptimizedResultUsingCache<T>(IRequest requestContext, Guid cacheKey, DateTime? lastDateModified, TimeSpan? cacheDuration, Func<T> factoryFn, IDictionary<string, string> responseHeaders = null)
-               where T : class
-        {
-            if (cacheKey.Equals(Guid.Empty))
-            {
-                throw new ArgumentNullException("cacheKey");
-            }
-            if (factoryFn == null)
-            {
-                throw new ArgumentNullException("factoryFn");
-            }
-
-            var key = cacheKey.ToString("N");
-
-            if (responseHeaders == null)
-            {
-                responseHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            }
-
-            // See if the result is already cached in the browser
-            var result = GetCachedResult(requestContext, responseHeaders, cacheKey, key, lastDateModified, cacheDuration, null);
-
-            if (result != null)
-            {
-                return result;
-            }
-
-            return GetOptimizedResultInternal(requestContext, factoryFn(), false, responseHeaders);
         }
 
         /// <summary>
@@ -551,19 +501,17 @@ namespace Emby.Server.Implementations.HttpServer
             options.ResponseHeaders = options.ResponseHeaders ?? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             var contentType = options.ContentType;
 
-            if (cacheKey.Equals(Guid.Empty))
+            if (!cacheKey.Equals(Guid.Empty))
             {
-                throw new ArgumentNullException("cacheKey");
-            }
+                var key = cacheKey.ToString("N");
 
-            var key = cacheKey.ToString("N");
+                // See if the result is already cached in the browser
+                var result = GetCachedResult(requestContext, options.ResponseHeaders, cacheKey, key, options.DateLastModified, options.CacheDuration, contentType);
 
-            // See if the result is already cached in the browser
-            var result = GetCachedResult(requestContext, options.ResponseHeaders, cacheKey, key, options.DateLastModified, options.CacheDuration, contentType);
-
-            if (result != null)
-            {
-                return result;
+                if (result != null)
+                {
+                    return result;
+                }
             }
 
             // TODO: We don't really need the option value
@@ -592,7 +540,7 @@ namespace Emby.Server.Implementations.HttpServer
             {
                 var stream = await factoryFn().ConfigureAwait(false);
 
-                var hasHeaders = new RangeRequestWriter(rangeHeader, stream, contentType, isHeadRequest, _logger)
+                var hasHeaders = new RangeRequestWriter(rangeHeader, options.ContentLength, stream, contentType, isHeadRequest, _logger)
                 {
                     OnComplete = options.OnComplete
                 };

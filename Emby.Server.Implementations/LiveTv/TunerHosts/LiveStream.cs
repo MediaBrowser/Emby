@@ -206,7 +206,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
                     TrySeek(inputStream, -20000);
                 }
 
-                await CopyTo(inputStream, stream, 81920, emptyReadLimit, cancellationToken).ConfigureAwait(false);
+                await ApplicationHost.StreamHelper.CopyToAsync(inputStream, stream, 81920, emptyReadLimit, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -215,46 +215,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             get
             {
                 return 1000;
-            }
-        }
-
-        private async Task CopyTo(Stream source, Stream destination, int bufferSize, int emptyReadLimit, CancellationToken cancellationToken)
-        {
-            byte[] buffer = new byte[bufferSize];
-
-            if (emptyReadLimit <= 0)
-            {
-                int read;
-                while ((read = source.Read(buffer, 0, buffer.Length)) != 0)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    destination.Write(buffer, 0, read);
-                }
-
-                return;
-            }
-
-            var eofCount = 0;
-
-            while (eofCount < emptyReadLimit)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                var bytesRead = source.Read(buffer, 0, buffer.Length);
-
-                if (bytesRead == 0)
-                {
-                    eofCount++;
-                    await Task.Delay(50, cancellationToken).ConfigureAwait(false);
-                }
-                else
-                {
-                    eofCount = 0;
-
-                    //await destination.WriteAsync(buffer, 0, read).ConfigureAwait(false);
-                    destination.Write(buffer, 0, bytesRead);
-                }
             }
         }
 

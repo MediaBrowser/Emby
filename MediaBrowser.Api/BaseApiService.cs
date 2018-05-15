@@ -81,7 +81,7 @@ namespace MediaBrowser.Api
         protected object ToOptimizedResult<T>(T result)
             where T : class
         {
-            return ResultFactory.GetOptimizedResult(Request, result);
+            return ResultFactory.GetResult(Request, result);
         }
 
         protected void AssertCanUpdateUser(IAuthorizationContext authContext, IUserManager userManager, string userId, bool restrictUserPreferences)
@@ -105,18 +105,6 @@ namespace MediaBrowser.Api
                     throw new SecurityException("Unauthorized access.");
                 }
             }
-        }
-
-        /// <summary>
-        /// To the optimized serialized result using cache.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="result">The result.</param>
-        /// <returns>System.Object.</returns>
-        protected object ToOptimizedSerializedResultUsingCache<T>(T result)
-           where T : class
-        {
-            return ToOptimizedResult(result);
         }
 
         /// <summary>

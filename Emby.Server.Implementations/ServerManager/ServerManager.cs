@@ -75,7 +75,6 @@ namespace Emby.Server.Implementations.ServerManager
         private readonly List<IWebSocketListener> _webSocketListeners = new List<IWebSocketListener>();
 
         private bool _disposed;
-        private readonly IMemoryStreamFactory _memoryStreamProvider;
         private readonly ITextEncoding _textEncoding;
 
         /// <summary>
@@ -86,7 +85,7 @@ namespace Emby.Server.Implementations.ServerManager
         /// <param name="logger">The logger.</param>
         /// <param name="configurationManager">The configuration manager.</param>
         /// <exception cref="System.ArgumentNullException">applicationHost</exception>
-        public ServerManager(IServerApplicationHost applicationHost, IJsonSerializer jsonSerializer, ILogger logger, IServerConfigurationManager configurationManager, IMemoryStreamFactory memoryStreamProvider, ITextEncoding textEncoding)
+        public ServerManager(IServerApplicationHost applicationHost, IJsonSerializer jsonSerializer, ILogger logger, IServerConfigurationManager configurationManager, ITextEncoding textEncoding)
         {
             if (applicationHost == null)
             {
@@ -105,7 +104,6 @@ namespace Emby.Server.Implementations.ServerManager
             _jsonSerializer = jsonSerializer;
             _applicationHost = applicationHost;
             ConfigurationManager = configurationManager;
-            _memoryStreamProvider = memoryStreamProvider;
             _textEncoding = textEncoding;
         }
 
@@ -155,7 +153,7 @@ namespace Emby.Server.Implementations.ServerManager
                 return;
             }
 
-            var connection = new WebSocketConnection(e.WebSocket, e.Endpoint, _jsonSerializer, _logger, _memoryStreamProvider, _textEncoding)
+            var connection = new WebSocketConnection(e.WebSocket, e.Endpoint, _jsonSerializer, _logger, _textEncoding)
             {
                 OnReceive = ProcessWebSocketMessageReceived,
                 Url = e.Url,

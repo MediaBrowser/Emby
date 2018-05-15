@@ -97,6 +97,7 @@
     <Compile Include="Dto\MetadataEditorInfo.cs" />
     <Compile Include="Dto\NameIdPair.cs" />
     <Compile Include="Dto\NameValuePair.cs" />
+    <Compile Include="IO\IStreamHelper.cs" />
     <Compile Include="Logging\IConsoleLogger.cs" />
     <Compile Include="Net\IpEndPointInfo.cs" />
     <Compile Include="Net\IAcceptSocket.cs" />

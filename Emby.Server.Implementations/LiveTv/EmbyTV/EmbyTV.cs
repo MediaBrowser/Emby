@@ -76,7 +76,9 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
         private readonly ConcurrentDictionary<string, ActiveRecordingInfo> _activeRecordings =
             new ConcurrentDictionary<string, ActiveRecordingInfo>(StringComparer.OrdinalIgnoreCase);
 
-        public EmbyTV(IServerApplicationHost appHost, IMediaSourceManager mediaSourceManager, IAssemblyInfo assemblyInfo, ILogger logger, IJsonSerializer jsonSerializer, IPowerManagement powerManagement, IHttpClient httpClient, IServerConfigurationManager config, ILiveTvManager liveTvManager, IFileSystem fileSystem, ILibraryManager libraryManager, ILibraryMonitor libraryMonitor, IProviderManager providerManager, IMediaEncoder mediaEncoder, ITimerFactory timerFactory, IProcessFactory processFactory, ISystemEvents systemEvents)
+        private readonly IStreamHelper _streamHelper;
+
+        public EmbyTV(IServerApplicationHost appHost, IStreamHelper streamHelper, IMediaSourceManager mediaSourceManager, IAssemblyInfo assemblyInfo, ILogger logger, IJsonSerializer jsonSerializer, IPowerManagement powerManagement, IHttpClient httpClient, IServerConfigurationManager config, ILiveTvManager liveTvManager, IFileSystem fileSystem, ILibraryManager libraryManager, ILibraryMonitor libraryMonitor, IProviderManager providerManager, IMediaEncoder mediaEncoder, ITimerFactory timerFactory, IProcessFactory processFactory, ISystemEvents systemEvents)
         {
             Current = this;
 
@@ -95,6 +97,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             _jsonSerializer = jsonSerializer;
             _assemblyInfo = assemblyInfo;
             _mediaSourceManager = mediaSourceManager;
+            _streamHelper = streamHelper;
 
             _seriesTimerProvider = new SeriesTimerManager(fileSystem, jsonSerializer, _logger, Path.Combine(DataPath, "seriestimers"));
             _timerProvider = new TimerManager(fileSystem, jsonSerializer, _logger, Path.Combine(DataPath, "timers"), _logger, timerFactory, powerManagement);
@@ -832,13 +835,11 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             existingTimer.EpisodeTitle = updatedTimer.EpisodeTitle;
             existingTimer.Genres = updatedTimer.Genres;
             existingTimer.HomePageUrl = updatedTimer.HomePageUrl;
-            existingTimer.IsNews = updatedTimer.IsNews;
             existingTimer.IsMovie = updatedTimer.IsMovie;
             existingTimer.IsSeries = updatedTimer.IsSeries;
             existingTimer.Tags = updatedTimer.Tags;
             existingTimer.IsProgramSeries = updatedTimer.IsProgramSeries;
             existingTimer.IsRepeat = updatedTimer.IsRepeat;
-            existingTimer.IsSports = updatedTimer.IsSports;
             existingTimer.Name = updatedTimer.Name;
             existingTimer.OfficialRating = updatedTimer.OfficialRating;
             existingTimer.OriginalAirDate = updatedTimer.OriginalAirDate;
@@ -1826,7 +1827,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 return new EncodedRecorder(_logger, _fileSystem, _mediaEncoder, _config.ApplicationPaths, _jsonSerializer, _httpClient, _processFactory, _config, _assemblyInfo);
             }
 
-            return new DirectRecorder(_logger, _httpClient, _fileSystem);
+            return new DirectRecorder(_logger, _httpClient, _fileSystem, _streamHelper);
         }
 
         private void OnSuccessfulRecording(TimerInfo timer, string path)
@@ -2705,8 +2706,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             timerInfo.SeasonNumber = programInfo.ParentIndexNumber;
             timerInfo.EpisodeNumber = programInfo.IndexNumber;
             timerInfo.IsMovie = programInfo.IsMovie;
-            timerInfo.IsNews = programInfo.IsNews;
-            timerInfo.IsSports = programInfo.IsSports;
             timerInfo.ProductionYear = programInfo.ProductionYear;
             timerInfo.EpisodeTitle = programInfo.EpisodeTitle;
             timerInfo.OriginalAirDate = programInfo.PremiereDate;

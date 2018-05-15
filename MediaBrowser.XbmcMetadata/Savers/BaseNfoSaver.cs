@@ -384,8 +384,8 @@ namespace MediaBrowser.XbmcMetadata.Savers
                     {
                         var timespan = TimeSpan.FromTicks(runtimeTicks.Value);
 
-                        writer.WriteElementString("duration", Convert.ToInt32(timespan.TotalMinutes).ToString(UsCulture));
-                        writer.WriteElementString("durationinseconds", Convert.ToInt32(timespan.TotalSeconds).ToString(UsCulture));
+                        writer.WriteElementString("duration", Math.Floor(timespan.TotalMinutes).ToString(UsCulture));
+                        writer.WriteElementString("durationinseconds", Math.Floor(timespan.TotalSeconds).ToString(UsCulture));
                     }
 
                     var video = item as Video;
@@ -669,7 +669,7 @@ namespace MediaBrowser.XbmcMetadata.Savers
             {
                 var timespan = TimeSpan.FromTicks(runTimeTicks.Value);
 
-                writer.WriteElementString("runtime", Convert.ToInt32(timespan.TotalMinutes).ToString(UsCulture));
+                writer.WriteElementString("runtime", Convert.ToInt64(timespan.TotalMinutes).ToString(UsCulture));
             }
 
             if (!string.IsNullOrWhiteSpace(item.Tagline))
