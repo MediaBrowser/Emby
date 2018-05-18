@@ -1,6 +1,8 @@
 {
     "AllowMediaConversion": "Allow media conversion",
     "AllowMediaConversionHelp": "Grant or deny access to the convert media feature.",
+    "HeaderFetcherSettings": "Fetcher Settings",
+    "ManageLibrary": "Manage library",
     "LabelPrevious": "Anterior",
     "LabelFinish": "Finalitzar",
     "LabelNext": "Seg\u00fcent",

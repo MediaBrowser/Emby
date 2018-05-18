@@ -1,6 +1,8 @@
 {
     "AllowMediaConversion": "Allow media conversion",
     "AllowMediaConversionHelp": "Grant or deny access to the convert media feature.",
+    "HeaderFetcherSettings": "Fetcher Settings",
+    "ManageLibrary": "Manage library",
     "LabelPrevious": "El\u0151z\u0151",
     "LabelFinish": "Befejez",
     "LabelNext": "K\u00f6vetkez\u0151",
@@ -395,7 +397,7 @@
     "TabFolders": "K\u00f6nyvt\u00e1rak",
     "LabelSpecialSeasonsDisplayName": "Special season display name:",
     "LabelEnableRealtimeMonitor": "Enable real time monitoring",
-    "LabelEnableRealtimeMonitorHelp": "Changes will be processed immediately, on supported file systems.",
+    "LabelEnableRealtimeMonitorHelp": "Changes to files will be processed immediately, on supported file systems.",
     "ButtonScanLibrary": "M\u00e9diat\u00e1r Beolvas\u00e1sa",
     "HeaderNumberOfPlayers": "Players",
     "OptionAnyNumberOfPlayers": "B\u00e1rmilyen",

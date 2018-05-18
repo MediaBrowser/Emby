@@ -1,6 +1,8 @@
 {
     "AllowMediaConversion": "Allow media conversion",
     "AllowMediaConversionHelp": "Grant or deny access to the convert media feature.",
+    "HeaderFetcherSettings": "Fetcher Settings",
+    "ManageLibrary": "Manage library",
     "LabelPrevious": "Vorher",
     "LabelFinish": "Beende",
     "LabelNext": "N\u00f6chst",
@@ -395,7 +397,7 @@
     "TabFolders": "Folders",
     "LabelSpecialSeasonsDisplayName": "Special season display name:",
     "LabelEnableRealtimeMonitor": "Enable real time monitoring",
-    "LabelEnableRealtimeMonitorHelp": "Changes will be processed immediately, on supported file systems.",
+    "LabelEnableRealtimeMonitorHelp": "Changes to files will be processed immediately, on supported file systems.",
     "ButtonScanLibrary": "Scan Library",
     "HeaderNumberOfPlayers": "Players",
     "OptionAnyNumberOfPlayers": "Any",

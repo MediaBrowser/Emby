@@ -1,6 +1,8 @@
 {
     "AllowMediaConversion": "Allow media conversion",
     "AllowMediaConversionHelp": "Grant or deny access to the convert media feature.",
+    "HeaderFetcherSettings": "Fetcher Settings",
+    "ManageLibrary": "Manage library",
     "LabelPrevious": "\u00d6nceki",
     "LabelFinish": "Bitir",
     "LabelNext": "Sonraki",
@@ -395,7 +397,7 @@
     "TabFolders": "Klas\u00f6rler",
     "LabelSpecialSeasonsDisplayName": "Special season display name:",
     "LabelEnableRealtimeMonitor": "Enable real time monitoring",
-    "LabelEnableRealtimeMonitorHelp": "Changes will be processed immediately, on supported file systems.",
+    "LabelEnableRealtimeMonitorHelp": "Changes to files will be processed immediately, on supported file systems.",
     "ButtonScanLibrary": "K\u00fct\u00fcphaneyi Tara",
     "HeaderNumberOfPlayers": "Players",
     "OptionAnyNumberOfPlayers": "Hepsi",

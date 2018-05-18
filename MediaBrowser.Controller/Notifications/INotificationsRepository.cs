@@ -32,8 +32,7 @@ namespace MediaBrowser.Controller.Notifications
         /// </summary>
         /// <param name="notification">The notification.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        Task AddNotification(Notification notification, CancellationToken cancellationToken);
+        void AddNotification(Notification notification, CancellationToken cancellationToken);
 
         /// <summary>
         /// Marks the read.
@@ -42,8 +41,7 @@ namespace MediaBrowser.Controller.Notifications
         /// <param name="userId">The user id.</param>
         /// <param name="isRead">if set to <c>true</c> [is read].</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        Task MarkRead(IEnumerable<string> notificationIdList, string userId, bool isRead, CancellationToken cancellationToken);
+        void MarkRead(IEnumerable<string> notificationIdList, string userId, bool isRead, CancellationToken cancellationToken);
 
         /// <summary>
         /// Marks all read.
@@ -51,8 +49,7 @@ namespace MediaBrowser.Controller.Notifications
         /// <param name="userId">The user identifier.</param>
         /// <param name="isRead">if set to <c>true</c> [is read].</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        Task MarkAllRead(string userId, bool isRead, CancellationToken cancellationToken);
+        void MarkAllRead(string userId, bool isRead, CancellationToken cancellationToken);
         
         /// <summary>
         /// Gets the notifications summary.

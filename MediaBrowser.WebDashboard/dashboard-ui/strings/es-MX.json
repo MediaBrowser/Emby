@@ -1,6 +1,8 @@
 {
     "AllowMediaConversion": "Permitir conversi\u00f3n de medios",
     "AllowMediaConversionHelp": "Permitir o denegar acceso a la funci\u00f3n de convertir medios.",
+    "HeaderFetcherSettings": "Fetcher Settings",
+    "ManageLibrary": "Manage library",
     "LabelPrevious": "Anterior",
     "LabelFinish": "Terminar",
     "LabelNext": "Siguiente",

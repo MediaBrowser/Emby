@@ -108,10 +108,18 @@ namespace Emby.Server.Implementations.Diagnostics
                 return Task.FromResult(true);
             }
 
+            //if (_process.WaitForExit(100))
+            //{
+            //    return Task.FromResult(true);
+            //}
+
+            //timeMs -= 100;
+            timeMs = Math.Max(0, timeMs);
+
             var tcs = new TaskCompletionSource<bool>();
 
             var cancellationToken = new CancellationTokenSource(timeMs).Token;
-            _process.Exited += (sender, args) => tcs.TrySetResult(HasExited);
+            _process.Exited += (sender, args) => tcs.TrySetResult(true);
 
             cancellationToken.Register(() => tcs.TrySetResult(HasExited));
 

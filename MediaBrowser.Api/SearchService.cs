@@ -134,9 +134,9 @@ namespace MediaBrowser.Api
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>System.Object.</returns>
-        public async Task<object> Get(GetSearchHints request)
+        public object Get(GetSearchHints request)
         {
-            var result = await GetSearchHintsAsync(request).ConfigureAwait(false);
+            var result = GetSearchHintsAsync(request);
 
             return ToOptimizedResult(result);
         }
@@ -146,9 +146,9 @@ namespace MediaBrowser.Api
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>Task{IEnumerable{SearchHintResult}}.</returns>
-        private async Task<SearchHintResult> GetSearchHintsAsync(GetSearchHints request)
+        private SearchHintResult GetSearchHintsAsync(GetSearchHints request)
         {
-            var result = await _searchEngine.GetSearchHints(new SearchQuery
+            var result = _searchEngine.GetSearchHints(new SearchQuery
             {
                 Limit = request.Limit,
                 SearchTerm = request.SearchTerm,
@@ -170,7 +170,7 @@ namespace MediaBrowser.Api
                 IsSeries = request.IsSeries,
                 IsSports = request.IsSports
 
-            }).ConfigureAwait(false);
+            });
 
             return new SearchHintResult
             {

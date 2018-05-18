@@ -133,26 +133,27 @@ namespace MediaBrowser.Api
             return _notificationManager.SendNotification(notification, CancellationToken.None);
         }
 
-        public Task Post(MarkRead request)
+        public void Post(MarkRead request)
         {
-            return MarkRead(request.Ids, request.UserId, true);
+            MarkRead(request.Ids, request.UserId, true);
         }
 
-        public Task Post(MarkUnread request)
+        public void Post(MarkUnread request)
         {
-            return MarkRead(request.Ids, request.UserId, false);
+            MarkRead(request.Ids, request.UserId, false);
         }
 
-        private Task MarkRead(string idList, string userId, bool read)
+        private void MarkRead(string idList, string userId, bool read)
         {
             var ids = (idList ?? string.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
             if (ids.Length == 0)
             {
-                return _notificationsRepo.MarkAllRead(userId, read, CancellationToken.None);
+                _notificationsRepo.MarkAllRead(userId, read, CancellationToken.None);
+                return;
             }
 
-            return _notificationsRepo.MarkRead(ids, userId, read, CancellationToken.None);
+            _notificationsRepo.MarkRead(ids, userId, read, CancellationToken.None);
         }
 
         public object Get(GetNotifications request)
