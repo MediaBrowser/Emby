@@ -184,7 +184,7 @@ namespace Emby.Server.Implementations.EntryPoints
                 var natManager = _natManager;
                 if (natManager != null)
                 {
-                    natManager.Handle(localAddress, info, endpoint, NatProtocol.Upnp);
+                    await natManager.Handle(localAddress, info, endpoint, NatProtocol.Upnp).ConfigureAwait(false);
                 }
             }
         }

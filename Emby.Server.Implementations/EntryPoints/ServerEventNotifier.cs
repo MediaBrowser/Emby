@@ -167,7 +167,7 @@ namespace Emby.Server.Implementations.EntryPoints
             {
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //Logger.ErrorException("Error sending message", ex);
             }

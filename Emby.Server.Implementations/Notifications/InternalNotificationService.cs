@@ -23,7 +23,7 @@ namespace Emby.Server.Implementations.Notifications
 
         public Task SendNotification(UserNotification request, CancellationToken cancellationToken)
         {
-            return _repo.AddNotification(new Notification
+            _repo.AddNotification(new Notification
             {
                 Date = request.Date,
                 Description = request.Description,
@@ -33,6 +33,8 @@ namespace Emby.Server.Implementations.Notifications
                 UserId = request.User.Id.ToString("N")
 
             }, cancellationToken);
+
+            return Task.CompletedTask;
         }
 
         public bool IsEnabledForUser(User user)

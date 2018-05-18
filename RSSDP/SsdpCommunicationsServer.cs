@@ -453,7 +453,7 @@ namespace Rssdp.Infrastructure
                 {
                     responseMessage = _ResponseParser.Parse(data);
                 }
-                catch (ArgumentException ex)
+                catch (ArgumentException)
                 {
                     // Ignore invalid packets.
                 }
@@ -468,7 +468,7 @@ namespace Rssdp.Infrastructure
                 {
                     requestMessage = _RequestParser.Parse(data);
                 }
-                catch (ArgumentException ex)
+                catch (ArgumentException)
                 {
                     // Ignore invalid packets.
                 }

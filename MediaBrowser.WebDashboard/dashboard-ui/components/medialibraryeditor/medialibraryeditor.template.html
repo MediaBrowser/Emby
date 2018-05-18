@@ -14,13 +14,15 @@
             </label>
         </div>
 
-        <div style="display: flex; align-items: center;">
-            <h2 style="margin: .5em 0;">${HeadersFolders}</h2>
-            <button is="emby-button" type="button" class="fab btnAddFolder submit" style="margin-left:1em;" title="${ButtonAdd}">
-                <i class="md-icon">add</i>
-            </button>
+        <div class="folders hide">
+            <div style="display: flex; align-items: center;">
+                <h2 style="margin: .5em 0;">${HeadersFolders}</h2>
+                <button is="emby-button" type="button" class="fab btnAddFolder submit" style="margin-left:1em;" title="${ButtonAdd}">
+                    <i class="md-icon">add</i>
+                </button>
+            </div>
+            <div class="paperList folderList" style="margin-bottom:2em;"></div>
         </div>
-        <div class="paperList folderList" style="margin-bottom:2em;"></div>
         <div class="libraryOptions"></div>
     </div>
 </div>

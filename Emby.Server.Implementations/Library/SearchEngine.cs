@@ -31,7 +31,7 @@ namespace Emby.Server.Implementations.Library
             _logger = logManager.GetLogger("SearchEngine");
         }
 
-        public async Task<QueryResult<SearchHintInfo>> GetSearchHints(SearchQuery query)
+        public QueryResult<SearchHintInfo> GetSearchHints(SearchQuery query)
         {
             User user = null;
 
@@ -43,26 +43,22 @@ namespace Emby.Server.Implementations.Library
                 user = _userManager.GetUserById(query.UserId);
             }
 
-            var results = await GetSearchHints(query, user).ConfigureAwait(false);
-
-            var searchResultArray = results.ToArray();
-            results = searchResultArray;
-
-            var count = searchResultArray.Length;
+            var results = GetSearchHints(query, user);
+            var totalRecordCount = results.Count;
 
             if (query.StartIndex.HasValue)
             {
-                results = results.Skip(query.StartIndex.Value);
+                results = results.Skip(query.StartIndex.Value).ToList();
             }
 
             if (query.Limit.HasValue)
             {
-                results = results.Take(query.Limit.Value);
+                results = results.Take(query.Limit.Value).ToList();
             }
 
             return new QueryResult<SearchHintInfo>
             {
-                TotalRecordCount = count,
+                TotalRecordCount = totalRecordCount,
 
                 Items = results.ToArray()
             };
@@ -83,7 +79,7 @@ namespace Emby.Server.Implementations.Library
         /// <param name="user">The user.</param>
         /// <returns>IEnumerable{SearchHintResult}.</returns>
         /// <exception cref="System.ArgumentNullException">searchTerm</exception>
-        private Task<IEnumerable<SearchHintInfo>> GetSearchHints(SearchQuery query, User user)
+        private List<SearchHintInfo> GetSearchHints(SearchQuery query, User user)
         {
             var searchTerm = query.SearchTerm;
 
@@ -224,9 +220,10 @@ namespace Emby.Server.Implementations.Library
             {
                 Item = i.Item1,
                 MatchedTerm = i.Item2
-            });
 
-            return Task.FromResult(returnValue);
+            }).ToList();
+
+            return returnValue;
         }
 
         /// <summary>

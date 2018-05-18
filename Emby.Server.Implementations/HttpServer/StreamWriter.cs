@@ -106,7 +106,7 @@ namespace Emby.Server.Implementations.HttpServer
                     }
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 if (OnError != null)
                 {

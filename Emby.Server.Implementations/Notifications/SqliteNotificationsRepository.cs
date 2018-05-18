@@ -205,9 +205,9 @@ namespace Emby.Server.Implementations.Notifications
         /// <param name="notification">The notification.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        public async Task AddNotification(Notification notification, CancellationToken cancellationToken)
+        public void AddNotification(Notification notification, CancellationToken cancellationToken)
         {
-            await ReplaceNotification(notification, cancellationToken).ConfigureAwait(false);
+            ReplaceNotification(notification, cancellationToken);
 
             if (NotificationAdded != null)
             {
@@ -231,7 +231,7 @@ namespace Emby.Server.Implementations.Notifications
         /// <param name="notification">The notification.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        private async Task ReplaceNotification(Notification notification, CancellationToken cancellationToken)
+        private void ReplaceNotification(Notification notification, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(notification.Id))
             {
@@ -277,13 +277,12 @@ namespace Emby.Server.Implementations.Notifications
         /// <param name="userId">The user id.</param>
         /// <param name="isRead">if set to <c>true</c> [is read].</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        public async Task MarkRead(IEnumerable<string> notificationIdList, string userId, bool isRead, CancellationToken cancellationToken)
+        public void MarkRead(IEnumerable<string> notificationIdList, string userId, bool isRead, CancellationToken cancellationToken)
         {
             var list = notificationIdList.ToList();
             var idArray = list.Select(i => new Guid(i)).ToArray(list.Count);
 
-            await MarkReadInternal(idArray, userId, isRead, cancellationToken).ConfigureAwait(false);
+            MarkReadInternal(idArray, userId, isRead, cancellationToken);
 
             if (NotificationsMarkedRead != null)
             {
@@ -303,7 +302,7 @@ namespace Emby.Server.Implementations.Notifications
             }
         }
 
-        public async Task MarkAllRead(string userId, bool isRead, CancellationToken cancellationToken)
+        public void MarkAllRead(string userId, bool isRead, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -325,7 +324,7 @@ namespace Emby.Server.Implementations.Notifications
             }
         }
 
-        private async Task MarkReadInternal(IEnumerable<Guid> notificationIdList, string userId, bool isRead, CancellationToken cancellationToken)
+        private void MarkReadInternal(IEnumerable<Guid> notificationIdList, string userId, bool isRead, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 

@@ -648,34 +648,34 @@ namespace Emby.Server.Implementations.HttpServer
                 }
                 else
                 {
-                    ErrorHandler(new FileNotFoundException(), httpReq, false, false);
+                    await ErrorHandler(new FileNotFoundException(), httpReq, false, false).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException ex)
             {
-                ErrorHandler(ex, httpReq, false, false);
+                await ErrorHandler(ex, httpReq, false, false).ConfigureAwait(false);
             }
 
             catch (IOException ex)
             {
-                ErrorHandler(ex, httpReq, false, false);
+                await ErrorHandler(ex, httpReq, false, false).ConfigureAwait(false);
             }
 
             catch (SocketException ex)
             {
-                ErrorHandler(ex, httpReq, false, false);
+                await ErrorHandler(ex, httpReq, false, false).ConfigureAwait(false);
             }
 
             catch (SecurityException ex)
             {
-                ErrorHandler(ex, httpReq, false, true);
+                await ErrorHandler(ex, httpReq, false, true).ConfigureAwait(false);
             }
 
             catch (Exception ex)
             {
                 var logException = !string.Equals(ex.GetType().Name, "SocketException", StringComparison.OrdinalIgnoreCase);
 
-                ErrorHandler(ex, httpReq, logException, false);
+                await ErrorHandler(ex, httpReq, logException, false).ConfigureAwait(false);
             }
             finally
             {

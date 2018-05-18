@@ -373,7 +373,8 @@ namespace Emby.Server.Implementations.Library
 
         public void SetDefaultAudioAndSubtitleStreamIndexes(BaseItem item, MediaSourceInfo source, User user)
         {
-            var mediaType = item.MediaType;
+            // Item would only be null if the app didn't supply ItemId as part of the live stream open request
+            var mediaType = item == null ? MediaType.Video : item.MediaType;
 
             if (string.Equals(mediaType, MediaType.Video, StringComparison.OrdinalIgnoreCase))
             {

@@ -1,6 +1,8 @@
 {
-    "AllowMediaConversion": "Allow media conversion",
+    "AllowMediaConversion": "Povoli\u0165 konverziu m\u00e9di\u00ed",
     "AllowMediaConversionHelp": "Grant or deny access to the convert media feature.",
+    "HeaderFetcherSettings": "Fetcher Settings",
+    "ManageLibrary": "Manage library",
     "LabelPrevious": "Predch\u00e1dzaj\u00face",
     "LabelFinish": "Ukon\u010di\u0165",
     "LabelNext": "\u010ealej",

@@ -68,8 +68,6 @@ namespace Emby.Server.Implementations.Data
 
         private readonly IFileSystem _fileSystem;
         private readonly IEnvironmentInfo _environmentInfo;
-        private readonly ITimerFactory _timerFactory;
-        private ITimer _shrinkMemoryTimer;
         private IServerApplicationHost _appHost;
 
         /// <summary>
@@ -92,7 +90,6 @@ namespace Emby.Server.Implementations.Data
             _jsonSerializer = jsonSerializer;
             _fileSystem = fileSystem;
             _environmentInfo = environmentInfo;
-            _timerFactory = timerFactory;
             _typeMapper = new TypeMapper(assemblyInfo);
 
             DbFilePath = Path.Combine(_config.ApplicationPaths.DataPath, "library.db");
@@ -114,17 +111,6 @@ namespace Emby.Server.Implementations.Data
             {
                 return true;
             }
-        }
-
-        protected override void CloseConnection()
-        {
-            if (_shrinkMemoryTimer != null)
-            {
-                _shrinkMemoryTimer.Dispose();
-                _shrinkMemoryTimer = null;
-            }
-
-            base.CloseConnection();
         }
 
         /// <summary>
@@ -356,31 +342,6 @@ namespace Emby.Server.Implementations.Data
             }
 
             userDataRepo.Initialize(WriteLock, _connection);
-
-            _shrinkMemoryTimer = _timerFactory.Create(OnShrinkMemoryTimerCallback, null, TimeSpan.FromMinutes(1), TimeSpan.FromHours(6));
-        }
-
-        private void OnShrinkMemoryTimerCallback(object state)
-        {
-            try
-            {
-                using (WriteLock.Write())
-                {
-                    using (var connection = CreateConnection())
-                    {
-                        connection.RunQueries(new string[]
-                        {
-                            "pragma shrink_memory"
-                        });
-                    }
-                }
-
-                GC.Collect();
-            }
-            catch (Exception ex)
-            {
-                Logger.ErrorException("Error running shrink memory", ex);
-            }
         }
 
         private readonly string[] _retriveItemColumns =
@@ -3468,92 +3429,94 @@ namespace Emby.Server.Implementations.Data
             var tags = query.Tags.ToList();
             var excludeTags = query.ExcludeTags.ToList();
 
-            if (!(query.IsMovie ?? true) || !(query.IsSeries ?? true))
-            {
-                if (query.IsMovie.HasValue)
-                {
-                    var alternateTypes = new List<string>();
-                    if (query.IncludeItemTypes.Length == 0 || query.IncludeItemTypes.Contains(typeof(Movie).Name))
-                    {
-                        alternateTypes.Add(typeof(Movie).FullName);
-                    }
-                    if (query.IncludeItemTypes.Length == 0 || query.IncludeItemTypes.Contains(typeof(Trailer).Name))
-                    {
-                        alternateTypes.Add(typeof(Trailer).FullName);
-                    }
+            //if (!(query.IsMovie ?? true) || !(query.IsSeries ?? true))
+            //{
+            //    if (query.IsMovie.HasValue)
+            //    {
+            //        var alternateTypes = new List<string>();
+            //        if (query.IncludeItemTypes.Length == 0 || query.IncludeItemTypes.Contains(typeof(Movie).Name))
+            //        {
+            //            alternateTypes.Add(typeof(Movie).FullName);
+            //        }
+            //        if (query.IncludeItemTypes.Length == 0 || query.IncludeItemTypes.Contains(typeof(Trailer).Name))
+            //        {
+            //            alternateTypes.Add(typeof(Trailer).FullName);
+            //        }
 
-                    if (alternateTypes.Count == 0)
-                    {
-                        whereClauses.Add("IsMovie=@IsMovie");
-                        if (statement != null)
-                        {
-                            statement.TryBind("@IsMovie", query.IsMovie);
-                        }
-                    }
-                    else
-                    {
-                        whereClauses.Add("(IsMovie is null OR IsMovie=@IsMovie)");
-                        if (statement != null)
-                        {
-                            statement.TryBind("@IsMovie", query.IsMovie);
-                        }
-                    }
-                }
-                if (query.IsSeries.HasValue)
-                {
-                    whereClauses.Add("IsSeries=@IsSeries");
-                    if (statement != null)
-                    {
-                        statement.TryBind("@IsSeries", query.IsSeries);
-                    }
-                }
-            }
-            else
+            //        if (alternateTypes.Count == 0)
+            //        {
+            //            whereClauses.Add("IsMovie=@IsMovie");
+            //            if (statement != null)
+            //            {
+            //                statement.TryBind("@IsMovie", query.IsMovie);
+            //            }
+            //        }
+            //        else
+            //        {
+            //            whereClauses.Add("(IsMovie is null OR IsMovie=@IsMovie)");
+            //            if (statement != null)
+            //            {
+            //                statement.TryBind("@IsMovie", query.IsMovie);
+            //            }
+            //        }
+            //    }
+            //}
+            //else
+            //{
+
+            //}
+
+            if (query.IsMovie ?? false)
             {
                 var programAttribtues = new List<string>();
-                if (query.IsMovie ?? false)
-                {
-                    var alternateTypes = new List<string>();
-                    if (query.IncludeItemTypes.Length == 0 || query.IncludeItemTypes.Contains(typeof(Movie).Name))
-                    {
-                        alternateTypes.Add(typeof(Movie).FullName);
-                    }
-                    if (query.IncludeItemTypes.Length == 0 || query.IncludeItemTypes.Contains(typeof(Trailer).Name))
-                    {
-                        alternateTypes.Add(typeof(Trailer).FullName);
-                    }
 
-                    if (alternateTypes.Count == 0)
-                    {
-                        programAttribtues.Add("IsMovie=@IsMovie");
-                    }
-                    else
-                    {
-                        programAttribtues.Add("(IsMovie is null OR IsMovie=@IsMovie)");
-                    }
+                var alternateTypes = new List<string>();
+                if (query.IncludeItemTypes.Length == 0 || query.IncludeItemTypes.Contains(typeof(Movie).Name))
+                {
+                    alternateTypes.Add(typeof(Movie).FullName);
+                }
+                if (query.IncludeItemTypes.Length == 0 || query.IncludeItemTypes.Contains(typeof(Trailer).Name))
+                {
+                    alternateTypes.Add(typeof(Trailer).FullName);
+                }
 
-                    if (statement != null)
-                    {
-                        statement.TryBind("@IsMovie", true);
-                    }
-                }
-                if (query.IsSeries ?? false)
+                if (alternateTypes.Count == 0)
                 {
-                    programAttribtues.Add("IsSeries=@IsSeries");
-                    if (statement != null)
-                    {
-                        statement.TryBind("@IsSeries", query.IsSeries);
-                    }
+                    programAttribtues.Add("IsMovie=@IsMovie");
                 }
-                if (programAttribtues.Count > 0)
+                else
                 {
-                    whereClauses.Add("(" + string.Join(" OR ", programAttribtues.ToArray(programAttribtues.Count)) + ")");
+                    programAttribtues.Add("(IsMovie is null OR IsMovie=@IsMovie)");
+                }
+
+                if (statement != null)
+                {
+                    statement.TryBind("@IsMovie", true);
+                }
+
+                whereClauses.Add("(" + string.Join(" OR ", programAttribtues.ToArray(programAttribtues.Count)) + ")");
+            }
+            else if (query.IsMovie.HasValue)
+            {
+                whereClauses.Add("IsMovie=@IsMovie");
+                if (statement != null)
+                {
+                    statement.TryBind("@IsMovie", query.IsMovie);
+                }
+            }
+
+            if (query.IsSeries.HasValue)
+            {
+                whereClauses.Add("IsSeries=@IsSeries");
+                if (statement != null)
+                {
+                    statement.TryBind("@IsSeries", query.IsSeries);
                 }
             }
 
             if (query.IsSports.HasValue)
             {
-                if (query.IsSports.HasValue)
+                if (query.IsSports.Value)
                 {
                     tags.Add("Sports");
                 }
@@ -3565,7 +3528,7 @@ namespace Emby.Server.Implementations.Data
 
             if (query.IsNews.HasValue)
             {
-                if (query.IsNews.HasValue)
+                if (query.IsNews.Value)
                 {
                     tags.Add("News");
                 }
@@ -3577,7 +3540,7 @@ namespace Emby.Server.Implementations.Data
 
             if (query.IsKids.HasValue)
             {
-                if (query.IsKids.HasValue)
+                if (query.IsKids.Value)
                 {
                     tags.Add("Kids");
                 }
@@ -3656,8 +3619,8 @@ namespace Emby.Server.Implementations.Data
 
             if (!string.IsNullOrWhiteSpace(query.Path))
             {
-                //whereClauses.Add("(Path=@Path COLLATE NOCASE)");
-                whereClauses.Add("Path=@Path");
+                whereClauses.Add("(Path=@Path COLLATE NOCASE)");
+                //whereClauses.Add("Path=@Path");
                 if (statement != null)
                 {
                     statement.TryBind("@Path", GetPathToSave(query.Path));
