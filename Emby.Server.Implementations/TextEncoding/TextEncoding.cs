@@ -203,6 +203,7 @@ namespace Emby.Server.Implementations.TextEncoding
                 case "hrv":
                 case "rum":
                 case "ron":
+                case "rom":
                 case "rup":
                     return "windows-1250";
                 // albanian

@@ -224,10 +224,10 @@ namespace Emby.Dlna.Didl
                 streamInfo.TargetVideoBitrate,
                 streamInfo.TargetTimestamp,
                 streamInfo.IsDirectStream,
-                streamInfo.RunTimeTicks,
+                streamInfo.RunTimeTicks ?? 0,
                 streamInfo.TargetVideoProfile,
                 streamInfo.TargetVideoLevel,
-                streamInfo.TargetFramerate,
+                streamInfo.TargetFramerate ?? 0,
                 streamInfo.TargetPacketLength,
                 streamInfo.TranscodeSeekInfo,
                 streamInfo.IsTargetAnamorphic,
@@ -368,7 +368,7 @@ namespace Emby.Dlna.Didl
                 streamInfo.TargetVideoBitDepth,
                 streamInfo.TargetVideoProfile,
                 streamInfo.TargetVideoLevel,
-                streamInfo.TargetFramerate,
+                streamInfo.TargetFramerate ?? 0,
                 streamInfo.TargetPacketLength,
                 streamInfo.TargetTimestamp,
                 streamInfo.IsTargetAnamorphic,
@@ -580,7 +580,7 @@ namespace Emby.Dlna.Didl
                 targetChannels,
                 targetAudioBitDepth,
                 streamInfo.IsDirectStream,
-                streamInfo.RunTimeTicks,
+                streamInfo.RunTimeTicks ?? 0,
                 streamInfo.TranscodeSeekInfo);
 
             writer.WriteAttributeString("protocolInfo", String.Format(

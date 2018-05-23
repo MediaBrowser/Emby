@@ -116,7 +116,7 @@ namespace Emby.Dlna.Main
 
             if (options.EnableServer)
             {
-                await StartDevicePublisher().ConfigureAwait(false);
+                await StartDevicePublisher(options).ConfigureAwait(false);
             }
             else
             {
@@ -185,9 +185,9 @@ namespace Emby.Dlna.Main
             }
         }
 
-        public async Task StartDevicePublisher()
+        public async Task StartDevicePublisher(Configuration.DlnaOptions options)
         {
-            if (!_config.GetDlnaConfiguration().BlastAliveMessages)
+            if (!options.BlastAliveMessages)
             {
                 return;
             }
@@ -204,6 +204,8 @@ namespace Emby.Dlna.Main
                 _Publisher.SupportPnpRootDevice = false;
 
                 await RegisterServerEndpoints().ConfigureAwait(false);
+
+                _Publisher.StartBroadcastingAliveMessages(TimeSpan.FromSeconds(options.BlastAliveMessageIntervalSeconds));
             }
             catch (Exception ex)
             {
@@ -213,8 +215,6 @@ namespace Emby.Dlna.Main
 
         private async Task RegisterServerEndpoints()
         {
-            var cacheLength = _config.GetDlnaConfiguration().BlastAliveMessageIntervalSeconds;
-
             var addresses = (await _appHost.GetLocalIpAddresses(CancellationToken.None).ConfigureAwait(false)).ToList();
 
             var udn = CreateUuid(_appHost.SystemId);
@@ -236,7 +236,7 @@ namespace Emby.Dlna.Main
 
                 var device = new SsdpRootDevice
                 {
-                    CacheLifetime = TimeSpan.FromSeconds(cacheLength), //How long SSDP clients can cache this info.
+                    CacheLifetime = TimeSpan.FromSeconds(60), //How long SSDP clients can cache this info.
                     Location = uri, // Must point to the URL that serves your devices UPnP description document. 
                     FriendlyName = "Emby Server",
                     Manufacturer = "Emby",

@@ -744,7 +744,7 @@ namespace MediaBrowser.Controller.MediaEncoding
             }
         }
 
-        public abstract void ReportTranscodingProgress(TimeSpan? transcodingPosition, float? framerate, double? percentComplete, long? bytesTranscoded, int? bitRate);
+        public abstract void ReportTranscodingProgress(TimeSpan? transcodingPosition, float framerate, double? percentComplete, long bytesTranscoded, int? bitRate);
     }
 
     /// <summary>

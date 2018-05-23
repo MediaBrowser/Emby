@@ -236,7 +236,7 @@ namespace MediaBrowser.Api.Subtitles
                 request.Index,
                 request.Format,
                 request.StartPositionTicks,
-                request.EndPositionTicks,
+                request.EndPositionTicks ?? 0,
                 request.CopyTimestamps,
                 CancellationToken.None);
         }

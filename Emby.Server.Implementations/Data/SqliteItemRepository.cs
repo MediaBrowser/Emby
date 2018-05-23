@@ -2993,81 +2993,81 @@ namespace Emby.Server.Implementations.Data
             }).ToArray());
         }
 
-        private Tuple<string, bool> MapOrderByField(string name, InternalItemsQuery query)
+        private ValueTuple<string, bool> MapOrderByField(string name, InternalItemsQuery query)
         {
             if (string.Equals(name, ItemSortBy.AirTime, StringComparison.OrdinalIgnoreCase))
             {
                 // TODO
-                return new Tuple<string, bool>("SortName", false);
+                return new ValueTuple<string, bool>("SortName", false);
             }
             if (string.Equals(name, ItemSortBy.Runtime, StringComparison.OrdinalIgnoreCase))
             {
-                return new Tuple<string, bool>("RuntimeTicks", false);
+                return new ValueTuple<string, bool>("RuntimeTicks", false);
             }
             if (string.Equals(name, ItemSortBy.Random, StringComparison.OrdinalIgnoreCase))
             {
-                return new Tuple<string, bool>("RANDOM()", false);
+                return new ValueTuple<string, bool>("RANDOM()", false);
             }
             if (string.Equals(name, ItemSortBy.DatePlayed, StringComparison.OrdinalIgnoreCase))
             {
                 if (query.GroupBySeriesPresentationUniqueKey)
                 {
-                    return new Tuple<string, bool>("MAX(LastPlayedDate)", false);
+                    return new ValueTuple<string, bool>("MAX(LastPlayedDate)", false);
                 }
 
-                return new Tuple<string, bool>("LastPlayedDate", false);
+                return new ValueTuple<string, bool>("LastPlayedDate", false);
             }
             if (string.Equals(name, ItemSortBy.PlayCount, StringComparison.OrdinalIgnoreCase))
             {
-                return new Tuple<string, bool>("PlayCount", false);
+                return new ValueTuple<string, bool>("PlayCount", false);
             }
             if (string.Equals(name, ItemSortBy.IsFavoriteOrLiked, StringComparison.OrdinalIgnoreCase))
             {
                 // (Select Case When Abs(COALESCE(ProductionYear, 0) - @ItemProductionYear) < 10 Then 2 Else 0 End )
-                return new Tuple<string, bool>("(Select Case When IsFavorite is null Then 0 Else IsFavorite End )", true);
+                return new ValueTuple<string, bool>("(Select Case When IsFavorite is null Then 0 Else IsFavorite End )", true);
             }
             if (string.Equals(name, ItemSortBy.IsFolder, StringComparison.OrdinalIgnoreCase))
             {
-                return new Tuple<string, bool>("IsFolder", true);
+                return new ValueTuple<string, bool>("IsFolder", true);
             }
             if (string.Equals(name, ItemSortBy.IsPlayed, StringComparison.OrdinalIgnoreCase))
             {
-                return new Tuple<string, bool>("played", true);
+                return new ValueTuple<string, bool>("played", true);
             }
             if (string.Equals(name, ItemSortBy.IsUnplayed, StringComparison.OrdinalIgnoreCase))
             {
-                return new Tuple<string, bool>("played", false);
+                return new ValueTuple<string, bool>("played", false);
             }
             if (string.Equals(name, ItemSortBy.DateLastContentAdded, StringComparison.OrdinalIgnoreCase))
             {
-                return new Tuple<string, bool>("DateLastMediaAdded", false);
+                return new ValueTuple<string, bool>("DateLastMediaAdded", false);
             }
             if (string.Equals(name, ItemSortBy.Artist, StringComparison.OrdinalIgnoreCase))
             {
-                return new Tuple<string, bool>("(select CleanValue from itemvalues where ItemId=Guid and Type=0 LIMIT 1)", false);
+                return new ValueTuple<string, bool>("(select CleanValue from itemvalues where ItemId=Guid and Type=0 LIMIT 1)", false);
             }
             if (string.Equals(name, ItemSortBy.AlbumArtist, StringComparison.OrdinalIgnoreCase))
             {
-                return new Tuple<string, bool>("(select CleanValue from itemvalues where ItemId=Guid and Type=1 LIMIT 1)", false);
+                return new ValueTuple<string, bool>("(select CleanValue from itemvalues where ItemId=Guid and Type=1 LIMIT 1)", false);
             }
             if (string.Equals(name, ItemSortBy.OfficialRating, StringComparison.OrdinalIgnoreCase))
             {
-                return new Tuple<string, bool>("InheritedParentalRatingValue", false);
+                return new ValueTuple<string, bool>("InheritedParentalRatingValue", false);
             }
             if (string.Equals(name, ItemSortBy.Studio, StringComparison.OrdinalIgnoreCase))
             {
-                return new Tuple<string, bool>("(select CleanValue from itemvalues where ItemId=Guid and Type=3 LIMIT 1)", false);
+                return new ValueTuple<string, bool>("(select CleanValue from itemvalues where ItemId=Guid and Type=3 LIMIT 1)", false);
             }
             if (string.Equals(name, ItemSortBy.SeriesDatePlayed, StringComparison.OrdinalIgnoreCase))
             {
-                return new Tuple<string, bool>("(Select MAX(LastPlayedDate) from TypedBaseItems B" + GetJoinUserDataText(query) + " where Played=1 and B.SeriesPresentationUniqueKey=A.PresentationUniqueKey)", false);
+                return new ValueTuple<string, bool>("(Select MAX(LastPlayedDate) from TypedBaseItems B" + GetJoinUserDataText(query) + " where Played=1 and B.SeriesPresentationUniqueKey=A.PresentationUniqueKey)", false);
             }
             if (string.Equals(name, ItemSortBy.SeriesSortName, StringComparison.OrdinalIgnoreCase))
             {
-                return new Tuple<string, bool>("SeriesName", false);
+                return new ValueTuple<string, bool>("SeriesName", false);
             }
 
-            return new Tuple<string, bool>(name, false);
+            return new ValueTuple<string, bool>(name, false);
         }
 
         public List<Guid> GetItemIdsList(InternalItemsQuery query)

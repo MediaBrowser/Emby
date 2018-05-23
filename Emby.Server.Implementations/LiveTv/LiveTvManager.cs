@@ -64,8 +64,6 @@ namespace Emby.Server.Implementations.LiveTv
 
         private ILiveTvService[] _services = new ILiveTvService[] { };
 
-        private readonly SemaphoreSlim _refreshRecordingsLock = new SemaphoreSlim(1, 1);
-
         private ITunerHost[] _tunerHosts = Array.Empty<ITunerHost>();
         private IListingsProvider[] _listingProviders = Array.Empty<IListingsProvider>();
         private readonly IFileSystem _fileSystem;
@@ -78,11 +76,6 @@ namespace Emby.Server.Implementations.LiveTv
         public string GetEmbyTvActiveRecordingPath(string id)
         {
             return EmbyTV.EmbyTV.Current.GetActiveRecordingPath(id);
-        }
-
-        public Task<ILiveStream> GetEmbyTvLiveStream(string id)
-        {
-            return EmbyTV.EmbyTV.Current.GetLiveStream(id);
         }
 
         public LiveTvManager(IApplicationHost appHost, IServerConfigurationManager config, ILogger logger, IItemRepository itemRepo, IImageProcessor imageProcessor, IUserDataManager userDataManager, IDtoService dtoService, IUserManager userManager, ILibraryManager libraryManager, ITaskManager taskManager, ILocalizationManager localization, IJsonSerializer jsonSerializer, IProviderManager providerManager, IFileSystem fileSystem, ISecurityManager security, Func<IChannelManager> channelManager)
@@ -135,7 +128,43 @@ namespace Emby.Server.Implementations.LiveTv
             foreach (var service in _services)
             {
                 service.DataSourceChanged += service_DataSourceChanged;
+
+                var embyTv = service as EmbyTV.EmbyTV;
+
+                if (embyTv != null)
+                {
+                    embyTv.TimerCreated += EmbyTv_TimerCreated;
+                    embyTv.TimerCancelled += EmbyTv_TimerCancelled;
+                }
             }
+        }
+
+        private void EmbyTv_TimerCancelled(object sender, GenericEventArgs<string> e)
+        {
+            var timerId = e.Argument;
+
+            EventHelper.FireEventIfNotNull(TimerCancelled, this, new GenericEventArgs<TimerEventInfo>
+            {
+                Argument = new TimerEventInfo
+                {
+                    Id = timerId
+                }
+            }, _logger);
+        }
+
+        private void EmbyTv_TimerCreated(object sender, GenericEventArgs<TimerInfo> e)
+        {
+            var timer = e.Argument;
+            var service = sender as ILiveTvService;
+
+            EventHelper.FireEventIfNotNull(TimerCreated, this, new GenericEventArgs<TimerEventInfo>
+            {
+                Argument = new TimerEventInfo
+                {
+                    ProgramId = _tvDtoService.GetInternalProgramId(service.Name, timer.ProgramId).ToString("N"),
+                    Id = timer.Id
+                }
+            }, _logger);
         }
 
         public ITunerHost[] TunerHosts
@@ -212,9 +241,43 @@ namespace Emby.Server.Implementations.LiveTv
             return _libraryManager.GetItemsResult(internalQuery);
         }
 
-        public Task<Tuple<MediaSourceInfo, ILiveStream>> GetChannelStream(string id, string mediaSourceId, CancellationToken cancellationToken)
+        public async Task<Tuple<MediaSourceInfo, ILiveStream>> GetChannelStream(string id, string mediaSourceId, CancellationToken cancellationToken)
         {
-            return GetLiveStream(id, mediaSourceId, cancellationToken);
+            if (string.Equals(id, mediaSourceId, StringComparison.OrdinalIgnoreCase))
+            {
+                mediaSourceId = null;
+            }
+
+            MediaSourceInfo info;
+            bool isVideo;
+            ILiveTvService service;
+            ILiveStream liveStream = null;
+
+            var channel = (LiveTvChannel)_libraryManager.GetItemById(id);
+            isVideo = channel.ChannelType == ChannelType.TV;
+            service = GetService(channel);
+            _logger.Info("Opening channel stream from {0}, external channel Id: {1}", service.Name, channel.ExternalId);
+
+            var supportsManagedStream = service as ISupportsDirectStreamProvider;
+            if (supportsManagedStream != null)
+            {
+                var streamInfo = await supportsManagedStream.GetChannelStreamWithDirectStreamProvider(channel.ExternalId, mediaSourceId, cancellationToken).ConfigureAwait(false);
+                info = streamInfo.Item1;
+                liveStream = streamInfo.Item2;
+            }
+            else
+            {
+                info = await service.GetChannelStream(channel.ExternalId, mediaSourceId, cancellationToken).ConfigureAwait(false);
+            }
+            info.RequiresClosing = true;
+
+            var idPrefix = service.GetType().FullName.GetMD5().ToString("N") + "_";
+
+            info.LiveStreamId = idPrefix + info.Id;
+
+            Normalize(info, service, isVideo);
+
+            return new Tuple<MediaSourceInfo, ILiveStream>(info, liveStream);
         }
 
         public async Task<IEnumerable<MediaSourceInfo>> GetChannelMediaSources(BaseItem item, CancellationToken cancellationToken)
@@ -247,48 +310,6 @@ namespace Emby.Server.Implementations.LiveTv
         private ILiveTvService GetService(string name)
         {
             return _services.FirstOrDefault(i => string.Equals(i.Name, name, StringComparison.OrdinalIgnoreCase));
-        }
-
-        private async Task<Tuple<MediaSourceInfo, ILiveStream>> GetLiveStream(string id, string mediaSourceId, CancellationToken cancellationToken)
-        {
-            if (string.Equals(id, mediaSourceId, StringComparison.OrdinalIgnoreCase))
-            {
-                mediaSourceId = null;
-            }
-
-            MediaSourceInfo info;
-            bool isVideo;
-            ILiveTvService service;
-            ILiveStream liveStream = null;
-
-            var channel = (LiveTvChannel)_libraryManager.GetItemById(id);
-            isVideo = channel.ChannelType == ChannelType.TV;
-            service = GetService(channel);
-            _logger.Info("Opening channel stream from {0}, external channel Id: {1}", service.Name, channel.ExternalId);
-
-            var supportsManagedStream = service as ISupportsDirectStreamProvider;
-            if (supportsManagedStream != null)
-            {
-                var streamInfo = await supportsManagedStream.GetChannelStreamWithDirectStreamProvider(channel.ExternalId, mediaSourceId, cancellationToken).ConfigureAwait(false);
-                info = streamInfo.Item1;
-                liveStream = streamInfo.Item2;
-            }
-            else
-            {
-                info = await service.GetChannelStream(channel.ExternalId, mediaSourceId, cancellationToken).ConfigureAwait(false);
-            }
-            info.RequiresClosing = true;
-
-            if (info.RequiresClosing)
-            {
-                var idPrefix = service.GetType().FullName.GetMD5().ToString("N") + "_";
-
-                info.LiveStreamId = idPrefix + info.Id;
-            }
-
-            Normalize(info, service, isVideo);
-
-            return new Tuple<MediaSourceInfo, ILiveStream>(info, liveStream);
         }
 
         private void Normalize(MediaSourceInfo mediaSource, ILiveTvService service, bool isVideo)
@@ -1761,13 +1782,16 @@ namespace Emby.Server.Implementations.LiveTv
 
             await service.CancelTimerAsync(timer.ExternalId, CancellationToken.None).ConfigureAwait(false);
 
-            EventHelper.FireEventIfNotNull(TimerCancelled, this, new GenericEventArgs<TimerEventInfo>
+            if (!(service is EmbyTV.EmbyTV))
             {
-                Argument = new TimerEventInfo
+                EventHelper.FireEventIfNotNull(TimerCancelled, this, new GenericEventArgs<TimerEventInfo>
                 {
-                    Id = id
-                }
-            }, _logger);
+                    Argument = new TimerEventInfo
+                    {
+                        Id = id
+                    }
+                }, _logger);
+            }
         }
 
         public async Task CancelSeriesTimer(string id)
@@ -2114,14 +2138,17 @@ namespace Emby.Server.Implementations.LiveTv
 
             _logger.Info("New recording scheduled");
 
-            EventHelper.FireEventIfNotNull(TimerCreated, this, new GenericEventArgs<TimerEventInfo>
+            if (!(service is EmbyTV.EmbyTV))
             {
-                Argument = new TimerEventInfo
+                EventHelper.FireEventIfNotNull(TimerCreated, this, new GenericEventArgs<TimerEventInfo>
                 {
-                    ProgramId = _tvDtoService.GetInternalProgramId(timer.ServiceName, info.ProgramId).ToString("N"),
-                    Id = newTimerId
-                }
-            }, _logger);
+                    Argument = new TimerEventInfo
+                    {
+                        ProgramId = _tvDtoService.GetInternalProgramId(timer.ServiceName, info.ProgramId).ToString("N"),
+                        Id = newTimerId
+                    }
+                }, _logger);
+            }
         }
 
         public async Task CreateSeriesTimer(SeriesTimerInfoDto timer, CancellationToken cancellationToken)
