@@ -26,9 +26,9 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 }
                 else if (info.OriginalAirDate.HasValue)
                 {
-                    if (info.OriginalAirDate.Value.Date.Equals(DateTime.UtcNow.Date))
+                    if (info.OriginalAirDate.Value.Date.Equals(info.StartDate.Date))
                     {
-                        name += " " + GetDateString(info.OriginalAirDate.Value);
+                        name += " " + GetDateString(info.StartDate);
                     }
                     else
                     {

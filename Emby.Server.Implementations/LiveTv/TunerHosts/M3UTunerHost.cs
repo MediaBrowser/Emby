@@ -93,11 +93,11 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
             if (tunerCount > 0)
             {
-                var liveStreams = await EmbyTV.EmbyTV.Current.GetLiveStreams(info, cancellationToken).ConfigureAwait(false);
+                var liveStreams = EmbyTV.EmbyTV.Current.GetLiveStreams(info, cancellationToken);
 
-                if (liveStreams.Count >= info.TunerCount)
+                if (liveStreams.Count >= tunerCount)
                 {
-                    throw new LiveTvConflictException();
+                    throw new LiveTvConflictException("M3U simultaneous stream limit has been reached.");
                 }
             }
 

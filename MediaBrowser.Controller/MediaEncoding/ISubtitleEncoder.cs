@@ -17,7 +17,7 @@ namespace MediaBrowser.Controller.MediaEncoding
             int subtitleStreamIndex,
             string outputFormat,
             long startTimeTicks,
-            long? endTimeTicks,
+            long endTimeTicks,
             bool preserveOriginalTimestamps,
             CancellationToken cancellationToken);
 

@@ -86,12 +86,12 @@ namespace MediaBrowser.Providers.TV
 
                             if (int.TryParse(parts[2], NumberStyles.Integer, _usCulture, out episodeNumber))
                             {
-                                return new Tuple<int, int>(seasonNumber, episodeNumber);
+                                return new ValueTuple<int, int>(seasonNumber, episodeNumber);
                             }
                         }
                     }
 
-                    return new Tuple<int, int>(-1, -1);
+                    return new ValueTuple<int, int>(-1, -1);
                 })
                 .Where(i => i.Item1 != -1 && i.Item2 != -1)
                 .ToList();
@@ -165,13 +165,13 @@ namespace MediaBrowser.Providers.TV
             IList<BaseItem> allItems,
             bool addMissingEpisodes,
             string seriesDataPath,
-            IEnumerable<Tuple<int, int>> episodeLookup,
+            IEnumerable<ValueTuple<int, int>> episodeLookup,
             CancellationToken cancellationToken)
         {
             var existingEpisodes = allItems.OfType<Episode>()
                                    .ToList();
 
-            var lookup = episodeLookup as IList<Tuple<int, int>> ?? episodeLookup.ToList();
+            var lookup = episodeLookup as IList<ValueTuple<int, int>> ?? episodeLookup.ToList();
 
             var seasonCounts = (from e in lookup
                                 group e by e.Item1 into g
@@ -241,7 +241,7 @@ namespace MediaBrowser.Providers.TV
         /// </summary>
         private bool RemoveObsoleteOrMissingEpisodes(Series series,
             IList<BaseItem> allRecursiveChildren,
-            IEnumerable<Tuple<int, int>> episodeLookup,
+            IEnumerable<ValueTuple<int, int>> episodeLookup,
             bool allowMissingEpisodes)
         {
             var existingEpisodes = allRecursiveChildren.OfType<Episode>()
@@ -317,7 +317,7 @@ namespace MediaBrowser.Providers.TV
         /// <returns>Task{System.Boolean}.</returns>
         private bool RemoveObsoleteOrMissingSeasons(Series series,
             IList<BaseItem> allRecursiveChildren,
-            IEnumerable<Tuple<int, int>> episodeLookup)
+            IEnumerable<ValueTuple<int, int>> episodeLookup)
         {
             var existingSeasons = allRecursiveChildren.OfType<Season>().ToList();
 
@@ -421,7 +421,7 @@ namespace MediaBrowser.Providers.TV
         /// <param name="seasonCounts"></param>
         /// <param name="tuple">The tuple.</param>
         /// <returns>Episode.</returns>
-        private Episode GetExistingEpisode(IList<Episode> existingEpisodes, Dictionary<int, int> seasonCounts, Tuple<int, int> tuple)
+        private Episode GetExistingEpisode(IList<Episode> existingEpisodes, Dictionary<int, int> seasonCounts, ValueTuple<int, int> tuple)
         {
             var s = tuple.Item1;
             var e = tuple.Item2;

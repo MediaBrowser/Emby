@@ -496,7 +496,7 @@ namespace Emby.Dlna.PlayTo
                     streamInfo.TargetAudioChannels,
                     streamInfo.TargetAudioBitDepth,
                     streamInfo.IsDirectStream,
-                    streamInfo.RunTimeTicks,
+                    streamInfo.RunTimeTicks ?? 0,
                     streamInfo.TranscodeSeekInfo);
             }
 
@@ -512,10 +512,10 @@ namespace Emby.Dlna.PlayTo
                     streamInfo.TargetVideoBitrate,
                     streamInfo.TargetTimestamp,
                     streamInfo.IsDirectStream,
-                    streamInfo.RunTimeTicks,
+                    streamInfo.RunTimeTicks ?? 0,
                     streamInfo.TargetVideoProfile,
                     streamInfo.TargetVideoLevel,
-                    streamInfo.TargetFramerate,
+                    streamInfo.TargetFramerate ?? 0,
                     streamInfo.TargetPacketLength,
                     streamInfo.TranscodeSeekInfo,
                     streamInfo.IsTargetAnamorphic,

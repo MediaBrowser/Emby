@@ -204,8 +204,6 @@ namespace Emby.Server.Implementations.Updates
             }
         }
 
-        private readonly SemaphoreSlim _updateSemaphore = new SemaphoreSlim(1, 1);
-
         /// <summary>
         /// Gets all available packages.
         /// </summary>
@@ -219,8 +217,7 @@ namespace Emby.Server.Implementations.Updates
                 CancellationToken = cancellationToken,
                 Progress = new SimpleProgress<Double>(),
                 CacheLength = GetCacheLength(),
-                CacheMode = CacheMode.Unconditional,
-                ResourcePool = _updateSemaphore
+                CacheMode = CacheMode.Unconditional
 
             }, "GET").ConfigureAwait(false))
             {

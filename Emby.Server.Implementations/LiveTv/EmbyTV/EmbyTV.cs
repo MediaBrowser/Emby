@@ -71,7 +71,8 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
         public static EmbyTV Current;
 
         public event EventHandler DataSourceChanged;
-        public event EventHandler<RecordingStatusChangedEventArgs> RecordingStatusChanged;
+        public event EventHandler<GenericEventArgs<TimerInfo>> TimerCreated;
+        public event EventHandler<GenericEventArgs<string>> TimerCancelled;
 
         private readonly ConcurrentDictionary<string, ActiveRecordingInfo> _activeRecordings =
             new ConcurrentDictionary<string, ActiveRecordingInfo>(StringComparer.OrdinalIgnoreCase);
@@ -632,6 +633,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             var timer = _timerProvider.GetTimer(timerId);
             if (timer != null)
             {
+                var statusChanging = timer.Status != RecordingStatus.Cancelled;
                 timer.Status = RecordingStatus.Cancelled;
 
                 if (isManualCancellation)
@@ -646,6 +648,11 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 else
                 {
                     _timerProvider.AddOrUpdate(timer, false);
+                }
+
+                if (statusChanging && TimerCancelled != null)
+                {
+                    TimerCancelled(this, new GenericEventArgs<string>(timerId));
                 }
             }
             ActiveRecordingInfo activeRecordingInfo;
@@ -721,6 +728,12 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
             timer.IsManual = true;
             _timerProvider.Add(timer);
+
+            if (TimerCreated != null)
+            {
+                TimerCreated(this, new GenericEventArgs<TimerInfo>(timer));
+            }
+
             return Task.FromResult(timer.Id);
         }
 
@@ -1022,7 +1035,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 .ToList();
         }
 
-        private readonly SemaphoreSlim _liveStreamsSemaphore = new SemaphoreSlim(1, 1);
         private readonly List<ILiveStream> _liveStreams = new List<ILiveStream>();
 
         public async Task<MediaSourceInfo> GetChannelStream(string channelId, string streamId, CancellationToken cancellationToken)
@@ -1056,88 +1068,55 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             return mediaSource;
         }
 
-        public async Task<ILiveStream> GetLiveStream(string uniqueId)
+        public List<ILiveStream> GetLiveStreams(TunerHostInfo host, CancellationToken cancellationToken)
         {
-            await _liveStreamsSemaphore.WaitAsync().ConfigureAwait(false);
-
-            try
-            {
-                return _liveStreams
-                    .FirstOrDefault(i => string.Equals(i.UniqueId, uniqueId, StringComparison.OrdinalIgnoreCase));
-            }
-            finally
-            {
-                _liveStreamsSemaphore.Release();
-            }
-        }
-
-        public Task<List<ILiveStream>> GetLiveStreams(TunerHostInfo host, CancellationToken cancellationToken)
-        {
-            //await _liveStreamsSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
-
-            //try
-            //{
             var hostId = host.Id;
 
-            return Task.FromResult(_liveStreams
+            return _liveStreams
                 .Where(i => string.Equals(i.TunerHostId, hostId, StringComparison.OrdinalIgnoreCase))
-                .ToList());
-            //}
-            //finally
-            //{
-            //    _liveStreamsSemaphore.Release();
-            //}
+                .ToList();
         }
 
         private async Task<Tuple<ILiveStream, MediaSourceInfo>> GetChannelStreamInternal(string channelId, string streamId, CancellationToken cancellationToken)
         {
-            await _liveStreamsSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
-
             _logger.Info("Streaming Channel " + channelId);
 
-            try
+            var result = _liveStreams.FirstOrDefault(i => string.Equals(i.OriginalStreamId, streamId, StringComparison.OrdinalIgnoreCase));
+
+            if (result != null && result.EnableStreamSharing)
             {
-                var result = _liveStreams.FirstOrDefault(i => string.Equals(i.OriginalStreamId, streamId, StringComparison.OrdinalIgnoreCase));
+                var openedMediaSource = CloneMediaSource(result.OpenedMediaSource, result.EnableStreamSharing);
+                result.SharedStreamIds.Add(openedMediaSource.Id);
 
-                if (result != null && result.EnableStreamSharing)
+                _logger.Info("Live stream {0} consumer count is now {1}", streamId, result.ConsumerCount);
+
+                return new Tuple<ILiveStream, MediaSourceInfo>(result, openedMediaSource);
+            }
+
+            foreach (var hostInstance in _liveTvManager.TunerHosts)
+            {
+                try
                 {
-                    var openedMediaSource = CloneMediaSource(result.OpenedMediaSource, result.EnableStreamSharing);
-                    result.SharedStreamIds.Add(openedMediaSource.Id);
+                    result = await hostInstance.GetChannelStream(channelId, streamId, cancellationToken).ConfigureAwait(false);
 
-                    _logger.Info("Live stream {0} consumer count is now {1}", streamId, result.ConsumerCount);
+                    var openedMediaSource = CloneMediaSource(result.OpenedMediaSource, result.EnableStreamSharing);
+
+                    result.SharedStreamIds.Add(openedMediaSource.Id);
+                    _liveStreams.Add(result);
+
+                    result.OriginalStreamId = streamId;
+
+                    _logger.Info("Returning mediasource streamId {0}, mediaSource.Id {1}, mediaSource.LiveStreamId {2}",
+                        streamId, openedMediaSource.Id, openedMediaSource.LiveStreamId);
 
                     return new Tuple<ILiveStream, MediaSourceInfo>(result, openedMediaSource);
                 }
-
-                foreach (var hostInstance in _liveTvManager.TunerHosts)
+                catch (FileNotFoundException)
                 {
-                    try
-                    {
-                        result = await hostInstance.GetChannelStream(channelId, streamId, cancellationToken).ConfigureAwait(false);
-
-                        var openedMediaSource = CloneMediaSource(result.OpenedMediaSource, result.EnableStreamSharing);
-
-                        result.SharedStreamIds.Add(openedMediaSource.Id);
-                        _liveStreams.Add(result);
-
-                        result.OriginalStreamId = streamId;
-
-                        _logger.Info("Returning mediasource streamId {0}, mediaSource.Id {1}, mediaSource.LiveStreamId {2}",
-                            streamId, openedMediaSource.Id, openedMediaSource.LiveStreamId);
-
-                        return new Tuple<ILiveStream, MediaSourceInfo>(result, openedMediaSource);
-                    }
-                    catch (FileNotFoundException)
-                    {
-                    }
-                    catch (OperationCanceledException)
-                    {
-                    }
                 }
-            }
-            finally
-            {
-                _liveStreamsSemaphore.Release();
+                catch (OperationCanceledException)
+                {
+                }
             }
 
             throw new Exception("Tuner not found.");
@@ -1199,48 +1178,34 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             };
         }
 
-        public async Task CloseLiveStream(string id, CancellationToken cancellationToken)
+        public Task CloseLiveStream(string id, CancellationToken cancellationToken)
         {
             // Ignore the consumer id
             //id = id.Substring(id.IndexOf('_') + 1);
 
-            await _liveStreamsSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
-
-            try
+            var stream = _liveStreams.FirstOrDefault(i => i.SharedStreamIds.Contains(id));
+            if (stream != null)
             {
-                var stream = _liveStreams.FirstOrDefault(i => i.SharedStreamIds.Contains(id));
-                if (stream != null)
+                stream.SharedStreamIds.Remove(id);
+
+                _logger.Info("Live stream {0} consumer count is now {1}", id, stream.ConsumerCount);
+
+                if (stream.ConsumerCount <= 0)
                 {
-                    stream.SharedStreamIds.Remove(id);
+                    _liveStreams.Remove(stream);
 
-                    _logger.Info("Live stream {0} consumer count is now {1}", id, stream.ConsumerCount);
+                    _logger.Info("Closing live stream {0}", id);
 
-                    if (stream.ConsumerCount <= 0)
-                    {
-                        _liveStreams.Remove(stream);
-
-                        _logger.Info("Closing live stream {0}", id);
-
-                        stream.Close();
-                        _logger.Info("Live stream {0} closed successfully", id);
-                    }
-                }
-                else
-                {
-                    _logger.Warn("Live stream not found: {0}, unable to close", id);
+                    stream.Close();
+                    _logger.Info("Live stream {0} closed successfully", id);
                 }
             }
-            catch (OperationCanceledException)
+            else
             {
+                _logger.Warn("Live stream not found: {0}, unable to close", id);
             }
-            catch (Exception ex)
-            {
-                _logger.ErrorException("Error closing live stream", ex);
-            }
-            finally
-            {
-                _liveStreamsSemaphore.Release();
-            }
+
+            return Task.CompletedTask;
         }
 
         public Task RecordLiveStream(string id, CancellationToken cancellationToken)
@@ -2500,6 +2465,11 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                             enabledTimersForSeries.Add(timer);
                         }
                         _timerProvider.Add(timer);
+
+                        if (TimerCreated != null)
+                        {
+                            TimerCreated(this, new GenericEventArgs<TimerInfo>(timer));
+                        }
                     }
                     else
                     {

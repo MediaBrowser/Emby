@@ -49,12 +49,32 @@ namespace Emby.Server.Implementations.Diagnostics
             }
         }
 
-        private bool HasExited;
+        private bool _hasExited;
+        private bool HasExited
+        {
+            get
+            {
+                if (_hasExited)
+                {
+                    return true;
+                }
+
+                try
+                {
+                    _hasExited = _process.HasExited;
+                }
+                catch (InvalidOperationException)
+                {
+                    _hasExited = true;
+                }
+
+                return _hasExited;
+            }
+        }
 
         private void _process_Exited(object sender, EventArgs e)
         {
-            HasExited = true;
-
+            _hasExited = true;
             if (Exited != null)
             {
                 Exited(this, e);
@@ -103,11 +123,6 @@ namespace Emby.Server.Implementations.Diagnostics
 
         public Task<bool> WaitForExitAsync(int timeMs)
         {
-            if (HasExited)
-            {
-                return Task.FromResult(true);
-            }
-
             //if (_process.WaitForExit(100))
             //{
             //    return Task.FromResult(true);
@@ -119,6 +134,12 @@ namespace Emby.Server.Implementations.Diagnostics
             var tcs = new TaskCompletionSource<bool>();
 
             var cancellationToken = new CancellationTokenSource(timeMs).Token;
+
+            if (HasExited)
+            {
+                return Task.FromResult(true);
+            }
+
             _process.Exited += (sender, args) => tcs.TrySetResult(true);
 
             cancellationToken.Register(() => tcs.TrySetResult(HasExited));

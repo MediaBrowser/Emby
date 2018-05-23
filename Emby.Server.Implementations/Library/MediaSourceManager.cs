@@ -481,6 +481,31 @@ namespace Emby.Server.Implementations.Library
             }
         }
 
+        public async Task<IDirectStreamProvider> GetDirectStreamProviderByUniqueId(string uniqueId, CancellationToken cancellationToken)
+        {
+            await _liveStreamSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+            try
+            {
+                var info = _openStreams.Values.FirstOrDefault(i =>
+                {
+                    var liveStream = i.DirectStreamProvider as MediaBrowser.Controller.LiveTv.ILiveStream;
+                    if (liveStream != null)
+                    {
+                        return string.Equals(liveStream.UniqueId, uniqueId, StringComparison.OrdinalIgnoreCase);
+                    }
+
+                    return false;
+                });
+
+                return info == null ? null : info.DirectStreamProvider;
+            }
+            finally
+            {
+                _liveStreamSemaphore.Release();
+            }
+        }
+
         public async Task<LiveStreamResponse> OpenLiveStream(LiveStreamRequest request, CancellationToken cancellationToken)
         {
             var result = await OpenLiveStreamInternal(request, cancellationToken).ConfigureAwait(false);

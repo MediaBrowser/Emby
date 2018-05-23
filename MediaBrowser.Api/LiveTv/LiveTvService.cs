@@ -708,8 +708,9 @@ namespace MediaBrowser.Api.LiveTv
         private readonly IEnvironmentInfo _environment;
         private ICryptoProvider _cryptographyProvider;
         private IStreamHelper _streamHelper;
+        private IMediaSourceManager _mediaSourceManager;
 
-        public LiveTvService(ICryptoProvider crypto, IStreamHelper streamHelper, ILiveTvManager liveTvManager, IUserManager userManager, IServerConfigurationManager config, IHttpClient httpClient, ILibraryManager libraryManager, IDtoService dtoService, IFileSystem fileSystem, IAuthorizationContext authContext, ISessionContext sessionContext, IEnvironmentInfo environment)
+        public LiveTvService(ICryptoProvider crypto, IMediaSourceManager mediaSourceManager, IStreamHelper streamHelper, ILiveTvManager liveTvManager, IUserManager userManager, IServerConfigurationManager config, IHttpClient httpClient, ILibraryManager libraryManager, IDtoService dtoService, IFileSystem fileSystem, IAuthorizationContext authContext, ISessionContext sessionContext, IEnvironmentInfo environment)
         {
             _liveTvManager = liveTvManager;
             _userManager = userManager;
@@ -723,6 +724,7 @@ namespace MediaBrowser.Api.LiveTv
             _environment = environment;
             _cryptographyProvider = crypto;
             _streamHelper = streamHelper;
+            _mediaSourceManager = mediaSourceManager;
         }
 
         public object Get(GetTunerHostTypes request)
@@ -774,7 +776,10 @@ namespace MediaBrowser.Api.LiveTv
 
         public async Task<object> Get(GetLiveStreamFile request)
         {
-            var directStreamProvider = (await _liveTvManager.GetEmbyTvLiveStream(request.Id).ConfigureAwait(false)) as IDirectStreamProvider;
+            var liveStreamInfo = await _mediaSourceManager.GetDirectStreamProviderByUniqueId(request.Id, CancellationToken.None).ConfigureAwait(false);
+
+            var directStreamProvider = liveStreamInfo;
+
             var outputHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
             outputHeaders["Content-Type"] = Model.Net.MimeTypes.GetMimeType("file." + request.Container);

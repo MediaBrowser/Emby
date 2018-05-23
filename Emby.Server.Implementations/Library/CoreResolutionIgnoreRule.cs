@@ -44,7 +44,8 @@ namespace Emby.Server.Implementations.Library
                 "@Recycle",
                 ".@__thumb",
                 "$RECYCLE.BIN",
-                "System Volume Information"
+                "System Volume Information",
+                ".grab"
 
         };
         
