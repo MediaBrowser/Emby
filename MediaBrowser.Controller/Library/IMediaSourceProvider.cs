@@ -20,13 +20,6 @@ namespace MediaBrowser.Controller.Library
         /// <summary>
         /// Opens the media source.
         /// </summary>
-        Task<Tuple<MediaSourceInfo,IDirectStreamProvider,bool>> OpenMediaSource(string openToken, CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Closes the media source.
-        /// </summary>
-        /// <param name="liveStreamId">The live stream identifier.</param>
-        /// <returns>Task.</returns>
-        Task CloseMediaSource(string liveStreamId);
+        Task<ILiveStream> OpenMediaSource(string openToken, List<ILiveStream> currentLiveStreams, CancellationToken cancellationToken);
     }
 }

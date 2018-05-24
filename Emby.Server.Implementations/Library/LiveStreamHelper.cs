@@ -15,7 +15,7 @@ using MediaBrowser.Common.Configuration;
 using System.IO;
 using MediaBrowser.Common.Extensions;
 
-namespace Emby.Server.Implementations.LiveTv
+namespace Emby.Server.Implementations.Library
 {
     public class LiveStreamHelper
     {
@@ -40,7 +40,7 @@ namespace Emby.Server.Implementations.LiveTv
             var now = DateTime.UtcNow;
 
             MediaInfo mediaInfo = null;
-            var cacheFilePath = string.IsNullOrEmpty(cacheKey) ? null : Path.Combine(_appPaths.CachePath, "livetvmediainfo", cacheKey.GetMD5().ToString("N") + ".json");
+            var cacheFilePath = string.IsNullOrEmpty(cacheKey) ? null : Path.Combine(_appPaths.CachePath, "mediainfo", cacheKey.GetMD5().ToString("N") + ".json");
 
             if (!string.IsNullOrEmpty(cacheKey))
             {
@@ -50,7 +50,7 @@ namespace Emby.Server.Implementations.LiveTv
 
                     //_logger.Debug("Found cached media info");
                 }
-                catch (Exception ex)
+                catch
                 {
                 }
             }
@@ -61,7 +61,11 @@ namespace Emby.Server.Implementations.LiveTv
                 {
                     var delayMs = mediaSource.AnalyzeDurationMs ?? 0;
                     delayMs = Math.Max(3000, delayMs);
-                    await Task.Delay(delayMs, cancellationToken).ConfigureAwait(false);
+                    if (delayMs > 0)
+                    {
+                        _logger.Info("Waiting {0}ms before probing the live stream", delayMs);
+                        await Task.Delay(delayMs, cancellationToken).ConfigureAwait(false);
+                    }
                 }
 
                 mediaSource.AnalyzeDurationMs = 3000;

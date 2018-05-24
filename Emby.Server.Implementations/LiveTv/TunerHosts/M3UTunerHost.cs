@@ -87,13 +87,14 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             ".mpd"
         };
 
-        protected override async Task<ILiveStream> GetChannelStream(TunerHostInfo info, ChannelInfo channelInfo, string streamId, CancellationToken cancellationToken)
+        protected override async Task<ILiveStream> GetChannelStream(TunerHostInfo info, ChannelInfo channelInfo, string streamId, List<ILiveStream> currentLiveStreams, CancellationToken cancellationToken)
         {
             var tunerCount = info.TunerCount;
 
             if (tunerCount > 0)
             {
-                var liveStreams = EmbyTV.EmbyTV.Current.GetLiveStreams(info, cancellationToken);
+                var tunerHostId = info.Id;
+                var liveStreams = currentLiveStreams.Where(i => string.Equals(i.TunerHostId, tunerHostId, StringComparison.OrdinalIgnoreCase)).ToList();
 
                 if (liveStreams.Count >= tunerCount)
                 {
