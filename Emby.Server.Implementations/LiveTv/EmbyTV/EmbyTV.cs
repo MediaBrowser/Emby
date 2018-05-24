@@ -42,6 +42,7 @@ using MediaBrowser.Model.Querying;
 using MediaBrowser.Model.Reflection;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Model.MediaInfo;
+using Emby.Server.Implementations.Library;
 
 namespace Emby.Server.Implementations.LiveTv.EmbyTV
 {
@@ -1035,20 +1036,51 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 .ToList();
         }
 
-        private readonly List<ILiveStream> _liveStreams = new List<ILiveStream>();
-
-        public async Task<MediaSourceInfo> GetChannelStream(string channelId, string streamId, CancellationToken cancellationToken)
+        public Task<MediaSourceInfo> GetChannelStream(string channelId, string streamId, CancellationToken cancellationToken)
         {
-            var result = await GetChannelStreamWithDirectStreamProvider(channelId, streamId, cancellationToken).ConfigureAwait(false);
-
-            return result.Item1;
+            throw new NotImplementedException();
         }
 
-        public async Task<Tuple<MediaSourceInfo, ILiveStream>> GetChannelStreamWithDirectStreamProvider(string channelId, string streamId, CancellationToken cancellationToken)
+        public async Task<ILiveStream> GetChannelStreamWithDirectStreamProvider(string channelId, string streamId, List<ILiveStream> currentLiveStreams, CancellationToken cancellationToken)
         {
-            var result = await GetChannelStreamInternal(channelId, streamId, cancellationToken).ConfigureAwait(false);
+            _logger.Info("Streaming Channel " + channelId);
 
-            return new Tuple<MediaSourceInfo, ILiveStream>(result.Item2, result.Item1);
+            var result = string.IsNullOrEmpty(streamId) ? 
+                null :
+                currentLiveStreams.FirstOrDefault(i => string.Equals(i.OriginalStreamId, streamId, StringComparison.OrdinalIgnoreCase));
+
+            if (result != null && result.EnableStreamSharing)
+            {
+                result.ConsumerCount++;
+
+                _logger.Info("Live stream {0} consumer count is now {1}", streamId, result.ConsumerCount);
+
+                return result;
+            }
+
+            foreach (var hostInstance in _liveTvManager.TunerHosts)
+            {
+                try
+                {
+                    result = await hostInstance.GetChannelStream(channelId, streamId, currentLiveStreams, cancellationToken).ConfigureAwait(false);
+
+                    var openedMediaSource = result.MediaSource;
+
+                    result.OriginalStreamId = streamId;
+
+                    _logger.Info("Returning mediasource streamId {0}, mediaSource.Id {1}, mediaSource.LiveStreamId {2}", streamId, openedMediaSource.Id, openedMediaSource.LiveStreamId);
+
+                    return result;
+                }
+                catch (FileNotFoundException)
+                {
+                }
+                catch (OperationCanceledException)
+                {
+                }
+            }
+
+            throw new Exception("Tuner not found.");
         }
 
         private MediaSourceInfo CloneMediaSource(MediaSourceInfo mediaSource, bool enableStreamSharing)
@@ -1066,60 +1098,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             //}
 
             return mediaSource;
-        }
-
-        public List<ILiveStream> GetLiveStreams(TunerHostInfo host, CancellationToken cancellationToken)
-        {
-            var hostId = host.Id;
-
-            return _liveStreams
-                .Where(i => string.Equals(i.TunerHostId, hostId, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-        }
-
-        private async Task<Tuple<ILiveStream, MediaSourceInfo>> GetChannelStreamInternal(string channelId, string streamId, CancellationToken cancellationToken)
-        {
-            _logger.Info("Streaming Channel " + channelId);
-
-            var result = _liveStreams.FirstOrDefault(i => string.Equals(i.OriginalStreamId, streamId, StringComparison.OrdinalIgnoreCase));
-
-            if (result != null && result.EnableStreamSharing)
-            {
-                var openedMediaSource = CloneMediaSource(result.OpenedMediaSource, result.EnableStreamSharing);
-                result.SharedStreamIds.Add(openedMediaSource.Id);
-
-                _logger.Info("Live stream {0} consumer count is now {1}", streamId, result.ConsumerCount);
-
-                return new Tuple<ILiveStream, MediaSourceInfo>(result, openedMediaSource);
-            }
-
-            foreach (var hostInstance in _liveTvManager.TunerHosts)
-            {
-                try
-                {
-                    result = await hostInstance.GetChannelStream(channelId, streamId, cancellationToken).ConfigureAwait(false);
-
-                    var openedMediaSource = CloneMediaSource(result.OpenedMediaSource, result.EnableStreamSharing);
-
-                    result.SharedStreamIds.Add(openedMediaSource.Id);
-                    _liveStreams.Add(result);
-
-                    result.OriginalStreamId = streamId;
-
-                    _logger.Info("Returning mediasource streamId {0}, mediaSource.Id {1}, mediaSource.LiveStreamId {2}",
-                        streamId, openedMediaSource.Id, openedMediaSource.LiveStreamId);
-
-                    return new Tuple<ILiveStream, MediaSourceInfo>(result, openedMediaSource);
-                }
-                catch (FileNotFoundException)
-                {
-                }
-                catch (OperationCanceledException)
-                {
-                }
-            }
-
-            throw new Exception("Tuner not found.");
         }
 
         public async Task<List<MediaSourceInfo>> GetChannelStreamMediaSources(string channelId, CancellationToken cancellationToken)
@@ -1154,9 +1132,9 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             var stream = new MediaSourceInfo
             {
                 EncoderPath = _appHost.GetLocalApiUrl("127.0.0.1") + "/LiveTv/LiveRecordings/" + info.Id + "/stream",
-                EncoderProtocol = MediaBrowser.Model.MediaInfo.MediaProtocol.Http,
+                EncoderProtocol = MediaProtocol.Http,
                 Path = info.Path,
-                Protocol = MediaBrowser.Model.MediaInfo.MediaProtocol.File,
+                Protocol = MediaProtocol.File,
                 Id = info.Id,
                 SupportsDirectPlay = false,
                 SupportsDirectStream = true,
@@ -1180,31 +1158,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
         public Task CloseLiveStream(string id, CancellationToken cancellationToken)
         {
-            // Ignore the consumer id
-            //id = id.Substring(id.IndexOf('_') + 1);
-
-            var stream = _liveStreams.FirstOrDefault(i => i.SharedStreamIds.Contains(id));
-            if (stream != null)
-            {
-                stream.SharedStreamIds.Remove(id);
-
-                _logger.Info("Live stream {0} consumer count is now {1}", id, stream.ConsumerCount);
-
-                if (stream.ConsumerCount <= 0)
-                {
-                    _liveStreams.Remove(stream);
-
-                    _logger.Info("Closing live stream {0}", id);
-
-                    stream.Close();
-                    _logger.Info("Live stream {0} closed successfully", id);
-                }
-            }
-            else
-            {
-                _logger.Warn("Live stream not found: {0}, unable to close", id);
-            }
-
             return Task.CompletedTask;
         }
 

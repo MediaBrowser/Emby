@@ -107,7 +107,7 @@ namespace MediaBrowser.Controller.LiveTv
         /// <param name="mediaSourceId">The media source identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task{StreamResponseInfo}.</returns>
-        Task<Tuple<MediaSourceInfo, ILiveStream>> GetChannelStream(string id, string mediaSourceId, CancellationToken cancellationToken);
+        Task<Tuple<MediaSourceInfo, ILiveStream>> GetChannelStream(string id, string mediaSourceId, List<ILiveStream> currentLiveStreams, CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets the program.
@@ -158,13 +158,6 @@ namespace MediaBrowser.Controller.LiveTv
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
         Task CreateSeriesTimer(SeriesTimerInfoDto timer, CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Closes the live stream.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns>Task.</returns>
-        Task CloseLiveStream(string id);
 
         /// <summary>
         /// Gets the guide information.

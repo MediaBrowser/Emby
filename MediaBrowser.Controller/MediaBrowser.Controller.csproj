@@ -124,6 +124,7 @@
     <Compile Include="IResourceFileManager.cs" />
     <Compile Include="Library\DeleteOptions.cs" />
     <Compile Include="Library\ILibraryPostScanTask.cs" />
+    <Compile Include="Library\ILiveStream.cs" />
     <Compile Include="Library\IMediaSourceManager.cs" />
     <Compile Include="Library\IMediaSourceProvider.cs" />
     <Compile Include="Library\IMetadataFileSaver.cs" />

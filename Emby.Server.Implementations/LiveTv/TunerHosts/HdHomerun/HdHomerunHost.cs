@@ -21,6 +21,7 @@ using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Net;
 using MediaBrowser.Model.System;
+using MediaBrowser.Controller.Library;
 
 namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
 {
@@ -576,7 +577,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             return list;
         }
 
-        protected override async Task<ILiveStream> GetChannelStream(TunerHostInfo info, ChannelInfo channelInfo, string streamId, CancellationToken cancellationToken)
+        protected override async Task<ILiveStream> GetChannelStream(TunerHostInfo info, ChannelInfo channelInfo, string streamId, List<ILiveStream> currentLiveStreams, CancellationToken cancellationToken)
         {
             var profile = streamId.Split('_')[0];
 

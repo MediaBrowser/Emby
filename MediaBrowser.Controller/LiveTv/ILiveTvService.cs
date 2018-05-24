@@ -180,7 +180,7 @@ namespace MediaBrowser.Controller.LiveTv
 
     public interface ISupportsDirectStreamProvider
     {
-        Task<Tuple<MediaSourceInfo, ILiveStream>> GetChannelStreamWithDirectStreamProvider(string channelId, string streamId, CancellationToken cancellationToken);
+        Task<ILiveStream> GetChannelStreamWithDirectStreamProvider(string channelId, string streamId, List<ILiveStream> currentLiveStreams, CancellationToken cancellationToken);
     }
 
     public interface ISupportsUpdatingDefaults

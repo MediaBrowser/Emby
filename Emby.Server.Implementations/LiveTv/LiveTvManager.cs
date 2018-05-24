@@ -37,6 +37,7 @@ using MediaBrowser.Model.Globalization;
 using MediaBrowser.Model.Tasks;
 using Emby.Server.Implementations.LiveTv.Listings;
 using MediaBrowser.Controller.Channels;
+using Emby.Server.Implementations.Library;
 
 namespace Emby.Server.Implementations.LiveTv
 {
@@ -241,7 +242,7 @@ namespace Emby.Server.Implementations.LiveTv
             return _libraryManager.GetItemsResult(internalQuery);
         }
 
-        public async Task<Tuple<MediaSourceInfo, ILiveStream>> GetChannelStream(string id, string mediaSourceId, CancellationToken cancellationToken)
+        public async Task<Tuple<MediaSourceInfo, ILiveStream>> GetChannelStream(string id, string mediaSourceId, List<ILiveStream> currentLiveStreams, CancellationToken cancellationToken)
         {
             if (string.Equals(id, mediaSourceId, StringComparison.OrdinalIgnoreCase))
             {
@@ -251,7 +252,7 @@ namespace Emby.Server.Implementations.LiveTv
             MediaSourceInfo info;
             bool isVideo;
             ILiveTvService service;
-            ILiveStream liveStream = null;
+            ILiveStream liveStream;
 
             var channel = (LiveTvChannel)_libraryManager.GetItemById(id);
             isVideo = channel.ChannelType == ChannelType.TV;
@@ -261,13 +262,14 @@ namespace Emby.Server.Implementations.LiveTv
             var supportsManagedStream = service as ISupportsDirectStreamProvider;
             if (supportsManagedStream != null)
             {
-                var streamInfo = await supportsManagedStream.GetChannelStreamWithDirectStreamProvider(channel.ExternalId, mediaSourceId, cancellationToken).ConfigureAwait(false);
-                info = streamInfo.Item1;
-                liveStream = streamInfo.Item2;
+                liveStream = await supportsManagedStream.GetChannelStreamWithDirectStreamProvider(channel.ExternalId, mediaSourceId, currentLiveStreams, cancellationToken).ConfigureAwait(false);
+                info = liveStream.MediaSource;
             }
             else
             {
                 info = await service.GetChannelStream(channel.ExternalId, mediaSourceId, cancellationToken).ConfigureAwait(false);
+
+                liveStream = new ExclusiveLiveStream(info, service, info.Id);
             }
             info.RequiresClosing = true;
 
@@ -2207,24 +2209,6 @@ namespace Emby.Server.Implementations.LiveTv
             var service = GetService(timer.ServiceName);
 
             await service.UpdateSeriesTimerAsync(info, cancellationToken).ConfigureAwait(false);
-        }
-
-        public async Task CloseLiveStream(string id)
-        {
-            var parts = id.Split(new[] { '_' }, 2);
-
-            var service = _services.FirstOrDefault(i => string.Equals(i.GetType().FullName.GetMD5().ToString("N"), parts[0], StringComparison.OrdinalIgnoreCase));
-
-            if (service == null)
-            {
-                throw new ArgumentException("Service not found.");
-            }
-
-            id = parts[1];
-
-            _logger.Info("Closing live stream from {0}, stream Id: {1}", service.Name, id);
-
-            await service.CloseLiveStream(id, CancellationToken.None).ConfigureAwait(false);
         }
 
         public GuideInfo GetGuideInfo()
