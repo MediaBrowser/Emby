@@ -134,7 +134,7 @@ namespace MediaBrowser.Providers.Omdb
 
                     if (isSearch)
                     {
-                        var searchResultList = _jsonSerializer.DeserializeFromStream<SearchResultList>(stream);
+                        var searchResultList = await _jsonSerializer.DeserializeFromStreamAsync<SearchResultList>(stream).ConfigureAwait(false);
                         if (searchResultList != null && searchResultList.Search != null)
                         {
                             resultList.AddRange(searchResultList.Search);
@@ -142,7 +142,7 @@ namespace MediaBrowser.Providers.Omdb
                     }
                     else
                     {
-                        var result = _jsonSerializer.DeserializeFromStream<SearchResult>(stream);
+                        var result = await _jsonSerializer.DeserializeFromStreamAsync<SearchResult>(stream).ConfigureAwait(false);
                         if (string.Equals(result.Response, "true", StringComparison.OrdinalIgnoreCase))
                         {
                             resultList.Add(result);

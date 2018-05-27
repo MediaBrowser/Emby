@@ -11,7 +11,7 @@ namespace Emby.Server.Implementations.Services
 {
     public class ServiceHandler
     {
-        protected static object CreateContentTypeRequest(HttpListenerHost host, IRequest httpReq, Type requestType, string contentType)
+        protected static Task<object> CreateContentTypeRequest(HttpListenerHost host, IRequest httpReq, Type requestType, string contentType)
         {
             if (!string.IsNullOrEmpty(contentType) && httpReq.ContentLength > 0)
             {
@@ -21,7 +21,7 @@ namespace Emby.Server.Implementations.Services
                     return deserializer(requestType, httpReq.InputStream);
                 }
             }
-            return host.CreateInstance(requestType); 
+            return Task.FromResult(host.CreateInstance(requestType)); 
         }
 
         public static RestPath FindMatchingRestPath(string httpMethod, string pathInfo, ILogger logger, out string contentType)
@@ -121,7 +121,10 @@ namespace Emby.Server.Implementations.Services
             else
             {
                 var requestParams = await GetFlattenedRequestParams(httpReq).ConfigureAwait(false);
-                return CreateRequest(host, httpReq, restPath, requestParams);
+
+                var requestDto = await CreateContentTypeRequest(host, httpReq, restPath.RequestType, httpReq.ContentType).ConfigureAwait(false);
+
+                return CreateRequest(httpReq, restPath, requestParams, requestDto);
             }
         }
 
@@ -130,13 +133,6 @@ namespace Emby.Server.Implementations.Services
             var requiresRequestStreamTypeInfo = typeof(IRequiresRequestStream).GetTypeInfo();
 
             return requiresRequestStreamTypeInfo.IsAssignableFrom(requestType.GetTypeInfo());
-        }
-
-        public static object CreateRequest(HttpListenerHost host, IRequest httpReq, RestPath restPath, Dictionary<string, string> requestParams)
-        {
-            var requestDto = CreateContentTypeRequest(host, httpReq, restPath.RequestType, httpReq.ContentType);
-
-            return CreateRequest(httpReq, restPath, requestParams, requestDto);
         }
 
         public static object CreateRequest(IRequest httpReq, RestPath restPath, Dictionary<string, string> requestParams, object requestDto)

@@ -8,6 +8,7 @@ using System.IO;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Controller.MediaEncoding;
 using MediaBrowser.Model.Services;
+using System.Threading.Tasks;
 
 namespace MediaBrowser.Api
 {
@@ -128,12 +129,12 @@ namespace MediaBrowser.Api
             _configurationManager.ReplaceConfiguration(config);
         }
 
-        public void Post(UpdateNamedConfiguration request)
+        public async Task Post(UpdateNamedConfiguration request)
         {
             var key = GetPathValue(2);
 
             var configurationType = _configurationManager.GetConfigurationType(key);
-            var configuration = _jsonSerializer.DeserializeFromStream(request.RequestStream, configurationType);
+            var configuration = await _jsonSerializer.DeserializeFromStreamAsync(request.RequestStream, configurationType).ConfigureAwait(false);
 
             _configurationManager.SaveConfiguration(key, configuration);
         }

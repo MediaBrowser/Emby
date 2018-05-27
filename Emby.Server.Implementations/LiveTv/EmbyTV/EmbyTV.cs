@@ -1620,7 +1620,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
                 var episodesToDelete = (librarySeries.GetItemList(new InternalItemsQuery
                 {
-                    OrderBy = new[] { new Tuple<string, SortOrder>(ItemSortBy.DateCreated, SortOrder.Descending) },
+                    OrderBy = new[] { new ValueTuple<string, SortOrder>(ItemSortBy.DateCreated, SortOrder.Descending) },
                     IsVirtualItem = false,
                     IsFolder = false,
                     Recursive = true,
@@ -2303,7 +2303,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 },
                 MinStartDate = startDateUtc.AddMinutes(-3),
                 MaxStartDate = startDateUtc.AddMinutes(3),
-                OrderBy = new[] { new Tuple<string, SortOrder>(ItemSortBy.StartDate, SortOrder.Ascending) }
+                OrderBy = new[] { new ValueTuple<string, SortOrder>(ItemSortBy.StartDate, SortOrder.Ascending) }
             };
 
             if (!string.IsNullOrWhiteSpace(channelId))

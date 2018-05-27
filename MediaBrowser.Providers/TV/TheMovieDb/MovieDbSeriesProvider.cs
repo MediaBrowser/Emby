@@ -362,7 +362,7 @@ namespace MediaBrowser.Providers.TV
             {
                 using (var json = response.Content)
                 {
-                    mainResult = _jsonSerializer.DeserializeFromStream<RootObject>(json);
+                    mainResult = await _jsonSerializer.DeserializeFromStreamAsync<RootObject>(json).ConfigureAwait(false);
 
                     if (!string.IsNullOrEmpty(language))
                     {
@@ -399,7 +399,7 @@ namespace MediaBrowser.Providers.TV
                 {
                     using (var json = response.Content)
                     {
-                        var englishResult = _jsonSerializer.DeserializeFromStream<RootObject>(json);
+                        var englishResult = await _jsonSerializer.DeserializeFromStreamAsync<RootObject>(json).ConfigureAwait(false);
 
                         mainResult.overview = englishResult.overview;
                         mainResult.ResultLanguage = "en";
@@ -464,7 +464,7 @@ namespace MediaBrowser.Providers.TV
             {
                 using (var json = response.Content)
                 {
-                    var result = _jsonSerializer.DeserializeFromStream<MovieDbSearch.ExternalIdLookupResult>(json);
+                    var result = await _jsonSerializer.DeserializeFromStreamAsync<MovieDbSearch.ExternalIdLookupResult>(json).ConfigureAwait(false);
 
                     if (result != null && result.tv_results != null)
                     {

@@ -156,7 +156,7 @@ namespace MediaBrowser.Providers.Movies
             {
                 using (var json = response.Content)
                 {
-                    _tmdbSettings = _jsonSerializer.DeserializeFromStream<TmdbSettingsResult>(json);
+                    _tmdbSettings = await _jsonSerializer.DeserializeFromStreamAsync<TmdbSettingsResult>(json).ConfigureAwait(false);
 
                     return _tmdbSettings;
                 }
@@ -355,7 +355,7 @@ namespace MediaBrowser.Providers.Movies
                 {
                     using (var json = response.Content)
                     {
-                        mainResult = _jsonSerializer.DeserializeFromStream<CompleteMovieData>(json);
+                        mainResult = await _jsonSerializer.DeserializeFromStreamAsync<CompleteMovieData>(json).ConfigureAwait(false);
                     }
                 }
             }
@@ -400,7 +400,7 @@ namespace MediaBrowser.Providers.Movies
                 {
                     using (var json = response.Content)
                     {
-                        var englishResult = _jsonSerializer.DeserializeFromStream<CompleteMovieData>(json);
+                        var englishResult = await _jsonSerializer.DeserializeFromStreamAsync<CompleteMovieData>(json).ConfigureAwait(false);
 
                         mainResult.overview = englishResult.overview;
                     }

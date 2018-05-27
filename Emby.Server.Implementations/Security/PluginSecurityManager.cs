@@ -130,7 +130,7 @@ namespace Emby.Server.Implementations.Security
             {
                 using (var response = await _httpClient.Post(options).ConfigureAwait(false))
                 {
-                    var reg = _jsonSerializer.DeserializeFromStream<RegRecord>(response.Content);
+                    var reg = await _jsonSerializer.DeserializeFromStreamAsync<RegRecord>(response.Content).ConfigureAwait(false);
 
                     if (reg == null)
                     {
@@ -251,7 +251,7 @@ namespace Emby.Server.Implementations.Security
                         {
                             using (var json = response.Content)
                             {
-                                reg = _jsonSerializer.DeserializeFromStream<RegRecord>(json);
+                                reg = await _jsonSerializer.DeserializeFromStreamAsync<RegRecord>(json).ConfigureAwait(false);
                                 success = true;
                             }
                         }
