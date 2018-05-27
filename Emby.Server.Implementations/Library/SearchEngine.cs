@@ -170,7 +170,7 @@ namespace Emby.Server.Implementations.Library
                 Limit = query.Limit,
                 IncludeItemsByName = string.IsNullOrEmpty(query.ParentId),
                 ParentId = string.IsNullOrEmpty(query.ParentId) ? (Guid?)null : new Guid(query.ParentId),
-                OrderBy = new[] { new Tuple<string, SortOrder>(ItemSortBy.SortName, SortOrder.Ascending) },
+                OrderBy = new[] { new ValueTuple<string, SortOrder>(ItemSortBy.SortName, SortOrder.Ascending) },
                 Recursive = true,
 
                 IsKids = query.IsKids,

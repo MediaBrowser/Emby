@@ -106,7 +106,7 @@ namespace MediaBrowser.Api.UserLibrary
 
             var itemsResult = _libraryManager.GetItemsResult(new InternalItemsQuery(user)
             {
-                OrderBy = new[] { ItemSortBy.DatePlayed }.Select(i => new Tuple<string, SortOrder>(i, SortOrder.Descending)).ToArray(),
+                OrderBy = new[] { ItemSortBy.DatePlayed }.Select(i => new ValueTuple<string, SortOrder>(i, SortOrder.Descending)).ToArray(),
                 IsResumable = true,
                 StartIndex = request.StartIndex,
                 Limit = request.Limit,
@@ -473,10 +473,10 @@ namespace MediaBrowser.Api.UserLibrary
                 // Albums by artist
                 if (query.ArtistIds.Length > 0 && query.IncludeItemTypes.Length == 1 && string.Equals(query.IncludeItemTypes[0], "MusicAlbum", StringComparison.OrdinalIgnoreCase))
                 {
-                    query.OrderBy = new Tuple<string, SortOrder>[]
+                    query.OrderBy = new []
                     {
-                        new Tuple<string, SortOrder>(ItemSortBy.ProductionYear, SortOrder.Descending),
-                        new Tuple<string, SortOrder>(ItemSortBy.SortName, SortOrder.Ascending)
+                        new ValueTuple<string, SortOrder>(ItemSortBy.ProductionYear, SortOrder.Descending),
+                        new ValueTuple<string, SortOrder>(ItemSortBy.SortName, SortOrder.Ascending)
                     };
                 }
             }

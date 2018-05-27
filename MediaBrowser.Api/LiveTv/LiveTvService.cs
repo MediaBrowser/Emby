@@ -1118,7 +1118,7 @@ namespace MediaBrowser.Api.LiveTv
             return ToOptimizedResult(new QueryResult<BaseItemDto>());
         }
 
-        public async Task<object> Get(GetRecording request)
+        public object Get(GetRecording request)
         {
             var user = _userManager.GetUserById(request.UserId);
 
@@ -1253,7 +1253,7 @@ namespace MediaBrowser.Api.LiveTv
             return ToOptimizedResult(new QueryResult<BaseItemDto>());
         }
 
-        public async Task<object> Get(GetRecordingGroup request)
+        public object Get(GetRecordingGroup request)
         {
             throw new FileNotFoundException();
         }

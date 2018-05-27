@@ -223,7 +223,10 @@ namespace Emby.Server.Implementations.HttpServer
 
             if (isHeadRequest)
             {
-                return GetHttpResult(request, Array.Empty<byte>(), contentType, true, responseHeaders);
+                using (ms)
+                {
+                    return GetHttpResult(request, Array.Empty<byte>(), contentType, true, responseHeaders);
+                }
             }
 
             return GetHttpResult(request, ms, contentType, true, responseHeaders);

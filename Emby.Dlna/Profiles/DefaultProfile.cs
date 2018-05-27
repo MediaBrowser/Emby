@@ -5,7 +5,7 @@ using MediaBrowser.Model.Extensions;
 
 namespace Emby.Dlna.Profiles
 {
-    [XmlRoot("Profile")]
+    [System.Xml.Serialization.XmlRoot("Profile")]
     public class DefaultProfile : DeviceProfile
     {
         public DefaultProfile()

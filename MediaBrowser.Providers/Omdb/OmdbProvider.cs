@@ -305,7 +305,7 @@ namespace MediaBrowser.Providers.Omdb
             {
                 using (var stream = response.Content)
                 {
-                    var rootObject = _jsonSerializer.DeserializeFromStream<RootObject>(stream);
+                    var rootObject = await _jsonSerializer.DeserializeFromStreamAsync<RootObject>(stream).ConfigureAwait(false);
                     _fileSystem.CreateDirectory(_fileSystem.GetDirectoryName(path));
                     _jsonSerializer.SerializeToFile(rootObject, path);
                 }
@@ -342,7 +342,7 @@ namespace MediaBrowser.Providers.Omdb
             {
                 using (var stream = response.Content)
                 {
-                    var rootObject = _jsonSerializer.DeserializeFromStream<SeasonRootObject>(stream);
+                    var rootObject = await _jsonSerializer.DeserializeFromStreamAsync<SeasonRootObject>(stream).ConfigureAwait(false);
                     _fileSystem.CreateDirectory(_fileSystem.GetDirectoryName(path));
                     _jsonSerializer.SerializeToFile(rootObject, path);
                 }

@@ -763,7 +763,7 @@ namespace MediaBrowser.Providers.Music
                         {
                             using (var stream = response.Content)
                             {
-                                var results = _json.DeserializeFromStream<List<MbzUrl>>(stream);
+                                var results = await _json.DeserializeFromStreamAsync<List<MbzUrl>>(stream).ConfigureAwait(false);
 
                                 list = results;
                             }

@@ -225,16 +225,16 @@ namespace Emby.Server.Implementations.LiveTv
 
             var orderBy = internalQuery.OrderBy.ToList();
 
-            orderBy.AddRange(query.SortBy.Select(i => new Tuple<string, SortOrder>(i, query.SortOrder ?? SortOrder.Ascending)));
+            orderBy.AddRange(query.SortBy.Select(i => new ValueTuple<string, SortOrder>(i, query.SortOrder ?? SortOrder.Ascending)));
 
             if (query.EnableFavoriteSorting)
             {
-                orderBy.Insert(0, new Tuple<string, SortOrder>(ItemSortBy.IsFavoriteOrLiked, SortOrder.Descending));
+                orderBy.Insert(0, new ValueTuple<string, SortOrder>(ItemSortBy.IsFavoriteOrLiked, SortOrder.Descending));
             }
 
             if (!internalQuery.OrderBy.Any(i => string.Equals(i.Item1, ItemSortBy.SortName, StringComparison.OrdinalIgnoreCase)))
             {
-                orderBy.Add(new Tuple<string, SortOrder>(ItemSortBy.SortName, SortOrder.Ascending));
+                orderBy.Add(new ValueTuple<string, SortOrder>(ItemSortBy.SortName, SortOrder.Ascending));
             }
 
             internalQuery.OrderBy = orderBy.ToArray();
@@ -763,7 +763,7 @@ namespace Emby.Server.Implementations.LiveTv
             if (query.OrderBy.Length == 0)
             {
                 // Unless something else was specified, order by start date to take advantage of a specialized index
-                query.OrderBy = new Tuple<string, SortOrder>[] { new Tuple<string, SortOrder>(ItemSortBy.StartDate, SortOrder.Ascending) };
+                query.OrderBy = new ValueTuple<string, SortOrder>[] { new ValueTuple<string, SortOrder>(ItemSortBy.StartDate, SortOrder.Ascending) };
             }
 
             RemoveFields(options);
@@ -854,7 +854,7 @@ namespace Emby.Server.Implementations.LiveTv
                 IsSports = query.IsSports,
                 IsKids = query.IsKids,
                 EnableTotalRecordCount = query.EnableTotalRecordCount,
-                OrderBy = new[] { new Tuple<string, SortOrder>(ItemSortBy.StartDate, SortOrder.Ascending) },
+                OrderBy = new[] { new ValueTuple<string, SortOrder>(ItemSortBy.StartDate, SortOrder.Ascending) },
                 TopParentIds = new[] { topFolder.Id },
                 DtoOptions = options,
                 GenreIds = query.GenreIds
@@ -1446,7 +1446,7 @@ namespace Emby.Server.Implementations.LiveTv
                 IsVirtualItem = false,
                 Limit = limit,
                 StartIndex = query.StartIndex,
-                OrderBy = new[] { new Tuple<string, SortOrder>(ItemSortBy.DateCreated, SortOrder.Descending) },
+                OrderBy = new[] { new ValueTuple<string, SortOrder>(ItemSortBy.DateCreated, SortOrder.Descending) },
                 EnableTotalRecordCount = query.EnableTotalRecordCount,
                 IncludeItemTypes = includeItemTypes.ToArray(includeItemTypes.Count),
                 ExcludeItemTypes = excludeItemTypes.ToArray(excludeItemTypes.Count),
@@ -1506,7 +1506,7 @@ namespace Emby.Server.Implementations.LiveTv
                 Recursive = true,
                 AncestorIds = folders.Select(i => i.Id).ToArray(folders.Count),
                 Limit = query.Limit,
-                OrderBy = new[] { new Tuple<string, SortOrder>(ItemSortBy.DateCreated, SortOrder.Descending) },
+                OrderBy = new[] { new ValueTuple<string, SortOrder>(ItemSortBy.DateCreated, SortOrder.Descending) },
                 EnableTotalRecordCount = query.EnableTotalRecordCount,
                 IncludeItemTypes = includeItemTypes.ToArray(includeItemTypes.Count),
                 ExcludeItemTypes = excludeItemTypes.ToArray(excludeItemTypes.Count),
@@ -1960,7 +1960,7 @@ namespace Emby.Server.Implementations.LiveTv
                 MaxStartDate = now,
                 MinEndDate = now,
                 Limit = channelIds.Length,
-                OrderBy = new[] { new Tuple<string, SortOrder>(ItemSortBy.StartDate, SortOrder.Ascending) },
+                OrderBy = new[] { new ValueTuple<string, SortOrder>(ItemSortBy.StartDate, SortOrder.Ascending) },
                 TopParentIds = new[] { GetInternalLiveTvFolder(CancellationToken.None).Id },
                 DtoOptions = options
 

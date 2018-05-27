@@ -530,7 +530,7 @@ namespace Emby.Server.Implementations.Channels
             return _libraryManager.GetItemIds(new InternalItemsQuery
             {
                 IncludeItemTypes = new[] { typeof(Channel).Name },
-                OrderBy = new Tuple<string, SortOrder>[] { new Tuple<string, SortOrder>(ItemSortBy.SortName, SortOrder.Ascending) }
+                OrderBy = new ValueTuple<string, SortOrder>[] { new ValueTuple<string, SortOrder>(ItemSortBy.SortName, SortOrder.Ascending) }
 
             }).Select(i => GetChannelFeatures(i.ToString("N"))).ToArray();
         }
@@ -641,18 +641,18 @@ namespace Emby.Server.Implementations.Channels
 
             if (sortByPremiereDate)
             {
-                query.OrderBy = new Tuple<string, SortOrder>[]
+                query.OrderBy = new []
                 {
-                    new Tuple<string, SortOrder>(ItemSortBy.PremiereDate, SortOrder.Descending),
-                    new Tuple<string, SortOrder>(ItemSortBy.ProductionYear, SortOrder.Descending),
-                    new Tuple<string, SortOrder>(ItemSortBy.DateCreated, SortOrder.Descending)
+                    new ValueTuple<string, SortOrder>(ItemSortBy.PremiereDate, SortOrder.Descending),
+                    new ValueTuple<string, SortOrder>(ItemSortBy.ProductionYear, SortOrder.Descending),
+                    new ValueTuple<string, SortOrder>(ItemSortBy.DateCreated, SortOrder.Descending)
                 };
             }
             else
             {
-                query.OrderBy = new Tuple<string, SortOrder>[]
+                query.OrderBy = new []
                 {
-                    new Tuple<string, SortOrder>(ItemSortBy.DateCreated, SortOrder.Descending)
+                    new ValueTuple<string, SortOrder>(ItemSortBy.DateCreated, SortOrder.Descending)
                 };
             }
 

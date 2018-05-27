@@ -126,7 +126,7 @@ namespace MediaBrowser.Api
         /// Gets the order by.
         /// </summary>
         /// <returns>IEnumerable{ItemSortBy}.</returns>
-        public Tuple<string, SortOrder>[] GetOrderBy()
+        public ValueTuple<string, SortOrder>[] GetOrderBy()
         {
             return BaseItemsRequest.GetOrderBy(SortBy, SortOrder);
         }

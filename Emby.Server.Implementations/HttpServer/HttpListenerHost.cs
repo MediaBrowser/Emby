@@ -830,12 +830,12 @@ namespace Emby.Server.Implementations.HttpServer
             _xmlSerializer.SerializeToStream(o, stream);
         }
 
-        public object DeserializeXml(Type type, Stream stream)
+        public Task<object> DeserializeXml(Type type, Stream stream)
         {
-            return _xmlSerializer.DeserializeFromStream(type, stream);
+            return Task.FromResult(_xmlSerializer.DeserializeFromStream(type, stream));
         }
 
-        public object DeserializeJson(Type type, Stream stream)
+        public Task<object> DeserializeJson(Type type, Stream stream)
         {
             //using (var reader = new StreamReader(stream))
             //{
@@ -843,7 +843,7 @@ namespace Emby.Server.Implementations.HttpServer
             //    Logger.Info(json);
             //    return _jsonSerializer.DeserializeFromString(json, type);
             //}
-            return _jsonSerializer.DeserializeFromStream(stream, type);
+            return _jsonSerializer.DeserializeFromStreamAsync(stream, type);
         }
 
         private string NormalizeEmbyRoutePath(string path)

@@ -190,7 +190,7 @@ namespace Emby.Server.Implementations.Updates
                     {
                         cancellationToken.ThrowIfCancellationRequested();
 
-                        var packages = _jsonSerializer.DeserializeFromStream<PackageInfo[]>(json);
+                        var packages = await _jsonSerializer.DeserializeFromStreamAsync<PackageInfo[]>(json).ConfigureAwait(false);
 
                         return FilterPackages(packages, packageType, applicationVersion);
                     }
@@ -223,7 +223,7 @@ namespace Emby.Server.Implementations.Updates
             {
                 using (var stream = response.Content)
                 {
-                    return FilterPackages(_jsonSerializer.DeserializeFromStream<PackageInfo[]>(stream));
+                    return FilterPackages(await _jsonSerializer.DeserializeFromStreamAsync<PackageInfo[]>(stream).ConfigureAwait(false));
                 }
             }
         }

@@ -77,9 +77,9 @@ namespace Emby.Server.Implementations.UserViews
                 DtoOptions = new DtoOptions(false),
                 ImageTypes = new ImageType[] { ImageType.Primary },
                 Limit = 4,
-                OrderBy = new Tuple<string, SortOrder>[]
+                OrderBy = new ValueTuple<string, SortOrder>[]
                 {
-                    new Tuple<string, SortOrder>(ItemSortBy.Random, SortOrder.Ascending)
+                    new ValueTuple<string, SortOrder>(ItemSortBy.Random, SortOrder.Ascending)
                 },
                 IncludeItemTypes = includeItemTypes
 

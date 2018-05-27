@@ -189,7 +189,7 @@ namespace MediaBrowser.Providers.BoxSets
             {
                 using (var json = response.Content)
                 {
-                    mainResult = _json.DeserializeFromStream<RootObject>(json);
+                    mainResult = await _json.DeserializeFromStreamAsync<RootObject>(json).ConfigureAwait(false);
                 }
             }
 
@@ -217,7 +217,7 @@ namespace MediaBrowser.Providers.BoxSets
                     {
                         using (var json = response.Content)
                         {
-                            mainResult = _json.DeserializeFromStream<RootObject>(json);
+                            mainResult = await _json.DeserializeFromStreamAsync<RootObject>(json).ConfigureAwait(false);
                         }
                     }
                 }

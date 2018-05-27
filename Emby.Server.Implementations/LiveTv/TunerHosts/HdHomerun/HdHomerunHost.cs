@@ -86,7 +86,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             {
                 using (var stream = response.Content)
                 {
-                    var lineup = JsonSerializer.DeserializeFromStream<List<Channels>>(stream) ?? new List<Channels>();
+                    var lineup = await JsonSerializer.DeserializeFromStreamAsync<List<Channels>>(stream).ConfigureAwait(false) ?? new List<Channels>();
 
                     if (info.ImportFavoritesOnly)
                     {
@@ -154,7 +154,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                 {
                     using (var stream = response.Content)
                     {
-                        var discoverResponse = JsonSerializer.DeserializeFromStream<DiscoverResponse>(stream);
+                        var discoverResponse = await JsonSerializer.DeserializeFromStreamAsync<DiscoverResponse>(stream).ConfigureAwait(false);
 
                         if (!string.IsNullOrEmpty(cacheKey))
                         {

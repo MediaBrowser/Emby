@@ -101,7 +101,7 @@ namespace MediaBrowser.Providers.People
             {
                 using (var json = response.Content)
                 {
-                    var result = _jsonSerializer.DeserializeFromStream<PersonSearchResults>(json) ??
+                    var result = await _jsonSerializer.DeserializeFromStreamAsync<PersonSearchResults>(json).ConfigureAwait(false) ??
                                  new PersonSearchResults();
 
                     return result.Results.Select(i => GetSearchResult(i, tmdbImageUrl));
