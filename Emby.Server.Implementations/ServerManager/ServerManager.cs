@@ -12,10 +12,11 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Emby.Server.Implementations.Net;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Services;
 using MediaBrowser.Model.Text;
+using System.Net.WebSockets;
 
 namespace Emby.Server.Implementations.ServerManager
 {
@@ -138,7 +139,7 @@ namespace Emby.Server.Implementations.ServerManager
                 throw;
             }
 
-            HttpServer.WebSocketConnected += HttpServer_WebSocketConnected;
+            ((HttpServer.HttpListenerHost)HttpServer).WebSocketConnected += HttpServer_WebSocketConnected;
         }
 
         /// <summary>
@@ -172,11 +173,11 @@ namespace Emby.Server.Implementations.ServerManager
         /// Processes the web socket message received.
         /// </summary>
         /// <param name="result">The result.</param>
-        private async void ProcessWebSocketMessageReceived(WebSocketMessageInfo result)
+        private Task ProcessWebSocketMessageReceived(WebSocketMessageInfo result)
         {
             if (_disposed)
             {
-                return;
+                return Task.CompletedTask;
             }
 
             //_logger.Debug("Websocket message received: {0}", result.MessageType);
@@ -193,7 +194,7 @@ namespace Emby.Server.Implementations.ServerManager
                 }
             }));
 
-            await Task.WhenAll(tasks).ConfigureAwait(false);
+            return Task.WhenAll(tasks);
         }
 
         /// <summary>
@@ -312,7 +313,7 @@ namespace Emby.Server.Implementations.ServerManager
 
             if (HttpServer != null)
             {
-                HttpServer.WebSocketConnected -= HttpServer_WebSocketConnected;
+                ((HttpServer.HttpListenerHost)HttpServer).WebSocketConnected -= HttpServer_WebSocketConnected;
 
                 _logger.Info("Disposing http server");
 

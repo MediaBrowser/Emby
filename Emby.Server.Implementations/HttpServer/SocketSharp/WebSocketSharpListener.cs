@@ -14,7 +14,7 @@ using MediaBrowser.Model.Net;
 using MediaBrowser.Model.Services;
 using MediaBrowser.Model.System;
 using MediaBrowser.Model.Text;
-using SocketHttpListener.Primitives;
+using Emby.Server.Implementations.Net;
 
 namespace Emby.Server.Implementations.HttpServer.SocketSharp
 {

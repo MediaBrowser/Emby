@@ -407,7 +407,7 @@ namespace MediaBrowser.Api.Library
                 {
                     if (string.Equals(type, "Series", StringComparison.OrdinalIgnoreCase))
                     {
-                        return false;
+                        return true;
                     }
                     if (string.Equals(type, "Season", StringComparison.OrdinalIgnoreCase))
                     {

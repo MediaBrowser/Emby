@@ -589,7 +589,7 @@ namespace MediaBrowser.Providers.Music
             return new ValueTuple<string, string>(name, artistId);
         }
 
-        private async Task<string> GetReleaseIdFromReleaseGroupId(string releaseGroupId, CancellationToken cancellationToken)
+        private async ValueTask<string> GetReleaseIdFromReleaseGroupId(string releaseGroupId, CancellationToken cancellationToken)
         {
             var url = string.Format("/ws/2/release?release-group={0}", releaseGroupId);
 
@@ -627,7 +627,7 @@ namespace MediaBrowser.Providers.Music
         /// <param name="releaseEntryId">The release entry id.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task{System.String}.</returns>
-        private async Task<string> GetReleaseGroupFromReleaseId(string releaseEntryId, CancellationToken cancellationToken)
+        private async ValueTask<string> GetReleaseGroupFromReleaseId(string releaseEntryId, CancellationToken cancellationToken)
         {
             var url = string.Format("/ws/2/release-group/?query=reid:{0}", releaseEntryId);
 

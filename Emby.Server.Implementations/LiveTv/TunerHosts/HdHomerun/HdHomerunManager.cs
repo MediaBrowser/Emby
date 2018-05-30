@@ -115,7 +115,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             }
         }
 
-        public async Task<bool> CheckTunerAvailability(IpAddressInfo remoteIp, int tuner, CancellationToken cancellationToken)
+        public async ValueTask<bool> CheckTunerAvailability(IpAddressInfo remoteIp, int tuner, CancellationToken cancellationToken)
         {
             using (var socket = _socketFactory.CreateTcpSocket(remoteIp, HdHomeRunPort))
             {
@@ -123,7 +123,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             }
         }
 
-        private async Task<bool> CheckTunerAvailability(ISocket socket, IpAddressInfo remoteIp, int tuner, CancellationToken cancellationToken)
+        private async ValueTask<bool> CheckTunerAvailability(ISocket socket, IpAddressInfo remoteIp, int tuner, CancellationToken cancellationToken)
         {
             var ipEndPoint = new IpEndPointInfo(remoteIp, HdHomeRunPort);
 

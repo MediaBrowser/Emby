@@ -4,7 +4,8 @@ using MediaBrowser.Model.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using WebSocketState = MediaBrowser.Model.Net.WebSocketState;
+using System.Net.WebSockets;
+using Emby.Server.Implementations.Net;
 
 namespace Emby.Server.Implementations.HttpServer.SocketSharp
 {

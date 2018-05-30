@@ -26,6 +26,7 @@ using MediaBrowser.Model.Services;
 using MediaBrowser.Model.System;
 using MediaBrowser.Model.Text;
 using System.Net.Sockets;
+using Emby.Server.Implementations.Net;
 
 namespace Emby.Server.Implementations.HttpServer
 {

@@ -51,7 +51,7 @@ namespace MediaBrowser.Providers.MediaInfo
             return downloadedLanguages;
         }
 
-        public Task<bool> DownloadSubtitles(Video video,
+        public ValueTask<bool> DownloadSubtitles(Video video,
             List<MediaStream> mediaStreams,
             bool skipIfEmbeddedSubtitlesPresent,
             bool skipIfAudioTrackMatches,
@@ -63,12 +63,12 @@ namespace MediaBrowser.Providers.MediaInfo
         {
             if (video.VideoType != VideoType.VideoFile)
             {
-                return Task.FromResult(false);
+                return new ValueTask<bool>(Task.FromResult(false));
             }
 
             if (!video.IsCompleteMedia)
             {
-                return Task.FromResult(false);
+                return new ValueTask<bool>(Task.FromResult(false));
             }
 
             VideoContentType mediaType;
@@ -84,14 +84,14 @@ namespace MediaBrowser.Providers.MediaInfo
             else
             {
                 // These are the only supported types
-                return Task.FromResult(false);
+                return new ValueTask<bool>(Task.FromResult(false));
             }
 
             return DownloadSubtitles(video, mediaStreams, skipIfEmbeddedSubtitlesPresent, skipIfAudioTrackMatches,
                 requirePerfectMatch, lang, disabledSubtitleFetchers, subtitleFetcherOrder, mediaType, cancellationToken);
         }
 
-        private async Task<bool> DownloadSubtitles(Video video,
+        private async ValueTask<bool> DownloadSubtitles(Video video,
             List<MediaStream> mediaStreams,
             bool skipIfEmbeddedSubtitlesPresent,
             bool skipIfAudioTrackMatches,

@@ -250,7 +250,7 @@ namespace Emby.Server.Implementations.Library
             return builder.ToString();
         }
 
-        public async Task<User> AuthenticateUser(string username, string password, string hashedPassword, string passwordMd5, string remoteEndPoint, bool isUserSession)
+        public async Task<User> AuthenticateUser(string username, string password, string hashedPassword, string remoteEndPoint, bool isUserSession)
         {
             if (string.IsNullOrWhiteSpace(username))
             {
@@ -278,7 +278,7 @@ namespace Emby.Server.Implementations.Library
                 {
                     try
                     {
-                        await _connectFactory().Authenticate(user.ConnectUserName, password, passwordMd5).ConfigureAwait(false);
+                        await _connectFactory().Authenticate(user.ConnectUserName, password).ConfigureAwait(false);
                         success = true;
                     }
                     catch
@@ -323,7 +323,7 @@ namespace Emby.Server.Implementations.Library
             {
                 try
                 {
-                    var connectAuthResult = await _connectFactory().Authenticate(username, password, passwordMd5).ConfigureAwait(false);
+                    var connectAuthResult = await _connectFactory().Authenticate(username, password).ConfigureAwait(false);
 
                     user = Users.FirstOrDefault(i => string.Equals(i.ConnectUserId, connectAuthResult.User.Id, StringComparison.OrdinalIgnoreCase));
 
@@ -407,7 +407,7 @@ namespace Emby.Server.Implementations.Library
             return providers;
         }
 
-        private async Task<bool> AuthenticateWithProvider(IAuthenticationProvider provider, string username, string password, User resolvedUser)
+        private async ValueTask<bool> AuthenticateWithProvider(IAuthenticationProvider provider, string username, string password, User resolvedUser)
         {
             try
             {

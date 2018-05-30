@@ -103,7 +103,7 @@ namespace MediaBrowser.Providers.Omdb
             ParseAdditionalMetadata(itemResult, result);
         }
 
-        public async Task<bool> FetchEpisodeData<T>(MetadataResult<T> itemResult, int episodeNumber, int seasonNumber, string episodeImdbId, string seriesImdbId, string language, string country, CancellationToken cancellationToken)
+        public async ValueTask<bool> FetchEpisodeData<T>(MetadataResult<T> itemResult, int episodeNumber, int seasonNumber, string episodeImdbId, string seriesImdbId, string language, string country, CancellationToken cancellationToken)
             where T : BaseItem
         {
             if (string.IsNullOrWhiteSpace(seriesImdbId))
@@ -277,7 +277,7 @@ namespace MediaBrowser.Providers.Omdb
             return url;
         }
 
-        private async Task<string> EnsureItemInfo(string imdbId, CancellationToken cancellationToken)
+        private async ValueTask<string> EnsureItemInfo(string imdbId, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(imdbId))
             {
@@ -314,7 +314,7 @@ namespace MediaBrowser.Providers.Omdb
             return path;
         }
 
-        private async Task<string> EnsureSeasonInfo(string seriesImdbId, int seasonId, CancellationToken cancellationToken)
+        private async ValueTask<string> EnsureSeasonInfo(string seriesImdbId, int seasonId, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(seriesImdbId))
             {

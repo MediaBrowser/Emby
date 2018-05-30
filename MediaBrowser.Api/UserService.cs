@@ -130,9 +130,6 @@ namespace MediaBrowser.Api
 
         [ApiMember(Name = "Pw", IsRequired = true, DataType = "string", ParameterType = "body", Verb = "POST")]
         public string Pw { get; set; }
-
-        [ApiMember(Name = "PasswordMd5", IsRequired = true, DataType = "string", ParameterType = "body", Verb = "POST")]
-        public string PasswordMd5 { get; set; }
     }
 
     /// <summary>
@@ -437,7 +434,6 @@ namespace MediaBrowser.Api
                 DeviceName = auth.Device,
                 Password = request.Pw,
                 PasswordSha1 = request.Password,
-                PasswordMd5 = request.PasswordMd5,
                 RemoteEndPoint = Request.RemoteIp,
                 Username = request.Username
 
@@ -472,7 +468,7 @@ namespace MediaBrowser.Api
             }
             else
             {
-                var success = await _userManager.AuthenticateUser(user.Name, request.CurrentPw, request.CurrentPassword, null, Request.RemoteIp, false).ConfigureAwait(false);
+                var success = await _userManager.AuthenticateUser(user.Name, request.CurrentPw, request.CurrentPassword, Request.RemoteIp, false).ConfigureAwait(false);
 
                 if (success == null)
                 {

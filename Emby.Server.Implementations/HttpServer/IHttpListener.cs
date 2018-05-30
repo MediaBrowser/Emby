@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Model.Services;
+using Emby.Server.Implementations.Net;
 
 namespace Emby.Server.Implementations.HttpServer
 {
