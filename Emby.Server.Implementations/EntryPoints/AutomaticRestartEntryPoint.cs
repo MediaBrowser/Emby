@@ -79,7 +79,7 @@ namespace Emby.Server.Implementations.EntryPoints
             }
         }
 
-        private async Task<bool> IsIdle()
+        private async ValueTask<bool> IsIdle()
         {
             if (_iTaskManager.ScheduledTasks.Any(i => i.State != TaskState.Idle))
             {

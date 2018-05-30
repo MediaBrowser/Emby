@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Services;
 using MediaBrowser.Model.Text;
+using Emby.Server.Implementations.Net;
+using System.Net.WebSockets;
 
 namespace Emby.Server.Implementations.ServerManager
 {
@@ -51,7 +53,7 @@ namespace Emby.Server.Implementations.ServerManager
         /// Gets or sets the receive action.
         /// </summary>
         /// <value>The receive action.</value>
-        public Action<WebSocketMessageInfo> OnReceive { get; set; }
+        public Func<WebSocketMessageInfo, Task> OnReceive { get; set; }
 
         /// <summary>
         /// Gets the last activity date.
@@ -108,7 +110,7 @@ namespace Emby.Server.Implementations.ServerManager
             _jsonSerializer = jsonSerializer;
             _socket = socket;
             _socket.OnReceiveBytes = OnReceiveInternal;
-            _socket.OnReceive = OnReceiveInternal;
+
             RemoteEndPoint = remoteEndPoint;
             _logger = logger;
             _textEncoding = textEncoding;

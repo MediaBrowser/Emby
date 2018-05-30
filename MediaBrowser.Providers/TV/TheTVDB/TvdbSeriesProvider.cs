@@ -270,7 +270,7 @@ namespace MediaBrowser.Providers.TV
             await ExtractEpisodes(seriesDataPath, downloadLangaugeXmlFile, lastTvDbUpdateTime).ConfigureAwait(false);
         }
 
-        private async Task<string> GetSeriesByRemoteId(string id, string idType, string language, CancellationToken cancellationToken)
+        private async ValueTask<string> GetSeriesByRemoteId(string id, string idType, string language, CancellationToken cancellationToken)
         {
             String url;
             if (string.Equals(idType, MetadataProviders.Zap2It.ToString(), StringComparison.OrdinalIgnoreCase))
@@ -420,7 +420,7 @@ namespace MediaBrowser.Providers.TV
         }
 
         private SemaphoreSlim _ensureSemaphore = new SemaphoreSlim(1, 1);
-        internal async Task<string> EnsureSeriesInfo(Dictionary<string, string> seriesProviderIds, string seriesName, int? seriesYear, string preferredMetadataLanguage, CancellationToken cancellationToken)
+        internal async ValueTask<string> EnsureSeriesInfo(Dictionary<string, string> seriesProviderIds, string seriesName, int? seriesYear, string preferredMetadataLanguage, CancellationToken cancellationToken)
         {
             await _ensureSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 

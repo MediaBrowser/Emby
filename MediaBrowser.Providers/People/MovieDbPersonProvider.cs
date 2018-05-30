@@ -206,7 +206,7 @@ namespace MediaBrowser.Providers.People
         /// <param name="info">The information.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task{System.String}.</returns>
-        private async Task<string> GetTmdbId(PersonLookupInfo info, CancellationToken cancellationToken)
+        private async ValueTask<string> GetTmdbId(PersonLookupInfo info, CancellationToken cancellationToken)
         {
             var results = await GetSearchResults(info, cancellationToken).ConfigureAwait(false);
 

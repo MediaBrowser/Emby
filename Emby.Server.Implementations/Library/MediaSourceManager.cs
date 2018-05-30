@@ -198,6 +198,10 @@ namespace Emby.Server.Implementations.Library
             {
                 return MediaProtocol.Ftp;
             }
+            if (path.StartsWith("udp", StringComparison.OrdinalIgnoreCase))
+            {
+                return MediaProtocol.Udp;
+            }
 
             return _fileSystem.IsPathFile(path) ? MediaProtocol.File : MediaProtocol.Http;
         }

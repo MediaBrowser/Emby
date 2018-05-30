@@ -11,8 +11,8 @@ using MediaBrowser.Model.IO;
 using SocketHttpListener.Net.WebSockets;
 using SocketHttpListener.Primitives;
 using HttpStatusCode = SocketHttpListener.Net.HttpStatusCode;
-using MediaBrowser.Model.Net;
 using System.Net.Sockets;
+using WebSocketState = System.Net.WebSockets.WebSocketState;
 
 namespace SocketHttpListener
 {
