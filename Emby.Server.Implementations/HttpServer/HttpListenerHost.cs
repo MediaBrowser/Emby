@@ -27,6 +27,8 @@ using MediaBrowser.Model.System;
 using MediaBrowser.Model.Text;
 using System.Net.Sockets;
 using Emby.Server.Implementations.Net;
+using MediaBrowser.Common.Events;
+using MediaBrowser.Model.Events;
 
 namespace Emby.Server.Implementations.HttpServer
 {
@@ -37,12 +39,9 @@ namespace Emby.Server.Implementations.HttpServer
         private readonly ILogger _logger;
         public string[] UrlPrefixes { get; private set; }
 
-        private readonly List<IService> _restServices = new List<IService>();
-
         private IHttpListener _listener;
 
-        public event EventHandler<WebSocketConnectEventArgs> WebSocketConnected;
-        public event EventHandler<WebSocketConnectingEventArgs> WebSocketConnecting;
+        public event EventHandler<GenericEventArgs<IWebSocketConnection>> WebSocketConnected;
 
         private readonly IServerConfigurationManager _config;
         private readonly INetworkManager _networkManager;
@@ -66,6 +65,9 @@ namespace Emby.Server.Implementations.HttpServer
 
         private readonly Dictionary<Type, Type> ServiceOperationsMap = new Dictionary<Type, Type>();
         public static HttpListenerHost Instance { get; protected set; }
+
+        private IWebSocketListener[] _webSocketListeners = Array.Empty<IWebSocketListener>();
+        private readonly List<IWebSocketConnection> _webSocketConnections = new List<IWebSocketConnection>();
 
         public HttpListenerHost(IServerApplicationHost applicationHost,
             ILogger logger,
@@ -191,29 +193,38 @@ namespace Emby.Server.Implementations.HttpServer
                 _environment);
         }
 
-        private void OnWebSocketConnecting(WebSocketConnectingEventArgs args)
+        private void OnWebSocketConnected(WebSocketConnectEventArgs e)
         {
             if (_disposed)
             {
                 return;
             }
 
-            if (WebSocketConnecting != null)
+            var connection = new WebSocketConnection(e.WebSocket, e.Endpoint, _jsonSerializer, _logger, _textEncoding)
             {
-                WebSocketConnecting(this, args);
-            }
-        }
+                OnReceive = ProcessWebSocketMessageReceived,
+                Url = e.Url,
+                QueryString = e.QueryString ?? new QueryParamCollection()
+            };
 
-        private void OnWebSocketConnected(WebSocketConnectEventArgs args)
-        {
-            if (_disposed)
+            connection.Closed += Connection_Closed;
+
+            lock (_webSocketConnections)
             {
-                return;
+                _webSocketConnections.Add(connection);
             }
 
             if (WebSocketConnected != null)
             {
-                WebSocketConnected(this, args);
+                EventHelper.FireEventIfNotNull(WebSocketConnected, this, new GenericEventArgs<IWebSocketConnection>(connection), _logger);
+            }
+        }
+
+        private void Connection_Closed(object sender, EventArgs e)
+        {
+            lock (_webSocketConnections)
+            {
+                _webSocketConnections.Remove((IWebSocketConnection)sender);
             }
         }
 
@@ -319,6 +330,26 @@ namespace Emby.Server.Implementations.HttpServer
         /// </summary>
         public void Stop()
         {
+            List<IWebSocketConnection> connections;
+
+            lock (_webSocketConnections)
+            {
+                connections = _webSocketConnections.ToList();
+                _webSocketConnections.Clear();
+            }
+
+            foreach (var connection in connections)
+            {
+                try
+                {
+                    connection.Dispose();
+                }
+                catch
+                {
+
+                }
+            }
+
             if (_listener != null)
             {
                 _logger.Info("Stopping HttpListener...");
@@ -765,15 +796,15 @@ namespace Emby.Server.Implementations.HttpServer
         /// Adds the rest handlers.
         /// </summary>
         /// <param name="services">The services.</param>
-        public void Init(IEnumerable<IService> services)
+        public void Init(IEnumerable<IService> services, IEnumerable<IWebSocketListener> listeners)
         {
-            _restServices.AddRange(services);
+            _webSocketListeners = listeners.ToArray();
 
             ServiceController = new ServiceController();
 
             _logger.Info("Calling ServiceStack AppHost.Init");
 
-            var types = _restServices.Select(r => r.GetType()).ToArray();
+            var types = services.Select(r => r.GetType()).ToArray();
 
             ServiceController.Init(this, types);
 
@@ -896,6 +927,34 @@ namespace Emby.Server.Implementations.HttpServer
             }
         }
 
+        /// <summary>
+        /// Processes the web socket message received.
+        /// </summary>
+        /// <param name="result">The result.</param>
+        private Task ProcessWebSocketMessageReceived(WebSocketMessageInfo result)
+        {
+            if (_disposed)
+            {
+                return Task.CompletedTask;
+            }
+
+            //_logger.Debug("Websocket message received: {0}", result.MessageType);
+
+            var tasks = _webSocketListeners.Select(i => Task.Run(async () =>
+            {
+                try
+                {
+                    await i.ProcessMessage(result).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorException("{0} failed processing WebSocket message {1}", ex, i.GetType().Name, result.MessageType ?? string.Empty);
+                }
+            }));
+
+            return Task.WhenAll(tasks);
+        }
+
         public void Dispose()
         {
             Dispose(true);
@@ -908,7 +967,6 @@ namespace Emby.Server.Implementations.HttpServer
             _listener = GetListener();
 
             _listener.WebSocketConnected = OnWebSocketConnected;
-            _listener.WebSocketConnecting = OnWebSocketConnecting;
             _listener.ErrorHandler = ErrorHandler;
             _listener.RequestHandler = RequestHandler;
 

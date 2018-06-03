@@ -51,7 +51,6 @@ namespace Emby.Server.Implementations.Channels
         private readonly IProviderManager _providerManager;
 
         private readonly ILocalizationManager _localization;
-        private readonly ConcurrentDictionary<Guid, bool> _refreshedItems = new ConcurrentDictionary<Guid, bool>();
 
         public ChannelManager(IUserManager userManager, IDtoService dtoService, ILibraryManager libraryManager, ILogger logger, IServerConfigurationManager config, IFileSystem fileSystem, IUserDataManager userDataManager, IJsonSerializer jsonSerializer, ILocalizationManager localization, IHttpClient httpClient, IProviderManager providerManager)
         {
@@ -283,8 +282,6 @@ namespace Emby.Server.Implementations.Channels
 
         public async Task RefreshChannels(IProgress<double> progress, CancellationToken cancellationToken)
         {
-            _refreshedItems.Clear();
-
             var allChannelsList = GetAllChannels().ToList();
 
             var numComplete = 0;

@@ -4,6 +4,9 @@ using MediaBrowser.Controller.Notifications;
 using MediaBrowser.Controller.Plugins;
 using System.Linq;
 using MediaBrowser.Model.Extensions;
+using MediaBrowser.Controller.Session;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace Emby.Server.Implementations.Notifications
 {
@@ -14,12 +17,12 @@ namespace Emby.Server.Implementations.Notifications
     {
         private readonly INotificationsRepository _notificationsRepo;
 
-        private readonly IServerManager _serverManager;
+        private readonly ISessionManager _sessionManager;
 
-        public WebSocketNotifier(INotificationsRepository notificationsRepo, IServerManager serverManager)
+        public WebSocketNotifier(INotificationsRepository notificationsRepo, ISessionManager sessionManager)
         {
             _notificationsRepo = notificationsRepo;
-            _serverManager = serverManager;
+            _sessionManager = sessionManager;
         }
 
         public void Run()
@@ -37,19 +40,36 @@ namespace Emby.Server.Implementations.Notifications
 
             var msg = string.Join("|", list.ToArray(list.Count));
 
-            _serverManager.SendWebSocketMessage("NotificationsMarkedRead", msg);
+            SendMessageToUserSession(e.UserId, "NotificationsMarkedRead", msg);
         }
 
         void _notificationsRepo_NotificationAdded(object sender, NotificationUpdateEventArgs e)
         {
             var msg = e.Notification.UserId + "|" + e.Notification.Id;
 
-            _serverManager.SendWebSocketMessage("NotificationAdded", msg);
+            SendMessageToUserSession(e.Notification.UserId, "NotificationAdded", msg);
+        }
+
+        private async void SendMessageToUserSession<T>(string userId, string name, T data)
+        {
+            try
+            {
+                await _sessionManager.SendMessageToUserSessions(new List<string> { userId }, name, data, CancellationToken.None);
+            }
+            catch (ObjectDisposedException)
+            {
+
+            }
+            catch (Exception)
+            {
+                //Logger.ErrorException("Error sending message", ex);
+            }
         }
 
         public void Dispose()
         {
             _notificationsRepo.NotificationAdded -= _notificationsRepo_NotificationAdded;
+            _notificationsRepo.NotificationsMarkedRead -= _notificationsRepo_NotificationsMarkedRead;
         }
     }
 }

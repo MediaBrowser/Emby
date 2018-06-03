@@ -3,12 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Services;
 using MediaBrowser.Common.Extensions;
 using System.Text;
 using MediaBrowser.Controller.Net;
 using System.Linq;
+using Emby.Dlna.Main;
 
 namespace Emby.Dlna.Api
 {
@@ -109,21 +109,39 @@ namespace Emby.Dlna.Api
     public class DlnaServerService : IService, IRequiresRequest
     {
         private readonly IDlnaManager _dlnaManager;
-        private readonly IContentDirectory _contentDirectory;
-        private readonly IConnectionManager _connectionManager;
-        private readonly IMediaReceiverRegistrar _mediaReceiverRegistrar;
 
         private const string XMLContentType = "text/xml; charset=UTF-8";
 
         public IRequest Request { get; set; }
         private IHttpResultFactory _resultFactory;
 
-        public DlnaServerService(IDlnaManager dlnaManager, IHttpResultFactory httpResultFactory, IContentDirectory contentDirectory, IConnectionManager connectionManager, IMediaReceiverRegistrar mediaReceiverRegistrar)
+        private IContentDirectory ContentDirectory
+        {
+            get
+            {
+                return DlnaEntryPoint.Current.ContentDirectory;
+            }
+        }
+
+        private IConnectionManager ConnectionManager
+        {
+            get
+            {
+                return DlnaEntryPoint.Current.ConnectionManager;
+            }
+        }
+
+        private IMediaReceiverRegistrar MediaReceiverRegistrar
+        {
+            get
+            {
+                return DlnaEntryPoint.Current.MediaReceiverRegistrar;
+            }
+        }
+
+        public DlnaServerService(IDlnaManager dlnaManager, IHttpResultFactory httpResultFactory)
         {
             _dlnaManager = dlnaManager;
-            _contentDirectory = contentDirectory;
-            _connectionManager = connectionManager;
-            _mediaReceiverRegistrar = mediaReceiverRegistrar;
             _resultFactory = httpResultFactory;
         }
 
@@ -147,42 +165,42 @@ namespace Emby.Dlna.Api
 
         public object Get(GetContentDirectory request)
         {
-            var xml = _contentDirectory.GetServiceXml(Request.Headers.ToDictionary());
+            var xml = ContentDirectory.GetServiceXml(Request.Headers.ToDictionary());
 
             return _resultFactory.GetResult(xml, XMLContentType);
         }
 
         public object Get(GetMediaReceiverRegistrar request)
         {
-            var xml = _mediaReceiverRegistrar.GetServiceXml(Request.Headers.ToDictionary());
+            var xml = MediaReceiverRegistrar.GetServiceXml(Request.Headers.ToDictionary());
 
             return _resultFactory.GetResult(xml, XMLContentType);
         }
 
         public object Get(GetConnnectionManager request)
         {
-            var xml = _connectionManager.GetServiceXml(Request.Headers.ToDictionary());
+            var xml = ConnectionManager.GetServiceXml(Request.Headers.ToDictionary());
 
             return _resultFactory.GetResult(xml, XMLContentType);
         }
 
         public object Post(ProcessMediaReceiverRegistrarControlRequest request)
         {
-            var response = PostAsync(request.RequestStream, _mediaReceiverRegistrar);
+            var response = PostAsync(request.RequestStream, MediaReceiverRegistrar);
 
             return _resultFactory.GetResult(response.Xml, XMLContentType);
         }
 
         public object Post(ProcessContentDirectoryControlRequest request)
         {
-            var response = PostAsync(request.RequestStream, _contentDirectory);
+            var response = PostAsync(request.RequestStream, ContentDirectory);
 
             return _resultFactory.GetResult(response.Xml, XMLContentType);
         }
 
         public object Post(ProcessConnectionManagerControlRequest request)
         {
-            var response = PostAsync(request.RequestStream, _connectionManager);
+            var response = PostAsync(request.RequestStream, ConnectionManager);
 
             return _resultFactory.GetResult(response.Xml, XMLContentType);
         }
@@ -244,32 +262,32 @@ namespace Emby.Dlna.Api
 
         public object Subscribe(ProcessContentDirectoryEventRequest request)
         {
-            return ProcessEventRequest(_contentDirectory);
+            return ProcessEventRequest(ContentDirectory);
         }
 
         public object Subscribe(ProcessConnectionManagerEventRequest request)
         {
-            return ProcessEventRequest(_connectionManager);
+            return ProcessEventRequest(ConnectionManager);
         }
 
         public object Subscribe(ProcessMediaReceiverRegistrarEventRequest request)
         {
-            return ProcessEventRequest(_mediaReceiverRegistrar);
+            return ProcessEventRequest(MediaReceiverRegistrar);
         }
 
         public object Unsubscribe(ProcessContentDirectoryEventRequest request)
         {
-            return ProcessEventRequest(_contentDirectory);
+            return ProcessEventRequest(ContentDirectory);
         }
 
         public object Unsubscribe(ProcessConnectionManagerEventRequest request)
         {
-            return ProcessEventRequest(_connectionManager);
+            return ProcessEventRequest(ConnectionManager);
         }
 
         public object Unsubscribe(ProcessMediaReceiverRegistrarEventRequest request)
         {
-            return ProcessEventRequest(_mediaReceiverRegistrar);
+            return ProcessEventRequest(MediaReceiverRegistrar);
         }
 
         private object ProcessEventRequest(IEventManager eventManager)

@@ -784,7 +784,7 @@ namespace MediaBrowser.Api.LiveTv
 
             outputHeaders["Content-Type"] = Model.Net.MimeTypes.GetMimeType("file." + request.Container);
 
-            return new ProgressiveFileCopier(directStreamProvider , _streamHelper, outputHeaders, Logger, _environment)
+            return new ProgressiveFileCopier(directStreamProvider, _streamHelper, outputHeaders, Logger, _environment)
             {
                 AllowEndOfFile = false
             };
@@ -1106,7 +1106,10 @@ namespace MediaBrowser.Api.LiveTv
                 IsSeries = request.IsSeries,
                 IsKids = request.IsKids,
                 IsSports = request.IsSports,
-                IsLibraryItem = request.IsLibraryItem
+                IsLibraryItem = request.IsLibraryItem,
+                Fields = request.GetItemFields(),
+                ImageTypeLimit = request.ImageTypeLimit,
+                EnableImages = request.EnableImages
 
             }, options);
 
