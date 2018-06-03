@@ -250,7 +250,7 @@
   "Continuing": "Continuing",
   "Ended": "Ended",
   "HeaderEnabledFields": "Enabled Fields",
-  "HeaderEnabledFieldsHelp": "Uncheck a field to lock it and prevent it's data from being changed.",
+  "HeaderEnabledFieldsHelp": "Uncheck a field to lock it and prevent its data from being changed.",
   "Backdrops": "Backdrops",
   "Images": "Images",
   "Runtime": "Runtime",

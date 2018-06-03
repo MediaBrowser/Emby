@@ -1,7 +1,7 @@
 {
     "MessageUnlockAppWithPurchaseOrSupporter": "Ontgrendel deze functie met een kleine eenmalige aankoop, of met een actief Emby Premiere abonnement.",
-    "MessageUnlockAppWithSupporter": "Ontgrendel deze functie met een actief Emby Premiere abonnement.",
-    "MessageToValidateSupporter": "Als u een actieve Emby Premiere abonnement heeft, zorg er dan voor dat u deze activeert in uw Emby Server Dashboard door te klikken op Emby Premiere in het hoofdmenu.",
+    "MessageUnlockAppWithSupporter": "Ontgrendel deze functie met een actief Emby Premi\u00e8re abonnement.",
+    "MessageToValidateSupporter": "Als u een actieve Emby Premi\u00e8re abonnement heeft, zorg er dan voor dat u deze activeert in uw Emby Server Dashboard door te klikken op Emby Premiere in het hoofdmenu.",
     "ValueSpecialEpisodeName": "Speciaal - {0}",
     "Share": "Delen",
     "Add": "Toevoegen",
@@ -317,7 +317,7 @@
     "ConvertUnwatchedVideosOnly": "Alleen onbekeken video's converteren",
     "SyncUnwatchedVideosOnly": "Alleen niet bekeken video's downloaden",
     "ConvertUnwatchedVideosOnlyHelp": "Alleen onbekeken video's worden geconverteerd.",
-    "SyncUnwatchedVideosOnlyHelp": "Alleen niet bekeken video's zullen worden gedownload. En video's zullen van het apparaat worden verwijderd nadat deze zijn bekeken.",
+    "SyncUnwatchedVideosOnlyHelp": "Alleen niet bekeken video's zullen worden gedownload en de video's worden van het apparaat verwijderd nadat deze zijn bekeken.",
     "AutomaticallySyncNewContent": "Nieuwe inhoud automatisch downloaden",
     "AutomaticallySyncNewContentHelp": "Aan deze map toegevoegde nieuwe inhoud automatisch naar het apparaat downloaden.",
     "AutomaticallyConvertNewContent": "Nieuwe content automatisch converteren",
