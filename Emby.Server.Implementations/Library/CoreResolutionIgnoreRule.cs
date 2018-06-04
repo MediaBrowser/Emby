@@ -25,7 +25,7 @@ namespace Emby.Server.Implementations.Library
         /// <summary>
         /// Any folder named in this list will be ignored - can be added to at runtime for extensibility
         /// </summary>
-        public static readonly List<string> IgnoreFolders = new List<string>
+        public static readonly Dictionary<string, string> IgnoreFolders = new List<string>
         {
                 "metadata",
                 "ps3_update",
@@ -45,10 +45,13 @@ namespace Emby.Server.Implementations.Library
                 ".@__thumb",
                 "$RECYCLE.BIN",
                 "System Volume Information",
-                ".grab"
+                ".grab",
 
-        };
-        
+                // macos
+                ".AppleDouble"
+
+        }.ToDictionary(i => i, StringComparer.OrdinalIgnoreCase);
+
         public CoreResolutionIgnoreRule(IFileSystem fileSystem, ILibraryManager libraryManager, ILogger logger)
         {
             _fileSystem = fileSystem;
@@ -109,7 +112,7 @@ namespace Emby.Server.Implementations.Library
             if (fileInfo.IsDirectory)
             {
                 // Ignore any folders in our list
-                if (IgnoreFolders.Contains(filename, StringComparer.OrdinalIgnoreCase))
+                if (IgnoreFolders.ContainsKey(filename))
                 {
                     return true;
                 }

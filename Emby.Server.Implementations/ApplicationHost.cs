@@ -1,12 +1,9 @@
 ﻿using Emby.Common.Implementations.Serialization;
-using Emby.Dlna;
-using Emby.Dlna.ConnectionManager;
-using Emby.Dlna.ContentDirectory;
-using Emby.Dlna.Main;
-using Emby.Dlna.MediaReceiverRegistrar;
-using Emby.Dlna.Ssdp;
 using Emby.Drawing;
 using Emby.Photos;
+using Emby.Dlna;
+using Emby.Dlna.Main;
+using Emby.Dlna.Ssdp;
 using Emby.Server.Implementations.Activity;
 using Emby.Server.Implementations.Archiving;
 using Emby.Server.Implementations.Channels;
@@ -294,11 +291,6 @@ namespace Emby.Server.Implementations
             return new ResourceFileManager(HttpResultFactory, LogManager.GetLogger("ResourceManager"), FileSystemManager);
         }
 
-        /// <summary>
-        /// Gets or sets the server manager.
-        /// </summary>
-        /// <value>The server manager.</value>
-        private IServerManager ServerManager { get; set; }
         /// <summary>
         /// Gets or sets the user manager.
         /// </summary>
@@ -986,10 +978,7 @@ namespace Emby.Server.Implementations
 
             HttpServer = HttpServerFactory.CreateServer(this, LogManager, ServerConfigurationManager, NetworkManager, streamHelper, "Emby", "web/index.html", textEncoding, SocketFactory, CryptographyProvider, JsonSerializer, XmlSerializer, EnvironmentInfo, Certificate, FileSystemManager, SupportsDualModeSockets);
             HttpServer.GlobalResponse = LocalizationManager.GetLocalizedString("StartupEmbyServerIsLoading");
-            RegisterSingleInstance(HttpServer, false);
-
-            ServerManager = new ServerManager.ServerManager(this, JsonSerializer, LogManager.GetLogger("ServerManager"), ServerConfigurationManager, textEncoding);
-            RegisterSingleInstance(ServerManager);
+            RegisterSingleInstance(HttpServer);
 
             ImageProcessor = GetImageProcessor();
             RegisterSingleInstance(ImageProcessor);
@@ -1036,9 +1025,6 @@ namespace Emby.Server.Implementations
             var dlnaManager = new DlnaManager(XmlSerializer, FileSystemManager, ApplicationPaths, LogManager.GetLogger("Dlna"), JsonSerializer, this, assemblyInfo);
             RegisterSingleInstance<IDlnaManager>(dlnaManager);
 
-            var connectionManager = new ConnectionManager(dlnaManager, ServerConfigurationManager, LogManager.GetLogger("UpnpConnectionManager"), HttpClient, new XmlReaderSettingsFactory());
-            RegisterSingleInstance<IConnectionManager>(connectionManager);
-
             CollectionManager = new CollectionManager(LibraryManager, ApplicationPaths, LocalizationManager, FileSystemManager, LibraryMonitor, LogManager.GetLogger("CollectionManager"), ProviderManager);
             RegisterSingleInstance(CollectionManager);
 
@@ -1050,12 +1036,6 @@ namespace Emby.Server.Implementations
 
             UserViewManager = new UserViewManager(LibraryManager, LocalizationManager, UserManager, ChannelManager, LiveTvManager, ServerConfigurationManager);
             RegisterSingleInstance(UserViewManager);
-
-            var contentDirectory = new ContentDirectory(dlnaManager, UserDataManager, ImageProcessor, LibraryManager, ServerConfigurationManager, UserManager, LogManager.GetLogger("UpnpContentDirectory"), HttpClient, LocalizationManager, ChannelManager, MediaSourceManager, UserViewManager, () => MediaEncoder, new XmlReaderSettingsFactory(), TVSeriesManager);
-            RegisterSingleInstance<IContentDirectory>(contentDirectory);
-
-            var mediaRegistrar = new MediaReceiverRegistrar(LogManager.GetLogger("MediaReceiverRegistrar"), HttpClient, ServerConfigurationManager, new XmlReaderSettingsFactory());
-            RegisterSingleInstance<IMediaReceiverRegistrar>(mediaRegistrar);
 
             NotificationManager = new NotificationManager(LogManager, UserManager, ServerConfigurationManager);
             RegisterSingleInstance(NotificationManager);
@@ -1399,9 +1379,7 @@ namespace Emby.Server.Implementations
             ConfigurationManager.AddParts(GetExports<IConfigurationFactory>());
             Plugins = GetExportsWithInfo<IPlugin>().Select(LoadPlugin).Where(i => i != null).ToArray();
 
-            HttpServer.Init(GetExports<IService>(false));
-
-            ServerManager.AddWebSocketListeners(GetExports<IWebSocketListener>(false));
+            HttpServer.Init(GetExports<IService>(false), GetExports<IWebSocketListener>());
 
             StartServer();
 
@@ -1592,12 +1570,16 @@ namespace Emby.Server.Implementations
         {
             try
             {
-                ServerManager.Start(GetUrlPrefixes().ToArray());
+                HttpServer.StartServer(GetUrlPrefixes().ToArray());
                 return;
             }
             catch (Exception ex)
             {
-                Logger.ErrorException("Error starting http server", ex);
+                var msg = string.Equals(ex.GetType().Name, "SocketException", StringComparison.OrdinalIgnoreCase)
+                  ? "The http server is unable to start due to a Socket error. This can occasionally happen when the operating system takes longer than usual to release the IP bindings from the previous session. This can take up to five minutes. Please try waiting or rebooting the system."
+                  : "Error starting Http Server";
+
+                Logger.ErrorException(msg, ex);
 
                 if (HttpPort == ServerConfiguration.DefaultHttpPort)
                 {
@@ -1609,7 +1591,7 @@ namespace Emby.Server.Implementations
 
             try
             {
-                ServerManager.Start(GetUrlPrefixes().ToArray());
+                HttpServer.StartServer(GetUrlPrefixes().ToArray());
             }
             catch (Exception ex)
             {
@@ -2132,7 +2114,7 @@ namespace Emby.Server.Implementations
         }
 
         private readonly ConcurrentDictionary<string, bool> _validAddressResults = new ConcurrentDictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
-        private async Task<bool> IsIpAddressValidAsync(IpAddressInfo address, CancellationToken cancellationToken)
+        private async ValueTask<bool> IsIpAddressValidAsync(IpAddressInfo address, CancellationToken cancellationToken)
         {
             if (address.Equals(IpAddressInfo.Loopback) ||
                 address.Equals(IpAddressInfo.IPv6Loopback))

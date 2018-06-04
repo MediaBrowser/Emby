@@ -1086,16 +1086,16 @@ namespace Emby.Server.Implementations.Library
 
             var innerProgress = new ActionableProgress<double>();
 
-            innerProgress.RegisterAction(pct => progress.Report(pct * .90));
+            innerProgress.RegisterAction(pct => progress.Report(pct * .96));
 
             // Now validate the entire media library
             await RootFolder.ValidateChildren(innerProgress, cancellationToken, new MetadataRefreshOptions(_fileSystem), recursive: true).ConfigureAwait(false);
 
-            progress.Report(90);
+            progress.Report(96);
 
             innerProgress = new ActionableProgress<double>();
 
-            innerProgress.RegisterAction(pct => progress.Report(90 + pct * .1));
+            innerProgress.RegisterAction(pct => progress.Report(96 + (pct * .04)));
 
             // Run post-scan tasks
             await RunPostScanTasks(innerProgress, cancellationToken).ConfigureAwait(false);

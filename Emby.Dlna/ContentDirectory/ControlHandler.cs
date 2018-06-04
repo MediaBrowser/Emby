@@ -38,7 +38,6 @@ namespace Emby.Dlna.ContentDirectory
     public class ControlHandler : BaseControlHandler
     {
         private readonly ILibraryManager _libraryManager;
-        private readonly IChannelManager _channelManager;
         private readonly IUserDataManager _userDataManager;
         private readonly IServerConfigurationManager _config;
         private readonly User _user;
@@ -57,14 +56,13 @@ namespace Emby.Dlna.ContentDirectory
 
         private readonly DeviceProfile _profile;
 
-        public ControlHandler(ILogger logger, ILibraryManager libraryManager, DeviceProfile profile, string serverAddress, string accessToken, IImageProcessor imageProcessor, IUserDataManager userDataManager, User user, int systemUpdateId, IServerConfigurationManager config, ILocalizationManager localization, IChannelManager channelManager, IMediaSourceManager mediaSourceManager, IUserViewManager userViewManager, IMediaEncoder mediaEncoder, IXmlReaderSettingsFactory xmlReaderSettingsFactory, ITVSeriesManager tvSeriesManager)
+        public ControlHandler(ILogger logger, ILibraryManager libraryManager, DeviceProfile profile, string serverAddress, string accessToken, IImageProcessor imageProcessor, IUserDataManager userDataManager, User user, int systemUpdateId, IServerConfigurationManager config, ILocalizationManager localization, IMediaSourceManager mediaSourceManager, IUserViewManager userViewManager, IMediaEncoder mediaEncoder, IXmlReaderSettingsFactory xmlReaderSettingsFactory, ITVSeriesManager tvSeriesManager)
             : base(config, logger, xmlReaderSettingsFactory)
         {
             _libraryManager = libraryManager;
             _userDataManager = userDataManager;
             _user = user;
             _systemUpdateId = systemUpdateId;
-            _channelManager = channelManager;
             _userViewManager = userViewManager;
             _tvSeriesManager = tvSeriesManager;
             _profile = profile;
@@ -247,6 +245,8 @@ namespace Emby.Dlna.ContentDirectory
 
             int totalCount;
 
+            var dlnaOptions = _config.GetDlnaConfiguration();
+
             using (XmlWriter writer = XmlWriter.Create(builder, settings))
             {
                 //writer.WriteStartDocument();
@@ -275,7 +275,7 @@ namespace Emby.Dlna.ContentDirectory
                     }
                     else
                     {
-                        _didlBuilder.WriteItemElement(_config.GetDlnaConfiguration(), writer, item, user, null, null, deviceId, filter);
+                        _didlBuilder.WriteItemElement(dlnaOptions, writer, item, user, null, null, deviceId, filter);
                     }
 
                     provided++;
@@ -301,7 +301,7 @@ namespace Emby.Dlna.ContentDirectory
                         }
                         else
                         {
-                            _didlBuilder.WriteItemElement(_config.GetDlnaConfiguration(), writer, childItem, user, item, serverItem.StubType, deviceId, filter);
+                            _didlBuilder.WriteItemElement(dlnaOptions, writer, childItem, user, item, serverItem.StubType, deviceId, filter);
                         }
                     }
                 }
@@ -386,6 +386,8 @@ namespace Emby.Dlna.ContentDirectory
 
                 provided = childrenResult.Items.Length;
 
+                var dlnaOptions = _config.GetDlnaConfiguration();
+
                 foreach (var i in childrenResult.Items)
                 {
                     if (i.IsDisplayedAsFolder)
@@ -397,7 +399,7 @@ namespace Emby.Dlna.ContentDirectory
                     }
                     else
                     {
-                        _didlBuilder.WriteItemElement(_config.GetDlnaConfiguration(), writer, i, user, item, serverItem.StubType, deviceId, filter);
+                        _didlBuilder.WriteItemElement(dlnaOptions, writer, i, user, item, serverItem.StubType, deviceId, filter);
                     }
                 }
 

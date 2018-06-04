@@ -3,6 +3,7 @@
     "AllowMediaConversionHelp": "Grant or deny access to the convert media feature.",
     "HeaderFetcherSettings": "Fetcher Settings",
     "ManageLibrary": "Manage library",
+    "DefaultCameraUploadPathHelp": "Select a custom upload path. If left blank, a default folder will be used. If using a custom path it will also need to be added as a library in Emby library setup.",
     "LabelPrevious": "Precedente",
     "LabelFinish": "Finito",
     "LabelNext": "Prossimo",

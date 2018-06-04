@@ -146,13 +146,17 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
 
                     if (WebSocketConnected != null)
                     {
+                        var socket = new SharpWebSocket(webSocketContext.WebSocket, _logger);
+
                         WebSocketConnected(new WebSocketConnectEventArgs
                         {
                             Url = url,
                             QueryString = queryString,
-                            WebSocket = new SharpWebSocket(webSocketContext.WebSocket, _logger),
+                            WebSocket = socket,
                             Endpoint = endpoint
                         });
+
+                        await ReceiveWebSocket(ctx, socket).ConfigureAwait(false);
                     }
                 }
                 else
@@ -167,6 +171,31 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
                 _logger.ErrorException("AcceptWebSocketAsync error", ex);
                 ctx.Response.StatusCode = 500;
                 ctx.Response.Close();
+            }
+        }
+
+        private async Task ReceiveWebSocket(HttpListenerContext ctx, SharpWebSocket socket)
+        {
+            try
+            {
+                await socket.StartReceive().ConfigureAwait(false);
+            }
+            finally
+            {
+                TryClose(ctx, 200);
+            }
+        }
+
+        private void TryClose(HttpListenerContext ctx, int statusCode)
+        {
+            try
+            {
+                ctx.Response.StatusCode = 200;
+                ctx.Response.Close();
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Error closing web socket response", ex);
             }
         }
 

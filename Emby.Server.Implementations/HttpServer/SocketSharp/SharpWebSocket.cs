@@ -1,5 +1,4 @@
 ﻿using MediaBrowser.Common.Events;
-using MediaBrowser.Controller.Net;
 using MediaBrowser.Model.Logging;
 using System;
 using System.Threading;
@@ -24,6 +23,7 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
         /// <value>The web socket.</value>
         private SocketHttpListener.WebSocket WebSocket { get; set; }
 
+        private TaskCompletionSource<bool> _taskCompletionSource = new TaskCompletionSource<bool>();
         private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
         public SharpWebSocket(SocketHttpListener.WebSocket socket, ILogger logger)
@@ -48,6 +48,11 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
             WebSocket.ConnectAsServer();
         }
 
+        public Task StartReceive()
+        {
+            return _taskCompletionSource.Task;
+        }
+
         void socket_OnError(object sender, SocketHttpListener.ErrorEventArgs e)
         {
             _logger.Error("Error in SharpWebSocket: {0}", e.Message ?? string.Empty);
@@ -56,6 +61,8 @@ namespace Emby.Server.Implementations.HttpServer.SocketSharp
 
         void socket_OnClose(object sender, SocketHttpListener.CloseEventArgs e)
         {
+            _taskCompletionSource.TrySetResult(true);
+
             EventHelper.FireEventIfNotNull(Closed, this, EventArgs.Empty, _logger);
         }
 
