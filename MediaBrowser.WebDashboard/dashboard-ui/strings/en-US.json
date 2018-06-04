@@ -1751,7 +1751,7 @@
   "ScanLibrary": "Scan library",
   "EnableStreamLooping": "Auto-loop live streams",
   "EnableStreamLoopingHelp": "Enable this if live streams only contain a few seconds of data and need to be continuously requested. Enabling this when not needed may cause problems.",
-  "HttpsRequiresCert": "To enable https for external connections, you will need to supply a trusted SSL certificate, such as Lets Encrypt.",
+  "HttpsRequiresCert": "To enable secure connections, you will need to supply a trusted SSL certificate, such as Lets Encrypt. Please either supply a certificate, or disable secure connections.",
   "HeaderLatestDownloadedVideos": "Latest Downloaded Videos",
   "ServerRestartNeededAfterPluginInstall": "Emby Server will need to be restarted after installing a plugin.",
   "PluginInstalledMessage": "The plugin has been successfully installed. Emby Server will need to be restarted for changes to take effect.",
