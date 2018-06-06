@@ -105,14 +105,14 @@ namespace MediaBrowser.Providers.Studios
             return string.Format("https://raw.github.com/MediaBrowser/MediaBrowser.Resources/master/images/imagesbyname/studios/{0}/{1}.jpg", image, filename);
         }
 
-        private ValueTask<string> EnsureThumbsList(string file, CancellationToken cancellationToken)
+        private Task<string> EnsureThumbsList(string file, CancellationToken cancellationToken)
         {
             const string url = "https://raw.github.com/MediaBrowser/MediaBrowser.Resources/master/images/imagesbyname/studiothumbs.txt";
 
             return EnsureList(url, file, _httpClient, _fileSystem, cancellationToken);
         }
 
-        private ValueTask<string> EnsurePosterList(string file, CancellationToken cancellationToken)
+        private Task<string> EnsurePosterList(string file, CancellationToken cancellationToken)
         {
             const string url = "https://raw.github.com/MediaBrowser/MediaBrowser.Resources/master/images/imagesbyname/studioposters.txt";
 
@@ -143,7 +143,7 @@ namespace MediaBrowser.Providers.Studios
         /// <param name="fileSystem">The file system.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        public async ValueTask<string> EnsureList(string url, string file, IHttpClient httpClient, IFileSystem fileSystem, CancellationToken cancellationToken)
+        public async Task<string> EnsureList(string url, string file, IHttpClient httpClient, IFileSystem fileSystem, CancellationToken cancellationToken)
         {
             var fileInfo = fileSystem.GetFileInfo(file);
 

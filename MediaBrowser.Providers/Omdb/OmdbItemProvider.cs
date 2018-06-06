@@ -264,14 +264,14 @@ namespace MediaBrowser.Providers.Omdb
             return result;
         }
 
-        private async ValueTask<string> GetMovieImdbId(ItemLookupInfo info, CancellationToken cancellationToken)
+        private async Task<string> GetMovieImdbId(ItemLookupInfo info, CancellationToken cancellationToken)
         {
             var results = await GetSearchResultsInternal(info, "movie", false, cancellationToken).ConfigureAwait(false);
             var first = results.FirstOrDefault();
             return first == null ? null : first.GetProviderId(MetadataProviders.Imdb);
         }
 
-        private async ValueTask<string> GetSeriesImdbId(SeriesInfo info, CancellationToken cancellationToken)
+        private async Task<string> GetSeriesImdbId(SeriesInfo info, CancellationToken cancellationToken)
         {
             var results = await GetSearchResultsInternal(info, "series", false, cancellationToken).ConfigureAwait(false);
             var first = results.FirstOrDefault();

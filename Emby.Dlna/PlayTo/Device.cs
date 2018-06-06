@@ -239,7 +239,7 @@ namespace Emby.Dlna.PlayTo
                 services.FirstOrDefault(s => (s.ServiceType ?? string.Empty).StartsWith("urn:schemas-upnp-org:service:AVTransport", StringComparison.OrdinalIgnoreCase));
         }
 
-        private async ValueTask<bool> SetMute(bool mute, CancellationToken cancellationToken)
+        private async Task<bool> SetMute(bool mute, CancellationToken cancellationToken)
         {
             var rendererCommands = await GetRenderingProtocolAsync(cancellationToken).ConfigureAwait(false);
 

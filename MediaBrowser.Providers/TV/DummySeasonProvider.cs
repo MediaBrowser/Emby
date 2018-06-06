@@ -33,7 +33,7 @@ namespace MediaBrowser.Providers.TV
             _fileSystem = fileSystem;
         }
 
-        public async ValueTask<bool> Run(Series series, CancellationToken cancellationToken)
+        public async Task<bool> Run(Series series, CancellationToken cancellationToken)
         {
             var seasonsRemoved = RemoveObsoleteSeasons(series);
 

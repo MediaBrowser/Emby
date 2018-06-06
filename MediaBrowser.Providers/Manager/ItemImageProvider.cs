@@ -438,7 +438,7 @@ namespace MediaBrowser.Providers.Manager
             return changed;
         }
 
-        private async ValueTask<bool> DownloadImage(BaseItem item, LibraryOptions libraryOptions,
+        private async Task<bool> DownloadImage(BaseItem item, LibraryOptions libraryOptions,
             IRemoteImageProvider provider,
             RefreshResult result,
             IEnumerable<RemoteImageInfo> images,
