@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Threading.Timer</name>
+  </assembly>
+  <members>
+    <member name="T:System.Threading.Timer">
+      <summary>Fournit un mécanisme permettant d'exécuter une méthode à intervalles spécifiés.Cette classe ne peut pas être héritée.Pour parcourir le code source .NET Framework correspondant à ce type, consultez la source de référence.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Timer.#ctor(System.Threading.TimerCallback,System.Object,System.Int32,System.Int32)">
+      <summary>Initialise une nouvelle instance de la classe Timer, à l'aide d'un entier signé 32 bits pour spécifier l'intervalle de temps.</summary>
+      <param name="callback">Délégué <see cref="T:System.Threading.TimerCallback" /> représentant une méthode à exécuter. </param>
+      <param name="state">Objet contenant les informations que la méthode de rappel doit utiliser, ou valeur null. </param>
+      <param name="dueTime">Délai d'attente, en millisecondes, avant que <paramref name="callback" /> soit appelé.Spécifiez <see cref="F:System.Threading.Timeout.Infinite" /> pour empêcher le démarrage de la minuterie.Spécifiez zéro (0) pour démarrer la minuterie immédiatement.</param>
+      <param name="period">Intervalle de temps, en millisecondes, entre les appels de <paramref name="callback" />.Spécifiez <see cref="F:System.Threading.Timeout.Infinite" /> pour désactiver la signalisation périodique.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter is negative and is not equal to <see cref="F:System.Threading.Timeout.Infinite" />. </exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="callback" /> parameter is null. </exception>
+    </member>
+    <member name="M:System.Threading.Timer.#ctor(System.Threading.TimerCallback,System.Object,System.TimeSpan,System.TimeSpan)">
+      <summary>Initialise une nouvelle instance de la classe Timer, à l'aide de valeurs <see cref="T:System.TimeSpan" /> pour mesurer les intervalles de temps.</summary>
+      <param name="callback">Délégué représentant une méthode à exécuter. </param>
+      <param name="state">Objet contenant les informations que la méthode de rappel doit utiliser, ou valeur null. </param>
+      <param name="dueTime">Délai d'attente avant que le paramètre <paramref name="callback" /> appelle ses méthodes.Spécifiez -1 milliseconde pour empêcher le démarrage de la minuterie.Spécifiez zéro (0) pour démarrer la minuterie immédiatement.</param>
+      <param name="period">Intervalle de temps entre les appels des méthodes référencées par <paramref name="callback" />.Spécifiez -1 milliseconde pour désactiver la signalisation périodique.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The number of milliseconds in the value of <paramref name="dueTime" /> or <paramref name="period" /> is negative and not equal to <see cref="F:System.Threading.Timeout.Infinite" />, or is greater than <see cref="F:System.Int32.MaxValue" />. </exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="callback" /> parameter is null. </exception>
+    </member>
+    <member name="M:System.Threading.Timer.Change(System.Int32,System.Int32)">
+      <summary>Modifie l'heure de début et l'intervalle entre les appels de méthode d'une minuterie ; les intervalles de temps sont mesurés à l'aide d'entiers 32 bits signés.</summary>
+      <returns>true si le minuteur a été correctement mis à jour ; sinon, false.</returns>
+      <param name="dueTime">Délai d'attente, en millisecondes, avant l'appel de la méthode de rappel spécifiée au moment de la construction de <see cref="T:System.Threading.Timer" />.Spécifiez <see cref="F:System.Threading.Timeout.Infinite" /> pour empêcher le redémarrage de la minuterie.Spécifiez zéro (0) pour redémarrer la minuterie immédiatement.</param>
+      <param name="period">Intervalle de temps, en millisecondes, entre les appels de la méthode de rappel spécifiée au moment de la construction de <see cref="T:System.Threading.Timer" />.Spécifiez <see cref="F:System.Threading.Timeout.Infinite" /> pour désactiver la signalisation périodique.</param>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.Timer" /> has already been disposed. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter is negative and is not equal to <see cref="F:System.Threading.Timeout.Infinite" />. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.Timer.Change(System.TimeSpan,System.TimeSpan)">
+      <summary>Modifie l'heure de début et l'intervalle entre les appels de méthode d'une minuterie ; les intervalles de temps sont mesurés à l'aide de valeurs <see cref="T:System.TimeSpan" />.</summary>
+      <returns>true si le minuteur a été correctement mis à jour ; sinon, false.</returns>
+      <param name="dueTime">
+        <see cref="T:System.TimeSpan" /> représentant le délai d'attente avant l'appel de la méthode de rappel spécifiée au moment de la construction de <see cref="T:System.Threading.Timer" />.Spécifiez -1 milliseconde pour empêcher le démarrage de la minuterie.Spécifiez zéro (0) pour redémarrer la minuterie immédiatement.</param>
+      <param name="period">Intervalle de temps entre les appels de la méthode de rappel spécifiée au moment de la construction de <see cref="T:System.Threading.Timer" />.Spécifiez -1 milliseconde pour désactiver la signalisation périodique.</param>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.Timer" /> has already been disposed. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter, in milliseconds, is less than -1. </exception>
+      <exception cref="T:System.NotSupportedException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter, in milliseconds, is greater than 4294967294. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.Timer.Dispose">
+      <summary>Libère toutes les ressources utilisées par l'instance actuelle de <see cref="T:System.Threading.Timer" />.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.TimerCallback">
+      <summary>Représente la méthode qui gère des appels d'un <see cref="T:System.Threading.Timer" />.</summary>
+      <param name="state">Objet contenant des informations spécifiques à l'application et concernant la méthode appelée par ce délégué, ou null. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+  </members>
+</doc>

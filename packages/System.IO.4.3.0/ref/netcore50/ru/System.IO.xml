@@ -1,0 +1,2023 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.IO</name>
+  </assembly>
+  <members>
+    <member name="T:System.IO.BinaryReader">
+      <summary>Считывает примитивные типы данных как двоичные значения в заданной кодировке.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.#ctor(System.IO.Stream)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.BinaryReader" /> на основании указанного потока с использованием кодировки UTF-8.</summary>
+      <param name="input">Входной поток. </param>
+      <exception cref="T:System.ArgumentException">Поток не поддерживает чтение, имеет значение null или был закрыт до начала операции. </exception>
+    </member>
+    <member name="M:System.IO.BinaryReader.#ctor(System.IO.Stream,System.Text.Encoding)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.BinaryReader" /> на основе указанного потока и кодировки символов.</summary>
+      <param name="input">Входной поток. </param>
+      <param name="encoding">Кодировка символов, которую нужно использовать. </param>
+      <exception cref="T:System.ArgumentException">Поток не поддерживает чтение, имеет значение null или был закрыт до начала операции. </exception>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="encoding" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.IO.BinaryReader.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.BinaryReader" /> на основе указанного потока и кодировки символов, а также при необходимости оставляет поток открытым.</summary>
+      <param name="input">Входной поток.</param>
+      <param name="encoding">Кодировка символов, которую нужно использовать.</param>
+      <param name="leaveOpen">Значение true, чтобы оставить поток открытым после удаления объекта <see cref="T:System.IO.BinaryReader" />; в противном случае — значение false.</param>
+      <exception cref="T:System.ArgumentException">Поток не поддерживает чтение, имеет значение null или был закрыт до начала операции. </exception>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="encoding" /> или <paramref name="input" /> имеет значение null. </exception>
+    </member>
+    <member name="P:System.IO.BinaryReader.BaseStream">
+      <summary>Предоставляет доступ к базовому потоку объекта <see cref="T:System.IO.BinaryReader" />.</summary>
+      <returns>Базовый поток, связанный с объектом BinaryReader.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.Dispose">
+      <summary>Освобождает все ресурсы, используемые текущим экземпляром класса <see cref="T:System.IO.BinaryReader" />.</summary>
+    </member>
+    <member name="M:System.IO.BinaryReader.Dispose(System.Boolean)">
+      <summary>Освобождает неуправляемые ресурсы, используемые классом <see cref="T:System.IO.BinaryReader" /> (при необходимости освобождает и управляемые ресурсы).</summary>
+      <param name="disposing">Значение true позволяет освободить как управляемые, так и неуправляемые ресурсы; значение false освобождает только неуправляемые ресурсы. </param>
+    </member>
+    <member name="M:System.IO.BinaryReader.FillBuffer(System.Int32)">
+      <summary>Заполняет внутренний буфер указанным количеством байтов, которые были cчитаны из потока.</summary>
+      <param name="numBytes">Количество байтов, чтение которых необходимо выполнить. </param>
+      <exception cref="T:System.IO.EndOfStreamException">Конец потока достигнут раньше, чем было выполнено чтение <paramref name="numBytes" /> байтов. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Запрошенное значение <paramref name="numBytes" /> превышает размер внутреннего буфера.</exception>
+    </member>
+    <member name="M:System.IO.BinaryReader.PeekChar">
+      <summary>Возвращает следующий доступный для чтения символ, не перемещая позицию байта или символа вперед.</summary>
+      <returns>Следующий доступный символ или значение -1, если в потоке больше нет символов, или поток не поддерживает поиск.</returns>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ArgumentException">Текущий символ не может быт декодирован в буфер внутренних символов с помощью <see cref="T:System.Text.Encoding" />, выбранного для потока.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.Read">
+      <summary>Выполняет чтение знаков из базового потока и перемещает текущую позицию в потоке вперед в соответствии с используемым значением Encoding и конкретным знаком в потоке, чтение которого выполняется в настоящий момент.</summary>
+      <returns>Следующий символ из входного потока или значение -1, если в настоящее время доступных символов нет.</returns>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.Read(System.Byte[],System.Int32,System.Int32)">
+      <summary>Считывает указанное количество байтов из потока, начиная с заданной точки в массиве байтов. </summary>
+      <returns>Количество байтов, считанных в <paramref name="buffer" />.Количество символов может быть меньше указанного числа, если в потоке осталось меньше байтов, чем следует считать. Количество символов также может равняться нулю, если достигнут конец потока.</returns>
+      <param name="buffer">Буфер, в который должны считываться данные. </param>
+      <param name="index">Стартовая точка в буфере, начиная с которой считываемые данные записываются в буфер. </param>
+      <param name="count">Количество байтов, чтение которых необходимо выполнить. </param>
+      <exception cref="T:System.ArgumentException">Длина буфера за вычетом значения параметра <paramref name="index" /> меньше значения параметра <paramref name="count" />. -или-Число декодированных знаков для чтения больше, чем <paramref name="count" />.Это может произойти, если декодер Юникода возвращает резервные символы или суррогатную пару.</exception>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> является отрицательным. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.Read(System.Char[],System.Int32,System.Int32)">
+      <summary>Считывает указанное количество символов из потока, начиная с заданной точки в массиве символов.</summary>
+      <returns>Общее количество символов, считанных в буфер.Количество символов может быть меньше указанного числа, если в потоке осталось меньше символов, чем следует прочитать. Количество символов также может равняться нулю, если достигнут конец потока.</returns>
+      <param name="buffer">Буфер, в который должны считываться данные. </param>
+      <param name="index">Стартовая точка в буфере, начиная с которой считываемые данные записываются в буфер. </param>
+      <param name="count">Число символов для чтения. </param>
+      <exception cref="T:System.ArgumentException">Длина буфера за вычетом значения параметра <paramref name="index" /> меньше значения параметра <paramref name="count" />. -или-Число декодированных знаков для чтения больше, чем <paramref name="count" />.Это может произойти, если декодер Юникода возвращает резервные символы или суррогатную пару.</exception>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> является отрицательным. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.Read7BitEncodedInt">
+      <summary>Считывает 32-разрядное целое число в сжатом формате.</summary>
+      <returns>32-разрядное целое число в сжатом формате.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Достигнут конец потока. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.FormatException">Поток поврежден.</exception>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadBoolean">
+      <summary>Считывает значение Boolean из текущего потока и перемещает текущую позицию в потоке на один байт вперед.</summary>
+      <returns>Значение true, если байт не равен нулю; в противном случае — значение false.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Достигнут конец потока. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadByte">
+      <summary>Считывает из текущего потока следующий байт и перемещает текущую позицию в потоке на один байт вперед.</summary>
+      <returns>Следующий байт, считанный из текущего потока.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Достигнут конец потока. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadBytes(System.Int32)">
+      <summary>Считывает указанное количество байтов из текущего потока в массив байтов и перемещает текущую позицию на это количество байтов.</summary>
+      <returns>Массив байтов, в котором содержатся данные, считанные из базового потока.Если при чтении был достигнут конец потока, это число может быть меньше, чем количество запрошенных байтов.</returns>
+      <param name="count">Количество байтов, чтение которых необходимо выполнить.Это значение должно быть равно 0 или быть больше 0, иначе возникнет исключение.</param>
+      <exception cref="T:System.ArgumentException">Число декодированных знаков для чтения больше, чем <paramref name="count" />.Это может произойти, если декодер Юникода возвращает резервные символы или суррогатную пару.</exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение <paramref name="count" /> отрицательно. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadChar">
+      <summary>Считывает следующий знак из текущего потока и изменяет текущую позицию в потоке в соответствии с используемым значением Encoding и конкретным знаком в потоке, чтение которого выполняется в настоящий момент.</summary>
+      <returns>Символ, считанный из текущего потока.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Достигнут конец потока. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ArgumentException">Выполнено чтение символа-заместителя. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadChars(System.Int32)">
+      <summary>Считывает указанное количество символов из текущего потока, возвращает данные в массив символов и перемещает текущую позицию в соответствии с используемой Encoding и определенным символом, считываемым из потока.</summary>
+      <returns>Массив символов, в котором содержатся данные, считанные из базового потока.Если при чтении был достигнут конец потока, это число может быть меньше, чем количество запрошенных символов.</returns>
+      <param name="count">Количество символов, которое необходимо считать. </param>
+      <exception cref="T:System.ArgumentException">Число декодированных знаков для чтения больше, чем <paramref name="count" />.Это может произойти, если декодер Юникода возвращает резервные символы или суррогатную пару.</exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение <paramref name="count" /> отрицательно. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadDecimal">
+      <summary>Считывает десятичное значение из текущего потока и перемещает текущую позицию в потоке на шестнадцать байтов вперед.</summary>
+      <returns>Десятичное значение, считанное из текущего потока.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Достигнут конец потока. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadDouble">
+      <summary>Считывает число с плавающей запятой длиной 8 байт из текущего потока и перемещает текущую позицию в потоке на восемь байт вперед.</summary>
+      <returns>Число с плавающей запятой длиной 8 байт, считанное из текущего потока.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Достигнут конец потока. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadInt16">
+      <summary>Считывает целое число со знаком длиной 2 байта из текущего потока и перемещает текущую позицию в потоке на два байта вперед.</summary>
+      <returns>Целое число со знаком длиной 2 байта, считанное из текущего потока.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Достигнут конец потока. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadInt32">
+      <summary>Считывает целое число со знаком длиной 4 байта из текущего потока и перемещает текущую позицию в потоке на четыре байта вперед.</summary>
+      <returns>Целое число со знаком длиной 2 байта, считанное из текущего потока.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Достигнут конец потока. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadInt64">
+      <summary>Считывает целое число со знаком длиной 8 байта из текущего потока и перемещает текущую позицию в потоке на восемь байт вперед.</summary>
+      <returns>Целое число со знаком длиной 8 байт, считанное из текущего потока.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Достигнут конец потока. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadSByte">
+      <summary>Считывает из текущего потока байт со знаком и перемещает текущую позицию в потоке на один байт вперед.</summary>
+      <returns>Байт со знаком, считанный из текущего потока.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Достигнут конец потока. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadSingle">
+      <summary>Считывает число с плавающей запятой длиной 4 байта из текущего потока и перемещает текущую позицию в потоке на четыре байта вперед.</summary>
+      <returns>Число с плавающей запятой длиной 4 байта, считанное из текущего потока.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Достигнут конец потока. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadString">
+      <summary>Считывает строку из текущего потока.Строка предваряется значением длины строки, которое закодировано как целое число блоками по семь битов.</summary>
+      <returns>Считываемая строка.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Достигнут конец потока. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadUInt16">
+      <summary>Считывает целое число без знака длиной 2 байта в формате с прямым порядком байтов из текущего потока и перемещает текущую позицию в потоке на два байта вперед.</summary>
+      <returns>Целое число без знака длиной 2 байта, считанное из текущего потока.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Достигнут конец потока. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadUInt32">
+      <summary>Считывает целое число без знака длиной 4 байта из текущего потока и перемещает текущую позицию в потоке на четыре байта вперед.</summary>
+      <returns>Целое число без знака длиной 4 байта, считанное из текущего потока.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Достигнут конец потока. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadUInt64">
+      <summary>Считывает целое число без знака длиной 8 байт из текущего потока и перемещает текущую позицию в потоке на восемь байтов вперед.</summary>
+      <returns>Целое число без знака длиной 8 байт, считанное из текущего потока.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Достигнут конец потока. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.IO.BinaryWriter">
+      <summary>Записывает простые типы данных в поток как двоичные значения и поддерживает запись строк в определенной кодировке.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.#ctor">
+      <summary>Выполняет инициализацию нового экземпляра класса <see cref="T:System.IO.BinaryWriter" />, который осуществляет запись в поток.</summary>
+    </member>
+    <member name="M:System.IO.BinaryWriter.#ctor(System.IO.Stream)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.BinaryWriter" /> на основании указанного потока с использованием кодировки UTF-8.</summary>
+      <param name="output">Выходной поток. </param>
+      <exception cref="T:System.ArgumentException">Поток не поддерживает запись или был закрыт до начала операции. </exception>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="output" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.IO.BinaryWriter.#ctor(System.IO.Stream,System.Text.Encoding)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.BinaryWriter" /> на основании указанного потока и кодировки символов.</summary>
+      <param name="output">Выходной поток. </param>
+      <param name="encoding">Кодировка символов, которую нужно использовать. </param>
+      <exception cref="T:System.ArgumentException">Поток не поддерживает запись или был закрыт до начала операции. </exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="output" /> или <paramref name="encoding" /> — null. </exception>
+    </member>
+    <member name="M:System.IO.BinaryWriter.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.BinaryWriter" /> на основании указанного потока и кодировки символов, а также при необходимости оставляет поток открытым.</summary>
+      <param name="output">Выходной поток.</param>
+      <param name="encoding">Кодировка символов, которую нужно использовать.</param>
+      <param name="leaveOpen">Значение true, чтобы оставить поток открытым после удаления объекта <see cref="T:System.IO.BinaryWriter" />; в противном случае — значение false.</param>
+      <exception cref="T:System.ArgumentException">Поток не поддерживает запись или был закрыт до начала операции. </exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="output" /> или <paramref name="encoding" /> — null. </exception>
+    </member>
+    <member name="P:System.IO.BinaryWriter.BaseStream">
+      <summary>Получает базовый поток <see cref="T:System.IO.BinaryWriter" />.</summary>
+      <returns>Базовый поток, связанный с объектом BinaryWriter.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Dispose">
+      <summary>Освобождает все ресурсы, используемые текущим экземпляром класса <see cref="T:System.IO.BinaryWriter" />.</summary>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Dispose(System.Boolean)">
+      <summary>Освобождает неуправляемые (а при необходимости и управляемые) ресурсы, используемые объектом <see cref="T:System.IO.BinaryWriter" />.</summary>
+      <param name="disposing">Значение true позволяет освободить управляемые и неуправляемые ресурсы; значение false позволяет освободить только неуправляемые ресурсы. </param>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Flush">
+      <summary>Очищает все буферы текущего модуля записи и вызывает немедленную запись всех буферизованных данных на базовое устройство.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.IO.BinaryWriter.Null">
+      <summary>Задает <see cref="T:System.IO.BinaryWriter" /> без резервного хранилища.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.IO.BinaryWriter.OutStream">
+      <summary>Содержит базовый поток.</summary>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Seek(System.Int32,System.IO.SeekOrigin)">
+      <summary>Задает позицию в текущем потоке.</summary>
+      <returns>Позиция в текущем потоке.</returns>
+      <param name="offset">Смещение в байтах относительно <paramref name="origin" />. </param>
+      <param name="origin">Поле <see cref="T:System.IO.SeekOrigin" /> указывает точку отсчета, относительно которой указывается новая позиция. </param>
+      <exception cref="T:System.IO.IOException">Указатель позиции в файле перемещен в недопустимую позицию. </exception>
+      <exception cref="T:System.ArgumentException">Значение <see cref="T:System.IO.SeekOrigin" /> является недопустимым. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Boolean)">
+      <summary>Выполняет запись значения типа Boolean длиной один байт в текущий поток, при этом 0 соответствует значению false, а 1 — значению true.</summary>
+      <param name="value">Записываемое в поток значение типа Boolean (0 или 1). </param>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Byte)">
+      <summary>Выполняет запись байта без знака в текущий поток и перемещает позицию в потоке на один байт вперед.</summary>
+      <param name="value">Записываемый в поток байт без знака. </param>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Byte[])">
+      <summary>Выполняет запись массива байтов в базовый поток.</summary>
+      <param name="buffer">Массив байтов, содержащий записываемые в поток данные. </param>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="buffer" /> имеет значение null. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Byte[],System.Int32,System.Int32)">
+      <summary>Выполняет запись части массива байтов в текущий поток.</summary>
+      <param name="buffer">Массив байтов, содержащий записываемые в поток данные. </param>
+      <param name="index">Стартовая точка в буфере <paramref name="buffer" />, с которой начинается запись. </param>
+      <param name="count">Количество записываемых байтов. </param>
+      <exception cref="T:System.ArgumentException">Длина буфера за вычетом значения параметра <paramref name="index" /> меньше значения параметра <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="buffer" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> является отрицательным. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Char)">
+      <summary>Выполняет запись символа Юникод в текущий поток и перемещает текущую позицию в потоке вперед в соответствии с используемой Encoding и количеством записанных в поток символов.</summary>
+      <param name="ch">Незаменяющий символ Юникода, который необходимо записать. </param>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="ch" /> представляет собой единичный символ-заместитель.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Char[])">
+      <summary>Выполняет запись массива символов в текущий поток и перемещает текущую позицию в потоке в соответствии с используемой Encoding и количеством записанных в поток символов.</summary>
+      <param name="chars">Массив символов, содержащий записываемые в поток данные. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="chars" /> имеет значение null. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Char[],System.Int32,System.Int32)">
+      <summary>Выполняет запись части массива символов в текущий поток и изменяет текущую позицию в потоке в соответствии с используемой Encoding и, возможно, количеством символов, записанных в поток.</summary>
+      <param name="chars">Массив символов, содержащий записываемые в поток данные. </param>
+      <param name="index">Стартовая точка в буфере <paramref name="chars" />, с которой начинается запись. </param>
+      <param name="count">Количество символов для записи. </param>
+      <exception cref="T:System.ArgumentException">Длина буфера за вычетом значения параметра <paramref name="index" /> меньше значения параметра <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="chars" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> является отрицательным. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Decimal)">
+      <summary>Записывает десятичное число в текущий поток и перемещает позицию в потоке на шестнадцать байтов.</summary>
+      <param name="value">Десятичное значение, которое необходимо записать. </param>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Double)">
+      <summary>Записывает число с плавающей запятой длиной 8 байт в текущий поток и перемещает позицию в потоке вперед на восемь байт.</summary>
+      <param name="value">Число с плавающей запятой длиной 8 байт, которое необходимо записать в поток. </param>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Int16)">
+      <summary>Записывает целое число со знаком длиной 2 байта в текущий поток и перемещает позицию в потоке вперед на два байта.</summary>
+      <param name="value">Целое число со знаком размером 2 байта, которое необходимо записать в поток. </param>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Int32)">
+      <summary>Записывает целое число со знаком длиной 4 байта в текущий поток и перемещает позицию в потоке вперед на четыре байта.</summary>
+      <param name="value">Целое число со знаком размером 4 байта, которое необходимо записать в поток. </param>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Int64)">
+      <summary>Записывает целое число со знаком длиной 8 байт в текущий поток и перемещает позицию в потоке вперед на восемь байт.</summary>
+      <param name="value">Целое число со знаком размером 8 байт, которое необходимо записать в поток. </param>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.SByte)">
+      <summary>Записывает байт со знаком в текущий поток и перемещает позицию в потоке вперед на один байт.</summary>
+      <param name="value">Байт со знаком, который необходимо записать в поток. </param>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Single)">
+      <summary>Записывает число с плавающей запятой длиной 4 байта в текущий поток и перемещает позицию в потоке вперед на четыре байта.</summary>
+      <param name="value">Число с плавающей запятой длиной 4 байта, которое необходимо записать в поток. </param>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.String)">
+      <summary>Записывает в текущий поток строку, предваряемую ее длиной, используя текущую кодировку <see cref="T:System.IO.BinaryWriter" />, и перемещает позицию в потоке вперед в соответствии с используемой кодировкой и количеством записанных в поток символов.</summary>
+      <param name="value">Записываемое значение. </param>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="value" /> имеет значение null. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.UInt16)">
+      <summary>Записывает целое число без знака длиной 2 байта в текущий поток и перемещает позицию в потоке вперед на два байта.</summary>
+      <param name="value">Целое число без знака размером 2 байта, которое необходимо записать в поток. </param>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.UInt32)">
+      <summary>Записывает целое число без знака длиной 4 байта в текущий поток и перемещает позицию в потоке вперед на четыре байта.</summary>
+      <param name="value">Целое число без знака размером 4 байта, которое необходимо записать в поток. </param>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.UInt64)">
+      <summary>Записывает целое число без знака длиной 8 байт в текущий поток и перемещает позицию в потоке вперед на восемь байт.</summary>
+      <param name="value">Целое число без знака размером 8 байт, которое необходимо записать в поток. </param>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write7BitEncodedInt(System.Int32)">
+      <summary>Записывает 32-разрядное целое число в сжатом формате.</summary>
+      <param name="value">32-разрядное целое число, которое необходимо записать. </param>
+      <exception cref="T:System.IO.EndOfStreamException">Достигнут конец потока. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Поток закрыт. </exception>
+    </member>
+    <member name="T:System.IO.EndOfStreamException">
+      <summary>Исключение, которое создается при попытке выполнить чтение за пределами потока.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.EndOfStreamException.#ctor">
+      <summary>Выполняет инициализацию нового экземпляра класса <see cref="T:System.IO.EndOfStreamException" /> со строкой сообщения, которая соответствует строке системного сообщения, и значением HRESULT равным COR_E_ENDOFSTREAM.</summary>
+    </member>
+    <member name="M:System.IO.EndOfStreamException.#ctor(System.String)">
+      <summary>Выполняет инициализацию нового экземпляра класса <see cref="T:System.IO.EndOfStreamException" /> со строкой сообщения, которая соответствует строке <paramref name="message" />, и значением HRESULT равным COR_E_ENDOFSTREAM.</summary>
+      <param name="message">Строка, описывающая ошибку.Содержимое параметра <paramref name="message" /> должно быть понятным пользователю.Вызывающий оператор этого конструктора необходим, чтобы убедиться, локализована ли данная строка для текущего языка и региональных параметров системы.</param>
+    </member>
+    <member name="M:System.IO.EndOfStreamException.#ctor(System.String,System.Exception)">
+      <summary>Выполняет инициализацию нового экземпляра класса <see cref="T:System.IO.EndOfStreamException" /> с указанным сообщением об ошибке и ссылкой на внутреннее исключение, которое стало причиной данного исключения.</summary>
+      <param name="message">Строка, описывающая ошибку.Содержимое параметра <paramref name="message" /> должно быть понятным пользователю.Вызывающий оператор этого конструктора необходим, чтобы убедиться, локализована ли данная строка для текущего языка и региональных параметров системы.</param>
+      <param name="innerException">Исключение, которое вызвало текущее исключение.Если значение параметра <paramref name="innerException" /> не равно null, текущее исключение сгенерировано в блоке catch, обрабатывающем внутреннее исключение.</param>
+    </member>
+    <member name="T:System.IO.InvalidDataException">
+      <summary>Исключение возникает, когда поток данных имеет недопустимый формат.</summary>
+    </member>
+    <member name="M:System.IO.InvalidDataException.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.InvalidDataException" />.</summary>
+    </member>
+    <member name="M:System.IO.InvalidDataException.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.InvalidDataException" /> с указанным сообщением об ошибке.</summary>
+      <param name="message">Сообщение об ошибке с объяснением причин исключения.</param>
+    </member>
+    <member name="M:System.IO.InvalidDataException.#ctor(System.String,System.Exception)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.InvalidDataException" /> со ссылкой на внутреннее исключение, которое является причиной данного исключения.</summary>
+      <param name="message">Сообщение об ошибке с объяснением причин исключения.</param>
+      <param name="innerException">Исключение, которое вызвало текущее исключение.Если значение параметра <paramref name="innerException" /> не равно null, текущее исключение сгенерировано в блоке catch, обрабатывающем внутреннее исключение.</param>
+    </member>
+    <member name="T:System.IO.MemoryStream">
+      <summary>Создает поток, резервным хранилищем которого является память.Чтобы просмотреть исходный код .NET Framework для этого типа, см. Reference Source.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.MemoryStream" /> расширяемой емкостью, инициализированной нулевым значением.</summary>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor(System.Byte[])">
+      <summary>Инициализирует новый неизменяемый экземпляр класса <see cref="T:System.IO.MemoryStream" /> на основе указанного массива байтов.</summary>
+      <param name="buffer">Массив байтов без знака, из которого создается текущий поток. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor(System.Byte[],System.Boolean)">
+      <summary>Инициализирует новый неизменяемый экземпляр класса <see cref="T:System.IO.MemoryStream" /> на основе указанного массива байтов с помощью указанного значения свойства <see cref="P:System.IO.MemoryStream.CanWrite" />.</summary>
+      <param name="buffer">Массив байтов без знака, из которого создается данный поток. </param>
+      <param name="writable">Параметр свойства <see cref="P:System.IO.MemoryStream.CanWrite" />, который определяет возможность поддержки потоком записи. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor(System.Byte[],System.Int32,System.Int32)">
+      <summary>Инициализирует новый неизменяемый экземпляр класса <see cref="T:System.IO.MemoryStream" /> на основе указанной области (индекса) массива байтов.</summary>
+      <param name="buffer">Массив байтов без знака, из которого создается данный поток. </param>
+      <param name="index">Индекс в <paramref name="buffer" />, с которого начинается поток. </param>
+      <param name="count">Длина потока в байтах. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> меньше нуля. </exception>
+      <exception cref="T:System.ArgumentException">Длина буфера за вычетом значения параметра <paramref name="index" /> меньше значения параметра <paramref name="count" />.</exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor(System.Byte[],System.Int32,System.Int32,System.Boolean)">
+      <summary>Инициализирует новый неизменяемый экземпляр класса <see cref="T:System.IO.MemoryStream" /> на основе указанной области массива байтов с помощью указанного значения свойства <see cref="P:System.IO.MemoryStream.CanWrite" />.</summary>
+      <param name="buffer">Массив байтов без знака, из которого создается данный поток. </param>
+      <param name="index">Индекс в <paramref name="buffer" />, с которого начинается поток. </param>
+      <param name="count">Длина потока в байтах. </param>
+      <param name="writable">Параметр свойства <see cref="P:System.IO.MemoryStream.CanWrite" />, который определяет возможность поддержки потоком записи. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="index" /> или <paramref name="count" /> имеет отрицательное значение. </exception>
+      <exception cref="T:System.ArgumentException">Длина буфера за вычетом значения параметра <paramref name="index" /> меньше значения параметра <paramref name="count" />.</exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor(System.Byte[],System.Int32,System.Int32,System.Boolean,System.Boolean)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.MemoryStream" /> на основе указанной области массива байтов с помощью указанного значения свойства <see cref="P:System.IO.MemoryStream.CanWrite" /> и возможности вызова <see cref="M:System.IO.MemoryStream.GetBuffer" /> с указанным значением.</summary>
+      <param name="buffer">Массив байтов без знака, из которого создается данный поток. </param>
+      <param name="index">Индекс в <paramref name="buffer" />, с которого начинается поток. </param>
+      <param name="count">Длина потока в байтах. </param>
+      <param name="writable">Параметр свойства <see cref="P:System.IO.MemoryStream.CanWrite" />, который определяет возможность поддержки потоком записи. </param>
+      <param name="publiclyVisible">Значение true, чтобы разрешить метод <see cref="M:System.IO.MemoryStream.GetBuffer" />, возвращающий массив байтов без знака, из которого создан поток; в противном случае — значение false. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> является отрицательным. </exception>
+      <exception cref="T:System.ArgumentException">Длина буфера за вычетом значения параметра <paramref name="index" /> меньше значения параметра <paramref name="count" />. </exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor(System.Int32)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.MemoryStream" /> расширяемой емкостью, инициализированной с указанным значением.</summary>
+      <param name="capacity">Исходный размер внутреннего массива в байтах. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение <paramref name="capacity" /> отрицательно. </exception>
+    </member>
+    <member name="P:System.IO.MemoryStream.CanRead">
+      <summary>Возвращает значение, определяющее в текущем потоке наличие поддержки операций чтения.</summary>
+      <returns>Значение true, если поток открыт.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.MemoryStream.CanSeek">
+      <summary>Возвращает значение, определяющее в текущем потоке наличие поддержки операций поиска.</summary>
+      <returns>Значение true, если поток открыт.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.MemoryStream.CanWrite">
+      <summary>Возвращает значение, определяющее в текущем потоке наличие поддержки операций записи.</summary>
+      <returns>Значение true, если поток поддерживает запись; в противном случае — значение false.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.MemoryStream.Capacity">
+      <summary>Возвращает или задает число байтов, выделенных для этого потока.</summary>
+      <returns>Длина применимой к использованию части буфера для потока.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Заданная емкость отрицательная или меньше текущей длины потока. </exception>
+      <exception cref="T:System.ObjectDisposedException">Текущий поток закрыт. </exception>
+      <exception cref="T:System.NotSupportedException">set вызывается для потока, емкость которого нельзя изменить. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.CopyToAsync(System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
+      <summary>Асинхронно считывает все байты из текущего потока и записывает их в другой поток, используя указанный размер буфера и токен отмены.</summary>
+      <returns>Задача, представляющая асинхронную операцию копирования.</returns>
+      <param name="destination">Поток, в который будет скопировано содержимое текущего потока.</param>
+      <param name="bufferSize">Размер (в байтах) буфера.Это значение должно быть больше нуля.</param>
+      <param name="cancellationToken">Токен для отслеживания запросов отмены.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="destination" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="buffersize" /> имеет отрицательное значение или равен нулю.</exception>
+      <exception cref="T:System.ObjectDisposedException">Текущий поток или поток назначения удаляется.</exception>
+      <exception cref="T:System.NotSupportedException">Текущий поток не поддерживает чтение или поток назначения не поддерживает запись.</exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.Dispose(System.Boolean)">
+      <summary>Освобождает неуправляемые ресурсы, используемые классом <see cref="T:System.IO.MemoryStream" /> (при необходимости освобождает и управляемые ресурсы).</summary>
+      <param name="disposing">Значение true позволяет освободить как управляемые, так и неуправляемые ресурсы; значение false освобождает только неуправляемые ресурсы.</param>
+    </member>
+    <member name="M:System.IO.MemoryStream.Flush">
+      <summary>Переопределяет метод <see cref="M:System.IO.Stream.Flush" /> так, что никакие действия не выполняются.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.FlushAsync(System.Threading.CancellationToken)">
+      <summary>Асинхронно очищает все буферы для этого потока и отслеживает запросы отмены.</summary>
+      <returns>Задача, представляющая асинхронную операцию очистки.</returns>
+      <param name="cancellationToken">Токен для отслеживания запросов отмены.</param>
+      <exception cref="T:System.ObjectDisposedException">Поток был ликвидирован.</exception>
+    </member>
+    <member name="P:System.IO.MemoryStream.Length">
+      <summary>Возвращает длину потока в байтах.</summary>
+      <returns>Длина потока в байтах.</returns>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.MemoryStream.Position">
+      <summary>Возвращает или задает текущее положение в потоке.</summary>
+      <returns>Текущее положение в потоке.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">В качестве положения задано отрицательное значение или значение, большее <see cref="F:System.Int32.MaxValue" />. </exception>
+      <exception cref="T:System.ObjectDisposedException">Поток закрыт. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.Read(System.Byte[],System.Int32,System.Int32)">
+      <summary>Считывает блок байтов из текущего потока и записывает данные в буфер.</summary>
+      <returns>Общее число байтов, записанных в буфер.Оно может быть меньше запрошенного числа байтов, если это количество в текущий момент не доступно, или же равно нулю, если конец потока достигнут до того, как байты были считаны.</returns>
+      <param name="buffer">При возвращении данного метода этот параметр содержит указанный массив байтов со значениями от <paramref name="offset" /> до (<paramref name="offset" /> + <paramref name="count" /> - 1), замененными символами, считанными из текущего потока. </param>
+      <param name="offset">Отсчитываемое от нуля смещение байтов в буфере <paramref name="buffer" />, с которого начинается сохранение данных из текущего потока.</param>
+      <param name="count">Максимальное число байтов, предназначенных для чтения. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="offset" /> или <paramref name="count" /> является отрицательным. </exception>
+      <exception cref="T:System.ArgumentException">Длина буфера за вычетом <paramref name="offset" /> меньше, чем <paramref name="count" />. </exception>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр потока закрыт. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+      <summary>Асинхронно считывает последовательность байтов из текущего потока, перемещает позицию в потоке на число считанных байтов и отслеживает запросы отмены.</summary>
+      <returns>Задача, представляющая асинхронную операцию чтения.Значение параметра <paramref name="TResult" /> содержит общее число байтов, считанных в буфер.Значение результата может быть меньше запрошенного числа байтов, если число доступных в данный момент байтов меньше запрошенного числа, или результат может быть равен 0 (нулю), если был достигнут конец потока.</returns>
+      <param name="buffer">Буфер, в который записываются данные.</param>
+      <param name="offset">Смещение байтов в <paramref name="buffer" />, с которого начинается запись данных из потока.</param>
+      <param name="count">Максимальное число байтов, предназначенных для чтения.</param>
+      <param name="cancellationToken">Токен для отслеживания запросов отмены.Значение по умолчанию — <see cref="P:System.Threading.CancellationToken.None" />.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="offset" /> или <paramref name="count" /> является отрицательным.</exception>
+      <exception cref="T:System.ArgumentException">Сумма значений параметров <paramref name="offset" /> и <paramref name="count" /> больше длины буфера.</exception>
+      <exception cref="T:System.NotSupportedException">Поток не поддерживает чтение.</exception>
+      <exception cref="T:System.ObjectDisposedException">Поток был ликвидирован.</exception>
+      <exception cref="T:System.InvalidOperationException">Поток в настоящее время используется предыдущей операцией чтения. </exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.ReadByte">
+      <summary>Считывает байт из текущего потока.</summary>
+      <returns>Байт приводится к типу <see cref="T:System.Int32" /> или -1, если достигнут конец потока.</returns>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр потока закрыт. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.Seek(System.Int64,System.IO.SeekOrigin)">
+      <summary>Задает указанное значение для положения в текущем потоке.</summary>
+      <returns>Новое положение в потоке, вычисляемое путем объединения смещения и исходной точки ссылки.</returns>
+      <param name="offset">Новое положение в потоке.Оно определяется относительно параметра <paramref name="loc" /> и может быть положительным или отрицательным.</param>
+      <param name="loc">Значение типа <see cref="T:System.IO.SeekOrigin" />, которое действует как точка ссылки поиска. </param>
+      <exception cref="T:System.IO.IOException">Попытка поиска выполняется до начала потока. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение <paramref name="offset" /> больше значения <see cref="F:System.Int32.MaxValue" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <see cref="T:System.IO.SeekOrigin" /> недопустим. -или-Значение <paramref name="offset" /> вызвало арифметическое переполнение.</exception>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр потока закрыт. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.SetLength(System.Int64)">
+      <summary>Задает указанное значение для длины текущего потока.</summary>
+      <param name="value">Значение задаваемой длины. </param>
+      <exception cref="T:System.NotSupportedException">Размер текущего потока изменить нельзя, и значение параметра <paramref name="value" /> больше текущей емкости.-или- Текущий поток не поддерживает запись. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="value" /> отрицательное или больше максимальной длины <see cref="T:System.IO.MemoryStream" />, где максимальная длина равна (<see cref="F:System.Int32.MaxValue" /> - источник). Источник — это индекс в основном буфере, с которого начинается поток. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.ToArray">
+      <summary>Записывает содержимое потока в массив байтов независимо от свойства <see cref="P:System.IO.MemoryStream.Position" />.</summary>
+      <returns>Новый массив байтов.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.TryGetBuffer(System.ArraySegment{System.Byte}@)">
+      <summary>Возвращает массив байтов без знака, из которого был создан данный поток.Возвращаемое значение указывает, успешно ли выполнено преобразование.</summary>
+      <returns>Значение true, если преобразование прошло успешно; в противном случае — значение false.</returns>
+      <param name="buffer">Сегмент массива байтов, из которого был создан данный поток.</param>
+    </member>
+    <member name="M:System.IO.MemoryStream.Write(System.Byte[],System.Int32,System.Int32)">
+      <summary>Записывает в текущий поток блок байтов, используя данные, считанные из буфера.</summary>
+      <param name="buffer">Буфер, из которого записываются данные. </param>
+      <param name="offset">Отсчитываемое от нуля смещение байтов в буфере <paramref name="buffer" />, с которого начинается копирование байтов в текущий поток.</param>
+      <param name="count">Максимальное число байтов для записи. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null. </exception>
+      <exception cref="T:System.NotSupportedException">Поток не поддерживает запись.Дополнительные сведения см. в разделе <see cref="P:System.IO.Stream.CanWrite" />.-или- Текущее положение ближе к концу потока, чем число байтов <paramref name="count" />, и емкость изменить невозможно. </exception>
+      <exception cref="T:System.ArgumentException">Длина буфера за вычетом <paramref name="offset" /> меньше, чем <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="offset" /> или <paramref name="count" /> имеет отрицательное значение. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр потока закрыт. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+      <summary>Асинхронно записывает последовательность байтов в текущий поток, перемещает текущую позицию внутри потока на число записанных байтов и отслеживает запросы отмены.</summary>
+      <returns>Задача, представляющая асинхронную операцию записи.</returns>
+      <param name="buffer">Буфер, из которого записываются данные.</param>
+      <param name="offset">Смещение байтов (начиная с нуля) в объекте <paramref name="buffer" />, с которого начинается копирование байтов в поток.</param>
+      <param name="count">Максимальное число байтов для записи.</param>
+      <param name="cancellationToken">Токен для отслеживания запросов отмены.Значение по умолчанию — <see cref="P:System.Threading.CancellationToken.None" />.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="offset" /> или <paramref name="count" /> является отрицательным.</exception>
+      <exception cref="T:System.ArgumentException">Сумма значений параметров <paramref name="offset" /> и <paramref name="count" /> больше длины буфера.</exception>
+      <exception cref="T:System.NotSupportedException">Поток не поддерживает запись.</exception>
+      <exception cref="T:System.ObjectDisposedException">Поток был ликвидирован.</exception>
+      <exception cref="T:System.InvalidOperationException">Поток в настоящее время используется предыдущей операцией записи. </exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.WriteByte(System.Byte)">
+      <summary>Записывает байт в текущее положение текущего потока.</summary>
+      <param name="value">Записываемый байт. </param>
+      <exception cref="T:System.NotSupportedException">Поток не поддерживает запись.Дополнительные сведения см. в разделе <see cref="P:System.IO.Stream.CanWrite" />.-или- Текущее положение находится в конце потока и емкость изменить невозможно. </exception>
+      <exception cref="T:System.ObjectDisposedException">Текущий поток закрыт. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.WriteTo(System.IO.Stream)">
+      <summary>Записывает все содержимое данного потока памяти в другой поток.</summary>
+      <param name="stream">Поток, в который требуется осуществить запись данного потока памяти. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="stream" /> имеет значение null. </exception>
+      <exception cref="T:System.ObjectDisposedException">Текущий или конечный поток закрыт. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.IO.SeekOrigin">
+      <summary>Задает позицию в потоке, используемую для поиска.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.SeekOrigin.Begin">
+      <summary>Задает начало потока.</summary>
+    </member>
+    <member name="F:System.IO.SeekOrigin.Current">
+      <summary>Задает текущее положение в потоке.</summary>
+    </member>
+    <member name="F:System.IO.SeekOrigin.End">
+      <summary>Задает конец потока.</summary>
+    </member>
+    <member name="T:System.IO.Stream">
+      <summary>Предоставляет универсальное представление последовательности байтов.Этот класс является абстрактным.Чтобы просмотреть исходный код .NET Framework для этого типа, см. Reference Source.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.Stream" />. </summary>
+    </member>
+    <member name="P:System.IO.Stream.CanRead">
+      <summary>При переопределении в производном классе возвращает значение, показывающее, поддерживает ли текущий поток возможность чтения.</summary>
+      <returns>Значение true, если поток поддерживает чтение; в противном случае — значение false.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.IO.Stream.CanSeek">
+      <summary>При переопределении в производном классе возвращает значение, которое показывает, поддерживается ли в текущем потоке возможность поиска.</summary>
+      <returns>Значение true, если поток поддерживает поиск; в противном случае — значение false.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.IO.Stream.CanTimeout">
+      <summary>Возвращает значение, которое показывает, может ли для данного потока истечь время ожидания.</summary>
+      <returns>Значение, которое показывает, может ли для данного потока истечь время ожидания.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.Stream.CanWrite">
+      <summary>При переопределении в производном классе возвращает значение, которое показывает, поддерживает ли текущий поток возможность записи.</summary>
+      <returns>Значение true, если поток поддерживает запись; в противном случае — значение false.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.CopyTo(System.IO.Stream)">
+      <summary>Считывает байты из текущего потока и записывает их в другой поток.</summary>
+      <param name="destination">Поток, в который будет скопировано содержимое текущего потока.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="destination" /> имеет значение null.</exception>
+      <exception cref="T:System.NotSupportedException">Текущий поток не поддерживает чтение.-или-Параметр <paramref name="destination" /> не поддерживает запись.</exception>
+      <exception cref="T:System.ObjectDisposedException">Текущий поток или параметр <paramref name="destination" /> был закрыт до вызова метода <see cref="M:System.IO.Stream.CopyTo(System.IO.Stream)" />.</exception>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода.</exception>
+    </member>
+    <member name="M:System.IO.Stream.CopyTo(System.IO.Stream,System.Int32)">
+      <summary>Считывает байты из текущего потока и записывает их в другой поток, используя указанный размер буфера.</summary>
+      <param name="destination">Поток, в который будет скопировано содержимое текущего потока.</param>
+      <param name="bufferSize">Размер буфера.Это значение должно быть больше нуля.Размер по умолчанию — 81920.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="destination" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="bufferSize" /> имеет отрицательное значение или равен нулю.</exception>
+      <exception cref="T:System.NotSupportedException">Текущий поток не поддерживает чтение.-или-Параметр <paramref name="destination" /> не поддерживает запись.</exception>
+      <exception cref="T:System.ObjectDisposedException">Текущий поток или параметр <paramref name="destination" /> был закрыт до вызова метода <see cref="M:System.IO.Stream.CopyTo(System.IO.Stream)" />.</exception>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода.</exception>
+    </member>
+    <member name="M:System.IO.Stream.CopyToAsync(System.IO.Stream)">
+      <summary>Асинхронно считывает байты из текущего потока и записывает их в другой поток.</summary>
+      <returns>Задача, представляющая асинхронную операцию копирования.</returns>
+      <param name="destination">Поток, в который будет скопировано содержимое текущего потока.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="destination" /> имеет значение null.</exception>
+      <exception cref="T:System.ObjectDisposedException">Текущий поток или поток назначения удаляется.</exception>
+      <exception cref="T:System.NotSupportedException">Текущий поток не поддерживает чтение или поток назначения не поддерживает запись.</exception>
+    </member>
+    <member name="M:System.IO.Stream.CopyToAsync(System.IO.Stream,System.Int32)">
+      <summary>Асинхронно считывает байты из текущего потока и записывает их в другой поток, используя указанный размер буфера.</summary>
+      <returns>Задача, представляющая асинхронную операцию копирования.</returns>
+      <param name="destination">Поток, в который будет скопировано содержимое текущего потока.</param>
+      <param name="bufferSize">Размер (в байтах) буфера.Это значение должно быть больше нуля.Размер по умолчанию — 81920.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="destination" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="buffersize" /> имеет отрицательное значение или равен нулю.</exception>
+      <exception cref="T:System.ObjectDisposedException">Текущий поток или поток назначения удаляется.</exception>
+      <exception cref="T:System.NotSupportedException">Текущий поток не поддерживает чтение или поток назначения не поддерживает запись.</exception>
+    </member>
+    <member name="M:System.IO.Stream.CopyToAsync(System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
+      <summary>Асинхронно считывает байты из текущего потока и записывает их в другой поток, используя указанный размер буфера и токен отмены.</summary>
+      <returns>Задача, представляющая асинхронную операцию копирования.</returns>
+      <param name="destination">Поток, в который будет скопировано содержимое текущего потока.</param>
+      <param name="bufferSize">Размер (в байтах) буфера.Это значение должно быть больше нуля.Размер по умолчанию — 81920.</param>
+      <param name="cancellationToken">Токен для отслеживания запросов отмены.Значение по умолчанию — <see cref="P:System.Threading.CancellationToken.None" />.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="destination" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="buffersize" /> имеет отрицательное значение или равен нулю.</exception>
+      <exception cref="T:System.ObjectDisposedException">Текущий поток или поток назначения удаляется.</exception>
+      <exception cref="T:System.NotSupportedException">Текущий поток не поддерживает чтение или поток назначения не поддерживает запись.</exception>
+    </member>
+    <member name="M:System.IO.Stream.Dispose">
+      <summary>Освобождает все ресурсы, занятые модулем <see cref="T:System.IO.Stream" />.</summary>
+    </member>
+    <member name="M:System.IO.Stream.Dispose(System.Boolean)">
+      <summary>Освобождает неуправляемые ресурсы, используемые объектом <see cref="T:System.IO.Stream" />, а при необходимости освобождает также управляемые ресурсы.</summary>
+      <param name="disposing">Значение true позволяет освободить как управляемые, так и неуправляемые ресурсы; значение false освобождает только неуправляемые ресурсы.</param>
+    </member>
+    <member name="M:System.IO.Stream.Flush">
+      <summary>При переопределении в производном классе очищает все буферы данного потока и вызывает запись данных буферов в базовое устройство.</summary>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.FlushAsync">
+      <summary>Асинхронно очищает все буферы для этого потока и вызывает запись всех буферизованных данных в базовое устройство.</summary>
+      <returns>Задача, представляющая асинхронную операцию очистки.</returns>
+      <exception cref="T:System.ObjectDisposedException">Поток был ликвидирован.</exception>
+    </member>
+    <member name="M:System.IO.Stream.FlushAsync(System.Threading.CancellationToken)">
+      <summary>Асинхронно очищает все буферы данного потока, вызывает запись буферизованных данных в базовое устройство и отслеживает запросы отмены.</summary>
+      <returns>Задача, представляющая асинхронную операцию очистки.</returns>
+      <param name="cancellationToken">Токен для отслеживания запросов отмены.Значение по умолчанию — <see cref="P:System.Threading.CancellationToken.None" />.</param>
+      <exception cref="T:System.ObjectDisposedException">Поток был ликвидирован.</exception>
+    </member>
+    <member name="P:System.IO.Stream.Length">
+      <summary>При переопределении в производном классе получает длину потока в байтах.</summary>
+      <returns>Длинное значение, представляющее длину потока в байтах.</returns>
+      <exception cref="T:System.NotSupportedException">Класс, созданный на основе класса Stream, не поддерживает возможность поиска. </exception>
+      <exception cref="T:System.ObjectDisposedException">Методы были вызваны после закрытия потока. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.IO.Stream.Null">
+      <summary>Объект Stream без резервного хранилища.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.IO.Stream.Position">
+      <summary>При переопределении в производном классе получает или задает позицию в текущем потоке.</summary>
+      <returns>Текущее положение в потоке.</returns>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.NotSupportedException">Этот поток не поддерживает поиск. </exception>
+      <exception cref="T:System.ObjectDisposedException">Методы были вызваны после закрытия потока. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.Read(System.Byte[],System.Int32,System.Int32)">
+      <summary>При переопределении в производном классе считывает последовательность байтов из текущего потока и перемещает позицию в потоке на число считанных байтов.</summary>
+      <returns>Общее количество байтов, считанных в буфер.Это число может быть меньше количества запрошенных байтов, если столько байтов в настоящее время недоступно, а также равняться нулю (0), если был достигнут конец потока.</returns>
+      <param name="buffer">Массив байтов.После завершения выполнения данного метода буфер содержит указанный массив байтов, в котором значения в интервале между <paramref name="offset" /> и (<paramref name="offset" /> + <paramref name="count" /> - 1) заменены байтами, считанными из текущего источника.</param>
+      <param name="offset">Смещение байтов (начиная с нуля) в <paramref name="buffer" />, с которого начинается сохранение данных, считанных из текущего потока. </param>
+      <param name="count">Максимальное количество байтов, которое должно быть считано из текущего потока. </param>
+      <exception cref="T:System.ArgumentException">Сумма значений параметров <paramref name="offset" /> и <paramref name="count" /> больше длины буфера. </exception>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="offset" /> или <paramref name="count" /> является отрицательным. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.NotSupportedException">Поток не поддерживает чтение. </exception>
+      <exception cref="T:System.ObjectDisposedException">Методы были вызваны после закрытия потока. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.ReadAsync(System.Byte[],System.Int32,System.Int32)">
+      <summary>Асинхронно считывает последовательность байтов из текущего потока и перемещает позицию внутри потока на число считанных байтов.</summary>
+      <returns>Задача, представляющая асинхронную операцию чтения.Значение параметра <paramref name="TResult" /> содержит общее число байтов, считанных в буфер.Значение результата может быть меньше запрошенного числа байтов, если число доступных в данный момент байтов меньше запрошенного числа, или результат может быть равен 0 (нулю), если был достигнут конец потока.</returns>
+      <param name="buffer">Буфер, в который записываются данные.</param>
+      <param name="offset">Смещение байтов в <paramref name="buffer" />, с которого начинается запись данных из потока.</param>
+      <param name="count">Максимальное число байтов, предназначенных для чтения.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="offset" /> или <paramref name="count" /> является отрицательным.</exception>
+      <exception cref="T:System.ArgumentException">Сумма значений параметров <paramref name="offset" /> и <paramref name="count" /> больше длины буфера.</exception>
+      <exception cref="T:System.NotSupportedException">Поток не поддерживает чтение.</exception>
+      <exception cref="T:System.ObjectDisposedException">Поток был ликвидирован.</exception>
+      <exception cref="T:System.InvalidOperationException">Поток в настоящее время используется предыдущей операцией чтения. </exception>
+    </member>
+    <member name="M:System.IO.Stream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+      <summary>Асинхронно считывает последовательность байтов из текущего потока, перемещает позицию в потоке на число считанных байтов и отслеживает запросы отмены.</summary>
+      <returns>Задача, представляющая асинхронную операцию чтения.Значение параметра <paramref name="TResult" /> содержит общее число байтов, считанных в буфер.Значение результата может быть меньше запрошенного числа байтов, если число доступных в данный момент байтов меньше запрошенного числа, или результат может быть равен 0 (нулю), если был достигнут конец потока.</returns>
+      <param name="buffer">Буфер, в который записываются данные.</param>
+      <param name="offset">Смещение байтов в <paramref name="buffer" />, с которого начинается запись данных из потока.</param>
+      <param name="count">Максимальное число байтов, предназначенных для чтения.</param>
+      <param name="cancellationToken">Токен для отслеживания запросов отмены.Значение по умолчанию — <see cref="P:System.Threading.CancellationToken.None" />.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="offset" /> или <paramref name="count" /> является отрицательным.</exception>
+      <exception cref="T:System.ArgumentException">Сумма значений параметров <paramref name="offset" /> и <paramref name="count" /> больше длины буфера.</exception>
+      <exception cref="T:System.NotSupportedException">Поток не поддерживает чтение.</exception>
+      <exception cref="T:System.ObjectDisposedException">Поток был ликвидирован.</exception>
+      <exception cref="T:System.InvalidOperationException">Поток в настоящее время используется предыдущей операцией чтения. </exception>
+    </member>
+    <member name="M:System.IO.Stream.ReadByte">
+      <summary>Считывает байт из потока и перемещает позицию в потоке на один байт или возвращает -1, если достигнут конец потока.</summary>
+      <returns>Байт без знака, приведенный к Int32, или значение -1, если достигнут конец потока.</returns>
+      <exception cref="T:System.NotSupportedException">Поток не поддерживает чтение. </exception>
+      <exception cref="T:System.ObjectDisposedException">Методы были вызваны после закрытия потока. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.Stream.ReadTimeout">
+      <summary>Возвращает или задает значение в миллисекундах, определяющее период, в течение которого поток будет пытаться выполнить операцию чтения, прежде чем истечет время ожидания. </summary>
+      <returns>Значение в миллисекундах, определяющее период, в течение которого поток будет пытаться выполнить операцию чтения, прежде чем истечет время ожидания.</returns>
+      <exception cref="T:System.InvalidOperationException">Метод <see cref="P:System.IO.Stream.ReadTimeout" /> всегда создает исключение <see cref="T:System.InvalidOperationException" />. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.Seek(System.Int64,System.IO.SeekOrigin)">
+      <summary>При переопределении в производном классе задает позицию в текущем потоке.</summary>
+      <returns>Новая позиция в текущем потоке.</returns>
+      <param name="offset">Смещение в байтах относительно параметра <paramref name="origin" />. </param>
+      <param name="origin">Значение типа <see cref="T:System.IO.SeekOrigin" />, указывающее точку ссылки, которая используется для получения новой позиции. </param>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.NotSupportedException">Поток не поддерживает поиск, если поток создан на основе канала или вывода консоли. </exception>
+      <exception cref="T:System.ObjectDisposedException">Методы были вызваны после закрытия потока. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.SetLength(System.Int64)">
+      <summary>При переопределении в производном классе задает длину текущего потока.</summary>
+      <param name="value">Нужная длина текущего потока в байтах. </param>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.NotSupportedException">Поток не поддерживает ни поиск, ни запись, например, если поток создан на основе канала или вывода консоли. </exception>
+      <exception cref="T:System.ObjectDisposedException">Методы были вызваны после закрытия потока. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.Write(System.Byte[],System.Int32,System.Int32)">
+      <summary>При переопределении в производном классе записывает последовательность байтов в текущий поток и перемещает текущую позицию в нем вперед на число записанных байтов.</summary>
+      <param name="buffer">Массив байтов.Этот метод копирует байты <paramref name="count" /> из <paramref name="buffer" /> в текущий поток.</param>
+      <param name="offset">Отсчитываемое от нуля смещение байтов в буфере <paramref name="buffer" />, с которого начинается копирование байтов в текущий поток. </param>
+      <param name="count">Количество байтов, которое необходимо записать в текущий поток. </param>
+      <exception cref="T:System.ArgumentException">Сумма <paramref name="offset" /> и <paramref name="count" /> больше, чем длина буфера.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" />  — null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> или <paramref name="count" /> является отрицательным.</exception>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода, такие как не удается найти указанный файл.</exception>
+      <exception cref="T:System.NotSupportedException">Поток не поддерживает запись.</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="M:System.IO.Stream.Write(System.Byte[],System.Int32,System.Int32)" /> был вызван после закрытия потока.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.WriteAsync(System.Byte[],System.Int32,System.Int32)">
+      <summary>Асинхронно записывает последовательность байтов в текущий поток и перемещает текущую позицию внутри потока на число записанных байтов.</summary>
+      <returns>Задача, представляющая асинхронную операцию записи.</returns>
+      <param name="buffer">Буфер, из которого записываются данные.</param>
+      <param name="offset">Смещение байтов (начиная с нуля) в объекте <paramref name="buffer" />, с которого начинается копирование байтов в поток.</param>
+      <param name="count">Максимальное число байтов для записи.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="offset" /> или <paramref name="count" /> является отрицательным.</exception>
+      <exception cref="T:System.ArgumentException">Сумма значений параметров <paramref name="offset" /> и <paramref name="count" /> больше длины буфера.</exception>
+      <exception cref="T:System.NotSupportedException">Поток не поддерживает запись.</exception>
+      <exception cref="T:System.ObjectDisposedException">Поток был ликвидирован.</exception>
+      <exception cref="T:System.InvalidOperationException">Поток в настоящее время используется предыдущей операцией записи. </exception>
+    </member>
+    <member name="M:System.IO.Stream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+      <summary>Асинхронно записывает последовательность байтов в текущий поток, перемещает текущую позицию внутри потока на число записанных байтов и отслеживает запросы отмены.</summary>
+      <returns>Задача, представляющая асинхронную операцию записи.</returns>
+      <param name="buffer">Буфер, из которого записываются данные.</param>
+      <param name="offset">Смещение байтов (начиная с нуля) в объекте <paramref name="buffer" />, с которого начинается копирование байтов в поток.</param>
+      <param name="count">Максимальное число байтов для записи.</param>
+      <param name="cancellationToken">Токен для отслеживания запросов отмены.Значение по умолчанию — <see cref="P:System.Threading.CancellationToken.None" />.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="offset" /> или <paramref name="count" /> является отрицательным.</exception>
+      <exception cref="T:System.ArgumentException">Сумма значений параметров <paramref name="offset" /> и <paramref name="count" /> больше длины буфера.</exception>
+      <exception cref="T:System.NotSupportedException">Поток не поддерживает запись.</exception>
+      <exception cref="T:System.ObjectDisposedException">Поток был ликвидирован.</exception>
+      <exception cref="T:System.InvalidOperationException">Поток в настоящее время используется предыдущей операцией записи. </exception>
+    </member>
+    <member name="M:System.IO.Stream.WriteByte(System.Byte)">
+      <summary>Записывает байт в текущее положение в потоке и перемещает позицию в потоке вперед на один байт.</summary>
+      <param name="value">Байт, записываемый в поток. </param>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.NotSupportedException">Поток не поддерживает запись или был закрыт до начала операции. </exception>
+      <exception cref="T:System.ObjectDisposedException">Методы были вызваны после закрытия потока. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.Stream.WriteTimeout">
+      <summary>Возвращает или задает значение в миллисекундах, определяющее период, в течение которого поток будет пытаться выполнить операцию записи, прежде чем истечет время ожидания. </summary>
+      <returns>Значение в миллисекундах, определяющее период, в течение которого поток будет пытаться выполнить операцию записи, прежде чем истечет время ожидания.</returns>
+      <exception cref="T:System.InvalidOperationException">Метод <see cref="P:System.IO.Stream.WriteTimeout" /> всегда создает исключение <see cref="T:System.InvalidOperationException" />. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.IO.StreamReader">
+      <summary>Реализует объект <see cref="T:System.IO.TextReader" />, который считывает символы из потока байтов в определенной кодировке.Чтобы просмотреть исходный код .NET Framework для этого типа, см. Reference Source.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.#ctor(System.IO.Stream)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.StreamReader" /> для заданного потока.</summary>
+      <param name="stream">Поток, который нужно считать. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="stream" /> не поддерживает чтение. </exception>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="stream" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.IO.StreamReader.#ctor(System.IO.Stream,System.Boolean)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.StreamReader" /> для указанного потока, используя заданный параметр обнаружения метки порядка следования байтов.</summary>
+      <param name="stream">Поток, который нужно считать. </param>
+      <param name="detectEncodingFromByteOrderMarks">Указывает, следует ли выполнять поиск меток порядка байтов с начала файла. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="stream" /> не поддерживает чтение. </exception>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="stream" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.IO.StreamReader.#ctor(System.IO.Stream,System.Text.Encoding)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.StreamReader" /> для заданного потока, используя указанную кодировку символов.</summary>
+      <param name="stream">Поток, который нужно считать. </param>
+      <param name="encoding">Кодировка символов, которую нужно использовать. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="stream" /> не поддерживает чтение. </exception>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="stream" /> или <paramref name="encoding" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.IO.StreamReader.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.StreamReader" /> для заданного потока, используя указанную кодировку символов и параметр обнаружения метки порядка байтов.</summary>
+      <param name="stream">Поток, который нужно считать. </param>
+      <param name="encoding">Кодировка символов, которую нужно использовать. </param>
+      <param name="detectEncodingFromByteOrderMarks">Указывает, следует ли выполнять поиск меток порядка байтов с начала файла. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="stream" /> не поддерживает чтение. </exception>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="stream" /> или <paramref name="encoding" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.IO.StreamReader.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean,System.Int32)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.StreamReader" /> для заданного потока, используя указанную кодировку символов, параметр обнаружения метки порядка байтов и размер буфера.</summary>
+      <param name="stream">Поток, который нужно считать. </param>
+      <param name="encoding">Кодировка символов, которую нужно использовать. </param>
+      <param name="detectEncodingFromByteOrderMarks">Указывает, следует ли выполнять поиск меток порядка байтов с начала файла. </param>
+      <param name="bufferSize">Минимальный размер буфера. </param>
+      <exception cref="T:System.ArgumentException">Поток не поддерживает чтение. </exception>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="stream" /> или <paramref name="encoding" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="bufferSize" /> меньше или равно нулю. </exception>
+    </member>
+    <member name="M:System.IO.StreamReader.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean,System.Int32,System.Boolean)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.StreamReader" /> для указанного потока на основе заданной кодировки символов, параметра обнаружения меток порядка байтов и размера буфера, а также при необходимости оставляет поток открытым.</summary>
+      <param name="stream">Считываемый поток.</param>
+      <param name="encoding">Кодировка символов, которую нужно использовать.</param>
+      <param name="detectEncodingFromByteOrderMarks">Значение true для поиска меток порядка байтов в начале файла; в противном случае — значение false.</param>
+      <param name="bufferSize">Минимальный размер буфера.</param>
+      <param name="leaveOpen">Значение true, чтобы оставить поток открытым после удаления объекта <see cref="T:System.IO.StreamReader" />; в противном случае — значение false.</param>
+    </member>
+    <member name="P:System.IO.StreamReader.BaseStream">
+      <summary>Возвращает основной поток.</summary>
+      <returns>Основной поток.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.StreamReader.CurrentEncoding">
+      <summary>Возвращает текущую кодировку символов, используемую текущим объектом <see cref="T:System.IO.StreamReader" />.</summary>
+      <returns>Текущая кодировка символов, используемая текущим устройством чтения.После первого вызова любого метода <see cref="Overload:System.IO.StreamReader.Read" /> объекта <see cref="T:System.IO.StreamReader" /> значение может измениться, поскольку до первого вызова метода <see cref="Overload:System.IO.StreamReader.Read" /> автоматическое определение кодировки не выполняется.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.DiscardBufferedData">
+      <summary>Очищает внутренний буфер.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.Dispose(System.Boolean)">
+      <summary>Закрывает основной поток, освобождает неуправляемые ресурсы, используемые <see cref="T:System.IO.StreamReader" />, и при необходимости освобождает управляемые ресурсы.</summary>
+      <param name="disposing">Значение true позволяет освободить как управляемые, так и неуправляемые ресурсы; значение false освобождает только неуправляемые ресурсы. </param>
+    </member>
+    <member name="P:System.IO.StreamReader.EndOfStream">
+      <summary>Возвращает значение, определяющее, находится ли позиция текущего потока в конце потока.</summary>
+      <returns>Значение true, если текущее положение находится в конце потока; в противном случае — значение false.</returns>
+      <exception cref="T:System.ObjectDisposedException">Основной поток удален.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.IO.StreamReader.Null">
+      <summary>Объект <see cref="T:System.IO.StreamReader" /> для пустого потока.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.Peek">
+      <summary>Возвращает следующий доступный символ, но не использует его.</summary>
+      <returns>Целое число, представляющее следующий символ для прочтения или значение -1, если доступных для чтения символов нет или поток не поддерживает поиск.</returns>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.Read">
+      <summary>Выполняет чтение следующего символа из входного потока и перемещает положение символа на одну позицию вперед.</summary>
+      <returns>Следующий символ из входного потока, представленный в виде объекта <see cref="T:System.Int32" />, или значение -1, если больше нет доступных символов.</returns>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.Read(System.Char[],System.Int32,System.Int32)">
+      <summary>Считывает заданное максимальное количество символов из текущего потока в буфер начиная с заданного индекса.</summary>
+      <returns>Число символов, которые были считаны, или значение 0, если к концу потока не было считано никаких данных.Это число будет не больше параметра <paramref name="count" />, в зависимости от доступности данных в потоке.</returns>
+      <param name="buffer">При возврате данный метод содержит указанный массив символов, в котором значения в интервале между <paramref name="index" /> и (<paramref name="index + count - 1" />) заменены символами, считанными из текущего источника. </param>
+      <param name="index">Индекс <paramref name="buffer" />, с которого требуется начать запись. </param>
+      <param name="count">Максимальное число считываемых символов. </param>
+      <exception cref="T:System.ArgumentException">Длина буфера за вычетом значения параметра <paramref name="index" /> меньше значения параметра <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> является отрицательным. </exception>
+      <exception cref="T:System.IO.IOException">Возникает ошибка ввода-вывода, например закрывается поток. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Асинхронно считывает указанное максимальное количество символов из текущего потока и записывает данные в буфер, начиная с заданного индекса. </summary>
+      <returns>Задача, представляющая асинхронную операцию чтения.Значение параметра <paramref name="TResult" /> содержит общее число байтов, считанных в буфер.Значение результата может быть меньше запрошенного числа байтов, если число доступных в данный момент байтов меньше запрошенного числа, или результат может быть равен 0 (нулю), если был достигнут конец потока.</returns>
+      <param name="buffer">При возвращении из этого метода содержит указанный массив символов, в котором значения в интервале от <paramref name="index" /> и (<paramref name="index" /> + <paramref name="count" /> - 1) заменены символами, считанными из текущего источника.</param>
+      <param name="index">Позиция в буфере <paramref name="buffer" />, с которого начинается запись.</param>
+      <param name="count">Максимальное число считываемых символов.Если конец потока достигнут, прежде чем указанное количество символов записывается в буфер, возвращается текущий метод.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> является отрицательным.</exception>
+      <exception cref="T:System.ArgumentException">Сумма значений параметров <paramref name="index" /> и <paramref name="count" /> больше длины буфера.</exception>
+      <exception cref="T:System.ObjectDisposedException">Поток был ликвидирован.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство чтения в настоящее время используется предыдущей операцией чтения. </exception>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadBlock(System.Char[],System.Int32,System.Int32)">
+      <summary>Считывает указанное максимальное количество символов из текущего потока и записывает данные в буфер, начиная с заданного индекса.</summary>
+      <returns>Количество считанных символов.Число будет меньше или равно значению <paramref name="count" />, в зависимости от того, считаны ли все входящие символы.</returns>
+      <param name="buffer">При возврате данный метод содержит указанный массив символов, в котором значения в интервале между <paramref name="index" /> и (<paramref name="index + count - 1" />) заменены символами, считанными из текущего источника.</param>
+      <param name="index">Позиция в буфере <paramref name="buffer" />, с которого начинается запись.</param>
+      <param name="count">Максимальное число считываемых символов.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentException">Длина буфера за вычетом значения параметра <paramref name="index" /> меньше значения параметра <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> является отрицательным. </exception>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.StreamReader" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadBlockAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Асинхронно считывает указанное максимальное количество символов из текущего потока и записывает данные в буфер, начиная с заданного индекса.</summary>
+      <returns>Задача, представляющая асинхронную операцию чтения.Значение параметра <paramref name="TResult" /> содержит общее число байтов, считанных в буфер.Значение результата может быть меньше запрошенного числа байтов, если число доступных в данный момент байтов меньше запрошенного числа, или результат может быть равен 0 (нулю), если был достигнут конец потока.</returns>
+      <param name="buffer">При возвращении из этого метода содержит указанный массив символов, в котором значения в интервале от <paramref name="index" /> и (<paramref name="index" /> + <paramref name="count" /> - 1) заменены символами, считанными из текущего источника.</param>
+      <param name="index">Позиция в буфере <paramref name="buffer" />, с которого начинается запись.</param>
+      <param name="count">Максимальное число считываемых символов.Если конец потока достигнут, прежде чем в буфер записано указанное количество символов, метод возвращает управление.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> является отрицательным.</exception>
+      <exception cref="T:System.ArgumentException">Сумма значений параметров <paramref name="index" /> и <paramref name="count" /> больше длины буфера.</exception>
+      <exception cref="T:System.ObjectDisposedException">Поток был ликвидирован.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство чтения в настоящее время используется предыдущей операцией чтения. </exception>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadLine">
+      <summary>Выполняет чтение строки символов из текущего потока и возвращает данные в виде строки.</summary>
+      <returns>Следующая строка из входного потока или значение null, если достигнут конец входного потока.</returns>
+      <exception cref="T:System.OutOfMemoryException">Недостаточно памяти для размещения буфера возвращаемых строк. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadLineAsync">
+      <summary>Асинхронно выполняет чтение строки символов из текущего потока и возвращает данные в виде строки.</summary>
+      <returns>Задача, представляющая асинхронную операцию чтения.Значение параметра <paramref name="TResult" /> содержит следующую строку из потока или значение null, если все знаки прочитаны.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Количество символов в следующей строке больше <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">Поток был ликвидирован.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство чтения в настоящее время используется предыдущей операцией чтения. </exception>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadToEnd">
+      <summary>Считывает все символы, начиная с текущей позиции до конца потока.</summary>
+      <returns>Остальная часть потока в виде строки (от текущего положения до конца).Если текущее положение находится в конце потока, возвращается пустая строка ("").</returns>
+      <exception cref="T:System.OutOfMemoryException">Недостаточно памяти для размещения буфера возвращаемых строк. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadToEndAsync">
+      <summary>Асинхронно считывает все символы, начиная с текущей позиции до конца потока, и возвращает их в виде одной строки.</summary>
+      <returns>Задача, представляющая асинхронную операцию чтения.Значение параметра <paramref name="TResult" /> содержит строку с символами от текущего положения до конца потока.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Количество символов больше <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">Поток был ликвидирован.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство чтения в настоящее время используется предыдущей операцией чтения. </exception>
+    </member>
+    <member name="T:System.IO.StreamWriter">
+      <summary>Реализует <see cref="T:System.IO.TextWriter" /> для записи символов в поток в определенной кодировке.Чтобы просмотреть исходный код .NET Framework для этого типа, см. ссылки на источник.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.#ctor(System.IO.Stream)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.StreamWriter" /> для указанного потока, используя кодировку UTF-8 и размер буфера по умолчанию.</summary>
+      <param name="stream">Поток, в который требуется выполнить запись. </param>
+      <exception cref="T:System.ArgumentException">Запись в поток <paramref name="stream" /> запрещена. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="stream" />is null. </exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.#ctor(System.IO.Stream,System.Text.Encoding)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.StreamWriter" /> для указанного потока, используя заданную кодировку и размер буфера по умолчанию.</summary>
+      <param name="stream">Поток, в который требуется выполнить запись. </param>
+      <param name="encoding">Кодировка символов, которую нужно использовать. </param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="stream" /> или <paramref name="encoding" /> — null. </exception>
+      <exception cref="T:System.ArgumentException">Запись в поток <paramref name="stream" /> запрещена. </exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.#ctor(System.IO.Stream,System.Text.Encoding,System.Int32)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.StreamWriter" /> для указанного потока, используя заданную кодировку и размер буфера.</summary>
+      <param name="stream">Поток, в который требуется выполнить запись. </param>
+      <param name="encoding">Кодировка символов, которую нужно использовать. </param>
+      <param name="bufferSize">Размер буфера в байтах. </param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="stream" /> или <paramref name="encoding" /> — null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение <paramref name="bufferSize" /> отрицательно. </exception>
+      <exception cref="T:System.ArgumentException">Запись в поток <paramref name="stream" /> запрещена. </exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.#ctor(System.IO.Stream,System.Text.Encoding,System.Int32,System.Boolean)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.StreamWriter" /> для указанного потока, используя заданную кодировку и размер буфера, а также при необходимости оставляет поток открытым.</summary>
+      <param name="stream">Поток, в который требуется выполнить запись.</param>
+      <param name="encoding">Кодировка символов, которую нужно использовать.</param>
+      <param name="bufferSize">Размер буфера в байтах.</param>
+      <param name="leaveOpen">Значение true, чтобы оставить поток открытым после удаления объекта <see cref="T:System.IO.StreamWriter" />; в противном случае — значение false.</param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="stream" /> или <paramref name="encoding" /> — null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение <paramref name="bufferSize" /> отрицательно. </exception>
+      <exception cref="T:System.ArgumentException">Запись в поток <paramref name="stream" /> запрещена. </exception>
+    </member>
+    <member name="P:System.IO.StreamWriter.AutoFlush">
+      <summary>Получает или задает значение, определяющее, будет ли <see cref="T:System.IO.StreamWriter" /> сбрасывать буфер в основной поток после каждого вызова <see cref="M:System.IO.StreamWriter.Write(System.Char)" />.</summary>
+      <returns>Значение true, чтобы заставить <see cref="T:System.IO.StreamWriter" /> сбросить буфер; в противном случае — false.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.IO.StreamWriter.BaseStream">
+      <summary>Получает основной поток, связанный с резервным хранилищем.</summary>
+      <returns>Поток, в который StreamWriter выполняет запись.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.Dispose(System.Boolean)">
+      <summary>Освобождает неуправляемые ресурсы, используемые объектом <see cref="T:System.IO.StreamWriter" />, а при необходимости освобождает также управляемые ресурсы.</summary>
+      <param name="disposing">trueЧтобы освободить управляемые и неуправляемые ресурсы; false чтобы освободить только неуправляемые ресурсы. </param>
+      <exception cref="T:System.Text.EncoderFallbackException">Текущая кодировка не поддерживает отображение половины суррогатной пары Юникода.</exception>
+    </member>
+    <member name="P:System.IO.StreamWriter.Encoding">
+      <summary>Получает кодировку <see cref="T:System.Text.Encoding" />, в которой осуществляется запись выходных данных.</summary>
+      <returns>Кодировка <see cref="T:System.Text.Encoding" />, указанная в конструкторе для текущего экземпляра, или <see cref="T:System.Text.UTF8Encoding" />, если кодировка не задана.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.Flush">
+      <summary>Очищает все буферы для текущего средства записи и вызывает запись всех данных буфера в основной поток.</summary>
+      <exception cref="T:System.ObjectDisposedException">Текущее средство записи закрывается. </exception>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Текущая кодировка не поддерживает отображение половины суррогатной пары Юникода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.FlushAsync">
+      <summary>Асинхронно очищает все буферы для этого потока и вызывает запись всех буферизованных данных в базовое устройство.</summary>
+      <returns>Задача, представляющая асинхронную операцию очистки.</returns>
+      <exception cref="T:System.ObjectDisposedException">Поток был ликвидирован.</exception>
+    </member>
+    <member name="F:System.IO.StreamWriter.Null">
+      <summary>Предоставляет StreamWriter без резервного хранилища, в который можно осуществлять запись, но из которого нельзя считывать данные.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.Write(System.Char)">
+      <summary>Записывает символ в поток.</summary>
+      <param name="value">Символ, записываемый в поток. </param>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> имеет значение True, или буфер <see cref="T:System.IO.StreamWriter" /> полон, и текущее средство записи закрывается. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> имеет значение True, или буфер <see cref="T:System.IO.StreamWriter" /> полон, и его содержимое не может быть записано в основной поток заданного размера, поскольку <see cref="T:System.IO.StreamWriter" /> находится в конце потока. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.Write(System.Char[])">
+      <summary>Записывает в поток массив символов.</summary>
+      <param name="buffer">Массив символов, содержащий записываемые в поток данные.Если <paramref name="buffer" /> имеет значение null, запись не выполняется.</param>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> имеет значение True, или буфер <see cref="T:System.IO.StreamWriter" /> полон, и текущее средство записи закрывается. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> имеет значение True, или буфер <see cref="T:System.IO.StreamWriter" /> полон, и его содержимое не может быть записано в основной поток заданного размера, поскольку <see cref="T:System.IO.StreamWriter" /> находится в конце потока. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.Write(System.Char[],System.Int32,System.Int32)">
+      <summary>Записывает в поток дочерний массив символов.</summary>
+      <param name="buffer">Массив символов, содержащий записываемые данные. </param>
+      <param name="index">Положение символа в буфере, с которого начинается чтение данных. </param>
+      <param name="count">Наибольшее количество символов для записи. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" />is null. </exception>
+      <exception cref="T:System.ArgumentException">Длина буфера за вычетом значения параметра <paramref name="index" /> меньше значения параметра <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> является отрицательным. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> имеет значение True, или буфер <see cref="T:System.IO.StreamWriter" /> полон, и текущее средство записи закрывается. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> имеет значение True, или буфер <see cref="T:System.IO.StreamWriter" /> полон, и его содержимое не может быть записано в основной поток заданного размера, поскольку <see cref="T:System.IO.StreamWriter" /> находится в конце потока. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.Write(System.String)">
+      <summary>Записывает в поток строку.</summary>
+      <param name="value">Строка, записываемая в поток.Если <paramref name="value" /> равняется null, запись не выполняется.</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> имеет значение True, или буфер <see cref="T:System.IO.StreamWriter" /> полон, и текущее средство записи закрывается. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> имеет значение True, или буфер <see cref="T:System.IO.StreamWriter" /> полон, и его содержимое не может быть записано в основной поток заданного размера, поскольку <see cref="T:System.IO.StreamWriter" /> находится в конце потока. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteAsync(System.Char)">
+      <summary>Асинхронно записывает символ в поток.</summary>
+      <returns>Задача, представляющая асинхронную операцию записи.</returns>
+      <param name="value">Символ, записываемый в поток.</param>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство записи потока.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство записи потока в настоящее время используется предыдущей операцией записи.</exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Асинхронно записывает дочерний массив символов в поток.</summary>
+      <returns>Задача, представляющая асинхронную операцию записи.</returns>
+      <param name="buffer">Массив символов, содержащий записываемые данные.</param>
+      <param name="index">Положение символа в буфере с которого начинается чтение данных.</param>
+      <param name="count">Наибольшее количество символов для записи.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" />is null.</exception>
+      <exception cref="T:System.ArgumentException">Сумма значений параметров <paramref name="index" /> и <paramref name="count" /> превышает длину буфера.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> является отрицательным.</exception>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство записи потока.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство записи потока в настоящее время используется предыдущей операцией записи. </exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteAsync(System.String)">
+      <summary>Асинхронно записывает строку в поток.</summary>
+      <returns>Задача, представляющая асинхронную операцию записи.</returns>
+      <param name="value">Строка, записываемая в поток.Если <paramref name="value" /> имеет значение null, запись не выполняется.</param>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство записи потока.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство записи потока в настоящее время используется предыдущей операцией записи.</exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteLineAsync">
+      <summary>Асинхронно записывает в поток признак конца строки.</summary>
+      <returns>Задача, представляющая асинхронную операцию записи.</returns>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство записи потока.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство записи потока в настоящее время используется предыдущей операцией записи.</exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteLineAsync(System.Char)">
+      <summary>Асинхронно записывает в поток символ, за которым следует признак конца строки.</summary>
+      <returns>Задача, представляющая асинхронную операцию записи.</returns>
+      <param name="value">Символ, записываемый в поток.</param>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство записи потока.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство записи потока в настоящее время используется предыдущей операцией записи.</exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteLineAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Асинхронного записывает в поток дочерний массив символов, за которыми следует признак конца строки.</summary>
+      <returns>Задача, представляющая асинхронную операцию записи.</returns>
+      <param name="buffer">Массив символов, из которого записываются данные.</param>
+      <param name="index">Положение символа в буфере, с которого начинается чтение данных.</param>
+      <param name="count">Наибольшее количество символов для записи.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" />is null.</exception>
+      <exception cref="T:System.ArgumentException">Сумма значений параметров <paramref name="index" /> и <paramref name="count" /> превышает длину буфера.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> является отрицательным.</exception>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство записи потока.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство записи потока в настоящее время используется предыдущей операцией записи. </exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteLineAsync(System.String)">
+      <summary>Асинхронно записывает в поток строку, за которой следует признак конца строки.</summary>
+      <returns>Задача, представляющая асинхронную операцию записи.</returns>
+      <param name="value">Строка для записи.Если значение равно null, записывается только знак завершения строки.</param>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство записи потока.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство записи потока в настоящее время используется предыдущей операцией записи.</exception>
+    </member>
+    <member name="T:System.IO.StringReader">
+      <summary>Реализует класс <see cref="T:System.IO.TextReader" />, осуществляющий чтение из строки.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringReader.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.StringReader" />, осуществляющий чтение из указанной строки.</summary>
+      <param name="s">Строка, для которой должен быть инициализирован класс <see cref="T:System.IO.StringReader" />. </param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="s" /> — null. </exception>
+    </member>
+    <member name="M:System.IO.StringReader.Dispose(System.Boolean)">
+      <summary>Освобождает неуправляемые ресурсы, используемые <see cref="T:System.IO.StringReader" /> (при необходимости освобождает и управляемые ресурсы).</summary>
+      <param name="disposing">Значение true позволяет освободить управляемые и неуправляемые ресурсы; значение false позволяет освободить только неуправляемые ресурсы. </param>
+    </member>
+    <member name="M:System.IO.StringReader.Peek">
+      <summary>Возвращает следующий доступный символ, но не использует его.</summary>
+      <returns>Целое число, представляющее следующий символ, чтение которого необходимо выполнить, или значение -1, если доступных символов больше нет или поток не поддерживает поиск.</returns>
+      <exception cref="T:System.ObjectDisposedException">Текущее средство чтения закрыто. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringReader.Read">
+      <summary>Считывает следующий символ из строки ввода и увеличивает позицию символа на один символ.</summary>
+      <returns>Следующий символ из основной строки или значение -1, если больше нет доступных символов.</returns>
+      <exception cref="T:System.ObjectDisposedException">Текущее средство чтения закрыто. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringReader.Read(System.Char[],System.Int32,System.Int32)">
+      <summary>Считывает блок символов из строки ввода и увеличивает позицию символов на <paramref name="count" />.</summary>
+      <returns>Общее количество символов, считанных в буфер.Оно может быть меньше, чем число запрошенных символов, если большинство символов не доступно в текущий момент, или равно нулю, если достигнут конец основной строки.</returns>
+      <param name="buffer">При возвращении данного метода содержит заданный массив символов, в котором значения в интервале между <paramref name="index" /> и (<paramref name="index" /> + <paramref name="count" /> - 1) заменены символами, считанными из текущего источника. </param>
+      <param name="index">Начальный индекс в буфере. </param>
+      <param name="count">Количество символов, которые необходимо считать. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="buffer" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentException">Длина буфера за вычетом значения параметра <paramref name="index" /> меньше значения параметра <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> является отрицательным. </exception>
+      <exception cref="T:System.ObjectDisposedException">Текущее средство чтения закрыто. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringReader.ReadAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Асинхронно считывает указанное максимальное количество символов из текущей строки и записывает данные в буфер, начиная с заданного индекса. </summary>
+      <returns>Задача, представляющая асинхронную операцию чтения.Значение параметра <paramref name="TResult" /> содержит общее число байтов, считанных в буфер.Значение результата может быть меньше запрошенного числа байтов, если число текущих доступных байтов меньше запрошенного числа, или результат может быть равен 0 (нулю), если был достигнут конец строки.</returns>
+      <param name="buffer">При возвращении данного метода содержит заданный массив символов, в котором значения в интервале между <paramref name="index" /> и (<paramref name="index" /> + <paramref name="count" /> - 1) заменены символами, считанными из текущего источника.</param>
+      <param name="index">Позиция в буфере <paramref name="buffer" />, с которого начинается запись.</param>
+      <param name="count">Наибольшее число символов для чтения.Если конец строки достигнут, прежде чем в буфер записано указанное количество символов, метод возвращает управление.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="buffer" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> является отрицательным.</exception>
+      <exception cref="T:System.ArgumentException">Сумма значений параметров <paramref name="index" /> и <paramref name="count" /> больше длины буфера.</exception>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство чтения строки.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство чтения в настоящее время используется предыдущей операцией чтения. </exception>
+    </member>
+    <member name="M:System.IO.StringReader.ReadBlockAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Асинхронно считывает указанное максимальное количество символов из текущей строки и записывает данные в буфер, начиная с заданного индекса.</summary>
+      <returns>Задача, представляющая асинхронную операцию чтения.Значение параметра <paramref name="TResult" /> содержит общее число байтов, считанных в буфер.Значение результата может быть меньше запрошенного числа байтов, если число текущих доступных байтов меньше запрошенного числа, или результат может быть равен 0 (нулю), если был достигнут конец строки.</returns>
+      <param name="buffer">При возвращении данного метода содержит заданный массив символов, в котором значения в интервале между <paramref name="index" /> и (<paramref name="index" /> + <paramref name="count" /> - 1) заменены символами, считанными из текущего источника.</param>
+      <param name="index">Позиция в буфере <paramref name="buffer" />, с которого начинается запись.</param>
+      <param name="count">Наибольшее число символов для чтения.Если конец строки достигнут, прежде чем в буфер записано указанное количество символов, метод возвращает управление.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="buffer" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> является отрицательным.</exception>
+      <exception cref="T:System.ArgumentException">Сумма значений параметров <paramref name="index" /> и <paramref name="count" /> больше длины буфера.</exception>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство чтения строки.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство чтения в настоящее время используется предыдущей операцией чтения. </exception>
+    </member>
+    <member name="M:System.IO.StringReader.ReadLine">
+      <summary>Выполняет чтение строки символов из текущей строки и возвращает данные в виде строки.</summary>
+      <returns>Следующая строка из текущей строки, или значение null, если достигнут конец строки.</returns>
+      <exception cref="T:System.ObjectDisposedException">Текущее средство чтения закрыто. </exception>
+      <exception cref="T:System.OutOfMemoryException">Недостаточно памяти для размещения буфера возвращаемых строк. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringReader.ReadLineAsync">
+      <summary>Асинхронно выполняет чтение строки символов из текущей строки и возвращает данные в виде строки.</summary>
+      <returns>Задача, представляющая асинхронную операцию чтения.Значение параметра <paramref name="TResult" /> содержит следующую строку из средства чтения строк или значение null, если все знаки считаны.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Количество символов в следующей строке больше <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство чтения строки.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство чтения в настоящее время используется предыдущей операцией чтения. </exception>
+    </member>
+    <member name="M:System.IO.StringReader.ReadToEnd">
+      <summary>Выполняет чтение всех символов, начиная с текущей позиции до конца строки, и возвращает их в виде одной строки.</summary>
+      <returns>Содержимое, начиная от текущей позиции до конца основной строки.</returns>
+      <exception cref="T:System.OutOfMemoryException">Недостаточно памяти для размещения буфера возвращаемых строк. </exception>
+      <exception cref="T:System.ObjectDisposedException">Текущее средство чтения закрыто. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringReader.ReadToEndAsync">
+      <summary>Асинхронно считывает все символы, начиная с текущей позиции до конца строки, и возвращает их в виде одной строки.</summary>
+      <returns>Задача, представляющая асинхронную операцию чтения.Значение параметра <paramref name="TResult" /> содержит строку с символами от текущего положения до конца строки.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Количество символов больше <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство чтения строки.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство чтения в настоящее время используется предыдущей операцией чтения. </exception>
+    </member>
+    <member name="T:System.IO.StringWriter">
+      <summary>Реализует <see cref="T:System.IO.TextWriter" /> для записи данных в строку.Данные хранятся в основном <see cref="T:System.Text.StringBuilder" />.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.StringWriter" />.</summary>
+    </member>
+    <member name="M:System.IO.StringWriter.#ctor(System.IFormatProvider)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.StringWriter" /> с указанным форматом объекта.</summary>
+      <param name="formatProvider">Объект <see cref="T:System.IFormatProvider" />, управляющий форматированием. </param>
+    </member>
+    <member name="M:System.IO.StringWriter.#ctor(System.Text.StringBuilder)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.StringWriter" />, с помощью которого осуществляется запись в указанный класс <see cref="T:System.Text.StringBuilder" />.</summary>
+      <param name="sb">Класс StringBuilder, в который осуществляется запись. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="sb" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.IO.StringWriter.#ctor(System.Text.StringBuilder,System.IFormatProvider)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.StringWriter" />, с помощью которого осуществляется запись в указанный класс <see cref="T:System.Text.StringBuilder" /> и который имеет указанный формат поставщика.</summary>
+      <param name="sb">Класс StringBuilder, в который осуществляется запись. </param>
+      <param name="formatProvider">Объект <see cref="T:System.IFormatProvider" />, управляющий форматированием. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="sb" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.IO.StringWriter.Dispose(System.Boolean)">
+      <summary>Освобождает неуправляемые (а при необходимости и управляемые) ресурсы, используемые объектом <see cref="T:System.IO.StringWriter" />.</summary>
+      <param name="disposing">Значение true позволяет освободить управляемые и неуправляемые ресурсы; значение false позволяет освободить только неуправляемые ресурсы. </param>
+    </member>
+    <member name="P:System.IO.StringWriter.Encoding">
+      <summary>Получает кодировку <see cref="T:System.Text.Encoding" />, в которой осуществляется запись выходных данных.</summary>
+      <returns>Encoding, в которой осуществляется запись выходных данных.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.FlushAsync">
+      <summary>Асинхронно очищает все буферы текущего средства записи и вызывает запись всех буферизованных данных в базовое устройство. </summary>
+      <returns>Задача, представляющая асинхронную операцию очистки.</returns>
+    </member>
+    <member name="M:System.IO.StringWriter.GetStringBuilder">
+      <summary>Возвращает основной <see cref="T:System.Text.StringBuilder" />.</summary>
+      <returns>Базовый StringBuilder.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.ToString">
+      <summary>Возвращает строку, содержащую символы, записанные до этого момента в текущий StringWriter.</summary>
+      <returns>Строка, содержащая символы, записанные в текущий StringWriter.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.Write(System.Char)">
+      <summary>Записывает символ в строку.</summary>
+      <param name="value">Символ для записи. </param>
+      <exception cref="T:System.ObjectDisposedException">Средство записи закрыто. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.Write(System.Char[],System.Int32,System.Int32)">
+      <summary>Записывает в строку дочерний массив символов.</summary>
+      <param name="buffer">Массив символов, из которого записываются данные. </param>
+      <param name="index">Положение в буфере, с которого начинается чтение данных.</param>
+      <param name="count">Наибольшее количество символов для записи. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="buffer" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> является отрицательным. </exception>
+      <exception cref="T:System.ArgumentException">(<paramref name="index" /> + <paramref name="count" />)&gt; <paramref name="buffer" />.Length.</exception>
+      <exception cref="T:System.ObjectDisposedException">Средство записи закрыто. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.Write(System.String)">
+      <summary>Записывает строку в текущую строку.</summary>
+      <param name="value">Строка для записи. </param>
+      <exception cref="T:System.ObjectDisposedException">Средство записи закрыто. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.WriteAsync(System.Char)">
+      <summary>Выполняет асинхронную запись символа в строку.</summary>
+      <returns>Задача, представляющая асинхронную операцию записи.</returns>
+      <param name="value">Символ, записываемый в строку.</param>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство записи строки.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство записи строки в настоящее время используется предыдущей операцией записи. </exception>
+    </member>
+    <member name="M:System.IO.StringWriter.WriteAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Асинхронно записывает дочерний массив символов в строку.</summary>
+      <returns>Задача, представляющая асинхронную операцию записи.</returns>
+      <param name="buffer">Массив символов, из которого записываются данные.</param>
+      <param name="index">Положение в буфере, с которого начинается чтение данных.</param>
+      <param name="count">Наибольшее количество символов для записи.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="buffer" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentException">Сумма значений параметров <paramref name="index" /> и <paramref name="count" /> превышает длину буфера.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> является отрицательным.</exception>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство записи строки.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство записи строки в настоящее время используется предыдущей операцией записи. </exception>
+    </member>
+    <member name="M:System.IO.StringWriter.WriteAsync(System.String)">
+      <summary>Выполняет асинхронную запись строки в текущую строку.</summary>
+      <returns>Задача, представляющая асинхронную операцию записи.</returns>
+      <param name="value">Строка для записи.Если параметр <paramref name="value" /> имеет значение null, в текстовый поток ничего записано не будет.</param>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство записи строки.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство записи строки в настоящее время используется предыдущей операцией записи. </exception>
+    </member>
+    <member name="M:System.IO.StringWriter.WriteLineAsync(System.Char)">
+      <summary>Асинхронно записывает в строку символ, за которым следует признак конца строки.</summary>
+      <returns>Задача, представляющая асинхронную операцию записи.</returns>
+      <param name="value">Символ, записываемый в строку.</param>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство записи строки.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство записи строки в настоящее время используется предыдущей операцией записи. </exception>
+    </member>
+    <member name="M:System.IO.StringWriter.WriteLineAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Асинхронного записывает в строку дочерний массив символов, за которыми следует признак конца строки.</summary>
+      <returns>Задача, представляющая асинхронную операцию записи.</returns>
+      <param name="buffer">Массив символов, из которого записываются данные.</param>
+      <param name="index">Положение в буфере, с которого начинается чтение данных.</param>
+      <param name="count">Наибольшее количество символов для записи. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="buffer" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentException">Сумма значений параметров <paramref name="index" /> и <paramref name="count" /> превышает длину буфера.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> является отрицательным.</exception>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство записи строки.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство записи строки в настоящее время используется предыдущей операцией записи. </exception>
+    </member>
+    <member name="M:System.IO.StringWriter.WriteLineAsync(System.String)">
+      <summary>Асинхронного записывает в текущий поток строку, за которой следует признак конца строки.</summary>
+      <returns>Задача, представляющая асинхронную операцию записи.</returns>
+      <param name="value">Строка для записи.Если значение равно null, записывается только знак завершения строки.</param>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство записи строки.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство записи строки в настоящее время используется предыдущей операцией записи. </exception>
+    </member>
+    <member name="T:System.IO.TextReader">
+      <summary>Представляет средство чтения, позволяющее считывать последовательные наборы символов.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.TextReader" />.</summary>
+    </member>
+    <member name="M:System.IO.TextReader.Dispose">
+      <summary>Освобождает все ресурсы, используемые объектом <see cref="T:System.IO.TextReader" />.</summary>
+    </member>
+    <member name="M:System.IO.TextReader.Dispose(System.Boolean)">
+      <summary>Освобождает неуправляемые ресурсы, используемые объектом <see cref="T:System.IO.TextReader" />, а при необходимости освобождает также и управляемые ресурсы.</summary>
+      <param name="disposing">Значение true позволяет освободить как управляемые, так и неуправляемые ресурсы; значение false освобождает только неуправляемые ресурсы. </param>
+    </member>
+    <member name="F:System.IO.TextReader.Null">
+      <summary>Предоставляет TextReader без данных, доступных для чтения.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.Peek">
+      <summary>Выполняет чтение следующего символа, не изменяя состояние средства чтения или источника символа.Возвращает следующий доступный символ, фактически не считывая его из средства чтения.</summary>
+      <returns>Целое число, представляющее следующий символ, чтение которого необходимо выполнить, или значение -1, если доступных символов больше нет или средство чтения не поддерживает поиск.</returns>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextReader" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.Read">
+      <summary>Выполняет чтение следующего символа из средства чтения текста и перемещает положение символа на одну позицию вперед.</summary>
+      <returns>Следующий символ из средства чтения текста или значение -1, если доступных символов больше нет.Реализация по умолчанию возвращает значение -1.</returns>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextReader" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.Read(System.Char[],System.Int32,System.Int32)">
+      <summary>Считывает указанное максимальное количество символов из текущего средства чтения и записывает данные в буфер, начиная с заданного индекса.</summary>
+      <returns>Количество считанных символов.Количество будет меньше или равно <paramref name="count" /> в зависимости от доступности данных в средстве чтения.Этот метод возвращает 0 (нуль), если его вызвать при отсутствии символов, доступных для чтения.</returns>
+      <param name="buffer">При возвращении данного метода содержит заданный массив символов, в котором значения в интервале между <paramref name="index" /> и (<paramref name="index" /> + <paramref name="count" /> - 1) заменены символами, считанными из текущего источника. </param>
+      <param name="index">Позиция в буфере <paramref name="buffer" />, с которого начинается запись. </param>
+      <param name="count">Максимальное число считываемых символов.Если конец средства чтения достигнут, прежде чем в буфер считано указанное количество символов, метод возвращает управление.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentException">Длина буфера за вычетом значения параметра <paramref name="index" /> меньше значения параметра <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> является отрицательным. </exception>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextReader" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.ReadAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Асинхронно считывает указанное максимальное количество символов из текущего средства чтения текста и записывает данные в буфер, начиная с указанного индекса. </summary>
+      <returns>Задача, представляющая асинхронную операцию чтения.Значение параметра <paramref name="TResult" /> содержит общее число байтов, считанных в буфер.Значение результата может быть меньше запрошенного числа байтов, если число текущих доступных байтов меньше запрошенного числа, или результат может быть равен 0 (нулю), если был достигнут конец текста.</returns>
+      <param name="buffer">При возвращении данного метода содержит заданный массив символов, в котором значения в интервале между <paramref name="index" /> и (<paramref name="index" /> + <paramref name="count" /> - 1) заменены символами, считанными из текущего источника.</param>
+      <param name="index">Позиция в буфере <paramref name="buffer" />, с которого начинается запись.</param>
+      <param name="count">Максимальное число считываемых символов.Если конец текста достигнут, прежде чем указанное количество символов считывается в буфер, текущий метод возвращает управление.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> является отрицательным.</exception>
+      <exception cref="T:System.ArgumentException">Сумма значений параметров <paramref name="index" /> и <paramref name="count" /> больше длины буфера.</exception>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство чтения текста.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство чтения в настоящее время используется предыдущей операцией чтения. </exception>
+    </member>
+    <member name="M:System.IO.TextReader.ReadBlock(System.Char[],System.Int32,System.Int32)">
+      <summary>Считывает указанное максимальное количество символов из текущего средства чтения текста и записывает данные в буфер, начиная с заданного индекса.</summary>
+      <returns>Количество считанных символов.Число будет меньше или равно значению <paramref name="count" /> в зависимости от того, считаны ли все входящие символы.</returns>
+      <param name="buffer">При возвращении данного метода этот параметр содержит заданный массив символов, в котором значения в интервале между <paramref name="index" /> и (<paramref name="index" /> + <paramref name="count" /> - 1) заменены символами, считанными из текущего источника. </param>
+      <param name="index">Позиция в буфере <paramref name="buffer" />, с которого начинается запись.</param>
+      <param name="count">Максимальное число считываемых символов. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentException">Длина буфера за вычетом значения параметра <paramref name="index" /> меньше значения параметра <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> является отрицательным. </exception>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextReader" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.ReadBlockAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Асинхронно считывает указанное максимальное количество символов из текущего средства чтения текста и записывает данные в буфер, начиная с указанного индекса.</summary>
+      <returns>Задача, представляющая асинхронную операцию чтения.Значение параметра <paramref name="TResult" /> содержит общее число байтов, считанных в буфер.Значение результата может быть меньше запрошенного числа байтов, если число текущих доступных байтов меньше запрошенного числа, или результат может быть равен 0 (нулю), если был достигнут конец текста.</returns>
+      <param name="buffer">При возвращении данного метода содержит заданный массив символов, в котором значения в интервале между <paramref name="index" /> и (<paramref name="index" /> + <paramref name="count" /> - 1) заменены символами, считанными из текущего источника.</param>
+      <param name="index">Позиция в буфере <paramref name="buffer" />, с которого начинается запись.</param>
+      <param name="count">Максимальное число считываемых символов.Если конец текста достигнут, прежде чем указанное количество символов считывается в буфер, текущий метод возвращает управление.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> является отрицательным.</exception>
+      <exception cref="T:System.ArgumentException">Сумма значений параметров <paramref name="index" /> и <paramref name="count" /> больше длины буфера.</exception>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство чтения текста.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство чтения в настоящее время используется предыдущей операцией чтения. </exception>
+    </member>
+    <member name="M:System.IO.TextReader.ReadLine">
+      <summary>Выполняет чтение строки символов из средства чтения текста и возвращает данные в виде строки.</summary>
+      <returns>Следующая строка из средства чтения, или значение null, если все символы считаны.</returns>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.OutOfMemoryException">Недостаточно памяти для размещения буфера возвращаемых строк. </exception>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextReader" /> закрыт. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Количество символов в следующей строке больше <see cref="F:System.Int32.MaxValue" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.ReadLineAsync">
+      <summary>Асинхронно выполняет чтение строки символов и возвращает данные в виде строки. </summary>
+      <returns>Задача, представляющая асинхронную операцию чтения.Значение параметра <paramref name="TResult" /> содержит следующую строку из средства чтения текста или значение null, если все знаки считаны.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Количество символов в следующей строке больше <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство чтения текста.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство чтения в настоящее время используется предыдущей операцией чтения. </exception>
+    </member>
+    <member name="M:System.IO.TextReader.ReadToEnd">
+      <summary>Считывает все символы, начиная с текущей позиции до конца средства чтения текста, и возвращает их в виде одной строки.</summary>
+      <returns>Строка, содержащая все символы, начиная с текущей позиции до конца средства чтения текста.</returns>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextReader" /> закрыт. </exception>
+      <exception cref="T:System.OutOfMemoryException">Недостаточно памяти для размещения буфера возвращаемых строк. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Количество символов в следующей строке больше <see cref="F:System.Int32.MaxValue" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.ReadToEndAsync">
+      <summary>Асинхронно считывает все символы с текущей позиции до конца средства чтения текста и возвращает их в виде одной строки.</summary>
+      <returns>Задача, представляющая асинхронную операцию чтения.Значение параметра <paramref name="TResult" /> содержит строку с символами от текущего положения до конца средства чтения текста.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Количество символов больше <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство чтения текста.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство чтения в настоящее время используется предыдущей операцией чтения. </exception>
+    </member>
+    <member name="T:System.IO.TextWriter">
+      <summary>Представляет модуль записи, который может записывать последовательные наборы символов.Это абстрактный класс.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.TextWriter" />.</summary>
+    </member>
+    <member name="M:System.IO.TextWriter.#ctor(System.IFormatProvider)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.IO.TextWriter" /> указанным поставщиком формата.</summary>
+      <param name="formatProvider">Объект <see cref="T:System.IFormatProvider" />, управляющий форматированием. </param>
+    </member>
+    <member name="F:System.IO.TextWriter.CoreNewLine">
+      <summary>Сохраняет символы новой строки, используемые для данного TextWriter.</summary>
+    </member>
+    <member name="M:System.IO.TextWriter.Dispose">
+      <summary>Освобождает все ресурсы, используемые объектом <see cref="T:System.IO.TextWriter" />.</summary>
+    </member>
+    <member name="M:System.IO.TextWriter.Dispose(System.Boolean)">
+      <summary>Освобождает неуправляемые ресурсы, используемые объектом <see cref="T:System.IO.TextWriter" />, а при необходимости освобождает также управляемые ресурсы.</summary>
+      <param name="disposing">Значение true позволяет освободить как управляемые, так и неуправляемые ресурсы; значение false освобождает только неуправляемые ресурсы. </param>
+    </member>
+    <member name="P:System.IO.TextWriter.Encoding">
+      <summary>При переопределении в производном классе возвращает кодировку символов, в которой записаны выходные данные.</summary>
+      <returns>Кодировка символов, в которой осуществляется запись выходных данных.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Flush">
+      <summary>Очищает все буферы текущего модуля записи и вызывает немедленную запись всех буферизованных данных на базовое устройство.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.FlushAsync">
+      <summary>Асинхронно очищает все буферы текущего средства записи и вызывает запись всех буферизованных данных в базовое устройство. </summary>
+      <returns>Задача, представляющая асинхронную операцию очистки. </returns>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство записи текста.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство записи в настоящее время используется предыдущей операцией записи. </exception>
+    </member>
+    <member name="P:System.IO.TextWriter.FormatProvider">
+      <summary>Возвращает объект, управляющий форматированием.</summary>
+      <returns>Объект <see cref="T:System.IFormatProvider" /> для указанного языка и региональных параметров или форматирование текущего языка и региональных параметров, если не заданы другие.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.TextWriter.NewLine">
+      <summary>Возвращает или задает признак конца строки, используемой текущим TextWriter.</summary>
+      <returns>Признак конца строки для текущего TextWriter.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.TextWriter.Null">
+      <summary>Предоставляет TextWriter без резервного хранилища, в который можно осуществлять запись, но из которого нельзя считывать данные.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Boolean)">
+      <summary>Записывает в текстовую строку или поток текстовое представление значения Boolean.</summary>
+      <param name="value">Значение Boolean для записи. </param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Char)">
+      <summary>Выполняет запись символа в текстовую строку или поток.</summary>
+      <param name="value">Символ, записываемый в текстовый поток. </param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Char[])">
+      <summary>Выполняет запись массива символов в текстовую строку или поток.</summary>
+      <param name="buffer">Массив символов, записываемый в текстовый поток. </param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Char[],System.Int32,System.Int32)">
+      <summary>Записывает дочерний массив символов в текстовую строку или поток.</summary>
+      <param name="buffer">Массив символов, из которого записываются данные. </param>
+      <param name="index">Положение символа в буфере, с которого начинается извлечение данных. </param>
+      <param name="count">Количество символов для записи. </param>
+      <exception cref="T:System.ArgumentException">Длина буфера за вычетом значения параметра <paramref name="index" /> меньше значения параметра <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="buffer" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> является отрицательным. </exception>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Decimal)">
+      <summary>Записывает текстовое представление десятичного значения в текстовую строку или поток.</summary>
+      <param name="value">Десятичное значение, которое необходимо записать. </param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Double)">
+      <summary>Записывает в текстовую строку или поток текстовое представление значения с плавающей запятой размером 8 байт.</summary>
+      <param name="value">Записываемое значение с плавающей запятой размером 8 байт. </param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Int32)">
+      <summary>Записывает в текстовую строку или поток текстовое представление целого числа со знаком размером 4 байта.</summary>
+      <param name="value">Записываемое целое число со знаком размером 4 байта. </param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Int64)">
+      <summary>Записывает в текстовую строку или поток текстовое представление целого числа со знаком размером 8 байт.</summary>
+      <param name="value">Записываемое целое число со знаком размером 8 байт. </param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Object)">
+      <summary>Записывает в текстовую строку или поток текстовое представление объекта с помощью вызова метода ToString для этого объекта.</summary>
+      <param name="value">Записываемый объект. </param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Single)">
+      <summary>Записывает в текстовую строку или поток текстовое представление значения с плавающей запятой размером 4 байта.</summary>
+      <param name="value">Записываемое значение с плавающей запятой размером 4 байта. </param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.String)">
+      <summary>Асинхронно записывает строку в текстовую строку или поток.</summary>
+      <param name="value">Строка для записи. </param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.String,System.Object)">
+      <summary>Записывает форматированную строку в текстовую строку или поток, используя ту же семантику, что и метод <see cref="M:System.String.Format(System.String,System.Object)" />.</summary>
+      <param name="format">Строка составного формата (см. примечания). </param>
+      <param name="arg0">Объект для форматирования и записи. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="format" /> имеет значение null. </exception>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.FormatException">Параметр <paramref name="format" /> не является допустимой строкой составного формата.-или- Индекс элемента формата меньше 0 (нуля) или больше или равен числу объектов, которые необходимо отформатировать (которое для этой перегрузки метода равно 1). </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.String,System.Object,System.Object)">
+      <summary>Записывает форматированную строку в текстовую строку или поток, используя ту же семантику, что и метод <see cref="M:System.String.Format(System.String,System.Object,System.Object)" />.</summary>
+      <param name="format">Строка составного формата (см. примечания). </param>
+      <param name="arg0">Первый объект для форматирования и записи. </param>
+      <param name="arg1">Второй объект для форматирования и записи. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="format" /> имеет значение null. </exception>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.FormatException">Параметр <paramref name="format" /> не является допустимой строкой составного формата.-или- Индекс элемента формата меньше 0 (нуля) или больше или равен числу объектов, которые необходимо отформатировать (которое для этой перегрузки метода равно 2). </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.String,System.Object,System.Object,System.Object)">
+      <summary>Записывает форматированную строку в текстовую строку или поток, используя ту же семантику, что и метод <see cref="M:System.String.Format(System.String,System.Object,System.Object,System.Object)" />.</summary>
+      <param name="format">Строка составного формата (см. примечания). </param>
+      <param name="arg0">Первый объект для форматирования и записи. </param>
+      <param name="arg1">Второй объект для форматирования и записи. </param>
+      <param name="arg2">Третий объект для форматирования и записи. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="format" /> имеет значение null. </exception>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.FormatException">Параметр <paramref name="format" /> не является допустимой строкой составного формата.-или- Индекс элемента формата меньше 0 (нуля) или больше или равен числу объектов, которые необходимо отформатировать (которое для этой перегрузки метода равно 3). </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.String,System.Object[])">
+      <summary>Записывает форматированную строку в текстовую строку или поток, используя ту же семантику, что и метод <see cref="M:System.String.Format(System.String,System.Object[])" />.</summary>
+      <param name="format">Строка составного формата (см. примечания). </param>
+      <param name="arg">Массив объектов, содержащий от нуля и более объектов, которые необходимо форматировать и записать. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="format" /> или <paramref name="arg" /> имеет значение null. </exception>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.FormatException">Параметр <paramref name="format" /> не является допустимой строкой составного формата.-или- Индекс элемента формата меньше 0 (нуля), либо больше или равен длине массива <paramref name="arg" />. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.UInt32)">
+      <summary>Записывает в текстовую строку или поток текстовое представление целого числа без знака размером 4 байта.</summary>
+      <param name="value">Записываемое целое число без знака размером 4 байта. </param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.UInt64)">
+      <summary>Записывает в текстовую строку или поток текстовое представление целого числа без знака размером 8 байт.</summary>
+      <param name="value">Записываемое целое число без знака размером 8 байт. </param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteAsync(System.Char)">
+      <summary>Выполняет асинхронную запись символа в текстовую строку или поток.</summary>
+      <returns>Задача, представляющая асинхронную операцию записи.</returns>
+      <param name="value">Символ, записываемый в текстовый поток.</param>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство записи текста.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство записи текста в настоящее время используется предыдущей операцией записи. </exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteAsync(System.Char[])">
+      <summary>Выполняет асинхронную запись массива символов в текстовую строку или поток.</summary>
+      <returns>Задача, представляющая асинхронную операцию записи.</returns>
+      <param name="buffer">Массив символов, записываемый в текстовый поток.Если <paramref name="buffer" /> имеет значение null, запись не выполняется.</param>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство записи текста.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство записи текста в настоящее время используется предыдущей операцией записи. </exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Асинхронно записывает дочерний массив символов в текстовую строку или поток. </summary>
+      <returns>Задача, представляющая асинхронную операцию записи.</returns>
+      <param name="buffer">Массив символов, из которого записываются данные. </param>
+      <param name="index">Положение символа в буфере, с которого начинается извлечение данных. </param>
+      <param name="count">Количество символов для записи. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentException">Сумма значений параметров <paramref name="index" /> и <paramref name="count" /> превышает длину буфера.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> является отрицательным.</exception>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство записи текста.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство записи текста в настоящее время используется предыдущей операцией записи. </exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteAsync(System.String)">
+      <summary>Выполняет асинхронную запись строки в текстовую строку или поток.</summary>
+      <returns>Задача, представляющая асинхронную операцию записи. </returns>
+      <param name="value">Строка для записи.Если параметр <paramref name="value" /> имеет значение null, в текстовый поток ничего не записывается.</param>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство записи текста.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство записи текста в настоящее время используется предыдущей операцией записи. </exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine">
+      <summary>Записывает признак конца строки в текстовую строку или поток.</summary>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Boolean)">
+      <summary>Записывает в текстовую строку или поток текстовое представление значения Boolean, за которым следует признак конца строки.</summary>
+      <param name="value">Значение Boolean для записи. </param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Char)">
+      <summary>Записывает в текстовую строку или поток символ, за которым следует признак конца строки.</summary>
+      <param name="value">Символ, записываемый в текстовый поток. </param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Char[])">
+      <summary>Записывает в текстовую строку или поток массив символов, за которыми следует признак конца строки.</summary>
+      <param name="buffer">Массив символов, из которого считываются данные. </param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Char[],System.Int32,System.Int32)">
+      <summary>Записывает в текстовую строку или поток дочерний массив символов, за которыми следует признак конца строки.</summary>
+      <param name="buffer">Массив символов, из которого считываются данные. </param>
+      <param name="index">Положение символа в <paramref name="buffer" />, с которого начинается чтение данных. </param>
+      <param name="count">Наибольшее количество символов для записи. </param>
+      <exception cref="T:System.ArgumentException">Длина буфера за вычетом значения параметра <paramref name="index" /> меньше значения параметра <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="buffer" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> является отрицательным. </exception>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Decimal)">
+      <summary>Записывает в текстовую строку или поток текстовое представление десятичного значения, за которым следует признак конца строки.</summary>
+      <param name="value">Десятичное значение, которое необходимо записать. </param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Double)">
+      <summary>Записывает в текстовую строку или поток текстовое представление значения с плавающей запятой размером 8 байта, за которым следует признак конца строки.</summary>
+      <param name="value">Записываемое значение с плавающей запятой размером 8 байт. </param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Int32)">
+      <summary>Записывает в текстовую строку или поток текстовое представление целого числа со знаком размером 4 байта, за которым следует признак конца строки.</summary>
+      <param name="value">Записываемое целое число со знаком размером 4 байта. </param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Int64)">
+      <summary>Записывает в текстовую строку или поток текстовое представление целого числа со знаком размером 8 байт, за которым следует признак конца строки.</summary>
+      <param name="value">Записываемое целое число со знаком размером 8 байт. </param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Object)">
+      <summary>Записывает в текстовую строку или поток текстовое представление объекта путем вызова метода ToString для этого объекта, за которым следует признак конца строки.</summary>
+      <param name="value">Записываемый объект.Если <paramref name="value" /> имеет значение null, записывается только признак конца строки.</param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Single)">
+      <summary>Записывает в текстовую строку или поток текстовое представление значения с плавающей запятой размером 4 байта, за которым следует признак конца строки.</summary>
+      <param name="value">Записываемое значение с плавающей запятой размером 4 байта. </param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.String)">
+      <summary>Записывает в текстовую строку или поток строку, за которой следует признак конца строки.</summary>
+      <param name="value">Строка для записи.Если <paramref name="value" /> имеет значение null, записывается только признак конца строки.</param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.String,System.Object)">
+      <summary>Записывает форматированную строку и новую строку в текстовую строку или поток, используя ту же семантику, что и метод <see cref="M:System.String.Format(System.String,System.Object)" />.</summary>
+      <param name="format">Строка составного формата (см. примечания).</param>
+      <param name="arg0">Объект для форматирования и записи. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="format" /> имеет значение null. </exception>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.FormatException">Параметр <paramref name="format" /> не является допустимой строкой составного формата.-или- Индекс элемента формата меньше 0 (нуля) или больше или равен числу объектов, которые необходимо отформатировать (которое для этой перегрузки метода равно 1). </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.String,System.Object,System.Object)">
+      <summary>Записывает форматированную строку и новую строку в текстовую строку или поток, используя ту же семантику, что и метод <see cref="M:System.String.Format(System.String,System.Object,System.Object)" />.</summary>
+      <param name="format">Строка составного формата (см. примечания).</param>
+      <param name="arg0">Первый объект для форматирования и записи. </param>
+      <param name="arg1">Второй объект для форматирования и записи. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="format" /> имеет значение null. </exception>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.FormatException">Параметр <paramref name="format" /> не является допустимой строкой составного формата.-или- Индекс элемента формата меньше 0 (нуля) или больше или равен числу объектов, которые необходимо отформатировать (которое для этой перегрузки метода равно 2). </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.String,System.Object,System.Object,System.Object)">
+      <summary>Записывает отформатированную строку и новую строку, используя ту же семантику, что и <see cref="M:System.String.Format(System.String,System.Object)" />.</summary>
+      <param name="format">Строка составного формата (см. примечания).</param>
+      <param name="arg0">Первый объект для форматирования и записи. </param>
+      <param name="arg1">Второй объект для форматирования и записи. </param>
+      <param name="arg2">Третий объект для форматирования и записи. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="format" /> имеет значение null. </exception>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.FormatException">Параметр <paramref name="format" /> не является допустимой строкой составного формата.-или- Индекс элемента формата меньше 0 (нуля) или больше или равен числу объектов, которые необходимо отформатировать (которое для этой перегрузки метода равно 3). </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.String,System.Object[])">
+      <summary>Записывает отформатированную строку и новую строку, используя ту же семантику, что и <see cref="M:System.String.Format(System.String,System.Object)" />.</summary>
+      <param name="format">Строка составного формата (см. примечания).</param>
+      <param name="arg">Массив объектов, содержащий от нуля и более объектов, которые необходимо форматировать и записать. </param>
+      <exception cref="T:System.ArgumentNullException">Строка или объект передаются в виде null. </exception>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <exception cref="T:System.FormatException">Параметр <paramref name="format" /> не является допустимой строкой составного формата.-или- Индекс элемента формата меньше 0 (нуля), либо больше или равен длине массива <paramref name="arg" />. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.UInt32)">
+      <summary>Записывает в текстовую строку или поток текстовое представление целого числа без знака размером 4 байта, за которым следует признак конца строки.</summary>
+      <param name="value">Записываемое целое число без знака размером 4 байта. </param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.UInt64)">
+      <summary>Записывает в текстовую строку или поток текстовое представление целого числа без знака размером 8 байт, за которым следует признак конца строки.</summary>
+      <param name="value">Записываемое целое число без знака размером 8 байт. </param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.IO.TextWriter" /> закрыт. </exception>
+      <exception cref="T:System.IO.IOException">Ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLineAsync">
+      <summary>Асинхронно записывает признак конца строки в текстовую строку или поток.</summary>
+      <returns>Задача, представляющая асинхронную операцию записи. </returns>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство записи текста.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство записи текста в настоящее время используется предыдущей операцией записи. </exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLineAsync(System.Char)">
+      <summary>Асинхронно записывает в текстовую строку или поток символ, за которым следует признак конца строки.</summary>
+      <returns>Задача, представляющая асинхронную операцию записи.</returns>
+      <param name="value">Символ, записываемый в текстовый поток.</param>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство записи текста.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство записи текста в настоящее время используется предыдущей операцией записи. </exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLineAsync(System.Char[])">
+      <summary>Асинхронно записывает в текстовую строку или поток массив символов, за которыми следует признак конца строки.</summary>
+      <returns>Задача, представляющая асинхронную операцию записи.</returns>
+      <param name="buffer">Массив символов, записываемый в текстовый поток.Если массив символов имеет значение null, записывается только признак конца строки.</param>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство записи текста.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство записи текста в настоящее время используется предыдущей операцией записи. </exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLineAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Асинхронно записывает в текстовую строку или поток дочерний массив символов, за которыми следует признак конца строки.</summary>
+      <returns>Задача, представляющая асинхронную операцию записи.</returns>
+      <param name="buffer">Массив символов, из которого записываются данные. </param>
+      <param name="index">Положение символа в буфере, с которого начинается извлечение данных. </param>
+      <param name="count">Количество символов для записи. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentException">Сумма значений параметров <paramref name="index" /> и <paramref name="count" /> превышает длину буфера.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> является отрицательным.</exception>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство записи текста.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство записи текста в настоящее время используется предыдущей операцией записи. </exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLineAsync(System.String)">
+      <summary>Асинхронно записывает в текстовую строку или поток строку, за которой следует знак конца строки. </summary>
+      <returns>Задача, представляющая асинхронную операцию записи.</returns>
+      <param name="value">Строка для записи.Если значение равно null, записывается только знак конца строки.</param>
+      <exception cref="T:System.ObjectDisposedException">Удалено средство записи текста.</exception>
+      <exception cref="T:System.InvalidOperationException">Средство записи текста в настоящее время используется предыдущей операцией записи. </exception>
+    </member>
+  </members>
+</doc>

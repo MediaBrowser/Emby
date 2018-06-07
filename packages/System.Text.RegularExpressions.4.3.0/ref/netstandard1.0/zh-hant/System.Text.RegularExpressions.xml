@@ -1,0 +1,852 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Text.RegularExpressions</name>
+  </assembly>
+  <members>
+    <member name="T:System.Text.RegularExpressions.Capture">
+      <summary>表示單一子運算式成功擷取的結果。</summary>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Capture.Index">
+      <summary>在原始字串中找到擷取的子字串的第一個字元之位置。</summary>
+      <returns>在原始字串中找到擷取的子字串之以零起始的開始位置。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Capture.Length">
+      <summary>取得所擷取子字串的長度。</summary>
+      <returns>擷取的子字串的長度。</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Capture.ToString">
+      <summary>擷取已透過呼叫 <see cref="P:System.Text.RegularExpressions.Capture.Value" /> 屬性從輸入字串擷取的子字串。</summary>
+      <returns>比對所擷取的子字串。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Capture.Value">
+      <summary>從輸入字串取得擷取的子字串。</summary>
+      <returns>比對所擷取的子字串。</returns>
+    </member>
+    <member name="T:System.Text.RegularExpressions.CaptureCollection">
+      <summary>表示單一擷取群組完成的擷取集合。</summary>
+    </member>
+    <member name="P:System.Text.RegularExpressions.CaptureCollection.Count">
+      <summary>取得群組所擷取的子字串數目。</summary>
+      <returns>
+        <see cref="T:System.Text.RegularExpressions.CaptureCollection" /> 中項目的數目。</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.CaptureCollection.GetEnumerator">
+      <summary>提供逐一查看集合的列舉值。</summary>
+      <returns>物件，包含 <see cref="T:System.Text.RegularExpressions.CaptureCollection" /> 內的所有 <see cref="T:System.Text.RegularExpressions.Capture" /> 物件。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.CaptureCollection.Item(System.Int32)">
+      <summary>取得集合的個別成員。</summary>
+      <returns>在集合中位置 <paramref name="i" /> 上的擷取的子字串。</returns>
+      <param name="i">擷取集合內的索引。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="i" /> 小於 0 或大於 <see cref="P:System.Text.RegularExpressions.CaptureCollection.Count" />。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.CaptureCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>複製集合的所有項目至指定索引處開始的指定陣列。</summary>
+      <param name="array">複製這個集合的目的地一維陣列。</param>
+      <param name="arrayIndex">目的陣列中以零起始的索引 (複製開始之處)。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> 為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="arrayIndex" /> 不在 <paramref name="array" /> 範圍內。-或-<paramref name="arrayIndex" /> 加上 <see cref="P:System.Text.RegularExpressions.CaptureCollection.Count" /> 落在 <paramref name="array" /> 範圍以外。</exception>
+    </member>
+    <member name="P:System.Text.RegularExpressions.CaptureCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>取得值，指示對集合的存取是否為同步的 (安全執行緒)。</summary>
+      <returns>所有情況下都是 false。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.CaptureCollection.System#Collections#ICollection#SyncRoot">
+      <summary>取得物件，可用來對集合進行同步存取。</summary>
+      <returns>可用來同步存取集合的物件。</returns>
+    </member>
+    <member name="T:System.Text.RegularExpressions.Group">
+      <summary>表示單一擷取群組的結果。</summary>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Group.Captures">
+      <summary>依照最內層最左邊為優先的順序，取得符合擷取群組的所有擷取的集合 (如果規則運算式使用 <see cref="F:System.Text.RegularExpressions.RegexOptions.RightToLeft" /> 選項修改，則依照最內層最右邊為優先的順序)，集合可能有零個或更多項目。</summary>
+      <returns>符合群組的子字串集合。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Group.Success">
+      <summary>取得值，指出比對是否成功。</summary>
+      <returns>如果比對成功，則為 true，否則為 false。</returns>
+    </member>
+    <member name="T:System.Text.RegularExpressions.GroupCollection">
+      <summary>在單一比對中傳回擷取之群組的集合。</summary>
+    </member>
+    <member name="P:System.Text.RegularExpressions.GroupCollection.Count">
+      <summary>傳回集合中的群組數。</summary>
+      <returns>集合中的群組數。</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.GroupCollection.GetEnumerator">
+      <summary>提供逐一查看集合的列舉值。</summary>
+      <returns>列舉程式，包含 <see cref="T:System.Text.RegularExpressions.GroupCollection" /> 中的所有 <see cref="T:System.Text.RegularExpressions.Group" /> 物件。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.GroupCollection.Item(System.Int32)">
+      <summary>以整數索引啟用對集合成員的存取。</summary>
+      <returns>
+        <paramref name="groupnum" /> 指定的集合成員。</returns>
+      <param name="groupnum">要擷取之集合成員的以零起始的索引。</param>
+    </member>
+    <member name="P:System.Text.RegularExpressions.GroupCollection.Item(System.String)">
+      <summary>以字串索引啟用對集合成員的存取。</summary>
+      <returns>
+        <paramref name="groupname" /> 指定的集合成員。</returns>
+      <param name="groupname">擷取群組的名稱。</param>
+    </member>
+    <member name="M:System.Text.RegularExpressions.GroupCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>複製集合的所有項目至指定索引處開始的指定陣列。</summary>
+      <param name="array">複製這個集合的目的地一維陣列。</param>
+      <param name="arrayIndex">目的陣列中以零為起始的索引 (複製開始之處)。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> 為 null。</exception>
+      <exception cref="T:System.IndexOutOfRangeException">
+        <paramref name="arrayIndex" /> 不在 <paramref name="array" /> 範圍內。-或-<paramref name="arrayIndex" /> 加上 <see cref="P:System.Text.RegularExpressions.GroupCollection.Count" /> 落在 <paramref name="array" /> 範圍以外。</exception>
+    </member>
+    <member name="P:System.Text.RegularExpressions.GroupCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>取得值，指示對集合的存取是否為同步的 (安全執行緒)。</summary>
+      <returns>所有情況下都是 false。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.GroupCollection.System#Collections#ICollection#SyncRoot">
+      <summary>取得物件，這個物件可以用來對集合進行同步存取。</summary>
+      <returns>Object，可用來對集合同步存取。</returns>
+    </member>
+    <member name="T:System.Text.RegularExpressions.Match">
+      <summary>表示單一規則運算式 (Regular Expression) 比對的結果。</summary>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Match.Empty">
+      <summary>取得空白群組。所有失敗的比對會傳回這個空白比對。</summary>
+      <returns>空的符合項目。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Match.Groups">
+      <summary>取得符合規則運算式的群組集合。</summary>
+      <returns>符合模式的字元群組。</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Match.NextMatch">
+      <summary>自最後一個比對結束的位置 (在最後符合字元之後的字元) 開始，傳回具有下一個比對結果的新 <see cref="T:System.Text.RegularExpressions.Match" /> 物件。</summary>
+      <returns>下一個規則運算式相符項目。</returns>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Match.Result(System.String)">
+      <summary>傳回所指定取代模式的展開 (Expansion)。</summary>
+      <returns>
+        <paramref name="replacement" /> 參數的展開版本。</returns>
+      <param name="replacement">要使用的取代模式。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="replacement" /> 為 null。</exception>
+      <exception cref="T:System.NotSupportedException">這種模式不允許展開。</exception>
+    </member>
+    <member name="T:System.Text.RegularExpressions.MatchCollection">
+      <summary>表示藉由重複套用規則運算式 (Regular Expression) 模式至輸入字串，所找到的成功比對的集合。</summary>
+    </member>
+    <member name="P:System.Text.RegularExpressions.MatchCollection.Count">
+      <summary>取得符合項的數目。</summary>
+      <returns>符合項的數目。</returns>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.MatchCollection.GetEnumerator">
+      <summary>提供逐一查看集合的列舉值。</summary>
+      <returns>物件，包含 <see cref="T:System.Text.RegularExpressions.MatchCollection" /> 內的所有 <see cref="T:System.Text.RegularExpressions.Match" /> 物件。</returns>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。</exception>
+    </member>
+    <member name="P:System.Text.RegularExpressions.MatchCollection.Item(System.Int32)">
+      <summary>取得集合的個別成員。</summary>
+      <returns>在集合中位置 <paramref name="i" /> 上的擷取的子字串。</returns>
+      <param name="i">
+        <see cref="T:System.Text.RegularExpressions.Match" /> 集合內的索引。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="i" /> 小於 0，或大於等於 <see cref="P:System.Text.RegularExpressions.MatchCollection.Count" />。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.MatchCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>將集合的所有元素複製到以指定的索引為起始點的指定陣列。</summary>
+      <param name="array">複製這個集合的目的地一維陣列。</param>
+      <param name="arrayIndex">陣列中以零起始的索引 (複製開始之處)。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> 是多維陣列。</exception>
+      <exception cref="T:System.IndexOutOfRangeException">
+        <paramref name="arrayIndex" /> 不在陣列的範圍內。-或-<paramref name="arrayIndex" /> 加上 <see cref="P:System.Text.RegularExpressions.MatchCollection.Count" /> 落在 <paramref name="array" /> 範圍以外。</exception>
+    </member>
+    <member name="P:System.Text.RegularExpressions.MatchCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>取得值，指示對集合的存取是否為同步的 (安全執行緒)。</summary>
+      <returns>所有情況下都是 false。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.MatchCollection.System#Collections#ICollection#SyncRoot">
+      <summary>取得物件，這個物件可以用來對集合進行同步存取。</summary>
+      <returns>Object，可用來對集合同步存取。這個屬性永遠傳回物件本身。</returns>
+    </member>
+    <member name="T:System.Text.RegularExpressions.MatchEvaluator">
+      <summary>表示每次在 <see cref="Overload:System.Text.RegularExpressions.Regex.Replace" /> 方法作業期間找到規則運算式 (Regular Expression) 相符項目時都會呼叫的方法。</summary>
+      <returns>字串，由 <see cref="T:System.Text.RegularExpressions.MatchEvaluator" /> 委派 (Delegate) 所表示的方法傳回。</returns>
+      <param name="match">
+        <see cref="T:System.Text.RegularExpressions.Match" /> 物件，表示 <see cref="Overload:System.Text.RegularExpressions.Regex.Replace" /> 方法作業期間的單一規則運算式相符項目。</param>
+    </member>
+    <member name="T:System.Text.RegularExpressions.Regex">
+      <summary>表示不變的規則運算式 (Regular Expression)。若要瀏覽此類型的.NET Framework 原始碼，請參閱參考來源。</summary>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.#ctor">
+      <summary>初始化 <see cref="T:System.Text.RegularExpressions.Regex" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.#ctor(System.String)">
+      <summary>為指定的規則運算式初始化 <see cref="T:System.Text.RegularExpressions.Regex" /> 類別的新執行個體。</summary>
+      <param name="pattern">要比對的規則運算式模式。</param>
+      <exception cref="T:System.ArgumentException">發生規則運算式剖析錯誤。 </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="pattern" /> 為 null。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.#ctor(System.String,System.Text.RegularExpressions.RegexOptions)">
+      <summary>使用會修改模式的選項，為指定的規則運算式初始化 <see cref="T:System.Text.RegularExpressions.Regex" /> 類別的新執行個體。</summary>
+      <param name="pattern">要比對的規則運算式模式。</param>
+      <param name="options">列舉值的位元組合，這些值會修改規則運算式。</param>
+      <exception cref="T:System.ArgumentException">發生規則運算式剖析錯誤。 </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="pattern" /> 為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 包含無效的旗標。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.#ctor(System.String,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>針對指定的規則運算式，使用修改模式的選項，以及指定在逾時前模式比對方法應該嘗試比對的時間長度的值，初始化 <see cref="T:System.Text.RegularExpressions.Regex" /> 類別的新執行個體。</summary>
+      <param name="pattern">要比對的規則運算式模式。</param>
+      <param name="options">列舉值的位元組合，這些值會修改規則運算式。</param>
+      <param name="matchTimeout">間隔，若要表示此方法不會逾時則為 <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" />。</param>
+      <exception cref="T:System.ArgumentException">發生規則運算式剖析錯誤。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="pattern" /> 為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 不是有效的 <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 值。-或-<paramref name="matchTimeout" /> 為負數、零或大約大於 24 天。</exception>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Regex.CacheSize">
+      <summary>取得或設定在已編譯規則運算式目前靜態快取中項目的最大數目。</summary>
+      <returns>靜態快取中項目的最大數目。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">設定作業中的值小於零。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Escape(System.String)">
+      <summary>以逸出程式碼取代字元 (\、*、+、?、|、{、[、(、)、^、$、.、# 和空白字元) 的最小集合，以便逸出這些字元。這樣會指示規則運算式引擎將這些字元解譯為常值，而非解譯為中繼字元。</summary>
+      <returns>字元字串，其中中繼字元已轉換為逸出格式。</returns>
+      <param name="str">輸入字串，包含要轉換的文字。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> 為 null。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.GetGroupNames">
+      <summary>傳回規則運算式的擷取群組名稱的陣列。</summary>
+      <returns>群組名稱的字串陣列。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.GetGroupNumbers">
+      <summary>傳回對應陣列中群組名稱的擷取群組編號的陣列。</summary>
+      <returns>群組編號的整數陣列。</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.GroupNameFromNumber(System.Int32)">
+      <summary>取得對應指定群組編號的群組名稱。</summary>
+      <returns>字串，含有與指定群組編號相關聯的群組名稱。如果沒有對應 <paramref name="i" /> 的群組名稱，方法會傳回 <see cref="F:System.String.Empty" />。</returns>
+      <param name="i">群組編號，要轉換至對應群組名稱的。</param>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.GroupNumberFromName(System.String)">
+      <summary>傳回對應指定群組名稱的群組編號。</summary>
+      <returns>對應指定群組名稱的群組編號；如果 <paramref name="name" /> 不是有效的群組名稱，則為 -1。</returns>
+      <param name="name">群組名稱，要轉換至對應群組編號的。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 為 null。</exception>
+    </member>
+    <member name="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout">
+      <summary>指定模式比對作業不應逾時。</summary>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.IsMatch(System.String)">
+      <summary>表示 <see cref="T:System.Text.RegularExpressions.Regex" /> 建構函式中指定的規則運算式是否要在指定的輸入字串中尋找相符項目。</summary>
+      <returns>如果規則運算式尋找到符合項目，則為 true，否則為 false。</returns>
+      <param name="input">用來搜尋比對的字串。 </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 為 null。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.Int32)">
+      <summary>表示 <see cref="T:System.Text.RegularExpressions.Regex" /> 建構函式中所指定的規則運算式，是否要從字串中指定的起始位置開始，在指定的輸入字串中尋找相符項目。</summary>
+      <returns>如果規則運算式尋找到符合項目，則為 true，否則為 false。</returns>
+      <param name="input">用來搜尋比對的字串。</param>
+      <param name="startat">要開始搜尋的字元位置。 </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startat" /> 小於零或是大於 <paramref name="input" /> 的長度。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.String)">
+      <summary>表示指定的規則運算式是否在指定的輸入字串中尋找相符項目。</summary>
+      <returns>如果規則運算式尋找到符合項目，則為 true，否則為 false。</returns>
+      <param name="input">用來搜尋比對的字串。</param>
+      <param name="pattern">要比對的規則運算式模式。 </param>
+      <exception cref="T:System.ArgumentException">發生規則運算式剖析錯誤。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="pattern" /> 為 null。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.String,System.Text.RegularExpressions.RegexOptions)">
+      <summary>表示指定的規則運算式是否使用指定的比對選項，在指定的輸入字串中尋找相符項目。</summary>
+      <returns>如果規則運算式尋找到符合項目，則為 true，否則為 false。</returns>
+      <param name="input">用來搜尋比對的字串。</param>
+      <param name="pattern">要比對的規則運算式模式。</param>
+      <param name="options">列舉值的位元組合，提供用於比對的選項。 </param>
+      <exception cref="T:System.ArgumentException">發生規則運算式剖析錯誤。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="pattern" /> 為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 不是有效的 <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 值。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.String,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>指出指定的規則運算式是否使用指定的比對選項和逾時間隔，在指定的輸入字串中尋找相符項目。</summary>
+      <returns>如果規則運算式尋找到符合項目，則為 true，否則為 false。</returns>
+      <param name="input">用來搜尋比對的字串。</param>
+      <param name="pattern">要比對的規則運算式模式。</param>
+      <param name="options">列舉值的位元組合，提供用於比對的選項。</param>
+      <param name="matchTimeout">間隔，若要表示此方法不會逾時則為 <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" />。</param>
+      <exception cref="T:System.ArgumentException">發生規則運算式剖析錯誤。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="pattern" /> 為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 不是有效的 <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 值。-或-<paramref name="matchTimeout" /> 為負數、零或大約大於 24 天。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Match(System.String)">
+      <summary>在指定的輸入字串中，搜尋符合 <see cref="T:System.Text.RegularExpressions.Regex" /> 建構函式中所指定規則運算式的第一個項目。</summary>
+      <returns>物件，包含符合之項目的相關資訊。</returns>
+      <param name="input">用來搜尋比對的字串。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 為 null。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32)">
+      <summary>從字串中指定的開始位置開始，在輸入字串中搜尋規則運算式的第一個相符項目。</summary>
+      <returns>物件，包含符合之項目的相關資訊。</returns>
+      <param name="input">用來搜尋比對的字串。</param>
+      <param name="startat">要開始搜尋之以零起始的字元位置。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startat" /> 小於零或是大於 <paramref name="input" /> 的長度。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32,System.Int32)">
+      <summary>從指定的開始位置開始並且僅搜尋指定數目的字元，在輸入字串中搜尋規則運算式的第一個相符項目。</summary>
+      <returns>物件，包含符合之項目的相關資訊。</returns>
+      <param name="input">用來搜尋比對的字串。</param>
+      <param name="beginning">定義要搜尋的最左邊位置的輸入字串中以零起始的字元位置。</param>
+      <param name="length">子字串中要包含以搜尋的字元數。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="beginning" /> 小於零或是大於 <paramref name="input" /> 的長度。-或-<paramref name="length" /> 小於零或是大於 <paramref name="input" /> 的長度。-或-<paramref name="beginning" />+<paramref name="length" />– 1 identifies a position that is outside the range of <paramref name="input" />.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Match(System.String,System.String)">
+      <summary>在指定的輸入字串中搜尋所指定規則運算式的第一個相符項目。</summary>
+      <returns>物件，包含符合之項目的相關資訊。</returns>
+      <param name="input">用來搜尋比對的字串。</param>
+      <param name="pattern">要比對的規則運算式模式。</param>
+      <exception cref="T:System.ArgumentException">發生規則運算式剖析錯誤。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="pattern" /> 為 null。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Match(System.String,System.String,System.Text.RegularExpressions.RegexOptions)">
+      <summary>使用指定的比對選項，在輸入字串中搜尋所指定規則運算式的第一個相符項目。</summary>
+      <returns>物件，包含符合之項目的相關資訊。</returns>
+      <param name="input">用來搜尋比對的字串。</param>
+      <param name="pattern">要比對的規則運算式模式。</param>
+      <param name="options">列舉值的位元組合，提供用於比對的選項。</param>
+      <exception cref="T:System.ArgumentException">發生規則運算式剖析錯誤。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="pattern" /> 為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 不是 <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 值的有效位元組合。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Match(System.String,System.String,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>使用指定的比對選項和逾時間隔，在輸入字串中搜尋所指定規則運算式的第一個相符項目。</summary>
+      <returns>物件，包含符合之項目的相關資訊。</returns>
+      <param name="input">用來搜尋比對的字串。</param>
+      <param name="pattern">要比對的規則運算式模式。</param>
+      <param name="options">列舉值的位元組合，提供用於比對的選項。</param>
+      <param name="matchTimeout">間隔，若要表示此方法不會逾時則為 <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" />。</param>
+      <exception cref="T:System.ArgumentException">發生規則運算式剖析錯誤。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="pattern" /> 為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 不是 <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 值的有效位元組合。-或-<paramref name="matchTimeout" /> 為負數、零或大約大於 24 天。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Matches(System.String)">
+      <summary>在指定的輸入字串搜尋規則運算式的所有項目。</summary>
+      <returns>搜尋之後找到的 <see cref="T:System.Text.RegularExpressions.Match" /> 物件集合。如果找不到相符的項目，此方法會傳回空集合物件。</returns>
+      <param name="input">用來搜尋比對的字串。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 為 null。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.Int32)">
+      <summary>自字串中指定的開始位置開始，在指定的輸入字串搜尋規則運算式的所有項目。</summary>
+      <returns>搜尋之後找到的 <see cref="T:System.Text.RegularExpressions.Match" /> 物件集合。如果找不到相符的項目，此方法會傳回空集合物件。</returns>
+      <param name="input">用來搜尋比對的字串。</param>
+      <param name="startat">在輸入字串中開始搜尋的字元位置。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startat" /> 小於零或是大於 <paramref name="input" /> 的長度。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.String)">
+      <summary>在指定的輸入字串搜尋所指定規則運算式的所有相符項目。</summary>
+      <returns>搜尋之後找到的 <see cref="T:System.Text.RegularExpressions.Match" /> 物件集合。如果找不到相符的項目，此方法會傳回空集合物件。</returns>
+      <param name="input">用來搜尋比對的字串。</param>
+      <param name="pattern">要比對的規則運算式模式。</param>
+      <exception cref="T:System.ArgumentException">發生規則運算式剖析錯誤。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="pattern" /> 為 null。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.String,System.Text.RegularExpressions.RegexOptions)">
+      <summary>使用指定的比對選項在指定的輸入字串中，搜尋所指定規則運算式的所有相符項目。</summary>
+      <returns>搜尋之後找到的 <see cref="T:System.Text.RegularExpressions.Match" /> 物件集合。如果找不到相符的項目，此方法會傳回空集合物件。</returns>
+      <param name="input">用來搜尋比對的字串。</param>
+      <param name="pattern">要比對的規則運算式模式。</param>
+      <param name="options">列舉值的位元組合，這些值會指定用於比對的選項。</param>
+      <exception cref="T:System.ArgumentException">發生規則運算式剖析錯誤。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="pattern" /> 為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 不是 <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 值的有效位元組合。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.String,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>使用指定的比對選項和逾時間隔，在指定的輸入字串中搜尋所指定規則運算式的所有相符項目。</summary>
+      <returns>搜尋之後找到的 <see cref="T:System.Text.RegularExpressions.Match" /> 物件集合。如果找不到相符的項目，此方法會傳回空集合物件。</returns>
+      <param name="input">用來搜尋比對的字串。</param>
+      <param name="pattern">要比對的規則運算式模式。</param>
+      <param name="options">列舉值的位元組合，這些值會指定用於比對的選項。</param>
+      <param name="matchTimeout">間隔，若要表示此方法不會逾時則為 <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" />。</param>
+      <exception cref="T:System.ArgumentException">發生規則運算式剖析錯誤。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="pattern" /> 為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 不是 <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 值的有效位元組合。-或-<paramref name="matchTimeout" /> 為負數、零或大約大於 24 天。</exception>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Regex.MatchTimeout">
+      <summary>取得目前執行個體的逾時間隔。</summary>
+      <returns>在<see cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException" />擲回之前，可在模式比對作業中流逝的最大時間間隔，或者為<see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" />（如果停用逾時）。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Regex.Options">
+      <summary>取得傳入 <see cref="T:System.Text.RegularExpressions.Regex" /> 建構函式的選項。</summary>
+      <returns>
+        <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 列舉的一個或多個成員，代表傳遞至 <see cref="T:System.Text.RegularExpressions.Regex" /> 建構函式的選項</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String)">
+      <summary>在指定的輸入字串中，使用指定的取代字串來取代符合規則運算式模式的所有字串。</summary>
+      <returns>與輸入字串相同的新字串 (不同之處是取代字串會取代每一個相符的字串)。如果規則運算式模式在目前執行個體中沒有符合項目，方法會傳回未變更的目前執行個體。</returns>
+      <param name="input">用來搜尋比對的字串。</param>
+      <param name="replacement">取代字串。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="replacement" /> 為 null。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32)">
+      <summary>在指定的輸入字串中，使用指定的取代字串來取代符合規則運算式模式的指定最大字串數目。</summary>
+      <returns>與輸入字串相同的新字串 (不同之處是取代字串會取代每一個相符的字串)。如果規則運算式模式在目前執行個體中沒有符合項目，方法會傳回未變更的目前執行個體。</returns>
+      <param name="input">用來搜尋比對的字串。</param>
+      <param name="replacement">取代字串。</param>
+      <param name="count">取代作業可以發生的最大次數。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="replacement" /> 為 null。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32,System.Int32)">
+      <summary>在指定的輸入子字串中，使用指定的取代字串來取代符合規則運算式模式的指定最大字串數目。</summary>
+      <returns>與輸入字串相同的新字串 (不同之處是取代字串會取代每一個相符的字串)。如果規則運算式模式在目前執行個體中沒有符合項目，方法會傳回未變更的目前執行個體。</returns>
+      <param name="input">用來搜尋比對的字串。</param>
+      <param name="replacement">取代字串。</param>
+      <param name="count">取代可以發生的最大次數。</param>
+      <param name="startat">在輸入字串中開始搜尋的字元位置。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="replacement" /> 為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startat" /> 小於零或是大於 <paramref name="input" /> 的長度。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.String)">
+      <summary>在指定的輸入字串中，使用指定的取代字串來取代符合指定之規則運算式的所有字串。</summary>
+      <returns>與輸入字串相同的新字串 (不同之處是取代字串會取代每一個相符的字串)。如果在目前的執行個體中沒有符合 <paramref name="pattern" /> 的項目，則方法傳回未變更的目前執行個體。</returns>
+      <param name="input">用來搜尋比對的字串。</param>
+      <param name="pattern">要比對的規則運算式模式。</param>
+      <param name="replacement">取代字串。</param>
+      <exception cref="T:System.ArgumentException">發生規則運算式剖析錯誤。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" />、<paramref name="pattern" /> 或 <paramref name="replacement" /> 為 null。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.String,System.Text.RegularExpressions.RegexOptions)">
+      <summary>在指定的輸入字串中，使用指定的取代字串來取代符合指定之規則運算式的所有字串。指定的選項會修改符合的作業。</summary>
+      <returns>與輸入字串相同的新字串 (不同之處是取代字串會取代每一個相符的字串)。如果在目前的執行個體中沒有符合 <paramref name="pattern" /> 的項目，則方法傳回未變更的目前執行個體。</returns>
+      <param name="input">用來搜尋比對的字串。</param>
+      <param name="pattern">要比對的規則運算式模式。</param>
+      <param name="replacement">取代字串。</param>
+      <param name="options">列舉值的位元組合，提供用於比對的選項。</param>
+      <exception cref="T:System.ArgumentException">發生規則運算式剖析錯誤。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" />、<paramref name="pattern" /> 或 <paramref name="replacement" /> 為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 不是 <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 值的有效位元組合。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.String,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>在指定的輸入字串中，使用指定的取代字串來取代符合指定之規則運算式的所有字串。如果沒有找到相符項目，其他參數會指定修改比對作業的選項和逾時間隔。</summary>
+      <returns>與輸入字串相同的新字串 (不同之處是取代字串會取代每一個相符的字串)。如果在目前的執行個體中沒有符合 <paramref name="pattern" /> 的項目，則方法傳回未變更的目前執行個體。</returns>
+      <param name="input">用來搜尋比對的字串。</param>
+      <param name="pattern">要比對的規則運算式模式。</param>
+      <param name="replacement">取代字串。</param>
+      <param name="options">列舉值的位元組合，提供用於比對的選項。</param>
+      <param name="matchTimeout">間隔，若要表示此方法不會逾時則為 <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" />。</param>
+      <exception cref="T:System.ArgumentException">發生規則運算式剖析錯誤。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" />、<paramref name="pattern" /> 或 <paramref name="replacement" /> 為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 不是 <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 值的有效位元組合。-或-<paramref name="matchTimeout" /> 為負數、零或大約大於 24 天。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Text.RegularExpressions.MatchEvaluator)">
+      <summary>在指定的輸入字串中，使用 <see cref="T:System.Text.RegularExpressions.MatchEvaluator" /> 委派所傳回的字串來取代所有符合指定之規則運算式的字串。</summary>
+      <returns>與輸入字串相同的新字串 (不同之處是取代字串會取代每一個相符的字串)。如果在目前的執行個體中沒有符合 <paramref name="pattern" /> 的項目，則方法傳回未變更的目前執行個體。</returns>
+      <param name="input">用來搜尋比對的字串。</param>
+      <param name="pattern">要比對的規則運算式模式。</param>
+      <param name="evaluator">檢查每個符合項目並傳回原始符合字串或取代字串的自訂方法。</param>
+      <exception cref="T:System.ArgumentException">發生規則運算式剖析錯誤。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" />、<paramref name="pattern" /> 或 <paramref name="evaluator" /> 為 null。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Text.RegularExpressions.MatchEvaluator,System.Text.RegularExpressions.RegexOptions)">
+      <summary>在指定的輸入字串中，使用 <see cref="T:System.Text.RegularExpressions.MatchEvaluator" /> 委派所傳回的字串來取代所有符合指定之規則運算式的字串。指定的選項會修改符合的作業。</summary>
+      <returns>與輸入字串相同的新字串 (不同之處是取代字串會取代每一個相符的字串)。如果在目前的執行個體中沒有符合 <paramref name="pattern" /> 的項目，則方法傳回未變更的目前執行個體。</returns>
+      <param name="input">用來搜尋比對的字串。</param>
+      <param name="pattern">要比對的規則運算式模式。</param>
+      <param name="evaluator">檢查每個符合項目並傳回原始符合字串或取代字串的自訂方法。</param>
+      <param name="options">列舉值的位元組合，提供用於比對的選項。</param>
+      <exception cref="T:System.ArgumentException">發生規則運算式剖析錯誤。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" />、<paramref name="pattern" /> 或 <paramref name="evaluator" /> 為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 不是 <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 值的有效位元組合。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Text.RegularExpressions.MatchEvaluator,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>在指定的輸入字串中，使用 <see cref="T:System.Text.RegularExpressions.MatchEvaluator" /> 委派所傳回的字串來取代所有符合指定之規則運算式的子字串。如果沒有找到相符項目，其他參數會指定修改比對作業的選項和逾時間隔。</summary>
+      <returns>與輸入字串相同的新字串 (不同之處是取代字串會取代每一個相符的字串)。如果在目前的執行個體中沒有符合 <paramref name="pattern" /> 的項目，則方法傳回未變更的目前執行個體。</returns>
+      <param name="input">用來搜尋比對的字串。</param>
+      <param name="pattern">要比對的規則運算式模式。</param>
+      <param name="evaluator">檢查每個符合項目並傳回原始符合字串或取代字串的自訂方法。</param>
+      <param name="options">列舉值的位元組合，提供用於比對的選項。</param>
+      <param name="matchTimeout">間隔，若要表示此方法不會逾時則為 <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" />。</param>
+      <exception cref="T:System.ArgumentException">發生規則運算式剖析錯誤。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" />、<paramref name="pattern" /> 或 <paramref name="evaluator" /> 為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 不是 <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 值的有效位元組合。-或-<paramref name="matchTimeout" /> 為負數、零或大約大於 24 天。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator)">
+      <summary>在指定的輸入字串中，使用 <see cref="T:System.Text.RegularExpressions.MatchEvaluator" /> 委派所傳回的字串來取代所有符合指定之規則運算式的字串。</summary>
+      <returns>與輸入字串相同的新字串 (不同之處是取代字串會取代每一個相符的字串)。如果規則運算式模式在目前執行個體中沒有符合項目，方法會傳回未變更的目前執行個體。</returns>
+      <param name="input">用來搜尋比對的字串。</param>
+      <param name="evaluator">檢查每個符合項目並傳回原始符合字串或取代字串的自訂方法。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="evaluator" /> 為 null。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32)">
+      <summary>在指定的輸入字串中，使用 <see cref="T:System.Text.RegularExpressions.MatchEvaluator" /> 委派所傳回的字串來取代符合規則運算式模式的指定最大字串數目。</summary>
+      <returns>與輸入字串相同的新字串 (不同之處是取代字串會取代每一個相符的字串)。如果規則運算式模式在目前執行個體中沒有符合項目，方法會傳回未變更的目前執行個體。</returns>
+      <param name="input">用來搜尋比對的字串。</param>
+      <param name="evaluator">檢查每個符合項目並傳回原始符合字串或取代字串的自訂方法。</param>
+      <param name="count">取代將發生的最多次數。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="evaluator" /> 為 null。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32,System.Int32)">
+      <summary>在指定的輸入子字串中，使用 <see cref="T:System.Text.RegularExpressions.MatchEvaluator" /> 委派所傳回的字串來取代符合規則運算式模式的指定最大字串數目。</summary>
+      <returns>與輸入字串相同的新字串 (不同之處是取代字串會取代每一個相符的字串)。如果規則運算式模式在目前執行個體中沒有符合項目，方法會傳回未變更的目前執行個體。</returns>
+      <param name="input">用來搜尋比對的字串。</param>
+      <param name="evaluator">檢查每個符合項目並傳回原始符合字串或取代字串的自訂方法。</param>
+      <param name="count">取代將發生的最多次數。</param>
+      <param name="startat">在輸入字串中開始搜尋的字元位置。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="evaluator" /> 為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startat" /> 小於零或是大於 <paramref name="input" /> 的長度。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Regex.RightToLeft">
+      <summary>取得值，指出規則運算式是否由右至左搜尋。</summary>
+      <returns>如果規則運算式由右至左搜尋，則為 true，否則為 false。</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Split(System.String)">
+      <summary>在 <see cref="T:System.Text.RegularExpressions.Regex" /> 建構函式中指定之規則運算式模式所定義的位置，將輸入字串分隔成子字串的陣列。</summary>
+      <returns>字串的陣列。</returns>
+      <param name="input">要分隔的字串。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 為 null。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32)">
+      <summary>在 <see cref="T:System.Text.RegularExpressions.Regex" /> 建構函式中指定的規則運算式所定義的位置，以指定的最大次數來將輸入字串分隔成子字串的陣列。</summary>
+      <returns>字串的陣列。</returns>
+      <param name="input">要分隔的字串。</param>
+      <param name="count">分隔作業可以發生的最多次數。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 為 null。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32,System.Int32)">
+      <summary>在 <see cref="T:System.Text.RegularExpressions.Regex" /> 建構函式中指定的規則運算式所定義的位置，以指定的最大次數來將輸入字串分隔成子字串的陣列。規則運算式模式從輸入字串中指定的字元位置開始搜尋。</summary>
+      <returns>字串的陣列。</returns>
+      <param name="input">要分隔的字串。</param>
+      <param name="count">分隔作業可以發生的最多次數。</param>
+      <param name="startat">在輸入字串中要開始搜尋的字元位置。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startat" /> 小於零或是大於 <paramref name="input" /> 的長度。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Split(System.String,System.String)">
+      <summary>在規則運算式模式所定義的位置，將輸入字串分割成子字串陣列。</summary>
+      <returns>字串的陣列。</returns>
+      <param name="input">要分隔的字串。</param>
+      <param name="pattern">要比對的規則運算式模式。</param>
+      <exception cref="T:System.ArgumentException">發生規則運算式剖析錯誤。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="pattern" /> 為 null。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Split(System.String,System.String,System.Text.RegularExpressions.RegexOptions)">
+      <summary>在指定的規則運算式模式所定義的位置，將輸入字串分割成子字串陣列。指定的選項會修改符合的作業。</summary>
+      <returns>字串的陣列。</returns>
+      <param name="input">要分隔的字串。</param>
+      <param name="pattern">要比對的規則運算式模式。</param>
+      <param name="options">列舉值的位元組合，提供用於比對的選項。</param>
+      <exception cref="T:System.ArgumentException">發生規則運算式剖析錯誤。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="pattern" /> 為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 不是 <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 值的有效位元組合。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Split(System.String,System.String,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>在指定的規則運算式模式所定義的位置，將輸入字串分割成子字串陣列。如果沒有找到相符項目，其他參數會指定修改比對作業的選項和逾時間隔。</summary>
+      <returns>字串陣列。</returns>
+      <param name="input">要分隔的字串。</param>
+      <param name="pattern">要比對的規則運算式模式。</param>
+      <param name="options">列舉值的位元組合，提供用於比對的選項。</param>
+      <param name="matchTimeout">間隔，若要表示此方法不會逾時則為 <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" />。</param>
+      <exception cref="T:System.ArgumentException">發生規則運算式剖析錯誤。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="pattern" /> 為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 不是 <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 值的有效位元組合。-或-<paramref name="matchTimeout" /> 為負數、零或大約大於 24 天。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">發生逾時。如需逾時的詳細資訊，請參閱＜備註＞一節。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.ToString">
+      <summary>傳回傳遞至 Regex 建構函式中的規則運算式模式。</summary>
+      <returns>
+        <paramref name="pattern" /> 參數，傳遞至 Regex 建構函式。</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Unescape(System.String)">
+      <summary>轉換輸入字串中任何逸出的字元。</summary>
+      <returns>字元字串，其中任何逸出字元轉換成其未逸出格式。</returns>
+      <param name="str">輸入字串，包含要轉換的文字。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="str" /> 包含無法辨認的逸出序列。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> 為 null。</exception>
+    </member>
+    <member name="T:System.Text.RegularExpressions.RegexMatchTimeoutException">
+      <summary>當規則運算式模式比對方法的執行時間超過其逾時間隔時，所擲回的例外狀況。</summary>
+    </member>
+    <member name="M:System.Text.RegularExpressions.RegexMatchTimeoutException.#ctor">
+      <summary>使用系統提供的訊息，初始化 <see cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="M:System.Text.RegularExpressions.RegexMatchTimeoutException.#ctor(System.String)">
+      <summary>使用指定的訊息字串，初始化 <see cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException" /> 類別的新執行個體。</summary>
+      <param name="message">描述例外狀況的字串。</param>
+    </member>
+    <member name="M:System.Text.RegularExpressions.RegexMatchTimeoutException.#ctor(System.String,System.Exception)">
+      <summary>使用指定的錯誤訊息和造成這個例外狀況原因的內部例外狀況參考，初始化 <see cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException" /> 類別的新執行個體。</summary>
+      <param name="message">描述例外狀況的字串。</param>
+      <param name="inner">導致目前例外狀況的例外。</param>
+    </member>
+    <member name="M:System.Text.RegularExpressions.RegexMatchTimeoutException.#ctor(System.String,System.String,System.TimeSpan)">
+      <summary>使用規則運算式模式、輸入文字，以及逾時間隔的相關資訊，初始化 <see cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException" /> 類別的新執行個體。</summary>
+      <param name="regexInput">當發生逾時，由規則運算式引擎所處理的輸入文字。</param>
+      <param name="regexPattern">當發生逾時，由規則運算式引擎所使用的模式。</param>
+      <param name="matchTimeout">逾時間隔。</param>
+    </member>
+    <member name="P:System.Text.RegularExpressions.RegexMatchTimeoutException.Input">
+      <summary>取得當發生逾時，規則運算式引擎所處理的輸入文字。</summary>
+      <returns>規則運算式輸入文字。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.RegexMatchTimeoutException.MatchTimeout">
+      <summary>取得規則運算式比對的逾時間隔。</summary>
+      <returns>逾時間隔。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.RegexMatchTimeoutException.Pattern">
+      <summary>取得當發生逾時，比對作業中所使用的規則運算式模式。</summary>
+      <returns>規則運算式模式。</returns>
+    </member>
+    <member name="T:System.Text.RegularExpressions.RegexOptions">
+      <summary>提供用來設定規則運算式 (Regular Expression) 選項的列舉值。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.Compiled">
+      <summary>指定將規則運算式編譯為組件。這將產生較快速的執行，但會增加啟動時間。在呼叫 <see cref="M:System.Text.RegularExpressions.Regex.CompileToAssembly(System.Text.RegularExpressions.RegexCompilationInfo[],System.Reflection.AssemblyName)" /> 方法時，不應將這個值指派至 <see cref="P:System.Text.RegularExpressions.RegexCompilationInfo.Options" /> 屬性。如需詳細資訊，請參閱 規則運算式選項 主題中的＜已編譯的規則運算式＞一節。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.CultureInvariant">
+      <summary>指定忽略語言中的文化差異。如需詳細資訊，請參閱 規則運算式選項 主題中的＜使用不因文化特性而異的比較＞一節。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.ECMAScript">
+      <summary>啟用運算式的 ECMAScript 相容行為。這個值只能結合 <see cref="F:System.Text.RegularExpressions.RegexOptions.IgnoreCase" />、<see cref="F:System.Text.RegularExpressions.RegexOptions.Multiline" /> 和 <see cref="F:System.Text.RegularExpressions.RegexOptions.Compiled" /> 值使用。將這個值與任何其他值一起使用都將導致例外狀況。如需 <see cref="F:System.Text.RegularExpressions.RegexOptions.ECMAScript" /> 選項的詳細資訊，請參閱 規則運算式選項 主題中的＜ECMAScript 比對行為＞一節。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.ExplicitCapture">
+      <summary>指定唯一有效的擷取為明確命名的或編號的，格式為 (?&lt;name&gt;…) 的群組。這允許未命名的括號充當非擷取群組，而避免運算式 (?:…) 的語法不便。如需詳細資訊，請參閱 規則運算式選項 主題中的＜僅限明確擷取＞一節。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.IgnoreCase">
+      <summary>指定區分大小寫的比對。如需詳細資訊，請參閱 規則運算式選項 主題中的＜不區分大小寫的比對＞一節。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.IgnorePatternWhitespace">
+      <summary>從模式排除未逸出的空白字元 (White Space)，並啟用以 # 標記的註解。不過，這個值不會影響或排除字元類別中的空白字元、數值數量詞，或是標示個別規則運算式語言項目開始的語彙基元。如需詳細資訊，請參閱 規則運算式選項 主題中的＜忽略空白字元＞一節。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.Multiline">
+      <summary>多行模式。變更 ^ 和 $ 的意義以致它們分別在任何一行的開頭和結尾做比對，而不只是整個字串的開頭和結尾。如需詳細資訊，請參閱 規則運算式選項 主題中的＜多行模式＞一節。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.None">
+      <summary>指定無選項設定。如需規則運算式引擎預設行為的詳細資訊，請參閱 規則運算式選項 主題中的＜預設選項＞一節。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.RightToLeft">
+      <summary>指定搜尋將由右至左，而非由左至右。如需詳細資訊，請參閱 規則運算式選項 主題中的＜從右至左模式＞一節。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.Singleline">
+      <summary>指定單行模式。變更點 (.) 的意義，使它符合一切字元 (而不是 \n 之外的一切字元)。如需詳細資訊，請參閱 規則運算式選項 主題中的＜單行模式＞一節。</summary>
+    </member>
+  </members>
+</doc>

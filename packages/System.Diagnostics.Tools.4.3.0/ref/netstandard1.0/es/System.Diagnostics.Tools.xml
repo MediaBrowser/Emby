@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Diagnostics.Tools</name>
+  </assembly>
+  <members>
+    <member name="T:System.CodeDom.Compiler.GeneratedCodeAttribute">
+      <summary>Identifica el código generado por una herramienta.Esta clase no puede heredarse.</summary>
+    </member>
+    <member name="M:System.CodeDom.Compiler.GeneratedCodeAttribute.#ctor(System.String,System.String)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.CodeDom.Compiler.GeneratedCodeAttribute" />, especificando el nombre y la versión de la herramienta que generó el código.</summary>
+      <param name="tool">Nombre de la herramienta que generó el código.</param>
+      <param name="version">Versión de la herramienta que generó el código.</param>
+    </member>
+    <member name="P:System.CodeDom.Compiler.GeneratedCodeAttribute.Tool">
+      <summary>Obtiene el nombre de la herramienta que generó el código.</summary>
+      <returns>Nombre de la herramienta que generó el código.</returns>
+    </member>
+    <member name="P:System.CodeDom.Compiler.GeneratedCodeAttribute.Version">
+      <summary>Obtiene el nombre de la versión de la herramienta que generó el código.</summary>
+      <returns>Versión de la herramienta que generó el código.</returns>
+    </member>
+    <member name="T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute">
+      <summary>Suprime la elaboración de un informe de la infracción de una regla específica de la herramienta de análisis estático, permitiendo varias supresiones en un solo artefacto de código.</summary>
+    </member>
+    <member name="M:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.#ctor(System.String,System.String)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute" />, especificando la categoría de la herramienta de análisis estático y el identificador de una regla de análisis. </summary>
+      <param name="category">Categoría del atributo.</param>
+      <param name="checkId">Identificador de la regla de la herramienta de análisis a la que se aplica el atributo.</param>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Category">
+      <summary>Obtiene la categoría que identifica la clasificación del atributo.</summary>
+      <returns>Categoría que identifica el atributo.</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.CheckId">
+      <summary>Obtiene el identificador de la regla de la herramienta de análisis estático que se va a suprimir.</summary>
+      <returns>El identificador de la regla de la herramienta de análisis estático que se va a suprimir.</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Justification">
+      <summary>Obtiene o establece la justificación para suprimir el mensaje de análisis de código.</summary>
+      <returns>La justificación para suprimir el mensaje.</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.MessageId">
+      <summary>Obtiene o establece un argumento opcional que amplía los criterios de exclusión.</summary>
+      <returns>Una cadena que contiene los criterios de exclusión ampliados.</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Scope">
+      <summary>Obtiene o establece el ámbito del código que es relevante para el atributo.</summary>
+      <returns>El ámbito del código que es relevante para el atributo.</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Target">
+      <summary>Obtiene o establece una ruta de acceso completa que representa el destino del atributo.</summary>
+      <returns>Una ruta de acceso completa que representa el destino del atributo.</returns>
+    </member>
+  </members>
+</doc>

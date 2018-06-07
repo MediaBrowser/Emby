@@ -1,0 +1,1019 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Text.Encoding</name>
+  </assembly>
+  <members>
+    <member name="T:System.Text.Decoder">
+      <summary>将一个编码字节序列转换为一组字符。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Decoder.#ctor">
+      <summary>初始化 <see cref="T:System.Text.Decoder" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Text.Decoder.Convert(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32,System.Int32,System.Boolean,System.Int32@,System.Int32@,System.Boolean@)">
+      <summary>将已编码字节的数组转换为 UTF-16 编码字符，然后将结果存储在字符数组中。</summary>
+      <param name="bytes">要转换的字节数组。</param>
+      <param name="byteIndex">要转换的 <paramref name="bytes" /> 的第一个元素。</param>
+      <param name="byteCount">要转换的 <paramref name="bytes" /> 的元素数。</param>
+      <param name="chars">一个数组，存储已转换的字符。</param>
+      <param name="charIndex">存储数据的 <paramref name="chars" /> 中的第一个元素。</param>
+      <param name="charCount">要用于转换的 <paramref name="chars" /> 中的最大元素数。</param>
+      <param name="flush">如果要指示没有要转换的更多数据，则为 true；否则为 false。</param>
+      <param name="bytesUsed">此方法在返回时包含用于转换的字节数。该参数未经初始化即被传递。</param>
+      <param name="charsUsed">此方法在返回时包含转换产生的 <paramref name="chars" /> 中的字符数。该参数未经初始化即被传递。</param>
+      <param name="completed">此方法返回时，如果 <paramref name="byteCount" /> 指定的所有字符均已转换，则包含 true；否则包含 false。该参数未经初始化即被传递。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> 或 <paramref name="bytes" /> 为 null (Nothing)。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" />、<paramref name="charCount" />、<paramref name="byteIndex" /> 或 <paramref name="byteCount" /> 小于零。- 或 -<paramref name="chars" /> 的长度 -<paramref name="charIndex" /> 小于 <paramref name="charCount" />。- 或 -<paramref name="bytes" /> 的长度 -<paramref name="byteIndex" /> 小于 <paramref name="byteCount" />。</exception>
+      <exception cref="T:System.ArgumentException">输出缓冲区太小，无法包含任何已转换的输入。输出缓冲区应大于或等于 <see cref="Overload:System.Text.Decoder.GetCharCount" /> 方法指示的大小。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得更详细的解释）－和－将 <see cref="P:System.Text.Decoder.Fallback" /> 设置为 <see cref="T:System.Text.DecoderExceptionFallback" />。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.Decoder.Fallback">
+      <summary>获取或设置当前 <see cref="T:System.Text.Decoder" /> 对象的 <see cref="T:System.Text.DecoderFallback" /> 对象。</summary>
+      <returns>一个 <see cref="T:System.Text.DecoderFallback" /> 对象。</returns>
+      <exception cref="T:System.ArgumentNullException">设置操作中的值为 null (Nothing)。</exception>
+      <exception cref="T:System.ArgumentException">无法在设置操作中赋新值，这是因为当前 <see cref="T:System.Text.DecoderFallbackBuffer" /> 对象含有尚未解码的数据。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Decoder.FallbackBuffer">
+      <summary>获取与当前 <see cref="T:System.Text.Decoder" /> 对象关联的 <see cref="T:System.Text.DecoderFallbackBuffer" /> 对象。</summary>
+      <returns>一个 <see cref="T:System.Text.DecoderFallbackBuffer" /> 对象。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Decoder.GetCharCount(System.Byte[],System.Int32,System.Int32)">
+      <summary>在派生类中重写时，计算对字节序列（从指定字节数组开始）进行解码所产生的字符数。</summary>
+      <returns>对指定的字节序列和内部缓冲区中的任何字节进行解码所产生的字符数。</returns>
+      <param name="bytes">包含要解码的字节序列的字节数组。</param>
+      <param name="index">第一个要解码的字节的索引。</param>
+      <param name="count">要解码的字节数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> 为 null (Nothing)。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> 或 <paramref name="count" /> 小于零。- 或 -<paramref name="index" /> 和 <paramref name="count" /> 不表示 <paramref name="bytes" /> 中的有效范围。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得更详细的解释）－和－将 <see cref="P:System.Text.Decoder.Fallback" /> 设置为 <see cref="T:System.Text.DecoderExceptionFallback" />。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Decoder.GetCharCount(System.Byte[],System.Int32,System.Int32,System.Boolean)">
+      <summary>在派生类中重写时，计算对字节序列（从指定字节数组开始）进行解码所产生的字符数。一个参数，指示计算后是否要清除解码器的内部状态。</summary>
+      <returns>对指定的字节序列和内部缓冲区中的任何字节进行解码所产生的字符数。</returns>
+      <param name="bytes">包含要解码的字节序列的字节数组。</param>
+      <param name="index">第一个要解码的字节的索引。</param>
+      <param name="count">要解码的字节数。</param>
+      <param name="flush">如果要在计算后模拟编码器内部状态的清除过程，则为 true；否则为 false。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> 为 null (Nothing)。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> 或 <paramref name="count" /> 小于零。- 或 -<paramref name="index" /> 和 <paramref name="count" /> 不表示 <paramref name="bytes" /> 中的有效范围。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得更详细的解释）－和－将 <see cref="P:System.Text.Decoder.Fallback" /> 设置为 <see cref="T:System.Text.DecoderExceptionFallback" />。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Decoder.GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)">
+      <summary>在派生类中重写时，将指定字节数组的字节序列和内部缓冲区中的任何字节解码到指定的字符数组。</summary>
+      <returns>写入 <paramref name="chars" /> 的实际字符数。</returns>
+      <param name="bytes">包含要解码的字节序列的字节数组。</param>
+      <param name="byteIndex">第一个要解码的字节的索引。</param>
+      <param name="byteCount">要解码的字节数。</param>
+      <param name="chars">要用于包含所产生的字符集的字符数组。</param>
+      <param name="charIndex">开始写入所产生的字符集的索引位置。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> 为 null (Nothing)。- 或 -<paramref name="chars" /> 为 null (Nothing)。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteIndex" />、<paramref name="byteCount" /> 或 <paramref name="charIndex" /> 小于零。- 或 -<paramref name="byteindex" /> 和 <paramref name="byteCount" /> 不表示 <paramref name="bytes" /> 中的有效范围。- 或 -<paramref name="charIndex" /> 不是 <paramref name="chars" /> 中的有效索引。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="chars" /> 中从 <paramref name="charIndex" /> 到数组结尾没有足够容量来容纳所产生的字符。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得更详细的解释）－和－将 <see cref="P:System.Text.Decoder.Fallback" /> 设置为 <see cref="T:System.Text.DecoderExceptionFallback" />。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Decoder.GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32,System.Boolean)">
+      <summary>在派生类中重写时，将指定字节数组的字节序列和内部缓冲区中的任何字节解码到指定的字符数组。一个参数，指示转换后是否要清除解码器的内部状态。</summary>
+      <returns>写入 <paramref name="chars" /> 参数的实际字符数。</returns>
+      <param name="bytes">包含要解码的字节序列的字节数组。</param>
+      <param name="byteIndex">第一个要解码的字节的索引。</param>
+      <param name="byteCount">要解码的字节数。</param>
+      <param name="chars">要用于包含所产生的字符集的字符数组。</param>
+      <param name="charIndex">开始写入所产生的字符集的索引位置。</param>
+      <param name="flush">如果要在转换后清除解码器的内部状态，则为 true；否则，为 false。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> 为 null (Nothing)。- 或 -<paramref name="chars" /> 为 null (Nothing)。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteIndex" />、<paramref name="byteCount" /> 或 <paramref name="charIndex" /> 小于零。- 或 -<paramref name="byteindex" /> 和 <paramref name="byteCount" /> 不表示 <paramref name="bytes" /> 中的有效范围。- 或 -<paramref name="charIndex" /> 不是 <paramref name="chars" /> 中的有效索引。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="chars" /> 中从 <paramref name="charIndex" /> 到数组结尾没有足够容量来容纳所产生的字符。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得更详细的解释）－和－将 <see cref="P:System.Text.Decoder.Fallback" /> 设置为 <see cref="T:System.Text.DecoderExceptionFallback" />。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Decoder.Reset">
+      <summary>在派生类中重写时，将解码器设置回它的初始状态。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.DecoderExceptionFallback">
+      <summary>为不能转换为输入字符的已编码输入字节序列提供失败处理机制（称为“回退”）。回退引发异常，而不是解码输入字节序列。此类不能被继承。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderExceptionFallback.#ctor">
+      <summary>初始化 <see cref="T:System.Text.DecoderExceptionFallback" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Text.DecoderExceptionFallback.CreateFallbackBuffer">
+      <summary>返回解码器回退缓冲区，如果无法将字节序列转换为字符，该缓冲区将引发异常。</summary>
+      <returns>当无法解码字节序列时，解码器回退缓冲区引发异常。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderExceptionFallback.Equals(System.Object)">
+      <summary>指示当前 <see cref="T:System.Text.DecoderExceptionFallback" /> 对象与指定对象是否相等。</summary>
+      <returns>如果 <paramref name="value" /> 不为 null 且是一个 <see cref="T:System.Text.DecoderExceptionFallback" /> 对象，则为 true；否则，为 false。</returns>
+      <param name="value">从 <see cref="T:System.Text.DecoderExceptionFallback" /> 类派生的对象。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderExceptionFallback.GetHashCode">
+      <summary>检索此实例的哈希代码。</summary>
+      <returns>返回值始终是相同的任意值，没有特别的意义。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderExceptionFallback.MaxCharCount">
+      <summary>获取此实例可以返回的最大字符数。</summary>
+      <returns>返回值始终为零。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.DecoderFallback">
+      <summary>为不能转换为输出字符的已编码输入字节序列提供失败处理机制（称为“回退”）。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderFallback.#ctor">
+      <summary>初始化 <see cref="T:System.Text.DecoderFallback" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Text.DecoderFallback.CreateFallbackBuffer">
+      <summary>在派生类中重写时，将初始化 <see cref="T:System.Text.DecoderFallbackBuffer" /> 类的新实例。</summary>
+      <returns>提供解码器回退缓冲区的对象。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderFallback.ExceptionFallback">
+      <summary>获取无法解码输入字节序列时引发异常的对象。</summary>
+      <returns>从 <see cref="T:System.Text.DecoderFallback" /> 类派生的类型。默认值为 <see cref="T:System.Text.DecoderExceptionFallback" /> 对象。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderFallback.MaxCharCount">
+      <summary>当用派生类重写时，获取当前 <see cref="T:System.Text.DecoderFallback" /> 对象能返回的最大字符数。</summary>
+      <returns>当前 <see cref="T:System.Text.DecoderFallback" /> 对象能返回的最大字符数。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderFallback.ReplacementFallback">
+      <summary>获取输出替代字符串的对象，以替代无法解码的输入字节序列。</summary>
+      <returns>从 <see cref="T:System.Text.DecoderFallback" /> 类派生的类型。默认值是发出问号字符（“?”和 U+003F）来替代未知字节序列的 <see cref="T:System.Text.DecoderReplacementFallback" /> 对象。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Text.DecoderFallbackBuffer">
+      <summary>提供一个允许回退处理程序在无法解码输入的字节序列时返回备用字符串到解码器的缓冲区。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderFallbackBuffer.#ctor">
+      <summary>初始化 <see cref="T:System.Text.DecoderFallbackBuffer" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Text.DecoderFallbackBuffer.Fallback(System.Byte[],System.Int32)">
+      <summary>在派生类中被重写时，准备回退缓冲区以便对指定输入字节序列进行处理。</summary>
+      <returns>如果回退缓冲区可以处理 <paramref name="bytesUnknown" />，则为 true；如果回退缓冲区忽略 <paramref name="bytesUnknown" />，则为 false。</returns>
+      <param name="bytesUnknown">字节的输入数组。</param>
+      <param name="index">
+        <paramref name="bytesUnknown" /> 中字节的索引位置。</param>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderFallbackBuffer.GetNextChar">
+      <summary>在派生类中重写后，此方法检索回退缓冲区中的下一个字符。</summary>
+      <returns>回退缓冲区中的下一个字符。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderFallbackBuffer.MovePrevious">
+      <summary>在派生类中被重写时，将导致下一次调用 <see cref="M:System.Text.DecoderFallbackBuffer.GetNextChar" /> 方法，以便访问位于当前字符位置之前的数据缓冲区字符位置。</summary>
+      <returns>如果 <see cref="M:System.Text.DecoderFallbackBuffer.MovePrevious" /> 操作成功，则为 true；否则为 false。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderFallbackBuffer.Remaining">
+      <summary>在派生类中被重写时，获取尚未处理的当前 <see cref="T:System.Text.DecoderFallbackBuffer" /> 对象中的字符数。</summary>
+      <returns>尚未处理的当前回退缓冲区中的字符数。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderFallbackBuffer.Reset">
+      <summary>初始化所有与此回退缓冲区相关的数据和状态信息。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Text.DecoderFallbackException">
+      <summary>解码器回退操作失败时引发的异常。此类不能被继承。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderFallbackException.#ctor">
+      <summary>初始化 <see cref="T:System.Text.DecoderFallbackException" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Text.DecoderFallbackException.#ctor(System.String)">
+      <summary>初始化 <see cref="T:System.Text.DecoderFallbackException" /> 类的新实例。一个参数指定错误信息。</summary>
+      <param name="message">错误信息。</param>
+    </member>
+    <member name="M:System.Text.DecoderFallbackException.#ctor(System.String,System.Byte[],System.Int32)">
+      <summary>初始化 <see cref="T:System.Text.DecoderFallbackException" /> 类的新实例。参数指定错误信息、被解码的字节数组和无法被解码的字节的索引。</summary>
+      <param name="message">错误信息。</param>
+      <param name="bytesUnknown">输入字节数组。</param>
+      <param name="index">无法解码的字节在 <paramref name="bytesUnknown" /> 中的索引位置。</param>
+    </member>
+    <member name="M:System.Text.DecoderFallbackException.#ctor(System.String,System.Exception)">
+      <summary>初始化 <see cref="T:System.Text.DecoderFallbackException" /> 类的新实例。参数指定错误信息和导致此异常的内部异常。</summary>
+      <param name="message">错误信息。</param>
+      <param name="innerException">导致此异常的异常。</param>
+    </member>
+    <member name="P:System.Text.DecoderFallbackException.BytesUnknown">
+      <summary>获取导致异常的输入字节序列。</summary>
+      <returns>无法解码的输入字节数组。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderFallbackException.Index">
+      <summary>获取导致异常的字节在输入字节序列中的索引位置。</summary>
+      <returns>无法解码的字节在输入字节数组中的索引位置。索引位置是从零开始的。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Text.DecoderReplacementFallback">
+      <summary>为不能转换为输出字符的已编码输入字节序列提供称为“回退”的失败处理机制。回退发出用户指定的替换字符串，而不是已解码的输入字节序列。此类不能被继承。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderReplacementFallback.#ctor">
+      <summary>初始化 <see cref="T:System.Text.DecoderReplacementFallback" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Text.DecoderReplacementFallback.#ctor(System.String)">
+      <summary>使用指定的替换字符串初始化 <see cref="T:System.Text.DecoderReplacementFallback" /> 类的新实例。</summary>
+      <param name="replacement">在解码操作中发出的、用以替换无法解码的输入字节序列的字符串。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="replacement" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="replacement" /> 包含无效的代理项对。也就是说，代理项对不是由一个高代理项组件后面跟着一个低代理项组件组成。</exception>
+    </member>
+    <member name="M:System.Text.DecoderReplacementFallback.CreateFallbackBuffer">
+      <summary>创建一个 <see cref="T:System.Text.DecoderFallbackBuffer" /> 对象，该对象是用此 <see cref="T:System.Text.DecoderReplacementFallback" /> 对象的替换字符串初始化的。</summary>
+      <returns>一个 <see cref="T:System.Text.DecoderFallbackBuffer" /> 对象，它指定要使用的字符串而不是原始解码操作输入。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderReplacementFallback.DefaultString">
+      <summary>获取作为此 <see cref="T:System.Text.DecoderReplacementFallback" /> 对象的值的替换字符串。</summary>
+      <returns>发出的用以替换无法解码的输入字节序列的替代字符串。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderReplacementFallback.Equals(System.Object)">
+      <summary>指示指定对象的值是否与等于此 <see cref="T:System.Text.DecoderReplacementFallback" /> 对象的值。</summary>
+      <returns>true if <paramref name="value" /> is a <see cref="T:System.Text.DecoderReplacementFallback" /> object having a <see cref="P:System.Text.DecoderReplacementFallback.DefaultString" /> property that is equal to the <see cref="P:System.Text.DecoderReplacementFallback.DefaultString" /> property of the current <see cref="T:System.Text.DecoderReplacementFallback" /> object; otherwise, false.</returns>
+      <param name="value">
+        <see cref="T:System.Text.DecoderReplacementFallback" /> 对象。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderReplacementFallback.GetHashCode">
+      <summary>检索此 <see cref="T:System.Text.DecoderReplacementFallback" /> 对象的值的哈希代码。</summary>
+      <returns>此对象的值的哈希代码。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderReplacementFallback.MaxCharCount">
+      <summary>获取此 <see cref="T:System.Text.DecoderReplacementFallback" /> 对象的替换字符串中的字符数。</summary>
+      <returns>发出的用以替换无法解码的字节序列的字符串中的字符数，也就是说，由 <see cref="P:System.Text.DecoderReplacementFallback.DefaultString" /> 属性返回的字符串长度。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.Encoder">
+      <summary>将一组字符转换为一个字节序列。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoder.#ctor">
+      <summary>初始化 <see cref="T:System.Text.Encoder" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Text.Encoder.Convert(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@,System.Int32@,System.Boolean@)">
+      <summary>将 Unicode 字符数组转换为编码的字节序列并将结果存储在字节数组中。</summary>
+      <param name="chars">要转换的字符数组。</param>
+      <param name="charIndex">要转换的 <paramref name="chars" /> 的第一个元素。</param>
+      <param name="charCount">要转换的 <paramref name="chars" /> 的元素数。</param>
+      <param name="bytes">一个数组，其中存储已转换的字节。</param>
+      <param name="byteIndex">用来存储数据的 <paramref name="bytes" /> 的第一个元素。</param>
+      <param name="byteCount">要用于转换的 <paramref name="bytes" /> 的最大元素数。</param>
+      <param name="flush">如果要指示没有要转换的更多数据，则为 true；否则为 false。</param>
+      <param name="charsUsed">此方法在返回时包含用于转换的 <paramref name="chars" /> 中的字符数。该参数未经初始化即被传递。</param>
+      <param name="bytesUsed">此方法在返回时包含转换所产生的字节数。该参数未经初始化即被传递。</param>
+      <param name="completed">此方法返回时，如果 <paramref name="charCount" /> 指定的所有字符均已转换，则包含 true；否则包含 false。该参数未经初始化即被传递。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> 或 <paramref name="bytes" /> 为 null (Nothing)。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" />、<paramref name="charCount" />、<paramref name="byteIndex" /> 或 <paramref name="byteCount" /> 小于零。- 或 -<paramref name="chars" /> 的长度 -<paramref name="charIndex" /> 小于 <paramref name="charCount" />。- 或 -<paramref name="bytes" /> 的长度 -<paramref name="byteIndex" /> 小于 <paramref name="byteCount" />。</exception>
+      <exception cref="T:System.ArgumentException">输出缓冲区太小，无法包含任何已转换的输入。输出缓冲区应大于或等于 <see cref="Overload:System.Text.Encoder.GetByteCount" /> 方法指示的大小。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得更详细的解释）－和－将 <see cref="P:System.Text.Encoder.Fallback" /> 设置为 <see cref="T:System.Text.EncoderExceptionFallback" />。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoder.Fallback">
+      <summary>获取或设置当前 <see cref="T:System.Text.Encoder" /> 对象的 <see cref="T:System.Text.EncoderFallback" /> 对象。</summary>
+      <returns>一个 <see cref="T:System.Text.EncoderFallback" /> 对象。</returns>
+      <exception cref="T:System.ArgumentNullException">设置操作中的值为 null (Nothing)。</exception>
+      <exception cref="T:System.ArgumentException">无法在设置操作中赋新值，这是因为当前 <see cref="T:System.Text.EncoderFallbackBuffer" /> 对象含有尚未编码的数据。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得更详细的解释）－和－将 <see cref="P:System.Text.Encoder.Fallback" /> 设置为 <see cref="T:System.Text.EncoderExceptionFallback" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoder.FallbackBuffer">
+      <summary>获取与当前 <see cref="T:System.Text.Encoder" /> 对象关联的 <see cref="T:System.Text.EncoderFallbackBuffer" /> 对象。</summary>
+      <returns>一个 <see cref="T:System.Text.EncoderFallbackBuffer" /> 对象。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoder.GetByteCount(System.Char[],System.Int32,System.Int32,System.Boolean)">
+      <summary>在派生类中重写时，计算对指定字符数组中的一组字符进行编码所产生的字节数。一个参数指示计算后是否要清除编码器的内部状态。</summary>
+      <returns>通过对指定字符和内部缓冲区中的所有字符进行编码而产生的字节数。</returns>
+      <param name="chars">包含要编码的字符集的字符数组。</param>
+      <param name="index">第一个要编码的字符的索引。</param>
+      <param name="count">要编码的字符的数目。</param>
+      <param name="flush">如果要在计算后模拟编码器内部状态的清除过程，则为 true；否则为 false。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> 或 <paramref name="count" /> 小于零。- 或 -<paramref name="index" /> 和 <paramref name="count" /> 不表示 <paramref name="chars" /> 中的有效范围。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得更详细的解释）－和－将 <see cref="P:System.Text.Encoder.Fallback" /> 设置为 <see cref="T:System.Text.EncoderExceptionFallback" />。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoder.GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Boolean)">
+      <summary>在派生类中重写时，将指定字符数组中的一组字符和内部缓冲区中的任何字符编码到指定的字节数组中。一个参数指示转换后是否清除编码器的内部状态。</summary>
+      <returns>写入 <paramref name="bytes" /> 的实际字节数。</returns>
+      <param name="chars">包含要编码的字符集的字符数组。</param>
+      <param name="charIndex">第一个要编码的字符的索引。</param>
+      <param name="charCount">要编码的字符的数目。</param>
+      <param name="bytes">要包含所产生的字节序列的字节数组。</param>
+      <param name="byteIndex">开始写入所产生的字节序列的索引位置。</param>
+      <param name="flush">如果要在转换后清除编码器的内部状态，则为 true；否则为 false。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> 为 null (Nothing)。- 或 -<paramref name="bytes" /> 为 null (Nothing)。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" />、<paramref name="charCount" /> 或 <paramref name="byteIndex" /> 小于零。- 或 -<paramref name="charIndex" /> 和 <paramref name="charCount" /> 不表示 <paramref name="chars" /> 中的有效范围。- 或 -<paramref name="byteIndex" /> 不是 <paramref name="bytes" /> 中的有效索引。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="bytes" /> 中从 <paramref name="byteIndex" /> 到数组结尾没有足够的容量来容纳所产生的字节。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得更详细的解释）－和－将 <see cref="P:System.Text.Encoder.Fallback" /> 设置为 <see cref="T:System.Text.EncoderExceptionFallback" />。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoder.Reset">
+      <summary>在派生类中重写时，将编码器设置回它的初始状态。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.EncoderExceptionFallback">
+      <summary>为不能转换为输出字节序列的输入字符提供一个称为“回退”的失败处理机制。如果输入字符无法转换为输出字节序列，则回退引发异常。此类不能被继承。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderExceptionFallback.#ctor">
+      <summary>初始化 <see cref="T:System.Text.EncoderExceptionFallback" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Text.EncoderExceptionFallback.CreateFallbackBuffer">
+      <summary>返回编码器回退缓冲区，如果无法将字符序列转换为字节序列，则该缓冲区引发异常。</summary>
+      <returns>当无法编码字符序列时，解码器回退缓冲区引发异常。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderExceptionFallback.Equals(System.Object)">
+      <summary>指示当前 <see cref="T:System.Text.EncoderExceptionFallback" /> 对象与指定对象是否相等。</summary>
+      <returns>如果 <paramref name="value" /> 不为 null（在 Visual Basic .NET 中为 Nothing），并且是 <see cref="T:System.Text.EncoderExceptionFallback" /> 对象，则为 true；否则为 false。</returns>
+      <param name="value">从 <see cref="T:System.Text.EncoderExceptionFallback" /> 类派生的对象。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderExceptionFallback.GetHashCode">
+      <summary>检索此实例的哈希代码。</summary>
+      <returns>返回值始终是相同的任意值，没有特别的意义。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderExceptionFallback.MaxCharCount">
+      <summary>获取此实例可以返回的最大字符数。</summary>
+      <returns>返回值始终为零。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.EncoderFallback">
+      <summary>为不能转换为已编码输出字节序列的输入字符提供称为“回退”的失败处理机制。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallback.#ctor">
+      <summary>初始化 <see cref="T:System.Text.EncoderFallback" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Text.EncoderFallback.CreateFallbackBuffer">
+      <summary>在派生类中重写时，将初始化 <see cref="T:System.Text.EncoderFallbackBuffer" /> 类的新实例。</summary>
+      <returns>提供编码器回退缓冲区的对象。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallback.ExceptionFallback">
+      <summary>获取一个对象，在无法对输入字符进行编码时，该对象将引发异常。</summary>
+      <returns>从 <see cref="T:System.Text.EncoderFallback" /> 类派生的类型。默认值为 <see cref="T:System.Text.EncoderExceptionFallback" /> 对象。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallback.MaxCharCount">
+      <summary>在派生类中重写时，获取当前 <see cref="T:System.Text.EncoderFallback" /> 对象可以返回的最大字符数。</summary>
+      <returns>当前 <see cref="T:System.Text.EncoderFallback" /> 对象可以返回的最大字符数。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallback.ReplacementFallback">
+      <summary>获取一个对象，该对象会输出一个替代字符串来代替无法编码的输入字符。</summary>
+      <returns>从 <see cref="T:System.Text.EncoderFallback" /> 类派生的类型。默认值是 <see cref="T:System.Text.EncoderReplacementFallback" /> 对象，该对象将未知输入字符替换为问号字符（“?”，U+003F）。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Text.EncoderFallbackBuffer">
+      <summary>提供一个允许回退处理程序在无法编码输入的字符时返回备用字符串到编码器的缓冲区。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackBuffer.#ctor">
+      <summary>初始化 <see cref="T:System.Text.EncoderFallbackBuffer" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Text.EncoderFallbackBuffer.Fallback(System.Char,System.Char,System.Int32)">
+      <summary>在派生类中重写后，此方法对回退缓冲区进行准备，以处理指定的代理项对。</summary>
+      <returns>如果回退缓冲区可以处理 <paramref name="charUnknownHigh" /> 和 <paramref name="charUnknownLow" />，则为 true；如果回退缓冲区忽略代理项对，则为 false。</returns>
+      <param name="charUnknownHigh">输入对的高代理项。</param>
+      <param name="charUnknownLow">输入对的低代理项。</param>
+      <param name="index">该代理项对在输入缓冲区中的索引位置。</param>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackBuffer.Fallback(System.Char,System.Int32)">
+      <summary>在派生类中重写后，此方法对回退缓冲区进行准备，以处理指定的输入字符。</summary>
+      <returns>如果回退缓冲区能处理 <paramref name="charUnknown" /> 则为 true；如果回退缓冲区忽略 <paramref name="charUnknown" />，则为 false。</returns>
+      <param name="charUnknown">一个输入字符。</param>
+      <param name="index">该字符在输入缓冲区中的索引位置。</param>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackBuffer.GetNextChar">
+      <summary>在派生类中重写后，此方法检索回退缓冲区中的下一个字符。</summary>
+      <returns>回退缓冲区中的下一个字符。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackBuffer.MovePrevious">
+      <summary>在派生类中重写后，此方法将使对 <see cref="M:System.Text.EncoderFallbackBuffer.GetNextChar" /> 方法的下一次调用访问当前字符位置之前的数据缓冲区字符位置。</summary>
+      <returns>如果 <see cref="M:System.Text.EncoderFallbackBuffer.MovePrevious" /> 操作成功，则为 true，否则为 false。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallbackBuffer.Remaining">
+      <summary>在派生类中重写后，此属性获取当前 <see cref="T:System.Text.EncoderFallbackBuffer" /> 对象中要处理的剩余字符数。</summary>
+      <returns>尚未处理的当前回退缓冲区中的字符数。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackBuffer.Reset">
+      <summary>初始化所有与此回退缓冲区相关的数据和状态信息。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Text.EncoderFallbackException">
+      <summary>编码器回退操作失败时引发的异常。此类不能被继承。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackException.#ctor">
+      <summary>初始化 <see cref="T:System.Text.EncoderFallbackException" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Text.EncoderFallbackException.#ctor(System.String)">
+      <summary>初始化 <see cref="T:System.Text.EncoderFallbackException" /> 类的新实例。一个参数指定错误信息。</summary>
+      <param name="message">错误信息。</param>
+    </member>
+    <member name="M:System.Text.EncoderFallbackException.#ctor(System.String,System.Exception)">
+      <summary>初始化 <see cref="T:System.Text.EncoderFallbackException" /> 类的新实例。参数指定错误信息和导致此异常的内部异常。</summary>
+      <param name="message">错误信息。</param>
+      <param name="innerException">导致此异常的异常。</param>
+    </member>
+    <member name="P:System.Text.EncoderFallbackException.CharUnknown">
+      <summary>获取导致异常的输入字符。</summary>
+      <returns>无法编码的字符。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallbackException.CharUnknownHigh">
+      <summary>获取导致异常的代理项对的高组件字符。</summary>
+      <returns>无法编码的代理项对的高组件字符。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallbackException.CharUnknownLow">
+      <summary>获取导致异常的代理项对的低组件字符。</summary>
+      <returns>无法编码的代理项对的低组件字符。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallbackException.Index">
+      <summary>获取导致异常的字符在输入缓冲区中的索引位置。</summary>
+      <returns>无法编码的字符在输入缓冲区中的索引位置。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackException.IsUnknownSurrogate">
+      <summary>指示导致异常的输入是否为代理项对。</summary>
+      <returns>如果输入是代理项对，则为 true；否则为 false。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.EncoderReplacementFallback">
+      <summary>为不能转换为输出字节序列的输入字符提供一个称为“回退”的失败处理机制。此回退使用由用户指定的替换字符串来代替原始的输入字符。此类不能被继承。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderReplacementFallback.#ctor">
+      <summary>初始化 <see cref="T:System.Text.EncoderReplacementFallback" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Text.EncoderReplacementFallback.#ctor(System.String)">
+      <summary>使用指定的替换字符串初始化 <see cref="T:System.Text.EncoderReplacementFallback" /> 类的新实例。</summary>
+      <param name="replacement">编码操作中转换的、用以替代无法编码的输入字符的字符串。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="replacement" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="replacement" /> 包含无效的代理项对。也就是说，代理项不是由一个高代理项组件后面跟着一个低代理项组件组成。</exception>
+    </member>
+    <member name="M:System.Text.EncoderReplacementFallback.CreateFallbackBuffer">
+      <summary>创建一个 <see cref="T:System.Text.EncoderFallbackBuffer" /> 对象，该对象是用此 <see cref="T:System.Text.EncoderReplacementFallback" /> 对象的替换字符串初始化的。</summary>
+      <returns>一个 <see cref="T:System.Text.EncoderFallbackBuffer" /> 对象，它与此 <see cref="T:System.Text.EncoderReplacementFallback" /> 对象相等。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderReplacementFallback.DefaultString">
+      <summary>获取作为此 <see cref="T:System.Text.EncoderReplacementFallback" /> 对象的值的替换字符串。</summary>
+      <returns>一个用于替换无法编码的输入字符的替代字符串。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderReplacementFallback.Equals(System.Object)">
+      <summary>指示指定对象的值是否与等于此 <see cref="T:System.Text.EncoderReplacementFallback" /> 对象的值。</summary>
+      <returns>true if the <paramref name="value" /> parameter specifies an <see cref="T:System.Text.EncoderReplacementFallback" /> object and the replacement string of that object is equal to the replacement string of this <see cref="T:System.Text.EncoderReplacementFallback" /> object; otherwise, false.</returns>
+      <param name="value">
+        <see cref="T:System.Text.EncoderReplacementFallback" /> 对象。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderReplacementFallback.GetHashCode">
+      <summary>检索此 <see cref="T:System.Text.EncoderReplacementFallback" /> 对象的值的哈希代码。</summary>
+      <returns>此对象的值的哈希代码。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderReplacementFallback.MaxCharCount">
+      <summary>获取此 <see cref="T:System.Text.EncoderReplacementFallback" /> 对象的替换字符串中的字符数。</summary>
+      <returns>用于替换无法编码的输入字符的字符串中的字符数。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.Encoding">
+      <summary>表示字符编码。若要浏览此类型的.NET Framework 源代码，请参阅参考源。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.#ctor">
+      <summary>初始化 <see cref="T:System.Text.Encoding" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Text.Encoding.#ctor(System.Int32)">
+      <summary>初始化对应于指定代码页的 <see cref="T:System.Text.Encoding" /> 类的新实例。</summary>
+      <param name="codePage">首选编码的代码页标识符。- 或 -0，使用默认编码。 </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="codePage" /> 小于零。</exception>
+    </member>
+    <member name="M:System.Text.Encoding.#ctor(System.Int32,System.Text.EncoderFallback,System.Text.DecoderFallback)">
+      <summary>初始化的新实例<see cref="T:System.Text.Encoding" />对应于与指定编码器和解码器回退策略指定的代码页的类。</summary>
+      <param name="codePage">编码的代码页标识符。</param>
+      <param name="encoderFallback">一个对象，在无法用当前编码对字符进行编码时，该对象可用来提供错误处理过程。</param>
+      <param name="decoderFallback">一个对象，在无法用当前编码对字节序列进行解码时，该对象可用来提供错误处理过程。 </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="codePage" /> 小于零。</exception>
+    </member>
+    <member name="P:System.Text.Encoding.ASCII">
+      <summary>获取 ASCII（7 位）字符集的编码。</summary>
+      <returns>ASCII（7 位）字符集的编码。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.BigEndianUnicode">
+      <summary>获取使用 Big Endian 字节顺序的 UTF-16 格式的编码。</summary>
+      <returns>使用 Big Endian 字节顺序的 UTF-16 格式的编码对象。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.Clone">
+      <summary>当在派生类中重写时，创建当前 <see cref="T:System.Text.Encoding" /> 对象的一个浅表副本。</summary>
+      <returns>当前 <see cref="T:System.Text.Encoding" /> 对象的副本。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.CodePage">
+      <summary>在派生类中重写时，获取当前 <see cref="T:System.Text.Encoding" /> 的代码页标识符。</summary>
+      <returns>当前 <see cref="T:System.Text.Encoding" /> 的代码页标识符。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.Convert(System.Text.Encoding,System.Text.Encoding,System.Byte[])">
+      <summary>将整个字节数组从一种编码转换为另一种编码。</summary>
+      <returns>
+        <see cref="T:System.Byte" /> 类型的数组包含将 <paramref name="bytes" /> 从 <paramref name="srcEncoding" /> 转换为 <paramref name="dstEncoding" /> 的结果。</returns>
+      <param name="srcEncoding">
+        <paramref name="bytes" /> 的编码格式。</param>
+      <param name="dstEncoding">目标编码格式。</param>
+      <param name="bytes">要转换的字节。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="srcEncoding" /> 为 null。- 或 - <paramref name="dstEncoding" /> 为 null。- 或 - <paramref name="bytes" /> 为 null。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得完整的解释）－和－srcEncoding。将 <see cref="P:System.Text.Encoding.DecoderFallback" /> 设置为 <see cref="T:System.Text.DecoderExceptionFallback" />。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得完整的解释）－和－dstEncoding。将 <see cref="P:System.Text.Encoding.EncoderFallback" /> 设置为 <see cref="T:System.Text.EncoderExceptionFallback" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.Convert(System.Text.Encoding,System.Text.Encoding,System.Byte[],System.Int32,System.Int32)">
+      <summary>将字节数组内某个范围的字节从一种编码转换为另一种编码。</summary>
+      <returns>一个 <see cref="T:System.Byte" /> 类型的数组，其中包含将 <paramref name="bytes" /> 中某个范围的字节从 <paramref name="srcEncoding" /> 转换为 <paramref name="dstEncoding" /> 的结果。</returns>
+      <param name="srcEncoding">源数组 <paramref name="bytes" /> 的编码。</param>
+      <param name="dstEncoding">输出数组的编码。</param>
+      <param name="bytes">要转换的字节数组。</param>
+      <param name="index">要转换的 <paramref name="bytes" /> 中第一个元素的索引。</param>
+      <param name="count">要转换的字节数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="srcEncoding" /> 为 null。- 或 - <paramref name="dstEncoding" /> 为 null。- 或 - <paramref name="bytes" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> 和 <paramref name="count" /> 不指定字节数组中的有效范围。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得完整的解释）－和－srcEncoding。将 <see cref="P:System.Text.Encoding.DecoderFallback" /> 设置为 <see cref="T:System.Text.DecoderExceptionFallback" />。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得完整的解释）－和－dstEncoding。将 <see cref="P:System.Text.Encoding.EncoderFallback" /> 设置为 <see cref="T:System.Text.EncoderExceptionFallback" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.DecoderFallback">
+      <summary>获取或设置当前 <see cref="T:System.Text.Encoding" /> 对象的 <see cref="T:System.Text.DecoderFallback" /> 对象。</summary>
+      <returns>当前 <see cref="T:System.Text.Encoding" /> 对象的解码回退对象。</returns>
+      <exception cref="T:System.ArgumentNullException">设置操作中的值为 null。</exception>
+      <exception cref="T:System.InvalidOperationException">由于当前 <see cref="T:System.Text.Encoding" /> 对象为只读，所以无法在设置操作中赋值。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.EncoderFallback">
+      <summary>获取或设置当前 <see cref="T:System.Text.Encoding" /> 对象的 <see cref="T:System.Text.EncoderFallback" /> 对象。</summary>
+      <returns>当前 <see cref="T:System.Text.Encoding" /> 对象的编码回退对象。</returns>
+      <exception cref="T:System.ArgumentNullException">设置操作中的值为 null。</exception>
+      <exception cref="T:System.InvalidOperationException">由于当前 <see cref="T:System.Text.Encoding" /> 对象为只读，所以无法在设置操作中赋值。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.EncodingName">
+      <summary>在派生类中重写时，获取当前编码的用户可读说明。</summary>
+      <returns>当前 <see cref="T:System.Text.Encoding" /> 的可读说明。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.Equals(System.Object)">
+      <summary>确定指定的 <see cref="T:System.Object" /> 是否等于当前实例。</summary>
+      <returns>如果 <paramref name="value" /> 是 <see cref="T:System.Text.Encoding" /> 的一个实例并且等于当前实例，则为 true；否则，为 false。</returns>
+      <param name="value">与当前实例进行比较的 <see cref="T:System.Object" />。 </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetByteCount(System.Char*,System.Int32)">
+      <summary>在派生类中重写时，计算对一组字符（从指定的字符指针处开始）进行编码所产生的字节数。</summary>
+      <returns>对指定字符进行编码后生成的字节数。</returns>
+      <param name="chars">指向第一个要编码的字符的指针。</param>
+      <param name="count">要编码的字符的数目。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> 小于零。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得完整的解释）－和－将 <see cref="P:System.Text.Encoding.EncoderFallback" /> 设置为 <see cref="T:System.Text.EncoderExceptionFallback" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetByteCount(System.Char[])">
+      <summary>在派生类中重写时，计算对指定字符数组中的所有字符进行编码所产生的字节数。</summary>
+      <returns>对指定字符数组中的所有字符进行编码后产生的字节数。</returns>
+      <param name="chars">包含要编码的字符的字符数组。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> 为 null。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得完整的解释）－和－将 <see cref="P:System.Text.Encoding.EncoderFallback" /> 设置为 <see cref="T:System.Text.EncoderExceptionFallback" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetByteCount(System.Char[],System.Int32,System.Int32)">
+      <summary>在派生类中重写时，计算对指定字符数组中的一组字符进行编码所产生的字节数。</summary>
+      <returns>对指定字符进行编码后生成的字节数。</returns>
+      <param name="chars">包含要编码的字符集的字符数组。</param>
+      <param name="index">第一个要编码的字符的索引。</param>
+      <param name="count">要编码的字符的数目。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> 或 <paramref name="count" /> 小于零。- 或 - <paramref name="index" /> 和 <paramref name="count" /> 不表示 <paramref name="chars" /> 中的有效范围。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得完整的解释）－和－将 <see cref="P:System.Text.Encoding.EncoderFallback" /> 设置为 <see cref="T:System.Text.EncoderExceptionFallback" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetByteCount(System.String)">
+      <summary>在派生类中重写时，计算对指定字符串中的字符进行编码所产生的字节数。</summary>
+      <returns>对指定字符进行编码后生成的字节数。</returns>
+      <param name="s">包含要编码的字符集的字符串。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> 为 null。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得完整的解释）－和－将 <see cref="P:System.Text.Encoding.EncoderFallback" /> 设置为 <see cref="T:System.Text.EncoderExceptionFallback" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetBytes(System.Char*,System.Int32,System.Byte*,System.Int32)">
+      <summary>在派生类中重写时，将一组字符（从指定的字符指针开始）编码为一个字节序列，并从指定的字节指针开始存储该字节序列。</summary>
+      <returns>在由 <paramref name="bytes" /> 参数指示的位置处写入的实际字节数。</returns>
+      <param name="chars">指向第一个要编码的字符的指针。</param>
+      <param name="charCount">要编码的字符的数目。</param>
+      <param name="bytes">一个指针，指向开始写入所产生的字节序列的位置。</param>
+      <param name="byteCount">最多写入的字节数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> 为 null。- 或 - <paramref name="bytes" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charCount" /> 或 <paramref name="byteCount" /> 小于零。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="byteCount" /> 少于所产生的字节数。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得完整的解释）－和－将 <see cref="P:System.Text.Encoding.EncoderFallback" /> 设置为 <see cref="T:System.Text.EncoderExceptionFallback" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetBytes(System.Char[])">
+      <summary>在派生类中重写时，将指定字符数组中的所有字符编码为一个字节序列。</summary>
+      <returns>一个字节数组，包含对指定的字符集进行编码的结果。</returns>
+      <param name="chars">包含要编码的字符的字符数组。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> 为 null。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得完整的解释）－和－将 <see cref="P:System.Text.Encoding.EncoderFallback" /> 设置为 <see cref="T:System.Text.EncoderExceptionFallback" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetBytes(System.Char[],System.Int32,System.Int32)">
+      <summary>在派生类中重写时，将指定字符数组中的一组字符编码为一个字节序列。</summary>
+      <returns>一个字节数组，包含对指定的字符集进行编码的结果。</returns>
+      <param name="chars">包含要编码的字符集的字符数组。</param>
+      <param name="index">第一个要编码的字符的索引。</param>
+      <param name="count">要编码的字符的数目。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> 或 <paramref name="count" /> 小于零。- 或 - <paramref name="index" /> 和 <paramref name="count" /> 不表示 <paramref name="chars" /> 中的有效范围。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得完整的解释）－和－将 <see cref="P:System.Text.Encoding.EncoderFallback" /> 设置为 <see cref="T:System.Text.EncoderExceptionFallback" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>在派生类中重写时，将指定字符数组中的一组字符编码为指定的字节数组。</summary>
+      <returns>写入 <paramref name="bytes" /> 的实际字节数。</returns>
+      <param name="chars">包含要编码的字符集的字符数组。</param>
+      <param name="charIndex">第一个要编码的字符的索引。</param>
+      <param name="charCount">要编码的字符的数目。</param>
+      <param name="bytes">要包含所产生的字节序列的字节数组。</param>
+      <param name="byteIndex">要开始写入所产生的字节序列的索引位置。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> 为 null。- 或 - <paramref name="bytes" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" />、<paramref name="charCount" /> 或 <paramref name="byteIndex" /> 小于零。- 或 - <paramref name="charIndex" /> 和 <paramref name="charCount" /> 不表示 <paramref name="chars" /> 中的有效范围。- 或 - <paramref name="byteIndex" /> 不是 <paramref name="bytes" /> 中的有效索引。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="bytes" /> 中从 <paramref name="byteIndex" /> 到数组结尾没有足够的容量来容纳所产生的字节。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得完整的解释）－和－将 <see cref="P:System.Text.Encoding.EncoderFallback" /> 设置为 <see cref="T:System.Text.EncoderExceptionFallback" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetBytes(System.String)">
+      <summary>在派生类中重写时，将指定字符串中的所有字符编码为一个字节序列。</summary>
+      <returns>一个字节数组，包含对指定的字符集进行编码的结果。</returns>
+      <param name="s">包含要编码的字符的字符串。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> 为 null。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得完整的解释）－和－将 <see cref="P:System.Text.Encoding.EncoderFallback" /> 设置为 <see cref="T:System.Text.EncoderExceptionFallback" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetBytes(System.String,System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>在派生类中重写时，将指定字符串中的一组字符编码为指定的字节数组。</summary>
+      <returns>写入 <paramref name="bytes" /> 的实际字节数。</returns>
+      <param name="s">包含要编码的字符集的字符串。</param>
+      <param name="charIndex">第一个要编码的字符的索引。</param>
+      <param name="charCount">要编码的字符的数目。</param>
+      <param name="bytes">要包含所产生的字节序列的字节数组。</param>
+      <param name="byteIndex">要开始写入所产生的字节序列的索引位置。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> 为 null。- 或 - <paramref name="bytes" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" />、<paramref name="charCount" /> 或 <paramref name="byteIndex" /> 小于零。- 或 - <paramref name="charIndex" /> 和 <paramref name="charCount" /> 不表示 <paramref name="chars" /> 中的有效范围。- 或 - <paramref name="byteIndex" /> 不是 <paramref name="bytes" /> 中的有效索引。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="bytes" /> 中从 <paramref name="byteIndex" /> 到数组结尾没有足够的容量来容纳所产生的字节。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得完整的解释）－和－将 <see cref="P:System.Text.Encoding.EncoderFallback" /> 设置为 <see cref="T:System.Text.EncoderExceptionFallback" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetCharCount(System.Byte*,System.Int32)">
+      <summary>在派生类中重写时，计算对字节序列（从指定的字节指针开始）进行解码所产生的字符数。</summary>
+      <returns>对指定字节序列进行解码所产生的字符数。</returns>
+      <param name="bytes">指向第一个要解码的字节的指针。</param>
+      <param name="count">要解码的字节数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> 小于零。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得完整的解释）－和－将 <see cref="P:System.Text.Encoding.DecoderFallback" /> 设置为 <see cref="T:System.Text.DecoderExceptionFallback" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetCharCount(System.Byte[])">
+      <summary>在派生类中重写时，计算对指定字节数组中的所有字节进行解码所产生的字符数。</summary>
+      <returns>对指定字节序列进行解码所产生的字符数。</returns>
+      <param name="bytes">包含要解码的字节序列的字节数组。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> 为 null。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得完整的解释）－和－将 <see cref="P:System.Text.Encoding.DecoderFallback" /> 设置为 <see cref="T:System.Text.DecoderExceptionFallback" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetCharCount(System.Byte[],System.Int32,System.Int32)">
+      <summary>在派生类中重写时，计算对字节序列（从指定字节数组开始）进行解码所产生的字符数。</summary>
+      <returns>对指定字节序列进行解码所产生的字符数。</returns>
+      <param name="bytes">包含要解码的字节序列的字节数组。</param>
+      <param name="index">第一个要解码的字节的索引。</param>
+      <param name="count">要解码的字节数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> 或 <paramref name="count" /> 小于零。- 或 - <paramref name="index" /> 和 <paramref name="count" /> 不表示 <paramref name="bytes" /> 中的有效范围。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得完整的解释）－和－将 <see cref="P:System.Text.Encoding.DecoderFallback" /> 设置为 <see cref="T:System.Text.DecoderExceptionFallback" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetChars(System.Byte*,System.Int32,System.Char*,System.Int32)">
+      <summary>在派生类中重写时，将一个字节序列（从指定的字节指针开始）解码为一组字符，并从指定的字符指针开始存储该组字符。</summary>
+      <returns>在由 <paramref name="chars" /> 参数指示的位置处写入的实际字符数。</returns>
+      <param name="bytes">指向第一个要解码的字节的指针。</param>
+      <param name="byteCount">要解码的字节数。</param>
+      <param name="chars">一个指针，指向开始写入所产生的字符集的位置。</param>
+      <param name="charCount">要写入的最大字符数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> 为 null。- 或 - <paramref name="chars" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteCount" /> 或 <paramref name="charCount" /> 小于零。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="charCount" /> 少于所产生的字符数。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得完整的解释）－和－将 <see cref="P:System.Text.Encoding.DecoderFallback" /> 设置为 <see cref="T:System.Text.DecoderExceptionFallback" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetChars(System.Byte[])">
+      <summary>在派生类中重写时，将指定字节数组中的所有字节解码为一组字符。</summary>
+      <returns>一个字节数组，包含对指定的字节序列进行解码的结果。</returns>
+      <param name="bytes">包含要解码的字节序列的字节数组。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> 为 null。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得完整的解释）－和－将 <see cref="P:System.Text.Encoding.DecoderFallback" /> 设置为 <see cref="T:System.Text.DecoderExceptionFallback" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetChars(System.Byte[],System.Int32,System.Int32)">
+      <summary>在派生类中重写时，将指定字节数组中的一个字节序列解码为一组字符。</summary>
+      <returns>一个字节数组，包含对指定的字节序列进行解码的结果。</returns>
+      <param name="bytes">包含要解码的字节序列的字节数组。</param>
+      <param name="index">第一个要解码的字节的索引。</param>
+      <param name="count">要解码的字节数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> 或 <paramref name="count" /> 小于零。- 或 - <paramref name="index" /> 和 <paramref name="count" /> 不表示 <paramref name="bytes" /> 中的有效范围。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得完整的解释）－和－将 <see cref="P:System.Text.Encoding.DecoderFallback" /> 设置为 <see cref="T:System.Text.DecoderExceptionFallback" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)">
+      <summary>在派生类中重写时，将指定字节数组中的字节序列解码为指定的字符数组。</summary>
+      <returns>写入 <paramref name="chars" /> 的实际字符数。</returns>
+      <param name="bytes">包含要解码的字节序列的字节数组。</param>
+      <param name="byteIndex">第一个要解码的字节的索引。</param>
+      <param name="byteCount">要解码的字节数。</param>
+      <param name="chars">要用于包含所产生的字符集的字符数组。</param>
+      <param name="charIndex">开始写入所产生的字符集的索引位置。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> 为 null。- 或 - <paramref name="chars" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteIndex" />、<paramref name="byteCount" /> 或 <paramref name="charIndex" /> 小于零。- 或 - <paramref name="byteindex" /> 和 <paramref name="byteCount" /> 不表示 <paramref name="bytes" /> 中的有效范围。- 或 - <paramref name="charIndex" /> 不是 <paramref name="chars" /> 中的有效索引。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="chars" /> 中从 <paramref name="charIndex" /> 到数组结尾没有足够容量来容纳所产生的字符。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得完整的解释）－和－将 <see cref="P:System.Text.Encoding.DecoderFallback" /> 设置为 <see cref="T:System.Text.DecoderExceptionFallback" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetDecoder">
+      <summary>在派生类中重写时，获取一个解码器，该解码器将已编码的字节序列转换为字符序列。</summary>
+      <returns>一个 <see cref="T:System.Text.Decoder" />，它将已编码的字节序列转换为字符序列。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetEncoder">
+      <summary>在派生类中重写时，获取一个解码器，该解码器将 Unicode 字符序列转换为已编码的字节序列。</summary>
+      <returns>一个 <see cref="T:System.Text.Encoder" />，它将 Unicode 字符序列转换为已编码的字节序列。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetEncoding(System.Int32)">
+      <summary>返回与指定代码页标识符关联的编码。</summary>
+      <returns>与指定代码页关联的编码。</returns>
+      <param name="codepage">首选编码的代码页标识符。可能的值都在 <see cref="T:System.Text.Encoding" /> 类主题中出现的表的“代码页”的一列中列了出来。- 或 -0（零），使用默认编码。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="codepage" /> 小于零或大于 65535。 </exception>
+      <exception cref="T:System.ArgumentException">基础平台不支持 <paramref name="codepage" />。 </exception>
+      <exception cref="T:System.NotSupportedException">基础平台不支持 <paramref name="codepage" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetEncoding(System.Int32,System.Text.EncoderFallback,System.Text.DecoderFallback)">
+      <summary>返回与指定代码页标识符关联的编码。参数指定一个错误处理程序，用于处理无法编码的字符和无法解码的字节序列。</summary>
+      <returns>与指定代码页关联的编码。</returns>
+      <param name="codepage">首选编码的代码页标识符。可能的值都在 <see cref="T:System.Text.Encoding" /> 类主题中出现的表的“代码页”的一列中列了出来。- 或 -0（零），使用默认编码。</param>
+      <param name="encoderFallback">一个对象，在无法用当前编码对字符进行编码时，该对象可用来提供错误处理过程。</param>
+      <param name="decoderFallback">一个对象，在无法用当前编码对字节序列进行解码时，该对象可用来提供错误处理过程。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="codepage" /> 小于零或大于 65535。 </exception>
+      <exception cref="T:System.ArgumentException">基础平台不支持 <paramref name="codepage" />。 </exception>
+      <exception cref="T:System.NotSupportedException">基础平台不支持 <paramref name="codepage" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetEncoding(System.String)">
+      <summary>返回与指定代码页名称关联的编码。</summary>
+      <returns>与指定代码页关联的编码。</returns>
+      <param name="name">首选编码的代码页名称。<see cref="P:System.Text.Encoding.WebName" /> 属性返回的值是有效的。可能的值都在 <see cref="T:System.Text.Encoding" /> 类主题中出现的表的“名称”一列中列了出来。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 不是有效的代码页名称。- 或 -基础平台不支持 <paramref name="name" /> 所指示的代码页。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetEncoding(System.String,System.Text.EncoderFallback,System.Text.DecoderFallback)">
+      <summary>返回与指定代码页名称关联的编码。参数指定一个错误处理程序，用于处理无法编码的字符和无法解码的字节序列。</summary>
+      <returns>与指定代码页关联的编码。</returns>
+      <param name="name">首选编码的代码页名称。<see cref="P:System.Text.Encoding.WebName" /> 属性返回的值是有效的。可能的值都在 <see cref="T:System.Text.Encoding" /> 类主题中出现的表的“名称”一列中列了出来。</param>
+      <param name="encoderFallback">一个对象，在无法用当前编码对字符进行编码时，该对象可用来提供错误处理过程。</param>
+      <param name="decoderFallback">一个对象，在无法用当前编码对字节序列进行解码时，该对象可用来提供错误处理过程。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 不是有效的代码页名称。- 或 -基础平台不支持 <paramref name="name" /> 所指示的代码页。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetHashCode">
+      <summary>返回当前实例的哈希代码。</summary>
+      <returns>当前实例的哈希代码。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetMaxByteCount(System.Int32)">
+      <summary>在派生类中重写时，计算对指定数目的字符进行编码所产生的最大字节数。</summary>
+      <returns>对指定数目的字符进行编码所产生的最大字节数。</returns>
+      <param name="charCount">要编码的字符的数目。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charCount" /> 小于零。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得完整的解释）－和－将 <see cref="P:System.Text.Encoding.EncoderFallback" /> 设置为 <see cref="T:System.Text.EncoderExceptionFallback" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetMaxCharCount(System.Int32)">
+      <summary>在派生类中重写时，计算对指定数目的字节进行解码时所产生的最大字符数。</summary>
+      <returns>对指定数目的字节进行解码时所产生的最大字符数。</returns>
+      <param name="byteCount">要解码的字节数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteCount" /> 小于零。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得完整的解释）－和－将 <see cref="P:System.Text.Encoding.DecoderFallback" /> 设置为 <see cref="T:System.Text.DecoderExceptionFallback" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetPreamble">
+      <summary>在派生类中重写时，返回指定所用编码的字节序列。</summary>
+      <returns>一个字节数组，包含指定所用编码的字节序列。- 或 -长度为零的字节数组（如果不需要前导码）。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetString(System.Byte*,System.Int32)">
+      <summary>当在派生类中重写，解码指定的指定地址处开始转换为字符串的字节数。</summary>
+      <returns>包含指定字节序列解码结果的字符串。 </returns>
+      <param name="bytes">指向字节数组的指针。</param>
+      <param name="byteCount">要解码的字节数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" />为 null 指针。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteCount" /> 小于零。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">发生回退 （请参阅.NET Framework 中的字符编码有关的完整说明）－和－将 <see cref="P:System.Text.Encoding.DecoderFallback" /> 设置为 <see cref="T:System.Text.DecoderExceptionFallback" />。</exception>
+    </member>
+    <member name="M:System.Text.Encoding.GetString(System.Byte[])">
+      <summary>在派生类中重写时，将指定字节数组中的所有字节解码为一个字符串。</summary>
+      <returns>包含指定字节序列解码结果的字符串。</returns>
+      <param name="bytes">包含要解码的字节序列的字节数组。</param>
+      <exception cref="T:System.ArgumentException">字节数组中包含无效的 Unicode 码位。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> 为 null。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得完整的解释）－和－将 <see cref="P:System.Text.Encoding.DecoderFallback" /> 设置为 <see cref="T:System.Text.DecoderExceptionFallback" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetString(System.Byte[],System.Int32,System.Int32)">
+      <summary>在派生类中重写时，将指定字节数组中的一个字节序列解码为一个字符串。</summary>
+      <returns>包含指定字节序列解码结果的字符串。</returns>
+      <param name="bytes">包含要解码的字节序列的字节数组。</param>
+      <param name="index">第一个要解码的字节的索引。</param>
+      <param name="count">要解码的字节数。</param>
+      <exception cref="T:System.ArgumentException">字节数组中包含无效的 Unicode 码位。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> 或 <paramref name="count" /> 小于零。- 或 - <paramref name="index" /> 和 <paramref name="count" /> 不表示 <paramref name="bytes" /> 中的有效范围。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">发生回退（请参见.NET Framework 中的字符编码以获得完整的解释）－和－将 <see cref="P:System.Text.Encoding.DecoderFallback" /> 设置为 <see cref="T:System.Text.DecoderExceptionFallback" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.IsSingleByte">
+      <summary>在派生类中重写时，获取一个值，该值指示当前的编码是否使用单字节码位。</summary>
+      <returns>如果当前的 <see cref="T:System.Text.Encoding" /> 使用单字节码位，则为 true；否则，为 false。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.RegisterProvider(System.Text.EncodingProvider)">
+      <summary>注册编码的提供程序。</summary>
+      <param name="provider">子类<see cref="T:System.Text.EncodingProvider" />提供对其他字符编码的访问。 </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="provider" /> 为 null。</exception>
+    </member>
+    <member name="P:System.Text.Encoding.Unicode">
+      <summary>获取使用 Little-Endian 字节顺序的 UTF-16 格式的编码。</summary>
+      <returns>使用 Little-Endian 字节顺序的 UTF-16 格式的编码。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.UTF32">
+      <summary>获取使用 Little-Endian 字节顺序的 UTF-32 格式的编码。</summary>
+      <returns>使用 Little-Endian 字节顺序的 UTF-32 格式的编码对象。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.UTF7">
+      <summary>获取 UTF-7 格式的编码。</summary>
+      <returns>UTF-7 格式的编码。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.UTF8">
+      <summary>获取 UTF-8 格式的编码。</summary>
+      <returns>UTF-8 格式的编码。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.WebName">
+      <summary>在派生类中重写时，获取在 Internet 编号分配管理机构 (IANA) 注册的当前编码的名称。</summary>
+      <returns>当前 <see cref="T:System.Text.Encoding" /> 的 IANA 名称。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.EncodingProvider">
+      <summary>提供编码提供程序的基类，后者提供在特定平台上不可用的编码。</summary>
+    </member>
+    <member name="M:System.Text.EncodingProvider.#ctor">
+      <summary>初始化 <see cref="T:System.Text.EncodingProvider" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Text.EncodingProvider.GetEncoding(System.Int32)">
+      <summary>返回与指定代码页标识符关联的编码。</summary>
+      <returns>与指定的代码页中，关联的编码，它或null如果此<see cref="T:System.Text.EncodingProvider" />不能返回一个有效的编码对应于<paramref name="codepage" />。</returns>
+      <param name="codepage">请求的编码的代码页标识符。</param>
+    </member>
+    <member name="M:System.Text.EncodingProvider.GetEncoding(System.Int32,System.Text.EncoderFallback,System.Text.DecoderFallback)">
+      <summary>返回与指定代码页标识符关联的编码。参数指定一个错误处理程序，用于处理无法编码的字符和无法解码的字节序列。</summary>
+      <returns>与指定的代码页中，关联的编码，它或null如果此<see cref="T:System.Text.EncodingProvider" />不能返回一个有效的编码对应于<paramref name="codepage" />。</returns>
+      <param name="codepage">请求的编码的代码页标识符。</param>
+      <param name="encoderFallback">一个字符不能使用此编码进行编码时提供错误处理过程的对象。</param>
+      <param name="decoderFallback">一个对象，与该编码字节序列无法解码时提供错误处理过程。</param>
+    </member>
+    <member name="M:System.Text.EncodingProvider.GetEncoding(System.String)">
+      <summary>返回具有指定名称的编码。</summary>
+      <returns>指定的名称，与关联的编码，它或null如果此<see cref="T:System.Text.EncodingProvider" />不能返回一个有效的编码对应于<paramref name="name" />。</returns>
+      <param name="name">请求的编码的名称。</param>
+    </member>
+    <member name="M:System.Text.EncodingProvider.GetEncoding(System.String,System.Text.EncoderFallback,System.Text.DecoderFallback)">
+      <summary>返回与指定名称关联的编码。参数指定一个错误处理程序，用于处理无法编码的字符和无法解码的字节序列。</summary>
+      <returns>指定的名称，与关联的编码，它或null如果此<see cref="T:System.Text.EncodingProvider" />不能返回一个有效的编码对应于<paramref name="name" />。</returns>
+      <param name="name">首选编码的名称。</param>
+      <param name="encoderFallback">一个字符不能使用此编码进行编码时提供错误处理过程的对象。</param>
+      <param name="decoderFallback">一个对象，在无法用当前编码对字节序列进行解码时，该对象可用来提供错误处理过程。</param>
+    </member>
+  </members>
+</doc>

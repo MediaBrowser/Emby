@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Diagnostics.Tools</name>
+  </assembly>
+  <members>
+    <member name="T:System.CodeDom.Compiler.GeneratedCodeAttribute">
+      <summary>Erkennt Code, der von einem Tool generiert wurde.Diese Klasse kann nicht vererbt werden.</summary>
+    </member>
+    <member name="M:System.CodeDom.Compiler.GeneratedCodeAttribute.#ctor(System.String,System.String)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.CodeDom.Compiler.GeneratedCodeAttribute" />-Klasse unter Angabe des Namens und der Version des Tools, mit dem der Code generiert wurde.</summary>
+      <param name="tool">Der Name des Tools, das den Code generiert hat.</param>
+      <param name="version">Die Version des Tools, das den Code generiert hat.</param>
+    </member>
+    <member name="P:System.CodeDom.Compiler.GeneratedCodeAttribute.Tool">
+      <summary>Ruft den Namen des Tools ab, das den Code generiert hat.</summary>
+      <returns>Der Name des Tools, das den Code generiert hat.</returns>
+    </member>
+    <member name="P:System.CodeDom.Compiler.GeneratedCodeAttribute.Version">
+      <summary>Ruft die Version des Tools ab, das den Code generiert hat.</summary>
+      <returns>Die Version des Tools, das den Code generiert hat.</returns>
+    </member>
+    <member name="T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute">
+      <summary>Unterdrückt die Berichterstellung über eine Regelverletzung eines bestimmten statischen Analysetools und ermöglicht mehrfaches Unterdrücken für ein einzelnes Codeartefakt.</summary>
+    </member>
+    <member name="M:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.#ctor(System.String,System.String)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute" />-Klasse und gibt die Kategorie des statischen Analysetools und den Bezeichner für eine Analyseregel an. </summary>
+      <param name="category">Die Kategorie für das Attribut.</param>
+      <param name="checkId">Der Bezeichner der Analysetoolregel, auf die das Attribut angewendet wird.</param>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Category">
+      <summary>Ruft die Kategorie ab, die die Klassifizierung des Attributs bezeichnet.</summary>
+      <returns>Die Kategorie, die das Attribut bezeichnet.</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.CheckId">
+      <summary>Ruft den Bezeichner der statischen Analysetoolregel ab, die unterdrückt werden soll.</summary>
+      <returns>Der Bezeichner der statischen Analysetoolregel, die unterdrückt werden soll.</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Justification">
+      <summary>Ruft die Begründung für das Unterdrücken der Codeanalysemeldung ab oder legt diese fest.</summary>
+      <returns>Die Begründung für das Unterdrücken der Meldung.</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.MessageId">
+      <summary>Ruft ein optionales Argument ab, das Ausschlusskriterien erweitert, oder legt dieses fest.</summary>
+      <returns>Eine Zeichenfolge, die die erweiterten Ausschlusskriterien enthält.</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Scope">
+      <summary>Ruft den Bereich des Codes ab, der für das Attribut relevant ist, oder legt diesen fest.</summary>
+      <returns>Der Bereich des Codes, der für das Attribut relevant ist.</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Target">
+      <summary>Ruft einen voll qualifizierten Pfad ab, der das Ziel des Attributs darstellt, oder legt diesen fest.</summary>
+      <returns>Ein voll qualifizierter Pfad, der das Ziel des Attributs darstellt.</returns>
+    </member>
+  </members>
+</doc>

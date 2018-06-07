@@ -1,0 +1,474 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Reflection.Extensions</name>
+  </assembly>
+  <members>
+    <member name="T:System.Reflection.CustomAttributeExtensions">
+      <summary>Contiene métodos estáticos para recuperar atributos personalizados.</summary>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.Assembly)">
+      <summary>Recupera un atributo personalizado de un tipo especificado que se aplica a un ensamblado concreto. </summary>
+      <returns>Atributo personalizado que coincide con <paramref name="T" />, o null si no se encuentra ningún atributo.</returns>
+      <param name="element">Ensamblado que se va a inspeccionar.</param>
+      <typeparam name="T">Tipo de atributo que se va a buscar.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> es null. </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">Se ha encontrado más de un atributo de los atributos solicitados. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.Assembly,System.Type)">
+      <summary>Recupera un atributo personalizado de un tipo especificado que se aplica a un ensamblado concreto.</summary>
+      <returns>Atributo personalizado que coincide con <paramref name="attributeType" />, o null si no se encuentra ningún atributo.</returns>
+      <param name="element">Ensamblado que se va a inspeccionar.</param>
+      <param name="attributeType">Tipo de atributo que se va a buscar.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="element" /> o de <paramref name="attributeType" /> es null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> no se deriva de <see cref="T:System.Attribute" />. </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">Se ha encontrado más de un atributo de los atributos solicitados. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.MemberInfo)">
+      <summary>Recupera un atributo personalizado de un tipo especificado que se aplica a un miembro concreto.</summary>
+      <returns>Atributo personalizado que coincide con <paramref name="T" />, o null si no se encuentra ningún atributo.</returns>
+      <param name="element">Miembro que se va a inspeccionar.</param>
+      <typeparam name="T">Tipo de atributo que se va a buscar.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> es null. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> no es un constructor, método, propiedad, evento, tipo o campo. </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">Se ha encontrado más de un atributo de los atributos solicitados. </exception>
+      <exception cref="T:System.TypeLoadException">Un tipo de atributo personalizado no puede cargarse. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.MemberInfo,System.Boolean)">
+      <summary>Recupera un atributo personalizado de un tipo especificado que se aplica a un miembro concreto y, opcionalmente, inspecciona los antecesores de dicho miembro.</summary>
+      <returns>Atributo personalizado que coincide con <paramref name="T" />, o null si no se encuentra ningún atributo.</returns>
+      <param name="element">Miembro que se va a inspeccionar.</param>
+      <param name="inherit">Es true para inspeccionar los antecesores de <paramref name="element" />; de lo contrario, es false. </param>
+      <typeparam name="T">Tipo de atributo que se va a buscar.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> es null. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> no es un constructor, método, propiedad, evento, tipo o campo. </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">Se ha encontrado más de un atributo de los atributos solicitados. </exception>
+      <exception cref="T:System.TypeLoadException">Un tipo de atributo personalizado no puede cargarse. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.MemberInfo,System.Type)">
+      <summary>Recupera un atributo personalizado de un tipo especificado que se aplica a un miembro concreto.</summary>
+      <returns>Atributo personalizado que coincide con <paramref name="attributeType" />, o null si no se encuentra ningún atributo.</returns>
+      <param name="element">Miembro que se va a inspeccionar.</param>
+      <param name="attributeType">Tipo de atributo que se va a buscar.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="element" /> o de <paramref name="attributeType" /> es null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> no se deriva de <see cref="T:System.Attribute" />. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> no es un constructor, método, propiedad, evento, tipo o campo. </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">Se ha encontrado más de un atributo de los atributos solicitados. </exception>
+      <exception cref="T:System.TypeLoadException">Un tipo de atributo personalizado no puede cargarse. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.MemberInfo,System.Type,System.Boolean)">
+      <summary>Recupera un atributo personalizado de un tipo especificado que se aplica a un miembro concreto y, opcionalmente, inspecciona los antecesores de dicho miembro.</summary>
+      <returns>Atributo personalizado que coincide con <paramref name="attributeType" />, o null si no se encuentra ningún atributo.</returns>
+      <param name="element">Miembro que se va a inspeccionar.</param>
+      <param name="attributeType">Tipo de atributo que se va a buscar.</param>
+      <param name="inherit">Es true para inspeccionar los antecesores de <paramref name="element" />; de lo contrario, es false. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="element" /> o de <paramref name="attributeType" /> es null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> no se deriva de <see cref="T:System.Attribute" />. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> no es un constructor, método, propiedad, evento, tipo o campo. </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">Se ha encontrado más de un atributo de los atributos solicitados. </exception>
+      <exception cref="T:System.TypeLoadException">Un tipo de atributo personalizado no puede cargarse. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.Module)">
+      <summary>Recupera un atributo personalizado de un tipo especificado que se aplica a un módulo concreto.</summary>
+      <returns>Atributo personalizado que coincide con <paramref name="T" />, o null si no se encuentra ningún atributo.</returns>
+      <param name="element">Módulo que se va a inspeccionar.</param>
+      <typeparam name="T">Tipo de atributo que se va a buscar.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> es null. </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">Se ha encontrado más de un atributo de los atributos solicitados. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.Module,System.Type)">
+      <summary>Recupera un atributo personalizado de un tipo especificado que se aplica a un módulo concreto.</summary>
+      <returns>Atributo personalizado que coincide con <paramref name="attributeType" />, o null si no se encuentra ningún atributo.</returns>
+      <param name="element">Módulo que se va a inspeccionar.</param>
+      <param name="attributeType">Tipo de atributo que se va a buscar.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="element" /> o de <paramref name="attributeType" /> es null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> no se deriva de <see cref="T:System.Attribute" />. </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">Se ha encontrado más de un atributo de los atributos solicitados. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.ParameterInfo)">
+      <summary>Recupera un atributo personalizado de un tipo especificado que se aplica a un parámetro concreto.</summary>
+      <returns>Atributo personalizado que coincide con <paramref name="T" />, o null si no se encuentra ningún atributo.</returns>
+      <param name="element">Parámetro que se va a inspeccionar.</param>
+      <typeparam name="T">Tipo de atributo que se va a buscar.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> es null. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> no es un constructor, método, propiedad, evento, tipo o campo. </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">Se ha encontrado más de un atributo de los atributos solicitados. </exception>
+      <exception cref="T:System.TypeLoadException">Un tipo de atributo personalizado no puede cargarse. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.ParameterInfo,System.Boolean)">
+      <summary>Recupera un atributo personalizado de un tipo especificado que se aplica a un parámetro concreto y, opcionalmente, inspecciona los antecesores de dicho parámetro.</summary>
+      <returns>Atributo personalizado que coincide con <paramref name="T" />, o null si no se encuentra ningún atributo.</returns>
+      <param name="element">Parámetro que se va a inspeccionar.</param>
+      <param name="inherit">Es true para inspeccionar los antecesores de <paramref name="element" />; de lo contrario, es false. </param>
+      <typeparam name="T">Tipo de atributo que se va a buscar.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> es null. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> no es un constructor, método, propiedad, evento, tipo o campo. </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">Se ha encontrado más de un atributo de los atributos solicitados. </exception>
+      <exception cref="T:System.TypeLoadException">Un tipo de atributo personalizado no puede cargarse. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.ParameterInfo,System.Type)">
+      <summary>Recupera un atributo personalizado de un tipo especificado que se aplica a un parámetro concreto.</summary>
+      <returns>Atributo personalizado que coincide con <paramref name="attributeType" />, o null si no se encuentra ningún atributo.</returns>
+      <param name="element">Parámetro que se va a inspeccionar.</param>
+      <param name="attributeType">Tipo de atributo que se va a buscar.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="element" /> o de <paramref name="attributeType" /> es null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> no se deriva de <see cref="T:System.Attribute" />. </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">Se ha encontrado más de un atributo de los atributos solicitados. </exception>
+      <exception cref="T:System.TypeLoadException">Un tipo de atributo personalizado no puede cargarse. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.ParameterInfo,System.Type,System.Boolean)">
+      <summary>Recupera un atributo personalizado de un tipo especificado que se aplica a un parámetro concreto y, opcionalmente, inspecciona los antecesores de dicho parámetro.</summary>
+      <returns>Atributo personalizado que coincide con <paramref name="attributeType" />, o null si no se encuentra ningún atributo.</returns>
+      <param name="element">Parámetro que se va a inspeccionar.</param>
+      <param name="attributeType">Tipo de atributo que se va a buscar.</param>
+      <param name="inherit">Es true para inspeccionar los antecesores de <paramref name="element" />; de lo contrario, es false. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="element" /> o de <paramref name="attributeType" /> es null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> no se deriva de <see cref="T:System.Attribute" />. </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">Se ha encontrado más de un atributo de los atributos solicitados. </exception>
+      <exception cref="T:System.TypeLoadException">Un tipo de atributo personalizado no puede cargarse. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.Assembly)">
+      <summary>Recupera una colección de atributos personalizados de un tipo especificado que se aplican a un ensamblado concreto. </summary>
+      <returns>Colección de atributos personalizados que se aplican a <paramref name="element" /> y que coinciden con <paramref name="T" />, o una colección vacía si no existe ninguno de esos atributos. </returns>
+      <param name="element">Ensamblado que se va a inspeccionar.</param>
+      <typeparam name="T">Tipo de atributo que se va a buscar.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> es null. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.Assembly)">
+      <summary>Recupera una colección de atributos personalizados que se aplican a un ensamblado especificado.</summary>
+      <returns>Colección de atributos personalizados que se aplican a <paramref name="element" /> o una colección vacía si no existe ninguno de esos atributos. </returns>
+      <param name="element">Ensamblado que se va a inspeccionar.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> es null. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.Assembly,System.Type)">
+      <summary>Recupera una colección de atributos personalizados de un tipo especificado que se aplican a un ensamblado concreto.</summary>
+      <returns>Colección de atributos personalizados que se aplican a <paramref name="element" /> y que coinciden con <paramref name="attributeType" />, o una colección vacía si no existe ninguno de esos atributos. </returns>
+      <param name="element">Ensamblado que se va a inspeccionar.</param>
+      <param name="attributeType">Tipo de atributo que se va a buscar.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="element" /> o de <paramref name="attributeType" /> es null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> no se deriva de <see cref="T:System.Attribute" />. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.MemberInfo)">
+      <summary>Recupera una colección de atributos personalizados que se aplican a un miembro especificado.</summary>
+      <returns>Colección de atributos personalizados que se aplican a <paramref name="element" /> o una colección vacía si no existe ninguno de esos atributos. </returns>
+      <param name="element">Miembro que se va a inspeccionar.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> es null. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> no es un constructor, método, propiedad, evento, tipo o campo. </exception>
+      <exception cref="T:System.TypeLoadException">Un tipo de atributo personalizado no puede cargarse. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.MemberInfo)">
+      <summary>Recupera una colección de atributos personalizados de un tipo especificado que se aplican a un miembro concreto.</summary>
+      <returns>Colección de atributos personalizados que se aplican a <paramref name="element" /> y que coinciden con <paramref name="T" />, o una colección vacía si no existe ninguno de esos atributos. </returns>
+      <param name="element">Miembro que se va a inspeccionar.</param>
+      <typeparam name="T">Tipo de atributo que se va a buscar.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> es null. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> no es un constructor, método, propiedad, evento, tipo o campo. </exception>
+      <exception cref="T:System.TypeLoadException">Un tipo de atributo personalizado no puede cargarse. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.MemberInfo,System.Boolean)">
+      <summary>Recupera una colección de atributos personalizados de un tipo especificado que se aplican a un miembro concreto y, opcionalmente, inspecciona los antecesores de dicho miembro.</summary>
+      <returns>Colección de atributos personalizados que se aplican a <paramref name="element" /> y que coinciden con <paramref name="T" />, o una colección vacía si no existe ninguno de esos atributos. </returns>
+      <param name="element">Miembro que se va a inspeccionar.</param>
+      <param name="inherit">Es true para inspeccionar los antecesores de <paramref name="element" />; de lo contrario, es false. </param>
+      <typeparam name="T">Tipo de atributo que se va a buscar.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> es null. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> no es un constructor, método, propiedad, evento, tipo o campo. </exception>
+      <exception cref="T:System.TypeLoadException">Un tipo de atributo personalizado no puede cargarse. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.MemberInfo,System.Boolean)">
+      <summary>Recupera una colección de atributos personalizados que se aplican a un miembro concreto y, opcionalmente, inspecciona los antecesores de dicho miembro.</summary>
+      <returns>Colección de atributos personalizados que se aplican a <paramref name="element" /> y que coincide con los criterios especificados, o una colección vacía si no hay tales atributos. </returns>
+      <param name="element">Miembro que se va a inspeccionar.</param>
+      <param name="inherit">Es true para inspeccionar los antecesores de <paramref name="element" />; de lo contrario, es false. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> es null. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> no es un constructor, método, propiedad, evento, tipo o campo. </exception>
+      <exception cref="T:System.TypeLoadException">Un tipo de atributo personalizado no puede cargarse. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.MemberInfo,System.Type)">
+      <summary>Recupera una colección de atributos personalizados de un tipo especificado que se aplican a un miembro concreto.</summary>
+      <returns>Colección de atributos personalizados que se aplican a <paramref name="element" /> y que coinciden con <paramref name="attributeType" />, o una colección vacía si no existe ninguno de esos atributos. </returns>
+      <param name="element">Miembro que se va a inspeccionar.</param>
+      <param name="attributeType">Tipo de atributo que se va a buscar.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="element" /> o de <paramref name="attributeType" /> es null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> no se deriva de <see cref="T:System.Attribute" />. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> no es un constructor, método, propiedad, evento, tipo o campo. </exception>
+      <exception cref="T:System.TypeLoadException">Un tipo de atributo personalizado no puede cargarse. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.MemberInfo,System.Type,System.Boolean)">
+      <summary>Recupera una colección de atributos personalizados de un tipo especificado que se aplican a un miembro concreto y, opcionalmente, inspecciona los antecesores de dicho miembro.</summary>
+      <returns>Colección de atributos personalizados que se aplican a <paramref name="element" /> y que coinciden con <paramref name="attributeType" />, o una colección vacía si no existe ninguno de esos atributos.</returns>
+      <param name="element">Miembro que se va a inspeccionar.</param>
+      <param name="attributeType">Tipo de atributo que se va a buscar.</param>
+      <param name="inherit">Es true para inspeccionar los antecesores de <paramref name="element" />; de lo contrario, es false. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="element" /> o de <paramref name="attributeType" /> es null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> no se deriva de <see cref="T:System.Attribute" />. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> no es un constructor, método, propiedad, evento, tipo o campo. </exception>
+      <exception cref="T:System.TypeLoadException">Un tipo de atributo personalizado no puede cargarse. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.Module)">
+      <summary>Recupera una colección de atributos personalizados que se aplican a un módulo especificado.</summary>
+      <returns>Colección de atributos personalizados que se aplican a <paramref name="element" /> o una colección vacía si no existe ninguno de esos atributos. </returns>
+      <param name="element">Módulo que se va a inspeccionar.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> es null. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.Module)">
+      <summary>Recupera una colección de atributos personalizados de un tipo especificado que se aplican a un módulo concreto.</summary>
+      <returns>Colección de atributos personalizados que se aplican a <paramref name="element" /> y que coinciden con <paramref name="T" />, o una colección vacía si no existe ninguno de esos atributos. </returns>
+      <param name="element">Módulo que se va a inspeccionar.</param>
+      <typeparam name="T">Tipo de atributo que se va a buscar.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> es null. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.Module,System.Type)">
+      <summary>Recupera una colección de atributos personalizados de un tipo especificado que se aplican a un módulo concreto.</summary>
+      <returns>Colección de atributos personalizados que se aplican a <paramref name="element" /> y que coinciden con <paramref name="attributeType" />, o una colección vacía si no existe ninguno de esos atributos.</returns>
+      <param name="element">Módulo que se va a inspeccionar.</param>
+      <param name="attributeType">Tipo de atributo que se va a buscar.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="element" /> o de <paramref name="attributeType" /> es null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> no se deriva de <see cref="T:System.Attribute" />. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.ParameterInfo)">
+      <summary>Recupera una colección de atributos personalizados que se aplican a un parámetro especificado.</summary>
+      <returns>Colección de atributos personalizados que se aplican a <paramref name="element" /> o una colección vacía si no existe ninguno de esos atributos. </returns>
+      <param name="element">Parámetro que se va a inspeccionar.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> es null. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> no es un constructor, método, propiedad, evento, tipo o campo. </exception>
+      <exception cref="T:System.TypeLoadException">Un tipo de atributo personalizado no puede cargarse. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.ParameterInfo)">
+      <summary>Recupera una colección de atributos personalizados de un tipo especificado que se aplican a un parámetro concreto.</summary>
+      <returns>Colección de atributos personalizados que se aplican a <paramref name="element" /> y que coinciden con <paramref name="T" />, o una colección vacía si no existe ninguno de esos atributos. </returns>
+      <param name="element">Parámetro que se va a inspeccionar.</param>
+      <typeparam name="T">Tipo de atributo que se va a buscar.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> es null. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> no es un constructor, método, propiedad, evento, tipo o campo. </exception>
+      <exception cref="T:System.TypeLoadException">Un tipo de atributo personalizado no puede cargarse. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.ParameterInfo,System.Boolean)">
+      <summary>Recupera una colección de atributos personalizados que se aplican a un parámetro concreto y, opcionalmente, inspecciona los antecesores de dicho parámetro.</summary>
+      <returns>Colección de atributos personalizados que se aplican a <paramref name="element" /> o una colección vacía si no existe ninguno de esos atributos. </returns>
+      <param name="element">Parámetro que se va a inspeccionar.</param>
+      <param name="inherit">Es true para inspeccionar los antecesores de <paramref name="element" />; de lo contrario, es false. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> es null. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> no es un constructor, método, propiedad, evento, tipo o campo. </exception>
+      <exception cref="T:System.TypeLoadException">Un tipo de atributo personalizado no puede cargarse. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.ParameterInfo,System.Boolean)">
+      <summary>Recupera una colección de atributos personalizados de un tipo especificado que se aplican a un parámetro concreto y, opcionalmente, inspecciona los antecesores de dicho parámetro.</summary>
+      <returns>Colección de atributos personalizados que se aplican a <paramref name="element" /> y que coinciden con <paramref name="T" />, o una colección vacía si no existe ninguno de esos atributos. </returns>
+      <param name="element">Parámetro que se va a inspeccionar.</param>
+      <param name="inherit">Es true para inspeccionar los antecesores de <paramref name="element" />; de lo contrario, es false. </param>
+      <typeparam name="T">Tipo de atributo que se va a buscar.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> es null. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> no es un constructor, método, propiedad, evento, tipo o campo. </exception>
+      <exception cref="T:System.TypeLoadException">Un tipo de atributo personalizado no puede cargarse. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.ParameterInfo,System.Type)">
+      <summary>Recupera una colección de atributos personalizados de un tipo especificado que se aplican a un parámetro concreto.</summary>
+      <returns>Colección de atributos personalizados que se aplican a <paramref name="element" /> y que coinciden con <paramref name="attributeType" />, o una colección vacía si no existe ninguno de esos atributos. </returns>
+      <param name="element">Parámetro que se va a inspeccionar.</param>
+      <param name="attributeType">Tipo de atributo que se va a buscar.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="element" /> o de <paramref name="attributeType" /> es null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> no se deriva de <see cref="T:System.Attribute" />. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> no es un constructor, método, propiedad, evento, tipo o campo. </exception>
+      <exception cref="T:System.TypeLoadException">Un tipo de atributo personalizado no puede cargarse. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.ParameterInfo,System.Type,System.Boolean)">
+      <summary>Recupera una colección de atributos personalizados de un tipo especificado que se aplican a un parámetro concreto y, opcionalmente, inspecciona los antecesores de dicho parámetro.</summary>
+      <returns>Colección de atributos personalizados que se aplican a <paramref name="element" /> y que coinciden con <paramref name="attributeType" />, o una colección vacía si no existe ninguno de esos atributos. </returns>
+      <param name="element">Parámetro que se va a inspeccionar.</param>
+      <param name="attributeType">Tipo de atributo que se va a buscar.</param>
+      <param name="inherit">Es true para inspeccionar los antecesores de <paramref name="element" />; de lo contrario, es false. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="element" /> o de <paramref name="attributeType" /> es null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> no se deriva de <see cref="T:System.Attribute" />. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> no es un constructor, método, propiedad, evento, tipo o campo. </exception>
+      <exception cref="T:System.TypeLoadException">Un tipo de atributo personalizado no puede cargarse. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.Assembly,System.Type)">
+      <summary>Indica si se deben aplicar atributos personalizados de un tipo especificado a un ensamblado especificado.</summary>
+      <returns>Es true si un atributo del tipo especificado se aplica a <paramref name="element" />; de lo contrario, es false.</returns>
+      <param name="element">Ensamblado que se va a inspeccionar.</param>
+      <param name="attributeType">Tipo del atributo que se va a buscar.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="element" /> o de <paramref name="attributeType" /> es null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> no se deriva de <see cref="T:System.Attribute" />. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.MemberInfo,System.Type)">
+      <summary>Indica si se deben aplicar atributos personalizados de un tipo especificado a un miembro especificado.</summary>
+      <returns>Es true si un atributo del tipo especificado se aplica a <paramref name="element" />; de lo contrario, es false.</returns>
+      <param name="element">Miembro que se va a inspeccionar.</param>
+      <param name="attributeType">Tipo de atributo que se va a buscar.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="element" /> o de <paramref name="attributeType" /> es null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> no se deriva de <see cref="T:System.Attribute" />. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> no es un constructor, método, propiedad, evento, tipo o campo. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.MemberInfo,System.Type,System.Boolean)">
+      <summary>Indica si los atributos personalizados de un tipo especificado se aplican a un miembro especificado y, opcionalmente, se aplican a sus antecesores.</summary>
+      <returns>Es true si un atributo del tipo especificado se aplica a <paramref name="element" />; de lo contrario, es false.</returns>
+      <param name="element">Miembro que se va a inspeccionar.</param>
+      <param name="attributeType">Tipo del atributo que se va a buscar.</param>
+      <param name="inherit">Es true para inspeccionar los antecesores de <paramref name="element" />; de lo contrario, es false. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="element" /> o de <paramref name="attributeType" /> es null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> no se deriva de <see cref="T:System.Attribute" />. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> no es un constructor, método, propiedad, evento, tipo o campo. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.Module,System.Type)">
+      <summary>Indica si se deben aplicar atributos personalizados de un tipo especificado a un módulo especificado.</summary>
+      <returns>Es true si un atributo del tipo especificado se aplica a <paramref name="element" />; de lo contrario, es false.</returns>
+      <param name="element">Módulo que se va a inspeccionar.</param>
+      <param name="attributeType">Tipo de atributo que se va a buscar.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="element" /> o de <paramref name="attributeType" /> es null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> no se deriva de <see cref="T:System.Attribute" />. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.ParameterInfo,System.Type)">
+      <summary>Indica si se deben aplicar atributos personalizados de un tipo especificado a un parámetro especificado.</summary>
+      <returns>Es true si un atributo del tipo especificado se aplica a <paramref name="element" />; de lo contrario, es false.</returns>
+      <param name="element">Parámetro que se va a inspeccionar.</param>
+      <param name="attributeType">Tipo de atributo que se va a buscar.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="element" /> o de <paramref name="attributeType" /> es null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> no se deriva de <see cref="T:System.Attribute" />. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.ParameterInfo,System.Type,System.Boolean)">
+      <summary>Indica si los atributos personalizados de un tipo especificado se aplican a un parámetro especificado y, opcionalmente, se aplican a sus antecesores.</summary>
+      <returns>Es true si un atributo del tipo especificado se aplica a <paramref name="element" />; de lo contrario, es false.</returns>
+      <param name="element">Parámetro que se va a inspeccionar.</param>
+      <param name="attributeType">Tipo de atributo que se va a buscar.</param>
+      <param name="inherit">Es true para inspeccionar los antecesores de <paramref name="element" />; de lo contrario, es false. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="element" /> o de <paramref name="attributeType" /> es null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> no se deriva de <see cref="T:System.Attribute" />. </exception>
+    </member>
+    <member name="T:System.Reflection.InterfaceMapping">
+      <summary>Recupera la asignación de una interfaz en los métodos reales de una clase que implementa esa interfaz.</summary>
+    </member>
+    <member name="F:System.Reflection.InterfaceMapping.InterfaceMethods">
+      <summary>Muestra los métodos definidos en la interfaz.</summary>
+    </member>
+    <member name="F:System.Reflection.InterfaceMapping.InterfaceType">
+      <summary>Muestra el tipo que representa la interfaz.</summary>
+    </member>
+    <member name="F:System.Reflection.InterfaceMapping.TargetMethods">
+      <summary>Muestra los métodos que implementan la interfaz.</summary>
+    </member>
+    <member name="F:System.Reflection.InterfaceMapping.TargetType">
+      <summary>Representa el tipo que se utilizó para crear la asignación de la interfaz.</summary>
+    </member>
+    <member name="T:System.Reflection.RuntimeReflectionExtensions">
+      <summary>Proporciona métodos que recuperan información sobre tipos en tiempo de ejecución.</summary>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetMethodInfo(System.Delegate)">
+      <summary>Obtiene un objeto que representa el método representado por el delegado especificado.</summary>
+      <returns>Objeto que representa el método.</returns>
+      <param name="del">Delegado al que se va a examinar.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeBaseDefinition(System.Reflection.MethodInfo)">
+      <summary>Recupera un objeto que representa el método especificado en la clase base directa o indirecta donde el método se declaró por primera vez.</summary>
+      <returns>Un objeto que representa la declaración inicial del método especificado en una clase base.</returns>
+      <param name="method">Método para recuperar la información.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeEvent(System.Type,System.String)">
+      <summary>Recupera un objeto que representa el evento especificado.</summary>
+      <returns>Objeto que representa el evento especificado o null si no se encuentra el evento.</returns>
+      <param name="type">El tipo que contiene el evento.</param>
+      <param name="name">Nombre del evento.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeEvents(System.Type)">
+      <summary>Recupera una colección que representa todos los eventos definidos en un tipo especificado.</summary>
+      <returns>Colección de eventos para el tipo especificado.</returns>
+      <param name="type">El tipo que contiene los eventos.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeField(System.Type,System.String)">
+      <summary>Recupera un objeto que representa un campo especificado.</summary>
+      <returns>Objeto que representa el campo especificado o null si no se encuentra el campo.</returns>
+      <param name="type">Tipo que contiene el campo.</param>
+      <param name="name">Nombre del campo.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeFields(System.Type)">
+      <summary>Recupera una colección que representa todos los campos definidos en un tipo especificado.</summary>
+      <returns>Colección de campos para el tipo especificado.</returns>
+      <param name="type">Tipo que contiene los campos.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeInterfaceMap(System.Reflection.TypeInfo,System.Type)">
+      <summary>Devuelve una asignación de interfaz para el tipo de interfaz y la interfaz especificada.</summary>
+      <returns>Objeto que representa la asignación de interfaz para la interfaz y el tipo especificados.</returns>
+      <param name="typeInfo">Tipo para el que recuperar una asignación.</param>
+      <param name="interfaceType">Interfaz para la que recuperar una asignación.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeMethod(System.Type,System.String,System.Type[])">
+      <summary>Recupera un objeto que representa un método especificado.</summary>
+      <returns>Objeto que representa el método especificado o null si no se encuentra el método.</returns>
+      <param name="type">Tipo que contiene el método.</param>
+      <param name="name">Nombre del método.</param>
+      <param name="parameters">Matriz que contiene los parámetros del método.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeMethods(System.Type)">
+      <summary>Recupera una colección que representa todos los métodos definidos en un tipo especificado.</summary>
+      <returns>Colección de métodos para el tipo especificado.</returns>
+      <param name="type">Tipo que contiene los métodos.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeProperties(System.Type)">
+      <summary>Recupera una colección que representa todas las propiedades definidas en un tipo especificado.</summary>
+      <returns>Colección de propiedades del tipo especificado.</returns>
+      <param name="type">Tipo que contiene las propiedades.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeProperty(System.Type,System.String)">
+      <summary>Recupera un objeto que representa una propiedad especificada.</summary>
+      <returns>Objeto que representa la propiedad especificada o null si no se encuentra la propiedad.</returns>
+      <param name="type">El tipo que contiene la propiedad.</param>
+      <param name="name">Nombre de la propiedad.</param>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,467 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Console</name>
+  </assembly>
+  <members>
+    <member name="T:System.Console">
+      <summary>Rappresenta i flussi di input, output e di errore standard per le applicazioni console.La classe non può essere ereditata.Per esaminare il codice sorgente di .NET Framework per questo tipo, vedere il Reference Source.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Console.BackgroundColor">
+      <summary>Ottiene o imposta il colore di sfondo della console.</summary>
+      <returns>Valore che specifica il colore di sfondo della console; vale a dire il colore che viene visualizzato dietro ogni carattere.Il colore predefinito è nero.</returns>
+      <exception cref="T:System.ArgumentException">Il colore specificato per un'operazione di impostazione non è un membro valido dell'oggetto <see cref="T:System.ConsoleColor" />. </exception>
+      <exception cref="T:System.Security.SecurityException">L'utente non dispone dell'autorizzazione per eseguire l'operazione. </exception>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Window="SafeTopLevelWindows" />
+      </PermissionSet>
+    </member>
+    <member name="E:System.Console.CancelKeyPress">
+      <summary>Si verifica quando il tasto di modifica <see cref="F:System.ConsoleModifiers.Control" /> (CTRL) e il tasto della console <see cref="F:System.ConsoleKey.C" /> (C) o il tasto INTERR vengono premuti contemporaneamente (CTRL+C o CTRL+INTERR).</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Console.Error">
+      <summary>Ottiene il flusso di output di errore standard.</summary>
+      <returns>Oggetto <see cref="T:System.IO.TextWriter" /> che rappresenta il flusso di output di errore standard.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Console.ForegroundColor">
+      <summary>Ottiene o imposta il colore di primo piano della console.</summary>
+      <returns>Oggetto <see cref="T:System.ConsoleColor" /> che specifica il colore di primo piano della console; vale a dire il colore con cui viene visualizzato ogni carattere.Il colore predefinito è grigio.</returns>
+      <exception cref="T:System.ArgumentException">Il colore specificato per un'operazione di impostazione non è un membro valido dell'oggetto <see cref="T:System.ConsoleColor" />. </exception>
+      <exception cref="T:System.Security.SecurityException">L'utente non dispone dell'autorizzazione per eseguire l'operazione. </exception>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Window="SafeTopLevelWindows" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Console.In">
+      <summary>Ottiene il flusso di input standard.</summary>
+      <returns>Oggetto <see cref="T:System.IO.TextReader" /> che rappresenta il flusso di input standard.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.OpenStandardError">
+      <summary>Acquisisce il flusso di errore standard.</summary>
+      <returns>Flusso di errore standard.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.OpenStandardInput">
+      <summary>Acquisisce il flusso di input standard.</summary>
+      <returns>Flusso di input standard.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.OpenStandardOutput">
+      <summary>Acquisisce il flusso di output standard.</summary>
+      <returns>Flusso di output standard.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Console.Out">
+      <summary>Ottiene il flusso di output standard.</summary>
+      <returns>Oggetto <see cref="T:System.IO.TextWriter" /> che rappresenta il flusso di output standard.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Read">
+      <summary>Legge il carattere successivo dal flusso di input standard.</summary>
+      <returns>Carattere successivo dal flusso di input oppure -1 se non ci sono altri caratteri da leggere.</returns>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.ReadLine">
+      <summary>Legge la riga successiva di caratteri dal flusso di input standard.</summary>
+      <returns>Riga successiva di caratteri dal flusso di input oppure null se non ci sono altre righe disponibili.</returns>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <exception cref="T:System.OutOfMemoryException">La memoria disponibile non è sufficiente per assegnare un buffer per la stringa restituita. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il numero di caratteri nella riga successiva è maggiore di <see cref="F:System.Int32.MaxValue" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.ResetColor">
+      <summary>Imposta i colori di primo piano e di sfondo della console sulle impostazioni predefinite.</summary>
+      <exception cref="T:System.Security.SecurityException">L'utente non dispone dell'autorizzazione per eseguire l'operazione. </exception>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Window="SafeTopLevelWindows" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Console.SetError(System.IO.TextWriter)">
+      <summary>Imposta la proprietà <see cref="P:System.Console.Error" /> sull'oggetto <see cref="T:System.IO.TextWriter" /> specificato.</summary>
+      <param name="newError">Flusso che è il nuovo output di errore standard. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="newError" /> è null. </exception>
+      <exception cref="T:System.Security.SecurityException">Il chiamante non dispone dell'autorizzazione richiesta. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Console.SetIn(System.IO.TextReader)">
+      <summary>Imposta la proprietà <see cref="P:System.Console.In" /> sull'oggetto <see cref="T:System.IO.TextReader" /> specificato.</summary>
+      <param name="newIn">Flusso che è il nuovo input standard. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="newIn" /> è null. </exception>
+      <exception cref="T:System.Security.SecurityException">Il chiamante non dispone dell'autorizzazione richiesta. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Console.SetOut(System.IO.TextWriter)">
+      <summary>Imposta la proprietà <see cref="P:System.Console.Out" /> sull'oggetto <see cref="T:System.IO.TextWriter" /> specificato.</summary>
+      <param name="newOut">Flusso che è il nuovo output standard. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="newOut" /> è null. </exception>
+      <exception cref="T:System.Security.SecurityException">Il chiamante non dispone dell'autorizzazione richiesta. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Console.Write(System.Boolean)">
+      <summary>Scrive nel flusso di output standard la rappresentazione testo del valore Boolean specificato.</summary>
+      <param name="value">Valore da scrivere. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Char)">
+      <summary>Scrive nel flusso di output standard il valore del carattere Unicode specificato.</summary>
+      <param name="value">Valore da scrivere. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Char[])">
+      <summary>Scrive nel flusso di output standard una specifica matrice di caratteri Unicode.</summary>
+      <param name="buffer">Matrice di caratteri Unicode. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Char[],System.Int32,System.Int32)">
+      <summary>Scrive nel flusso di output standard una specifica sottomatrice di caratteri Unicode.</summary>
+      <param name="buffer">Matrice di caratteri Unicode. </param>
+      <param name="index">Posizione iniziale in <paramref name="buffer" />. </param>
+      <param name="count">Numero di caratteri da scrivere. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> è null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> o <paramref name="count" /> è minore di zero. </exception>
+      <exception cref="T:System.ArgumentException">La somma dei parametri <paramref name="index" /> + <paramref name="count" /> specifica una posizione non all'interno del parametro <paramref name="buffer" />. </exception>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Decimal)">
+      <summary>Inserisce nel flusso di output standard la rappresentazione testo del valore <see cref="T:System.Decimal" /> specificato.</summary>
+      <param name="value">Valore da scrivere. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Double)">
+      <summary>Scrive nel flusso di output standard la rappresentazione testo del valore a virgola mobile e precisione doppia specificato.</summary>
+      <param name="value">Valore da scrivere. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Int32)">
+      <summary>Scrive nel flusso di output standard la rappresentazione di testo dell'intero con segno a 32 bit specificato.</summary>
+      <param name="value">Valore da scrivere. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Int64)">
+      <summary>Scrive nel flusso di output standard la rappresentazione di testo dell'intero con segno a 64 bit specificato.</summary>
+      <param name="value">Valore da scrivere. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Object)">
+      <summary>Scrive nel flusso di output standard la rappresentazione testo dell'oggetto specificato.</summary>
+      <param name="value">Valore da scrivere oppure null. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Single)">
+      <summary>Scrive nel flusso di output standard la rappresentazione testo del valore a virgola mobile e precisione singola specificato.</summary>
+      <param name="value">Valore da scrivere. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String)">
+      <summary>Scrive nel flusso di output standard il valore della stringa specificato.</summary>
+      <param name="value">Valore da scrivere. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String,System.Object)">
+      <summary>Scrive nel flusso di output standard la rappresentazione testo dell'oggetto specificato usando le informazioni di formato specificate.</summary>
+      <param name="format">Stringa in formato composito (vedere la sezione Note). </param>
+      <param name="arg0">Oggetto da scrivere usando <paramref name="format" />. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> è null. </exception>
+      <exception cref="T:System.FormatException">La specifica di formato nel parametro <paramref name="format" /> non è valida. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String,System.Object,System.Object)">
+      <summary>Scrive nel flusso di output standard la rappresentazione testo degli oggetti specificati usando le informazioni di formato specificate.</summary>
+      <param name="format">Stringa in formato composito (vedere la sezione Note).</param>
+      <param name="arg0">Primo oggetto da scrivere usando <paramref name="format" />. </param>
+      <param name="arg1">Secondo oggetto da scrivere usando <paramref name="format" />. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> è null. </exception>
+      <exception cref="T:System.FormatException">La specifica di formato nel parametro <paramref name="format" /> non è valida. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String,System.Object,System.Object,System.Object)">
+      <summary>Scrive nel flusso di output standard la rappresentazione testo degli oggetti specificati usando le informazioni di formato specificate.</summary>
+      <param name="format">Stringa in formato composito (vedere la sezione Note).</param>
+      <param name="arg0">Primo oggetto da scrivere usando <paramref name="format" />. </param>
+      <param name="arg1">Secondo oggetto da scrivere usando <paramref name="format" />. </param>
+      <param name="arg2">Terzo oggetto da scrivere usando <paramref name="format" />. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> è null. </exception>
+      <exception cref="T:System.FormatException">La specifica di formato nel parametro <paramref name="format" /> non è valida. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String,System.Object[])">
+      <summary>Scrive nel flusso di output standard la rappresentazione testo della matrice di oggetti specificata usando le informazioni di formato specificate.</summary>
+      <param name="format">Stringa in formato composito (vedere la sezione Note).</param>
+      <param name="arg">Matrice di oggetti da scrivere usando <paramref name="format" />. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> o <paramref name="arg" /> è null. </exception>
+      <exception cref="T:System.FormatException">La specifica di formato nel parametro <paramref name="format" /> non è valida. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.UInt32)">
+      <summary>Scrive nel flusso di output standard la rappresentazione testo dell'intero senza segno a 32 bit specificato.</summary>
+      <param name="value">Valore da scrivere. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.UInt64)">
+      <summary>Scrive nel flusso di output standard la rappresentazione testo dell'intero senza segno a 64 bit specificato.</summary>
+      <param name="value">Valore da scrivere. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine">
+      <summary>Scrive nel flusso di output standard il terminatore di riga corrente.</summary>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Boolean)">
+      <summary>Scrive nel flusso di output standard la rappresentazione testo del valore Boolean specificato, seguita dal terminatore di riga corrente.</summary>
+      <param name="value">Valore da scrivere. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Char)">
+      <summary>Scrive nel flusso di output standard il valore del carattere Unicode specificato, seguito dal terminatore di riga corrente.</summary>
+      <param name="value">Valore da scrivere. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Char[])">
+      <summary>Scrive nel flusso di output standard la matrice di caratteri Unicode specificata, seguita dal terminatore di riga corrente.</summary>
+      <param name="buffer">Matrice di caratteri Unicode. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Char[],System.Int32,System.Int32)">
+      <summary>Scrive nel flusso di output standard la sottomatrice di caratteri Unicode specificata, seguita dal terminatore di riga corrente.</summary>
+      <param name="buffer">Matrice di caratteri Unicode. </param>
+      <param name="index">Posizione iniziale in <paramref name="buffer" />. </param>
+      <param name="count">Numero di caratteri da scrivere. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> è null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> o <paramref name="count" /> è minore di zero. </exception>
+      <exception cref="T:System.ArgumentException">La somma dei parametri <paramref name="index" /> + <paramref name="count" /> specifica una posizione non all'interno del parametro <paramref name="buffer" />. </exception>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Decimal)">
+      <summary>Scrive nel flusso di output standard la rappresentazione testo del valore <see cref="T:System.Decimal" /> specificato, seguita dal terminatore di riga corrente.</summary>
+      <param name="value">Valore da scrivere. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Double)">
+      <summary>Scrive nel flusso di output standard la rappresentazione testo del valore a virgola mobile e precisione doppia specificato, seguita dal terminatore di riga corrente.</summary>
+      <param name="value">Valore da scrivere. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Int32)">
+      <summary>Scrive nel flusso di output standard la rappresentazione di testo dell'intero con segno a 32 bit specificato, seguita dal terminatore di riga corrente.</summary>
+      <param name="value">Valore da scrivere. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Int64)">
+      <summary>Scrive nel flusso di output standard la rappresentazione di testo dell'intero con segno a 64 bit specificato, seguita dal terminatore di riga corrente.</summary>
+      <param name="value">Valore da scrivere. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Object)">
+      <summary>Scrive nel flusso di output standard la rappresentazione testo dell'oggetto specificato, seguita dal terminatore di riga corrente.</summary>
+      <param name="value">Valore da scrivere. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Single)">
+      <summary>Scrive nel flusso di output standard la rappresentazione testo del valore a virgola mobile e precisione singola specificato, seguita dal terminatore di riga corrente.</summary>
+      <param name="value">Valore da scrivere. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String)">
+      <summary>Scrive nel flusso di output standard il valore della stringa specificato, seguito dal terminatore di riga corrente.</summary>
+      <param name="value">Valore da scrivere. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String,System.Object)">
+      <summary>Scrive nel flusso di output standard la rappresentazione testo dell'oggetto specificato, seguita dal terminatore di riga corrente, usando le informazioni di formato specificate.</summary>
+      <param name="format">Stringa in formato composito (vedere la sezione Note).</param>
+      <param name="arg0">Oggetto da scrivere usando <paramref name="format" />. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> è null. </exception>
+      <exception cref="T:System.FormatException">La specifica di formato nel parametro <paramref name="format" /> non è valida. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String,System.Object,System.Object)">
+      <summary>Scrive nel flusso di output standard la rappresentazione testo degli oggetti specificati, seguita dal terminatore di riga corrente, usando le informazioni di formato specificate.</summary>
+      <param name="format">Stringa in formato composito (vedere la sezione Note).</param>
+      <param name="arg0">Primo oggetto da scrivere usando <paramref name="format" />. </param>
+      <param name="arg1">Secondo oggetto da scrivere usando <paramref name="format" />. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> è null. </exception>
+      <exception cref="T:System.FormatException">La specifica di formato nel parametro <paramref name="format" /> non è valida. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String,System.Object,System.Object,System.Object)">
+      <summary>Scrive nel flusso di output standard la rappresentazione testo degli oggetti specificati, seguita dal terminatore di riga corrente, usando le informazioni di formato specificate.</summary>
+      <param name="format">Stringa in formato composito (vedere la sezione Note).</param>
+      <param name="arg0">Primo oggetto da scrivere usando <paramref name="format" />. </param>
+      <param name="arg1">Secondo oggetto da scrivere usando <paramref name="format" />. </param>
+      <param name="arg2">Terzo oggetto da scrivere usando <paramref name="format" />. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> è null. </exception>
+      <exception cref="T:System.FormatException">La specifica di formato nel parametro <paramref name="format" /> non è valida. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String,System.Object[])">
+      <summary>Scrive nel flusso di output standard la rappresentazione testo della matrice di oggetti specificata, seguita dal terminatore di riga corrente, usando le informazioni di formato specificate.</summary>
+      <param name="format">Stringa in formato composito (vedere la sezione Note).</param>
+      <param name="arg">Matrice di oggetti da scrivere usando <paramref name="format" />. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> o <paramref name="arg" /> è null. </exception>
+      <exception cref="T:System.FormatException">La specifica di formato nel parametro <paramref name="format" /> non è valida. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.UInt32)">
+      <summary>Scrive nel flusso di output standard la rappresentazione testo dell'intero senza segno a 32 bit specificato, seguita dal terminatore di riga corrente.</summary>
+      <param name="value">Valore da scrivere. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.UInt64)">
+      <summary>Scrive nel flusso di output standard la rappresentazione testo dell'intero senza segno a 64 bit specificato, seguita dal terminatore di riga corrente.</summary>
+      <param name="value">Valore da scrivere. </param>
+      <exception cref="T:System.IO.IOException">Si è verificato un errore di I/O. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.ConsoleCancelEventArgs">
+      <summary>Fornisce dati per l'evento <see cref="E:System.Console.CancelKeyPress" />.La classe non può essere ereditata.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.ConsoleCancelEventArgs.Cancel">
+      <summary>Ottiene o imposta un valore che indica se premendo il tasto di modifica <see cref="F:System.ConsoleModifiers.Control" /> e il tasto della console <see cref="F:System.ConsoleKey.C" /> (CTRL+C) o i tasti CTRL+INTERR viene terminato il processo corrente.L'impostazione predefinita è false, che termina il processo corrente.</summary>
+      <returns>true se il processo corrente deve riprendere al completamento dell'operazione del gestore eventi; false se il processo corrente deve terminare.Il valore predefinito è false; il processo corrente termina al completamento del gestore eventi.Se true, il processo corrente prosegue.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.ConsoleCancelEventArgs.SpecialKey">
+      <summary>Ottiene la combinazione di tasti di modifica e della console che hanno causato l'interruzione del processo corrente.</summary>
+      <returns>Uno dei valori di enumerazione che specifica la combinazione di tasti che ha interrotto il processo corrente.Nessun valore predefinito.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.ConsoleCancelEventHandler">
+      <summary>Rappresenta il metodo che gestirà l'evento <see cref="E:System.Console.CancelKeyPress" /> di un oggetto <see cref="T:System.Console" />.</summary>
+      <param name="sender">Origine dell'evento. </param>
+      <param name="e">Oggetto <see cref="T:System.ConsoleCancelEventArgs" /> che contiene i dati dell'evento. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.ConsoleColor">
+      <summary>Specifica le costanti per la definizione dei colori dello sfondo e in primo piano della console.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.ConsoleColor.Black">
+      <summary>Colore nero.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Blue">
+      <summary>Colore blu.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Cyan">
+      <summary>Colore ciano (verde-blu).</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkBlue">
+      <summary>Colore blu scuro.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkCyan">
+      <summary>Colore ciano scuro (verde-blu scuro).</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkGray">
+      <summary>Colore grigio scuro.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkGreen">
+      <summary>Colore verde scuro.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkMagenta">
+      <summary>Colore magenta scuro (rosso porpora scuro).</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkRed">
+      <summary>Colore rosso scuro.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkYellow">
+      <summary>Colore giallo scuro (ocra).</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Gray">
+      <summary>Colore grigio.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Green">
+      <summary>Colore verde.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Magenta">
+      <summary>Colore magenta (rosso porpora).</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Red">
+      <summary>Colore rosso.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.White">
+      <summary>Colore bianco</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Yellow">
+      <summary>Colore giallo.</summary>
+    </member>
+    <member name="T:System.ConsoleSpecialKey">
+      <summary>Specifica le combinazioni di tasti di modifica e della console in grado di interrompere il processo corrente.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.ConsoleSpecialKey.ControlBreak">
+      <summary>Il tasto di modifica <see cref="F:System.ConsoleModifiers.Control" /> più il tasto della console INTERR.</summary>
+    </member>
+    <member name="F:System.ConsoleSpecialKey.ControlC">
+      <summary>Il tasto di modifica <see cref="F:System.ConsoleModifiers.Control" /> più il tasto della console <see cref="F:System.ConsoleKey.C" />.</summary>
+    </member>
+  </members>
+</doc>

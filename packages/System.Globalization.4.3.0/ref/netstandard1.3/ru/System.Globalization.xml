@@ -1,0 +1,1611 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Globalization</name>
+  </assembly>
+  <members>
+    <member name="T:System.Globalization.Calendar">
+      <summary>Представляет время в виде раздельных значений, например недель, месяцев и годов.</summary>
+    </member>
+    <member name="M:System.Globalization.Calendar.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Globalization.Calendar" />.</summary>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddDays(System.DateTime,System.Int32)">
+      <summary>Возвращает <see cref="T:System.DateTime" /> как заданное число дней из заданного объекта <see cref="T:System.DateTime" />.</summary>
+      <returns>Объект <see cref="T:System.DateTime" />, полученный добавлением заданного числа дней к заданному объекту <see cref="T:System.DateTime" />.</returns>
+      <param name="time">Объект <see cref="T:System.DateTime" />, к которому добавляются дни. </param>
+      <param name="days">Добавляемое число дней. </param>
+      <exception cref="T:System.ArgumentException">Результирующее значение <see cref="T:System.DateTime" /> находится вне диапазона значений данного календаря. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение <paramref name="days" /> находится вне допустимого диапазона возвращаемого значения <see cref="T:System.DateTime" />. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddHours(System.DateTime,System.Int32)">
+      <summary>Возвращает <see cref="T:System.DateTime" /> как заданное число часов из заданного объекта <see cref="T:System.DateTime" />.</summary>
+      <returns>Объект <see cref="T:System.DateTime" />, полученный добавлением заданного числа часов к заданному объекту <see cref="T:System.DateTime" />.</returns>
+      <param name="time">Объект <see cref="T:System.DateTime" />, к которому добавляются часы. </param>
+      <param name="hours">Добавляемое число часов. </param>
+      <exception cref="T:System.ArgumentException">Результирующее значение <see cref="T:System.DateTime" /> находится вне диапазона значений данного календаря. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение <paramref name="hours" /> находится вне допустимого диапазона возвращаемого значения <see cref="T:System.DateTime" />. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddMilliseconds(System.DateTime,System.Double)">
+      <summary>Возвращает <see cref="T:System.DateTime" /> как заданное число миллисекунд из заданного объекта <see cref="T:System.DateTime" />.</summary>
+      <returns>Объект <see cref="T:System.DateTime" />, полученный добавлением заданного числа миллисекунд к заданному объекту <see cref="T:System.DateTime" />.</returns>
+      <param name="time">Объект <see cref="T:System.DateTime" />, к которому добавляются миллисекунды. </param>
+      <param name="milliseconds">Добавляемое число миллисекунд.</param>
+      <exception cref="T:System.ArgumentException">Результирующее значение <see cref="T:System.DateTime" /> находится вне диапазона значений данного календаря. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение <paramref name="milliseconds" /> находится вне допустимого диапазона возвращаемого значения <see cref="T:System.DateTime" />. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddMinutes(System.DateTime,System.Int32)">
+      <summary>Возвращает <see cref="T:System.DateTime" /> как заданное число минут из заданного объекта <see cref="T:System.DateTime" />.</summary>
+      <returns>Объект <see cref="T:System.DateTime" />, полученный добавлением заданного числа минут к заданному объекту <see cref="T:System.DateTime" />.</returns>
+      <param name="time">Объект <see cref="T:System.DateTime" />, к которому добавляются минуты. </param>
+      <param name="minutes">Добавляемое число минут. </param>
+      <exception cref="T:System.ArgumentException">Результирующее значение <see cref="T:System.DateTime" /> находится вне диапазона значений данного календаря. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение <paramref name="minutes" /> находится вне допустимого диапазона возвращаемого значения <see cref="T:System.DateTime" />. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>При переопределении в производном классе возвращает <see cref="T:System.DateTime" /> как заданное число месяцев из заданного <see cref="T:System.DateTime" />.</summary>
+      <returns>Объект <see cref="T:System.DateTime" />, полученный добавлением заданного числа месяцев к заданному объекту <see cref="T:System.DateTime" />.</returns>
+      <param name="time">Объект <see cref="T:System.DateTime" />, к которому добавляются месяцы. </param>
+      <param name="months">Добавляемое число месяцев. </param>
+      <exception cref="T:System.ArgumentException">Результирующее значение <see cref="T:System.DateTime" /> находится вне диапазона значений данного календаря. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение <paramref name="months" /> находится вне допустимого диапазона возвращаемого значения <see cref="T:System.DateTime" />. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddSeconds(System.DateTime,System.Int32)">
+      <summary>Возвращает <see cref="T:System.DateTime" /> как заданное число секунд из заданного объекта <see cref="T:System.DateTime" />.</summary>
+      <returns>Объект <see cref="T:System.DateTime" />, полученный добавлением заданного числа секунд к заданному объекту <see cref="T:System.DateTime" />.</returns>
+      <param name="time">Объект <see cref="T:System.DateTime" />, к которому добавляются секунды. </param>
+      <param name="seconds">Добавляемое число секунд. </param>
+      <exception cref="T:System.ArgumentException">Результирующее значение <see cref="T:System.DateTime" /> находится вне диапазона значений данного календаря. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение <paramref name="seconds" /> находится вне допустимого диапазона возвращаемого значения <see cref="T:System.DateTime" />. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddWeeks(System.DateTime,System.Int32)">
+      <summary>Возвращает <see cref="T:System.DateTime" /> как заданное число недель из заданного объекта <see cref="T:System.DateTime" />.</summary>
+      <returns>Объект <see cref="T:System.DateTime" />, полученный добавлением заданного числа недель к заданному объекту <see cref="T:System.DateTime" />.</returns>
+      <param name="time">Объект <see cref="T:System.DateTime" />, к которому добавляются недели. </param>
+      <param name="weeks">Добавляемое число недель. </param>
+      <exception cref="T:System.ArgumentException">Результирующее значение <see cref="T:System.DateTime" /> находится вне диапазона значений данного календаря. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение <paramref name="weeks" /> находится вне допустимого диапазона возвращаемого значения <see cref="T:System.DateTime" />. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddYears(System.DateTime,System.Int32)">
+      <summary>При переопределении в производном классе возвращает <see cref="T:System.DateTime" /> как заданное число лет из заданного <see cref="T:System.DateTime" />.</summary>
+      <returns>Объект <see cref="T:System.DateTime" />, полученный добавлением заданного числа лет к заданному объекту <see cref="T:System.DateTime" />.</returns>
+      <param name="time">Объект <see cref="T:System.DateTime" />, к которому добавляются годы. </param>
+      <param name="years">Добавляемое число лет. </param>
+      <exception cref="T:System.ArgumentException">Результирующее значение <see cref="T:System.DateTime" /> находится вне диапазона значений данного календаря. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение <paramref name="years" /> находится вне допустимого диапазона возвращаемого значения <see cref="T:System.DateTime" />. </exception>
+    </member>
+    <member name="F:System.Globalization.Calendar.CurrentEra">
+      <summary>Представляет текущую эру для текущего календаря. </summary>
+    </member>
+    <member name="P:System.Globalization.Calendar.Eras">
+      <summary>При переопределении в производном классе возвращает список эр в текущем календаре.</summary>
+      <returns>Массив целых чисел для представления эр в текущем календаре.</returns>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDayOfMonth(System.DateTime)">
+      <summary>При переопределении в производном классе возвращает день месяца в заданном <see cref="T:System.DateTime" />.</summary>
+      <returns>Положительное целое число, обозначающее день месяца в параметре <paramref name="time" />.</returns>
+      <param name="time">Класс <see cref="T:System.DateTime" />, который требуется прочитать. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDayOfWeek(System.DateTime)">
+      <summary>При переопределении в производном классе возвращает день недели в заданном <see cref="T:System.DateTime" />.</summary>
+      <returns>Значение <see cref="T:System.DayOfWeek" />, представляющее день недели в параметре <paramref name="time" />.</returns>
+      <param name="time">Класс <see cref="T:System.DateTime" />, который требуется прочитать. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDayOfYear(System.DateTime)">
+      <summary>При переопределении в производном классе возвращает день года в заданном <see cref="T:System.DateTime" />.</summary>
+      <returns>Положительное целое число, обозначающее день года в параметре <paramref name="time" />.</returns>
+      <param name="time">Класс <see cref="T:System.DateTime" />, который требуется прочитать. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDaysInMonth(System.Int32,System.Int32)">
+      <summary>Возвращает число дней в указанном месяце указанных года текущей эры.</summary>
+      <returns>Количество дней в указанном месяце указанных года текущей эры.</returns>
+      <param name="year">Целое число, представляющее год. </param>
+      <param name="month">Положительное целое число, представляющее месяц. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="year" /> находится вне диапазона, поддерживаемого календарем.– или – Значение параметра <paramref name="month" /> находится вне диапазона, поддерживаемого календарем. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>При переопределении в производном классе возвращает число дней в указанном месяце, году и в указанной эре.</summary>
+      <returns>Количество дней в указанном месяце указанных года и эры.</returns>
+      <param name="year">Целое число, представляющее год. </param>
+      <param name="month">Положительное целое число, представляющее месяц. </param>
+      <param name="era">Целое число, представляющее эру. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="year" /> находится вне диапазона, поддерживаемого календарем.– или – Значение параметра <paramref name="month" /> находится вне диапазона, поддерживаемого календарем.– или – Значение параметра <paramref name="era" /> находится вне диапазона, поддерживаемого календарем. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDaysInYear(System.Int32)">
+      <summary>Возвращает число дней в указанном году текущей эры.</summary>
+      <returns>Число дней в указанном году текущей эры.</returns>
+      <param name="year">Целое число, представляющее год. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="year" /> находится вне диапазона, поддерживаемого календарем. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>При переопределении в производном классе возвращает число дней в указанном году и в указанной эре.</summary>
+      <returns>Число дней в указанном году указанной эры.</returns>
+      <param name="year">Целое число, представляющее год. </param>
+      <param name="era">Целое число, представляющее эру. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="year" /> находится вне диапазона, поддерживаемого календарем.– или – Значение параметра <paramref name="era" /> находится вне диапазона, поддерживаемого календарем. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetEra(System.DateTime)">
+      <summary>При переопределении в производном классе возвращает эру в заданном <see cref="T:System.DateTime" />.</summary>
+      <returns>Целое число, представляющее эру в <paramref name="time" />.</returns>
+      <param name="time">Класс <see cref="T:System.DateTime" />, который требуется прочитать. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetHour(System.DateTime)">
+      <summary>Возвращает значение часов в заданном <see cref="T:System.DateTime" />.</summary>
+      <returns>Целое число от 0 до 23, обозначающее час в <paramref name="time" />.</returns>
+      <param name="time">Класс <see cref="T:System.DateTime" />, который требуется прочитать. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>Вычисляет високосный месяц для заданных года и эры.</summary>
+      <returns>Положительное целое число от 1 до 13, указывающее високосный месяц в указанном году указанной эры.– или –Нуль, если этот календарь не поддерживает високосные месяцы или если в параметрах <paramref name="year" /> и <paramref name="era" /> не указан високосный год.</returns>
+      <param name="year">Год.</param>
+      <param name="era">Эра.</param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetMilliseconds(System.DateTime)">
+      <summary>Возвращает значение миллисекунд в заданном <see cref="T:System.DateTime" />.</summary>
+      <returns>Число двойной точности с плавающей запятой удвоенной точности от 0 до 999, которое представляет миллисекунды в параметре <paramref name="time" />.</returns>
+      <param name="time">Класс <see cref="T:System.DateTime" />, который требуется прочитать. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetMinute(System.DateTime)">
+      <summary>Возвращает значение минут в заданном <see cref="T:System.DateTime" />.</summary>
+      <returns>Целое число от 0 до 59, представляющее минуты в <paramref name="time" />.</returns>
+      <param name="time">Класс <see cref="T:System.DateTime" />, который требуется прочитать. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetMonth(System.DateTime)">
+      <summary>При переопределении в производном классе возвращает месяц в заданном <see cref="T:System.DateTime" />.</summary>
+      <returns>Положительное целое число, представляющее месяц в параметре <paramref name="time" />.</returns>
+      <param name="time">Класс <see cref="T:System.DateTime" />, который требуется прочитать. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetMonthsInYear(System.Int32)">
+      <summary>Возвращает число месяцев в указанном году текущей эры.</summary>
+      <returns>Число месяцев в указанном году текущей эры.</returns>
+      <param name="year">Целое число, представляющее год. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="year" /> находится вне диапазона, поддерживаемого календарем. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>При переопределении в производном классе возвращает число месяцев в указанном году указанной эры.</summary>
+      <returns>Число месяцев в указанном году указанной эры.</returns>
+      <param name="year">Целое число, представляющее год. </param>
+      <param name="era">Целое число, представляющее эру. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="year" /> находится вне диапазона, поддерживаемого календарем.– или – Значение параметра <paramref name="era" /> находится вне диапазона, поддерживаемого календарем. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetSecond(System.DateTime)">
+      <summary>Возвращает значение секунд в заданном <see cref="T:System.DateTime" />.</summary>
+      <returns>Целое число от 0 до 59, представляющее секунды в <paramref name="time" />.</returns>
+      <param name="time">Класс <see cref="T:System.DateTime" />, который требуется прочитать. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetWeekOfYear(System.DateTime,System.Globalization.CalendarWeekRule,System.DayOfWeek)">
+      <summary>Возвращает неделю года, к которой относится дата в заданном значении <see cref="T:System.DateTime" />.</summary>
+      <returns>Положительное целое число, представляющее неделю года, к которой относится дата в параметре <paramref name="time" />.</returns>
+      <param name="time">Значение даты и времени. </param>
+      <param name="rule">Значение перечисления, определяющее календарную неделю. </param>
+      <param name="firstDayOfWeek">Значение перечисления, представляющее первый день недели. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Время, указанное в параметре <paramref name="time" />, наступает раньше момента времени, определенного свойством <see cref="P:System.Globalization.Calendar.MinSupportedDateTime" />, или позже момента времени, определенного свойством <see cref="P:System.Globalization.Calendar.MaxSupportedDateTime" />.– или –<paramref name="firstDayOfWeek" /> не является допустимым значением <see cref="T:System.DayOfWeek" />.– или – <paramref name="rule" /> не является допустимым значением <see cref="T:System.Globalization.CalendarWeekRule" />. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetYear(System.DateTime)">
+      <summary>При переопределении в производном классе возвращает год в заданном <see cref="T:System.DateTime" />.</summary>
+      <returns>Целое число, представляющее год в параметре <paramref name="time" />.</returns>
+      <param name="time">Класс <see cref="T:System.DateTime" />, который требуется прочитать. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapDay(System.Int32,System.Int32,System.Int32)">
+      <summary>Определяет, является ли указанная дата текущей эры високосным днем.</summary>
+      <returns>Значение true, если указанный день — високосный; в противном случае — значение false.</returns>
+      <param name="year">Целое число, представляющее год. </param>
+      <param name="month">Положительное целое число, представляющее месяц. </param>
+      <param name="day">Положительное целое число, представляющее день. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="year" /> находится вне диапазона, поддерживаемого календарем.– или – Значение параметра <paramref name="month" /> находится вне диапазона, поддерживаемого календарем.– или – Значение параметра <paramref name="day" /> находится вне диапазона, поддерживаемого календарем. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>При переопределении в производном классе определяет, является ли указанная дата указанной эры високосным днем.</summary>
+      <returns>Значение true, если указанный день — високосный; в противном случае — значение false.</returns>
+      <param name="year">Целое число, представляющее год. </param>
+      <param name="month">Положительное целое число, представляющее месяц. </param>
+      <param name="day">Положительное целое число, представляющее день. </param>
+      <param name="era">Целое число, представляющее эру. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="year" /> находится вне диапазона, поддерживаемого календарем.– или – Значение параметра <paramref name="month" /> находится вне диапазона, поддерживаемого календарем.– или – Значение параметра <paramref name="day" /> находится вне диапазона, поддерживаемого календарем.– или – Значение параметра <paramref name="era" /> находится вне диапазона, поддерживаемого календарем. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapMonth(System.Int32,System.Int32)">
+      <summary>Определяет, является ли указанный месяц указанного года текущей эры високосным месяцем.</summary>
+      <returns>Значение true, если указанный месяц — високосный; в противном случае — значение false.</returns>
+      <param name="year">Целое число, представляющее год. </param>
+      <param name="month">Положительное целое число, представляющее месяц. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="year" /> находится вне диапазона, поддерживаемого календарем.– или – Значение параметра <paramref name="month" /> находится вне диапазона, поддерживаемого календарем. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>При переопределении в производном классе определяет, является ли указанный месяц указанных года и эры високосным месяцем.</summary>
+      <returns>Значение true, если указанный месяц — високосный; в противном случае — значение false.</returns>
+      <param name="year">Целое число, представляющее год. </param>
+      <param name="month">Положительное целое число, представляющее месяц. </param>
+      <param name="era">Целое число, представляющее эру. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="year" /> находится вне диапазона, поддерживаемого календарем.– или – Значение параметра <paramref name="month" /> находится вне диапазона, поддерживаемого календарем.– или – Значение параметра <paramref name="era" /> находится вне диапазона, поддерживаемого календарем. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapYear(System.Int32)">
+      <summary>Определяет, является ли указанный год текущей эры високосным годом.</summary>
+      <returns>Значение true, если указанный год — високосный; в противном случае — значение false.</returns>
+      <param name="year">Целое число, представляющее год. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="year" /> находится вне диапазона, поддерживаемого календарем. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>При переопределении в производном классе определяет, является ли указанный год указанной эры високосным годом.</summary>
+      <returns>Значение true, если указанный год — високосный; в противном случае — значение false.</returns>
+      <param name="year">Целое число, представляющее год. </param>
+      <param name="era">Целое число, представляющее эру. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="year" /> находится вне диапазона, поддерживаемого календарем.– или – Значение параметра <paramref name="era" /> находится вне диапазона, поддерживаемого календарем. </exception>
+    </member>
+    <member name="P:System.Globalization.Calendar.IsReadOnly">
+      <summary>Возвращает значение, указывающее, является ли объект <see cref="T:System.Globalization.Calendar" /> доступным только для чтения.</summary>
+      <returns>true, если объект <see cref="T:System.Globalization.Calendar" /> доступен только для чтения, в противном случае — false.</returns>
+    </member>
+    <member name="P:System.Globalization.Calendar.MaxSupportedDateTime">
+      <summary>Возвращает самые последние дату и время, поддерживаемые этим объектом <see cref="T:System.Globalization.Calendar" />.</summary>
+      <returns>Самые последние дата и время, поддерживаемые этим календарем.Значение по умолчанию — <see cref="F:System.DateTime.MaxValue" />.</returns>
+    </member>
+    <member name="P:System.Globalization.Calendar.MinSupportedDateTime">
+      <summary>Возвращает самые ранние дату и время, поддерживаемые этим объектом <see cref="T:System.Globalization.Calendar" />.</summary>
+      <returns>Самые ранние дата и время, поддерживаемые этим календарем.Значение по умолчанию — <see cref="F:System.DateTime.MinValue" />.</returns>
+    </member>
+    <member name="M:System.Globalization.Calendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>Возвращает <see cref="T:System.DateTime" /> с заданными значениями даты и времени текущей эры.</summary>
+      <returns>Объект <see cref="T:System.DateTime" /> с заданными значениями даты и времени в текущей эре.</returns>
+      <param name="year">Целое число, представляющее год. </param>
+      <param name="month">Положительное целое число, представляющее месяц. </param>
+      <param name="day">Положительное целое число, представляющее день. </param>
+      <param name="hour">Целое число от 0 до 23, представляющее час. </param>
+      <param name="minute">Целое число от 0 до 59, представляющее минуту. </param>
+      <param name="second">Целое число от 0 до 59, представляющее секунду. </param>
+      <param name="millisecond">Целое число от 0 до 999, представляющее миллисекунду. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="year" /> находится вне диапазона, поддерживаемого календарем.– или – Значение параметра <paramref name="month" /> находится вне диапазона, поддерживаемого календарем.– или – Значение параметра <paramref name="day" /> находится вне диапазона, поддерживаемого календарем.– или – Значение параметра <paramref name="hour" /> меньше нуля или больше 23.– или – Значение параметра <paramref name="minute" /> меньше нуля или больше 59.– или – Значение параметра <paramref name="second" /> меньше нуля или больше 59.– или – Значение параметра <paramref name="millisecond" /> меньше нуля или больше 999. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>При переопределении в производном классе возвращает <see cref="T:System.DateTime" /> со значением даты и времени в заданной эре.</summary>
+      <returns>Объект <see cref="T:System.DateTime" /> с заданными значениями даты и времени в текущей эре.</returns>
+      <param name="year">Целое число, представляющее год. </param>
+      <param name="month">Положительное целое число, представляющее месяц. </param>
+      <param name="day">Положительное целое число, представляющее день. </param>
+      <param name="hour">Целое число от 0 до 23, представляющее час. </param>
+      <param name="minute">Целое число от 0 до 59, представляющее минуту. </param>
+      <param name="second">Целое число от 0 до 59, представляющее секунду. </param>
+      <param name="millisecond">Целое число от 0 до 999, представляющее миллисекунду. </param>
+      <param name="era">Целое число, представляющее эру. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="year" /> находится вне диапазона, поддерживаемого календарем.– или – Значение параметра <paramref name="month" /> находится вне диапазона, поддерживаемого календарем.– или – Значение параметра <paramref name="day" /> находится вне диапазона, поддерживаемого календарем.– или – Значение параметра <paramref name="hour" /> меньше нуля или больше 23.– или – Значение параметра <paramref name="minute" /> меньше нуля или больше 59.– или – Значение параметра <paramref name="second" /> меньше нуля или больше 59.– или – Значение параметра <paramref name="millisecond" /> меньше нуля или больше 999.– или – Значение параметра <paramref name="era" /> находится вне диапазона, поддерживаемого календарем. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.ToFourDigitYear(System.Int32)">
+      <summary>Преобразует заданный год в четырехзначный с использованием свойства <see cref="P:System.Globalization.Calendar.TwoDigitYearMax" /> для определения века.</summary>
+      <returns>Целое число, содержащее четырехразрядное представление <paramref name="year" />.</returns>
+      <param name="year">Двузначное или четырехзначное целое число, представляющее подлежащий преобразованию год. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="year" /> находится вне диапазона, поддерживаемого календарем. </exception>
+    </member>
+    <member name="P:System.Globalization.Calendar.TwoDigitYearMax">
+      <summary>Возвращает или задает последний год в диапазоне ста лет, для которого существует двузначное представление года.</summary>
+      <returns>Последний год в диапазоне ста лет, для которого существует двузначное представление года.</returns>
+      <exception cref="T:System.InvalidOperationException">Текущий объект <see cref="T:System.Globalization.Calendar" /> доступен только для чтения.</exception>
+    </member>
+    <member name="T:System.Globalization.CalendarWeekRule">
+      <summary>Устанавливает правила для определения первой недели года.</summary>
+    </member>
+    <member name="F:System.Globalization.CalendarWeekRule.FirstDay">
+      <summary>Указывает, что первая неделя года начинается в первый день года и заканчивается перед назначенным первым днем недели.Значение равно 0.</summary>
+    </member>
+    <member name="F:System.Globalization.CalendarWeekRule.FirstFourDayWeek">
+      <summary>Указывает, что первой неделей года является первая неделя, состоящая из четырех или более дней, следующих перед назначенным первым днем недели.Значение равно 2.</summary>
+    </member>
+    <member name="F:System.Globalization.CalendarWeekRule.FirstFullWeek">
+      <summary>Указывает, что первая неделя года начинается с назначенного первого дня недели, который встречается первым в году.Значение равно 1.</summary>
+    </member>
+    <member name="T:System.Globalization.CharUnicodeInfo">
+      <summary>Получает сведения о символе Юникода.Этот класс не наследуется.</summary>
+    </member>
+    <member name="M:System.Globalization.CharUnicodeInfo.GetNumericValue(System.Char)">
+      <summary>Получает числовое значение, связанное с указанным символом.</summary>
+      <returns>Числовое значение, связанное с указанным символом.-или- -1, если указанный символ не является числовым символом.</returns>
+      <param name="ch">Символ Юникода, для которого следует получить числовое значение. </param>
+    </member>
+    <member name="M:System.Globalization.CharUnicodeInfo.GetNumericValue(System.String,System.Int32)">
+      <summary>Получает числовое значение, связанное с символом, расположенным по указанному индексу в указанной строке.</summary>
+      <returns>Числовое значение, связанное с символом, расположенным по указанному индексу в указанной строке.-или- -1, если символ на месте указанного индекса указанной строки не является числовым символом.</returns>
+      <param name="s">Параметр <see cref="T:System.String" />, содержащий символ Юникода, для которого следует получить числовое значение. </param>
+      <param name="index">Индекс символа Юникода, для которого следует получить числовое значение. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="s" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение <paramref name="index" /> находится вне диапазона допустимых индексов в <paramref name="s" />. </exception>
+    </member>
+    <member name="M:System.Globalization.CharUnicodeInfo.GetUnicodeCategory(System.Char)">
+      <summary>Получает категорию Юникода, относящуюся к указанному символу.</summary>
+      <returns>Значение <see cref="T:System.Globalization.UnicodeCategory" />, указывающее категорию указанного символа.</returns>
+      <param name="ch">Символ Юникода, для которого следует получить категорию Юникода. </param>
+    </member>
+    <member name="M:System.Globalization.CharUnicodeInfo.GetUnicodeCategory(System.String,System.Int32)">
+      <summary>Получает категорию Юникода, относящуюся к символу, расположенному по заданному индексу в заданной строке.</summary>
+      <returns>Значение <see cref="T:System.Globalization.UnicodeCategory" />, указывающее категорию Юникода, относящуюся к символу, расположенному по заданному индексу в заданной строке.</returns>
+      <param name="s">Параметр <see cref="T:System.String" />, содержащий символ Юникода, для которого следует получить категорию Юникода. </param>
+      <param name="index">Индекс символа Юникода, для которого следует получить категорию Юникода. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="s" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение <paramref name="index" /> находится вне диапазона допустимых индексов в <paramref name="s" />. </exception>
+    </member>
+    <member name="T:System.Globalization.CompareInfo">
+      <summary>Реализует ряд методов для сравнения строк с учетом языка и региональных параметров.</summary>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.Int32,System.Int32,System.String,System.Int32,System.Int32)">
+      <summary>Сравнивает часть одной строки с частью другой строки.</summary>
+      <returns>32-разрядное целое число со знаком, выражающее лексическое соотношение двух сравниваемых значений.Значение Условие нуль Эти две строки совпадают. меньше нуля Заданная часть <paramref name="string1" /> меньше заданной части <paramref name="string2" />. больше нуля Заданная часть <paramref name="string1" /> больше заданной части <paramref name="string2" />. </returns>
+      <param name="string1">Первая сравниваемая строка. </param>
+      <param name="offset1">Отсчитываемый от нуля индекс знака в строке <paramref name="string1" />, с которого начинается сравнение. </param>
+      <param name="length1">Число последовательных знаков в строке <paramref name="string1" /> для сравнения. </param>
+      <param name="string2">Вторая сравниваемая строка. </param>
+      <param name="offset2">Отсчитываемый от нуля индекс знака в строке <paramref name="string2" />, с которого начинается сравнение. </param>
+      <param name="length2">Число последовательных знаков в строке <paramref name="string2" /> для сравнения. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметров <paramref name="offset1" /> или <paramref name="length1" />, или <paramref name="offset2" />, или <paramref name="length2" /> меньше нуля.-или- Значение параметра <paramref name="offset1" /> больше или равно количеству символов в строке <paramref name="string1" />.-или- Значение параметра <paramref name="offset2" /> больше или равно количеству символов в строке <paramref name="string2" />.-или- <paramref name="length1" /> больше количества символов от <paramref name="offset1" /> до конца <paramref name="string1" />.-или- <paramref name="length2" /> больше количества символов от <paramref name="offset2" /> до конца <paramref name="string2" />. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.Int32,System.Int32,System.String,System.Int32,System.Int32,System.Globalization.CompareOptions)">
+      <summary>Сравнивает часть одной строки с частью другой строки с использованием заданного значения <see cref="T:System.Globalization.CompareOptions" />.</summary>
+      <returns>32-разрядное целое число со знаком, выражающее лексическое соотношение двух сравниваемых значений.Значение Условие нуль Эти две строки совпадают. меньше нуля Заданная часть <paramref name="string1" /> меньше заданной части <paramref name="string2" />. больше нуля Заданная часть <paramref name="string1" /> больше заданной части <paramref name="string2" />. </returns>
+      <param name="string1">Первая сравниваемая строка. </param>
+      <param name="offset1">Отсчитываемый от нуля индекс знака в строке <paramref name="string1" />, с которого начинается сравнение. </param>
+      <param name="length1">Число последовательных знаков в строке <paramref name="string1" /> для сравнения. </param>
+      <param name="string2">Вторая сравниваемая строка. </param>
+      <param name="offset2">Отсчитываемый от нуля индекс знака в строке <paramref name="string2" />, с которого начинается сравнение. </param>
+      <param name="length2">Число последовательных знаков в строке <paramref name="string2" /> для сравнения. </param>
+      <param name="options">Значение, определяющее способ сравнения <paramref name="string1" /> и <paramref name="string2" />.Параметр <paramref name="options" /> является значением перечисления <see cref="F:System.Globalization.CompareOptions.Ordinal" />, используемым самостоятельно, или побитовой комбинацией одного или нескольких следующих значений: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" />, <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> и <see cref="F:System.Globalization.CompareOptions.StringSort" />.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметров <paramref name="offset1" /> или <paramref name="length1" />, или <paramref name="offset2" />, или <paramref name="length2" /> меньше нуля.-или- Значение параметра <paramref name="offset1" /> больше или равно количеству символов в строке <paramref name="string1" />.-или- Значение параметра <paramref name="offset2" /> больше или равно количеству символов в строке <paramref name="string2" />.-или- <paramref name="length1" /> больше количества символов от <paramref name="offset1" /> до конца <paramref name="string1" />.-или- <paramref name="length2" /> больше количества символов от <paramref name="offset2" /> до конца <paramref name="string2" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> содержит недопустимое значение <see cref="T:System.Globalization.CompareOptions" />. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.Int32,System.String,System.Int32)">
+      <summary>Сравнивает конечную часть одной строки с конечной частью другой строки.</summary>
+      <returns>32-разрядное целое число со знаком, выражающее лексическое соотношение двух сравниваемых значений.Значение Условие нуль Эти две строки совпадают. меньше нуля Заданная часть <paramref name="string1" /> меньше заданной части <paramref name="string2" />. больше нуля Заданная часть <paramref name="string1" /> больше заданной части <paramref name="string2" />. </returns>
+      <param name="string1">Первая сравниваемая строка. </param>
+      <param name="offset1">Отсчитываемый от нуля индекс знака в строке <paramref name="string1" />, с которого начинается сравнение. </param>
+      <param name="string2">Вторая сравниваемая строка. </param>
+      <param name="offset2">Отсчитываемый от нуля индекс знака в строке <paramref name="string2" />, с которого начинается сравнение. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="offset1" /> или <paramref name="offset2" /> меньше нуля.-или- Значение параметра <paramref name="offset1" /> больше или равно количеству символов в строке <paramref name="string1" />.-или- Значение параметра <paramref name="offset2" /> больше или равно количеству символов в строке <paramref name="string2" />. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.Int32,System.String,System.Int32,System.Globalization.CompareOptions)">
+      <summary>Сравнивает конечную часть одной строки с конечной частью другой строки с использованием заданного значения <see cref="T:System.Globalization.CompareOptions" />.</summary>
+      <returns>32-разрядное целое число со знаком, выражающее лексическое соотношение двух сравниваемых значений.Значение Условие нуль Эти две строки совпадают. меньше нуля Заданная часть <paramref name="string1" /> меньше заданной части <paramref name="string2" />. больше нуля Заданная часть <paramref name="string1" /> больше заданной части <paramref name="string2" />. </returns>
+      <param name="string1">Первая сравниваемая строка. </param>
+      <param name="offset1">Отсчитываемый от нуля индекс знака в строке <paramref name="string1" />, с которого начинается сравнение. </param>
+      <param name="string2">Вторая сравниваемая строка. </param>
+      <param name="offset2">Отсчитываемый от нуля индекс знака в строке <paramref name="string2" />, с которого начинается сравнение. </param>
+      <param name="options">Значение, определяющее способ сравнения <paramref name="string1" /> и <paramref name="string2" />.Параметр <paramref name="options" /> является значением перечисления <see cref="F:System.Globalization.CompareOptions.Ordinal" />, используемым самостоятельно, или побитовой комбинацией одного или нескольких следующих значений: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" />, <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> и <see cref="F:System.Globalization.CompareOptions.StringSort" />.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="offset1" /> или <paramref name="offset2" /> меньше нуля.-или- Значение параметра <paramref name="offset1" /> больше или равно количеству символов в строке <paramref name="string1" />.-или- Значение параметра <paramref name="offset2" /> больше или равно количеству символов в строке <paramref name="string2" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> содержит недопустимое значение <see cref="T:System.Globalization.CompareOptions" />. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.String)">
+      <summary>Сравнивает две строки. </summary>
+      <returns>32-разрядное целое число со знаком, выражающее лексическое соотношение двух сравниваемых значений.Значение Условие нуль Эти две строки совпадают. меньше нуля <paramref name="string1" />является менее <paramref name="string2" />. больше нуля Значение <paramref name="string1" /> больше значения <paramref name="string2" />. </returns>
+      <param name="string1">Первая сравниваемая строка. </param>
+      <param name="string2">Вторая сравниваемая строка. </param>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.String,System.Globalization.CompareOptions)">
+      <summary>Сравнивает две строки с использованием заданного значения <see cref="T:System.Globalization.CompareOptions" />.</summary>
+      <returns>32-разрядное целое число со знаком, выражающее лексическое соотношение двух сравниваемых значений.Значение Условие нуль Эти две строки совпадают. меньше нуля <paramref name="string1" />является менее <paramref name="string2" />. больше нуля Значение <paramref name="string1" /> больше значения <paramref name="string2" />. </returns>
+      <param name="string1">Первая сравниваемая строка. </param>
+      <param name="string2">Вторая сравниваемая строка. </param>
+      <param name="options">Значение, определяющее способ сравнения <paramref name="string1" /> и <paramref name="string2" />.Параметр <paramref name="options" /> является значением перечисления <see cref="F:System.Globalization.CompareOptions.Ordinal" />, используемым самостоятельно, или побитовой комбинацией одного или нескольких следующих значений: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" />, <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> и <see cref="F:System.Globalization.CompareOptions.StringSort" />.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> содержит недопустимое значение <see cref="T:System.Globalization.CompareOptions" />. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Equals(System.Object)">
+      <summary>Определяет, равен ли заданный объект текущему объекту <see cref="T:System.Globalization.CompareInfo" />.</summary>
+      <returns>Значение true, если заданный объект равен текущему объекту <see cref="T:System.Globalization.CompareInfo" />; в противном случае — значение false.</returns>
+      <param name="value">Объект для сравнения с текущим объектом <see cref="T:System.Globalization.CompareInfo" />. </param>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.GetCompareInfo(System.String)">
+      <summary>Инициализирует новый объект <see cref="T:System.Globalization.CompareInfo" />, связанный с языком и региональными параметрами с заданным именем.</summary>
+      <returns>Новый объект <see cref="T:System.Globalization.CompareInfo" />, связанный с языком и региональными параметрами с заданным идентификатором и использующий методы сравнения строк в текущем объекте <see cref="T:System.Reflection.Assembly" />.</returns>
+      <param name="name">Строка, представляющая имя языка и региональных параметров. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" />is null. </exception>
+      <exception cref="T:System.ArgumentException">Значение параметра <paramref name="name" /> не является допустимым именем языка и региональных параметров. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.GetHashCode">
+      <summary>Служит хэш-функцией текущего класса <see cref="T:System.Globalization.CompareInfo" /> для алгоритмов хэширования и структур данных, например в хэш-таблице.</summary>
+      <returns>Хэш-код для текущего объекта <see cref="T:System.Globalization.CompareInfo" />.</returns>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.GetHashCode(System.String,System.Globalization.CompareOptions)">
+      <summary>Возвращает хэш-код для строки с учетом указанные параметры сравнения. </summary>
+      <returns>Хэш-код 32-разрядное целое число со знаком. </returns>
+      <param name="source">Строка, чьи хэш-код — должны быть возвращены. </param>
+      <param name="options">Значение, определяющее способ сравнения строк. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />is null. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.Char)">
+      <summary>Осуществляет поиск указанного знака и возвращает отсчитываемый с нуля индекс первого найденного экземпляра во всей строке источника.</summary>
+      <returns>Отсчитываемый от нуля индекс первого вхождения параметра <paramref name="value" />, если есть, в <paramref name="source" />; если не найден — значение -1.Возвращает значение 0 (ноль), если <paramref name="value" /> — игнорируемый символ.</returns>
+      <param name="source">Строка для поиска. </param>
+      <param name="value">Знак, который нужно найти в <paramref name="source" />. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />is null. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.Char,System.Globalization.CompareOptions)">
+      <summary>Осуществляет поиск указанного знака и возвращает отсчитываемый с нуля индекс первого найденного экземпляра во всей строке источника с использованием заданного значения <see cref="T:System.Globalization.CompareOptions" />.</summary>
+      <returns>Отсчитываемый от нуля индекс первого вхождения параметра <paramref name="value" />, если есть, в <paramref name="source" /> с использованием указанных параметров сравнения; в противном случае — значение -1.Возвращает значение 0 (ноль), если <paramref name="value" /> — игнорируемый символ.</returns>
+      <param name="source">Строка для поиска. </param>
+      <param name="value">Знак, который нужно найти в <paramref name="source" />. </param>
+      <param name="options">Значение, определяющее способ сравнения строк.Параметр <paramref name="options" /> является значением перечисления <see cref="F:System.Globalization.CompareOptions.Ordinal" />, используемым самостоятельно, или побитовой комбинацией одного или нескольких следующих значений: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> и <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />is null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> содержит недопустимое значение <see cref="T:System.Globalization.CompareOptions" />. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.Char,System.Int32,System.Globalization.CompareOptions)">
+      <summary>Осуществляет поиск заданного знака и возвращает отсчитываемый от нуля индекс первого экземпляра в разделе исходной строки от заданного индекса до конца строки с использованием заданного значения <see cref="T:System.Globalization.CompareOptions" />.</summary>
+      <returns>Отсчитываемый от нуля индекс первого вхождения параметра <paramref name="value" />, если есть, в разделе <paramref name="source" />, начиная с <paramref name="startIndex" /> и заканчивая <paramref name="source" />, с использованием указанных параметров сравнения; в противном случае — значение -1.Возвращает <paramref name="startIndex" />, если <paramref name="value" /> — игнорируемый символ.</returns>
+      <param name="source">Строка для поиска. </param>
+      <param name="value">Знак, который нужно найти в <paramref name="source" />. </param>
+      <param name="startIndex">Индекс (с нуля) начальной позиции поиска. </param>
+      <param name="options">Значение, определяющее способ сравнения <paramref name="source" /> и <paramref name="value" />.Параметр <paramref name="options" /> является значением перечисления <see cref="F:System.Globalization.CompareOptions.Ordinal" />, используемым самостоятельно, или побитовой комбинацией одного или нескольких следующих значений: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> и <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="startIndex" /> находится вне диапазона допустимых индексов параметра <paramref name="source" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> содержит недопустимое значение <see cref="T:System.Globalization.CompareOptions" />. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.Char,System.Int32,System.Int32)">
+      <summary>Осуществляет поиск указанного знака и возвращает отсчитываемый с нуля индекс первого экземпляра в части строки источника, который начинается с указанного индекса и содержит указанное количество элементов.</summary>
+      <returns>Отсчитываемый от нуля индекс первого вхождения параметра <paramref name="value" />, если есть, в разделе <paramref name="source" />, который начинается с <paramref name="startIndex" /> и содержит количество элементов, определяемое параметром <paramref name="count" />; в противном случае — значение -1.Возвращает <paramref name="startIndex" />, если <paramref name="value" /> — игнорируемый символ.</returns>
+      <param name="source">Строка для поиска. </param>
+      <param name="value">Знак, который нужно найти в <paramref name="source" />. </param>
+      <param name="startIndex">Индекс (с нуля) начальной позиции поиска. </param>
+      <param name="count">Число элементов в диапазоне, в котором выполняется поиск. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="startIndex" /> находится вне диапазона допустимых индексов параметра <paramref name="source" />.-или- Значение параметра <paramref name="count" /> меньше нуля.-или- Параметры <paramref name="startIndex" /> и <paramref name="count" /> не определяют допустимую часть объекта <paramref name="source" />. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.Char,System.Int32,System.Int32,System.Globalization.CompareOptions)">
+      <summary>Осуществляет поиск указанного знака и возвращает отсчитываемый с нуля индекс первого экземпляра в разделе строки источника, который начинается с указанного индекса и содержит указанное количество элементов, с использованием указанного значения <see cref="T:System.Globalization.CompareOptions" />.</summary>
+      <returns>Отсчитываемый от нуля индекс первого вхождения параметра <paramref name="value" />, если есть, в разделе <paramref name="source" />, который начинается с <paramref name="startIndex" /> и содержит количество элементов, определяемое параметром <paramref name="count" />, с использованием указанных параметров сравнения; в противном случае — значение -1.Возвращает <paramref name="startIndex" />, если <paramref name="value" /> — игнорируемый символ.</returns>
+      <param name="source">Строка для поиска. </param>
+      <param name="value">Знак, который нужно найти в <paramref name="source" />. </param>
+      <param name="startIndex">Индекс (с нуля) начальной позиции поиска. </param>
+      <param name="count">Число элементов в диапазоне, в котором выполняется поиск. </param>
+      <param name="options">Значение, определяющее способ сравнения <paramref name="source" /> и <paramref name="value" />.Параметр <paramref name="options" /> является значением перечисления <see cref="F:System.Globalization.CompareOptions.Ordinal" />, используемым самостоятельно, или побитовой комбинацией одного или нескольких следующих значений: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> и <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="startIndex" /> находится вне диапазона допустимых индексов параметра <paramref name="source" />.-или- Значение параметра <paramref name="count" /> меньше нуля.-или- Параметры <paramref name="startIndex" /> и <paramref name="count" /> не определяют допустимую часть объекта <paramref name="source" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> содержит недопустимое значение <see cref="T:System.Globalization.CompareOptions" />. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.String)">
+      <summary>Осуществляет поиск указанной подстроки и возвращает отсчитываемый с нуля индекс первого найденного экземпляра во всей строке источника.</summary>
+      <returns>Отсчитываемый от нуля индекс первого вхождения параметра <paramref name="value" />, если есть, в <paramref name="source" />; если не найден — значение -1.Возвращает значение 0 (ноль), если <paramref name="value" /> — игнорируемый символ.</returns>
+      <param name="source">Строка для поиска. </param>
+      <param name="value">Строка, которую нужно найти в <paramref name="source" />. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />is null.-или- <paramref name="value" />is null. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.String,System.Globalization.CompareOptions)">
+      <summary>Осуществляет поиск указанной подстроки и возвращает отсчитываемый с нуля индекс первого найденного экземпляра во всей строке источника с использованием заданного значения <see cref="T:System.Globalization.CompareOptions" />.</summary>
+      <returns>Отсчитываемый от нуля индекс первого вхождения параметра <paramref name="value" />, если есть, в <paramref name="source" /> с использованием указанных параметров сравнения; в противном случае — значение -1.Возвращает значение 0 (ноль), если <paramref name="value" /> — игнорируемый символ.</returns>
+      <param name="source">Строка для поиска. </param>
+      <param name="value">Строка, которую нужно найти в <paramref name="source" />. </param>
+      <param name="options">Значение, определяющее способ сравнения <paramref name="source" /> и <paramref name="value" />.Параметр <paramref name="options" /> является значением перечисления <see cref="F:System.Globalization.CompareOptions.Ordinal" />, используемым самостоятельно, или побитовой комбинацией одного или нескольких следующих значений: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> и <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />is null.-или- <paramref name="value" />is null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> содержит недопустимое значение <see cref="T:System.Globalization.CompareOptions" />. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.String,System.Int32,System.Globalization.CompareOptions)">
+      <summary>Осуществляет поиск заданной подстроки и возвращает отсчитываемый от нуля индекс первого экземпляра в разделе исходной строки от заданного индекса до конца строки с использованием заданного значения <see cref="T:System.Globalization.CompareOptions" />.</summary>
+      <returns>Отсчитываемый от нуля индекс первого вхождения параметра <paramref name="value" />, если есть, в разделе <paramref name="source" />, начиная с <paramref name="startIndex" /> и заканчивая <paramref name="source" />, с использованием указанных параметров сравнения; в противном случае — значение -1.Возвращает <paramref name="startIndex" />, если <paramref name="value" /> — игнорируемый символ.</returns>
+      <param name="source">Строка для поиска. </param>
+      <param name="value">Строка, которую нужно найти в <paramref name="source" />. </param>
+      <param name="startIndex">Индекс (с нуля) начальной позиции поиска. </param>
+      <param name="options">Значение, определяющее способ сравнения <paramref name="source" /> и <paramref name="value" />.Параметр <paramref name="options" /> является значением перечисления <see cref="F:System.Globalization.CompareOptions.Ordinal" />, используемым самостоятельно, или побитовой комбинацией одного или нескольких следующих значений: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> и <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />is null.-или- <paramref name="value" />is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="startIndex" /> находится вне диапазона допустимых индексов параметра <paramref name="source" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> содержит недопустимое значение <see cref="T:System.Globalization.CompareOptions" />. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.String,System.Int32,System.Int32)">
+      <summary>Осуществляет поиск указанной подстроки и возвращает отсчитываемый с нуля индекс первого экземпляра в части строки источника, которая начинается с указанного индекса и содержит указанное число элементов.</summary>
+      <returns>Отсчитываемый от нуля индекс первого вхождения параметра <paramref name="value" />, если есть, в разделе <paramref name="source" />, который начинается с <paramref name="startIndex" /> и содержит количество элементов, определяемое параметром <paramref name="count" />; в противном случае — значение -1.Возвращает <paramref name="startIndex" />, если <paramref name="value" /> — игнорируемый символ.</returns>
+      <param name="source">Строка для поиска. </param>
+      <param name="value">Строка, которую нужно найти в <paramref name="source" />. </param>
+      <param name="startIndex">Индекс (с нуля) начальной позиции поиска. </param>
+      <param name="count">Число элементов в диапазоне, в котором выполняется поиск. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />is null.-или- <paramref name="value" />is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="startIndex" /> находится вне диапазона допустимых индексов параметра <paramref name="source" />.-или- Значение параметра <paramref name="count" /> меньше нуля.-или- Параметры <paramref name="startIndex" /> и <paramref name="count" /> не определяют допустимую часть объекта <paramref name="source" />. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.String,System.Int32,System.Int32,System.Globalization.CompareOptions)">
+      <summary>Осуществляет поиск указанной подстроки и возвращает отсчитываемый с нуля индекс первого экземпляра в разделе строки источника, который начинается с указанного индекса и содержит указанное количество элементов, с использованием указанного значения <see cref="T:System.Globalization.CompareOptions" />.</summary>
+      <returns>Отсчитываемый от нуля индекс первого вхождения параметра <paramref name="value" />, если есть, в разделе <paramref name="source" />, который начинается с <paramref name="startIndex" /> и содержит количество элементов, определяемое параметром <paramref name="count" />, с использованием указанных параметров сравнения; в противном случае — значение -1.Возвращает <paramref name="startIndex" />, если <paramref name="value" /> — игнорируемый символ.</returns>
+      <param name="source">Строка для поиска. </param>
+      <param name="value">Строка, которую нужно найти в <paramref name="source" />. </param>
+      <param name="startIndex">Индекс (с нуля) начальной позиции поиска. </param>
+      <param name="count">Число элементов в диапазоне, в котором выполняется поиск. </param>
+      <param name="options">Значение, определяющее способ сравнения <paramref name="source" /> и <paramref name="value" />.Параметр <paramref name="options" /> является значением перечисления <see cref="F:System.Globalization.CompareOptions.Ordinal" />, используемым самостоятельно, или побитовой комбинацией одного или нескольких следующих значений: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> и <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />is null.-или- <paramref name="value" />is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="startIndex" /> находится вне диапазона допустимых индексов параметра <paramref name="source" />.-или- Значение параметра <paramref name="count" /> меньше нуля.-или- Параметры <paramref name="startIndex" /> и <paramref name="count" /> не определяют допустимую часть объекта <paramref name="source" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> содержит недопустимое значение <see cref="T:System.Globalization.CompareOptions" />. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IsPrefix(System.String,System.String)">
+      <summary>Определяет, начинается ли указанная строка источника с указанного префикса.</summary>
+      <returns>true, если длина <paramref name="prefix" /> меньше или равна длине <paramref name="source" /> и <paramref name="source" /> начинается с <paramref name="prefix" />; в противном случае — false.</returns>
+      <param name="source">Строка, в которой выполняется поиск. </param>
+      <param name="prefix">Строка, сравниваемая с началом <paramref name="source" />. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />is null.-или- <paramref name="prefix" />is null. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IsPrefix(System.String,System.String,System.Globalization.CompareOptions)">
+      <summary>Определяет, начинается ли указанная строка источника с указанного префикса, с использованием заданного значения <see cref="T:System.Globalization.CompareOptions" />.</summary>
+      <returns>true, если длина <paramref name="prefix" /> меньше или равна длине <paramref name="source" /> и <paramref name="source" /> начинается с <paramref name="prefix" />; в противном случае — false.</returns>
+      <param name="source">Строка, в которой выполняется поиск. </param>
+      <param name="prefix">Строка, сравниваемая с началом <paramref name="source" />. </param>
+      <param name="options">Значение, определяющее способ сравнения <paramref name="source" /> и <paramref name="prefix" />.Параметр <paramref name="options" /> является значением перечисления <see cref="F:System.Globalization.CompareOptions.Ordinal" />, используемым самостоятельно, или побитовой комбинацией одного или нескольких следующих значений: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> и <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />is null.-или- <paramref name="prefix" />is null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> содержит недопустимое значение <see cref="T:System.Globalization.CompareOptions" />. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IsSuffix(System.String,System.String)">
+      <summary>Определяет, заканчивается ли указанная строка источника указанным суффиксом.</summary>
+      <returns>true, если длина <paramref name="suffix" /> меньше или равна длине <paramref name="source" /> и <paramref name="source" /> заканчивается  <paramref name="suffix" />; в противном случае — false.</returns>
+      <param name="source">Строка, в которой выполняется поиск. </param>
+      <param name="suffix">Строка, сравниваемая с концом <paramref name="source" />. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />is null.-или- <paramref name="suffix" />is null. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IsSuffix(System.String,System.String,System.Globalization.CompareOptions)">
+      <summary>Определяет, заканчивается ли указанная строка источника указанным суффиксом, с использованием заданного значения <see cref="T:System.Globalization.CompareOptions" />.</summary>
+      <returns>true, если длина <paramref name="suffix" /> меньше или равна длине <paramref name="source" /> и <paramref name="source" /> заканчивается  <paramref name="suffix" />; в противном случае — false.</returns>
+      <param name="source">Строка, в которой выполняется поиск. </param>
+      <param name="suffix">Строка, сравниваемая с концом <paramref name="source" />. </param>
+      <param name="options">Значение, определяющее способ сравнения <paramref name="source" /> и <paramref name="suffix" />.Параметр <paramref name="options" /> является значением перечисления <see cref="F:System.Globalization.CompareOptions.Ordinal" />, используемым самостоятельно, или побитовой комбинацией одного или нескольких следующих значений: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> и <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />is null.-или- <paramref name="suffix" />is null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> содержит недопустимое значение <see cref="T:System.Globalization.CompareOptions" />. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.Char)">
+      <summary>Осуществляет поиск указанного знака и возвращает отсчитываемый с нуля индекс последнего найденного экземпляра во всей строке источника.</summary>
+      <returns>Отсчитываемый от нуля индекс последнего вхождения параметра <paramref name="value" />, если есть, в <paramref name="source" />; если не найден — значение -1.</returns>
+      <param name="source">Строка для поиска. </param>
+      <param name="value">Знак, который нужно найти в <paramref name="source" />. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />is null. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.Char,System.Globalization.CompareOptions)">
+      <summary>Осуществляет поиск указанного знака и возвращает отсчитываемый с нуля индекс последнего найденного экземпляра во всей строке источника с использованием заданного значения <see cref="T:System.Globalization.CompareOptions" />.</summary>
+      <returns>Отсчитываемый от нуля индекс последнего вхождения параметра <paramref name="value" />, если есть, в <paramref name="source" /> с использованием указанных параметров сравнения; в противном случае — значение -1.</returns>
+      <param name="source">Строка для поиска. </param>
+      <param name="value">Знак, который нужно найти в <paramref name="source" />. </param>
+      <param name="options">Значение, определяющее способ сравнения <paramref name="source" /> и <paramref name="value" />.Параметр <paramref name="options" /> является значением перечисления <see cref="F:System.Globalization.CompareOptions.Ordinal" />, используемым самостоятельно, или побитовой комбинацией одного или нескольких следующих значений: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> и <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />is null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> содержит недопустимое значение <see cref="T:System.Globalization.CompareOptions" />. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.Char,System.Int32,System.Globalization.CompareOptions)">
+      <summary>Осуществляет поиск заданного знака и возвращает отсчитываемый от нуля индекс последнего экземпляра в разделе исходной строки от начала строки до заданного индекса с использованием заданного значения <see cref="T:System.Globalization.CompareOptions" />.</summary>
+      <returns>Отсчитываемый от нуля индекс последнего вхождения параметра <paramref name="value" />, если есть, в разделе <paramref name="source" />, начиная с <paramref name="source" /> и заканчивая <paramref name="startIndex" />, с использованием указанных параметров сравнения; в противном случае — значение -1.Возвращает <paramref name="startIndex" />, если <paramref name="value" /> — игнорируемый символ.</returns>
+      <param name="source">Строка для поиска. </param>
+      <param name="value">Знак, который нужно найти в <paramref name="source" />. </param>
+      <param name="startIndex">Индекс (с нуля) начала диапазона поиска в обратном направлении. </param>
+      <param name="options">Значение, определяющее способ сравнения <paramref name="source" /> и <paramref name="value" />.Параметр <paramref name="options" /> является значением перечисления <see cref="F:System.Globalization.CompareOptions.Ordinal" />, используемым самостоятельно, или побитовой комбинацией одного или нескольких следующих значений: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> и <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="startIndex" /> находится вне диапазона допустимых индексов параметра <paramref name="source" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> содержит недопустимое значение <see cref="T:System.Globalization.CompareOptions" />. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.Char,System.Int32,System.Int32)">
+      <summary>Осуществляет поиск указанного знака и возвращает отсчитываемый с нуля индекс последнего экземпляра в части строки источника, которая содержит указанное количество элементов и заканчивается на указанном индексе.</summary>
+      <returns>Отсчитываемый от нуля индекс последнего экземпляра <paramref name="value" />, если есть, в разделе <paramref name="source" />, который содержит количество элементов, определяемое параметром <paramref name="count" /> заканчивается на <paramref name="startIndex" />; в противном случае — значение -1.Возвращает <paramref name="startIndex" />, если <paramref name="value" /> — игнорируемый символ.</returns>
+      <param name="source">Строка для поиска. </param>
+      <param name="value">Знак, который нужно найти в <paramref name="source" />. </param>
+      <param name="startIndex">Индекс (с нуля) начала диапазона поиска в обратном направлении. </param>
+      <param name="count">Число элементов в диапазоне, в котором выполняется поиск. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="startIndex" /> находится вне диапазона допустимых индексов параметра <paramref name="source" />.-или- Значение параметра <paramref name="count" /> меньше нуля.-или- Параметры <paramref name="startIndex" /> и <paramref name="count" /> не определяют допустимую часть объекта <paramref name="source" />. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.Char,System.Int32,System.Int32,System.Globalization.CompareOptions)">
+      <summary>Осуществляет поиск указанного знака и возвращает отсчитываемый с нуля индекс последнего экземпляра в разделе строки источника, который содержит указанное количество элементов и заканчивается на указанном индексе, с использованием указанного значения <see cref="T:System.Globalization.CompareOptions" />.</summary>
+      <returns>Отсчитываемый от нуля индекс последнего вхождения параметра <paramref name="value" />, если есть, в разделе <paramref name="source" />, который содержит количество элементов, определяемое параметром <paramref name="count" /> и заканчивается на <paramref name="startIndex" />, с использованием указанных параметров сравнения; в противном случае — значение -1.Возвращает <paramref name="startIndex" />, если <paramref name="value" /> — игнорируемый символ.</returns>
+      <param name="source">Строка для поиска. </param>
+      <param name="value">Знак, который нужно найти в <paramref name="source" />. </param>
+      <param name="startIndex">Индекс (с нуля) начала диапазона поиска в обратном направлении. </param>
+      <param name="count">Число элементов в диапазоне, в котором выполняется поиск. </param>
+      <param name="options">Значение, определяющее способ сравнения <paramref name="source" /> и <paramref name="value" />.Параметр <paramref name="options" /> является значением перечисления <see cref="F:System.Globalization.CompareOptions.Ordinal" />, используемым самостоятельно, или побитовой комбинацией одного или нескольких следующих значений: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> и <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="startIndex" /> находится вне диапазона допустимых индексов параметра <paramref name="source" />.-или- Значение параметра <paramref name="count" /> меньше нуля.-или- Параметры <paramref name="startIndex" /> и <paramref name="count" /> не определяют допустимую часть объекта <paramref name="source" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> содержит недопустимое значение <see cref="T:System.Globalization.CompareOptions" />. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.String)">
+      <summary>Выполняет поиск указанной подстроки и возвращает начинающийся с нуля индекс последнего экземпляра в рамках всей исходной строки.</summary>
+      <returns>Отсчитываемый от нуля индекс последнего вхождения параметра <paramref name="value" />, если есть, в <paramref name="source" />; если не найден — значение -1.</returns>
+      <param name="source">Строка для поиска. </param>
+      <param name="value">Строка, которую нужно найти в <paramref name="source" />. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />is null.-или- <paramref name="value" />is null. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.String,System.Globalization.CompareOptions)">
+      <summary>Осуществляет поиск указанной подстроки и возвращает отсчитываемый с нуля индекс последнего найденного экземпляра во всей строке источника с использованием заданного значения <see cref="T:System.Globalization.CompareOptions" />.</summary>
+      <returns>Отсчитываемый от нуля индекс последнего вхождения параметра <paramref name="value" />, если есть, в <paramref name="source" /> с использованием указанных параметров сравнения; в противном случае — значение -1.</returns>
+      <param name="source">Строка для поиска. </param>
+      <param name="value">Строка, которую нужно найти в <paramref name="source" />. </param>
+      <param name="options">Значение, определяющее способ сравнения <paramref name="source" /> и <paramref name="value" />.Параметр <paramref name="options" /> является значением перечисления <see cref="F:System.Globalization.CompareOptions.Ordinal" />, используемым самостоятельно, или побитовой комбинацией одного или нескольких следующих значений: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> и <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />is null.-или- <paramref name="value" />is null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> содержит недопустимое значение <see cref="T:System.Globalization.CompareOptions" />. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.String,System.Int32,System.Globalization.CompareOptions)">
+      <summary>Осуществляет поиск заданной подстроки и возвращает отсчитываемый от нуля индекс последнего экземпляра в разделе исходной строки от начала строки до заданного индекса с использованием заданного значения <see cref="T:System.Globalization.CompareOptions" />.</summary>
+      <returns>Отсчитываемый от нуля индекс последнего вхождения параметра <paramref name="value" />, если есть, в разделе <paramref name="source" />, начиная с <paramref name="source" /> и заканчивая <paramref name="startIndex" />, с использованием указанных параметров сравнения; в противном случае — значение -1.Возвращает <paramref name="startIndex" />, если <paramref name="value" /> — игнорируемый символ.</returns>
+      <param name="source">Строка для поиска. </param>
+      <param name="value">Строка, которую нужно найти в <paramref name="source" />. </param>
+      <param name="startIndex">Индекс (с нуля) начала диапазона поиска в обратном направлении. </param>
+      <param name="options">Значение, определяющее способ сравнения <paramref name="source" /> и <paramref name="value" />.Параметр <paramref name="options" /> является значением перечисления <see cref="F:System.Globalization.CompareOptions.Ordinal" />, используемым самостоятельно, или побитовой комбинацией одного или нескольких следующих значений: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> и <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />is null.-или- <paramref name="value" />is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="startIndex" /> находится вне диапазона допустимых индексов параметра <paramref name="source" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> содержит недопустимое значение <see cref="T:System.Globalization.CompareOptions" />. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.String,System.Int32,System.Int32)">
+      <summary>Осуществляет поиск указанной подстроки и возвращает отсчитываемый с нуля индекс последнего экземпляра в части строки источника, который содержит указанное количество элементов и заканчивается на указанном индексе.</summary>
+      <returns>Отсчитываемый от нуля индекс последнего экземпляра <paramref name="value" />, если есть, в разделе <paramref name="source" />, который содержит количество элементов, определяемое параметром <paramref name="count" /> заканчивается на <paramref name="startIndex" />; в противном случае — значение -1.Возвращает <paramref name="startIndex" />, если <paramref name="value" /> — игнорируемый символ.</returns>
+      <param name="source">Строка для поиска. </param>
+      <param name="value">Строка, которую нужно найти в <paramref name="source" />. </param>
+      <param name="startIndex">Индекс (с нуля) начала диапазона поиска в обратном направлении. </param>
+      <param name="count">Число элементов в диапазоне, в котором выполняется поиск. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />is null.-или- <paramref name="value" />is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="startIndex" /> находится вне диапазона допустимых индексов параметра <paramref name="source" />.-или- Значение параметра <paramref name="count" /> меньше нуля.-или- Параметры <paramref name="startIndex" /> и <paramref name="count" /> не определяют допустимую часть объекта <paramref name="source" />. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.String,System.Int32,System.Int32,System.Globalization.CompareOptions)">
+      <summary>Осуществляет поиск указанной подстроки и возвращает отсчитываемый с нуля индекс последнего экземпляра в разделе строки источника, который содержит указанное количество элементов и заканчивается на указанном индексе, с использованием указанного значения <see cref="T:System.Globalization.CompareOptions" />.</summary>
+      <returns>Отсчитываемый от нуля индекс последнего вхождения параметра <paramref name="value" />, если есть, в разделе <paramref name="source" />, который содержит количество элементов, определяемое параметром <paramref name="count" /> и заканчивается на <paramref name="startIndex" />, с использованием указанных параметров сравнения; в противном случае — значение -1.Возвращает <paramref name="startIndex" />, если <paramref name="value" /> — игнорируемый символ.</returns>
+      <param name="source">Строка для поиска. </param>
+      <param name="value">Строка, которую нужно найти в <paramref name="source" />. </param>
+      <param name="startIndex">Индекс (с нуля) начала диапазона поиска в обратном направлении. </param>
+      <param name="count">Число элементов в диапазоне, в котором выполняется поиск. </param>
+      <param name="options">Значение, определяющее способ сравнения <paramref name="source" /> и <paramref name="value" />.Параметр <paramref name="options" /> является значением перечисления <see cref="F:System.Globalization.CompareOptions.Ordinal" />, используемым самостоятельно, или побитовой комбинацией одного или нескольких следующих значений: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> и <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />is null.-или- <paramref name="value" />is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="startIndex" /> находится вне диапазона допустимых индексов параметра <paramref name="source" />.-или- Значение параметра <paramref name="count" /> меньше нуля.-или- Параметры <paramref name="startIndex" /> и <paramref name="count" /> не определяют допустимую часть объекта <paramref name="source" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> содержит недопустимое значение <see cref="T:System.Globalization.CompareOptions" />. </exception>
+    </member>
+    <member name="P:System.Globalization.CompareInfo.Name">
+      <summary>Получает имя используемого языка и региональных параметров для операций сортировки по данному объекту <see cref="T:System.Globalization.CompareInfo" />.</summary>
+      <returns>Имя языка и региональных параметров.</returns>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.ToString">
+      <summary>Возвращает строку, представляющую текущий объект <see cref="T:System.Globalization.CompareInfo" />.</summary>
+      <returns>Строка, представляющая текущий объект <see cref="T:System.Globalization.CompareInfo" />.</returns>
+    </member>
+    <member name="T:System.Globalization.CompareOptions">
+      <summary>Определяет параметры сравнения строк для <see cref="T:System.Globalization.CompareInfo" />.</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.IgnoreCase">
+      <summary>Указывает, что сравнение строк не должно учитывать регистр.</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.IgnoreKanaType">
+      <summary>Указывает, что при сравнении строк необходимо игнорировать тип "Кана".Типы японской азбуки Каны обозначают символы хираганы и катаканы, представляющие звуки японского языка.Хирагана используется для японских выражений и слов, а катакана — для слов, заимствованных из других языков, например "компьютер" и "Интернет".Для обозначения любого звука может быть использована как хирагана, так и катакана.Если выбрано это значение, знаки хирагана и катакана для одного и того же звука считаются равными.</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.IgnoreNonSpace">
+      <summary> Указывает, что при сравнении строк необходимо игнорировать не занимающие место несамостоятельные знаки, например, диакритические.В стандарте Юникода комбинированные символы определяются как символы, объединяемые с базовыми символами для получения нового символа.Не занимающие место несамостоятельные знаки в своем представлении не требуют дополнительного пространства.</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.IgnoreSymbols">
+      <summary>Указывает, что при сравнении строк необходимо игнорировать такие символы, как разделители, знаки препинания, знаки денежных единиц, знак процента, математические символы, амперсанд и т. д.</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.IgnoreWidth">
+      <summary>Указывает, что при сравнении строк необходимо игнорировать ширину знака.Например, символы японской катаканы могут быть написаны в полную ширину или в половину ширины.Если выбрано это значение, знаки катаканы, написанные в полную ширину, считаются равными тем же знакам, написанным в половину ширины.</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.None">
+      <summary>Указывает настройки параметров по умолчанию.</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.Ordinal">
+      <summary>Указывает, что в сравнении строк должны использоваться последовательные значения строки в кодировке Юникода UTF-16 (последовательное сравнение единиц кода). Это позволяет быстро выполнить сравнение, которое, однако, не учитывает особенностей, связанных с языком и региональными параметрами.Строка, начинающаяся с единицы кода XXXX16, отображается перед строкой, начинающейся с YYYY16, если XXXX16 меньше YYYY16.Это значение не может быть объединено с другими значениями <see cref="T:System.Globalization.CompareOptions" /> и должно использоваться обособленно.</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.OrdinalIgnoreCase">
+      <summary>При сравнении строк не должен учитываться регистр. После этого выполняется обычное сравнение.Этот способ аналогичен преобразованию строки в верхний регистр с помощью инвариантного языка и региональных параметров и выполнению порядкового сравнения результатов.</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.StringSort">
+      <summary>Указывает, что сравнение строк должно использовать алгоритм сортировки строк.В строке сортировки дефис, апостроф, а также другие знаки, не являющиеся буквенно-цифровыми, предшествуют буквенно-цифровым знакам.</summary>
+    </member>
+    <member name="T:System.Globalization.CultureInfo">
+      <summary>Предоставляет сведения об определенном языке и региональных параметрах (которые в совокупности называются языковым стандартом для разработки неуправляемого кода).В этих сведениях содержатся имена языков и региональных параметров, система языка, используемый календарь и форматы дат, а также разделители строк.</summary>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Globalization.CultureInfo" /> на основе языка и региональных параметров, заданных именем.</summary>
+      <param name="name">Предварительно определенное имя <see cref="T:System.Globalization.CultureInfo" />, свойство <see cref="P:System.Globalization.CultureInfo.Name" /> существующего объекта <see cref="T:System.Globalization.CultureInfo" /> или имя языка и региональных параметров, свойственных только Windows.<paramref name="name" /> не учитывает регистр.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> is null. </exception>
+      <exception cref="T:System.Globalization.CultureNotFoundException">
+        <paramref name="name" /> is not a valid culture name.For more information, see the Notes to Callers section.</exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.Calendar">
+      <summary>Возвращает календарь, используемый по умолчанию для языка и региональных параметров.</summary>
+      <returns>Объект <see cref="T:System.Globalization.Calendar" />, представляющий календарь, используемый по умолчанию в языке и региональных параметрах.</returns>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.Clone">
+      <summary>Создает копию текущего поставщика <see cref="T:System.Globalization.CultureInfo" />.</summary>
+      <returns>Копия текущего объекта <see cref="T:System.Globalization.CultureInfo" />.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.CompareInfo">
+      <summary>Возвращает объект <see cref="T:System.Globalization.CompareInfo" />, который определяет способ сравнения строк в данном языке и региональных параметрах.</summary>
+      <returns>
+        <see cref="T:System.Globalization.CompareInfo" /> для определения способа сравнения строк в данном языке и региональных параметрах.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.CurrentCulture">
+      <summary>Возвращает или задает объект <see cref="T:System.Globalization.CultureInfo" />, представляющий язык и региональные параметры, используемые текущим потоком.</summary>
+      <returns>Объект, представляющий язык и региональные параметры, используемые текущим потоком.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is set to null.</exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.CurrentUICulture">
+      <summary>Возвращает или задает объект <see cref="T:System.Globalization.CultureInfo" />, представляющий текущий язык и региональные параметры пользовательского интерфейса, используемые диспетчером ресурсов для поиска ресурсов, связанных с конкретным языком и региональными параметрами, во время выполнения.</summary>
+      <returns>Язык и региональные параметры, используемые диспетчером ресурсов для поиска ресурсов, связанных с языком и региональными параметрами, во время выполнения.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is set to null.</exception>
+      <exception cref="T:System.ArgumentException">The property is set to a culture name that cannot be used to locate a resource file.Resource filenames can include only letters, numbers, hyphens, or underscores.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.DateTimeFormat">
+      <summary>Возвращает или задает объект <see cref="T:System.Globalization.DateTimeFormatInfo" />, определяющий формат отображения даты и времени, соответствующий языку и региональным параметрам.</summary>
+      <returns>Объект <see cref="T:System.Globalization.DateTimeFormatInfo" />, определяющий формат отображения даты и времени, соответствующий языку и региональным параметрам.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Globalization.CultureInfo.DateTimeFormat" /> property or any of the <see cref="T:System.Globalization.DateTimeFormatInfo" /> properties is set, and the <see cref="T:System.Globalization.CultureInfo" /> is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.DefaultThreadCurrentCulture">
+      <summary>Возвращает или задает язык и региональные параметры, используемые по умолчанию для потоков в текущем домене приложения.</summary>
+      <returns>Язык и региональные параметры по умолчанию для потоков в текущем домене приложения или значение null, если текущий язык и региональные параметры системы являются заданными по умолчанию для потока в домене приложения.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.DefaultThreadCurrentUICulture">
+      <summary>Возвращает или задает язык и региональные параметры пользовательского интерфейса, используемые по умолчанию для потоков в текущем домене приложения.</summary>
+      <returns>Язык и региональные параметры по умолчанию пользовательского интерфейса для потоков в текущем домене приложения или значение null, если текущий язык и региональные параметры пользовательского интерфейса системы являются заданными по умолчанию для потока пользовательского интерфейса в домене приложения.</returns>
+      <exception cref="T:System.ArgumentException">In a set operation, the <see cref="P:System.Globalization.CultureInfo.Name" /> property value is invalid. </exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.DisplayName">
+      <summary>Возвращает полное локализованное имя языка и региональных параметров. </summary>
+      <returns>Полное локализованное имя языка и региональных параметров в формате languagefull [country/regionfull], где languagefull — полное имя языка, а country/regionfull — полное имя страны или региона.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.EnglishName">
+      <summary>Возвращает имя языка и региональных параметров в формате languagefull [country/regionfull] на английском языке.</summary>
+      <returns>Имя языка и региональных параметров в формате languagefull [country/regionfull] на английском языке, где languagefull — полное имя языка, а country/regionfull — полное имя страны или региона.</returns>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.Equals(System.Object)">
+      <summary>Определяет, является ли заданный объект тем же языком и региональными параметрами, что и <see cref="T:System.Globalization.CultureInfo" />.</summary>
+      <returns>Значение true, если параметр <paramref name="value" /> относится к тому же языку и региональным параметрам, что и текущий объект <see cref="T:System.Globalization.CultureInfo" />; в противном случае — значение false.</returns>
+      <param name="value">Объект, который требуется сравнить с текущим объектом <see cref="T:System.Globalization.CultureInfo" />. </param>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.GetFormat(System.Type)">
+      <summary>Возвращает объект, определяющий способ форматирования заданного типа.</summary>
+      <returns>Значение свойства <see cref="P:System.Globalization.CultureInfo.NumberFormat" />, являющееся объектом <see cref="T:System.Globalization.NumberFormatInfo" />, который содержит сведения о формате числа по умолчанию для текущего <see cref="T:System.Globalization.CultureInfo" />, если <paramref name="formatType" /> является объектом <see cref="T:System.Type" /> для класса <see cref="T:System.Globalization.NumberFormatInfo" />.-или- Значение свойства <see cref="P:System.Globalization.CultureInfo.DateTimeFormat" />, являющееся объектом <see cref="T:System.Globalization.DateTimeFormatInfo" />, который содержит сведения о формате даты и времени по умолчанию для текущего <see cref="T:System.Globalization.CultureInfo" />, если <paramref name="formatType" /> является объектом <see cref="T:System.Type" /> для класса <see cref="T:System.Globalization.DateTimeFormatInfo" />.-или- Значение NULL, если <paramref name="formatType" /> — любой другой объект.</returns>
+      <param name="formatType">Значение <see cref="T:System.Type" />, для которого нужно получить объект форматирования.Этот метод поддерживает только типы <see cref="T:System.Globalization.NumberFormatInfo" /> и <see cref="T:System.Globalization.DateTimeFormatInfo" />.</param>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.GetHashCode">
+      <summary>Служит хэш-функцией текущего класса <see cref="T:System.Globalization.CultureInfo" /> для использования в алгоритмах и структурах данных хеширования, например в хэш-таблице.</summary>
+      <returns>Хэш-код для текущего объекта <see cref="T:System.Globalization.CultureInfo" />.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.InvariantCulture">
+      <summary>Возвращает объект <see cref="T:System.Globalization.CultureInfo" />, не зависящий от языка и региональных параметров (инвариантный).</summary>
+      <returns>Объект, не зависящий от языка и региональных параметров (инвариантный).</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.IsNeutralCulture">
+      <summary>Возвращает значение, показывающее, представляет ли текущий объект <see cref="T:System.Globalization.CultureInfo" /> нейтральный язык и региональные параметры.</summary>
+      <returns>Значение true, если текущий объект <see cref="T:System.Globalization.CultureInfo" /> представляет нейтральный язык и региональные параметры, в противном случае — false.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.IsReadOnly">
+      <summary>Возвращает значение, указывающее, является ли текущий объект <see cref="T:System.Globalization.CultureInfo" /> доступным только для чтения.</summary>
+      <returns>Значение true, если текущий объект <see cref="T:System.Globalization.CultureInfo" /> доступен только для чтения, в противном случае — значение false.Значение по умолчанию — false.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.Name">
+      <summary>Возвращает имя языка и региональных параметров в формате languagecode2-country/regioncode2.</summary>
+      <returns>Имя языка и региональных параметров в формате languagecode2-country/regioncode2.languagecode2 — двухбуквенный код в нижнем регистре, производный от ISO 639-1.country/regioncode2 является производным от ISO 3166 и обычно состоит из 2 прописных букв или из тега языка BCP-47.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.NativeName">
+      <summary>Возвращает имя языка и региональных параметров, состоящих из языка, страны или региона и дополнительного набора символов, которые свойственны для этого языка.</summary>
+      <returns>Имя языка и региональных параметров.состоит из полного имени языка, полного имени страны или региона и дополнительного набора символов.Дополнительные сведения о формате см. в описании класса <see cref="T:System.Globalization.CultureInfo" />.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.NumberFormat">
+      <summary>Возвращает или задает объект <see cref="T:System.Globalization.NumberFormatInfo" />, определяющий формат отображения чисел, денежной единицы и процентов, соответствующий языку и региональным параметрам.</summary>
+      <returns>Объект <see cref="T:System.Globalization.NumberFormatInfo" />, определяющий формат отображения чисел, денежной единицы и процентов, соответствующий языку и региональным параметрам.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Globalization.CultureInfo.NumberFormat" /> property or any of the <see cref="T:System.Globalization.NumberFormatInfo" /> properties is set, and the <see cref="T:System.Globalization.CultureInfo" /> is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.OptionalCalendars">
+      <summary>Возвращает список календарей, которые могут использоваться в данном языке и региональных параметров.</summary>
+      <returns>Массив типа <see cref="T:System.Globalization.Calendar" />, представляющий календари, которые могут использоваться в языке и региональных параметрах, представленных текущим <see cref="T:System.Globalization.CultureInfo" />.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.Parent">
+      <summary>Возвращает объект <see cref="T:System.Globalization.CultureInfo" />, представляющий родительский язык и региональные параметры текущего объекта <see cref="T:System.Globalization.CultureInfo" />.</summary>
+      <returns>Объект <see cref="T:System.Globalization.CultureInfo" />, представляющий родительский язык и региональные параметры текущего объекта <see cref="T:System.Globalization.CultureInfo" />.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.ReadOnly(System.Globalization.CultureInfo)">
+      <summary>Возвращает программу-оболочку, доступную только для чтения, для заданного объекта <see cref="T:System.Globalization.CultureInfo" />. </summary>
+      <returns>Доступная только для чтения программа-оболочка <see cref="T:System.Globalization.CultureInfo" /> для параметра <paramref name="ci" />.</returns>
+      <param name="ci">Объект <see cref="T:System.Globalization.CultureInfo" />, для которого создается оболочка. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="ci" /> is null. </exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.TextInfo">
+      <summary>Возвращает объект <see cref="T:System.Globalization.TextInfo" />, определяющий систему письма, связанную с данным языком и региональными параметрами.</summary>
+      <returns>Объект <see cref="T:System.Globalization.TextInfo" />, определяющий систему письма, связанную с данным языком и региональными параметрами.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.ToString">
+      <summary>Возвращает строку, содержащую имя текущего объекта <see cref="T:System.Globalization.CultureInfo" /> в формате languagecode2-country/regioncode2.</summary>
+      <returns>Строка, содержащая имя текущего объекта<see cref="T:System.Globalization.CultureInfo" />.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.TwoLetterISOLanguageName">
+      <summary>Возвращает двухбуквенный код ISO 639-1 для языка текущего объекта <see cref="T:System.Globalization.CultureInfo" />.</summary>
+      <returns>Двухбуквенный код ISO 639-1 для языка текущего объекта <see cref="T:System.Globalization.CultureInfo" />.</returns>
+    </member>
+    <member name="T:System.Globalization.CultureNotFoundException">
+      <summary>Исключение, создаваемое при вызове метода, который осуществляет попытку создать язык и региональные параметры, недоступные на этом компьютере.</summary>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Globalization.CultureNotFoundException" /> строкой сообщений, настроенной на отображение предоставляемого системой сообщения.</summary>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Globalization.CultureNotFoundException" /> указанным сообщением об ошибке.</summary>
+      <param name="message">Сообщение об ошибке, отображаемое с этим исключением.</param>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor(System.String,System.Exception)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Globalization.CultureNotFoundException" /> указанным сообщением об ошибке и ссылкой на внутреннее исключение, вызвавшее данное исключение.</summary>
+      <param name="message">Сообщение об ошибке, отображаемое с этим исключением.</param>
+      <param name="innerException">Исключение, которое является причиной текущего исключения.Если параметр <paramref name="innerException" /> не является указателем NULL, текущее исключение возникло в блоке catch, обрабатывающем внутреннее исключение.</param>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor(System.String,System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Globalization.CultureNotFoundException" /> заданным сообщением об ошибке и именем параметра, ставшего причиной этого исключения.</summary>
+      <param name="paramName">Имя параметра, вызвавшего текущее исключение.</param>
+      <param name="message">Сообщение об ошибке, отображаемое с этим исключением.</param>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor(System.String,System.String,System.Exception)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Globalization.CultureNotFoundException" /> заданным сообщением об ошибке, недопустимым именем языка и региональных параметров и ссылкой на внутреннее исключение, вызвавшее данное исключение.</summary>
+      <param name="message">Сообщение об ошибке, отображаемое с этим исключением.</param>
+      <param name="invalidCultureName">Имя языка и региональных параметров, которое не удается найти.</param>
+      <param name="innerException">Исключение, которое является причиной текущего исключения.Если параметр <paramref name="innerException" /> не является указателем NULL, текущее исключение возникло в блоке catch, обрабатывающем внутреннее исключение.</param>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor(System.String,System.String,System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Globalization.CultureNotFoundException" /> заданным сообщением об ошибке, недействительным именем языка и региональных параметров и именем параметра, ставшего причиной этого исключения.</summary>
+      <param name="paramName">Имя параметра, вызвавшего текущее исключение.</param>
+      <param name="invalidCultureName">Имя языка и региональных параметров, которое не удается найти.</param>
+      <param name="message">Сообщение об ошибке, отображаемое с этим исключением.</param>
+    </member>
+    <member name="P:System.Globalization.CultureNotFoundException.InvalidCultureName">
+      <summary>Возвращает имя языка и региональных параметров, которое не удается найти.</summary>
+      <returns>Недействительное имя языка и региональных параметров.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureNotFoundException.Message">
+      <summary>Возвращает сообщение об ошибке с объяснением причин исключения.</summary>
+      <returns>Текстовая строка с подробным описанием исключения.</returns>
+    </member>
+    <member name="T:System.Globalization.DateTimeFormatInfo">
+      <summary>Предоставляет сведения о форматировании значений даты и времени, связанные с языком и региональными параметрами.</summary>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.#ctor">
+      <summary>Инициализирует новый доступный для записи экземпляр класса <see cref="T:System.Globalization.DateTimeFormatInfo" />, не зависящий от языка и региональных параметров (инвариантный).</summary>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.AbbreviatedDayNames">
+      <summary>Получает или задает одномерный массив типа <see cref="T:System.String" />, содержащий сокращенные названия дней недели, принятые в определенном языке и региональных параметрах.</summary>
+      <returns>Одномерный массив типа <see cref="T:System.String" />, содержащий сокращенные названия дней недели, принятые в определенном языке и региональных параметрах.Массив для <see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> содержит сокращения "Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс".</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.ArgumentException">The property is being set to an array that is multidimensional or that has a length that is not exactly 7. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.AbbreviatedMonthGenitiveNames">
+      <summary>Получает или задает массив строк сокращенных названий месяцев, связанных с текущим объектом <see cref="T:System.Globalization.DateTimeFormatInfo" />.</summary>
+      <returns>Массив сокращенных имен месяцев.</returns>
+      <exception cref="T:System.ArgumentException">In a set operation, the array is multidimensional or has a length that is not exactly 13.</exception>
+      <exception cref="T:System.ArgumentNullException">In a set operation, the array or one of the elements of the array is null.</exception>
+      <exception cref="T:System.InvalidOperationException">In a set operation, the current <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only.</exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.AbbreviatedMonthNames">
+      <summary>Получает или задает одномерный строковый массив, содержащий сокращения месяцев, принятые в определенном языке и региональных параметрах.</summary>
+      <returns>Одномерный строковый массив, состоящий из 13 элементов и содержащий сокращения месяцев, принятые в определенном языке и региональных параметрах.В 12-месячных календарях тринадцатый элемент массива представляет собой пустую строку.Массив для <see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> содержит элементы "Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек" и "".</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.ArgumentException">The property is being set to an array that is multidimensional or that has a length that is not exactly 13. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.AMDesignator">
+      <summary>Возвращает или задает строку указателя часов до полудня (АМ — "ante meridiem").</summary>
+      <returns>Строка указателя часов до полудня.По умолчанию для свойства <see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> задано значение AM.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.Calendar">
+      <summary>Возвращает или задает календарь, используемый в текущей языке и региональных параметрах.</summary>
+      <returns>Календарь, используемый в текущем языке и региональных параметрах.Значением по умолчанию для <see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> является объект <see cref="T:System.Globalization.GregorianCalendar" />.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The property is being set to a <see cref="T:System.Globalization.Calendar" /> object that is not valid for the current culture. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.CalendarWeekRule">
+      <summary>Возвращает или задает значение, определяющее правило, используемое для определения первой календарной недели года.</summary>
+      <returns>Значение, определяющее первую календарную неделю года.Значение по умолчанию для свойства <see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> равно <see cref="F:System.Globalization.CalendarWeekRule.FirstDay" />.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The property is being set to a value that is not a valid <see cref="T:System.Globalization.CalendarWeekRule" /> value. </exception>
+      <exception cref="T:System.InvalidOperationException">In a set operation, the current <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only.</exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.Clone">
+      <summary>Создает неполную копию коллекции <see cref="T:System.Globalization.DateTimeFormatInfo" />.</summary>
+      <returns>Новый объект <see cref="T:System.Globalization.DateTimeFormatInfo" />, скопированный из исходного <see cref="T:System.Globalization.DateTimeFormatInfo" />..</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.CurrentInfo">
+      <summary>Получает доступный только для чтения объект <see cref="T:System.Globalization.DateTimeFormatInfo" />, форматирующий значения на основе текущего языка и региональных параметров.</summary>
+      <returns>Доступный только для чтения объекта <see cref="T:System.Globalization.DateTimeFormatInfo" /> на основе объекта <see cref="T:System.Globalization.CultureInfo" /> текущего потока.</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.DayNames">
+      <summary>Получает или задает одномерный массив строк, содержащий полные названия дней недели, принятые в определенном языке и региональных параметрах.</summary>
+      <returns>Одномерный массив строк, содержащий полные названия дней недели, принятые в определенном языке и региональных параметрах.Массив для свойства <see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> содержит значения "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота" и "Воскресенье".</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.ArgumentException">The property is being set to an array that is multidimensional or that has a length that is not exactly 7. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.FirstDayOfWeek">
+      <summary>Возвращает или задает первый день недели.</summary>
+      <returns>Значение перечисления, представляющее первый день недели.Значение по умолчанию для свойства <see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> равно <see cref="F:System.DayOfWeek.Sunday" />.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The property is being set to a value that is not a valid <see cref="T:System.DayOfWeek" /> value. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.FullDateTimePattern">
+      <summary>Получает или задает строку пользовательского формата для длинного значения даты и длинного значения времени.</summary>
+      <returns>Строка пользовательского формата для длинного значения даты и длинного значения времени.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetAbbreviatedDayName(System.DayOfWeek)">
+      <summary>Возвращает сокращенное название указанного дня недели, принятое в определенном языке и региональных параметрах, связанных с текущим объектом <see cref="T:System.Globalization.DateTimeFormatInfo" />.</summary>
+      <returns>Сокращение дня недели, принятое в определенном языке и региональных параметрах, представленных свойством <paramref name="dayofweek" />.</returns>
+      <param name="dayofweek">Значение <see cref="T:System.DayOfWeek" />. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="dayofweek" /> is not a valid <see cref="T:System.DayOfWeek" /> value. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetAbbreviatedEraName(System.Int32)">
+      <summary>Возвращает строку, содержащую сокращенное название указанной эры, если такое сокращение существует.</summary>
+      <returns>Строка, содержащая сокращенное название указанной эры, если такое сокращение существует,-или- Строка, содержащая полное название указанной эры, если сокращение отсутствует.</returns>
+      <param name="era">Целое число, представляющее собой эру. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> does not represent a valid era in the calendar specified in the <see cref="P:System.Globalization.DateTimeFormatInfo.Calendar" /> property. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetAbbreviatedMonthName(System.Int32)">
+      <summary>Возвращает сокращение указанного месяца, принятое в определенном языке и региональных параметрах, связанных с текущим объектом <see cref="T:System.Globalization.DateTimeFormatInfo" />.</summary>
+      <returns>Сокращенное название месяца, принятое в определенном языке и региональных параметрах, представленное свойством <paramref name="month" />.</returns>
+      <param name="month">Целое число от 1 до 13, представляющее собой название извлекаемого месяца. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="month" /> is less than 1 or greater than 13. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetDayName(System.DayOfWeek)">
+      <summary>Возвращает полное название указанного дня недели, принятое в определенном языке и региональных параметрах, связанных с текущим объектом <see cref="T:System.Globalization.DateTimeFormatInfo" />.</summary>
+      <returns>Полное название дня недели, принятое в определенном языке и региональных параметрах, представленных свойством <paramref name="dayofweek" />.</returns>
+      <param name="dayofweek">Значение <see cref="T:System.DayOfWeek" />. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="dayofweek" /> is not a valid <see cref="T:System.DayOfWeek" /> value. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetEra(System.String)">
+      <summary>Возвращает целое число, представляющее собой указанную эру.</summary>
+      <returns>Целое число, представляющее эру, если <paramref name="eraName" /> является допустимым; в противном случае -1.</returns>
+      <param name="eraName">Строка, содержащая название эры. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="eraName" /> is null. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetEraName(System.Int32)">
+      <summary>Возвращает строку, содержащую название указанной эры.</summary>
+      <returns>Строка, содержащая название эры.</returns>
+      <param name="era">Целое число, представляющее собой эру. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> does not represent a valid era in the calendar specified in the <see cref="P:System.Globalization.DateTimeFormatInfo.Calendar" /> property. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetFormat(System.Type)">
+      <summary>Возвращает объект указанного типа, предоставляющий службу форматирования времени и даты.</summary>
+      <returns>Текущий объект, если параметр <paramref name="formatType" /> совпадает с типом текущего объекта <see cref="T:System.Globalization.DateTimeFormatInfo" />; в противном случае — значение null.</returns>
+      <param name="formatType">Тип требуемой службы форматирования. </param>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetInstance(System.IFormatProvider)">
+      <summary>Возвращает объект <see cref="T:System.Globalization.DateTimeFormatInfo" />, связанный с указанным <see cref="T:System.IFormatProvider" />.</summary>
+      <returns>Объект <see cref="T:System.Globalization.DateTimeFormatInfo" />, связанный с <see cref="T:System.IFormatProvider" />.</returns>
+      <param name="provider">Объект <see cref="T:System.IFormatProvider" />, который получает объект <see cref="T:System.Globalization.DateTimeFormatInfo" />.-или- 
+              Значение null, чтобы получить <see cref="P:System.Globalization.DateTimeFormatInfo.CurrentInfo" />. </param>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetMonthName(System.Int32)">
+      <summary>Возвращает полное название указанного месяца, принятое в определенном языке и региональных параметрах, связанных с текущим объектом <see cref="T:System.Globalization.DateTimeFormatInfo" />.</summary>
+      <returns>Полное название месяца, принятое в определенном языке и региональных параметрах, представленное свойством <paramref name="month" />.</returns>
+      <param name="month">Целое число от 1 до 13, представляющее собой название извлекаемого месяца. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="month" /> is less than 1 or greater than 13. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.InvariantInfo">
+      <summary>Получает доступный только для чтения объект по умолчанию <see cref="T:System.Globalization.DateTimeFormatInfo" />, который не зависит от языка и региональных параметров (инвариантный).</summary>
+      <returns>Объект, доступный только для чтения, который не зависит от языка и региональных параметров (инвариантный).</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.IsReadOnly">
+      <summary>Получает значение, указывающее, является ли объект <see cref="T:System.Globalization.DateTimeFormatInfo" /> доступным только для чтения.</summary>
+      <returns>Значение true, если объект <see cref="T:System.Globalization.DateTimeFormatInfo" /> доступен только для чтения, в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.LongDatePattern">
+      <summary>Получает или задает строку пользовательского формата для длинного значения даты.</summary>
+      <returns>Строка пользовательского формата для длинного значения даты.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.LongTimePattern">
+      <summary>Получает или задает строку пользовательского формата для длинного значения времени.</summary>
+      <returns>Шаблон формата для долговременного значения.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.MonthDayPattern">
+      <summary>Получает или задает строку пользовательского формата для значения месяца и дня.</summary>
+      <returns>Строка пользовательского формата для значения месяца и дня.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.MonthGenitiveNames">
+      <summary>Получает или задает массив строк названий месяцев, связанных с текущим объектом <see cref="T:System.Globalization.DateTimeFormatInfo" />.</summary>
+      <returns>Массив строк имен месяцев.</returns>
+      <exception cref="T:System.ArgumentException">In a set operation, the array is multidimensional or has a length that is not exactly 13.</exception>
+      <exception cref="T:System.ArgumentNullException">In a set operation, the array or one of its elements is null.</exception>
+      <exception cref="T:System.InvalidOperationException">In a set operation, the current <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only.</exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.MonthNames">
+      <summary>Возвращает или задает одномерный массив типа <see cref="T:System.String" />, содержащий полные названия месяцев, принятые в определенном языке и региональных параметрах.</summary>
+      <returns>Одномерный массив типа <see cref="T:System.String" />, содержащий полные названия месяцев, принятые в определенном языке и региональных параметрах.В 12-месячном календаре тринадцатый элемент массива представляет собой пустую строку.Массив для свойства <see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> содержит элементы "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь" и "".</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.ArgumentException">The property is being set to an array that is multidimensional or that has a length that is not exactly 13. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.PMDesignator">
+      <summary>Возвращает или задает строку указателя часов после полудня (PМ — "post meridiem").</summary>
+      <returns>Строка указателя часов после полудня (PМ — "post meridiem").Значение по умолчанию для объекта <see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> — "PM".</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.ReadOnly(System.Globalization.DateTimeFormatInfo)">
+      <summary>Возвращает программу-оболочку <see cref="T:System.Globalization.DateTimeFormatInfo" />, доступную только для чтения.</summary>
+      <returns>Оболочка <see cref="T:System.Globalization.DateTimeFormatInfo" />, доступная только для чтения.</returns>
+      <param name="dtfi">Объект <see cref="T:System.Globalization.DateTimeFormatInfo" />, для которого создается оболочка. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="dtfi" /> is null. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.RFC1123Pattern">
+      <summary>Получает строку пользовательского формата для значения времени, основанного на спецификации IETF Request for Comments 1123 (RFC IETF).</summary>
+      <returns>Строка пользовательского формата для значения времени на основе спецификации 1123 IETF RFC.</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.ShortDatePattern">
+      <summary>Получает или задает строку пользовательского формата для короткого значения даты.</summary>
+      <returns>Строка пользовательского формата для короткого значения даты.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.ShortestDayNames">
+      <summary>Получает или задает массив строк самых кратких уникальных сокращений имен дней, связанный с текущим объектом <see cref="T:System.Globalization.DateTimeFormatInfo" />.</summary>
+      <returns>Массив строк имен дней.</returns>
+      <exception cref="T:System.ArgumentException">In a set operation, the array does not have exactly seven elements.</exception>
+      <exception cref="T:System.ArgumentNullException">In a set operation, the value array or one of the elements of the value array is null.</exception>
+      <exception cref="T:System.InvalidOperationException">In a set operation, the current <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only.</exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.ShortTimePattern">
+      <summary>Получает или задает строку пользовательского формата для короткого значения времени.</summary>
+      <returns>Строка пользовательского формата для короткого значения времени.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.SortableDateTimePattern">
+      <summary>Получает строку пользовательского формата для сортируемого значения даты и времени.</summary>
+      <returns>Строка пользовательского формата для сортируемого значения даты и времени.</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.UniversalSortableDateTimePattern">
+      <summary>Получает строку пользовательского формата для универсальной, сортируемой строки даты и времени.</summary>
+      <returns>Строка пользовательского формата для универсальной, сортируемой строки даты и времени.</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.YearMonthPattern">
+      <summary>Получает или задает строку пользовательского формата для значения года и месяца.</summary>
+      <returns>Строка пользовательского формата для значения года и месяца.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="T:System.Globalization.NumberFormatInfo">
+      <summary>Предоставляет сведения для конкретного языка и региональных параметров для числовых значений форматирования и анализа. </summary>
+    </member>
+    <member name="M:System.Globalization.NumberFormatInfo.#ctor">
+      <summary>Инициализирует новый доступный для записи экземпляр класса <see cref="T:System.Globalization.NumberFormatInfo" />, не зависящий от языка и региональных параметров (инвариантный).</summary>
+    </member>
+    <member name="M:System.Globalization.NumberFormatInfo.Clone">
+      <summary>Создает неполную копию объекта <see cref="T:System.Globalization.NumberFormatInfo" />.</summary>
+      <returns>Новый объект, скопированный из исходного объекта <see cref="T:System.Globalization.NumberFormatInfo" />.</returns>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyDecimalDigits">
+      <summary>Возвращает или задает число десятичных разрядов, используемое в значениях денежных сумм.</summary>
+      <returns>Число десятичных разрядов, используемое в значениях денежных сумм.Значение по умолчанию для аргумента <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> равно 2.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Для свойства устанавливается значение меньше 0 или больше 99. </exception>
+      <exception cref="T:System.InvalidOperationException">Свойство задается, и объект <see cref="T:System.Globalization.NumberFormatInfo" /> доступен только для чтения. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyDecimalSeparator">
+      <summary>Возвращает или задает строку, используемую в качестве десятичного разделителя в значениях денежных сумм.</summary>
+      <returns>Строка, используемая в качестве десятичного разделителя в значениях денежных сумм.Значение по умолчанию для объекта <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> равно ".".</returns>
+      <exception cref="T:System.ArgumentNullException">Свойству присвоено значение null. </exception>
+      <exception cref="T:System.InvalidOperationException">Свойство задается, и объект <see cref="T:System.Globalization.NumberFormatInfo" /> доступен только для чтения. </exception>
+      <exception cref="T:System.ArgumentException">Для свойства задается пустая строка.</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyGroupSeparator">
+      <summary>Возвращает или задает строку, разделяющую разряды в целой части десятичной дроби в значениях денежных сумм.</summary>
+      <returns>Строка, разделяющая разряды в целой части десятичной дроби в значениях денежных сумм.Значение по умолчанию для объекта <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> равно "-".</returns>
+      <exception cref="T:System.ArgumentNullException">Свойству присвоено значение null. </exception>
+      <exception cref="T:System.InvalidOperationException">Свойство задается, и объект <see cref="T:System.Globalization.NumberFormatInfo" /> доступен только для чтения. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyGroupSizes">
+      <summary>Возвращает или задает число цифр в каждой из групп целой части десятичной дроби в значениях денежных сумм.</summary>
+      <returns>Число цифр в каждой из групп целой части десятичной дроби в значениях денежных сумм.Для свойства <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> по умолчанию используется одномерный массив с единственным элементом, для которого задано значение 3.</returns>
+      <exception cref="T:System.ArgumentNullException">Свойству присвоено значение null. </exception>
+      <exception cref="T:System.ArgumentException">Свойство задается, и массив содержит запись со значением меньше 0 или больше 9,-или- свойство задается, и массив содержит запись, отличную от последней записи, для которой задано значение 0. </exception>
+      <exception cref="T:System.InvalidOperationException">Свойство задается, и объект <see cref="T:System.Globalization.NumberFormatInfo" /> доступен только для чтения. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyNegativePattern">
+      <summary>Возвращает или задает шаблон формата для отрицательных значений денежных сумм.</summary>
+      <returns>Шаблон формата для отрицательных значений денежных сумм.По умолчанию для свойства <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> задано значение 0, представляющее "($n)", где "$" — это <see cref="P:System.Globalization.NumberFormatInfo.CurrencySymbol" />, а <paramref name="n" /> — число.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Свойство устанавливается в значение меньше 0 или больше 15. </exception>
+      <exception cref="T:System.InvalidOperationException">Свойство задается, и объект <see cref="T:System.Globalization.NumberFormatInfo" /> доступен только для чтения. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyPositivePattern">
+      <summary>Возвращает или задает шаблон формата для положительных значений денежных сумм.</summary>
+      <returns>Шаблон формата для положительных значений денежных сумм.По умолчанию для свойства <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> задано значение 0, представляющее "$n", где "$" — это <see cref="P:System.Globalization.NumberFormatInfo.CurrencySymbol" />, а <paramref name="n" /> — число.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Свойство устанавливается в значение меньше 0 или больше 3. </exception>
+      <exception cref="T:System.InvalidOperationException">Свойство задается, и объект <see cref="T:System.Globalization.NumberFormatInfo" /> доступен только для чтения. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencySymbol">
+      <summary>Возвращает или задает строку, используемую в качестве знака денежной единицы.</summary>
+      <returns>Строка, используемая в качестве знака денежной единицы.Значение по умолчанию для объекта <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> — "¤".</returns>
+      <exception cref="T:System.ArgumentNullException">Свойству присвоено значение null. </exception>
+      <exception cref="T:System.InvalidOperationException">Свойство задается, и объект <see cref="T:System.Globalization.NumberFormatInfo" /> доступен только для чтения. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrentInfo">
+      <summary>Возвращает доступный только для чтения объект <see cref="T:System.Globalization.NumberFormatInfo" />, форматирующий значения на основе текущего языка и региональных параметров.</summary>
+      <returns>Доступный только для чтения объект <see cref="T:System.Globalization.NumberFormatInfo" /> на основе языка и региональных параметров текущего потока.</returns>
+    </member>
+    <member name="M:System.Globalization.NumberFormatInfo.GetFormat(System.Type)">
+      <summary>Возвращает объект указанного типа, предоставляющий службу форматирования чисел.</summary>
+      <returns>Текущий объект <see cref="T:System.Globalization.NumberFormatInfo" />, если параметр <paramref name="formatType" /> совпадает с типом текущего объекта <see cref="T:System.Globalization.NumberFormatInfo" />; в противном случае — значение null.</returns>
+      <param name="formatType">
+        <see cref="T:System.Type" /> требуемой службы форматирования. </param>
+    </member>
+    <member name="M:System.Globalization.NumberFormatInfo.GetInstance(System.IFormatProvider)">
+      <summary>Возвращает класс <see cref="T:System.Globalization.NumberFormatInfo" />, связанный с заданным <see cref="T:System.IFormatProvider" />.</summary>
+      <returns>Класс <see cref="T:System.Globalization.NumberFormatInfo" />, связанный с заданным классом <see cref="T:System.IFormatProvider" />.</returns>
+      <param name="formatProvider">Объект <see cref="T:System.IFormatProvider" />, используемый для получения <see cref="T:System.Globalization.NumberFormatInfo" />.-или- Значение null, чтобы получить <see cref="P:System.Globalization.NumberFormatInfo.CurrentInfo" />. </param>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.InvariantInfo">
+      <summary>Возвращает объект <see cref="T:System.Globalization.NumberFormatInfo" />, доступный только для чтения, который не зависит от языка и региональных параметров (инвариантный).</summary>
+      <returns>Объект, доступный только для чтения, который не зависит от языка и региональных параметров (инвариантный).</returns>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.IsReadOnly">
+      <summary>Возвращает значение, указывающее, является ли данный объект <see cref="T:System.Globalization.NumberFormatInfo" /> доступным только для чтения.</summary>
+      <returns>Значение true, если интерфейс <see cref="T:System.Globalization.NumberFormatInfo" /> доступен только для чтения; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NaNSymbol">
+      <summary>Возвращает или задает строку, представляющую значение IEEE NaN (не числовое).</summary>
+      <returns>Строка, представляющая значение IEEE NaN (не числовое).Значение по умолчанию для объекта <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> — "NaN".</returns>
+      <exception cref="T:System.ArgumentNullException">Свойству присвоено значение null. </exception>
+      <exception cref="T:System.InvalidOperationException">Свойство задается, и объект <see cref="T:System.Globalization.NumberFormatInfo" /> доступен только для чтения. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NegativeInfinitySymbol">
+      <summary>Возвращает или задает строку, представляющую минус бесконечность.</summary>
+      <returns>Строка, представляющая минус бесконечность.Значение по умолчанию для объекта <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> ‏‏— "Infinity".</returns>
+      <exception cref="T:System.ArgumentNullException">Свойству присвоено значение null. </exception>
+      <exception cref="T:System.InvalidOperationException">Свойство задается, и объект <see cref="T:System.Globalization.NumberFormatInfo" /> доступен только для чтения. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NegativeSign">
+      <summary>Возвращает или задает строку, указывающую, что соответствующее число является отрицательным.</summary>
+      <returns>Строка, указывающая, что соответствующее число является отрицательным.Значение по умолчанию для объекта <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> — "+".</returns>
+      <exception cref="T:System.ArgumentNullException">Свойству присвоено значение null. </exception>
+      <exception cref="T:System.InvalidOperationException">Свойство задается, и объект <see cref="T:System.Globalization.NumberFormatInfo" /> доступен только для чтения. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NumberDecimalDigits">
+      <summary>Возвращает или задает число десятичных разрядов, используемое в числовых значениях.</summary>
+      <returns>Число десятичных разрядов, используемое в числовых значениях.Значение по умолчанию для аргумента <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> равно 2.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Для свойства устанавливается значение меньше 0 или больше 99. </exception>
+      <exception cref="T:System.InvalidOperationException">Свойство задается, и объект <see cref="T:System.Globalization.NumberFormatInfo" /> доступен только для чтения. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NumberDecimalSeparator">
+      <summary>Возвращает или задает строку, используемую в качестве десятичного разделителя в числовых значениях.</summary>
+      <returns>Строка, используемая в качестве десятичного разделителя в числовых значениях.Значение по умолчанию для объекта <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> равно ".".</returns>
+      <exception cref="T:System.ArgumentNullException">Свойству присвоено значение null. </exception>
+      <exception cref="T:System.InvalidOperationException">Свойство задается, и объект <see cref="T:System.Globalization.NumberFormatInfo" /> доступен только для чтения. </exception>
+      <exception cref="T:System.ArgumentException">Для свойства задается пустая строка.</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NumberGroupSeparator">
+      <summary>Возвращает или задает строку, разделяющую разряды в целой части десятичной дроби в числовых значениях.</summary>
+      <returns>Строка, разделяющая разряды в целой части десятичной дроби в числовых значениях.Значение по умолчанию для объекта <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> равно "-".</returns>
+      <exception cref="T:System.ArgumentNullException">Свойству присвоено значение null. </exception>
+      <exception cref="T:System.InvalidOperationException">Свойство задается, и объект <see cref="T:System.Globalization.NumberFormatInfo" /> доступен только для чтения. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NumberGroupSizes">
+      <summary>Возвращает или задает число цифр в каждой из групп целой части десятичной дроби в числовых значениях.</summary>
+      <returns>Число цифр в каждой из групп целой части десятичной дроби в числовых значениях.Для свойства <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> по умолчанию используется одномерный массив с единственным элементом, для которого задано значение 3.</returns>
+      <exception cref="T:System.ArgumentNullException">Свойству присвоено значение null. </exception>
+      <exception cref="T:System.ArgumentException">Свойство задается, и массив содержит запись со значением меньше 0 или больше 9,-или- свойство задается, и массив содержит запись, отличную от последней записи, для которой задано значение 0. </exception>
+      <exception cref="T:System.InvalidOperationException">Свойство задается, и объект <see cref="T:System.Globalization.NumberFormatInfo" /> доступен только для чтения. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NumberNegativePattern">
+      <summary>Возвращает или задает шаблон формата для отрицательных числовых значений.</summary>
+      <returns>Шаблон формата для отрицательных числовых значений. </returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Свойство устанавливается в значение меньше 0 или больше 4. </exception>
+      <exception cref="T:System.InvalidOperationException">Свойство задается, и объект <see cref="T:System.Globalization.NumberFormatInfo" /> доступен только для чтения. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentDecimalDigits">
+      <summary>Возвращает или задает количество десятичных разрядов, используемое в значениях процентов. </summary>
+      <returns>Число десятичных разрядов, используемое в значениях процентов.Значение по умолчанию для аргумента <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> равно 2.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Для свойства устанавливается значение меньше 0 или больше 99. </exception>
+      <exception cref="T:System.InvalidOperationException">Свойство задается, и объект <see cref="T:System.Globalization.NumberFormatInfo" /> доступен только для чтения. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentDecimalSeparator">
+      <summary>Возвращает или задает строку, используемую в качестве десятичного разделителя в значениях процентов. </summary>
+      <returns>Строка, используемая в качестве десятичного разделителя в значениях процентов.Значение по умолчанию для объекта <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> равно ".".</returns>
+      <exception cref="T:System.ArgumentNullException">Свойству присвоено значение null. </exception>
+      <exception cref="T:System.InvalidOperationException">Свойство задается, и объект <see cref="T:System.Globalization.NumberFormatInfo" /> доступен только для чтения. </exception>
+      <exception cref="T:System.ArgumentException">Для свойства задается пустая строка.</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentGroupSeparator">
+      <summary>Возвращает или задает строку, разделяющую разряды в целой части десятичной дроби в значениях процентов. </summary>
+      <returns>Строка, разделяющая разряды в целой части десятичной дроби в значениях процентов.Значение по умолчанию для объекта <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> равно "-".</returns>
+      <exception cref="T:System.ArgumentNullException">Свойству присвоено значение null. </exception>
+      <exception cref="T:System.InvalidOperationException">Свойство задается, и объект <see cref="T:System.Globalization.NumberFormatInfo" /> доступен только для чтения. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentGroupSizes">
+      <summary>Возвращает или задает количество цифр в каждой из групп разрядов целой части десятичной дроби в значениях процентов. </summary>
+      <returns>Число цифр в каждой из групп целой части десятичной дроби в значениях процентов.Для свойства <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> по умолчанию используется одномерный массив с единственным элементом, для которого задано значение 3.</returns>
+      <exception cref="T:System.ArgumentNullException">Свойству присвоено значение null. </exception>
+      <exception cref="T:System.ArgumentException">Свойство задается, и массив содержит запись со значением меньше 0 или больше 9,-или- свойство задается, и массив содержит запись, отличную от последней записи, для которой задано значение 0. </exception>
+      <exception cref="T:System.InvalidOperationException">Свойство задается, и объект <see cref="T:System.Globalization.NumberFormatInfo" /> доступен только для чтения. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentNegativePattern">
+      <summary>Возвращает или задает шаблон формата для отрицательных значений процентов.</summary>
+      <returns>Шаблон формата для отрицательных значений процентов.По умолчанию для свойства <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> задано значение 0, представляющее "-n %", где "%" — это <see cref="P:System.Globalization.NumberFormatInfo.PercentSymbol" />, а <paramref name="n" /> — число.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Свойство устанавливается в значение меньше 0 или больше 11. </exception>
+      <exception cref="T:System.InvalidOperationException">Свойство задается, и объект <see cref="T:System.Globalization.NumberFormatInfo" /> доступен только для чтения. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentPositivePattern">
+      <summary>Возвращает или задает шаблон формата для положительных значений процентов.</summary>
+      <returns>Шаблон формата для положительных значений процентов.По умолчанию для свойства <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> задано значение 0, представляющее "n %", где "%" — это <see cref="P:System.Globalization.NumberFormatInfo.PercentSymbol" />, а <paramref name="n" /> — число.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Свойство устанавливается в значение меньше 0 или больше 3. </exception>
+      <exception cref="T:System.InvalidOperationException">Свойство задается, и объект <see cref="T:System.Globalization.NumberFormatInfo" /> доступен только для чтения. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentSymbol">
+      <summary>Возвращает или задает строку, используемую в качестве знака процентов.</summary>
+      <returns>Строка, используемая в качестве знака процентов.Значение по умолчанию для объекта <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> равно "%".</returns>
+      <exception cref="T:System.ArgumentNullException">Свойству присвоено значение null. </exception>
+      <exception cref="T:System.InvalidOperationException">Свойство задается, и объект <see cref="T:System.Globalization.NumberFormatInfo" /> доступен только для чтения. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PerMilleSymbol">
+      <summary>Возвращает или задает строку, используемую в качестве знака промилле.</summary>
+      <returns>Строка, используемая в качестве знака промилле.Значением по умолчанию для <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> является "‰", что соответствует символу Юникода U+2030.</returns>
+      <exception cref="T:System.ArgumentNullException">Свойству присвоено значение null. </exception>
+      <exception cref="T:System.InvalidOperationException">Свойство задается, и объект <see cref="T:System.Globalization.NumberFormatInfo" /> доступен только для чтения. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PositiveInfinitySymbol">
+      <summary>Возвращает или задает строку, представляющую плюс бесконечность.</summary>
+      <returns>Строка, представляющая плюс бесконечность.Значение по умолчанию для объекта <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> ‏‏равно "Infinity".</returns>
+      <exception cref="T:System.ArgumentNullException">Свойству присвоено значение null. </exception>
+      <exception cref="T:System.InvalidOperationException">Свойство задается, и объект <see cref="T:System.Globalization.NumberFormatInfo" /> доступен только для чтения. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PositiveSign">
+      <summary>Возвращает или задает строку, указывающую, что соответствующее число является положительным.</summary>
+      <returns>Строка, указывающая, что соответствующее число является положительным.Значение по умолчанию для объекта <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> равно "+".</returns>
+      <exception cref="T:System.ArgumentNullException">В операции присваивания присваиваемое значение меньше null.</exception>
+      <exception cref="T:System.InvalidOperationException">Свойство задается, и объект <see cref="T:System.Globalization.NumberFormatInfo" /> доступен только для чтения. </exception>
+    </member>
+    <member name="M:System.Globalization.NumberFormatInfo.ReadOnly(System.Globalization.NumberFormatInfo)">
+      <summary>Возвращает программу-оболочку <see cref="T:System.Globalization.NumberFormatInfo" />, доступную только для чтения.</summary>
+      <returns>Доступная только для чтения программа-оболочка <see cref="T:System.Globalization.NumberFormatInfo" /> для параметра <paramref name="nfi" />.</returns>
+      <param name="nfi">Класс <see cref="T:System.Globalization.NumberFormatInfo" />, для которого создается оболочка. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="nfi" /> имеет значение null. </exception>
+    </member>
+    <member name="T:System.Globalization.RegionInfo">
+      <summary>Содержит сведения о стране или регионе.</summary>
+    </member>
+    <member name="M:System.Globalization.RegionInfo.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Globalization.RegionInfo" />, основанный на стране или регионе или определенном языке и региональных параметрах, указанных по имени.</summary>
+      <param name="name">Строка, содержащая код из двух букв, определенный в формате ISO 3166 для страны или региона.-или-Строка, содержащая имя языка и региональных параметров для определенного языка и региональных параметров, пользовательского языка или региональных параметров или языка и региональных параметров, свойственных только для ОС Windows.Если имя языка и региональных параметров не указано в формате RFC 4646, в приложении должно быть указано имя языка и региональных параметров полностью, а не только название страны или региона.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> is null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> is not a valid country/region name or specific culture name.</exception>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.CurrencySymbol">
+      <summary>Возвращает символ денежной единицы, связанной со страной или регионом.</summary>
+      <returns>Символ денежной единицы, связанной со страной или регионом.</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.CurrentRegion">
+      <summary>Получает объект <see cref="T:System.Globalization.RegionInfo" />, представляющий страну/регион, используемые текущим потоком.</summary>
+      <returns>Объект <see cref="T:System.Globalization.RegionInfo" />, представляющий страну/регион, используемые текущим потоком.</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.DisplayName">
+      <summary>Возвращает полное имя страны или региона на языке локализованной версии .NET Framework.</summary>
+      <returns>Полное имя страны или региона на языке локализованной версии .NET Framework.</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.EnglishName">
+      <summary>Возвращает полное имя страны или региона на английском языке.</summary>
+      <returns>Полное имя страны или региона на английском языке.</returns>
+    </member>
+    <member name="M:System.Globalization.RegionInfo.Equals(System.Object)">
+      <summary>Определяет, является ли заданный объект тем же экземпляром текущего объекта <see cref="T:System.Globalization.RegionInfo" />.</summary>
+      <returns>Значение true, если параметр <paramref name="value" /> является объектом <see cref="T:System.Globalization.RegionInfo" />, а его свойство <see cref="P:System.Globalization.RegionInfo.Name" /> равно свойству <see cref="P:System.Globalization.RegionInfo.Name" /> текущего объекта <see cref="T:System.Globalization.RegionInfo" />; в противном случае — значение false.</returns>
+      <param name="value">Объект для сравнения с текущим объектом <see cref="T:System.Globalization.RegionInfo" />. </param>
+    </member>
+    <member name="M:System.Globalization.RegionInfo.GetHashCode">
+      <summary>Служит хэш-функцией текущего класса <see cref="T:System.Globalization.RegionInfo" /> для использования в алгоритмах и структурах данных хеширования, например в хэш-таблице.</summary>
+      <returns>Хэш-код для текущего объекта <see cref="T:System.Globalization.RegionInfo" />.</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.IsMetric">
+      <summary>Возвращает значение, указывающее, использует ли страна или регион метрическую систему.</summary>
+      <returns>Значение true, если страна или регион использует метрическую систему мер, в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.ISOCurrencySymbol">
+      <summary>Возвращает трехзначный символ денежной единицы в формате ISO 4217, связанный со страной или регионом.</summary>
+      <returns>Трехзначный символ денежной единицы в формате ISO 4217, связанный со страной или регионом.</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.Name">
+      <summary>Получает или задает имя или двухбуквенный код страны или региона в формате ISO 3166 для текущего объекта <see cref="T:System.Globalization.RegionInfo" />.</summary>
+      <returns>Значение, заданное параметром <paramref name="name" /> конструктора <see cref="M:System.Globalization.RegionInfo.#ctor(System.String)" />.Возвращается значение в верхнем регистре.-или-Двухбуквенный код, указанный в формате ISO 3166 для страны или региона, определяется параметром <paramref name="culture" /> конструктора <see cref="M:System.Globalization.RegionInfo.#ctor(System.Int32)" />.Возвращается значение в верхнем регистре.</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.NativeName">
+      <summary>Получает название страны или региона, отформатированное в соответствии с родным языком страны или региона.</summary>
+      <returns>Собственное имя страны и региона отформатировано в соответствии с правилами языка, связанными с кодом страны региона по стандарту ISO 3166. </returns>
+    </member>
+    <member name="M:System.Globalization.RegionInfo.ToString">
+      <summary>Возвращает строку, содержащую имя языка и региональных параметров или двухбуквенные коды, определенные в формате ISO 3166, для текущего объекта <see cref="T:System.Globalization.RegionInfo" />..</summary>
+      <returns>Строка, содержащая имя языка и региональных параметров или двухбуквенные коды страны или региона в формате ISO 3166 для текущего объекта <see cref="T:System.Globalization.RegionInfo" />..</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.TwoLetterISORegionName">
+      <summary>Возвращает код из двух букв, определенный в формате ISO 3166 для страны или региона.</summary>
+      <returns>Код из двух букв, определенный в формате ISO 3166 для страны или региона.</returns>
+    </member>
+    <member name="T:System.Globalization.StringInfo">
+      <summary>Предоставляет функциональные возможности для разбиения строки на текстовые элементы и итерации по этим элементам.</summary>
+    </member>
+    <member name="M:System.Globalization.StringInfo.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Globalization.StringInfo" />. </summary>
+    </member>
+    <member name="M:System.Globalization.StringInfo.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Globalization.StringInfo" /> с в указанную строку.</summary>
+      <param name="value">Строка для инициализации этого объекта <see cref="T:System.Globalization.StringInfo" />.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="value" /> имеет значение null.</exception>
+    </member>
+    <member name="M:System.Globalization.StringInfo.Equals(System.Object)">
+      <summary>Указывает, равен ли текущий объект <see cref="T:System.Globalization.StringInfo" /> указанному объекту.</summary>
+      <returns>true, если параметр <paramref name="value" /> является объектом <see cref="T:System.Globalization.StringInfo" /> и его свойство <see cref="P:System.Globalization.StringInfo.String" /> равняется свойству <see cref="P:System.Globalization.StringInfo.String" /> этого объекта <see cref="T:System.Globalization.StringInfo" />; в противном случае — false.</returns>
+      <param name="value">Объект.</param>
+    </member>
+    <member name="M:System.Globalization.StringInfo.GetHashCode">
+      <summary>Рассчитывает хэш-код для значения текущего объекта <see cref="T:System.Globalization.StringInfo" />.</summary>
+      <returns>32-битное целое число хэш-кода со знаком, основанное на значении строки этого объекта <see cref="T:System.Globalization.StringInfo" />.</returns>
+    </member>
+    <member name="M:System.Globalization.StringInfo.GetNextTextElement(System.String)">
+      <summary>Возвращает первый текстовый элемент в заданной строке.</summary>
+      <returns>Строка, содержащая первый текстовый элемент в заданной строке.</returns>
+      <param name="str">Строка, из которой нужно получить элемент текста. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="str" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.Globalization.StringInfo.GetNextTextElement(System.String,System.Int32)">
+      <summary>Возвращает элемент текста по указанному индексу заданной строки.</summary>
+      <returns>Строка, содержащая элемент текста по указанному индексу заданной строки.</returns>
+      <param name="str">Строка, из которой нужно получить элемент текста. </param>
+      <param name="index">Отсчитываемый от нуля индекс, с которого начинается элемент текста. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="str" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение <paramref name="index" /> находится вне диапазона допустимых индексов для <paramref name="str" />. </exception>
+    </member>
+    <member name="M:System.Globalization.StringInfo.GetTextElementEnumerator(System.String)">
+      <summary>Возвращает перечислитель, который выполняет итерацию по текстовым элементам всей строки.</summary>
+      <returns>Объект <see cref="T:System.Globalization.TextElementEnumerator" /> для всей строки.</returns>
+      <param name="str">Строка, в выполняется итерация. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="str" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.Globalization.StringInfo.GetTextElementEnumerator(System.String,System.Int32)">
+      <summary>Возвращает перечислитель, который может выполнять итерацию по текстовым элементам строки, начиная с указанного индекса.</summary>
+      <returns>Параметр <see cref="T:System.Globalization.TextElementEnumerator" /> для всей строки, начиная с индекса <paramref name="index" />.</returns>
+      <param name="str">Строка, в выполняется итерация. </param>
+      <param name="index">Отсчитываемый от нуля индекс, с которого необходимо начать итерацию. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="str" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение <paramref name="index" /> находится вне диапазона допустимых индексов для <paramref name="str" />. </exception>
+    </member>
+    <member name="P:System.Globalization.StringInfo.LengthInTextElements">
+      <summary>Возвращает количество элементов текста в текущем объекте <see cref="T:System.Globalization.StringInfo" />.</summary>
+      <returns>Количество базовых знаков, суррогатных пар и соединений последовательности знаков в этом объекте <see cref="T:System.Globalization.StringInfo" />.</returns>
+    </member>
+    <member name="M:System.Globalization.StringInfo.ParseCombiningCharacters(System.String)">
+      <summary>Возвращает индексы каждого базового знака, старший символ-заместитель или знак элемента управления в пределах указанной строки.</summary>
+      <returns>Массив целочисленных чисел, который содержит отсчитываемые с нуля индексы каждого базового знака, старший символ-заместитель или знак элемента управления в пределах указанной строки.</returns>
+      <param name="str">Строка для поиска. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="str" /> имеет значение null. </exception>
+    </member>
+    <member name="P:System.Globalization.StringInfo.String">
+      <summary>Возвращает или задает значение текущего объекта <see cref="T:System.Globalization.StringInfo" /> object.</summary>
+      <returns>Строка, являющаяся значением текущего объекта <see cref="T:System.Globalization.StringInfo" />.</returns>
+      <exception cref="T:System.ArgumentNullException">Для данного свойства задано значение null.</exception>
+    </member>
+    <member name="T:System.Globalization.TextElementEnumerator">
+      <summary>Осуществляет нумерацию элементов текста в строке. </summary>
+    </member>
+    <member name="P:System.Globalization.TextElementEnumerator.Current">
+      <summary>Возвращает текущий текстовый элемент строки.</summary>
+      <returns>Объект, содержащий текущий текстовый элемент строки.</returns>
+      <exception cref="T:System.InvalidOperationException">Перечислитель помещается перед первым текстовым элементом или после последнего текстового элемента. </exception>
+    </member>
+    <member name="P:System.Globalization.TextElementEnumerator.ElementIndex">
+      <summary>Возвращает индекс текстового элемента, в котором в настоящий момент находится перечислитель.</summary>
+      <returns>Индекс текстового элемента, в котором в настоящий момент находится перечислитель.</returns>
+      <exception cref="T:System.InvalidOperationException">Перечислитель помещается перед первым текстовым элементом или после последнего текстового элемента. </exception>
+    </member>
+    <member name="M:System.Globalization.TextElementEnumerator.GetTextElement">
+      <summary>Возвращает текущий текстовый элемент строки.</summary>
+      <returns>Новая строка, содержащая текущий текстовый элемент в читаемой строке.</returns>
+      <exception cref="T:System.InvalidOperationException">Перечислитель помещается перед первым текстовым элементом или после последнего текстового элемента. </exception>
+    </member>
+    <member name="M:System.Globalization.TextElementEnumerator.MoveNext">
+      <summary>Перемещает перечислитель на следующий текстовый элемент строки.</summary>
+      <returns>true, если перечислитель был успешно перемещен на следующий текстовый элемент; false, если перечислитель достиг конца строки.</returns>
+    </member>
+    <member name="M:System.Globalization.TextElementEnumerator.Reset">
+      <summary>Перемещает перечислитель в исходное положение, перед первым текстовым элементом в строке.</summary>
+    </member>
+    <member name="T:System.Globalization.TextInfo">
+      <summary>Определяет свойства и поведение текста, свойственные системе письма, например регистр. </summary>
+    </member>
+    <member name="P:System.Globalization.TextInfo.CultureName">
+      <summary>Получает имя языка и региональных параметров, связанных с текущим объектом <see cref="T:System.Globalization.TextInfo" />.</summary>
+      <returns>Имя языка и региональных параметров. </returns>
+    </member>
+    <member name="M:System.Globalization.TextInfo.Equals(System.Object)">
+      <summary>Определяет, представляет ли заданный объект ту же систему письма, что и текущий объект <see cref="T:System.Globalization.TextInfo" />.</summary>
+      <returns>Значение true, если параметр <paramref name="obj" /> представляет ту же систему письма, что и текущий объект <see cref="T:System.Globalization.TextInfo" />; в противном случае — значение false.</returns>
+      <param name="obj">Объект для сравнения с текущим объектом <see cref="T:System.Globalization.TextInfo" />. </param>
+    </member>
+    <member name="M:System.Globalization.TextInfo.GetHashCode">
+      <summary>Служит хэш-функцией текущего класса <see cref="T:System.Globalization.TextInfo" /> для использования в алгоритмах и структурах данных хеширования, например в хэш-таблице.</summary>
+      <returns>Хэш-код для текущего объекта <see cref="T:System.Globalization.TextInfo" />.</returns>
+    </member>
+    <member name="P:System.Globalization.TextInfo.IsReadOnly">
+      <summary>Получает значение, указывающее, является ли текущий объект <see cref="T:System.Globalization.TextInfo" /> доступным только для чтения.</summary>
+      <returns>Значение true, если текущий объект <see cref="T:System.Globalization.TextInfo" /> доступен только для чтения, в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Globalization.TextInfo.IsRightToLeft">
+      <summary>Получает значение, указывающее, представляет ли текущий объект <see cref="T:System.Globalization.TextInfo" /> систему письма справа налево.</summary>
+      <returns>Значение true, если текст пишется справа налево, в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Globalization.TextInfo.ListSeparator">
+      <summary>Возвращает или задает строку, разделяющую элементы в списке.</summary>
+      <returns>Строка, разделяющая элементы в списке.</returns>
+      <exception cref="T:System.ArgumentNullException">The value in a set operation is null.</exception>
+      <exception cref="T:System.InvalidOperationException">In a set operation, the current <see cref="T:System.Globalization.TextInfo" /> object is read-only.</exception>
+    </member>
+    <member name="M:System.Globalization.TextInfo.ToLower(System.Char)">
+      <summary>Преобразует заданный знак в нижний регистр.</summary>
+      <returns>Заданный знак, преобразуемый в нижний регистр.</returns>
+      <param name="c">Знак для преобразования в нижний регистр. </param>
+    </member>
+    <member name="M:System.Globalization.TextInfo.ToLower(System.String)">
+      <summary>Преобразует заданную строку в нижний регистр.</summary>
+      <returns>Заданная строка, преобразованная в нижний регистр.</returns>
+      <param name="str">Строка для преобразования в нижний регистр. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> is null. </exception>
+    </member>
+    <member name="M:System.Globalization.TextInfo.ToString">
+      <summary>Возвращает строку, представляющую текущий объект <see cref="T:System.Globalization.TextInfo" />.</summary>
+      <returns>Строка, представляющая текущий <see cref="T:System.Globalization.TextInfo" />.</returns>
+    </member>
+    <member name="M:System.Globalization.TextInfo.ToUpper(System.Char)">
+      <summary>Преобразует заданный знак в верхний регистр.</summary>
+      <returns>Заданный знак, преобразуемый в верхний регистр.</returns>
+      <param name="c">Знак для преобразования в верхний регистр. </param>
+    </member>
+    <member name="M:System.Globalization.TextInfo.ToUpper(System.String)">
+      <summary>Преобразует заданную строку в верхний регистр.</summary>
+      <returns>Заданная строка, преобразуемая в верхний регистр.</returns>
+      <param name="str">Строка для преобразования в верхний регистр. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> is null. </exception>
+    </member>
+    <member name="T:System.Globalization.UnicodeCategory">
+      <summary>Определяет категорию знака в формате Юникод.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.ClosePunctuation">
+      <summary>Закрывающий символ для одного из парных пунктуационных знаков, таких как круглые, квадратные и фигурные скобки.Принятое обозначение в Юникоде — "Pe" (punctuation, close).Значение равно 21.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.ConnectorPunctuation">
+      <summary>Знак пунктуации, являющийся соединителем двух знаков.Принятое обозначение в Юникоде — "Pc" (punctuation, connector).Значение равно 18.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.Control">
+      <summary>Управляющий символ кода со значением в Юникоде, равным U+007F либо находящемся в диапазоне от U+0000 до U+001F или от U+0080 до U+009F.Принятое обозначение в Юникоде — "Cc" (other, control).Значение равно 14.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.CurrencySymbol">
+      <summary>Символ денежной единицы.Принятое обозначение в Юникоде — "Sc" (symbol, currency).Значение равно 26.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.DashPunctuation">
+      <summary>Знак тире или дефиса.Принятое обозначение в Юникоде — "Pd" (punctuation, dash).Значение равно 19.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.DecimalDigitNumber">
+      <summary>Знак десятичной цифры в диапазоне от 0 до 9.Принятое обозначение в Юникоде — "Nd" (number, decimal digit).Значение равно 8.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.EnclosingMark">
+      <summary>Вложенный символ — не занимающий место несамостоятельный символ, который окружает все предыдущие символы до базового символа включительно.Принятое обозначение в Юникоде — "Me" (mark, enclosing).Значение равно 7.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.FinalQuotePunctuation">
+      <summary>Закрывающий или заключительный знак кавычки.Принятое обозначение в Юникоде — "Pf" (punctuation, final quote).Значение равно 23.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.Format">
+      <summary>Символ форматирования, который влияет на расположение текста или на операции по обработке текста, но обычно не отображается.Принятое обозначение в Юникоде — "Cf" (other, format).Значение равно 15.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.InitialQuotePunctuation">
+      <summary>Открывающий или начальный знак кавычки.Принятое обозначение в Юникоде — "Pi" (punctuation, initial quote).Значение равно 22.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.LetterNumber">
+      <summary>Число, представленное буквой вместо десятичной цифры; например, обозначение римской цифры пять — "V".Принятое обозначение в Юникоде — "Nl" (number, letter).Значение равно 9.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.LineSeparator">
+      <summary>Символ, используемый для разделения строк текста.Принятое обозначение в Юникоде — "Zl" (separator, line).Значение равно 12.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.LowercaseLetter">
+      <summary>Буква нижнего регистра.Принятое обозначение в Юникоде — "Ll" (letter, lowercase).Значение равно 1.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.MathSymbol">
+      <summary>Математические символы, например "+" или "=".Принятое обозначение в Юникоде — "Sm" (symbol, math).Значение равно 25.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.ModifierLetter">
+      <summary>Символ буквы модификатора, представляющий собой отдельно стоящий знак ненулевой ширины, указывающий на изменение предшествующей буквы.Принятое обозначение в Юникоде — "Lm" (letter, modifier).Значение равно 3.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.ModifierSymbol">
+      <summary>Символ модификатора, который указывает на изменения окружающих его символов.Например, дробная черта указывает, что номер слева является числителем, а номер справа — знаменателем.Индикатор отмечается специальным знаком Юникода "Sk" (symbol, modifier).Значение равно 27.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.NonSpacingMark">
+      <summary>Несамостоятельный символ, указывающий на изменения базового символа.Принятое обозначение в Юникоде — "Mn" (mark, nonspacing).Значение равно 5.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OpenPunctuation">
+      <summary>Открывающий символ для одного из парных пунктуационных знаков, таких как круглые, квадратные и фигурные скобки.Принятое обозначение в Юникоде — "Ps" (punctuation, open).Значение равно 20.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OtherLetter">
+      <summary>Буква, не находящаяся в верхнем или нижнем регистре, регистре заголовка и не являющаяся буквой модификатора.Принятое обозначение в Юникоде — "Lo" (letter, other).Значение равно 4.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OtherNotAssigned">
+      <summary>Символ, не принадлежащий ни к одной из категорий Юникода.Принятое обозначение в Юникоде — "Cn" (other, not assigned).Значение равно 29.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OtherNumber">
+      <summary>Число, не являющееся ни десятичной цифрой, ни буквенной цифрой, например дробь 1/2.Принятое в Юникоде обозначение индикатора — "No" (number, other).Значение равно 10.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OtherPunctuation">
+      <summary>Знак пунктуации, который не является соединителем, тире, открывающим или закрывающим знаком пунктуации, начальной или заключительной кавычкой.Принятое обозначение в Юникоде — "Po" (punctuation, other).Значение равно 24.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OtherSymbol">
+      <summary>Символ, который не является математическим символом, символом денежной единицы или символом модификатора.Принятое обозначение в Юникоде — "So" (symbol, other).Значение равно 28.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.ParagraphSeparator">
+      <summary>Символ, используемый для разделения абзацев.Принятое обозначение в Юникоде — "Zp" (separator, paragraph).Значение равно 13.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.PrivateUse">
+      <summary>Символ для личного использования, значение которого в Юникоде находится в диапазоне от U+E000 до U+F8FF.Принятое обозначение в Юникоде — "Co" (other, private use).Значение равно 17.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.SpaceSeparator">
+      <summary>Символ пробела, не имеющий глифа, но не являющимся символом управления или форматирования.Принятое обозначение в Юникоде — "Zs" (separator, space).Значение равно 11.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.SpacingCombiningMark">
+      <summary>Знак ненулевой ширины, который указывает на изменения базового символа и влияет на ширину глифа для этого базового символа.Принятое обозначение в Юникоде — "Mc" (mark, spacing combining).Значение равно 6.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.Surrogate">
+      <summary>Старший или младший замещающий символ.Значения кодов символов-заместителей находятся в диапазоне от D800 до DFFF.Принятое обозначение в Юникоде — "Cs" (other, surrogate).Значение равно 16.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.TitlecaseLetter">
+      <summary>Буква регистра заголовка.Принятое обозначение в Юникоде — "Lt" (letter, titlecase).Значение равно 2.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.UppercaseLetter">
+      <summary>Буква верхнего регистра.Принятое обозначение в Юникоде — "Lu" (letter, uppercase).Значение равно 0.</summary>
+    </member>
+  </members>
+</doc>

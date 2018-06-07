@@ -1,0 +1,1154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Reflection</name>
+  </assembly>
+  <members>
+    <member name="T:System.Reflection.AmbiguousMatchException">
+      <summary>当绑定到成员的操作导致一个以上的成员匹配绑定条件时引发的异常。此类不能被继承。</summary>
+    </member>
+    <member name="M:System.Reflection.AmbiguousMatchException.#ctor">
+      <summary>通过使用空消息字符串和将根源异常设置为 null 来初始化 <see cref="T:System.Reflection.AmbiguousMatchException" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Reflection.AmbiguousMatchException.#ctor(System.String)">
+      <summary>初始化 <see cref="T:System.Reflection.AmbiguousMatchException" /> 类的一个新实例，将其消息字符串设置为给定消息，将根源异常设置为 null。</summary>
+      <param name="message">指示此异常的引发原因的字符串。</param>
+    </member>
+    <member name="M:System.Reflection.AmbiguousMatchException.#ctor(System.String,System.Exception)">
+      <summary>使用指定的错误消息和对作为此异常原因的内部异常的引用来初始化 <see cref="T:System.Reflection.AmbiguousMatchException" /> 类的新实例。</summary>
+      <param name="message">解释异常原因的错误信息。</param>
+      <param name="inner">导致当前异常的异常。如果 <paramref name="inner" /> 参数不为 null，则当前异常将在处理内部异常的 catch 块中引发。</param>
+    </member>
+    <member name="T:System.Reflection.Assembly">
+      <summary>表示一个程序集，它是一个可重用、无版本冲突并且可自我描述的公共语言运行时应用程序构建基块。</summary>
+    </member>
+    <member name="P:System.Reflection.Assembly.CustomAttributes">
+      <summary>获取包含此程序集自定义属性的集合。</summary>
+      <returns>包含此程序集自定义属性的集合。</returns>
+    </member>
+    <member name="P:System.Reflection.Assembly.DefinedTypes">
+      <summary>获取定义在此程序集中的类型的集合。</summary>
+      <returns>定义在此程序集中的类型的集合。</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.Equals(System.Object)">
+      <summary>确定此程序集和指定的对象是否相等。</summary>
+      <returns>如果 true 与此实例相等，则为 <paramref name="o" />；否则为 false。</returns>
+      <param name="o">与该实例进行比较的对象。</param>
+    </member>
+    <member name="P:System.Reflection.Assembly.ExportedTypes">
+      <summary>获取此程序集中定义的公共类型的集合，这些公共类型在程序集外可见。</summary>
+      <returns>此程序集中定义的公共类型的集合，这些公共类型在程序集外可见。</returns>
+    </member>
+    <member name="P:System.Reflection.Assembly.FullName">
+      <summary>获取程序集的显示名称。</summary>
+      <returns>程序集的显示名称。</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetHashCode">
+      <summary>返回此实例的哈希代码。</summary>
+      <returns>32 位有符号整数哈希代码。</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetManifestResourceInfo(System.String)">
+      <summary>返回关于给定资源如何保持的信息。</summary>
+      <returns>用关于资源拓扑的信息填充的对象；如果未找到资源，则为 null。</returns>
+      <param name="resourceName">区分大小写的资源名称。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="resourceName" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="resourceName" /> 参数是空字符串 ("")。</exception>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetManifestResourceNames">
+      <summary>返回此程序集中的所有资源的名称。</summary>
+      <returns>包含所有资源名称的数组。</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetManifestResourceStream(System.String)">
+      <summary>从此程序集加载指定的清单资源。</summary>
+      <returns>如果在编译期间没有指定任何资源，或者资源对调用方不可见，则为清单资源或者为 null。</returns>
+      <param name="name">所请求的清单资源的名称（区分大小写）。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 参数为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 参数是空字符串 ("")。</exception>
+      <exception cref="T:System.IO.FileLoadException">在 .NET for Windows Store apps 或 可移植类库, ，捕获该基类异常， <see cref="T:System.IO.IOException" />, 、 相反。发现一个未能加载的文件。</exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="name" />。</exception>
+      <exception cref="T:System.BadImageFormatException">
+        <paramref name="name" /> 不是有效程序集。</exception>
+      <exception cref="T:System.NotImplementedException">资源长度大于 <see cref="F:System.Int64.MaxValue" />。</exception>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetName">
+      <summary>获取此程序集的 <see cref="T:System.Reflection.AssemblyName" />。</summary>
+      <returns>包含此程序集的完全分析的显示名称的对象。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetType(System.String)">
+      <summary>获取程序集实例中具有指定名称的 <see cref="T:System.Type" /> 对象。</summary>
+      <returns>表示指定类的对象，若未找到该类则为 null。</returns>
+      <param name="name">类型的全名。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 无效。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 为 null。</exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="name" /> 需要一个无法找到的依赖程序集。</exception>
+      <exception cref="T:System.IO.FileLoadException">在 .NET for Windows Store apps 或 可移植类库, ，捕获该基类异常， <see cref="T:System.IO.IOException" />, 、 相反。<paramref name="name" /> 需要一个已找到但无法加载的依赖程序集。- 或 -当前程序集被加载到只反射上下文中，<paramref name="name" /> 需要一个未预先加载的依赖程序集。</exception>
+      <exception cref="T:System.BadImageFormatException">
+        <paramref name="name" /> 需要一个依赖程序集，但该文件不是一个有效的程序集。- 或 -<paramref name="name" /> 需要一个针对高于当前加载版本的运行库版本编译的依赖程序集。</exception>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetType(System.String,System.Boolean,System.Boolean)">
+      <summary>获取程序集实例中具有指定名称的 <see cref="T:System.Type" /> 对象，带有忽略大小写和在找不到该类型时引发异常的选项。</summary>
+      <returns>表示指定类的对象。</returns>
+      <param name="name">类型的全名。</param>
+      <param name="throwOnError">true 表示在找不到该类型时引发异常；false 则表示返回 null。</param>
+      <param name="ignoreCase">如果为 true，则忽略类型名的大小写；否则，为 false。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 无效。- 或 - <paramref name="name" /> 的长度超过 1024 个字符。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 为 null。</exception>
+      <exception cref="T:System.TypeLoadException">
+        <paramref name="throwOnError" /> 为 true，找不到该类型。</exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="name" /> 需要一个无法找到的依赖程序集。</exception>
+      <exception cref="T:System.IO.FileLoadException">
+        <paramref name="name" /> 需要一个已找到但无法加载的依赖程序集。- 或 -当前程序集被加载到只反射上下文中，<paramref name="name" /> 需要一个未预先加载的依赖程序集。</exception>
+      <exception cref="T:System.BadImageFormatException">
+        <paramref name="name" /> 需要一个依赖程序集，但该文件不是一个有效的程序集。- 或 -<paramref name="name" /> 需要一个针对高于当前加载版本的运行库版本编译的依赖程序集。</exception>
+    </member>
+    <member name="P:System.Reflection.Assembly.IsDynamic">
+      <summary>获取一个值，该值指示当前程序集是否是通过使用反射发出在当前进程中动态生成的。</summary>
+      <returns>如果当前程序集是在当前进程中动态生成的，则为 true；否则为 false。</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.Load(System.Reflection.AssemblyName)">
+      <summary>在给定程序集的 <see cref="T:System.Reflection.AssemblyName" /> 的情况下，加载程序集。</summary>
+      <returns>加载的程序集。</returns>
+      <param name="assemblyRef">描述要加载的程序集的对象。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="assemblyRef" /> 为 null。</exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="assemblyRef" /> 未找到。</exception>
+      <exception cref="T:System.IO.FileLoadException">在 .NET for Windows Store apps 或 可移植类库, ，捕获该基类异常， <see cref="T:System.IO.IOException" />, 、 相反。发现一个未能加载的文件。</exception>
+      <exception cref="T:System.BadImageFormatException">
+        <paramref name="assemblyRef" /> 不是有效程序集。- 或 -当前加载的是 2.0 或更高版本的公共语言运行时，而 <paramref name="assemblyRef" /> 是用更高版本的公共语言运行时编译的。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="*AllFiles*" PathDiscovery="*AllFiles*" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Reflection.Assembly.ManifestModule">
+      <summary>获取包含当前程序集清单的模块。</summary>
+      <returns>包含程序集清单的模块。</returns>
+    </member>
+    <member name="P:System.Reflection.Assembly.Modules">
+      <summary>获取包含此程序集中模块的集合。</summary>
+      <returns>包含此程序集中模块的集合。</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.ToString">
+      <summary>返回程序集的全名，即所谓的显示名称。</summary>
+      <returns>程序集的全名；如果不能确定程序集的全名，则为类名。</returns>
+    </member>
+    <member name="T:System.Reflection.AssemblyContentType">
+      <summary>提供有关程序集中代码包含的类型的信息。</summary>
+    </member>
+    <member name="F:System.Reflection.AssemblyContentType.Default">
+      <summary>程序集包含 .NET Framework 代码。</summary>
+    </member>
+    <member name="F:System.Reflection.AssemblyContentType.WindowsRuntime">
+      <summary>程序集包括 Windows 运行时 代码。</summary>
+    </member>
+    <member name="T:System.Reflection.AssemblyName">
+      <summary>完整描述程序集的唯一标识。</summary>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.#ctor">
+      <summary>初始化 <see cref="T:System.Reflection.AssemblyName" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.#ctor(System.String)">
+      <summary>用指定的显示名称初始化 <see cref="T:System.Reflection.AssemblyName" /> 类的新实例。</summary>
+      <param name="assemblyName">程序集的显示名称，由 <see cref="P:System.Reflection.AssemblyName.FullName" /> 属性返回。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="assemblyName" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="assemblyName" /> 是一个零长度字符串。</exception>
+      <exception cref="T:System.IO.FileLoadException">在 .NET for Windows Store 应用程序 或 可移植类库 中，请改为捕获基类异常 <see cref="T:System.IO.IOException" />。引用的程序集未能找到或无法加载。</exception>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.ContentType">
+      <summary>获取或设置指示程序集包含的内容类型的值。</summary>
+      <returns>指示程序集包含哪种内容类型的值。</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.CultureName">
+      <summary>获取或设置与此程序集关联的区域性名称。</summary>
+      <returns>区域性名称。</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.Flags">
+      <summary>获取或设置该程序集的属性。</summary>
+      <returns>表示程序集特性的值。</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.FullName">
+      <summary>获取程序集的全名（也称为显示名称）。</summary>
+      <returns>作为程序集的全名（也称为显示名称）的字符串。</returns>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.GetPublicKey">
+      <summary>获取程序集的公钥。</summary>
+      <returns>字节数组，包含程序集的公钥。</returns>
+      <exception cref="T:System.Security.SecurityException">提供了公钥（例如使用 <see cref="M:System.Reflection.AssemblyName.SetPublicKey(System.Byte[])" /> 方法），但未提供公钥标记。</exception>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.GetPublicKeyToken">
+      <summary>获取公钥标记，该标记为应用程序或程序集签名时所用公钥的 SHA-1 哈希值的最后 8 个字节。</summary>
+      <returns>包含公钥调用的字节数组。</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.Name">
+      <summary>获取或设置程序集的简单名称。这通常（但不一定）是程序集的清单文件的文件名，不包括其扩展名。</summary>
+      <returns>程序集的简单名称。</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.ProcessorArchitecture">
+      <summary>获取或设置一个值，该值标识可执行文件的目标平台的处理器和每字位数。</summary>
+      <returns>枚举值之一，标识可执行文件的目标平台的处理器和每字位数。</returns>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.SetPublicKey(System.Byte[])">
+      <summary>设置用于标识程序集的公钥。</summary>
+      <param name="publicKey">字节数组，包含程序集的公钥。</param>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.SetPublicKeyToken(System.Byte[])">
+      <summary>设置公钥标记，该标记为应用程序或程序集签名时所用公钥的 SHA-1 哈希值的最后 8 个字节。</summary>
+      <param name="publicKeyToken">字节数组，包含程序集的公钥标记。</param>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.ToString">
+      <summary>返回程序集的全名，即所谓的显示名称。</summary>
+      <returns>程序集的全名；如果不能确定程序集的全名，则为类名。</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.Version">
+      <summary>获取或设置程序集的主版本号、次版本号、内部版本号和修订号。</summary>
+      <returns>一个对象，表示程序集的主版本号、次版本号、内部版本号和修订号。</returns>
+    </member>
+    <member name="T:System.Reflection.ConstructorInfo">
+      <summary>发现类构造函数的属性并提供对构造函数元数据的访问权。</summary>
+    </member>
+    <member name="F:System.Reflection.ConstructorInfo.ConstructorName">
+      <summary>表示存储在元数据中的类构造函数方法的名称。该名称始终为“.ctor”。此字段为只读。</summary>
+    </member>
+    <member name="M:System.Reflection.ConstructorInfo.Equals(System.Object)">
+      <summary>返回一个值，该值指示此实例是否与指定的对象相等。</summary>
+      <returns>如果 <paramref name="obj" /> 等于此实例的类型和值，则为 true；否则为 false。</returns>
+      <param name="obj">与此实例进行比较的 object，或 null。</param>
+    </member>
+    <member name="M:System.Reflection.ConstructorInfo.GetHashCode">
+      <summary>返回此实例的哈希代码。</summary>
+      <returns>32 位有符号整数哈希代码。</returns>
+    </member>
+    <member name="M:System.Reflection.ConstructorInfo.Invoke(System.Object[])">
+      <summary>调用具有指定参数的实例所反映的构造函数，并为不常用的参数提供默认值。</summary>
+      <returns>与构造函数关联的类的实例。</returns>
+      <param name="parameters">与此构造函数的参数的个数、顺序和类型（受默认联编程序的约束）相匹配的值数组。如果此构造函数没有参数，则像 Object[] parameters = new Object[0] 中那样，使用包含零元素或 null 的数组。如果此数组中的对象未用值来显式初始化，则该对象将包含该对象类型的默认值。对于引用类型的元素，该值为 null。对于值类型的元素，该值为 0、0.0 或 false，具体取决于特定的元素类型。</param>
+      <exception cref="T:System.MemberAccessException">此类是抽象类。- 或 -构造函数是类初始值设定项。</exception>
+      <exception cref="T:System.MethodAccessException">在 .NET for Windows Store 应用程序 或 可移植类库 中，请改为捕获基类异常 <see cref="T:System.MemberAccessException" />。构造函数是私有的或受保护的，而且调用方不具有 <see cref="F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess" />。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="parameters" /> 数组不包含与此构造函数所接受的类型相匹配的值。</exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">调用的构造函数引发异常。</exception>
+      <exception cref="T:System.Reflection.TargetParameterCountException">传递的参数个数不正确。</exception>
+      <exception cref="T:System.NotSupportedException">不支持创建 <see cref="T:System.TypedReference" />、<see cref="T:System.ArgIterator" /> 和 <see cref="T:System.RuntimeArgumentHandle" /> 类型。</exception>
+      <exception cref="T:System.Security.SecurityException">调用方不具有所需的代码访问权限。</exception>
+    </member>
+    <member name="F:System.Reflection.ConstructorInfo.TypeConstructorName">
+      <summary>表示存储于元数据中的类型构造函数方法的名称。该名称始终为“.cctor”。此属性为只读。</summary>
+    </member>
+    <member name="T:System.Reflection.CustomAttributeData">
+      <summary>提供对加载到只反射上下文中的程序集、模块、类型、成员和参数的自定义特性数据的访问。</summary>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeData.AttributeType">
+      <summary>键入该特性的类型。</summary>
+      <returns>属性的类型。</returns>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeData.ConstructorArguments">
+      <summary>获取为由 <see cref="T:System.Reflection.CustomAttributeData" /> 对象表示的特性实例指定的位置参数列表。</summary>
+      <returns>一个结构的集合，表示为自定义特性实例指定的位置参数。</returns>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeData.NamedArguments">
+      <summary>获取为由 <see cref="T:System.Reflection.CustomAttributeData" /> 对象表示的特性实例指定的命名参数列表。</summary>
+      <returns>一个结构的集合，表示为自定义特性实例指定的命名参数。</returns>
+    </member>
+    <member name="T:System.Reflection.CustomAttributeNamedArgument">
+      <summary>表示只反射上下文中自定义特性的命名参数。</summary>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeNamedArgument.IsField">
+      <summary>获取一个值，该值指示命名参数是否是一个字段。</summary>
+      <returns>如果命名参数为字段，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeNamedArgument.MemberName">
+      <summary>获取将用于设置命名参数的特性成员名称。</summary>
+      <returns>用于设置命名参数的特性成员的名称。</returns>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeNamedArgument.TypedValue">
+      <summary>获取一个 <see cref="T:System.Reflection.CustomAttributeTypedArgument" /> 结构，该结构可用于获取当前命名参数的类型和值。</summary>
+      <returns>一个结构，可用于获取当前命名参数的类型和值。</returns>
+    </member>
+    <member name="T:System.Reflection.CustomAttributeTypedArgument">
+      <summary>表示只反射上下文中的自定义特性的参数，或数组参数的元素。</summary>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeTypedArgument.ArgumentType">
+      <summary>获取参数或数组参数元素的类型。</summary>
+      <returns>一个 <see cref="T:System.Type" /> 对象，表示参数或数组元素的类型。</returns>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeTypedArgument.Value">
+      <summary>获取简单参数或数组参数的元素的参数值；获取数组参数的值的集合。</summary>
+      <returns>一个表示参数或元素的值的对象，或表示数组类型参数的值的 <see cref="T:System.Reflection.CustomAttributeTypedArgument" /> 对象的一个泛型 <see cref="T:System.Collections.ObjectModel.ReadOnlyCollection`1" />。</returns>
+    </member>
+    <member name="T:System.Reflection.EventInfo">
+      <summary>发现事件的属性并提供对事件元数据的访问权。</summary>
+    </member>
+    <member name="M:System.Reflection.EventInfo.AddEventHandler(System.Object,System.Delegate)">
+      <summary>将事件处理程序添加到事件源。</summary>
+      <param name="target">事件源。</param>
+      <param name="handler">封装目标引发事件时将调用的方法。</param>
+      <exception cref="T:System.InvalidOperationException">该事件没有公共的 add 访问器。</exception>
+      <exception cref="T:System.ArgumentException">传入的处理程序无法使用。</exception>
+      <exception cref="T:System.MethodAccessException">在 .NET for Windows Store 应用程序 或 可移植类库 中，请改为捕获基类异常 <see cref="T:System.MemberAccessException" />。调用方无权访问该成员。</exception>
+      <exception cref="T:System.Reflection.TargetException">在 .NET for Windows Store 应用程序 或 可移植类库 中，请改为捕获 <see cref="T:System.Exception" />。<paramref name="target" /> 参数为 null 并且该事件不是静态的。- 或 -目标上没有声明 <see cref="T:System.Reflection.EventInfo" />。</exception>
+    </member>
+    <member name="P:System.Reflection.EventInfo.AddMethod">
+      <summary>获取 <see cref="T:System.Reflection.MethodInfo" /> 对象 <see cref="M:System.Reflection.EventInfo.AddEventHandler(System.Object,System.Delegate)" /> 事件的一个方法，包括非公共方法。</summary>
+      <returns>
+        <see cref="M:System.Reflection.EventInfo.AddEventHandler(System.Object,System.Delegate)" /> 方法的 <see cref="T:System.Reflection.MethodInfo" /> 对象。</returns>
+    </member>
+    <member name="P:System.Reflection.EventInfo.Attributes">
+      <summary>获取此事件的属性。</summary>
+      <returns>此事件的只读特性。</returns>
+    </member>
+    <member name="M:System.Reflection.EventInfo.Equals(System.Object)">
+      <summary>返回一个值，该值指示此实例是否与指定的对象相等。</summary>
+      <returns>如果 <paramref name="obj" /> 等于此实例的类型和值，则为 true；否则为 false。</returns>
+      <param name="obj">与此实例进行比较的 object，或 null。</param>
+    </member>
+    <member name="P:System.Reflection.EventInfo.EventHandlerType">
+      <summary>获取与此事件关联的基础事件处理程序委托的 Type 对象。</summary>
+      <returns>表示委托事件处理程序的只读 Type 对象。</returns>
+      <exception cref="T:System.Security.SecurityException">调用方没有所要求的权限。</exception>
+    </member>
+    <member name="M:System.Reflection.EventInfo.GetHashCode">
+      <summary>返回此实例的哈希代码。</summary>
+      <returns>32 位有符号整数哈希代码。</returns>
+    </member>
+    <member name="P:System.Reflection.EventInfo.IsSpecialName">
+      <summary>获取一个值，通过该值指示 EventInfo 是否具有一个有特殊意义的名称。</summary>
+      <returns>如果此事件具有一个特殊名称，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.EventInfo.RaiseMethod">
+      <summary>获取返回在引发该事件时所调用的方法，含非公开的方法。</summary>
+      <returns>引发该事件时所调用的方法。</returns>
+    </member>
+    <member name="M:System.Reflection.EventInfo.RemoveEventHandler(System.Object,System.Delegate)">
+      <summary>从事件源中移除事件处理程序。</summary>
+      <param name="target">事件源。</param>
+      <param name="handler">将解除与由目标引发的事件的关联的委托。</param>
+      <exception cref="T:System.InvalidOperationException">该事件没有公共的 remove 访问器。</exception>
+      <exception cref="T:System.ArgumentException">传入的处理程序无法使用。</exception>
+      <exception cref="T:System.Reflection.TargetException">在 .NET for Windows Store 应用程序 或 可移植类库 中，请改为捕获 <see cref="T:System.Exception" />。<paramref name="target" /> 参数为 null 并且该事件不是静态的。- 或 -目标上没有声明 <see cref="T:System.Reflection.EventInfo" />。</exception>
+      <exception cref="T:System.MethodAccessException">在 .NET for Windows Store 应用程序 或 可移植类库 中，请改为捕获基类异常 <see cref="T:System.MemberAccessException" />。调用方无权访问该成员。</exception>
+    </member>
+    <member name="P:System.Reflection.EventInfo.RemoveMethod">
+      <summary>获取 MethodInfo 对象，以移除该事件的一个方法，包括非公共方法。</summary>
+      <returns>用于移除该事件方法的 MethodInfo 对象。</returns>
+    </member>
+    <member name="T:System.Reflection.FieldInfo">
+      <summary>发现字段属性并提供对字段元数据的访问权。</summary>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.Attributes">
+      <summary>获取与此字段关联的特性。</summary>
+      <returns>此字段的 FieldAttributes。</returns>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.Equals(System.Object)">
+      <summary>返回一个值，该值指示此实例是否与指定的对象相等。</summary>
+      <returns>如果 <paramref name="obj" /> 等于此实例的类型和值，则为 true；否则为 false。</returns>
+      <param name="obj">与此实例进行比较的 object，或 null。</param>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.FieldType">
+      <summary>获取此字段对象的类型。</summary>
+      <returns>此字段对象的类型。</returns>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.GetFieldFromHandle(System.RuntimeFieldHandle)">
+      <summary>获取由指定句柄表示的字段的 <see cref="T:System.Reflection.FieldInfo" />。</summary>
+      <returns>
+        <see cref="T:System.Reflection.FieldInfo" /> 对象，表示由 <paramref name="handle" /> 指定的字段。</returns>
+      <param name="handle">
+        <see cref="T:System.RuntimeFieldHandle" /> 结构，它包含字段的内部元数据表示形式的句柄。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="handle" /> 无效。</exception>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.GetFieldFromHandle(System.RuntimeFieldHandle,System.RuntimeTypeHandle)">
+      <summary>获取由指定句柄表示的指定泛型类型字段的 <see cref="T:System.Reflection.FieldInfo" />。</summary>
+      <returns>
+        <see cref="T:System.Reflection.FieldInfo" /> 对象，表示由 <paramref name="handle" /> 指定的字段，该字段的类型为 <paramref name="declaringType" /> 指定的泛型类型。</returns>
+      <param name="handle">
+        <see cref="T:System.RuntimeFieldHandle" /> 结构，它包含字段的内部元数据表示形式的句柄。</param>
+      <param name="declaringType">
+        <see cref="T:System.RuntimeTypeHandle" /> 结构，它包含定义该字段的泛型类型的句柄。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="handle" /> 无效。- 或 -<paramref name="declaringType" /> 与 <paramref name="handle" /> 不兼容。例如，<paramref name="declaringType" /> 是泛型类型定义的运行时类型句柄，且 <paramref name="handle" /> 来自于构造类型。请参阅“备注”。</exception>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.GetHashCode">
+      <summary>返回此实例的哈希代码。</summary>
+      <returns>32 位有符号整数哈希代码。</returns>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.GetValue(System.Object)">
+      <summary>在派生类中被重写时，返回给定对象支持的字段的值。</summary>
+      <returns>包含此实例反映的字段值的对象。</returns>
+      <param name="obj">其字段值将返回的对象。</param>
+      <exception cref="T:System.Reflection.TargetException">在 .NET for Windows Store 应用程序 或 可移植类库 中，请改为捕获 <see cref="T:System.Exception" />。此字段是非静态的且 <paramref name="obj" /> 为 null。</exception>
+      <exception cref="T:System.NotSupportedException">字段被标记为文本，但是该字段没有一个可接受的文本类型。</exception>
+      <exception cref="T:System.FieldAccessException">在 .NET for Windows Store 应用程序 或 可移植类库 中，请改为捕获基类异常 <see cref="T:System.MemberAccessException" />。调用方没有访问此字段的权限。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="obj" /> 类既不声明该方法也不继承该方法。</exception>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsAssembly">
+      <summary>获取一个值，该值指示此字段的潜在可见性是否由 <see cref="F:System.Reflection.FieldAttributes.Assembly" /> 描述；也就是说，此字段只对同一程序集中的其他类型可见，而对该程序集以外的派生类型则不可见。</summary>
+      <returns>如果此字段的可见性由 <see cref="F:System.Reflection.FieldAttributes.Assembly" /> 准确描述，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsFamily">
+      <summary>获取一个值，该值指示此字段的可见性是否由 <see cref="F:System.Reflection.FieldAttributes.Family" /> 描述；也就是说，此字段仅在其类和派生类内可见。</summary>
+      <returns>如果对此字段的访问由 <see cref="F:System.Reflection.FieldAttributes.Family" /> 准确描述，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsFamilyAndAssembly">
+      <summary>获取一个值，该值指示此字段的可见性是否由 <see cref="F:System.Reflection.FieldAttributes.FamANDAssem" /> 描述；也就是说，可从派生类访问此字段，但仅当这些派生类在同一程序集中时。</summary>
+      <returns>如果对此字段的访问由 <see cref="F:System.Reflection.FieldAttributes.FamANDAssem" /> 准确描述，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsFamilyOrAssembly">
+      <summary>获取一个值，该值指示此字段的潜在可见性是否由 <see cref="F:System.Reflection.FieldAttributes.FamORAssem" /> 描述；也就是说，可通过派生类（无论其位置如何）和同一程序集中的类访问此字段。</summary>
+      <returns>如果对此字段的访问由 <see cref="F:System.Reflection.FieldAttributes.FamORAssem" /> 准确描述，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsInitOnly">
+      <summary>获取一个值，通过该值指示此字段是否只能在构造函数的主体中设置。</summary>
+      <returns>如果字段设置了 InitOnly 属性，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsLiteral">
+      <summary>获取一个值，通过该值指示该值是否在编译时写入并且不能更改。</summary>
+      <returns>如果字段设置了 Literal 属性，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsPrivate">
+      <summary>获取一个值，通过该值指示此字段是否为私有字段。</summary>
+      <returns>如果此字段为私有字段，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsPublic">
+      <summary>获取一个值，通过该值指示此字段是否为公共字段。</summary>
+      <returns>如果此字段为公共字段，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsSpecialName">
+      <summary>获取一个值，该值指示是否已在 <see cref="T:System.Reflection.FieldAttributes" /> 枚举数中设置相应的 SpecialName 特性。</summary>
+      <returns>如果在 <see cref="T:System.Reflection.FieldAttributes" /> 中设置了 SpecialName 特性，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsStatic">
+      <summary>获取一个值，通过该值指示此字段是否为静态字段。</summary>
+      <returns>如果此字段为静态字段，则为 true；否则为 false。</returns>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.SetValue(System.Object,System.Object)">
+      <summary>设置给定对象支持的字段值。</summary>
+      <param name="obj">将设置其字段值的对象。</param>
+      <param name="value">分配给字段的值。</param>
+      <exception cref="T:System.FieldAccessException">在 .NET for Windows Store 应用程序 或 可移植类库 中，请改为捕获基类异常 <see cref="T:System.MemberAccessException" />。调用方没有访问此字段的权限。</exception>
+      <exception cref="T:System.Reflection.TargetException">在 .NET for Windows Store 应用程序 或 可移植类库 中，请改为捕获 <see cref="T:System.Exception" />。<paramref name="obj" /> 参数为 null 并且该字段是一个实例字段。</exception>
+      <exception cref="T:System.ArgumentException">对象上不存在该字段。- 或 -<paramref name="value" /> 参数无法转换并存储在该字段中。</exception>
+    </member>
+    <member name="T:System.Reflection.IntrospectionExtensions">
+      <summary>包含转换的 <see cref="T:System.Type" /> 对象的方法。</summary>
+    </member>
+    <member name="M:System.Reflection.IntrospectionExtensions.GetTypeInfo(System.Type)">
+      <summary>返回指定类型的 <see cref="T:System.Reflection.TypeInfo" /> 表示形式。</summary>
+      <returns>被转换的对象。</returns>
+      <param name="type">要转换的类型。</param>
+    </member>
+    <member name="T:System.Reflection.IReflectableType">
+      <summary>表示可在其上发射的类型。</summary>
+    </member>
+    <member name="M:System.Reflection.IReflectableType.GetTypeInfo">
+      <summary>检索表示此类型的对象。</summary>
+      <returns>一个表示此类型的对象。</returns>
+    </member>
+    <member name="T:System.Reflection.LocalVariableInfo">
+      <summary>发现局部变量的属性并提供对局部变量元数据的访问。</summary>
+    </member>
+    <member name="M:System.Reflection.LocalVariableInfo.#ctor">
+      <summary>初始化 <see cref="T:System.Reflection.LocalVariableInfo" /> 类的新实例。</summary>
+    </member>
+    <member name="P:System.Reflection.LocalVariableInfo.IsPinned">
+      <summary>获取一个 <see cref="T:System.Boolean" /> 值，该值指示由局部变量引用的对象是否被固定在内存中。</summary>
+      <returns>如果由变量引用的对象被固定在内存中，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.LocalVariableInfo.LocalIndex">
+      <summary>获取方法体内局部变量的索引。</summary>
+      <returns>一个整数值，表示方法体内局部变量的声明顺序。</returns>
+    </member>
+    <member name="P:System.Reflection.LocalVariableInfo.LocalType">
+      <summary>获取局部变量的类型。</summary>
+      <returns>局部变量的类型。</returns>
+    </member>
+    <member name="M:System.Reflection.LocalVariableInfo.ToString">
+      <summary>返回一个描述局部变量的用户可读的字符串。</summary>
+      <returns>一个字符串，显示有关局部变量的信息，包括类型名称、索引和固定状态。</returns>
+    </member>
+    <member name="T:System.Reflection.ManifestResourceInfo">
+      <summary>提供对清单资源的访问，这些资源是描述应用程序依赖项的 XML 文件。</summary>
+    </member>
+    <member name="M:System.Reflection.ManifestResourceInfo.#ctor(System.Reflection.Assembly,System.String,System.Reflection.ResourceLocation)">
+      <summary>为由指定的程序集和文件包含且具有指定位置的资源初始化 <see cref="T:System.Reflection.ManifestResourceInfo" /> 类的新实例。</summary>
+      <param name="containingAssembly">包含清单资源的程序集。</param>
+      <param name="containingFileName">包含清单资源的文件名（如果该文件与清单文件不同）。</param>
+      <param name="resourceLocation">一个枚举值的按位组合，提供有关清单资源位置的信息。</param>
+    </member>
+    <member name="P:System.Reflection.ManifestResourceInfo.FileName">
+      <summary>获取包含清单资源的文件名（如果该文件与清单文件不同）。</summary>
+      <returns>清单资源的文件名。</returns>
+    </member>
+    <member name="P:System.Reflection.ManifestResourceInfo.ReferencedAssembly">
+      <summary>获取包含清单资源的程序集。</summary>
+      <returns>包含清单资源的程序集。</returns>
+    </member>
+    <member name="P:System.Reflection.ManifestResourceInfo.ResourceLocation">
+      <summary>获取清单资源的位置。</summary>
+      <returns>指示清单资源位置的 <see cref="T:System.Reflection.ResourceLocation" /> 标志的按位组合。</returns>
+    </member>
+    <member name="T:System.Reflection.MemberInfo">
+      <summary>获取有关成员属性的信息并提供对成员元数据的访问。</summary>
+    </member>
+    <member name="P:System.Reflection.MemberInfo.CustomAttributes">
+      <summary>获取包含此成员自定义特性的集合。</summary>
+      <returns>包含此成员的自定义特性的集合。</returns>
+    </member>
+    <member name="P:System.Reflection.MemberInfo.DeclaringType">
+      <summary>获取声明该成员的类。</summary>
+      <returns>声明该成员的类的 Type 对象。</returns>
+    </member>
+    <member name="M:System.Reflection.MemberInfo.Equals(System.Object)">
+      <summary>返回一个值，该值指示此实例是否与指定的对象相等。</summary>
+      <returns>如果 <paramref name="obj" /> 等于此实例的类型和值，则为 true；否则为 false。</returns>
+      <param name="obj">与此实例进行比较的 object，或 null。</param>
+    </member>
+    <member name="M:System.Reflection.MemberInfo.GetHashCode">
+      <summary>返回此实例的哈希代码。</summary>
+      <returns>32 位有符号整数哈希代码。</returns>
+    </member>
+    <member name="P:System.Reflection.MemberInfo.Module">
+      <summary>获取一个模块，在该模块中已经定义一个类型，该类型用于声明由当前 <see cref="T:System.Reflection.MemberInfo" /> 表示的成员。</summary>
+      <returns>
+        <see cref="T:System.Reflection.Module" />，在其中已经定义一个类型，该类型用于声明由当前 <see cref="T:System.Reflection.MemberInfo" /> 表示的成员。</returns>
+      <exception cref="T:System.NotImplementedException">此方法未实现。</exception>
+    </member>
+    <member name="P:System.Reflection.MemberInfo.Name">
+      <summary>获取当前成员的名称。</summary>
+      <returns>包含此成员名称的 <see cref="T:System.String" />。</returns>
+    </member>
+    <member name="T:System.Reflection.MethodBase">
+      <summary>提供有关方法和构造函数的信息。</summary>
+    </member>
+    <member name="P:System.Reflection.MethodBase.Attributes">
+      <summary>获取与此方法关联的属性。</summary>
+      <returns>
+        <see cref="T:System.Reflection.MethodAttributes" /> 值之一。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.CallingConvention">
+      <summary>获取一个值，该值指示此方法的调用约定。</summary>
+      <returns>此方法的 <see cref="T:System.Reflection.CallingConventions" />。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.ContainsGenericParameters">
+      <summary>获取一个值，该值指示泛型方法是否包含未赋值的泛型类型参数。</summary>
+      <returns>如果当前 <see cref="T:System.Reflection.MethodBase" /> 对象表示的泛型方法包含未赋值的泛型类型参数，则为 true；否则为 false。</returns>
+    </member>
+    <member name="M:System.Reflection.MethodBase.Equals(System.Object)">
+      <summary>返回一个值，该值指示此实例是否与指定的对象相等。</summary>
+      <returns>如果 <paramref name="obj" /> 等于此实例的类型和值，则为 true；否则为 false。</returns>
+      <param name="obj">与此实例进行比较的 object，或 null。</param>
+    </member>
+    <member name="M:System.Reflection.MethodBase.GetGenericArguments">
+      <summary>返回 <see cref="T:System.Type" /> 对象的数组，这些对象表示泛型方法的类型实参或泛型方法定义的类型形参。</summary>
+      <returns>
+        <see cref="T:System.Type" /> 对象的数组，这些对象表示泛型方法的类型变量或泛型方法定义的类型参数。如果当前方法不是泛型方法，则返回空数组。</returns>
+      <exception cref="T:System.NotSupportedException">当前对象是 <see cref="T:System.Reflection.ConstructorInfo" />。.NET Framework 2.0 版不支持泛型构造函数。如果派生类未重写此方法，此异常即为默认行为。</exception>
+    </member>
+    <member name="M:System.Reflection.MethodBase.GetHashCode">
+      <summary>返回此实例的哈希代码。</summary>
+      <returns>32 位有符号整数哈希代码。</returns>
+    </member>
+    <member name="M:System.Reflection.MethodBase.GetMethodFromHandle(System.RuntimeMethodHandle)">
+      <summary>通过使用方法的内部元数据表示形式（句柄）获取方法信息。</summary>
+      <returns>MethodBase，包含方法的有关信息。</returns>
+      <param name="handle">方法的句柄。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="handle" /> 无效。</exception>
+    </member>
+    <member name="M:System.Reflection.MethodBase.GetMethodFromHandle(System.RuntimeMethodHandle,System.RuntimeTypeHandle)">
+      <summary>以指定泛型类型，获取指定句柄所表示的构造函数或方法的 <see cref="T:System.Reflection.MethodBase" /> 对象。</summary>
+      <returns>
+        <see cref="T:System.Reflection.MethodBase" /> 对象，表示由 <paramref name="handle" /> 指定的方法或构造函数，为由 <paramref name="declaringType" /> 指定的泛型类型。</returns>
+      <param name="handle">构造函数或方法的内部元数据表示形式的句柄。</param>
+      <param name="declaringType">定义构造函数或方法的泛型类型的句柄。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="handle" /> 无效。</exception>
+    </member>
+    <member name="M:System.Reflection.MethodBase.GetParameters">
+      <summary>当在派生类中重写时，获取指定的方法或构造函数的参数。</summary>
+      <returns>ParameterInfo 类型的数组，包含与此 MethodBase 实例所反射的方法（或构造函数）的签名匹配的信息。</returns>
+    </member>
+    <member name="M:System.Reflection.MethodBase.Invoke(System.Object,System.Object[])">
+      <summary>使用指定的参数调用当前实例所表示的方法或构造函数。</summary>
+      <returns>一个对象，包含被调用方法的返回值，如果调用的是构造函数，则为 null。警告也可以修改表示用 ref 或 out 关键字声明的参数的 <paramref name="parameters" /> 数组元素。</returns>
+      <param name="obj">对其调用方法或构造函数的对象。如果方法是静态的，则忽略此参数。如果构造函数是静态的，则此参数必须为 null 或定义该构造函数的类的实例。</param>
+      <param name="parameters">调用的方法或构造函数的参数列表。这是一个对象数组，这些对象与要调用的方法或构造函数的参数具有相同的数量、顺序和类型。如果没有任何参数，则 <paramref name="parameters" /> 应为 null。如果此实例所表示的方法或构造函数采用 ref 参数（在 Visual Basic 中为 ByRef），使用此函数调用该方法或构造函数时，该参数不需要任何特殊属性。如果此数组中的对象未用值来显式初始化，则该对象将包含该对象类型的默认值。对于引用类型的元素，该值为 null。对于值类型的元素，该值为 0、0.0 或 false，具体取决于特定的元素类型。</param>
+      <exception cref="T:System.Reflection.TargetException">在 .NET for Windows Store 应用程序 或 可移植类库 中，请改为捕获 <see cref="T:System.Exception" />。<paramref name="obj" /> 参数为 null 并且此方法不是静态的。- 或 -<paramref name="obj" /> 的类既不声明也不继承此方法。- 或 -调用了静态构造函数，并且 <paramref name="obj" /> 既不是 null 也不是声明该构造函数的类的实例。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="parameters" /> 数组的元素与此实例所反射的方法或构造函数的签名不匹配。</exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">调用的方法或构造函数引发异常。- 或 -当前实例是包含不可验证代码的 <see cref="T:System.Reflection.Emit.DynamicMethod" />。请参见 <see cref="T:System.Reflection.Emit.DynamicMethod" /> 的备注中的“验证”一节。</exception>
+      <exception cref="T:System.Reflection.TargetParameterCountException">
+        <paramref name="parameters" /> 数组的参数数目不正确。</exception>
+      <exception cref="T:System.MethodAccessException">在 .NET for Windows Store 应用程序 或 可移植类库 中，请改为捕获基类异常 <see cref="T:System.MemberAccessException" />。调用方无权执行由当前实例表示的方法或构造函数。</exception>
+      <exception cref="T:System.InvalidOperationException">声明此方法的类型是开放式泛型类型。即，<see cref="P:System.Type.ContainsGenericParameters" /> 属性为声明类型返回 true。</exception>
+      <exception cref="T:System.NotSupportedException">当前实例等于 <see cref="T:System.Reflection.Emit.MethodBuilder" />。</exception>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsAbstract">
+      <summary>获取一个值，该值指示此方法是否为抽象方法。</summary>
+      <returns>如果该方法是抽象的，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsAssembly">
+      <summary>获取一个值，该值指示此方法或构造函数的潜在可见性是否由 <see cref="F:System.Reflection.MethodAttributes.Assembly" /> 描述；也就是说，此方法或构造函数只对同一程序集中的其他类型可见，而对该程序集以外的派生类型则不可见。</summary>
+      <returns>如果此方法或构造函数的可见性由 <see cref="F:System.Reflection.MethodAttributes.Assembly" /> 准确描述，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsConstructor">
+      <summary>获取一个值，该值指示此方法是否为构造函数。</summary>
+      <returns>如果此方法是 <see cref="T:System.Reflection.ConstructorInfo" /> 对象（参见"备注"中有关 <see cref="T:System.Reflection.Emit.ConstructorBuilder" /> 对象的说明）所表示的构造函数，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsFamily">
+      <summary>获取一个值，该值指示此方法或构造函数的可见性是否由 <see cref="F:System.Reflection.MethodAttributes.Family" /> 描述；也就是说，此方法或构造函数仅在其类和派生类内可见。</summary>
+      <returns>如果对此方法或构造函数的访问由 <see cref="F:System.Reflection.MethodAttributes.Family" /> 准确描述，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsFamilyAndAssembly">
+      <summary>获取一个值，该值指示此方法或构造函数的可见性是否由 <see cref="F:System.Reflection.MethodAttributes.FamANDAssem" /> 描述；也就是说，此方法或构造函数可由派生类调用，但仅当这些派生类在同一程序集中时。</summary>
+      <returns>如果对此方法或构造函数的访问由 <see cref="F:System.Reflection.MethodAttributes.FamANDAssem" /> 准确描述，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsFamilyOrAssembly">
+      <summary>获取一个值，该值指示此方法或构造函数的潜在可见性是否由 <see cref="F:System.Reflection.MethodAttributes.FamORAssem" /> 描述；也就是说，此方法或构造函数可由派生类（无论其位置如何）和同一程序集中的类调用。</summary>
+      <returns>如果对此方法或构造函数的访问由 <see cref="F:System.Reflection.MethodAttributes.FamORAssem" /> 准确描述，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsFinal">
+      <summary>获取一个值，该值指示此方法是否为 final。</summary>
+      <returns>如果此方法是 final 方法，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsGenericMethod">
+      <summary>获取一个值，该值指示方法是否为泛型方法。</summary>
+      <returns>如果当前 <see cref="T:System.Reflection.MethodBase" /> 表示泛型方法，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsGenericMethodDefinition">
+      <summary>获取一个值，该值指示方法是否为泛型方法定义。</summary>
+      <returns>如果当前 <see cref="T:System.Reflection.MethodBase" /> 对象表示泛型方法的定义，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsHideBySig">
+      <summary>获取一个值，该值指示是否只有一个签名完全相同的同一种类的成员在派生类中是隐藏的。</summary>
+      <returns>如果此成员被签名隐藏，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsPrivate">
+      <summary>获取一个值，该值指示此成员是否是私有的。</summary>
+      <returns>如果对此方法的访问只限于该类本身的其他成员，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsPublic">
+      <summary>获取一个值，该值指示这是否是一个公共方法。</summary>
+      <returns>如果此方法是公共的，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsSpecialName">
+      <summary>获取一个值，该值指示此方法是否具有特殊名称。</summary>
+      <returns>如果此方法具有特殊名称，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsStatic">
+      <summary>获取一个值，该值指示方法是否为 static。</summary>
+      <returns>如果此方法为 static，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsVirtual">
+      <summary>获取一个值，该值指示方法是否为 virtual。</summary>
+      <returns>如果此方法为 virtual，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.MethodImplementationFlags">
+      <summary>获取指定方法实现特性的 <see cref="T:System.Reflection.MethodImplAttributes" /> 标志。</summary>
+      <returns>方法实现标志。</returns>
+    </member>
+    <member name="T:System.Reflection.MethodInfo">
+      <summary>发现方法的属性并提供对方法元数据的访问。</summary>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.CreateDelegate(System.Type)">
+      <summary>从此方法创建指定类型的委托。</summary>
+      <returns>此方法的委托。</returns>
+      <param name="delegateType">要创建的委托的类型。</param>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.CreateDelegate(System.Type,System.Object)">
+      <summary>从此方法创建具有指定目标的指定类型的委托。</summary>
+      <returns>此方法的委托。</returns>
+      <param name="delegateType">要创建的委托的类型。</param>
+      <param name="target">由委托将其作为目标的对象。</param>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.Equals(System.Object)">
+      <summary>返回一个值，该值指示此实例是否与指定的对象相等。</summary>
+      <returns>如果 true 等于此实例的类型和值，则为 <paramref name="obj" />；否则为 false。</returns>
+      <param name="obj">与此实例进行比较的对象，或为 null。</param>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.GetGenericArguments">
+      <summary>返回 <see cref="T:System.Type" /> 对象的数组，这些对象表示泛型方法的类型实参或泛型方法定义的类型形参。</summary>
+      <returns>
+        <see cref="T:System.Type" /> 对象的数组，这些对象表示泛型方法的类型变量或泛型方法定义的类型参数。如果当前方法不是泛型方法，则返回空数组。</returns>
+      <exception cref="T:System.NotSupportedException">不支持此方法。</exception>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.GetGenericMethodDefinition">
+      <summary>返回一个 <see cref="T:System.Reflection.MethodInfo" /> 对象，该对象表示可从其构造当前方法的泛型方法定义。</summary>
+      <returns>一个 <see cref="T:System.Reflection.MethodInfo" /> 对象，表示可从其构造当前方法的泛型方法定义。</returns>
+      <exception cref="T:System.InvalidOperationException">当前方法不是泛型方法。即，<see cref="P:System.Reflection.MethodInfo.IsGenericMethod" /> 返回 false。</exception>
+      <exception cref="T:System.NotSupportedException">不支持此方法。</exception>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.GetHashCode">
+      <summary>返回此实例的哈希代码。</summary>
+      <returns>32 位有符号整数哈希代码。</returns>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.MakeGenericMethod(System.Type[])">
+      <summary>用类型数组的元素替代当前泛型方法定义的类型参数，并返回表示结果构造方法的 <see cref="T:System.Reflection.MethodInfo" /> 对象。</summary>
+      <returns>一个 <see cref="T:System.Reflection.MethodInfo" /> 对象，表示通过将当前泛型方法定义的类型参数替换为 <paramref name="typeArguments" /> 的元素生成的构造方法。</returns>
+      <param name="typeArguments">要替换当前泛型方法定义的类型参数的类型数组。</param>
+      <exception cref="T:System.InvalidOperationException">当前 <see cref="T:System.Reflection.MethodInfo" /> 不表示泛型方法定义。即，<see cref="P:System.Reflection.MethodInfo.IsGenericMethodDefinition" /> 返回 false。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="typeArguments" /> 为 null。- 或 - <paramref name="typeArguments" /> 的所有元素均为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="typeArguments" /> 中元素的数目与当前泛型方法定义的类型参数的数目不同。- 或 - <paramref name="typeArguments" /> 的某个元素不满足为当前泛型方法定义的相应类型参数指定的约束。</exception>
+      <exception cref="T:System.NotSupportedException">不支持此方法。</exception>
+    </member>
+    <member name="P:System.Reflection.MethodInfo.ReturnParameter">
+      <summary>获取一个 <see cref="T:System.Reflection.ParameterInfo" /> 对象，该对象包含有关方法的返回类型的信息（例如返回类型是否具有自定义修饰符）。</summary>
+      <returns>一个 <see cref="T:System.Reflection.ParameterInfo" /> 对象，包含有关返回类型的信息。</returns>
+      <exception cref="T:System.NotImplementedException">此方法未实现。</exception>
+    </member>
+    <member name="P:System.Reflection.MethodInfo.ReturnType">
+      <summary>获取此方法的返回类型。</summary>
+      <returns>此方法的返回类型。</returns>
+    </member>
+    <member name="T:System.Reflection.Module">
+      <summary>在模块上执行反射。</summary>
+    </member>
+    <member name="P:System.Reflection.Module.Assembly">
+      <summary>为此 <see cref="T:System.Reflection.Module" /> 实例获取适当的 <see cref="T:System.Reflection.Assembly" />。</summary>
+      <returns>Assembly 对象。</returns>
+    </member>
+    <member name="P:System.Reflection.Module.CustomAttributes">
+      <summary>获取包含此模型自定义特性的集合。</summary>
+      <returns>包含此模块的自定义特性的集合。</returns>
+    </member>
+    <member name="M:System.Reflection.Module.Equals(System.Object)">
+      <summary>确定此模块和指定的对象是否相等。</summary>
+      <returns>如果 <paramref name="o" /> 等于此实例，则为 true；否则为 false。</returns>
+      <param name="o">与该实例进行比较的对象。</param>
+    </member>
+    <member name="P:System.Reflection.Module.FullyQualifiedName">
+      <summary>获取表示此模块的完全限定名和路径的字符串。</summary>
+      <returns>完全限定的模块名。</returns>
+      <exception cref="T:System.Security.SecurityException">调用方没有所需的权限。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Reflection.Module.GetHashCode">
+      <summary>返回此实例的哈希代码。</summary>
+      <returns>32 位有符号整数哈希代码。</returns>
+    </member>
+    <member name="M:System.Reflection.Module.GetType(System.String,System.Boolean,System.Boolean)">
+      <summary>返回指定的类型，指定是否对该模块进行区分大小写的搜索；如果找不到该类型，则指定是否引发异常。</summary>
+      <returns>如果已在此模块中声明指定类型，则为一个表示指定类型的 <see cref="T:System.Type" /> 对象；否则为 null。</returns>
+      <param name="className">要定位的类型的名称。该名称必须是用命名空间完全限定的。</param>
+      <param name="throwOnError">如果为 true，则在找不到该类型时引发异常；如果为 false，则返回 null。</param>
+      <param name="ignoreCase">对于不区分大小写的搜索，为 true；否则，为 false。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="className" /> 为 null。</exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">调用该类初始值设定项，并引发异常。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="className" /> 是零长度字符串。</exception>
+      <exception cref="T:System.TypeLoadException">
+        <paramref name="throwOnError" /> 为 true，找不到该类型。</exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="className" /> 需要一个无法找到的依赖程序集。</exception>
+      <exception cref="T:System.IO.FileLoadException">
+        <paramref name="className" /> 需要一个已找到但无法加载的依赖程序集。- 或 -当前程序集被加载到只反射上下文中，<paramref name="className" /> 需要一个未预先加载的依赖程序集。</exception>
+      <exception cref="T:System.BadImageFormatException">
+        <paramref name="className" /> 需要一个依赖程序集，但该文件不是一个有效的程序集。- 或 -<paramref name="className" /> 需要一个针对高于当前加载版本的运行库版本编译的依赖程序集。</exception>
+    </member>
+    <member name="P:System.Reflection.Module.Name">
+      <summary>获取 String，它表示移除了路径的模块名。</summary>
+      <returns>不带路径的模块名。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Reflection.Module.ToString">
+      <summary>返回模块的名称。</summary>
+      <returns>表示此模块的名称的 String。</returns>
+    </member>
+    <member name="T:System.Reflection.ParameterInfo">
+      <summary>发现参数属性并提供对参数元数据的访问。</summary>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.Attributes">
+      <summary>获取该参数的属性。</summary>
+      <returns>表示该参数的特性的 ParameterAttributes 对象。</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.CustomAttributes">
+      <summary>获取包含此参数自定义特性的集合。</summary>
+      <returns>包含此参数自定义特性的集合。</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.DefaultValue">
+      <summary>如果此参数有默认值，则获取指示此参数的默认值的值。</summary>
+      <returns>此参数的默认值；如果此参数没有默认值，则为 <see cref="F:System.DBNull.Value" />。</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.HasDefaultValue">
+      <summary>获取一个值，指示此参数是否有默认值。</summary>
+      <returns>如果此参数有一默认值，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.IsIn">
+      <summary>获取一个值，通过该值指示这是否为输入参数。</summary>
+      <returns>如果此参数是输入参数，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.IsOptional">
+      <summary>获取一个值，通过该值指示该参数是否可选。</summary>
+      <returns>如果此参数是可选的，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.IsOut">
+      <summary>获取一个值，通过该值指示这是否为输出参数。</summary>
+      <returns>如果此参数是输出参数，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.IsRetval">
+      <summary>获取一个值，通过该值指示这是否为 Retval 参数。</summary>
+      <returns>如果此参数是 Retval，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.Member">
+      <summary>获取一个值，通过该值指示实现此参数的成员。</summary>
+      <returns>植入由此 <see cref="T:System.Reflection.ParameterInfo" /> 表示的参数的成员。</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.Name">
+      <summary>获取参数名。</summary>
+      <returns>此参数的简单名称。</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.ParameterType">
+      <summary>获取该参数的 Type。</summary>
+      <returns>表示该参数 Type 的 Type 对象。</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.Position">
+      <summary>获取参数在形参表中的位置（从零开始）。</summary>
+      <returns>表示该参数在参数列表中所占位置的整数。</returns>
+    </member>
+    <member name="T:System.Reflection.PropertyInfo">
+      <summary>发现属性 (Property) 的属性 (Attribute) 并提供对属性 (Property) 元数据的访问。</summary>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.Attributes">
+      <summary>获取此属性 (Property) 的属性 (Attribute)。</summary>
+      <returns>此属性 (Property) 的属性 (Attribute)。</returns>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.CanRead">
+      <summary>获取一个值，该值指示此属性是否可读。</summary>
+      <returns>如果此属性可读，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.CanWrite">
+      <summary>获取一个值，该值指示此属性是否可写。</summary>
+      <returns>如果此属性可写，则为 true；否则，为 false。</returns>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.Equals(System.Object)">
+      <summary>返回一个值，该值指示此实例是否与指定的对象相等。</summary>
+      <returns>如果 <paramref name="obj" /> 等于此实例的类型和值，则为 true；否则为 false。</returns>
+      <param name="obj">与此实例进行比较的 object，或 null。</param>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.GetConstantValue">
+      <summary>由编译器返回与属性关联的文本值。</summary>
+      <returns>一个 <see cref="T:System.Object" />，它包含与此属性关联的文本值。如果文本值是一个元素值为零的类类型，则返回值为 null。</returns>
+      <exception cref="T:System.InvalidOperationException">非托管元数据中的常数表不包含当前属性的常数值。</exception>
+      <exception cref="T:System.FormatException">值的类型不是公共语言规范 (CLS) 许可的类型。请参见“ECMA Partition II”（ECMA 第二部分）规范中的“Metadata”（元数据）。</exception>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.GetHashCode">
+      <summary>返回此实例的哈希代码。</summary>
+      <returns>32 位有符号整数哈希代码。</returns>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.GetIndexParameters">
+      <summary>当在派生类中重写时，返回此属性的所有索引参数的数组。</summary>
+      <returns>ParameterInfo 类型的数组，它包含索引的参数。如果未为该属性编制索引，则数组包含 0（零）个元素。</returns>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.GetMethod">
+      <summary>获取此属性的 get 访问器。</summary>
+      <returns>此属性的 get 访问器。</returns>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.GetValue(System.Object)">
+      <summary>返回指定对象的属性值。</summary>
+      <returns>指定对象的属性值。</returns>
+      <param name="obj">将返回其属性值的对象。</param>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.GetValue(System.Object,System.Object[])">
+      <summary>用索引化属性的可选索引值返回指定对象的该属性值。</summary>
+      <returns>指定对象的属性值。</returns>
+      <param name="obj">将返回其属性值的对象。</param>
+      <param name="index">索引化属性的可选索引值。索引化属性的索引从零开始。对于非索引化属性，该值应为 null。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> 数组不包含所需类型的参数。- 或 -未找到该属性的 get 访问器。</exception>
+      <exception cref="T:System.Reflection.TargetException">在 .NET for Windows Store 应用程序 或 可移植类库 中，请改为捕获 <see cref="T:System.Exception" />。该对象与目标类型不匹配，或者某属性是实例属性但 <paramref name="obj" /> 为 null。</exception>
+      <exception cref="T:System.Reflection.TargetParameterCountException">
+        <paramref name="index" /> 中参数的数目与已编制索引的属性所采用的参数的数目不相符。</exception>
+      <exception cref="T:System.MethodAccessException">在 .NET for Windows Store 应用程序 或 可移植类库 中，请改为捕获基类异常 <see cref="T:System.MemberAccessException" />。尝试非法访问某类中私有或受保护的方法。</exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">检索属性值时出错。例如，为索引属性指定的索引值超出范围。<see cref="P:System.Exception.InnerException" /> 属性指示错误的原因。</exception>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.IsSpecialName">
+      <summary>获取一个值，该值指示此属性是否是特殊名称。</summary>
+      <returns>如果此属性是特殊名称，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.PropertyType">
+      <summary>获取此属性的类型。</summary>
+      <returns>此属性的类型。</returns>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.SetMethod">
+      <summary>获取此属性的 set 访问器。</summary>
+      <returns>set取值函数，该属性，或null如果属性是只读的。</returns>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.SetValue(System.Object,System.Object)">
+      <summary>设置指定对象的属性值。</summary>
+      <param name="obj">将设置其属性值的对象。</param>
+      <param name="value">新的属性值。</param>
+      <exception cref="T:System.ArgumentException">未找到该属性的 set 访问器。- 或 -<paramref name="value" />不能转换为的类型<see cref="P:System.Reflection.PropertyInfo.PropertyType" />。</exception>
+      <exception cref="T:System.Reflection.TargetException">在 .NET for Windows Store 应用程序 或 可移植类库 中，请改为捕获 <see cref="T:System.Exception" />。一种<paramref name="obj" />与目标类型不匹配或某个属性是实例属性，但<paramref name="obj" />是null。</exception>
+      <exception cref="T:System.MethodAccessException">在 .NET for Windows Store 应用程序 或 可移植类库 中，请改为捕获基类异常 <see cref="T:System.MemberAccessException" />。尝试非法访问某类中私有或受保护的方法。</exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">设置属性值时出错。<see cref="P:System.Exception.InnerException" /> 属性指示错误的原因。</exception>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.SetValue(System.Object,System.Object,System.Object[])">
+      <summary>用索引化属性的可选索引值设置指定对象的该属性值。</summary>
+      <param name="obj">将设置其属性值的对象。</param>
+      <param name="value">新的属性值。</param>
+      <param name="index">索引化属性的可选索引值。对于非索引化属性，该值应为 null。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> 数组不包含所需类型的参数。- 或 -未找到该属性的 set 访问器。- 或 -<paramref name="value" />不能转换为的类型<see cref="P:System.Reflection.PropertyInfo.PropertyType" />。</exception>
+      <exception cref="T:System.Reflection.TargetException">在 .NET for Windows Store 应用程序 或 可移植类库 中，请改为捕获 <see cref="T:System.Exception" />。该对象与目标类型不匹配，或者某属性是实例属性但 <paramref name="obj" /> 为 null。</exception>
+      <exception cref="T:System.Reflection.TargetParameterCountException">
+        <paramref name="index" /> 中参数的数目与已编制索引的属性所采用的参数的数目不相符。</exception>
+      <exception cref="T:System.MethodAccessException">在 .NET for Windows Store 应用程序 或 可移植类库 中，请改为捕获基类异常 <see cref="T:System.MemberAccessException" />。尝试非法访问某类中私有或受保护的方法。</exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">设置属性值时出错。例如，为索引属性指定的索引值超出范围。<see cref="P:System.Exception.InnerException" /> 属性指示错误的原因。</exception>
+    </member>
+    <member name="T:System.Reflection.ReflectionContext">
+      <summary>表示可提供反射对象的上下文。</summary>
+    </member>
+    <member name="M:System.Reflection.ReflectionContext.#ctor">
+      <summary>初始化 <see cref="T:System.Reflection.ReflectionContext" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Reflection.ReflectionContext.GetTypeForObject(System.Object)">
+      <summary>获取本反射上下文中特定对象的类的表示形式。</summary>
+      <returns>一个对象，表示指定对象的类型。。</returns>
+      <param name="value">要表示的对象。</param>
+    </member>
+    <member name="M:System.Reflection.ReflectionContext.MapAssembly(System.Reflection.Assembly)">
+      <summary>在本反射上下文中，获取由另一个反射上下文表示的程序集的表示形式。</summary>
+      <returns>在此反射上下文中的程序集合的表示。</returns>
+      <param name="assembly">用来在该上下文中表示的程序集的外部表示。</param>
+    </member>
+    <member name="M:System.Reflection.ReflectionContext.MapType(System.Reflection.TypeInfo)">
+      <summary>在本反射上下文中，获取由另一个反射上下文表示的类型的表示形式。</summary>
+      <returns>在此反射上下文中的类型的表示。</returns>
+      <param name="type">用来在该上下文中表示的类型的外部表示。</param>
+    </member>
+    <member name="T:System.Reflection.ReflectionTypeLoadException">
+      <summary>当模块中有任何类无法加载时由 <see cref="M:System.Reflection.Module.GetTypes" /> 方法引发的异常。此类不能被继承。</summary>
+    </member>
+    <member name="M:System.Reflection.ReflectionTypeLoadException.#ctor(System.Type[],System.Exception[])">
+      <summary>用给定类及其关联的异常初始化 <see cref="T:System.Reflection.ReflectionTypeLoadException" /> 类的新实例。</summary>
+      <param name="classes">Type 类型的数组，其中包含在模块中定义并加载的类。该数组可以包含空引用（在 Visual Basic 中为 Nothing）值。</param>
+      <param name="exceptions">Exception 类型的数组，其中包含由类加载程序引发的异常。<paramref name="classes" /> 数组中的空引用（在 Visual Basic 中为 Nothing）值与此 <paramref name="exceptions" /> 数组中的异常保持对应。</param>
+    </member>
+    <member name="M:System.Reflection.ReflectionTypeLoadException.#ctor(System.Type[],System.Exception[],System.String)">
+      <summary>用给定类、与此类关联的异常以及异常说明初始化 <see cref="T:System.Reflection.ReflectionTypeLoadException" /> 类的新实例。</summary>
+      <param name="classes">Type 类型的数组，其中包含在模块中定义并加载的类。该数组可以包含空引用（在 Visual Basic 中为 Nothing）值。</param>
+      <param name="exceptions">Exception 类型的数组，其中包含由类加载程序引发的异常。<paramref name="classes" /> 数组中的空引用（在 Visual Basic 中为 Nothing）值与此 <paramref name="exceptions" /> 数组中的异常保持对应。</param>
+      <param name="message">描述此异常的引发原因的 String。</param>
+    </member>
+    <member name="P:System.Reflection.ReflectionTypeLoadException.LoaderExceptions">
+      <summary>获取类加载程序引发的异常数组。</summary>
+      <returns>Exception 类型的数组，其中包含由类加载程序引发的异常。此实例的 <paramref name="classes" /> 数组中的空值也属于该数组中的异常。</returns>
+    </member>
+    <member name="P:System.Reflection.ReflectionTypeLoadException.Types">
+      <summary>获取模块中定义并加载的类的数组。</summary>
+      <returns>Type 类型的数组，其中包含在模块中定义并加载的类。该数组可以包含一些 null 值。</returns>
+    </member>
+    <member name="T:System.Reflection.ResourceLocation">
+      <summary>指定资源位置。</summary>
+    </member>
+    <member name="F:System.Reflection.ResourceLocation.ContainedInAnotherAssembly">
+      <summary>指定资源包含在另一个程序集中。</summary>
+    </member>
+    <member name="F:System.Reflection.ResourceLocation.ContainedInManifestFile">
+      <summary>指定资源包含在清单文件中。</summary>
+    </member>
+    <member name="F:System.Reflection.ResourceLocation.Embedded">
+      <summary>指定嵌入（即非链接）资源。</summary>
+    </member>
+    <member name="T:System.Reflection.TargetInvocationException">
+      <summary>由通过反射调用的方法引发的异常。此类不能被继承。</summary>
+    </member>
+    <member name="M:System.Reflection.TargetInvocationException.#ctor(System.Exception)">
+      <summary>用对作为此异常原因的内部异常的引用初始化 <see cref="T:System.Reflection.TargetInvocationException" /> 类的新实例。</summary>
+      <param name="inner">导致当前异常的异常。如果 <paramref name="inner" /> 参数不为 null，则当前异常将在处理内部异常的 catch 块中引发。</param>
+    </member>
+    <member name="M:System.Reflection.TargetInvocationException.#ctor(System.String,System.Exception)">
+      <summary>使用指定错误信息和对作为此异常原因的内部异常的引用来初始化 <see cref="T:System.Reflection.TargetInvocationException" /> 类的新实例。</summary>
+      <param name="message">解释异常原因的错误信息。</param>
+      <param name="inner">导致当前异常的异常。如果 <paramref name="inner" /> 参数不为 null，则当前异常将在处理内部异常的 catch 块中引发。</param>
+    </member>
+    <member name="T:System.Reflection.TargetParameterCountException">
+      <summary>当调用的参数数目与预期的数目不匹配时引发的异常。此类不能被继承。</summary>
+    </member>
+    <member name="M:System.Reflection.TargetParameterCountException.#ctor">
+      <summary>用空消息字符串和异常的根源初始化 <see cref="T:System.Reflection.TargetParameterCountException" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Reflection.TargetParameterCountException.#ctor(System.String)">
+      <summary>用设置为给定消息的消息字符串和根源异常初始化 <see cref="T:System.Reflection.TargetParameterCountException" /> 类的新实例。</summary>
+      <param name="message">描述此异常的引发原因的 String。</param>
+    </member>
+    <member name="M:System.Reflection.TargetParameterCountException.#ctor(System.String,System.Exception)">
+      <summary>使用指定错误信息和对作为此异常原因的内部异常的引用来初始化 <see cref="T:System.Reflection.TargetParameterCountException" /> 类的新实例。</summary>
+      <param name="message">解释异常原因的错误信息。</param>
+      <param name="inner">导致当前异常的异常。如果 <paramref name="inner" /> 参数不为 null，则当前异常将在处理内部异常的 catch 块中引发。</param>
+    </member>
+    <member name="T:System.Reflection.TypeInfo">
+      <summary>表示类类型、接口类型、数组类型、值类型、枚举类型、类型参数、泛型类型定义，以及开放或封闭构造的泛型类型的类型声明。</summary>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.Assembly"></member>
+    <member name="P:System.Reflection.TypeInfo.AssemblyQualifiedName"></member>
+    <member name="M:System.Reflection.TypeInfo.AsType">
+      <summary>返回 <see cref="T:System.Type" /> 对象形式的当前类型。</summary>
+      <returns>当前类型。</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.Attributes"></member>
+    <member name="P:System.Reflection.TypeInfo.BaseType"></member>
+    <member name="P:System.Reflection.TypeInfo.ContainsGenericParameters"></member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredConstructors">
+      <summary>获取由当前类型声明的构造函数的集合。</summary>
+      <returns>由当前类型声明的构造函数的集合。</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredEvents">
+      <summary>获取由当前类型定义的事件的集合。</summary>
+      <returns>由当前类型定义的事件的集合。</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredFields">
+      <summary>获取由当前类型定义的字段的集合。</summary>
+      <returns>由当前类型定义的字段的集合。</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredMembers">
+      <summary>获取由当前类型定义的成员的集合。</summary>
+      <returns>由当前类型定义的成员的集合。</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredMethods">
+      <summary>获取由当前类型定义的方法的集合。</summary>
+      <returns>由当前类型定义的方法的集合。</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredNestedTypes">
+      <summary>获取由当前类型定义的嵌套类型的集合。</summary>
+      <returns>由当前类型定义的嵌套类型的集合。</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredProperties">
+      <summary>获取由当前类型定义的属性的集合。</summary>
+      <returns>由当前类型定义的属性的集合。</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaringMethod"></member>
+    <member name="P:System.Reflection.TypeInfo.FullName"></member>
+    <member name="P:System.Reflection.TypeInfo.GenericParameterAttributes"></member>
+    <member name="P:System.Reflection.TypeInfo.GenericParameterPosition"></member>
+    <member name="P:System.Reflection.TypeInfo.GenericTypeArguments"></member>
+    <member name="P:System.Reflection.TypeInfo.GenericTypeParameters">
+      <summary>获取当前实例泛型类型参数的数组。</summary>
+      <returns>包含当前实例的泛型类型参数的数组，如果当前实例没有任何泛型类型参数，则为 <see cref="P:System.Array.Length" /> 为零的数组。</returns>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetArrayRank"></member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredEvent(System.String)">
+      <summary>返回表示由当前类型声明的指定公共事件的对象。</summary>
+      <returns>如果找到对象，则为表示指定的事件的对象；否则为 null。</returns>
+      <param name="name">事件的名称。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredField(System.String)">
+      <summary>返回表示由当前类型声明的指定公共字段的对象。</summary>
+      <returns>如果找到对象，则为表示指定的字段的对象；否则为 null。</returns>
+      <param name="name">字段的名称。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredMethod(System.String)">
+      <summary>返回表示由当前类型声明的指定公共方法的对象。</summary>
+      <returns>如果找到对象，则为表示指定的方法的对象；否则为 null。</returns>
+      <param name="name">方法的名称。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredMethods(System.String)">
+      <summary>返回包含所有与指定名称相匹配在当前类型声明的公共方法的集合。</summary>
+      <returns>包含匹配 <paramref name="name" />的方法的集合。</returns>
+      <param name="name">要搜索的方法名称。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredNestedType(System.String)">
+      <summary>返回表示由当前类型声明的指定公共嵌套类型的对象。</summary>
+      <returns>如果找到对象，则为表示指定的嵌套类型的对象；否则为 null。</returns>
+      <param name="name">嵌套类型的名称。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredProperty(System.String)">
+      <summary>返回表示由当前类型声明的指定公共属性的对象。</summary>
+      <returns>如果找到对象，则为表示指定的属性的对象；否则为 null。</returns>
+      <param name="name">属性的名称。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetElementType"></member>
+    <member name="M:System.Reflection.TypeInfo.GetGenericParameterConstraints"></member>
+    <member name="M:System.Reflection.TypeInfo.GetGenericTypeDefinition"></member>
+    <member name="P:System.Reflection.TypeInfo.GUID"></member>
+    <member name="P:System.Reflection.TypeInfo.HasElementType"></member>
+    <member name="P:System.Reflection.TypeInfo.ImplementedInterfaces">
+      <summary>获取当前类型实现的接口的集合。</summary>
+      <returns>由当前类型实现的接口的集合。</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.IsAbstract"></member>
+    <member name="P:System.Reflection.TypeInfo.IsAnsiClass"></member>
+    <member name="P:System.Reflection.TypeInfo.IsArray"></member>
+    <member name="M:System.Reflection.TypeInfo.IsAssignableFrom(System.Reflection.TypeInfo)">
+      <summary>返回一个值，该值指示指定类型是否可分配给当前的类型。</summary>
+      <returns>如果可以将指定类型分配给此类型，则为 true；否则为 false。</returns>
+      <param name="typeInfo">要检查的类型。</param>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.IsAutoClass"></member>
+    <member name="P:System.Reflection.TypeInfo.IsAutoLayout"></member>
+    <member name="P:System.Reflection.TypeInfo.IsByRef"></member>
+    <member name="P:System.Reflection.TypeInfo.IsClass"></member>
+    <member name="P:System.Reflection.TypeInfo.IsEnum"></member>
+    <member name="P:System.Reflection.TypeInfo.IsExplicitLayout"></member>
+    <member name="P:System.Reflection.TypeInfo.IsGenericParameter"></member>
+    <member name="P:System.Reflection.TypeInfo.IsGenericType"></member>
+    <member name="P:System.Reflection.TypeInfo.IsGenericTypeDefinition"></member>
+    <member name="P:System.Reflection.TypeInfo.IsImport"></member>
+    <member name="P:System.Reflection.TypeInfo.IsInterface"></member>
+    <member name="P:System.Reflection.TypeInfo.IsLayoutSequential"></member>
+    <member name="P:System.Reflection.TypeInfo.IsMarshalByRef"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNested"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedAssembly"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedFamANDAssem"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedFamily"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedFamORAssem"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedPrivate"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedPublic"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNotPublic"></member>
+    <member name="P:System.Reflection.TypeInfo.IsPointer"></member>
+    <member name="P:System.Reflection.TypeInfo.IsPrimitive"></member>
+    <member name="P:System.Reflection.TypeInfo.IsPublic"></member>
+    <member name="P:System.Reflection.TypeInfo.IsSealed"></member>
+    <member name="P:System.Reflection.TypeInfo.IsSerializable"></member>
+    <member name="P:System.Reflection.TypeInfo.IsSpecialName"></member>
+    <member name="M:System.Reflection.TypeInfo.IsSubclassOf(System.Type)"></member>
+    <member name="P:System.Reflection.TypeInfo.IsUnicodeClass"></member>
+    <member name="P:System.Reflection.TypeInfo.IsValueType"></member>
+    <member name="P:System.Reflection.TypeInfo.IsVisible"></member>
+    <member name="M:System.Reflection.TypeInfo.MakeArrayType"></member>
+    <member name="M:System.Reflection.TypeInfo.MakeArrayType(System.Int32)"></member>
+    <member name="M:System.Reflection.TypeInfo.MakeByRefType"></member>
+    <member name="M:System.Reflection.TypeInfo.MakeGenericType(System.Type[])"></member>
+    <member name="M:System.Reflection.TypeInfo.MakePointerType"></member>
+    <member name="P:System.Reflection.TypeInfo.Namespace"></member>
+    <member name="M:System.Reflection.TypeInfo.System#Reflection#IReflectableType#GetTypeInfo">
+      <summary>返回当前类型为 <see cref="T:System.Reflection.TypeInfo" /> 对象的表示形式。</summary>
+      <returns>当前类型的引用。</returns>
+    </member>
+  </members>
+</doc>

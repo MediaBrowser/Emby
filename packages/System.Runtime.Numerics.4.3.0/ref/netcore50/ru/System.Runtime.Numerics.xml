@@ -1,0 +1,1034 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Runtime.Numerics</name>
+  </assembly>
+  <members>
+    <member name="T:System.Numerics.BigInteger">
+      <summary>Представляет произвольно большое целое число со знаком.</summary>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.Byte[])">
+      <summary>Инициализирует новый экземпляр структуры <see cref="T:System.Numerics.BigInteger" />, используя значения в массиве байтов.</summary>
+      <param name="value">Массив значений типа byte в прямом порядке байтов.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is null.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.Decimal)">
+      <summary>Инициализирует новый экземпляр структуры <see cref="T:System.Numerics.BigInteger" />, используя значение <see cref="T:System.Decimal" />.</summary>
+      <param name="value">Десятичное число.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.Double)">
+      <summary>Инициализирует новый экземпляр структуры <see cref="T:System.Numerics.BigInteger" />, используя значение с плавающей запятой двойной точности.</summary>
+      <param name="value">Значение с плавающей точкой двойной точности.</param>
+      <exception cref="T:System.OverflowException">The value of <paramref name="value" /> is <see cref="F:System.Double.NaN" />.-or-The value of <paramref name="value" /> is <see cref="F:System.Double.NegativeInfinity" />.-or-The value of <paramref name="value" /> is <see cref="F:System.Double.PositiveInfinity" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.Int32)">
+      <summary>Инициализирует новый экземпляр структуры <see cref="T:System.Numerics.BigInteger" />, используя 32-разрядное знаковое целое число.</summary>
+      <param name="value">32-разрядное знаковое целое число.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.Int64)">
+      <summary>Инициализирует новый экземпляр структуры <see cref="T:System.Numerics.BigInteger" />, используя 64-разрядное знаковое целое число.</summary>
+      <param name="value">64-разрядное знаковое целое число.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.Single)">
+      <summary>Инициализирует новый экземпляр структуры <see cref="T:System.Numerics.BigInteger" />, используя значение с плавающей запятой одинарной точности.</summary>
+      <param name="value">Значение с плавающей точкой одинарной точности.</param>
+      <exception cref="T:System.OverflowException">The value of <paramref name="value" /> is <see cref="F:System.Single.NaN" />.-or-The value of <paramref name="value" /> is <see cref="F:System.Single.NegativeInfinity" />.-or-The value of <paramref name="value" /> is <see cref="F:System.Single.PositiveInfinity" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.UInt32)">
+      <summary>Инициализирует новый экземпляр структуры <see cref="T:System.Numerics.BigInteger" />, используя 32-разрядное целое число без знака.</summary>
+      <param name="value">32-разрядное целое значение без знака.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.UInt64)">
+      <summary>Инициализирует новый экземпляр структуры <see cref="T:System.Numerics.BigInteger" />, используя 64-разрядное целое число без знака.</summary>
+      <param name="value">64-разрядное целое число без знака.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Abs(System.Numerics.BigInteger)">
+      <summary>Получает абсолютное значение объекта <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Абсолютное значение параметра <paramref name="value" />.</returns>
+      <param name="value">Число.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Add(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>Складывает два значения <see cref="T:System.Numerics.BigInteger" /> и возвращает результат.</summary>
+      <returns>Сумма <paramref name="left" /> и <paramref name="right" />.</returns>
+      <param name="left">Первое из складываемых значений.</param>
+      <param name="right">Второе из складываемых значений.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Compare(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>Сравнивает два значения <see cref="T:System.Numerics.BigInteger" /> и возвращает целое значение, которое показывает, больше или меньше первое значение по сравнению со вторым или равно ему.</summary>
+      <returns>Знаковое целое число, которое определяет относительные значения параметров <paramref name="left" /> и <paramref name="right" />, как показано в следующей таблице.ЗначениеУсловиеМеньше нуляЗначение параметра <paramref name="left" /> меньше значения <paramref name="right" />.НульЗначения параметров <paramref name="left" /> и <paramref name="right" /> равны.Больше нуляЗначение <paramref name="left" /> больше значения <paramref name="right" />.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.CompareTo(System.Int64)">
+      <summary>Сравнивает данный экземпляр с 64-разрядным знаковым целым числом и возвращает целое число, которое показывает, является ли значение данного экземпляра меньшим, большим или равным значению 64-битового знакового целого числа.</summary>
+      <returns>Знаковое целое число, определяющее, как соотносятся между собой данный экземпляр и объект <paramref name="other" />. Возможные соотношения показаны в следующей таблице.Возвращаемое значениеОписаниеМеньше нуляТекущий экземпляр меньше значения параметра <paramref name="other" />.НульТекущий экземпляр равен значению параметра <paramref name="other" />.Больше нуляТекущий экземпляр больше значения параметра <paramref name="other" />.</returns>
+      <param name="other">64-разрядное знаковое целое число для сравнения.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.CompareTo(System.Numerics.BigInteger)">
+      <summary>Сравнивает данный экземпляр с другим экземпляром <see cref="T:System.Numerics.BigInteger" /> и возвращает целое число, которое показывает, является ли значение данного экземпляра меньшим, большим или равным значению указанного объекта.</summary>
+      <returns>Знаковое целое число, определяющее, как соотносятся между собой данный экземпляр и объект <paramref name="other" />. Возможные соотношения показаны в следующей таблице.Возвращаемое значениеОписаниеМеньше нуляТекущий экземпляр меньше значения параметра <paramref name="other" />.НульТекущий экземпляр равен значению параметра <paramref name="other" />.Больше нуляТекущий экземпляр больше значения параметра <paramref name="other" />.</returns>
+      <param name="other">Объект для сравнения.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.CompareTo(System.UInt64)">
+      <summary>Сравнивает данный экземпляр с 64-разрядным целым числом без знака и возвращает целое число, которое показывает, является ли значение данного экземпляра меньшим или большим по сравнению со значением 64-битового целого числа без знака или равным ему.</summary>
+      <returns>Целое число со знаком, определяющее, как соотносятся между собой данный экземпляр и параметр <paramref name="other" />. Возможные соотношения показаны в следующей таблице.Возвращаемое значениеОписаниеМеньше нуляТекущий экземпляр меньше значения параметра <paramref name="other" />.НульТекущий экземпляр равен значению параметра <paramref name="other" />.Больше нуляТекущий экземпляр больше значения параметра <paramref name="other" />.</returns>
+      <param name="other">64-разрядное целое число без знака для сравнения.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Divide(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>Делит одно значение <see cref="T:System.Numerics.BigInteger" /> на другое и возвращает результат.</summary>
+      <returns>Частное от деления.</returns>
+      <param name="dividend">Значение, которое необходимо разделить.</param>
+      <param name="divisor">Значение, на которое необходимо разделить.</param>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="divisor" /> is 0 (zero).</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.DivRem(System.Numerics.BigInteger,System.Numerics.BigInteger,System.Numerics.BigInteger@)">
+      <summary>Делит одно значение <see cref="T:System.Numerics.BigInteger" /> на другое, возвращает результат, а также возвращает остаток в виде параметра вывода.</summary>
+      <returns>Частное от деления.</returns>
+      <param name="dividend">Значение, которое необходимо разделить.</param>
+      <param name="divisor">Значение, на которое необходимо разделить.</param>
+      <param name="remainder">После выполнения данного метода содержит значение <see cref="T:System.Numerics.BigInteger" />, представляющее остаток от деления.Этот параметр передается неинициализированным.</param>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="divisor" /> is 0 (zero).</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Equals(System.Int64)">
+      <summary>Возвращает значение, определяющее, равны ли текущий экземпляр и 64-разрядное целое число со знаком.</summary>
+      <returns>Значение true, если 64-разрядное целое число со знаком и текущий экземпляр равны; в противном случае — значение false.</returns>
+      <param name="other">64-разрядное целое число со знаком для сравнения.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Equals(System.Numerics.BigInteger)">
+      <summary>Возвращает значение, определяющее, равны ли текущий экземпляр и указанный объект <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Значение true, если значения данного объекта <see cref="T:System.Numerics.BigInteger" /> и объекта <paramref name="other" /> совпадают; в противном случае — значение false.</returns>
+      <param name="other">Объект для сравнения.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Equals(System.Object)">
+      <summary>Возвращает значение, определяющее, равны ли текущий экземпляр и указанный объект.</summary>
+      <returns>Значение true, если параметр <paramref name="obj" /> является объектом <see cref="T:System.Numerics.BigInteger" /> или объектом типа, поддерживающего неявное преобразование к значению <see cref="T:System.Numerics.BigInteger" />, а его значение равняется значению текущего объекта <see cref="T:System.Numerics.BigInteger" />; в противном случае — значение false.</returns>
+      <param name="obj">Сравниваемый объект. </param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Equals(System.UInt64)">
+      <summary>Возвращает значение, определяющее, равны ли текущий экземпляр и 64-разрядное целое число без знака.</summary>
+      <returns>Значение true, если текущий экземпляр и 64-разрядное целое число без знака равны; в противном случае — значение false.</returns>
+      <param name="other">64-разрядное целое число без знака для сравнения.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.GetHashCode">
+      <summary>Возвращает хэш-код для текущего объекта <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Хэш-код в виде 32-разрядного целого числа со знаком.</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.GreatestCommonDivisor(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>Находит наибольший общий делитель двух значений <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Наибольший общий делитель значений <paramref name="left" /> и <paramref name="right" />.</returns>
+      <param name="left">Первое значение в вычитании.</param>
+      <param name="right">Второе значение в вычитании.</param>
+    </member>
+    <member name="P:System.Numerics.BigInteger.IsEven">
+      <summary>Указывает, равно ли значение текущего объекта <see cref="T:System.Numerics.BigInteger" /> четному числу.</summary>
+      <returns>Значение true, если значение объекта <see cref="T:System.Numerics.BigInteger" /> равно четному числу; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Numerics.BigInteger.IsOne">
+      <summary>Указывает, равно ли значение текущего объекта <see cref="T:System.Numerics.BigInteger" /> значению <see cref="P:System.Numerics.BigInteger.One" />.</summary>
+      <returns>Значение true, если объект <see cref="T:System.Numerics.BigInteger" /> имеет значение <see cref="P:System.Numerics.BigInteger.One" />; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Numerics.BigInteger.IsPowerOfTwo">
+      <summary>Указывает, равно ли значение текущего объекта <see cref="T:System.Numerics.BigInteger" /> степени двух.</summary>
+      <returns>Значение true, если значение объекта <see cref="T:System.Numerics.BigInteger" /> равно степени двух; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Numerics.BigInteger.IsZero">
+      <summary>Указывает, равно ли значение текущего объекта <see cref="T:System.Numerics.BigInteger" /> значению <see cref="P:System.Numerics.BigInteger.Zero" />.</summary>
+      <returns>Значение true, если объект <see cref="T:System.Numerics.BigInteger" /> имеет значение <see cref="P:System.Numerics.BigInteger.Zero" />; в противном случае — значение false.</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Log(System.Numerics.BigInteger)">
+      <summary>Возвращает натуральный логарифм (с основанием e) указанного числа.</summary>
+      <returns>Натуральный (по основанию e) логарифм числа <paramref name="value" />, как показано в таблице в разделе примечаний.</returns>
+      <param name="value">Число, логарифм которого требуется найти.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The natural log of <paramref name="value" /> is out of range of the <see cref="T:System.Double" /> data type.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Log(System.Numerics.BigInteger,System.Double)">
+      <summary>Возвращает логарифм указанного числа в системе счисления с указанным основанием.</summary>
+      <returns>Логарифм по основанию <paramref name="baseValue" /> числа <paramref name="value" />, как показано в таблице в разделе примечаний.</returns>
+      <param name="value">Число, логарифм которого должен быть найден.</param>
+      <param name="baseValue">Основание логарифма.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The log of <paramref name="value" /> is out of range of the <see cref="T:System.Double" /> data type.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Log10(System.Numerics.BigInteger)">
+      <summary>Возвращает логарифм с основанием 10 указанного числа.</summary>
+      <returns>Логарифм по основанию 10 для числа <paramref name="value" />, как показано в таблице в разделе примечаний.</returns>
+      <param name="value">Число, логарифм которого должен быть найден.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The base 10 log of <paramref name="value" /> is out of range of the <see cref="T:System.Double" /> data type.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Max(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>Возвращает наибольшее из двух значений <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Большее из значений двух параметров, <paramref name="left" /> или <paramref name="right" />.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Min(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>Возвращает наименьшее из двух значений <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Меньшее из значений двух параметров, <paramref name="left" /> или <paramref name="right" />.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="P:System.Numerics.BigInteger.MinusOne">
+      <summary>Получает значение, представляющее минус единицу (-1).</summary>
+      <returns>Целое число, равное минус единице (-1).</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.ModPow(System.Numerics.BigInteger,System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>Выполняет модульное деление числа, возведенного в степень другого числа.</summary>
+      <returns>Остаток от деления показателя степени<paramref name="value" /> на значение <paramref name="modulus" />.</returns>
+      <param name="value">Число, возведенное в степень <paramref name="exponent" />.</param>
+      <param name="exponent">Показатель степени, в которую будет возведено значение <paramref name="value" />.</param>
+      <param name="modulus">Число, на которое делится значение <paramref name="value" />, возведенное в степень <paramref name="exponent" />.</param>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="modulus" /> is zero.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="exponent" /> is negative.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Multiply(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>Возвращает произведение двух значений <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Произведение параметров <paramref name="left" /> и <paramref name="right" />.</returns>
+      <param name="left">Первое число для умножения.</param>
+      <param name="right">Второе число для умножения.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Negate(System.Numerics.BigInteger)">
+      <summary>Меняет знак указанного значения <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Результат умножения параметра <paramref name="value" /> на минус единицу (-1).</returns>
+      <param name="value">Инвертируемое значение.</param>
+    </member>
+    <member name="P:System.Numerics.BigInteger.One">
+      <summary>Получает значение, представляющее единицу (1).</summary>
+      <returns>Целое число, равное единице (1).</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Addition(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>Складывает значения двух указанных объектов <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Сумма <paramref name="left" /> и <paramref name="right" />.</returns>
+      <param name="left">Первое из складываемых значений.</param>
+      <param name="right">Второе из складываемых значений.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_BitwiseAnd(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>Выполняет битовую операцию And для двух значений <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Результат битовой операции And.</returns>
+      <param name="left">Первое значение в вычитании.</param>
+      <param name="right">Второе значение в вычитании.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_BitwiseOr(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>Выполняет битовую операцию Or для двух значений <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Результат битовой операции Or.</returns>
+      <param name="left">Первое значение в вычитании.</param>
+      <param name="right">Второе значение в вычитании.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Decrement(System.Numerics.BigInteger)">
+      <summary>Уменьшает значение <see cref="T:System.Numerics.BigInteger" /> на 1.</summary>
+      <returns>Значение параметра <paramref name="value" />, уменьшенное на 1.</returns>
+      <param name="value">Уменьшаемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Division(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>Делит указанное значение <see cref="T:System.Numerics.BigInteger" /> на другое указанное значение <see cref="T:System.Numerics.BigInteger" />, используя целочисленное деление.</summary>
+      <returns>Целочисленный результат деления.</returns>
+      <param name="dividend">Значение, которое необходимо разделить.</param>
+      <param name="divisor">Значение, на которое необходимо разделить.</param>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="divisor" /> is 0 (zero).</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Equality(System.Int64,System.Numerics.BigInteger)">
+      <summary>Возвращает значение, указывающее, равны ли длинное знаковое целое число и значение <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Значение true, если параметры <paramref name="left" /> и <paramref name="right" /> имеют одинаковые значения; в противном случае — значение false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Equality(System.Numerics.BigInteger,System.Int64)">
+      <summary>Возвращает значение, указывающее, равны ли значение <see cref="T:System.Numerics.BigInteger" /> и длинное знаковое целое число.</summary>
+      <returns>Значение true, если параметры <paramref name="left" /> и <paramref name="right" /> имеют одинаковые значения; в противном случае — значение false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Equality(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>Возвращает значение, указывающее, равны ли значения двух объектов <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Значение true, если параметры <paramref name="left" /> и <paramref name="right" /> имеют одинаковые значения; в противном случае — значение false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Equality(System.Numerics.BigInteger,System.UInt64)">
+      <summary>Возвращает значение, указывающее, равны ли значение <see cref="T:System.Numerics.BigInteger" /> и длинное целое число без знака.</summary>
+      <returns>Значение true, если параметры <paramref name="left" /> и <paramref name="right" /> имеют одинаковые значения; в противном случае — значение false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Equality(System.UInt64,System.Numerics.BigInteger)">
+      <summary>Возвращает значение, указывающее, равны ли значение <see cref="T:System.Numerics.BigInteger" /> и длинное целое число без знака.</summary>
+      <returns>Значение true, если параметры <paramref name="left" /> и <paramref name="right" /> имеют одинаковые значения; в противном случае — значение false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_ExclusiveOr(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>Выполняет битовую исключающую операцию Or (XOr) для двух значений <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Результат битовой операции Or.</returns>
+      <param name="left">Первое значение в вычитании.</param>
+      <param name="right">Второе значение в вычитании.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Decimal)~System.Numerics.BigInteger">
+      <summary>Определяет явное преобразование объекта <see cref="T:System.Decimal" /> в значение <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" />.</returns>
+      <param name="value">Значение, которое необходимо преобразовать в тип <see cref="T:System.Numerics.BigInteger" />.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Double)~System.Numerics.BigInteger">
+      <summary>Определяет явное преобразование значения <see cref="T:System.Double" /> в значение <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" />.</returns>
+      <param name="value">Значение, которое необходимо преобразовать в тип <see cref="T:System.Numerics.BigInteger" />.</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is <see cref="F:System.Double.NaN" />.-or-<paramref name="value" /> is <see cref="F:System.Double.PositiveInfinity" />.-or-<paramref name="value" /> is <see cref="F:System.Double.NegativeInfinity" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Int16">
+      <summary>Определяет явное преобразование объекта <see cref="T:System.Numerics.BigInteger" /> в значение 16-битового знакового целого числа.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" />.</returns>
+      <param name="value">Значение, которое необходимо преобразовать в 16-разрядное знаковое целое число.</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.Int16.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.Int16.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Decimal">
+      <summary>Определяет явное преобразование объекта <see cref="T:System.Numerics.BigInteger" /> в значение <see cref="T:System.Decimal" />.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" />.</returns>
+      <param name="value">Значение, которое необходимо преобразовать в тип <see cref="T:System.Decimal" />.</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.Decimal.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.Decimal.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Double">
+      <summary>Определяет явное преобразование объекта <see cref="T:System.Numerics.BigInteger" /> в значение <see cref="T:System.Double" />.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" />.</returns>
+      <param name="value">Значение, которое необходимо преобразовать в тип <see cref="T:System.Double" />.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Byte">
+      <summary>Определяет явное преобразование объекта <see cref="T:System.Numerics.BigInteger" /> в байтовое значение без знака.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" />.</returns>
+      <param name="value">Значение, которое необходимо преобразовать в тип <see cref="T:System.Byte" />.</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.Byte.MinValue" />. -or-<paramref name="value" /> is greater than <see cref="F:System.Byte.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.UInt64">
+      <summary>Определяет явное преобразование объекта <see cref="T:System.Numerics.BigInteger" /> в значение 64-битового целого числа без знака.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" />.</returns>
+      <param name="value">Значение, которое необходимо преобразовать в 64-разрядное целое число без знака.</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.UInt64.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.UInt64.MaxValue" />. </exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Int32">
+      <summary>Определяет явное преобразование объекта <see cref="T:System.Numerics.BigInteger" /> в значение 32-битового знакового целого числа.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" />.</returns>
+      <param name="value">Значение, которое необходимо преобразовать в 32-разрядное знаковое целое число. </param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.Int32.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.Int32.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.SByte">
+      <summary>Определяет явное преобразование объекта <see cref="T:System.Numerics.BigInteger" /> в значение 8-битового числа со знаком.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" />.</returns>
+      <param name="value">Значение, которое необходимо преобразовать в значение 8-разрядного знакового числа.</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.SByte.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.SByte.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Int64">
+      <summary>Определяет явное преобразование объекта <see cref="T:System.Numerics.BigInteger" /> в значение 64-битового знакового целого числа.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" />.</returns>
+      <param name="value">Значение, которое необходимо преобразовать в 64-разрядное знаковое целое число.</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.Int64.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.Int64.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Single">
+      <summary>Определяет явное преобразование объекта <see cref="T:System.Numerics.BigInteger" /> в значение числа с плавающей запятой одиночной точности.</summary>
+      <returns>Объект, содержащий ближайшее возможное представление параметра <paramref name="value" />.</returns>
+      <param name="value">Значение, которое необходимо преобразовать в значение числа с плавающей запятой одиночной точности.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.UInt32">
+      <summary>Определяет явное преобразование объекта <see cref="T:System.Numerics.BigInteger" /> в значение 32-битового целого числа без знака.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" />.</returns>
+      <param name="value">Значение, которое необходимо преобразовать в 32-разрядное целое число без знака.</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.UInt32.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.UInt32.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.UInt16">
+      <summary>Определяет явное преобразование объекта <see cref="T:System.Numerics.BigInteger" /> в значение 16-битового целого числа без знака.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" />.</returns>
+      <param name="value">Значение, которое необходимо преобразовать в 16-разрядное целое число без знака.</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.UInt16.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.UInt16.MaxValue" />. </exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Single)~System.Numerics.BigInteger">
+      <summary>Определяет явное преобразование объекта <see cref="T:System.Single" /> в значение <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" />.</returns>
+      <param name="value">Значение, которое необходимо преобразовать в тип <see cref="T:System.Numerics.BigInteger" />.</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is <see cref="F:System.Single.NaN" />.-or-<paramref name="value" /> is <see cref="F:System.Single.PositiveInfinity" />.-or-<paramref name="value" /> is <see cref="F:System.Single.NegativeInfinity" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThan(System.Int64,System.Numerics.BigInteger)">
+      <summary>Возвращает значение, определяющее, действительно ли 64-разрядное целое число со знаком больше или равно значению <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>true, если значение <paramref name="left" /> больше значения <paramref name="right" />; в противном случае — false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThan(System.Numerics.BigInteger,System.Int64)">
+      <summary>Возвращает значение, определяющее, действительно ли значение <see cref="T:System.Numerics.BigInteger" /> больше значения 64-битового целого числа со знаком.</summary>
+      <returns>true, если значение <paramref name="left" /> больше значения <paramref name="right" />; в противном случае — false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThan(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>Возвращает значение, определяющее, действительно ли значение типа <see cref="T:System.Numerics.BigInteger" /> больше другого значения типа <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>true, если значение <paramref name="left" /> больше значения <paramref name="right" />; в противном случае — false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThan(System.Numerics.BigInteger,System.UInt64)">
+      <summary>Возвращает значение, определяющее действительно ли значение <see cref="T:System.Numerics.BigInteger" /> больше 64-битового целого числа без знака.</summary>
+      <returns>true, если значение <paramref name="left" /> больше значения <paramref name="right" />; в противном случае — false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThan(System.UInt64,System.Numerics.BigInteger)">
+      <summary>Возвращает значение, определяющее действительно ли значение <see cref="T:System.Numerics.BigInteger" /> больше 64-битового целого числа без знака.</summary>
+      <returns>true, если значение <paramref name="left" /> больше значения <paramref name="right" />; в противном случае — false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThanOrEqual(System.Int64,System.Numerics.BigInteger)">
+      <summary>Возвращает значение, определяющее, действительно ли 64-разрядное целое число со знаком больше или равно значению <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>true, если значение <paramref name="left" /> больше значения <paramref name="right" />; в противном случае — false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThanOrEqual(System.Numerics.BigInteger,System.Int64)">
+      <summary>Возвращает значение, определяющее, действительно ли значение <see cref="T:System.Numerics.BigInteger" /> больше или равно значению 64-битового целого числа со знаком.</summary>
+      <returns>true, если значение <paramref name="left" /> больше значения <paramref name="right" />; в противном случае — false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThanOrEqual(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>Возвращает значение, определяющее, действительно ли значение типа <see cref="T:System.Numerics.BigInteger" /> больше или равно другому значению типа <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>true, если значение <paramref name="left" /> больше значения <paramref name="right" />; в противном случае — false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThanOrEqual(System.Numerics.BigInteger,System.UInt64)">
+      <summary>Возвращает значение, определяющее, действительно ли значение <see cref="T:System.Numerics.BigInteger" /> больше или равно значению 64-битового целого числа без знака.</summary>
+      <returns>true, если значение <paramref name="left" /> больше значения <paramref name="right" />; в противном случае — false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThanOrEqual(System.UInt64,System.Numerics.BigInteger)">
+      <summary>Возвращает значение, определяющее, действительно ли 64-разрядное целое число без знака больше или равно значению <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>true, если значение <paramref name="left" /> больше значения <paramref name="right" />; в противном случае — false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.Byte)~System.Numerics.BigInteger">
+      <summary>Определяет неявное преобразование значения типа byte без знака в значение <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" />.</returns>
+      <param name="value">Значение, которое необходимо преобразовать в тип <see cref="T:System.Numerics.BigInteger" />.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.Int16)~System.Numerics.BigInteger">
+      <summary>Определяет неявное преобразование 16-битового знакового целого числа в значение <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" />.</returns>
+      <param name="value">Значение, которое необходимо преобразовать в тип <see cref="T:System.Numerics.BigInteger" />.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.Int32)~System.Numerics.BigInteger">
+      <summary>Определяет неявное преобразование 32-битового знакового целого числа в значение <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" />.</returns>
+      <param name="value">Значение, которое необходимо преобразовать в тип <see cref="T:System.Numerics.BigInteger" />.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.Int64)~System.Numerics.BigInteger">
+      <summary>Определяет неявное преобразование 64-битового знакового целого числа в значение <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" />.</returns>
+      <param name="value">Значение, которое необходимо преобразовать в тип <see cref="T:System.Numerics.BigInteger" />.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.SByte)~System.Numerics.BigInteger">
+      <summary>Определяет неявное преобразование 8-битового знакового целого числа в значение <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" />.</returns>
+      <param name="value">Значение, которое необходимо преобразовать в тип <see cref="T:System.Numerics.BigInteger" />.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.UInt16)~System.Numerics.BigInteger">
+      <summary>Определяет неявное преобразование 16-битового целого числа без знака в значение <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" />.</returns>
+      <param name="value">Значение, которое необходимо преобразовать в тип <see cref="T:System.Numerics.BigInteger" />.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.UInt32)~System.Numerics.BigInteger">
+      <summary>Определяет неявное преобразование 32-битового целого числа без знака в значение <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" />.</returns>
+      <param name="value">Значение, которое необходимо преобразовать в тип <see cref="T:System.Numerics.BigInteger" />.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.UInt64)~System.Numerics.BigInteger">
+      <summary>Определяет неявное преобразование 64-битового целого числа без знака в значение <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" />.</returns>
+      <param name="value">Значение, которое необходимо преобразовать в тип <see cref="T:System.Numerics.BigInteger" />.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Increment(System.Numerics.BigInteger)">
+      <summary>Увеличивает значение <see cref="T:System.Numerics.BigInteger" /> на 1.</summary>
+      <returns>Значение параметра <paramref name="value" />, увеличенное на 1.</returns>
+      <param name="value">Увеличиваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Inequality(System.Int64,System.Numerics.BigInteger)">
+      <summary>Возвращает значение, определяющее, действительно ли 64-разрядное целое число со знаком и значение <see cref="T:System.Numerics.BigInteger" /> не равны.</summary>
+      <returns>Значение true, если значения параметров <paramref name="left" /> и <paramref name="right" /> не равны; в противном случае — значение false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Inequality(System.Numerics.BigInteger,System.Int64)">
+      <summary>Возвращает значение, определяющее, действительно ли значение <see cref="T:System.Numerics.BigInteger" /> и 64-разрядное целое число со знаком не равны.</summary>
+      <returns>Значение true, если значения параметров <paramref name="left" /> и <paramref name="right" /> не равны; в противном случае — значение false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Inequality(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>Возвращает значение, указывающее, различаются ли значения двух объектов <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Значение true, если значения параметров <paramref name="left" /> и <paramref name="right" /> не равны; в противном случае — значение false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Inequality(System.Numerics.BigInteger,System.UInt64)">
+      <summary>Возвращает значение, определяющее, действительно ли значение <see cref="T:System.Numerics.BigInteger" /> и 64-разрядное целое число без знака не равны.</summary>
+      <returns>Значение true, если значения параметров <paramref name="left" /> и <paramref name="right" /> не равны; в противном случае — значение false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Inequality(System.UInt64,System.Numerics.BigInteger)">
+      <summary>Возвращает значение, определяющее, действительно ли 64-разрядное целое число без знака и значение <see cref="T:System.Numerics.BigInteger" /> не равны.</summary>
+      <returns>Значение true, если значения параметров <paramref name="left" /> и <paramref name="right" /> не равны; в противном случае — значение false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LeftShift(System.Numerics.BigInteger,System.Int32)">
+      <summary>Сдвигает значение <see cref="T:System.Numerics.BigInteger" /> на указанное число битов влево.</summary>
+      <returns>Значение, которое было сдвинуто влево на указанное число бит.</returns>
+      <param name="value">Значение, для которого необходимо выполнить побитовый сдвиг.</param>
+      <param name="shift">Количество битов, на которое необходимо сдвинуть влево значение <paramref name="value" />.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThan(System.Int64,System.Numerics.BigInteger)">
+      <summary>Возвращает значение, определяющее, действительно 64-разрядное целое число со знаком меньше или равно значению <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>true, если значение <paramref name="left" /> меньше значения <paramref name="right" />; в противном случае — false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThan(System.Numerics.BigInteger,System.Int64)">
+      <summary>Возвращает значение, определяющее, действительно ли значение <see cref="T:System.Numerics.BigInteger" /> меньше 64-битового целого числа со знаком.</summary>
+      <returns>true, если значение <paramref name="left" /> меньше значения <paramref name="right" />; в противном случае — false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThan(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>Возвращает значение, определяющее, действительно ли значение типа <see cref="T:System.Numerics.BigInteger" /> меньше другого значения типа <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>true, если значение <paramref name="left" /> меньше значения <paramref name="right" />; в противном случае — false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThan(System.Numerics.BigInteger,System.UInt64)">
+      <summary>Возвращает значение, определяющее действительно ли значение <see cref="T:System.Numerics.BigInteger" /> меньше 64-битового целого числа без знака.</summary>
+      <returns>true, если значение <paramref name="left" /> меньше значения <paramref name="right" />; в противном случае — false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThan(System.UInt64,System.Numerics.BigInteger)">
+      <summary>Возвращает значение, определяющее, действительно ли 64-разрядное целое число без знака меньше значения <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>true, если значение <paramref name="left" /> меньше значения <paramref name="right" />; в противном случае — false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.Int64,System.Numerics.BigInteger)">
+      <summary>Возвращает значение, определяющее, действительно ли 64-разрядное целое число со знаком меньше или равно значению <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>true, если значение <paramref name="left" /> меньше или равно значению <paramref name="right" />; в противном случае — false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.Numerics.BigInteger,System.Int64)">
+      <summary>Возвращает значение, определяющее, действительно ли значение <see cref="T:System.Numerics.BigInteger" /> меньше или равно 64-разрядному целому числу со знаком.</summary>
+      <returns>true, если значение <paramref name="left" /> меньше или равно значению <paramref name="right" />; в противном случае — false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>Возвращает значение, определяющее, действительно ли значение типа <see cref="T:System.Numerics.BigInteger" /> меньше или равно другому значению типа <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>true, если значение <paramref name="left" /> меньше или равно значению <paramref name="right" />; в противном случае — false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.Numerics.BigInteger,System.UInt64)">
+      <summary>Возвращает значение, определяющее, действительно ли значение <see cref="T:System.Numerics.BigInteger" /> меньше или равно 64-разрядному целому числу без знака.</summary>
+      <returns>true, если значение <paramref name="left" /> меньше или равно значению <paramref name="right" />; в противном случае — false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.UInt64,System.Numerics.BigInteger)">
+      <summary>Возвращает значение, определяющее, действительно ли 64-разрядное целое число без знака меньше или равно значению <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>true, если значение <paramref name="left" /> меньше или равно значению <paramref name="right" />; в противном случае — false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Modulus(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>Возвращает остаток от деления двух заданных значений <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Остаток от деления.</returns>
+      <param name="dividend">Значение, которое необходимо разделить.</param>
+      <param name="divisor">Значение, на которое необходимо разделить.</param>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="divisor" /> is 0 (zero).</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Multiply(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>Умножает два заданных значения <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Произведение <paramref name="left" /> и <paramref name="right" />.</returns>
+      <param name="left">Первое значение для перемножения.</param>
+      <param name="right">Второе значение для перемножения.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_OnesComplement(System.Numerics.BigInteger)">
+      <summary>Возвращает результат битовой операции дополнения до единицы для значения <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Битовое дополнение значения <paramref name="value" /> до единицы.</returns>
+      <param name="value">Целочисленное значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_RightShift(System.Numerics.BigInteger,System.Int32)">
+      <summary>Сдвигает значение <see cref="T:System.Numerics.BigInteger" /> на указанное число битов вправо.</summary>
+      <returns>Значение, которое было сдвинуто вправо на указанное число бит.</returns>
+      <param name="value">Значение, для которого необходимо выполнить побитовый сдвиг.</param>
+      <param name="shift">Количество битов, на которое необходимо сдвинуть вправо значение <paramref name="value" />.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Subtraction(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>Вычитает значение <see cref="T:System.Numerics.BigInteger" /> из другого значения <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Результат вычитания <paramref name="right" /> из <paramref name="left" />.</returns>
+      <param name="left">Значение, из которого следует вычитать (уменьшаемое).</param>
+      <param name="right">Значение для вычитания (вычитаемое).</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_UnaryNegation(System.Numerics.BigInteger)">
+      <summary>Меняет знак указанного значения BigInteger. </summary>
+      <returns>Результат умножения параметра <paramref name="value" /> на минус единицу (-1).</returns>
+      <param name="value">Инвертируемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_UnaryPlus(System.Numerics.BigInteger)">
+      <summary>Возвращает значение операнда <see cref="T:System.Numerics.BigInteger" />.(Знак операнда не изменяется.)</summary>
+      <returns>Значение операнда <paramref name="value" />.</returns>
+      <param name="value">Целочисленное значение.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Parse(System.String)">
+      <summary>Преобразует строковое представление числа в его эквивалент типа <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Значение, эквивалентное числу, которое задается параметром <paramref name="value" />.</returns>
+      <param name="value">Строка, содержащая преобразуемое число.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is null.</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="value" /> is not in the correct format.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Parse(System.String,System.Globalization.NumberStyles)">
+      <summary>Преобразует строковое представление числа с указанным стилем в его эквивалент в формате <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Значение, эквивалентное числу, которое задается параметром <paramref name="value" />.</returns>
+      <param name="value">Строка, содержащая преобразуемое число. </param>
+      <param name="style">Побитовое сочетание значений перечисления, которое показывает разрешенный формат параметра <paramref name="value" />.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="style" /> is not a <see cref="T:System.Globalization.NumberStyles" /> value.-or-<paramref name="style" /> includes the <see cref="F:System.Globalization.NumberStyles.AllowHexSpecifier" /> or <see cref="F:System.Globalization.NumberStyles.HexNumber" /> flag along with another value.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is null.</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="value" /> does not comply with the input pattern specified by <see cref="T:System.Globalization.NumberStyles" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Parse(System.String,System.Globalization.NumberStyles,System.IFormatProvider)">
+      <summary>Преобразует строковое представление числа в указанном стиле и формате, связанном с определенным языком и региональными параметрами, в его эквивалент типа <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Значение, эквивалентное числу, которое задается параметром <paramref name="value" />.</returns>
+      <param name="value">Строка, содержащая преобразуемое число.</param>
+      <param name="style">Побитовое сочетание значений перечисления, которое показывает разрешенный формат параметра <paramref name="value" />.</param>
+      <param name="provider">Объект, предоставляющий сведения о форматировании параметра <paramref name="value" /> в зависимости от языка и региональных параметров.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="style" /> is not a <see cref="T:System.Globalization.NumberStyles" /> value.-or-<paramref name="style" /> includes the <see cref="F:System.Globalization.NumberStyles.AllowHexSpecifier" /> or <see cref="F:System.Globalization.NumberStyles.HexNumber" /> flag along with another value.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is null.</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="value" /> does not comply with the input pattern specified by <paramref name="style" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Parse(System.String,System.IFormatProvider)">
+      <summary>Преобразует строковое представление числа в указанном формате, связанном с определенным языком и региональными параметрами, в его эквивалент типа <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Значение, эквивалентное числу, которое задается параметром <paramref name="value" />.</returns>
+      <param name="value">Строка, содержащая преобразуемое число.</param>
+      <param name="provider">Объект, предоставляющий сведения о форматировании параметра <paramref name="value" /> в зависимости от языка и региональных параметров.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is null.</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="value" /> is not in the correct format.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Pow(System.Numerics.BigInteger,System.Int32)">
+      <summary>Возводит значение <see cref="T:System.Numerics.BigInteger" /> в заданную степень.</summary>
+      <returns>Результат возведения <paramref name="value" /> в степень <paramref name="exponent" />.</returns>
+      <param name="value">Число, возведенное в степень <paramref name="exponent" />.</param>
+      <param name="exponent">Показатель степени, в которую будет возведено значение <paramref name="value" />.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of the <paramref name="exponent" /> parameter is negative.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Remainder(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>Выполняет целочисленное деление двух значений <see cref="T:System.Numerics.BigInteger" /> и возвращает остаток.</summary>
+      <returns>Остаток от деления <paramref name="dividend" /> на значение <paramref name="divisor" />.</returns>
+      <param name="dividend">Значение, которое необходимо разделить.</param>
+      <param name="divisor">Значение, на которое необходимо разделить.</param>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="divisor" /> is 0 (zero).</exception>
+    </member>
+    <member name="P:System.Numerics.BigInteger.Sign">
+      <summary>Получает число, указывающее знак (минус, плюс или нуль) текущего объекта <see cref="T:System.Numerics.BigInteger" />.</summary>
+      <returns>Число, которое указывает знак объекта <see cref="T:System.Numerics.BigInteger" />, как показано в следующей таблице.ЧисловойОписание-1Этот объект имеет отрицательное значение.0Этот объект имеет значение 0 (нуль).1Этот объект имеет положительное значение.</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Subtract(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>Вычитает одно значение <see cref="T:System.Numerics.BigInteger" /> из другого и возвращает результат.</summary>
+      <returns>Результат вычитания <paramref name="right" /> из <paramref name="left" />.</returns>
+      <param name="left">Значение, из которого следует вычитать (уменьшаемое).</param>
+      <param name="right">Значение для вычитания (вычитаемое).</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.System#IComparable#CompareTo(System.Object)">
+      <summary>Сравнивает текущий экземпляр с другим объектом того же типа и возвращает целое число, которое показывает, расположен ли текущий экземпляр перед, после или на той же позиции в порядке сортировки, что и другой объект.</summary>
+      <returns>Целое число со знаком, показывающее относительный порядок данного экземпляра и <paramref name="obj" />.Возвращаемое значение Описание Меньше нуля Данный экземпляр предшествует параметру <paramref name="obj" /> в порядке сортировки. Нуль Данный экземпляр занимает ту же позицию в порядке сортировки, что и объект <paramref name="obj" />. Больше нуля Данный экземпляр следует за параметром <paramref name="obj" /> в порядке сортировки.-или- 
+                  Свойство <paramref name="value" /> имеет значение null. </returns>
+      <param name="obj">Объект, сравниваемый с этим экземпляром, или значение null. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="obj" /> is not a <see cref="T:System.Numerics.BigInteger" />. </exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.ToByteArray">
+      <summary>Преобразует значение <see cref="T:System.Numerics.BigInteger" /> в массив байтов.</summary>
+      <returns>Значение текущего объекта <see cref="T:System.Numerics.BigInteger" />, преобразованное в массив байтов.</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.ToString">
+      <summary>Преобразует числовое значение текущего объекта <see cref="T:System.Numerics.BigInteger" /> в эквивалентное ему строковое представление.</summary>
+      <returns>Строковое представление текущего значения <see cref="T:System.Numerics.BigInteger" />..</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.ToString(System.IFormatProvider)">
+      <summary>Преобразует числовое значение текущего объекта <see cref="T:System.Numerics.BigInteger" /> в эквивалентное ему строковое представление, используя указанные сведения об особенностях форматирования для данного языка и региональных параметров.</summary>
+      <returns>Строковое представление значения текущего объекта <see cref="T:System.Numerics.BigInteger" /> в формате, заданном параметром <paramref name="provider" />.</returns>
+      <param name="provider">Объект, предоставляющий сведения о форматировании для определенного языка и региональных параметров.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.ToString(System.String)">
+      <summary>Преобразует числовое значение текущего объекта <see cref="T:System.Numerics.BigInteger" /> в эквивалентное ему строковое представление с использованием заданного формата.</summary>
+      <returns>Строковое представление значения текущего объекта <see cref="T:System.Numerics.BigInteger" /> в формате, заданном параметром <paramref name="format" />.</returns>
+      <param name="format">Стандартная или пользовательская строка числового формата.</param>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> is not a valid format string.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.ToString(System.String,System.IFormatProvider)">
+      <summary>Преобразует числовое значение текущего объекта <see cref="T:System.Numerics.BigInteger" /> в эквивалентное ему строковое представление с использованием указанного формата и сведений об особенностях формата для данного языка и региональных параметров.</summary>
+      <returns>Строковое представление значения текущего объекта <see cref="T:System.Numerics.BigInteger" />, заданное параметрами <paramref name="format" /> и <paramref name="provider" />.</returns>
+      <param name="format">Стандартная или пользовательская строка числового формата.</param>
+      <param name="provider">Объект, предоставляющий сведения о форматировании для определенного языка и региональных параметров.</param>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> is not a valid format string.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.TryParse(System.String,System.Globalization.NumberStyles,System.IFormatProvider,System.Numerics.BigInteger@)">
+      <summary>Предпринимает попытку преобразования числа в формате, который определяется заданным стилем и языком и региональными параметрами, в эквивалент типа <see cref="T:System.Numerics.BigInteger" /> и возвращает значение, определяющее, успешно ли выполнено преобразование.</summary>
+      <returns>Значение true, если параметр <paramref name="value" /> успешно преобразован, в противном случае — значение false.</returns>
+      <param name="value">Строковое представление числа.Строка интерпретируется с использованием стиля, указанного в <paramref name="style" />.</param>
+      <param name="style">Побитовое сочетание значений перечисления, обозначающих элементы стиля, которые могут быть представлены в параметре <paramref name="value" />.Обычно указывается значение <see cref="F:System.Globalization.NumberStyles.Integer" />.</param>
+      <param name="provider">Объект, который предоставляет сведения о форматировании параметра <paramref name="value" /> в зависимости от языка и региональных параметров.</param>
+      <param name="result">После выполнения этого метода содержит эквивалент типа <see cref="T:System.Numerics.BigInteger" /> числа, содержащегося в параметре <paramref name="value" /> или <see cref="P:System.Numerics.BigInteger.Zero" />, если выполнить преобразование не удалось.Преобразование не удается выполнить, если параметр <paramref name="value" /> имеет значение null или его формат несовместим со значением <paramref name="style" />.Этот параметр передается неинициализированным.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="style" /> is not a <see cref="T:System.Globalization.NumberStyles" /> value.-or-<paramref name="style" /> includes the <see cref="F:System.Globalization.NumberStyles.AllowHexSpecifier" /> or <see cref="F:System.Globalization.NumberStyles.HexNumber" /> flag along with another value. </exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.TryParse(System.String,System.Numerics.BigInteger@)">
+      <summary>Предпринимает попытку преобразования строкового представления числа в его эквивалент типа <see cref="T:System.Numerics.BigInteger" /> и возвращает значение, позволяющее определить, успешно ли выполнено преобразование.</summary>
+      <returns>Значение true, если параметр <paramref name="value" /> успешно преобразован; в противном случае — значение false.</returns>
+      <param name="value">Строковое представление числа.</param>
+      <param name="result">После выполнения этого метода содержит эквивалент типа <see cref="T:System.Numerics.BigInteger" /> для числа, содержащегося в параметре <paramref name="value" />, или нуль (0), если выполнить преобразование не удалось.Преобразование не удается выполнить, если значение параметра <paramref name="value" /> равно null или задано в неверном формате.Этот параметр передается неинициализированным.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is null.</exception>
+    </member>
+    <member name="P:System.Numerics.BigInteger.Zero">
+      <summary>Получает значение, представляющее 0 (нуль).</summary>
+      <returns>Целое число, равное нулю (0).</returns>
+    </member>
+    <member name="T:System.Numerics.Complex">
+      <summary>Представляет комплексное число.</summary>
+    </member>
+    <member name="M:System.Numerics.Complex.#ctor(System.Double,System.Double)">
+      <summary>Инициализирует новый экземпляр структуры <see cref="T:System.Numerics.Complex" /> с использованием заданных значений действительного и мнимого чисел.</summary>
+      <param name="real">Действительная часть комплексного числа.</param>
+      <param name="imaginary">Мнимая часть комплексного числа.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Abs(System.Numerics.Complex)">
+      <summary>Возвращает абсолютное значение (или величину) комплексного числа.</summary>
+      <returns>Абсолютное значение параметра <paramref name="value" />.</returns>
+      <param name="value">Комплексное число.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Acos(System.Numerics.Complex)">
+      <summary>Возвращает угол, представляющий собой арккосинус указанного комплексного числа.</summary>
+      <returns>Угол (в радианах), представляющий собой арккосинус параметра <paramref name="value" />.</returns>
+      <param name="value">Комплексное число, представляющее косинус.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Add(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>Складывает два комплексных числа и возвращает результат.</summary>
+      <returns>Сумма <paramref name="left" /> и <paramref name="right" />.</returns>
+      <param name="left">Первое комплексное число для сложения.</param>
+      <param name="right">Второе комплексное число для сложения.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Asin(System.Numerics.Complex)">
+      <summary>Возвращает угол, представляющий собой арксинус указанного комплексного числа.</summary>
+      <returns>Угол, представляющий собой арксинус параметра <paramref name="value" />.</returns>
+      <param name="value">Комплексное число.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Atan(System.Numerics.Complex)">
+      <summary>Возвращает угол, представляющий собой арктангенс указанного комплексного числа.</summary>
+      <returns>Угол, представляющий собой арктангенс параметра <paramref name="value" />.</returns>
+      <param name="value">Комплексное число.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Conjugate(System.Numerics.Complex)">
+      <summary>Вычисляет сопряженное число комплексного числа и возвращает результат.</summary>
+      <returns>Сопряженное число для <paramref name="value" />.</returns>
+      <param name="value">Комплексное число.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Cos(System.Numerics.Complex)">
+      <summary>Возвращает косинус указанного комплексного числа.</summary>
+      <returns>Косинус <paramref name="value" />.</returns>
+      <param name="value">Комплексное число.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Cosh(System.Numerics.Complex)">
+      <summary>Возвращает гиперболический косинус указанного комплексного числа.</summary>
+      <returns>Гиперболический косинус <paramref name="value" />.</returns>
+      <param name="value">Комплексное число.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Divide(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>Делит одно комплексное число на другое и возвращает результат.</summary>
+      <returns>Частное от деления.</returns>
+      <param name="dividend">Комплексное число-числитель.</param>
+      <param name="divisor">Комплексное число-знаменатель.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Equals(System.Numerics.Complex)">
+      <summary>Возвращает значение, указывающее, равны ли текущий экземпляр и указанное комплексное число.</summary>
+      <returns>Значение true, если значения комплексного числа и <paramref name="value" /> совпадают; в противном случае — значение false.</returns>
+      <param name="value">Комплексное число для сравнения.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Equals(System.Object)">
+      <summary>Возвращает значение, определяющее равны ли текущий экземпляр и указанный объект. </summary>
+      <returns>Значение true, если параметр <paramref name="obj" /> является объектом <see cref="T:System.Numerics.Complex" /> или типом, поддерживающим неявное преобразование в объект <see cref="T:System.Numerics.Complex" />, а его значение равняется текущему объекту <see cref="T:System.Numerics.Complex" />; в противном случае — значение false.</returns>
+      <param name="obj">Объект для сравнения.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Exp(System.Numerics.Complex)">
+      <summary>Возвращает число e, возведенное в степень, определяемую комплексным числом.</summary>
+      <returns>Число e, возведенное в степень <paramref name="value" />.</returns>
+      <param name="value">Комплексное число, определяющее степень.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.FromPolarCoordinates(System.Double,System.Double)">
+      <summary>Создает комплексное число из полярных координат точки.</summary>
+      <returns>Комплексное число.</returns>
+      <param name="magnitude">Модуль, т. е. расстояние от начала координат (точки пересечения осей X и Y) до числа.</param>
+      <param name="phase">Фаза, т. е. угол от прямой до горизонтальной оси в радианах.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.GetHashCode">
+      <summary>Возвращает хэш-код для текущего объекта <see cref="T:System.Numerics.Complex" />.</summary>
+      <returns>Хэш-код 32-разрядное целое число со знаком.</returns>
+    </member>
+    <member name="P:System.Numerics.Complex.Imaginary">
+      <summary>Получает мнимую часть текущего объекта <see cref="T:System.Numerics.Complex" />.</summary>
+      <returns>Мнимая часть комплексного числа.</returns>
+    </member>
+    <member name="F:System.Numerics.Complex.ImaginaryOne">
+      <summary>Возвращает новый экземпляр объекта <see cref="T:System.Numerics.Complex" /> со значением действительного числа, равным нулю, и значением мнимого числа, равным единице.</summary>
+    </member>
+    <member name="M:System.Numerics.Complex.Log(System.Numerics.Complex)">
+      <summary>Возвращает натуральный логарифм (по основанию e) указанного комплексного числа.</summary>
+      <returns>Натуральный логарифм (по основанию e) значения <paramref name="value" />.</returns>
+      <param name="value">Комплексное число.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Log(System.Numerics.Complex,System.Double)">
+      <summary>Возвращает логарифм по заданному основанию указанного комплексного числа.</summary>
+      <returns>Логарифм <paramref name="value" /> по основанию <paramref name="baseValue" />.</returns>
+      <param name="value">Комплексное число.</param>
+      <param name="baseValue">Основание логарифма.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Log10(System.Numerics.Complex)">
+      <summary>Возвращает логарифм по основанию 10 указанного комплексного числа.</summary>
+      <returns>Логарифм <paramref name="value" /> по основанию 10.</returns>
+      <param name="value">Комплексное число.</param>
+    </member>
+    <member name="P:System.Numerics.Complex.Magnitude">
+      <summary>Возвращает модуль (или абсолютное значение) комплексного числа.</summary>
+      <returns>Модуль текущего экземпляра.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Multiply(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>Возвращает произведение двух комплексных чисел.</summary>
+      <returns>Произведение параметров <paramref name="left" /> и <paramref name="right" />.</returns>
+      <param name="left">Первое комплексное число для перемножения.</param>
+      <param name="right">Второе комплексное число для перемножения.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Negate(System.Numerics.Complex)">
+      <summary>Возвращает аддитивную инверсию указанного комплексного числа.</summary>
+      <returns>Результат умножения частей <see cref="P:System.Numerics.Complex.Real" /> и <see cref="P:System.Numerics.Complex.Imaginary" /> параметра <paramref name="value" /> на -1.</returns>
+      <param name="value">Комплексное число.</param>
+    </member>
+    <member name="F:System.Numerics.Complex.One">
+      <summary>Возвращает новый экземпляр объекта <see cref="T:System.Numerics.Complex" /> со значением действительного числа, равным единице, и значением мнимого числа, равным нулю.</summary>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Addition(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>Складывает два комплексных числа.</summary>
+      <returns>Сумма <paramref name="left" /> и <paramref name="right" />.</returns>
+      <param name="left">Первое из складываемых значений.</param>
+      <param name="right">Второе из складываемых значений.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Division(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>Делит одно указанное комплексное число на другое.</summary>
+      <returns>Результат деления <paramref name="left" /> на <paramref name="right" />.</returns>
+      <param name="left">Значение, которое необходимо разделить.</param>
+      <param name="right">Значение, на которое необходимо разделить.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Equality(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>Возвращает значение, указывающее, равны ли два комплексных числа.</summary>
+      <returns>Значение true, если параметры <paramref name="left" /> и <paramref name="right" /> имеют одинаковые значения; в противном случае — значение false.</returns>
+      <param name="left">Первое комплексное число для сравнения.</param>
+      <param name="right">Второе комплексное число для сравнения.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Explicit(System.Decimal)~System.Numerics.Complex">
+      <summary>Определяет явное преобразование значения <see cref="T:System.Decimal" /> в комплексное число.</summary>
+      <returns>Комплексное число, вещественная часть которого равна параметру <paramref name="value" />, а мнимая часть равна нулю. </returns>
+      <param name="value">Значение, преобразуемое в комплексное число.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Explicit(System.Numerics.BigInteger)~System.Numerics.Complex">
+      <summary>Определяет явное преобразование значения <see cref="T:System.Numerics.BigInteger" /> в комплексное число. </summary>
+      <returns>Комплексное число, вещественная часть которого равна параметру <paramref name="value" />, а мнимая часть равна нулю. </returns>
+      <param name="value">Значение, преобразуемое в комплексное число.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Byte)~System.Numerics.Complex">
+      <summary>Определяет неявное преобразование байта без знака в комплексное число.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" /> как действительную часть и ноль как мнимую часть.</returns>
+      <param name="value">Значение, преобразуемое в комплексное число.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Double)~System.Numerics.Complex">
+      <summary>Определяет неявное преобразование числа с плавающей запятой двойной точности в комплексное число.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" /> как действительную часть и ноль как мнимую часть.</returns>
+      <param name="value">Значение, преобразуемое в комплексное число.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Int16)~System.Numerics.Complex">
+      <summary>Определяет неявное преобразование 16-битового целого числа со знаком в комплексное число.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" /> как действительную часть и ноль как мнимую часть.</returns>
+      <param name="value">Значение, преобразуемое в комплексное число.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Int32)~System.Numerics.Complex">
+      <summary>Определяет неявное преобразование 32-битового целого числа со знаком в комплексное число.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" /> как действительную часть и ноль как мнимую часть.</returns>
+      <param name="value">Значение, преобразуемое в комплексное число.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Int64)~System.Numerics.Complex">
+      <summary>Определяет неявное преобразование 64-битового целого числа со знаком в комплексное число.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" /> как действительную часть и ноль как мнимую часть.</returns>
+      <param name="value">Значение, преобразуемое в комплексное число.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.SByte)~System.Numerics.Complex">
+      <summary>Определяет неявное преобразование байта со знаком в комплексное число.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" /> как действительную часть и ноль как мнимую часть.</returns>
+      <param name="value">Значение, преобразуемое в комплексное число.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Single)~System.Numerics.Complex">
+      <summary>Определяет неявное преобразование числа с плавающей запятой одиночной точности в комплексное число.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" /> как действительную часть и ноль как мнимую часть.</returns>
+      <param name="value">Значение, преобразуемое в комплексное число.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.UInt16)~System.Numerics.Complex">
+      <summary>Определяет неявное преобразование 16-битного целого числа без знака в комплексное число.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" /> как действительную часть и ноль как мнимую часть.</returns>
+      <param name="value">Значение, преобразуемое в комплексное число.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.UInt32)~System.Numerics.Complex">
+      <summary>Определяет неявное преобразование 32-битного целого числа без знака в комплексное число.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" /> как действительную часть и ноль как мнимую часть.</returns>
+      <param name="value">Значение, преобразуемое в комплексное число.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.UInt64)~System.Numerics.Complex">
+      <summary>Определяет неявное преобразование 64-битного целого числа без знака в комплексное число.</summary>
+      <returns>Объект, содержащий значение параметра <paramref name="value" /> как действительную часть и ноль как мнимую часть.</returns>
+      <param name="value">Значение, преобразуемое в комплексное число.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Inequality(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>Возвращает значение, указывающее, равны ли два комплексных числа.</summary>
+      <returns>Значение true, если значения параметров <paramref name="left" /> и <paramref name="right" /> не равны; в противном случае — значение false.</returns>
+      <param name="left">Первое сравниваемое значение.</param>
+      <param name="right">Второе сравниваемое значение.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Multiply(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>Перемножает два заданных комплексных числа.</summary>
+      <returns>Произведение <paramref name="left" /> на <paramref name="right" />.</returns>
+      <param name="left">Первое значение для перемножения.</param>
+      <param name="right">Второе значение для перемножения.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Subtraction(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>Вычитает комплексное число из другого комплексного числа.</summary>
+      <returns>Результат вычитания <paramref name="right" /> из <paramref name="left" />.</returns>
+      <param name="left">Значение, из которого следует вычитать (уменьшаемое).</param>
+      <param name="right">Значение для вычитания (вычитаемое).</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_UnaryNegation(System.Numerics.Complex)">
+      <summary>Возвращает аддитивную инверсию указанного комплексного числа.</summary>
+      <returns>Результат умножения частей <see cref="P:System.Numerics.Complex.Real" /> и <see cref="P:System.Numerics.Complex.Imaginary" /> параметра <paramref name="value" /> на -1.</returns>
+      <param name="value">Инвертируемое значение.</param>
+    </member>
+    <member name="P:System.Numerics.Complex.Phase">
+      <summary>Возвращает фазу комплексного числа.</summary>
+      <returns>Фаза комплексного числа в радианах.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Pow(System.Numerics.Complex,System.Double)">
+      <summary>Возвращает заданное комплексное число, возведенное в степень, заданную числом с плавающей запятой двойной точности.</summary>
+      <returns>Комплексное число <paramref name="value" />, возведенное в степень <paramref name="power" />.</returns>
+      <param name="value">Комплексное число для возведения в степень.</param>
+      <param name="power">Число двойной точности с плавающей запятой, задающее степень.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Pow(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>Возвращает заданное комплексное число, возведенное в степень, заданную комплексным числом.</summary>
+      <returns>Комплексное число <paramref name="value" />, возведенное в степень <paramref name="power" />.</returns>
+      <param name="value">Комплексное число для возведения в степень.</param>
+      <param name="power">Комплексное число, определяющее степень.</param>
+    </member>
+    <member name="P:System.Numerics.Complex.Real">
+      <summary>Получает вещественную часть текущего объекта <see cref="T:System.Numerics.Complex" />.</summary>
+      <returns>Действительная часть комплексного числа.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Reciprocal(System.Numerics.Complex)">
+      <summary>Возвращает обратную величину комплексного числа.</summary>
+      <returns>Обратная величина значения <paramref name="value" />.</returns>
+      <param name="value">Комплексное число.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Sin(System.Numerics.Complex)">
+      <summary>Возвращает синус указанного комплексного числа.</summary>
+      <returns>Синус <paramref name="value" />.</returns>
+      <param name="value">Комплексное число.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Sinh(System.Numerics.Complex)">
+      <summary>Возвращает гиперболический синус указанного комплексного числа.</summary>
+      <returns>Гиперболический синус <paramref name="value" />.</returns>
+      <param name="value">Комплексное число.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Sqrt(System.Numerics.Complex)">
+      <summary>Возвращает квадратный корень из указанного комплексного числа.</summary>
+      <returns>Квадратный корень значения <paramref name="value" />.</returns>
+      <param name="value">Комплексное число.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Subtract(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>Вычитает одно комплексное число из другого и возвращает результат.</summary>
+      <returns>Результат вычитания <paramref name="right" /> из <paramref name="left" />.</returns>
+      <param name="left">Значение, из которого следует вычитать (уменьшаемое).</param>
+      <param name="right">Значение для вычитания (вычитаемое).</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Tan(System.Numerics.Complex)">
+      <summary>Возвращает тангенс указанного комплексного числа.</summary>
+      <returns>Тангенс <paramref name="value" />.</returns>
+      <param name="value">Комплексное число.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Tanh(System.Numerics.Complex)">
+      <summary>Возвращает гиперболический тангенс указанного комплексного числа.</summary>
+      <returns>Гиперболический тангенс <paramref name="value" />.</returns>
+      <param name="value">Комплексное число.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.ToString">
+      <summary>Преобразует значение текущего комплексного числа в эквивалентное строковое представление в прямоугольной системе координат.</summary>
+      <returns>Строковое представление текущего экземпляра в прямоугольной системе координат.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.ToString(System.IFormatProvider)">
+      <summary>Преобразует значение текущего комплексного числа в эквивалентное строковое представление в прямоугольной системе координат, используя указанные сведения об особенностях форматирования, связанных с языком и региональными параметрами.</summary>
+      <returns>Строковое представление текущего экземпляра в прямоугольной системе координат, заданное <paramref name="provider" />.</returns>
+      <param name="provider">Объект, предоставляющий сведения о форматировании для определенного языка и региональных параметров.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.ToString(System.String)">
+      <summary>Преобразует значение текущего комплексного числа в эквивалентное строковое представление в прямоугольной системе координат, используя указанный формат для действительной и мнимой частей.</summary>
+      <returns>Строковое представление текущего экземпляра в прямоугольной системе координат.</returns>
+      <param name="format">Стандартная или пользовательская строка числового формата.</param>
+      <exception cref="T:System.FormatException">Параметр <paramref name="format" /> не является допустимой строкой формата.</exception>
+    </member>
+    <member name="M:System.Numerics.Complex.ToString(System.String,System.IFormatProvider)">
+      <summary>Преобразует значение текущего комплексного числа в эквивалентное строковое представление в прямоугольной системе координат, используя для действительной и мнимой частей указанный формат и сведения об особенностях форматирования, связанных с языком и региональными параметрами.</summary>
+      <returns>Строковое представление текущего экземпляра в прямоугольной системе координат, заданное <paramref name="format" /> и <paramref name="provider" />.</returns>
+      <param name="format">Стандартная или пользовательская строка числового формата.</param>
+      <param name="provider">Объект, предоставляющий сведения о форматировании для определенного языка и региональных параметров.</param>
+      <exception cref="T:System.FormatException">Параметр <paramref name="format" /> не является допустимой строкой формата.</exception>
+    </member>
+    <member name="F:System.Numerics.Complex.Zero">
+      <summary>Возвращает новый экземпляр объекта <see cref="T:System.Numerics.Complex" /> со значениями действительного и мнимого чисел, равными нулю.</summary>
+    </member>
+  </members>
+</doc>

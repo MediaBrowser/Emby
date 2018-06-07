@@ -1,0 +1,1564 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Net.Primitives</name>
+  </assembly>
+  <members>
+    <member name="T:System.Net.AuthenticationSchemes">
+      <summary>인증에 사용할 프로토콜을 지정합니다.</summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.Anonymous">
+      <summary>익명 인증을 지정합니다.</summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.Basic">
+      <summary>기본 인증을 지정합니다. </summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.Digest">
+      <summary>다이제스트 인증을 지정합니다.</summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.IntegratedWindowsAuthentication">
+      <summary>Windows 인증을 지정합니다.</summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.Negotiate">
+      <summary>클라이언트와 협상하여 인증 체계를 결정합니다.클라이언트와 서버 모두 Kerberos를 지원하면 이 인증 체계가 사용되고, 그렇지 않으면 NTLM이 사용됩니다.</summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.None">
+      <summary>인증이 허용되지 않습니다.이 플래그가 설정된 상태에서 <see cref="T:System.Net.HttpListener" /> 개체를 요청하는 클라이언트는 항상 403 Forbidden 상태를 받게 됩니다.이 플래그는 리소스를 클라이언트에 제공하지 않아야 하는 경우에 사용합니다.</summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.Ntlm">
+      <summary>NTLM 인증을 지정합니다.</summary>
+    </member>
+    <member name="T:System.Net.Cookie">
+      <summary>쿠키 관리에 사용되는 속성 및 메서드 집합을 제공합니다.이 클래스는 상속될 수 없습니다.</summary>
+    </member>
+    <member name="M:System.Net.Cookie.#ctor">
+      <summary>
+        <see cref="T:System.Net.Cookie" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Net.Cookie.#ctor(System.String,System.String)">
+      <summary>지정된 <see cref="P:System.Net.Cookie.Name" />과 <see cref="P:System.Net.Cookie.Value" />를 사용하여 <see cref="T:System.Net.Cookie" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="name">
+        <see cref="T:System.Net.Cookie" /> 이름입니다.<paramref name="name" />에는 등호, 세미콜론, 쉼표, 줄 바꿈(\n), 리턴(\r), 탭(\t) 및 공백 문자와 같은 문자를 사용할 수 없습니다.달러 기호("$")는 첫 문자로 사용할 수 없습니다.</param>
+      <param name="value">
+        <see cref="T:System.Net.Cookie" />의 값입니다.<paramref name="value" />에는 세미콜론, 쉼표 같은 문자를 사용할 수 없습니다.</param>
+      <exception cref="T:System.Net.CookieException">
+        <paramref name="name" /> 매개 변수가 null인 경우 또는 <paramref name="name" /> 매개 변수의 길이가 0인 경우 또는 <paramref name="name" /> 매개 변수에 잘못된 문자가 포함된 경우또는 <paramref name="value" /> 매개 변수가 null인 경우-또는- <paramref name="value" /> 매개 변수에 잘못된 문자를 포함하며 따옴표로 묶이지 않은 문자열이 있는 경우 </exception>
+    </member>
+    <member name="M:System.Net.Cookie.#ctor(System.String,System.String,System.String)">
+      <summary>지정된 <see cref="P:System.Net.Cookie.Name" />, <see cref="P:System.Net.Cookie.Value" /> 및 <see cref="P:System.Net.Cookie.Path" />를 사용하여 <see cref="T:System.Net.Cookie" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="name">
+        <see cref="T:System.Net.Cookie" /> 이름입니다.<paramref name="name" />에는 등호, 세미콜론, 쉼표, 줄 바꿈(\n), 리턴(\r), 탭(\t) 및 공백 문자와 같은 문자를 사용할 수 없습니다.달러 기호("$")는 첫 문자로 사용할 수 없습니다.</param>
+      <param name="value">
+        <see cref="T:System.Net.Cookie" />의 값입니다.<paramref name="value" />에는 세미콜론, 쉼표 같은 문자를 사용할 수 없습니다.</param>
+      <param name="path">이 <see cref="T:System.Net.Cookie" />를 적용할 원본 서버에 있는 URI의 하위 집합입니다.기본값은 "/"입니다.</param>
+      <exception cref="T:System.Net.CookieException">
+        <paramref name="name" /> 매개 변수가 null인 경우 또는 <paramref name="name" /> 매개 변수의 길이가 0인 경우 또는 <paramref name="name" /> 매개 변수에 잘못된 문자가 포함된 경우또는 <paramref name="value" /> 매개 변수가 null인 경우-또는- <paramref name="value" /> 매개 변수에 잘못된 문자를 포함하며 따옴표로 묶이지 않은 문자열이 있는 경우</exception>
+    </member>
+    <member name="M:System.Net.Cookie.#ctor(System.String,System.String,System.String,System.String)">
+      <summary>지정된 <see cref="P:System.Net.Cookie.Name" />, <see cref="P:System.Net.Cookie.Value" />, <see cref="P:System.Net.Cookie.Path" /> 및 <see cref="P:System.Net.Cookie.Domain" />을 사용하여 <see cref="T:System.Net.Cookie" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="name">
+        <see cref="T:System.Net.Cookie" /> 이름입니다.<paramref name="name" />에는 등호, 세미콜론, 쉼표, 줄 바꿈(\n), 리턴(\r), 탭(\t) 및 공백 문자와 같은 문자를 사용할 수 없습니다.달러 기호("$")는 첫 문자로 사용할 수 없습니다.</param>
+      <param name="value">
+        <see cref="T:System.Net.Cookie" /> 개체의 값입니다.<paramref name="value" />에는 세미콜론, 쉼표 같은 문자를 사용할 수 없습니다.</param>
+      <param name="path">이 <see cref="T:System.Net.Cookie" />를 적용할 원본 서버에 있는 URI의 하위 집합입니다.기본값은 "/"입니다.</param>
+      <param name="domain">이 <see cref="T:System.Net.Cookie" />가 유효한 선택적 인터넷 도메인입니다.기본값은 이 <see cref="T:System.Net.Cookie" />를 받은 호스트입니다.</param>
+      <exception cref="T:System.Net.CookieException">
+        <paramref name="name" /> 매개 변수가 null인 경우 또는 <paramref name="name" /> 매개 변수의 길이가 0인 경우 또는 <paramref name="name" /> 매개 변수에 잘못된 문자가 포함된 경우또는 <paramref name="value" /> 매개 변수가 null인 경우-또는- <paramref name="value" /> 매개 변수에 잘못된 문자를 포함하며 따옴표로 묶이지 않은 문자열이 있는 경우</exception>
+    </member>
+    <member name="P:System.Net.Cookie.Comment">
+      <summary>서버가 <see cref="T:System.Net.Cookie" />에 추가할 수 있는 주석을 가져오거나 설정합니다.</summary>
+      <returns>이 <see cref="T:System.Net.Cookie" />에 대한 용도를 문서화할 선택적 주석입니다.</returns>
+    </member>
+    <member name="P:System.Net.Cookie.CommentUri">
+      <summary>서버가 <see cref="T:System.Net.Cookie" />를 제공할 수 있는 URI 주석을 가져오거나 설정합니다.</summary>
+      <returns>이 <see cref="T:System.Net.Cookie" />에 대한 URI 참조의 용도를 나타내는 선택적 주석입니다.해당 값은 URI 형식을 준수해야 합니다.</returns>
+    </member>
+    <member name="P:System.Net.Cookie.Discard">
+      <summary>서버가 설정하는 삭제 플래그를 가져오거나 설정합니다.</summary>
+      <returns>현재 세션 끝에서 클라이언트가 <see cref="T:System.Net.Cookie" />를 삭제하면 true이고, 그렇지 않으면 false입니다.기본값은 false입니다.</returns>
+    </member>
+    <member name="P:System.Net.Cookie.Domain">
+      <summary>
+        <see cref="T:System.Net.Cookie" />가 유효한 URI를 가져오거나 설정합니다.</summary>
+      <returns>
+        <see cref="T:System.Net.Cookie" />가 유효한 URI입니다.</returns>
+    </member>
+    <member name="M:System.Net.Cookie.Equals(System.Object)">
+      <summary>
+        <see cref="M:System.Object.Equals(System.Object)" /> 메서드를 재정의합니다.</summary>
+      <returns>
+        <see cref="T:System.Net.Cookie" />가 <paramref name="comparand" />인 경우 true를 반환합니다.<see cref="P:System.Net.Cookie.Name" />, <see cref="P:System.Net.Cookie.Value" />, <see cref="P:System.Net.Cookie.Path" />, <see cref="P:System.Net.Cookie.Domain" /> 및 <see cref="P:System.Net.Cookie.Version" /> 속성이 같으면 두 <see cref="T:System.Net.Cookie" /> 인스턴스는 동일한 것으로 처리됩니다.<see cref="P:System.Net.Cookie.Name" />과 <see cref="P:System.Net.Cookie.Domain" /> 문자열 비교에서는 대/소문자를 구분하지 않습니다.</returns>
+      <param name="comparand">
+        <see cref="T:System.Net.Cookie" />에 대한 참조입니다. </param>
+    </member>
+    <member name="P:System.Net.Cookie.Expired">
+      <summary>
+        <see cref="T:System.Net.Cookie" />의 현재 상태를 가져오거나 설정합니다.</summary>
+      <returns>
+        <see cref="T:System.Net.Cookie" />가 만료되었으면 true이고, 그렇지 않으면 false입니다.기본값은 false입니다.</returns>
+    </member>
+    <member name="P:System.Net.Cookie.Expires">
+      <summary>
+        <see cref="T:System.Net.Cookie" />에 대한 만료 날짜와 시간을 <see cref="T:System.DateTime" />으로 가져오거나 설정합니다.</summary>
+      <returns>
+        <see cref="T:System.DateTime" /> 인스턴스로 설정한 <see cref="T:System.Net.Cookie" />에 대한 만료 날짜와 시간입니다.</returns>
+    </member>
+    <member name="M:System.Net.Cookie.GetHashCode">
+      <summary>
+        <see cref="M:System.Object.GetHashCode" /> 메서드를 재정의합니다.</summary>
+      <returns>이 인스턴스에 대한 부호 있는 32비트 정수 해시 코드입니다.</returns>
+    </member>
+    <member name="P:System.Net.Cookie.HttpOnly">
+      <summary>페이지 스크립트 또는 다른 활성 콘텐츠에서 이 쿠키에 액세스할 수 있는지 여부를 확인합니다.</summary>
+      <returns>페이지 스크립트 또는 다른 활성 콘텐츠에서 이 쿠키에 액세스할 수 있는지 여부를 나타내는 부울 값입니다.</returns>
+    </member>
+    <member name="P:System.Net.Cookie.Name">
+      <summary>
+        <see cref="T:System.Net.Cookie" />의 이름을 가져오거나 설정합니다.</summary>
+      <returns>
+        <see cref="T:System.Net.Cookie" />의 이름입니다.</returns>
+      <exception cref="T:System.Net.CookieException">set 작업에 지정된 값이 null이거나 빈 문자열인 경우- 또는 -set 작업에 지정된 값에 잘못된 문자가 포함되어 있는 경우.<see cref="P:System.Net.Cookie.Name" /> 속성에는 등호, 세미콜론, 쉼표, 줄 바꿈(\n), 리턴(\r), 탭(\t) 및 공백 문자와 같은 문자를 사용할 수 없습니다.달러 기호("$")는 첫 문자로 사용할 수 없습니다.</exception>
+    </member>
+    <member name="P:System.Net.Cookie.Path">
+      <summary>
+        <see cref="T:System.Net.Cookie" />가 적용되는 URI를 가져오거나 설정합니다.</summary>
+      <returns>
+        <see cref="T:System.Net.Cookie" />가 적용되는 URI입니다.</returns>
+    </member>
+    <member name="P:System.Net.Cookie.Port">
+      <summary>
+        <see cref="T:System.Net.Cookie" />가 적용되는 TCP 포트 목록을 가져오거나 설정합니다.</summary>
+      <returns>
+        <see cref="T:System.Net.Cookie" />가 적용되는 TCP 포트 목록입니다.</returns>
+      <exception cref="T:System.Net.CookieException">set 작업에 지정된 값이 구문 분석되지 않거나 큰따옴표로 묶여 있지 않은 경우 </exception>
+    </member>
+    <member name="P:System.Net.Cookie.Secure">
+      <summary>
+        <see cref="T:System.Net.Cookie" />의 보안 수준을 가져오거나 설정합니다.</summary>
+      <returns>후속 요청이 HTTPS(Secure Hypertext Transfer Protocol)를 사용하는 경우 클라이언트가 이 후속 요청에서만 쿠키를 반환하면 true이고, 그렇지 않으면 false입니다.기본값은 false입니다.</returns>
+    </member>
+    <member name="P:System.Net.Cookie.TimeStamp">
+      <summary>쿠키가 <see cref="T:System.DateTime" />으로 발행된 시간을 가져옵니다.</summary>
+      <returns>쿠키가 <see cref="T:System.DateTime" />으로 발행된 시간입니다.</returns>
+    </member>
+    <member name="M:System.Net.Cookie.ToString">
+      <summary>
+        <see cref="M:System.Object.ToString" /> 메서드를 재정의합니다.</summary>
+      <returns>HTTP Cookie: 요청 헤더에 포함할 수 있도록 이 <see cref="T:System.Net.Cookie" /> 개체의 문자열 표시를 반환합니다.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Net.Cookie.Value">
+      <summary>
+        <see cref="T:System.Net.Cookie" />에 대한 <see cref="P:System.Net.Cookie.Value" />를 가져오거나 설정합니다.</summary>
+      <returns>
+        <see cref="T:System.Net.Cookie" />의 <see cref="P:System.Net.Cookie.Value" />입니다.</returns>
+    </member>
+    <member name="P:System.Net.Cookie.Version">
+      <summary>쿠키가 준수하는 HTTP 상태 유지 관리 버전을 가져오거나 설정합니다.</summary>
+      <returns>쿠키가 준수하는 HTTP 상태 유지 관리 버전입니다.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">버전에 지정된 값이 허용되지 않는 경우 </exception>
+    </member>
+    <member name="T:System.Net.CookieCollection">
+      <summary>
+        <see cref="T:System.Net.Cookie" /> 클래스의 인스턴스에 대한 컬렉션 컨테이너를 제공합니다.</summary>
+    </member>
+    <member name="M:System.Net.CookieCollection.#ctor">
+      <summary>
+        <see cref="T:System.Net.CookieCollection" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Net.CookieCollection.Add(System.Net.Cookie)">
+      <summary>
+        <see cref="T:System.Net.Cookie" />을 <see cref="T:System.Net.CookieCollection" />에 추가합니다.</summary>
+      <param name="cookie">
+        <see cref="T:System.Net.CookieCollection" />에 추가할 <see cref="T:System.Net.Cookie" />입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="cookie" />가 null입니다. </exception>
+    </member>
+    <member name="M:System.Net.CookieCollection.Add(System.Net.CookieCollection)">
+      <summary>현재 인스턴스에 <see cref="T:System.Net.CookieCollection" />의 내용을 추가합니다.</summary>
+      <param name="cookies">추가할 <see cref="T:System.Net.CookieCollection" />입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="cookies" />가 null입니다. </exception>
+    </member>
+    <member name="P:System.Net.CookieCollection.Count">
+      <summary>
+        <see cref="T:System.Net.CookieCollection" />에 포함된 쿠키 수를 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Net.CookieCollection" />에 포함된 쿠키 수입니다.</returns>
+    </member>
+    <member name="M:System.Net.CookieCollection.GetEnumerator">
+      <summary>
+        <see cref="T:System.Net.CookieCollection" />을 반복할 수 있는 열거자를 반환합니다.</summary>
+      <returns>
+        <see cref="T:System.Net.CookieCollection" />을 반복할 수 있는 <see cref="T:System.Collections.IEnumerator" /> 인터페이스 구현의 인스턴스입니다.</returns>
+    </member>
+    <member name="P:System.Net.CookieCollection.Item(System.String)">
+      <summary>
+        <see cref="T:System.Net.CookieCollection" />에서 특정 이름을 가진 <see cref="T:System.Net.Cookie" />를 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Net.CookieCollection" />에서 가져온 특정 이름을 가진 <see cref="T:System.Net.Cookie" />입니다.</returns>
+      <param name="name">찾을 <see cref="T:System.Net.Cookie" />의 이름입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" />가 null입니다. </exception>
+    </member>
+    <member name="M:System.Net.CookieCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>[.NET Framework 4.5.1 이상 버전에서 지원됨] 이 멤버에 대한 설명은 <see cref="M:System.Collections.ICollection.CopyTo(System.Array,System.Int32)" />를 참조하십시오.</summary>
+      <param name="array">컬렉션에서 복사한 요소의 대상인 1차원 배열입니다.배열에서 0부터 시작하는 인덱스를 사용해야 합니다.</param>
+      <param name="index">
+        <paramref name="array" />에서 복사가 시작되는 인덱스(0부터 시작)입니다.</param>
+    </member>
+    <member name="P:System.Net.CookieCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>[.NET Framework 4.5.1 이상 버전에서 지원됨] 이 멤버에 대한 설명은 <see cref="P:System.Collections.ICollection.IsSynchronized" />를 참조하십시오.</summary>
+      <returns>컬렉션에 대한 액세스가 동기화(스레드로부터 안전)되면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="P:System.Net.CookieCollection.System#Collections#ICollection#SyncRoot">
+      <summary>[.NET Framework 4.5.1 이상 버전에서 지원됨] 이 멤버에 대한 설명은 <see cref="P:System.Collections.ICollection.SyncRoot" />를 참조하십시오.</summary>
+      <returns>컬렉션에 대한 액세스를 동기화하는 데 사용할 수 있는 개체입니다.</returns>
+    </member>
+    <member name="T:System.Net.CookieContainer">
+      <summary>
+        <see cref="T:System.Net.CookieCollection" /> 개체의 컬렉션에 대한 컨테이너를 제공합니다.</summary>
+    </member>
+    <member name="M:System.Net.CookieContainer.#ctor">
+      <summary>
+        <see cref="T:System.Net.CookieContainer" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Net.CookieContainer.Add(System.Uri,System.Net.Cookie)">
+      <summary>특정 URI에 대한 <see cref="T:System.Net.CookieContainer" />에 <see cref="T:System.Net.Cookie" />를 추가합니다.</summary>
+      <param name="uri">
+        <see cref="T:System.Net.CookieContainer" />에 추가할 <see cref="T:System.Net.Cookie" />의 URI입니다. </param>
+      <param name="cookie">
+        <see cref="T:System.Net.CookieContainer" />에 추가할 <see cref="T:System.Net.Cookie" />입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="uri" />가 null이거나 <paramref name="cookie" />가 null인 경우 </exception>
+      <exception cref="T:System.Net.CookieException">
+        <paramref name="cookie" />가 <paramref name="maxCookieSize" />보다 큰 경우 또는 <paramref name="cookie" />의 도메인이 올바른 URI가 아닌 경우 </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.CookieContainer.Add(System.Uri,System.Net.CookieCollection)">
+      <summary>특정 URI에 대한 <see cref="T:System.Net.CookieContainer" />에 <see cref="T:System.Net.CookieCollection" />의 내용을 추가합니다.</summary>
+      <param name="uri">
+        <see cref="T:System.Net.CookieContainer" />에 추가할 <see cref="T:System.Net.CookieCollection" />의 URI입니다. </param>
+      <param name="cookies">
+        <see cref="T:System.Net.CookieContainer" />에 추가할 <see cref="T:System.Net.CookieCollection" />입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="cookies" />가 null입니다. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="cookies" />에 지정된 쿠키 중 하나의 도메인이 null인 경우 </exception>
+      <exception cref="T:System.Net.CookieException">
+        <paramref name="cookies" />의 쿠키 중 하나에 잘못된 도메인이 들어 있는 경우 </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Net.CookieContainer.Capacity">
+      <summary>
+        <see cref="T:System.Net.CookieContainer" />가 보유할 수 있는 <see cref="T:System.Net.Cookie" /> 인스턴스의 수를 가져오거나 설정합니다.</summary>
+      <returns>
+        <see cref="T:System.Net.CookieContainer" />가 보유할 수 있는 <see cref="T:System.Net.Cookie" /> 인스턴스의 수입니다.이 한계는 초과할 수 없는 한계이므로 <see cref="T:System.Net.Cookie" />를 추가할 때 이 한계를 초과하지 않도록 합니다.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="Capacity" />가 0보다 작거나 같은 경우 또는 값이 <see cref="P:System.Net.CookieContainer.PerDomainCapacity" />보다 작고 <see cref="P:System.Net.CookieContainer.PerDomainCapacity" />가 <see cref="F:System.Int32.MaxValue" />와 같지 않은 경우 </exception>
+    </member>
+    <member name="P:System.Net.CookieContainer.Count">
+      <summary>
+        <see cref="T:System.Net.CookieContainer" />가 현재 보유하고 있는 <see cref="T:System.Net.Cookie" /> 인스턴스의 수를 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Net.CookieContainer" />가 현재 보유하고 있는 <see cref="T:System.Net.Cookie" /> 인스턴스의 수입니다.이 값은 모든 도메인에 있는 <see cref="T:System.Net.Cookie" /> 인스턴스의 총 수입니다.</returns>
+    </member>
+    <member name="F:System.Net.CookieContainer.DefaultCookieLengthLimit">
+      <summary>
+        <see cref="T:System.Net.CookieContainer" />가 보유할 수 있는 <see cref="T:System.Net.Cookie" /> 인스턴스의 기본 최대 크기(바이트)를 나타냅니다.이 필드는 상수입니다.</summary>
+    </member>
+    <member name="F:System.Net.CookieContainer.DefaultCookieLimit">
+      <summary>
+        <see cref="T:System.Net.CookieContainer" />가 보유할 수 있는 기본 최대 <see cref="T:System.Net.Cookie" /> 인스턴스 수를 나타냅니다.이 필드는 상수입니다.</summary>
+    </member>
+    <member name="F:System.Net.CookieContainer.DefaultPerDomainCookieLimit">
+      <summary>
+        <see cref="T:System.Net.CookieContainer" />가 각 도메인을 참조할 수 있는 기본 최대 <see cref="T:System.Net.Cookie" /> 인스턴스 수를 나타냅니다.이 필드는 상수입니다.</summary>
+    </member>
+    <member name="M:System.Net.CookieContainer.GetCookieHeader(System.Uri)">
+      <summary>특정 URI와 관련된 <see cref="T:System.Net.Cookie" /> 인스턴스를 나타내는 HTTP 쿠키가 포함된 HTTP 쿠키 헤더를 가져옵니다.</summary>
+      <returns>세미콜론으로 구분된 <see cref="T:System.Net.Cookie" /> 인스턴스를 나타내는 문자열과 함께 HTTP 쿠키 헤더입니다.</returns>
+      <param name="uri">필요한 <see cref="T:System.Net.Cookie" /> 인스턴스의 URI입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="uri" />가 null입니다. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.CookieContainer.GetCookies(System.Uri)">
+      <summary>특정 URI와 관련된 <see cref="T:System.Net.Cookie" /> 인스턴스를 포함하는 <see cref="T:System.Net.CookieCollection" />을 가져옵니다.</summary>
+      <returns>특정 URI와 관련된 <see cref="T:System.Net.Cookie" /> 인스턴스를 포함하는 <see cref="T:System.Net.CookieCollection" />입니다.</returns>
+      <param name="uri">필요한 <see cref="T:System.Net.Cookie" /> 인스턴스의 URI입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="uri" />가 null입니다. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Net.CookieContainer.MaxCookieSize">
+      <summary>
+        <see cref="T:System.Net.Cookie" />의 최대 허용 길이를 나타냅니다.</summary>
+      <returns>
+        <see cref="T:System.Net.Cookie" />의 최대 허용 길이(바이트)입니다.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="MaxCookieSize" />가 0보다 작거나 같은 경우 </exception>
+    </member>
+    <member name="P:System.Net.CookieContainer.PerDomainCapacity">
+      <summary>
+        <see cref="T:System.Net.CookieContainer" />가 도메인당 보유할 수 있는 <see cref="T:System.Net.Cookie" /> 인스턴스의 수를 가져오거나 설정합니다.</summary>
+      <returns>도메인당 허용되는 <see cref="T:System.Net.Cookie" /> 인스턴스의 수입니다.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="PerDomainCapacity" />가 0보다 작거나 같은 경우 또는 <paramref name="(PerDomainCapacity" />가 허용 가능한 최대 쿠키 인스턴스 수(300)보다 크고 <see cref="F:System.Int32.MaxValue" />와 같지 않은 경우 </exception>
+    </member>
+    <member name="M:System.Net.CookieContainer.SetCookies(System.Uri,System.String)">
+      <summary>HTTP 쿠키 헤더의 쿠키에 대한 <see cref="T:System.Net.Cookie" /> 인스턴스를 특정 URI에 대한 <see cref="T:System.Net.CookieContainer" />에 추가합니다.</summary>
+      <param name="uri">
+        <see cref="T:System.Net.CookieCollection" />의 URI입니다. </param>
+      <param name="cookieHeader">HTTP가 설정한 쿠키 헤더의 내용으로 쉼표로 구분된 <see cref="T:System.Net.Cookie" /> 인스턴스와 함께 HTTP 서버에 의해 반환됩니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="uri" />가 null입니다. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="cookieHeader" />가 null입니다. </exception>
+      <exception cref="T:System.Net.CookieException">쿠키 중 하나가 잘못된 경우 또는 쿠키 중 하나를 컨테이너에 추가하는 동안 오류가 발생한 경우 </exception>
+    </member>
+    <member name="T:System.Net.CookieException">
+      <summary>
+        <see cref="T:System.Net.CookieContainer" />에 <see cref="T:System.Net.Cookie" />를 추가하는 동안 오류가 발생할 때 throw되는 예외입니다.</summary>
+    </member>
+    <member name="M:System.Net.CookieException.#ctor">
+      <summary>
+        <see cref="T:System.Net.CookieException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="T:System.Net.CredentialCache">
+      <summary>여러 자격 증명을 위한 저장소를 제공합니다.</summary>
+    </member>
+    <member name="M:System.Net.CredentialCache.#ctor">
+      <summary>
+        <see cref="T:System.Net.CredentialCache" /> 클래스의 새 인스턴스를 만듭니다.</summary>
+    </member>
+    <member name="M:System.Net.CredentialCache.Add(System.String,System.Int32,System.String,System.Net.NetworkCredential)">
+      <summary>SMTP와 함께 사용할 <see cref="T:System.Net.NetworkCredential" /> 인스턴스를 자격 증명 캐시에 추가하고 이를 호스트 컴퓨터, 포트 및 인증 프로토콜과 연결합니다.이 메서드를 사용하여 추가한 자격 증명은 SMTP에 대해서만 유효합니다.HTTP 또는 FTP 요청에는 이 메서드가 작동하지 않습니다.</summary>
+      <param name="host">호스트 컴퓨터를 식별하는 <see cref="T:System.String" />입니다.</param>
+      <param name="port">
+        <paramref name="host" />에 연결할 포트를 지정하는 <see cref="T:System.Int32" />입니다.</param>
+      <param name="authenticationType">
+        <paramref name="cred" />를 사용하여 <paramref name="host" />에 연결할 때 사용되는 인증 체계를 식별하는 <see cref="T:System.String" />입니다.설명 부분을 참조하십시오.</param>
+      <param name="credential">자격 증명 캐시에 추가할 <see cref="T:System.Net.NetworkCredential" />입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="host" />가 null입니다. 또는<paramref name="authType" />가 null입니다. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="authType" />이 허용되는 값이 아닌 경우.설명 부분을 참조하십시오.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="port" />가 0보다 작은 경우</exception>
+    </member>
+    <member name="M:System.Net.CredentialCache.Add(System.Uri,System.String,System.Net.NetworkCredential)">
+      <summary>SMTP 이외의 프로토콜과 함께 사용할 <see cref="T:System.Net.NetworkCredential" /> 인스턴스를 자격 증명 캐시에 추가하고 이를 URI(Uniform Resource Identifier) 접두사 및 인증 프로토콜과 연결합니다. </summary>
+      <param name="uriPrefix">자격 증명이 권한을 부여하는 리소스의 URI 접두사를 지정하는 <see cref="T:System.Uri" />입니다. </param>
+      <param name="authType">
+        <paramref name="uriPrefix" />에 명명된 리소스가 사용한 인증 체계입니다. </param>
+      <param name="cred">자격 증명 캐시에 추가할 <see cref="T:System.Net.NetworkCredential" />입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="uriPrefix" />가 null입니다. 또는 <paramref name="authType" />가 null입니다. </exception>
+      <exception cref="T:System.ArgumentException">동일한 자격 증명이 두 번 이상 추가되는 경우 </exception>
+    </member>
+    <member name="P:System.Net.CredentialCache.DefaultCredentials">
+      <summary>응용 프로그램의 시스템 자격 증명을 가져옵니다.</summary>
+      <returns>응용 프로그램의 시스템 자격 증명을 나타내는 <see cref="T:System.Net.ICredentials" />입니다.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="USERNAME" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Net.CredentialCache.DefaultNetworkCredentials">
+      <summary>현재 보안 컨텍스트의 네트워크 자격 증명을 가져옵니다.</summary>
+      <returns>현재 사용자 또는 응용 프로그램의 네트워크 자격 증명을 나타내는 <see cref="T:System.Net.NetworkCredential" />입니다.</returns>
+    </member>
+    <member name="M:System.Net.CredentialCache.GetCredential(System.String,System.Int32,System.String)">
+      <summary>지정된 호스트, 포트 및 인증 프로토콜과 관련된 <see cref="T:System.Net.NetworkCredential" /> 인스턴스를 반환합니다.</summary>
+      <returns>
+        <see cref="T:System.Net.NetworkCredential" />이거나 캐시에 일치하는 자격 증명이 없는 경우에는 null입니다.</returns>
+      <param name="host">호스트 컴퓨터를 식별하는 <see cref="T:System.String" />입니다.</param>
+      <param name="port">
+        <paramref name="host" />에 연결할 포트를 지정하는 <see cref="T:System.Int32" />입니다.</param>
+      <param name="authenticationType">
+        <paramref name="host" />에 연결할 때 사용되는 인증 체계를 식별하는 <see cref="T:System.String" />입니다.설명 부분을 참조하십시오.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="host" />가 null입니다. 또는 <paramref name="authType" />가 null입니다. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="authType" />이 허용되는 값이 아닌 경우.설명 부분을 참조하십시오.또는<paramref name="host" />가 빈 문자열("")인 경우</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="port" />가 0보다 작은 경우</exception>
+    </member>
+    <member name="M:System.Net.CredentialCache.GetCredential(System.Uri,System.String)">
+      <summary>지정된 URI(Uniform Resource Identifier) 및 인증 형식과 관련된 <see cref="T:System.Net.NetworkCredential" /> 인스턴스를 반환합니다.</summary>
+      <returns>
+        <see cref="T:System.Net.NetworkCredential" />이거나 캐시에 일치하는 자격 증명이 없는 경우에는 null입니다.</returns>
+      <param name="uriPrefix">자격 증명이 권한을 부여하는 리소스의 URI 접두사를 지정하는 <see cref="T:System.Uri" />입니다. </param>
+      <param name="authType">
+        <paramref name="uriPrefix" />에 명명된 리소스가 사용한 인증 체계입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="uriPrefix" /> 또는 <paramref name="authType" />가 null인 경우 </exception>
+    </member>
+    <member name="M:System.Net.CredentialCache.GetEnumerator">
+      <summary>
+        <see cref="T:System.Net.CredentialCache" /> 인스턴스에서 반복할 수 있는 열거자를 반환합니다.</summary>
+      <returns>
+        <see cref="T:System.Net.CredentialCache" />에 대한 <see cref="T:System.Collections.IEnumerator" />입니다.</returns>
+    </member>
+    <member name="M:System.Net.CredentialCache.Remove(System.String,System.Int32,System.String)">
+      <summary>
+        <see cref="T:System.Net.NetworkCredential" /> 인스턴스가 지정된 호스트, 포트 및 인증 프로토콜과 관련된 경우 캐시에서 해당 인스턴스를 삭제합니다.</summary>
+      <param name="host">호스트 컴퓨터를 식별하는 <see cref="T:System.String" />입니다.</param>
+      <param name="port">
+        <paramref name="host" />에 연결할 포트를 지정하는 <see cref="T:System.Int32" />입니다.</param>
+      <param name="authenticationType">
+        <paramref name="host" />에 연결할 때 사용되는 인증 체계를 식별하는 <see cref="T:System.String" />입니다.설명 부분을 참조하십시오.</param>
+    </member>
+    <member name="M:System.Net.CredentialCache.Remove(System.Uri,System.String)">
+      <summary>
+        <see cref="T:System.Net.NetworkCredential" /> 인스턴스가 지정된 URI(Uniform Resource Identifier) 접두사 및 인증 프로토콜과 관련된 경우 캐시에서 해당 인스턴스를 삭제합니다.</summary>
+      <param name="uriPrefix">자격 증명이 권한을 부여하는 리소스의 URI 접두사를 지정하는 <see cref="T:System.Uri" />입니다. </param>
+      <param name="authType">
+        <paramref name="uriPrefix" />에 명명된 호스트가 사용한 인증 체계입니다. </param>
+    </member>
+    <member name="T:System.Net.DecompressionMethods">
+      <summary>
+        <see cref="T:System.Net.HttpWebRequest" />에 대한 응답으로 받은 데이터를 압축하는 데 사용되는 파일 압축 및 압축 풀기 인코딩 형식을 나타냅니다.</summary>
+    </member>
+    <member name="F:System.Net.DecompressionMethods.Deflate">
+      <summary>Deflate 압축 및 압축 풀기 알고리즘을 사용합니다.</summary>
+    </member>
+    <member name="F:System.Net.DecompressionMethods.GZip">
+      <summary>gZip 압축 및 압축 풀기 알고리즘을 사용합니다.</summary>
+    </member>
+    <member name="F:System.Net.DecompressionMethods.None">
+      <summary>압축을 사용하지 않습니다.</summary>
+    </member>
+    <member name="T:System.Net.DnsEndPoint">
+      <summary>네트워크 끝점을 호스트 이름이나 IP 주소의 문자열 표현 및 포트 번호로 나타냅니다.</summary>
+    </member>
+    <member name="M:System.Net.DnsEndPoint.#ctor(System.String,System.Int32)">
+      <summary>호스트 이름이나 IP 주소의 문자열 표현 및 포트 번호를 사용하여 <see cref="T:System.Net.DnsEndPoint" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="host">호스트 이름이나 IP 주소의 문자열 표현입니다.</param>
+      <param name="port">주소와 연결된 포트 번호이거나, 사용할 수 있는 포트를 지정할 경우 0입니다.<paramref name="port" />는 호스트 순서로 지정됩니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="host" /> 매개 변수에 빈 문자열이 들어 있는 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="host" /> 매개 변수가 null인 경우</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="port" />이 <see cref="F:System.Net.IPEndPoint.MinPort" />보다 작습니다.또는 <paramref name="port" />가 <see cref="F:System.Net.IPEndPoint.MaxPort" />보다 큰 경우 </exception>
+    </member>
+    <member name="M:System.Net.DnsEndPoint.#ctor(System.String,System.Int32,System.Net.Sockets.AddressFamily)">
+      <summary>호스트 이름이나 IP 주소의 문자열 표현, 포트 번호 및 주소 패밀리를 사용하여 <see cref="T:System.Net.DnsEndPoint" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="host">호스트 이름이나 IP 주소의 문자열 표현입니다.</param>
+      <param name="port">주소와 연결된 포트 번호이거나, 사용할 수 있는 포트를 지정할 경우 0입니다.<paramref name="port" />는 호스트 순서로 지정됩니다.</param>
+      <param name="addressFamily">
+        <see cref="T:System.Net.Sockets.AddressFamily" /> 값 중 하나입니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="host" /> 매개 변수에 빈 문자열이 들어 있는 경우또는 <paramref name="addressFamily" />가 <see cref="F:System.Net.Sockets.AddressFamily.Unknown" />입니다.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="host" /> 매개 변수가 null인 경우</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="port" />이 <see cref="F:System.Net.IPEndPoint.MinPort" />보다 작습니다.또는 <paramref name="port" />가 <see cref="F:System.Net.IPEndPoint.MaxPort" />보다 큰 경우</exception>
+    </member>
+    <member name="P:System.Net.DnsEndPoint.AddressFamily">
+      <summary>IP(인터넷 프로토콜) 주소 패밀리를 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Net.Sockets.AddressFamily" /> 값 중 하나입니다.</returns>
+    </member>
+    <member name="M:System.Net.DnsEndPoint.Equals(System.Object)">
+      <summary>두 <see cref="T:System.Net.DnsEndPoint" /> 개체를 비교합니다.</summary>
+      <returns>두 <see cref="T:System.Net.DnsEndPoint" /> 인스턴스가 동일하면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="comparand">현재 인스턴스와 비교할 <see cref="T:System.Net.DnsEndPoint" /> 인스턴스입니다.</param>
+    </member>
+    <member name="M:System.Net.DnsEndPoint.GetHashCode">
+      <summary>
+        <see cref="T:System.Net.DnsEndPoint" />의 해시 값을 반환합니다.</summary>
+      <returns>
+        <see cref="T:System.Net.DnsEndPoint" />의 정수 해시 값입니다.</returns>
+    </member>
+    <member name="P:System.Net.DnsEndPoint.Host">
+      <summary>호스트 이름 또는 호스트 IP(인터넷 프로토콜) 주소의 문자열 표현을 가져옵니다.</summary>
+      <returns>호스트 이름 또는 IP 주소의 문자열 표현입니다.</returns>
+    </member>
+    <member name="P:System.Net.DnsEndPoint.Port">
+      <summary>
+        <see cref="T:System.Net.DnsEndPoint" />의 포트 번호를 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Net.DnsEndPoint" />의 포트 번호를 나타내는 0에서 0xffff 범위의 정수 값입니다.</returns>
+    </member>
+    <member name="M:System.Net.DnsEndPoint.ToString">
+      <summary>
+        <see cref="T:System.Net.DnsEndPoint" />의 호스트 이름이나 IP 주소의 문자열 표현 및 포트 번호를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.Net.DnsEndPoint" />의 주소 패밀리, 호스트 이름이나 IP 주소 문자열 및 포트 번호가 포함된 문자열입니다.</returns>
+    </member>
+    <member name="T:System.Net.EndPoint">
+      <summary>네트워크 주소를 식별합니다.이 클래스는 abstract 클래스입니다.</summary>
+    </member>
+    <member name="M:System.Net.EndPoint.#ctor">
+      <summary>
+        <see cref="T:System.Net.EndPoint" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+    </member>
+    <member name="P:System.Net.EndPoint.AddressFamily">
+      <summary>끝점이 속하는 주소 패밀리를 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Net.Sockets.AddressFamily" /> 값 중 하나입니다.</returns>
+      <exception cref="T:System.NotImplementedException">하위 클래스에서 재정의되지 않은 속성을 가져오거나 설정하려는 경우 </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.EndPoint.Create(System.Net.SocketAddress)">
+      <summary>
+        <see cref="T:System.Net.SocketAddress" /> 인스턴스에서 <see cref="T:System.Net.EndPoint" /> 인스턴스를 만듭니다.</summary>
+      <returns>지정한 <see cref="T:System.Net.SocketAddress" /> 인스턴스에서 초기화된 새 <see cref="T:System.Net.EndPoint" /> 인스턴스입니다.</returns>
+      <param name="socketAddress">연결에 대한 끝점 역할을 하는 소켓 주소입니다. </param>
+      <exception cref="T:System.NotImplementedException">하위 클래스에서 재정의되지 않은 메서드에 액세스하려는 경우 </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.EndPoint.Serialize">
+      <summary>끝점 정보를 <see cref="T:System.Net.SocketAddress" /> 인스턴스로 serialize합니다.</summary>
+      <returns>끝점 정보를 포함하는 <see cref="T:System.Net.SocketAddress" /> 인스턴스입니다.</returns>
+      <exception cref="T:System.NotImplementedException">하위 클래스에서 재정의되지 않은 메서드에 액세스하려는 경우 </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Net.HttpStatusCode">
+      <summary>HTTP에 대해 정의된 상태 코드 값이 포함됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Accepted">
+      <summary>HTTP 상태 202에 해당합니다.<see cref="F:System.Net.HttpStatusCode.Accepted" />는 요청에 대한 추가 처리가 허용되는 경우에 표시됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Ambiguous">
+      <summary>HTTP 상태 300에 해당합니다.<see cref="F:System.Net.HttpStatusCode.Ambiguous" />는 요청된 정보에 여러 가지 표현이 포함되어 있는 경우에 표시됩니다.기본적으로 이 상태는 리디렉션으로 처리되며 그 다음에 이 응답과 연결된 Location 헤더의 내용이 나옵니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.BadGateway">
+      <summary>HTTP 상태 502에 해당합니다.<see cref="F:System.Net.HttpStatusCode.BadGateway" />는 중간 프록시 서버가 다른 프록시 서버 또는 원본 서버로부터 잘못된 응답을 받은 경우에 표시됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.BadRequest">
+      <summary>HTTP 상태 400에 해당합니다.<see cref="F:System.Net.HttpStatusCode.BadRequest" />는 서버에서 요청을 인식할 수 없는 경우에 표시됩니다.해당되는 오류가 없거나, 정확한 오류를 모르거나, 고유한 오류 코드가 없는 경우 <see cref="F:System.Net.HttpStatusCode.BadRequest" />가 전송됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Conflict">
+      <summary>HTTP 상태 409에 해당합니다.<see cref="F:System.Net.HttpStatusCode.Conflict" />는 서버에 충돌이 발생하여 요청을 수행할 수 없는 경우에 표시됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Continue">
+      <summary>HTTP 상태 100에 해당합니다.<see cref="F:System.Net.HttpStatusCode.Continue" />는 클라이언트에서 요청을 계속 수행할 수 있는 경우에 표시됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Created">
+      <summary>HTTP 상태 201에 해당합니다.<see cref="F:System.Net.HttpStatusCode.Created" />는 요청에 대한 결과로 응답이 보내지기 전에 새 리소스가 만들어진 경우에 표시됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.ExpectationFailed">
+      <summary>HTTP 상태 417에 해당합니다.<see cref="F:System.Net.HttpStatusCode.ExpectationFailed" />는 서버에서 Expect 헤더에 예상되는 작업을 수행할 수 없는 경우에 표시됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Forbidden">
+      <summary>HTTP 상태 403에 해당합니다.<see cref="F:System.Net.HttpStatusCode.Forbidden" />은 서버에서 요청을 수행하지 않는 경우에 표시됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Found">
+      <summary>HTTP 상태 302에 해당합니다.<see cref="F:System.Net.HttpStatusCode.Found" />는 요청된 정보가 Location 헤더에 지정된 URI에 있는 경우에 표시됩니다.이 상태가 반환되면 기본적으로 응답과 관련된 Location 헤더를 따릅니다.원래의 요청 메서드가 POST이면 리디렉션된 요청은 GET 메서드를 사용합니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.GatewayTimeout">
+      <summary>HTTP 상태 504에 해당합니다.<see cref="F:System.Net.HttpStatusCode.GatewayTimeout" />은 다른 프록시 서버 또는 원본 서버의 응답을 기다리는 동안 중간 프록시 서버의 시간이 초과된 경우에 표시됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Gone">
+      <summary>HTTP 상태 410에 해당합니다.<see cref="F:System.Net.HttpStatusCode.Gone" />은 요청된 리소스를 더 이상 사용할 수 없는 경우에 표시됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.HttpVersionNotSupported">
+      <summary>HTTP 상태 505에 해당합니다.<see cref="F:System.Net.HttpStatusCode.HttpVersionNotSupported" />는 서버에서 요청된 HTTP 버전을 지원하지 않는 경우에 표시됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.InternalServerError">
+      <summary>HTTP 상태 500에 해당합니다.<see cref="F:System.Net.HttpStatusCode.InternalServerError" />는 서버에 일반 오류가 발생한 경우에 표시됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.LengthRequired">
+      <summary>HTTP 상태 411에 해당합니다.<see cref="F:System.Net.HttpStatusCode.LengthRequired" />는 필요한 Content-length 헤더가 없는 경우에 표시됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.MethodNotAllowed">
+      <summary>HTTP 상태 405에 해당합니다.HTTP 상태 405에 해당합니다. <see cref="F:System.Net.HttpStatusCode.MethodNotAllowed" />는 요청된 리소스에서 요청 메서드(POST 또는 GET)를 사용할 수 없는 경우에 표시됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Moved">
+      <summary>HTTP 상태 301에 해당합니다.<see cref="F:System.Net.HttpStatusCode.Moved" />는 요청된 정보가 Location 헤더에 지정한 URI로 이동된 경우에 표시됩니다.이 상태가 반환되면 기본적으로 응답과 관련된 Location 헤더를 따릅니다.원래의 요청 메서드가 POST이면 리디렉션된 요청은 GET 메서드를 사용합니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.MovedPermanently">
+      <summary>HTTP 상태 301에 해당합니다.<see cref="F:System.Net.HttpStatusCode.MovedPermanently" />는 요청된 정보가 Location 헤더에 지정한 URI로 이동된 경우에 표시됩니다.이 상태가 반환되면 기본적으로 응답과 관련된 Location 헤더를 따릅니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.MultipleChoices">
+      <summary>HTTP 상태 300에 해당합니다.<see cref="F:System.Net.HttpStatusCode.MultipleChoices" />는 요청된 정보에 여러 가지 표현이 포함되어 있는 경우에 표시됩니다.기본적으로 이 상태는 리디렉션으로 처리되며 그 다음에 이 응답과 연결된 Location 헤더의 내용이 나옵니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.NoContent">
+      <summary>HTTP 상태 204에 해당합니다.<see cref="F:System.Net.HttpStatusCode.NoContent" />는 요청이 처리된 다음 응답이 빈 경우에 표시됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.NonAuthoritativeInformation">
+      <summary>HTTP 상태 203에 해당합니다.<see cref="F:System.Net.HttpStatusCode.NonAuthoritativeInformation" />은 메타 정보를 원본 서버 대신 캐시된 복사본에서 가져왔으므로 잘못될 수 있는 경우에 표시됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.NotAcceptable">
+      <summary>HTTP 상태 406에 해당합니다.<see cref="F:System.Net.HttpStatusCode.NotAcceptable" />은 클라이언트가 Accept 헤더를 사용하여 리소스의 사용 가능한 표현을 허용하지 않도록 지정한 경우에 표시됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.NotFound">
+      <summary>HTTP 상태 404에 해당합니다.<see cref="F:System.Net.HttpStatusCode.NotFound" />는 요청된 리소스가 서버에 없는 경우에 표시됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.NotImplemented">
+      <summary>HTTP 상태 501에 해당합니다.<see cref="F:System.Net.HttpStatusCode.NotImplemented" />는 서버에서 요청된 기능을 지원하지 않는 경우에 표시됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.NotModified">
+      <summary>HTTP 상태 304에 해당합니다.<see cref="F:System.Net.HttpStatusCode.NotModified" />는 클라이언트의 캐시된 복사본이 최신인 경우에 표시됩니다.리소스의 내용이 전송되지 않습니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.OK">
+      <summary>HTTP 상태 200에 해당합니다.<see cref="F:System.Net.HttpStatusCode.OK" />는 요청이 성공하여 요청된 정보가 응답 중인 경우에 표시됩니다.이 코드는 일반적으로 수신되는 상태 코드입니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.PartialContent">
+      <summary>HTTP 상태 206에 해당합니다.<see cref="F:System.Net.HttpStatusCode.PartialContent" />는 해당 응답이 바이트 범위가 포함된 GET 요청에서 요청한 부분 응답인 경우에 표시됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.PaymentRequired">
+      <summary>HTTP 상태 402에 해당합니다.<see cref="F:System.Net.HttpStatusCode.PaymentRequired" />는 나중에 사용하기 위해 예약되어 있습니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.PreconditionFailed">
+      <summary>HTTP 상태 412에 해당합니다.<see cref="F:System.Net.HttpStatusCode.PreconditionFailed" />는 이 요청에 대해 설정된 조건이 잘못되어 요청을 수행할 수 없는 경우에 표시됩니다.조건은 If-Match, If-None-Match 또는 If-Unmodified-Since 등의 조건 요청 헤더를 사용하여 설정됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.ProxyAuthenticationRequired">
+      <summary>HTTP 상태 407에 해당합니다.<see cref="F:System.Net.HttpStatusCode.ProxyAuthenticationRequired" />는 요청된 프록시에 인증이 필요한 경우에 표시됩니다.Proxy-authenticate 헤더에 자세한 인증 수행 방법이 포함되어 있습니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Redirect">
+      <summary>HTTP 상태 302에 해당합니다.<see cref="F:System.Net.HttpStatusCode.Redirect" />는 요청된 정보가 Location 헤더에 지정된 URI에 있는 경우에 표시됩니다.이 상태가 반환되면 기본적으로 응답과 관련된 Location 헤더를 따릅니다.원래의 요청 메서드가 POST이면 리디렉션된 요청은 GET 메서드를 사용합니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.RedirectKeepVerb">
+      <summary>HTTP 상태 307에 해당합니다.<see cref="F:System.Net.HttpStatusCode.RedirectKeepVerb" />는 요청 정보가 Location 헤더에 지정된 URI에 있는 경우에 표시됩니다.이 상태가 반환되면 기본적으로 응답과 관련된 Location 헤더를 따릅니다.원래의 요청 메서드가 POST이면 리디렉션된 요청도 POST 메서드를 사용합니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.RedirectMethod">
+      <summary>HTTP 상태 303에 해당합니다.<see cref="F:System.Net.HttpStatusCode.RedirectMethod" />는 POST를 수행하여 클라이언트를 Location 헤더에 지정된 URI로 자동으로 리디렉션합니다.Location 헤더에서 지정한 리소스에 대한 요청은 GET을 사용하여 수행됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.RequestedRangeNotSatisfiable">
+      <summary>HTTP 상태 416에 해당합니다.<see cref="F:System.Net.HttpStatusCode.RequestedRangeNotSatisfiable" />은 범위의 시작이 리소스의 시작 이전이거나 범위의 끝이 리소스의 끝 이후이므로 리소스에서 요청한 데이터 범위를 반환할 수 없는 경우에 표시됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.RequestEntityTooLarge">
+      <summary>HTTP 상태 413에 해당합니다.<see cref="F:System.Net.HttpStatusCode.RequestEntityTooLarge" />는 요청이 너무 많아 서버에서 처리할 수 없는 경우에 표시됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.RequestTimeout">
+      <summary>HTTP 상태 408에 해당합니다.<see cref="F:System.Net.HttpStatusCode.RequestTimeout" />은 서버에서 예상한 시간 안에 클라이언트에서 요청을 보내지 않은 경우에 표시됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.RequestUriTooLong">
+      <summary>HTTP 상태 414에 해당합니다.<see cref="F:System.Net.HttpStatusCode.RequestUriTooLong" />은 URI가 너무 긴 경우에 표시됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.ResetContent">
+      <summary>HTTP 상태 205에 해당합니다.<see cref="F:System.Net.HttpStatusCode.ResetContent" />는 클라이언트에서 현재 리소스를 다시 로드하는 것이 아니라 다시 설정해야 하는 경우에 표시됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.SeeOther">
+      <summary>HTTP 상태 303에 해당합니다.<see cref="F:System.Net.HttpStatusCode.SeeOther" />는 POST를 수행하여 클라이언트를 Location 헤더에 지정된 URI로 자동으로 리디렉션합니다.Location 헤더에서 지정한 리소스에 대한 요청은 GET을 사용하여 수행됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.ServiceUnavailable">
+      <summary>HTTP 상태 503에 해당합니다.<see cref="F:System.Net.HttpStatusCode.ServiceUnavailable" />은 일반적으로 로드가 많거나 유지 관리 문제 때문에 일시적으로 서버를 사용할 수 없는 경우에 표시됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.SwitchingProtocols">
+      <summary>HTTP 상태 101에 해당합니다.<see cref="F:System.Net.HttpStatusCode.SwitchingProtocols" />는 프로토콜 버전 또는 프로토콜을 변경 중인 경우에 표시됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.TemporaryRedirect">
+      <summary>HTTP 상태 307에 해당합니다.<see cref="F:System.Net.HttpStatusCode.TemporaryRedirect" />는 요청 정보가 Location 헤더에 지정된 URI에 있는 경우에 표시됩니다.이 상태가 반환되면 기본적으로 응답과 관련된 Location 헤더를 따릅니다.원래의 요청 메서드가 POST이면 리디렉션된 요청도 POST 메서드를 사용합니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Unauthorized">
+      <summary>HTTP 상태 401에 해당합니다.<see cref="F:System.Net.HttpStatusCode.Unauthorized" />는 요청된 리소스에 인증이 필요한 경우에 표시됩니다.WWW-Authenticate 헤더에 자세한 인증 수행 방법이 포함되어 있습니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.UnsupportedMediaType">
+      <summary>HTTP 상태 415에 해당합니다.<see cref="F:System.Net.HttpStatusCode.UnsupportedMediaType" />은 요청이 지원되지 않는 형식인 경우에 표시됩니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Unused">
+      <summary>HTTP 상태 306에 해당합니다.<see cref="F:System.Net.HttpStatusCode.Unused" />는 전체가 지정되지 않은 HTTP/1.1 사양에 대한 제안된 확장명입니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.UpgradeRequired">
+      <summary>HTTP 상태 426에 해당합니다.<see cref="F:System.Net.HttpStatusCode.UpgradeRequired" />는 클라이언트가 TLS/1.0 같은 다른 프로토콜로 전환해야 함을 나타냅니다.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.UseProxy">
+      <summary>HTTP 상태 305에 해당합니다.<see cref="F:System.Net.HttpStatusCode.UseProxy" />는 요청이 Location 헤더에 지정된 URI에 있는 프록시 서버를 사용해야 하는 경우에 표시됩니다.</summary>
+    </member>
+    <member name="T:System.Net.ICredentials">
+      <summary>웹 클라이언트 인증을 위한 자격 증명을 검색할 수 있는 기본 인증 인터페이스를 제공합니다.</summary>
+    </member>
+    <member name="M:System.Net.ICredentials.GetCredential(System.Uri,System.String)">
+      <summary>지정된 URI 및 인증 형식과 관련된 <see cref="T:System.Net.NetworkCredential" /> 개체를 반환합니다.</summary>
+      <returns>지정된 URI 및 인증 형식과 관련된 <see cref="T:System.Net.NetworkCredential" />입니다. 사용할 수 있는 자격 증명이 없으면 null입니다.</returns>
+      <param name="uri">클라이언트에서 인증을 제공하는 <see cref="T:System.Uri" />입니다. </param>
+      <param name="authType">
+        <see cref="P:System.Net.IAuthenticationModule.AuthenticationType" /> 속성에 정의된 것과 같은 인증 형식입니다. </param>
+    </member>
+    <member name="T:System.Net.ICredentialsByHost">
+      <summary>호스트, 포트 및 인증 형식에 대한 자격 증명을 검색할 수 있는 인터페이스를 제공합니다.</summary>
+    </member>
+    <member name="M:System.Net.ICredentialsByHost.GetCredential(System.String,System.Int32,System.String)">
+      <summary>지정된 호스트, 포트 및 인증 프로토콜에 대한 자격 증명을 반환합니다.</summary>
+      <returns>지정된 호스트, 포트 및 인증 프로토콜에 대한 <see cref="T:System.Net.NetworkCredential" />이거나, 지정된 호스트, 포트 및 인증 프로토콜에 대해 사용할 수 있는 자격 증명이 없는 경우 null입니다.</returns>
+      <param name="host">클라이언트를 인증할 호스트 컴퓨터입니다.</param>
+      <param name="port">클라이언트가 통신할 <paramref name="host" />의 포트입니다.</param>
+      <param name="authenticationType">인증 프로토콜입니다.</param>
+    </member>
+    <member name="T:System.Net.IPAddress">
+      <summary>IP(인터넷 프로토콜) 주소를 제공합니다.</summary>
+    </member>
+    <member name="M:System.Net.IPAddress.#ctor(System.Byte[])">
+      <summary>
+        <see cref="T:System.Byte" /> 배열로 지정된 주소를 사용하여 <see cref="T:System.Net.IPAddress" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="address">IP 주소의 바이트 배열 값입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="address" />가 null입니다. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="address" />에 잘못된 IP 주소가 포함되었습니다. </exception>
+    </member>
+    <member name="M:System.Net.IPAddress.#ctor(System.Byte[],System.Int64)">
+      <summary>
+        <see cref="T:System.Byte" /> 배열로 지정된 주소와 지정된 범위 식별자를 사용하여 <see cref="T:System.Net.IPAddress" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="address">IP 주소의 바이트 배열 값입니다. </param>
+      <param name="scopeid">범위 식별자의 long 값입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="address" />가 null입니다. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="address" />에 잘못된 IP 주소가 포함되었습니다. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="scopeid" /> &lt; 0 또는 <paramref name="scopeid" /> &gt; 0x00000000FFFFFFFF </exception>
+    </member>
+    <member name="M:System.Net.IPAddress.#ctor(System.Int64)">
+      <summary>
+        <see cref="T:System.Int64" />로 지정된 주소를 사용하여 <see cref="T:System.Net.IPAddress" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="newAddress">IP 주소의 long 값입니다.예를 들어, big-endian 형식의 0x2414188f 값은 IP 주소가 "143.24.20.36"입니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="newAddress" /> &lt; 0 또는 <paramref name="newAddress" /> &gt; 0x00000000FFFFFFFF </exception>
+    </member>
+    <member name="P:System.Net.IPAddress.AddressFamily">
+      <summary>IP 주소의 주소 패밀리를 가져옵니다.</summary>
+      <returns>IPv4에 대한 <see cref="F:System.Net.Sockets.AddressFamily.InterNetwork" /> 또는 IPv6에 대한 <see cref="F:System.Net.Sockets.AddressFamily.InterNetworkV6" />을 반환합니다.</returns>
+    </member>
+    <member name="F:System.Net.IPAddress.Any">
+      <summary>서버에서 모든 네트워크 인터페이스의 클라이언트 동작을 수신 대기해야 함을 나타내는 IP 주소를 제공합니다.이 필드는 읽기 전용입니다.</summary>
+    </member>
+    <member name="F:System.Net.IPAddress.Broadcast">
+      <summary>IP 브로드캐스트 주소를 제공합니다.이 필드는 읽기 전용입니다.</summary>
+    </member>
+    <member name="M:System.Net.IPAddress.Equals(System.Object)">
+      <summary>두 개의 IP 주소를 비교합니다.</summary>
+      <returns>두 개의 주소가 동일하면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="comparand">현재 인스턴스와 비교할 <see cref="T:System.Net.IPAddress" /> 인스턴스입니다. </param>
+    </member>
+    <member name="M:System.Net.IPAddress.GetAddressBytes">
+      <summary>
+        <see cref="T:System.Net.IPAddress" />의 복사본을 바이트 배열로 제공합니다.</summary>
+      <returns>
+        <see cref="T:System.Byte" /> 배열입니다.</returns>
+    </member>
+    <member name="M:System.Net.IPAddress.GetHashCode">
+      <summary>IP 주소에 대한 해시 값을 반환합니다.</summary>
+      <returns>정수 해시 값입니다.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.IPAddress.HostToNetworkOrder(System.Int16)">
+      <summary>short 값을 호스트 바이트 순서에서 네트워크 바이트 순서로 변환합니다.</summary>
+      <returns>네트워크 바이트 순서로 표현된 short 값입니다.</returns>
+      <param name="host">호스트 바이트 순서로 변환할 숫자입니다. </param>
+    </member>
+    <member name="M:System.Net.IPAddress.HostToNetworkOrder(System.Int32)">
+      <summary>정수 값을 호스트 바이트 순서에서 네트워크 바이트 순서로 변환합니다.</summary>
+      <returns>네트워크 바이트 순서로 표현된 정수 값입니다.</returns>
+      <param name="host">호스트 바이트 순서로 변환할 숫자입니다. </param>
+    </member>
+    <member name="M:System.Net.IPAddress.HostToNetworkOrder(System.Int64)">
+      <summary>호스트 바이트 순서에서 네트워크 바이트 순서로 long 값을 변환합니다.</summary>
+      <returns>네트워크 바이트 순서로 표현된 long 값입니다.</returns>
+      <param name="host">호스트 바이트 순서로 변환할 숫자입니다. </param>
+    </member>
+    <member name="F:System.Net.IPAddress.IPv6Any">
+      <summary>
+        <see cref="M:System.Net.Sockets.Socket.Bind(System.Net.EndPoint)" /> 메서드는 <see cref="F:System.Net.IPAddress.IPv6Any" /> 필드를 사용하여 <see cref="T:System.Net.Sockets.Socket" />이 모든 네트워크 인터페이스에서 클라이언트 동작을 수신 대기해야 함을 나타냅니다.</summary>
+    </member>
+    <member name="F:System.Net.IPAddress.IPv6Loopback">
+      <summary>IP 루프백 주소를 제공합니다.이 속성은 읽기 전용입니다.</summary>
+    </member>
+    <member name="F:System.Net.IPAddress.IPv6None">
+      <summary>네트워크 인터페이스를 사용하지 않아야 함을 나타내는 IP 주소를 제공합니다.이 속성은 읽기 전용입니다.</summary>
+    </member>
+    <member name="P:System.Net.IPAddress.IsIPv4MappedToIPv6">
+      <summary>IP 주소가 IPv4-매핑된 IPv6 주소인지 여부를 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Boolean" />를 반환합니다.IP 주소가 IPv4 매핑된 IPv6 주소이면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="P:System.Net.IPAddress.IsIPv6LinkLocal">
+      <summary>주소가 IPv6 링크 로컬 주소인지 여부를 가져옵니다.</summary>
+      <returns>IP 주소가 IPv6 링크 로컬 주소이면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="P:System.Net.IPAddress.IsIPv6Multicast">
+      <summary>주소가 IPv6 멀티캐스트 전역 주소인지 여부를 가져옵니다.</summary>
+      <returns>IP 주소가 IPv6 멀티캐스트 전역 주소이면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="P:System.Net.IPAddress.IsIPv6SiteLocal">
+      <summary>주소가 IPv6 사이트 로컬 주소인지 여부를 가져옵니다.</summary>
+      <returns>IP 주소가 IPv6 사이트 로컬 주소이면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="P:System.Net.IPAddress.IsIPv6Teredo">
+      <summary>주소가 IPv6 Teredo 주소인지 여부를 가져옵니다.</summary>
+      <returns>IP 주소가 IPv6 Teredo 주소이면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="M:System.Net.IPAddress.IsLoopback(System.Net.IPAddress)">
+      <summary>지정된 IP 주소가 루프백 주소인지 여부를 나타냅니다.</summary>
+      <returns>
+        <paramref name="address" />가 루프백 주소이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="address">IP 주소입니다. </param>
+    </member>
+    <member name="F:System.Net.IPAddress.Loopback">
+      <summary>IP 루프백 주소를 제공합니다.이 필드는 읽기 전용입니다.</summary>
+    </member>
+    <member name="M:System.Net.IPAddress.MapToIPv4">
+      <summary>
+        <see cref="T:System.Net.IPAddress" /> 개체를 IPv4 주소로 매핑합니다.</summary>
+      <returns>
+        <see cref="T:System.Net.IPAddress" />를 반환합니다.IPv4 주소입니다.</returns>
+    </member>
+    <member name="M:System.Net.IPAddress.MapToIPv6">
+      <summary>
+        <see cref="T:System.Net.IPAddress" /> 개체를 IPv6 주소로 매핑합니다.</summary>
+      <returns>
+        <see cref="T:System.Net.IPAddress" />를 반환합니다.IPv6 주소입니다.</returns>
+    </member>
+    <member name="M:System.Net.IPAddress.NetworkToHostOrder(System.Int16)">
+      <summary>short 값을 네트워크 바이트 순서에서 호스트 바이트 순서로 변환합니다.</summary>
+      <returns>호스트 바이트 순서로 표현된 short 값입니다.</returns>
+      <param name="network">네트워크 바이트 순서로 변환할 숫자입니다. </param>
+    </member>
+    <member name="M:System.Net.IPAddress.NetworkToHostOrder(System.Int32)">
+      <summary>정수 값을 네트워크 바이트 순서에서 호스트 바이트 순서로 변환합니다.</summary>
+      <returns>호스트 바이트 순서로 표현된 정수 값입니다.</returns>
+      <param name="network">네트워크 바이트 순서로 변환할 숫자입니다. </param>
+    </member>
+    <member name="M:System.Net.IPAddress.NetworkToHostOrder(System.Int64)">
+      <summary>long 값을 네트워크 바이트 순서에서 호스트 바이트 순서로 변환합니다.</summary>
+      <returns>호스트 바이트 순서로 표현된 long 값입니다.</returns>
+      <param name="network">네트워크 바이트 순서로 변환할 숫자입니다. </param>
+    </member>
+    <member name="F:System.Net.IPAddress.None">
+      <summary>네트워크 인터페이스를 사용하지 않아야 함을 나타내는 IP 주소를 제공합니다.이 필드는 읽기 전용입니다.</summary>
+    </member>
+    <member name="M:System.Net.IPAddress.Parse(System.String)">
+      <summary>IP 주소 문자열을 <see cref="T:System.Net.IPAddress" /> 인스턴스로 변환합니다.</summary>
+      <returns>
+        <see cref="T:System.Net.IPAddress" /> 인스턴스입니다.</returns>
+      <param name="ipString">IPv4의 경우 점 구분 네 자리 표기법으로 표현된 IP 주소를 포함하는 문자열이고, IPv6의 경우 콜론과 16진수 표기법으로 표현된 IP 주소를 포함하는 문자열입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="ipString" />가 null입니다. </exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="ipString" />이 유효한 IP 주소가 아닌 경우 </exception>
+    </member>
+    <member name="P:System.Net.IPAddress.ScopeId">
+      <summary>IPv6 주소 범위 식별자를 가져오거나 설정합니다.</summary>
+      <returns>주소의 범위를 지정하는 정수(Long)입니다.</returns>
+      <exception cref="T:System.Net.Sockets.SocketException">AddressFamily = InterNetwork. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="scopeId" /> &lt; 0-또는-<paramref name="scopeId" /> &gt; 0x00000000FFFFFFFF  </exception>
+    </member>
+    <member name="M:System.Net.IPAddress.ToString">
+      <summary>인터넷 주소를 표준 표기법으로 변환합니다.</summary>
+      <returns>IPv4의 경우 점 구분 네 자리 표기법으로 표현된 IP 주소를 포함하는 문자열이고, IPv6의 경우 콜론과 16진수 표기법으로 표현된 IP 주소를 포함하는 문자열입니다.</returns>
+      <exception cref="T:System.Net.Sockets.SocketException">주소 패밀리는 <see cref="F:System.Net.Sockets.AddressFamily.InterNetworkV6" />이며 주소가 잘못되었습니다. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.IPAddress.TryParse(System.String,System.Net.IPAddress@)">
+      <summary>문자열이 유효한 IP 주소인지 여부를 확인합니다.</summary>
+      <returns>
+        <paramref name="ipString" />이 유효한 IP 주소이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="ipString">유효성을 확인할 문자열입니다.</param>
+      <param name="address">문자열의 <see cref="T:System.Net.IPAddress" /> 버전입니다.</param>
+    </member>
+    <member name="T:System.Net.IPEndPoint">
+      <summary>네트워크 끝점을 IP 주소와 포트 번호로 나타냅니다.</summary>
+    </member>
+    <member name="M:System.Net.IPEndPoint.#ctor(System.Int64,System.Int32)">
+      <summary>지정된 주소와 포트 번호를 사용하여 <see cref="T:System.Net.IPEndPoint" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="address">인터넷 호스트의 IP 주소입니다. </param>
+      <param name="port">
+        <paramref name="address" />와 연결된 포트 번호이거나, 사용할 수 있는 포트를 지정할 경우 0입니다.<paramref name="port" />는 호스트 순서로 지정됩니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="port" />이 <see cref="F:System.Net.IPEndPoint.MinPort" />보다 작습니다.또는 <paramref name="port" />가 <see cref="F:System.Net.IPEndPoint.MaxPort" />보다 큰 경우또는 <paramref name="address" />가 0보다 작거나 0x00000000FFFFFFFF보다 큰 경우 </exception>
+    </member>
+    <member name="M:System.Net.IPEndPoint.#ctor(System.Net.IPAddress,System.Int32)">
+      <summary>지정된 주소와 포트 번호를 사용하여 <see cref="T:System.Net.IPEndPoint" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="address">
+        <see cref="T:System.Net.IPAddress" />입니다. </param>
+      <param name="port">
+        <paramref name="address" />와 연결된 포트 번호이거나, 사용할 수 있는 포트를 지정할 경우 0입니다.<paramref name="port" />는 호스트 순서로 지정됩니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="address" />가 null입니다.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="port" />이 <see cref="F:System.Net.IPEndPoint.MinPort" />보다 작습니다.또는 <paramref name="port" />가 <see cref="F:System.Net.IPEndPoint.MaxPort" />보다 큰 경우또는 <paramref name="address" />가 0보다 작거나 0x00000000FFFFFFFF보다 큰 경우 </exception>
+    </member>
+    <member name="P:System.Net.IPEndPoint.Address">
+      <summary>끝점의 IP 주소를 가져오거나 설정합니다.</summary>
+      <returns>끝점의 IP 주소가 포함된 <see cref="T:System.Net.IPAddress" /> 인스턴스입니다.</returns>
+    </member>
+    <member name="P:System.Net.IPEndPoint.AddressFamily">
+      <summary>IP(인터넷 프로토콜) 주소 패밀리를 가져옵니다.</summary>
+      <returns>
+        <see cref="F:System.Net.Sockets.AddressFamily.InterNetwork" />를 반환합니다.</returns>
+    </member>
+    <member name="M:System.Net.IPEndPoint.Create(System.Net.SocketAddress)">
+      <summary>소켓 주소를 사용하여 끝점을 만듭니다.</summary>
+      <returns>지정된 소켓 주소를 사용하는 <see cref="T:System.Net.EndPoint" /> 인스턴스입니다.</returns>
+      <param name="socketAddress">끝점에 사용할 <see cref="T:System.Net.SocketAddress" />입니다. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="socketAddress" />의 AddressFamily가 현재 인스턴스의 AddressFamily와 같지 않은 경우또는 <paramref name="socketAddress" /> 크기가 8보다 작은 경우 </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.IPEndPoint.Equals(System.Object)">
+      <summary>지정한 <see cref="T:System.Object" />가 현재 <see cref="T:System.Net.IPEndPoint" /> 인스턴스와 같은지 여부를 확인합니다.</summary>
+      <returns>지정한 개체가 현재 개체와 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="comparand">지정된 <see cref="T:System.Object" />와 현재 <see cref="T:System.Net.IPEndPoint" /> 인스턴스를 비교합니다.</param>
+    </member>
+    <member name="M:System.Net.IPEndPoint.GetHashCode">
+      <summary>
+        <see cref="T:System.Net.IPEndPoint" /> 인스턴스에 대한 해시 값을 반환합니다.</summary>
+      <returns>정수 해시 값입니다.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="F:System.Net.IPEndPoint.MaxPort">
+      <summary>
+        <see cref="P:System.Net.IPEndPoint.Port" /> 속성에 할당할 수 있는 최대값을 지정합니다.MaxPort 값은 0x0000FFFF로 설정됩니다.이 필드는 읽기 전용입니다.</summary>
+    </member>
+    <member name="F:System.Net.IPEndPoint.MinPort">
+      <summary>
+        <see cref="P:System.Net.IPEndPoint.Port" /> 속성에 할당할 수 있는 최소값을 지정합니다.이 필드는 읽기 전용입니다.</summary>
+    </member>
+    <member name="P:System.Net.IPEndPoint.Port">
+      <summary>끝점의 포트 번호를 가져오거나 설정합니다.</summary>
+      <returns>끝점의 포트 번호를 나타내는 <see cref="F:System.Net.IPEndPoint.MinPort" />에서 <see cref="F:System.Net.IPEndPoint.MaxPort" /> 범위의 정수 값입니다.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">set 작업에 대해 지정된 값이 <see cref="F:System.Net.IPEndPoint.MinPort" />보다 작거나 <see cref="F:System.Net.IPEndPoint.MaxPort" />보다 큰 경우 </exception>
+    </member>
+    <member name="M:System.Net.IPEndPoint.Serialize">
+      <summary>끝점 정보를 <see cref="T:System.Net.SocketAddress" /> 인스턴스로 serialize합니다.</summary>
+      <returns>끝점의 소켓 주소가 포함된 <see cref="T:System.Net.SocketAddress" /> 인스턴스입니다.</returns>
+    </member>
+    <member name="M:System.Net.IPEndPoint.ToString">
+      <summary>지정된 끝점의 IP 주소와 포트 번호를 반환합니다.</summary>
+      <returns>IP 주소 및 지정된 끝점의 포트 번호가 포함된 문자열입니다(예: 192.168.1.2:80).</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Net.IWebProxy">
+      <summary>
+        <see cref="T:System.Net.WebRequest" /> 클래스에 대한 프록시 액세스를 구현할 수 있는 기본 인터페이스를 제공합니다.</summary>
+    </member>
+    <member name="P:System.Net.IWebProxy.Credentials">
+      <summary>인증을 위해 프록시 서버에 제출할 자격 증명입니다.</summary>
+      <returns>프록시 서버에 대한 요청을 인증하는 데 필요한 자격 증명이 포함된 <see cref="T:System.Net.ICredentials" /> 인스턴스입니다.</returns>
+    </member>
+    <member name="M:System.Net.IWebProxy.GetProxy(System.Uri)">
+      <summary>프록시의 URI를 반환합니다.</summary>
+      <returns>
+        <paramref name="destination" />에 접속하는 데 사용되는 프록시의 URI가 포함된 <see cref="T:System.Uri" /> 인스턴스입니다.</returns>
+      <param name="destination">요청된 인터넷 리소스를 지정하는 <see cref="T:System.Uri" />입니다. </param>
+    </member>
+    <member name="M:System.Net.IWebProxy.IsBypassed(System.Uri)">
+      <summary>프록시를 지정된 호스트로 사용하지 말아야 함을 나타냅니다.</summary>
+      <returns>프록시 서버를 <paramref name="host" />로 사용하지 말아야 하면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="host">프록시 사용을 확인할 호스트의 <see cref="T:System.Uri" />입니다. </param>
+    </member>
+    <member name="T:System.Net.NetworkCredential">
+      <summary>기본, 다이제스트, NTLM 및 Kerberos 인증과 같은 암호 기반의 인증 체계에 자격 증명을 제공합니다.</summary>
+    </member>
+    <member name="M:System.Net.NetworkCredential.#ctor">
+      <summary>
+        <see cref="T:System.Net.NetworkCredential" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Net.NetworkCredential.#ctor(System.String,System.String)">
+      <summary>지정된 사용자 이름과 암호를 사용하여 <see cref="T:System.Net.NetworkCredential" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="userName">자격 증명과 관련된 사용자 이름입니다. </param>
+      <param name="password">자격 증명과 관련된 사용자 이름에 대한 암호입니다. </param>
+    </member>
+    <member name="M:System.Net.NetworkCredential.#ctor(System.String,System.String,System.String)">
+      <summary>지정된 사용자 이름, 암호 및 도메인을 사용하여 <see cref="T:System.Net.NetworkCredential" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="userName">자격 증명과 관련된 사용자 이름입니다. </param>
+      <param name="password">자격 증명과 관련된 사용자 이름에 대한 암호입니다. </param>
+      <param name="domain">이러한 자격 증명과 관련된 도메인입니다. </param>
+    </member>
+    <member name="P:System.Net.NetworkCredential.Domain">
+      <summary>자격 증명을 확인하는 도메인 또는 컴퓨터 이름을 가져오거나 설정합니다.</summary>
+      <returns>자격 증명과 관련된 도메인 이름입니다.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.NetworkCredential.GetCredential(System.String,System.Int32,System.String)">
+      <summary>지정된 호스트, 포트 및 인증 형식에 대한 <see cref="T:System.Net.NetworkCredential" /> 클래스의 인스턴스를 반환합니다.</summary>
+      <returns>지정된 호스트, 포트 및 인증 프로토콜에 대한 <see cref="T:System.Net.NetworkCredential" />이거나, 지정된 호스트, 포트 및 인증 프로토콜에 대해 사용할 수 있는 자격 증명이 없는 경우 null입니다.</returns>
+      <param name="host">클라이언트를 인증하는 호스트 컴퓨터입니다.</param>
+      <param name="port">클라이언트가 통신하는 <paramref name="host" />의 포트입니다.</param>
+      <param name="authenticationType">
+        <see cref="P:System.Net.IAuthenticationModule.AuthenticationType" /> 속성에 정의된 대로 요청된 인증 형식입니다. </param>
+    </member>
+    <member name="M:System.Net.NetworkCredential.GetCredential(System.Uri,System.String)">
+      <summary>지정된 URI(Uniform Resource Identifier) 및 인증 형식에 대한 <see cref="T:System.Net.NetworkCredential" /> 클래스의 인스턴스를 반환합니다.</summary>
+      <returns>
+        <see cref="T:System.Net.NetworkCredential" /> 개체</returns>
+      <param name="uri">클라이언트에서 인증을 제공하는 URI입니다. </param>
+      <param name="authType">
+        <see cref="P:System.Net.IAuthenticationModule.AuthenticationType" /> 속성에 정의된 대로 요청된 인증 형식입니다. </param>
+    </member>
+    <member name="P:System.Net.NetworkCredential.Password">
+      <summary>자격 증명과 관련된 사용자 이름에 대한 암호를 가져오거나 설정합니다.</summary>
+      <returns>자격 증명과 관련된 암호입니다.<paramref name="password" /> 매개 변수를 null로 설정하여 이 <see cref="T:System.Net.NetworkCredential" /> 인스턴스가 초기화된 경우 <see cref="P:System.Net.NetworkCredential.Password" /> 속성은 빈 문자열을 반환합니다.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Net.NetworkCredential.UserName">
+      <summary>자격 증명과 관련된 사용자 이름을 가져오거나 설정합니다.</summary>
+      <returns>자격 증명과 관련된 사용자 이름입니다.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Net.SocketAddress">
+      <summary>
+        <see cref="T:System.Net.EndPoint" /> 파생 클래스의 serialize된 정보를 저장합니다.</summary>
+    </member>
+    <member name="M:System.Net.SocketAddress.#ctor(System.Net.Sockets.AddressFamily)">
+      <summary>지정된 주소 패밀리에 대한 <see cref="T:System.Net.SocketAddress" /> 클래스의 새 인스턴스를 만듭니다.</summary>
+      <param name="family">
+        <see cref="T:System.Net.Sockets.AddressFamily" /> 열거형 값입니다. </param>
+    </member>
+    <member name="M:System.Net.SocketAddress.#ctor(System.Net.Sockets.AddressFamily,System.Int32)">
+      <summary>지정된 주소 패밀리와 버퍼 크기를 사용하여 <see cref="T:System.Net.SocketAddress" /> 클래스의 새 인스턴스를 만듭니다.</summary>
+      <param name="family">
+        <see cref="T:System.Net.Sockets.AddressFamily" /> 열거형 값입니다. </param>
+      <param name="size">내부 버퍼에 할당할 바이트 수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="size" />가 2보다 작은 경우이러한 2바이트는 <paramref name="family" />를 저장하는 데 필요합니다.</exception>
+    </member>
+    <member name="M:System.Net.SocketAddress.Equals(System.Object)">
+      <summary>지정한 <see cref="T:System.Object" />가 현재 <see cref="T:System.Net.SocketAddress" /> 인스턴스와 같은지 여부를 확인합니다.</summary>
+      <returns>지정한 개체가 현재 개체와 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="comparand">지정된 <see cref="T:System.Object" />와 현재 <see cref="T:System.Net.SocketAddress" /> 인스턴스를 비교합니다.</param>
+    </member>
+    <member name="P:System.Net.SocketAddress.Family">
+      <summary>현재 <see cref="T:System.Net.SocketAddress" />의 <see cref="T:System.Net.Sockets.AddressFamily" /> 열거형 값을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Net.Sockets.AddressFamily" /> 열거형 값 중 하나입니다.</returns>
+    </member>
+    <member name="M:System.Net.SocketAddress.GetHashCode">
+      <summary>특정 형식에 대한 해시 함수로 사용되며 해시 알고리즘 및 해시 테이블과 같은 데이터 구조에 사용하기 적당합니다.</summary>
+      <returns>현재 개체의 해시 코드입니다.</returns>
+    </member>
+    <member name="P:System.Net.SocketAddress.Item(System.Int32)">
+      <summary>내부 버퍼의 지정된 인덱스 요소를 가져오거나 설정합니다.</summary>
+      <returns>내부 버퍼의 지정된 인덱스 요소 값입니다.</returns>
+      <param name="offset">필요한 정보의 배열 인덱스 요소입니다. </param>
+      <exception cref="T:System.IndexOutOfRangeException">지정된 인덱스가 버퍼에 없는 경우 </exception>
+    </member>
+    <member name="P:System.Net.SocketAddress.Size">
+      <summary>
+        <see cref="T:System.Net.SocketAddress" />의 내부 버퍼 크기를 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Net.SocketAddress" />의 내부 버퍼 크기입니다.</returns>
+    </member>
+    <member name="M:System.Net.SocketAddress.ToString">
+      <summary>소켓 주소에 대한 정보를 반환합니다.</summary>
+      <returns>
+        <see cref="T:System.Net.SocketAddress" />에 대한 정보가 포함된 문자열입니다.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Net.TransportContext">
+      <summary>
+        <see cref="T:System.Net.TransportContext" /> 클래스는 내부 전송 계층에 대한 추가 컨텍스트를 제공합니다.</summary>
+    </member>
+    <member name="M:System.Net.TransportContext.#ctor">
+      <summary>
+        <see cref="T:System.Net.TransportContext" /> 클래스의 새 인스턴스를 만듭니다.</summary>
+    </member>
+    <member name="M:System.Net.TransportContext.GetChannelBinding(System.Security.Authentication.ExtendedProtection.ChannelBindingKind)">
+      <summary>요청된 채널 바인딩을 검색합니다. </summary>
+      <returns>요청된 <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding" />이거나, 현재 전송 또는 운영 체제에서 채널 바인딩을 지원하지 않을 경우 null입니다.</returns>
+      <param name="kind">검색할 채널 바인딩의 형식입니다.</param>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="kind" />는 <see cref="P:System.Net.HttpListenerRequest.TransportContext" /> 속성에서 검색된 <see cref="F:System.Security.Authentication.ExtendedProtection.ChannelBindingKind.Endpoint" />에 사용할 <see cref="T:System.Net.TransportContext" />가 되어야 합니다.</exception>
+    </member>
+    <member name="T:System.Net.NetworkInformation.IPAddressCollection">
+      <summary>
+        <see cref="T:System.Net.IPAddress" /> 형식의 집합을 저장합니다.</summary>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.#ctor">
+      <summary>
+        <see cref="T:System.Net.NetworkInformation.IPAddressCollection" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.Add(System.Net.IPAddress)">
+      <summary>이 작업이 이 컬렉션에 지원되지 않기 때문에 <see cref="T:System.NotSupportedException" />을 throw합니다.</summary>
+      <param name="address">컬렉션에 추가할 개체입니다.</param>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.Clear">
+      <summary>이 작업이 이 컬렉션에 지원되지 않기 때문에 <see cref="T:System.NotSupportedException" />을 throw합니다.</summary>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.Contains(System.Net.IPAddress)">
+      <summary>지정된 <see cref="T:System.Net.IPAddress" /> 개체가 컬렉션에 있는지 여부를 확인합니다.</summary>
+      <returns>
+        <see cref="T:System.Net.IPAddress" /> 개체가 컬렉션에 있으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="address">컬렉션에서 검색할 <see cref="T:System.Net.IPAddress" /> 개체입니다.</param>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.CopyTo(System.Net.IPAddress[],System.Int32)">
+      <summary>이 컬렉션의 요소를 <see cref="T:System.Net.IPAddress" /> 형식의 1차원 배열에 복사합니다.</summary>
+      <param name="array">컬렉션의 복사본을 받는 1차원 배열입니다.</param>
+      <param name="offset">
+        <paramref name="array" />에서 복사가 시작되는 인덱스(0부터 시작)입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" />가 null입니다. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" />가 0보다 작은 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" />가 다차원 배열인 경우또는 이 <see cref="T:System.Net.NetworkInformation.IPAddressCollection" />의 요소 수가 <paramref name="offset" />에서 대상 <paramref name="array" /> 끝까지 사용 가능한 공간보다 큰 경우 </exception>
+      <exception cref="T:System.InvalidCastException">이 <see cref="T:System.Net.NetworkInformation.IPAddressCollection" />의 요소를 대상 <paramref name="array" />의 형식으로 자동 캐스팅할 수 없는 경우 </exception>
+    </member>
+    <member name="P:System.Net.NetworkInformation.IPAddressCollection.Count">
+      <summary>이 컬렉션의 <see cref="T:System.Net.IPAddress" /> 형식 수를 가져옵니다.</summary>
+      <returns>이 컬렉션의 <see cref="T:System.Net.IPAddress" /> 형식 수가 포함된 <see cref="T:System.Int32" /> 값입니다.</returns>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.GetEnumerator">
+      <summary>이 컬렉션을 반복하는 데 사용할 수 있는 개체를 반환합니다.</summary>
+      <returns>
+        <see cref="T:System.Collections.IEnumerator" /> 인터페이스를 구현하고 이 컬렉션의 <see cref="T:System.Net.NetworkInformation.IPAddressCollection" /> 형식에 액세스할 수 있게 해 주는 개체입니다.</returns>
+    </member>
+    <member name="P:System.Net.NetworkInformation.IPAddressCollection.IsReadOnly">
+      <summary>이 컬렉션이 읽기 전용인지 여부를 나타내는 값을 가져옵니다.</summary>
+      <returns>모든 경우에 true를 반환합니다.</returns>
+    </member>
+    <member name="P:System.Net.NetworkInformation.IPAddressCollection.Item(System.Int32)">
+      <summary>컬렉션의 지정된 인덱스에 있는 <see cref="T:System.Net.IPAddress" />를 가져옵니다.</summary>
+      <returns>컬렉션의 지정된 인덱스에 있는 <see cref="T:System.Net.IPAddress" />입니다.</returns>
+      <param name="index">원하는 인덱스입니다.</param>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.Remove(System.Net.IPAddress)">
+      <summary>이 작업이 이 컬렉션에 지원되지 않기 때문에 <see cref="T:System.NotSupportedException" />을 throw합니다.</summary>
+      <returns>항상 <see cref="T:System.NotSupportedException" />을 throw합니다.</returns>
+      <param name="address">제거할 개체입니다.</param>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.System#Collections#IEnumerable#GetEnumerator">
+      <summary>이 컬렉션을 반복하는 데 사용할 수 있는 개체를 반환합니다.</summary>
+      <returns>
+        <see cref="T:System.Collections.IEnumerator" /> 인터페이스를 구현하고 이 컬렉션의 <see cref="T:System.Net.NetworkInformation.IPAddressCollection" /> 형식에 액세스할 수 있게 해 주는 개체입니다.</returns>
+    </member>
+    <member name="T:System.Net.Security.AuthenticationLevel">
+      <summary>
+        <see cref="T:System.Net.WebRequest" /> 클래스와 이 클래스에서 파생된 클래스를 사용하여 리소스를 요청할 때 인증 및 가장에 대한 클라이언트 요구 사항을 지정합니다.</summary>
+    </member>
+    <member name="F:System.Net.Security.AuthenticationLevel.MutualAuthRequested">
+      <summary>클라이언트와 서버를 인증해야 합니다.서버가 인증되지 않아도 요청이 실패하지는 않습니다.상호 인증이 발생했는지 여부를 확인하려면 <see cref="P:System.Net.WebResponse.IsMutuallyAuthenticated" /> 속성 값을 확인합니다.</summary>
+    </member>
+    <member name="F:System.Net.Security.AuthenticationLevel.MutualAuthRequired">
+      <summary>클라이언트와 서버를 인증해야 합니다.서버가 인증되지 않은 경우 응용 프로그램에서는 상호 인증이 실패했음을 나타내는 <see cref="T:System.Net.ProtocolViolationException" /> 내부 예외와 함께 <see cref="T:System.IO.IOException" />을 받습니다.</summary>
+    </member>
+    <member name="F:System.Net.Security.AuthenticationLevel.None">
+      <summary>클라이언트와 서버에 대한 인증이 필요 없습니다.</summary>
+    </member>
+    <member name="T:System.Net.Security.SslPolicyErrors">
+      <summary>SSL(Secure Socket Layer) 정책 오류를 열거합니다.</summary>
+    </member>
+    <member name="F:System.Net.Security.SslPolicyErrors.None">
+      <summary>SSL 정책 오류가 없습니다.</summary>
+    </member>
+    <member name="F:System.Net.Security.SslPolicyErrors.RemoteCertificateChainErrors">
+      <summary>
+        <see cref="P:System.Security.Cryptography.X509Certificates.X509Chain.ChainStatus" />가 비어 있지 않은 배열을 반환했습니다.</summary>
+    </member>
+    <member name="F:System.Net.Security.SslPolicyErrors.RemoteCertificateNameMismatch">
+      <summary>인증서 이름이 일치하지 않습니다.</summary>
+    </member>
+    <member name="F:System.Net.Security.SslPolicyErrors.RemoteCertificateNotAvailable">
+      <summary>인증서를 사용할 수 없습니다.</summary>
+    </member>
+    <member name="T:System.Net.Sockets.AddressFamily">
+      <summary>
+        <see cref="T:System.Net.Sockets.Socket" /> 클래스의 인스턴스가 사용할 수 있는 주소 지정 체계를 지정합니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.AppleTalk">
+      <summary>AppleTalk 주소입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Atm">
+      <summary>Native ATM 서비스 주소입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Banyan">
+      <summary>Banyan 주소입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Ccitt">
+      <summary>X.25와 같은 CCITT 프로토콜에 대한 주소입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Chaos">
+      <summary>MIT CHAOS 프로토콜에 대한 주소입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Cluster">
+      <summary>Microsoft 클러스터 제품들에 대한 주소입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.DataKit">
+      <summary>Datakit 프로토콜에 대한 주소입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.DataLink">
+      <summary>직접 데이터 링크 인터페이스 주소입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.DecNet">
+      <summary>DECnet 주소입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Ecma">
+      <summary>ECMA(European Computer Manufacturers Association) 주소입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.FireFox">
+      <summary>FireFox 주소입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.HyperChannel">
+      <summary>NSC Hyperchannel 주소입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Ieee12844">
+      <summary>IEEE 1284.4 작업 그룹 주소입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.ImpLink">
+      <summary>ARPANET IMP 주소입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.InterNetwork">
+      <summary>IP 버전 4.에 대한 주소입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.InterNetworkV6">
+      <summary>IP 버전 6.에 대한 주소입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Ipx">
+      <summary>IPX 또는 SPX 주소입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Irda">
+      <summary>IrDA 주소입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Iso">
+      <summary>ISO 프로토콜에 대한 주소입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Lat">
+      <summary>LAT 주소입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.NetBios">
+      <summary>NetBios 주소입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.NetworkDesigners">
+      <summary>Network Designers OSI 게이트웨이 사용 프로토콜에 대한 주소입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.NS">
+      <summary>Xerox NS 프로토콜에 대한 주소입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Osi">
+      <summary>OSI 프로토콜에 대한 주소입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Pup">
+      <summary>PUP 프로토콜에 대한 주소입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Sna">
+      <summary>IBM SNA 주소입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Unix">
+      <summary>호스트에 대한 로컬 Unix 주소입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Unknown">
+      <summary>알 수 없는 주소 패밀리 입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Unspecified">
+      <summary>지정되지 않은 주소 패밀리입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.VoiceView">
+      <summary>VoiceView 주소입니다.</summary>
+    </member>
+    <member name="T:System.Net.Sockets.SocketError">
+      <summary>
+        <see cref="T:System.Net.Sockets.Socket" /> 클래스에 대한 오류 코드를 정의합니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.AccessDenied">
+      <summary>지정된 액세스 권한에서 허용하지 않는 방식으로 <see cref="T:System.Net.Sockets.Socket" />에 액세스하려고 시도했습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.AddressAlreadyInUse">
+      <summary>일반적으로 같은 주소는 한 번만 사용할 수 있습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.AddressFamilyNotSupported">
+      <summary>지정된 주소 패밀리가 지원되지 않습니다.IPv6 주소 패밀리가 지정되었는데 IPv6 스택이 로컬 컴퓨터에 설치되어 있지 않은 경우 이 오류가 반환됩니다.또한 IPv4 주소 패밀리가 지정되었는데 IPv4 스택이 로컬 컴퓨터에 설치되어 있지 않은 경우에도 이 오류가 반환됩니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.AddressNotAvailable">
+      <summary>선택한 IP 주소가 이 컨텍스트에서 유효하지 않습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.AlreadyInProgress">
+      <summary>비블로킹 <see cref="T:System.Net.Sockets.Socket" /> 작업이 이미 진행 중입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ConnectionAborted">
+      <summary>.NET Framework 또는 내부 소켓 공급자에 의해 연결이 끊어졌습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ConnectionRefused">
+      <summary>원격 호스트가 연결을 거부했습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ConnectionReset">
+      <summary>원격 피어가 연결을 다시 설정했습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.DestinationAddressRequired">
+      <summary>
+        <see cref="T:System.Net.Sockets.Socket" /> 작업에 필수 주소가 누락되었습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.Disconnecting">
+      <summary>정상적으로 종료하는 중입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.Fault">
+      <summary>내부 소켓 공급자에서 잘못된 포인터 주소를 발견했습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.HostDown">
+      <summary>원격 호스트가 다운되어 작업이 실패했습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.HostNotFound">
+      <summary>호스트를 확인할 수 없습니다.이름이 공식 호스트 이름 또는 별칭이 아닙니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.HostUnreachable">
+      <summary>지정된 호스트에 대한 네트워크 경로가 존재하지 않습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.InProgress">
+      <summary>블로킹 작업이 진행 중입니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.Interrupted">
+      <summary>블로킹 <see cref="T:System.Net.Sockets.Socket" /> 호출이 취소되었습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.InvalidArgument">
+      <summary>
+        <see cref="T:System.Net.Sockets.Socket" /> 멤버에 잘못된 인수를 지정했습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.IOPending">
+      <summary>응용 프로그램에서 즉시 완료할 수 없는 겹쳐진 작업을 시작했습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.IsConnected">
+      <summary>
+        <see cref="T:System.Net.Sockets.Socket" />이 이미 연결되어 있습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.MessageSize">
+      <summary>데이터그램이 너무 깁니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NetworkDown">
+      <summary>네트워크를 사용할 수 없는 경우</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NetworkReset">
+      <summary>응용 프로그램에서 시간이 초과된 연결에 <see cref="F:System.Net.Sockets.SocketOptionName.KeepAlive" />를 설정하려고 했습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NetworkUnreachable">
+      <summary>원격 호스트의 경로가 존재하지 않습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NoBufferSpaceAvailable">
+      <summary>
+        <see cref="T:System.Net.Sockets.Socket" /> 작업에 사용할 수 있는 여유 버퍼 공간이 없습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NoData">
+      <summary>요청된 이름 또는 IP 주소를 이름 서버에서 찾을 수 없습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NoRecovery">
+      <summary>오류를 복구할 수 없거나 요청된 데이터베이스를 찾을 수 없습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NotConnected">
+      <summary>
+        <see cref="T:System.Net.Sockets.Socket" />이 연결되지 않은 상태로 응용 프로그램에서 데이터를 보내고 받으려고 했습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NotInitialized">
+      <summary>내부 소켓 공급자가 초기화되지 않았습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NotSocket">
+      <summary>소켓이 아닌 위치에서 <see cref="T:System.Net.Sockets.Socket" /> 작업을 시도했습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.OperationAborted">
+      <summary>
+        <see cref="T:System.Net.Sockets.Socket" />을 닫아서 겹쳐진 작업이 중단되었습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.OperationNotSupported">
+      <summary>주소 패밀리가 프로토콜 패밀리에서 지원되지 않습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ProcessLimit">
+      <summary>내부 소켓 공급자를 사용하는 프로세스가 너무 많습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ProtocolFamilyNotSupported">
+      <summary>프로토콜 패밀리가 구현되지 않거나 구성되지 않았습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ProtocolNotSupported">
+      <summary>프로토콜이 구현되지 않거나 구성되지 않았습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ProtocolOption">
+      <summary>알 수 없거나, 잘못되거나, 지원되지 않는 옵션 또는 수준을 <see cref="T:System.Net.Sockets.Socket" />에 사용했습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ProtocolType">
+      <summary>이 <see cref="T:System.Net.Sockets.Socket" />의 프로토콜 형식이 잘못되었습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.Shutdown">
+      <summary>
+        <see cref="T:System.Net.Sockets.Socket" />이 이미 닫혔기 때문에 데이터를 보내거나 받기 위한 요청이 거부되었습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.SocketError">
+      <summary>지정되지 않은 <see cref="T:System.Net.Sockets.Socket" /> 오류가 발생했습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.SocketNotSupported">
+      <summary>이 주소 패밀리에서는 지정된 소켓 형식이 지원되지 않습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.Success">
+      <summary>
+        <see cref="T:System.Net.Sockets.Socket" /> 작업을 성공적으로 완료했습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.SystemNotReady">
+      <summary>네트워크 하위 시스템을 사용할 수 없습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.TimedOut">
+      <summary>연결 시도 제한 시간이 초과되었거나 연결된 호스트에서 응답하지 않습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.TooManyOpenSockets">
+      <summary>내부 소켓 공급자에 열려 있는 소켓이 너무 많습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.TryAgain">
+      <summary>호스트 이름을 확인할 수 없습니다.나중에 다시 시도하십시오.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.TypeNotFound">
+      <summary>지정된 클래스를 찾을 수 없습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.VersionNotSupported">
+      <summary>내부 소켓 공급자의 버전이 범위를 벗어났습니다.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.WouldBlock">
+      <summary>비블로킹 소켓에 대한 작업을 즉시 완료할 수 없습니다.</summary>
+    </member>
+    <member name="T:System.Net.Sockets.SocketException">
+      <summary>소켓 오류가 발생할 때 발생되는 예외입니다.</summary>
+    </member>
+    <member name="M:System.Net.Sockets.SocketException.#ctor">
+      <summary>마지막으로 발생한 운영 체제 오류 코드를 사용하여 <see cref="T:System.Net.Sockets.SocketException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Net.Sockets.SocketException.#ctor(System.Int32)">
+      <summary>지정된 오류 코드를 사용하여 <see cref="T:System.Net.Sockets.SocketException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="errorCode">발생한 오류를 나타내는 오류 코드입니다. </param>
+    </member>
+    <member name="P:System.Net.Sockets.SocketException.Message">
+      <summary>이 예외와 관련된 오류 메시지를 가져옵니다.</summary>
+      <returns>오류 메시지를 포함하는 문자열입니다. </returns>
+    </member>
+    <member name="P:System.Net.Sockets.SocketException.SocketErrorCode">
+      <summary>이 예외와 관련된 오류 코드를 가져옵니다.</summary>
+      <returns>이 예외와 관련된 정수 오류 코드입니다.</returns>
+    </member>
+    <member name="T:System.Security.Authentication.CipherAlgorithmType">
+      <summary>
+        <see cref="T:System.Net.Security.SslStream" /> 클래스에 대해 적절한 암호화 알고리즘을 정의합니다.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Aes">
+      <summary>AES(고급 암호화 표준) 알고리즘입니다.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Aes128">
+      <summary>128비트 키의 AES(고급 암호화 표준) 알고리즘입니다.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Aes192">
+      <summary>192비트 키의 AES(고급 암호화 표준) 알고리즘입니다.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Aes256">
+      <summary>256비트 키의 AES(고급 암호화 표준) 알고리즘입니다.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Des">
+      <summary>DES(데이터 암호화 표준) 알고리즘입니다.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.None">
+      <summary>사용되는 암호화 알고리즘이 없습니다.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Null">
+      <summary>Null 암호화 알고리즘에는 암호화가 사용되지 않습니다. </summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Rc2">
+      <summary>RC2(Rivest's Code 2) 알고리즘입니다.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Rc4">
+      <summary>RC4(Rivest's Code 4) 알고리즘입니다.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.TripleDes">
+      <summary>3DES(3중 데이터 암호화 표준) 알고리즘입니다.</summary>
+    </member>
+    <member name="T:System.Security.Authentication.ExchangeAlgorithmType">
+      <summary>클라이언트와 서버가 공유하는 키를 만드는 데 사용되는 알고리즘을 지정합니다.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExchangeAlgorithmType.DiffieHellman">
+      <summary>Diffie Hellman 임시 키 교환 알고리즘입니다.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExchangeAlgorithmType.None">
+      <summary>사용되는 키 교환 알고리즘이 없습니다.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExchangeAlgorithmType.RsaKeyX">
+      <summary>RSA 공개 키 교환 알고리즘입니다.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExchangeAlgorithmType.RsaSign">
+      <summary>RSA 공개 키 서명 알고리즘입니다.</summary>
+    </member>
+    <member name="T:System.Security.Authentication.HashAlgorithmType">
+      <summary>MAC(메시지 인증 코드)를 생성하는 데 사용되는 알고리즘을 지정합니다.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.HashAlgorithmType.Md5">
+      <summary>MD5(메시지 다이제스트 5) 해시 알고리즘입니다.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.HashAlgorithmType.None">
+      <summary>사용되는 해시 알고리즘이 없습니다.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.HashAlgorithmType.Sha1">
+      <summary>SHA1(Secure Hashing Algorithm)입니다.</summary>
+    </member>
+    <member name="T:System.Security.Authentication.SslProtocols">
+      <summary>
+        <see cref="T:System.Security.Authentication.SslProtocols" />의 가능한 버전을 정의합니다.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.SslProtocols.None">
+      <summary>지정된 SSL 프로토콜이 없습니다.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.SslProtocols.Ssl2">
+      <summary>SSL 2.0 프로토콜을 지정합니다.SSL 2.0은 TLS 프로토콜로 대체되었으며 이전 버전과의 호환성을 위해서만 제공됩니다.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.SslProtocols.Ssl3">
+      <summary>SSL 3.0 프로토콜을 지정합니다.SSL 3.0은 TLS 프로토콜로 대체되었으며 이전 버전과의 호환성을 위해서만 제공됩니다.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.SslProtocols.Tls">
+      <summary>TLS 1.0 보안 프로토콜을 지정합니다.TLS 프로토콜은 IETF RFC 2246에 정의되어 있습니다.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.SslProtocols.Tls11">
+      <summary>TLS 1.1 보안 프로토콜을 지정합니다.TLS 프로토콜은 IETF RFC 4346에 정의되어 있습니다.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.SslProtocols.Tls12">
+      <summary>TLS 1.2 보안 프로토콜을 지정합니다.TLS 프로토콜은 IETF RFC 5246에 정의되어 있습니다.</summary>
+    </member>
+    <member name="T:System.Security.Authentication.ExtendedProtection.ChannelBinding">
+      <summary>
+        <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding" /> 클래스는 인증된 트랜잭션을 보안 채널에 바인딩하는 데 사용되는 불투명 데이터에 대한 포인터를 캡슐화합니다.</summary>
+    </member>
+    <member name="M:System.Security.Authentication.ExtendedProtection.ChannelBinding.#ctor">
+      <summary>
+        <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Security.Authentication.ExtendedProtection.ChannelBinding.#ctor(System.Boolean)">
+      <summary>
+        <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="ownsHandle">Windows 통합 인증에 확장 보호를 제공하는 네이티브 호출로 전달될 바이트 데이터가 들어 있는 네이티브 메모리 영역에 대한 SafeHandle을 응용 프로그램이 소유하고 있는지 여부를 나타내는 부울 값입니다.</param>
+    </member>
+    <member name="P:System.Security.Authentication.ExtendedProtection.ChannelBinding.Size">
+      <summary>
+        <see cref="P:System.Security.Authentication.ExtendedProtection.ChannelBinding.Size" /> 속성은 <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding" /> 인스턴스와 연결된 채널 바인딩 토큰의 크기를 바이트 단위로 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding" /> 인스턴스에 있는 채널 바인딩 토큰의 크기(바이트)입니다.</returns>
+    </member>
+    <member name="T:System.Security.Authentication.ExtendedProtection.ChannelBindingKind">
+      <summary>
+        <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBindingKind" /> 열거형은 보안 채널에서 쿼리할 수 있는 채널 바인딩의 종류를 나타냅니다.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExtendedProtection.ChannelBindingKind.Endpoint">
+      <summary>지정된 끝점에 고유한 채널 바인딩입니다(예: TLS 서버 인증서).</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExtendedProtection.ChannelBindingKind.Unique">
+      <summary>지정된 채널에 완전히 고유한 채널 바인딩입니다(예: TLS 세션 키).</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExtendedProtection.ChannelBindingKind.Unknown">
+      <summary>알 수 없는 채널 바인딩 형식입니다.</summary>
+    </member>
+  </members>
+</doc>

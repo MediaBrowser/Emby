@@ -1,0 +1,481 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Console</name>
+  </assembly>
+  <members>
+    <member name="T:System.Console">
+      <summary>表示控制台应用程序的标准输入流、输出流和错误流。此类不能被继承。若要浏览此类型的.NET Framework 源代码，请参阅 Reference Source。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Console.BackgroundColor">
+      <summary>获取或设置控制台的背景色。</summary>
+      <returns>一个值，指定控制台的背景色；也就是显示在每个字符后面的颜色。默认为黑色。</returns>
+      <exception cref="T:System.ArgumentException">在 Set 操作中指定的颜色不是 <see cref="T:System.ConsoleColor" /> 的有效成员。</exception>
+      <exception cref="T:System.Security.SecurityException">该用户没有执行此操作的权限。</exception>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Window="SafeTopLevelWindows" />
+      </PermissionSet>
+    </member>
+    <member name="E:System.Console.CancelKeyPress">
+      <summary>当 <see cref="F:System.ConsoleModifiers.Control" /> 修改键 (Ctrl) 和 <see cref="F:System.ConsoleKey.C" /> console 键 (C) 或 Break 键同时按住（Ctrl+C 或 Ctrl+Break）时发生。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Console.Error">
+      <summary>获取标准错误输出流。</summary>
+      <returns>表示标准错误输出流的 <see cref="T:System.IO.TextWriter" />。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Console.ForegroundColor">
+      <summary>获取或设置控制台的前景色。</summary>
+      <returns>一个 <see cref="T:System.ConsoleColor" />，指定控制台的前景色；也就是显示的每个字符的颜色。默认为灰色。</returns>
+      <exception cref="T:System.ArgumentException">在 Set 操作中指定的颜色不是 <see cref="T:System.ConsoleColor" /> 的有效成员。</exception>
+      <exception cref="T:System.Security.SecurityException">该用户没有执行此操作的权限。</exception>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Window="SafeTopLevelWindows" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Console.In">
+      <summary>获取标准输入流。</summary>
+      <returns>表示标准输入流的 <see cref="T:System.IO.TextReader" />。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.OpenStandardError">
+      <summary>获取标准错误流。</summary>
+      <returns>标准错误流。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.OpenStandardInput">
+      <summary>获取标准输入流。</summary>
+      <returns>标准输入流。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.OpenStandardOutput">
+      <summary>获取标准输出流。</summary>
+      <returns>标准输出流。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Console.Out">
+      <summary>获取标准输出流。</summary>
+      <returns>表示标准输出流的 <see cref="T:System.IO.TextWriter" />。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Read">
+      <summary>从标准输入流读取下一个字符。</summary>
+      <returns>输入流中的下一个字符；如果当前没有更多的字符可供读取，则为负一 (-1)。</returns>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.ReadLine">
+      <summary>从标准输入流读取下一行字符。</summary>
+      <returns>输入流中的下一行字符；如果没有更多的可用行，则为 null。</returns>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <exception cref="T:System.OutOfMemoryException">内存不足，无法为返回的字符串分配缓冲区。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">下一行字符中的字符数大于 <see cref="F:System.Int32.MaxValue" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.ResetColor">
+      <summary>将控制台的前景色和背景色设置为默认值。</summary>
+      <exception cref="T:System.Security.SecurityException">该用户没有执行此操作的权限。</exception>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Window="SafeTopLevelWindows" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Console.SetError(System.IO.TextWriter)">
+      <summary>将 <see cref="P:System.Console.Error" /> 属性设置为指定的 <see cref="T:System.IO.TextWriter" /> 对象。</summary>
+      <param name="newError">一个流，它是新的标准错误输出。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="newError" /> 为 null。</exception>
+      <exception cref="T:System.Security.SecurityException">调用方没有所要求的权限。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Console.SetIn(System.IO.TextReader)">
+      <summary>将 <see cref="P:System.Console.In" /> 属性设置为指定的 <see cref="T:System.IO.TextReader" /> 对象。</summary>
+      <param name="newIn">一个流，它是新的标准输入。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="newIn" /> 为 null。</exception>
+      <exception cref="T:System.Security.SecurityException">调用方没有所要求的权限。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Console.SetOut(System.IO.TextWriter)">
+      <summary>将 <see cref="P:System.Console.Out" /> 属性设置为指定的 <see cref="T:System.IO.TextWriter" /> 对象。</summary>
+      <param name="newOut">一个流，它是新的标准输出。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="newOut" /> 为 null。</exception>
+      <exception cref="T:System.Security.SecurityException">调用方没有所要求的权限。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Console.Write(System.Boolean)">
+      <summary>将指定的布尔值的文本表示形式写入标准输出流。</summary>
+      <param name="value">要写入的值。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Char)">
+      <summary>将指定的 Unicode 字符值写入标准输出流。</summary>
+      <param name="value">要写入的值。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Char[])">
+      <summary>将指定的 Unicode 字符数组写入标准输出流。</summary>
+      <param name="buffer">Unicode 字符数组。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Char[],System.Int32,System.Int32)">
+      <summary>将指定的 Unicode 字符子数组写入标准输出流。</summary>
+      <param name="buffer">Unicode 字符的数组。</param>
+      <param name="index">
+        <paramref name="buffer" /> 中的起始位置。</param>
+      <param name="count">要写入的字符数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> 或 <paramref name="count" /> 小于零。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> 和 <paramref name="count" /> 共同指定一个不在 <paramref name="buffer" /> 中的位置。</exception>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Decimal)">
+      <summary>将指定的 <see cref="T:System.Decimal" /> 值的文本表示形式写入标准输出流。</summary>
+      <param name="value">要写入的值。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Double)">
+      <summary>将指定的双精度浮点值的文本表示形式写入标准输出流。</summary>
+      <param name="value">要写入的值。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Int32)">
+      <summary>将指定的 32 位有符号整数值的文本表示写入标准输出流。</summary>
+      <param name="value">要写入的值。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Int64)">
+      <summary>将指定的 64 位有符号整数值的文本表示写入标准输出流。</summary>
+      <param name="value">要写入的值。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Object)">
+      <summary>将指定对象的文本表示形式写入标准输出流。</summary>
+      <param name="value">要写入的值，或者为 null。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Single)">
+      <summary>将指定的单精度浮点值的文本表示形式写入标准输出流。</summary>
+      <param name="value">要写入的值。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String)">
+      <summary>将指定的字符串值写入标准输出流。</summary>
+      <param name="value">要写入的值。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String,System.Object)">
+      <summary>使用指定的格式信息将指定对象的文本表示形式写入标准输出流。</summary>
+      <param name="format">复合格式字符串（请参见“备注”）。</param>
+      <param name="arg0">要使用 <paramref name="format" /> 写入的对象。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> 为 null。</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> 中的格式规范无效。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String,System.Object,System.Object)">
+      <summary>使用指定的格式信息将指定对象的文本表示形式写入标准输出流。</summary>
+      <param name="format">复合格式字符串（请参见“备注”）。</param>
+      <param name="arg0">要使用 <paramref name="format" /> 写入的第一个对象。</param>
+      <param name="arg1">要使用 <paramref name="format" /> 写入的第二个对象。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> 为 null。</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> 中的格式规范无效。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String,System.Object,System.Object,System.Object)">
+      <summary>使用指定的格式信息将指定对象的文本表示形式写入标准输出流。</summary>
+      <param name="format">复合格式字符串（请参见“备注”）。</param>
+      <param name="arg0">要使用 <paramref name="format" /> 写入的第一个对象。</param>
+      <param name="arg1">要使用 <paramref name="format" /> 写入的第二个对象。</param>
+      <param name="arg2">要使用 <paramref name="format" /> 写入的第三个对象。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> 为 null。</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> 中的格式规范无效。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String,System.Object[])">
+      <summary>使用指定的格式信息将指定的对象数组的文本表示形式写入标准输出流。</summary>
+      <param name="format">复合格式字符串（请参见“备注”）。</param>
+      <param name="arg">要使用 <paramref name="format" /> 写入的对象的数组。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> 或 <paramref name="arg" /> 为 null。</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> 中的格式规范无效。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.UInt32)">
+      <summary>将指定的 32 位无符号整数值的文本表示写入标准输出流。</summary>
+      <param name="value">要写入的值。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.UInt64)">
+      <summary>将指定的 64 位无符号整数值的文本表示写入标准输出流。</summary>
+      <param name="value">要写入的值。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine">
+      <summary>将当前行终止符写入标准输出流。</summary>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Boolean)">
+      <summary>将指定布尔值的文本表示形式（后跟当前行终止符）写入标准输出流。</summary>
+      <param name="value">要写入的值。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Char)">
+      <summary>将指定的 Unicode 字符值（后跟当前行终止符）写入标准输出流。</summary>
+      <param name="value">要写入的值。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Char[])">
+      <summary>将指定的 Unicode 字符数组（后跟当前行终止符）写入标准输出流。</summary>
+      <param name="buffer">Unicode 字符数组。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Char[],System.Int32,System.Int32)">
+      <summary>将指定的 Unicode 字符子数组（后跟当前行终止符）写入标准输出流。</summary>
+      <param name="buffer">Unicode 字符的数组。</param>
+      <param name="index">
+        <paramref name="buffer" /> 中的起始位置。</param>
+      <param name="count">要写入的字符数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> 或 <paramref name="count" /> 小于零。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> 和 <paramref name="count" /> 共同指定一个不在 <paramref name="buffer" /> 中的位置。</exception>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Decimal)">
+      <summary>将指定的 <see cref="T:System.Decimal" /> 值的文本表示形式（后跟当前行终止符）写入标准输出流。</summary>
+      <param name="value">要写入的值。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Double)">
+      <summary>将指定的双精度浮点值的文本表示形式（后跟当前行终止符）写入标准输出流。</summary>
+      <param name="value">要写入的值。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Int32)">
+      <summary>将指定的 32 位有符号整数值的文本表示（后跟当前行的结束符）写入标准输出流。</summary>
+      <param name="value">要写入的值。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Int64)">
+      <summary>将指定的 64 位有符号整数值的文本表示（后跟当前行的结束符）写入标准输出流。</summary>
+      <param name="value">要写入的值。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Object)">
+      <summary>将指定对象的文本表示形式（后跟当前行终止符）写入标准输出流。</summary>
+      <param name="value">要写入的值。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Single)">
+      <summary>将指定的单精度浮点值的文本表示形式（后跟当前行终止符）写入标准输出流。</summary>
+      <param name="value">要写入的值。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String)">
+      <summary>将指定的字符串值（后跟当前行终止符）写入标准输出流。</summary>
+      <param name="value">要写入的值。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String,System.Object)">
+      <summary>使用指定的格式信息，将指定对象（后跟当前行终止符）的文本表示形式写入标准输出流。</summary>
+      <param name="format">复合格式字符串（请参见“备注”）。</param>
+      <param name="arg0">要使用 <paramref name="format" /> 写入的对象。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> 为 null。</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> 中的格式规范无效。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String,System.Object,System.Object)">
+      <summary>使用指定的格式信息，将指定对象的文本表示形式（后跟当前行终止符）写入标准输出流。</summary>
+      <param name="format">复合格式字符串（请参见“备注”）。</param>
+      <param name="arg0">要使用 <paramref name="format" /> 写入的第一个对象。</param>
+      <param name="arg1">要使用 <paramref name="format" /> 写入的第二个对象。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> 为 null。</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> 中的格式规范无效。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String,System.Object,System.Object,System.Object)">
+      <summary>使用指定的格式信息，将指定对象的文本表示形式（后跟当前行终止符）写入标准输出流。</summary>
+      <param name="format">复合格式字符串（请参见“备注”）。</param>
+      <param name="arg0">要使用 <paramref name="format" /> 写入的第一个对象。</param>
+      <param name="arg1">要使用 <paramref name="format" /> 写入的第二个对象。</param>
+      <param name="arg2">要使用 <paramref name="format" /> 写入的第三个对象。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> 为 null。</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> 中的格式规范无效。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String,System.Object[])">
+      <summary>使用指定的格式信息，将指定的对象数组（后跟当前行终止符）的文本表示形式写入标准输出流。</summary>
+      <param name="format">复合格式字符串（请参见“备注”）。</param>
+      <param name="arg">要使用 <paramref name="format" /> 写入的对象的数组。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> 或 <paramref name="arg" /> 为 null。</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> 中的格式规范无效。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.UInt32)">
+      <summary>将指定的 32 位无符号的整数值的文本表示（后跟当前行的结束符）写入标准输出流。</summary>
+      <param name="value">要写入的值。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.UInt64)">
+      <summary>将指定的 64 位无符号的整数值的文本表示（后跟当前行的结束符）写入标准输出流。</summary>
+      <param name="value">要写入的值。</param>
+      <exception cref="T:System.IO.IOException">发生了 I/O 错误。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.ConsoleCancelEventArgs">
+      <summary>为 <see cref="E:System.Console.CancelKeyPress" /> 事件提供数据。此类不能被继承。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.ConsoleCancelEventArgs.Cancel">
+      <summary>获取或设置一个值，该值指示同时按下 <see cref="F:System.ConsoleModifiers.Control" /> 修改键和 <see cref="F:System.ConsoleKey.C" /> 控制台键 (Ctrl+C) 或 Ctrl+Break 键是否会终止当前进程。默认值为 false，这将终止当前进程。</summary>
+      <returns>如果当前进程在事件处理程序结束时应继续，则为 true；如果当前进程应终止，则为 false。默认值为 false；当前进程将在事件处理程序返回时终止。如果为 true，当前进程将继续。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.ConsoleCancelEventArgs.SpecialKey">
+      <summary>获取中断当前进程的修改键和控制台键的组合。</summary>
+      <returns>一个枚举值指定中断当前进程的组合键。没有默认值。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.ConsoleCancelEventHandler">
+      <summary>表示将要处理 <see cref="T:System.Console" /> 的 <see cref="E:System.Console.CancelKeyPress" /> 事件的方法。</summary>
+      <param name="sender">事件源。</param>
+      <param name="e">含事件数据的 <see cref="T:System.ConsoleCancelEventArgs" /> 对象。 </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.ConsoleColor">
+      <summary>指定定义控制台前景色和背景色的常数。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.ConsoleColor.Black">
+      <summary>黑色。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Blue">
+      <summary>蓝色。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Cyan">
+      <summary>青色（蓝绿色）。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkBlue">
+      <summary>藏蓝色。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkCyan">
+      <summary>深紫色（深蓝绿色）。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkGray">
+      <summary>深灰色。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkGreen">
+      <summary>深绿色。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkMagenta">
+      <summary>深紫红色。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkRed">
+      <summary>深红色。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkYellow">
+      <summary>深黄色（赭色）。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Gray">
+      <summary>灰色。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Green">
+      <summary>绿色。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Magenta">
+      <summary>紫红色。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Red">
+      <summary>红色。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.White">
+      <summary>白色。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Yellow">
+      <summary>黄色。</summary>
+    </member>
+    <member name="T:System.ConsoleSpecialKey">
+      <summary>指定能够中断当前进程的修改键和控制台键的组合。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.ConsoleSpecialKey.ControlBreak">
+      <summary>
+        <see cref="F:System.ConsoleModifiers.Control" /> 修改键加上 Break 控制台键。</summary>
+    </member>
+    <member name="F:System.ConsoleSpecialKey.ControlC">
+      <summary>
+        <see cref="F:System.ConsoleModifiers.Control" /> 修改键加 <see cref="F:System.ConsoleKey.C" /> 控制台键。</summary>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,1350 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Reflection.Primitives</name>
+  </assembly>
+  <members>
+    <member name="T:System.Reflection.CallingConventions">
+      <summary>Definiert die gültigen Aufrufkonventionen für eine Methode.</summary>
+    </member>
+    <member name="F:System.Reflection.CallingConventions.Any">
+      <summary>Gibt an, dass entweder die Standard-Aufrufkonvention oder die VarArgs-Aufrufkonvention verwendet werden kann.</summary>
+    </member>
+    <member name="F:System.Reflection.CallingConventions.ExplicitThis">
+      <summary>Gibt an, dass es sich bei der Signatur um eine Funktionszeiger-Signatur handelt, die einen Aufruf einer Instanz oder einer virtuellen Methode (keiner statischen Methode) darstellt.Wenn ExplicitThis festgelegt ist, muss HasThis ebenfalls festgelegt werden.Das erste an die aufgerufene Methode übergebene Argument ist weiterhin ein this-Zeiger, der Typ des ersten Arguments ist jedoch jetzt unbekannt.Deshalb wird ein Token, das den Typ (oder die Klasse) des this-Zeigers beschreibt, in der Signatur der Metadaten explizit gespeichert.</summary>
+    </member>
+    <member name="F:System.Reflection.CallingConventions.HasThis">
+      <summary>Gibt eine Instanz oder eine virtuelle Methode (keine statische Methode) an.Zur Laufzeit wird der aufgerufenen Methode als erstes Argument ein Zeiger auf das Zielobjekt übergeben (der this-Zeiger).Die in den Metadaten gespeicherte Signatur enthält den Typ dieses ersten Arguments nicht, da die Methode bekannt ist und die Klasse, die diese besitzt, aus den Metadaten ermittelt werden kann.</summary>
+    </member>
+    <member name="F:System.Reflection.CallingConventions.Standard">
+      <summary>Gibt die Standardaufrufkonvention an, die durch die Common Language Runtime bestimmt wurde.Verwenden Sie diese Aufrufkonvention für statische Methoden.Verwenden Sie HasThis für Instanzen oder virtuelle Methoden.</summary>
+    </member>
+    <member name="F:System.Reflection.CallingConventions.VarArgs">
+      <summary>Gibt die Aufrufkonvention für Methoden mit variablen Argumenten an.</summary>
+    </member>
+    <member name="T:System.Reflection.EventAttributes">
+      <summary>Gibt die Attribute eines Ereignisses an.</summary>
+    </member>
+    <member name="F:System.Reflection.EventAttributes.None">
+      <summary>Gibt an, dass das Ereignis keine Attribute hat.</summary>
+    </member>
+    <member name="F:System.Reflection.EventAttributes.RTSpecialName">
+      <summary>Gibt an, dass die Common Language Runtime die Namenscodierung überprüfen soll.</summary>
+    </member>
+    <member name="F:System.Reflection.EventAttributes.SpecialName">
+      <summary>Gibt an, dass der Name eine Besonderheit des Ereignisses beschreibt.</summary>
+    </member>
+    <member name="T:System.Reflection.FieldAttributes">
+      <summary>Gibt Flags an, die die Attribute eines Felds beschreiben.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Assembly">
+      <summary>Gibt an, dass auf das Feld von der gesamten Assembly aus zugegriffen werden kann.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.FamANDAssem">
+      <summary>Gibt an, dass auf das Feld nur von Untertypen in dieser Assembly zugegriffen werden kann.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Family">
+      <summary>Gibt an, dass auf das Feld nur von Typen und Untertypen zugegriffen werden kann.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.FamORAssem">
+      <summary>Gibt an, dass auf das Feld sowohl von Untertypen von einem beliebigen Ort wie auch aus der gesamten Assembly zugegriffen werden kann.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.FieldAccessMask">
+      <summary>Gibt die Zugriffsebene für ein angegebenes Feld an.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.HasDefault">
+      <summary>Gibt an, dass das Feld einen Standardwert besitzt.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.HasFieldMarshal">
+      <summary>Gibt an, dass das Feld über Marshallinginformationen verfügt.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.HasFieldRVA">
+      <summary>Gibt an, dass das Feld eine RVA (relative virtuelle Adresse) besitzt.Die RVA bezeichnet die Position des Methodenrumpfes innerhalb des aktuellen Bildes als Adresse relativ zum Beginn der Bilddatei, in der er sich befindet.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.InitOnly">
+      <summary>Gibt an, dass das Feld nur im Text eines Konstruktors initialisiert und festgelegt werden kann. </summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Literal">
+      <summary>Gibt an, dass es sich bei dem Feldwert um eine Kompilierzeitkonstante (statisch oder früh gebunden) handelt.Jeder Versuch des Festlegens löst eine <see cref="T:System.FieldAccessException" /> aus.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.NotSerialized">
+      <summary>Gibt an, dass das Feld nicht serialisiert werden muss, wenn der Typ remote übergeben wird.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.PinvokeImpl">
+      <summary>Für zukünftige Verwendung reserviert.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Private">
+      <summary>Gibt an, dass der Zugriff auf das Feld auf den übergeordneten Typ beschränkt ist.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.PrivateScope">
+      <summary>Gibt an, dass auf das Feld nicht verwiesen werden kann.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Public">
+      <summary>Gibt an, dass auf das Feld alle Member zugreifen können, für die dieser Gültigkeitsbereich sichtbar ist.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.RTSpecialName">
+      <summary>Gibt an, dass die Common Language Runtime (interne APIs für Metadaten) die Namenscodierung überprüfen soll.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.SpecialName">
+      <summary>Gibt eine spezielle Methode an, wobei der Name die Besonderheit der Methode beschreibt.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Static">
+      <summary>Gibt an, dass das Feld den definierten Typ darstellt oder ansonsten instanzspezifisch ist.</summary>
+    </member>
+    <member name="T:System.Reflection.GenericParameterAttributes">
+      <summary>Beschreibt die Einschränkungen für einen generischen Typparameter eines generischen Typs oder einer generischen Methode.</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.Contravariant">
+      <summary>Der generische Typparameter ist Contravariant.Ein Contravariant-Typparameter kann in Methodensignaturen als Parametertyp aufgeführt werden.</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.Covariant">
+      <summary>Der generische Typparameter ist Covariant.Ein Covariant-Typparameter kann als Ergebnistyp einer Methode, als Typ eines schreibgeschützten Felds, als deklarierter Basistyp oder als eine implementierte Schnittstelle verwendet werden.</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.DefaultConstructorConstraint">
+      <summary>Ein Typ kann nur durch den generischen Typparameter ersetzt werden, wenn er über einen parameterlosen Konstruktor verfügt.</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.None">
+      <summary>Es gibt keine besonderen Flags.</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.NotNullableValueTypeConstraint">
+      <summary>Ein Typ kann nur durch den generischen Typparameter ersetzt werden, wenn er ein Werttyp ist, für den keine NULL-Werte zulässig sind.</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.ReferenceTypeConstraint">
+      <summary>Ein Typ kann nur durch den generischen Typparameter ersetzt werden, wenn er ein Verweistyp ist.</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.SpecialConstraintMask">
+      <summary>Wählt die Kombination aller besonderen Einschränkungsflags aus.Dieser Wert entsteht durch Kombination der folgenden Flags mit logischem OR: <see cref="F:System.Reflection.GenericParameterAttributes.DefaultConstructorConstraint" />, <see cref="F:System.Reflection.GenericParameterAttributes.ReferenceTypeConstraint" /> und <see cref="F:System.Reflection.GenericParameterAttributes.NotNullableValueTypeConstraint" />.</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.VarianceMask">
+      <summary>Wählt die Kombination aller Varianzflags aus.Dieser Wert entsteht durch Kombination der folgenden Flags mit logischem OR: <see cref="F:System.Reflection.GenericParameterAttributes.Contravariant" /> und <see cref="F:System.Reflection.GenericParameterAttributes.Covariant" />.</summary>
+    </member>
+    <member name="T:System.Reflection.MethodAttributes">
+      <summary>Gibt Flags für Methodenattribute an.Diese Flags sind in der Datei corhdr.h definiert.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Abstract">
+      <summary>Gibt an, dass die Klasse keine Implementierung dieser Methode bereitstellt.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Assembly">
+      <summary>Gibt an, dass alle Klassen dieser Assembly auf die Methode zugreifen können.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.CheckAccessOnOverride">
+      <summary>Gibt an, dass die Methode nur überschrieben werden kann, wenn auch der Zugriff auf sie möglich ist.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.FamANDAssem">
+      <summary>Gibt an, dass Member dieses Typs und von diesem abgeleitete Typen aus ausschließlich dieser Assembly auf die Methode zugreifen können.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Family">
+      <summary>Gibt an, dass nur Member dieser Klasse und ihrer abgeleiteten Klassen auf die Methode zugreifen können.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.FamORAssem">
+      <summary>Gibt an, dass abgeleitete Klassen von beliebiger Stelle aus sowie beliebige Klassen in der Assembly auf die Methode zugreifen können.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Final">
+      <summary>Gibt an, dass die Methode nicht überschrieben werden kann.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.HasSecurity">
+      <summary>Gibt an, dass der Methode Sicherheitsfunktionen zugeordnet sind.Flag, das für die ausschließliche Verwendung zur Laufzeit reserviert ist.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.HideBySig">
+      <summary>Gibt an, dass die Methode nach Namen und Signatur verborgen wird, andernfalls nur nach Namen.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.MemberAccessMask">
+      <summary>Ruft Zugriffsinformationen ab.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.NewSlot">
+      <summary>Gibt an, dass die Methode immer einen neuen Slot in der vtable erhält.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.PinvokeImpl">
+      <summary>Gibt an, dass die Methodenimplementierung durch PInvoke (Platform Invocation Services) weitergeleitet wird.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Private">
+      <summary>Gibt an, dass nur die aktuelle Klasse auf die Methode zugreifen kann.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.PrivateScope">
+      <summary>Gibt an, dass auf den Member nicht verwiesen werden kann.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Public">
+      <summary>Gibt an, dass alle Objekte, in deren Gültigkeitsbereich sich dieses Objekt befindet, auf die Methode zugreifen können.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.RequireSecObject">
+      <summary>Gibt an, dass die Methode eine andere Methode aufruft, die Sicherheitscode enthält.Flag, das für die ausschließliche Verwendung zur Laufzeit reserviert ist.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.ReuseSlot">
+      <summary>Gibt an, dass die Methode einen vorhandenen Slot  in der vtable wiederverwendet.Dies ist das Standardverhalten.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.RTSpecialName">
+      <summary>Gibt an, dass die Common Language Runtime die Namenscodierung überprüft.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.SpecialName">
+      <summary>Gibt an, dass es sich um eine besondere Methode handelt.Dabei beschreibt der Name die Besonderheit der Methode.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Static">
+      <summary>Gibt an, dass die Methode für den Typ definiert ist. Andernfalls ist sie für die jeweilige Instanz definiert.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.UnmanagedExport">
+      <summary>Gibt an, dass die verwaltete Methode über Thunk zu nicht verwaltetem Code exportiert wird.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Virtual">
+      <summary>Gibt an, dass die Methode virtuell ist.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.VtableLayoutMask">
+      <summary>Ruft Attribute der vtable ab.</summary>
+    </member>
+    <member name="T:System.Reflection.MethodImplAttributes">
+      <summary>Gibt Flags für die Attribute einer Methodenimplementierung an.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.AggressiveInlining">
+      <summary>Gibt an, dass die Methode nach Möglichkeit "inline" sein soll.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.CodeTypeMask">
+      <summary>Gibt Flags zum Codetyp an.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.ForwardRef">
+      <summary>Gibt an, dass die Methode nicht definiert ist.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.IL">
+      <summary>Gibt an, dass die Methodenimplementierung in MSIL (Microsoft Intermediate Language) vorliegt.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.InternalCall">
+      <summary>Gibt einen internen Aufruf an.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.Managed">
+      <summary>Gibt an, dass die Methode in verwaltetem Code implementiert wird. </summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.ManagedMask">
+      <summary>Gibt an, ob die Methode in verwaltetem oder nicht verwaltetem Code implementiert wird.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.Native">
+      <summary>Gibt an, dass es sich um eine systemeigene Methodenimplementierung handelt.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.NoInlining">
+      <summary>Gibt an, dass die Methode keine Inlinemethode sein darf.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.NoOptimization">
+      <summary>Gibt an, dass die Methode beim Debuggen möglicher Codegenerierungsprobleme nicht vom JIT-Compiler (Just-In-Time) oder durch Generierung von systemeigenem Code (siehe Ngen.exe) optimiert wird.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.OPTIL">
+      <summary>Gibt an, dass die Methodenimplementierung in OPTIL (Optimized Intermediate Language) vorliegt.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.PreserveSig">
+      <summary>Gibt an, dass die Methodensignatur genau entsprechend der Deklaration exportiert wird.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.Runtime">
+      <summary>Gibt an, dass die Methodenimplementierung durch die Laufzeit bereitgestellt wird.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.Synchronized">
+      <summary>Gibt an, dass die Methode im gesamten Methodenkörper singlethreaded ist.Statische Methoden (Shared in Visual Basic) sperren den Typ, wohingegen Instanzmethoden die Instanz sperren.Für diesen Zweck können Sie auch die lock-Anweisung in C# oder die SyncLock-Anweisung in Visual Basic verwenden.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.Unmanaged">
+      <summary>Gibt an, dass die Methode in nicht verwaltetem Code implementiert wird.</summary>
+    </member>
+    <member name="T:System.Reflection.ParameterAttributes">
+      <summary>Definiert die Attribute, die einem Parameter zugeordnet werden können.Diese sind in CorHdr.h definiert.</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.HasDefault">
+      <summary>Gibt an, dass der Parameter einen Standardwert besitzt.</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.HasFieldMarshal">
+      <summary>Gibt an, dass der Parameter über Marshallinginformationen für Felder verfügt.</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.In">
+      <summary>Gibt an, dass der Parameter ein Eingabeparameter ist.</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.Lcid">
+      <summary>Gibt an, dass der Parameter ein Gebietsschemabezeichner (lcid) ist.</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.None">
+      <summary>Gibt an, dass kein Parameterattribut vorhanden ist.</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.Optional">
+      <summary>Gibt an, dass der Parameter optional ist.</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.Out">
+      <summary>Gibt an, dass der Parameter ein Ausgabeparameter ist.</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.Retval">
+      <summary>Gibt an, dass der Parameter ein Rückgabewert ist.</summary>
+    </member>
+    <member name="T:System.Reflection.PropertyAttributes">
+      <summary>Definiert die Attribute, die einer Eigenschaft zugeordnet werden können.Diese Attributwerte werden in corhdr.h definiert.</summary>
+    </member>
+    <member name="F:System.Reflection.PropertyAttributes.HasDefault">
+      <summary>Gibt an, dass die Eigenschaft einen Standardwert besitzt.</summary>
+    </member>
+    <member name="F:System.Reflection.PropertyAttributes.None">
+      <summary>Gibt an, dass einer Eigenschaft keine Attribute zugeordnet sind.</summary>
+    </member>
+    <member name="F:System.Reflection.PropertyAttributes.RTSpecialName">
+      <summary>Gibt an, dass die internen APIs für Metadaten die Namenscodierung überprüfen.</summary>
+    </member>
+    <member name="F:System.Reflection.PropertyAttributes.SpecialName">
+      <summary>Gibt an, dass es sich um eine besondere Eigenschaft handelt, wobei die Besonderheit des Namens beschrieben wird.</summary>
+    </member>
+    <member name="T:System.Reflection.TypeAttributes">
+      <summary>Gibt Typattribute an.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Abstract">
+      <summary>Gibt an, dass der Typ abstrakt ist.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.AnsiClass">
+      <summary>LPTSTR wird als ANSI-Code interpretiert.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.AutoClass">
+      <summary>LPTSTR wird automatisch interpretiert.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.AutoLayout">
+      <summary>Gibt an, dass das Layout der Klassenfelder automatisch durch die Common Language Runtime erfolgt.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.BeforeFieldInit">
+      <summary>Gibt an, dass durch den Aufruf von statischen Methoden des Typs nicht die Initialisierung dieses Typs durch das System erzwungen wird.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Class">
+      <summary>Gibt an, dass der Typ eine Klasse ist.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.ClassSemanticsMask">
+      <summary>Gibt Informationen zur Klassensemantik an. Die aktuelle Klasse ist kontextabhängig (andernfalls beweglich).</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.CustomFormatClass">
+      <summary>LPSTR wird mit einigen implementierungsabhängigen Mitteln interpretiert. Dazu zählt auch die Möglichkeit, eine <see cref="T:System.NotSupportedException" /> auszulösen.Nicht verwendet in der Microsoft-Implementierung von .NET Framework.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.CustomFormatMask">
+      <summary>Wird verwendet, um nicht standardkonforme Codierungsinformationen für systemeigenes Interop abzurufen.Die Bedeutung der Werte dieser 2 Bits ist nicht festgelegt.Nicht verwendet in der Microsoft-Implementierung von .NET Framework.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.ExplicitLayout">
+      <summary>Gibt an, dass das Layout der Klassenfelder an den angegebenen Offsets erfolgt.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.HasSecurity">
+      <summary>Dem Typ ist Sicherheit zugeordnet.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Import">
+      <summary>Gibt an, dass die Klasse oder die Schnittstelle aus einem anderen Modul importiert wird.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Interface">
+      <summary>Gibt an, dass der Typ eine Schnittstelle ist.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.LayoutMask">
+      <summary>Gibt Informationen zum Klassenlayout an.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedAssembly">
+      <summary>Gibt an, dass die Klasse mit Assemblysichtbarkeit geschachtelt ist, und dass daher nur mit Methoden auf die Klasse zugegriffen werden kann, die sich in ihrer Assembly befinden.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedFamANDAssem">
+      <summary>Gibt an, dass die Klasse mit Assembly- und Familiensichtbarkeit geschachtelt ist und daher nur mit Methoden auf die Klasse zugegriffen werden kann, die zur Schnittmenge ihrer Familie und Assembly gehören.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedFamily">
+      <summary>Gibt an, dass die Klasse mit Familiensichtbarkeit geschachtelt ist und daher nur mit Methoden auf die Klasse zugegriffen werden kann, die sich innerhalb des Typs oder eines beliebigen abgeleiteten Typs befinden.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedFamORAssem">
+      <summary>Gibt an, dass die Klasse mit Assembly- oder Familiensichtbarkeit geschachtelt ist und daher nur mit Methoden auf die Klasse zugegriffen werden kann, die zur Gesamtmenge ihrer Familie und Assembly gehören.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedPrivate">
+      <summary>Gibt an, dass die Klasse mit privater Sichtbarkeit geschachtelt ist.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedPublic">
+      <summary>Gibt an, dass die Klasse mit öffentlicher Sichtbarkeit geschachtelt ist.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NotPublic">
+      <summary>Gibt an, dass die Klasse nicht öffentlich ist.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Public">
+      <summary>Gibt an, dass die Klasse öffentlich ist.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.RTSpecialName">
+      <summary>Die Laufzeit muss die Namenscodierung überprüfen.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Sealed">
+      <summary>Gibt an, dass die Klasse konkret ist und nicht erweitert werden kann.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.SequentialLayout">
+      <summary>Gibt an, dass das Layout der Klassenfelder sequenziell in der Reihenfolge erfolgt, in der die Felder an die Metadaten ausgegeben wurden.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Serializable">
+      <summary>Gibt an, dass die Klasse serialisiert werden kann.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.SpecialName">
+      <summary>Gibt an, dass der Name eine Besonderheit der Klasse bezeichnet.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.StringFormatMask">
+      <summary>Wird zum Abrufen von Zeichenfolgeninformationen für die systemeigene Interoperabilität verwendet.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.UnicodeClass">
+      <summary>LPTSTR wird als UNICODE interpretiert.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.VisibilityMask">
+      <summary>Gibt Informationen zur Sichtbarkeit des Typs an.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.WindowsRuntime">
+      <summary>Gibt einen Windows-Runtime-Typ an.</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.FlowControl">
+      <summary>Beschreibt, wie eine Anweisung die Ablaufsteuerung ändert.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Branch">
+      <summary>Verzweigungsanweisung.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Break">
+      <summary>Unterbrechungsanweisung.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Call">
+      <summary>Aufrufanweisung.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Cond_Branch">
+      <summary>Bedingte Verzweigungsanweisung.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Meta">
+      <summary>Liefert Informationen zu einer nachfolgenden Anweisung.Die Unaligned-Anweisung von Reflection.Emit.Opcodes weist z. B. FlowControl.Meta auf und zeigt an, dass die nachfolgende Zeigeranweisung möglicherweise nicht ausgerichtet ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Next">
+      <summary>Normale Ablaufsteuerung.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Return">
+      <summary>Rückgabeanweisung.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Throw">
+      <summary>Anweisung zum Auslösen einer Ausnahme.</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.OpCode">
+      <summary>Beschreibt eine IL-Anweisung (Intermediate Language).</summary>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.Equals(System.Object)">
+      <summary>Testet, ob das angegebene Objekt gleich diesem Opcode ist.</summary>
+      <returns>true, wenn <paramref name="obj" /> eine Instanz von Opcode und gleich diesem Objekt ist, andernfalls false.</returns>
+      <param name="obj">Das mit diesem Objekt zu vergleichende Objekt. </param>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.Equals(System.Reflection.Emit.OpCode)">
+      <summary>Gibt an, ob die aktuelle Instanz und der angegebene <see cref="T:System.Reflection.Emit.OpCode" /> gleich sind.</summary>
+      <returns>true, wenn der Wert von <paramref name="obj" /> dem Wert der aktuellen Instanz entspricht, andernfalls false.</returns>
+      <param name="obj">Der <see cref="T:System.Reflection.Emit.OpCode" />, der mit der aktuellen Instanz verglichen werden soll.</param>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.FlowControl">
+      <summary>Die Eigenschaften der Ablaufsteuerung der IL-Anweisung (Intermediate Language).</summary>
+      <returns>Schreibgeschützt.Der Typ der Ablaufsteuerung.</returns>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.GetHashCode">
+      <summary>Gibt den für diesen Opcode generierten Hashcode zurück.</summary>
+      <returns>Gibt den Hashcode für diese Instanz zurück.</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.Name">
+      <summary>Der Name der IL-Anweisung (Intermediate Language).</summary>
+      <returns>Schreibgeschützt.Der Name der IL-Anweisung.</returns>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.op_Equality(System.Reflection.Emit.OpCode,System.Reflection.Emit.OpCode)">
+      <summary>Gibt an, ob zwei <see cref="T:System.Reflection.Emit.OpCode" />-Strukturen gleich sind.</summary>
+      <returns>true, wenn <paramref name="a" /> und <paramref name="b" /> gleich sind, andernfalls false.</returns>
+      <param name="a">Das <see cref="T:System.Reflection.Emit.OpCode" />, das mit <paramref name="b" /> verglichen werden soll.</param>
+      <param name="b">Das <see cref="T:System.Reflection.Emit.OpCode" />, das mit <paramref name="a" /> verglichen werden soll.</param>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.op_Inequality(System.Reflection.Emit.OpCode,System.Reflection.Emit.OpCode)">
+      <summary>Gibt an, ob zwei <see cref="T:System.Reflection.Emit.OpCode" />-Strukturen ungleich sind.</summary>
+      <returns>true, wenn <paramref name="a" /> und <paramref name="b" /> ungleich sind, andernfalls false.</returns>
+      <param name="a">Das <see cref="T:System.Reflection.Emit.OpCode" />, das mit <paramref name="b" /> verglichen werden soll.</param>
+      <param name="b">Das <see cref="T:System.Reflection.Emit.OpCode" />, das mit <paramref name="a" /> verglichen werden soll.</param>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.OpCodeType">
+      <summary>Der Typ der IL-Anweisung (Intermediate Language).</summary>
+      <returns>Schreibgeschützt.Der Typ der IL-Anweisung (Intermediate Language).</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.OperandType">
+      <summary>Der Operandentyp einer IL-Anweisung (Intermediate Language).</summary>
+      <returns>Schreibgeschützt.Der Operandentyp einer IL-Anweisung.</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.Size">
+      <summary>Die Größe der IL-Anweisung (Intermediate Language).</summary>
+      <returns>Schreibgeschützt.Die Größe der IL-Anweisung.</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.StackBehaviourPop">
+      <summary>Art des Stapelabrufs durch die IL-Anweisung (Intermediate Language).</summary>
+      <returns>Schreibgeschützt.Die Art, in der die IL-Anweisung den Stapel abruft.</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.StackBehaviourPush">
+      <summary>Art, in der die IL-Anweisung (Intermediate Language) einen Operanden auf den Stapel legt.</summary>
+      <returns>Schreibgeschützt.Die Art, in der die IL-Anweisung einen Operanden auf den Stapel legt.</returns>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.ToString">
+      <summary>Gibt diesen Opcode als <see cref="T:System.String" /> zurück.</summary>
+      <returns>Gibt einen <see cref="T:System.String" /> zurück, der den Namen dieses Opcode enthält.</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.Value">
+      <summary>Ruft den numerischen Wert für die Intermediate Language (IL)-Anweisung ab.</summary>
+      <returns>Schreibgeschützt.Ruft den numerischen Wert der IL-Anweisung ab.</returns>
+    </member>
+    <member name="T:System.Reflection.Emit.OpCodes">
+      <summary>Stellt Felddarstellungen der MSIL (Microsoft Intermediate Language)-Anweisungen für die Ausgabe durch die <see cref="T:System.Reflection.Emit.ILGenerator" />-Klassenmember bereit, beispielsweise <see cref="M:System.Reflection.Emit.ILGenerator.Emit(System.Reflection.Emit.OpCode)" />.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Add">
+      <summary>Addiert zwei Werte und legt das Ergebnis auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Add_Ovf">
+      <summary>Addiert zwei ganze Zahlen, führt eine Überlaufprüfung durch und legt das Ergebnis auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Add_Ovf_Un">
+      <summary>Addiert zwei Ganzzahlwerte ohne Vorzeichen, führt eine Überlaufprüfung durch und legt das Ergebnis auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.And">
+      <summary>Berechnet das bitweise AND für zwei Werte und legt das Ergebnis auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Arglist">
+      <summary>Gibt einen nicht verwalteten Zeiger auf die Argumentliste der aktuellen Methode zurück.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Beq">
+      <summary>Überträgt die Steuerung an eine Zielanweisung, wenn zwei Werte übereinstimmen.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Beq_S">
+      <summary>Überträgt die Steuerung an eine Zielanweisung (Kurzform), wenn zwei Werte übereinstimmen.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bge">
+      <summary>Überträgt die Steuerung an eine Zielanweisung, wenn der erste Wert größer oder gleich dem zweiten Wert ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bge_S">
+      <summary>Überträgt die Steuerung an eine Zielanweisung (Kurzform), wenn der erste Wert größer oder gleich dem zweiten Wert ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bge_Un">
+      <summary>Überträgt die Steuerung an eine Zielanweisung, wenn Ganzzahlwerte ohne Vorzeichen oder ungeordnete Gleitkommawerte verglichen werden und der erste Wert größer als der zweite Wert ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bge_Un_S">
+      <summary>Überträgt die Steuerung an eine Zielanweisung (Kurzform), wenn Ganzzahlwerte ohne Vorzeichen oder ungeordnete Gleitkommawerte verglichen werden und der erste Wert größer als der zweite Wert ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bgt">
+      <summary>Überträgt die Steuerung an eine Zielanweisung, wenn der erste Wert größer als der zweite Wert ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bgt_S">
+      <summary>Überträgt die Steuerung an eine Zielanweisung (Kurzform), wenn der erste Wert größer als der zweite Wert ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bgt_Un">
+      <summary>Überträgt die Steuerung an eine Zielanweisung, wenn Ganzzahlwerte ohne Vorzeichen oder ungeordnete Gleitkommawerte verglichen werden und der erste Wert größer als der zweite Wert ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bgt_Un_S">
+      <summary>Überträgt die Steuerung an eine Zielanweisung (Kurzform), wenn Ganzzahlwerte ohne Vorzeichen oder ungeordnete Gleitkommawerte verglichen werden und der erste Wert größer als der zweite Wert ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ble">
+      <summary>Überträgt die Steuerung an eine Zielanweisung, wenn der erste Wert kleiner oder gleich dem zweiten Wert ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ble_S">
+      <summary>Überträgt die Steuerung an eine Zielanweisung (Kurzform), wenn der erste Wert kleiner oder gleich dem zweiten Wert ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ble_Un">
+      <summary>Überträgt die Steuerung an eine Zielanweisung, wenn Ganzzahlwerte ohne Vorzeichen oder ungeordnete Gleitkommawerte verglichen werden und der erste Wert kleiner oder gleich dem zweiten Wert ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ble_Un_S">
+      <summary>Überträgt die Steuerung an eine Zielanweisung (Kurzform), wenn Ganzzahlwerte ohne Vorzeichen oder ungeordnete Gleitkommawerte verglichen werden und der erste Wert kleiner oder gleich dem zweiten Wert ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Blt">
+      <summary>Überträgt die Steuerung an eine Zielanweisung, wenn der erste Wert kleiner als der zweite Wert ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Blt_S">
+      <summary>Überträgt die Steuerung an eine Zielanweisung (Kurzform), wenn der erste Wert kleiner als der zweite Wert ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Blt_Un">
+      <summary>Überträgt die Steuerung an eine Zielanweisung, wenn Ganzzahlwerte ohne Vorzeichen oder ungeordnete Gleitkommawerte verglichen werden und der erste Wert kleiner als der zweite Wert ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Blt_Un_S">
+      <summary>Überträgt die Steuerung an eine Zielanweisung (Kurzform), wenn Ganzzahlwerte ohne Vorzeichen oder ungeordnete Gleitkommawerte verglichen werden und der erste Wert kleiner als der zweite Wert ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bne_Un">
+      <summary>Überträgt die Steuerung an eine Zielanweisung, wenn zwei Ganzzahlwerte ohne Vorzeichen oder ungeordnete Gleitkommawerte ungleich sind.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bne_Un_S">
+      <summary>Überträgt die Steuerung an eine Zielanweisung (Kurzform), wenn zwei Ganzzahlwerte ohne Vorzeichen oder ungeordnete Gleitkommawerte ungleich sind.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Box">
+      <summary>Konvertiert einen Werttyp in einen Objektverweis (Typ O).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Br">
+      <summary>Überträgt die Steuerung bedingungslos an eine Zielanweisung.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Br_S">
+      <summary>Überträgt die Steuerung bedingungslos an eine Zielanweisung (Kurzform).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Break">
+      <summary>Signalisiert CLI (Common Language Infrastructure), den Debugger darüber zu informieren, dass ein Haltepunkt erreicht wurde.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Brfalse">
+      <summary>Überträgt die Steuerung an eine Zielanweisung, wenn <paramref name="value" /> entweder false, ein NULL-Verweis (Nothing in Visual Basic) oder 0 (null) ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Brfalse_S">
+      <summary>Überträgt die Steuerung an eine Zielanweisung, wenn <paramref name="value" /> entweder false, ein NULL-Verweis oder 0 (null) ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Brtrue">
+      <summary>Überträgt die Steuerung an eine Zielanweisung, wenn <paramref name="value" /> entweder true, nicht NULL oder ungleich 0 (null) ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Brtrue_S">
+      <summary>Überträgt die Steuerung an eine Zielanweisung (Kurzform), wenn <paramref name="value" /> entweder true, nicht NULL oder ungleich 0 (null) ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Call">
+      <summary>Ruft die Methode auf, die der übergebene Methodendeskriptor angibt.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Calli">
+      <summary>Ruft die angegebene Methode auf dem Auswertungsstapel (als Zeiger auf einen Einstiegspunkt) mit Argumenten auf, die durch eine Aufrufkonvention beschrieben sind.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Callvirt">
+      <summary>Ruft eine spät gebundene Methode für ein Objekt auf und legt den Rückgabewert auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Castclass">
+      <summary>Wandelt ein als Verweis übergebenes Objekt in die angegebene Klasse um.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ceq">
+      <summary>Vergleicht zwei Werte.Wenn sie gleich sind, wird der Ganzzahlwert 1 (int32) auf dem Auswertungsstapel abgelegt, andernfalls wird 0 (int32) auf dem Auswertungsstapel abgelegt.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Cgt">
+      <summary>Vergleicht zwei Werte.Wenn der erste Wert größer als der zweite Wert ist, wird der Ganzzahlwert 1 (int32) auf dem Auswertungsstapel abgelegt, andernfalls wird 0 (int32) auf dem Auswertungsstapel abgelegt.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Cgt_Un">
+      <summary>Vergleicht zwei Werte ohne Vorzeichen oder zwei ungeordnete Werte.Wenn der erste Wert größer als der zweite Wert ist, wird der Ganzzahlwert 1 (int32) auf dem Auswertungsstapel abgelegt, andernfalls wird 0 (int32) auf dem Auswertungsstapel abgelegt.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ckfinite">
+      <summary>Löst <see cref="T:System.ArithmeticException" /> aus, wenn der Wert keine endliche Zahl ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Clt">
+      <summary>Vergleicht zwei Werte.Wenn der erste Wert kleiner als der zweite Wert ist, wird der Ganzzahlwert 1 (int32) auf dem Auswertungsstapel abgelegt, andernfalls wird 0 (int32) auf dem Auswertungsstapel abgelegt.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Clt_Un">
+      <summary>Vergleicht die Werte ohne Vorzeichen oder die ungeordneten Werte <paramref name="value1" /> und <paramref name="value2" />.Wenn <paramref name="value1" /> kleiner als <paramref name="value2" /> ist, wird der Ganzzahlwert 1 (int32) auf dem Auswertungsstapel abgelegt, andernfalls wird 0 (int32) auf dem Auswertungsstapel abgelegt.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Constrained">
+      <summary>Schränkt den Typ ein, für den eine virtuelle Methode aufgerufen wird.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_I">
+      <summary>Konvertiert den Wert an oberster Position des Auswertungsstapels in native int.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_I1">
+      <summary>Konvertiert den Wert an oberster Position des Auswertungsstapels in int8 und erweitert ihn dann zu int32 (durch Auffüllen).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_I2">
+      <summary>Konvertiert den Wert an oberster Position des Auswertungsstapels in int16 und erweitert ihn dann zu int32 (durch Auffüllen).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_I4">
+      <summary>Konvertiert den Wert an oberster Position des Auswertungsstapels in int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_I8">
+      <summary>Konvertiert den Wert an oberster Position des Auswertungsstapels in int64.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I">
+      <summary>Konvertiert den Wert mit Vorzeichen an oberster Position des Auswertungsstapels in native int mit Vorzeichen und löst bei einem Überlauf eine <see cref="T:System.OverflowException" /> aus.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I_Un">
+      <summary>Konvertiert den Wert ohne Vorzeichen an oberster Position des Auswertungsstapels in native int mit Vorzeichen und löst bei einem Überlauf eine <see cref="T:System.OverflowException" /> aus.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I1">
+      <summary>Konvertiert den Wert mit Vorzeichen an oberster Position des Auswertungsstapels in int8 mit Vorzeichen und erweitert ihn auf int32. Bei einem Überlauf wird eine <see cref="T:System.OverflowException" /> ausgelöst.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I1_Un">
+      <summary>Konvertiert den Wert ohne Vorzeichen an oberster Position des Auswertungsstapels in int8 mit Vorzeichen und erweitert ihn auf int32. Bei einem Überlauf wird eine <see cref="T:System.OverflowException" /> ausgelöst.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I2">
+      <summary>Konvertiert den Wert mit Vorzeichen an oberster Position des Auswertungsstapels in int16 mit Vorzeichen und erweitert ihn auf int32. Bei einem Überlauf wird eine <see cref="T:System.OverflowException" /> ausgelöst.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I2_Un">
+      <summary>Konvertiert den Wert ohne Vorzeichen an oberster Position des Auswertungsstapels in int16 mit Vorzeichen und erweitert ihn auf int32. Bei einem Überlauf wird eine <see cref="T:System.OverflowException" /> ausgelöst.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I4">
+      <summary>Konvertiert den Wert mit Vorzeichen an oberster Position des Auswertungsstapels in int32 mit Vorzeichen und löst bei einem Überlauf eine <see cref="T:System.OverflowException" /> aus.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I4_Un">
+      <summary>Konvertiert den Wert ohne Vorzeichen an oberster Position des Auswertungsstapels in int32 mit Vorzeichen und löst bei einem Überlauf eine <see cref="T:System.OverflowException" /> aus.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I8">
+      <summary>Konvertiert den Wert mit Vorzeichen an oberster Position des Auswertungsstapels in int64 mit Vorzeichen und löst bei einem Überlauf eine <see cref="T:System.OverflowException" /> aus.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I8_Un">
+      <summary>Konvertiert den Wert ohne Vorzeichen an oberster Position des Auswertungsstapels in int64 mit Vorzeichen und löst bei einem Überlauf eine <see cref="T:System.OverflowException" /> aus.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U">
+      <summary>Konvertiert den Wert mit Vorzeichen an oberster Position des Auswertungsstapels in unsigned native int und löst bei einem Überlauf eine <see cref="T:System.OverflowException" /> aus.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U_Un">
+      <summary>Konvertiert den Wert ohne Vorzeichen an oberster Position des Auswertungsstapels in unsigned native int und löst bei einem Überlauf eine <see cref="T:System.OverflowException" /> aus.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U1">
+      <summary>Konvertiert den Wert mit Vorzeichen an oberster Position des Auswertungsstapels in unsigned int8 und erweitert ihn auf int32. Bei einem Überlauf wird eine <see cref="T:System.OverflowException" /> ausgelöst.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U1_Un">
+      <summary>Konvertiert den Wert ohne Vorzeichen an oberster Position des Auswertungsstapels in unsigned int8 und erweitert ihn auf int32. Bei einem Überlauf wird eine <see cref="T:System.OverflowException" /> ausgelöst.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U2">
+      <summary>Konvertiert den Wert mit Vorzeichen an oberster Position des Auswertungsstapels in unsigned int16 und erweitert ihn auf int32. Bei einem Überlauf wird eine <see cref="T:System.OverflowException" /> ausgelöst.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U2_Un">
+      <summary>Konvertiert den Wert ohne Vorzeichen an oberster Position des Auswertungsstapels in unsigned int16 und erweitert ihn auf int32. Bei einem Überlauf wird eine <see cref="T:System.OverflowException" /> ausgelöst.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U4">
+      <summary>Konvertiert den Wert mit Vorzeichen an oberster Position des Auswertungsstapels in unsigned int32 und löst bei einem Überlauf eine <see cref="T:System.OverflowException" /> aus.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U4_Un">
+      <summary>Konvertiert den Wert ohne Vorzeichen an oberster Position des Auswertungsstapels in unsigned int32 und löst bei einem Überlauf eine <see cref="T:System.OverflowException" /> aus.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U8">
+      <summary>Konvertiert den Wert mit Vorzeichen an oberster Position des Auswertungsstapels in unsigned int64 und löst bei einem Überlauf eine <see cref="T:System.OverflowException" /> aus.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U8_Un">
+      <summary>Konvertiert den Wert ohne Vorzeichen an oberster Position des Auswertungsstapels in unsigned int64 und löst bei einem Überlauf eine <see cref="T:System.OverflowException" /> aus.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_R_Un">
+      <summary>Konvertiert den Ganzzahlwert ohne Vorzeichen an oberster Position des Auswertungsstapels in float32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_R4">
+      <summary>Konvertiert den Wert an oberster Position des Auswertungsstapels in float32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_R8">
+      <summary>Konvertiert den Wert an oberster Position des Auswertungsstapels in float64.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_U">
+      <summary>Konvertiert den Wert an oberster Position des Auswertungsstapels in unsigned native int und erweitert ihn dann zu native int.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_U1">
+      <summary>Konvertiert den Wert an oberster Position des Auswertungsstapels in unsigned int8 und erweitert ihn dann zu int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_U2">
+      <summary>Konvertiert den Wert an oberster Position des Auswertungsstapels in unsigned int16 und erweitert ihn dann zu int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_U4">
+      <summary>Konvertiert den Wert an oberster Position des Auswertungsstapels in unsigned int32 und erweitert ihn dann zu int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_U8">
+      <summary>Konvertiert den Wert an oberster Position des Auswertungsstapels in unsigned int64 und erweitert ihn dann zu int64.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Cpblk">
+      <summary>Kopiert eine angegebene Anzahl von Bytes von einer Quelladresse an eine Zieladresse.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Cpobj">
+      <summary>Kopiert den Werttyp, der an der Adresse eines Objekts gespeichert ist (Typ &amp;, * oder native int), an die Adresse des Zielobjekts (Typ &amp;, * oder native int).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Div">
+      <summary>Dividiert zwei Werte und legt das Ergebnis als Gleitkommawert (Typ F) oder Quotient (Typ int32) auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Div_Un">
+      <summary>Dividiert zwei Ganzzahlwerte ohne Vorzeichen und legt das Ergebnis (int32) auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Dup">
+      <summary>Kopiert den obersten Wert auf dem Auswertungsstapel und legt die Kopie dann auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Endfilter">
+      <summary>Überträgt die Steuerung von der filter-Klausel einer Ausnahme zurück an den CLI-Ausnahmehandler (Common Language Infrastructure).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Endfinally">
+      <summary>Überträgt die Steuerung aus der fault-Klausel oder finally-Klausel eines Ausnahmeblockes zurück an den CLI-Ausnahmehandler (Common Language Infrastructure).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Initblk">
+      <summary>Initialisiert einen angegebenen Speicherblock an einer bestimmten Adresse mit einer angegebenen Größe und einem angegebenen Anfangswert.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Initobj">
+      <summary>Initialisiert alle Felder des Werttyps an einer angegebenen Adresse mit einem NULL-Verweis oder dem Wert 0 des entsprechenden primitiven Typs.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Isinst">
+      <summary>Überprüft, ob ein Objektverweis (Typ O) eine Instanz einer bestimmten Klasse ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Jmp">
+      <summary>Beendet die aktuelle Methode und wechselt zur angegebenen Methode.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg">
+      <summary>Lädt ein Argument, auf das ein angegebener Indexwert verweist, in den Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg_0">
+      <summary>Lädt das Argument am Index 0 in den Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg_1">
+      <summary>Lädt das Argument am Index 1 in den Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg_2">
+      <summary>Lädt das Argument am Index 2 in den Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg_3">
+      <summary>Lädt das Argument am Index 3 in den Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg_S">
+      <summary>Lädt das Argument, auf das ein angegebener Kurzformindex verweist, in den Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarga">
+      <summary>Lädt eine Argumentadresse in den Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarga_S">
+      <summary>Lädt eine Argumentadresse in Kurzform in den Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4">
+      <summary>Legt einen bereitgestellten Wert vom Typ int32 als int32 auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_0">
+      <summary>Legt den Ganzzahlwert 0 als int32 auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_1">
+      <summary>Legt den Ganzzahlwert 1 als int32 auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_2">
+      <summary>Legt den Ganzzahlwert 2 als int32 auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_3">
+      <summary>Legt den Ganzzahlwert 3 als int32 auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_4">
+      <summary>Legt den Ganzzahlwert 4 als int32 auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_5">
+      <summary>Legt den Ganzzahlwert 5 als int32 auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_6">
+      <summary>Legt den Ganzzahlwert 6 als int32 auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_7">
+      <summary>Legt den Ganzzahlwert 7 als int32 auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_8">
+      <summary>Legt den Ganzzahlwert 8 als int32 auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_M1">
+      <summary>Legt den Ganzzahlwert -1 als int32 auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_S">
+      <summary>Legt den bereitgestellten int8-Wert als int32, Kurzform, auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I8">
+      <summary>Legt einen bereitgestellten Wert vom Typ int64 als int64 auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_R4">
+      <summary>Legt einen bereitgestellten Wert vom Typ float32 als Typ F (Gleitkommawert) auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_R8">
+      <summary>Legt einen bereitgestellten Wert vom Typ float64 als Typ F (Gleitkommawert) auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem">
+      <summary>Lädt das Element an einem angegebenen Arrayindex als der in der Anweisung angegebene Typ auf die oberste Position des Auswertungsstapels. </summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_I">
+      <summary>Lädt das Element mit dem Typ native int an einem angegebenen Arrayindex als native int auf die oberste Position des Auswertungsstapels.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_I1">
+      <summary>Lädt das Element mit dem Typ int8 an einem angegebenen Arrayindex als int32 an die oberste Position des Auswertungsstapels.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_I2">
+      <summary>Lädt das Element mit dem Typ int16 an einem angegebenen Arrayindex als int32 an die oberste Position des Auswertungsstapels.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_I4">
+      <summary>Lädt das Element mit dem Typ int32 an einem angegebenen Arrayindex als int32 an die oberste Position des Auswertungsstapels.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_I8">
+      <summary>Lädt das Element mit dem Typ int64 an einem angegebenen Arrayindex als int64 an die oberste Position des Auswertungsstapels.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_R4">
+      <summary>Lädt das Element vom Typ float32 an einem angegebenen Arrayindex als Typ F (Gleitkommawert) an die oberste Position des Auswertungsstapels.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_R8">
+      <summary>Lädt das Element vom Typ float64 an einem angegebenen Arrayindex als Typ F (Gleitkommawert) an die oberste Position des Auswertungsstapels.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_Ref">
+      <summary>Lädt das Element mit Objektverweis an einem angegebenen Arrayindex als Typ O (Objektverweis) an die oberste Position des Auswertungsstapels.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_U1">
+      <summary>Lädt das Element mit dem Typ unsigned int8 an einem angegebenen Arrayindex als int32 an die oberste Position des Auswertungsstapels.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_U2">
+      <summary>Lädt das Element mit dem Typ unsigned int16 an einem angegebenen Arrayindex als int32 an die oberste Position des Auswertungsstapels.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_U4">
+      <summary>Lädt das Element mit dem Typ unsigned int32 an einem angegebenen Arrayindex als int32 an die oberste Position des Auswertungsstapels.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelema">
+      <summary>Lädt die Adresse des Arrayelements an einem angegebenen Arrayindex als Typ &amp; (verwalteter Zeiger) an die oberste Position des Auswertungsstapels.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldfld">
+      <summary>Sucht den Wert eines Felds in dem Objekt, für das sich derzeit ein Verweis auf dem Auswertungsstapel befindet.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldflda">
+      <summary>Sucht die Adresse eines Felds in dem Objekt, für das sich derzeit ein Verweis auf dem Auswertungsstapel befindet.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldftn">
+      <summary>Legt einen nicht verwalteten Zeiger (Typ native int) auf dem Auswertungsstapel ab. Dieser Zeiger zeigt auf den systemeigenen Code, der eine bestimmte Methode implementiert.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_I">
+      <summary>Lädt einen Wert vom Typ native int indirekt als native int in den Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_I1">
+      <summary>Lädt einen Wert vom Typ int8 indirekt als int32 in den Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_I2">
+      <summary>Lädt einen Wert vom Typ int16 indirekt als int32 in den Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_I4">
+      <summary>Lädt einen Wert vom Typ int32 indirekt als int32 in den Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_I8">
+      <summary>Lädt einen Wert vom Typ int64 indirekt als int64 in den Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_R4">
+      <summary>Lädt einen Wert vom Typ float32 indirekt als Typ F (Gleitkommawert) in den Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_R8">
+      <summary>Lädt einen Wert vom Typ float64 indirekt als Typ F (Gleitkommawert) in den Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_Ref">
+      <summary>Lädt einen Objektverweis indirekt als Typ O (Objektverweis) in den Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_U1">
+      <summary>Lädt einen Wert vom Typ unsigned int8 indirekt als int32 in den Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_U2">
+      <summary>Lädt einen Wert vom Typ unsigned int16 indirekt als int32 in den Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_U4">
+      <summary>Lädt einen Wert vom Typ unsigned int32 indirekt als int32 in den Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldlen">
+      <summary>Legt die Anzahl der Elemente eines nullbasierten, eindimensionalen Arrays auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc">
+      <summary>Lädt die lokale Variable an einem bestimmten Index in den Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc_0">
+      <summary>Lädt die lokale Variable am Index 0 in den Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc_1">
+      <summary>Lädt die lokale Variable am Index 1 in den Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc_2">
+      <summary>Lädt die lokale Variable am Index 2 in den Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc_3">
+      <summary>Lädt die lokale Variable am Index 3 in den Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc_S">
+      <summary>Lädt die lokale Variable an einem bestimmten Index in den Auswertungsstapel, Kurzform.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloca">
+      <summary>Lädt die Adresse der lokalen Variablen am angegebenen Index in den Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloca_S">
+      <summary>Lädt die Adresse der lokalen Variablen am angegebenen Index in den Auswertungsstapel, Kurzform.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldnull">
+      <summary>Legt einen NULL-Verweis (Typ O) auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldobj">
+      <summary>Kopiert das Werttypobjekt, auf das eine Adresse zeigt, an die oberste Position des Auswertungsstapels.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldsfld">
+      <summary>Legt den Wert eines statischen Felds auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldsflda">
+      <summary>Legt die Adresse eines statischen Felds auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldstr">
+      <summary>Legt einen neuen Objektverweis auf ein in den Metadaten gespeichertes Zeichenfolgenliteral mittels Push ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldtoken">
+      <summary>Konvertiert ein Metadatentoken in seine Laufzeitdarstellung und legt es auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldvirtftn">
+      <summary>Legt einen nicht verwalteten Zeiger (Typ native int) auf systemeigenen Code auf dem Auswertungsstapel ab. Dieser Code implementiert eine bestimmte virtuelle Methode, die einem angegebenen Objekt zugeordnet ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Leave">
+      <summary>Beendet einen geschützten Codebereich, wobei die Steuerung bedingungslos an eine bestimmte Zielanweisung übertragen wird.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Leave_S">
+      <summary>Beendet einen geschützten Codebereich, wobei die Steuerung bedingungslos an eine bestimmte Zielanweisung übertragen wird, Kurzform.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Localloc">
+      <summary>Belegt eine bestimmte Anzahl von Bytes aus dem lokalen dynamischen Speicherpool und legt die Adresse (einen flüchtigen Zeiger, Typ *) des ersten reservierten Bytes auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Mkrefany">
+      <summary>Legt einen typisierten Verweis auf eine Instanz eines bestimmten Typs auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Mul">
+      <summary>Multipliziert zwei Werte und legt das Ergebnis auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Mul_Ovf">
+      <summary>Multipliziert zwei Ganzzahlwerte, führt eine Überlaufprüfung durch und legt das Ergebnis auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Mul_Ovf_Un">
+      <summary>Multipliziert zwei Ganzzahlwerte ohne Vorzeichen, führt eine Überlaufprüfung durch und legt das Ergebnis auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Neg">
+      <summary>Negiert einen Wert und legt das Ergebnis auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Newarr">
+      <summary>Legt einen Objektverweis auf ein neues nullbasiertes, eindimensionales Array auf dem Auswertungsstapel ab, dessen Elemente einen bestimmten Typ aufweisen.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Newobj">
+      <summary>Erstellt ein neues Objekt oder eine neue Instanz eines Werttyps, wobei ein Objektverweis (Typ O) auf dem Auswertungsstapel abgelegt wird.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Nop">
+      <summary>Füllt Speicherplatz auf, wenn Opcodes gepatcht werden.Es wird keine sinnvolle Operation ausgeführt, obwohl ein Verarbeitungszyklus ausgeführt werden kann.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Not">
+      <summary>Berechnet das bitweise Komplement des Ganzzahlwerts an oberster Position des Stapels und legt das Ergebnis als denselben Typ auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Or">
+      <summary>Berechnet das bitweise Komplement der beiden Ganzzahlwerte an oberster Position des Stapels und legt das Ergebnis auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Pop">
+      <summary>Entfernt den Wert, der sich derzeit an oberster Position des Auswertungsstapels befindet.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix1">
+      <summary>Dies ist eine reservierte Anweisung.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix2">
+      <summary>Dies ist eine reservierte Anweisung.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix3">
+      <summary>Dies ist eine reservierte Anweisung.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix4">
+      <summary>Dies ist eine reservierte Anweisung.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix5">
+      <summary>Dies ist eine reservierte Anweisung.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix6">
+      <summary>Dies ist eine reservierte Anweisung.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix7">
+      <summary>Dies ist eine reservierte Anweisung.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefixref">
+      <summary>Dies ist eine reservierte Anweisung.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Readonly">
+      <summary>Gibt an, dass beim nachfolgenden Vorgang zur Arrayadresse zur Laufzeit keine Typüberprüfung durchgeführt wird und dass ein verwalteter Zeiger zurückgegeben wird, der nur bedingt geändert werden kann.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Refanytype">
+      <summary>Ruft das Typtoken ab, das in einen typisierten Verweis eingebettet ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Refanyval">
+      <summary>Ruft die Adresse (Typ &amp;) ab, die in einen typisierten Verweis eingebettet ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Rem">
+      <summary>Dividiert zwei Werte und legt den Rest auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Rem_Un">
+      <summary>Dividiert zwei Werte ohne Vorzeichen und legt den Rest auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ret">
+      <summary>Wird von der aktuellen Methode zurückgegeben und legt einen Rückgabewert (sofern vorhanden) vom Auswertungsstapel des Aufgerufenen auf dem Auswertungsstapel des Aufrufenden ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Rethrow">
+      <summary>Löst erneut die aktuelle Ausnahme aus.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Shl">
+      <summary>Verschiebt einen ganzzahligen Wert um eine angegebene Anzahl von Bits nach links, wobei die frei werdenden Stellen mit 0-Bits aufgefüllt werden, und legt das Ergebnis auf den Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Shr">
+      <summary>Verschiebt einen ganzzahligen Wert um eine angegebene Anzahl von Bits nach rechts, wobei das Vorzeichen mitgeführt wird, und legt das Ergebnis auf den Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Shr_Un">
+      <summary>Verschiebt einen ganzzahligen Wert ohne Vorzeichen um eine angegebene Anzahl von Bits nach rechts, wobei die frei werdenden Stellen mit 0-Bits aufgefüllt werden, und legt das Ergebnis auf den Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Sizeof">
+      <summary>Legt die Größe eines bereitgestellten Werttyps in Bytes auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Starg">
+      <summary>Speichert den an der obersten Position des Auswertungsstapels befindlichen Wert im Argumentslot an einem angegebenen Index.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Starg_S">
+      <summary>Speichert den an der obersten Position des Auswertungsstapels befindlichen Wert im Argumentslot an einem angegebenen Index, Kurzform.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem">
+      <summary>Ersetzt das Arrayelement am angegebenen Index durch den Wert im Auswertungsstapel, dessen Typ in der Anweisung angegeben ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_I">
+      <summary>Ersetzt das Arrayelement am angegebenen Index durch den native int-Wert im Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_I1">
+      <summary>Ersetzt das Arrayelement am angegebenen Index durch den int8-Wert im Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_I2">
+      <summary>Ersetzt das Arrayelement am angegebenen Index durch den int16-Wert im Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_I4">
+      <summary>Ersetzt das Arrayelement am angegebenen Index durch den int32-Wert im Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_I8">
+      <summary>Ersetzt das Arrayelement am angegebenen Index durch den int64-Wert im Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_R4">
+      <summary>Ersetzt das Arrayelement am angegebenen Index durch den float32-Wert im Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_R8">
+      <summary>Ersetzt das Arrayelement am angegebenen Index durch den float64-Wert im Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_Ref">
+      <summary>Ersetzt das Arrayelement am angegebenen Index durch den Wert des Objektverweises (Typ O) im Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stfld">
+      <summary>Ersetzt den im Feld eines Objektsverweises oder Zeigers gespeicherten Wert durch einen neuen Wert.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_I">
+      <summary>Speichert einen Wert vom Typ native int an einer angegebenen Adresse.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_I1">
+      <summary>Speichert einen Wert vom Typ int8 an einer angegebenen Adresse.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_I2">
+      <summary>Speichert einen Wert vom Typ int16 an einer angegebenen Adresse.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_I4">
+      <summary>Speichert einen Wert vom Typ int32 an einer angegebenen Adresse.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_I8">
+      <summary>Speichert einen Wert vom Typ int64 an einer angegebenen Adresse.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_R4">
+      <summary>Speichert einen Wert vom Typ float32 an einer angegebenen Adresse.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_R8">
+      <summary>Speichert einen Wert vom Typ float64 an einer angegebenen Adresse.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_Ref">
+      <summary>Speichert einen Objektverweiswert an einer angegebenen Adresse.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc">
+      <summary>Holt den aktuellen Wert von der obersten Position des Auswertungsstapels und speichert ihn in der Liste der lokalen Variablen am angegebenen Index.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc_0">
+      <summary>Holt den aktuellen Wert von der obersten Position des Auswertungsstapels und speichert ihn in der Liste der lokalen Variablen am Index 0.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc_1">
+      <summary>Holt den aktuellen Wert von der obersten Position des Auswertungsstapels und speichert ihn in der Liste der lokalen Variablen am Index 1.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc_2">
+      <summary>Holt den aktuellen Wert von der obersten Position des Auswertungsstapels und speichert ihn in der Liste der lokalen Variablen am Index 2.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc_3">
+      <summary>Holt den aktuellen Wert von der obersten Position des Auswertungsstapels und speichert ihn in der Liste der lokalen Variablen am Index 3.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc_S">
+      <summary>Holt den aktuellen Wert von der obersten Position des Auswertungsstapels und speichert ihn in der Liste der lokalen Variablen am <paramref name="index" /> (Kurzform).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stobj">
+      <summary>Kopiert einen Wert mit dem angegebenen Typ vom Auswertungsstapel in die angegebene Speicheradresse.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stsfld">
+      <summary>Ersetzt den Wert eines statischen Felds durch einen Wert vom Auswertungsstapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Sub">
+      <summary>Subtrahiert einen Wert von einem anderen Wert und legt das Ergebnis auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Sub_Ovf">
+      <summary>Subtrahiert einen Ganzzahlwert von einem anderen Ganzzahlwert, führt eine Überlaufprüfung durch und legt das Ergebnis auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Sub_Ovf_Un">
+      <summary>Subtrahiert einen Ganzzahlwert ohne Vorzeichen von einem anderen Ganzzahlwert, führt eine Überlaufprüfung durch und legt das Ergebnis auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Switch">
+      <summary>Implementiert eine Sprungtabelle.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Tailcall">
+      <summary>Führt eine Postfix-Methodenaufrufanweisung in der Weise aus, dass der Stapelrahmen der aktuellen Methode vor der Ausführung der eigentlichen Aufrufanweisung entfernt wird.</summary>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCodes.TakesSingleByteArgument(System.Reflection.Emit.OpCode)">
+      <summary>Gibt True oder False zurück, wenn der bereitgestellte Opcode ein Einzelbyte-Argument akzeptiert.</summary>
+      <returns>True oder false.</returns>
+      <param name="inst">Eine Instanz eines eines Opcodeobjekts. </param>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Throw">
+      <summary>Löst das Ausnahmeobjekt aus, das sich momentan auf dem Auswertungsstapel befindet.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Unaligned">
+      <summary>Gibt an, dass eine Adresse, die sich momentan oben auf dem Stapel befindet, möglicherweise nicht an der eigentlichen Größe der unmittelbar darauf folgenden ldind-Anweisung, stind-Anweisung, ldfld-Anweisung, stfld-Anweisung, ldobj-Anweisung, stobj-Anweisung, initblk-Anweisung oder cpblk-Anweisung ausgerichtet ist.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Unbox">
+      <summary>Konvertiert die Darstellung eines mittels Boxing gepackten Werttyps in seine mittels Unboxing entpackte Entsprechung.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Unbox_Any">
+      <summary>Konvertiert die geschachtelte Darstellung eines in der Anweisung angegebenen Typs in seine nicht geschachtelte Form. </summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Volatile">
+      <summary>Gibt an, dass es sich bei einer Adresse, die sich momentan oben auf dem Auswertungsstapel befindet, möglicherweise um eine flüchtige Adresse handelt und daher die aus diesem Speicherort gelesenen Ergebnisse nicht zwischengespeichert werden können oder mehrere für diesen Speicherort ausgeführte Speichervorgänge nicht unterdrückt werden können.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Xor">
+      <summary>Berechnet das bitweise XOR der beidem auf dem Stapel an oberster Position befindlichen Werte und legt das Ergebnis auf dem Auswertungsstapel ab.</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.OpCodeType">
+      <summary>Beschreibt die Typen der MSIL-Anweisungen (Microsoft Intermediate Language).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodeType.Macro">
+      <summary>Es handelt sich um MSIL-Anweisungen (Microsoft Intermediate Language), die als Synonyme für andere MSIL-Anweisungen verwendet werden.Beispielsweise stellt ldarg.0 die ldarg-Anweisung mit einem Argument von 0 dar.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodeType.Nternal">
+      <summary>Beschreibt eine reservierte MSIL-Anweisung (Microsoft Intermediate Language).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodeType.Objmodel">
+      <summary>Beschreibt eine MSIL-Anweisung (Microsoft Intermediate Language), die auf Objekte angewendet wird.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodeType.Prefix">
+      <summary>Beschreibt eine Präfixanweisung, die das Verhalten der folgenden Anweisung verändert.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodeType.Primitive">
+      <summary>Beschreibt eine integrierte Anweisung.</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.OperandType">
+      <summary>Beschreibt den Operandentyp der MSIL-Anweisung (Microsoft Intermediate Language).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineBrTarget">
+      <summary>Der Operand ist ein Verzweigungsziel in Form einer 32-Bit-Ganzzahl.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineField">
+      <summary>Der Operand ist ein 32-Bit-Metadatentoken.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineI">
+      <summary>Der Operand ist eine 32-Bit-Ganzzahl.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineI8">
+      <summary>Der Operand ist eine 64-Bit-Ganzzahl.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineMethod">
+      <summary>Der Operand ist ein 32-Bit-Metadatentoken.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineNone">
+      <summary>Kein Operand.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineR">
+      <summary>Der Operand ist eine 64-Bit-IEEE-Gleitkommazahl.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineSig">
+      <summary>Der Operand ist ein 32-Bit-Metadatensignaturtoken.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineString">
+      <summary>Der Operand ist ein 32-Bit-Metadatenzeichenfolgetoken.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineSwitch">
+      <summary>Der Operand ist das 32-Bit-Ganzzahlargument zu einer switch-Anweisung.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineTok">
+      <summary>Der Operand ist ein FieldRef-Token, ein MethodRef-Token oder ein TypeRef-Token.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineType">
+      <summary>Der Operand ist ein 32-Bit-Metadatentoken.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineVar">
+      <summary>Der Operand ist eine 16-Bit-Ganzzahl mit der Ordnungszahl einer lokalen Variablen oder einem Argument.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.ShortInlineBrTarget">
+      <summary>Der Operand ist ein Verzweigungsziel in Form einer 8-Bit-Ganzzahl.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.ShortInlineI">
+      <summary>Der Operand ist eine 8-Bit-Ganzzahl.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.ShortInlineR">
+      <summary>Der Operand ist eine 32-Bit-IEEE-Gleitkommazahl.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.ShortInlineVar">
+      <summary>Der Operand ist eine 8-Bit-Ganzzahl mit der Ordnungszahl einer lokalen Variablen oder einem Argument.</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.PackingSize">
+      <summary>Gibt einen von zwei Faktoren an, die die Speicherausrichtung von Feldern bestimmen, wenn ein Typ gemarshallt wird.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size1">
+      <summary>Die Komprimierungsgröße ist 1 Byte.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size128">
+      <summary>Die Komprimierungsgröße ist 128 Bytes.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size16">
+      <summary>Die Komprimierungsgröße ist 16 Bytes.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size2">
+      <summary>Die Komprimierungsgröße ist 2 Bytes.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size32">
+      <summary>Die Komprimierungsgröße ist 32 Bytes.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size4">
+      <summary>Die Komprimierungsgröße ist 4 Bytes.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size64">
+      <summary>Die Komprimierungsgröße ist 64 Bytes.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size8">
+      <summary>Die Komprimierungsgröße ist 8 Bytes.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Unspecified">
+      <summary>Die Komprimierungsgröße ist nicht angegeben.</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.StackBehaviour">
+      <summary>Beschreibt, wie Werte auf einen Stapel gelegt bzw. von einem Stapel geholt werden.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pop0">
+      <summary>Vom Stapel werden keine Werte geholt.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pop1">
+      <summary>Holt einen Wert vom Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pop1_pop1">
+      <summary>Holt einen Wert für den ersten Operanden und einen Wert für den zweiten Operanden vom Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi">
+      <summary>Holt eine 32-Bit-Ganzzahl vom Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_pop1">
+      <summary>Holt eine 32-Bit-Ganzzahl für den ersten Operanden und einen Wert für den zweiten Operanden vom Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_popi">
+      <summary>Holt eine 32-Bit-Ganzzahl für den ersten Operanden und eine 32-Bit-Ganzzahl für den zweiten Operanden vom Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_popi_popi">
+      <summary>Holt eine 32-Bit-Ganzzahl für den ersten Operanden, eine 32-Bit-Ganzzahl für den zweiten Operanden und eine 32-Bit-Ganzzahl für den dritten Operanden vom Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_popi8">
+      <summary>Holt eine 64-Bit-Ganzzahl für den ersten Operanden und eine 32-Bit-Ganzzahl für den zweiten Operanden vom Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_popr4">
+      <summary>Holt eine 32-Bit-Ganzzahl für den ersten Operanden und eine 32-Bit-Gleitkommazahl für den zweiten Operanden vom Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_popr8">
+      <summary>Holt eine 64-Bit-Ganzzahl für den ersten Operanden und eine 32-Bit-Gleitkommazahl für den zweiten Operanden vom Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref">
+      <summary>Holt einen Verweis vom Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_pop1">
+      <summary>Holt einen Verweis für den ersten Operanden und einen Wert für den zweiten Operanden vom Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi">
+      <summary>Holt einen Verweis für den ersten Operanden und eine 32-Bit-Ganzzahl für den zweiten Operanden vom Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_pop1">
+      <summary>Holt einen Verweis für den ersten Operanden, einen Wert für den zweiten Operanden und eine 32-Bit-Ganzzahl für den dritten Operanden vom Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_popi">
+      <summary>Holt einen Verweis für den ersten Operanden, einen Wert für den zweiten Operanden und einen Wert für den dritten Operanden vom Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_popi8">
+      <summary>Holt einen Verweis für den ersten Operanden, einen Wert für den zweiten Operanden und eine 64-Bit-Ganzzahl für den dritten Operanden vom Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_popr4">
+      <summary>Holt einen Verweis für den ersten Operanden, einen Wert für den zweiten Operanden und eine 32-Bit-Ganzzahl für den dritten Operanden vom Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_popr8">
+      <summary>Holt einen Verweis für den ersten Operanden, einen Wert für den zweiten Operanden und eine 64-Bit-Gleitkommazahl für den dritten Operanden vom Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_popref">
+      <summary>Holt einen Verweis für den ersten Operanden, einen Wert für den zweiten Operanden und einen Verweis für den dritten Operanden vom Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Push0">
+      <summary>Auf den Stapel werden keine Werte gelegt.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Push1">
+      <summary>Legt einen Wert auf den Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Push1_push1">
+      <summary>Legt einen Wert für den ersten Operanden und einen Wert für den zweiten Operanden auf den Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pushi">
+      <summary>Legt eine 32-Bit-Ganzzahl auf den Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pushi8">
+      <summary>Legt eine 64-Bit-Ganzzahl auf den Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pushr4">
+      <summary>Legt eine 32-Bit-Gleitkommazahl  auf den Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pushr8">
+      <summary>Legt eine 64-Bit-Gleitkommazahl  auf den Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pushref">
+      <summary>Legt einen Verweis auf den Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Varpop">
+      <summary>Holt eine Variable vom Stapel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Varpush">
+      <summary>Legt eine Variable auf den Stapel.</summary>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,1935 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Globalization.Calendars</name>
+  </assembly>
+  <members>
+    <member name="T:System.Globalization.ChineseLunisolarCalendar">
+      <summary>Rappresenta il tempo suddiviso in mesi, giorni e anni.Gli anni vengono calcolati in base al calendario cinese, mentre i giorni e i mesi vengono calcolati in base al calendario lunisolare.</summary>
+    </member>
+    <member name="M:System.Globalization.ChineseLunisolarCalendar.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Globalization.ChineseLunisolarCalendar" />. </summary>
+    </member>
+    <member name="P:System.Globalization.ChineseLunisolarCalendar.Eras">
+      <summary>Ottiene le ere che corrispondono all'intervallo di date e ore supportato dall'oggetto <see cref="T:System.Globalization.ChineseLunisolarCalendar" /> corrente.</summary>
+      <returns>Matrice di interi con segno a 32 bit che specificano le ere relative all'oggetto.Il valore restituito per un oggetto <see cref="T:System.Globalization.ChineseLunisolarCalendar" /> è sempre una matrice contenente un elemento uguale al valore <see cref="F:System.Globalization.ChineseLunisolarCalendar.ChineseEra" />.</returns>
+    </member>
+    <member name="M:System.Globalization.ChineseLunisolarCalendar.GetEra(System.DateTime)">
+      <summary>Recupera l'era che corrisponde al tipo <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Intero che rappresenta l'era nel parametro <paramref name="time" />.</returns>
+      <param name="time">Tipo <see cref="T:System.DateTime" /> da leggere. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> è minore di <see cref="P:System.Globalization.ChineseLunisolarCalendar.MinSupportedDateTime" /> o maggiore di <see cref="P:System.Globalization.ChineseLunisolarCalendar.MaxSupportedDateTime" />.</exception>
+    </member>
+    <member name="P:System.Globalization.ChineseLunisolarCalendar.MaxSupportedDateTime">
+      <summary>Ottiene la data e l'ora massime supportate dalla classe <see cref="T:System.Globalization.ChineseLunisolarCalendar" />.</summary>
+      <returns>Tipo <see cref="T:System.DateTime" /> che rappresenta l'ultimo istante del 28 gennaio 2101 del calendario gregoriano, equivalente in modo approssimativo al costruttore DateTime(2101, 1, 28, 23, 59, 59, 999).</returns>
+    </member>
+    <member name="P:System.Globalization.ChineseLunisolarCalendar.MinSupportedDateTime">
+      <summary>Ottiene la data e l'ora minime supportate dalla classe <see cref="T:System.Globalization.ChineseLunisolarCalendar" />.</summary>
+      <returns>Tipo <see cref="T:System.DateTime" /> che rappresenta il 19 febbraio 1901 del calendario gregoriano, equivalente al costruttore DateTime(1901, 2, 19).</returns>
+    </member>
+    <member name="T:System.Globalization.EastAsianLunisolarCalendar">
+      <summary>Rappresenta un calendario in cui il tempo è suddiviso in mesi, giorni, anni ed ere e in cui le date sono basate su cicli solari e lunari.</summary>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>Calcola la data che ricorre a una distanza pari al numero di mesi indicato a partire dalla data specificata.</summary>
+      <returns>Nuovo oggetto <see cref="T:System.DateTime" /> risultante dalla somma del numero specificato di mesi e del parametro <paramref name="time" />.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> al quale aggiungere <paramref name="months" />. </param>
+      <param name="months">Numero di mesi da aggiungere. </param>
+      <exception cref="T:System.ArgumentException">Il risultato non è compreso nell’intervallo supportato di un oggetto <see cref="T:System.DateTime" />. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> è minore di -120.000 o maggiore di 120.000. - oppure -<paramref name="time" /> è minore di <see cref="P:System.Globalization.Calendar.MinSupportedDateTime" /> o maggiore di <see cref="P:System.Globalization.Calendar.MaxSupportedDateTime" />.</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>Calcola la data che ricorre a una distanza pari al numero di anni indicato a partire dalla data specificata.</summary>
+      <returns>Nuovo oggetto <see cref="T:System.DateTime" /> risultante dalla somma del numero specificato di anni e del parametro <paramref name="time" />.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> al quale aggiungere <paramref name="years" />. </param>
+      <param name="years">Numero di anni da aggiungere. </param>
+      <exception cref="T:System.ArgumentException">Il risultato non è compreso nell’intervallo supportato di un oggetto <see cref="T:System.DateTime" />. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> è minore di <see cref="P:System.Globalization.Calendar.MinSupportedDateTime" /> o maggiore di <see cref="P:System.Globalization.Calendar.MaxSupportedDateTime" />.</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetCelestialStem(System.Int32)">
+      <summary>Calcola il tronco celeste dell'anno specificato nel ciclo sessagenario (60 anni).</summary>
+      <returns>Numero compreso tra 1 e 10.</returns>
+      <param name="sexagenaryYear">Intero compreso tra 1 e 60 che rappresenta un anno nel ciclo sessagenario. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="sexagenaryYear" /> è minore di 1 o maggiore di 60.</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>Calcola il giorno del mese nella data specificata.</summary>
+      <returns>Intero compreso tra 1 e 31 che rappresenta il giorno del mese specificato nel parametro <paramref name="time" />.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>Calcola il giorno della settimana nella data specificata.</summary>
+      <returns>Uno dei valori di <see cref="T:System.DayOfWeek" /> che rappresenta il giorno della settimana specificato nel parametro <paramref name="time" />.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> è minore di <see cref="P:System.Globalization.Calendar.MinSupportedDateTime" /> o maggiore di <see cref="P:System.Globalization.Calendar.MaxSupportedDateTime" />.</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetDayOfYear(System.DateTime)">
+      <summary>Calcola il giorno dell'anno nella data specificata.</summary>
+      <returns>Intero compreso tra 1 e 354 in un anno normale o tra 1 e 384 in un anno bisestile che rappresenta il giorno dell'anno specificato nel parametro <paramref name="time" />.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>Calcola il numero di giorni nel mese specificato dell'anno e dell'era specificati.</summary>
+      <returns>Numero di giorni nel mese specificato dell'anno e dell'era specificati.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Intero compreso tra 1 e 12 in un anno normale e tra 1 e 13 in un anno bisestile che rappresenta il mese. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>Calcola il numero di giorni nell'anno e nell'era specificati.</summary>
+      <returns>Numero di giorni nell'anno e nell'era specificati.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>Calcola il mese intercalare per l'anno e l'era specificati.</summary>
+      <returns>Intero positivo compreso tra 1 e 13 che indica il mese intercalare nell'anno e nell'era specificati. - oppure -Zero se il calendario non supporta un mese intercalare o se i parametri <paramref name="year" /> e <paramref name="era" /> non specificano un anno bisestile.</returns>
+      <param name="year">Valore intero che rappresenta l'anno.</param>
+      <param name="era">Valore intero che rappresenta l'era.</param>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetMonth(System.DateTime)">
+      <summary>Restituisce il mese nella data specificata.</summary>
+      <returns>Intero compreso tra 1 e 13 che rappresenta il mese specificato nel parametro <paramref name="time" />.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>Calcola il numero di mesi nell'anno e nell'era specificati.</summary>
+      <returns>Numero di mesi nell'anno specificato dell'era specificata.Il valore restituito è 12 mesi in un anno normale o 13 mesi in un anno bisestile.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetSexagenaryYear(System.DateTime)">
+      <summary>Calcola l'anno nel ciclo sessagenario (60 anni) che corrisponde alla data specificata.</summary>
+      <returns>Numero compreso tra 1 e 60 nel ciclo sessagenario che corrisponde al parametro <paramref name="date" />.</returns>
+      <param name="time">Oggetto <see cref="T:System.DateTime" /> da leggere.</param>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetTerrestrialBranch(System.Int32)">
+      <summary>Calcola il ramo terrestre dell'anno specificato nel ciclo sessagenario (60 anni).</summary>
+      <returns>Intero compreso tra 1 e 12.</returns>
+      <param name="sexagenaryYear">Intero compreso tra 1 e 60 che rappresenta un anno nel ciclo sessagenario.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="sexagenaryYear" /> è minore di 1 o maggiore di 60.</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetYear(System.DateTime)">
+      <summary>Restituisce l'anno nella data specificata.</summary>
+      <returns>Valore intero che rappresenta l'anno nel valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>Determina se la data specificata nell'era specificata corrisponde a un giorno intercalare.</summary>
+      <returns>true se il giorno specificato è intercalare. In caso contrario, false.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Intero compreso tra 1 e 13 che rappresenta il mese. </param>
+      <param name="day">Intero compreso tra 1 e 31 che rappresenta il giorno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" />, <paramref name="day" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>Determina se il mese specificato nell'anno e nell'era specificati è intercalare.</summary>
+      <returns>true se il parametro <paramref name="month" /> è un mese intercalare; in caso contrario, false.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Intero compreso tra 1 e 13 che rappresenta il mese. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>Determina se l'anno specificato nell'era specificata è bisestile.</summary>
+      <returns>true se l'anno specificato è bisestile. In caso contrario, false.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>Restituisce un oggetto <see cref="T:System.DateTime" /> impostato sulla data, sull'ora e sull'era specificati.</summary>
+      <returns>Oggetto <see cref="T:System.DateTime" /> impostato sulla data, ora ed era specificate.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Intero compreso tra 1 e 13 che rappresenta il mese. </param>
+      <param name="day">Intero compreso tra 1 e 31 che rappresenta il giorno. </param>
+      <param name="hour">Intero compreso tra 0 e 23 che rappresenta l'ora. </param>
+      <param name="minute">Intero compreso tra 0 e 59 che rappresenta il minuto. </param>
+      <param name="second">Intero compreso tra 0 e 59 che rappresenta il secondo. </param>
+      <param name="millisecond">Intero compreso tra 0 e 999 che rappresenta il millisecondo. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" />, <paramref name="day" />, <paramref name="hour" />, <paramref name="minute" />, <paramref name="second" />, <paramref name="millisecond" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.ToFourDigitYear(System.Int32)">
+      <summary>Converte l'anno specificato in un anno a quattro cifre.</summary>
+      <returns>Intero che contiene la rappresentazione a quattro cifre del parametro <paramref name="year" />.</returns>
+      <param name="year">Valore intero a due o quattro cifre che rappresenta l'anno da convertire. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="P:System.Globalization.EastAsianLunisolarCalendar.TwoDigitYearMax">
+      <summary>Ottiene o imposta l'ultimo anno che, nell'intervallo di un secolo, può essere rappresentato da un anno a due cifre.</summary>
+      <returns>L'ultimo anno che, nell'intervallo di un secolo, può essere rappresentato da un anno a due cifre.</returns>
+      <exception cref="T:System.InvalidOperationException">L'oggetto <see cref="T:System.Globalization.EastAsianLunisolarCalendar" /> corrente è in sola lettura.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">In un'operazione di impostazione il valore è minore di 99 o maggiore dell'anno massimo supportato dal calendario corrente.</exception>
+    </member>
+    <member name="T:System.Globalization.GregorianCalendar">
+      <summary>Rappresenta il calendario gregoriano.</summary>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Globalization.GregorianCalendar" /> utilizzando il valore <see cref="T:System.Globalization.GregorianCalendarTypes" /> predefinito.</summary>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.#ctor(System.Globalization.GregorianCalendarTypes)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Globalization.GregorianCalendar" /> con il valore <see cref="T:System.Globalization.GregorianCalendarTypes" /> specificato.</summary>
+      <param name="type">Valore <see cref="T:System.Globalization.GregorianCalendarTypes" /> che indica la versione della lingua del calendario da creare. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="type" /> non è un membro dell'enumerazione <see cref="T:System.Globalization.GregorianCalendarTypes" />.</exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>Restituisce un valore <see cref="T:System.DateTime" /> che rappresenta il numero di mesi specificato a partire dal valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore <see cref="T:System.DateTime" /> risultante dalla somma del numero specificato di mesi e del valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Oggetto <see cref="T:System.DateTime" /> a cui aggiungere i mesi. </param>
+      <param name="months">Numero di mesi da aggiungere. </param>
+      <exception cref="T:System.ArgumentException">Il valore <see cref="T:System.DateTime" /> risultante non è compreso nell’intervallo supportato. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> è minore di -120000.- oppure - <paramref name="months" /> è maggiore di 120000. </exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>Restituisce un valore <see cref="T:System.DateTime" /> che rappresenta il numero di anni specificato a partire dal valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore <see cref="T:System.DateTime" /> risultante dalla somma del numero di anni specificato e del valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Oggetto <see cref="T:System.DateTime" /> a cui aggiungere anni. </param>
+      <param name="years">Numero di anni da aggiungere. </param>
+      <exception cref="T:System.ArgumentException">Il valore <see cref="T:System.DateTime" /> risultante non è compreso nell’intervallo supportato. </exception>
+    </member>
+    <member name="P:System.Globalization.GregorianCalendar.CalendarType">
+      <summary>Ottiene o imposta il valore <see cref="T:System.Globalization.GregorianCalendarTypes" /> che indica la versione della lingua dell'oggetto <see cref="T:System.Globalization.GregorianCalendar" /> corrente.</summary>
+      <returns>Valore <see cref="T:System.Globalization.GregorianCalendarTypes" /> che indica la versione della lingua dell'oggetto <see cref="T:System.Globalization.GregorianCalendar" /> corrente.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il valore specificato in un'operazione Set non è un membro dell'enumerazione <see cref="T:System.Globalization.GregorianCalendarTypes" />.</exception>
+      <exception cref="T:System.InvalidOperationException">In un'operazione di impostazione l'istanza corrente è in sola lettura.</exception>
+    </member>
+    <member name="P:System.Globalization.GregorianCalendar.Eras">
+      <summary>Ottiene l'elenco delle ere in <see cref="T:System.Globalization.GregorianCalendar" />.</summary>
+      <returns>Matrice di valori interi che rappresenta le ere in <see cref="T:System.Globalization.GregorianCalendar" />.</returns>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>Restituisce il giorno del mese nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero compreso tra 1 e 31 che rappresenta il giorno del mese in <paramref name="time" />.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>Restituisce il giorno della settimana nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore <see cref="T:System.DayOfWeek" /> che rappresenta il giorno della settimana in <paramref name="time" />.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetDayOfYear(System.DateTime)">
+      <summary>Restituisce il giorno dell'anno nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero compreso tra 1 e 366 che rappresenta il giorno dell'anno in <paramref name="time" />.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>Restituisce il numero di giorni nel mese specificato nell'anno specificato dell'era specificata.</summary>
+      <returns>Numero di giorni nel mese specificato dell'anno specificato dell'era specificata.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>Restituisce il numero di giorni nell'anno specificato dell'era specificata.</summary>
+      <returns>Numero di giorni nell'anno specificato dell'era specificata.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.</exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetEra(System.DateTime)">
+      <summary>Restituisce l'era nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero che rappresenta l'era in <paramref name="time" />.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>Calcola il mese intercalare per un anno e un'era specificati.</summary>
+      <returns>Restituisce sempre 0 poiché il calendario gregoriano non riconosce i mesi intercalari.</returns>
+      <param name="year">Un anno.</param>
+      <param name="era">Un'era.Specificare <see cref="F:System.Globalization.GregorianCalendar.ADEra" /> o GregorianCalendar.Eras[Calendar.CurrentEra].</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> è minore del valore dell'anno 1 o maggiore del valore dell'anno 9999 del calendario gregoriano.- oppure -<paramref name="era" /> non è <see cref="F:System.Globalization.GregorianCalendar.ADEra" /> o GregorianCalendar.Eras[Calendar.CurrentEra].</exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetMonth(System.DateTime)">
+      <summary>Restituisce il mese nell'oggetto <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero compreso tra 1 e 12 che rappresenta il mese <paramref name="time" />.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>Restituisce il numero di mesi nell'anno specificato dell'era specificata.</summary>
+      <returns>Numero di mesi nell'anno specificato dell'era specificata.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetYear(System.DateTime)">
+      <summary>Restituisce l'anno nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero che rappresenta l'anno in <paramref name="time" />.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>Determina se la data specificata nell'era specificata corrisponde a un giorno intercalare.</summary>
+      <returns>true se il giorno specificato è intercalare. In caso contrario, false.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="day">Valore intero compreso tra 1 e 31 che rappresenta il giorno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. - oppure - <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="day" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>Determina se il mese specificato nell'anno specificato dell'era specificata è intercalare.</summary>
+      <returns>Questo metodo restituisce sempre false, a meno che non venga sottoposto a override da una classe derivata.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>Determina se l'anno specificato nell'era specificata è bisestile.</summary>
+      <returns>true se l'anno specificato è bisestile. In caso contrario, false.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="P:System.Globalization.GregorianCalendar.MaxSupportedDateTime">
+      <summary>Ottiene la data e l'ora più recenti supportate dal tipo <see cref="T:System.Globalization.GregorianCalendar" />.</summary>
+      <returns>La data e l'ora più recenti supportate dal tipo <see cref="T:System.Globalization.GregorianCalendar" />, che corrispondono all'ultimo istante del 31 dicembre 9999 E.V. ed equivalgono a <see cref="F:System.DateTime.MaxValue" />.</returns>
+    </member>
+    <member name="P:System.Globalization.GregorianCalendar.MinSupportedDateTime">
+      <summary>Ottiene la data e l'ora meno recenti supportate dal tipo <see cref="T:System.Globalization.GregorianCalendar" />.</summary>
+      <returns>La data e l'ora meno recenti supportate dal tipo <see cref="T:System.Globalization.GregorianCalendar" />, che corrispondono al primo istante del 1° gennaio 0001 E.V. ed equivalgono a <see cref="F:System.DateTime.MinValue" />.</returns>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>Restituisce un valore <see cref="T:System.DateTime" /> impostato sulla data e sull'ora specificate nell'era specificata.</summary>
+      <returns>Valore <see cref="T:System.DateTime" /> impostato sulla data e sull'ora specificate nell'era corrente.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="day">Valore intero compreso tra 1 e 31 che rappresenta il giorno. </param>
+      <param name="hour">Valore intero compreso tra 0 e 23 che rappresenta l'ora. </param>
+      <param name="minute">Valore intero compreso tra 0 e 59 che rappresenta il minuto. </param>
+      <param name="second">Valore intero compreso tra 0 e 59 che rappresenta il secondo. </param>
+      <param name="millisecond">Valore intero compreso tra 0 e 999 che rappresenta il millisecondo. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="day" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="hour" /> è minore di zero o maggiore di 23.- oppure - <paramref name="minute" /> è minore di zero o maggiore di 59.- oppure - <paramref name="second" /> è minore di zero o maggiore di 59.- oppure - <paramref name="millisecond" /> è minore di zero o maggiore di 999. </exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.ToFourDigitYear(System.Int32)">
+      <summary>Converte l'anno specificato in un anno a quattro cifre utilizzando la proprietà <see cref="P:System.Globalization.GregorianCalendar.TwoDigitYearMax" /> per determinare il secolo corretto.</summary>
+      <returns>Intero che contiene la rappresentazione a quattro cifre di <paramref name="year" />.</returns>
+      <param name="year">Valore intero a due o quattro cifre che rappresenta l'anno da convertire. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="P:System.Globalization.GregorianCalendar.TwoDigitYearMax">
+      <summary>Ottiene o imposta l'ultimo anno che, nell'intervallo di un secolo, può essere rappresentato da un anno a due cifre.</summary>
+      <returns>L'ultimo anno che, nell'intervallo di un secolo, può essere rappresentato da un anno a due cifre.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il valore specificato in un'operazione Set è minore di 99. - oppure - Il valore specificato in un'operazione Set è maggiore di MaxSupportedDateTime.Year.</exception>
+      <exception cref="T:System.InvalidOperationException">In un'operazione di impostazione l'istanza corrente è in sola lettura.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.GregorianCalendarTypes">
+      <summary>Definisce le diverse versioni in lingua del calendario gregoriano.</summary>
+    </member>
+    <member name="F:System.Globalization.GregorianCalendarTypes.Arabic">
+      <summary>Fa riferimento alla versione araba del calendario gregoriano.</summary>
+    </member>
+    <member name="F:System.Globalization.GregorianCalendarTypes.Localized">
+      <summary>Fa riferimento alla versione localizzata del calendario gregoriano, in base alla lingua della classe <see cref="T:System.Globalization.CultureInfo" /> che utilizza la classe <see cref="T:System.Globalization.DateTimeFormatInfo" />.</summary>
+    </member>
+    <member name="F:System.Globalization.GregorianCalendarTypes.MiddleEastFrench">
+      <summary>Fa riferimento alla versione francese mediorientale del calendario gregoriano.</summary>
+    </member>
+    <member name="F:System.Globalization.GregorianCalendarTypes.TransliteratedEnglish">
+      <summary>Fa riferimento alla versione inglese traslitterata del calendario gregoriano.</summary>
+    </member>
+    <member name="F:System.Globalization.GregorianCalendarTypes.TransliteratedFrench">
+      <summary>Fa riferimento alla versione francese traslitterata del calendario gregoriano.</summary>
+    </member>
+    <member name="F:System.Globalization.GregorianCalendarTypes.USEnglish">
+      <summary>Fa riferimento alla versione inglese americano del calendario gregoriano.</summary>
+    </member>
+    <member name="T:System.Globalization.HebrewCalendar">
+      <summary>Rappresenta il calendario ebraico.</summary>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Globalization.HebrewCalendar" />.</summary>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>Restituisce un valore <see cref="T:System.DateTime" /> che rappresenta il numero di mesi specificato a partire dal valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore <see cref="T:System.DateTime" /> risultante dalla somma del numero specificato di mesi e del valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> al quale aggiungere <paramref name="months" />. </param>
+      <param name="months">Numero di mesi da aggiungere. </param>
+      <exception cref="T:System.ArgumentException">Il valore <see cref="T:System.DateTime" /> risultante non è compreso nell’intervallo supportato. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> è minore di -120.000 o maggiore di 120.000. </exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>Restituisce un valore <see cref="T:System.DateTime" /> che rappresenta il numero di anni specificato a partire dal valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore <see cref="T:System.DateTime" /> risultante dalla somma del numero di anni specificato e del valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> al quale aggiungere <paramref name="years" />. </param>
+      <param name="years">Numero di anni da aggiungere. </param>
+      <exception cref="T:System.ArgumentException">Il valore <see cref="T:System.DateTime" /> risultante non è compreso nell’intervallo supportato. </exception>
+    </member>
+    <member name="P:System.Globalization.HebrewCalendar.Eras">
+      <summary>Ottiene l'elenco delle ere in <see cref="T:System.Globalization.HebrewCalendar" />.</summary>
+      <returns>Matrice di valori interi che rappresenta le ere nel tipo <see cref="T:System.Globalization.HebrewCalendar" />.Il valore restituito è sempre una matrice contenente un elemento uguale a <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" />.</returns>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>Restituisce il giorno del mese nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero compreso tra 1 e 30 che rappresenta il giorno del mese nel valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>Restituisce il giorno della settimana nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore <see cref="T:System.DayOfWeek" /> che rappresenta il giorno della settimana nel valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetDayOfYear(System.DateTime)">
+      <summary>Restituisce il giorno dell'anno nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero compreso tra 1 e 385 che rappresenta il giorno dell'anno nel valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> è precedente al 17 settembre 1583 nel calendario gregoriano o successivo a <see cref="P:System.Globalization.HebrewCalendar.MaxSupportedDateTime" />. </exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>Restituisce il numero di giorni nel mese specificato nell'anno specificato dell'era specificata.</summary>
+      <returns>Numero di giorni nel mese specificato dell'anno specificato dell'era specificata.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 13 che rappresenta il mese. </param>
+      <param name="era">Valore intero che rappresenta l'era.Specificare <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> o Calendar.Eras[Calendar.CurrentEra].</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dall'oggetto <see cref="T:System.Globalization.HebrewCalendar" /> corrente. </exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>Restituisce il numero di giorni nell'anno specificato dell'era specificata.</summary>
+      <returns>Numero di giorni nell'anno specificato dell'era specificata.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="era">Valore intero che rappresenta l'era.Specificare <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> o HebrewCalendar.Eras[Calendar.CurrentEra].</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dall'oggetto <see cref="T:System.Globalization.HebrewCalendar" /> corrente. </exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetEra(System.DateTime)">
+      <summary>Restituisce l'era nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Intero che rappresenta l'era nel valore <see cref="T:System.DateTime" /> specificato.Il valore restituito è sempre <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" />.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>Calcola il mese intercalare per un anno e un'era specificati.</summary>
+      <returns>Valore intero positivo che indica il mese intercalare nell'anno e nell'era specificati.Il valore restituito è 7 se i parametri <paramref name="year" /> e <paramref name="era" /> specificano un anno bisestile oppure 0 se l'anno non è bisestile.</returns>
+      <param name="year">Un anno.</param>
+      <param name="era">Un'era.Specificare <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> o HebrewCalendar.Eras[Calendar.CurrentEra].</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> non è <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> o HebrewCalendar.Eras[Calendar.CurrentEra].- oppure -<paramref name="year" /> è minore del valore dell'anno 5343 o maggiore del valore dell'anno 5999 del calendario ebraico.</exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetMonth(System.DateTime)">
+      <summary>Restituisce il mese nell'oggetto <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Intero compreso tra 1 e 13 che rappresenta il mese nell'oggetto <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> è minore di <see cref="P:System.Globalization.HebrewCalendar.MinSupportedDateTime" /> o maggiore di <see cref="P:System.Globalization.HebrewCalendar.MaxSupportedDateTime" />.</exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>Restituisce il numero di mesi nell'anno specificato dell'era specificata.</summary>
+      <returns>Numero di mesi nell'anno specificato dell'era specificata.Il valore restituito è 12 in un anno normale oppure 13 in un anno bisestile.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="era">Valore intero che rappresenta l'era.Specificare <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> o HebrewCalendar.Eras[Calendar.CurrentEra].</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dall'oggetto <see cref="T:System.Globalization.HebrewCalendar" /> corrente. </exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetYear(System.DateTime)">
+      <summary>Restituisce l'anno nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero che rappresenta l'anno nel valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> non è compreso nell'intervallo supportato dall'oggetto <see cref="T:System.Globalization.HebrewCalendar" /> corrente. </exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>Determina se la data specificata nell'era specificata corrisponde a un giorno intercalare.</summary>
+      <returns>true se il giorno specificato è intercalare. In caso contrario, false.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 13 che rappresenta il mese. </param>
+      <param name="day">Valore intero compreso tra 1 e 30 che rappresenta il giorno. </param>
+      <param name="era">Valore intero che rappresenta l'era.Specificare <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> o HebrewCalendar.Eras[Calendar.CurrentEra].</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" />, <paramref name="day" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>Determina se il mese specificato nell'anno specificato dell'era specificata è intercalare.</summary>
+      <returns>true se il mese specificato è intercalare. In caso contrario, false.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 13 che rappresenta il mese. </param>
+      <param name="era">Valore intero che rappresenta l'era.Specificare <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> o HebrewCalendar.Eras[Calendar.CurrentEra].</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>Determina se l'anno specificato nell'era specificata è bisestile.</summary>
+      <returns>true se l'anno specificato è bisestile. In caso contrario, false.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="era">Valore intero che rappresenta l'era.Specificare <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> o HebrewCalendar.Eras[Calendar.CurrentEra].</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="P:System.Globalization.HebrewCalendar.MaxSupportedDateTime">
+      <summary>Ottiene la data e l'ora più recenti supportate dal tipo <see cref="T:System.Globalization.HebrewCalendar" />.</summary>
+      <returns>La data e l'ora più recenti supportate dal tipo <see cref="T:System.Globalization.HebrewCalendar" />, che corrispondono all'ultimo istante del 29 settembre 2239 E.V. del calendario gregoriano.</returns>
+    </member>
+    <member name="P:System.Globalization.HebrewCalendar.MinSupportedDateTime">
+      <summary>Ottiene la data e l'ora meno recenti supportate dal tipo <see cref="T:System.Globalization.HebrewCalendar" />.</summary>
+      <returns>La data e l'ora meno recenti supportate dal tipo <see cref="T:System.Globalization.HebrewCalendar" />, che corrispondono al primo istante del 1° gennaio 1583 E.V. del calendario gregoriano.</returns>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>Restituisce un valore <see cref="T:System.DateTime" /> impostato sulla data e sull'ora specificate nell'era specificata.</summary>
+      <returns>Valore <see cref="T:System.DateTime" /> impostato sulla data e sull'ora specificate nell'era corrente.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 13 che rappresenta il mese. </param>
+      <param name="day">Valore intero compreso tra 1 e 30 che rappresenta il giorno. </param>
+      <param name="hour">Valore intero compreso tra 0 e 23 che rappresenta l'ora. </param>
+      <param name="minute">Valore intero compreso tra 0 e 59 che rappresenta il minuto. </param>
+      <param name="second">Valore intero compreso tra 0 e 59 che rappresenta il secondo. </param>
+      <param name="millisecond">Valore intero compreso tra 0 e 999 che rappresenta il millisecondo. </param>
+      <param name="era">Valore intero che rappresenta l'era.Specificare <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> o HebrewCalendar.Eras[Calendar.CurrentEra].</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" />, <paramref name="day" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dall'oggetto <see cref="T:System.Globalization.HebrewCalendar" /> corrente.- oppure - <paramref name="hour" /> è minore di 0 o maggiore di 23.- oppure - <paramref name="minute" /> è minore di 0 o maggiore di 59.- oppure - <paramref name="second" /> è minore di 0 o maggiore di 59.- oppure - <paramref name="millisecond" /> è minore di 0 o maggiore di 999. </exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.ToFourDigitYear(System.Int32)">
+      <summary>Converte l'anno specificato in un anno a quattro cifre utilizzando la proprietà <see cref="P:System.Globalization.HebrewCalendar.TwoDigitYearMax" /> per determinare il secolo corretto.</summary>
+      <returns>Se il parametro <paramref name="year" /> è un anno a 2 cifre, il valore restituito equivale all'anno corrispondente a 4 cifre.Se il parametro <paramref name="year" /> è un anno a 4 cifre, il valore restituito è il parametro <paramref name="year" /> invariato.</returns>
+      <param name="year">Anno del calendario ebraico a 2 cifre compreso tra 0 a 99 o a 4 cifre compreso tra 5343 e 5999.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> è minore di 0.- oppure -<paramref name="year" /> è minore di <see cref="P:System.Globalization.HebrewCalendar.MinSupportedDateTime" /> o maggiore di <see cref="P:System.Globalization.HebrewCalendar.MaxSupportedDateTime" />. </exception>
+    </member>
+    <member name="P:System.Globalization.HebrewCalendar.TwoDigitYearMax">
+      <summary>Ottiene o imposta l'ultimo anno che, nell'intervallo di un secolo, può essere rappresentato da un anno a due cifre.</summary>
+      <returns>L'ultimo anno che, nell'intervallo di un secolo, può essere rappresentato da un anno a due cifre.</returns>
+      <exception cref="T:System.InvalidOperationException">L'oggetto <see cref="T:System.Globalization.HebrewCalendar" /> corrente è in sola lettura.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">In un'operazione Set, il valore dell'anno del calendario ebraico è minore di 5343, ma diverso da 99, oppure il valore dell'anno è maggiore di 5999. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.HijriCalendar">
+      <summary>Rappresenta il calendario Hijri.</summary>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Globalization.HijriCalendar" />.</summary>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>Restituisce un valore <see cref="T:System.DateTime" /> che rappresenta il numero di mesi specificato a partire dal valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore <see cref="T:System.DateTime" /> risultante dalla somma del numero specificato di mesi e del valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> al quale aggiungere i mesi. </param>
+      <param name="months">Numero di mesi da aggiungere. </param>
+      <exception cref="T:System.ArgumentException">Oggetto <see cref="T:System.DateTime" /> risultante.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> è minore di -120000.- oppure - <paramref name="months" /> è maggiore di 120000. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>Restituisce un valore <see cref="T:System.DateTime" /> che rappresenta il numero di anni specificato a partire dal valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore <see cref="T:System.DateTime" /> risultante dalla somma del numero di anni specificato e del valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> al quale aggiungere gli anni. </param>
+      <param name="years">Numero di anni da aggiungere. </param>
+      <exception cref="T:System.ArgumentException">Il valore <see cref="T:System.DateTime" /> risultante non è compreso nell’intervallo supportato. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Globalization.HijriCalendar.Eras">
+      <summary>Ottiene l'elenco delle ere in <see cref="T:System.Globalization.HijriCalendar" />.</summary>
+      <returns>Matrice di valori interi che rappresenta le ere in <see cref="T:System.Globalization.HijriCalendar" />.</returns>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>Restituisce il giorno del mese nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero compreso tra 1 e 30 che rappresenta il giorno del mese nel valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>Restituisce il giorno della settimana nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore <see cref="T:System.DayOfWeek" /> che rappresenta il giorno della settimana nel valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetDayOfYear(System.DateTime)">
+      <summary>Restituisce il giorno dell'anno nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero compreso tra 1 e 355 che rappresenta il giorno dell'anno nell'oggetto <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>Restituisce il numero di giorni nel mese specificato dell'anno e dell'era specificati.</summary>
+      <returns>Numero di giorni nel mese specificato dell'anno specificato dell'era specificata.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. - oppure - <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>Restituisce il numero di giorni nell'anno e nell'era specificati.</summary>
+      <returns>Numero di giorni nell'anno e nell'era specificati.Il numero di giorni è pari a 354 in un anno normale o a 355 in un anno bisestile.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetEra(System.DateTime)">
+      <summary>Restituisce l'era nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Intero che rappresenta l'era nel valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>Calcola il mese intercalare per un anno e un'era specificati.</summary>
+      <returns>Restituisce sempre 0 perché il tipo <see cref="T:System.Globalization.HijriCalendar" /> non supporta la nozione di mese intercalare.</returns>
+      <param name="year">Un anno.</param>
+      <param name="era">Un'era.Specificare <see cref="F:System.Globalization.Calendar.CurrentEra" /> o <see cref="F:System.Globalization.HijriCalendar.HijriEra" />.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> è minore del valore dell'anno 1 o maggiore del valore dell'anno 9666 del calendario Hijri.- oppure -<paramref name="era" /> non è <see cref="F:System.Globalization.Calendar.CurrentEra" /> o <see cref="F:System.Globalization.HijriCalendar.HijriEra" />.</exception>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetMonth(System.DateTime)">
+      <summary>Restituisce il mese nell'oggetto <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Intero compreso tra 1 e 12 che rappresenta il mese nel valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>Restituisce il numero di mesi nell'anno e nell'era specificati.</summary>
+      <returns>Numero di mesi nell'anno e nell'era specificati.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. - oppure - <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetYear(System.DateTime)">
+      <summary>Restituisce l'anno nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero che rappresenta l'anno nel valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Globalization.HijriCalendar.HijriAdjustment">
+      <summary>Ottiene o imposta il numero di giorni da aggiungere o sottrarre dal calendario per riflettere le variazioni dell'inizio e della fine del Ramadan e per tenere conto delle differenze nelle date tra i vari paesi.</summary>
+      <returns>Valore intero compreso tra -2 e 2 che rappresenta il numero di giorni da aggiungere o sottrarre dal calendario.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">La proprietà viene impostata su un valore non valido. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>Determina se la data specificata è un giorno intercalare.</summary>
+      <returns>true se il giorno specificato è intercalare. In caso contrario, false.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="day">Valore intero compreso tra 1 e 30 che rappresenta il giorno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. - oppure - <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="day" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>Determina se il mese specificato nell'anno e nell'era specificati è intercalare.</summary>
+      <returns>Questo metodo restituisce sempre false.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. - oppure - <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>Determina se l'anno specificato nell'era specificata è bisestile.</summary>
+      <returns>true se l'anno specificato è bisestile. In caso contrario, false.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. - oppure - <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="P:System.Globalization.HijriCalendar.MaxSupportedDateTime">
+      <summary>Ottiene la data e l'ora più recenti supportate dal calendario.</summary>
+      <returns>La data e l'ora più recenti supportate dal tipo <see cref="T:System.Globalization.HijriCalendar" />, che corrispondono all'ultimo istante del 31 dicembre 9999 E.V. del calendario gregoriano.</returns>
+    </member>
+    <member name="P:System.Globalization.HijriCalendar.MinSupportedDateTime">
+      <summary>Ottiene la data e l'ora meno recenti supportate dal calendario.</summary>
+      <returns>La data e l'ora meno recenti supportate dal tipo <see cref="T:System.Globalization.HijriCalendar" />, che corrispondono al primo istante del 18 luglio 622 E.V. del calendario gregoriano.</returns>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>Restituisce un oggetto <see cref="T:System.DateTime" /> impostato sulla data, sull'ora e sull'era specificati.</summary>
+      <returns>Valore <see cref="T:System.DateTime" /> impostato sulla data e sull'ora specificate nell'era corrente.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="day">Valore intero compreso tra 1 e 30 che rappresenta il giorno. </param>
+      <param name="hour">Valore intero compreso tra 0 e 23 che rappresenta l'ora. </param>
+      <param name="minute">Valore intero compreso tra 0 e 59 che rappresenta il minuto. </param>
+      <param name="second">Valore intero compreso tra 0 e 59 che rappresenta il secondo. </param>
+      <param name="millisecond">Valore intero compreso tra 0 e 999 che rappresenta il millisecondo. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. - oppure - <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="day" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="hour" /> è minore di zero o maggiore di 23.- oppure - <paramref name="minute" /> è minore di zero o maggiore di 59.- oppure - <paramref name="second" /> è minore di zero o maggiore di 59.- oppure - <paramref name="millisecond" /> è minore di zero o maggiore di 999. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.ToFourDigitYear(System.Int32)">
+      <summary>Converte l'anno specificato in un anno a quattro cifre utilizzando la proprietà <see cref="P:System.Globalization.HijriCalendar.TwoDigitYearMax" /> per determinare il secolo corretto.</summary>
+      <returns>Intero che contiene la rappresentazione a quattro cifre di <paramref name="year" />.</returns>
+      <param name="year">Valore intero a due o quattro cifre che rappresenta l'anno da convertire. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="P:System.Globalization.HijriCalendar.TwoDigitYearMax">
+      <summary>Ottiene o imposta l'ultimo anno che, nell'intervallo di un secolo, può essere rappresentato da un anno a due cifre.</summary>
+      <returns>L'ultimo anno che, nell'intervallo di un secolo, può essere rappresentato da un anno a due cifre.</returns>
+      <exception cref="T:System.InvalidOperationException">Questo calendario è in sola lettura.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">In un'operazione Set il valore è minore di 100 o maggiore di 9666.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.JapaneseCalendar">
+      <summary>Rappresenta il calendario giapponese.</summary>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Globalization.JapaneseCalendar" />.</summary>
+      <exception cref="T:System.TypeInitializationException">Impossibile inizializzare un oggetto <see cref="T:System.Globalization.JapaneseCalendar" />. Informazioni sulle impostazioni cultura mancanti.</exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>Restituisce un valore <see cref="T:System.DateTime" /> che rappresenta il numero di mesi specificato a partire dal valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore <see cref="T:System.DateTime" /> risultante dalla somma del numero specificato di mesi e del valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Oggetto <see cref="T:System.DateTime" /> a cui aggiungere i mesi. </param>
+      <param name="months">Numero di mesi da aggiungere. </param>
+      <exception cref="T:System.ArgumentException">Il valore <see cref="T:System.DateTime" /> risultante non è compreso nell’intervallo supportato. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> è minore di -120000.- oppure - <paramref name="months" /> è maggiore di 120000. </exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>Restituisce un valore <see cref="T:System.DateTime" /> che rappresenta il numero di anni specificato a partire dal valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore <see cref="T:System.DateTime" /> risultante dalla somma del numero di anni specificato e del valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Oggetto <see cref="T:System.DateTime" /> a cui aggiungere anni. </param>
+      <param name="years">Numero di anni da aggiungere. </param>
+      <exception cref="T:System.ArgumentException">Il valore <see cref="T:System.DateTime" /> risultante non è compreso nell’intervallo supportato. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> non è compreso nell'intervallo supportato dal tipo <see cref="T:System.Globalization.JapaneseCalendar" />.- oppure -<paramref name="years" /> è minore di -10.000 o maggiore di 10.000. </exception>
+    </member>
+    <member name="P:System.Globalization.JapaneseCalendar.Eras">
+      <summary>Ottiene l'elenco delle ere in <see cref="T:System.Globalization.JapaneseCalendar" />.</summary>
+      <returns>Matrice di valori interi che rappresenta le ere in <see cref="T:System.Globalization.JapaneseCalendar" />.</returns>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>Restituisce il giorno del mese nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero compreso tra 1 e 31 che rappresenta il giorno del mese nell'oggetto <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>Restituisce il giorno della settimana nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore <see cref="T:System.DayOfWeek" /> che rappresenta il giorno della settimana nel valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetDayOfYear(System.DateTime)">
+      <summary>Restituisce il giorno dell'anno nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero compreso tra 1 e 366 che rappresenta il giorno dell'anno nell'oggetto <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>Restituisce il numero di giorni nel mese specificato nell'anno specificato dell'era specificata.</summary>
+      <returns>Numero di giorni nel mese specificato dell'anno specificato dell'era specificata.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>Restituisce il numero di giorni nell'anno specificato dell'era specificata.</summary>
+      <returns>Numero di giorni nell'anno specificato dell'era specificata.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetEra(System.DateTime)">
+      <summary>Restituisce l'era nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Intero che rappresenta l'era nel valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il valore <see cref="T:System.DateTime" /> risultante non è compreso nell’intervallo supportato. </exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>Calcola il mese intercalare per un anno e un'era specificati.</summary>
+      <returns>Il valore restituito è sempre 0 perché il tipo <see cref="T:System.Globalization.JapaneseCalendar" /> non supporta la nozione di mese intercalare.</returns>
+      <param name="year">Un anno.</param>
+      <param name="era">Un'era.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dal tipo <see cref="T:System.Globalization.JapaneseCalendar" />.</exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetMonth(System.DateTime)">
+      <summary>Restituisce il mese nell'oggetto <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Intero compreso tra 1 e 12 che rappresenta il mese nel valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>Restituisce il numero di mesi nell'anno specificato dell'era specificata.</summary>
+      <returns>Il valore restituito è sempre 12.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetWeekOfYear(System.DateTime,System.Globalization.CalendarWeekRule,System.DayOfWeek)">
+      <summary>Restituisce la settimana dell'anno che comprende la data nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero in base 1 che rappresenta la settimana dell'anno che comprende la data nel parametro <paramref name="time" />.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+      <param name="rule">Uno dei valori <see cref="T:System.Globalization.CalendarWeekRule" /> che definisce una settimana di calendario. </param>
+      <param name="firstDayOfWeek">Uno dei valori <see cref="T:System.DayOfWeek" /> che rappresenta il primo giorno della settimana. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> o <paramref name="firstDayOfWeek" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="rule" /> non è un valore <see cref="T:System.Globalization.CalendarWeekRule" /> valido. </exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetYear(System.DateTime)">
+      <summary>Restituisce l'anno nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero che rappresenta l'anno nel valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>Determina se la data specificata nell'era specificata corrisponde a un giorno intercalare.</summary>
+      <returns>true se il giorno specificato è intercalare; in caso contrario, false.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="day">Valore intero compreso tra 1 e 31 che rappresenta il giorno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="day" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>Determina se il mese specificato nell'anno specificato dell'era specificata è intercalare.</summary>
+      <returns>Questo metodo restituisce sempre false, a meno che non venga sottoposto a override da una classe derivata.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>Determina se l'anno specificato nell'era specificata è bisestile.</summary>
+      <returns>true se l'anno specificato è bisestile; in caso contrario, false.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="P:System.Globalization.JapaneseCalendar.MaxSupportedDateTime">
+      <summary>Ottiene la data e l'ora più recenti supportate dall'oggetto <see cref="T:System.Globalization.JapaneseCalendar" /> corrente.</summary>
+      <returns>La data e l'ora più recenti supportate dal tipo <see cref="T:System.Globalization.JapaneseCalendar" />, che corrispondono all'ultimo istante del 31 dicembre 9999 E.V. del calendario gregoriano.</returns>
+    </member>
+    <member name="P:System.Globalization.JapaneseCalendar.MinSupportedDateTime">
+      <summary>Ottiene la data e l'ora meno recenti supportate dall'oggetto <see cref="T:System.Globalization.JapaneseCalendar" /> corrente.</summary>
+      <returns>La data e l'ora meno recenti supportate dal tipo <see cref="T:System.Globalization.JapaneseCalendar" />, che corrispondono al primo istante del 8 settembre 1868 E.V. del calendario gregoriano. </returns>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>Restituisce un valore <see cref="T:System.DateTime" /> impostato sulla data e sull'ora specificate nell'era specificata.</summary>
+      <returns>Valore <see cref="T:System.DateTime" /> impostato sulla data e sull'ora specificate nell'era corrente.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="day">Valore intero compreso tra 1 e 31 che rappresenta il giorno. </param>
+      <param name="hour">Valore intero compreso tra 0 e 23 che rappresenta l'ora. </param>
+      <param name="minute">Valore intero compreso tra 0 e 59 che rappresenta il minuto. </param>
+      <param name="second">Valore intero compreso tra 0 e 59 che rappresenta il secondo. </param>
+      <param name="millisecond">Valore intero compreso tra 0 e 999 che rappresenta il millisecondo. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="day" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="hour" /> è minore di zero o maggiore di 23.- oppure - <paramref name="minute" /> è minore di zero o maggiore di 59.- oppure - <paramref name="second" /> è minore di zero o maggiore di 59.- oppure - <paramref name="millisecond" /> è minore di zero o maggiore di 999.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.ToFourDigitYear(System.Int32)">
+      <summary>Converte l'anno specificato in un anno a quattro cifre utilizzando la proprietà <see cref="P:System.Globalization.JapaneseCalendar.TwoDigitYearMax" /> per determinare il secolo corretto.</summary>
+      <returns>Intero che contiene la rappresentazione a quattro cifre di <paramref name="year" />.</returns>
+      <param name="year">Valore intero (solitamente a due cifre) che rappresenta l'anno da convertire. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="P:System.Globalization.JapaneseCalendar.TwoDigitYearMax">
+      <summary>Ottiene o imposta l'ultimo anno che, nell'intervallo di un secolo, può essere rappresentato da un anno a due cifre.</summary>
+      <returns>L'ultimo anno che, nell'intervallo di un secolo, può essere rappresentato da un anno a due cifre.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il valore specificato in un'operazione Set è minore di 99. - oppure - Il valore specificato in un'operazione Set è maggiore di 8011 (o MaxSupportedDateTime.Year).</exception>
+      <exception cref="T:System.InvalidOperationException">In un'operazione di impostazione l'istanza corrente è in sola lettura.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.JapaneseLunisolarCalendar">
+      <summary>Rappresenta il tempo suddiviso in mesi, giorni e anni.Gli anni vengono calcolati come per il calendario giapponese, mentre i giorni e i mesi vengono calcolati utilizzando il calendario lunisolare.</summary>
+    </member>
+    <member name="M:System.Globalization.JapaneseLunisolarCalendar.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Globalization.JapaneseLunisolarCalendar" />. </summary>
+    </member>
+    <member name="P:System.Globalization.JapaneseLunisolarCalendar.Eras">
+      <summary>Ottiene le ere che sono importanti per l'oggetto <see cref="T:System.Globalization.JapaneseLunisolarCalendar" />.</summary>
+      <returns>Matrice di interi con segno a 32 bit che specificano le ere relative all'oggetto.</returns>
+    </member>
+    <member name="M:System.Globalization.JapaneseLunisolarCalendar.GetEra(System.DateTime)">
+      <summary>Recupera l'era che corrisponde all'oggetto <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Intero che rappresenta l'era specificata nel parametro <paramref name="time" />.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="P:System.Globalization.JapaneseLunisolarCalendar.MaxSupportedDateTime">
+      <summary>Ottiene la data e l'ora massime supportate dalla classe <see cref="T:System.Globalization.JapaneseLunisolarCalendar" />.</summary>
+      <returns>Data e ora più recenti supportate dalla classe <see cref="T:System.Globalization.JapaneseLunisolarCalendar" />, che corrispondono all'ultimo istante del 22 gennaio 2050 E.V. del calendario gregoriano.</returns>
+    </member>
+    <member name="P:System.Globalization.JapaneseLunisolarCalendar.MinSupportedDateTime">
+      <summary>Ottiene la data e l'ora minime supportate dalla classe <see cref="T:System.Globalization.JapaneseLunisolarCalendar" />.</summary>
+      <returns>Data e ora meno recenti supportate dalla classe <see cref="T:System.Globalization.JapaneseLunisolarCalendar" />, che corrispondono al primo istante del 28° gennaio 1960 E.V. del calendario gregoriano.</returns>
+    </member>
+    <member name="T:System.Globalization.JulianCalendar">
+      <summary>Rappresenta il calendario giuliano.</summary>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Globalization.JulianCalendar" />.</summary>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>Restituisce un valore <see cref="T:System.DateTime" /> che rappresenta il numero di mesi specificato a partire dal valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore <see cref="T:System.DateTime" /> risultante dalla somma del numero specificato di mesi e del valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Oggetto <see cref="T:System.DateTime" /> a cui aggiungere i mesi. </param>
+      <param name="months">Numero di mesi da aggiungere. </param>
+      <exception cref="T:System.ArgumentException">Il valore <see cref="T:System.DateTime" /> risultante non è compreso nell’intervallo supportato. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> è minore di -120000.- oppure - <paramref name="months" /> è maggiore di 120000. </exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>Restituisce un valore <see cref="T:System.DateTime" /> che rappresenta il numero di anni specificato a partire dal valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore <see cref="T:System.DateTime" /> risultante dalla somma del numero di anni specificato e del valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Oggetto <see cref="T:System.DateTime" /> a cui aggiungere anni. </param>
+      <param name="years">Numero di anni da aggiungere. </param>
+      <exception cref="T:System.ArgumentException">Il valore <see cref="T:System.DateTime" /> risultante non è compreso nell’intervallo supportato. </exception>
+    </member>
+    <member name="P:System.Globalization.JulianCalendar.Eras">
+      <summary>Ottiene l'elenco delle ere in <see cref="T:System.Globalization.JulianCalendar" />.</summary>
+      <returns>Matrice di valori interi che rappresenta le ere in <see cref="T:System.Globalization.JulianCalendar" />.</returns>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>Restituisce il giorno del mese nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero compreso tra 1 e 31 che rappresenta il giorno del mese in <paramref name="time" />.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>Restituisce il giorno della settimana nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore <see cref="T:System.DayOfWeek" /> che rappresenta il giorno della settimana in <paramref name="time" />.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetDayOfYear(System.DateTime)">
+      <summary>Restituisce il giorno dell'anno nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero compreso tra 1 e 366 che rappresenta il giorno dell'anno in <paramref name="time" />.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>Restituisce il numero di giorni nel mese specificato nell'anno specificato dell'era specificata.</summary>
+      <returns>Numero di giorni nel mese specificato dell'anno specificato dell'era specificata.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. - oppure - <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>Restituisce il numero di giorni nell'anno specificato dell'era specificata.</summary>
+      <returns>Numero di giorni nell'anno specificato dell'era specificata.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. - oppure - <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetEra(System.DateTime)">
+      <summary>Restituisce l'era nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero che rappresenta l'era in <paramref name="time" />.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>Calcola il mese intercalare per un anno e un'era specificati.</summary>
+      <returns>Valore intero positivo che indica il mese intercalare nell'anno e nell'era specificati.In alternativa, questo metodo restituisce zero se il calendario non supporta un mese intercalare o se i parametri <paramref name="year" /> e <paramref name="era" /> non specificano un anno bisestile.</returns>
+      <param name="year">Valore intero che rappresenta l'anno.</param>
+      <param name="era">Valore intero che rappresenta l'era.</param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetMonth(System.DateTime)">
+      <summary>Restituisce il mese nell'oggetto <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero compreso tra 1 e 12 che rappresenta il mese <paramref name="time" />.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>Restituisce il numero di mesi nell'anno specificato dell'era specificata.</summary>
+      <returns>Numero di mesi nell'anno specificato dell'era specificata.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. - oppure - <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetYear(System.DateTime)">
+      <summary>Restituisce l'anno nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero che rappresenta l'anno in <paramref name="time" />.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>Determina se la data specificata nell'era specificata corrisponde a un giorno intercalare.</summary>
+      <returns>true se il giorno specificato è intercalare. In caso contrario, false.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="day">Valore intero compreso tra 1 e 31 che rappresenta il giorno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="day" /> non è compreso nell'intervallo supportato dal calendario. - oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>Determina se il mese specificato nell'anno specificato dell'era specificata è intercalare.</summary>
+      <returns>Questo metodo restituisce sempre false, a meno che non venga sottoposto a override da una classe derivata.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario. - oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>Determina se l'anno specificato nell'era specificata è bisestile.</summary>
+      <returns>true se l'anno specificato è bisestile. In caso contrario, false.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario. - oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="P:System.Globalization.JulianCalendar.MaxSupportedDateTime">
+      <summary>Ottiene la data e l'ora più recenti supportate dalla classe <see cref="T:System.Globalization.JulianCalendar" />.</summary>
+      <returns>Data e ora più recenti supportate dalla classe <see cref="T:System.Globalization.JulianCalendar" />, che corrispondono all'ultimo istante del 31 dicembre 9999 E.V. del calendario gregoriano.</returns>
+    </member>
+    <member name="P:System.Globalization.JulianCalendar.MinSupportedDateTime">
+      <summary>Ottiene la data e l'ora meno recenti supportate dalla classe <see cref="T:System.Globalization.JulianCalendar" />.</summary>
+      <returns>Data e ora meno recenti supportate dalla classe <see cref="T:System.Globalization.JulianCalendar" />, che corrispondono al primo istante del 1° gennaio 0001 E.V. del calendario gregoriano.</returns>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>Restituisce un valore <see cref="T:System.DateTime" /> impostato sulla data e sull'ora specificate nell'era specificata.</summary>
+      <returns>Valore <see cref="T:System.DateTime" /> impostato sulla data e sull'ora specificate nell'era corrente.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="day">Valore intero compreso tra 1 e 31 che rappresenta il giorno. </param>
+      <param name="hour">Valore intero compreso tra 0 e 23 che rappresenta l'ora. </param>
+      <param name="minute">Valore intero compreso tra 0 e 59 che rappresenta il minuto. </param>
+      <param name="second">Valore intero compreso tra 0 e 59 che rappresenta il secondo. </param>
+      <param name="millisecond">Valore intero compreso tra 0 e 999 che rappresenta il millisecondo. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="day" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="hour" /> è minore di zero o maggiore di 23.- oppure - <paramref name="minute" /> è minore di zero o maggiore di 59.- oppure - <paramref name="second" /> è minore di zero o maggiore di 59.- oppure - <paramref name="millisecond" /> è minore di zero o maggiore di 999. - oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.ToFourDigitYear(System.Int32)">
+      <summary>Converte l'anno specificato in un anno a quattro cifre utilizzando la proprietà <see cref="P:System.Globalization.JulianCalendar.TwoDigitYearMax" /> per determinare il secolo corretto.</summary>
+      <returns>Intero che contiene la rappresentazione a quattro cifre di <paramref name="year" />.</returns>
+      <param name="year">Valore intero a due o quattro cifre che rappresenta l'anno da convertire. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="P:System.Globalization.JulianCalendar.TwoDigitYearMax">
+      <summary>Ottiene o imposta l'ultimo anno che, nell'intervallo di un secolo, può essere rappresentato da un anno a due cifre.</summary>
+      <returns>L'ultimo anno che, nell'intervallo di un secolo, può essere rappresentato da un anno a due cifre.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il valore specificato in un'operazione Set è minore di 99. - oppure - Il valore specificato in un'operazione Set è maggiore di MaxSupportedDateTime.Year.</exception>
+      <exception cref="T:System.InvalidOperationException">In un'operazione di impostazione l'istanza corrente è in sola lettura.</exception>
+    </member>
+    <member name="T:System.Globalization.KoreanCalendar">
+      <summary>Rappresenta il calendario coreano.</summary>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Globalization.KoreanCalendar" />.</summary>
+      <exception cref="T:System.TypeInitializationException">Impossibile inizializzare un oggetto <see cref="T:System.Globalization.KoreanCalendar" />. Informazioni sulle impostazioni cultura mancanti.</exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>Restituisce un valore <see cref="T:System.DateTime" /> che rappresenta il numero di mesi specificato a partire dal valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore <see cref="T:System.DateTime" /> risultante dalla somma del numero specificato di mesi e del valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Oggetto <see cref="T:System.DateTime" /> a cui aggiungere i mesi. </param>
+      <param name="months">Numero di mesi da aggiungere. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> è minore di -120000.- oppure - <paramref name="months" /> è maggiore di 120000. </exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>Restituisce un valore <see cref="T:System.DateTime" /> che rappresenta il numero di anni specificato a partire dal valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore <see cref="T:System.DateTime" /> risultante dalla somma del numero di anni specificato e del valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Oggetto <see cref="T:System.DateTime" /> a cui aggiungere anni. </param>
+      <param name="years">Numero di anni da aggiungere. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="years" /> o <paramref name="time" /> non è compreso nell'intervallo consentito.</exception>
+    </member>
+    <member name="P:System.Globalization.KoreanCalendar.Eras">
+      <summary>Ottiene l'elenco delle ere in <see cref="T:System.Globalization.KoreanCalendar" />.</summary>
+      <returns>Matrice di valori interi che rappresenta le ere in <see cref="T:System.Globalization.KoreanCalendar" />.</returns>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>Restituisce il giorno del mese nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero compreso tra 1 e 31 che rappresenta il giorno del mese nell'oggetto <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>Restituisce il giorno della settimana nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore <see cref="T:System.DayOfWeek" /> che rappresenta il giorno della settimana nel valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetDayOfYear(System.DateTime)">
+      <summary>Restituisce il giorno dell'anno nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero compreso tra 1 e 366 che rappresenta il giorno dell'anno nell'oggetto <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>Restituisce il numero di giorni nel mese specificato nell'anno specificato dell'era specificata.</summary>
+      <returns>Numero di giorni nel mese specificato dell'anno specificato dell'era specificata.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>Restituisce il numero di giorni nell'anno specificato dell'era specificata.</summary>
+      <returns>Numero di giorni nell'anno specificato dell'era specificata.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetEra(System.DateTime)">
+      <summary>Restituisce l'era nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Intero che rappresenta l'era nel valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>Calcola il mese intercalare per un anno e un'era specificati.</summary>
+      <returns>Il valore restituito è sempre 0 perché la classe <see cref="T:System.Globalization.KoreanCalendar" /> non supporta la nozione di mese intercalare.</returns>
+      <param name="year">Un anno.</param>
+      <param name="era">Un'era.</param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetMonth(System.DateTime)">
+      <summary>Restituisce il mese nell'oggetto <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Intero compreso tra 1 e 12 che rappresenta il mese nel valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>Restituisce il numero di mesi nell'anno specificato dell'era specificata.</summary>
+      <returns>Numero di mesi nell'anno specificato dell'era specificata.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetWeekOfYear(System.DateTime,System.Globalization.CalendarWeekRule,System.DayOfWeek)">
+      <summary>Restituisce la settimana dell'anno che comprende la data nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero in base 1 che rappresenta la settimana dell'anno che comprende la data nel parametro <paramref name="time" />.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+      <param name="rule">Uno dei valori <see cref="T:System.Globalization.CalendarWeekRule" /> che definisce una settimana di calendario. </param>
+      <param name="firstDayOfWeek">Uno dei valori <see cref="T:System.DayOfWeek" /> che rappresenta il primo giorno della settimana. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> o <paramref name="firstDayOfWeek" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="rule" /> non è un valore <see cref="T:System.Globalization.CalendarWeekRule" /> valido. </exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetYear(System.DateTime)">
+      <summary>Restituisce l'anno nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero che rappresenta l'anno nel valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>Determina se la data specificata nell'era specificata corrisponde a un giorno intercalare.</summary>
+      <returns>true se il giorno specificato è intercalare. In caso contrario, false.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="day">Valore intero compreso tra 1 e 31 che rappresenta il giorno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="day" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>Determina se il mese specificato nell'anno specificato dell'era specificata è intercalare.</summary>
+      <returns>Questo metodo restituisce sempre false, a meno che non venga sottoposto a override da una classe derivata.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>Determina se l'anno specificato nell'era specificata è bisestile.</summary>
+      <returns>true se l'anno specificato è bisestile. In caso contrario, false.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="P:System.Globalization.KoreanCalendar.MaxSupportedDateTime">
+      <summary>Ottiene la data e l'ora più recenti supportate dalla classe <see cref="T:System.Globalization.KoreanCalendar" />.</summary>
+      <returns>Data e ora più recenti supportate dalla classe <see cref="T:System.Globalization.KoreanCalendar" />, che corrispondono all'ultimo istante del 31 dicembre 9999 E.V. del calendario gregoriano.</returns>
+    </member>
+    <member name="P:System.Globalization.KoreanCalendar.MinSupportedDateTime">
+      <summary>Ottiene la data e l'ora meno recenti supportate dalla classe <see cref="T:System.Globalization.KoreanCalendar" />.</summary>
+      <returns>Data e ora meno recenti supportate dalla classe <see cref="T:System.Globalization.KoreanCalendar" />, che corrispondono al primo istante del 1° gennaio 0001 E.V. del calendario gregoriano.</returns>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>Restituisce un valore <see cref="T:System.DateTime" /> impostato sulla data e sull'ora specificate nell'era specificata.</summary>
+      <returns>Valore <see cref="T:System.DateTime" /> impostato sulla data e sull'ora specificate nell'era corrente.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="day">Valore intero compreso tra 1 e 31 che rappresenta il giorno. </param>
+      <param name="hour">Valore intero compreso tra 0 e 23 che rappresenta l'ora. </param>
+      <param name="minute">Valore intero compreso tra 0 e 59 che rappresenta il minuto. </param>
+      <param name="second">Valore intero compreso tra 0 e 59 che rappresenta il secondo. </param>
+      <param name="millisecond">Valore intero compreso tra 0 e 999 che rappresenta il millisecondo. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="day" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="hour" /> è minore di zero o maggiore di 23.- oppure - <paramref name="minute" /> è minore di zero o maggiore di 59.- oppure - <paramref name="second" /> è minore di zero o maggiore di 59.- oppure - <paramref name="millisecond" /> è minore di zero o maggiore di 999.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.ToFourDigitYear(System.Int32)">
+      <summary>Converte l'anno specificato in un anno a quattro cifre utilizzando la proprietà <see cref="P:System.Globalization.KoreanCalendar.TwoDigitYearMax" /> per determinare il secolo corretto.</summary>
+      <returns>Intero che contiene la rappresentazione a quattro cifre di <paramref name="year" />.</returns>
+      <param name="year">Valore intero a due o quattro cifre che rappresenta l'anno da convertire. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Globalization.KoreanCalendar.TwoDigitYearMax">
+      <summary>Ottiene o imposta l'ultimo anno che, nell'intervallo di un secolo, può essere rappresentato da un anno a due cifre.</summary>
+      <returns>L'ultimo anno che, nell'intervallo di un secolo, può essere rappresentato da un anno a due cifre.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il valore specificato in un'operazione Set è minore di 99. - oppure - Il valore specificato in un'operazione Set è maggiore di MaxSupportedDateTime.Year.</exception>
+      <exception cref="T:System.InvalidOperationException">In un'operazione di impostazione l'istanza corrente è in sola lettura.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.KoreanLunisolarCalendar">
+      <summary>Rappresenta il tempo suddiviso in mesi, giorni e anni.Gli anni vengono calcolati in base al calendario gregoriano, mentre i giorni e i mesi vengono calcolati in base al calendario lunisolare.</summary>
+    </member>
+    <member name="M:System.Globalization.KoreanLunisolarCalendar.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Globalization.KoreanLunisolarCalendar" />. </summary>
+    </member>
+    <member name="P:System.Globalization.KoreanLunisolarCalendar.Eras">
+      <summary>Ottiene le ere che corrispondono all'intervallo di date e ore supportato dall'oggetto <see cref="T:System.Globalization.KoreanLunisolarCalendar" /> corrente.</summary>
+      <returns>Matrice di interi con segno a 32 bit che specificano le ere relative all'oggetto.Il valore restituito per un oggetto <see cref="T:System.Globalization.KoreanLunisolarCalendar" /> è sempre una matrice contenente un elemento uguale al valore <see cref="F:System.Globalization.KoreanLunisolarCalendar.GregorianEra" />.</returns>
+    </member>
+    <member name="M:System.Globalization.KoreanLunisolarCalendar.GetEra(System.DateTime)">
+      <summary>Recupera l'era che corrisponde all'oggetto <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Intero che rappresenta l'era specificata dal parametro <paramref name="time" />.Il valore restituito per un oggetto <see cref="T:System.Globalization.KoreanLunisolarCalendar" /> è sempre il valore di <see cref="F:System.Globalization.KoreanLunisolarCalendar.GregorianEra" />.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> rappresenta un valore di data e ora minore di <see cref="P:System.Globalization.KoreanLunisolarCalendar.MinSupportedDateTime" /> o maggiore di <see cref="P:System.Globalization.KoreanLunisolarCalendar.MaxSupportedDateTime" />.</exception>
+    </member>
+    <member name="P:System.Globalization.KoreanLunisolarCalendar.MaxSupportedDateTime">
+      <summary>Ottiene la data e l'ora massime supportate dalla classe <see cref="T:System.Globalization.KoreanLunisolarCalendar" />.</summary>
+      <returns>La data e l'ora più recenti supportate dalla classe <see cref="T:System.Globalization.KoreanLunisolarCalendar" />, che corrispondono all'ultimo istante del 10 febbraio 2051 E.V. del calendario gregoriano.</returns>
+    </member>
+    <member name="P:System.Globalization.KoreanLunisolarCalendar.MinSupportedDateTime">
+      <summary>Ottiene la data e l'ora minime supportate dalla classe <see cref="T:System.Globalization.KoreanLunisolarCalendar" />.</summary>
+      <returns>Data e ora meno recenti supportate dalla classe <see cref="T:System.Globalization.KoreanLunisolarCalendar" />, che corrispondono al primo istante del 14 settembre 918 E.V. del calendario gregoriano.</returns>
+    </member>
+    <member name="T:System.Globalization.PersianCalendar">
+      <summary>Rappresenta il calendario persiano.</summary>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Globalization.PersianCalendar" />. </summary>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>Restituisce un oggetto <see cref="T:System.DateTime" /> con un offset pari al numero di mesi specificato rispetto all'oggetto <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Oggetto <see cref="T:System.DateTime" /> che rappresenta la data risultante dalla somma del numero di mesi specificato mediante il parametro <paramref name="months" /> e della data specificata mediante il parametro <paramref name="time" />.</returns>
+      <param name="time">Oggetto <see cref="T:System.DateTime" /> a cui aggiungere i mesi. </param>
+      <param name="months">Numero positivo o negativo di mesi da aggiungere. </param>
+      <exception cref="T:System.ArgumentException">Il valore <see cref="T:System.DateTime" /> risultante non è compreso nell’intervallo supportato. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> è minore di -120.000 o maggiore di 120.000. </exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>Restituisce un oggetto <see cref="T:System.DateTime" /> con un offset pari al numero di anni specificato rispetto dall'oggetto <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Oggetto <see cref="T:System.DateTime" /> risultante dalla somma del numero di anni e dell'oggetto <see cref="T:System.DateTime" /> specificati.</returns>
+      <param name="time">Oggetto <see cref="T:System.DateTime" /> a cui aggiungere anni. </param>
+      <param name="years">Numero positivo o negativo di anni da aggiungere. </param>
+      <exception cref="T:System.ArgumentException">Il valore <see cref="T:System.DateTime" /> risultante non è compreso nell’intervallo supportato. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="years" /> è minore di -10.000 o maggiore di 10.000. </exception>
+    </member>
+    <member name="P:System.Globalization.PersianCalendar.Eras">
+      <summary>Ottiene l'elenco delle ere in un oggetto <see cref="T:System.Globalization.PersianCalendar" />.</summary>
+      <returns>Matrice di interi che rappresenta le ere in un oggetto <see cref="T:System.Globalization.PersianCalendar" />.La matrice è costituita da un singolo elemento con valore <see cref="F:System.Globalization.PersianCalendar.PersianEra" />.</returns>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>Restituisce il giorno del mese nell'oggetto <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Intero compreso tra 1 e 31 che rappresenta il giorno del mese nell'oggetto <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> rappresenta una data precedente a <see cref="P:System.Globalization.PersianCalendar.MinSupportedDateTime" /> o successiva a <see cref="P:System.Globalization.PersianCalendar.MaxSupportedDateTime" />.</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>Restituisce il giorno della settimana nell'oggetto <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore <see cref="T:System.DayOfWeek" /> che rappresenta il giorno della settimana nell'oggetto <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetDayOfYear(System.DateTime)">
+      <summary>Restituisce il giorno dell'anno nell'oggetto <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Intero compreso tra 1 e 366 che rappresenta il giorno dell'anno nell'oggetto <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> rappresenta una data precedente a <see cref="P:System.Globalization.PersianCalendar.MinSupportedDateTime" /> o successiva a <see cref="P:System.Globalization.PersianCalendar.MaxSupportedDateTime" />.</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>Restituisce il numero di giorni nel mese specificato dell'anno e dell'era specificati.</summary>
+      <returns>Numero di giorni nel mese specificato dell'anno e dell'era specificati.</returns>
+      <param name="year">Intero compreso tra 1 e 9378 che rappresenta l'anno. </param>
+      <param name="month">Intero che rappresenta il mese ed è compreso tra 1 e 12 se <paramref name="year" /> è diverso da 9378 o tra 1 e 10 se <paramref name="year" /> è uguale a 9378.</param>
+      <param name="era">Intero compreso tra 0 e 1 che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>Restituisce il numero di giorni nell'anno specificato dell'era specificata.</summary>
+      <returns>Numero di giorni nell'anno e nell'era specificati.Il numero di giorni è pari a 365 in un anno normale o a 366 in un anno bisestile.</returns>
+      <param name="year">Intero compreso tra 1 e 9378 che rappresenta l'anno. </param>
+      <param name="era">Intero compreso tra 0 e 1 che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetEra(System.DateTime)">
+      <summary>Restituisce l'era nell'oggetto <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Restituisce sempre <see cref="F:System.Globalization.PersianCalendar.PersianEra" />.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> rappresenta una data precedente a <see cref="P:System.Globalization.PersianCalendar.MinSupportedDateTime" /> o successiva a <see cref="P:System.Globalization.PersianCalendar.MaxSupportedDateTime" />.</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>Restituisce il mese intercalare per un anno e un'era specificati.</summary>
+      <returns>Il valore restituito è sempre 0.</returns>
+      <param name="year">Intero compreso tra 1 e 9378 che rappresenta l'anno da convertire. </param>
+      <param name="era">Intero compreso tra 0 e 1 che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetMonth(System.DateTime)">
+      <summary>Restituisce il mese nell'oggetto <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Intero compreso tra 1 e 12 che rappresenta il mese nell'oggetto <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> rappresenta una data precedente a <see cref="P:System.Globalization.PersianCalendar.MinSupportedDateTime" /> o successiva a <see cref="P:System.Globalization.PersianCalendar.MaxSupportedDateTime" />.</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>Restituisce il numero di mesi nell'anno specificato dell'era specificata.</summary>
+      <returns>Restituisce 10 se il parametro <paramref name="year" /> è uguale a 9378; in caso contrario, restituisce sempre 12.</returns>
+      <param name="year">Intero compreso tra 1 e 9378 che rappresenta l'anno. </param>
+      <param name="era">Intero compreso tra 0 e 1 che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetYear(System.DateTime)">
+      <summary>Restituisce l'anno nell'oggetto <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Intero compreso tra 1 e 9378 che rappresenta l'anno nell'oggetto <see cref="T:System.DateTime" /> specificato. </returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> rappresenta una data precedente a <see cref="P:System.Globalization.PersianCalendar.MinSupportedDateTime" /> o successiva a <see cref="P:System.Globalization.PersianCalendar.MaxSupportedDateTime" />.</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>Determina se la data specificata è un giorno intercalare.</summary>
+      <returns>true se il giorno specificato è intercalare. In caso contrario, false.</returns>
+      <param name="year">Intero compreso tra 1 e 9378 che rappresenta l'anno. </param>
+      <param name="month">Intero che rappresenta il mese ed è compreso tra 1 e 12 se <paramref name="year" /> è diverso da 9378 o tra 1 e 10 se <paramref name="year" /> è uguale a 9378.</param>
+      <param name="day">Intero compreso tra 1 e 31 che rappresenta il giorno. </param>
+      <param name="era">Intero compreso tra 0 e 1 che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" />, <paramref name="day" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>Determina se il mese specificato nell'anno e nell'era specificati è intercalare.</summary>
+      <returns>Restituisce sempre false perché la classe <see cref="T:System.Globalization.PersianCalendar" /> non supporta la nozione di mese intercalare.</returns>
+      <param name="year">Intero compreso tra 1 e 9378 che rappresenta l'anno. </param>
+      <param name="month">Intero che rappresenta il mese ed è compreso tra 1 e 12 se <paramref name="year" /> è diverso da 9378 o tra 1 e 10 se <paramref name="year" /> è uguale a 9378.</param>
+      <param name="era">Intero compreso tra 0 e 1 che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>Determina se l'anno specificato nell'era specificata è bisestile.</summary>
+      <returns>true se l'anno specificato è bisestile. In caso contrario, false.</returns>
+      <param name="year">Intero compreso tra 1 e 9378 che rappresenta l'anno. </param>
+      <param name="era">Intero compreso tra 0 e 1 che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="P:System.Globalization.PersianCalendar.MaxSupportedDateTime">
+      <summary>Ottiene la data e l'ora più recenti supportate dalla classe <see cref="T:System.Globalization.PersianCalendar" />.</summary>
+      <returns>Data e ora più recenti supportate dalla classe <see cref="T:System.Globalization.PersianCalendar" />, che corrispondono all'ultimo istante del 31 dicembre 9999 E.V. del calendario gregoriano.</returns>
+    </member>
+    <member name="P:System.Globalization.PersianCalendar.MinSupportedDateTime">
+      <summary>Ottiene la data e l'ora meno recenti supportate dalla classe <see cref="T:System.Globalization.PersianCalendar" />.</summary>
+      <returns>Data e ora meno recenti supportate dalla classe <see cref="T:System.Globalization.PersianCalendar" />, che corrispondono al primo istante del 21 marzo 622 E.V. del calendario gregoriano.</returns>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>Restituisce un oggetto <see cref="T:System.DateTime" /> impostato sulla data, sull'ora e sull'era specificate.</summary>
+      <returns>Oggetto <see cref="T:System.DateTime" /> impostato sulla data e sull'ora specificate nell'era corrente.</returns>
+      <param name="year">Intero compreso tra 1 e 9378 che rappresenta l'anno. </param>
+      <param name="month">Intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="day">Intero compreso tra 1 e 31 che rappresenta il giorno. </param>
+      <param name="hour">Intero compreso tra 0 e 23 che rappresenta l'ora. </param>
+      <param name="minute">Intero compreso tra 0 e 59 che rappresenta il minuto. </param>
+      <param name="second">Intero compreso tra 0 e 59 che rappresenta il secondo. </param>
+      <param name="millisecond">Intero compreso tra 0 e 999 che rappresenta il millisecondo. </param>
+      <param name="era">Intero compreso tra 0 e 1 che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" />, <paramref name="day" />, <paramref name="hour" />, <paramref name="minute" />, <paramref name="second" />, <paramref name="millisecond" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario.</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.ToFourDigitYear(System.Int32)">
+      <summary>Converte l'anno specificato in una rappresentazione a quattro cifre.</summary>
+      <returns>Intero che contiene la rappresentazione a quattro cifre di <paramref name="year" />.</returns>
+      <param name="year">Intero compreso tra 1 e 9378 che rappresenta l'anno da convertire. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> è minore di 0 o maggiore di 9378. </exception>
+    </member>
+    <member name="P:System.Globalization.PersianCalendar.TwoDigitYearMax">
+      <summary>Ottiene o imposta l'ultimo anno che, nell'intervallo di un secolo, può essere rappresentato da un anno a due cifre.</summary>
+      <returns>L'ultimo anno che, nell'intervallo di un secolo, può essere rappresentato da un anno a due cifre.</returns>
+      <exception cref="T:System.InvalidOperationException">Questo calendario è in sola lettura.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">In un'operazione Set il valore è minore di 100 o maggiore di 9378.</exception>
+    </member>
+    <member name="T:System.Globalization.TaiwanCalendar">
+      <summary>calendario taiwanese.</summary>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Globalization.TaiwanCalendar" />.</summary>
+      <exception cref="T:System.TypeInitializationException">Impossibile inizializzare un oggetto <see cref="T:System.Globalization.TaiwanCalendar" />. Informazioni sulle impostazioni cultura mancanti.</exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>Restituisce un valore <see cref="T:System.DateTime" /> che rappresenta il numero di mesi specificato a partire dal valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore <see cref="T:System.DateTime" /> risultante dalla somma del numero specificato di mesi e del valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Oggetto <see cref="T:System.DateTime" /> a cui aggiungere i mesi. </param>
+      <param name="months">Numero di mesi da aggiungere. </param>
+      <exception cref="T:System.ArgumentException">Il valore <see cref="T:System.DateTime" /> risultante non è compreso nell’intervallo supportato. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> è minore di -120000.- oppure - <paramref name="months" /> è maggiore di 120000. </exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>Restituisce un valore <see cref="T:System.DateTime" /> che rappresenta il numero di anni specificato a partire dal valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore <see cref="T:System.DateTime" /> risultante dalla somma del numero di anni specificato e del valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Oggetto <see cref="T:System.DateTime" /> a cui aggiungere anni. </param>
+      <param name="years">Numero di anni da aggiungere. </param>
+      <exception cref="T:System.ArgumentException">Il valore <see cref="T:System.DateTime" /> risultante non è compreso nell’intervallo supportato. </exception>
+    </member>
+    <member name="P:System.Globalization.TaiwanCalendar.Eras">
+      <summary>Ottiene l'elenco delle ere in <see cref="T:System.Globalization.TaiwanCalendar" />.</summary>
+      <returns>Matrice costituita da un singolo elemento il cui valore è sempre l'era corrente.</returns>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>Restituisce il giorno del mese nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero compreso tra 1 e 31 che rappresenta il giorno del mese nell'oggetto <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>Restituisce il giorno della settimana nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore <see cref="T:System.DayOfWeek" /> che rappresenta il giorno della settimana nel valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetDayOfYear(System.DateTime)">
+      <summary>Restituisce il giorno dell'anno nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero compreso tra 1 e 366 che rappresenta il giorno dell'anno nell'oggetto <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>Restituisce il numero di giorni nel mese specificato nell'anno specificato dell'era specificata.</summary>
+      <returns>Numero di giorni nel mese specificato dell'anno specificato dell'era specificata.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>Restituisce il numero di giorni nell'anno specificato dell'era specificata.</summary>
+      <returns>Numero di giorni nell'anno specificato dell'era specificata.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetEra(System.DateTime)">
+      <summary>Restituisce l'era nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Intero che rappresenta l'era nel valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>Calcola il mese intercalare per un anno e un'era specificati.</summary>
+      <returns>Il valore restituito è sempre 0 perché la classe <see cref="T:System.Globalization.TaiwanCalendar" /> non supporta la nozione di mese intercalare.</returns>
+      <param name="year">Un anno.</param>
+      <param name="era">Un'era.</param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetMonth(System.DateTime)">
+      <summary>Restituisce il mese nell'oggetto <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Intero compreso tra 1 e 12 che rappresenta il mese nel valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>Restituisce il numero di mesi nell'anno specificato dell'era specificata.</summary>
+      <returns>Numero di mesi nell'anno specificato dell'era specificata.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetWeekOfYear(System.DateTime,System.Globalization.CalendarWeekRule,System.DayOfWeek)">
+      <summary>Restituisce la settimana dell'anno che comprende la data nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero positivo che rappresenta la settimana dell'anno che include la data nel parametro <paramref name="time" />.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+      <param name="rule">Uno dei valori <see cref="T:System.Globalization.CalendarWeekRule" /> che definisce una settimana di calendario. </param>
+      <param name="firstDayOfWeek">Uno dei valori <see cref="T:System.DayOfWeek" /> che rappresenta il primo giorno della settimana. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> o <paramref name="firstDayOfWeek" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="rule" /> non è un valore <see cref="T:System.Globalization.CalendarWeekRule" /> valido. </exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetYear(System.DateTime)">
+      <summary>Restituisce l'anno nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero che rappresenta l'anno nel valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>Determina se la data specificata nell'era specificata corrisponde a un giorno intercalare.</summary>
+      <returns>true se il giorno specificato è intercalare. In caso contrario, false.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="day">Valore intero compreso tra 1 e 31 che rappresenta il giorno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="day" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>Determina se il mese specificato nell'anno specificato dell'era specificata è intercalare.</summary>
+      <returns>Questo metodo restituisce sempre false, a meno che non venga sottoposto a override da una classe derivata.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>Determina se l'anno specificato nell'era specificata è bisestile.</summary>
+      <returns>true se l'anno specificato è bisestile. In caso contrario, false.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="P:System.Globalization.TaiwanCalendar.MaxSupportedDateTime">
+      <summary>Ottiene la data e l'ora più recenti supportate dalla classe <see cref="T:System.Globalization.TaiwanCalendar" />.</summary>
+      <returns>La data e l'ora più recenti supportate dalla classe <see cref="T:System.Globalization.TaiwanCalendar" />, che corrispondono all'ultimo istante del 31 dicembre 9999 E.V. del calendario gregoriano.</returns>
+    </member>
+    <member name="P:System.Globalization.TaiwanCalendar.MinSupportedDateTime">
+      <summary>Ottiene la data e l'ora meno recenti supportate dalla classe <see cref="T:System.Globalization.TaiwanCalendar" />.</summary>
+      <returns>La data e l'ora meno recenti supportate dalla classe <see cref="T:System.Globalization.TaiwanCalendar" /> che corrispondono al primo istante del 1° gennaio 1912 E.V. del calendario gregoriano.</returns>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>Restituisce un valore <see cref="T:System.DateTime" /> impostato sulla data e sull'ora specificate nell'era specificata.</summary>
+      <returns>Valore <see cref="T:System.DateTime" /> impostato sulla data e sull'ora specificate nell'era corrente.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="day">Valore intero compreso tra 1 e 31 che rappresenta il giorno. </param>
+      <param name="hour">Valore intero compreso tra 0 e 23 che rappresenta l'ora. </param>
+      <param name="minute">Valore intero compreso tra 0 e 59 che rappresenta il minuto. </param>
+      <param name="second">Valore intero compreso tra 0 e 59 che rappresenta il secondo. </param>
+      <param name="millisecond">Valore intero compreso tra 0 e 999 che rappresenta il millisecondo. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="day" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="hour" /> è minore di zero o maggiore di 23.- oppure - <paramref name="minute" /> è minore di zero o maggiore di 59.- oppure - <paramref name="second" /> è minore di zero o maggiore di 59.- oppure - <paramref name="millisecond" /> è minore di zero o maggiore di 999.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.ToFourDigitYear(System.Int32)">
+      <summary>Converte l'anno specificato in un anno a quattro cifre utilizzando la proprietà <see cref="P:System.Globalization.TaiwanCalendar.TwoDigitYearMax" /> per determinare il secolo corretto.</summary>
+      <returns>Intero che contiene la rappresentazione a quattro cifre di <paramref name="year" />.</returns>
+      <param name="year">Valore intero a due o quattro cifre che rappresenta l'anno da convertire. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="P:System.Globalization.TaiwanCalendar.TwoDigitYearMax">
+      <summary>Ottiene o imposta l'ultimo anno che, nell'intervallo di un secolo, può essere rappresentato da un anno a due cifre.</summary>
+      <returns>L'ultimo anno che, nell'intervallo di un secolo, può essere rappresentato da un anno a due cifre.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il valore specificato in un'operazione Set è minore di 99. - oppure - Il valore specificato in un'operazione Set è maggiore di MaxSupportedDateTime.Year.</exception>
+      <exception cref="T:System.InvalidOperationException">In un'operazione di impostazione l'istanza corrente è in sola lettura.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.TaiwanLunisolarCalendar">
+      <summary>Rappresenta il calendario lunisolare taiwanese.Gli anni vengono calcolati in base al calendario gregoriano, come nel calendario taiwanese, mentre i giorni e i mesi vengono calcolati in base al calendario lunisolare.</summary>
+    </member>
+    <member name="M:System.Globalization.TaiwanLunisolarCalendar.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Globalization.TaiwanLunisolarCalendar" />. </summary>
+    </member>
+    <member name="P:System.Globalization.TaiwanLunisolarCalendar.Eras">
+      <summary>Ottiene le ere relative all'oggetto <see cref="T:System.Globalization.TaiwanLunisolarCalendar" /> corrente.</summary>
+      <returns>Matrice costituita da un singolo elemento il cui valore è sempre l'era corrente.</returns>
+    </member>
+    <member name="M:System.Globalization.TaiwanLunisolarCalendar.GetEra(System.DateTime)">
+      <summary>Recupera l'era che corrisponde all'oggetto <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Intero che rappresenta l'era specificata nel parametro <paramref name="time" />.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="P:System.Globalization.TaiwanLunisolarCalendar.MaxSupportedDateTime">
+      <summary>Ottiene la data e l'ora massime supportate dalla classe <see cref="T:System.Globalization.TaiwanLunisolarCalendar" />.</summary>
+      <returns>La data e l'ora più recenti supportate dalla classe <see cref="T:System.Globalization.TaiwanLunisolarCalendar" />, che corrispondono all'ultimo istante del 10 febbraio 2051 E.V. del calendario gregoriano.</returns>
+    </member>
+    <member name="P:System.Globalization.TaiwanLunisolarCalendar.MinSupportedDateTime">
+      <summary>Ottiene la data e l'ora minime supportate dalla classe <see cref="T:System.Globalization.TaiwanLunisolarCalendar" />.</summary>
+      <returns>Data e ora meno recenti supportate dalla classe <see cref="T:System.Globalization.TaiwanLunisolarCalendar" />, che corrispondono al primo istante del 18 febbraio 1912 E.V. del calendario gregoriano.</returns>
+    </member>
+    <member name="T:System.Globalization.ThaiBuddhistCalendar">
+      <summary>Rappresenta il calendario buddista thailandese.</summary>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Globalization.ThaiBuddhistCalendar" />.</summary>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>Restituisce un valore <see cref="T:System.DateTime" /> che rappresenta il numero di mesi specificato a partire dal valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore <see cref="T:System.DateTime" /> risultante dalla somma del numero specificato di mesi e del valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Oggetto <see cref="T:System.DateTime" /> a cui aggiungere i mesi. </param>
+      <param name="months">Numero di mesi da aggiungere. </param>
+      <exception cref="T:System.ArgumentException">Il valore <see cref="T:System.DateTime" /> risultante non è compreso nell’intervallo supportato. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> è minore di -120000.- oppure - <paramref name="months" /> è maggiore di 120000. </exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>Restituisce un valore <see cref="T:System.DateTime" /> che rappresenta il numero di anni specificato a partire dal valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore <see cref="T:System.DateTime" /> risultante dalla somma del numero di anni specificato e del valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Oggetto <see cref="T:System.DateTime" /> a cui aggiungere anni. </param>
+      <param name="years">Numero di anni da aggiungere. </param>
+      <exception cref="T:System.ArgumentException">Il valore <see cref="T:System.DateTime" /> risultante non è compreso nell’intervallo supportato. </exception>
+    </member>
+    <member name="P:System.Globalization.ThaiBuddhistCalendar.Eras">
+      <summary>Ottiene l’elenco delle ere nella classe <see cref="T:System.Globalization.ThaiBuddhistCalendar" />.</summary>
+      <returns>Matrice costituita da un singolo elemento il cui valore è sempre l'era corrente.</returns>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>Restituisce il giorno del mese nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero compreso tra 1 e 31 che rappresenta il giorno del mese nell'oggetto <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>Restituisce il giorno della settimana nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore <see cref="T:System.DayOfWeek" /> che rappresenta il giorno della settimana nel valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetDayOfYear(System.DateTime)">
+      <summary>Restituisce il giorno dell'anno nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero compreso tra 1 e 366 che rappresenta il giorno dell'anno nell'oggetto <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>Restituisce il numero di giorni nel mese specificato nell'anno specificato dell'era specificata.</summary>
+      <returns>Numero di giorni nel mese specificato dell'anno specificato dell'era specificata.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>Restituisce il numero di giorni nell'anno specificato dell'era specificata.</summary>
+      <returns>Numero di giorni nell'anno specificato dell'era specificata.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetEra(System.DateTime)">
+      <summary>Restituisce l'era nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Intero che rappresenta l'era nel valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>Calcola il mese intercalare per un anno e un'era specificati.</summary>
+      <returns>Il valore restituito è sempre 0 perché la classe <see cref="T:System.Globalization.ThaiBuddhistCalendar" /> non supporta la nozione di mese intercalare.</returns>
+      <param name="year">Un anno.</param>
+      <param name="era">Un'era.</param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetMonth(System.DateTime)">
+      <summary>Restituisce il mese nell'oggetto <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Intero compreso tra 1 e 12 che rappresenta il mese nel valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>Restituisce il numero di mesi nell'anno specificato dell'era specificata.</summary>
+      <returns>Numero di mesi nell'anno specificato dell'era specificata.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetWeekOfYear(System.DateTime,System.Globalization.CalendarWeekRule,System.DayOfWeek)">
+      <summary>Restituisce la settimana dell'anno che comprende la data nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero positivo in base 1 che rappresenta la settimana dell'anno che include la data nel parametro <paramref name="time" />.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+      <param name="rule">Uno dei valori <see cref="T:System.Globalization.CalendarWeekRule" /> che definisce una settimana di calendario. </param>
+      <param name="firstDayOfWeek">Uno dei valori <see cref="T:System.DayOfWeek" /> che rappresenta il primo giorno della settimana. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> o <paramref name="firstDayOfWeek" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="rule" /> non è un valore <see cref="T:System.Globalization.CalendarWeekRule" /> valido. </exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetYear(System.DateTime)">
+      <summary>Restituisce l'anno nel valore <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero che rappresenta l'anno nel valore <see cref="T:System.DateTime" /> specificato.</returns>
+      <param name="time">Valore <see cref="T:System.DateTime" /> da leggere. </param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>Determina se la data specificata nell'era specificata corrisponde a un giorno intercalare.</summary>
+      <returns>true se il giorno specificato è intercalare. In caso contrario, false.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="day">Valore intero compreso tra 1 e 31 che rappresenta il giorno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="day" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>Determina se il mese specificato nell'anno specificato dell'era specificata è intercalare.</summary>
+      <returns>Questo metodo restituisce sempre false, a meno che non venga sottoposto a override da una classe derivata.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>Determina se l'anno specificato nell'era specificata è bisestile.</summary>
+      <returns>true se l'anno specificato è bisestile. In caso contrario, false.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="P:System.Globalization.ThaiBuddhistCalendar.MaxSupportedDateTime">
+      <summary>Ottiene la data e l'ora più recenti supportate dalla classe <see cref="T:System.Globalization.ThaiBuddhistCalendar" />.</summary>
+      <returns>La data e l'ora più recenti supportate dalla classe <see cref="T:System.Globalization.ThaiBuddhistCalendar" />, che corrispondono all'ultimo istante del 31 dicembre 9999 E.V. del calendario gregoriano.</returns>
+    </member>
+    <member name="P:System.Globalization.ThaiBuddhistCalendar.MinSupportedDateTime">
+      <summary>Ottiene la data e l'ora meno recenti supportate dalla classe <see cref="T:System.Globalization.ThaiBuddhistCalendar" />.</summary>
+      <returns>Data e ora meno recenti supportate dalla classe <see cref="T:System.Globalization.ThaiBuddhistCalendar" />, che corrispondono al primo istante del 1° gennaio 0001 E.V. del calendario gregoriano.</returns>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>Restituisce un valore <see cref="T:System.DateTime" /> impostato sulla data e sull'ora specificate nell'era specificata.</summary>
+      <returns>Valore <see cref="T:System.DateTime" /> impostato sulla data e sull'ora specificate nell'era corrente.</returns>
+      <param name="year">Valore intero che rappresenta l'anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta il mese. </param>
+      <param name="day">Valore intero compreso tra 1 e 31 che rappresenta il giorno. </param>
+      <param name="hour">Valore intero compreso tra 0 e 23 che rappresenta l'ora. </param>
+      <param name="minute">Valore intero compreso tra 0 e 59 che rappresenta il minuto. </param>
+      <param name="second">Valore intero compreso tra 0 e 59 che rappresenta il secondo. </param>
+      <param name="millisecond">Valore intero compreso tra 0 e 999 che rappresenta il millisecondo. </param>
+      <param name="era">Valore intero che rappresenta l'era. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="month" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="day" /> non è compreso nell'intervallo supportato dal calendario.- oppure - <paramref name="hour" /> è minore di zero o maggiore di 23.- oppure - <paramref name="minute" /> è minore di zero o maggiore di 59.- oppure - <paramref name="second" /> è minore di zero o maggiore di 59.- oppure - <paramref name="millisecond" /> è minore di zero o maggiore di 999.- oppure - <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.ToFourDigitYear(System.Int32)">
+      <summary>Converte l'anno specificato in un anno a quattro cifre utilizzando la proprietà <see cref="P:System.Globalization.ThaiBuddhistCalendar.TwoDigitYearMax" /> per determinare il secolo corretto.</summary>
+      <returns>Intero che contiene la rappresentazione a quattro cifre di <paramref name="year" />.</returns>
+      <param name="year">Valore intero a due o quattro cifre che rappresenta l'anno da convertire. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Globalization.ThaiBuddhistCalendar.TwoDigitYearMax">
+      <summary>Ottiene o imposta l'ultimo anno che, nell'intervallo di un secolo, può essere rappresentato da un anno a due cifre.</summary>
+      <returns>L'ultimo anno che, nell'intervallo di un secolo, può essere rappresentato da un anno a due cifre.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il valore specificato in un'operazione Set è minore di 99. - oppure - Il valore specificato in un'operazione Set è maggiore di MaxSupportedDateTime.Year.</exception>
+      <exception cref="T:System.InvalidOperationException">In un'operazione di impostazione l'istanza corrente è in sola lettura.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.UmAlQuraCalendar">
+      <summary>Rappresenta il calendario Hijri saudita (Um Al Qura).</summary>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Globalization.UmAlQuraCalendar" />. </summary>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>Calcola una data che ricorre a una distanza pari al numero di mesi indicato a partire da una data iniziale specificata.</summary>
+      <returns>Data risultante dall'aggiunta del numero di mesi specificato dal parametro <paramref name="months" /> alla data specificata dal parametro <paramref name="time" />.</returns>
+      <param name="time">Data a cui aggiungere i mesi.La classe <see cref="T:System.Globalization.UmAlQuraCalendar" /> supporta solo le date comprese tra 30/04/1900 00.00.00 (data del calendario gregoriano) e 16/11/2077 23:59:59 (data del calendario gregoriano).</param>
+      <param name="months">Numero positivo o negativo di mesi da aggiungere. </param>
+      <exception cref="T:System.ArgumentException">La data risultante non è compresa nell'intervallo supportato dalla classe <see cref="T:System.Globalization.UmAlQuraCalendar" />. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> è minore di -120.000 o maggiore di 120.000. - oppure -<paramref name="time" /> non è compreso nell'intervallo supportato dal calendario.</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>Calcola una data che ricorre a una distanza pari al numero di anni indicato a partire da una data iniziale specificata.</summary>
+      <returns>Data risultante dall'aggiunta del numero di anni specificato dal parametro <paramref name="years" /> alla data specificata dal parametro <paramref name="time" />.</returns>
+      <param name="time">Data alla quale aggiungere gli anni.La classe <see cref="T:System.Globalization.UmAlQuraCalendar" /> supporta solo le date comprese tra 30/04/1900 00.00.00 (data del calendario gregoriano) e 16/11/2077 23:59:59 (data del calendario gregoriano).</param>
+      <param name="years">Numero positivo o negativo di anni da aggiungere. </param>
+      <exception cref="T:System.ArgumentException">La data risultante non è compresa nell'intervallo supportato dalla classe <see cref="T:System.Globalization.UmAlQuraCalendar" />. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="years" /> è minore di -10.000 o maggiore di 10.000. - oppure -<paramref name="time" /> non è compreso nell'intervallo supportato dal calendario.</exception>
+    </member>
+    <member name="P:System.Globalization.UmAlQuraCalendar.Eras">
+      <summary>Ottiene un elenco delle ere supportate dall'oggetto <see cref="T:System.Globalization.UmAlQuraCalendar" /> corrente.</summary>
+      <returns>Matrice costituita da un singolo elemento con valore <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />.</returns>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>Calcola il giorno del mese in cui ricorre una data specificata.</summary>
+      <returns>Valore intero compreso tra 1 e 30 che rappresenta il giorno del mese specificato dal parametro <paramref name="time" />. </returns>
+      <param name="time">Il valore della data da leggere.La classe <see cref="T:System.Globalization.UmAlQuraCalendar" /> supporta solo le date comprese tra 30/04/1900 00.00.00 (data del calendario gregoriano) e 16/11/2077 23:59:59 (data del calendario gregoriano).</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>Calcola il giorno della settimana in cui ricorre una data specificata.</summary>
+      <returns>Valore <see cref="T:System.DayOfWeek" /> che rappresenta il giorno della settimana specificato dal parametro <paramref name="time" />.</returns>
+      <param name="time">Il valore della data da leggere.La classe <see cref="T:System.Globalization.UmAlQuraCalendar" /> supporta solo le date comprese tra 30/04/1900 00.00.00 (data del calendario gregoriano) e 16/11/2077 23:59:59 (data del calendario gregoriano).</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetDayOfYear(System.DateTime)">
+      <summary>Calcola il giorno dell'anno in cui ricorre una data specificata.</summary>
+      <returns>Valore intero compreso tra 1 e 355 che rappresenta il giorno dell'anno specificato dal parametro <paramref name="time" />.</returns>
+      <param name="time">Il valore della data da leggere.La classe <see cref="T:System.Globalization.UmAlQuraCalendar" /> supporta solo le date comprese tra 30/04/1900 00.00.00 (data del calendario gregoriano) e 16/11/2077 23:59:59 (data del calendario gregoriano).</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>Calcola il numero di giorni nel mese specificato dell'anno e dell'era specificati.</summary>
+      <returns>Numero di giorni nel mese specificato dell'anno e dell'era specificati.Il valore restituito è 29 in un anno normale e 30 in un anno bisestile.</returns>
+      <param name="year">Un anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta un mese. </param>
+      <param name="era">Un'era.Specificare UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] o <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dalla classe <see cref="T:System.Globalization.UmAlQuraCalendar" />. </exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>Calcola il numero di giorni nell'anno specificato dell'era specificata.</summary>
+      <returns>Numero di giorni nell'anno e nell'era specificati.Il numero di giorni è pari a 354 in un anno normale o a 355 in un anno bisestile.</returns>
+      <param name="year">Un anno. </param>
+      <param name="era">Un'era.Specificare UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] o <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dalla classe <see cref="T:System.Globalization.UmAlQuraCalendar" />. </exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetEra(System.DateTime)">
+      <summary>Calcola l'era in cui ricorre una data specificata.</summary>
+      <returns>Restituisce sempre il valore <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />.</returns>
+      <param name="time">Il valore della data da leggere. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>Calcola il mese intercalare per un anno e un'era specificati.</summary>
+      <returns>Restituisce sempre 0 perché la classe <see cref="T:System.Globalization.UmAlQuraCalendar" /> non supporta i mesi intercalari.</returns>
+      <param name="year">Un anno.</param>
+      <param name="era">Un'era.Specificare UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] o <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> è minore di 1318 o maggiore di 1450.- oppure -<paramref name="era" /> non è UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] o <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />.</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetMonth(System.DateTime)">
+      <summary>Calcola il mese in cui ricorre una data specificata.</summary>
+      <returns>Valore intero compreso tra 1 e 12 che rappresenta il mese nella data specificata dal parametro <paramref name="time" />.</returns>
+      <param name="time">Il valore della data da leggere.La classe <see cref="T:System.Globalization.UmAlQuraCalendar" /> supporta solo le date comprese tra 30/04/1900 00.00.00 (data del calendario gregoriano) e 16/11/2077 23:59:59 (data del calendario gregoriano).</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>Calcola il numero di mesi nell'anno specificato dell'era specificata.</summary>
+      <returns>Sempre 12.</returns>
+      <param name="year">Un anno. </param>
+      <param name="era">Un'era.Specificare UmAlQuaraCalendar.Eras[UmAlQuraCalendar.CurrentEra] o <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="era" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetYear(System.DateTime)">
+      <summary>Calcola l'anno di una data rappresentata da un oggetto <see cref="T:System.DateTime" /> specificato.</summary>
+      <returns>Valore intero che rappresenta l'anno specificato dal parametro <paramref name="time" />.</returns>
+      <param name="time">Il valore della data da leggere.La classe <see cref="T:System.Globalization.UmAlQuraCalendar" /> supporta solo le date comprese tra 30/04/1900 00.00.00 (data del calendario gregoriano) e 16/11/2077 23:59:59 (data del calendario gregoriano).</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>Determina se la data specificata è un giorno intercalare.</summary>
+      <returns>true se il giorno specificato è intercalare. In caso contrario, false.Il valore restituito è sempre false perché la classe <see cref="T:System.Globalization.UmAlQuraCalendar" /> non supporta i giorni intercalari.</returns>
+      <param name="year">Un anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta un mese. </param>
+      <param name="day">Valore integer compreso tra 1 e 30 che rappresenta un giorno. </param>
+      <param name="era">Un'era.Specificare UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] o <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" />, <paramref name="day" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dalla classe <see cref="T:System.Globalization.UmAlQuraCalendar" />. </exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>Determina se il mese specificato nell'anno e nell'era specificati è intercalare.</summary>
+      <returns>Restituisce sempre false perché la classe <see cref="T:System.Globalization.UmAlQuraCalendar" /> non supporta i mesi intercalari.</returns>
+      <param name="year">Un anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta un mese. </param>
+      <param name="era">Un'era.Specificare UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] o <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dalla classe <see cref="T:System.Globalization.UmAlQuraCalendar" />. </exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>Determina se l'anno specificato nell'era specificata è bisestile.</summary>
+      <returns>true se l'anno specificato è bisestile. In caso contrario, false.</returns>
+      <param name="year">Un anno. </param>
+      <param name="era">Un'era.Specificare UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] o <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dalla classe <see cref="T:System.Globalization.UmAlQuraCalendar" />. </exception>
+    </member>
+    <member name="P:System.Globalization.UmAlQuraCalendar.MaxSupportedDateTime">
+      <summary>Ottiene la data e l'ora più recenti supportate dal calendario.</summary>
+      <returns>Data e ora più recenti supportate dalla classe <see cref="T:System.Globalization.UmAlQuraCalendar" />, che corrispondono all'ultimo istante del 16 novembre 2077 E.V. del calendario gregoriano.</returns>
+    </member>
+    <member name="P:System.Globalization.UmAlQuraCalendar.MinSupportedDateTime">
+      <summary>Ottiene la data e l'ora meno recenti supportate dal calendario.</summary>
+      <returns>La data e l'ora meno recenti supportate dalla classe <see cref="T:System.Globalization.UmAlQuraCalendar" />, che corrispondono al primo istante del 30 aprile 1900 E.V. del calendario gregoriano.</returns>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>Restituisce un oggetto <see cref="T:System.DateTime" /> impostato sulla data, sull'ora e sull'era specificati.</summary>
+      <returns>Valore <see cref="T:System.DateTime" /> impostato sulla data e sull'ora specificate nell'era corrente.</returns>
+      <param name="year">Un anno. </param>
+      <param name="month">Valore intero compreso tra 1 e 12 che rappresenta un mese. </param>
+      <param name="day">Valore intero compreso tra 1 e 29 che rappresenta un giorno. </param>
+      <param name="hour">Valore intero compreso tra 0 e 23 che rappresenta un'ora. </param>
+      <param name="minute">Valore intero compreso tra 0 e 59 che rappresenta un minuto. </param>
+      <param name="second">Valore intero compreso tra 0 e 59 che rappresenta un secondo. </param>
+      <param name="millisecond">Valore intero compreso tra 0 e 999 che rappresenta un millisecondo. </param>
+      <param name="era">Un'era.Specificare UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] o <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" />, <paramref name="day" /> o <paramref name="era" /> non è compreso nell'intervallo supportato dalla classe <see cref="T:System.Globalization.UmAlQuraCalendar" />.- oppure - <paramref name="hour" /> è minore di zero o maggiore di 23.- oppure - <paramref name="minute" /> è minore di zero o maggiore di 59.- oppure - <paramref name="second" /> è minore di zero o maggiore di 59.- oppure - <paramref name="millisecond" /> è minore di zero o maggiore di 999. </exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.ToFourDigitYear(System.Int32)">
+      <summary>Converte l'anno specificato in un anno a quattro cifre utilizzando la proprietà <see cref="P:System.Globalization.UmAlQuraCalendar.TwoDigitYearMax" /> per determinare il secolo corretto.</summary>
+      <returns>Se il parametro <paramref name="year" /> è un anno a 2 cifre, il valore restituito equivale all'anno corrispondente a 4 cifre.Se il parametro <paramref name="year" /> è un anno a 4 cifre, il valore restituito è il parametro <paramref name="year" /> invariato.</returns>
+      <param name="year">Un anno a 2 cifre compreso tra 0 e 99 o un anno del calendario Um Al Qura a 4 cifre compreso tra 1318 e 1450.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> non è compreso nell'intervallo supportato dal calendario. </exception>
+    </member>
+    <member name="P:System.Globalization.UmAlQuraCalendar.TwoDigitYearMax">
+      <summary>Ottiene o imposta l'ultimo anno che, nell'intervallo di un secolo, può essere rappresentato da un anno a due cifre.</summary>
+      <returns>L'ultimo anno che, nell'intervallo di un secolo, può essere rappresentato da un anno a due cifre.</returns>
+      <exception cref="T:System.InvalidOperationException">Questo calendario è in sola lettura.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">In un'operazione Set il valore dell'anno del calendario Um Al Qura è minore di 1318, ma diverso da 99, oppure il valore dell'anno è maggiore di 1450.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,2264 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.IO</name>
+  </assembly>
+  <members>
+    <member name="T:System.IO.BinaryReader">
+      <summary>プリミティブ データ型を特定のエンコーディングのバイナリ値として読み取ります。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.#ctor(System.IO.Stream)">
+      <summary>指定したストリームに基づき、UTF-8 エンコーディングを使用する <see cref="T:System.IO.BinaryReader" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="input">入力ストリーム。</param>
+      <exception cref="T:System.ArgumentException">ストリームが読み取りをサポートしていないか、null であるか、既に閉じています。</exception>
+    </member>
+    <member name="M:System.IO.BinaryReader.#ctor(System.IO.Stream,System.Text.Encoding)">
+      <summary>指定したストリームと文字エンコーディングに基づいて、<see cref="T:System.IO.BinaryReader" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="input">入力ストリーム。</param>
+      <param name="encoding">使用する文字エンコーディング。</param>
+      <exception cref="T:System.ArgumentException">ストリームが読み取りをサポートしていないか、null であるか、既に閉じています。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="encoding" /> は null です。</exception>
+    </member>
+    <member name="M:System.IO.BinaryReader.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean)">
+      <summary>指定したストリームと文字エンコーディングに基づいて <see cref="T:System.IO.BinaryReader" /> クラスの新しいインスタンスを初期化し、必要に応じて、ストリームを開いたままにします。</summary>
+      <param name="input">入力ストリーム。</param>
+      <param name="encoding">使用する文字エンコーディング。</param>
+      <param name="leaveOpen">
+        <see cref="T:System.IO.BinaryReader" /> オブジェクトを破棄した後にストリームを開いたままにする場合は true、それ以外の場合は false。</param>
+      <exception cref="T:System.ArgumentException">ストリームが読み取りをサポートしていないか、null であるか、既に閉じています。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="encoding" /> または <paramref name="input" /> が null です。</exception>
+    </member>
+    <member name="P:System.IO.BinaryReader.BaseStream">
+      <summary>
+        <see cref="T:System.IO.BinaryReader" /> の基になるストリームへのアクセスを公開します。</summary>
+      <returns>BinaryReader に関連付けられた、基になるストリーム。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.Dispose">
+      <summary>
+        <see cref="T:System.IO.BinaryReader" /> クラスの現在のインスタンスによって使用されているすべてのリソースを解放します。</summary>
+    </member>
+    <member name="M:System.IO.BinaryReader.Dispose(System.Boolean)">
+      <summary>
+        <see cref="T:System.IO.BinaryReader" /> クラスによって使用されているアンマネージ リソースを解放し、オプションでマネージ リソースも解放します。</summary>
+      <param name="disposing">マネージ リソースとアンマネージ リソースの両方を解放する場合は true。アンマネージ リソースだけを解放する場合は false。</param>
+    </member>
+    <member name="M:System.IO.BinaryReader.FillBuffer(System.Int32)">
+      <summary>指定したバイト数分だけストリームから読み取ったバイトを内部バッファーに格納します。</summary>
+      <param name="numBytes">読み取るバイト数。</param>
+      <exception cref="T:System.IO.EndOfStreamException">
+        <paramref name="numBytes" /> 分のバイトを読み取る前にストリームの末尾に到達しました。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">要求された <paramref name="numBytes" /> が、内部バッファー サイズより大きくなっています。</exception>
+    </member>
+    <member name="M:System.IO.BinaryReader.PeekChar">
+      <summary>読み取り可能な次の文字を返します。バイトの位置または文字の位置は変化しません。</summary>
+      <returns>使用できる次の文字。使用できる文字がないか、ストリームがシークをサポートしていない場合は -1。</returns>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentException">現在の文字は、ストリーム用に選択された <see cref="T:System.Text.Encoding" /> を使用して内部文字バッファーにデコードできません。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.Read">
+      <summary>基になるストリームから文字を読み取り、使用した Encoding とストリームから読み取った特定の文字に従ってストリームの現在位置を進めます。</summary>
+      <returns>入力ストリームの次の文字。現在読み取り可能な文字がない場合は -1。</returns>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.Read(System.Byte[],System.Int32,System.Int32)">
+      <summary>バイト配列内の指定された位置を開始点として、ストリームから指定されたバイト数を読み取ります。</summary>
+      <returns>
+        <paramref name="buffer" /> に読み取るバイト数。要求したバイト数分のバイトを読み取れなかった場合、この値は要求したバイト数より小さくなります。ストリームの末尾に到達した場合は 0 になることがあります。</returns>
+      <param name="buffer">データを読み取るバッファー。</param>
+      <param name="index">バッファー内の、バッファーへの読み取り開始点。</param>
+      <param name="count">読み取るバイト数。</param>
+      <exception cref="T:System.ArgumentException">バッファー長から <paramref name="index" /> を差し引いた値が <paramref name="count" /> より小さい値です。またはデコードされた文字の数が <paramref name="count" /> を超えています。これは、Unicode デコーダーがフォールバック文字またはサロゲート ペアを返す場合に発生することがあります。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.Read(System.Char[],System.Int32,System.Int32)">
+      <summary>文字配列内の指定された位置を開始点として、ストリームから指定された文字数を読み取ります。</summary>
+      <returns>バッファーに読み取られた合計文字数。要求した文字数分の文字を読み取れなかった場合、この値は要求した文字数より小さくなります。また、ストリームの末尾に到達した場合は 0 になることがあります。</returns>
+      <param name="buffer">データを読み取るバッファー。</param>
+      <param name="index">バッファー内の、バッファーへの読み取り開始点。</param>
+      <param name="count">読み取る文字の数。</param>
+      <exception cref="T:System.ArgumentException">バッファー長から <paramref name="index" /> を差し引いた値が <paramref name="count" /> より小さい値です。またはデコードされた文字の数が <paramref name="count" /> を超えています。これは、Unicode デコーダーがフォールバック文字またはサロゲート ペアを返す場合に発生することがあります。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.Read7BitEncodedInt">
+      <summary>32 ビット整数を圧縮形式で読み取ります。</summary>
+      <returns>圧縮形式の 32 ビット整数。</returns>
+      <exception cref="T:System.IO.EndOfStreamException">ストリームの末尾に到達しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.FormatException">ストリームが破損しています。</exception>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadBoolean">
+      <summary>現在のストリームから Boolean 値を読み取り、ストリームの現在位置を 1 バイトだけ進めます。</summary>
+      <returns>読み取ったバイトが 0 以外の場合は true。0 の場合は false。</returns>
+      <exception cref="T:System.IO.EndOfStreamException">ストリームの末尾に到達しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadByte">
+      <summary>現在のストリームから次のバイトを読み取り、ストリームの現在位置を 1 バイトだけ進めます。</summary>
+      <returns>現在のストリームから読み取った次のバイト。</returns>
+      <exception cref="T:System.IO.EndOfStreamException">ストリームの末尾に到達しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadBytes(System.Int32)">
+      <summary>現在のストリームから指定されたバイト数をバイト配列に読み取り、そのバイト数だけストリーム内の現在位置を進めます。</summary>
+      <returns>基になるストリームから読み取ったデータが格納されているバイト配列。ストリームの末尾に到達した場合は要求したバイト数より小さくなることがあります。</returns>
+      <param name="count">読み取るバイト数。この値は 0 以上の数字の必要があり、それ以外の場合は例外が発生します。</param>
+      <exception cref="T:System.ArgumentException">デコードされた文字の数が <paramref name="count" /> を超えています。これは、Unicode デコーダーがフォールバック文字またはサロゲート ペアを返す場合に発生することがあります。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> が負の値です。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadChar">
+      <summary>現在のストリームの次の文字を読み取り、使用した Encoding とストリームから読み取った特定の文字に従ってストリームの現在位置を進めます。</summary>
+      <returns>現在のストリームから読み取った文字。</returns>
+      <exception cref="T:System.IO.EndOfStreamException">ストリームの末尾に到達しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentException">サロゲート文字が読み取られました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadChars(System.Int32)">
+      <summary>現在のストリームから指定された文字数を読み取り、そのデータを文字配列として返します。また、使用した Encoding とストリームから読み取った特定の文字に従って現在位置を進めます。</summary>
+      <returns>基になるストリームから読み取ったデータが格納されている文字配列。ストリームの末尾に到達した場合は、要求された文字数より小さくなることがあります。</returns>
+      <param name="count">読み取る文字の数。</param>
+      <exception cref="T:System.ArgumentException">デコードされた文字の数が <paramref name="count" /> を超えています。これは、Unicode デコーダーがフォールバック文字またはサロゲート ペアを返す場合に発生することがあります。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> が負の値です。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadDecimal">
+      <summary>現在のストリームから 10 進数値を読み取り、ストリームの現在位置を 16 バイトだけ進めます。</summary>
+      <returns>現在のストリームから読み取った 10 進数値。</returns>
+      <exception cref="T:System.IO.EndOfStreamException">ストリームの末尾に到達しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadDouble">
+      <summary>現在のストリームから 8 バイト浮動小数点値を読み取り、ストリームの現在位置を 8 バイトだけ進めます。</summary>
+      <returns>現在のストリームから読み取った 8 バイト浮動小数点値。</returns>
+      <exception cref="T:System.IO.EndOfStreamException">ストリームの末尾に到達しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadInt16">
+      <summary>現在のストリームから 2 バイト符号付き整数を読み取り、ストリームの現在位置を 2 バイトだけ進めます。</summary>
+      <returns>現在のストリームから読み取った 2 バイト符号付き整数。</returns>
+      <exception cref="T:System.IO.EndOfStreamException">ストリームの末尾に到達しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadInt32">
+      <summary>現在のストリームから 4 バイト符号付き整数を読み取り、ストリームの現在位置を 4 バイトだけ進めます。</summary>
+      <returns>現在のストリームから読み取った 4 バイト符号付き整数。</returns>
+      <exception cref="T:System.IO.EndOfStreamException">ストリームの末尾に到達しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadInt64">
+      <summary>現在のストリームから 8 バイト符号付き整数を読み取り、ストリームの現在位置を 8 バイトだけ進めます。</summary>
+      <returns>現在のストリームから読み取った 8 バイト符号付き整数。</returns>
+      <exception cref="T:System.IO.EndOfStreamException">ストリームの末尾に到達しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadSByte">
+      <summary>現在のストリームから符号付きバイトを読み取り、ストリームの現在位置を 1 バイトだけ進めます。</summary>
+      <returns>現在のストリームから読み取った符号付きバイト。</returns>
+      <exception cref="T:System.IO.EndOfStreamException">ストリームの末尾に到達しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadSingle">
+      <summary>現在のストリームから 4 バイト浮動小数点値を読み取り、ストリームの現在位置を 4 バイトだけ進めます。</summary>
+      <returns>現在のストリームから読み取った 4 バイト浮動小数点値。</returns>
+      <exception cref="T:System.IO.EndOfStreamException">ストリームの末尾に到達しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadString">
+      <summary>現在のストリームから 1 つの文字列を読み取ります。ストリームの文字列は、7 ビットごとにエンコードされた文字列の長さが先頭に付加されています。</summary>
+      <returns>読み取った文字列。</returns>
+      <exception cref="T:System.IO.EndOfStreamException">ストリームの末尾に到達しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadUInt16">
+      <summary>リトル エンディアン エンコーディングを使用して現在のストリームから 2 バイト符号なし整数を読み取り、ストリームの位置を 2 バイトだけ進めます。</summary>
+      <returns>現在のストリームから読み取った 2 バイト符号なし整数。</returns>
+      <exception cref="T:System.IO.EndOfStreamException">ストリームの末尾に到達しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadUInt32">
+      <summary>現在のストリームから 4 バイト符号なし整数を読み取り、ストリームの位置を 4 バイトだけ進めます。</summary>
+      <returns>現在のストリームから読み取った 4 バイト符号なし整数。</returns>
+      <exception cref="T:System.IO.EndOfStreamException">ストリームの末尾に到達しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadUInt64">
+      <summary>現在のストリームから 8 バイト符号なし整数を読み取り、ストリームの位置を 8 バイトだけ進めます。</summary>
+      <returns>現在のストリームから読み取った 8 バイト符号なし整数。</returns>
+      <exception cref="T:System.IO.EndOfStreamException">ストリームの末尾に到達しました。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.IO.BinaryWriter">
+      <summary>プリミティブ型をバイナリでストリームに書き込みます。特定のエンコーディングの文字列の書き込みをサポートします。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.#ctor">
+      <summary>ストリームへの書き込みを行う <see cref="T:System.IO.BinaryWriter" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.IO.BinaryWriter.#ctor(System.IO.Stream)">
+      <summary>指定したストリームに基づき、UTF-8 エンコーディングを使用する <see cref="T:System.IO.BinaryWriter" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="output">出力ストリーム。</param>
+      <exception cref="T:System.ArgumentException">ストリームが書き込みをサポートしていないか、既に閉じています。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="output" /> は null なので、</exception>
+    </member>
+    <member name="M:System.IO.BinaryWriter.#ctor(System.IO.Stream,System.Text.Encoding)">
+      <summary>指定したストリームと文字エンコーディングに基づいて、<see cref="T:System.IO.BinaryWriter" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="output">出力ストリーム。</param>
+      <param name="encoding">使用する文字エンコーディング。</param>
+      <exception cref="T:System.ArgumentException">ストリームが書き込みをサポートしていないか、既に閉じています。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="output" /> または <paramref name="encoding" /> が null です。</exception>
+    </member>
+    <member name="M:System.IO.BinaryWriter.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean)">
+      <summary>指定したストリームと文字エンコーディングに基づいて <see cref="T:System.IO.BinaryWriter" /> クラスの新しいインスタンスを初期化し、必要に応じて、ストリームを開いたままにします。</summary>
+      <param name="output">出力ストリーム。</param>
+      <param name="encoding">使用する文字エンコーディング。</param>
+      <param name="leaveOpen">
+        <see cref="T:System.IO.BinaryWriter" /> オブジェクトを破棄した後にストリームを開いたままにする場合は true、それ以外の場合は false。</param>
+      <exception cref="T:System.ArgumentException">ストリームが書き込みをサポートしていないか、既に閉じています。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="output" /> または <paramref name="encoding" /> が null です。</exception>
+    </member>
+    <member name="P:System.IO.BinaryWriter.BaseStream">
+      <summary>
+        <see cref="T:System.IO.BinaryWriter" /> の基になるストリームを取得します。</summary>
+      <returns>BinaryWriter に関連付けられた、基になるストリーム。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Dispose">
+      <summary>
+        <see cref="T:System.IO.BinaryWriter" /> クラスの現在のインスタンスによって使用されているすべてのリソースを解放します。</summary>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Dispose(System.Boolean)">
+      <summary>
+        <see cref="T:System.IO.BinaryWriter" /> によって使用されているアンマネージ リソースを解放し、オプションでマネージ リソースも解放します。</summary>
+      <param name="disposing">マネージ リソースとアンマネージ リソースの両方を解放する場合は true。アンマネージ リソースだけを解放する場合は false。</param>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Flush">
+      <summary>現在のライターのすべてのバッファーをクリアし、バッファー内のデータを基になるデバイスに書き込みます。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.IO.BinaryWriter.Null">
+      <summary>バッキング ストアを持たない <see cref="T:System.IO.BinaryWriter" /> を指定します。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.IO.BinaryWriter.OutStream">
+      <summary>基になるストリームを保持します。</summary>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Seek(System.Int32,System.IO.SeekOrigin)">
+      <summary>現在のストリーム内の位置を設定します。</summary>
+      <returns>現在のストリームの位置。</returns>
+      <param name="offset">
+        <paramref name="origin" /> からのバイト オフセット。</param>
+      <param name="origin">新しい位置を取得するための参照ポイントを示す <see cref="T:System.IO.SeekOrigin" /> フィールド。</param>
+      <exception cref="T:System.IO.IOException">ファイル ポインターが無効な位置に移動しました。</exception>
+      <exception cref="T:System.ArgumentException">
+        <see cref="T:System.IO.SeekOrigin" /> 値が無効です。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Boolean)">
+      <summary>現在のストリームに 1 バイト Boolean 値を書き込みます。値 0 は false を表し、値 1 は true を表します。</summary>
+      <param name="value">書き込む Boolean 値 (0 または 1)。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Byte)">
+      <summary>現在のストリームに符号なしバイトを書き込み、ストリームの位置を 1 バイトだけ進めます。</summary>
+      <param name="value">書き込む符号なしバイト。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Byte[])">
+      <summary>基になるストリームにバイト配列を書き込みます。</summary>
+      <param name="buffer">書き込むデータが格納されているバイト配列。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null なので、</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Byte[],System.Int32,System.Int32)">
+      <summary>現在のストリームにバイト配列の特定の領域を書き込みます。</summary>
+      <param name="buffer">書き込むデータが格納されているバイト配列。</param>
+      <param name="index">
+        <paramref name="buffer" /> 内の書き込み開始点。</param>
+      <param name="count">書き込むバイト数。</param>
+      <exception cref="T:System.ArgumentException">バッファー長から <paramref name="index" /> を差し引いた値が <paramref name="count" /> より小さい値です。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Char)">
+      <summary>現在のストリームに Unicode 文字を書き込み、使用した Encoding とストリームに書き込んだ特定の文字に従ってストリームの現在位置を進めます。</summary>
+      <param name="ch">書き込む非サロゲート Unicode 文字。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="ch" /> は、単一のサロゲート文字です。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Char[])">
+      <summary>現在のストリームに文字配列を書き込み、使用した Encoding とストリームに書き込んだ特定の文字に従ってストリームの現在位置を進めます。</summary>
+      <param name="chars">書き込むデータを格納する文字配列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> は null なので、</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Char[],System.Int32,System.Int32)">
+      <summary>現在のストリームに文字配列の特定の領域を書き込み、使用した Encoding とストリームに書き込んだ特定の文字に従ってストリームの現在位置を進めます。</summary>
+      <param name="chars">書き込むデータを格納する文字配列。</param>
+      <param name="index">
+        <paramref name="chars" /> 内の書き込み開始点。</param>
+      <param name="count">書き込む文字数。</param>
+      <exception cref="T:System.ArgumentException">バッファー長から <paramref name="index" /> を差し引いた値が <paramref name="count" /> より小さい値です。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Decimal)">
+      <summary>現在のストリームに 10 進数値を書き込み、ストリームの位置を 16 バイトだけ進めます。</summary>
+      <param name="value">書き込む 10 進値。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Double)">
+      <summary>現在のストリームに 8 バイト浮動小数点値を書き込み、ストリームの位置を 8 バイトだけ進めます。</summary>
+      <param name="value">書き込む 8 バイト浮動小数点値。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Int16)">
+      <summary>現在のストリームに 2 バイト符号付き整数を書き込み、ストリームの位置を 2 バイトだけ進めます。</summary>
+      <param name="value">書き込む 2 バイト符号付き整数。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Int32)">
+      <summary>現在のストリームに 4 バイト符号付き整数を書き込み、ストリームの位置を 4 バイトだけ進めます。</summary>
+      <param name="value">書き込む 4 バイト符号付き整数。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Int64)">
+      <summary>現在のストリームに 8 バイト符号付き整数を書き込み、ストリームの位置を 8 バイトだけ進めます。</summary>
+      <param name="value">書き込む 8 バイト符号付き整数。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.SByte)">
+      <summary>現在のストリームに符号付きバイトを書き込み、ストリームの位置を 1 バイトだけ進めます。</summary>
+      <param name="value">書き込む符号付きバイト。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Single)">
+      <summary>現在のストリームに 4 バイト浮動小数点値を書き込み、ストリームの位置を 4 バイトだけ進めます。</summary>
+      <param name="value">書き込む 4 バイト浮動小数点値。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.String)">
+      <summary>文字長プリフィックスを持つ文字列を、<see cref="T:System.IO.BinaryWriter" /> の現在のエンコーディングでこのストリームに書き込み、使用したエンコーディングとストリームに書き込んだ特定の文字に従ってストリームの現在位置を進めます。</summary>
+      <param name="value">書き込む値。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> は null なので、</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.UInt16)">
+      <summary>現在のストリームに 2 バイト符号なし整数を書き込み、ストリームの位置を 2 バイトだけ進めます。</summary>
+      <param name="value">書き込む 2 バイト符号なし整数。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.UInt32)">
+      <summary>現在のストリームに 4 バイト符号なし整数を書き込み、ストリームの位置を 4 バイトだけ進めます。</summary>
+      <param name="value">書き込む 4 バイト符号なし整数。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.UInt64)">
+      <summary>現在のストリームに 8 バイト符号なし整数を書き込み、ストリームの位置を 8 バイトだけ進めます。</summary>
+      <param name="value">書き込む 8 バイト符号なし整数。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write7BitEncodedInt(System.Int32)">
+      <summary>32 ビット整数を圧縮形式で書き込みます。</summary>
+      <param name="value">書き込む 32 ビット整数。</param>
+      <exception cref="T:System.IO.EndOfStreamException">ストリームの末尾に到達しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <exception cref="T:System.IO.IOException">ストリームが閉じられました。</exception>
+    </member>
+    <member name="T:System.IO.EndOfStreamException">
+      <summary>ストリームの末尾を越えて読み込もうとしたときにスローされる例外。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.EndOfStreamException.#ctor">
+      <summary>メッセージ文字列がシステムによって提供されたメッセージに設定され、HRESULT が COR_E_ENDOFSTREAM に設定された <see cref="T:System.IO.EndOfStreamException" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.IO.EndOfStreamException.#ctor(System.String)">
+      <summary>メッセージ文字列を <paramref name="message" /> に設定し、HRESULT を COR_E_ENDOFSTREAM に設定して、<see cref="T:System.IO.EndOfStreamException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">エラーを説明する文字列。<paramref name="message" /> の内容は、ユーザーが理解できる内容にします。このコンストラクターの呼び出し元では、この文字列が現在のシステムのカルチャに合わせてローカライズ済みであることを確認しておく必要があります。</param>
+    </member>
+    <member name="M:System.IO.EndOfStreamException.#ctor(System.String,System.Exception)">
+      <summary>指定したエラー メッセージと、この例外の原因である内部例外への参照を使用して、<see cref="T:System.IO.EndOfStreamException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">エラーを説明する文字列。<paramref name="message" /> の内容は、ユーザーが理解できる内容にします。このコンストラクターの呼び出し元では、この文字列が現在のシステムのカルチャに合わせてローカライズ済みであることを確認しておく必要があります。</param>
+      <param name="innerException">現在の例外の原因である例外。<paramref name="innerException" /> パラメーターが null でない場合は、内部例外を処理する catch ブロックで現在の例外が発生します。</param>
+    </member>
+    <member name="T:System.IO.InvalidDataException">
+      <summary>データ ストリームが無効な形式である場合にスローされる例外。</summary>
+    </member>
+    <member name="M:System.IO.InvalidDataException.#ctor">
+      <summary>
+        <see cref="T:System.IO.InvalidDataException" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.IO.InvalidDataException.#ctor(System.String)">
+      <summary>指定したエラー メッセージを使用して、<see cref="T:System.IO.InvalidDataException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">例外の原因を説明するエラー メッセージ。</param>
+    </member>
+    <member name="M:System.IO.InvalidDataException.#ctor(System.String,System.Exception)">
+      <summary>この例外の原因である内部例外への参照を指定して、<see cref="T:System.IO.InvalidDataException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">例外の原因を説明するエラー メッセージ。</param>
+      <param name="innerException">現在の例外の原因である例外。<paramref name="innerException" /> パラメーターが null でない場合は、内部例外を処理する catch ブロックで現在の例外が発生します。</param>
+    </member>
+    <member name="T:System.IO.MemoryStream">
+      <summary>バッキング ストアとしてメモリを使用するストリームを作成します。この種類の .NET Framework ソース コードを参照して、次を参照してください。、 Reference Sourceです。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor">
+      <summary>
+        <see cref="T:System.IO.MemoryStream" /> クラスの新しいインスタンスを、0 に初期化される拡張可能な容量を使用して 初期化します。</summary>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor(System.Byte[])">
+      <summary>指定したバイト配列に基づいて、サイズを変更できない <see cref="T:System.IO.MemoryStream" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="buffer">現在のストリームを作成する符号なしバイトの配列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor(System.Byte[],System.Boolean)">
+      <summary>
+        <see cref="P:System.IO.MemoryStream.CanWrite" /> プロパティを指定どおりに設定し、指定したバイト配列に基づいて、サイズを変更できない <see cref="T:System.IO.MemoryStream" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="buffer">このストリームの作成元の符号なしバイトの配列。</param>
+      <param name="writable">ストリームが書き込みをサポートするかどうかを決定する <see cref="P:System.IO.MemoryStream.CanWrite" /> プロパティの設定。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor(System.Byte[],System.Int32,System.Int32)">
+      <summary>バイト配列の指定した領域 (インデックス) に基づいて、サイズを変更できない <see cref="T:System.IO.MemoryStream" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="buffer">このストリームの作成元の符号なしバイトの配列。</param>
+      <param name="index">ストリームが開始する位置の <paramref name="buffer" /> のインデックス。</param>
+      <param name="count">バイト単位のストリーム長。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が 0 未満です。</exception>
+      <exception cref="T:System.ArgumentException">バッファー長から <paramref name="index" /> を差し引いた値が <paramref name="count" /> より小さい値です。</exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor(System.Byte[],System.Int32,System.Int32,System.Boolean)">
+      <summary>
+        <see cref="P:System.IO.MemoryStream.CanWrite" /> プロパティを指定どおりに設定し、バイト配列の指定した領域に基づいて、サイズを変更できない <see cref="T:System.IO.MemoryStream" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="buffer">このストリームの作成元の符号なしバイトの配列。</param>
+      <param name="index">ストリームが開始する位置の <paramref name="buffer" /> のインデックス。</param>
+      <param name="count">バイト単位のストリーム長。</param>
+      <param name="writable">ストリームが書き込みをサポートするかどうかを決定する <see cref="P:System.IO.MemoryStream.CanWrite" /> プロパティの設定。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ArgumentException">バッファー長から <paramref name="index" /> を差し引いた値が <paramref name="count" /> より小さい値です。</exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor(System.Byte[],System.Int32,System.Int32,System.Boolean,System.Boolean)">
+      <summary>
+        <see cref="P:System.IO.MemoryStream.CanWrite" /> プロパティを指定どおりに設定し、<see cref="M:System.IO.MemoryStream.GetBuffer" /> を呼び出す機能を指定どおりに設定して、バイト配列の指定した領域に基づき、<see cref="T:System.IO.MemoryStream" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="buffer">このストリームの作成元の符号なしバイトの配列。</param>
+      <param name="index">ストリームが開始する位置の <paramref name="buffer" /> のインデックス。</param>
+      <param name="count">バイト単位のストリーム長。</param>
+      <param name="writable">ストリームが書き込みをサポートするかどうかを決定する <see cref="P:System.IO.MemoryStream.CanWrite" /> プロパティの設定。</param>
+      <param name="publiclyVisible">ストリームの作成元の符号なしバイト配列を返す <see cref="M:System.IO.MemoryStream.GetBuffer" /> を有効にする場合は true。それ以外の場合は false。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ArgumentException">バッファー長から <paramref name="index" /> を差し引いた値が <paramref name="count" /> より小さい値です。</exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor(System.Int32)">
+      <summary>
+        <see cref="T:System.IO.MemoryStream" /> クラスの新しいインスタンスを、指定に従って初期化される拡張可能な容量を使用して初期化します。</summary>
+      <param name="capacity">バイト単位の内部配列の初期サイズ。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="capacity" /> が負の値です。</exception>
+    </member>
+    <member name="P:System.IO.MemoryStream.CanRead">
+      <summary>現在のストリームが読み取りをサポートしているかどうかを示す値を取得します。</summary>
+      <returns>ストリームが開いている場合は true。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.MemoryStream.CanSeek">
+      <summary>現在のストリームがシークをサポートしているかどうかを示す値を取得します。</summary>
+      <returns>ストリームが開いている場合は true。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.MemoryStream.CanWrite">
+      <summary>現在のストリームが書き込みをサポートしているかどうかを示す値を取得します。</summary>
+      <returns>ストリームが書き込みをサポートしている場合は true。それ以外の場合は false。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.MemoryStream.Capacity">
+      <summary>ストリームに割り当てられたバイト数を取得または設定します。</summary>
+      <returns>ストリームに対してバッファーが使用できる部分の長さ。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">容量が負の値または現在のストリーム長より小さい値に設定されています。</exception>
+      <exception cref="T:System.ObjectDisposedException">現在のストリームが閉じています。</exception>
+      <exception cref="T:System.NotSupportedException">容量を変更できないストリームに対して set が呼び出されました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.CopyToAsync(System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
+      <summary>指定されたバッファー サイズを使用して、現在のストリームからすべてのバイトを非同期に読み取り、指定されたバッファー サイズとキャンセル トークンを使用して、別のストリームに書き込みます。</summary>
+      <returns>非同期のコピー操作を表すタスク。</returns>
+      <param name="destination">現在のストリームの内容のコピー先のストリーム。</param>
+      <param name="bufferSize">バッファーのサイズ (バイト数)。これは、0 より大きい値である必要があります。</param>
+      <param name="cancellationToken">キャンセル要求を監視するためのトークン。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destination" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="buffersize" /> が負の値またはゼロです。</exception>
+      <exception cref="T:System.ObjectDisposedException">現在のストリームまたはコピー先ストリームは破棄されます。</exception>
+      <exception cref="T:System.NotSupportedException">現在のストリームが読み取りをサポートしていないか、コピー先のストリームが書き込みをサポートしていません。</exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.Dispose(System.Boolean)">
+      <summary>
+        <see cref="T:System.IO.MemoryStream" /> クラスによって使用されているアンマネージ リソースを解放し、オプションでマネージ リソースも解放します。</summary>
+      <param name="disposing">マネージ リソースとアンマネージ リソースの両方を解放する場合は true。アンマネージ リソースだけを解放する場合は false。</param>
+    </member>
+    <member name="M:System.IO.MemoryStream.Flush">
+      <summary>アクションが実行されないように、<see cref="M:System.IO.Stream.Flush" /> メソッドをオーバーライドします。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.FlushAsync(System.Threading.CancellationToken)">
+      <summary>このストリームのすべてのバッファーを非同期的にクリアし、キャンセル要求を監視します。</summary>
+      <returns>非同期のフラッシュ操作を表すタスク。</returns>
+      <param name="cancellationToken">キャンセル要求を監視するためのトークン。</param>
+      <exception cref="T:System.ObjectDisposedException">ストリームは破棄されています。</exception>
+    </member>
+    <member name="P:System.IO.MemoryStream.Length">
+      <summary>バイト単位のストリーム長を取得します。</summary>
+      <returns>バイト単位のストリーム長。</returns>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.MemoryStream.Position">
+      <summary>ストリームの現在位置を取得または設定します。</summary>
+      <returns>ストリーム内の現在位置。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">位置が負の値または <see cref="F:System.Int32.MaxValue" /> より大きい値に設定されています。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.Read(System.Byte[],System.Int32,System.Int32)">
+      <summary>現在のストリームからバイトのブロックを読み取り、データをバッファーに書き込みます。</summary>
+      <returns>バッファーに書き込まれた合計バイト数。要求しただけのバイト数を読み取ることができなかった場合、この値は要求したバイト数より小さくなります。また、データを読み取る前にストリームの末尾に到達した場合は 0 になります。</returns>
+      <param name="buffer">このメソッドが戻るとき、指定したバイト配列の <paramref name="offset" /> から (<paramref name="offset" /> + <paramref name="count" /> - 1) までの値が、現在のストリームから読み取られた文字に置き換えられています。</param>
+      <param name="offset">現在のストリームからのデータの格納を開始する位置を示す <paramref name="buffer" /> 内のバイト オフセット。インデックス番号は 0 から始まります。</param>
+      <param name="count">読み取る最大バイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ArgumentException">バッファー長から <paramref name="offset" /> を差し引いた値が <paramref name="count" /> より小さい値です。</exception>
+      <exception cref="T:System.ObjectDisposedException">現在のストリーム インスタンスが閉じています。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+      <summary>現在のストリームから非同期的にバイト シーケンスを非同期に読み取り、読み取ったバイト数だけストリーム内の位置を進め、キャンセル要求を監視します。</summary>
+      <returns>非同期の読み取り操作を表すタスク。<paramref name="TResult" /> パラメーターの値には、バッファーに読み込まれるバイトの合計数が含まれます。現在使用できるバイト数が要求した数より小さい場合、結果の値は要求したバイト数より小さくなることがあります。また、ストリームの末尾に到達した場合は 0 になることがあります。</returns>
+      <param name="buffer">データを書き込むバッファー。</param>
+      <param name="offset">ストリームからのデータの書き込み開始位置を示す <paramref name="buffer" /> 内のバイト オフセット。</param>
+      <param name="count">読み取る最大バイト数。</param>
+      <param name="cancellationToken">キャンセル要求を監視するためのトークン。既定値は <see cref="P:System.Threading.CancellationToken.None" /> です。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="offset" /> と <paramref name="count" /> の合計値が、バッファー長より大きい値です。</exception>
+      <exception cref="T:System.NotSupportedException">ストリームは読み取りをサポートしません。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームは破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">ストリームは現在、前の読み取り操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.ReadByte">
+      <summary>現在のストリームからバイトを読み取ります。</summary>
+      <returns>
+        <see cref="T:System.Int32" /> にキャストしたバイト。ストリームの末尾に達した場合は -1。</returns>
+      <exception cref="T:System.ObjectDisposedException">現在のストリーム インスタンスが閉じています。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.Seek(System.Int64,System.IO.SeekOrigin)">
+      <summary>現在のストリーム内の位置を指定した値に設定します。</summary>
+      <returns>初期参照ポイントとオフセットを組み合わせて計算するストリーム内の新しい位置。</returns>
+      <param name="offset">ストリームの新しい位置。これは <paramref name="loc" /> パラメーターに対する相対値であり、正または負の値にできます。</param>
+      <param name="loc">シーク参照ポイントとして機能する <see cref="T:System.IO.SeekOrigin" /> 型の値。</param>
+      <exception cref="T:System.IO.IOException">ストリームの先頭より前をシークしようとしました。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> が <see cref="F:System.Int32.MaxValue" /> より大きくなっています。</exception>
+      <exception cref="T:System.ArgumentException">無効な <see cref="T:System.IO.SeekOrigin" /> があります。または<paramref name="offset" /> によって算術オーバーフローが発生しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">現在のストリーム インスタンスが閉じています。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.SetLength(System.Int64)">
+      <summary>現在のストリーム長を指定した値に設定します。</summary>
+      <param name="value">長さを設定する値。</param>
+      <exception cref="T:System.NotSupportedException">現在のストリームのサイズが変更できません。<paramref name="value" /> が現在の容量を超えています。または 現在のストリームが書き込みをサポートしません。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="value" /> が負または <see cref="T:System.IO.MemoryStream" /> の最大長より大きな値です。最大長は、(<see cref="F:System.Int32.MaxValue" /> - origin) で計算され、origin は、ストリームが開始する位置を示す基になるバッファーのインデックスです。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.ToArray">
+      <summary>
+        <see cref="P:System.IO.MemoryStream.Position" /> プロパティには関係なく、ストリームの内容をバイト配列に書き込みます。</summary>
+      <returns>新しいバイト配列。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.TryGetBuffer(System.ArraySegment{System.Byte}@)">
+      <summary>このストリームの作成元の符号なしバイトの配列を返します。戻り値は、変換が成功したかどうかを示します。</summary>
+      <returns>変換が成功した場合は true。それ以外の場合は false。</returns>
+      <param name="buffer">このストリームの作成元のバイト配列セグメント。</param>
+    </member>
+    <member name="M:System.IO.MemoryStream.Write(System.Byte[],System.Int32,System.Int32)">
+      <summary>バッファーから読み取ったデータを使用して、現在のストリームにバイトのブロックを書き込みます。</summary>
+      <param name="buffer">データの書き込み元となるバッファー。</param>
+      <param name="offset">現在のストリームへのバイトのコピーを開始する位置を示す <paramref name="buffer" /> 内のバイト オフセット。インデックス番号は 0 から始まります。</param>
+      <param name="count">書き込む最大バイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.NotSupportedException">ストリームは書き込みをサポートしません。詳細については、<see cref="P:System.IO.Stream.CanWrite" /> のトピックを参照してください。または 現在の位置が、ストリームの末尾に向かって <paramref name="count" /> バイトよりも近い位置にあり、容量を変更できません。</exception>
+      <exception cref="T:System.ArgumentException">バッファー長から <paramref name="offset" /> を差し引いた値が <paramref name="count" /> より小さい値です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">現在のストリーム インスタンスが閉じています。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+      <summary>現在のストリームにバイト シーケンスを非同期に書き込み、書き込んだバイト数だけストリーム内の現在位置を進め、キャンセル要求を監視します。</summary>
+      <returns>非同期の書き込み操作を表すタスク。</returns>
+      <param name="buffer">データの書き込み元となるバッファー。</param>
+      <param name="offset">ストリームへのバイトのコピーを開始する位置を示す <paramref name="buffer" /> 内のバイト オフセット。インデックス番号は 0 から始まります。</param>
+      <param name="count">書き込む最大バイト数。</param>
+      <param name="cancellationToken">キャンセル要求を監視するためのトークン。既定値は <see cref="P:System.Threading.CancellationToken.None" /> です。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="offset" /> と <paramref name="count" /> の合計値が、バッファー長より大きい値です。</exception>
+      <exception cref="T:System.NotSupportedException">ストリームは書き込みをサポートしません。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームは破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">ストリームは現在、前の書き込み操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.WriteByte(System.Byte)">
+      <summary>現在のストリーム内の現在位置に 1 バイトを書き込みます。</summary>
+      <param name="value">書き込むバイト。</param>
+      <exception cref="T:System.NotSupportedException">ストリームは書き込みをサポートしません。詳細については、<see cref="P:System.IO.Stream.CanWrite" /> のトピックを参照してください。または 現在の位置がストリームの末尾になっており、容量を変更できません。</exception>
+      <exception cref="T:System.ObjectDisposedException">現在のストリームが閉じています。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.WriteTo(System.IO.Stream)">
+      <summary>メモリ ストリームの内容全体を別のストリームに書き込みます。</summary>
+      <param name="stream">このメモリ ストリームが書き込まれるストリーム。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="stream" /> は null です。</exception>
+      <exception cref="T:System.ObjectDisposedException">現在のストリームまたは対象のストリームは閉じています。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.IO.SeekOrigin">
+      <summary>シークに使用するストリームの場所を指定します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.SeekOrigin.Begin">
+      <summary>ストリームの先頭を指定します。</summary>
+    </member>
+    <member name="F:System.IO.SeekOrigin.Current">
+      <summary>ストリーム内の現在位置を指定します。</summary>
+    </member>
+    <member name="F:System.IO.SeekOrigin.End">
+      <summary>ストリームの末尾を指定します。</summary>
+    </member>
+    <member name="T:System.IO.Stream">
+      <summary>バイト シーケンスのジェネリック ビューを提供します。これは抽象クラスです。この種類の .NET Framework ソース コードを参照して、次を参照してください。、 Reference Sourceです。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.#ctor">
+      <summary>
+        <see cref="T:System.IO.Stream" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="P:System.IO.Stream.CanRead">
+      <summary>派生クラスでオーバーライドされた場合は、現在のストリームが読み取りをサポートするかどうかを示す値を取得します。</summary>
+      <returns>ストリームが読み込みをサポートしている場合は true。それ以外の場合は false。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.IO.Stream.CanSeek">
+      <summary>派生クラスでオーバーライドされた場合は、現在のストリームがシークをサポートするかどうかを示す値を取得します。</summary>
+      <returns>ストリームがシークをサポートしている場合は true。それ以外の場合は false。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.IO.Stream.CanTimeout">
+      <summary>現在のストリームがタイムアウトできるかどうかを決定する値を取得します。</summary>
+      <returns>現在のストリームがタイムアウトできるかどうかを決定する値。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.Stream.CanWrite">
+      <summary>派生クラスでオーバーライドされた場合は、現在のストリームが書き込みをサポートするかどうかを示す値を取得します。</summary>
+      <returns>ストリームが書き込みをサポートしている場合は true。それ以外の場合は false。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.CopyTo(System.IO.Stream)">
+      <summary>現在のストリームからバイトを読み取り、別のストリームに書き込みます。</summary>
+      <param name="destination">現在のストリームの内容のコピー先のストリーム。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destination" /> は null です。</exception>
+      <exception cref="T:System.NotSupportedException">現在のストリームは読み取りをサポートしていません。または<paramref name="destination" /> は、書き込みをサポートしません。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <paramref name="destination" /> メソッドが呼び出される前に、現在のストリームまたは <see cref="M:System.IO.Stream.CopyTo(System.IO.Stream)" /> が閉じられました。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+    </member>
+    <member name="M:System.IO.Stream.CopyTo(System.IO.Stream,System.Int32)">
+      <summary>指定されたバッファー サイズを使用して、現在のストリームからバイトを読み取り、別のストリームに書き込みます。</summary>
+      <param name="destination">現在のストリームの内容のコピー先のストリーム。</param>
+      <param name="bufferSize">バッファーのサイズ。これは、0 より大きい値である必要があります。既定のサイズは 81920 です。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destination" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="bufferSize" /> が負の値またはゼロです。</exception>
+      <exception cref="T:System.NotSupportedException">現在のストリームは読み取りをサポートしていません。または<paramref name="destination" /> は、書き込みをサポートしません。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <paramref name="destination" /> メソッドが呼び出される前に、現在のストリームまたは <see cref="M:System.IO.Stream.CopyTo(System.IO.Stream)" /> が閉じられました。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+    </member>
+    <member name="M:System.IO.Stream.CopyToAsync(System.IO.Stream)">
+      <summary>現在のストリームからすべてのバイトを非同期に読み取り、別のストリームに書き込みます。</summary>
+      <returns>非同期のコピー操作を表すタスク。</returns>
+      <param name="destination">現在のストリームの内容のコピー先のストリーム。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destination" /> は null です。</exception>
+      <exception cref="T:System.ObjectDisposedException">現在のストリームまたはコピー先ストリームは破棄されます。</exception>
+      <exception cref="T:System.NotSupportedException">現在のストリームが読み取りをサポートしていないか、コピー先のストリームが書き込みをサポートしていません。</exception>
+    </member>
+    <member name="M:System.IO.Stream.CopyToAsync(System.IO.Stream,System.Int32)">
+      <summary>指定されたバッファー サイズを使用して、現在のストリームからバイトを非同期に読み取り、別のストリームに書き込みます。</summary>
+      <returns>非同期のコピー操作を表すタスク。</returns>
+      <param name="destination">現在のストリームの内容のコピー先のストリーム。</param>
+      <param name="bufferSize">バッファーのサイズ (バイト数)。これは、0 より大きい値である必要があります。既定のサイズは 81920 です。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destination" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="buffersize" /> が負の値またはゼロです。</exception>
+      <exception cref="T:System.ObjectDisposedException">現在のストリームまたはコピー先ストリームは破棄されます。</exception>
+      <exception cref="T:System.NotSupportedException">現在のストリームが読み取りをサポートしていないか、コピー先のストリームが書き込みをサポートしていません。</exception>
+    </member>
+    <member name="M:System.IO.Stream.CopyToAsync(System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
+      <summary>指定されたバッファー サイズを使用して、現在のストリームからバイトを非同期に読み取り、指定されたバッファー サイズとキャンセル トークンを使用して、別のストリームに書き込みます。</summary>
+      <returns>非同期のコピー操作を表すタスク。</returns>
+      <param name="destination">現在のストリームの内容のコピー先のストリーム。</param>
+      <param name="bufferSize">バッファーのサイズ (バイト数)。これは、0 より大きい値である必要があります。既定のサイズは 81920 です。</param>
+      <param name="cancellationToken">キャンセル要求を監視するためのトークン。既定値は <see cref="P:System.Threading.CancellationToken.None" /> です。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destination" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="buffersize" /> が負の値またはゼロです。</exception>
+      <exception cref="T:System.ObjectDisposedException">現在のストリームまたはコピー先ストリームは破棄されます。</exception>
+      <exception cref="T:System.NotSupportedException">現在のストリームが読み取りをサポートしていないか、コピー先のストリームが書き込みをサポートしていません。</exception>
+    </member>
+    <member name="M:System.IO.Stream.Dispose">
+      <summary>
+        <see cref="T:System.IO.Stream" /> によって使用されているすべてのリソースを解放します。</summary>
+    </member>
+    <member name="M:System.IO.Stream.Dispose(System.Boolean)">
+      <summary>
+        <see cref="T:System.IO.Stream" /> で使用されているアンマネージ リソースを解放し、オプションでマネージ リソースを解放します。</summary>
+      <param name="disposing">マネージ リソースとアンマネージ リソースの両方を解放する場合は true。アンマネージ リソースだけを解放する場合は false。</param>
+    </member>
+    <member name="M:System.IO.Stream.Flush">
+      <summary>派生クラスによってオーバーライドされた場合は、ストリームに対応するすべてのバッファーをクリアし、バッファー内のデータを基になるデバイスに書き込みます。</summary>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.FlushAsync">
+      <summary>ストリームに対応するすべてのバッファーを非同期にクリアし、バッファー内のデータを基になるデバイスに書き込みます。</summary>
+      <returns>非同期のフラッシュ操作を表すタスク。</returns>
+      <exception cref="T:System.ObjectDisposedException">ストリームは破棄されています。</exception>
+    </member>
+    <member name="M:System.IO.Stream.FlushAsync(System.Threading.CancellationToken)">
+      <summary>ストリームに対応するすべてのバッファーを非同期にクリアし、バッファー内のデータを基になるデバイスに書き込み、キャンセル要求を監視します。</summary>
+      <returns>非同期のフラッシュ操作を表すタスク。</returns>
+      <param name="cancellationToken">キャンセル要求を監視するためのトークン。既定値は <see cref="P:System.Threading.CancellationToken.None" /> です。</param>
+      <exception cref="T:System.ObjectDisposedException">ストリームは破棄されています。</exception>
+    </member>
+    <member name="P:System.IO.Stream.Length">
+      <summary>派生クラスでオーバーライドされた場合は、ストリームの長さをバイト単位で取得します。</summary>
+      <returns>ストリーム長 (バイト単位) を表す long 値。</returns>
+      <exception cref="T:System.NotSupportedException">Stream から派生したクラスがシークをサポートしていません。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられた後でメソッドが呼び出されました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.IO.Stream.Null">
+      <summary>バッキング ストアを持たない Stream。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.IO.Stream.Position">
+      <summary>派生クラスでオーバーライドされた場合は、現在のストリーム内の位置を取得または設定します。</summary>
+      <returns>ストリーム内の現在位置。</returns>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.NotSupportedException">ストリームがシークをサポートしていません。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられた後でメソッドが呼び出されました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.Read(System.Byte[],System.Int32,System.Int32)">
+      <summary>派生クラスによってオーバーライドされた場合は、現在のストリームからバイト シーケンスを読み取り、読み取ったバイト数の分だけストリームの位置を進めます。</summary>
+      <returns>バッファーに読み取られた合計バイト数。要求しただけのバイト数を読み取ることができなかった場合、この値は要求したバイト数より小さくなります。ストリームの末尾に到達した場合は 0 (ゼロ) になることがあります。</returns>
+      <param name="buffer">バイト配列。このメソッドが戻るとき、指定したバイト配列の <paramref name="offset" /> から (<paramref name="offset" /> + <paramref name="count" /> -1) までの値が、現在のソースから読み取られたバイトに置き換えられます。</param>
+      <param name="offset">現在のストリームから読み取ったデータの格納を開始する位置を示す <paramref name="buffer" /> 内のバイト オフセット。インデックス番号は 0 から始まります。</param>
+      <param name="count">現在のストリームから読み取る最大バイト数。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="offset" /> と <paramref name="count" /> の合計値が、バッファー長より大きい値です。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.NotSupportedException">ストリームは読み取りをサポートしません。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられた後でメソッドが呼び出されました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.ReadAsync(System.Byte[],System.Int32,System.Int32)">
+      <summary>現在のストリームからバイト シーケンスを非同期に読み取り、読み取ったバイト数だけストリーム内の位置を進めます。</summary>
+      <returns>非同期の読み取り操作を表すタスク。<paramref name="TResult" /> パラメーターの値には、バッファーに読み込まれるバイトの合計数が含まれます。現在使用できるバイト数が要求した数より小さい場合、結果の値は要求したバイト数より小さくなることがあります。また、ストリームの末尾に到達した場合は 0 になることがあります。</returns>
+      <param name="buffer">データを書き込むバッファー。</param>
+      <param name="offset">ストリームからのデータの書き込み開始位置を示す <paramref name="buffer" /> 内のバイト オフセット。</param>
+      <param name="count">読み取る最大バイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="offset" /> と <paramref name="count" /> の合計値が、バッファー長より大きい値です。</exception>
+      <exception cref="T:System.NotSupportedException">ストリームは読み取りをサポートしません。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームは破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">ストリームは現在、前の読み取り操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.Stream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+      <summary>現在のストリームから非同期的にバイト シーケンスを非同期に読み取り、読み取ったバイト数だけストリーム内の位置を進め、キャンセル要求を監視します。</summary>
+      <returns>非同期の読み取り操作を表すタスク。<paramref name="TResult" /> パラメーターの値には、バッファーに読み込まれるバイトの合計数が含まれます。現在使用できるバイト数が要求した数より小さい場合、結果の値は要求したバイト数より小さくなることがあります。また、ストリームの末尾に到達した場合は 0 になることがあります。</returns>
+      <param name="buffer">データを書き込むバッファー。</param>
+      <param name="offset">ストリームからのデータの書き込み開始位置を示す <paramref name="buffer" /> 内のバイト オフセット。</param>
+      <param name="count">読み取る最大バイト数。</param>
+      <param name="cancellationToken">キャンセル要求を監視するためのトークン。既定値は <see cref="P:System.Threading.CancellationToken.None" /> です。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="offset" /> と <paramref name="count" /> の合計値が、バッファー長より大きい値です。</exception>
+      <exception cref="T:System.NotSupportedException">ストリームは読み取りをサポートしません。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームは破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">ストリームは現在、前の読み取り操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.Stream.ReadByte">
+      <summary>ストリームから 1 バイトを読み取り、ストリーム内の位置を 1 バイト進めます。ストリームの末尾の場合は -1 を返します。</summary>
+      <returns>Int32 にキャストされた符号なしバイト。ストリームの末尾の場合は -1。</returns>
+      <exception cref="T:System.NotSupportedException">ストリームは読み取りをサポートしません。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられた後でメソッドが呼び出されました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.Stream.ReadTimeout">
+      <summary>ストリームがタイムアウト前に読み取りを試行する期間を決定する値 (ミリ秒単位) を取得または設定します。</summary>
+      <returns>ストリームがタイムアウト前に読み取りを試行する期間を決定する値 (ミリ秒単位)。</returns>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="P:System.IO.Stream.ReadTimeout" /> メソッドは、常に <see cref="T:System.InvalidOperationException" /> をスローします。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.Seek(System.Int64,System.IO.SeekOrigin)">
+      <summary>派生クラスでオーバーライドされた場合は、現在のストリーム内の位置を設定します。</summary>
+      <returns>現在のストリーム内の新しい位置。</returns>
+      <param name="offset">
+        <paramref name="origin" /> パラメーターからの相対バイト オフセット。</param>
+      <param name="origin">新しい位置を取得するために使用する参照ポイントを示す <see cref="T:System.IO.SeekOrigin" /> 型の値。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.NotSupportedException">ストリームがシークをサポートしていません。たとえば、ストリームがパイプまたはコンソール出力によって生成された可能性があります。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられた後でメソッドが呼び出されました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.SetLength(System.Int64)">
+      <summary>派生クラスでオーバーライドされた場合は、現在のストリームの長さを設定します。</summary>
+      <param name="value">現在のストリームの希望の長さ (バイト数)。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.NotSupportedException">ストリームが書き込みとシークの両方をサポートしていません。たとえば、ストリームがパイプまたはコンソール出力によって生成された可能性があります。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられた後でメソッドが呼び出されました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.Write(System.Byte[],System.Int32,System.Int32)">
+      <summary>派生クラスによってオーバーライドされた場合は、現在のストリームにバイト シーケンスを書き込み、書き込んだバイト数の分だけストリームの現在位置を進めます。</summary>
+      <param name="buffer">バイト配列。このメソッドは、<paramref name="buffer" /> から現在のストリームに、<paramref name="count" /> で指定されたバイト数だけコピーします。</param>
+      <param name="offset">現在のストリームへのバイトのコピーを開始する位置を示す <paramref name="buffer" /> 内のバイト オフセット。インデックス番号は 0 から始まります。</param>
+      <param name="count">現在のストリームに書き込むバイト数。</param>
+      <exception cref="T:System.ArgumentException">合計 <paramref name="offset" /> と <paramref name="count" /> がバッファーの長さより大きい。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" />nullです。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.IO.IOException">指定したファイルが見つからないなど、I/O エラーが発生しました。</exception>
+      <exception cref="T:System.NotSupportedException">ストリームは書き込みをサポートしません。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="M:System.IO.Stream.Write(System.Byte[],System.Int32,System.Int32)" /> ストリームが閉じられた後が呼び出されました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.WriteAsync(System.Byte[],System.Int32,System.Int32)">
+      <summary>現在のストリームにバイト シーケンスを非同期に書き込み、書き込んだバイト数だけストリーム内の現在位置を進めます。</summary>
+      <returns>非同期の書き込み操作を表すタスク。</returns>
+      <param name="buffer">データの書き込み元となるバッファー。</param>
+      <param name="offset">ストリームへのバイトのコピーを開始する位置を示す <paramref name="buffer" /> 内のバイト オフセット。インデックス番号は 0 から始まります。</param>
+      <param name="count">書き込む最大バイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="offset" /> と <paramref name="count" /> の合計値が、バッファー長より大きい値です。</exception>
+      <exception cref="T:System.NotSupportedException">ストリームは書き込みをサポートしません。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームは破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">ストリームは現在、前の書き込み操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.Stream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+      <summary>現在のストリームにバイト シーケンスを非同期に書き込み、書き込んだバイト数だけストリーム内の現在位置を進め、キャンセル要求を監視します。</summary>
+      <returns>非同期の書き込み操作を表すタスク。</returns>
+      <param name="buffer">データの書き込み元となるバッファー。</param>
+      <param name="offset">ストリームへのバイトのコピーを開始する位置を示す <paramref name="buffer" /> 内のバイト オフセット。インデックス番号は 0 から始まります。</param>
+      <param name="count">書き込む最大バイト数。</param>
+      <param name="cancellationToken">キャンセル要求を監視するためのトークン。既定値は <see cref="P:System.Threading.CancellationToken.None" /> です。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="offset" /> と <paramref name="count" /> の合計値が、バッファー長より大きい値です。</exception>
+      <exception cref="T:System.NotSupportedException">ストリームは書き込みをサポートしません。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームは破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">ストリームは現在、前の書き込み操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.Stream.WriteByte(System.Byte)">
+      <summary>ストリームの現在位置にバイトを書き込み、ストリームの位置を 1 バイトだけ進めます。</summary>
+      <param name="value">ストリームに書き込むバイト。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.NotSupportedException">ストリームが書き込みをサポートしていないか、既に閉じています。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームが閉じられた後でメソッドが呼び出されました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.Stream.WriteTimeout">
+      <summary>ストリームがタイムアウト前に書き込みを試行する期間を決定する値 (ミリ秒単位) を取得または設定します。</summary>
+      <returns>ストリームがタイムアウト前に書き込みを試行する期間を決定する値 (ミリ秒単位)。</returns>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="P:System.IO.Stream.WriteTimeout" /> メソッドは、常に <see cref="T:System.InvalidOperationException" /> をスローします。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.IO.StreamReader">
+      <summary>特定のエンコーディングのバイト ストリームから文字を読み込む <see cref="T:System.IO.TextReader" /> を実装します。この種類の .NET Framework ソース コードを参照して、次を参照してください。、 Reference Sourceです。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.#ctor(System.IO.Stream)">
+      <summary>指定したストリーム用の <see cref="T:System.IO.StreamReader" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="stream">読み込まれるストリーム。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="stream" /> が読み取りをサポートしていません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="stream" /> は null です。</exception>
+    </member>
+    <member name="M:System.IO.StreamReader.#ctor(System.IO.Stream,System.Boolean)">
+      <summary>バイト順マーク検出オプションを設定して、指定したストリーム用の <see cref="T:System.IO.StreamReader" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="stream">読み込まれるストリーム。</param>
+      <param name="detectEncodingFromByteOrderMarks">ファイルの先頭にあるバイト順序マークを検索するかどうかを示します。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="stream" /> が読み取りをサポートしていません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="stream" /> は null です。</exception>
+    </member>
+    <member name="M:System.IO.StreamReader.#ctor(System.IO.Stream,System.Text.Encoding)">
+      <summary>文字エンコーディングを設定して、指定したストリーム用の <see cref="T:System.IO.StreamReader" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="stream">読み込まれるストリーム。</param>
+      <param name="encoding">使用する文字エンコーディング。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="stream" /> が読み取りをサポートしていません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="stream" /> または <paramref name="encoding" /> が null です。</exception>
+    </member>
+    <member name="M:System.IO.StreamReader.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean)">
+      <summary>文字エンコーディングとバイト順マーク検出オプションを設定して、指定したストリーム用の <see cref="T:System.IO.StreamReader" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="stream">読み込まれるストリーム。</param>
+      <param name="encoding">使用する文字エンコーディング。</param>
+      <param name="detectEncodingFromByteOrderMarks">ファイルの先頭にあるバイト順序マークを検索するかどうかを示します。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="stream" /> が読み取りをサポートしていません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="stream" /> または <paramref name="encoding" /> が null です。</exception>
+    </member>
+    <member name="M:System.IO.StreamReader.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean,System.Int32)">
+      <summary>文字エンコーディング、バイト順マーク検出オプション、およびバッファー サイズを設定して、指定したストリーム用の <see cref="T:System.IO.StreamReader" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="stream">読み込まれるストリーム。</param>
+      <param name="encoding">使用する文字エンコーディング。</param>
+      <param name="detectEncodingFromByteOrderMarks">ファイルの先頭にあるバイト順序マークを検索するかどうかを示します。</param>
+      <param name="bufferSize">最小バッファー サイズ。</param>
+      <exception cref="T:System.ArgumentException">ストリームは読み取りをサポートしません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="stream" /> または <paramref name="encoding" /> が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="bufferSize" /> が 0 以下です。</exception>
+    </member>
+    <member name="M:System.IO.StreamReader.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean,System.Int32,System.Boolean)">
+      <summary>指定した文字エンコーディング、バイト順マーク検出オプション、およびバッファー サイズに基づいて、指定したストリーム用の <see cref="T:System.IO.StreamReader" /> クラスの新しいインスタンスを初期化し、必要に応じて、ストリームを開いたままにします。</summary>
+      <param name="stream">読み取るストリーム。</param>
+      <param name="encoding">使用する文字エンコーディング。</param>
+      <param name="detectEncodingFromByteOrderMarks">ファイルの先頭にあるバイト順序マークを検索する場合は true。それ以外の場合は false。</param>
+      <param name="bufferSize">最小バッファー サイズ。</param>
+      <param name="leaveOpen">
+        <see cref="T:System.IO.StreamReader" /> オブジェクトを破棄した後にストリームを開いたままにする場合は true、それ以外の場合は false。</param>
+    </member>
+    <member name="P:System.IO.StreamReader.BaseStream">
+      <summary>基になるストリームを返します。</summary>
+      <returns>基になるストリーム。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.StreamReader.CurrentEncoding">
+      <summary>現在の <see cref="T:System.IO.StreamReader" /> オブジェクトが使用している現在の文字エンコーディングを取得します。</summary>
+      <returns>現在のリーダーが使用している現在の文字エンコーディング。<see cref="T:System.IO.StreamReader" /> の <see cref="Overload:System.IO.StreamReader.Read" /> メソッドを最初に呼び出した後、現在の文字エンコーディングを示す値が異なる場合があります。これは、<see cref="Overload:System.IO.StreamReader.Read" /> メソッドの最初の呼び出しまでエンコードの自動検出が実行されないためです。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.DiscardBufferedData">
+      <summary>内部バッファーをクリアします。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.Dispose(System.Boolean)">
+      <summary>基になるストリームを閉じ、<see cref="T:System.IO.StreamReader" /> によって使用されているアンマネージ リソースを解放します。任意でマネージ リソースも解放します。</summary>
+      <param name="disposing">マネージ リソースとアンマネージ リソースの両方を解放する場合は true。アンマネージ リソースだけを解放する場合は false。</param>
+    </member>
+    <member name="P:System.IO.StreamReader.EndOfStream">
+      <summary>現在のストリームの位置がストリームの末尾かどうかを示す値を取得します。</summary>
+      <returns>現在のストリームの位置がストリームの末尾の場合は true。それ以外の場合は false。</returns>
+      <exception cref="T:System.ObjectDisposedException">基になるストリームは破棄されています。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.IO.StreamReader.Null">
+      <summary>空のストリームの <see cref="T:System.IO.StreamReader" /> オブジェクト。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.Peek">
+      <summary>読み取り可能な次の文字を返しますが、その文字は使用されません。</summary>
+      <returns>読み取り対象の次の文字を表す整数。読み取り対象の文字が存在しない場合またはストリームがシークをサポートしていない場合は -1。</returns>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.Read">
+      <summary>入力ストリームから次の文字を読み込み、1 文字分だけ文字位置を進めます。</summary>
+      <returns>入力ストリームの次の文字を <see cref="T:System.Int32" /> オブジェクトで表した値。使用できる文字がない場合は -1。</returns>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.Read(System.Char[],System.Int32,System.Int32)">
+      <summary>指定したインデックスを開始位置として、現在のストリームから、指定された最大文字数をバッファー内に読み取ります。</summary>
+      <returns>読み込まれた文字数。ストリームの末尾でデータが読み込まれなかった場合は 0。この数値は、ストリーム内に使用できるデータがあるかどうかによって異なりますが、<paramref name="count" /> パラメーター以下の数値になります。</returns>
+      <param name="buffer">このメソッドが戻るとき、指定した文字配列の <paramref name="index" /> から (<paramref name="index + count - 1" />) までの値が、現在のソースから読み取られた文字に置き換えられています。</param>
+      <param name="index">書き込みの開始位置を示す <paramref name="buffer" /> のインデックス。</param>
+      <param name="count">読み取り対象の最大文字数。</param>
+      <exception cref="T:System.ArgumentException">バッファー長から <paramref name="index" /> を差し引いた値が <paramref name="count" /> より小さい値です。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。たとえば、ストリームがクローズされています。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>指定した最大文字数を現在のストリームから非同期的に読み取り、バッファーの指定したインデックス位置にそのデータを書き込みます。</summary>
+      <returns>非同期の読み取り操作を表すタスク。<paramref name="TResult" /> パラメーターの値には、バッファーに読み込まれるバイトの合計数が含まれます。現在使用できるバイト数が要求した数より小さい場合、結果の値は要求したバイト数より小さくなることがあります。また、ストリームの末尾に到達した場合は 0 になることがあります。</returns>
+      <param name="buffer">このメソッドが戻るとき、指定した文字配列の <paramref name="index" /> から (<paramref name="index" /> + <paramref name="count" /> - 1) までの値が、現在のソースから読み取られた文字に置き換えられます。</param>
+      <param name="index">書き込みを開始する <paramref name="buffer" /> 内の位置。</param>
+      <param name="count">読み取り対象の最大文字数。指定された文字数をバッファーに書き込む前にストリームの末尾に到達した場合は現在のメソッドが返ります。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> と <paramref name="count" /> の合計値が、バッファー長より大きい値です。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームは破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">リーダーは現在、前の読み取り操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadBlock(System.Char[],System.Int32,System.Int32)">
+      <summary>指定した最大文字数を現在のストリームから読み取り、バッファーの指定したインデックス位置にそのデータを書き込みます。</summary>
+      <returns>読み取られた文字数。この数値は、すべての入力文字が読み取られたかどうかによって異なりますが、<paramref name="count" /> 以下の数値になります。</returns>
+      <param name="buffer">このメソッドが戻るとき、指定した文字配列の <paramref name="index" /> から (<paramref name="index + count - 1" />) までの値が、現在のソースから読み取られた文字に置き換えられています。</param>
+      <param name="index">書き込みを開始する <paramref name="buffer" /> 内の位置。</param>
+      <param name="count">読み取り対象の最大文字数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentException">バッファー長から <paramref name="index" /> を差し引いた値が <paramref name="count" /> より小さい値です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.StreamReader" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadBlockAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>指定した最大文字数を現在のストリームから非同期的に読み取り、バッファーの指定したインデックス位置にそのデータを書き込みます。</summary>
+      <returns>非同期の読み取り操作を表すタスク。<paramref name="TResult" /> パラメーターの値には、バッファーに読み込まれるバイトの合計数が含まれます。現在使用できるバイト数が要求した数より小さい場合、結果の値は要求したバイト数より小さくなることがあります。また、ストリームの末尾に到達した場合は 0 になることがあります。</returns>
+      <param name="buffer">このメソッドが戻るとき、指定した文字配列の <paramref name="index" /> から (<paramref name="index" /> + <paramref name="count" /> - 1) までの値が、現在のソースから読み取られた文字に置き換えられます。</param>
+      <param name="index">書き込みを開始する <paramref name="buffer" /> 内の位置。</param>
+      <param name="count">読み取り対象の最大文字数。指定された文字数をバッファーに書き込む前にストリームの末尾に到達した場合、メソッドは制御を返します。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> と <paramref name="count" /> の合計値が、バッファー長より大きい値です。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームは破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">リーダーは現在、前の読み取り操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadLine">
+      <summary>現在のストリームから 1 行分の文字を読み取り、そのデータを文字列として返します。</summary>
+      <returns>入力ストリームからの次の行。入力ストリームの末尾に到達した場合は null。</returns>
+      <exception cref="T:System.OutOfMemoryException">返される文字列用のバッファーを割り当てるためにはメモリが不足しています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadLineAsync">
+      <summary>現在のストリームから非同期的に 1 行分の文字を読み取り、そのデータを文字列として返します。</summary>
+      <returns>非同期の読み取り操作を表すタスク。<paramref name="TResult" /> パラメーターの値には、ストリームの次の行が含まれます。または、すべての文字が読み取られた場合は null です。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">次の行の文字数が、<see cref="F:System.Int32.MaxValue" /> を超えています。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームは破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">リーダーは現在、前の読み取り操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadToEnd">
+      <summary>すべての文字の現在位置から末尾までを読み込みます。</summary>
+      <returns>ストリームの現在位置から末尾までのストリームの残り部分 (文字列)。現在の位置がストリームの末尾である場合は、空の文字列 ("") が返されます。</returns>
+      <exception cref="T:System.OutOfMemoryException">返される文字列用のバッファーを割り当てるためにはメモリが不足しています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadToEndAsync">
+      <summary>現在位置からストリームの末尾まですべての文字を非同期的に読み取り、1 つの文字列として返します。</summary>
+      <returns>非同期の読み取り操作を表すタスク。<paramref name="TResult" /> パラメーターの値には、現在位置からストリームの末尾までの文字から成る文字列が含まれます。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">文字数が <see cref="F:System.Int32.MaxValue" /> を超えています。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリームは破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">リーダーは現在、前の読み取り操作で使用中です。</exception>
+    </member>
+    <member name="T:System.IO.StreamWriter">
+      <summary>文字を特定のエンコーディングでストリームに書き込むための <see cref="T:System.IO.TextWriter" /> を実装しています。この種類の .NET Framework ソース コードを参照して、次を参照してください。、参照ソースです。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.#ctor(System.IO.Stream)">
+      <summary>UTF-8 エンコーディングと既定のバッファー サイズを使用して、指定したストリーム用の <see cref="T:System.IO.StreamWriter" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="stream">書き込まれるストリーム。 </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="stream" /> が書き込み可能ではありません。 </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="stream" /> は null です。</exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.#ctor(System.IO.Stream,System.Text.Encoding)">
+      <summary>指定したエンコーディングと既定のバッファー サイズを使用して、指定したストリーム用の <see cref="T:System.IO.StreamWriter" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="stream">書き込まれるストリーム。</param>
+      <param name="encoding">使用する文字エンコーディング。 </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="stream" /> または <paramref name="encoding" /> が null です。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="stream" /> が書き込み可能ではありません。</exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.#ctor(System.IO.Stream,System.Text.Encoding,System.Int32)">
+      <summary>指定したエンコーディングとバッファー サイズを使用して、指定したストリーム用の <see cref="T:System.IO.StreamWriter" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="stream">書き込まれるストリーム。</param>
+      <param name="encoding">使用する文字エンコーディング。</param>
+      <param name="bufferSize">バイト単位のバッファー サイズ。 </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="stream" /> または <paramref name="encoding" /> が null です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="bufferSize" /> が負の値です。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="stream" /> が書き込み可能ではありません。</exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.#ctor(System.IO.Stream,System.Text.Encoding,System.Int32,System.Boolean)">
+      <summary>指定した円コーディングとバッファー サイズを使用して、指定したストリーム用の <see cref="T:System.IO.StreamWriter" /> クラスの新しいインスタンスを初期化し、必要に応じて、ストリームを開いたままにします。</summary>
+      <param name="stream">書き込まれるストリーム。</param>
+      <param name="encoding">使用する文字エンコーディング。</param>
+      <param name="bufferSize">バイト単位のバッファー サイズ。</param>
+      <param name="leaveOpen">true to leave the stream open after the <see cref="T:System.IO.StreamWriter" /> object is disposed; otherwise, false.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="stream" /> または <paramref name="encoding" /> が null です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="bufferSize" /> が負の値です。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="stream" /> が書き込み可能ではありません。</exception>
+    </member>
+    <member name="P:System.IO.StreamWriter.AutoFlush">
+      <summary>
+        <see cref="M:System.IO.StreamWriter.Write(System.Char)" /> が呼び出されるたびに、<see cref="T:System.IO.StreamWriter" /> によって基になるストリームに対するバッファーをフラッシュするかどうかを示す値を取得または設定します。</summary>
+      <returns>
+        <see cref="T:System.IO.StreamWriter" /> に強制的にバッファーをフラッシュさせる場合は true。それ以外の場合は false。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.IO.StreamWriter.BaseStream">
+      <summary>バッキング ストアと連結する、基になるストリームを取得します。</summary>
+      <returns>この StreamWriter が書き込むストリーム。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.Dispose(System.Boolean)">
+      <summary>
+        <see cref="T:System.IO.StreamWriter" /> によって使用されているアンマネージ リソースを解放し、オプションでマネージ リソースも解放します。</summary>
+      <param name="disposing">マネージ リソースとアンマネージ リソースの両方を解放する場合は true。アンマネージ リソースだけを解放する場合は false。</param>
+      <exception cref="T:System.Text.EncoderFallbackException">現在のエンコードは、Unicode サロゲート ペアの片方の表示をサポートしていません。</exception>
+    </member>
+    <member name="P:System.IO.StreamWriter.Encoding">
+      <summary>出力の書き込みに使用する <see cref="T:System.Text.Encoding" /> を取得します。</summary>
+      <returns>現在のインスタンスのコンストラクターで指定した <see cref="T:System.Text.Encoding" />。エンコーディングを指定しなかった場合は、<see cref="T:System.Text.UTF8Encoding" />。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.Flush">
+      <summary>現在のライターで使用したすべてのバッファーをクリアし、バッファー内のすべてのデータを基になるストリームに書き込みます。</summary>
+      <exception cref="T:System.ObjectDisposedException">現在のライターがクローズされています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">現在のエンコードは、Unicode サロゲート ペアの片方の表示をサポートしていません。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.FlushAsync">
+      <summary>このストリームのすべてのバッファーを非同期にクリアし、バッファー内のデータを基になるデバイスに書き込みます。</summary>
+      <returns>非同期のフラッシュ操作を表すタスク。</returns>
+      <exception cref="T:System.ObjectDisposedException">ストリームは破棄されています。</exception>
+    </member>
+    <member name="F:System.IO.StreamWriter.Null">
+      <summary>バッキング ストアを持たない書き込み専用の StreamWriter を提供します。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.Write(System.Char)">
+      <summary>ストリームに文字を書き込みます。</summary>
+      <param name="value">ストリームに書き込む文字。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。 </exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> が true または <see cref="T:System.IO.StreamWriter" /> バッファーがいっぱいで、現在のライターが閉じられています。 </exception>
+      <exception cref="T:System.NotSupportedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> が true または <see cref="T:System.IO.StreamWriter" /> バッファーがいっぱいで、<see cref="T:System.IO.StreamWriter" /> がストリームの末尾にあるため、基になる固定サイズのストリームにバッファーの内容を書き込むことができません。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.Write(System.Char[])">
+      <summary>ストリームに文字配列を書き込みます。</summary>
+      <param name="buffer">書き込むデータを格納する文字配列。<paramref name="buffer" /> が null の場合は、何も書き込まれません。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。 </exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> が true または <see cref="T:System.IO.StreamWriter" /> バッファーがいっぱいで、現在のライターが閉じられています。 </exception>
+      <exception cref="T:System.NotSupportedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> が true または <see cref="T:System.IO.StreamWriter" /> バッファーがいっぱいで、<see cref="T:System.IO.StreamWriter" /> がストリームの末尾にあるため、基になる固定サイズのストリームにバッファーの内容を書き込むことができません。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.Write(System.Char[],System.Int32,System.Int32)">
+      <summary>ストリームに文字配列の一部を書き込みます。</summary>
+      <param name="buffer">書き込むデータを格納する文字配列。</param>
+      <param name="index">データの読み取りを開始する、バッファー内の文字位置。</param>
+      <param name="count">書き込む文字の最大数。 </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentException">バッファー長から <paramref name="index" /> を差し引いた値が <paramref name="count" /> より小さい値です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。 </exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> が true または <see cref="T:System.IO.StreamWriter" /> バッファーがいっぱいで、現在のライターが閉じられています。 </exception>
+      <exception cref="T:System.NotSupportedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> が true または <see cref="T:System.IO.StreamWriter" /> バッファーがいっぱいで、<see cref="T:System.IO.StreamWriter" /> がストリームの末尾にあるため、基になる固定サイズのストリームにバッファーの内容を書き込むことができません。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.Write(System.String)">
+      <summary>ストリームに文字列を書き込みます。</summary>
+      <param name="value">ストリームに書き込む文字列。<paramref name="value" /> が null の場合は、何も書き込まれません。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> が true または <see cref="T:System.IO.StreamWriter" /> バッファーがいっぱいで、現在のライターが閉じられています。 </exception>
+      <exception cref="T:System.NotSupportedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> が true または <see cref="T:System.IO.StreamWriter" /> バッファーがいっぱいで、<see cref="T:System.IO.StreamWriter" /> がストリームの末尾にあるため、基になる固定サイズのストリームにバッファーの内容を書き込むことができません。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteAsync(System.Char)">
+      <summary>文字を非同期でストリームに書き込みます。</summary>
+      <returns>非同期の書き込み操作を表すタスク。</returns>
+      <param name="value">ストリームに書き込む文字。</param>
+      <exception cref="T:System.ObjectDisposedException">ストリーム ライターは破棄されます。</exception>
+      <exception cref="T:System.InvalidOperationException">ストリーム ライターは現在、前の書き込み操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>文字の部分配列をストリームに非同期で書き込みます。</summary>
+      <returns>非同期の書き込み操作を表すタスク。</returns>
+      <param name="buffer">書き込むデータを格納する文字配列。</param>
+      <param name="index">データの読み取りを開始する、バッファー内の文字位置。</param>
+      <param name="count">書き込む文字の最大数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> に <paramref name="count" /> を加算した値が、バッファーの長さを超えています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリーム ライターは破棄されます。</exception>
+      <exception cref="T:System.InvalidOperationException">ストリーム ライターは現在、前の書き込み操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteAsync(System.String)">
+      <summary>文字列をストリームに非同期で書き込みます。</summary>
+      <returns>非同期の書き込み操作を表すタスク。</returns>
+      <param name="value">ストリームに書き込む文字列。<paramref name="value" /> が null の場合は、何も書き込まれません。</param>
+      <exception cref="T:System.ObjectDisposedException">ストリーム ライターは破棄されます。</exception>
+      <exception cref="T:System.InvalidOperationException">ストリーム ライターは現在、前の書き込み操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteLineAsync">
+      <summary>行終端記号をストリームに非同期で書き込みます。</summary>
+      <returns>非同期の書き込み操作を表すタスク。</returns>
+      <exception cref="T:System.ObjectDisposedException">ストリーム ライターは破棄されます。</exception>
+      <exception cref="T:System.InvalidOperationException">ストリーム ライターは現在、前の書き込み操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteLineAsync(System.Char)">
+      <summary>非同期でストリームに文字を書き込み、続けて行終端記号を書き込みます。</summary>
+      <returns>非同期の書き込み操作を表すタスク。</returns>
+      <param name="value">ストリームに書き込む文字。</param>
+      <exception cref="T:System.ObjectDisposedException">ストリーム ライターは破棄されます。</exception>
+      <exception cref="T:System.InvalidOperationException">ストリーム ライターは現在、前の書き込み操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteLineAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>文字の部分配列をストリームに非同期で書き込み、続けて行終端記号を書き込みます。</summary>
+      <returns>非同期の書き込み操作を表すタスク。</returns>
+      <param name="buffer">データの書き込み元の文字配列。</param>
+      <param name="index">データの読み取りを開始する、バッファー内の文字位置。</param>
+      <param name="count">書き込む文字の最大数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> に <paramref name="count" /> を加算した値が、バッファーの長さを超えています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ObjectDisposedException">ストリーム ライターは破棄されます。</exception>
+      <exception cref="T:System.InvalidOperationException">ストリーム ライターは現在、前の書き込み操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteLineAsync(System.String)">
+      <summary>文字列を非同期でストリームに書き込み、続けて行終端記号を書き込みます。</summary>
+      <returns>非同期の書き込み操作を表すタスク。</returns>
+      <param name="value">書き込む文字列。値が null の場合は、行終端記号だけが書き込まれます。</param>
+      <exception cref="T:System.ObjectDisposedException">ストリーム ライターは破棄されます。</exception>
+      <exception cref="T:System.InvalidOperationException">ストリーム ライターは現在、前の書き込み操作で使用中です。</exception>
+    </member>
+    <member name="T:System.IO.StringReader">
+      <summary>文字列から読み取る <see cref="T:System.IO.TextReader" /> を実装します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringReader.#ctor(System.String)">
+      <summary>指定した文字列から読み取る <see cref="T:System.IO.StringReader" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="s">
+        <see cref="T:System.IO.StringReader" /> を初期化する目的の文字列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.IO.StringReader.Dispose(System.Boolean)">
+      <summary>
+        <see cref="T:System.IO.StringReader" /> によって使用されているアンマネージ リソースを解放し、オプションでマネージ リソースも解放します。</summary>
+      <param name="disposing">マネージ リソースとアンマネージ リソースの両方を解放する場合は true。アンマネージ リソースだけを解放する場合は false。</param>
+    </member>
+    <member name="M:System.IO.StringReader.Peek">
+      <summary>読み取り可能な次の文字を返しますが、その文字は使用されません。</summary>
+      <returns>読み取り対象の次の文字を表す整数。使用できる文字がないか、ストリームがシークをサポートしていない場合は -1。</returns>
+      <exception cref="T:System.ObjectDisposedException">現在のリーダーが閉じています。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringReader.Read">
+      <summary>入力文字列から次の文字を読み取り、1 文字分だけ文字位置を進めます。</summary>
+      <returns>基になる文字列の次の文字。または使用できる文字がない場合は -1。</returns>
+      <exception cref="T:System.ObjectDisposedException">現在のリーダーが閉じています。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringReader.Read(System.Char[],System.Int32,System.Int32)">
+      <summary>入力文字列から文字のブロックを読み取り、<paramref name="count" /> だけ文字位置を進めます。</summary>
+      <returns>バッファーに読み取られた合計文字数。要求しただけの文字数を読み取ることができなかった場合、この値は要求した文字数より小さくなります。基になる文字列の末尾に到達した場合は 0 になることがあります。</returns>
+      <param name="buffer">このメソッドが戻るとき、指定した文字配列の <paramref name="index" /> から (<paramref name="index" /> + <paramref name="count" /> - 1) までの値が、現在のソースから読み取られた文字に置き換えられます。</param>
+      <param name="index">バッファー内の開始インデックス。</param>
+      <param name="count">読み取る文字の数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentException">バッファー長から <paramref name="index" /> を差し引いた値が <paramref name="count" /> より小さい値です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ObjectDisposedException">現在のリーダーが閉じています。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringReader.ReadAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>指定した最大文字数を現在の文字列から非同期的に読み取り、バッファーの指定したインデックス位置にそのデータを書き込みます。</summary>
+      <returns>非同期の読み取り操作を表すタスク。<paramref name="TResult" /> パラメーターの値には、バッファーに読み込まれるバイトの合計数が含まれます。現在使用できるバイト数が要求した数より小さい場合、結果の値は要求したバイト数より小さくなることがあります。また、文字列の末尾に到達した場合は 0 になることがあります。</returns>
+      <param name="buffer">このメソッドが戻るとき、指定した文字配列の <paramref name="index" /> から (<paramref name="index" /> + <paramref name="count" /> - 1) までの値が、現在のソースから読み取られた文字に置き換えられます。</param>
+      <param name="index">書き込みを開始する <paramref name="buffer" /> 内の位置。</param>
+      <param name="count">読み取り対象の最大文字数。指定された文字数をバッファーに書き込む前に文字列の末尾に到達した場合、メソッドは制御を返します。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> と <paramref name="count" /> の合計値が、バッファー長より大きい値です。</exception>
+      <exception cref="T:System.ObjectDisposedException">文字列リーダーは破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">リーダーは現在、前の読み取り操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.StringReader.ReadBlockAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>指定した最大文字数を現在の文字列から非同期的に読み取り、バッファーの指定したインデックス位置にそのデータを書き込みます。</summary>
+      <returns>非同期の読み取り操作を表すタスク。<paramref name="TResult" /> パラメーターの値には、バッファーに読み込まれるバイトの合計数が含まれます。現在使用できるバイト数が要求した数より小さい場合、結果の値は要求したバイト数より小さくなることがあります。また、文字列の末尾に到達した場合は 0 になることがあります。</returns>
+      <param name="buffer">このメソッドが戻るとき、指定した文字配列の <paramref name="index" /> から (<paramref name="index" /> + <paramref name="count" /> - 1) までの値が、現在のソースから読み取られた文字に置き換えられます。</param>
+      <param name="index">書き込みを開始する <paramref name="buffer" /> 内の位置。</param>
+      <param name="count">読み取り対象の最大文字数。指定された文字数をバッファーに書き込む前に文字列の末尾に到達した場合、メソッドは制御を返します。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> と <paramref name="count" /> の合計値が、バッファー長より大きい値です。</exception>
+      <exception cref="T:System.ObjectDisposedException">文字列リーダーは破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">リーダーは現在、前の読み取り操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.StringReader.ReadLine">
+      <summary>現在の文字列から 1 行分の文字を読み取り、そのデータを文字列として返します。</summary>
+      <returns>現在の文字列の次の行。文字列の末尾に到達した場合は null。</returns>
+      <exception cref="T:System.ObjectDisposedException">現在のリーダーが閉じています。</exception>
+      <exception cref="T:System.OutOfMemoryException">返される文字列用のバッファーを割り当てるためにはメモリが不足しています。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringReader.ReadLineAsync">
+      <summary>現在の文字列から非同期的に 1 行分の文字を読み取り、そのデータを文字列として返します。</summary>
+      <returns>非同期の読み取り操作を表すタスク。<paramref name="TResult" /> パラメーターの値には、文字列リーダーの次の行が含まれます。または、すべての文字が読み取られた場合は null です。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">次の行の文字数が、<see cref="F:System.Int32.MaxValue" /> を超えています。</exception>
+      <exception cref="T:System.ObjectDisposedException">文字列リーダーは破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">リーダーは現在、前の読み取り操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.StringReader.ReadToEnd">
+      <summary>現在位置から文字列の末尾まですべての文字を読み取り、1 つの文字列として返します。</summary>
+      <returns>基になる文字列の現在位置から末尾までの内容。</returns>
+      <exception cref="T:System.OutOfMemoryException">返される文字列用のバッファーを割り当てるためにはメモリが不足しています。</exception>
+      <exception cref="T:System.ObjectDisposedException">現在のリーダーが閉じています。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringReader.ReadToEndAsync">
+      <summary>現在位置から文字列の末尾まですべての文字を非同期的に読み取り、1 つの文字列として返します。</summary>
+      <returns>非同期の読み取り操作を表すタスク。<paramref name="TResult" /> パラメーターの値には、現在位置から文字列の末尾までの文字から成る文字列が含まれます。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">文字数が <see cref="F:System.Int32.MaxValue" /> を超えています。</exception>
+      <exception cref="T:System.ObjectDisposedException">文字列リーダーは破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">リーダーは現在、前の読み取り操作で使用中です。</exception>
+    </member>
+    <member name="T:System.IO.StringWriter">
+      <summary>文字列に情報を書き込む <see cref="T:System.IO.TextWriter" /> を実装します。情報は、基になる <see cref="T:System.Text.StringBuilder" /> に格納されます。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.#ctor">
+      <summary>
+        <see cref="T:System.IO.StringWriter" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.IO.StringWriter.#ctor(System.IFormatProvider)">
+      <summary>指定した書式コントロールで <see cref="T:System.IO.StringWriter" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="formatProvider">書式を制御する <see cref="T:System.IFormatProvider" /> オブジェクト。</param>
+    </member>
+    <member name="M:System.IO.StringWriter.#ctor(System.Text.StringBuilder)">
+      <summary>指定した <see cref="T:System.Text.StringBuilder" /> への書き込みを行う <see cref="T:System.IO.StringWriter" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="sb">書き込む StringBuilder。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="sb" /> は null なので、</exception>
+    </member>
+    <member name="M:System.IO.StringWriter.#ctor(System.Text.StringBuilder,System.IFormatProvider)">
+      <summary>指定した <see cref="T:System.Text.StringBuilder" /> に書き込みを行い、指定した書式プロバイダーを持つ <see cref="T:System.IO.StringWriter" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="sb">書き込む StringBuilder。</param>
+      <param name="formatProvider">書式を制御する <see cref="T:System.IFormatProvider" /> オブジェクト。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="sb" /> は null なので、</exception>
+    </member>
+    <member name="M:System.IO.StringWriter.Dispose(System.Boolean)">
+      <summary>
+        <see cref="T:System.IO.StringWriter" /> によって使用されているアンマネージ リソースを解放し、オプションでマネージ リソースも解放します。</summary>
+      <param name="disposing">マネージ リソースとアンマネージ リソースの両方を解放する場合は true。アンマネージ リソースだけを解放する場合は false。</param>
+    </member>
+    <member name="P:System.IO.StringWriter.Encoding">
+      <summary>出力の書き込みに使用する <see cref="T:System.Text.Encoding" /> を取得します。</summary>
+      <returns>出力の書き込み時に適用する Encoding。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.FlushAsync">
+      <summary>現在のライターのすべてのバッファーを非同期にクリアし、バッファー内のデータを基になるデバイスに書き込みます。</summary>
+      <returns>非同期のフラッシュ操作を表すタスク。</returns>
+    </member>
+    <member name="M:System.IO.StringWriter.GetStringBuilder">
+      <summary>基になる <see cref="T:System.Text.StringBuilder" /> を返します。</summary>
+      <returns>基になる StringBuilder。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.ToString">
+      <summary>現在の StringWriter に書き込まれた文字を格納している文字列を返します。</summary>
+      <returns>現在の StringWriter に書き込まれた文字を格納している文字列。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.Write(System.Char)">
+      <summary>文字列に文字を書き込みます。</summary>
+      <param name="value">書き込む文字。</param>
+      <exception cref="T:System.ObjectDisposedException">ライターが閉じられました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.Write(System.Char[],System.Int32,System.Int32)">
+      <summary>文字配列の一部を文字列に書き込みます。</summary>
+      <param name="buffer">データの書き込み元の文字配列。</param>
+      <param name="index">データの読み取りを開始する、バッファー内の位置。</param>
+      <param name="count">書き込む文字の最大数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ArgumentException">(<paramref name="index" /> + <paramref name="count" />)&gt; <paramref name="buffer" />。Length.</exception>
+      <exception cref="T:System.ObjectDisposedException">ライターが閉じられました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.Write(System.String)">
+      <summary>現在の文字列に文字列を書き込みます。</summary>
+      <param name="value">書き込む文字列。</param>
+      <exception cref="T:System.ObjectDisposedException">ライターが閉じられました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.WriteAsync(System.Char)">
+      <summary>文字列に文字を非同期的に書き込みます。</summary>
+      <returns>非同期の書き込み操作を表すタスク。</returns>
+      <param name="value">文字列に書き込む文字。</param>
+      <exception cref="T:System.ObjectDisposedException">文字列ライターは破棄されます。</exception>
+      <exception cref="T:System.InvalidOperationException">文字列ライターは現在、前の書き込み操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.StringWriter.WriteAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>文字の部分配列を文字列に非同期で書き込みます。</summary>
+      <returns>非同期の書き込み操作を表すタスク。</returns>
+      <param name="buffer">データの書き込み元の文字配列。</param>
+      <param name="index">データの読み取りを開始する、バッファー内の位置。</param>
+      <param name="count">書き込む文字の最大数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> に <paramref name="count" /> を加算した値が、バッファーの長さを超えています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ObjectDisposedException">文字列ライターは破棄されます。</exception>
+      <exception cref="T:System.InvalidOperationException">文字列ライターは現在、前の書き込み操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.StringWriter.WriteAsync(System.String)">
+      <summary>現在の文字列に文字列を非同期的に書き込みます。</summary>
+      <returns>非同期の書き込み操作を表すタスク。</returns>
+      <param name="value">書き込む文字列。<paramref name="value" /> が null の場合は、何もテキスト ストリームに書き込みません。</param>
+      <exception cref="T:System.ObjectDisposedException">文字列ライターは破棄されます。</exception>
+      <exception cref="T:System.InvalidOperationException">文字列ライターは現在、前の書き込み操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.StringWriter.WriteLineAsync(System.Char)">
+      <summary>非同期で文字列に文字を書き込み、続けて行終端記号を書き込みます。</summary>
+      <returns>非同期の書き込み操作を表すタスク。</returns>
+      <param name="value">文字列に書き込む文字。</param>
+      <exception cref="T:System.ObjectDisposedException">文字列ライターは破棄されます。</exception>
+      <exception cref="T:System.InvalidOperationException">文字列ライターは現在、前の書き込み操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.StringWriter.WriteLineAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>文字の部分配列を文字列に非同期で書き込み、続けて行終端記号を書き込みます。</summary>
+      <returns>非同期の書き込み操作を表すタスク。</returns>
+      <param name="buffer">データの書き込み元の文字配列。</param>
+      <param name="index">データの読み取りを開始する、バッファー内の位置。</param>
+      <param name="count">書き込む文字の最大数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> に <paramref name="count" /> を加算した値が、バッファーの長さを超えています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ObjectDisposedException">文字列ライターは破棄されます。</exception>
+      <exception cref="T:System.InvalidOperationException">文字列ライターは現在、前の書き込み操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.StringWriter.WriteLineAsync(System.String)">
+      <summary>現在の文字列に非同期で文字列を書き込み、続けて行終端記号を書き込みます。</summary>
+      <returns>非同期の書き込み操作を表すタスク。</returns>
+      <param name="value">書き込む文字列。値が null の場合は、行終端記号だけが書き込まれます。</param>
+      <exception cref="T:System.ObjectDisposedException">文字列ライターは破棄されます。</exception>
+      <exception cref="T:System.InvalidOperationException">文字列ライターは現在、前の書き込み操作で使用中です。</exception>
+    </member>
+    <member name="T:System.IO.TextReader">
+      <summary>一連の文字を読み取ることができるリーダーを表します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.#ctor">
+      <summary>
+        <see cref="T:System.IO.TextReader" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.IO.TextReader.Dispose">
+      <summary>この <see cref="T:System.IO.TextReader" /> オブジェクトによって使用されているすべてのリソースを解放します。</summary>
+    </member>
+    <member name="M:System.IO.TextReader.Dispose(System.Boolean)">
+      <summary>
+        <see cref="T:System.IO.TextReader" /> で使用されているアンマネージ リソースを解放し、オプションでマネージ リソースを解放します。</summary>
+      <param name="disposing">マネージ リソースとアンマネージ リソースの両方を解放する場合は true。アンマネージ リソースだけを解放する場合は false。</param>
+    </member>
+    <member name="F:System.IO.TextReader.Null">
+      <summary>読み取り対象のデータを TextReader に提供しません。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.Peek">
+      <summary>リーダーや文字の読み取り元の状態を変更せずに、次の文字を読み取ります。リーダーから実際に文字を読み取らずに次の文字を返します。</summary>
+      <returns>読み取り対象の次の文字を表す整数。使用できる文字がないか、リーダーがシークをサポートしていない場合は -1。</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextReader" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.Read">
+      <summary>テキスト リーダーから次の文字を読み取り、1 文字分だけ文字位置を進めます。</summary>
+      <returns>テキスト リーダーからの次の文字。それ以上読み取り可能な文字がない場合は -1。既定の実装では、-1 が返されます。</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextReader" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.Read(System.Char[],System.Int32,System.Int32)">
+      <summary>指定した最大文字数を現在のリーダーから読み取り、バッファーの指定したインデックス位置にそのデータを書き込みます。</summary>
+      <returns>読み取られた文字数。この数値は、リーダー内に使用できるデータがあるかどうかによって異なりますが、<paramref name="count" /> 以下の数値になります。読み取り対象の文字がない場合にこのメソッドを呼び出すと、0 (ゼロ) が返されます。</returns>
+      <param name="buffer">このメソッドが戻るとき、指定した文字配列の <paramref name="index" /> から (<paramref name="index" /> + <paramref name="count" /> - 1) までの値が、現在のソースから読み取られた文字に置き換えられます。</param>
+      <param name="index">書き込みを開始する <paramref name="buffer" /> 内の位置。</param>
+      <param name="count">読み取り対象の最大文字数。指定された文字数をバッファーに読み取る前にリーダーの末尾に到達した場合、メソッドは制御を返します。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentException">バッファー長から <paramref name="index" /> を差し引いた値が <paramref name="count" /> より小さい値です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextReader" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.ReadAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>指定した最大文字数を現在のテキスト リーダーから非同期に読み取り、バッファーの指定したインデックス位置にそのデータを書き込みます。</summary>
+      <returns>非同期の読み取り操作を表すタスク。<paramref name="TResult" /> パラメーターの値には、バッファーに読み込まれるバイトの合計数が含まれます。現在使用できるバイト数が要求した数より小さい場合、結果の値は要求したバイト数より小さくなることがあります。また、テキストの末尾に到達した場合は 0 になることがあります。</returns>
+      <param name="buffer">このメソッドが戻るとき、指定した文字配列の <paramref name="index" /> から (<paramref name="index" /> + <paramref name="count" /> - 1) までの値が、現在のソースから読み取られた文字に置き換えられます。</param>
+      <param name="index">書き込みを開始する <paramref name="buffer" /> 内の位置。</param>
+      <param name="count">読み取り対象の最大文字数。指定された文字数をバッファーに読み取る前にテキストの末尾に到達した場合は、現在のメソッドが返ります。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> と <paramref name="count" /> の合計値が、バッファー長より大きい値です。</exception>
+      <exception cref="T:System.ObjectDisposedException">テキスト リーダーは破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">リーダーは現在、前の読み取り操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.TextReader.ReadBlock(System.Char[],System.Int32,System.Int32)">
+      <summary>指定した最大文字数を現在のテキスト リーダーから読み取り、バッファーの指定したインデックス位置にそのデータを書き込みます。</summary>
+      <returns>読み取られた文字数。この数値は、すべての入力文字が読み取られたかどうかによって異なりますが、<paramref name="count" /> 以下の数値になります。</returns>
+      <param name="buffer">このメソッドが戻るとき、指定した文字配列の <paramref name="index" /> から (<paramref name="index" /> + <paramref name="count" /> -1) までの値が、現在のソースから読み取られた文字に置き換えられています。</param>
+      <param name="index">書き込みを開始する <paramref name="buffer" /> 内の位置。</param>
+      <param name="count">読み取り対象の最大文字数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentException">バッファー長から <paramref name="index" /> を差し引いた値が <paramref name="count" /> より小さい値です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextReader" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.ReadBlockAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>指定した最大文字数を現在のテキスト リーダーから非同期に読み取り、バッファーの指定したインデックス位置にそのデータを書き込みます。</summary>
+      <returns>非同期の読み取り操作を表すタスク。<paramref name="TResult" /> パラメーターの値には、バッファーに読み込まれるバイトの合計数が含まれます。現在使用できるバイト数が要求した数より小さい場合、結果の値は要求したバイト数より小さくなることがあります。また、テキストの末尾に到達した場合は 0 になることがあります。</returns>
+      <param name="buffer">このメソッドが戻るとき、指定した文字配列の <paramref name="index" /> から (<paramref name="index" /> + <paramref name="count" /> - 1) までの値が、現在のソースから読み取られた文字に置き換えられます。</param>
+      <param name="index">書き込みを開始する <paramref name="buffer" /> 内の位置。</param>
+      <param name="count">読み取り対象の最大文字数。指定された文字数をバッファーに読み取る前にテキストの末尾に到達した場合は、現在のメソッドが返ります。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> と <paramref name="count" /> の合計値が、バッファー長より大きい値です。</exception>
+      <exception cref="T:System.ObjectDisposedException">テキスト リーダーは破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">リーダーは現在、前の読み取り操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.TextReader.ReadLine">
+      <summary>テキスト リーダーから 1 行分の文字を読み取り、そのデータを文字列として返します。</summary>
+      <returns>リーダーの次の行。またはすべての文字が読み取られた場合は null。</returns>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.OutOfMemoryException">返される文字列用のバッファーを割り当てるためにはメモリが不足しています。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextReader" /> が閉じています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">次の行の文字数が、<see cref="F:System.Int32.MaxValue" /> を超えています。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.ReadLineAsync">
+      <summary>1 行分の文字を非同期的に読み取り、そのデータを文字列として返します。</summary>
+      <returns>非同期の読み取り操作を表すタスク。<paramref name="TResult" /> パラメーターの値には、テキスト リーダーの次の行が含まれます。または、すべての文字が読み取られた場合は null です。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">次の行の文字数が、<see cref="F:System.Int32.MaxValue" /> を超えています。</exception>
+      <exception cref="T:System.ObjectDisposedException">テキスト リーダーは破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">リーダーは現在、前の読み取り操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.TextReader.ReadToEnd">
+      <summary>テキスト リーダーの現在位置から末尾まですべての文字を読み取り、1 つの文字列として返します。</summary>
+      <returns>テキスト リーダーの現在位置から末尾までのすべての文字を含む文字列。</returns>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextReader" /> が閉じています。</exception>
+      <exception cref="T:System.OutOfMemoryException">返される文字列用のバッファーを割り当てるためにはメモリが不足しています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">次の行の文字数が、<see cref="F:System.Int32.MaxValue" /> を超えています。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.ReadToEndAsync">
+      <summary>テキスト リーダーの現在位置から末尾まですべての文字を非同期的に読み取り、1 つの文字列として返します。</summary>
+      <returns>非同期の読み取り操作を表すタスク。<paramref name="TResult" /> パラメーターの値には、現在位置からテキスト リーダーの末尾までの文字から成る文字列が含まれます。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">文字数が <see cref="F:System.Int32.MaxValue" /> を超えています。</exception>
+      <exception cref="T:System.ObjectDisposedException">テキスト リーダーは破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">リーダーは現在、前の読み取り操作で使用中です。</exception>
+    </member>
+    <member name="T:System.IO.TextWriter">
+      <summary>一連の文字を書き込むことができるライターを表します。このクラスは抽象クラスです。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.#ctor">
+      <summary>
+        <see cref="T:System.IO.TextWriter" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.IO.TextWriter.#ctor(System.IFormatProvider)">
+      <summary>指定した書式プロバイダーで <see cref="T:System.IO.TextWriter" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="formatProvider">書式を制御する <see cref="T:System.IFormatProvider" /> オブジェクト。</param>
+    </member>
+    <member name="F:System.IO.TextWriter.CoreNewLine">
+      <summary>この TextWriter で使用する改行文字を格納します。</summary>
+    </member>
+    <member name="M:System.IO.TextWriter.Dispose">
+      <summary>この <see cref="T:System.IO.TextWriter" /> オブジェクトによって使用されているすべてのリソースを解放します。</summary>
+    </member>
+    <member name="M:System.IO.TextWriter.Dispose(System.Boolean)">
+      <summary>
+        <see cref="T:System.IO.TextWriter" /> で使用されているアンマネージ リソースを解放し、オプションでマネージ リソースを解放します。</summary>
+      <param name="disposing">マネージ リソースとアンマネージ リソースの両方を解放する場合は true。アンマネージ リソースだけを解放する場合は false。</param>
+    </member>
+    <member name="P:System.IO.TextWriter.Encoding">
+      <summary>派生クラスによってオーバーライドされると、出力を書き込む文字エンコーディングを返します。</summary>
+      <returns>出力の書き込み時に適用する文字エンコーディング。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Flush">
+      <summary>現在のライターのすべてのバッファーをクリアし、バッファー内のデータを基になるデバイスに書き込みます。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.FlushAsync">
+      <summary>現在のライターのすべてのバッファーを非同期にクリアし、バッファー内のデータを基になるデバイスに書き込みます。</summary>
+      <returns>非同期のフラッシュ操作を表すタスク。</returns>
+      <exception cref="T:System.ObjectDisposedException">テキスト ライターは破棄されます。</exception>
+      <exception cref="T:System.InvalidOperationException">ライターは現在、前の書き込み操作で使用中です。</exception>
+    </member>
+    <member name="P:System.IO.TextWriter.FormatProvider">
+      <summary>書式を制御するオブジェクトを取得します。</summary>
+      <returns>特定のカルチャ設定の <see cref="T:System.IFormatProvider" /> オブジェクト、または他のカルチャ設定が指定されていない場合は現在のカルチャ設定の書式。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.TextWriter.NewLine">
+      <summary>現在の TextWriter で使用される行終端文字列を取得または設定します。</summary>
+      <returns>現在の TextWriter で使用する行終端文字列。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.TextWriter.Null">
+      <summary>バッキング ストアを持たない書き込み専用の TextWriter を提供します。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Boolean)">
+      <summary>Boolean 値のテキスト形式をテキスト文字列またはストリームに書き込みます。</summary>
+      <param name="value">書き込む Boolean 値。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Char)">
+      <summary>文字をテキスト文字列またはストリームに書き込みます。</summary>
+      <param name="value">テキスト ストリームに書き込む文字。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Char[])">
+      <summary>文字配列をテキスト文字列またはストリームに書き込みます。</summary>
+      <param name="buffer">テキスト ストリームに書き込む文字配列。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Char[],System.Int32,System.Int32)">
+      <summary>文字の部分配列をテキスト文字列またはストリームに書き込みます。</summary>
+      <param name="buffer">データの書き込み元の文字配列。</param>
+      <param name="index">データの取得を開始する、バッファー内の文字位置。</param>
+      <param name="count">書き込む文字数。</param>
+      <exception cref="T:System.ArgumentException">バッファー長から <paramref name="index" /> を差し引いた値が <paramref name="count" /> より小さい値です。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> パラメーターが null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Decimal)">
+      <summary>10 進値のテキスト形式をテキスト文字列またはストリームに書き込みます。</summary>
+      <param name="value">書き込む 10 進値。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Double)">
+      <summary>8 バイト浮動小数点値のテキスト形式をテキスト文字列またはストリームに書き込みます。</summary>
+      <param name="value">書き込む 8 バイト浮動小数点値。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Int32)">
+      <summary>4 バイト符号付き整数のテキスト形式をテキスト文字列またはストリームに書き込みます。</summary>
+      <param name="value">書き込む 4 バイト符号付き整数。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Int64)">
+      <summary>8 バイト符号付き整数のテキスト形式をテキスト文字列またはストリームに書き込みます。</summary>
+      <param name="value">書き込む 8 バイト符号付き整数。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Object)">
+      <summary>オブジェクトで ToString メソッドを呼び出して、そのオブジェクトのテキスト形式をテキスト文字列またはストリームに書き込みます。</summary>
+      <param name="value">書き込むオブジェクト。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Single)">
+      <summary>4 バイト浮動小数点値のテキスト形式をテキスト文字列またはストリームに書き込みます。</summary>
+      <param name="value">書き込む 4 バイト浮動小数点値。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.String)">
+      <summary>文字列をテキスト文字列またはストリームに書き込みます。</summary>
+      <param name="value">書き込む文字列。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.String,System.Object)">
+      <summary>
+        <see cref="M:System.String.Format(System.String,System.Object)" /> メソッドと同じセマンティクスを使用して、書式設定された文字列をテキスト文字列またはストリームに書き込みます。</summary>
+      <param name="format">複合書式指定文字列 (「解説」を参照)。</param>
+      <param name="arg0">書式設定および書き込みをするオブジェクト。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> は null です。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> は有効な復号書式指定文字列ではありません。または 書式指定項目のインデックスが、0 (ゼロ) より小さいか、書式設定されるオブジェクトの数 (このメソッド オーバーロードでは 1) 以上です。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.String,System.Object,System.Object)">
+      <summary>
+        <see cref="M:System.String.Format(System.String,System.Object,System.Object)" /> メソッドと同じセマンティクスを使用して、書式設定された文字列をテキスト文字列またはストリームに書き込みます。</summary>
+      <param name="format">複合書式指定文字列 (「解説」を参照)。</param>
+      <param name="arg0">書式設定および書き込みをする最初のオブジェクト。</param>
+      <param name="arg1">書式設定および書き込みをする 2 番目のオブジェクト。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> は null です。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> は有効な復号書式指定文字列ではありません。または 書式指定項目のインデックスが、0 (ゼロ) より小さいか、書式設定されるオブジェクトの数 (このメソッド オーバーロードでは 2) 以上です。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.String,System.Object,System.Object,System.Object)">
+      <summary>
+        <see cref="M:System.String.Format(System.String,System.Object,System.Object,System.Object)" /> メソッドと同じセマンティクスを使用して、書式設定された文字列をテキスト文字列またはストリームに書き込みます。</summary>
+      <param name="format">複合書式指定文字列 (「解説」を参照)。</param>
+      <param name="arg0">書式設定および書き込みをする最初のオブジェクト。</param>
+      <param name="arg1">書式設定および書き込みをする 2 番目のオブジェクト。</param>
+      <param name="arg2">書式設定および書き込みをする 3 番目のオブジェクト。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> は null です。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> は有効な復号書式指定文字列ではありません。または 書式指定項目のインデックスが、0 (ゼロ) より小さいか、書式設定されるオブジェクトの数 (このメソッド オーバーロードでは 3) 以上です。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.String,System.Object[])">
+      <summary>
+        <see cref="M:System.String.Format(System.String,System.Object[])" /> メソッドと同じセマンティクスを使用して、書式設定された文字列をテキスト文字列またはストリームに書き込みます。</summary>
+      <param name="format">複合書式指定文字列 (「解説」を参照)。</param>
+      <param name="arg">書式設定および書き込みをする 0 個以上のオブジェクトを含むオブジェクト配列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> または <paramref name="arg" /> が null です。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> は有効な復号書式指定文字列ではありません。または 書式項目のインデックスが 0 より小さいか、<paramref name="arg" /> 配列の長さ以上です。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.UInt32)">
+      <summary>4 バイト符号なし整数のテキスト形式をテキスト文字列またはストリームに書き込みます。</summary>
+      <param name="value">書き込む 4 バイト符号なし整数。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.UInt64)">
+      <summary>8 バイト符号なし整数のテキスト形式をテキスト文字列またはストリームに書き込みます。</summary>
+      <param name="value">書き込む 8 バイト符号なし整数。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteAsync(System.Char)">
+      <summary>文字をテキスト文字列またはストリームに非同期的に書き込みます。</summary>
+      <returns>非同期の書き込み操作を表すタスク。</returns>
+      <param name="value">テキスト ストリームに書き込む文字。</param>
+      <exception cref="T:System.ObjectDisposedException">テキスト ライターは破棄されます。</exception>
+      <exception cref="T:System.InvalidOperationException">テキスト ライターは現在、前の書き込み操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteAsync(System.Char[])">
+      <summary>文字配列をテキスト文字列またはストリームに非同期的に書き込みます。</summary>
+      <returns>非同期の書き込み操作を表すタスク。</returns>
+      <param name="buffer">テキスト ストリームに書き込む文字配列。<paramref name="buffer" /> が null の場合は、何も書き込まれません。</param>
+      <exception cref="T:System.ObjectDisposedException">テキスト ライターは破棄されます。</exception>
+      <exception cref="T:System.InvalidOperationException">テキスト ライターは現在、前の書き込み操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>文字の部分配列をテキスト文字列またはストリームに非同期的に書き込みます。</summary>
+      <returns>非同期の書き込み操作を表すタスク。</returns>
+      <param name="buffer">データの書き込み元の文字配列。</param>
+      <param name="index">データの取得を開始する、バッファー内の文字位置。</param>
+      <param name="count">書き込む文字数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> に <paramref name="count" /> を加算した値が、バッファーの長さを超えています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ObjectDisposedException">テキスト ライターは破棄されます。</exception>
+      <exception cref="T:System.InvalidOperationException">テキスト ライターは現在、前の書き込み操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteAsync(System.String)">
+      <summary>文字列をテキスト文字列またはストリームに非同期的に書き込みます。</summary>
+      <returns>非同期の書き込み操作を表すタスク。</returns>
+      <param name="value">書き込む文字列。<paramref name="value" /> が null の場合は、何もテキスト ストリームに書き込みません。</param>
+      <exception cref="T:System.ObjectDisposedException">テキスト ライターは破棄されます。</exception>
+      <exception cref="T:System.InvalidOperationException">テキスト ライターは現在、前の書き込み操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine">
+      <summary>行終端記号をテキスト文字列またはストリームに書き込みます。</summary>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Boolean)">
+      <summary>Boolean 値のテキスト形式をテキスト文字列またはストリームに書き込み、続けて行終端記号を書き込みます。</summary>
+      <param name="value">書き込む Boolean 値。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Char)">
+      <summary>文字をテキスト文字列またはストリームに書き込み、続けて行終端記号を書き込みます。</summary>
+      <param name="value">テキスト ストリームに書き込む文字。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Char[])">
+      <summary>文字の配列をテキスト文字列またはストリームに書き込み、続けて行終端記号を書き込みます。</summary>
+      <param name="buffer">データの読み取り元の文字配列。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Char[],System.Int32,System.Int32)">
+      <summary>文字の部分配列をテキスト文字列またはストリームに書き込み、続けて行終端記号を書き込みます。</summary>
+      <param name="buffer">データの読み取り元の文字配列。</param>
+      <param name="index">データの読み込みを開始する、<paramref name="buffer" /> 内の文字の位置。</param>
+      <param name="count">書き込む文字の最大数。</param>
+      <exception cref="T:System.ArgumentException">バッファー長から <paramref name="index" /> を差し引いた値が <paramref name="count" /> より小さい値です。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> パラメーターが null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Decimal)">
+      <summary>10 進値のテキスト形式をテキスト文字列またはストリームに書き込み、続けて行終端記号を書き込みます。</summary>
+      <param name="value">書き込む 10 進値。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Double)">
+      <summary>8 バイト浮動小数点値のテキスト形式をテキスト文字列またはストリームに書き込み、続けて行終端記号を書き込みます。</summary>
+      <param name="value">書き込む 8 バイト浮動小数点値。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Int32)">
+      <summary>4 バイト符号付き整数のテキスト形式をテキスト文字列またはストリームに書き込み、続けて行終端記号を書き込みます。</summary>
+      <param name="value">書き込む 4 バイト符号付き整数。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Int64)">
+      <summary>8 バイト符号付き整数のテキスト形式をテキスト文字列またはストリームに書き込み、続けて行終端記号を書き込みます。</summary>
+      <param name="value">書き込む 8 バイト符号付き整数。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Object)">
+      <summary>オブジェクトで ToString メソッドを呼び出して、そのオブジェクトのテキスト形式をテキスト文字列またはストリームに書き込み、続けて行終端記号を書き込みます。</summary>
+      <param name="value">書き込むオブジェクト。<paramref name="value" /> が null の場合は、行終端記号だけを書き込みます。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Single)">
+      <summary>4 バイト浮動小数点値のテキスト形式をテキスト文字列またはストリームに書き込み、続けて行終端記号を書き込みます。</summary>
+      <param name="value">書き込む 4 バイト浮動小数点値。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.String)">
+      <summary>文字列をテキスト文字列またはストリームに書き込み、続けて行終端記号を書き込みます。</summary>
+      <param name="value">書き込む文字列。<paramref name="value" /> が null の場合は、行終端記号だけを書き込みます。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.String,System.Object)">
+      <summary>
+        <see cref="M:System.String.Format(System.String,System.Object)" /> メソッドと同じセマンティクスを使用して、書式設定された文字列と改行をテキスト文字列またはストリームに書き込みます。</summary>
+      <param name="format">複合書式指定文字列 (「解説」を参照)。</param>
+      <param name="arg0">書式設定および書き込みをするオブジェクト。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> は null です。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> は有効な復号書式指定文字列ではありません。または 書式指定項目のインデックスが、0 (ゼロ) より小さいか、書式設定されるオブジェクトの数 (このメソッド オーバーロードでは 1) 以上です。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.String,System.Object,System.Object)">
+      <summary>
+        <see cref="M:System.String.Format(System.String,System.Object,System.Object)" /> メソッドと同じセマンティクスを使用して、書式設定された文字列と改行をテキスト文字列またはストリームに書き込みます。</summary>
+      <param name="format">複合書式指定文字列 (「解説」を参照)。</param>
+      <param name="arg0">書式設定および書き込みをする最初のオブジェクト。</param>
+      <param name="arg1">書式設定および書き込みをする 2 番目のオブジェクト。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> は null です。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> は有効な復号書式指定文字列ではありません。または 書式指定項目のインデックスが、0 (ゼロ) より小さいか、書式設定されるオブジェクトの数 (このメソッド オーバーロードでは 2) 以上です。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.String,System.Object,System.Object,System.Object)">
+      <summary>
+        <see cref="M:System.String.Format(System.String,System.Object)" /> と同じセマンティクスを使用して、書式設定された文字列と改行を書き込みます。</summary>
+      <param name="format">複合書式指定文字列 (「解説」を参照)。</param>
+      <param name="arg0">書式設定および書き込みをする最初のオブジェクト。</param>
+      <param name="arg1">書式設定および書き込みをする 2 番目のオブジェクト。</param>
+      <param name="arg2">書式設定および書き込みをする 3 番目のオブジェクト。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> は null です。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> は有効な復号書式指定文字列ではありません。または 書式指定項目のインデックスが、0 (ゼロ) より小さいか、書式設定されるオブジェクトの数 (このメソッド オーバーロードでは 3) 以上です。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.String,System.Object[])">
+      <summary>
+        <see cref="M:System.String.Format(System.String,System.Object)" /> と同じセマンティクスを使用して、書式設定された文字列と改行を書き込みます。</summary>
+      <param name="format">複合書式指定文字列 (「解説」を参照)。</param>
+      <param name="arg">書式設定および書き込みをする 0 個以上のオブジェクトを含むオブジェクト配列。</param>
+      <exception cref="T:System.ArgumentNullException">文字列またはオブジェクトが null として渡されました。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> は有効な復号書式指定文字列ではありません。または 書式項目のインデックスが 0 より小さいか、<paramref name="arg" /> 配列の長さ以上です。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.UInt32)">
+      <summary>4 バイト符号なし整数のテキスト形式をテキスト文字列またはストリームに書き込み、続けて行終端記号を書き込みます。</summary>
+      <param name="value">書き込む 4 バイト符号なし整数。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.UInt64)">
+      <summary>8 バイト符号なし整数のテキスト形式をテキスト文字列またはストリームに書き込み、続けて行終端記号を書き込みます。</summary>
+      <param name="value">書き込む 8 バイト符号なし整数。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> が閉じています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLineAsync">
+      <summary>行終端記号をテキスト文字列またはストリームに非同期的に書き込みます。</summary>
+      <returns>非同期の書き込み操作を表すタスク。</returns>
+      <exception cref="T:System.ObjectDisposedException">テキスト ライターは破棄されます。</exception>
+      <exception cref="T:System.InvalidOperationException">テキスト ライターは現在、前の書き込み操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLineAsync(System.Char)">
+      <summary>文字をテキスト文字列またはストリームに非同期的に書き込み、続けて行終端記号を書き込みます。</summary>
+      <returns>非同期の書き込み操作を表すタスク。</returns>
+      <param name="value">テキスト ストリームに書き込む文字。</param>
+      <exception cref="T:System.ObjectDisposedException">テキスト ライターは破棄されます。</exception>
+      <exception cref="T:System.InvalidOperationException">テキスト ライターは現在、前の書き込み操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLineAsync(System.Char[])">
+      <summary>文字の配列をテキスト文字列またはストリームに非同期的に書き込み、続けて行終端記号を書き込みます。</summary>
+      <returns>非同期の書き込み操作を表すタスク。</returns>
+      <param name="buffer">テキスト ストリームに書き込む文字配列。文字配列が null の場合は、行終端記号だけが書き込まれます。</param>
+      <exception cref="T:System.ObjectDisposedException">テキスト ライターは破棄されます。</exception>
+      <exception cref="T:System.InvalidOperationException">テキスト ライターは現在、前の書き込み操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLineAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>文字の部分配列をテキスト文字列またはストリームに非同期的に書き込み、続けて行終端記号を書き込みます。</summary>
+      <returns>非同期の書き込み操作を表すタスク。</returns>
+      <param name="buffer">データの書き込み元の文字配列。</param>
+      <param name="index">データの取得を開始する、バッファー内の文字位置。</param>
+      <param name="count">書き込む文字数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> に <paramref name="count" /> を加算した値が、バッファーの長さを超えています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が負の値です。</exception>
+      <exception cref="T:System.ObjectDisposedException">テキスト ライターは破棄されます。</exception>
+      <exception cref="T:System.InvalidOperationException">テキスト ライターは現在、前の書き込み操作で使用中です。</exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLineAsync(System.String)">
+      <summary>文字列をテキスト文字列またはストリームに非同期的に書き込み、続けて行終端記号を書き込みます。</summary>
+      <returns>非同期の書き込み操作を表すタスク。</returns>
+      <param name="value">書き込む文字列。値が null の場合は、行終端記号だけが書き込まれます。</param>
+      <exception cref="T:System.ObjectDisposedException">テキスト ライターは破棄されます。</exception>
+      <exception cref="T:System.InvalidOperationException">テキスト ライターは現在、前の書き込み操作で使用中です。</exception>
+    </member>
+  </members>
+</doc>

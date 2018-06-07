@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.IO.FileSystem.Primitives</name>
+  </assembly>
+  <members>
+    <member name="T:System.IO.FileAccess">
+      <summary>Consente di definire le costanti per l'accesso in lettura, scrittura o lettura/scrittura a un file.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileAccess.Read">
+      <summary>Accesso in lettura al file.I dati possono essere letti dal file.Da combinare con Write per l'accesso in lettura/scrittura.</summary>
+    </member>
+    <member name="F:System.IO.FileAccess.ReadWrite">
+      <summary>Accesso in lettura/scrittura al file.I dati possono essere scritti nel file e letti dal file.</summary>
+    </member>
+    <member name="F:System.IO.FileAccess.Write">
+      <summary>Accesso in scrittura al file.I dati possono essere scritti nel file.Da combinare con Read per l'accesso in lettura/scrittura.</summary>
+    </member>
+    <member name="T:System.IO.FileAttributes">
+      <summary>Fornisce gli attributi per file e directory.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileAttributes.Archive">
+      <summary>Il file è un candidato per backup o rimozione. </summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Compressed">
+      <summary>Il file è compresso.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Device">
+      <summary>Riservato per un utilizzo futuro.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Directory">
+      <summary>Il file è una directory.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Encrypted">
+      <summary>Il file o la directory è crittografato.Per un file, questo significa che tutti i dati del file sono crittografati.Per una directory, significa che la crittografia è l'impostazione predefinita per i nuovi file e le nuove directory.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Hidden">
+      <summary>Il file è nascosto, quindi non viene incluso in un elenco normale del contenuto delle directory.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.IntegrityStream">
+      <summary>Il file o la directory include il supporto dell'integrità dei dati.Quando questo valore viene applicato a un file, tutti i flussi di dati nel file dispongono di supporto dell'integrità.Quando questo valore viene applicato a una directory, tutti i nuovi file e le sottodirectory della directory, per impostazione predefinita, includono il supporto di integrità.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Normal">
+      <summary>Il file è un file standard che non contiene attributi speciali.Questo attributo è valido solo se utilizzato singolarmente.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.NoScrubData">
+      <summary>La directory o il file è escluso dalla funzionalità di analisi dell'integrità dei dati.Quando questo valore viene applicato a una directory, tutti i nuovi file e le sottodirectory della directory, per impostazione predefinita, vengono esclusi dall'integrità dei dati.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.NotContentIndexed">
+      <summary>Il file non sarà indicizzato dal servizio di indicizzazione dei contenuti del sistema operativo.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Offline">
+      <summary>Il file è offline.I dati del file non sono immediatamente disponibili.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.ReadOnly">
+      <summary>Il file è in sola lettura.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.ReparsePoint">
+      <summary>Il file contiene un punto di analisi, ovvero un blocco di dati definiti dall'utente associato a un file o una directory.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.SparseFile">
+      <summary>Il file è un file sparse.I file frammentati sono in genere file di grandi dimensioni, contenenti per la maggior parte degli zeri.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.System">
+      <summary>Il file è un file system.Ovvero, il file è parte del sistema operativo oppure è utilizzato esclusivamente dal sistema operativo.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Temporary">
+      <summary>Il file è temporaneo.Un file temporaneo contiene i dati che sono necessari durante l'esecuzione di un'applicazione, ma che non sono richiesti al termine della stessa.I file system tentano di mantenere tutti i dati in memoria in modo da consentire un accesso più rapido anziché spostarli nell'archivio di massa.L'applicazione dovrebbe eliminare un file temporaneo quando non è più necessario.</summary>
+    </member>
+    <member name="T:System.IO.FileMode">
+      <summary>Specifica le modalità di apertura di un file da parte del sistema operativo.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileMode.Append">
+      <summary>Apre il file, se esiste, e si sposta alla fine del file oppure crea un nuovo file.Richiede l'autorizzazione <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Append" />.FileMode.Append può essere utilizzata solo insieme a FileAccess.Write.Il tentativo di spostamento in una posizione precedente alla fine del file comporterà la generazione di un'eccezione <see cref="T:System.IO.IOException" />. Qualsiasi tentativo di lettura non riuscirà e comporterà la generazione di un'eccezione <see cref="T:System.NotSupportedException" />.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.Create">
+      <summary>Specifica che il sistema operativo deve creare un nuovo file.Se il file esiste verrà sovrascritto.Richiede l'autorizzazione <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" />.FileMode.Create equivale a richiedere l'utilizzo di <see cref="F:System.IO.FileMode.CreateNew" /> nel caso in cui il file non esista e di <see cref="F:System.IO.FileMode.Truncate" /> in caso contrario.Se il file esiste già ma è nascosto, viene generata l'eccezione <see cref="T:System.UnauthorizedAccessException" />.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.CreateNew">
+      <summary>Specifica che il sistema operativo deve creare un nuovo file.Richiede l'autorizzazione <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" />.Se il file esiste già, viene generata un'eccezione <see cref="T:System.IO.IOException" />.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.Open">
+      <summary>Specifica che il sistema operativo deve aprire un file esistente.La possibilità di aprire il file dipende dal valore specificato dall'enumerazione <see cref="T:System.IO.FileAccess" />.Un'eccezione <see cref="T:System.IO.FileNotFoundException" /> viene generata se il file non esiste.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.OpenOrCreate">
+      <summary>Specifica che il sistema operativo deve aprire un file, se esistente. In caso contrario, deve indica di creare un nuovo file.Se il file viene aperto con FileAccess.Read, è necessaria l'autorizzazione <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Read" />.Se l'accesso al file è FileAccess.Write, sarà necessaria l'autorizzazione <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" />.Se il file viene aperto con FileAccess.ReadWrite, saranno necessarie le autorizzazioni <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Read" /> e <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" />.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.Truncate">
+      <summary>Specifica che il sistema operativo deve aprire un file esistente.Se il file è aperto, deve essere troncato in modo che la sua dimensione sia uguale a zero byte.Richiede l'autorizzazione <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" />.Qualsiasi tentativo di lettura di un file aperto con FileMode.Truncate genera un'eccezione <see cref="T:System.ArgumentException" />.</summary>
+    </member>
+    <member name="T:System.IO.FileShare">
+      <summary>Contiene le costanti di controllo dei possibili tipi di accesso allo stesso file da parte di altri oggetti <see cref="T:System.IO.FileStream" />.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileShare.Delete">
+      <summary>Consente l'eliminazione successiva di un file.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.Inheritable">
+      <summary>Rende l'handle del file ereditabile da parte dei processi figlio.Non supportato direttamente da Win32.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.None">
+      <summary>Rifiuta la condivisione del file corrente.Qualsiasi richiesta di aprire il file (da parte di questo o altri processi) non avrà esito positivo fino alla chiusura del file.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.Read">
+      <summary>Consente la successiva apertura del file in lettura.Se il flag non è specificato, qualsiasi richiesta di aprire il file in lettura (da parte di questo o altri processi) non avrà esito positivo fino alla chiusura del file.Tuttavia, anche nel caso in cui il flag sia specificato, potrebbero comunque essere necessarie autorizzazioni aggiuntive per accedere al file.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.ReadWrite">
+      <summary>Consente la successiva apertura del file in lettura o scrittura.Se il flag non è specificato, qualsiasi richiesta di aprire il file in lettura o scrittura (da parte di questo o altri processi) non avrà esito positivo fino alla chiusura del file.Tuttavia, anche nel caso in cui il flag sia specificato, potrebbero comunque essere necessarie autorizzazioni aggiuntive per accedere al file.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.Write">
+      <summary>Consente la successiva apertura del file in scrittura.Se il flag non è specificato, qualsiasi richiesta di aprire il file in scrittura (da parte di questo o altri processi) non avrà esito positivo fino alla chiusura del file.Tuttavia, anche nel caso in cui il flag sia specificato, potrebbero comunque essere necessarie autorizzazioni aggiuntive per accedere al file.</summary>
+    </member>
+  </members>
+</doc>

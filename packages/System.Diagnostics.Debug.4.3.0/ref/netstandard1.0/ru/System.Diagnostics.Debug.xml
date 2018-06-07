@@ -1,0 +1,370 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Diagnostics.Debug</name>
+  </assembly>
+  <members>
+    <member name="T:System.Diagnostics.Debug">
+      <summary>Предоставляет набор методов и свойств, помогающих при отладке кода.Этот класс не наследуется.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Assert(System.Boolean)">
+      <summary>Проверяет условие; если условие имеет значение false, выводит сообщение, отображающее стек вызовов.</summary>
+      <param name="condition">Условное выражение, которое требуется оценить.Если условие имеет значение true, сообщение о сбое не отправляется и окно сообщения не отображается.</param>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Assert(System.Boolean,System.String)">
+      <summary>Проверяет условие; если условие имеет значение false, выводит указанное сообщения и отображает окно сообщения со стеком вызовов.</summary>
+      <param name="condition">Условное выражение, которое требуется оценить.Если условие имеет значение true, указанное сообщение не отправляется и окно сообщения не отображается.</param>
+      <param name="message">Сообщение, которое следует отправить в коллекцию <see cref="P:System.Diagnostics.Trace.Listeners" />. </param>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Assert(System.Boolean,System.String,System.String)">
+      <summary>Проверяет условие; если условие имеет значение false, выводит два указанных сообщения и отображает окно сообщения со стеком вызовов.</summary>
+      <param name="condition">Условное выражение, которое требуется оценить.Если условие имеет значение true, указанные сообщения не отправляются и окно сообщения не отображается.</param>
+      <param name="message">Сообщение, которое следует отправить в коллекцию <see cref="P:System.Diagnostics.Trace.Listeners" />. </param>
+      <param name="detailMessage">Подробное сообщение, которое следует отправить в коллекцию <see cref="P:System.Diagnostics.Trace.Listeners" />. </param>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Assert(System.Boolean,System.String,System.String,System.Object[])">
+      <summary>Проверяет условие; если условие имеет значение false, выводит два сообщения (простое и отформатированное) и отображает окно сообщения со стеком вызовов.</summary>
+      <param name="condition">Условное выражение, которое требуется оценить.Если условие имеет значение true, указанные сообщения не отправляются и окно сообщения не отображается.</param>
+      <param name="message">Сообщение, которое следует отправить в коллекцию <see cref="P:System.Diagnostics.Trace.Listeners" />. </param>
+      <param name="detailMessageFormat">Строка составного формата (см. "Примечания") для отправки в коллекцию <see cref="P:System.Diagnostics.Trace.Listeners" />.Это сообщение содержит текст, перемежаемый нулем или несколькими элементами форматирования, которые соответствуют объектам массива <paramref name="args" />.</param>
+      <param name="args">Массив объектов, содержащий нуль или более форматируемых объектов.</param>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Fail(System.String)">
+      <summary>Выдает указанное сообщение об ошибке.</summary>
+      <param name="message">Выдаваемое сообщение. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Fail(System.String,System.String)">
+      <summary>Выдает простое и подробное сообщение об ошибке.</summary>
+      <param name="message">Выдаваемое сообщение. </param>
+      <param name="detailMessage">Выдаваемое подробное сообщение. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Write(System.Object)">
+      <summary>Записывает значение метода <see cref="M:System.Object.ToString" /> объекта в прослушиватели трассировки в коллекции <see cref="P:System.Diagnostics.Debug.Listeners" />.</summary>
+      <param name="value">Объект, имя которого отправляется в <see cref="P:System.Diagnostics.Debug.Listeners" />. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Write(System.Object,System.String)">
+      <summary>Записывает имя категории и значение метода <see cref="M:System.Object.ToString" /> объекта в прослушиватели трассировки в коллекции <see cref="P:System.Diagnostics.Debug.Listeners" />.</summary>
+      <param name="value">Объект, имя которого отправляется в <see cref="P:System.Diagnostics.Debug.Listeners" />. </param>
+      <param name="category">Имя категории, используемое для систематизации выходных данных. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Write(System.String)">
+      <summary>Записывает сообщение в прослушиватели трассировки в коллекции <see cref="P:System.Diagnostics.Debug.Listeners" />.</summary>
+      <param name="message">Записываемое сообщение. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Write(System.String,System.String)">
+      <summary>Записывает имя категории и сообщение в прослушиватели трассировки в коллекции <see cref="P:System.Diagnostics.Debug.Listeners" />.</summary>
+      <param name="message">Записываемое сообщение. </param>
+      <param name="category">Имя категории, используемое для систематизации выходных данных. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteIf(System.Boolean,System.Object)">
+      <summary>Записывает значение метода <see cref="M:System.Object.ToString" /> объекта в прослушиватели трассировки в коллекции <see cref="P:System.Diagnostics.Debug.Listeners" />, если условие имеет значение true.</summary>
+      <param name="condition">Условное выражение, которое требуется оценить.Если условие имеет значение true, значение записывается в прослушиватели трассировки в коллекции.</param>
+      <param name="value">Объект, имя которого отправляется в <see cref="P:System.Diagnostics.Debug.Listeners" />. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteIf(System.Boolean,System.Object,System.String)">
+      <summary>Записывает имя категории и значение метода <see cref="M:System.Object.ToString" /> объекта в прослушиватели трассировки в коллекции <see cref="P:System.Diagnostics.Debug.Listeners" />, если условие имеет значение true.</summary>
+      <param name="condition">Условное выражение, которое требуется оценить.Если условие имеет значение true, имя категории и значение записываются в прослушиватели трассировки в коллекции.</param>
+      <param name="value">Объект, имя которого отправляется в <see cref="P:System.Diagnostics.Debug.Listeners" />. </param>
+      <param name="category">Имя категории, используемое для систематизации выходных данных. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteIf(System.Boolean,System.String)">
+      <summary>Записывает сообщение в прослушиватели трассировки в коллекции <see cref="P:System.Diagnostics.Debug.Listeners" />, если условие имеет значение true.</summary>
+      <param name="condition">Условное выражение, которое требуется оценить.Если условие имеет значение true, сообщение записывается в прослушиватели трассировки в коллекции.</param>
+      <param name="message">Записываемое сообщение. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteIf(System.Boolean,System.String,System.String)">
+      <summary>Записывает имя категории и сообщение в прослушиватели трассировки в коллекции <see cref="P:System.Diagnostics.Debug.Listeners" />, если условие имеет значение true.</summary>
+      <param name="condition">Условное выражение, которое требуется оценить.Если условие имеет значение true, имя категории и сообщение записываются в прослушиватели трассировки в коллекции.</param>
+      <param name="message">Записываемое сообщение. </param>
+      <param name="category">Имя категории, используемое для систематизации выходных данных. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLine(System.Object)">
+      <summary>Записывает значение метода <see cref="M:System.Object.ToString" /> объекта в прослушиватели трассировки в коллекции <see cref="P:System.Diagnostics.Debug.Listeners" />.</summary>
+      <param name="value">Объект, имя которого отправляется в <see cref="P:System.Diagnostics.Debug.Listeners" />. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLine(System.Object,System.String)">
+      <summary>Записывает имя категории и значение метода <see cref="M:System.Object.ToString" /> объекта в прослушиватели трассировки в коллекции <see cref="P:System.Diagnostics.Debug.Listeners" />.</summary>
+      <param name="value">Объект, имя которого отправляется в <see cref="P:System.Diagnostics.Debug.Listeners" />. </param>
+      <param name="category">Имя категории, используемое для систематизации выходных данных. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLine(System.String)">
+      <summary>Записывает сообщение, заканчивающееся ограничителем строки, в прослушиватели трассировки в коллекции <see cref="P:System.Diagnostics.Debug.Listeners" />.</summary>
+      <param name="message">Записываемое сообщение. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLine(System.String,System.Object[])">
+      <summary>Записывает форматированное сообщение, заканчивающееся ограничителем строки, в прослушиватели трассировки в коллекции <see cref="P:System.Diagnostics.Debug.Listeners" />.</summary>
+      <param name="format">Строка составного формата (см. примечания), содержащая текст, перемежаемый нулем или несколькими элементами форматирования, которые соответствуют объектам массива <paramref name="args" />.</param>
+      <param name="args">Массив объектов, содержащий нуль или более форматируемых объектов. </param>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLine(System.String,System.String)">
+      <summary>Записывает имя категории и сообщение в прослушиватели трассировки в коллекции <see cref="P:System.Diagnostics.Debug.Listeners" />.</summary>
+      <param name="message">Записываемое сообщение. </param>
+      <param name="category">Имя категории, используемое для систематизации выходных данных. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLineIf(System.Boolean,System.Object)">
+      <summary>Записывает значение метода <see cref="M:System.Object.ToString" /> объекта в прослушиватели трассировки в коллекции <see cref="P:System.Diagnostics.Debug.Listeners" />, если условие имеет значение true.</summary>
+      <param name="condition">Условное выражение, которое требуется оценить.Если условие имеет значение true, значение записывается в прослушиватели трассировки в коллекции.</param>
+      <param name="value">Объект, имя которого отправляется в <see cref="P:System.Diagnostics.Debug.Listeners" />. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLineIf(System.Boolean,System.Object,System.String)">
+      <summary>Записывает имя категории и значение метода <see cref="M:System.Object.ToString" /> объекта в прослушиватели трассировки в коллекции <see cref="P:System.Diagnostics.Debug.Listeners" />, если условие имеет значение true.</summary>
+      <param name="condition">Условное выражение, которое требуется оценить.Если условие имеет значение true, имя категории и значение записываются в прослушиватели трассировки в коллекции.</param>
+      <param name="value">Объект, имя которого отправляется в <see cref="P:System.Diagnostics.Debug.Listeners" />. </param>
+      <param name="category">Имя категории, используемое для систематизации выходных данных. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLineIf(System.Boolean,System.String)">
+      <summary>Записывает сообщение в прослушиватели трассировки в коллекции <see cref="P:System.Diagnostics.Debug.Listeners" />, если условие имеет значение true.</summary>
+      <param name="condition">Условное выражение, которое требуется оценить.Если условие имеет значение true, сообщение записывается в прослушиватели трассировки в коллекции.</param>
+      <param name="message">Записываемое сообщение. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLineIf(System.Boolean,System.String,System.String)">
+      <summary>Записывает имя категории и сообщение в прослушиватели трассировки в коллекции <see cref="P:System.Diagnostics.Debug.Listeners" />, если условие имеет значение true.</summary>
+      <param name="condition">Значение true — запись сообщения; в противном случае — false. </param>
+      <param name="message">Записываемое сообщение. </param>
+      <param name="category">Имя категории, используемое для систематизации выходных данных. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Diagnostics.Debugger">
+      <summary>Разрешает взаимодействие с отладчиком.Этот класс не наследуется.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Debugger.Break">
+      <summary>Сообщает присоединенному отладчику точку останова.</summary>
+      <exception cref="T:System.Security.SecurityException">Не задано переключение класса <see cref="T:System.Security.Permissions.UIPermission" /> на отладчик. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.Debugger.IsAttached">
+      <summary>Получает значение, показывающее, присоединен ли отладчик к процессу.</summary>
+      <returns>Значение true, если отладчик присоединен; в противном случае — значение false.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Debugger.Launch">
+      <summary>Присоединяет и запускает отладчик для процесса.</summary>
+      <returns>Значение true, если отладчик успешно запущен или уже присоединен; в противном случае — значение false.</returns>
+      <exception cref="T:System.Security.SecurityException">Класс <see cref="T:System.Security.Permissions.UIPermission" /> не запускает отладчик. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerBrowsableAttribute">
+      <summary>Определяет наличие и способ отображения членов в окнах переменных отладчика.Этот класс не наследуется.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerBrowsableAttribute.#ctor(System.Diagnostics.DebuggerBrowsableState)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Diagnostics.DebuggerBrowsableAttribute" />. </summary>
+      <param name="state">Одно из значений <see cref="T:System.Diagnostics.DebuggerBrowsableState" />, определяющее способ отображения члена.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="state" /> не является одним из значений <see cref="T:System.Diagnostics.DebuggerBrowsableState" />.</exception>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerBrowsableAttribute.State">
+      <summary>Получает состояние отображения атрибута.</summary>
+      <returns>Одно из значений <see cref="T:System.Diagnostics.DebuggerBrowsableState" />.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerBrowsableState">
+      <summary>Обеспечивает отображаемые инструкции для отладчика.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Diagnostics.DebuggerBrowsableState.Collapsed">
+      <summary>Отобразите свернутый элемент.</summary>
+    </member>
+    <member name="F:System.Diagnostics.DebuggerBrowsableState.Never">
+      <summary>Никогда не отображает элемент.</summary>
+    </member>
+    <member name="F:System.Diagnostics.DebuggerBrowsableState.RootHidden">
+      <summary>Не отображайте корневые элементы; отображайте дочерние элементы, если элемент является коллекцией или массивом элементов.</summary>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerDisplayAttribute">
+      <summary>Определяет способ отображения класса или поля в окнах переменных отладчика.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerDisplayAttribute.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Diagnostics.DebuggerDisplayAttribute" />. </summary>
+      <param name="value">Строка, отображаемая в столбце значений для экземпляров типа; при использовании пустой строки ("") столбец значений оказывается скрытым.</param>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerDisplayAttribute.Name">
+      <summary>Возвращает или задает имя, отображаемое в окнах переменных отладчика.</summary>
+      <returns>Имя, отображаемое в окнах переменных отладчика.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerDisplayAttribute.Target">
+      <summary>Возвращает или задает тип целевого объекта атрибута.</summary>
+      <returns>Целевой тип атрибута.</returns>
+      <exception cref="T:System.ArgumentNullException">Свойству <see cref="P:System.Diagnostics.DebuggerDisplayAttribute.Target" /> присвоено значение null.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerDisplayAttribute.TargetTypeName">
+      <summary>Возвращает или задает имя целевого объекта атрибута.</summary>
+      <returns>Имя типа целевого объекта атрибута.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerDisplayAttribute.Type">
+      <summary>Возвращает или задает строку, отображаемую в столбце типа в окнах переменных отладчика.</summary>
+      <returns>Строка, отображаемая в столбце типа в окнах переменных отладчика.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerDisplayAttribute.Value">
+      <summary>Возвращает строку, отображаемую в столбце значений в окнах переменных отладчика.</summary>
+      <returns>Строка, отображаемая в столбце значений переменных отладчика.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerHiddenAttribute">
+      <summary>Задает класс <see cref="T:System.Diagnostics.DebuggerHiddenAttribute" />.Этот класс не наследуется.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerHiddenAttribute.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Diagnostics.DebuggerHiddenAttribute" />. </summary>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerNonUserCodeAttribute">
+      <summary>Идентифицирует тип или член, не являющийся частью кода пользователя.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerNonUserCodeAttribute.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Diagnostics.DebuggerNonUserCodeAttribute" />. </summary>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerStepThroughAttribute">
+      <summary>Отдает отладчику указание о сквозной обработке кода (вместо обработки изнутри).Этот класс не наследуется.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerStepThroughAttribute.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Diagnostics.DebuggerStepThroughAttribute" />. </summary>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerTypeProxyAttribute">
+      <summary>Задает для типа прокси отображения.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerTypeProxyAttribute.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Diagnostics.DebuggerTypeProxyAttribute" />, используя указанное имя прокси-типа. </summary>
+      <param name="typeName">Имя прокси-типа.</param>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerTypeProxyAttribute.#ctor(System.Type)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Diagnostics.DebuggerTypeProxyAttribute" />, используя указанный прокси-тип. </summary>
+      <param name="type">Прокси-тип.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="type" /> имеет значение null.</exception>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerTypeProxyAttribute.ProxyTypeName">
+      <summary>Возвращает имя прокси-типа. </summary>
+      <returns>Имя прокси-типа.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerTypeProxyAttribute.Target">
+      <summary>Возвращает или задает для атрибута тип целевого объекта.</summary>
+      <returns>Целевой тип атрибута.</returns>
+      <exception cref="T:System.ArgumentNullException">Свойству <see cref="P:System.Diagnostics.DebuggerTypeProxyAttribute.Target" /> присвоено значение null.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerTypeProxyAttribute.TargetTypeName">
+      <summary>Возвращает или задает имя типа целевого объекта.</summary>
+      <returns>Имя типа целевого объекта.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+  </members>
+</doc>

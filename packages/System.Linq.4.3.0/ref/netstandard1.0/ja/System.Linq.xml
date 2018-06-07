@@ -1,0 +1,2007 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Linq</name>
+  </assembly>
+  <members>
+    <member name="T:System.Linq.Enumerable">
+      <summary>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> を実装するオブジェクトをクエリするための一連の static (Visual Basic では Shared) メソッドを提供します。</summary>
+    </member>
+    <member name="M:System.Linq.Enumerable.Aggregate``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``0,``0})">
+      <summary>シーケンスにアキュムレータ関数を適用します。</summary>
+      <returns>最終的なアキュムレータ値。</returns>
+      <param name="source">集計対象の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="func">各要素に対して呼び出すアキュムレータ関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="func" /> が null です。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Aggregate``2(System.Collections.Generic.IEnumerable{``0},``1,System.Func{``1,``0,``1})">
+      <summary>シーケンスにアキュムレータ関数を適用します。指定されたシード値が最初のアキュムレータ値として使用されます。</summary>
+      <returns>最終的なアキュムレータ値。</returns>
+      <param name="source">集計対象の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="seed">最初のアキュムレータ値。</param>
+      <param name="func">各要素に対して呼び出すアキュムレータ関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TAccumulate">アキュムレータ値の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="func" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Aggregate``3(System.Collections.Generic.IEnumerable{``0},``1,System.Func{``1,``0,``1},System.Func{``1,``2})">
+      <summary>シーケンスにアキュムレータ関数を適用します。指定したシード値は最初のアキュムレータ値として使用され、指定した関数は結果値の選択に使用されます。</summary>
+      <returns>変換された最終的なアキュムレータ値。</returns>
+      <param name="source">集計対象の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="seed">最初のアキュムレータ値。</param>
+      <param name="func">各要素に対して呼び出すアキュムレータ関数。</param>
+      <param name="resultSelector">最終的なアキュムレータ値を結果値に変換する関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TAccumulate">アキュムレータ値の型。</typeparam>
+      <typeparam name="TResult">結果の値の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />、<paramref name="func" />、または <paramref name="resultSelector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.All``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+      <summary>シーケンスのすべての要素が条件を満たしているかどうかを判断します。</summary>
+      <returns>指定された述語でソース シーケンスのすべての要素がテストに合格する場合は true。それ以外の場合は false。</returns>
+      <param name="source">述語を適用する要素を格納している <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="predicate">各要素が条件を満たしているかどうかをテストする関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="predicate" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Any``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>シーケンスに要素が含まれているかどうかを判断します。</summary>
+      <returns>ソース シーケンスに要素が含まれている場合は true。それ以外の場合は false。</returns>
+      <param name="source">空かどうかを確認する <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Any``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+      <summary>シーケンスの任意の要素が条件を満たしているかどうかを判断します。</summary>
+      <returns>指定された述語でソース シーケンスの要素がテストに合格する場合は true。それ以外の場合は false。</returns>
+      <param name="source">述語を適用する要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="predicate">各要素が条件を満たしているかどうかをテストする関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="predicate" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.AsEnumerable``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> として型指定された入力を返します。</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> として型指定された入力シーケンス。</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> として型指定するシーケンス。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Decimal})">
+      <summary>
+        <see cref="T:System.Decimal" /> 値のシーケンスの平均値を計算します。</summary>
+      <returns>値のシーケンスの平均値。</returns>
+      <param name="source">平均値計算の対象となる <see cref="T:System.Decimal" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Double})">
+      <summary>
+        <see cref="T:System.Double" /> 値のシーケンスの平均値を計算します。</summary>
+      <returns>値のシーケンスの平均値。</returns>
+      <param name="source">平均値計算の対象となる <see cref="T:System.Double" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Int32})">
+      <summary>
+        <see cref="T:System.Int32" /> 値のシーケンスの平均値を計算します。</summary>
+      <returns>値のシーケンスの平均値。</returns>
+      <param name="source">平均値計算の対象となる <see cref="T:System.Int32" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Int64})">
+      <summary>
+        <see cref="T:System.Int64" /> 値のシーケンスの平均値を計算します。</summary>
+      <returns>値のシーケンスの平均値。</returns>
+      <param name="source">平均値計算の対象となる <see cref="T:System.Int64" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Nullable{System.Decimal}})">
+      <summary>null 許容の <see cref="T:System.Decimal" /> 値のシーケンスの平均値を計算します。</summary>
+      <returns>値のシーケンスの平均値。ソース シーケンスが空か null 値のみを含む場合は null。</returns>
+      <param name="source">平均値計算の対象となる null 許容の <see cref="T:System.Decimal" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.OverflowException">シーケンス内の要素の合計が <see cref="F:System.Decimal.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Nullable{System.Double}})">
+      <summary>null 許容の <see cref="T:System.Double" /> 値のシーケンスの平均値を計算します。</summary>
+      <returns>値のシーケンスの平均値。ソース シーケンスが空か null 値のみを含む場合は null。</returns>
+      <param name="source">平均値計算の対象となる null 許容の <see cref="T:System.Double" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Nullable{System.Int32}})">
+      <summary>null 許容の <see cref="T:System.Int32" /> 値のシーケンスの平均値を計算します。</summary>
+      <returns>値のシーケンスの平均値。ソース シーケンスが空か null 値のみを含む場合は null。</returns>
+      <param name="source">平均値計算の対象となる null 許容の <see cref="T:System.Int32" />  値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.OverflowException">シーケンス内の要素の合計が <see cref="F:System.Int64.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Nullable{System.Int64}})">
+      <summary>null 許容の <see cref="T:System.Int64" /> 値のシーケンスの平均値を計算します。</summary>
+      <returns>値のシーケンスの平均値。ソース シーケンスが空か null 値のみを含む場合は null。</returns>
+      <param name="source">平均値計算の対象となる null 許容の <see cref="T:System.Int64" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.OverflowException">シーケンス内の要素の合計が <see cref="F:System.Int64.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Nullable{System.Single}})">
+      <summary>null 許容の <see cref="T:System.Single" /> 値のシーケンスの平均値を計算します。</summary>
+      <returns>値のシーケンスの平均値。ソース シーケンスが空か null 値のみを含む場合は null。</returns>
+      <param name="source">平均値計算の対象となる null 許容の <see cref="T:System.Single" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Single})">
+      <summary>
+        <see cref="T:System.Single" /> 値のシーケンスの平均値を計算します。</summary>
+      <returns>値のシーケンスの平均値。</returns>
+      <param name="source">平均値計算の対象となる <see cref="T:System.Single" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Decimal})">
+      <summary>入力シーケンスの各要素に対して変換関数を呼び出して取得する <see cref="T:System.Decimal" /> 値のシーケンスの平均値を計算します。</summary>
+      <returns>値のシーケンスの平均値。</returns>
+      <param name="source">平均値の計算に使用される値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+      <exception cref="T:System.OverflowException">シーケンス内の要素の合計が <see cref="F:System.Decimal.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Double})">
+      <summary>入力シーケンスの各要素に対して変換関数を呼び出して取得する <see cref="T:System.Double" /> 値のシーケンスの平均値を計算します。</summary>
+      <returns>値のシーケンスの平均値。</returns>
+      <param name="source">平均値計算の対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32})">
+      <summary>入力シーケンスの各要素に対して変換関数を呼び出して取得する <see cref="T:System.Int32" /> 値のシーケンスの平均値を計算します。</summary>
+      <returns>値のシーケンスの平均値。</returns>
+      <param name="source">平均値計算の対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+      <exception cref="T:System.OverflowException">シーケンス内の要素の合計が <see cref="F:System.Int64.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int64})">
+      <summary>入力シーケンスの各要素に対して変換関数を呼び出して取得する <see cref="T:System.Int64" /> 値のシーケンスの平均値を計算します。</summary>
+      <returns>値のシーケンスの平均値。</returns>
+      <param name="source">平均値計算の対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">ソースの要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+      <exception cref="T:System.OverflowException">シーケンス内の要素の合計が <see cref="F:System.Int64.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Decimal}})">
+      <summary>入力シーケンスの各要素に対して変換関数を呼び出して取得する null 許容の <see cref="T:System.Decimal" /> 値のシーケンスの平均値を計算します。</summary>
+      <returns>値のシーケンスの平均値。ソース シーケンスが空か null 値のみを含む場合は null。</returns>
+      <param name="source">平均値計算の対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+      <exception cref="T:System.OverflowException">シーケンス内の要素の合計が <see cref="F:System.Decimal.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Double}})">
+      <summary>入力シーケンスの各要素に対して変換関数を呼び出して取得する null 許容の <see cref="T:System.Double" /> 値のシーケンスの平均値を計算します。</summary>
+      <returns>値のシーケンスの平均値。ソース シーケンスが空か null 値のみを含む場合は null。</returns>
+      <param name="source">平均値計算の対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int32}})">
+      <summary>入力シーケンスの各要素に対して変換関数を呼び出して取得する null 許容の <see cref="T:System.Int32" /> 値のシーケンスの平均値を計算します。</summary>
+      <returns>値のシーケンスの平均値。ソース シーケンスが空か null 値のみを含む場合は null。</returns>
+      <param name="source">平均値計算の対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+      <exception cref="T:System.OverflowException">シーケンス内の要素の合計が <see cref="F:System.Int64.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int64}})">
+      <summary>入力シーケンスの各要素に対して変換関数を呼び出して取得する null 許容の <see cref="T:System.Int64" /> 値のシーケンスの平均値を計算します。</summary>
+      <returns>値のシーケンスの平均値。ソース シーケンスが空か null 値のみを含む場合は null。</returns>
+      <param name="source">平均値計算の対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Single}})">
+      <summary>入力シーケンスの各要素に対して変換関数を呼び出して取得する null 許容の <see cref="T:System.Single" /> 値のシーケンスの平均値を計算します。</summary>
+      <returns>値のシーケンスの平均値。ソース シーケンスが空か null 値のみを含む場合は null。</returns>
+      <param name="source">平均値計算の対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Single})">
+      <summary>入力シーケンスの各要素に対して変換関数を呼び出して取得する <see cref="T:System.Single" /> 値のシーケンスの平均値を計算します。</summary>
+      <returns>値のシーケンスの平均値。</returns>
+      <param name="source">平均値計算の対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Cast``1(System.Collections.IEnumerable)">
+      <summary>
+        <see cref="T:System.Collections.IEnumerable" /> の要素を、指定した型にキャストします。</summary>
+      <returns>指定された型にキャストされたソース シーケンスの各要素を格納する <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">
+        <paramref name="TResult" /> 型にキャストされる要素が格納されている <see cref="T:System.Collections.IEnumerable" />。</param>
+      <typeparam name="TResult">
+        <paramref name="source" /> の要素のキャスト後の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.InvalidCastException">シーケンスの要素を <paramref name="TResult" /> 型にキャストできません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Concat``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+      <summary>2 つのシーケンスを連結します。</summary>
+      <returns>2 つの入力シーケンスの連結された要素が格納されている <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="first">連結する最初のシーケンス。</param>
+      <param name="second">最初のシーケンスに連結するシーケンス。</param>
+      <typeparam name="TSource">入力シーケンスの要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="first" /> または <paramref name="second" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Contains``1(System.Collections.Generic.IEnumerable{``0},``0)">
+      <summary>既定の等値比較子を使用して、指定した要素がシーケンスに含まれているかどうかを判断します。</summary>
+      <returns>指定した値を持つ要素がソース シーケンスに含まれている場合は true。それ以外は false。</returns>
+      <param name="source">値の検索対象となるシーケンス。</param>
+      <param name="value">シーケンス内で検索する値。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Contains``1(System.Collections.Generic.IEnumerable{``0},``0,System.Collections.Generic.IEqualityComparer{``0})">
+      <summary>指定した <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> を使用して、指定した要素がシーケンスに含まれているかどうかを判断します。</summary>
+      <returns>指定した値を持つ要素がソース シーケンスに含まれている場合は true。それ以外は false。</returns>
+      <param name="source">値の検索対象となるシーケンス。</param>
+      <param name="value">シーケンス内で検索する値。</param>
+      <param name="comparer">値を比較する等値比較子。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Count``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>シーケンス内の要素数を返します。</summary>
+      <returns>入力シーケンス内の要素数。</returns>
+      <param name="source">カウントする要素が格納されているシーケンス。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.OverflowException">
+        <paramref name="source" /> 内の要素数が <see cref="F:System.Int32.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Count``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+      <summary>条件を満たす、指定されたシーケンス内の要素の数を表す数値を返します。</summary>
+      <returns>述語関数の条件を満たす、シーケンス内の要素数を表す数値。</returns>
+      <param name="source">テストおよびカウントする要素が格納されているシーケンス。</param>
+      <param name="predicate">各要素が条件を満たしているかどうかをテストする関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="predicate" /> が null です。</exception>
+      <exception cref="T:System.OverflowException">
+        <paramref name="source" /> 内の要素数が <see cref="F:System.Int32.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.DefaultIfEmpty``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>指定したシーケンスの要素を返します。シーケンスが空の場合はシングルトン コレクションにある型パラメーターの既定値を返します。</summary>
+      <returns>
+        <paramref name="source" /> が空の場合、<paramref name="TSource" /> 型の既定値を格納する <see cref="T:System.Collections.Generic.IEnumerable`1" /> オブジェクト。それ以外の場合は <paramref name="source" />。</returns>
+      <param name="source">シーケンスが空の場合に、既定値を返すシーケンス。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.DefaultIfEmpty``1(System.Collections.Generic.IEnumerable{``0},``0)">
+      <summary>指定されたシーケンスの要素を返します。シーケンスが空の場合はシングルトン コレクションにある型パラメーターの既定値を返します。</summary>
+      <returns>
+        <paramref name="source" /> が空の場合は <paramref name="defaultValue" /> が格納されている <see cref="T:System.Collections.Generic.IEnumerable`1" />。それ以外の場合は <paramref name="source" />。</returns>
+      <param name="source">シーケンスが空の場合に、指定された値を返すシーケンス。</param>
+      <param name="defaultValue">シーケンスが空の場合に返す値。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+    </member>
+    <member name="M:System.Linq.Enumerable.Distinct``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>既定の等値比較子を使用して値を比較することにより、シーケンスから一意の要素を返します。</summary>
+      <returns>ソース シーケンスの一意の要素を格納する <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">重複する要素を削除する対象となるシーケンス。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Distinct``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
+      <summary>指定された <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> を使用して値を比較することにより、シーケンスから一意の要素を返します。</summary>
+      <returns>ソース シーケンスの一意の要素を格納する <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">重複する要素を削除する対象となるシーケンス。</param>
+      <param name="comparer">値を比較する <see cref="T:System.Collections.Generic.IEqualityComparer`1" />。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ElementAt``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+      <summary>シーケンス内の指定されたインデックス位置にある要素を返します。</summary>
+      <returns>ソース シーケンス内の指定された位置にある要素。</returns>
+      <param name="source">返される要素が含まれる <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="index">取得する要素の、0 から始まるインデックス。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> が 0 未満か <paramref name="source" /> に含まれている要素数以上の値です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ElementAtOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+      <summary>シーケンス内の指定されたインデックス位置にある要素を返します。インデックスが範囲外の場合は既定値を返します。</summary>
+      <returns>インデックスがソース シーケンスの範囲外の場合は default (<paramref name="TSource" />)。それ以外の場合は、ソース シーケンスの指定した位置にある要素。</returns>
+      <param name="source">返される要素が含まれる <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="index">取得する要素の、0 から始まるインデックス。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Empty``1">
+      <summary>指定した型引数を持つ空の <see cref="T:System.Collections.Generic.IEnumerable`1" /> を返します。</summary>
+      <returns>型引数が <paramref name="TResult" /> である空の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <typeparam name="TResult">返されるジェネリック <see cref="T:System.Collections.Generic.IEnumerable`1" /> の型パラメーターに割り当てる型。</typeparam>
+    </member>
+    <member name="M:System.Linq.Enumerable.Except``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+      <summary>既定の等値比較子を使用して値を比較することにより、2 つのシーケンスの差集合を生成します。</summary>
+      <returns>2 つのシーケンスの要素の差集合が格納されているシーケンス。</returns>
+      <param name="first">
+        <paramref name="second" /> には含まれていないが、返される要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="second">最初のシーケンスにも含まれ、返されたシーケンスからは削除される要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="TSource">入力シーケンスの要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="first" /> または <paramref name="second" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Except``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
+      <summary>指定された <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> を使用して値を比較することにより、2 つのシーケンスの差集合を生成します。</summary>
+      <returns>2 つのシーケンスの要素の差集合が格納されているシーケンス。</returns>
+      <param name="first">
+        <paramref name="second" /> には含まれていないが、返される要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="second">最初のシーケンスにも含まれ、返されたシーケンスからは削除される要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="comparer">値を比較する <see cref="T:System.Collections.Generic.IEqualityComparer`1" />。</param>
+      <typeparam name="TSource">入力シーケンスの要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="first" /> または <paramref name="second" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.First``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>シーケンスの最初の要素を返します。</summary>
+      <returns>指定されたシーケンスの最初の要素。</returns>
+      <param name="source">最初の要素を返す <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.InvalidOperationException">ソース シーケンスが空です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.First``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+      <summary>指定された条件を満たす、シーケンスの最初の要素を返します。</summary>
+      <returns>指定された述語関数でテストに合格する、シーケンスの最初の要素。</returns>
+      <param name="source">返される要素が含まれる <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="predicate">各要素が条件を満たしているかどうかをテストする関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="predicate" /> が null です。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="predicate" /> の条件を満たす要素がありません。またはソース シーケンスが空です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.FirstOrDefault``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>シーケンスの最初の要素を返します。シーケンスに要素が含まれていない場合は既定値を返します。</summary>
+      <returns>
+        <paramref name="source" /> が空の場合は default(<paramref name="TSource" />)。それ以外の場合は <paramref name="source" /> の最初の要素。</returns>
+      <param name="source">最初の要素を返す <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.FirstOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+      <summary>条件を満たす、シーケンスの最初の要素を返します。このような要素が見つからない場合は既定値を返します。</summary>
+      <returns>
+        <paramref name="source" /> が空の場合または <paramref name="predicate" /> で指定されたテストに合格する要素がない場合は default(<paramref name="TSource" />)。それ以外の場合は、<paramref name="predicate" /> で指定されたテストに合格する、<paramref name="source" /> の最初の要素。</returns>
+      <param name="source">返される要素が含まれる <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="predicate">各要素が条件を満たしているかどうかをテストする関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="predicate" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.GroupBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+      <summary>指定されたキー セレクター関数に従ってシーケンスの要素をグループ化します。</summary>
+      <returns>C# では IEnumerable&lt;IGrouping&lt;TKey, TSource&gt;&gt;、Visual Basic では IEnumerable(Of IGrouping(Of TKey, TSource))。ここでは、各 <see cref="T:System.Linq.IGrouping`2" /> オブジェクトに、オブジェクトのシーケンス、およびキーが格納されています。</returns>
+      <param name="source">グループ化する要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="keySelector">各要素のキーを抽出する関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TKey">
+        <paramref name="keySelector" /> によって返されるキーの型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="keySelector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.GroupBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
+      <summary>指定されたキー セレクター関数に従ってシーケンスの要素をグループ化し、指定された比較子を使用してキーを比較します。</summary>
+      <returns>C# では IEnumerable&lt;IGrouping&lt;TKey, TSource&gt;&gt;、Visual Basic では IEnumerable(Of IGrouping(Of TKey, TSource))。ここでは、各 <see cref="T:System.Linq.IGrouping`2" /> オブジェクトに、オブジェクトのコレクション、およびキーが格納されています。</returns>
+      <param name="source">グループ化する要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="keySelector">各要素のキーを抽出する関数。</param>
+      <param name="comparer">キーを比較する <see cref="T:System.Collections.Generic.IEqualityComparer`1" />。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TKey">
+        <paramref name="keySelector" /> によって返されるキーの型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="keySelector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.GroupBy``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``2})">
+      <summary>指定されたキー セレクター関数に従ってシーケンスの要素をグループ化し、指定された関数を使用して各グループの要素を射影します。</summary>
+      <returns>C# では IEnumerable&lt;IGrouping&lt;TKey, TElement&gt;&gt;、Visual Basic では IEnumerable(Of IGrouping(Of TKey, TElement))。ここでは、各 <see cref="T:System.Linq.IGrouping`2" /> オブジェクトに、<paramref name="TElement" /> 型のオブジェクトのコレクション、およびキーが格納されています。</returns>
+      <param name="source">グループ化する要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="keySelector">各要素のキーを抽出する関数。</param>
+      <param name="elementSelector">ソースの各要素を <see cref="T:System.Linq.IGrouping`2" /> の要素に割り当てる関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TKey">
+        <paramref name="keySelector" /> によって返されるキーの型。</typeparam>
+      <typeparam name="TElement">
+        <see cref="T:System.Linq.IGrouping`2" /> 内の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />、<paramref name="keySelector" />、または <paramref name="elementSelector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.GroupBy``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
+      <summary>キー セレクター関数に従ってシーケンスの要素をグループ化します。キーの比較には、比較子を使用し、各グループの要素の射影には、指定された関数を使用します。</summary>
+      <returns>C# では IEnumerable&lt;IGrouping&lt;TKey, TElement&gt;&gt;、Visual Basic では IEnumerable(Of IGrouping(Of TKey, TElement))。ここでは、各 <see cref="T:System.Linq.IGrouping`2" /> オブジェクトに、<paramref name="TElement" /> 型のオブジェクトのコレクション、およびキーが格納されています。</returns>
+      <param name="source">グループ化する要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="keySelector">各要素のキーを抽出する関数。</param>
+      <param name="elementSelector">ソースの各要素を <see cref="T:System.Linq.IGrouping`2" /> の要素に割り当てる関数。</param>
+      <param name="comparer">キーを比較する <see cref="T:System.Collections.Generic.IEqualityComparer`1" />。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TKey">
+        <paramref name="keySelector" /> によって返されるキーの型。</typeparam>
+      <typeparam name="TElement">
+        <see cref="T:System.Linq.IGrouping`2" /> 内の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />、<paramref name="keySelector" />、または <paramref name="elementSelector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.GroupBy``4(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``2},System.Func{``1,System.Collections.Generic.IEnumerable{``2},``3})">
+      <summary>指定されたキー セレクター関数に従ってシーケンスの要素をグループ化し、各グループとそのキーから結果値を作成します。各グループの要素は、指定された関数を使用して射影されます。</summary>
+      <returns>
+        <paramref name="TResult" /> 型の要素のコレクション。各要素は、グループとそのキーの射影を表します。</returns>
+      <param name="source">グループ化する要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="keySelector">各要素のキーを抽出する関数。</param>
+      <param name="elementSelector">ソースの各要素を <see cref="T:System.Linq.IGrouping`2" /> の要素に割り当てる関数。</param>
+      <param name="resultSelector">各グループから結果値を作成する関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TKey">
+        <paramref name="keySelector" /> によって返されるキーの型。</typeparam>
+      <typeparam name="TElement">各 <see cref="T:System.Linq.IGrouping`2" /> の要素の型。</typeparam>
+      <typeparam name="TResult">
+        <paramref name="resultSelector" /> によって返される結果値の型。</typeparam>
+    </member>
+    <member name="M:System.Linq.Enumerable.GroupBy``4(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``2},System.Func{``1,System.Collections.Generic.IEnumerable{``2},``3},System.Collections.Generic.IEqualityComparer{``1})">
+      <summary>指定されたキー セレクター関数に従ってシーケンスの要素をグループ化し、各グループとそのキーから結果値を作成します。キー値の比較には、指定された比較子を使用し、各グループの要素の射影には、指定された関数を使用します。</summary>
+      <returns>
+        <paramref name="TResult" /> 型の要素のコレクション。各要素は、グループとそのキーの射影を表します。</returns>
+      <param name="source">グループ化する要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="keySelector">各要素のキーを抽出する関数。</param>
+      <param name="elementSelector">ソースの各要素を <see cref="T:System.Linq.IGrouping`2" /> の要素に割り当てる関数。</param>
+      <param name="resultSelector">各グループから結果値を作成する関数。</param>
+      <param name="comparer">キーの比較対象となる <see cref="T:System.Collections.Generic.IEqualityComparer`1" />。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TKey">
+        <paramref name="keySelector" /> によって返されるキーの型。</typeparam>
+      <typeparam name="TElement">各 <see cref="T:System.Linq.IGrouping`2" /> の要素の型。</typeparam>
+      <typeparam name="TResult">
+        <paramref name="resultSelector" /> によって返される結果値の型。</typeparam>
+    </member>
+    <member name="M:System.Linq.Enumerable.GroupBy``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``1,System.Collections.Generic.IEnumerable{``0},``2})">
+      <summary>指定されたキー セレクター関数に従ってシーケンスの要素をグループ化し、各グループとそのキーから結果値を作成します。</summary>
+      <returns>
+        <paramref name="TResult" /> 型の要素のコレクション。各要素は、グループとそのキーの射影を表します。</returns>
+      <param name="source">グループ化する要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="keySelector">各要素のキーを抽出する関数。</param>
+      <param name="resultSelector">各グループから結果値を作成する関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TKey">
+        <paramref name="keySelector" /> によって返されるキーの型。</typeparam>
+      <typeparam name="TResult">
+        <paramref name="resultSelector" /> によって返される結果値の型。</typeparam>
+    </member>
+    <member name="M:System.Linq.Enumerable.GroupBy``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``1,System.Collections.Generic.IEnumerable{``0},``2},System.Collections.Generic.IEqualityComparer{``1})">
+      <summary>指定されたキー セレクター関数に従ってシーケンスの要素をグループ化し、各グループとそのキーから結果値を作成します。キーの比較には、指定された比較子を使用します。</summary>
+      <returns>
+        <paramref name="TResult" /> 型の要素のコレクション。各要素は、グループとそのキーの射影を表します。</returns>
+      <param name="source">グループ化する要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="keySelector">各要素のキーを抽出する関数。</param>
+      <param name="resultSelector">各グループから結果値を作成する関数。</param>
+      <param name="comparer">キーの比較対象となる <see cref="T:System.Collections.Generic.IEqualityComparer`1" />。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TKey">
+        <paramref name="keySelector" /> によって返されるキーの型。</typeparam>
+      <typeparam name="TResult">
+        <paramref name="resultSelector" /> によって返される結果値の型。</typeparam>
+    </member>
+    <member name="M:System.Linq.Enumerable.GroupJoin``4(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``2},System.Func{``1,``2},System.Func{``0,System.Collections.Generic.IEnumerable{``1},``3})">
+      <summary>キーが等しいかどうかに基づいて 2 つのシーケンスの要素を相互に関連付け、その結果をグループ化します。キーの比較には既定の等値比較子が使用されます。</summary>
+      <returns>2 つのシーケンスに対してグループ化結合を実行して取得する、<paramref name="TResult" /> 型の要素が格納されている <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="outer">結合する最初のシーケンス。</param>
+      <param name="inner">最初のシーケンスに結合するシーケンス。</param>
+      <param name="outerKeySelector">最初のシーケンスの各要素から結合キーを抽出する関数。</param>
+      <param name="innerKeySelector">2 番目のシーケンスの各要素から結合キーを抽出する関数。</param>
+      <param name="resultSelector">最初のシーケンスの要素と、2 番目のシーケンスの一致する要素のコレクションから結果の要素を作成する関数。</param>
+      <typeparam name="TOuter">最初のシーケンスの要素の型。</typeparam>
+      <typeparam name="TInner">2 番目のシーケンスの要素の型。</typeparam>
+      <typeparam name="TKey">キー セレクター関数によって返されるキーの型。</typeparam>
+      <typeparam name="TResult">結果の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="outer" />、<paramref name="inner" />、<paramref name="outerKeySelector" />、<paramref name="innerKeySelector" />、または <paramref name="resultSelector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.GroupJoin``4(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``2},System.Func{``1,``2},System.Func{``0,System.Collections.Generic.IEnumerable{``1},``3},System.Collections.Generic.IEqualityComparer{``2})">
+      <summary>キーが等しいかどうかに基づいて 2 つのシーケンスの要素を相互に関連付け、その結果をグループ化します。指定された <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> を使用してキーを比較します。</summary>
+      <returns>2 つのシーケンスに対してグループ化結合を実行して取得する、<paramref name="TResult" /> 型の要素が格納されている <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="outer">結合する最初のシーケンス。</param>
+      <param name="inner">最初のシーケンスに結合するシーケンス。</param>
+      <param name="outerKeySelector">最初のシーケンスの各要素から結合キーを抽出する関数。</param>
+      <param name="innerKeySelector">2 番目のシーケンスの各要素から結合キーを抽出する関数。</param>
+      <param name="resultSelector">最初のシーケンスの要素と、2 番目のシーケンスの一致する要素のコレクションから結果の要素を作成する関数。</param>
+      <param name="comparer">キーをハッシュして比較する <see cref="T:System.Collections.Generic.IEqualityComparer`1" />。</param>
+      <typeparam name="TOuter">最初のシーケンスの要素の型。</typeparam>
+      <typeparam name="TInner">2 番目のシーケンスの要素の型。</typeparam>
+      <typeparam name="TKey">キー セレクター関数によって返されるキーの型。</typeparam>
+      <typeparam name="TResult">結果の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="outer" />、<paramref name="inner" />、<paramref name="outerKeySelector" />、<paramref name="innerKeySelector" />、または <paramref name="resultSelector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Intersect``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+      <summary>既定の等値比較子を使用して値を比較することにより、2 つのシーケンスの積集合を生成します。</summary>
+      <returns>2 つのシーケンスの積集合を構成する要素が格納されているシーケンス。</returns>
+      <param name="first">
+        <paramref name="second" /> にも含まれる、返される一意の要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="second">最初のシーケンスにも含まれる、返される一意の要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="TSource">入力シーケンスの要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="first" /> または <paramref name="second" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Intersect``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
+      <summary>指定された <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> を使用して値を比較することにより、2 つのシーケンスの積集合を生成します。</summary>
+      <returns>2 つのシーケンスの積集合を構成する要素が格納されているシーケンス。</returns>
+      <param name="first">
+        <paramref name="second" /> にも含まれる、返される一意の要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="second">最初のシーケンスにも含まれる、返される一意の要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="comparer">値を比較する <see cref="T:System.Collections.Generic.IEqualityComparer`1" />。</param>
+      <typeparam name="TSource">入力シーケンスの要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="first" /> または <paramref name="second" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Join``4(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``2},System.Func{``1,``2},System.Func{``0,``1,``3})">
+      <summary>一致するキーに基づいて 2 つのシーケンスの要素を相互に関連付けます。キーの比較には既定の等値比較子が使用されます。</summary>
+      <returns>2 つのシーケンスに対して内部結合を実行して取得する、<paramref name="TResult" /> 型の要素が格納されている <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="outer">結合する最初のシーケンス。</param>
+      <param name="inner">最初のシーケンスに結合するシーケンス。</param>
+      <param name="outerKeySelector">最初のシーケンスの各要素から結合キーを抽出する関数。</param>
+      <param name="innerKeySelector">2 番目のシーケンスの各要素から結合キーを抽出する関数。</param>
+      <param name="resultSelector">一致する 2 つの要素から結果の要素を作成する関数。</param>
+      <typeparam name="TOuter">最初のシーケンスの要素の型。</typeparam>
+      <typeparam name="TInner">2 番目のシーケンスの要素の型。</typeparam>
+      <typeparam name="TKey">キー セレクター関数によって返されるキーの型。</typeparam>
+      <typeparam name="TResult">結果の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="outer" />、<paramref name="inner" />、<paramref name="outerKeySelector" />、<paramref name="innerKeySelector" />、または <paramref name="resultSelector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Join``4(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``2},System.Func{``1,``2},System.Func{``0,``1,``3},System.Collections.Generic.IEqualityComparer{``2})">
+      <summary>一致するキーに基づいて 2 つのシーケンスの要素を相互に関連付けます。指定された <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> を使用してキーを比較します。</summary>
+      <returns>2 つのシーケンスに対して内部結合を実行して取得する、<paramref name="TResult" /> 型の要素が格納されている <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="outer">結合する最初のシーケンス。</param>
+      <param name="inner">最初のシーケンスに結合するシーケンス。</param>
+      <param name="outerKeySelector">最初のシーケンスの各要素から結合キーを抽出する関数。</param>
+      <param name="innerKeySelector">2 番目のシーケンスの各要素から結合キーを抽出する関数。</param>
+      <param name="resultSelector">一致する 2 つの要素から結果の要素を作成する関数。</param>
+      <param name="comparer">キーをハッシュして比較する <see cref="T:System.Collections.Generic.IEqualityComparer`1" />。</param>
+      <typeparam name="TOuter">最初のシーケンスの要素の型。</typeparam>
+      <typeparam name="TInner">2 番目のシーケンスの要素の型。</typeparam>
+      <typeparam name="TKey">キー セレクター関数によって返されるキーの型。</typeparam>
+      <typeparam name="TResult">結果の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="outer" />、<paramref name="inner" />、<paramref name="outerKeySelector" />、<paramref name="innerKeySelector" />、または <paramref name="resultSelector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Last``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>シーケンスの最後の要素を返します。</summary>
+      <returns>ソース シーケンスの最後の位置にある値。</returns>
+      <param name="source">最後の要素を返す <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.InvalidOperationException">ソース シーケンスが空です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Last``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+      <summary>指定された条件を満たす、シーケンスの最後の要素を返します。</summary>
+      <returns>指定された述語関数でテストに合格する、シーケンスの最後の要素。</returns>
+      <param name="source">返される要素が含まれる <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="predicate">各要素が条件を満たしているかどうかをテストする関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="predicate" /> が null です。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="predicate" /> の条件を満たす要素がありません。またはソース シーケンスが空です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.LastOrDefault``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>シーケンスの最後の要素を返します。シーケンスに要素が含まれていない場合は既定値を返します。</summary>
+      <returns>ソース シーケンスが空の場合は default (<paramref name="TSource" />)。それ以外の場合は <see cref="T:System.Collections.Generic.IEnumerable`1" /> の最後の要素。</returns>
+      <param name="source">最後の要素を返す <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.LastOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+      <summary>条件を満たす、シーケンスの最後の要素を返します。このような要素が見つからない場合は既定値を返します。</summary>
+      <returns>シーケンスが空の場合、または述語関数でテストに合格する要素がない場合は default (<paramref name="TSource" />)。それ以外の場合は、述語関数でテストに合格する最後の要素。</returns>
+      <param name="source">返される要素が含まれる <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="predicate">各要素が条件を満たしているかどうかをテストする関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="predicate" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.LongCount``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>シーケンス内の要素の合計数を表す <see cref="T:System.Int64" /> を返します。</summary>
+      <returns>ソース シーケンスの要素数。</returns>
+      <param name="source">カウントする要素が格納されている <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.OverflowException">要素数が <see cref="F:System.Int64.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.LongCount``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+      <summary>シーケンス内で条件を満たす要素の数を表す <see cref="T:System.Int64" /> を返します。</summary>
+      <returns>述語関数の条件を満たす、シーケンス内の要素数を表す数値。</returns>
+      <param name="source">カウントする要素が格納されている <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="predicate">各要素が条件を満たしているかどうかをテストする関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="predicate" /> が null です。</exception>
+      <exception cref="T:System.OverflowException">一致する要素数が <see cref="F:System.Int64.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max(System.Collections.Generic.IEnumerable{System.Decimal})">
+      <summary>
+        <see cref="T:System.Decimal" /> 値のシーケンスの最大値を返します。</summary>
+      <returns>シーケンスの最大値。</returns>
+      <param name="source">最大値を確認する対象となる <see cref="T:System.Decimal" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max(System.Collections.Generic.IEnumerable{System.Double})">
+      <summary>
+        <see cref="T:System.Double" /> 値のシーケンスの最大値を返します。</summary>
+      <returns>シーケンスの最大値。</returns>
+      <param name="source">最大値を確認する対象となる <see cref="T:System.Double" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max(System.Collections.Generic.IEnumerable{System.Int32})">
+      <summary>
+        <see cref="T:System.Int32" /> 値のシーケンスの最大値を返します。</summary>
+      <returns>シーケンスの最大値。</returns>
+      <param name="source">最大値を確認する対象となる <see cref="T:System.Int32" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max(System.Collections.Generic.IEnumerable{System.Int64})">
+      <summary>
+        <see cref="T:System.Int64" /> 値のシーケンスの最大値を返します。</summary>
+      <returns>シーケンスの最大値。</returns>
+      <param name="source">最大値を確認する対象となる <see cref="T:System.Int64" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max(System.Collections.Generic.IEnumerable{System.Nullable{System.Decimal}})">
+      <summary>null 許容の <see cref="T:System.Decimal" /> 値のシーケンスの最大値を返します。</summary>
+      <returns>シーケンスの最大値に対応する Nullable&lt;Decimal&gt; 型 (C# の場合) または Nullable(Of Decimal) 型 (Visual Basic の場合) の値。 </returns>
+      <param name="source">最大値を確認する対象となる null 許容の <see cref="T:System.Decimal" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max(System.Collections.Generic.IEnumerable{System.Nullable{System.Double}})">
+      <summary>null 許容の <see cref="T:System.Double" /> 値のシーケンスの最大値を返します。</summary>
+      <returns>シーケンスの最大値に対応する Nullable&lt;Double&gt; 型 (C# の場合) または Nullable(Of Double) 型 (Visual Basic の場合) の値。</returns>
+      <param name="source">最大値を確認する対象となる null 許容の <see cref="T:System.Double" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max(System.Collections.Generic.IEnumerable{System.Nullable{System.Int32}})">
+      <summary>null 許容の <see cref="T:System.Int32" /> 値のシーケンスの最大値を返します。</summary>
+      <returns>シーケンスの最大値に対応する Nullable&lt;Int32&gt; 型 (C# の場合) または Nullable(Of Int32) 型 (Visual Basic の場合) の値。 </returns>
+      <param name="source">最大値を確認する対象となる null 許容の <see cref="T:System.Int32" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max(System.Collections.Generic.IEnumerable{System.Nullable{System.Int64}})">
+      <summary>null 許容の <see cref="T:System.Int64" /> 値のシーケンスの最大値を返します。</summary>
+      <returns>シーケンスの最大値に対応する Nullable&lt;Int64&gt; 型 (C# の場合) または Nullable(Of Int64) 型 (Visual Basic の場合) の値。 </returns>
+      <param name="source">最大値を確認する対象となる null 許容の <see cref="T:System.Int64" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max(System.Collections.Generic.IEnumerable{System.Nullable{System.Single}})">
+      <summary>null 許容の <see cref="T:System.Single" /> 値のシーケンスの最大値を返します。</summary>
+      <returns>シーケンスの最大値に対応する Nullable&lt;Single&gt; 型 (C# の場合) または Nullable(Of Single) 型 (Visual Basic の場合) の値。</returns>
+      <param name="source">最大値を確認する対象となる null 許容の <see cref="T:System.Single" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max(System.Collections.Generic.IEnumerable{System.Single})">
+      <summary>
+        <see cref="T:System.Single" /> 値のシーケンスの最大値を返します。</summary>
+      <returns>シーケンスの最大値。</returns>
+      <param name="source">最大値を確認する対象となる <see cref="T:System.Single" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>ジェネリック シーケンスの最大値を返します。</summary>
+      <returns>シーケンスの最大値。</returns>
+      <param name="source">最大値を確認する対象となる値のシーケンス。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Decimal})">
+      <summary>シーケンスの各要素に対して変換関数を呼び出し、<see cref="T:System.Decimal" /> の最大値を返します。</summary>
+      <returns>シーケンスの最大値。</returns>
+      <param name="source">最大値を確認する対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Double})">
+      <summary>シーケンスの各要素に対して変換関数を呼び出し、<see cref="T:System.Double" /> の最大値を返します。</summary>
+      <returns>シーケンスの最大値。</returns>
+      <param name="source">最大値を確認する対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32})">
+      <summary>シーケンスの各要素に対して変換関数を呼び出し、<see cref="T:System.Int32" /> の最大値を返します。</summary>
+      <returns>シーケンスの最大値。</returns>
+      <param name="source">最大値を確認する対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int64})">
+      <summary>シーケンスの各要素に対して変換関数を呼び出し、<see cref="T:System.Int64" /> の最大値を返します。</summary>
+      <returns>シーケンスの最大値。</returns>
+      <param name="source">最大値を確認する対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Decimal}})">
+      <summary>シーケンスの各要素に対して変換関数を呼び出し、null 許容の <see cref="T:System.Decimal" /> の最大値を返します。</summary>
+      <returns>シーケンスの最大値に対応する Nullable&lt;Decimal&gt; 型 (C# の場合) または Nullable(Of Decimal) 型 (Visual Basic の場合) の値。</returns>
+      <param name="source">最大値を確認する対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Double}})">
+      <summary>シーケンスの各要素に対して変換関数を呼び出し、null 許容の <see cref="T:System.Double" /> の最大値を返します。</summary>
+      <returns>シーケンスの最大値に対応する Nullable&lt;Double&gt; 型 (C# の場合) または Nullable(Of Double) 型 (Visual Basic の場合) の値。</returns>
+      <param name="source">最大値を確認する対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int32}})">
+      <summary>シーケンスの各要素に対して変換関数を呼び出し、null 許容の <see cref="T:System.Int32" /> の最大値を返します。</summary>
+      <returns>シーケンスの最大値に対応する Nullable&lt;Int32&gt; 型 (C# の場合) または Nullable(Of Int32) 型 (Visual Basic の場合) の値。</returns>
+      <param name="source">最大値を確認する対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int64}})">
+      <summary>シーケンスの各要素に対して変換関数を呼び出し、null 許容の <see cref="T:System.Int64" /> の最大値を返します。</summary>
+      <returns>シーケンスの最大値に対応する Nullable&lt;Int64&gt; 型 (C# の場合) または Nullable(Of Int64) 型 (Visual Basic の場合) の値。</returns>
+      <param name="source">最大値を確認する対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Single}})">
+      <summary>シーケンスの各要素に対して変換関数を呼び出し、null 許容の <see cref="T:System.Single" /> の最大値を返します。</summary>
+      <returns>シーケンスの最大値に対応する Nullable&lt;Single&gt; 型 (C# の場合) または Nullable(Of Single) 型 (Visual Basic の場合) の値。</returns>
+      <param name="source">最大値を確認する対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Single})">
+      <summary>シーケンスの各要素に対して変換関数を呼び出し、<see cref="T:System.Single" /> の最大値を返します。</summary>
+      <returns>シーケンスの最大値。</returns>
+      <param name="source">最大値を確認する対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+      <summary>ジェネリック シーケンスの各要素に対して変換関数を呼び出し、結果の最大値を返します。</summary>
+      <returns>シーケンスの最大値。</returns>
+      <param name="source">最大値を確認する対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TResult">
+        <paramref name="selector" /> によって返される値の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min(System.Collections.Generic.IEnumerable{System.Decimal})">
+      <summary>
+        <see cref="T:System.Decimal" /> 値のシーケンスの最小値を返します。</summary>
+      <returns>シーケンスの最小値。</returns>
+      <param name="source">最小値を確認する対象となる <see cref="T:System.Decimal" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min(System.Collections.Generic.IEnumerable{System.Double})">
+      <summary>
+        <see cref="T:System.Double" /> 値のシーケンスの最小値を返します。</summary>
+      <returns>シーケンスの最小値。</returns>
+      <param name="source">最小値を確認する対象となる <see cref="T:System.Double" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min(System.Collections.Generic.IEnumerable{System.Int32})">
+      <summary>
+        <see cref="T:System.Int32" /> 値のシーケンスの最小値を返します。</summary>
+      <returns>シーケンスの最小値。</returns>
+      <param name="source">最小値を確認する対象となる <see cref="T:System.Int32" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min(System.Collections.Generic.IEnumerable{System.Int64})">
+      <summary>
+        <see cref="T:System.Int64" /> 値のシーケンスの最小値を返します。</summary>
+      <returns>シーケンスの最小値。</returns>
+      <param name="source">最小値を確認する対象となる <see cref="T:System.Int64" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min(System.Collections.Generic.IEnumerable{System.Nullable{System.Decimal}})">
+      <summary>null 許容の <see cref="T:System.Decimal" /> 値のシーケンスの最小値を返します。</summary>
+      <returns>シーケンスの最小値に対応する Nullable&lt;Decimal&gt; 型 (C# の場合) または Nullable(Of Decimal) 型 (Visual Basic の場合) の値。</returns>
+      <param name="source">最小値を確認する対象となる null 許容の <see cref="T:System.Decimal" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min(System.Collections.Generic.IEnumerable{System.Nullable{System.Double}})">
+      <summary>null 許容の <see cref="T:System.Double" /> 値のシーケンスの最小値を返します。</summary>
+      <returns>シーケンスの最小値に対応する Nullable&lt;Double&gt; 型 (C# の場合) または Nullable(Of Double) 型 (Visual Basic の場合) の値。</returns>
+      <param name="source">最小値を確認する対象となる null 許容の <see cref="T:System.Double" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min(System.Collections.Generic.IEnumerable{System.Nullable{System.Int32}})">
+      <summary>null 許容の <see cref="T:System.Int32" /> 値のシーケンスの最小値を返します。</summary>
+      <returns>シーケンスの最小値に対応する Nullable&lt;Int32&gt; 型 (C# の場合) または Nullable(Of Int32) 型 (Visual Basic の場合) の値。</returns>
+      <param name="source">最小値を確認する対象となる null 許容の <see cref="T:System.Int32" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min(System.Collections.Generic.IEnumerable{System.Nullable{System.Int64}})">
+      <summary>null 許容の <see cref="T:System.Int64" /> 値のシーケンスの最小値を返します。</summary>
+      <returns>シーケンスの最小値に対応する Nullable&lt;Int64&gt; 型 (C# の場合) または Nullable(Of Int64) 型 (Visual Basic の場合) の値。</returns>
+      <param name="source">最小値を確認する対象となる null 許容の <see cref="T:System.Int64" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min(System.Collections.Generic.IEnumerable{System.Nullable{System.Single}})">
+      <summary>null 許容の <see cref="T:System.Single" /> 値のシーケンスの最小値を返します。</summary>
+      <returns>シーケンスの最小値に対応する Nullable&lt;Single&gt; 型 (C# の場合) または Nullable(Of Single) 型 (Visual Basic の場合) の値。</returns>
+      <param name="source">最小値を確認する対象となる null 許容の <see cref="T:System.Single" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min(System.Collections.Generic.IEnumerable{System.Single})">
+      <summary>
+        <see cref="T:System.Single" /> 値のシーケンスの最小値を返します。</summary>
+      <returns>シーケンスの最小値。</returns>
+      <param name="source">最小値を確認する対象となる <see cref="T:System.Single" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>ジェネリック シーケンスの最小値を返します。</summary>
+      <returns>シーケンスの最小値。</returns>
+      <param name="source">最小値を確認する対象となる値のシーケンス。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Decimal})">
+      <summary>シーケンスの各要素に対して変換関数を呼び出し、<see cref="T:System.Decimal" /> の最小値を返します。</summary>
+      <returns>シーケンスの最小値。</returns>
+      <param name="source">最小値を確認する対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Double})">
+      <summary>シーケンスの各要素に対して変換関数を呼び出し、<see cref="T:System.Double" /> の最小値を返します。</summary>
+      <returns>シーケンスの最小値。</returns>
+      <param name="source">最小値を確認する対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32})">
+      <summary>シーケンスの各要素に対して変換関数を呼び出し、<see cref="T:System.Int32" /> の最小値を返します。</summary>
+      <returns>シーケンスの最小値。</returns>
+      <param name="source">最小値を確認する対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int64})">
+      <summary>シーケンスの各要素に対して変換関数を呼び出し、<see cref="T:System.Int64" /> の最小値を返します。</summary>
+      <returns>シーケンスの最小値。</returns>
+      <param name="source">最小値を確認する対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Decimal}})">
+      <summary>シーケンスの各要素に対して変換関数を呼び出し、null 許容の <see cref="T:System.Decimal" /> の最小値を返します。</summary>
+      <returns>シーケンスの最小値に対応する Nullable&lt;Decimal&gt; 型 (C# の場合) または Nullable(Of Decimal) 型 (Visual Basic の場合) の値。</returns>
+      <param name="source">最小値を確認する対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Double}})">
+      <summary>シーケンスの各要素に対して変換関数を呼び出し、null 許容の <see cref="T:System.Double" /> の最小値を返します。</summary>
+      <returns>シーケンスの最小値に対応する Nullable&lt;Double&gt; 型 (C# の場合) または Nullable(Of Double) 型 (Visual Basic の場合) の値。</returns>
+      <param name="source">最小値を確認する対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int32}})">
+      <summary>シーケンスの各要素に対して変換関数を呼び出し、null 許容の <see cref="T:System.Int32" /> の最小値を返します。</summary>
+      <returns>シーケンスの最小値に対応する Nullable&lt;Int32&gt; 型 (C# の場合) または Nullable(Of Int32) 型 (Visual Basic の場合) の値。</returns>
+      <param name="source">最小値を確認する対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int64}})">
+      <summary>シーケンスの各要素に対して変換関数を呼び出し、null 許容の <see cref="T:System.Int64" /> の最小値を返します。</summary>
+      <returns>シーケンスの最小値に対応する Nullable&lt;Int64&gt; 型 (C# の場合) または Nullable(Of Int64) 型 (Visual Basic の場合) の値。</returns>
+      <param name="source">最小値を確認する対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Single}})">
+      <summary>シーケンスの各要素に対して変換関数を呼び出し、null 許容の <see cref="T:System.Single" /> の最小値を返します。</summary>
+      <returns>シーケンスの最小値に対応する Nullable&lt;Single&gt; 型 (C# の場合) または Nullable(Of Single) 型 (Visual Basic の場合) の値。</returns>
+      <param name="source">最小値を確認する対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Single})">
+      <summary>シーケンスの各要素に対して変換関数を呼び出し、<see cref="T:System.Single" /> の最小値を返します。</summary>
+      <returns>シーケンスの最小値。</returns>
+      <param name="source">最小値を確認する対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> に要素が含まれていません。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+      <summary>ジェネリック シーケンスの各要素に対して変換関数を呼び出し、結果の最小値を返します。</summary>
+      <returns>シーケンスの最小値。</returns>
+      <param name="source">最小値を確認する対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TResult">
+        <paramref name="selector" /> によって返される値の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.OfType``1(System.Collections.IEnumerable)">
+      <summary>指定された型に基づいて <see cref="T:System.Collections.IEnumerable" /> の要素をフィルター処理します。</summary>
+      <returns>
+        <paramref name="TResult" /> 型の入力シーケンスの要素を格納する <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">フィルター処理する要素を含む <see cref="T:System.Collections.IEnumerable" />。</param>
+      <typeparam name="TResult">シーケンスの要素をフィルター処理する型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.OrderBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+      <summary>シーケンスの要素をキーに従って昇順に並べ替えます。</summary>
+      <returns>要素がキーに従って並べ替えられている <see cref="T:System.Linq.IOrderedEnumerable`1" />。</returns>
+      <param name="source">順序付ける値のシーケンス。</param>
+      <param name="keySelector">要素からキーを抽出する関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TKey">
+        <paramref name="keySelector" /> によって返されるキーの型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="keySelector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.OrderBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+      <summary>指定された比較子を使用してシーケンスの要素を昇順に並べ替えます。</summary>
+      <returns>要素がキーに従って並べ替えられている <see cref="T:System.Linq.IOrderedEnumerable`1" />。</returns>
+      <param name="source">順序付ける値のシーケンス。</param>
+      <param name="keySelector">要素からキーを抽出する関数。</param>
+      <param name="comparer">キーを比較する <see cref="T:System.Collections.Generic.IComparer`1" />。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TKey">
+        <paramref name="keySelector" /> によって返されるキーの型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="keySelector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.OrderByDescending``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+      <summary>シーケンスの要素をキーに従って降順に並べ替えます。</summary>
+      <returns>要素がキーに従って降順に並べ替えられている <see cref="T:System.Linq.IOrderedEnumerable`1" />。</returns>
+      <param name="source">順序付ける値のシーケンス。</param>
+      <param name="keySelector">要素からキーを抽出する関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TKey">
+        <paramref name="keySelector" /> によって返されるキーの型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="keySelector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.OrderByDescending``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+      <summary>指定された比較子を使用してシーケンスの要素を降順に並べ替えます。</summary>
+      <returns>要素がキーに従って降順に並べ替えられている <see cref="T:System.Linq.IOrderedEnumerable`1" />。</returns>
+      <param name="source">順序付ける値のシーケンス。</param>
+      <param name="keySelector">要素からキーを抽出する関数。</param>
+      <param name="comparer">キーを比較する <see cref="T:System.Collections.Generic.IComparer`1" />。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TKey">
+        <paramref name="keySelector" /> によって返されるキーの型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="keySelector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Range(System.Int32,System.Int32)">
+      <summary>指定した範囲内の整数のシーケンスを生成します。</summary>
+      <returns>連続した整数の範囲を含む IEnumerable&lt;Int32&gt; (C# の場合) または IEnumerable(Of Int32) (Visual Basic の場合)。</returns>
+      <param name="start">シーケンス内の最初の整数の値。</param>
+      <param name="count">生成する連続した整数の数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> が 0 未満です。または<paramref name="start" /> + <paramref name="count" /> -1 が <see cref="F:System.Int32.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Repeat``1(``0,System.Int32)">
+      <summary>繰り返される 1 つの値を含むシーケンスを生成します。</summary>
+      <returns>繰り返される値を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="element">繰り返される値。</param>
+      <param name="count">生成されたシーケンスで値を繰り返す回数。</param>
+      <typeparam name="TResult">結果のシーケンスで繰り返される値の型。</typeparam>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> が 0 未満です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Reverse``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>シーケンスの要素の順序を反転させます。</summary>
+      <returns>要素が入力シーケンスの要素に逆順で対応しているシーケンス。</returns>
+      <param name="source">反転させる値のシーケンス。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Select``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+      <summary>シーケンスの各要素を新しいフォームに射影します。</summary>
+      <returns>
+        <paramref name="source" /> の各要素に対して変換関数を呼び出した結果として得られる要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">変換関数を呼び出す対象となる値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TResult">
+        <paramref name="selector" /> によって返される値の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Select``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,``1})">
+      <summary>要素のインデックスを組み込むことにより、シーケンスの各要素を新しいフォームに射影します。</summary>
+      <returns>
+        <paramref name="source" /> の各要素に対して変換関数を呼び出した結果として得られる要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">変換関数を呼び出す対象となる値のシーケンス。</param>
+      <param name="selector">各ソース要素に適用する変換関数。この関数の 2 つ目のパラメーターは、ソース要素のインデックスを表します。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TResult">
+        <paramref name="selector" /> によって返される値の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.SelectMany``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Collections.Generic.IEnumerable{``1}},System.Func{``0,``1,``2})">
+      <summary>シーケンスの各要素を <see cref="T:System.Collections.Generic.IEnumerable`1" /> に射影し、結果のシーケンスを 1 つのシーケンスに平坦化して、その各要素に対して結果のセレクター関数を呼び出します。</summary>
+      <returns>
+        <paramref name="source" /> の各要素で一対多の変換関数 <paramref name="collectionSelector" /> を呼び出し、こうしたシーケンスの各要素とそれに対応するソース要素を結果の要素に割り当てた結果として得られる要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">射影する値のシーケンス。</param>
+      <param name="collectionSelector">入力シーケンスの各要素に適用する変換関数。</param>
+      <param name="resultSelector">中間シーケンスの各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TCollection">
+        <paramref name="collectionSelector" /> によって収集される中間要素の型。</typeparam>
+      <typeparam name="TResult">結果のシーケンスの要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />、<paramref name="collectionSelector" />、または <paramref name="resultSelector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.SelectMany``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Collections.Generic.IEnumerable{``1}})">
+      <summary>シーケンスの各要素を <see cref="T:System.Collections.Generic.IEnumerable`1" /> に射影し、結果のシーケンスを 1 つのシーケンスに平坦化します。</summary>
+      <returns>入力シーケンスの各要素に対して一対多の変換関数を呼び出した結果として得られる要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">射影する値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TResult">
+        <paramref name="selector" /> によって返されるシーケンスの要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.SelectMany``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,System.Collections.Generic.IEnumerable{``1}},System.Func{``0,``1,``2})">
+      <summary>シーケンスの各要素を <see cref="T:System.Collections.Generic.IEnumerable`1" /> に射影し、結果のシーケンスを 1 つのシーケンスに平坦化して、その各要素に対して結果のセレクター関数を呼び出します。各ソース要素のインデックスは、その要素の中間の射影されたフォームで使用されます。</summary>
+      <returns>
+        <paramref name="source" /> の各要素で一対多の変換関数 <paramref name="collectionSelector" /> を呼び出し、こうしたシーケンスの各要素とそれに対応するソース要素を結果の要素に割り当てた結果として得られる要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">射影する値のシーケンス。</param>
+      <param name="collectionSelector">各ソース要素に適用する変換関数。この関数の 2 つ目のパラメーターは、ソース要素のインデックスを表します。</param>
+      <param name="resultSelector">中間シーケンスの各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TCollection">
+        <paramref name="collectionSelector" /> によって収集される中間要素の型。</typeparam>
+      <typeparam name="TResult">結果のシーケンスの要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />、<paramref name="collectionSelector" />、または <paramref name="resultSelector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.SelectMany``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,System.Collections.Generic.IEnumerable{``1}})">
+      <summary>シーケンスの各要素を <see cref="T:System.Collections.Generic.IEnumerable`1" /> に射影し、結果のシーケンスを 1 つのシーケンスに平坦化します。各ソース要素のインデックスは、その要素の射影されたフォームで使用されます。</summary>
+      <returns>入力シーケンスの各要素に対して一対多の変換関数を呼び出した結果として得られる要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">射影する値のシーケンス。</param>
+      <param name="selector">各ソース要素に適用する変換関数。この関数の 2 つ目のパラメーターは、ソース要素のインデックスを表します。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TResult">
+        <paramref name="selector" /> によって返されるシーケンスの要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.SequenceEqual``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+      <summary>要素の型に対して既定の等値比較子を使用して要素を比較することで、2 つのシーケンスが等しいかどうかを判断します。</summary>
+      <returns>2 つのソース シーケンスが同じ長さで、それらに対応する要素がその型の既定の等値比較子に従って等しい場合は true。それ以外の場合は false。</returns>
+      <param name="first">
+        <paramref name="second" /> と比較する <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="second">最初のシーケンスと比較する <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="TSource">入力シーケンスの要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="first" /> または <paramref name="second" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.SequenceEqual``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
+      <summary>指定された <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> を使用して要素を比較することで、2 つのシーケンスが等しいかどうかを判断します。</summary>
+      <returns>2 つのソース シーケンスが同じ長さで、<paramref name="comparer" /> に従ってそれらに対応する要素が等しい場合は true。それ以外の場合は false。</returns>
+      <param name="first">
+        <paramref name="second" /> と比較する <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="second">最初のシーケンスと比較する <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="comparer">要素の比較に使用する <see cref="T:System.Collections.Generic.IEqualityComparer`1" />。</param>
+      <typeparam name="TSource">入力シーケンスの要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="first" /> または <paramref name="second" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Single``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>シーケンスの唯一の要素を返します。シーケンス内の要素が 1 つだけではない場合は、例外をスローします。</summary>
+      <returns>入力シーケンスの 1 つの要素。</returns>
+      <param name="source">1 つの要素を返す <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.InvalidOperationException">入力シーケンスに複数の要素が含まれています。または入力シーケンスが空です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Single``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+      <summary>指定された条件を満たす、シーケンスの唯一の要素を返します。そのような要素が複数存在する場合は、例外をスローします。</summary>
+      <returns>条件を満たす、入力シーケンスの 1 つの要素。</returns>
+      <param name="source">1 つの要素を返す <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="predicate">要素が条件を満たしているかどうかをテストする関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="predicate" /> が null です。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="predicate" /> の条件を満たす要素がありません。または<paramref name="predicate" /> の条件を満たす要素が複数あります。またはソース シーケンスが空です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.SingleOrDefault``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>シーケンスの唯一の要素を返します。シーケンスが空の場合、既定値を返します。シーケンス内に要素が複数ある場合、このメソッドは例外をスローします。</summary>
+      <returns>入力シーケンスの 1 つの要素。シーケンスに要素が含まれない場合は default (<paramref name="TSource" />)。</returns>
+      <param name="source">1 つの要素を返す <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.InvalidOperationException">入力シーケンスに複数の要素が含まれています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.SingleOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+      <summary>指定された条件を満たす、シーケンスの唯一の要素を返します。そのような要素が存在しない場合、既定値を返します。複数の要素が条件を満たす場合、このメソッドは例外をスローします。</summary>
+      <returns>条件を満たす、入力シーケンスの 1 つの要素。そのような要素が見つからない場合は default (<paramref name="TSource" />)。</returns>
+      <param name="source">1 つの要素を返す <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="predicate">要素が条件を満たしているかどうかをテストする関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="predicate" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Skip``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+      <summary>シーケンス内の指定された数の要素をバイパスし、残りの要素を返します。</summary>
+      <returns>入力シーケンスで指定されたインデックスの後に出現する要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">返される要素が含まれる <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="count">残りの要素を返す前にスキップする要素の数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.SkipWhile``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+      <summary>指定された条件が満たされる限り、シーケンスの要素をバイパスした後、残りの要素を返します。</summary>
+      <returns>
+        <paramref name="predicate" /> で指定されたテストに合格しない連続する最初の要素から入力シーケンスの要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">返される要素が含まれる <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="predicate">各要素が条件を満たしているかどうかをテストする関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="predicate" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.SkipWhile``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,System.Boolean})">
+      <summary>指定された条件が満たされる限り、シーケンスの要素をバイパスした後、残りの要素を返します。要素のインデックスは、述語関数のロジックで使用されます。</summary>
+      <returns>
+        <paramref name="predicate" /> で指定されたテストに合格しない連続する最初の要素から入力シーケンスの要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">返される要素が含まれる <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="predicate">各ソース要素が条件に当てはまるかどうかをテストする関数。この関数の 2 つ目のパラメーターは、ソース要素のインデックスを表します。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="predicate" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Decimal})">
+      <summary>
+        <see cref="T:System.Decimal" /> 値のシーケンスの合計を計算します。</summary>
+      <returns>シーケンスの値の合計。</returns>
+      <param name="source">合計を計算する対象となる <see cref="T:System.Decimal" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.OverflowException">合計が <see cref="F:System.Decimal.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Double})">
+      <summary>
+        <see cref="T:System.Double" /> 値のシーケンスの合計を計算します。</summary>
+      <returns>シーケンスの値の合計。</returns>
+      <param name="source">合計を計算する対象となる <see cref="T:System.Double" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Int32})">
+      <summary>
+        <see cref="T:System.Int32" /> 値のシーケンスの合計を計算します。</summary>
+      <returns>シーケンスの値の合計。</returns>
+      <param name="source">合計を計算する対象となる <see cref="T:System.Int32" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.OverflowException">合計が <see cref="F:System.Int32.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Int64})">
+      <summary>
+        <see cref="T:System.Int64" /> 値のシーケンスの合計を計算します。</summary>
+      <returns>シーケンスの値の合計。</returns>
+      <param name="source">合計を計算する対象となる <see cref="T:System.Int64" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.OverflowException">合計が <see cref="F:System.Int64.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Nullable{System.Decimal}})">
+      <summary>null 許容の <see cref="T:System.Decimal" /> 値のシーケンスの合計を計算します。</summary>
+      <returns>シーケンスの値の合計。</returns>
+      <param name="source">合計を計算する対象となる null 許容の <see cref="T:System.Decimal" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.OverflowException">合計が <see cref="F:System.Decimal.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Nullable{System.Double}})">
+      <summary>null 許容の <see cref="T:System.Double" /> 値のシーケンスの合計を計算します。</summary>
+      <returns>シーケンスの値の合計。</returns>
+      <param name="source">合計を計算する対象となる null 許容の <see cref="T:System.Double" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Nullable{System.Int32}})">
+      <summary>null 許容の <see cref="T:System.Int32" /> 値のシーケンスの合計を計算します。</summary>
+      <returns>シーケンスの値の合計。</returns>
+      <param name="source">合計を計算する対象となる null 許容の <see cref="T:System.Int32" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.OverflowException">合計が <see cref="F:System.Int32.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Nullable{System.Int64}})">
+      <summary>null 許容の <see cref="T:System.Int64" /> 値のシーケンスの合計を計算します。</summary>
+      <returns>シーケンスの値の合計。</returns>
+      <param name="source">合計を計算する対象となる null 許容の <see cref="T:System.Int64" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+      <exception cref="T:System.OverflowException">合計が <see cref="F:System.Int64.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Nullable{System.Single}})">
+      <summary>null 許容の <see cref="T:System.Single" /> 値のシーケンスの合計を計算します。</summary>
+      <returns>シーケンスの値の合計。</returns>
+      <param name="source">合計を計算する対象となる null 許容の <see cref="T:System.Single" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Single})">
+      <summary>
+        <see cref="T:System.Single" /> 値のシーケンスの合計を計算します。</summary>
+      <returns>シーケンスの値の合計。</returns>
+      <param name="source">合計を計算する対象となる <see cref="T:System.Single" /> 値のシーケンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Decimal})">
+      <summary>入力シーケンスの各要素に対して変換関数を呼び出して取得する <see cref="T:System.Decimal" /> 値のシーケンスの合計を計算します。</summary>
+      <returns>射影された値の合計。</returns>
+      <param name="source">合計の計算に使用される値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+      <exception cref="T:System.OverflowException">合計が <see cref="F:System.Decimal.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Double})">
+      <summary>入力シーケンスの各要素に対して変換関数を呼び出して取得する <see cref="T:System.Double" /> 値のシーケンスの合計を計算します。</summary>
+      <returns>射影された値の合計。</returns>
+      <param name="source">合計の計算に使用される値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32})">
+      <summary>入力シーケンスの各要素に対して変換関数を呼び出して取得する <see cref="T:System.Int32" /> 値のシーケンスの合計を計算します。</summary>
+      <returns>射影された値の合計。</returns>
+      <param name="source">合計の計算に使用される値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+      <exception cref="T:System.OverflowException">合計が <see cref="F:System.Int32.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int64})">
+      <summary>入力シーケンスの各要素に対して変換関数を呼び出して取得する <see cref="T:System.Int64" /> 値のシーケンスの合計を計算します。</summary>
+      <returns>射影された値の合計。</returns>
+      <param name="source">合計の計算に使用される値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+      <exception cref="T:System.OverflowException">合計が <see cref="F:System.Int64.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Decimal}})">
+      <summary>入力シーケンスの各要素に対して変換関数を呼び出して取得する null 許容の <see cref="T:System.Decimal" /> 値のシーケンスの合計を計算します。</summary>
+      <returns>射影された値の合計。</returns>
+      <param name="source">合計の計算に使用される値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+      <exception cref="T:System.OverflowException">合計が <see cref="F:System.Decimal.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Double}})">
+      <summary>入力シーケンスの各要素に対して変換関数を呼び出して取得する null 許容の <see cref="T:System.Double" /> 値のシーケンスの合計を計算します。</summary>
+      <returns>射影された値の合計。</returns>
+      <param name="source">合計の計算に使用される値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int32}})">
+      <summary>入力シーケンスの各要素に対して変換関数を呼び出して取得する null 許容の <see cref="T:System.Int32" /> 値のシーケンスの合計を計算します。</summary>
+      <returns>射影された値の合計。</returns>
+      <param name="source">合計の計算に使用される値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+      <exception cref="T:System.OverflowException">合計が <see cref="F:System.Int32.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int64}})">
+      <summary>入力シーケンスの各要素に対して変換関数を呼び出して取得する null 許容の <see cref="T:System.Int64" /> 値のシーケンスの合計を計算します。</summary>
+      <returns>射影された値の合計。</returns>
+      <param name="source">合計の計算に使用される値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+      <exception cref="T:System.OverflowException">合計が <see cref="F:System.Int64.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Single}})">
+      <summary>入力シーケンスの各要素に対して変換関数を呼び出して取得する null 許容の <see cref="T:System.Single" /> 値のシーケンスの合計を計算します。</summary>
+      <returns>射影された値の合計。</returns>
+      <param name="source">合計の計算に使用される値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Single})">
+      <summary>入力シーケンスの各要素に対して変換関数を呼び出して取得する <see cref="T:System.Single" /> 値のシーケンスの合計を計算します。</summary>
+      <returns>射影された値の合計。</returns>
+      <param name="source">合計の計算に使用される値のシーケンス。</param>
+      <param name="selector">各要素に適用する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="selector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Take``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+      <summary>シーケンスの先頭から、指定された数の連続する要素を返します。</summary>
+      <returns>入力シーケンスの先頭から、指定された数の要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">要素を返すシーケンス。</param>
+      <param name="count">返す要素数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.TakeWhile``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+      <summary>指定された条件が満たされる限り、シーケンスから要素を返します。</summary>
+      <returns>テストに合格しなくなった要素の前に出現する、入力シーケンスの要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">要素を返すシーケンス。</param>
+      <param name="predicate">各要素が条件を満たしているかどうかをテストする関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="predicate" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.TakeWhile``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,System.Boolean})">
+      <summary>指定された条件が満たされる限り、シーケンスから要素を返します。要素のインデックスは、述語関数のロジックで使用されます。</summary>
+      <returns>テストに合格しなくなった要素の前に出現する、入力シーケンスの要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">要素を返すシーケンス。</param>
+      <param name="predicate">各ソース要素が条件に当てはまるかどうかをテストする関数。この関数の 2 つ目のパラメーターは、ソース要素のインデックスを表します。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="predicate" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ThenBy``2(System.Linq.IOrderedEnumerable{``0},System.Func{``0,``1})">
+      <summary>キーに従って、シーケンス内の後続の要素を昇順で配置します。</summary>
+      <returns>要素がキーに従って並べ替えられている <see cref="T:System.Linq.IOrderedEnumerable`1" />。</returns>
+      <param name="source">並べ替える要素を格納している <see cref="T:System.Linq.IOrderedEnumerable`1" />。</param>
+      <param name="keySelector">各要素からキーを抽出する関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TKey">
+        <paramref name="keySelector" /> によって返されるキーの型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="keySelector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ThenBy``2(System.Linq.IOrderedEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+      <summary>指定された比較子を使用して、シーケンス内の後続の要素を昇順で配置します。</summary>
+      <returns>要素がキーに従って並べ替えられている <see cref="T:System.Linq.IOrderedEnumerable`1" />。</returns>
+      <param name="source">並べ替える要素を格納している <see cref="T:System.Linq.IOrderedEnumerable`1" />。</param>
+      <param name="keySelector">各要素からキーを抽出する関数。</param>
+      <param name="comparer">キーを比較する <see cref="T:System.Collections.Generic.IComparer`1" />。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TKey">
+        <paramref name="keySelector" /> によって返されるキーの型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="keySelector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ThenByDescending``2(System.Linq.IOrderedEnumerable{``0},System.Func{``0,``1})">
+      <summary>キーに従って、シーケンス内の後続の要素を降順で配置します。</summary>
+      <returns>要素がキーに従って降順に並べ替えられている <see cref="T:System.Linq.IOrderedEnumerable`1" />。</returns>
+      <param name="source">並べ替える要素を格納している <see cref="T:System.Linq.IOrderedEnumerable`1" />。</param>
+      <param name="keySelector">各要素からキーを抽出する関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TKey">
+        <paramref name="keySelector" /> によって返されるキーの型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="keySelector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ThenByDescending``2(System.Linq.IOrderedEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+      <summary>指定された比較子を使用して、シーケンス内の後続の要素を降順で配置します。</summary>
+      <returns>要素がキーに従って降順に並べ替えられている <see cref="T:System.Linq.IOrderedEnumerable`1" />。</returns>
+      <param name="source">並べ替える要素を格納している <see cref="T:System.Linq.IOrderedEnumerable`1" />。</param>
+      <param name="keySelector">各要素からキーを抽出する関数。</param>
+      <param name="comparer">キーを比較する <see cref="T:System.Collections.Generic.IComparer`1" />。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TKey">
+        <paramref name="keySelector" /> によって返されるキーの型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="keySelector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ToArray``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> から配列を作成します。</summary>
+      <returns>入力シーケンスの要素を含む配列。</returns>
+      <param name="source">配列の作成元の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ToDictionary``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+      <summary>指定されたキー セレクター関数に従って、<see cref="T:System.Collections.Generic.IEnumerable`1" /> から <see cref="T:System.Collections.Generic.Dictionary`2" /> を作成します。</summary>
+      <returns>キーと値を格納している <see cref="T:System.Collections.Generic.Dictionary`2" />。</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.Dictionary`2" /> の作成元の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="keySelector">各要素からキーを抽出する関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TKey">
+        <paramref name="keySelector" /> によって返されるキーの型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="keySelector" /> が null です。または<paramref name="keySelector" /> が null のキーを生成しています。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="keySelector" /> が 2 つの要素に対して重複するキーを生成しています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ToDictionary``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
+      <summary>指定されたキー セレクター関数およびキーの比較子に従って、<see cref="T:System.Collections.Generic.IEnumerable`1" /> から <see cref="T:System.Collections.Generic.Dictionary`2" /> を作成します。</summary>
+      <returns>キーと値を格納している <see cref="T:System.Collections.Generic.Dictionary`2" />。</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.Dictionary`2" /> の作成元の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="keySelector">各要素からキーを抽出する関数。</param>
+      <param name="comparer">キーを比較する <see cref="T:System.Collections.Generic.IEqualityComparer`1" />。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TKey">
+        <paramref name="keySelector" /> によって返されるキーの型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="keySelector" /> が null です。または<paramref name="keySelector" /> が null のキーを生成しています。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="keySelector" /> が 2 つの要素に対して重複するキーを生成しています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ToDictionary``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``2})">
+      <summary>指定されたキー セレクター関数および要素セレクター関数に従って、<see cref="T:System.Collections.Generic.IEnumerable`1" /> から <see cref="T:System.Collections.Generic.Dictionary`2" /> を作成します。</summary>
+      <returns>入力シーケンスから選択された <paramref name="TElement" /> 型の値を格納する <see cref="T:System.Collections.Generic.Dictionary`2" />。</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.Dictionary`2" /> の作成元の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="keySelector">各要素からキーを抽出する関数。</param>
+      <param name="elementSelector">各要素から結果の要素値を生成する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TKey">
+        <paramref name="keySelector" /> によって返されるキーの型。</typeparam>
+      <typeparam name="TElement">
+        <paramref name="elementSelector" /> によって返される値の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />、<paramref name="keySelector" />、または <paramref name="elementSelector" /> が null です。または<paramref name="keySelector" /> が null のキーを生成しています。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="keySelector" /> が 2 つの要素に対して重複するキーを生成しています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ToDictionary``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
+      <summary>指定されたキー セレクター関数、比較子、および要素セレクター関数に従って、<see cref="T:System.Collections.Generic.IEnumerable`1" /> から <see cref="T:System.Collections.Generic.Dictionary`2" /> を作成します。</summary>
+      <returns>入力シーケンスから選択された <paramref name="TElement" /> 型の値を格納する <see cref="T:System.Collections.Generic.Dictionary`2" />。</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.Dictionary`2" /> の作成元の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="keySelector">各要素からキーを抽出する関数。</param>
+      <param name="elementSelector">各要素から結果の要素値を生成する変換関数。</param>
+      <param name="comparer">キーを比較する <see cref="T:System.Collections.Generic.IEqualityComparer`1" />。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TKey">
+        <paramref name="keySelector" /> によって返されるキーの型。</typeparam>
+      <typeparam name="TElement">
+        <paramref name="elementSelector" /> によって返される値の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />、<paramref name="keySelector" />、または <paramref name="elementSelector" /> が null です。または<paramref name="keySelector" /> が null のキーを生成しています。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="keySelector" /> が 2 つの要素に対して重複するキーを生成しています。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ToList``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> から <see cref="T:System.Collections.Generic.List`1" /> を作成します。</summary>
+      <returns>入力シーケンスの要素を含む <see cref="T:System.Collections.Generic.List`1" />。</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.List`1" /> の作成元の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ToLookup``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+      <summary>指定されたキー セレクター関数に従って、<see cref="T:System.Collections.Generic.IEnumerable`1" /> から <see cref="T:System.Linq.Lookup`2" /> を作成します。</summary>
+      <returns>キーと値を格納している <see cref="T:System.Linq.Lookup`2" />。</returns>
+      <param name="source">
+        <see cref="T:System.Linq.Lookup`2" /> の作成元の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="keySelector">各要素からキーを抽出する関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TKey">
+        <paramref name="keySelector" /> によって返されるキーの型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="keySelector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ToLookup``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
+      <summary>指定されたキー セレクター関数およびキーの比較子に従って、<see cref="T:System.Collections.Generic.IEnumerable`1" /> から <see cref="T:System.Linq.Lookup`2" /> を作成します。</summary>
+      <returns>キーと値を格納している <see cref="T:System.Linq.Lookup`2" />。</returns>
+      <param name="source">
+        <see cref="T:System.Linq.Lookup`2" /> の作成元の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="keySelector">各要素からキーを抽出する関数。</param>
+      <param name="comparer">キーを比較する <see cref="T:System.Collections.Generic.IEqualityComparer`1" />。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TKey">
+        <paramref name="keySelector" /> によって返されるキーの型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="keySelector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ToLookup``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``2})">
+      <summary>指定されたキー セレクター関数および要素セレクター関数に従って、<see cref="T:System.Collections.Generic.IEnumerable`1" /> から <see cref="T:System.Linq.Lookup`2" /> を作成します。</summary>
+      <returns>入力シーケンスから選択された <paramref name="TElement" /> 型の値を格納する <see cref="T:System.Linq.Lookup`2" />。</returns>
+      <param name="source">
+        <see cref="T:System.Linq.Lookup`2" /> の作成元の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="keySelector">各要素からキーを抽出する関数。</param>
+      <param name="elementSelector">各要素から結果の要素値を生成する変換関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TKey">
+        <paramref name="keySelector" /> によって返されるキーの型。</typeparam>
+      <typeparam name="TElement">
+        <paramref name="elementSelector" /> によって返される値の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />、<paramref name="keySelector" />、または <paramref name="elementSelector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ToLookup``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
+      <summary>指定されたキー セレクター関数、比較子、および要素セレクター関数に従って、<see cref="T:System.Collections.Generic.IEnumerable`1" /> から <see cref="T:System.Linq.Lookup`2" /> を作成します。</summary>
+      <returns>入力シーケンスから選択された <paramref name="TElement" /> 型の値を格納する <see cref="T:System.Linq.Lookup`2" />。</returns>
+      <param name="source">
+        <see cref="T:System.Linq.Lookup`2" /> の作成元の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="keySelector">各要素からキーを抽出する関数。</param>
+      <param name="elementSelector">各要素から結果の要素値を生成する変換関数。</param>
+      <param name="comparer">キーを比較する <see cref="T:System.Collections.Generic.IEqualityComparer`1" />。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <typeparam name="TKey">
+        <paramref name="keySelector" /> によって返されるキーの型。</typeparam>
+      <typeparam name="TElement">
+        <paramref name="elementSelector" /> によって返される値の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />、<paramref name="keySelector" />、または <paramref name="elementSelector" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Union``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+      <summary>既定の等値比較子を使用して、2 つのシーケンスの和集合を生成します。</summary>
+      <returns>2 つの入力シーケンスの要素 (重複する要素は除く) を格納している <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="first">和集合の最初のセットを形成する一意の要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="second">和集合の 2 番目のセットを形成する一意の要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="TSource">入力シーケンスの要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="first" /> または <paramref name="second" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Union``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
+      <summary>指定された <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> を使用して 2 つのシーケンスの和集合を生成します。</summary>
+      <returns>2 つの入力シーケンスの要素 (重複する要素は除く) を格納している <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="first">和集合の最初のセットを形成する一意の要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="second">和集合の 2 番目のセットを形成する一意の要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="comparer">値を比較する <see cref="T:System.Collections.Generic.IEqualityComparer`1" />。</param>
+      <typeparam name="TSource">入力シーケンスの要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="first" /> または <paramref name="second" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Where``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+      <summary>述語に基づいて値のシーケンスをフィルター処理します。</summary>
+      <returns>条件を満たす、入力シーケンスの要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">フィルター処理する <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="predicate">各要素が条件を満たしているかどうかをテストする関数。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="predicate" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Where``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,System.Boolean})">
+      <summary>述語に基づいて値のシーケンスをフィルター処理します。各要素のインデックスは、述語関数のロジックで使用されます。</summary>
+      <returns>条件を満たす、入力シーケンスの要素を含む <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">フィルター処理する <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="predicate">各ソース要素が条件に当てはまるかどうかをテストする関数。この関数の 2 つ目のパラメーターは、ソース要素のインデックスを表します。</param>
+      <typeparam name="TSource">
+        <paramref name="source" /> の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> または <paramref name="predicate" /> が null です。</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Zip``3(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``1,``2})">
+      <summary>2 つのシーケンスの対応する要素に対して、1 つの指定した関数を適用し、結果として 1 つのシーケンスを生成します。</summary>
+      <returns>2 つの入力シーケンスのマージされた要素が格納されている <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="first">マージする 1 番目のシーケンス。</param>
+      <param name="second">マージする 2 番目のシーケンス。</param>
+      <param name="resultSelector">2 つのシーケンスの要素をマージする方法を指定する関数。</param>
+      <typeparam name="TFirst">1 番目の入力シーケンスの要素の型。</typeparam>
+      <typeparam name="TSecond">2 番目の入力シーケンスの要素の型。</typeparam>
+      <typeparam name="TResult">結果のシーケンスの要素の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="first" /> または <paramref name="second" /> が null です。</exception>
+    </member>
+    <member name="T:System.Linq.IGrouping`2">
+      <summary>共通のキーを持つオブジェクトのコレクションを表します。</summary>
+      <typeparam name="TKey">
+        <see cref="T:System.Linq.IGrouping`2" /> のキーの型。このパラメーターが共変の型パラメーターです。つまり、その指定した型を使用するか、それよりも強い任意の派生型を使用することができます。共変性と反変性の詳細については、「ジェネリックの共変性と反変性」を参照してください。</typeparam>
+      <typeparam name="TElement">
+        <see cref="T:System.Linq.IGrouping`2" /> 内の値の型。</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Linq.IGrouping`2.Key">
+      <summary>
+        <see cref="T:System.Linq.IGrouping`2" /> のキーを取得します。</summary>
+      <returns>
+        <see cref="T:System.Linq.IGrouping`2" /> のキー。</returns>
+    </member>
+    <member name="T:System.Linq.ILookup`2">
+      <summary>キーを値の <see cref="T:System.Collections.Generic.IEnumerable`1" /> シーケンスに割り当てるデータ構造のインデクサー、サイズ プロパティ、およびブール値検索メソッドを定義します。</summary>
+      <typeparam name="TKey">
+        <see cref="T:System.Linq.ILookup`2" /> 内のキーの型。</typeparam>
+      <typeparam name="TElement">
+        <see cref="T:System.Linq.ILookup`2" /> 内の値を構成する <see cref="T:System.Collections.Generic.IEnumerable`1" /> シーケンス内の要素の型。</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Linq.ILookup`2.Contains(`0)">
+      <summary>指定したキーが <see cref="T:System.Linq.ILookup`2" /> 内に存在するかどうかを判定します。</summary>
+      <returns>
+        <paramref name="key" /> が <see cref="T:System.Linq.ILookup`2" /> 内にある場合は true。それ以外の場合は false。</returns>
+      <param name="key">
+        <see cref="T:System.Linq.ILookup`2" /> 内で検索するキー。</param>
+    </member>
+    <member name="P:System.Linq.ILookup`2.Count">
+      <summary>
+        <see cref="T:System.Linq.ILookup`2" /> 内のキーと値コレクションのペアの数を取得します。</summary>
+      <returns>
+        <see cref="T:System.Linq.ILookup`2" /> 内のキーと値コレクションのペアの数。</returns>
+    </member>
+    <member name="P:System.Linq.ILookup`2.Item(`0)">
+      <summary>指定したキーによりインデックス付けされた値の <see cref="T:System.Collections.Generic.IEnumerable`1" /> シーケンスを取得します。</summary>
+      <returns>指定したキーによりインデックス付けされた値の <see cref="T:System.Collections.Generic.IEnumerable`1" /> シーケンス。</returns>
+      <param name="key">必要な値のシーケンスのキー。</param>
+    </member>
+    <member name="T:System.Linq.IOrderedEnumerable`1">
+      <summary>並べ替えられたシーケンスを表します。</summary>
+      <typeparam name="TElement">シーケンスの要素の型。</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Linq.IOrderedEnumerable`1.CreateOrderedEnumerable``1(System.Func{`0,``0},System.Collections.Generic.IComparer{``0},System.Boolean)">
+      <summary>キーに従って <see cref="T:System.Linq.IOrderedEnumerable`1" /> の要素に対して後続の並べ替えを実行します。</summary>
+      <returns>要素がキーに従って並べ替えられている <see cref="T:System.Linq.IOrderedEnumerable`1" />。</returns>
+      <param name="keySelector">各要素のキーの抽出に使用される <see cref="T:System.Func`2" />。</param>
+      <param name="comparer">返されたシーケンスでの配置用のキーの比較に使用される <see cref="T:System.Collections.Generic.IComparer`1" />。</param>
+      <param name="descending">要素を降順に並べ替える true、要素を昇順に並べ替える false。</param>
+      <typeparam name="TKey">
+        <paramref name="keySelector" /> によって生成されるキーの型。</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Linq.Lookup`2">
+      <summary>それぞれ 1 つ以上の値に割り当てられたキーのコレクションを表します。</summary>
+      <typeparam name="TKey">
+        <see cref="T:System.Linq.Lookup`2" /> 内のキーの型。</typeparam>
+      <typeparam name="TElement">
+        <see cref="T:System.Linq.Lookup`2" /> 内の各 <see cref="T:System.Collections.Generic.IEnumerable`1" /> 値の要素の型。</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Linq.Lookup`2.ApplyResultSelector``1(System.Func{`0,System.Collections.Generic.IEnumerable{`1},``0})">
+      <summary>各キーとその関連する値に変換関数を適用し、結果を返します。</summary>
+      <returns>
+        <see cref="T:System.Linq.Lookup`2" /> 内にあるキーと値コレクションの各ペアの 1 つの値が格納されるコレクション。</returns>
+      <param name="resultSelector">各キーとその関連する値からの結果の値を導き出す関数。</param>
+      <typeparam name="TResult">
+        <paramref name="resultSelector" /> によって生成される結果の値の型。</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Linq.Lookup`2.Contains(`0)">
+      <summary>指定したキーが <see cref="T:System.Linq.Lookup`2" /> 内にあるかどうかを確認します。</summary>
+      <returns>
+        <paramref name="key" /> が <see cref="T:System.Linq.Lookup`2" /> 内にある場合は true。それ以外の場合は false。</returns>
+      <param name="key">
+        <see cref="T:System.Linq.Lookup`2" /> 内で検索するキー。</param>
+    </member>
+    <member name="P:System.Linq.Lookup`2.Count">
+      <summary>
+        <see cref="T:System.Linq.Lookup`2" /> 内のキーと値コレクションのペアの数を取得します。</summary>
+      <returns>
+        <see cref="T:System.Linq.Lookup`2" /> 内のキーと値コレクションのペアの数。</returns>
+    </member>
+    <member name="M:System.Linq.Lookup`2.GetEnumerator">
+      <summary>
+        <see cref="T:System.Linq.Lookup`2" /> を反復処理するジェネリック列挙子を返します。</summary>
+      <returns>
+        <see cref="T:System.Linq.Lookup`2" /> の列挙子。</returns>
+    </member>
+    <member name="P:System.Linq.Lookup`2.Item(`0)">
+      <summary>指定したキーによりインデックス付けされた値のコレクションを取得します。</summary>
+      <returns>指定したキーによりインデックス付けされた値のコレクション。</returns>
+      <param name="key">必要な値のコレクションのキー。</param>
+    </member>
+    <member name="M:System.Linq.Lookup`2.System#Collections#IEnumerable#GetEnumerator">
+      <summary>
+        <see cref="T:System.Linq.Lookup`2" /> を反復処理する列挙子を返します。このクラスは継承できません。</summary>
+      <returns>
+        <see cref="T:System.Linq.Lookup`2" /> の列挙子。</returns>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,1219 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Collections.Concurrent</name>
+  </assembly>
+  <members>
+    <member name="T:System.Collections.Concurrent.BlockingCollection`1">
+      <summary>为实现 <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> 的线程安全集合提供阻塞和限制功能。</summary>
+      <typeparam name="T">集合中的元素类型。</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.#ctor">
+      <summary>初始化 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 类的新实例，该实例没有上限。</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.#ctor(System.Collections.Concurrent.IProducerConsumerCollection{`0})">
+      <summary>初始化 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 类的新实例，该实例没有上限，并使用提供的 <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> 作为其基础数据存储区。</summary>
+      <param name="collection">要用作基础数据存储区的集合。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collection" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.#ctor(System.Collections.Concurrent.IProducerConsumerCollection{`0},System.Int32)">
+      <summary>初始化 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 类的新实例，该实例具有指定的上限，并使用提供的 <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> 作为其基础数据存储区。</summary>
+      <param name="collection">要用作基础数据存储区的集合。</param>
+      <param name="boundedCapacity">集合的限制大小。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collection" /> 参数为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="boundedCapacity" /> 不是一个正值。</exception>
+      <exception cref="T:System.ArgumentException">所提供 <paramref name="collection" /> 包含的值比 <paramref name="boundedCapacity" /> 允许的值多。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.#ctor(System.Int32)">
+      <summary>初始化 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 类的新实例，该实例具有指定的上限。</summary>
+      <param name="boundedCapacity">集合的限制大小。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="boundedCapacity" /> 不是一个正值。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.Add(`0)">
+      <summary>向 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 中添加项。</summary>
+      <param name="item">要添加到集合的项。该值可以是 null 引用。</param>
+      <exception cref="T:System.ObjectDisposedException">已释放了 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 已标记为已完成添加操作。- 或 -基础集合未接受该项。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.Add(`0,System.Threading.CancellationToken)">
+      <summary>向 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 中添加项。</summary>
+      <param name="item">要添加到集合的项。该值可以是 null 引用。</param>
+      <param name="cancellationToken">要观察的取消标记。</param>
+      <exception cref="T:System.OperationCanceledException">如果 <see cref="T:System.Threading.CancellationToken" />已取消。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 已被释放，或拥有 <paramref name="cancellationToken" /> 的 <see cref="T:System.Threading.CancellationTokenSource" /> 已被释放。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 已标记为已完成添加操作。- 或 -基础集合未接受该项。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.AddToAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0)">
+      <summary>向任一指定的 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例中添加指定的项。</summary>
+      <returns>将项添加到的集合在 <paramref name="collections" /> 数组中的索引。</returns>
+      <param name="collections">集合的数组。</param>
+      <param name="item">要添加到其中一个集合的项。</param>
+      <exception cref="T:System.ObjectDisposedException">至少其中一个 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例已释放。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collections" /> 参数为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="collections" /> 的计数大于最大的大小（STA 为 62，MTA 为 63）。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> 参数是一个 0 长度的数组，或者包含 null 元素，或者至少其中一个集合已标记为已完成添加。</exception>
+      <exception cref="T:System.InvalidOperationException">至少一个基础集合未接受该项。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.AddToAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0,System.Threading.CancellationToken)">
+      <summary>向任一指定的 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例中添加指定的项。</summary>
+      <returns>将项添加到的集合在 <paramref name="collections" /> 数组中的索引。</returns>
+      <param name="collections">集合的数组。</param>
+      <param name="item">要添加到其中一个集合的项。</param>
+      <param name="cancellationToken">要观察的取消标记。</param>
+      <exception cref="T:System.OperationCanceledException">如果 <see cref="T:System.Threading.CancellationToken" />已取消。</exception>
+      <exception cref="T:System.InvalidOperationException">至少一个基础集合未接受该项。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collections" /> 参数为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="collections" /> 的计数大于最大的大小（STA 为 62，MTA 为 63）。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> 参数是一个 0 长度的数组，或者包含 null 元素，或者至少其中一个集合已标记为已完成添加。</exception>
+      <exception cref="T:System.ObjectDisposedException">至少一个 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 已被释放的实例或创建 <paramref name="cancellationToken" /> 的 <see cref="T:System.Threading.CancellationTokenSource" /> 已被释放。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.BlockingCollection`1.BoundedCapacity">
+      <summary>获取此 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例的限定容量。</summary>
+      <returns>此集合的限定容量；如果未提供限制，则为 int.MaxValue。</returns>
+      <exception cref="T:System.ObjectDisposedException">已释放了 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.CompleteAdding">
+      <summary>将 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例标记为不再接受任何添加。</summary>
+      <exception cref="T:System.ObjectDisposedException">已释放了 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.CopyTo(`0[],System.Int32)">
+      <summary>将 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例中的所有项复制到兼容的一维数组中，复制从目标数组的指定索引处开始。</summary>
+      <param name="array">作为从 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例复制的元素的目标的一维数组。该数组的索引必须从零开始。</param>
+      <param name="index">
+        <paramref name="array" /> 中从零开始的索引，将在此处开始复制。</param>
+      <exception cref="T:System.ObjectDisposedException">已释放了 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> 参数为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> 参数小于零。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> 参数等于或大于 <paramref name="array" /> 的长度。目标数组太小，不能容纳所有 BlockingCcollection 元素。数组秩不匹配。数组类型与 BlockingCollection 元素不兼容。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.BlockingCollection`1.Count">
+      <summary>获取 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 中包含的项数。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 中包含的项数。</returns>
+      <exception cref="T:System.ObjectDisposedException">已释放了 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.Dispose">
+      <summary>释放 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 类的当前实例所使用的所有资源。</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.Dispose(System.Boolean)">
+      <summary>释放由 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例占用的资源。</summary>
+      <param name="disposing">是显式释放 (true)，还是由于终结器释放 (false)。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.GetConsumingEnumerable">
+      <summary>为集合中的项提供一个使用 <see cref="T:System.Collections.Generic.IEnumerator`1" />。</summary>
+      <returns>从集合中移除并返回项的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <exception cref="T:System.ObjectDisposedException">已释放了 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.GetConsumingEnumerable(System.Threading.CancellationToken)">
+      <summary>为集合中的项提供一个使用 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</summary>
+      <returns>从集合中移除并返回项的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="cancellationToken">要观察的取消标记。</param>
+      <exception cref="T:System.OperationCanceledException">如果 <see cref="T:System.Threading.CancellationToken" />已取消。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 已被释放，或创建 <paramref name="cancellationToken" /> 的 <see cref="T:System.Threading.CancellationTokenSource" /> 已被释放</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.BlockingCollection`1.IsAddingCompleted">
+      <summary>获取此 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 是否已标记为已完成添加。</summary>
+      <returns>此集合是否已标记为完成添加。</returns>
+      <exception cref="T:System.ObjectDisposedException">已释放了 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.BlockingCollection`1.IsCompleted">
+      <summary>获取一个值，该值指示此 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 是否已标记为已完成添加并且为空。</summary>
+      <returns>此集合是否已标记为完成添加并且为空。</returns>
+      <exception cref="T:System.ObjectDisposedException">已释放了 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.System#Collections#Generic#IEnumerable{T}#GetEnumerator">
+      <summary>为集合中的项提供一个 <see cref="T:System.Collections.Generic.IEnumerator`1" />。</summary>
+      <returns>集合中的项的 <see cref="T:System.Collections.Generic.IEnumerator`1" />。</returns>
+      <exception cref="T:System.ObjectDisposedException">已释放了 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>将 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例中的所有项复制到兼容的一维数组中，复制从目标数组的指定索引处开始。</summary>
+      <param name="array">作为从 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例复制的元素的目标的一维数组。该数组的索引必须从零开始。</param>
+      <param name="index">
+        <paramref name="array" /> 中从零开始的索引，将在此处开始复制。</param>
+      <exception cref="T:System.ObjectDisposedException">已释放了 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> 参数为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> 参数小于零。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> 参数等于或大于 <paramref name="array" /> 的长度，该数组是多维的，或集合的类型参数无法自动强制转换为目标数组的类型。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.BlockingCollection`1.System#Collections#ICollection#IsSynchronized">
+      <summary>获取一个值，通过该值指示对 <see cref="T:System.Collections.ICollection" /> 的访问是否同步。</summary>
+      <returns>始终返回 false。</returns>
+      <exception cref="T:System.ObjectDisposedException">已释放了 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.BlockingCollection`1.System#Collections#ICollection#SyncRoot">
+      <summary>获取一个可用于同步对 <see cref="T:System.Collections.ICollection" /> 的访问的对象。不支持此属性。</summary>
+      <returns>返回 null。</returns>
+      <exception cref="T:System.NotSupportedException">不支持 SyncRoot 属性。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.System#Collections#IEnumerable#GetEnumerator">
+      <summary>为集合中的项提供一个 <see cref="T:System.Collections.IEnumerator" />。</summary>
+      <returns>集合中的项的 <see cref="T:System.Collections.IEnumerator" />。</returns>
+      <exception cref="T:System.ObjectDisposedException">已释放了 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.Take">
+      <summary>从 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 中移除一个项。</summary>
+      <returns>从集合中移除的项。</returns>
+      <exception cref="T:System.ObjectDisposedException">已释放了 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />。</exception>
+      <exception cref="T:System.InvalidOperationException">基础集合在此 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例外修改，或 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 为空，并且集合已经标记为可完整地用于添加。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.Take(System.Threading.CancellationToken)">
+      <summary>从 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 中移除一个项。</summary>
+      <returns>从集合中移除的项。</returns>
+      <param name="cancellationToken">可用于取消获取操作的对象。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <see cref="T:System.Threading.CancellationToken" /> 已取消。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 已被释放，或创建该标记的 <see cref="T:System.Threading.CancellationTokenSource" /> 被取消。</exception>
+      <exception cref="T:System.InvalidOperationException">基础集合在此 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例外修改，或该 BlockingCollection 被标记为已完成添加，或 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 为空。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TakeFromAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0@)">
+      <summary>从任一指定的 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例中获取一项。</summary>
+      <returns>从中移除项的集合在 <paramref name="collections" /> 数组中的索引。</returns>
+      <param name="collections">集合的数组。</param>
+      <param name="item">从其中一个集合中移除的项。</param>
+      <exception cref="T:System.ObjectDisposedException">至少其中一个 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例已释放。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collections" /> 参数为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="collections" /> 的计数大于最大的大小（STA 为 62，MTA 为 63）。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> 参数是一个 0 长度的数组，或包含 null 元素，或 <see cref="M:System.Collections.Concurrent.BlockingCollection`1.CompleteAdding" /> 在集合上已被调用。</exception>
+      <exception cref="T:System.InvalidOperationException">至少一个基础集合已在其 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例之外进行了修改。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TakeFromAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0@,System.Threading.CancellationToken)">
+      <summary>观察指定的取消标记时从任一指定的 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例中获取一项。</summary>
+      <returns>从中移除项的集合在 <paramref name="collections" /> 数组中的索引。</returns>
+      <param name="collections">集合的数组。</param>
+      <param name="item">从其中一个集合中移除的项。</param>
+      <param name="cancellationToken">要观察的取消标记。</param>
+      <exception cref="T:System.OperationCanceledException">如果 <see cref="T:System.Threading.CancellationToken" />已取消。</exception>
+      <exception cref="T:System.InvalidOperationException">至少一个基础集合已在其 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例之外进行了修改。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collections" /> 参数为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="collections" /> 的计数大于最大的大小（STA 为 62，MTA 为 63）。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> 参数是一个 0 长度的数组，或包含 null 元素，或 <see cref="M:System.Collections.Concurrent.BlockingCollection`1.CompleteAdding" /> 在集合上已被调用。</exception>
+      <exception cref="T:System.ObjectDisposedException">至少其中一个 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例已释放。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.ToArray">
+      <summary>将项从 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例复制到新数组中。</summary>
+      <returns>包含集合元素副本的数组。</returns>
+      <exception cref="T:System.ObjectDisposedException">已释放了 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAdd(`0)">
+      <summary>尝试将指定的项添加到 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />。</summary>
+      <returns>true（如果可以添加 <paramref name="item" />）；否则为 false。如果该项是重复的，并且基础集合不会接受重复项，则会引发 <see cref="T:System.InvalidOperationException" />。</returns>
+      <param name="item">要添加到集合的项。</param>
+      <exception cref="T:System.ObjectDisposedException">已释放了 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 已标记为已完成添加操作。- 或 -基础集合未接受该项。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAdd(`0,System.Int32)">
+      <summary>尝试在指定的时间段内将指定的项添加到 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />。</summary>
+      <returns>如果在指定的时间内可以将 <paramref name="item" /> 添加到集合中，则为 true；否则为 false。如果该项是重复的，并且基础集合不会接受重复项，则会引发 <see cref="T:System.InvalidOperationException" />。</returns>
+      <param name="item">要添加到集合的项。</param>
+      <param name="millisecondsTimeout">等待的毫秒数，或为 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)，表示无限期等待。</param>
+      <exception cref="T:System.ObjectDisposedException">已释放了 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一个非 -1 的负数，而 -1 表示无限期超时。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 已标记为已完成添加操作。- 或 -基础集合未接受该项。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAdd(`0,System.Int32,System.Threading.CancellationToken)">
+      <summary>在观察取消标记时，尝试在指定的时间段内将指定的项添加到 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />。</summary>
+      <returns>如果在指定的时间内可以将 <paramref name="item" /> 添加到集合中，则为 true；否则为 false。如果该项是重复的，并且基础集合不会接受重复项，则会引发 <see cref="T:System.InvalidOperationException" />。</returns>
+      <param name="item">要添加到集合的项。</param>
+      <param name="millisecondsTimeout">等待的毫秒数，或为 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)，表示无限期等待。</param>
+      <param name="cancellationToken">要观察的取消标记。</param>
+      <exception cref="T:System.OperationCanceledException">如果 <see cref="T:System.Threading.CancellationToken" />已取消。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 已被释放，或基础 <see cref="T:System.Threading.CancellationTokenSource" /> 已被释放。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一个非 -1 的负数，而 -1 表示无限期超时。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 已标记为已完成添加操作。- 或 -基础集合未接受该项。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAdd(`0,System.TimeSpan)">
+      <summary>尝试将指定的项添加到 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />。</summary>
+      <returns>如果在指定的时间跨度内可以将 <paramref name="item" /> 添加到集合中，则为 true；否则为 false。</returns>
+      <param name="item">要添加到集合的项。</param>
+      <param name="timeout">表示等待的毫秒数的 <see cref="T:System.TimeSpan" />，或表示 -1 毫秒（无限期等待）的 <see cref="T:System.TimeSpan" />。</param>
+      <exception cref="T:System.ObjectDisposedException">已释放了 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 是 -1 毫秒之外的负数，表示无限超时或者超时大于 <see cref="F:System.Int32.MaxValue" />。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 已标记为已完成添加操作。- 或 -基础集合未接受该项。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAddToAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0)">
+      <summary>尝试将指定的项添加到任一指定的 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例。</summary>
+      <returns>将项添加到的集合在 <paramref name="collections" /> 数组中的索引；如果未能添加项，则为 -1。</returns>
+      <param name="collections">集合的数组。</param>
+      <param name="item">要添加到其中一个集合的项。</param>
+      <exception cref="T:System.ObjectDisposedException">至少其中一个 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例已释放。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collections" /> 参数为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="collections" /> 的计数大于最大的大小（STA 为 62，MTA 为 63）。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> 参数是一个 0 长度的数组，或者包含 null 元素，或者至少其中一个集合已标记为已完成添加。</exception>
+      <exception cref="T:System.InvalidOperationException">至少一个基础集合未接受该项。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAddToAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0,System.Int32)">
+      <summary>尝试将指定的项添加到任一指定的 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例。</summary>
+      <returns>将项添加到的集合在 <paramref name="collections" /> 数组中的索引；如果未能添加项，则为 -1。</returns>
+      <param name="collections">集合的数组。</param>
+      <param name="item">要添加到其中一个集合的项。</param>
+      <param name="millisecondsTimeout">等待的毫秒数，或为 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)，表示无限期等待。</param>
+      <exception cref="T:System.ObjectDisposedException">至少其中一个 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例已释放。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collections" /> 参数为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一个非 -1 的负数，而 -1 表示无限期超时。- 或 -<paramref name="collections" /> 的计数大于最大的大小（STA 为 62，MTA 为 63）。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> 参数是一个 0 长度的数组，或者包含 null 元素，或者至少其中一个集合已标记为已完成添加。</exception>
+      <exception cref="T:System.InvalidOperationException">至少一个基础集合未接受该项。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAddToAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0,System.Int32,System.Threading.CancellationToken)">
+      <summary>尝试将指定的项添加到任一指定的 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例。</summary>
+      <returns>将项添加到的集合在 <paramref name="collections" /> 数组中的索引；如果未能添加项，则为 -1。</returns>
+      <param name="collections">集合的数组。</param>
+      <param name="item">要添加到其中一个集合的项。</param>
+      <param name="millisecondsTimeout">等待的毫秒数，或为 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)，表示无限期等待。</param>
+      <param name="cancellationToken">要观察的取消标记。</param>
+      <exception cref="T:System.OperationCanceledException">如果 <see cref="T:System.Threading.CancellationToken" />已取消。</exception>
+      <exception cref="T:System.InvalidOperationException">至少一个基础集合未接受该项。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collections" /> 参数为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一个非 -1 的负数，而 -1 表示无限期超时。- 或 -<paramref name="collections" /> 的计数大于最大的大小（STA 为 62，MTA 为 63）。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> 参数是一个 0 长度的数组，或者包含 null 元素，或者至少其中一个集合已标记为已完成添加。</exception>
+      <exception cref="T:System.ObjectDisposedException">至少其中一个 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例已释放。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAddToAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0,System.TimeSpan)">
+      <summary>在观察指定的取消标记时，尝试将指定的项添加到任一指定的 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例。</summary>
+      <returns>将项添加到的集合在 <paramref name="collections" /> 数组中的索引；如果未能添加项，则为 -1。</returns>
+      <param name="collections">集合的数组。</param>
+      <param name="item">要添加到其中一个集合的项。</param>
+      <param name="timeout">表示等待的毫秒数的 <see cref="T:System.TimeSpan" />，或表示 -1 毫秒（无限期等待）的 <see cref="T:System.TimeSpan" />。</param>
+      <exception cref="T:System.ObjectDisposedException">至少一个 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例或创建 <paramref name="cancellationToken" /> 的 <see cref="T:System.Threading.CancellationTokenSource" /> 已被释放。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collections" /> 参数为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 是 -1 毫秒之外的负数，表示无限超时或者超时大于 <see cref="F:System.Int32.MaxValue" />。- 或 -<paramref name="collections" /> 的计数大于最大的大小（STA 为 62，MTA 为 63）。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> 参数是一个 0 长度的数组，或者包含 null 元素，或者至少其中一个集合已标记为已完成添加。</exception>
+      <exception cref="T:System.InvalidOperationException">至少一个基础集合未接受该项。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTake(`0@)">
+      <summary>尝试从 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 中移除某个项。</summary>
+      <returns>如果可以移除项，则为 true；否则为 false。</returns>
+      <param name="item">要从集合中移除的项。</param>
+      <exception cref="T:System.ObjectDisposedException">已释放了 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />。</exception>
+      <exception cref="T:System.InvalidOperationException">基础集合已在此 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例外部进行了修改。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTake(`0@,System.Int32)">
+      <summary>尝试在指定的时间段内从 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 中移除某个项。</summary>
+      <returns>如果在指定的时间内可以从集合中移除某个项，则为 true；否则为 false。</returns>
+      <param name="item">要从集合中移除的项。</param>
+      <param name="millisecondsTimeout">等待的毫秒数，或为 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)，表示无限期等待。</param>
+      <exception cref="T:System.ObjectDisposedException">已释放了 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一个非 -1 的负数，而 -1 表示无限期超时。</exception>
+      <exception cref="T:System.InvalidOperationException">基础集合已在此 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例外部进行了修改。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTake(`0@,System.Int32,System.Threading.CancellationToken)">
+      <summary>在观察取消标记时，尝试在指定的时间段内从 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 中移除某个项。</summary>
+      <returns>如果在指定的时间内可以从集合中移除某个项，则为 true；否则为 false。</returns>
+      <param name="item">要从集合中移除的项。</param>
+      <param name="millisecondsTimeout">等待的毫秒数，或为 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)，表示无限期等待。</param>
+      <param name="cancellationToken">要观察的取消标记。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <see cref="T:System.Threading.CancellationToken" /> 已取消。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 已被释放，或基础 <see cref="T:System.Threading.CancellationTokenSource" /> 已被释放。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一个非 -1 的负数，而 -1 表示无限期超时。</exception>
+      <exception cref="T:System.InvalidOperationException">基础集合已在此 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例外部进行了修改。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTake(`0@,System.TimeSpan)">
+      <summary>尝试在指定的时间段内从 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 中移除某个项。</summary>
+      <returns>如果在指定的时间内可以从集合中移除某个项，则为 true；否则为 false。</returns>
+      <param name="item">要从集合中移除的项。</param>
+      <param name="timeout">表示等待的毫秒数的对象，或表示 -1 毫秒（无限期等待）的对象。 </param>
+      <exception cref="T:System.ObjectDisposedException">已释放了 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 是一个非 -1 毫秒的负数，而 -1 表示无限期超时。- 或 - <paramref name="timeout" /> 大于 <see cref="F:System.Int32.MaxValue" />。</exception>
+      <exception cref="T:System.InvalidOperationException">基础集合已在此 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例外部进行了修改。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTakeFromAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0@)">
+      <summary>尝试从任一指定的 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例中移除某个项。</summary>
+      <returns>从中移除相应项的集合在 <paramref name="collections" /> 数组中的索引；如果未能移除某个项，则为 -1。</returns>
+      <param name="collections">集合的数组。</param>
+      <param name="item">从其中一个集合中移除的项。</param>
+      <exception cref="T:System.ObjectDisposedException">至少其中一个 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例已释放。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collections" /> 参数为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="collections" /> 的计数大于最大的大小（STA 为 62，MTA 为 63）。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> 参数是一个 0 长度的数组，或包含 null 元素。</exception>
+      <exception cref="T:System.InvalidOperationException">至少一个基础集合已在其 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例之外进行了修改。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTakeFromAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0@,System.Int32)">
+      <summary>尝试从任一指定的 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例中移除某个项。</summary>
+      <returns>从中移除相应项的集合在 <paramref name="collections" /> 数组中的索引；如果未能移除某个项，则为 -1。</returns>
+      <param name="collections">集合的数组。</param>
+      <param name="item">从其中一个集合中移除的项。</param>
+      <param name="millisecondsTimeout">等待的毫秒数，或为 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)，表示无限期等待。</param>
+      <exception cref="T:System.ObjectDisposedException">至少其中一个 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例已释放。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collections" /> 参数为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一个非 -1 的负数，而 -1 表示无限期超时。- 或 -<paramref name="collections" /> 的计数大于最大的大小（STA 为 62，MTA 为 63）。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> 参数是一个 0 长度的数组，或包含 null 元素。</exception>
+      <exception cref="T:System.InvalidOperationException">至少一个基础集合已在其 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例之外进行了修改。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTakeFromAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0@,System.Int32,System.Threading.CancellationToken)">
+      <summary>尝试从任一指定的 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例中移除某个项。</summary>
+      <returns>从中移除相应项的集合在 <paramref name="collections" /> 数组中的索引；如果未能移除某个项，则为 -1。</returns>
+      <param name="collections">集合的数组。</param>
+      <param name="item">从其中一个集合中移除的项。</param>
+      <param name="millisecondsTimeout">等待的毫秒数，或为 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)，表示无限期等待。</param>
+      <param name="cancellationToken">要观察的取消标记。</param>
+      <exception cref="T:System.OperationCanceledException">如果 <see cref="T:System.Threading.CancellationToken" />已取消。</exception>
+      <exception cref="T:System.InvalidOperationException">至少一个基础集合已在其 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例之外进行了修改。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collections" /> 参数为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一个非 -1 的负数，而 -1 表示无限期超时。- 或 -<paramref name="collections" /> 的计数大于最大的大小（STA 为 62，MTA 为 63）。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> 参数是一个 0 长度的数组，或包含 null 元素。</exception>
+      <exception cref="T:System.ObjectDisposedException">至少其中一个 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例已释放。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTakeFromAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0@,System.TimeSpan)">
+      <summary>尝试从任一指定的 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例中移除某个项。</summary>
+      <returns>从中移除相应项的集合在 <paramref name="collections" /> 数组中的索引；如果未能移除某个项，则为 -1。</returns>
+      <param name="collections">集合的数组。</param>
+      <param name="item">从其中一个集合中移除的项。</param>
+      <param name="timeout">表示等待的毫秒数的 <see cref="T:System.TimeSpan" />，或表示 -1 毫秒（无限期等待）的 <see cref="T:System.TimeSpan" />。</param>
+      <exception cref="T:System.ObjectDisposedException">至少其中一个 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例已释放。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collections" /> 参数为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 是 -1 毫秒之外的负数，表示无限超时或者超时大于 <see cref="F:System.Int32.MaxValue" />。- 或 -<paramref name="collections" /> 的计数大于最大的大小（STA 为 62，MTA 为 63）。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> 参数是一个 0 长度的数组，或包含 null 元素。</exception>
+      <exception cref="T:System.InvalidOperationException">至少一个基础集合已在其 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 实例之外进行了修改。</exception>
+    </member>
+    <member name="T:System.Collections.Concurrent.ConcurrentBag`1">
+      <summary>表示对象的线程安全的无序集合。</summary>
+      <typeparam name="T">要存储在集合中的元素的类型。</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.#ctor">
+      <summary>初始化 <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+      <summary>初始化 <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> 类的新实例，该类包含从指定集合中复制的元素。</summary>
+      <param name="collection">其元素被复制到新的 <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> 中的集合。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collection" /> 为 null 引用（在 Visual Basic 中为 Nothing）。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.Add(`0)">
+      <summary>将对象添加到 <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> 中。</summary>
+      <param name="item">要添加到 <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> 的对象。该值对于引用类型可以是空引用（在 Visual Basic 中为 Nothing）。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.CopyTo(`0[],System.Int32)">
+      <summary>从指定数组索引开始将 <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> 元素复制到现有一维 <see cref="T:System.Array" /> 中。</summary>
+      <param name="array">一维 <see cref="T:System.Array" />，它是从 <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> 所复制的元素的目标位置。<see cref="T:System.Array" /> 必须具有从零开始的索引。</param>
+      <param name="index">
+        <paramref name="array" /> 中从零开始的索引，将在此处开始复制。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> 为 null 引用（在 Visual Basic 中为 Nothing）。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> 小于零。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> 等于或大于 <paramref name="array" /> 的长度 - 或 - 源 <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> 中的元素数大于从 <paramref name="index" /> 到目标 <paramref name="array" /> 结尾的可用空间。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentBag`1.Count">
+      <summary>获取 <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> 中包含的元素数。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> 中包含的元素数。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.GetEnumerator">
+      <summary>返回一个循环访问 <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> 的枚举数。</summary>
+      <returns>可枚举 <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> 的内容的枚举器。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentBag`1.IsEmpty">
+      <summary>获取一个指示 <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> 是否为空的值。</summary>
+      <returns>如果 <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> 为空，则为 true；否则为 false。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.System#Collections#Concurrent#IProducerConsumerCollection{T}#TryAdd(`0)">
+      <summary>尝试将一个对象添加到 <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> 中。</summary>
+      <returns>始终返回 true</returns>
+      <param name="item">要添加到 <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> 的对象。该值对于引用类型可以是空引用（在 Visual Basic 中为 Nothing）。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>从特定的 <see cref="T:System.Array" /> 索引开始，将 <see cref="T:System.Collections.ICollection" /> 的元素复制到一个 <see cref="T:System.Array" /> 中。</summary>
+      <param name="array">一维 <see cref="T:System.Array" />，它是从 <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> 所复制的元素的目标位置。<see cref="T:System.Array" /> 必须具有从零开始的索引。</param>
+      <param name="index">
+        <paramref name="array" /> 中从零开始的索引，将在此处开始复制。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> 为 null 引用（在 Visual Basic 中为 Nothing）。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> 小于零。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> 是多维的。- 或 -<paramref name="array" /> 没有从零开始的索引。- 或 - <paramref name="index" /> 等于或大于 <paramref name="array" /> 的长度 - 或 - 源 <see cref="T:System.Collections.ICollection" /> 中的元素数大于从 <paramref name="index" /> 到目标 <paramref name="array" /> 结尾的可用空间。- 或 - 源 <see cref="T:System.Collections.ICollection" /> 的类型无法自动转换为目标 <paramref name="array" /> 的类型。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentBag`1.System#Collections#ICollection#IsSynchronized">
+      <summary>获取一个值，该值指示对 <see cref="T:System.Collections.ICollection" /> 的访问是否与 SyncRoot 保持同步。</summary>
+      <returns>如果对 <see cref="T:System.Collections.ICollection" /> 的访问与 SyncRoot 保持同步，则为 true；否则为 false。对于 <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />，此属性始终返回 false。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentBag`1.System#Collections#ICollection#SyncRoot">
+      <summary>获取一个可用于同步对 <see cref="T:System.Collections.ICollection" /> 的访问的对象。不支持此属性。</summary>
+      <returns>返回 null（在 Visual Basic 中为 Nothing）。</returns>
+      <exception cref="T:System.NotSupportedException">不支持 SyncRoot 属性。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.System#Collections#IEnumerable#GetEnumerator">
+      <summary>返回一个循环访问 <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> 的枚举数。</summary>
+      <returns>可枚举 <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> 的内容的枚举器。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.ToArray">
+      <summary>将 <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> 元素复制到新数组。</summary>
+      <returns>一个新数组，其中包含从 <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> 复制的元素的快照。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.TryPeek(`0@)">
+      <summary>尝试从 <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> 返回一个对象但不移除该对象。</summary>
+      <returns>如果成功返回了对象，则为 true；否则为 false。</returns>
+      <param name="result">此方法返回时，<paramref name="result" /> 包含 <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> 中的对象；如果操作失败，则返回 <paramref name="T" /> 的默认值。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.TryTake(`0@)">
+      <summary>尝试从 <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> 中移除并返回一个对象。</summary>
+      <returns>如果成功移除了对象，则为 true；否则为 false。</returns>
+      <param name="result">此方法返回时，<paramref name="result" /> 包含从 <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> 中移除的对象；如果包为空，则返回 <paramref name="T" /> 的默认值。</param>
+    </member>
+    <member name="T:System.Collections.Concurrent.ConcurrentDictionary`2">
+      <summary>表示可由多个线程同时访问的键/值对的线程安全集合。</summary>
+      <typeparam name="TKey">字典中的键的类型。</typeparam>
+      <typeparam name="TValue">字典中的值的类型。</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor">
+      <summary>初始化 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 类的新实例，该实例为空，具有默认的并发级别和默认的初始容量，并为键类型使用默认比较器。</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}})">
+      <summary>初始化 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 类的新实例，该实例包含从指定的 <see cref="T:System.Collections.Generic.IEnumerable`1" /> 中复制的元素，具有默认的并发级别和默认的初始容量，并为键类型使用默认比较器。</summary>
+      <param name="collection">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" />，其元素被复制到新的 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 中。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collection" /> 或其中的任一键为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collection" /> 包含一个或多个重复键。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}},System.Collections.Generic.IEqualityComparer{`0})">
+      <summary>初始化 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 类的新实例，该实例包含从指定的 <see cref="T:System.Collections.IEnumerable" /> 中复制的元素，具有默认的并发级别和默认的初始容量，并使用指定的 <see cref="T:System.Collections.Generic.IEqualityComparer`1" />。</summary>
+      <param name="collection">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" />，其元素被复制到新的 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 中。</param>
+      <param name="comparer">在比较键时要使用的 <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> 实现。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collection" /> 或 <paramref name="comparer" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor(System.Collections.Generic.IEqualityComparer{`0})">
+      <summary>初始化 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 类的新实例，该实例为空，具有默认的并发级别和容量，并使用指定的 <see cref="T:System.Collections.Generic.IEqualityComparer`1" />。</summary>
+      <param name="comparer">在对键进行比较时使用的相等比较实现。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="comparer" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}},System.Collections.Generic.IEqualityComparer{`0})">
+      <summary>初始化 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 类的新实例，该实例包含从指定的 <see cref="T:System.Collections.IEnumerable" /> 中复制的元素并使用指定的 <see cref="T:System.Collections.Generic.IEqualityComparer`1" />。</summary>
+      <param name="concurrencyLevel">将同时更新 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 的线程的估计数量。</param>
+      <param name="collection">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" />，其元素被复制到新的 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 中。</param>
+      <param name="comparer">在比较键时要使用的 <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> 实现。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collection" /> 或 <paramref name="comparer" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="concurrencyLevel" /> 小于 1。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collection" /> 包含一个或多个重复键。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor(System.Int32,System.Int32)">
+      <summary>初始化 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 类的新实例，该实例为空，具有指定的并发级别和容量，并为键类型使用默认比较器。</summary>
+      <param name="concurrencyLevel">将同时更新 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 的线程的估计数量。</param>
+      <param name="capacity">
+        <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 可包含的初始元素数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="concurrencyLevel" /> 小于 1。- 或 -<paramref name="capacity" /> 小于 0。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor(System.Int32,System.Int32,System.Collections.Generic.IEqualityComparer{`0})">
+      <summary>初始化 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 类的新实例，该实例为空，具有指定的并发级别和指定的初始容量，并使用指定的 <see cref="T:System.Collections.Generic.IEqualityComparer`1" />。</summary>
+      <param name="concurrencyLevel">将同时更新 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 的线程的估计数量。</param>
+      <param name="capacity">
+        <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 可包含的初始元素数。</param>
+      <param name="comparer">在比较键时要使用的 <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> 实现。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="comparer" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="concurrencyLevel" /> 或 <paramref name="capacity" /> 小于 1。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.AddOrUpdate(`0,System.Func{`0,`1},System.Func{`0,`1,`1})">
+      <summary>如果该键尚不存在，则使用指定函数将键/值对添加到 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />；如果该键已存在，则使用该函数更新 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 中的键/值对。</summary>
+      <returns>键的新值。这将是 addValueFactory 的结果（如果缺少键）或 updateValueFactory 的结果（如果存在键）。</returns>
+      <param name="key">要添加的键或应更新其值的键</param>
+      <param name="addValueFactory">用于为空缺键生成值的函数</param>
+      <param name="updateValueFactory">用于基于键的现有值为现有键生成新值的函数</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" />、<paramref name="addValueFactory" /> 或 <paramref name="updateValueFactory" /> 为 null。</exception>
+      <exception cref="T:System.OverflowException">字典已包含最大数目的元素 (<see cref="F:System.Int32.MaxValue" />)。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.AddOrUpdate(`0,`1,System.Func{`0,`1,`1})">
+      <summary>如果该键尚不存在，则将键/值对添加到 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />；如果该键已存在，则使用指定函数更新 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 中的键/值对。</summary>
+      <returns>键的新值。这将是 addValue（如果缺少键）或 updateValueFactory 的结果（如果存在键）。</returns>
+      <param name="key">要添加的键或应更新其值的键</param>
+      <param name="addValue">要为空缺键添加的值</param>
+      <param name="updateValueFactory">用于基于键的现有值为现有键生成新值的函数</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> 或 <paramref name="updateValueFactory" /> 为 null。</exception>
+      <exception cref="T:System.OverflowException">字典已包含最大数目的元素 (<see cref="F:System.Int32.MaxValue" />)。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.Clear">
+      <summary>从 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 中移除所有的键和值。</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.ContainsKey(`0)">
+      <summary>确定 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 是否包含指定的键。</summary>
+      <returns>true if the <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> contains an element with the specified key; otherwise, false.</returns>
+      <param name="key">要在 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 中定位的键。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> 为 null。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.Count">
+      <summary>获取包含在 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 中的键/值对的数目。</summary>
+      <returns>包含在 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 中的键/值对的数目。</returns>
+      <exception cref="T:System.OverflowException">字典已包含最大数目的元素 (<see cref="F:System.Int32.MaxValue" />)。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.GetEnumerator">
+      <summary>返回一个循环访问 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 的枚举数。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 的一个枚举数。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.GetOrAdd(`0,System.Func{`0,`1})">
+      <summary>如果该键尚不存在，则使用指定函数将键/值对添加到 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />。</summary>
+      <returns>键的值。如果字典中已存在该键，则为该键的现有值；如果字典中不存在该键，则为由 valueFactory 返回的键的新值。</returns>
+      <param name="key">要添加的元素的键。</param>
+      <param name="valueFactory">用于为键生成值的函数</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> 或 <paramref name="valueFactory" /> 为 null。</exception>
+      <exception cref="T:System.OverflowException">字典已包含最大数目的元素 (<see cref="F:System.Int32.MaxValue" />)。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.GetOrAdd(`0,`1)">
+      <summary>如果指定的键尚不存在，则将键/值对添加到 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 中。</summary>
+      <returns>键的值。如果字典中已存在该键，则为该键的现有值；如果字典中不存在该键，则为新值。</returns>
+      <param name="key">要添加的元素的键。</param>
+      <param name="value">当键不存在时要添加的值</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> 为 null。</exception>
+      <exception cref="T:System.OverflowException">字典已包含最大数目的元素 (<see cref="F:System.Int32.MaxValue" />)。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.IsEmpty">
+      <summary>获取一个指示 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 是否为空的值。</summary>
+      <returns>如果 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 为空，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.Item(`0)">
+      <summary>获取或设置与指定的键关联的值。</summary>
+      <returns>位于指定索引处的键/值对的值。</returns>
+      <param name="key">要获取或设置的值的键。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> 为 null。</exception>
+      <exception cref="T:System.Collections.Generic.KeyNotFoundException">已检索该属性，并且集合中不存在 <paramref name="key" />。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.Keys">
+      <summary>获取包含 <see cref="T:System.Collections.Generic.Dictionary`2" /> 中的键的集合。</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.Dictionary`2" /> 中的键的集合。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#ICollection{T}#Add(System.Collections.Generic.KeyValuePair{`0,`1})">
+      <summary>向集合中添加一项。</summary>
+      <param name="keyValuePair">要添加到字典中的 <see cref="T:System.Collections.Generic.KeyValuePair`2" />。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#ICollection{T}#Contains(System.Collections.Generic.KeyValuePair{`0,`1})">
+      <summary>获取一个值，该值指示 <see cref="T:System.Collections.Generic.ICollection`1" /> 是否包含具有指定键的元素。</summary>
+      <returns>true if the <see cref="T:System.Collections.Generic.ICollection`1" /> contains an element with the specified key; otherwise, false.</returns>
+      <param name="keyValuePair">要在 <see cref="T:System.Collections.Generic.ICollection`1" /> 中定位的键。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#ICollection{T}#CopyTo(System.Collections.Generic.KeyValuePair{`0,`1}[],System.Int32)">
+      <summary>从指定的数组索引开始，将 <see cref="T:System.Collections.ICollection" /> 中的元素复制到一个数组中。</summary>
+      <param name="array">一维数组，它是从 <see cref="T:System.Collections.ICollection" /> 中复制的元素的目标。该数组的索引必须从零开始。</param>
+      <param name="index">
+        <paramref name="array" /> 中从零开始的索引，将在此处开始复制。</param>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#ICollection{T}#IsReadOnly">
+      <summary>获取一个值，该值指示 <see cref="T:System.Collections.ICollection" /> 是否为只读。</summary>
+      <returns>true if the <see cref="T:System.Collections.ICollection" /> is read-only; otherwise, false.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#ICollection{T}#Remove(System.Collections.Generic.KeyValuePair{`0,`1})">
+      <summary>将指定的键/值对从集合中移除。</summary>
+      <returns>如果该元素已成功移除，则为 true；否则为 false。如果在原始 <see cref="T:System.Collections.Generic.ICollection`1" /> 中没有找到 <paramref name="key" />，此方法也会返回 false。</returns>
+      <param name="keyValuePair">要移除的 <see cref="T:System.Collections.Generic.KeyValuePair`2" />。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Add(`0,`1)">
+      <summary>向 <see cref="T:System.Collections.Generic.IDictionary`2" /> 中添加指定的键和值。</summary>
+      <param name="key">用作要添加的元素的键的对象。</param>
+      <param name="value">用作要添加的元素的值的对象。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 中已存在具有相同键的元素。</exception>
+      <exception cref="T:System.OverflowException">字典已包含最大数目的元素 (<see cref="F:System.Int32.MaxValue" />)。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Remove(`0)">
+      <summary>从 <see cref="T:System.Collections.Generic.IDictionary`2" /> 中移除包含指定键的元素。</summary>
+      <returns>如果该元素已成功移除，则为 true；否则为 false。This method also returns false if <paramref name="key" /> was not found in the original <see cref="T:System.Collections.Generic.IDictionary`2" />.</returns>
+      <param name="key">要移除的元素的键。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> 为 null。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey@TValue}#Keys">
+      <summary>获取包含 <see cref="T:System.Collections.Generic.Dictionary`2" /> 中的键的集合。</summary>
+      <returns>包含集合中的键<see cref="T:System.Collections.Generic.Dictionary`2" />。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey@TValue}#Values">
+      <summary>获取包含 <see cref="T:System.Collections.Generic.Dictionary`2" /> 中的值的集合。</summary>
+      <returns>包含 <see cref="T:System.Collections.Generic.Dictionary`2" /> 中的值的集合。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>从指定的数组索引开始，将 <see cref="T:System.Collections.ICollection" /> 中的元素复制到一个数组中。</summary>
+      <param name="array">一维数组，它是从 <see cref="T:System.Collections.ICollection" /> 中复制的元素的目标。该数组的索引必须从零开始。</param>
+      <param name="index">
+        <paramref name="array" /> 中从零开始的索引，将在此处开始复制。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> 小于 0。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> 等于或大于 <paramref name="array" /> 的长度。- 或 -源 <see cref="T:System.Collections.ICollection" /> 中的元素数目大于从 <paramref name="index" /> 到目标 <paramref name="array" /> 末尾之间的可用空间。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#ICollection#IsSynchronized">
+      <summary>获取一个值，该值指示对 <see cref="T:System.Collections.ICollection" /> 的访问是否与 SyncRoot 保持同步。</summary>
+      <returns>true if access to the <see cref="T:System.Collections.ICollection" /> is synchronized (thread safe); otherwise, false.对于 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />，此属性始终返回 false。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#ICollection#SyncRoot">
+      <summary>获取一个可用于同步对 <see cref="T:System.Collections.ICollection" /> 的访问的对象。不支持此属性。</summary>
+      <returns>始终返回 null。</returns>
+      <exception cref="T:System.NotSupportedException">不支持此属性。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#Add(System.Object,System.Object)">
+      <summary>将指定的键和值添加到字典中。</summary>
+      <param name="key">要用作键的对象。</param>
+      <param name="value">要用作值的对象。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="key" /> 所属类型不可分配给 <see cref="T:System.Collections.Generic.Dictionary`2" /> 的键类型。- 或 - <paramref name="value" /> 属于不能分配给 <see cref="T:System.Collections.Generic.Dictionary`2" /> 中的值类型的类型。 - 或 -<see cref="T:System.Collections.Generic.Dictionary`2" /> 中已存在相同键的值。</exception>
+      <exception cref="T:System.OverflowException">字典已包含最大数目的元素 (<see cref="F:System.Int32.MaxValue" />)。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#Contains(System.Object)">
+      <summary>获取一个值，该值指示 <see cref="T:System.Collections.Generic.IDictionary`2" /> 是否包含具有指定键的元素。</summary>
+      <returns>true if the <see cref="T:System.Collections.Generic.IDictionary`2" /> contains an element with the specified key; otherwise, false.</returns>
+      <param name="key">要在 <see cref="T:System.Collections.Generic.IDictionary`2" /> 中定位的键。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#GetEnumerator">
+      <summary>为 <see cref="T:System.Collections.Generic.IDictionary`2" /> 提供 <see cref="T:System.Collections.IDictionaryEnumerator" />。</summary>
+      <returns>用于 <see cref="T:System.Collections.Generic.IDictionary`2" /> 的 <see cref="T:System.Collections.IDictionaryEnumerator" />。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#IsFixedSize">
+      <summary>获取一个值，该值指示 <see cref="T:System.Collections.Generic.IDictionary`2" /> 是否具有固定大小。</summary>
+      <returns>true if the <see cref="T:System.Collections.Generic.IDictionary`2" /> has a fixed size; otherwise, false.对于 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />，此属性始终返回 false。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#IsReadOnly">
+      <summary>获取一个值，该值指示 <see cref="T:System.Collections.Generic.IDictionary`2" /> 是否为只读。</summary>
+      <returns>true if the <see cref="T:System.Collections.Generic.IDictionary`2" /> is read-only; otherwise, false.对于 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />，此属性始终返回 false。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#Item(System.Object)">
+      <summary>获取或设置与指定的键关联的值。</summary>
+      <returns>与指定键关联的值；如果 <paramref name="key" /> 不在字典中或 <paramref name="key" /> 属于不能分配给 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 的键类型的类型，则为 null。</returns>
+      <param name="key">要获取或设置的值的键。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentException">将分配一个值，并且 <paramref name="key" /> 属于不能分配给 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 的键类型或值类型的类型。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#Keys">
+      <summary>获取包含 <see cref="T:System.Collections.Generic.IDictionary`2" /> 的键的 <see cref="T:System.Collections.ICollection" />。</summary>
+      <returns>包含 <see cref="T:System.Collections.Generic.IDictionary`2" /> 的密钥的接口。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#Remove(System.Object)">
+      <summary>从 <see cref="T:System.Collections.IDictionary" /> 中移除包含指定键的元素。</summary>
+      <param name="key">要移除的元素的键。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> 为 null。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#Values">
+      <summary>获取包含 <see cref="T:System.Collections.IDictionary" /> 中的值的 <see cref="T:System.Collections.ICollection" />。</summary>
+      <returns>包含 <see cref="T:System.Collections.IDictionary" /> 中的值的接口。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IEnumerable#GetEnumerator">
+      <summary>返回一个循环访问 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 的枚举数。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 的一个枚举数。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.ToArray">
+      <summary>将 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 中存储的键和值对复制到新数组中。</summary>
+      <returns>一个新数组，其中包含从 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 复制的键和值对的快照。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.TryAdd(`0,`1)">
+      <summary>尝试将指定的键和值添加到 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 中。</summary>
+      <returns>如果该键/值对已成功添加到 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />，则为 true；如果该键已存在，则为 false。</returns>
+      <param name="key">要添加的元素的键。</param>
+      <param name="value">要添加的元素的值。对于引用类型，该值可以为 null。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> 为 null。</exception>
+      <exception cref="T:System.OverflowException">字典已包含最大数目的元素 (<see cref="F:System.Int32.MaxValue" />)。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.TryGetValue(`0,`1@)">
+      <summary>尝试从 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 获取与指定的键关联的值。</summary>
+      <returns>如果在 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 中找到该键，则为 true；否则为 false。</returns>
+      <param name="key">要获取的值的键。</param>
+      <param name="value">此方法返回时，包含该对象从<see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />如果操作失败，具有指定的键或该类型的默认值。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.TryRemove(`0,`1@)">
+      <summary>尝试从 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 中移除并返回具有指定键的值。</summary>
+      <returns>如果已成功移除对象，则为 true；否则为 false。</returns>
+      <param name="key">要移除并返回的元素的键。</param>
+      <param name="value">当此方法返回时，将包含从 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 中移除的对象；如果 <paramref name="key" /> 不存在，则包含 TValue 类型。 </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.TryUpdate(`0,`1,`1)">
+      <summary>将指定键的现有值与指定值进行比较，如果相等，则用第三个值更新该键。</summary>
+      <returns>如果具有 <paramref name="key" /> 的值与 <paramref name="comparisonValue" /> 相等且替换为 <paramref name="newValue" />，则为 true；否则为 false。</returns>
+      <param name="key">其值将与 <paramref name="comparisonValue" /> 进行比较并且可能被替换的键。</param>
+      <param name="newValue">一个值，当比较结果相等时，将替换具有指定 <paramref name="key" /> 的元素的值。</param>
+      <param name="comparisonValue">与具有指定 <paramref name="key" /> 的元素的值进行比较的值。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> 为 null。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.Values">
+      <summary>获取包含 <see cref="T:System.Collections.Generic.Dictionary`2" /> 中的值的集合。</summary>
+      <returns>包含 <see cref="T:System.Collections.Generic.Dictionary`2" /> 中的值的集合。</returns>
+    </member>
+    <member name="T:System.Collections.Concurrent.ConcurrentQueue`1">
+      <summary>表示线程安全的先进先出 (FIFO) 集合。</summary>
+      <typeparam name="T">队列中包含的元素的类型。</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.#ctor">
+      <summary>初始化 <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+      <summary>初始化 <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> 类的新实例，该类包含从指定集合中复制的元素</summary>
+      <param name="collection">其元素被复制到新的 <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> 中的集合。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collection" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.CopyTo(`0[],System.Int32)">
+      <summary>从指定数组索引开始将 <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> 元素复制到现有一维 <see cref="T:System.Array" /> 中。</summary>
+      <param name="array">一维 <see cref="T:System.Array" />，用作从 <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> 所复制的元素的目标数组。<see cref="T:System.Array" /> 必须具有从零开始的索引。</param>
+      <param name="index">
+        <paramref name="array" /> 中从零开始的索引，从此索引处开始进行复制。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> 是 null 引用（在 Visual Basic 中为 Nothing）。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> 小于零。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> 等于或大于 <paramref name="array" /> 的长度 - 或 - 源 <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> 中的元素数大于从 <paramref name="index" /> 到目标 <paramref name="array" /> 结尾的可用空间。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentQueue`1.Count">
+      <summary>获取 <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> 中包含的元素数。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> 中包含的元素个数。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.Enqueue(`0)">
+      <summary>将对象添加到 <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> 的结尾处。</summary>
+      <param name="item">要添加到 <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> 的结尾处的对象。该值对于引用类型可以是空引用（在 Visual Basic 中为 Nothing）。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.GetEnumerator">
+      <summary>返回循环访问 <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> 的枚举数。</summary>
+      <returns>可枚举 <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> 的内容的枚举器。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentQueue`1.IsEmpty">
+      <summary>获取一个指示 <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> 是否为空的值。</summary>
+      <returns>如果 <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> 为空，则为 true；否则为 false。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.System#Collections#Concurrent#IProducerConsumerCollection{T}#TryAdd(`0)">
+      <summary>尝试将一个对象添加到 <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> 中。</summary>
+      <returns>如果成功添加了对象，则为 true；否则为 false。</returns>
+      <param name="item">要添加到 <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> 的对象。该值对于引用类型可以是空引用（在 Visual Basic 中为 Nothing）。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.System#Collections#Concurrent#IProducerConsumerCollection{T}#TryTake(`0@)">
+      <summary>尝试从 <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> 中移除并返回一个对象。</summary>
+      <returns>如果成功移除并返回了元素，则为 true；否则为 false。</returns>
+      <param name="item">此方法返回时，如果操作成功，则 <paramref name="item" /> 包含所移除的对象。如果没有可供移除的对象，则不指定该值。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>从特定的 <see cref="T:System.Array" /> 索引处开始，将 <see cref="T:System.Collections.ICollection" /> 的元素复制到一个 <see cref="T:System.Array" /> 中。</summary>
+      <param name="array">一维 <see cref="T:System.Array" />，用作从 <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> 所复制的元素的目标数组。<see cref="T:System.Array" /> 必须具有从零开始的索引。</param>
+      <param name="index">
+        <paramref name="array" /> 中从零开始的索引，从此索引处开始进行复制。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> 是 null 引用（在 Visual Basic 中为 Nothing）。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> 小于零。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> 是多维的。- 或 -<paramref name="array" /> 没有从零开始的索引。- 或 - <paramref name="index" /> 等于或大于 <paramref name="array" /> 的长度 - 或 - 源 <see cref="T:System.Collections.ICollection" /> 中的元素数大于从 <paramref name="index" /> 到目标 <paramref name="array" /> 结尾的可用空间。- 或 - 源 <see cref="T:System.Collections.ICollection" /> 的类型无法自动转换为目标 <paramref name="array" /> 的类型。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentQueue`1.System#Collections#ICollection#IsSynchronized">
+      <summary>获取一个值，该值指示对 <see cref="T:System.Collections.ICollection" /> 的访问是否与 SyncRoot 保持同步。</summary>
+      <returns>如果对 <see cref="T:System.Collections.ICollection" /> 的访问与 SyncRoot 保持同步，则为 true；否则为 false。对于 <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />，此属性始终返回 false。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentQueue`1.System#Collections#ICollection#SyncRoot">
+      <summary>获取可用于同步对 <see cref="T:System.Collections.ICollection" /> 的访问的对象。不支持此属性。</summary>
+      <returns>返回 null（在 Visual Basic 中为 Nothing）。</returns>
+      <exception cref="T:System.NotSupportedException">不支持 SyncRoot 属性。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.System#Collections#IEnumerable#GetEnumerator">
+      <summary>返回一个循环访问集合的枚举器。</summary>
+      <returns>可用于循环访问集合的 <see cref="T:System.Collections.IEnumerator" />。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.ToArray">
+      <summary>将 <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> 中存储的元素复制到新数组中。</summary>
+      <returns>一个新数组，其中包含从 <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> 复制的元素的快照。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.TryDequeue(`0@)">
+      <summary>尝试移除并返回位于并发队列开头处的对象。</summary>
+      <returns>如果成功在 <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> 开头处移除并返回了元素，则为 true；否则为 false。</returns>
+      <param name="result">此方法返回时，如果操作成功，则 <paramref name="result" /> 包含所移除的对象。如果没有可供移除的对象，则不指定该值。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.TryPeek(`0@)">
+      <summary>尝试返回 <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> 开头处的对象但不将其移除。</summary>
+      <returns>如果成功返回了对象，则为 true；否则为 false。</returns>
+      <param name="result">此方法返回时，<paramref name="result" /> 包含 <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> 开始处的对象；如果操作失败，则包含未指定的值。</param>
+    </member>
+    <member name="T:System.Collections.Concurrent.ConcurrentStack`1">
+      <summary>表示线程安全的后进先出 (LIFO) 集合。</summary>
+      <typeparam name="T">堆栈中包含的元素的类型。</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.#ctor">
+      <summary>初始化 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+      <summary>初始化 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 类的新实例，该实例包含从指定集合复制的元素</summary>
+      <param name="collection">其元素被复制到新的 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 中的集合。</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="collection" /> argument is null.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.Clear">
+      <summary>从 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 中移除所有对象。</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.CopyTo(`0[],System.Int32)">
+      <summary>从指定数组索引开始将 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 元素复制到现有一维 <see cref="T:System.Array" /> 中。</summary>
+      <param name="array">一维 <see cref="T:System.Array" />，用作从 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 所复制的元素的目标数组。<see cref="T:System.Array" /> 必须具有从零开始的索引。</param>
+      <param name="index">
+        <paramref name="array" /> 中从零开始的索引，从此索引处开始进行复制。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> is a null reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> is less than zero.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> is equal to or greater than the length of the <paramref name="array" /> -or- The number of elements in the source <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentStack`1.Count">
+      <summary>获取 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 中包含的元素数。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 中包含的元素数。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.GetEnumerator">
+      <summary>返回循环访问 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 的枚举数。</summary>
+      <returns>用于 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 的枚举数。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentStack`1.IsEmpty">
+      <summary>获取一个值，该值指示 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 是否为空。</summary>
+      <returns>如果 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 为空，则为 true；否则为 false。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.Push(`0)">
+      <summary>将对象插入 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 的顶部。</summary>
+      <param name="item">要推入到 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 中的对象。该值对于引用类型可以是空引用（在 Visual Basic 中为 Nothing）。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.PushRange(`0[])">
+      <summary>自动将多个对象插入 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 的顶部。</summary>
+      <param name="items">要推入到 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 中的对象。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="items" /> is a null reference (Nothing in Visual Basic).</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.PushRange(`0[],System.Int32,System.Int32)">
+      <summary>自动将多个对象插入 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 的顶部。</summary>
+      <param name="items">要推入到 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 中的对象。</param>
+      <param name="startIndex">
+        <paramref name="items" /> 中从零开始的偏移量，在此开始插入元素到 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 的顶部。</param>
+      <param name="count">要插入到 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 的顶部的元素数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="items" /> is a null reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> or <paramref name="count" /> is negative.Or <paramref name="startIndex" /> is greater than or equal to the length of <paramref name="items" />.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="startIndex" /> + <paramref name="count" /> is greater than the length of <paramref name="items" />.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.System#Collections#Concurrent#IProducerConsumerCollection{T}#TryAdd(`0)">
+      <summary>尝试将一个对象添加到 <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> 中。</summary>
+      <returns>如果成功添加了对象，则为 true；否则为 false。</returns>
+      <param name="item">要添加到 <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> 的对象。该值对于引用类型可以是空引用（在 Visual Basic 中为 Nothing）。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.System#Collections#Concurrent#IProducerConsumerCollection{T}#TryTake(`0@)">
+      <summary>尝试从 <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> 中移除和返回一个对象。</summary>
+      <returns>如果成功移除并返回了元素，则为 true；否则为 false。</returns>
+      <param name="item">此方法返回时，如果操作成功，则 <paramref name="item" /> 包含所移除的对象。如果没有可供移除的对象，则不指定该值。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>从特定的 <see cref="T:System.Array" /> 索引处开始，将 <see cref="T:System.Collections.ICollection" /> 的元素复制到一个 <see cref="T:System.Array" /> 中。</summary>
+      <param name="array">一维 <see cref="T:System.Array" />，用作从 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 所复制的元素的目标数组。<see cref="T:System.Array" /> 必须具有从零开始的索引。</param>
+      <param name="index">
+        <paramref name="array" /> 中从零开始的索引，从此索引处开始进行复制。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> is a null reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> is less than zero.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> is multidimensional.-or- <paramref name="array" /> does not have zero-based indexing.-or- <paramref name="index" /> is equal to or greater than the length of the <paramref name="array" /> -or- The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.-or- The type of the source <see cref="T:System.Collections.ICollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentStack`1.System#Collections#ICollection#IsSynchronized">
+      <summary>获取一个指示对 <see cref="T:System.Collections.ICollection" /> 的访问是否与 SyncRoot 同步的值。</summary>
+      <returns>如果对 <see cref="T:System.Collections.ICollection" /> 的访问与 SyncRoot 同步，则为 true；否则为 false。对于 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />，此属性始终返回 false。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentStack`1.System#Collections#ICollection#SyncRoot">
+      <summary>获取可用于同步对 <see cref="T:System.Collections.ICollection" /> 的访问的对象。不支持此属性。</summary>
+      <returns>返回 null（在 Visual Basic 中为 Nothing）。</returns>
+      <exception cref="T:System.NotSupportedException">The SyncRoot property is not supported</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.System#Collections#IEnumerable#GetEnumerator">
+      <summary>返回循环访问集合的枚举数。</summary>
+      <returns>可用于循环访问集合的 <see cref="T:System.Collections.IEnumerator" />。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.ToArray">
+      <summary>将 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 中存储的项复制到一个新的数组。</summary>
+      <returns>新数组包含从 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 复制的元素的快照。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.TryPeek(`0@)">
+      <summary>尝试从 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 的顶部返回一个对象而无需移除它。</summary>
+      <returns>如果成功返回了对象，则为 true；否则为 false。</returns>
+      <param name="result">当此方法返回时，<paramref name="result" /> 包含来自 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 顶部的一个对象，或者如果操作失败，则包含未指定值。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.TryPop(`0@)">
+      <summary>尝试弹出并返回 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 顶部的对象。</summary>
+      <returns>如果从 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 的顶部成功移除并返回了元素，则为 true；否则为 false。</returns>
+      <param name="result">此方法返回时，如果操作成功，则 <paramref name="result" /> 包含所移除的对象。如果没有可供移除的对象，则不指定该值。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.TryPopRange(`0[])">
+      <summary>尝试自动弹出并返回 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 顶部的多个对象。</summary>
+      <returns>成功从 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 顶部弹出并插入 <paramref name="items" /> 中的对象数。</returns>
+      <param name="items">要将从 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 顶部弹出的对象添加到的 <see cref="T:System.Array" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="items" /> is a null argument (Nothing in Visual Basic).</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.TryPopRange(`0[],System.Int32,System.Int32)">
+      <summary>尝试自动弹出并返回 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 顶部的多个对象。</summary>
+      <returns>成功从堆栈顶部弹出并插入 <paramref name="items" /> 中的对象数。</returns>
+      <param name="items">要将从 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 顶部弹出的对象添加到的 <see cref="T:System.Array" />。</param>
+      <param name="startIndex">
+        <paramref name="items" /> 中从零开始的偏移量，在此开始从 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 顶部插入元素。</param>
+      <param name="count">从 <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> 顶部弹出并插入 <paramref name="items" /> 中的元素数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="items" /> is a null reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> or <paramref name="count" /> is negative.Or <paramref name="startIndex" /> is greater than or equal to the length of <paramref name="items" />.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="startIndex" /> + <paramref name="count" /> is greater than the length of <paramref name="items" />.</exception>
+    </member>
+    <member name="T:System.Collections.Concurrent.EnumerablePartitionerOptions">
+      <summary>指定控制分区程序的缓冲行为的选项</summary>
+    </member>
+    <member name="F:System.Collections.Concurrent.EnumerablePartitionerOptions.NoBuffering">
+      <summary>创建分区程序，该程序从源可枚举项中一次提取项而不使用中间存储，多个线程可以更有效地访问该存储。此选项支持低延迟（一从源获得项目就对其进行处理）且部分支持项目间的依赖项（线程无法死锁等待线程自身负责处理的项目）。</summary>
+    </member>
+    <member name="F:System.Collections.Concurrent.EnumerablePartitionerOptions.None">
+      <summary>使用默认行为，就是使用缓冲实现最佳性能。</summary>
+    </member>
+    <member name="T:System.Collections.Concurrent.IProducerConsumerCollection`1">
+      <summary>定义供制造者/使用者用来操作线程安全集合的方法。此接口提供一个统一的表示（为生产者/消费者集合），从而更高级别抽象如 <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> 可以使用集合作为基础的存储机制。</summary>
+      <typeparam name="T">指定集合中的元素的类型。</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.IProducerConsumerCollection`1.CopyTo(`0[],System.Int32)">
+      <summary>从指定的索引位置开始，将 <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> 的元素复制到 <see cref="T:System.Array" /> 中。</summary>
+      <param name="array">一维 <see cref="T:System.Array" />，用作从 <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> 所复制的元素的目标数组。 该数组的索引必须从零开始。</param>
+      <param name="index">
+        <paramref name="array" /> 中从零开始的索引，从此索引处开始进行复制。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> 是 null 引用（在 Visual Basic 中为 Nothing）。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> 小于零。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> 等于或大于 <paramref name="array" /> 的长度 - 或 - 集合中的元素数大于从 <paramref name="index" /> 到目标 <paramref name="array" /> 结尾的可用空间。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.IProducerConsumerCollection`1.ToArray">
+      <summary>将 <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> 中包含的元素复制到新数组中。</summary>
+      <returns>一个新数组，其中包含从 <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> 复制的元素。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.IProducerConsumerCollection`1.TryAdd(`0)">
+      <summary>尝试将一个对象添加到 <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> 中。</summary>
+      <returns>如果成功添加了对象，则为 true；否则为 false。</returns>
+      <param name="item">要添加到 <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> 的对象。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="item" /> 对于此集合无效。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.IProducerConsumerCollection`1.TryTake(`0@)">
+      <summary>尝试从 <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> 中移除并返回一个对象。</summary>
+      <returns>如果成功移除并返回了对象，则为 true；否则为 false。</returns>
+      <param name="item">此方法返回时，如果成功移除并返回了对象，则 <paramref name="item" /> 包含所移除的对象。如果没有可供移除的对象，则不指定该值。</param>
+    </member>
+    <member name="T:System.Collections.Concurrent.OrderablePartitioner`1">
+      <summary>表示将一个可排序数据源拆分成多个分区的特定方式。</summary>
+      <typeparam name="TSource">集合中的元素的类型。</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.OrderablePartitioner`1.#ctor(System.Boolean,System.Boolean,System.Boolean)">
+      <summary>从派生类中的构造函数进行调用以便使用索引键上指定的约束初始化 <see cref="T:System.Collections.Concurrent.OrderablePartitioner`1" /> 类。</summary>
+      <param name="keysOrderedInEachPartition">指示是否按键增加的顺序生成每个分区中的元素。</param>
+      <param name="keysOrderedAcrossPartitions">指示前一分区中的元素是否始终排在后一分区中的元素之前。如果为 true，则分区 0 中的每个元素的顺序键比分区 1 中的任何元素都要小，分区 1 中的每个元素的顺序键比分区 2 中的任何元素都要小，依次类推。</param>
+      <param name="keysNormalized">指示是否规范化键。如果为 true，所有顺序键均为范围 [0 .. numberOfElements-1] 中的不同整数。如果为 false，顺序键仍必须互不相同，但只考虑其相对顺序，而不考虑其绝对值。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.OrderablePartitioner`1.GetDynamicPartitions">
+      <summary>创建一个可将基础集合分区成可变数目的分区的对象。</summary>
+      <returns>一个可针对基础数据源创建分区的对象。</returns>
+      <exception cref="T:System.NotSupportedException">该基类不支持动态分区。它必须在派生类中实现。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.OrderablePartitioner`1.GetOrderableDynamicPartitions">
+      <summary>创建一个可将基础集合分区成可变数目的分区的对象。</summary>
+      <returns>一个可针对基础数据源创建分区的对象。</returns>
+      <exception cref="T:System.NotSupportedException">此分区程序不支持动态分区。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.OrderablePartitioner`1.GetOrderablePartitions(System.Int32)">
+      <summary>将基础集合分区成指定数目的可排序分区。</summary>
+      <returns>一个包含 <paramref name="partitionCount" /> 枚举器的列表。</returns>
+      <param name="partitionCount">要创建的分区数。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.OrderablePartitioner`1.GetPartitions(System.Int32)">
+      <summary>将基础集合分区成给定数目的可排序分区。</summary>
+      <returns>一个包含 <paramref name="partitionCount" /> 枚举器的列表。</returns>
+      <param name="partitionCount">要创建的分区数。</param>
+    </member>
+    <member name="P:System.Collections.Concurrent.OrderablePartitioner`1.KeysNormalized">
+      <summary>获取是否规范化顺序键。</summary>
+      <returns>如果规范化键，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.OrderablePartitioner`1.KeysOrderedAcrossPartitions">
+      <summary>获取前一分区中的元素是否始终排在后一分区中的元素之前。</summary>
+      <returns>如果前一分区中的元素始终排在后一分区中的元素之前，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.OrderablePartitioner`1.KeysOrderedInEachPartition">
+      <summary>获取是否按键增加的顺序生成每个分区中的元素。</summary>
+      <returns>如果按键增加的顺序生成每个分区中的元素，则为 true；否则为 false。</returns>
+    </member>
+    <member name="T:System.Collections.Concurrent.Partitioner">
+      <summary>提供针对数组、列表和可枚举项的常见分区策略。</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>从 <see cref="T:System.Collections.Generic.IEnumerable`1" /> 实例创建一个可排序分区程序。</summary>
+      <returns>基于输入数组的可排序分区程序。</returns>
+      <param name="source">要进行分区的可枚举项。</param>
+      <typeparam name="TSource">源可枚举项中的元素的类型。</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Concurrent.EnumerablePartitionerOptions)">
+      <summary>从 <see cref="T:System.Collections.Generic.IEnumerable`1" /> 实例创建一个可排序分区程序。</summary>
+      <returns>基于输入数组的可排序分区程序。</returns>
+      <param name="source">要进行分区的可枚举项。</param>
+      <param name="partitionerOptions">控制分区缓冲行为的选项。</param>
+      <typeparam name="TSource">源可枚举项中的元素的类型。</typeparam>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="partitionerOptions" /> 参数为 <see cref="T:System.Collections.Concurrent.EnumerablePartitionerOptions" /> 指定无效值。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create``1(System.Collections.Generic.IList{``0},System.Boolean)">
+      <summary>从 <see cref="T:System.Collections.Generic.IList`1" /> 实例创建一个可排序分区程序。</summary>
+      <returns>基于输入列表的可排序分区程序。</returns>
+      <param name="list">要进行分区的列表。</param>
+      <param name="loadBalance">一个布尔值，该值指示创建的分区程序是否应在各分区之间保持动态负载平衡，而不是静态负载平衡。</param>
+      <typeparam name="TSource">源列表中的元素的类型。</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create(System.Int32,System.Int32)">
+      <summary>创建一个按用户指定的范围划分区块的分区程序。</summary>
+      <returns>一个分区程序。</returns>
+      <param name="fromInclusive">范围下限（含）。</param>
+      <param name="toExclusive">范围上限（不含）。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="toExclusive" /> 参数小于或等于 <paramref name="fromInclusive" /> 参数。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create(System.Int32,System.Int32,System.Int32)">
+      <summary>创建一个按用户指定的范围划分区块的分区程序。</summary>
+      <returns>一个分区程序。</returns>
+      <param name="fromInclusive">范围下限（含）。</param>
+      <param name="toExclusive">范围上限（不含）。</param>
+      <param name="rangeSize">每个子范围的大小。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="toExclusive" /> 参数小于或等于 <paramref name="fromInclusive" /> 参数。- 或 -<paramref name="rangeSize" /> 参数小于或等于 0。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create(System.Int64,System.Int64)">
+      <summary>创建一个按用户指定的范围划分区块的分区程序。</summary>
+      <returns>一个分区程序。</returns>
+      <param name="fromInclusive">范围下限（含）。</param>
+      <param name="toExclusive">范围上限（不含）。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="toExclusive" /> 参数小于或等于 <paramref name="fromInclusive" /> 参数。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create(System.Int64,System.Int64,System.Int64)">
+      <summary>创建一个按用户指定的范围划分区块的分区程序。</summary>
+      <returns>一个分区程序。</returns>
+      <param name="fromInclusive">范围下限（含）。</param>
+      <param name="toExclusive">范围上限（不含）。</param>
+      <param name="rangeSize">每个子范围的大小。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="toExclusive" /> 参数小于或等于 <paramref name="fromInclusive" /> 参数。- 或 -<paramref name="rangeSize" /> 参数小于或等于 0。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create``1(``0[],System.Boolean)">
+      <summary>从 <see cref="T:System.Array" /> 实例创建一个可排序分区程序。</summary>
+      <returns>基于输入数组的可排序分区程序。</returns>
+      <param name="array">要进行分区的数组。</param>
+      <param name="loadBalance">一个布尔值，该值指示创建的分区程序是否应在各分区之间保持动态负载平衡，而不是静态负载平衡。</param>
+      <typeparam name="TSource">源数组中的元素的类型。</typeparam>
+    </member>
+    <member name="T:System.Collections.Concurrent.Partitioner`1">
+      <summary>表示将一个数据源拆分成多个分区的特定方式。</summary>
+      <typeparam name="TSource">集合中的元素的类型。</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner`1.#ctor">
+      <summary>创建新的分区程序实例。</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner`1.GetDynamicPartitions">
+      <summary>创建一个可将基础集合分区成可变数目的分区的对象。</summary>
+      <returns>一个可针对基础数据源创建分区的对象。</returns>
+      <exception cref="T:System.NotSupportedException">该基类不支持动态分区。必须在派生类中实现它。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner`1.GetPartitions(System.Int32)">
+      <summary>将基础集合分区成给定数目的分区。</summary>
+      <returns>一个包含 <paramref name="partitionCount" /> 枚举器的列表。</returns>
+      <param name="partitionCount">要创建的分区数。</param>
+    </member>
+    <member name="P:System.Collections.Concurrent.Partitioner`1.SupportsDynamicPartitions">
+      <summary>获取是否可以动态创建附加分区。</summary>
+      <returns>如果 <see cref="T:System.Collections.Concurrent.Partitioner`1" /> 可以根据分区请求动态创建分区，则为 true；如果 <see cref="T:System.Collections.Concurrent.Partitioner`1" /> 只能以静态方式分配分区，则为 false。</returns>
+    </member>
+  </members>
+</doc>

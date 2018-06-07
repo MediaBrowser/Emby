@@ -1,0 +1,788 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.ObjectModel</name>
+  </assembly>
+  <members>
+    <member name="T:System.Collections.ObjectModel.KeyedCollection`2">
+      <summary>키가 값에 포함된 컬렉션에 대한 추상 기본 클래스를 제공합니다.</summary>
+      <typeparam name="TKey">컬렉션에 있는 키의 형식입니다.</typeparam>
+      <typeparam name="TItem">컬렉션에 있는 항목의 형식입니다.</typeparam>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.#ctor">
+      <summary>기본 같음 비교자를 사용하는 <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.#ctor(System.Collections.Generic.IEqualityComparer{`0})">
+      <summary>지정된 같음 비교자를 사용하는 <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="comparer">키를 비교할 때 사용할 <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> 제네릭 인터페이스의 구현이거나, <see cref="P:System.Collections.Generic.EqualityComparer`1.Default" />에서 얻은 키의 형식에 대한 기본 같음 비교자를 사용하려면 null입니다.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.#ctor(System.Collections.Generic.IEqualityComparer{`0},System.Int32)">
+      <summary>지정된 같음 비교자를 사용하고 지정된 임계값이 초과되면 조회 사전을 만드는 <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="comparer">키를 비교할 때 사용할 <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> 제네릭 인터페이스의 구현이거나, <see cref="P:System.Collections.Generic.EqualityComparer`1.Default" />에서 얻은 키의 형식에 대한 기본 같음 비교자를 사용하려면 null입니다.</param>
+      <param name="dictionaryCreationThreshold">컬렉션에서 조회 사전을 만들지 않고 저장할 수 있는 요소의 수입니다. 0을 지정하면 첫 번째 항목을 추가할 때 조회 사전이 만들어지고, -1을 지정하면 조회 사전이 만들어지지 않습니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="dictionaryCreationThreshold" /> is less than –1.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.ChangeItemKey(`1,`0)">
+      <summary>조회 사전의 지정된 요소와 연결된 키를 변경합니다.</summary>
+      <param name="item">키를 변경할 요소입니다.</param>
+      <param name="newKey">
+        <paramref name="item" />의 새 키입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="item" /> is null.-or-<paramref name="key" /> is null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="item" /> is not found.-or-<paramref name="key" /> already exists in the <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.ClearItems">
+      <summary>
+        <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />에서 요소를 모두 제거합니다.</summary>
+    </member>
+    <member name="P:System.Collections.ObjectModel.KeyedCollection`2.Comparer">
+      <summary>컬렉션에 있는 키가 같은지 확인하는 데 사용되는 제네릭 같음 비교자를 가져옵니다.</summary>
+      <returns>컬렉션에 있는 키가 같은지 확인하는 데 사용되는 <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> 제네릭 인터페이스의 구현입니다.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.Contains(`0)">
+      <summary>컬렉션에 지정된 키를 가진 요소가 포함된지를 확인합니다.</summary>
+      <returns>
+        <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />에 지정한 키가 있는 요소가 포함되어 있으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="key">
+        <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />에서 찾을 수 있는 키입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> is null.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.KeyedCollection`2.Dictionary">
+      <summary>
+        <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />의 조회 사전을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />의 조회 사전이 있으면 해당 조회 사전이고, 그렇지 않으면 null입니다.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.GetKeyForItem(`1)">
+      <summary>파생 클래스에서 구현되면 지정된 요소에서 키를 추출합니다.</summary>
+      <returns>지정된 요소의 키입니다.</returns>
+      <param name="item">키를 추출할 요소입니다.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.InsertItem(System.Int32,`1)">
+      <summary>
+        <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />의 지정된 인덱스에 요소를 삽입합니다.</summary>
+      <param name="index">
+        <paramref name="item" />를 삽입해야 하는 인덱스(0부터 시작)입니다.</param>
+      <param name="item">삽입할 개체입니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> is less than 0.-or-<paramref name="index" /> is greater than <see cref="P:System.Collections.ObjectModel.Collection`1.Count" />.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.KeyedCollection`2.Item(`0)">
+      <summary>지정된 키를 가진 요소를 가져옵니다. </summary>
+      <returns>지정한 키가 있는 요소입니다.지정된 키를 가진 요소가 없으면 예외가 throw됩니다.</returns>
+      <param name="key">가져올 요소의 키입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> is null.</exception>
+      <exception cref="T:System.Collections.Generic.KeyNotFoundException">An element with the specified key does not exist in the collection.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.Remove(`0)">
+      <summary>
+        <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />에서 지정한 키를 가지는 요소를 제거합니다.</summary>
+      <returns>요소가 제거되면 true이고, 그렇지 않으면 false입니다.이 메서드는 <paramref name="key" />가 <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />에 없는 경우에도 false를 반환합니다.</returns>
+      <param name="key">제거할 요소의 키입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> is null.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.RemoveItem(System.Int32)">
+      <summary>
+        <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />의 지정한 인덱스에서 요소를 제거합니다.</summary>
+      <param name="index">제거할 요소의 인덱스입니다.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.SetItem(System.Int32,`1)">
+      <summary>지정된 인덱스에 있는 항목을 지정된 항목으로 바꿉니다.</summary>
+      <param name="index">바꿀 항목의 0부터 시작하는 인덱스입니다.</param>
+      <param name="item">새 항목입니다.</param>
+    </member>
+    <member name="T:System.Collections.ObjectModel.ObservableCollection`1">
+      <summary>항목이 추가 또는 제거되거나 전체 목록이 새로 고쳐질 때 알림을 제공하는 동적 데이터 컬렉션을 나타냅니다.</summary>
+      <typeparam name="T">컬렉션에 있는 요소의 형식입니다.</typeparam>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.#ctor">
+      <summary>
+        <see cref="T:System.Collections.ObjectModel.ObservableCollection`1" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+      <summary>지정된 컬렉션에서 복사한 요소가 포함된 <see cref="T:System.Collections.ObjectModel.ObservableCollection`1" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="collection">요소를 복사할 컬렉션입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collection" /> 매개 변수가 null인 경우</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.BlockReentrancy">
+      <summary>이 컬렉션을 변경하려는 재진입 시도를 허용하지 않습니다.</summary>
+      <returns>개체를 삭제하는 데 사용할 수 있는 <see cref="T:System.IDisposable" /> 개체입니다.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.CheckReentrancy">
+      <summary>이 컬렉션을 변경하려는 재진입 시도를 확인합니다.</summary>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.IDisposable" /> 반환 값이 아직 삭제되지 않은 상태에서 <see cref="M:System.Collections.ObjectModel.ObservableCollection`1.BlockReentrancy" />를 호출한 경우.일반적으로 이는 <see cref="E:System.Collections.ObjectModel.ObservableCollection`1.CollectionChanged" /> 이벤트 도중 이 컬렉션을 추가로 변경하려고 한 경우입니다.그러나 이 동작은 파생 클래스에서 <see cref="M:System.Collections.ObjectModel.ObservableCollection`1.BlockReentrancy" />를 호출하는 시점에 따라 다릅니다.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.ClearItems">
+      <summary>컬렉션에서 모든 항목을 제거합니다.</summary>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ObservableCollection`1.CollectionChanged">
+      <summary>항목이 추가, 제거, 변경 또는 이동되거나 전체 목록이 새로 고쳐질 때 발생합니다.</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.InsertItem(System.Int32,`0)">
+      <summary>항목을 컬렉션 내의 지정된 인덱스에 삽입합니다.</summary>
+      <param name="index">
+        <paramref name="item" />을 삽입해야 하는 인덱스(0부터 시작)입니다.</param>
+      <param name="item">삽입할 개체입니다.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.Move(System.Int32,System.Int32)">
+      <summary>지정된 인덱스에 있는 항목을 컬렉션에서 새 위치로 이동합니다.</summary>
+      <param name="oldIndex">이동할 항목의 위치를 지정하는 인덱스(0부터 시작)입니다.</param>
+      <param name="newIndex">항목의 새 위치를 지정하는 인덱스(0부터 시작)입니다.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.MoveItem(System.Int32,System.Int32)">
+      <summary>지정된 인덱스에 있는 항목을 컬렉션에서 새 위치로 이동합니다.</summary>
+      <param name="oldIndex">이동할 항목의 위치를 지정하는 인덱스(0부터 시작)입니다.</param>
+      <param name="newIndex">항목의 새 위치를 지정하는 인덱스(0부터 시작)입니다.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+      <summary>제공된 인수를 사용하여 <see cref="E:System.Collections.ObjectModel.ObservableCollection`1.CollectionChanged" /> 이벤트를 발생시킵니다.</summary>
+      <param name="e">발생할 이벤트의 인수입니다.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs)">
+      <summary>제공된 인수를 사용하여 <see cref="E:System.Collections.ObjectModel.ObservableCollection`1.PropertyChanged" /> 이벤트를 발생시킵니다.</summary>
+      <param name="e">발생할 이벤트의 인수입니다.</param>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ObservableCollection`1.PropertyChanged">
+      <summary>속성 값이 변경될 때 발생합니다.</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.RemoveItem(System.Int32)">
+      <summary>컬렉션의 지정된 인덱스에서 항목을 제거합니다.</summary>
+      <param name="index">제거할 요소의 0부터 시작하는 인덱스입니다.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.SetItem(System.Int32,`0)">
+      <summary>지정된 인덱스에 있는 요소를 바꿉니다.</summary>
+      <param name="index">바꿀 요소의 인덱스(0부터 시작)입니다.</param>
+      <param name="item">지정한 인덱스에 있는 요소의 새 값입니다.</param>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ObservableCollection`1.System#ComponentModel#INotifyPropertyChanged#PropertyChanged">
+      <summary>속성 값이 변경될 때 발생합니다.</summary>
+    </member>
+    <member name="T:System.Collections.ObjectModel.ReadOnlyDictionary`2">
+      <summary>키/값 쌍의 읽기 전용 제네릭 컬렉션을 나타냅니다.</summary>
+      <typeparam name="TKey">사전에 있는 키의 형식입니다.</typeparam>
+      <typeparam name="TValue">사전에 있는 값의 형식입니다.</typeparam>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.#ctor(System.Collections.Generic.IDictionary{`0,`1})">
+      <summary>지정한 사전을 둘러싸는 래퍼인 <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="dictionary">래핑할 사전입니다.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ContainsKey(`0)">
+      <summary>지정된 키를 가진 요소가 사전에 포함되어 있는지 여부를 확인합니다.</summary>
+      <returns>사전에 지정한 키를 가진 요소가 포함되어 있는 경우 true이고 그렇지 않은 경우 false입니다.</returns>
+      <param name="key">사전에서 찾을 키입니다.</param>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.Count">
+      <summary>사전의 항목 수를 가져옵니다.</summary>
+      <returns>사전의 항목 수입니다.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.Dictionary">
+      <summary>이 <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" /> 개체에서 래핑하는 사전을 가져옵니다.</summary>
+      <returns>이 개체에서 래핑되는 사전입니다.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.GetEnumerator">
+      <summary>
+        <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" />을 반복하는 열거자를 반환합니다.</summary>
+      <returns>컬렉션을 반복하는 데 사용할 수 있는 열거자입니다.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.Item(`0)">
+      <summary>지정된 키를 가진 요소를 가져옵니다.</summary>
+      <returns>지정된 키를 갖는 요소입니다.</returns>
+      <param name="key">가져올 요소의 키입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" />가 null입니다.</exception>
+      <exception cref="T:System.Collections.Generic.KeyNotFoundException">속성이 검색되었지만 <paramref name="key" />가 없는 경우</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.Keys">
+      <summary>사전의 키가 들어 있는 키 컬렉션을 가져옵니다.</summary>
+      <returns>사전의 키가 들어 있는 키 컬렉션입니다.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#Add(System.Collections.Generic.KeyValuePair{`0,`1})">
+      <summary>모든 경우에 <see cref="T:System.NotSupportedException" /> 예외를 throw합니다.</summary>
+      <param name="item">사전에 추가할 개체입니다.</param>
+      <exception cref="T:System.NotSupportedException">모든 경우</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#Clear">
+      <summary>모든 경우에 <see cref="T:System.NotSupportedException" /> 예외를 throw합니다.</summary>
+      <exception cref="T:System.NotSupportedException">모든 경우</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#Contains(System.Collections.Generic.KeyValuePair{`0,`1})">
+      <summary>사전에 특정 값이 들어 있는지 여부를 확인합니다.</summary>
+      <returns>
+        <paramref name="item" />이 사전에 있으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="item">사전에서 찾을 개체입니다.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#CopyTo(System.Collections.Generic.KeyValuePair{`0,`1}[],System.Int32)">
+      <summary>지정한 배열 인덱스부터 사전의 요소를 배열에 복사합니다.</summary>
+      <param name="array">사전에서 복사한 요소의 대상인 1차원 배열입니다.배열에서 0부터 시작하는 인덱스를 사용해야 합니다.</param>
+      <param name="arrayIndex">
+        <paramref name="array" />에서 복사가 시작되는 인덱스(0부터 시작)입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" />가 null입니다.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="arrayIndex" />가 0보다 작은 경우</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" />가 다차원 배열인 경우또는소스 사전의 요소 수가 <paramref name="arrayIndex" />부터 대상 <paramref name="array" /> 끝까지의 사용 가능한 공간보다 큰 경우또는<paramref name="T" /> 형식을 대상 <paramref name="array" />의 형식으로 자동 캐스팅할 수 없는 경우</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#IsReadOnly">
+      <summary>사전이 읽기 전용인지 여부를 나타내는 값을 가져옵니다.</summary>
+      <returns>모든 경우에 true를 반환합니다.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#Remove(System.Collections.Generic.KeyValuePair{`0,`1})">
+      <summary>모든 경우에 <see cref="T:System.NotSupportedException" /> 예외를 throw합니다.</summary>
+      <returns>모든 경우에 <see cref="T:System.NotSupportedException" /> 예외를 throw합니다.</returns>
+      <param name="item">사전에서 제거할 개체입니다.</param>
+      <exception cref="T:System.NotSupportedException">모든 경우</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Add(`0,`1)">
+      <summary>모든 경우에 <see cref="T:System.NotSupportedException" /> 예외를 throw합니다.</summary>
+      <param name="key">추가할 요소의 키로 사용할 개체입니다.</param>
+      <param name="value">추가할 요소의 값으로 사용할 개체입니다.</param>
+      <exception cref="T:System.NotSupportedException">모든 경우</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Item(`0)">
+      <summary>지정된 키를 가진 요소를 가져옵니다.</summary>
+      <returns>지정된 키를 갖는 요소입니다.</returns>
+      <param name="key">가져오거나 설정할 요소의 키입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" />가 null입니다.</exception>
+      <exception cref="T:System.Collections.Generic.KeyNotFoundException">속성이 검색되었지만 <paramref name="key" />가 없는 경우</exception>
+      <exception cref="T:System.NotSupportedException">속성이 설정된 경우</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Keys">
+      <summary>사전의 키가 들어 있는 컬렉션을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" />를 구현하는 개체의 키가 들어 있는 컬렉션입니다.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Remove(`0)">
+      <summary>모든 경우에 <see cref="T:System.NotSupportedException" /> 예외를 throw합니다.</summary>
+      <returns>모든 경우에 <see cref="T:System.NotSupportedException" /> 예외를 throw합니다.</returns>
+      <param name="key">제거할 요소의 키입니다.</param>
+      <exception cref="T:System.NotSupportedException">모든 경우</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Values">
+      <summary>사전의 값이 들어 있는 컬렉션을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" />를 구현하는 개체의 값이 들어 있는 컬렉션입니다.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey@TValue}#Keys">
+      <summary>읽기 전용 사전의 키를 포함하는 열거 가능한 컬렉션을 가져옵니다. </summary>
+      <returns>읽기 전용 사전의 키를 포함하는 열거 가능한 컬렉션입니다.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey@TValue}#Values">
+      <summary>읽기 전용 사전의 값을 포함하는 열거 가능한 컬렉션을 가져옵니다.</summary>
+      <returns>읽기 전용 사전의 값을 포함하는 열거 가능한 컬렉션입니다.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>지정한 배열 인덱스부터 사전의 요소를 배열에 복사합니다.</summary>
+      <param name="array">사전에서 복사한 요소의 대상인 1차원 배열입니다.배열에서 0부터 시작하는 인덱스를 사용해야 합니다.</param>
+      <param name="index">
+        <paramref name="array" />에서 복사가 시작되는 인덱스(0부터 시작)입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" />가 null입니다. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" />가 0보다 작은 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" />가 다차원 배열인 경우또는 소스 사전의 요소 수가 <paramref name="index" />부터 대상 <paramref name="array" /> 끝까지의 사용 가능한 공간보다 큰 경우또는 소스 사전의 형식이 대상 <paramref name="array" />의 형식으로 자동 캐스팅될 수 없는 경우</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#ICollection#IsSynchronized">
+      <summary>사전에 대한 액세스가 동기화되어 스레드로부터 안전한지 여부를 나타내는 값을 가져옵니다.</summary>
+      <returns>사전에 대한 액세스가 동기화되어 스레드로부터 안전하면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#ICollection#SyncRoot">
+      <summary>사전에 대한 액세스를 동기화하는 데 사용할 수 있는 개체를 가져옵니다.</summary>
+      <returns>사전에 대한 액세스를 동기화하는 데 사용할 수 있는 개체입니다.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Add(System.Object,System.Object)">
+      <summary>모든 경우에 <see cref="T:System.NotSupportedException" /> 예외를 throw합니다.</summary>
+      <param name="key">추가할 요소의 키입니다. </param>
+      <param name="value">추가할 요소의 값입니다. </param>
+      <exception cref="T:System.NotSupportedException">모든 경우</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Clear">
+      <summary>모든 경우에 <see cref="T:System.NotSupportedException" /> 예외를 throw합니다.</summary>
+      <exception cref="T:System.NotSupportedException">모든 경우</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Contains(System.Object)">
+      <summary>지정된 키를 가진 요소가 사전에 포함되어 있는지 여부를 확인합니다.</summary>
+      <returns>사전에 지정한 키를 가진 요소가 포함되어 있는 경우 true이고 그렇지 않은 경우 false입니다.</returns>
+      <param name="key">사전에서 찾을 키입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" />가 null입니다. </exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#GetEnumerator">
+      <summary>사전의 열거자를 반환합니다.</summary>
+      <returns>사전의 열거자입니다.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#IsFixedSize">
+      <summary>사전의 크기가 고정되어 있는지 여부를 나타내는 값을 가져옵니다.</summary>
+      <returns>사전의 크기가 고정되어 있으면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#IsReadOnly">
+      <summary>사전이 읽기 전용인지 여부를 나타내는 값을 가져옵니다.</summary>
+      <returns>모든 경우에 true를 반환합니다.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Item(System.Object)">
+      <summary>지정된 키를 가진 요소를 가져옵니다.</summary>
+      <returns>지정된 키를 갖는 요소입니다.</returns>
+      <param name="key">가져오거나 설정할 요소의 키입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" />가 null입니다. </exception>
+      <exception cref="T:System.NotSupportedException">속성이 설정된 경우또는 속성이 설정되어 있고 <paramref name="key" />가 컬렉션에 없으며 사전의 크기가 고정된 경우 </exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Keys">
+      <summary>사전의 키가 들어 있는 컬렉션을 가져옵니다.</summary>
+      <returns>사전의 키가 들어 있는 컬렉션입니다.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Remove(System.Object)">
+      <summary>모든 경우에 <see cref="T:System.NotSupportedException" /> 예외를 throw합니다.</summary>
+      <param name="key">제거할 요소의 키입니다. </param>
+      <exception cref="T:System.NotSupportedException">모든 경우</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Values">
+      <summary>사전의 값이 들어 있는 컬렉션을 가져옵니다.</summary>
+      <returns>사전의 값이 들어 있는 컬렉션입니다.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IEnumerable#GetEnumerator">
+      <summary>컬렉션을 반복하는 열거자를 반환합니다.</summary>
+      <returns>컬렉션을 반복하는 데 사용할 수 있는 열거자입니다.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.TryGetValue(`0,`1@)">
+      <summary>지정된 키와 연결된 값을 검색합니다.</summary>
+      <returns>
+        <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" />를 구현하는 개체에 지정한 키가 있는 요소가 포함되어 있으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="key">값을 검색할 키입니다.</param>
+      <param name="value">이 메서드가 반환될 때 지정된 키가 있으면 해당 키와 연결된 값이고, 그렇지 않으면 <paramref name="value" /> 매개 변수의 형식에 대한 기본값입니다.이 매개 변수는 초기화되지 않은 상태로 전달됩니다.</param>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.Values">
+      <summary>사전의 값이 들어 있는 컬렉션을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" />를 구현하는 개체의 값이 들어 있는 컬렉션입니다.</returns>
+    </member>
+    <member name="T:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection">
+      <summary>
+        <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" /> 개체 키의 읽기 전용 컬렉션을 나타냅니다.</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.CopyTo(`0[],System.Int32)">
+      <summary>특정 배열 인덱스부터 컬렉션의 요소를 배열에 복사합니다.</summary>
+      <param name="array">컬렉션에서 복사한 요소의 대상인 1차원 배열입니다.배열에서 0부터 시작하는 인덱스를 사용해야 합니다.</param>
+      <param name="arrayIndex">
+        <paramref name="array" />에서 복사가 시작되는 인덱스(0부터 시작)입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" />가 null입니다.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="arrayIndex" />가 0보다 작은 경우</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" />가 다차원 배열인 경우또는소스 컬렉션의 요소 수가 <paramref name="arrayIndex" />부터 대상 <paramref name="array" /> 끝까지의 사용 가능한 공간보다 큰 경우또는<paramref name="T" /> 형식을 대상 <paramref name="array" />의 형식으로 자동 캐스팅할 수 없는 경우</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.Count">
+      <summary>컬렉션에 있는 요소의 수를 가져옵니다.</summary>
+      <returns>컬렉션에 있는 요소의 수입니다.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.GetEnumerator">
+      <summary>컬렉션을 반복하는 열거자를 반환합니다.</summary>
+      <returns>컬렉션을 반복하는 데 사용할 수 있는 열거자입니다.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#Generic#ICollection{T}#Add(`0)">
+      <summary>모든 경우에 <see cref="T:System.NotSupportedException" /> 예외를 throw합니다.</summary>
+      <param name="item">컬렉션에 추가할 개체입니다.</param>
+      <exception cref="T:System.NotSupportedException">모든 경우</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#Generic#ICollection{T}#Clear">
+      <summary>모든 경우에 <see cref="T:System.NotSupportedException" /> 예외를 throw합니다.</summary>
+      <exception cref="T:System.NotSupportedException">모든 경우</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#Generic#ICollection{T}#Contains(`0)">
+      <summary>컬렉션에 특정 값이 있는지 여부를 확인합니다.</summary>
+      <returns>
+        <paramref name="item" />이 컬렉션에 있으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="item">컬렉션에서 찾을 개체입니다.</param>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#Generic#ICollection{T}#IsReadOnly">
+      <summary>컬렉션이 읽기 전용인지 여부를 나타내는 값을 가져옵니다.</summary>
+      <returns>모든 경우에 true를 반환합니다.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#Generic#ICollection{T}#Remove(`0)">
+      <summary>모든 경우에 <see cref="T:System.NotSupportedException" /> 예외를 throw합니다.</summary>
+      <returns>컬렉션에서 <paramref name="item" />이 성공적으로 제거되었으면 true이고, 그렇지 않으면 false입니다.이 메서드는 <paramref name="item" />이 원래 컬렉션에 없는 경우에도 false를 반환합니다.</returns>
+      <param name="item">컬렉션에서 제거할 개체입니다.</param>
+      <exception cref="T:System.NotSupportedException">모든 경우</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>특정 배열 인덱스부터 컬렉션의 요소를 배열에 복사합니다.</summary>
+      <param name="array">컬렉션에서 복사한 요소의 대상인 1차원 배열입니다.배열에서 0부터 시작하는 인덱스를 사용해야 합니다.</param>
+      <param name="index">
+        <paramref name="array" />에서 복사가 시작되는 인덱스(0부터 시작)입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" />가 null입니다.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" />가 0보다 작은 경우</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" />가 다차원 배열인 경우또는소스 컬렉션의 요소 수가 <paramref name="index" />부터 대상 <paramref name="array" /> 끝까지의 사용 가능한 공간보다 큰 경우</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>해당 컬렉션에 대한 액세스가 동기화되어 스레드로부터 안전하게 보호되는지 여부를 나타내는 값을 가져옵니다.</summary>
+      <returns>컬렉션에 대한 액세스가 동기화(스레드로부터 안전)되면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#ICollection#SyncRoot">
+      <summary>컬렉션에 대한 액세스를 동기화하는 데 사용할 수 있는 개체를 가져옵니다.</summary>
+      <returns>컬렉션에 대한 액세스를 동기화하는 데 사용할 수 있는 개체입니다.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#IEnumerable#GetEnumerator">
+      <summary>컬렉션을 반복하는 열거자를 반환합니다.</summary>
+      <returns>컬렉션을 반복하는 데 사용할 수 있는 열거자입니다.</returns>
+    </member>
+    <member name="T:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection">
+      <summary>
+        <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" /> 개체 값의 읽기 전용 컬렉션을 나타냅니다.</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.CopyTo(`1[],System.Int32)">
+      <summary>특정 배열 인덱스부터 컬렉션의 요소를 배열에 복사합니다.</summary>
+      <param name="array">컬렉션에서 복사한 요소의 대상인 1차원 배열입니다.배열에서 0부터 시작하는 인덱스를 사용해야 합니다.</param>
+      <param name="arrayIndex">
+        <paramref name="array" />에서 복사가 시작되는 인덱스(0부터 시작)입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" />가 null입니다.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="arrayIndex" />가 0보다 작은 경우</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" />가 다차원 배열인 경우또는소스 컬렉션의 요소 수가 <paramref name="arrayIndex" />부터 대상 <paramref name="array" /> 끝까지의 사용 가능한 공간보다 큰 경우또는<paramref name="T" /> 형식을 대상 <paramref name="array" />의 형식으로 자동 캐스팅할 수 없는 경우</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.Count">
+      <summary>컬렉션에 있는 요소의 수를 가져옵니다.</summary>
+      <returns>컬렉션에 있는 요소의 수입니다.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.GetEnumerator">
+      <summary>컬렉션을 반복하는 열거자를 반환합니다.</summary>
+      <returns>컬렉션을 반복하는 데 사용할 수 있는 열거자입니다.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#Generic#ICollection{T}#Add(`1)">
+      <summary>모든 경우에 <see cref="T:System.NotSupportedException" /> 예외를 throw합니다.</summary>
+      <param name="item">컬렉션에 추가할 개체입니다.</param>
+      <exception cref="T:System.NotSupportedException">모든 경우</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#Generic#ICollection{T}#Clear">
+      <summary>모든 경우에 <see cref="T:System.NotSupportedException" /> 예외를 throw합니다.</summary>
+      <exception cref="T:System.NotSupportedException">모든 경우</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#Generic#ICollection{T}#Contains(`1)">
+      <summary>컬렉션에 특정 값이 있는지 여부를 확인합니다.</summary>
+      <returns>
+        <paramref name="item" />이 컬렉션에 있으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="item">컬렉션에서 찾을 개체입니다.</param>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#Generic#ICollection{T}#IsReadOnly">
+      <summary>컬렉션이 읽기 전용인지 여부를 나타내는 값을 가져옵니다.</summary>
+      <returns>모든 경우에 true를 반환합니다.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#Generic#ICollection{T}#Remove(`1)">
+      <summary>모든 경우에 <see cref="T:System.NotSupportedException" /> 예외를 throw합니다.</summary>
+      <returns>컬렉션에서 <paramref name="item" />이 성공적으로 제거되었으면 true이고, 그렇지 않으면 false입니다.이 메서드는 <paramref name="item" />이 원래 컬렉션에 없는 경우에도 false를 반환합니다.</returns>
+      <param name="item">컬렉션에서 제거할 개체입니다.</param>
+      <exception cref="T:System.NotSupportedException">모든 경우</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>특정 배열 인덱스부터 컬렉션의 요소를 배열에 복사합니다.</summary>
+      <param name="array">컬렉션에서 복사한 요소의 대상인 1차원 배열입니다.배열에서 0부터 시작하는 인덱스를 사용해야 합니다.</param>
+      <param name="index">
+        <paramref name="array" />에서 복사가 시작되는 인덱스(0부터 시작)입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" />가 null입니다.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" />가 0보다 작은 경우</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" />가 다차원 배열인 경우또는소스 컬렉션의 요소 수가 <paramref name="index" />부터 대상 <paramref name="array" /> 끝까지의 사용 가능한 공간보다 큰 경우</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>해당 컬렉션에 대한 액세스가 동기화되어 스레드로부터 안전하게 보호되는지 여부를 나타내는 값을 가져옵니다.</summary>
+      <returns>컬렉션에 대한 액세스가 동기화(스레드로부터 안전)되면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#ICollection#SyncRoot">
+      <summary>컬렉션에 대한 액세스를 동기화하는 데 사용할 수 있는 개체를 가져옵니다.</summary>
+      <returns>컬렉션에 대한 액세스를 동기화하는 데 사용할 수 있는 개체입니다.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#IEnumerable#GetEnumerator">
+      <summary>컬렉션을 반복하는 열거자를 반환합니다.</summary>
+      <returns>컬렉션을 반복하는 데 사용할 수 있는 열거자입니다.</returns>
+    </member>
+    <member name="T:System.Collections.ObjectModel.ReadOnlyObservableCollection`1">
+      <summary>읽기 전용 <see cref="T:System.Collections.ObjectModel.ObservableCollection`1" />을 나타냅니다.</summary>
+      <typeparam name="T">컬렉션에 있는 요소의 형식입니다.</typeparam>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.#ctor(System.Collections.ObjectModel.ObservableCollection{`0})">
+      <summary>지정된 <see cref="T:System.Collections.ObjectModel.ObservableCollection`1" />에 대한 래퍼 역할을 하는 <see cref="T:System.Collections.ObjectModel.ReadOnlyObservableCollection`1" />의 새 인스턴스를 초기화합니다.</summary>
+      <param name="list">
+        <see cref="T:System.Collections.ObjectModel.ReadOnlyObservableCollection`1" /> 클래스의 이 인스턴스를 만드는 데 사용할 <see cref="T:System.Collections.ObjectModel.ObservableCollection`1" />입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="list" />가 null입니다.</exception>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.CollectionChanged">
+      <summary>항목이 추가되거나 제거되는 경우 발생합니다.</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+      <summary>제공된 인수를 사용하여 <see cref="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.CollectionChanged" /> 이벤트를 발생시킵니다.</summary>
+      <param name="args">발생할 이벤트의 인수입니다.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs)">
+      <summary>제공된 인수를 사용하여 <see cref="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.PropertyChanged" /> 이벤트를 발생시킵니다.</summary>
+      <param name="args">발생할 이벤트의 인수입니다.</param>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.PropertyChanged">
+      <summary>속성 값이 변경될 때 발생합니다.</summary>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.System#Collections#Specialized#INotifyCollectionChanged#CollectionChanged">
+      <summary>컬렉션이 변경되면 이 이벤트가 발생합니다.</summary>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.System#ComponentModel#INotifyPropertyChanged#PropertyChanged">
+      <summary>속성 값이 변경될 때 발생합니다.</summary>
+    </member>
+    <member name="T:System.Collections.Specialized.INotifyCollectionChanged">
+      <summary>항목이 추가 및 제거되거나 전체 목록이 새로 고쳐진 경우와 같은 동적 변경 내용을 수신기에 알립니다.</summary>
+    </member>
+    <member name="E:System.Collections.Specialized.INotifyCollectionChanged.CollectionChanged">
+      <summary>컬렉션이 변경되면 이 이벤트가 발생합니다.</summary>
+    </member>
+    <member name="T:System.Collections.Specialized.NotifyCollectionChangedAction">
+      <summary>
+        <see cref="E:System.Collections.Specialized.INotifyCollectionChanged.CollectionChanged" /> 이벤트를 발생시킨 작업을 설명합니다. </summary>
+    </member>
+    <member name="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add">
+      <summary>컬렉션에 하나 이상의 항목이 추가되었습니다.</summary>
+    </member>
+    <member name="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move">
+      <summary>컬렉션 내에서 하나 이상의 항목이 이동했습니다.</summary>
+    </member>
+    <member name="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove">
+      <summary>컬렉션에서 하나 이상의 항목이 제거되었습니다.</summary>
+    </member>
+    <member name="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace">
+      <summary>컬렉션에서 하나 이상의 항목이 바뀌었습니다.</summary>
+    </member>
+    <member name="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset">
+      <summary>컬렉션의 내용이 크게 변경되었습니다.</summary>
+    </member>
+    <member name="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs">
+      <summary>
+        <see cref="E:System.Collections.Specialized.INotifyCollectionChanged.CollectionChanged" /> 이벤트에 대한 데이터를 제공합니다.</summary>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction)">
+      <summary>
+        <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" /> 변경을 설명하는 <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="action">이벤트를 발생시킨 작업입니다.<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />으로 설정되어야 합니다.</param>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Collections.IList)">
+      <summary>여러 항목 변경을 설명하는 <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="action">이벤트를 발생시킨 작업입니다.<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />, <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add" /> 또는 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove" />로 설정될 수 있습니다.</param>
+      <param name="changedItems">변경의 영향을 받은 여러 항목입니다.</param>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Collections.IList,System.Collections.IList)">
+      <summary>여러 항목의 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" /> 변경을 설명하는 <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="action">이벤트를 발생시킨 작업입니다.<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" />로만 설정될 수 있습니다.</param>
+      <param name="newItems">원래 항목을 대체하는 새 항목입니다.</param>
+      <param name="oldItems">대체된 원래 항목입니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="action" />이 Replace가 아닌 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="oldItems" /> 또는 <paramref name="newItems" />가 null인 경우</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Collections.IList,System.Collections.IList,System.Int32)">
+      <summary>여러 항목의 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" /> 변경을 설명하는 <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="action">이벤트를 발생시킨 작업입니다.<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" />로만 설정될 수 있습니다.</param>
+      <param name="newItems">원래 항목을 대체하는 새 항목입니다.</param>
+      <param name="oldItems">대체된 원래 항목입니다.</param>
+      <param name="startingIndex">대체되는 항목 중 첫 번째 항목의 인덱스입니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="action" />이 Replace가 아닌 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="oldItems" /> 또는 <paramref name="newItems" />가 null인 경우</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Collections.IList,System.Int32)">
+      <summary>여러 항목 변경이나 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" /> 변경을 설명하는 <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="action">이벤트를 발생시킨 작업입니다.<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />, <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add" /> 또는 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove" />로 설정될 수 있습니다.</param>
+      <param name="changedItems">변경의 영향을 받은 항목입니다.</param>
+      <param name="startingIndex">변경이 발생한 인덱스입니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="action" />이 Reset, Add 또는 Remove가 아닌 경우, <paramref name="action" />이 Reset이고 <paramref name="changedItems" />가 null이 아니거나 <paramref name="startingIndex" />가 -1이 아닌 경우 또는 action이 Add 또는 Remove이고 <paramref name="startingIndex" />가 -1보다 작은 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="action" />이 Add 또는 Remove이고 <paramref name="changedItems" />가 null인 경우</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Collections.IList,System.Int32,System.Int32)">
+      <summary>여러 항목의 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" /> 변경을 설명하는 <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="action">이벤트를 발생시킨 작업입니다.<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" />로만 설정될 수 있습니다.</param>
+      <param name="changedItems">변경의 영향을 받은 항목입니다.</param>
+      <param name="index">변경된 항목의 새 인덱스입니다.</param>
+      <param name="oldIndex">변경된 항목의 이전 인덱스입니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="action" />이 Move가 아니거나 <paramref name="index" />가 0보다 작은 경우</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Object)">
+      <summary>단일 항목 변경을 설명하는 <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="action">이벤트를 발생시킨 작업입니다.<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />, <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add" /> 또는 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove" />로 설정될 수 있습니다.</param>
+      <param name="changedItem">변경의 영향을 받은 항목입니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="action" />이 Reset, Add 또는 Remove가 아니거나 <paramref name="action" />이 Reset이고 <paramref name="changedItem" />가 null이 아닌 경우</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Object,System.Int32)">
+      <summary>단일 항목 변경을 설명하는 <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="action">이벤트를 발생시킨 작업입니다.<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />, <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add" /> 또는 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove" />로 설정될 수 있습니다.</param>
+      <param name="changedItem">변경의 영향을 받은 항목입니다.</param>
+      <param name="index">변경이 발생한 인덱스입니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="action" />이 Reset, Add 또는 Remove가 아니거나, <paramref name="action" />이 Reset이고 <paramref name="changedItems" />가 null이 아니거나 <paramref name="index" />가 -1이 아닌 경우</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Object,System.Int32,System.Int32)">
+      <summary>단일 항목의 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" /> 변경을 설명하는 <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="action">이벤트를 발생시킨 작업입니다.<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" />로만 설정될 수 있습니다.</param>
+      <param name="changedItem">변경의 영향을 받은 항목입니다.</param>
+      <param name="index">변경된 항목의 새 인덱스입니다.</param>
+      <param name="oldIndex">변경된 항목의 이전 인덱스입니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="action" />이 Move가 아니거나 <paramref name="index" />가 0보다 작은 경우</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Object,System.Object)">
+      <summary>단일 항목의 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" /> 변경을 설명하는 <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="action">이벤트를 발생시킨 작업입니다.<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" />로만 설정될 수 있습니다.</param>
+      <param name="newItem">원래 항목을 대체하는 새 항목입니다.</param>
+      <param name="oldItem">대체된 원래 항목입니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="action" />이 Replace가 아닌 경우</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Object,System.Object,System.Int32)">
+      <summary>단일 항목의 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" /> 변경을 설명하는 <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="action">이벤트를 발생시킨 작업입니다.<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" />로 설정될 수 있습니다.</param>
+      <param name="newItem">원래 항목을 대체하는 새 항목입니다.</param>
+      <param name="oldItem">대체된 원래 항목입니다.</param>
+      <param name="index">대체되는 항목의 인덱스입니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="action" />이 Replace가 아닌 경우</exception>
+    </member>
+    <member name="P:System.Collections.Specialized.NotifyCollectionChangedEventArgs.Action">
+      <summary>이벤트를 발생시킨 작업을 가져옵니다. </summary>
+      <returns>이벤트를 발생시킨 작업을 설명하는 <see cref="T:System.Collections.Specialized.NotifyCollectionChangedAction" /> 값입니다.</returns>
+    </member>
+    <member name="P:System.Collections.Specialized.NotifyCollectionChangedEventArgs.NewItems">
+      <summary>변경에 관련된 새 항목의 목록을 가져옵니다.</summary>
+      <returns>변경에 관련된 새 항목의 목록입니다.</returns>
+    </member>
+    <member name="P:System.Collections.Specialized.NotifyCollectionChangedEventArgs.NewStartingIndex">
+      <summary>변경이 발생한 인덱스를 가져옵니다.</summary>
+      <returns>변경이 발생한 인덱스(0부터 시작)입니다.</returns>
+    </member>
+    <member name="P:System.Collections.Specialized.NotifyCollectionChangedEventArgs.OldItems">
+      <summary>
+        <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" />, Remove 또는 Move 작업의 영향을 받는 항목 목록을 가져옵니다.</summary>
+      <returns>
+        <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" />, Remove 또는 Move 작업의 영향을 받는 항목 목록입니다.</returns>
+    </member>
+    <member name="P:System.Collections.Specialized.NotifyCollectionChangedEventArgs.OldStartingIndex">
+      <summary>
+        <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" />, Remove 또는 Replace 작업이 발생한 인덱스를 가져옵니다.</summary>
+      <returns>
+        <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" />, Remove 또는 Replace 작업이 발생한 인덱스(0부터 시작)입니다.</returns>
+    </member>
+    <member name="T:System.Collections.Specialized.NotifyCollectionChangedEventHandler">
+      <summary>
+        <see cref="E:System.Collections.Specialized.INotifyCollectionChanged.CollectionChanged" /> 이벤트를 처리하는 메서드를 나타냅니다. </summary>
+      <param name="sender">이벤트를 발생시킨 개체입니다.</param>
+      <param name="e">이벤트 정보입니다.</param>
+    </member>
+    <member name="T:System.ComponentModel.DataErrorsChangedEventArgs">
+      <summary>
+        <see cref="E:System.ComponentModel.INotifyDataErrorInfo.ErrorsChanged" /> 이벤트에 대한 데이터를 제공합니다.</summary>
+    </member>
+    <member name="M:System.ComponentModel.DataErrorsChangedEventArgs.#ctor(System.String)">
+      <summary>
+        <see cref="T:System.ComponentModel.DataErrorsChangedEventArgs" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="propertyName">오류가 있는 속성의 이름입니다. 오류가 개체 수준인 경우 null 또는 <see cref="F:System.String.Empty" />입니다.</param>
+    </member>
+    <member name="P:System.ComponentModel.DataErrorsChangedEventArgs.PropertyName">
+      <summary>오류가 있는 속성의 이름을 가져옵니다.</summary>
+      <returns>오류가 있는 속성의 이름입니다.오류가 개체 수준인 경우 null또는 <see cref="F:System.String.Empty" />입니다.</returns>
+    </member>
+    <member name="T:System.ComponentModel.INotifyDataErrorInfo">
+      <summary>데이터 엔터티 클래스에서 사용자 지정 동기 및 비동기 유효성 검사 지원을 제공하기 위해 구현할 수 있는 멤버를 정의합니다.</summary>
+    </member>
+    <member name="E:System.ComponentModel.INotifyDataErrorInfo.ErrorsChanged">
+      <summary>속성 또는 전체 엔터티에 대한 유효성 검사 오류가 변경된 경우 발생합니다. </summary>
+    </member>
+    <member name="M:System.ComponentModel.INotifyDataErrorInfo.GetErrors(System.String)">
+      <summary>지정된 속성 또는 전체 엔터티에 대한 유효성 검사 오류를 가져옵니다.</summary>
+      <returns>속성 또는 엔터티에 대한 유효성 검사 오류입니다.</returns>
+      <param name="propertyName">유효성 검사 오류를 검색할 속성의 이름이거나, 엔터티 수준 오류를 검색하려면 null 또는 <see cref="F:System.String.Empty" />입니다.</param>
+    </member>
+    <member name="P:System.ComponentModel.INotifyDataErrorInfo.HasErrors">
+      <summary>엔터티에 유효성 검사 오류가 있는지 여부를 나타내는 값을 가져옵니다. </summary>
+      <returns>엔터티에 현재 유효성 검사 오류가 있으면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="T:System.ComponentModel.INotifyPropertyChanged">
+      <summary>속성 값이 변경되었음을 클라이언트에 알립니다.</summary>
+    </member>
+    <member name="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged">
+      <summary>속성 값이 변경될 때 발생합니다.</summary>
+    </member>
+    <member name="T:System.ComponentModel.INotifyPropertyChanging">
+      <summary>속성 값이 변경되고 있음을 클라이언트에 알립니다.</summary>
+    </member>
+    <member name="E:System.ComponentModel.INotifyPropertyChanging.PropertyChanging">
+      <summary>속성 값이 변경될 때 발생합니다.</summary>
+    </member>
+    <member name="T:System.ComponentModel.PropertyChangedEventArgs">
+      <summary>
+        <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged" /> 이벤트에 대한 데이터를 제공합니다.</summary>
+    </member>
+    <member name="M:System.ComponentModel.PropertyChangedEventArgs.#ctor(System.String)">
+      <summary>
+        <see cref="T:System.ComponentModel.PropertyChangedEventArgs" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="propertyName">변경된 속성의 이름입니다. </param>
+    </member>
+    <member name="P:System.ComponentModel.PropertyChangedEventArgs.PropertyName">
+      <summary>변경된 속성의 이름을 가져옵니다.</summary>
+      <returns>변경된 속성의 이름입니다.</returns>
+    </member>
+    <member name="T:System.ComponentModel.PropertyChangedEventHandler">
+      <summary>구성 요소에서 속성이 변경될 때 발생하는 <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged" /> 이벤트를 처리할 메서드를 나타냅니다.</summary>
+      <param name="sender">이벤트 소스입니다. </param>
+      <param name="e">이벤트 데이터가 들어 있는 <see cref="T:System.ComponentModel.PropertyChangedEventArgs" />입니다. </param>
+    </member>
+    <member name="T:System.ComponentModel.PropertyChangingEventArgs">
+      <summary>
+        <see cref="E:System.ComponentModel.INotifyPropertyChanging.PropertyChanging" /> 이벤트에 대한 데이터를 제공합니다. </summary>
+    </member>
+    <member name="M:System.ComponentModel.PropertyChangingEventArgs.#ctor(System.String)">
+      <summary>
+        <see cref="T:System.ComponentModel.PropertyChangingEventArgs" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+      <param name="propertyName">값이 변경되고 있는 속성의 이름입니다.</param>
+    </member>
+    <member name="P:System.ComponentModel.PropertyChangingEventArgs.PropertyName">
+      <summary>값이 변경되고 있는 속성의 이름을 가져옵니다.</summary>
+      <returns>값이 변경되고 있는 속성의 이름입니다.</returns>
+    </member>
+    <member name="T:System.ComponentModel.PropertyChangingEventHandler">
+      <summary>
+        <see cref="T:System.ComponentModel.INotifyPropertyChanging" /> 인터페이스의 <see cref="E:System.ComponentModel.INotifyPropertyChanging.PropertyChanging" /> 이벤트를 처리할 메서드를 나타냅니다. </summary>
+      <param name="sender">이벤트 소스입니다. </param>
+      <param name="e">이벤트 데이터가 들어 있는 <see cref="T:System.ComponentModel.PropertyChangingEventArgs" />입니다.</param>
+    </member>
+    <member name="T:System.Windows.Input.ICommand">
+      <summary>명령을 정의합니다.</summary>
+    </member>
+    <member name="M:System.Windows.Input.ICommand.CanExecute(System.Object)">
+      <summary>명령을 현재 상태에서 실행할 수 있는지를 결정하는 메서드를 정의합니다.</summary>
+      <returns>이 명령을 실행할 수 있으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="parameter">명령에 사용된 데이터입니다.명령에서 데이터를 전달할 필요가 없으면 이 개체를 null로 설정할 수 있습니다.</param>
+    </member>
+    <member name="E:System.Windows.Input.ICommand.CanExecuteChanged">
+      <summary>명령을 실행해야 하는지 여부에 영향을 주는 변경이 발생할 때 발생합니다.</summary>
+    </member>
+    <member name="M:System.Windows.Input.ICommand.Execute(System.Object)">
+      <summary>명령이 호출될 때 호출될 메서드를 정의합니다.</summary>
+      <param name="parameter">명령에 사용된 데이터입니다.명령에서 데이터를 전달할 필요가 없으면 이 개체를 null로 설정할 수 있습니다.</param>
+    </member>
+  </members>
+</doc>

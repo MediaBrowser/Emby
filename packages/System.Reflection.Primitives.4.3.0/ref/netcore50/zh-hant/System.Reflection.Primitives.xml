@@ -1,0 +1,1350 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Reflection.Primitives</name>
+  </assembly>
+  <members>
+    <member name="T:System.Reflection.CallingConventions">
+      <summary>定義方法的有效呼叫慣例 (Calling Convention)。</summary>
+    </member>
+    <member name="F:System.Reflection.CallingConventions.Any">
+      <summary>指定可能會使用 Standard 還是 VarArgs 呼叫慣例。</summary>
+    </member>
+    <member name="F:System.Reflection.CallingConventions.ExplicitThis">
+      <summary>指定簽章為函式指標簽章，表示呼叫執行個體或虛擬方法 (非靜態方法)。如果設定 ExplicitThis，也必須設定 HasThis。傳遞至呼叫方法的第一個引數仍是 this 指標，但第一個引數的型別目前未知。因此，描述 this 指標之型別 (或類別) 的語彙基元會明確地儲存到它的中繼資料 (Metadata) 簽章中。</summary>
+    </member>
+    <member name="F:System.Reflection.CallingConventions.HasThis">
+      <summary>指定執行個體或虛擬方法 (非靜態的方法)。在執行階段期間，呼叫的方法傳遞指標至目標物件做為它的第一個引數 (this 指標)。儲存在中繼資料的簽章並不包含這第一個引數的型別，因為已知方法，而且其擁有人類別可以從中繼資料找到。</summary>
+    </member>
+    <member name="F:System.Reflection.CallingConventions.Standard">
+      <summary>指定如同 Common Language Runtime 所判斷的預設呼叫慣例。靜態方法要使用此呼叫慣例。若為執行個體或虛擬方法，則需使用 HasThis。</summary>
+    </member>
+    <member name="F:System.Reflection.CallingConventions.VarArgs">
+      <summary>指定有變數引數之方法的呼叫慣例。</summary>
+    </member>
+    <member name="T:System.Reflection.EventAttributes">
+      <summary>指定事件的屬性 (Attribute)。</summary>
+    </member>
+    <member name="F:System.Reflection.EventAttributes.None">
+      <summary>指定事件沒有屬性。</summary>
+    </member>
+    <member name="F:System.Reflection.EventAttributes.RTSpecialName">
+      <summary>指定 Common Language Runtime 應該檢查名稱編碼方式。</summary>
+    </member>
+    <member name="F:System.Reflection.EventAttributes.SpecialName">
+      <summary>指定由名稱所描述事件的特殊性。</summary>
+    </member>
+    <member name="T:System.Reflection.FieldAttributes">
+      <summary>指定描述欄位屬性 (Attribute) 的旗標。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Assembly">
+      <summary>指定在整個組件中欄位是可存取的。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.FamANDAssem">
+      <summary>指定欄位只能由這個組件中的子型別存取。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Family">
+      <summary>指定欄位只能由型別和子型別存取。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.FamORAssem">
+      <summary>指定欄位可以在任何地方和整個組件中由子型別存取。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.FieldAccessMask">
+      <summary>指定特定欄位的存取層級。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.HasDefault">
+      <summary>指定此欄位含有預設值。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.HasFieldMarshal">
+      <summary>指定欄位含有封送處理 (Marshaling) 資訊。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.HasFieldRVA">
+      <summary>指定欄位含有相對虛擬位址 (RVA)。RVA 為目前影像中方法主體的位置，就像相對於影像檔所在位置的開始位址。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.InitOnly">
+      <summary>指定欄位只初始化，而且只能在建構函式主體中設定。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Literal">
+      <summary>指定欄位的值為編譯時期常數 (靜態或早期繫結)，任何對其進行設定的嘗試都會擲回 <see cref="T:System.FieldAccessException" />。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.NotSerialized">
+      <summary>指定當型別為遠端時，欄位不必序列化。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.PinvokeImpl">
+      <summary>保留供將來使用。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Private">
+      <summary>指定欄位只能由父型別存取。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.PrivateScope">
+      <summary>指定無法參考此欄位。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Public">
+      <summary>指定欄位可以讓能見到這個範圍的任何成員存取。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.RTSpecialName">
+      <summary>指定 Common Language Runtime (中繼資料內部 API) 應檢查名稱編碼方式。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.SpecialName">
+      <summary>指定特殊方法，具有描述方法是如何特殊的名稱。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Static">
+      <summary>指定表示定義型別的欄位，不然它就是一個執行個體。</summary>
+    </member>
+    <member name="T:System.Reflection.GenericParameterAttributes">
+      <summary>描述泛型型別或方法之泛型型別參數的條件約束。</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.Contravariant">
+      <summary>泛型型別參數是 Contravariant。Contravariant 型別參數可以在方法簽章中以參數型別顯示。</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.Covariant">
+      <summary>泛型型別參數是 Covariant。Covariant 型別參數可以顯示為方法的結果型別、唯讀欄位的型別、宣告的基底型別或實作介面。</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.DefaultConstructorConstraint">
+      <summary>僅當一個型別具有無參數的建構函式時，才可以取代泛型型別參數。</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.None">
+      <summary>沒有特殊旗標。</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.NotNullableValueTypeConstraint">
+      <summary>僅當一個型別為實值型別 (Value Type) 且不為 null 時，才可以取代泛型型別參數。</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.ReferenceTypeConstraint">
+      <summary>僅當一個型別為參考型別時，才可以取代泛型型別參數。</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.SpecialConstraintMask">
+      <summary>選取所有特殊條件約束旗標的組合。這個值是使用邏輯 OR 合併下列旗標的結果：<see cref="F:System.Reflection.GenericParameterAttributes.DefaultConstructorConstraint" />、<see cref="F:System.Reflection.GenericParameterAttributes.ReferenceTypeConstraint" /> 和 <see cref="F:System.Reflection.GenericParameterAttributes.NotNullableValueTypeConstraint" />。</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.VarianceMask">
+      <summary>選取所有變異數旗標的組合。這個值是使用邏輯 OR 合併下列旗標的結果：<see cref="F:System.Reflection.GenericParameterAttributes.Contravariant" /> 和 <see cref="F:System.Reflection.GenericParameterAttributes.Covariant" />。</summary>
+    </member>
+    <member name="T:System.Reflection.MethodAttributes">
+      <summary>指定方法屬性 (Attribute) 的旗標。這些旗標都被定義在 corhdr.h 檔案中。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Abstract">
+      <summary>指示類別不提供這個方法的實作。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Assembly">
+      <summary>指示這個組件的任何類別可存取該方法。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.CheckAccessOnOverride">
+      <summary>指示方法只有在它也是可存取時才可以被覆寫。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.FamANDAssem">
+      <summary>指示該方法只能讓這個型別的成員，以及這個型別在這個組件中的衍生型別存取。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Family">
+      <summary>指示只有這個類別和其衍生類別的成員可以存取該方法。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.FamORAssem">
+      <summary>指示任何位置的衍生類別以及組件中的任何類別都可存取該方法。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Final">
+      <summary>指示這個方法不能被覆寫。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.HasSecurity">
+      <summary>指示方法具有與它相關的安全性。保留旗標僅供執行階段使用。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.HideBySig">
+      <summary>指示方法依名稱和簽章隱藏；否則只依名稱隱藏。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.MemberAccessMask">
+      <summary>擷取存取範圍資訊。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.NewSlot">
+      <summary>指示方法永遠取得 vtable 中的新位置。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.PinvokeImpl">
+      <summary>指示方法實作經由 PInvoke (平台引動服務) 轉寄。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Private">
+      <summary>指示這個方法只能讓目前的類別存取。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.PrivateScope">
+      <summary>指示成員不能被參考。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Public">
+      <summary>指示這個物件所在範圍內的任何物件可存取該方法。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.RequireSecObject">
+      <summary>指示方法呼叫含有安全程式碼的另一個方法。保留旗標僅供執行階段使用。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.ReuseSlot">
+      <summary>指示方法將重新使用 vtable 中的現有位置。這是預設行為。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.RTSpecialName">
+      <summary>指示 Common Language Runtime 檢查名稱編碼方式。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.SpecialName">
+      <summary>指示方法為特殊方法。該名稱描述這個方法是如何特殊。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Static">
+      <summary>指示方法是定義在型別上；否則就是定義在每個執行個體 (Instance) 上。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.UnmanagedExport">
+      <summary>指示 Managed 方法由 Thunk 匯出到 Unmanaged 程式碼。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Virtual">
+      <summary>指示方法為虛擬的。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.VtableLayoutMask">
+      <summary>擷取 vtable 屬性。</summary>
+    </member>
+    <member name="T:System.Reflection.MethodImplAttributes">
+      <summary>指定方法實作 (Implementation) 的屬性旗標。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.AggressiveInlining">
+      <summary>指定應儘可能不內嵌方法。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.CodeTypeMask">
+      <summary>指定程式碼型別的相關旗標。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.ForwardRef">
+      <summary>指定未定義的方法。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.IL">
+      <summary>指定方法實作是採用 Microsoft Intermediate Language (MSIL)。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.InternalCall">
+      <summary>指定內部呼叫。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.Managed">
+      <summary>指定以 Managed 程式碼的方式實作方法。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.ManagedMask">
+      <summary>指定是否以 Managed 或 Unmanaged 程式碼的方式實作方法。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.Native">
+      <summary>指定方法實作是原生 (Native) 的。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.NoInlining">
+      <summary>指示方法不能是內嵌的 (Inline)。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.NoOptimization">
+      <summary>指定偵錯可能的程式碼產生問題時，Just-In-Time (JIT) 編譯器或機器碼產生 (請參閱 Ngen.exe) 不會最佳化方法。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.OPTIL">
+      <summary>指定方法實作是採用最佳化中繼語言 (OPTIL)。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.PreserveSig">
+      <summary>指定方法簽章正如所宣告的方式匯出。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.Runtime">
+      <summary>指定方法實作是由執行階段所提供。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.Synchronized">
+      <summary>指定方法為通過主體的單一執行緒。靜態方法 (在 Visual Basic 中為 Shared) 會鎖定型別，而執行個體方法則會鎖定執行個體。您也可以針對此用途，使用 C# lock 陳述式或 Visual Basic SyncLock 陳述式。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.Unmanaged">
+      <summary>指定方法以 Unmanaged 程式碼的方式實作。</summary>
+    </member>
+    <member name="T:System.Reflection.ParameterAttributes">
+      <summary>定義屬性 (Attribute)，其可能與參數有關聯。這些都被定義在 CorHdr.h 中。</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.HasDefault">
+      <summary>指定此參數具有預設值。</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.HasFieldMarshal">
+      <summary>指定參數具有欄位封送處理 (Marshaling) 資訊。</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.In">
+      <summary>指定參數為輸入參數。</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.Lcid">
+      <summary>指定參數為地區設定識別項 (Locale Identifier，LCID)。</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.None">
+      <summary>指定沒有參數屬性。</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.Optional">
+      <summary>指定參數為選擇項。</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.Out">
+      <summary>指定參數為輸出參數。</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.Retval">
+      <summary>指定參數為傳回值。</summary>
+    </member>
+    <member name="T:System.Reflection.PropertyAttributes">
+      <summary>定義屬性 (Attribute)，其可能與屬性 (Property) 有關聯。這些屬性 (Attribute) 值都被定義在 corhdr.h 中。</summary>
+    </member>
+    <member name="F:System.Reflection.PropertyAttributes.HasDefault">
+      <summary>指定屬性具有預設值。</summary>
+    </member>
+    <member name="F:System.Reflection.PropertyAttributes.None">
+      <summary>指定沒有屬性 (Attribute) 與屬性 (Property) 有關。</summary>
+    </member>
+    <member name="F:System.Reflection.PropertyAttributes.RTSpecialName">
+      <summary>指定中繼資料 (Metadata) 內部應用程式開發介面檢查名稱編碼方式。</summary>
+    </member>
+    <member name="F:System.Reflection.PropertyAttributes.SpecialName">
+      <summary>指定屬性為特殊屬性，具有描述屬性是如何特殊的名稱。</summary>
+    </member>
+    <member name="T:System.Reflection.TypeAttributes">
+      <summary>指定類型屬性 (Attribute)。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Abstract">
+      <summary>指定此類型為抽象。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.AnsiClass">
+      <summary>LPTSTR 被解譯為 ANSI。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.AutoClass">
+      <summary>LPTSTR 會自動被解譯。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.AutoLayout">
+      <summary>指定類別欄位會由 Common Language Runtime 自動配置。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.BeforeFieldInit">
+      <summary>指定呼叫類型的靜態 (Static) 方法時不要強制系統將類型初始化。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Class">
+      <summary>指定此類型為類別。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.ClassSemanticsMask">
+      <summary>指定類別語意 (Semantics) 資訊；目前的類別為依照上下文而定的 (否則為變動的)。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.CustomFormatClass">
+      <summary>LPSTR 由部分實作特定的方式進行解譯，這可能會擲回 <see cref="T:System.NotSupportedException" />。不會用於 Microsoft .NET Framework 實作中。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.CustomFormatMask">
+      <summary>用於擷取機器碼互通性的非標準編碼資訊。未指定這些 2 位元值的含義。不會用於 Microsoft .NET Framework 實作中。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.ExplicitLayout">
+      <summary>指定類別欄位配置於指定位移 (Offset)。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.HasSecurity">
+      <summary>類型具有關聯的安全性。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Import">
+      <summary>指定類別或介面從其他的模組匯入。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Interface">
+      <summary>指定此類型為介面。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.LayoutMask">
+      <summary>指定類別配置資訊。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedAssembly">
+      <summary>指定類別是使用組件 (Assembly) 可視性所產生的巢狀，因此只能藉由組件中的方法存取。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedFamANDAssem">
+      <summary>指定類別是使用組件和家族可視性所產生的巢狀，因此只能藉由在家族和組件交集中的方法存取。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedFamily">
+      <summary>指定類別是使用家族可視性所產生的巢狀，因此只能藉由其類型和任何衍生類型中的方法存取。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedFamORAssem">
+      <summary>指定類別是使用家族或組件可視性所產生的巢狀，因此只能藉由在家族和組件聯集中的方法存取。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedPrivate">
+      <summary>指定類別是使用私用 (Private) 可視性所產生的巢狀。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedPublic">
+      <summary>指定類別是使用公用 (Public) 可視性所產生的巢狀。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NotPublic">
+      <summary>指定類別不是公用。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Public">
+      <summary>指定類別是公用。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.RTSpecialName">
+      <summary>執行階段應該檢查名稱編碼方式。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Sealed">
+      <summary>指定類別為固定的，並且無法擴充。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.SequentialLayout">
+      <summary>指定類別欄位會循序配置，依照欄位發出至中繼資料 (Metadata) 的順序。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Serializable">
+      <summary>指定類別可以序列化。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.SpecialName">
+      <summary>指定類別在名稱所表示的方法中為特殊的。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.StringFormatMask">
+      <summary>用來擷取機器碼互通性 (Interoperability) 的字串資訊。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.UnicodeClass">
+      <summary>LPTSTR 被解譯為 UNICODE。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.VisibilityMask">
+      <summary>指定類型可視性資訊。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.WindowsRuntime">
+      <summary>指定 Windows 執行階段 類型。</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.FlowControl">
+      <summary>描述指令如何變更控制流程。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Branch">
+      <summary>分支指令。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Break">
+      <summary>中斷指令。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Call">
+      <summary>呼叫指令。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Cond_Branch">
+      <summary>條件分支指令。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Meta">
+      <summary>提供後續指令的相關資訊。例如，Unaligned 的 Reflection.Emit.Opcodes 指令具有 FlowControl.Meta，並指定後續指標指令可能未配置。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Next">
+      <summary>一般控制流程。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Return">
+      <summary>返回指令。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Throw">
+      <summary>例外狀況 (Exception) 擲回指令。</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.OpCode">
+      <summary>描述 Intermediate Language (IL) 指令。</summary>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.Equals(System.Object)">
+      <summary>測試指定物件是否等於這個 Opcode。</summary>
+      <returns>true if <paramref name="obj" /> is an instance of Opcode and is equal to this object; otherwise, false.</returns>
+      <param name="obj">要與這個物件比較的物件。 </param>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.Equals(System.Reflection.Emit.OpCode)">
+      <summary>指出目前的執行個體和指定的 <see cref="T:System.Reflection.Emit.OpCode" /> 是否相等。</summary>
+      <returns>如果 <paramref name="obj" /> 的值和目前執行個體的值相等則為 true，否則為 false。</returns>
+      <param name="obj">要與目前執行個體相比較的 <see cref="T:System.Reflection.Emit.OpCode" />。</param>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.FlowControl">
+      <summary>Intermediate Language (IL) 指令的流量控制 (Flow Control) 特性。</summary>
+      <returns>唯讀。流程控制的類型。</returns>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.GetHashCode">
+      <summary>傳回這個 Opcode 的已產生雜湊碼。</summary>
+      <returns>傳回這個執行個體的雜湊碼。</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.Name">
+      <summary>Intermediate Language (IL) 指令的名稱。</summary>
+      <returns>唯讀。IL 指令的名稱。</returns>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.op_Equality(System.Reflection.Emit.OpCode,System.Reflection.Emit.OpCode)">
+      <summary>指出兩個 <see cref="T:System.Reflection.Emit.OpCode" /> 結構是否相等。</summary>
+      <returns>如果 <paramref name="a" /> 等於 <paramref name="b" />，則為 true，否則為 false。</returns>
+      <param name="a">要和 <paramref name="b" /> 比較的 <see cref="T:System.Reflection.Emit.OpCode" />。</param>
+      <param name="b">要和 <paramref name="a" /> 比較的 <see cref="T:System.Reflection.Emit.OpCode" />。</param>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.op_Inequality(System.Reflection.Emit.OpCode,System.Reflection.Emit.OpCode)">
+      <summary>指出兩個 <see cref="T:System.Reflection.Emit.OpCode" /> 結構是否不相等。</summary>
+      <returns>如果 <paramref name="a" /> 不等於 <paramref name="b" /> 則為 true，否則為 false。</returns>
+      <param name="a">要和 <paramref name="b" /> 比較的 <see cref="T:System.Reflection.Emit.OpCode" />。</param>
+      <param name="b">要和 <paramref name="a" /> 比較的 <see cref="T:System.Reflection.Emit.OpCode" />。</param>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.OpCodeType">
+      <summary>Intermediate Language (IL) 指令的類型。</summary>
+      <returns>唯讀。Intermediate Language (IL) 指令的類型。</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.OperandType">
+      <summary>Intermediate Language (IL) 指令的運算元類型。</summary>
+      <returns>唯讀。IL 指令的運算元類型。</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.Size">
+      <summary>Intermediate Language (IL) 指令的大小。</summary>
+      <returns>唯讀。IL 指令的大小。</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.StackBehaviourPop">
+      <summary>Intermediate Language (IL) 指令如何從堆疊中取出。</summary>
+      <returns>唯讀。IL 指令從堆疊中取出的方式。</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.StackBehaviourPush">
+      <summary>Intermediate Language (IL) 指令如何將運算元推送至堆疊。</summary>
+      <returns>唯讀。IL 指令將運算元推送至堆疊的方式。</returns>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.ToString">
+      <summary>傳回這個 Opcode 做為 <see cref="T:System.String" />。</summary>
+      <returns>傳回 <see cref="T:System.String" />，包含這個 Opcode 的名稱。</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.Value">
+      <summary>取得中繼語言 (IL) 指令的數值。</summary>
+      <returns>唯讀。IL 指令的數值。</returns>
+    </member>
+    <member name="T:System.Reflection.Emit.OpCodes">
+      <summary>提供 Microsoft Intermediate Language (MSIL) 指令的欄位表示，以用於 <see cref="T:System.Reflection.Emit.ILGenerator" /> 類別成員 (例如 <see cref="M:System.Reflection.Emit.ILGenerator.Emit(System.Reflection.Emit.OpCode)" />) 的發出。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Add">
+      <summary>相加兩個值，並將結果推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Add_Ovf">
+      <summary>相加兩個整數、執行溢位檢查，並將結果推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Add_Ovf_Un">
+      <summary>相加兩個不帶正負號的整數 (Unsigned Integer) 值、執行溢位檢查，並將結果推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.And">
+      <summary>計算兩個值的位元 AND 運算，並將結果推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Arglist">
+      <summary>將 Unmanaged 指標傳回目前方法的引數清單。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Beq">
+      <summary>如果兩個值相等，則將控制權傳輸至目標指令。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Beq_S">
+      <summary>如果兩個值相等，則將控制權傳輸至目標指令 (簡短形式)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bge">
+      <summary>如果第一個值大於或等於第二個值，則將控制權傳輸至目標指令。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bge_S">
+      <summary>如果第一個值大於或等於第二個值，則將控制權傳輸至目標指令 (簡短形式)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bge_Un">
+      <summary>當比較不帶正負號的整數值或未按順序的浮點值時，如果第一個值大於第二個值，則將控制權傳輸至目標指令。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bge_Un_S">
+      <summary>當比較不帶正負號的整數值或未按順序的浮點值時，如果第一個值大於第二個值，則將控制權傳輸至目標指令 (簡短形式)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bgt">
+      <summary>如果第一個值大於第二個值，則將控制權傳輸至目標指令。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bgt_S">
+      <summary>如果第一個值大於第二個值，則將控制權傳輸至目標指令 (簡短形式)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bgt_Un">
+      <summary>當比較不帶正負號的整數值或未按順序的浮點值時，如果第一個值大於第二個值，則將控制權傳輸至目標指令。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bgt_Un_S">
+      <summary>當比較不帶正負號的整數值或未按順序的浮點值時，如果第一個值大於第二個值，則將控制權傳輸至目標指令 (簡短形式)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ble">
+      <summary>如果第一個值小於或等於第二個值，則將控制權傳輸至目標指令。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ble_S">
+      <summary>如果第一個值小於或等於第二個值，則將控制權傳輸至目標指令 (簡短形式)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ble_Un">
+      <summary>當比較不帶正負號的整數值或未按順序的浮點值時，如果第一個值小於或等於第二個值，則將控制權傳輸至目標指令。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ble_Un_S">
+      <summary>當比較不帶正負號的整數值或未按順序的浮點值時，如果第一個值小於或等於第二個值，則將控制權傳輸至目標指令 (簡短形式)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Blt">
+      <summary>如果第一個值小於第二個值，則將控制權傳輸至目標指令。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Blt_S">
+      <summary>如果第一個值小於第二個值，則將控制權傳輸至目標指令 (簡短形式)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Blt_Un">
+      <summary>當比較不帶正負號的整數值或未按順序的浮點值時，如果第一個值小於第二個值，則將控制權傳輸至目標指令。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Blt_Un_S">
+      <summary>當比較不帶正負號的整數值或未按順序的浮點值時，如果第一個值小於第二個值，則將控制權傳輸至目標指令 (簡短形式)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bne_Un">
+      <summary>當兩個不帶正負號的整數值或未按順序的浮點值不相等時，則將控制權傳輸至目標指令。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bne_Un_S">
+      <summary>當兩個不帶正負號的整數值或未按順序的浮點值不相等時，則將控制權傳輸至目標指令 (簡短形式)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Box">
+      <summary>將實值類型 (Value Type) 轉換成物件參考 (類型 O)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Br">
+      <summary>無條件地將控制權傳輸至目標指令。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Br_S">
+      <summary>無條件地將控制權傳輸至目標指令 (簡短形式)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Break">
+      <summary>以訊號指示 Common Language Infrastructure (CLI) 向偵錯工具告知已經過中斷點。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Brfalse">
+      <summary>如果 <paramref name="value" /> 為 false、Null 參考 (在 Visual Basic 中為 Nothing) 或零，則將控制權轉移給目標指令。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Brfalse_S">
+      <summary>如果 <paramref name="value" /> 為 false、Null 參考或零，則將控制權轉移給目標指令。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Brtrue">
+      <summary>如果 <paramref name="value" /> 為 true、非 Null 或非零，則將控制權轉移給目標指令。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Brtrue_S">
+      <summary>如果 <paramref name="value" /> 為 true、非 Null 或非零，則將控制權轉移給目標指令 (簡短形式)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Call">
+      <summary>呼叫傳遞的方法描述項所指示的方法。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Calli">
+      <summary>以呼叫慣例所描述的引數，呼叫在評估堆疊上指示的方法 (做為進入點的指標)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Callvirt">
+      <summary>在物件上呼叫晚期繫結方法，將傳回值推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Castclass">
+      <summary>嘗試將參考所傳遞的物件轉型為指定的類別。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ceq">
+      <summary>比較兩個值。如果相等，則將整數值 1 ((int32) 推送至評估堆疊，否則將 0 (int32) 推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Cgt">
+      <summary>比較兩個值。如果第一個值大於第二個值，則將整數值 1 ((int32) 推送至評估堆疊，否則，將 0 (int32) 推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Cgt_Un">
+      <summary>比較兩個沒有正負號或未排序的值。如果第一個值大於第二個值，則將整數值 1 ((int32) 推送至評估堆疊，否則，將 0 (int32) 推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ckfinite">
+      <summary>如果值非有限數值，則擲回 <see cref="T:System.ArithmeticException" />。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Clt">
+      <summary>比較兩個值。如果第一個值小於第二個值，則將整數值 1 ((int32) 推送至評估堆疊，否則，將 0 (int32) 推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Clt_Un">
+      <summary>比較不帶正負號或未按順序的值 <paramref name="value1" /> 和 <paramref name="value2" />。如果 <paramref name="value1" /> 小於 <paramref name="value2" />，則將整數值 1 ((int32) 推送至評估堆疊，否則將 0 (int32) 推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Constrained">
+      <summary>限制其上可進行虛擬方法呼叫的類型。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_I">
+      <summary>將評估堆疊頂端的值轉換成 native int。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_I1">
+      <summary>將評估堆疊頂端的值轉換成 int8，然後將它擴充 (填補) 到 int32。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_I2">
+      <summary>將評估堆疊頂端的值轉換成 int16，然後將它擴充 (填補) 到 int32。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_I4">
+      <summary>將評估堆疊頂端的值轉換成 int32。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_I8">
+      <summary>將評估堆疊頂端的值轉換成 int64。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I">
+      <summary>將評估堆疊頂端帶正負號的值轉換成帶正負號的 native int，並在溢位上擲回 <see cref="T:System.OverflowException" />。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I_Un">
+      <summary>將評估堆疊頂端不帶正負號的值轉換成帶正負號的 native int，並在溢位上擲回 <see cref="T:System.OverflowException" />。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I1">
+      <summary>將評估堆疊頂端帶正負號的值轉換成帶正負號 int8，將它擴充到 int32，並在溢位上擲回 <see cref="T:System.OverflowException" />。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I1_Un">
+      <summary>將評估堆疊頂端不帶正負號的值轉換成帶正負號的 int8，將它擴充到 int32，並在溢位上擲回 <see cref="T:System.OverflowException" />。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I2">
+      <summary>將評估堆疊頂端帶正負號的值轉換成帶正負號 int16，將它擴充到 int32，並在溢位上擲回 <see cref="T:System.OverflowException" />。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I2_Un">
+      <summary>將評估堆疊頂端不帶正負號的值轉換成帶正負號的 int16，將它擴充到 int32，並在溢位上擲回 <see cref="T:System.OverflowException" />。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I4">
+      <summary>將評估堆疊頂端帶正負號的值轉換成帶正負號的 int32，並在溢位上擲回 <see cref="T:System.OverflowException" />。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I4_Un">
+      <summary>將評估堆疊頂端不帶正負號的值轉換成帶正負號的 int32，並在溢位上擲回 <see cref="T:System.OverflowException" />。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I8">
+      <summary>將評估堆疊頂端帶正負號的值轉換成帶正負號的 int64，並在溢位上擲回 <see cref="T:System.OverflowException" />。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I8_Un">
+      <summary>將評估堆疊頂端不帶正負號的值轉換成帶正負號的 int64，並在溢位上擲回 <see cref="T:System.OverflowException" />。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U">
+      <summary>將評估堆疊頂端帶正負號的值轉換成 unsigned native int，並在溢位上擲回 <see cref="T:System.OverflowException" />。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U_Un">
+      <summary>將評估堆疊頂端不帶正負號的值轉換成 unsigned native int，並在溢位上擲回 <see cref="T:System.OverflowException" />。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U1">
+      <summary>將評估堆疊頂端帶正負號的值轉換成 unsigned int8，將它擴充到 int32，並在溢位上擲回 <see cref="T:System.OverflowException" />。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U1_Un">
+      <summary>將評估堆疊頂端不帶正負號的值轉換成 unsigned int8，將它擴充到 int32，並在溢位上擲回 <see cref="T:System.OverflowException" />。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U2">
+      <summary>將評估堆疊頂端帶正負號的值轉換成 unsigned int16，將它擴充到 int32，並在溢位上擲回 <see cref="T:System.OverflowException" />。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U2_Un">
+      <summary>將評估堆疊頂端不帶正負號的值轉換成 unsigned int16，將它擴充到 int32，並在溢位上擲回 <see cref="T:System.OverflowException" />。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U4">
+      <summary>將評估堆疊頂端帶正負號的值轉換成 unsigned int32，並在溢位上擲回 <see cref="T:System.OverflowException" />。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U4_Un">
+      <summary>將評估堆疊頂端不帶正負號的值轉換成 unsigned int32，並在溢位上擲回 <see cref="T:System.OverflowException" />。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U8">
+      <summary>將評估堆疊頂端帶正負號的值轉換成 unsigned int64，並在溢位上擲回 <see cref="T:System.OverflowException" />。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U8_Un">
+      <summary>將評估堆疊頂端不帶正負號的值轉換成 unsigned int64，並在溢位上擲回 <see cref="T:System.OverflowException" />。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_R_Un">
+      <summary>將評估堆疊頂端不帶正負號的整數 (Unsigned Integer) 值轉換成 float32。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_R4">
+      <summary>將評估堆疊頂端的值轉換成 float32。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_R8">
+      <summary>將評估堆疊頂端的值轉換成 float64。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_U">
+      <summary>將評估堆疊頂端的值轉換成 unsigned native int，並將它擴充到 native int。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_U1">
+      <summary>將評估堆疊頂端的值轉換成 unsigned int8，並將它擴充到 int32。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_U2">
+      <summary>將評估堆疊頂端的值轉換成 unsigned int16，並將它擴充到 int32。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_U4">
+      <summary>將評估堆疊頂端的值轉換成 unsigned int32，並將它擴充到 int32。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_U8">
+      <summary>將評估堆疊頂端的值轉換成 unsigned int64，並將它擴充到 int64。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Cpblk">
+      <summary>將指定的數值位元組數從來源位址複製到目的位址。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Cpobj">
+      <summary>將位於物件位址上的實值類型 (類型 &amp;、* 或 native int) 複製到目的物件的位址 (類型 &amp;、* 或 native int)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Div">
+      <summary>	將兩個值相除，並將做為浮點 (類型 F) 或商數 (類型 int32) 的結果推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Div_Un">
+      <summary>將兩個不帶正負號的整數值相除，並將結果 (int32) 推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Dup">
+      <summary>複製評估堆疊上目前最頂端的值，然後將複製推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Endfilter">
+      <summary>將控制權從例外狀況的 filter 子句傳回 Common Language Infrastructure (CLI) 例外處理常式。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Endfinally">
+      <summary>將控制權從例外狀況區塊的 fault 或 finally 子句傳回 Common Language Infrastructure (CLI) 例外處理常式。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Initblk">
+      <summary>將指定位址上的指定記憶體區塊初始化為指定的大小和初始值。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Initobj">
+      <summary>將位於指定位址之值類型的各個欄位，初始化為適當之基本類型的 null 參考或 0。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Isinst">
+      <summary>測試物件參考 (類型 O) 是否為特定類別的執行個體。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Jmp">
+      <summary>結束目前方法，並跳至指定的方法。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg">
+      <summary>載入引數 (為指定的索引值所參考) 至堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg_0">
+      <summary>載入位於索引 0 的引數至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg_1">
+      <summary>載入位於索引 1 的引數至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg_2">
+      <summary>載入位於索引 2 的引數至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg_3">
+      <summary>載入位於索引 3 的引數至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg_S">
+      <summary>載入引數 (為指定的簡短形式索引所參考) 至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarga">
+      <summary>載入引數位址至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarga_S">
+      <summary>以簡短形式，載入引數位址至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4">
+      <summary>將 int32 類型所提供的值，以 int32 類型推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_0">
+      <summary>將整數值 0 以 int32 類型推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_1">
+      <summary>將整數值 1 以 int32 類型推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_2">
+      <summary>將整數值 2 以 int32 類型推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_3">
+      <summary>將整數值 3 以 int32 類型推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_4">
+      <summary>將整數值 4 以 int32 類型推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_5">
+      <summary>將整數值 5 以 int32 類型推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_6">
+      <summary>將整數值 6 以 int32 類型推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_7">
+      <summary>將整數值 7 以 int32 類型推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_8">
+      <summary>將整數值 8 以 int32 類型推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_M1">
+      <summary>將整數值 -1 以 int32 類型推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_S">
+      <summary>推送提供的 int8 值至評估堆疊做為 int32 (簡短形式)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I8">
+      <summary>將 int64 類型所提供的值，以 int64 類型推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_R4">
+      <summary>將 float32 類型所提供的值，以 F 類型推送至評估堆疊(浮點數)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_R8">
+      <summary>將 float64 類型所提供的值，以 F 類型推送至評估堆疊(浮點數)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem">
+      <summary>將位於指定之陣列索引處的項目當做指令中指定的類型載入至評估堆疊的頂端。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_I">
+      <summary>將位於指定陣列索引處且類型為 native int 的項目，以 native int 類型載入評估堆疊的頂端。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_I1">
+      <summary>將位於指定陣列索引處且類型為 int8 的項目，以 int32 類型載入評估堆疊的頂端。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_I2">
+      <summary>將位於指定陣列索引處且類型為 int16 的項目，以 int32 類型載入評估堆疊的頂端。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_I4">
+      <summary>將位於指定陣列索引處且類型為 int32 的項目，以 int32 類型載入評估堆疊的頂端。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_I8">
+      <summary>將位於指定陣列索引處且類型為 int64 的項目，以 int64 類型載入評估堆疊的頂端。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_R4">
+      <summary>將位於指定陣列索引處且類型為 float32 的項目，以 F 類型 (浮點數) 載入評估堆疊的頂端。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_R8">
+      <summary>將位於指定陣列索引處且類型為 float64 的項目，以 F 類型 (浮點數) 載入評估堆疊的頂端。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_Ref">
+      <summary>載入包含位於指定的陣列索引中的物件參考項目至評估堆疊的頂端，做為類型 O (物件參考)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_U1">
+      <summary>將位於指定陣列索引處且類型為 unsigned int8 的項目，以 int32 類型載入評估堆疊的頂端。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_U2">
+      <summary>將位於指定陣列索引處且類型為 unsigned int16 的項目，以 int32 類型載入評估堆疊的頂端。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_U4">
+      <summary>將位於指定陣列索引處且類型為 unsigned int32 的項目，以 int32 類型載入評估堆疊的頂端。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelema">
+      <summary>載入位於指定陣列索引中的陣列項目位址至評估堆疊的頂端，做為類型 &amp; (Managed 指標)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldfld">
+      <summary>尋找物件中的欄位值，該值的參考目前位於評估堆疊中。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldflda">
+      <summary>尋找物件中的欄位位址，該位址的參考目前位於評估堆疊中。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldftn">
+      <summary>推送實作特定方法之機器碼的 Unmanaged 指標 (類型 native int) 至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_I">
+      <summary>將 native int 類型的值，以 native int 類型間接載入評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_I1">
+      <summary>將 int8 類型的值，以 int32 類型間接載入評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_I2">
+      <summary>將 int16 類型的值，以 int32 類型間接載入評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_I4">
+      <summary>將 int32 類型的值，以 int32 類型間接載入評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_I8">
+      <summary>將 int64 類型的值，以 int64 類型間接載入評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_R4">
+      <summary>將 float32 類型的值，以 F 類型 (浮點數)，間接載入評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_R8">
+      <summary>將 float64 類型的值，以 F 類型 (浮點數)，間接載入評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_Ref">
+      <summary>將物件參考做為類型 O (物件參考)，間接載入評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_U1">
+      <summary>將 unsigned int8 類型的值，以 int32 類型間接載入評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_U2">
+      <summary>將 unsigned int16 類型的值，以 int32 類型間接載入評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_U4">
+      <summary>將 unsigned int32 類型的值，以 int32 類型間接載入評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldlen">
+      <summary>推送以零為起始的一維陣列的項目數至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc">
+      <summary>載入位於指定索引的區域變數至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc_0">
+      <summary>將位於索引 0 的區域變數載入至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc_1">
+      <summary>將位於索引 1 的區域變數載入至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc_2">
+      <summary>將位於索引 2 的區域變數載入至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc_3">
+      <summary>將位於索引 3 的區域變數載入至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc_S">
+      <summary>載入位於指定索引的區域變數至評估堆疊 (簡短形式)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloca">
+      <summary>載入位於指定索引的區域變數位址至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloca_S">
+      <summary>載入位於指定索引的區域變數位址至評估堆疊 (簡短形式)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldnull">
+      <summary>推送 Null 參考 (類型 O) 至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldobj">
+      <summary>複製位址所指向的實值類型物件到評估堆疊的頂端。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldsfld">
+      <summary>推送靜態欄位的值至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldsflda">
+      <summary>推送靜態欄位的位址至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldstr">
+      <summary>推送新的物件參考至儲存於中繼資料的字串常值 (String Literal)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldtoken">
+      <summary>將中繼資料語彙基元轉換成它的執行階段表示，並將它推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldvirtftn">
+      <summary>推送實作與指定的物件相關聯的特定虛擬方法之機器碼的 Unmanaged 指標 (類型 native int) 至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Leave">
+      <summary>結束程式碼的保護區，無條件地將控制權傳輸至特定的目標指令。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Leave_S">
+      <summary>結束程式碼的保護區，無條件地將控制權傳輸至目標指令 (簡短形式)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Localloc">
+      <summary>從區域動態記憶體集區中配置某些數量的位元組，並將第一個配置的位元組的位址 (暫時性指標，類型 *) 推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Mkrefany">
+      <summary>將特定類型的執行個體之類型參考推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Mul">
+      <summary>將兩個值相乘，並將結果推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Mul_Ovf">
+      <summary>將兩個整數值相乘、執行溢位檢查，並將結果推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Mul_Ovf_Un">
+      <summary>將兩個不帶正負號的整數值相乘、執行溢位檢查，再將結果推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Neg">
+      <summary>將值變成相反值，並將結果推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Newarr">
+      <summary>將新的以零為起始一維陣列 (其項目屬於特定類型) 的物件參考推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Newobj">
+      <summary>建立實值類型的新物件或新執行個體，將物件參考 (類型 O) 推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Nop">
+      <summary>如果已完成修補 Opcode，則填滿空間。雖然會耗用處理循環，卻不會執行任何有意義的運算。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Not">
+      <summary>計算堆疊頂端的整數值的位元補數 (Complement)，並將結果當做相同類型來推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Or">
+      <summary>計算堆疊頂端兩個整數值的位元補數，並將結果推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Pop">
+      <summary>目前在評估堆疊頂端移除值。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix1">
+      <summary>這是保留的指示。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix2">
+      <summary>這是保留的指示。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix3">
+      <summary>這是保留的指示。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix4">
+      <summary>這是保留的指示。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix5">
+      <summary>這是保留的指示。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix6">
+      <summary>這是保留的指示。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix7">
+      <summary>這是保留的指示。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefixref">
+      <summary>這是保留的指示。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Readonly">
+      <summary>指定後續陣列位址作業在執行階段不執行任何類型檢查，且會傳回限制其變動性的 Managed 指標。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Refanytype">
+      <summary>擷取內嵌於類型參考中的類型語彙基元。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Refanyval">
+      <summary>擷取內嵌於類型參考中的位址 (類型 &amp;)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Rem">
+      <summary>將兩個值相除，並將餘數推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Rem_Un">
+      <summary>將兩個不帶正負號的值相除，並將餘數推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ret">
+      <summary>從目前方法傳回，將被呼叫端評估堆疊的傳回值 (如果有) 推送至呼叫端的評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Rethrow">
+      <summary>重新擲回目前的例外狀況。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Shl">
+      <summary>將整數值向左移 (使用零) 指定的位元數，將結果推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Shr">
+      <summary>將整數值 (使用正負號) 向右移指定的位元數，將結果推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Shr_Un">
+      <summary>將不帶正負號的整數值 (使用零) 向右移指定的位元數，將結果推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Sizeof">
+      <summary>將所提供實值類型的大小推送至評估堆疊 (以位元組為單位)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Starg">
+      <summary>在指定索引的引數槽中將值存放在評估堆疊的頂端。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Starg_S">
+      <summary>在指定索引 (簡短形式) 的引數位置中將值儲存於評估堆疊的頂端。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem">
+      <summary>使用評估堆疊上的值 (其類型在指令中指定)，取代在指定之索引處的陣列項目。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_I">
+      <summary>以在評估堆疊上的 native int 值來取代在指定索引的陣列項目。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_I1">
+      <summary>以在評估堆疊上的 int8 值來取代在指定索引的陣列項目。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_I2">
+      <summary>以在評估堆疊上的 int16 值來取代在指定索引的陣列項目。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_I4">
+      <summary>以在評估堆疊上的 int32 值來取代在指定索引的陣列項目。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_I8">
+      <summary>以在評估堆疊上的 int64 值來取代在指定索引的陣列項目。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_R4">
+      <summary>以在評估堆疊上的 float32 值來取代在指定索引的陣列項目。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_R8">
+      <summary>以在評估堆疊上的 float64 值來取代在指定索引的陣列項目。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_Ref">
+      <summary>以在評估堆疊上的物件參考值 (類型 O) 來取代在指定索引的陣列項目。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stfld">
+      <summary>以新值取代儲存在物件參考或指標的欄位中的值。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_I">
+      <summary>在提供的位址處儲存 native int 類型的值。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_I1">
+      <summary>在提供的位址處儲存 int8 類型的值。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_I2">
+      <summary>在提供的位址處儲存 int16 類型的值。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_I4">
+      <summary>在提供的位址處儲存 int32 類型的值。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_I8">
+      <summary>在提供的位址處儲存 int64 類型的值。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_R4">
+      <summary>在提供的位址處儲存 float32 類型的值。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_R8">
+      <summary>在提供的位址處儲存 float64 類型的值。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_Ref">
+      <summary>在所提供的位址儲存物件參考值。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc">
+      <summary>從評估堆疊的頂端取出目前值，並將它存放在指定索引的區域變數清單中。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc_0">
+      <summary>從評估堆疊的頂端取出目前值，並將它存放在索引 0 的區域變數清單中。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc_1">
+      <summary>從評估堆疊的頂端取出目前值，並將它存放在索引 1 的區域變數清單中。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc_2">
+      <summary>從評估堆疊的頂端取出目前值，並將它存放在索引 2 的區域變數清單中。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc_3">
+      <summary>從評估堆疊的頂端取出目前值，並將它存放在索引 3 的區域變數清單中。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc_S">
+      <summary>從評估堆疊的頂端取出目前值，並將它存放在 <paramref name="index" /> (簡短形式) 的區域變數清單中。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stobj">
+      <summary>從評估堆疊複製指定類型的值到所提供的記憶體位址。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stsfld">
+      <summary>以來自評估堆疊的值取代靜態欄位的值。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Sub">
+      <summary>將另一個值減去某一個值，並將結果推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Sub_Ovf">
+      <summary>將另一個值減去某一個值、執行溢位檢查，並將結果推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Sub_Ovf_Un">
+      <summary>將另一個不帶正負號的值減去某一個不帶正負號的值、執行溢位檢查，並將結果推送至評估堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Switch">
+      <summary>實作跳躍表格。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Tailcall">
+      <summary>執行後置的方法呼叫指令 (例如目前方法的堆疊框架) 會在執行實際的呼叫指令之前移除。</summary>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCodes.TakesSingleByteArgument(System.Reflection.Emit.OpCode)">
+      <summary>如果提供的 Opcode 採用單一位元組引數，則傳回 True 或 False。</summary>
+      <returns>True 或 false。</returns>
+      <param name="inst">Opcode 物件的執行個體。 </param>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Throw">
+      <summary>擲回目前位於評估堆疊的例外狀況物件。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Unaligned">
+      <summary>表示目前位於評估堆疊頂端的位置可能未對齊緊接 ldind、stind、ldfld、stfld、ldobj、stobj、initblk 或 cpblk 指令的正常大小。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Unbox">
+      <summary>將實值類型的 boxed 表示轉換成它的 unboxed 形式。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Unbox_Any">
+      <summary>將指令中指定之類型的 boxed 表示轉換成其 unboxed 形式。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Volatile">
+      <summary>指定目前在評估堆疊頂端的位址可能是 volatile，並且無法快取讀取該位置的結果，或者無法隱藏存放該位置的多個存放區。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Xor">
+      <summary>計算評估堆疊頂端兩個值的位元 XOR，將結果推送至評估堆疊。</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.OpCodeType">
+      <summary>描述 Microsoft Intermediate Language (MSIL) 指令的型別。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodeType.Macro">
+      <summary>這些是 Microsoft Intermediate Language (MSIL) 指令，做為其他 MSIL 指令的同義字。例如，ldarg.0 表示 ldarg 指令具有值為 0 的引數。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodeType.Nternal">
+      <summary>描述保留的 Microsoft Intermediate Language (MSIL) 指令。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodeType.Objmodel">
+      <summary>描述 Microsoft Intermediate Language (MSIL) 指令，應用於物件。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodeType.Prefix">
+      <summary>描述會修改下列指令行為的前置詞指令。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodeType.Primitive">
+      <summary>描述內建指令。</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.OperandType">
+      <summary>描述 Microsoft Intermediate Language (MSIL) 指令的運算元型別。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineBrTarget">
+      <summary>運算元為 32 位元的整數分支目標。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineField">
+      <summary>運算元為 32 位元中繼資料語彙基元。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineI">
+      <summary>運算元為 32 位元整數。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineI8">
+      <summary>運算元為 64 位元整數。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineMethod">
+      <summary>運算元為 32 位元中繼資料語彙基元。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineNone">
+      <summary>沒有運算元。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineR">
+      <summary>運算元為 64 位元 IEEE 浮點數。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineSig">
+      <summary>運算元為 32 位元中繼資料簽章語彙基元。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineString">
+      <summary>運算元為 32 位元中繼資料字串語彙基元。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineSwitch">
+      <summary>運算元為切換指令的 32 位元整數引數。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineTok">
+      <summary>運算元為 FieldRef、MethodRef 或 TypeRef 語彙基元。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineType">
+      <summary>運算元為 32 位元中繼資料語彙基元。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineVar">
+      <summary>運算元為包含區域變數或引數順序的 16 位元整數。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.ShortInlineBrTarget">
+      <summary>運算元為 8 位元的整數分支目標。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.ShortInlineI">
+      <summary>運算元為 8 位元整數。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.ShortInlineR">
+      <summary>運算元為 32 位元 IEEE 浮點數。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.ShortInlineVar">
+      <summary>運算元為包含區域變數或引數順序的 8 位元整數。</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.PackingSize">
+      <summary>指定兩個因數其中之一，可在封送處型別時決定欄位的記憶體對齊 (Alignment)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size1">
+      <summary>封裝大小為 1 位元組。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size128">
+      <summary>封裝大小為 128 位元組。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size16">
+      <summary>封裝大小為 16 位元組。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size2">
+      <summary>封裝大小為 2 位元組。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size32">
+      <summary>封裝大小為 32 位元組。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size4">
+      <summary>封裝大小為 4 位元組。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size64">
+      <summary>封裝大小為 64 位元組。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size8">
+      <summary>封裝大小為 8 位元組。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Unspecified">
+      <summary>封裝大小未指定。</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.StackBehaviour">
+      <summary>描述如何將值推入至堆疊或從堆疊取出。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pop0">
+      <summary>沒有值從堆疊取出。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pop1">
+      <summary>從堆疊取出一個值。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pop1_pop1">
+      <summary>從第一個運算元的堆疊取出一個值，並從第二個運算元的堆疊取出一個值。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi">
+      <summary>從堆疊取出 32 位元整數。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_pop1">
+      <summary>從第一個運算元堆疊取出 32 位元整數，並從第二個運算元堆疊取出值。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_popi">
+      <summary>從第一個運算元堆疊取出 32 位元整數，並從第二個運算元堆疊取出 32 位元整數。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_popi_popi">
+      <summary>從第一個運算元堆疊取出 32 位元整數，從第二個運算元堆疊取出 32 位元整數，並從第三運算元堆疊取出 32 位元整數。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_popi8">
+      <summary>從第一個運算元堆疊取出 32 位元整數，並從第二個運算元堆疊取出 64 位元整數。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_popr4">
+      <summary>從第一個運算元堆疊取出 32 位元整數，並從第二個運算元堆疊取出 32 位元浮點數。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_popr8">
+      <summary>從第一個運算元堆疊取出 32 位元整數，並從第二個運算元堆疊取出 64 位元浮點數。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref">
+      <summary>從堆疊取出參考。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_pop1">
+      <summary>從第一個運算元堆疊取出參考，並從第二個運算元堆疊取出值。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi">
+      <summary>從第一個運算元堆疊取出參考，並從第二個運算元堆疊取出 32 位元整數。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_pop1">
+      <summary>從第一個運算元堆疊取出參考，從第二個運算元堆疊取出值，並從第三個運算元堆疊取出 32 位元整數。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_popi">
+      <summary>從第一個運算元堆疊取出參考，從第二個運算元堆疊取出值，並從第三個運算元堆疊取出值。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_popi8">
+      <summary>從第一個運算元堆疊取出參考，從第二個運算元堆疊取出值，並從第三個運算元堆疊取出 64 位元整數。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_popr4">
+      <summary>從第一個運算元堆疊取出參考，從第二個運算元堆疊取出值，並從第三個運算元堆疊取出 32 位元整數。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_popr8">
+      <summary>從第一個運算元堆疊取出參考，從第二個運算元堆疊取出值，並從第三個運算元堆疊取出 64 位元浮點數。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_popref">
+      <summary>從第一個運算元堆疊取出參考，從第二個運算元堆疊取出值，並從第三個運算元堆疊取出參考。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Push0">
+      <summary>沒有推入至堆疊的值。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Push1">
+      <summary>推入一個值至堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Push1_push1">
+      <summary>推入一個值至第一個運算元堆疊，並推入一個值至第二個運算元堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pushi">
+      <summary>推入 32 位元整數至堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pushi8">
+      <summary>推入 64 位元整數至堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pushr4">
+      <summary>推入 32 位元浮點數至堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pushr8">
+      <summary>推入 64 位元浮點數至堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pushref">
+      <summary>推入參考至堆疊。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Varpop">
+      <summary>從堆疊取出變數。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Varpush">
+      <summary>推入變數至堆疊。</summary>
+    </member>
+  </members>
+</doc>

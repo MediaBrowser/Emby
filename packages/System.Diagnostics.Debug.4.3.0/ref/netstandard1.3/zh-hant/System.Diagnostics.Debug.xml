@@ -1,0 +1,376 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Diagnostics.Debug</name>
+  </assembly>
+  <members>
+    <member name="T:System.Diagnostics.Debug">
+      <summary>提供一組幫助您偵錯程式碼的方法和屬性。此類別無法被繼承。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Assert(System.Boolean)">
+      <summary>檢查條件；如果條件為 false，則會顯示列出呼叫堆疊的訊息方塊。</summary>
+      <param name="condition">要評估的條件運算式。如果條件為 true，則不會傳送失敗訊息且不會顯示訊息方塊。</param>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Assert(System.Boolean,System.String)">
+      <summary>檢查條件；如果條件為 false，則會輸出指定的訊息並且顯示列出呼叫堆疊的訊息方塊。</summary>
+      <param name="condition">要評估的條件運算式。如果條件為 true，則不會傳送指定的訊息且不會顯示訊息方塊。</param>
+      <param name="message">要傳送給 <see cref="P:System.Diagnostics.Trace.Listeners" /> 集合的訊息。</param>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Assert(System.Boolean,System.String,System.String)">
+      <summary>檢查條件；如果條件為 false，則會輸出兩個指定的訊息並且顯示列出呼叫堆疊的訊息方塊。</summary>
+      <param name="condition">要評估的條件運算式。如果條件為 true，則不會傳送指定的訊息且不會顯示訊息方塊。</param>
+      <param name="message">要傳送給 <see cref="P:System.Diagnostics.Trace.Listeners" /> 集合的訊息。</param>
+      <param name="detailMessage">要傳送給 <see cref="P:System.Diagnostics.Trace.Listeners" /> 集合的詳細訊息。</param>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Assert(System.Boolean,System.String,System.String,System.Object[])">
+      <summary>檢查條件；如果條件為 false，則會輸出兩個訊息 (簡單和格式化) 並且顯示列出呼叫堆疊的訊息方塊。</summary>
+      <param name="condition">要評估的條件運算式。如果條件為 true，則不會傳送指定的訊息且不會顯示訊息方塊。</param>
+      <param name="message">要傳送給 <see cref="P:System.Diagnostics.Trace.Listeners" /> 集合的訊息。</param>
+      <param name="detailMessageFormat">要傳送給 <see cref="P:System.Diagnostics.Trace.Listeners" /> 集合的複合格式字串 (請參閱＜備註＞)。這個訊息包含混合零個或多個格式項目的文字，而這些格式項目與 <paramref name="args" /> 陣列中的物件相對應。</param>
+      <param name="args">物件陣列，包含零或多個要格式化的物件。</param>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Fail(System.String)">
+      <summary>發出指定的錯誤訊息。</summary>
+      <param name="message">要發出的訊息。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Fail(System.String,System.String)">
+      <summary>發出錯誤訊息和詳細錯誤訊息。</summary>
+      <param name="message">要發出的訊息。</param>
+      <param name="detailMessage">要發出的詳細訊息。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Write(System.Object)">
+      <summary>將物件的 <see cref="M:System.Object.ToString" /> 方法的值寫入 <see cref="P:System.Diagnostics.Debug.Listeners" /> 集合中的追蹤接聽項。</summary>
+      <param name="value">名稱要傳送至 <see cref="P:System.Diagnostics.Debug.Listeners" /> 的物件。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Write(System.Object,System.String)">
+      <summary>將分類名稱和物件之 <see cref="M:System.Object.ToString" /> 方法的值寫入 <see cref="P:System.Diagnostics.Debug.Listeners" /> 集合中的追蹤接聽項。</summary>
+      <param name="value">名稱要傳送至 <see cref="P:System.Diagnostics.Debug.Listeners" /> 的物件。</param>
+      <param name="category">用來組織輸出的分類名稱。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Write(System.String)">
+      <summary>將訊息寫入 <see cref="P:System.Diagnostics.Debug.Listeners" /> 集合中的追蹤接聽項。</summary>
+      <param name="message">要寫入的訊息。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Write(System.String,System.String)">
+      <summary>將分類名稱和訊息寫入 <see cref="P:System.Diagnostics.Debug.Listeners" /> 集合中的追蹤接聽項。</summary>
+      <param name="message">要寫入的訊息。</param>
+      <param name="category">用來組織輸出的分類名稱。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteIf(System.Boolean,System.Object)">
+      <summary>如果條件為 true，則將物件之 <see cref="M:System.Object.ToString" /> 方法的值寫入 <see cref="P:System.Diagnostics.Debug.Listeners" /> 集合中的追蹤接聽項。</summary>
+      <param name="condition">要評估的條件運算式。如果條件為 true，則將值寫入集合中的追蹤接聽項。</param>
+      <param name="value">名稱要傳送至 <see cref="P:System.Diagnostics.Debug.Listeners" /> 的物件。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteIf(System.Boolean,System.Object,System.String)">
+      <summary>如果條件為 true，則將分類名稱和物件之 <see cref="M:System.Object.ToString" /> 方法的值寫入 <see cref="P:System.Diagnostics.Debug.Listeners" /> 集合中的追蹤接聽項。</summary>
+      <param name="condition">要評估的條件運算式。如果條件為 true，則將分類名稱和值寫入集合中的追蹤接聽項。</param>
+      <param name="value">名稱要傳送至 <see cref="P:System.Diagnostics.Debug.Listeners" /> 的物件。</param>
+      <param name="category">用來組織輸出的分類名稱。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteIf(System.Boolean,System.String)">
+      <summary>如果條件為 true，則將訊息寫入 <see cref="P:System.Diagnostics.Debug.Listeners" /> 集合中的追蹤接聽項。</summary>
+      <param name="condition">要評估的條件運算式。如果條件為 true，則將訊息寫入集合中的追蹤接聽項。</param>
+      <param name="message">要寫入的訊息。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteIf(System.Boolean,System.String,System.String)">
+      <summary>如果條件為 true，則將分類名稱和訊息寫入 <see cref="P:System.Diagnostics.Debug.Listeners" /> 集合中的追蹤接聽項。</summary>
+      <param name="condition">要評估的條件運算式。如果條件為 true，則將分類名稱和訊息寫入集合中的追蹤接聽項。</param>
+      <param name="message">要寫入的訊息。</param>
+      <param name="category">用來組織輸出的分類名稱。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLine(System.Object)">
+      <summary>將物件的 <see cref="M:System.Object.ToString" /> 方法的值寫入 <see cref="P:System.Diagnostics.Debug.Listeners" /> 集合中的追蹤接聽項。</summary>
+      <param name="value">名稱要傳送至 <see cref="P:System.Diagnostics.Debug.Listeners" /> 的物件。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLine(System.Object,System.String)">
+      <summary>將分類名稱和物件之 <see cref="M:System.Object.ToString" /> 方法的值寫入 <see cref="P:System.Diagnostics.Debug.Listeners" /> 集合中的追蹤接聽項。</summary>
+      <param name="value">名稱要傳送至 <see cref="P:System.Diagnostics.Debug.Listeners" /> 的物件。</param>
+      <param name="category">用來組織輸出的分類名稱。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLine(System.String)">
+      <summary>將後面接著行結束字元的訊息寫入 <see cref="P:System.Diagnostics.Debug.Listeners" /> 集合中的追蹤接聽項。</summary>
+      <param name="message">要寫入的訊息。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLine(System.String,System.Object[])">
+      <summary>將後面接著行結束字元的格式化訊息寫入 <see cref="P:System.Diagnostics.Debug.Listeners" /> 集合中的追蹤接聽項。</summary>
+      <param name="format">複合格式字串 (請參閱＜備註＞)，其中包含混合零或多個格式項目的文字，其與 <paramref name="args" /> 陣列中的物件相對應。</param>
+      <param name="args">物件陣列，包含零或多個要格式化的物件。</param>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLine(System.String,System.String)">
+      <summary>將分類名稱和訊息寫入 <see cref="P:System.Diagnostics.Debug.Listeners" /> 集合中的追蹤接聽項。</summary>
+      <param name="message">要寫入的訊息。</param>
+      <param name="category">用來組織輸出的分類名稱。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLineIf(System.Boolean,System.Object)">
+      <summary>如果條件為 true，則將物件之 <see cref="M:System.Object.ToString" /> 方法的值寫入 <see cref="P:System.Diagnostics.Debug.Listeners" /> 集合中的追蹤接聽項。</summary>
+      <param name="condition">要評估的條件運算式。如果條件為 true，則將值寫入集合中的追蹤接聽項。</param>
+      <param name="value">名稱要傳送至 <see cref="P:System.Diagnostics.Debug.Listeners" /> 的物件。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLineIf(System.Boolean,System.Object,System.String)">
+      <summary>如果條件為 true，則將分類名稱和物件之 <see cref="M:System.Object.ToString" /> 方法的值寫入 <see cref="P:System.Diagnostics.Debug.Listeners" /> 集合中的追蹤接聽項。</summary>
+      <param name="condition">要評估的條件運算式。如果條件為 true，則將分類名稱和值寫入集合中的追蹤接聽項。</param>
+      <param name="value">名稱要傳送至 <see cref="P:System.Diagnostics.Debug.Listeners" /> 的物件。</param>
+      <param name="category">用來組織輸出的分類名稱。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLineIf(System.Boolean,System.String)">
+      <summary>如果條件為 true，則將訊息寫入 <see cref="P:System.Diagnostics.Debug.Listeners" /> 集合中的追蹤接聽項。</summary>
+      <param name="condition">要評估的條件運算式。如果條件為 true，則將訊息寫入集合中的追蹤接聽項。</param>
+      <param name="message">要寫入的訊息。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLineIf(System.Boolean,System.String,System.String)">
+      <summary>如果條件為 true，則將分類名稱和訊息寫入 <see cref="P:System.Diagnostics.Debug.Listeners" /> 集合中的追蹤接聽項。</summary>
+      <param name="condition">導致訊息寫入，則為 true，否則為 false。</param>
+      <param name="message">要寫入的訊息。</param>
+      <param name="category">用來組織輸出的分類名稱。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Diagnostics.Debugger">
+      <summary>使用偵錯工具啟用通訊。此類別無法被繼承。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Debugger.Break">
+      <summary>表示已附加偵錯工具的中斷點。</summary>
+      <exception cref="T:System.Security.SecurityException">
+        <see cref="T:System.Security.Permissions.UIPermission" /> 未設定要中斷偵錯工具。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.Debugger.IsAttached">
+      <summary>取得值，表示偵錯工具是否附加至處理序。</summary>
+      <returns>如果已附加偵錯工具，則為 true，否則為 false。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Debugger.Launch">
+      <summary>啟動偵錯工具，並將其附加至處理序。</summary>
+      <returns>如果啟動成功或已附加偵錯工具，則為 true，否則為 false。</returns>
+      <exception cref="T:System.Security.SecurityException">
+        <see cref="T:System.Security.Permissions.UIPermission" /> 並不是設定來啟動偵錯工具。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerBrowsableAttribute">
+      <summary>決定成員如何顯示在偵測工具變數視窗中。此類別無法被繼承。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerBrowsableAttribute.#ctor(System.Diagnostics.DebuggerBrowsableState)">
+      <summary>初始化 <see cref="T:System.Diagnostics.DebuggerBrowsableAttribute" /> 類別的新執行個體。</summary>
+      <param name="state">其中一個 <see cref="T:System.Diagnostics.DebuggerBrowsableState" /> 值，指定顯示成員的方法。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="state" /> 不是其中一個 <see cref="T:System.Diagnostics.DebuggerBrowsableState" /> 值。</exception>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerBrowsableAttribute.State">
+      <summary>取得屬性的顯示狀態。</summary>
+      <returns>其中一個 <see cref="T:System.Diagnostics.DebuggerBrowsableState" /> 值。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerBrowsableState">
+      <summary>提供偵錯工具的顯示指示。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Diagnostics.DebuggerBrowsableState.Collapsed">
+      <summary>以摺疊方式顯示元素。</summary>
+    </member>
+    <member name="F:System.Diagnostics.DebuggerBrowsableState.Never">
+      <summary>永遠不顯示元素。</summary>
+    </member>
+    <member name="F:System.Diagnostics.DebuggerBrowsableState.RootHidden">
+      <summary>切勿顯示根元素，如果元素是元素陣列的集合，則顯示子元素。</summary>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerDisplayAttribute">
+      <summary>決定類別或欄位如何在偵錯工具變數視窗中顯示。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerDisplayAttribute.#ctor(System.String)">
+      <summary>初始化 <see cref="T:System.Diagnostics.DebuggerDisplayAttribute" /> 類別的新執行個體。</summary>
+      <param name="value">要顯示在型別執行個體之值資料行中的字串；空字串 ("") 會讓值資料行變成隱藏的資料行。</param>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerDisplayAttribute.Name">
+      <summary>取得或設定顯示於偵錯工具變數視窗中的名稱。</summary>
+      <returns>要顯示在偵錯工具變數視窗中的名稱。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerDisplayAttribute.Target">
+      <summary>取得或設定屬性 (Attribute) 的目標型別。</summary>
+      <returns>屬性的目標類型。</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <see cref="P:System.Diagnostics.DebuggerDisplayAttribute.Target" /> 設定為 null。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerDisplayAttribute.TargetTypeName">
+      <summary>取得或設定屬性 (Attribute) 的目標型別名稱。</summary>
+      <returns>屬性 (Attribute) 的目標型別名稱。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerDisplayAttribute.Type">
+      <summary>取得或設定要在偵錯工具變數視窗之型別資料行中顯示的字串。</summary>
+      <returns>要在偵錯工具變數視窗之型別資料行中顯示的字串。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerDisplayAttribute.Value">
+      <summary>取得要在偵錯工具變數視窗之值資料行中顯示的字串。</summary>
+      <returns>要在偵錯工具變數視窗之值資料行中顯示的字串。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerHiddenAttribute">
+      <summary>指定 <see cref="T:System.Diagnostics.DebuggerHiddenAttribute" />。此類別無法被繼承。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerHiddenAttribute.#ctor">
+      <summary>初始化 <see cref="T:System.Diagnostics.DebuggerHiddenAttribute" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerNonUserCodeAttribute">
+      <summary>識別型別或成員，它們不是應用程式之使用者程式碼的一部分。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerNonUserCodeAttribute.#ctor">
+      <summary>初始化 <see cref="T:System.Diagnostics.DebuggerNonUserCodeAttribute" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerStepThroughAttribute">
+      <summary>指示偵錯工具逐步執行程式碼，而不要進入程式碼。此類別無法被繼承。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerStepThroughAttribute.#ctor">
+      <summary>初始化 <see cref="T:System.Diagnostics.DebuggerStepThroughAttribute" /> 類別的新執行個體。 </summary>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerTypeProxyAttribute">
+      <summary>指定型別的顯示 Proxy。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerTypeProxyAttribute.#ctor(System.String)">
+      <summary>使用 Proxy 的型別名稱，初始化 <see cref="T:System.Diagnostics.DebuggerTypeProxyAttribute" /> 類別的新執行個體。</summary>
+      <param name="typeName">Proxy 型別的型別名稱。</param>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerTypeProxyAttribute.#ctor(System.Type)">
+      <summary>使用 Proxy 的型別，初始化 <see cref="T:System.Diagnostics.DebuggerTypeProxyAttribute" /> 類別的新執行個體。</summary>
+      <param name="type">Proxy 型別。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="type" /> 為 null。</exception>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerTypeProxyAttribute.ProxyTypeName">
+      <summary>取得 Proxy 型別的型別名稱。</summary>
+      <returns>Proxy 型別的型別名稱。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerTypeProxyAttribute.Target">
+      <summary>取得或設定屬性的目標型別。</summary>
+      <returns>屬性的目標型別。</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <see cref="P:System.Diagnostics.DebuggerTypeProxyAttribute.Target" /> 設定為 null。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerTypeProxyAttribute.TargetTypeName">
+      <summary>取得或設定目標型別的名稱。</summary>
+      <returns>目標型別的名稱。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+  </members>
+</doc>

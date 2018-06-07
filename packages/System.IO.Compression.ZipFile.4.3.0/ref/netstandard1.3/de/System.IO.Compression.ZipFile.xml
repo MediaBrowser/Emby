@@ -1,0 +1,274 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.IO.Compression.ZipFile</name>
+  </assembly>
+  <members>
+    <member name="T:System.IO.Compression.ZipFile">
+      <summary>Stellt statische Methoden zum Erstellen, Extrahieren und Öffnen von Zip-Archiven bereit. </summary>
+    </member>
+    <member name="M:System.IO.Compression.ZipFile.CreateFromDirectory(System.String,System.String)">
+      <summary>Erstellt ein ZIP-Archiv, das die Dateien und Verzeichnisse im angegebenen Verzeichnis enthält.</summary>
+      <param name="sourceDirectoryName">Der Pfad zum Verzeichnis, das archiviert werden soll, angegeben als relativer oder absoluter Pfad.Ein relativer Pfad wird relativ zum aktuellen Arbeitsverzeichnis interpretiert.</param>
+      <param name="destinationArchiveFileName">Der Pfad des zu erstellenden Archivs, angegeben als relativer oder absoluter Pfad.Ein relativer Pfad wird relativ zum aktuellen Arbeitsverzeichnis interpretiert.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" /> is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" /> is null.</exception>
+      <exception cref="T:System.IO.PathTooLongException">In <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" />, the specified path, file name, or both exceed the system-defined maximum length.For example, on Windows-based platforms, paths must not exceed 248 characters, and file names must not exceed 260 characters.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">
+        <paramref name="sourceDirectoryName" /> is invalid or does not exist (for example, it is on an unmapped drive).</exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="destinationArchiveFileName" /> already exists.-or-A file in the specified directory could not be opened.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">
+        <paramref name="destinationArchiveFileName" /> specifies a directory.-or-The caller does not have the required permission to access the directory specified in <paramref name="sourceDirectoryName" /> or the file specified in <paramref name="destinationArchiveFileName" />.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" /> contains an invalid format.-or-The zip archive does not support writing.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFile.CreateFromDirectory(System.String,System.String,System.IO.Compression.CompressionLevel,System.Boolean)">
+      <summary>Erstellt ein ZIP-Archiv, das die Dateien und Verzeichnisse im angegebenen Verzeichnis enthält, verwendet die angegebene Komprimierungsebene und optional das Basisverzeichnis.</summary>
+      <param name="sourceDirectoryName">Der Pfad zum Verzeichnis, das archiviert werden soll, angegeben als relativer oder absoluter Pfad.Ein relativer Pfad wird relativ zum aktuellen Arbeitsverzeichnis interpretiert.</param>
+      <param name="destinationArchiveFileName">Der Pfad des zu erstellenden Archivs, angegeben als relativer oder absoluter Pfad.Ein relativer Pfad wird relativ zum aktuellen Arbeitsverzeichnis interpretiert.</param>
+      <param name="compressionLevel">Einer der Enumerationswerte, der angibt, ob Geschwindigkeit oder Komprimierungseffektivität priorisiert wird, wenn der Eintrag erstellt.</param>
+      <param name="includeBaseDirectory">true, um den Verzeichnisnamens von <paramref name="sourceDirectoryName" /> am Stamm des Archivs einzuschließen; false, um nur der Inhalt des Verzeichnisses einzuschließen.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" /> is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" /> is null.</exception>
+      <exception cref="T:System.IO.PathTooLongException">In <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" />, the specified path, file name, or both exceed the system-defined maximum length.For example, on Windows-based platforms, paths must not exceed 248 characters, and file names must not exceed 260 characters.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">
+        <paramref name="sourceDirectoryName" /> is invalid or does not exist (for example, it is on an unmapped drive).</exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="destinationArchiveFileName" /> already exists.-or-A file in the specified directory could not be opened.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">
+        <paramref name="destinationArchiveFileName" /> specifies a directory.-or-The caller does not have the required permission to access the directory specified in <paramref name="sourceDirectoryName" /> or the file specified in <paramref name="destinationArchiveFileName" />.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" /> contains an invalid format.-or-The zip archive does not support writing.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFile.CreateFromDirectory(System.String,System.String,System.IO.Compression.CompressionLevel,System.Boolean,System.Text.Encoding)">
+      <summary>Erstellt ein ZIP-Archiv, das die Dateien und Verzeichnisse im angegebenen Verzeichnis enthält, die angegebene Komprimierungsebene und der angegebenen Zeichencodierung für Eintragsnamen verwendet und optional das Basisverzeichnis mit einbezieht.</summary>
+      <param name="sourceDirectoryName">Der Pfad zum Verzeichnis, das archiviert werden soll, angegeben als relativer oder absoluter Pfad.Ein relativer Pfad wird relativ zum aktuellen Arbeitsverzeichnis interpretiert.</param>
+      <param name="destinationArchiveFileName">Der Pfad des zu erstellenden Archivs, angegeben als relativer oder absoluter Pfad.Ein relativer Pfad wird relativ zum aktuellen Arbeitsverzeichnis interpretiert.</param>
+      <param name="compressionLevel">Einer der Enumerationswerte, der angibt, ob Geschwindigkeit oder Komprimierungseffektivität priorisiert wird, wenn der Eintrag erstellt.</param>
+      <param name="includeBaseDirectory">true, um den Verzeichnisnamens von <paramref name="sourceDirectoryName" /> am Stamm des Archivs einzuschließen; false, um nur der Inhalt des Verzeichnisses einzuschließen.</param>
+      <param name="entryNameEncoding">Die Codierung, die beim Lesen oder Schreiben von Eintragsnamen in diesem Archiv verwendet werden soll.Geben Sie einen Wert für diesen Parameter nur an, wenn eine Codierung für die Interoperabilität mit ZIP-Archiv-Tools und -Bibliotheken erforderlich ist, die die UTF-8-Codierung für Eintragsnamen nicht unterstützen.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" /> is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.-or-<paramref name="entryNameEncoding" /> is set to a Unicode encoding other than UTF-8.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" /> is null.</exception>
+      <exception cref="T:System.IO.PathTooLongException">In <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" />, the specified path, file name, or both exceed the system-defined maximum length.For example, on Windows-based platforms, paths must not exceed 248 characters, and file names must not exceed 260 characters.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">
+        <paramref name="sourceDirectoryName" /> is invalid or does not exist (for example, it is on an unmapped drive).</exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="destinationArchiveFileName" /> already exists.-or-A file in the specified directory could not be opened.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">
+        <paramref name="destinationArchiveFileName" /> specifies a directory.-or-The caller does not have the required permission to access the directory specified in <paramref name="sourceDirectoryName" /> or the file specified in <paramref name="destinationArchiveFileName" />.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" /> contains an invalid format.-or-The zip archive does not support writing.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFile.ExtractToDirectory(System.String,System.String)">
+      <summary>Extrahiert alle Dateien im angegebenen ZIP-Archiv in ein Verzeichnis im Dateisystem.</summary>
+      <param name="sourceArchiveFileName">Der Pfad zum Archiv, das extrahiert werden soll.</param>
+      <param name="destinationDirectoryName">Der Pfad zum Verzeichnis, in dem die extrahierten Dateien abgelegt werden sollen, angegeben als relativer oder absoluter Pfad.Ein relativer Pfad wird relativ zum aktuellen Arbeitsverzeichnis interpretiert.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="destinationDirectoryName" /> or <paramref name="sourceArchiveFileName" /> is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destinationDirectoryName" /> or <paramref name="sourceArchiveFileName" /> is null.</exception>
+      <exception cref="T:System.IO.PathTooLongException">The specified path in <paramref name="destinationDirectoryName" /> or <paramref name="sourceArchiveFileName" /> exceeds the system-defined maximum length.For example, on Windows-based platforms, paths must not exceed 248 characters, and file names must not exceed 260 characters.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid (for example, it is on an unmapped drive).</exception>
+      <exception cref="T:System.IO.IOException">The directory specified by <paramref name="destinationDirectoryName" /> already exists.-or-The name of an entry in the archive is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.-or-Extracting an archive entry would create a file that is outside the directory specified by <paramref name="destinationDirectoryName" />.(For example, this might happen if the entry name contains parent directory accessors.)-or-An archive entry to extract has the same name as an entry that has already been extracted from the same archive.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission to access the archive or the destination directory.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="destinationDirectoryName" /> or <paramref name="sourceArchiveFileName" /> contains an invalid format.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="sourceArchiveFileName" /> was not found.</exception>
+      <exception cref="T:System.IO.InvalidDataException">The archive specified by <paramref name="sourceArchiveFileName" /> is not a valid zip archive.-or-An archive entry was not found or was corrupt.-or-An archive entry was compressed by using a compression method that is not supported.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFile.ExtractToDirectory(System.String,System.String,System.Text.Encoding)">
+      <summary>Extrahiert alle Dateien im angegebenen ZIP-Archiv in ein Verzeichnis im Dateisystem und verwendet die angegebene Zeichencodierung für Eintragsnamen.</summary>
+      <param name="sourceArchiveFileName">Der Pfad zum Archiv, das extrahiert werden soll.</param>
+      <param name="destinationDirectoryName">Der Pfad zum Verzeichnis, in dem die extrahierten Dateien abgelegt werden sollen, angegeben als relativer oder absoluter Pfad.Ein relativer Pfad wird relativ zum aktuellen Arbeitsverzeichnis interpretiert.</param>
+      <param name="entryNameEncoding">Die Codierung, die beim Lesen oder Schreiben von Eintragsnamen in diesem Archiv verwendet werden soll.Geben Sie einen Wert für diesen Parameter nur an, wenn eine Codierung für die Interoperabilität mit ZIP-Archiv-Tools und -Bibliotheken erforderlich ist, die die UTF-8-Codierung für Eintragsnamen nicht unterstützen.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="destinationDirectoryName" /> or <paramref name="sourceArchiveFileName" /> is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.-or-<paramref name="entryNameEncoding" /> is set to a Unicode encoding other than UTF-8.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destinationDirectoryName" /> or <paramref name="sourceArchiveFileName" /> is null.</exception>
+      <exception cref="T:System.IO.PathTooLongException">The specified path in <paramref name="destinationDirectoryName" /> or <paramref name="sourceArchiveFileName" /> exceeds the system-defined maximum length.For example, on Windows-based platforms, paths must not exceed 248 characters, and file names must not exceed 260 characters.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid (for example, it is on an unmapped drive).</exception>
+      <exception cref="T:System.IO.IOException">The directory specified by <paramref name="destinationDirectoryName" /> already exists.-or-The name of an entry in the archive is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.-or-Extracting an archive entry would create a file that is outside the directory specified by <paramref name="destinationDirectoryName" />.(For example, this might happen if the entry name contains parent directory accessors.)-or-An archive entry to extract has the same name as an entry that has already been extracted from the same archive.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission to access the archive or the destination directory.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="destinationDirectoryName" /> or <paramref name="sourceArchiveFileName" /> contains an invalid format.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="sourceArchiveFileName" /> was not found.</exception>
+      <exception cref="T:System.IO.InvalidDataException">The archive specified by <paramref name="sourceArchiveFileName" /> is not a valid zip archive.-or-An archive entry was not found or was corrupt.-or-An archive entry was compressed by using a compression method that is not supported.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFile.Open(System.String,System.IO.Compression.ZipArchiveMode)">
+      <summary>Öffnet ein Zip-Archiv unter dem angegebenen Pfad und im angegebenen Modus.</summary>
+      <returns>Das geöffnete ZIP-Archiv.</returns>
+      <param name="archiveFileName">Der Pfad zum Archiv, dass geöffnet werden soll, angegeben als relativer oder absoluter Pfad.Ein relativer Pfad wird relativ zum aktuellen Arbeitsverzeichnis interpretiert.</param>
+      <param name="mode">Einer der Enumerationswerte, der die Aktionen angibt, die bei den Einträgen im geöffneten Archiv zulässig sind.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="archiveFileName" /> is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="archiveFileName" /> is null.</exception>
+      <exception cref="T:System.IO.PathTooLongException">In <paramref name="archiveFileName" />, the specified path, file name, or both exceed the system-defined maximum length.For example, on Windows-based platforms, paths must not exceed 248 characters, and file names must not exceed 260 characters.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">
+        <paramref name="archiveFileName" /> is invalid or does not exist (for example, it is on an unmapped drive).</exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="archiveFileName" /> could not be opened.-or-<paramref name="mode" /> is set to <see cref="F:System.IO.Compression.ZipArchiveMode.Create" />, but the file specified in <paramref name="archiveFileName" /> already exists.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">
+        <paramref name="archiveFileName" /> specifies a directory.-or-The caller does not have the required permission to access the file specified in <paramref name="archiveFileName" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="mode" /> specifies an invalid value.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="mode" /> is set to <see cref="F:System.IO.Compression.ZipArchiveMode.Read" />, but the file specified in <paramref name="archiveFileName" /> is not found.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="archiveFileName" /> contains an invalid format.</exception>
+      <exception cref="T:System.IO.InvalidDataException">
+        <paramref name="archiveFileName" /> could not be interpreted as a zip archive.-or-<paramref name="mode" /> is <see cref="F:System.IO.Compression.ZipArchiveMode.Update" />, but an entry is missing or corrupt and cannot be read.-or-<paramref name="mode" /> is <see cref="F:System.IO.Compression.ZipArchiveMode.Update" />, but an entry is too large to fit into memory.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFile.Open(System.String,System.IO.Compression.ZipArchiveMode,System.Text.Encoding)">
+      <summary>Öffnet ein Zip-Archiv im angegebenen Pfad im angegebenen Modus und mit der angegebenen Zeichencodierung für Eintragsnamen.</summary>
+      <returns>Das geöffnete ZIP-Archiv.</returns>
+      <param name="archiveFileName">Der Pfad zum Archiv, dass geöffnet werden soll, angegeben als relativer oder absoluter Pfad.Ein relativer Pfad wird relativ zum aktuellen Arbeitsverzeichnis interpretiert.</param>
+      <param name="mode">Einer der Enumerationswerte, der die Aktionen angibt, die bei den Einträgen im geöffneten Archiv zulässig sind.</param>
+      <param name="entryNameEncoding">Die Codierung, die beim Lesen oder Schreiben von Eintragsnamen in diesem Archiv verwendet werden soll.Geben Sie einen Wert für diesen Parameter nur an, wenn eine Codierung für die Interoperabilität mit ZIP-Archiv-Tools und -Bibliotheken erforderlich ist, die die UTF-8-Codierung für Eintragsnamen nicht unterstützen.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="archiveFileName" /> is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.-or-<paramref name="entryNameEncoding" /> is set to a Unicode encoding other than UTF-8.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="archiveFileName" /> is null.</exception>
+      <exception cref="T:System.IO.PathTooLongException">In <paramref name="archiveFileName" />, the specified path, file name, or both exceed the system-defined maximum length.For example, on Windows-based platforms, paths must not exceed 248 characters, and file names must not exceed 260 characters.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">
+        <paramref name="archiveFileName" /> is invalid or does not exist (for example, it is on an unmapped drive).</exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="archiveFileName" /> could not be opened.-or-<paramref name="mode" /> is set to <see cref="F:System.IO.Compression.ZipArchiveMode.Create" />, but the file specified in <paramref name="archiveFileName" /> already exists.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">
+        <paramref name="archiveFileName" /> specifies a directory.-or-The caller does not have the required permission to access the file specified in <paramref name="archiveFileName" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="mode" /> specifies an invalid value.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="mode" /> is set to <see cref="F:System.IO.Compression.ZipArchiveMode.Read" />, but the file specified in <paramref name="archiveFileName" /> is not found.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="archiveFileName" /> contains an invalid format.</exception>
+      <exception cref="T:System.IO.InvalidDataException">
+        <paramref name="archiveFileName" /> could not be interpreted as a zip archive.-or-<paramref name="mode" /> is <see cref="F:System.IO.Compression.ZipArchiveMode.Update" />, but an entry is missing or corrupt and cannot be read.-or-<paramref name="mode" /> is <see cref="F:System.IO.Compression.ZipArchiveMode.Update" />, but an entry is too large to fit into memory.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFile.OpenRead(System.String)">
+      <summary>Öffnet ein Zip-Archiv für das Lesen im angegebenen Pfad.</summary>
+      <returns>Das geöffnete ZIP-Archiv.</returns>
+      <param name="archiveFileName">Der Pfad zum Archiv, dass geöffnet werden soll, angegeben als relativer oder absoluter Pfad.Ein relativer Pfad wird relativ zum aktuellen Arbeitsverzeichnis interpretiert.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="archiveFileName" /> is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="archiveFileName" /> is null.</exception>
+      <exception cref="T:System.IO.PathTooLongException">In <paramref name="archiveFileName" />, the specified path, file name, or both exceed the system-defined maximum length.For example, on Windows-based platforms, paths must not exceed 248 characters, and file names must not exceed 260 characters.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">
+        <paramref name="archiveFileName" /> is invalid or does not exist (for example, it is on an unmapped drive).</exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="archiveFileName" /> could not be opened.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">
+        <paramref name="archiveFileName" /> specifies a directory.-or-The caller does not have the required permission to access the file specified in <paramref name="archiveFileName" />.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">The file specified in <paramref name="archiveFileName" /> is not found.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="archiveFileName" /> contains an invalid format.</exception>
+      <exception cref="T:System.IO.InvalidDataException">
+        <paramref name="archiveFileName" /> could not be interpreted as a zip archive.</exception>
+    </member>
+    <member name="T:System.IO.Compression.ZipFileExtensions">
+      <summary>Stellt Erweiterungsmethoden für die <see cref="T:System.IO.Compression.ZipArchive" />- und <see cref="T:System.IO.Compression.ZipArchiveEntry" />-Klassen bereit.</summary>
+    </member>
+    <member name="M:System.IO.Compression.ZipFileExtensions.CreateEntryFromFile(System.IO.Compression.ZipArchive,System.String,System.String)">
+      <summary>Archiviert eine Datei durch Komprimieren und Hinzufügen zum ZIP-Archiv.</summary>
+      <returns>Ein Wrapper für den neuen Eintrag im ZIP-Archiv.</returns>
+      <param name="destination">Das der Datei hinzuzufügende ZIP-Archiv.</param>
+      <param name="sourceFileName">Der Pfad zu der zu archivierenden Datei.Sie können einen absoluten oder relativen Pfad angeben.Ein relativer Pfad wird relativ zum aktuellen Arbeitsverzeichnis interpretiert.</param>
+      <param name="entryName">Der Name des Eintrags, der im ZIP-Archiv erstellt werden soll.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="sourceFileName" /> ist <see cref="F:System.String.Empty" />, enthält nur Leerraum oder mindestens ein ungültiges Zeichen.- oder -<paramref name="entryName" /> ist <see cref="F:System.String.Empty" />.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="sourceFileName" /> oder <paramref name="entryName" /> ist null.</exception>
+      <exception cref="T:System.IO.PathTooLongException">Im <paramref name="sourceFileName" /> überschreiten der angegebene Pfad und/oder der Dateiname die vom System vorgegebene Höchstlänge.Beispielsweise müssen Pfade auf Windows-Plattformen weniger als 248 Zeichen und Dateinamen weniger als 260 Zeichen haben.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">
+        <paramref name="sourceFileName" /> ist ungültig (z. B. befindet er sich auf einem nicht zugeordneten Laufwerk).</exception>
+      <exception cref="T:System.IO.IOException">Die anhand der <paramref name="sourceFileName" /> angegebene Datei kann nicht geöffnet werden.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">
+        <paramref name="sourceFileName" /> gibt ein Verzeichnis an.- oder -Der Aufrufer verfügt nicht über die erforderliche Berechtigung für den Zugriff auf die durch <paramref name="sourceFileName" /> angegebene Datei.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">Die von <paramref name="sourceFileName" /> angegebene Datei wird nicht gefunden.</exception>
+      <exception cref="T:System.NotSupportedException">Der <paramref name="sourceFileName" />-Parameter hat ein ungültiges Format.- oder -Das ZIP-Archiv unterstützt keine Schreibvorgänge.</exception>
+      <exception cref="T:System.ObjectDisposedException">Die ZIP-Archiv wurde freigegeben.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFileExtensions.CreateEntryFromFile(System.IO.Compression.ZipArchive,System.String,System.String,System.IO.Compression.CompressionLevel)">
+      <summary>Archiviert eine Datei durch Komprimieren mithilfe der angegebenen Komprimierungsebene und Hinzufügen zum ZIP-Archiv.</summary>
+      <returns>Ein Wrapper für den neuen Eintrag im ZIP-Archiv.</returns>
+      <param name="destination">Das der Datei hinzuzufügende ZIP-Archiv.</param>
+      <param name="sourceFileName">Der Pfad zu der zu archivierenden Datei.Sie können einen absoluten oder relativen Pfad angeben.Ein relativer Pfad wird relativ zum aktuellen Arbeitsverzeichnis interpretiert.</param>
+      <param name="entryName">Der Name des Eintrags, der im ZIP-Archiv erstellt werden soll.</param>
+      <param name="compressionLevel">Einer der Enumerationswerte, der angibt, ob Geschwindigkeit oder Komprimierungseffektivität priorisiert wird, wenn der Eintrag erstellt.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="sourceFileName" /> ist <see cref="F:System.String.Empty" />, enthält nur Leerraum oder mindestens ein ungültiges Zeichen.- oder -<paramref name="entryName" /> ist <see cref="F:System.String.Empty" />.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="sourceFileName" /> oder <paramref name="entryName" /> ist null.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">
+        <paramref name="sourceFileName" /> ist ungültig (z. B. befindet er sich auf einem nicht zugeordneten Laufwerk).</exception>
+      <exception cref="T:System.IO.PathTooLongException">Im <paramref name="sourceFileName" /> überschreiten der angegebene Pfad und/oder der Dateiname die vom System vorgegebene Höchstlänge.Beispielsweise müssen Pfade auf Windows-Plattformen weniger als 248 Zeichen und Dateinamen weniger als 260 Zeichen haben.</exception>
+      <exception cref="T:System.IO.IOException">Die anhand der <paramref name="sourceFileName" /> angegebene Datei kann nicht geöffnet werden.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">
+        <paramref name="sourceFileName" /> gibt ein Verzeichnis an.- oder -Der Aufrufer verfügt nicht über die erforderliche Berechtigung für den Zugriff auf die durch <paramref name="sourceFileName" /> angegebene Datei.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">Die von <paramref name="sourceFileName" /> angegebene Datei wird nicht gefunden.</exception>
+      <exception cref="T:System.NotSupportedException">Der <paramref name="sourceFileName" />-Parameter hat ein ungültiges Format.- oder -Das ZIP-Archiv unterstützt keine Schreibvorgänge.</exception>
+      <exception cref="T:System.ObjectDisposedException">Die ZIP-Archiv wurde freigegeben.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFileExtensions.ExtractToDirectory(System.IO.Compression.ZipArchive,System.String)">
+      <summary>Extrahiert alle Dateien im ZIP-Archiv in ein Verzeichnis im Dateisystem.</summary>
+      <param name="source">Das Zip-Archiv, aus dem Dateien extrahiert werden sollen.</param>
+      <param name="destinationDirectoryName">Der Pfad zum Verzeichnis, in dem die extrahierten Dateien abgelegt werden sollen.Sie können einen absoluten oder relativen Pfad angeben.Ein relativer Pfad wird relativ zum aktuellen Arbeitsverzeichnis interpretiert.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="destinationDirectoryName" /> ist <see cref="F:System.String.Empty" />, enthält nur Leerraum oder mindestens ein ungültiges Zeichen.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destinationDirectoryName" /> ist null.</exception>
+      <exception cref="T:System.IO.PathTooLongException">Der angegebene Pfad überschreitet die im System definierte maximale Länge ().Beispielsweise müssen Pfade auf Windows-Plattformen weniger als 248 Zeichen und Dateinamen weniger als 260 Zeichen haben.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">Der angegebene Pfad ist ungültig (z. B. befindet er sich auf einem nicht zugeordneten Laufwerk).</exception>
+      <exception cref="T:System.IO.IOException">Das von <paramref name="destinationDirectoryName" /> angegebene Verzeichnis ist bereits vorhanden.- oder -Der Name eines Eintrags im Archiv ist <see cref="F:System.String.Empty" />, enthält nur Leerraum oder enthält mindestens ein ungültiges Zeichen.- oder -Das Extrahieren eines Eintrags aus dem Archiv wird eine Datei erstellen, die sich außerhalb des Verzeichnisses befindet, das von <paramref name="destinationDirectoryName" /> angegeben wird. (Zum Beispiel geschähe dies möglicherweise, wenn der Eintragsname Accessoren des übergeordneten Verzeichnisses enthält.) - oder -Zwei oder mehr Einträge im Archiv haben denselben Namen.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Der Aufrufer verfügt nicht über die erforderliche Berechtigung zum Schreiben in das Zielverzeichnis.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="destinationDirectoryName" /> enthält ein ungültiges Format.</exception>
+      <exception cref="T:System.IO.InvalidDataException">Ein Archiveintrag wurde nicht gefunden oder ist beschädigt.- oder -Ein Archiveintrag wurde mit einer nicht unterstützten Komprimierungsmethode komprimiert.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFileExtensions.ExtractToFile(System.IO.Compression.ZipArchiveEntry,System.String)">
+      <summary>Extrahiert einen Eintrag im ZIP-Archiv in eine Datei.</summary>
+      <param name="source">Der Zip-Archiveintrag zum Extrahieren einer Datei.</param>
+      <param name="destinationFileName">Der Pfad der Datei, die aus dem Eintragsinhalt erstellt werden soll.Sie können einen absoluten oder relativen Pfad angeben.Ein relativer Pfad wird relativ zum aktuellen Arbeitsverzeichnis interpretiert.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="destinationFileName" /> ist eine Zeichenfolge der Länge 0, besteht nur aus Leerraum oder enthält ein oder mehr durch <see cref="F:System.IO.Path.InvalidPathChars" /> definierte ungültige Zeichen.- oder -<paramref name="destinationFileName" /> gibt ein Verzeichnis an.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destinationFileName" /> ist null. </exception>
+      <exception cref="T:System.IO.PathTooLongException">Der angegebene Pfad und/oder der Dateiname überschreiten die vom System vorgegebene Höchstlänge.Beispielsweise müssen Pfade auf Windows-Plattformen weniger als 248 Zeichen und Dateinamen weniger als 260 Zeichen haben.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">Der angegebene Pfad ist ungültig (z. B. befindet er sich auf einem nicht zugeordneten Laufwerk). </exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="destinationFileName" /> ist bereits vorhanden.- oder - Ein E/A-Fehler ist aufgetreten.- oder -Der Eintrag ist derzeit zum Schreiben geöffnet.- oder -Der Eintrag wurde vom Archiv gelöscht.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Der Aufrufer verfügt nicht über die erforderliche Berechtigung für die Erstellung der neuen Datei.</exception>
+      <exception cref="T:System.IO.InvalidDataException">Der Eintrag fehlt im Archiv, oder ist beschädigt und kann nicht gelesen werden.- oder -Der Eintrag wurde mit einer nicht unterstützten Komprimierungsmethode komprimiert.</exception>
+      <exception cref="T:System.ObjectDisposedException">Das Zip-Archiv, zu dem dieser Eintrag gehört, wurde freigegeben.</exception>
+      <exception cref="T:System.NotSupportedException">Das Format von <paramref name="destinationFileName" /> ist ungültig. - oder -Das Zip-Archiv für diesen Eintrag wurde im <see cref="F:System.IO.Compression.ZipArchiveMode.Create" />-Modus geöffnet, der den Abruf von Einträgen nicht zulässt.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFileExtensions.ExtractToFile(System.IO.Compression.ZipArchiveEntry,System.String,System.Boolean)">
+      <summary>Extrahiert einen Eintrag im ZIP-Archiv in eine Datei, wobei optional eine vorhandene Datei überschrieben wird, die den gleichen Namen hat.</summary>
+      <param name="source">Der Zip-Archiveintrag zum Extrahieren einer Datei.</param>
+      <param name="destinationFileName">Der Pfad der Datei, die aus dem Eintragsinhalt erstellt werden soll.Sie können einen absoluten oder relativen Pfad angeben.Ein relativer Pfad wird relativ zum aktuellen Arbeitsverzeichnis interpretiert.</param>
+      <param name="overwrite">true, um eine vorhandene Datei zu überschreiben, die den gleichen Namen wie die Zieldatei hat; andernfalls false.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="destinationFileName" /> ist eine Zeichenfolge der Länge 0, besteht nur aus Leerraum oder enthält ein oder mehr durch <see cref="F:System.IO.Path.InvalidPathChars" /> definierte ungültige Zeichen.- oder -<paramref name="destinationFileName" /> gibt ein Verzeichnis an.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destinationFileName" /> ist null. </exception>
+      <exception cref="T:System.IO.PathTooLongException">Der angegebene Pfad und/oder der Dateiname überschreiten die vom System vorgegebene Höchstlänge.Beispielsweise müssen Pfade auf Windows-Plattformen weniger als 248 Zeichen und Dateinamen weniger als 260 Zeichen haben.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">Der angegebene Pfad ist ungültig (z. B. befindet er sich auf einem nicht zugeordneten Laufwerk). </exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="destinationFileName" /> ist bereits vorhanden und <paramref name="overwrite" /> ist false.- oder - Ein E/A-Fehler ist aufgetreten.- oder -Der Eintrag ist derzeit zum Schreiben geöffnet.- oder -Der Eintrag wurde vom Archiv gelöscht.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Der Aufrufer verfügt nicht über die erforderliche Berechtigung für die Erstellung der neuen Datei.</exception>
+      <exception cref="T:System.IO.InvalidDataException">Der Eintrag fehlt im Archiv, oder er ist beschädigt und kann nicht gelesen werden.- oder -Der Eintrag wurde mit einer nicht unterstützten Komprimierungsmethode komprimiert.</exception>
+      <exception cref="T:System.ObjectDisposedException">Das Zip-Archiv, zu dem dieser Eintrag gehört, wurde freigegeben.</exception>
+      <exception cref="T:System.NotSupportedException">Das Format von <paramref name="destinationFileName" /> ist ungültig. - oder -Das Zip-Archiv für diesen Eintrag wurde im <see cref="F:System.IO.Compression.ZipArchiveMode.Create" />-Modus geöffnet, der den Abruf von Einträgen nicht zulässt.</exception>
+    </member>
+  </members>
+</doc>

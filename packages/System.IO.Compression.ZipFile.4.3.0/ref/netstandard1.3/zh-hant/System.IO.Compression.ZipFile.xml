@@ -1,0 +1,279 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.IO.Compression.ZipFile</name>
+  </assembly>
+  <members>
+    <member name="T:System.IO.Compression.ZipFile">
+      <summary>提供建立、解壓縮及開啟 zip 封存的靜態方法。</summary>
+    </member>
+    <member name="M:System.IO.Compression.ZipFile.CreateFromDirectory(System.String,System.String)">
+      <summary>建立包含指定目錄中檔案及目錄的 zip 封存。</summary>
+      <param name="sourceDirectoryName">要封存的目錄路徑 (指定為相對或絕對路徑)。相對路徑會解譯為與目前的工作目錄相對。</param>
+      <param name="destinationArchiveFileName">要建立之封存的路徑 (指定為相對或絕對路徑)。相對路徑會解譯為與目前的工作目錄相對。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" /> is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" /> is null.</exception>
+      <exception cref="T:System.IO.PathTooLongException">In <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" />, the specified path, file name, or both exceed the system-defined maximum length.For example, on Windows-based platforms, paths must not exceed 248 characters, and file names must not exceed 260 characters.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">
+        <paramref name="sourceDirectoryName" /> is invalid or does not exist (for example, it is on an unmapped drive).</exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="destinationArchiveFileName" /> already exists.-or-A file in the specified directory could not be opened.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">
+        <paramref name="destinationArchiveFileName" /> specifies a directory.-or-The caller does not have the required permission to access the directory specified in <paramref name="sourceDirectoryName" /> or the file specified in <paramref name="destinationArchiveFileName" />.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" /> contains an invalid format.-or-The zip archive does not support writing.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFile.CreateFromDirectory(System.String,System.String,System.IO.Compression.CompressionLevel,System.Boolean)">
+      <summary>建立 zip 封存，這個封存包含指定之目錄中的檔案及目錄，使用指定的壓縮等級，並選擇性包含基底目錄。</summary>
+      <param name="sourceDirectoryName">要封存的目錄路徑 (指定為相對或絕對路徑)。相對路徑會解譯為與目前的工作目錄相對。</param>
+      <param name="destinationArchiveFileName">要建立之封存的路徑 (指定為相對或絕對路徑)。相對路徑會解譯為與目前的工作目錄相對。</param>
+      <param name="compressionLevel">其中一個列舉值，指出建立項目時是否要強調速度或壓縮的效益。</param>
+      <param name="includeBaseDirectory">true 表示從 <paramref name="sourceDirectoryName" /> (位於封存根目錄中) 包含目錄名稱，false 表示只包含目錄的內容。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" /> is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" /> is null.</exception>
+      <exception cref="T:System.IO.PathTooLongException">In <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" />, the specified path, file name, or both exceed the system-defined maximum length.For example, on Windows-based platforms, paths must not exceed 248 characters, and file names must not exceed 260 characters.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">
+        <paramref name="sourceDirectoryName" /> is invalid or does not exist (for example, it is on an unmapped drive).</exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="destinationArchiveFileName" /> already exists.-or-A file in the specified directory could not be opened.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">
+        <paramref name="destinationArchiveFileName" /> specifies a directory.-or-The caller does not have the required permission to access the directory specified in <paramref name="sourceDirectoryName" /> or the file specified in <paramref name="destinationArchiveFileName" />.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" /> contains an invalid format.-or-The zip archive does not support writing.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFile.CreateFromDirectory(System.String,System.String,System.IO.Compression.CompressionLevel,System.Boolean,System.Text.Encoding)">
+      <summary>建立 zip 封存，這個封存包含指定之目錄中的檔案及目錄，針對項目名稱使用指定的壓縮等級和字元編碼方式，並選擇性包含基底目錄。</summary>
+      <param name="sourceDirectoryName">要封存的目錄路徑 (指定為相對或絕對路徑)。相對路徑會解譯為與目前的工作目錄相對。</param>
+      <param name="destinationArchiveFileName">要建立之封存的路徑 (指定為相對或絕對路徑)。相對路徑會解譯為與目前的工作目錄相對。</param>
+      <param name="compressionLevel">其中一個列舉值，指出建立項目時是否要強調速度或壓縮的效益。</param>
+      <param name="includeBaseDirectory">true 表示從 <paramref name="sourceDirectoryName" /> (位於封存根目錄中) 包含目錄名稱，false 表示只包含目錄的內容。</param>
+      <param name="entryNameEncoding">在此封存中讀取或寫入項目名稱時要使用的編碼方式。只有需要編碼以與 Zip 封存工具和程式庫互通，且這類工具和程式庫不支援項目名稱使用 UTF-8 編碼時，才指定此參數的值。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" /> is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.-or-<paramref name="entryNameEncoding" /> is set to a Unicode encoding other than UTF-8.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" /> is null.</exception>
+      <exception cref="T:System.IO.PathTooLongException">In <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" />, the specified path, file name, or both exceed the system-defined maximum length.For example, on Windows-based platforms, paths must not exceed 248 characters, and file names must not exceed 260 characters.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">
+        <paramref name="sourceDirectoryName" /> is invalid or does not exist (for example, it is on an unmapped drive).</exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="destinationArchiveFileName" /> already exists.-or-A file in the specified directory could not be opened.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">
+        <paramref name="destinationArchiveFileName" /> specifies a directory.-or-The caller does not have the required permission to access the directory specified in <paramref name="sourceDirectoryName" /> or the file specified in <paramref name="destinationArchiveFileName" />.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" /> contains an invalid format.-or-The zip archive does not support writing.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFile.ExtractToDirectory(System.String,System.String)">
+      <summary>將指定之 zip 封存中的所有檔案解壓縮到檔案系統上的目錄。</summary>
+      <param name="sourceArchiveFileName">要擷取之封存的路徑。</param>
+      <param name="destinationDirectoryName">要在其中放置解壓縮檔案的目錄路徑 (指定為相對或絕對路徑)。相對路徑會解譯為與目前的工作目錄相對。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="destinationDirectoryName" /> or <paramref name="sourceArchiveFileName" /> is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destinationDirectoryName" /> or <paramref name="sourceArchiveFileName" /> is null.</exception>
+      <exception cref="T:System.IO.PathTooLongException">The specified path in <paramref name="destinationDirectoryName" /> or <paramref name="sourceArchiveFileName" /> exceeds the system-defined maximum length.For example, on Windows-based platforms, paths must not exceed 248 characters, and file names must not exceed 260 characters.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid (for example, it is on an unmapped drive).</exception>
+      <exception cref="T:System.IO.IOException">The directory specified by <paramref name="destinationDirectoryName" /> already exists.-or-The name of an entry in the archive is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.-or-Extracting an archive entry would create a file that is outside the directory specified by <paramref name="destinationDirectoryName" />.(For example, this might happen if the entry name contains parent directory accessors.)-or-An archive entry to extract has the same name as an entry that has already been extracted from the same archive.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission to access the archive or the destination directory.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="destinationDirectoryName" /> or <paramref name="sourceArchiveFileName" /> contains an invalid format.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="sourceArchiveFileName" /> was not found.</exception>
+      <exception cref="T:System.IO.InvalidDataException">The archive specified by <paramref name="sourceArchiveFileName" /> is not a valid zip archive.-or-An archive entry was not found or was corrupt.-or-An archive entry was compressed by using a compression method that is not supported.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFile.ExtractToDirectory(System.String,System.String,System.Text.Encoding)">
+      <summary>將指定之 zip 封存中的所有檔案解壓縮到檔案系統上的目錄，並對項目名稱使用指定的字元編碼方式。</summary>
+      <param name="sourceArchiveFileName">要擷取之封存的路徑。</param>
+      <param name="destinationDirectoryName">要在其中放置解壓縮檔案的目錄路徑 (指定為相對或絕對路徑)。相對路徑會解譯為與目前的工作目錄相對。</param>
+      <param name="entryNameEncoding">在此封存中讀取或寫入項目名稱時要使用的編碼方式。只有需要編碼以與 Zip 封存工具和程式庫互通，且這類工具和程式庫不支援項目名稱使用 UTF-8 編碼時，才指定此參數的值。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="destinationDirectoryName" /> or <paramref name="sourceArchiveFileName" /> is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.-or-<paramref name="entryNameEncoding" /> is set to a Unicode encoding other than UTF-8.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destinationDirectoryName" /> or <paramref name="sourceArchiveFileName" /> is null.</exception>
+      <exception cref="T:System.IO.PathTooLongException">The specified path in <paramref name="destinationDirectoryName" /> or <paramref name="sourceArchiveFileName" /> exceeds the system-defined maximum length.For example, on Windows-based platforms, paths must not exceed 248 characters, and file names must not exceed 260 characters.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid (for example, it is on an unmapped drive).</exception>
+      <exception cref="T:System.IO.IOException">The directory specified by <paramref name="destinationDirectoryName" /> already exists.-or-The name of an entry in the archive is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.-or-Extracting an archive entry would create a file that is outside the directory specified by <paramref name="destinationDirectoryName" />.(For example, this might happen if the entry name contains parent directory accessors.)-or-An archive entry to extract has the same name as an entry that has already been extracted from the same archive.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission to access the archive or the destination directory.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="destinationDirectoryName" /> or <paramref name="sourceArchiveFileName" /> contains an invalid format.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="sourceArchiveFileName" /> was not found.</exception>
+      <exception cref="T:System.IO.InvalidDataException">The archive specified by <paramref name="sourceArchiveFileName" /> is not a valid zip archive.-or-An archive entry was not found or was corrupt.-or-An archive entry was compressed by using a compression method that is not supported.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFile.Open(System.String,System.IO.Compression.ZipArchiveMode)">
+      <summary>在指定路徑上以指定的模式開啟 zip 封存。</summary>
+      <returns>已開啟的 zip 封存。</returns>
+      <param name="archiveFileName">要開啟之封存的路徑 (指定為相對或絕對路徑)。相對路徑會解譯為與目前的工作目錄相對。</param>
+      <param name="mode">其中一個列舉值，指定在開啟的封存檔中項目上所允許的動作。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="archiveFileName" /> is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="archiveFileName" /> is null.</exception>
+      <exception cref="T:System.IO.PathTooLongException">In <paramref name="archiveFileName" />, the specified path, file name, or both exceed the system-defined maximum length.For example, on Windows-based platforms, paths must not exceed 248 characters, and file names must not exceed 260 characters.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">
+        <paramref name="archiveFileName" /> is invalid or does not exist (for example, it is on an unmapped drive).</exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="archiveFileName" /> could not be opened.-or-<paramref name="mode" /> is set to <see cref="F:System.IO.Compression.ZipArchiveMode.Create" />, but the file specified in <paramref name="archiveFileName" /> already exists.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">
+        <paramref name="archiveFileName" /> specifies a directory.-or-The caller does not have the required permission to access the file specified in <paramref name="archiveFileName" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="mode" /> specifies an invalid value.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="mode" /> is set to <see cref="F:System.IO.Compression.ZipArchiveMode.Read" />, but the file specified in <paramref name="archiveFileName" /> is not found.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="archiveFileName" /> contains an invalid format.</exception>
+      <exception cref="T:System.IO.InvalidDataException">
+        <paramref name="archiveFileName" /> could not be interpreted as a zip archive.-or-<paramref name="mode" /> is <see cref="F:System.IO.Compression.ZipArchiveMode.Update" />, but an entry is missing or corrupt and cannot be read.-or-<paramref name="mode" /> is <see cref="F:System.IO.Compression.ZipArchiveMode.Update" />, but an entry is too large to fit into memory.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFile.Open(System.String,System.IO.Compression.ZipArchiveMode,System.Text.Encoding)">
+      <summary>使用指定的模式，並將指定的字元編碼方式使用於項目名稱，即可開啟位於指定路徑的 zip 封存。</summary>
+      <returns>已開啟的 zip 封存。</returns>
+      <param name="archiveFileName">要開啟之封存的路徑 (指定為相對或絕對路徑)。相對路徑會解譯為與目前的工作目錄相對。</param>
+      <param name="mode">其中一個列舉值，指定在開啟的封存檔中項目上所允許的動作。</param>
+      <param name="entryNameEncoding">在此封存中讀取或寫入項目名稱時要使用的編碼方式。只有需要編碼以與 Zip 封存工具和程式庫互通，且這類工具和程式庫不支援項目名稱使用 UTF-8 編碼時，才指定此參數的值。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="archiveFileName" /> is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.-or-<paramref name="entryNameEncoding" /> is set to a Unicode encoding other than UTF-8.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="archiveFileName" /> is null.</exception>
+      <exception cref="T:System.IO.PathTooLongException">In <paramref name="archiveFileName" />, the specified path, file name, or both exceed the system-defined maximum length.For example, on Windows-based platforms, paths must not exceed 248 characters, and file names must not exceed 260 characters.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">
+        <paramref name="archiveFileName" /> is invalid or does not exist (for example, it is on an unmapped drive).</exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="archiveFileName" /> could not be opened.-or-<paramref name="mode" /> is set to <see cref="F:System.IO.Compression.ZipArchiveMode.Create" />, but the file specified in <paramref name="archiveFileName" /> already exists.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">
+        <paramref name="archiveFileName" /> specifies a directory.-or-The caller does not have the required permission to access the file specified in <paramref name="archiveFileName" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="mode" /> specifies an invalid value.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="mode" /> is set to <see cref="F:System.IO.Compression.ZipArchiveMode.Read" />, but the file specified in <paramref name="archiveFileName" /> is not found.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="archiveFileName" /> contains an invalid format.</exception>
+      <exception cref="T:System.IO.InvalidDataException">
+        <paramref name="archiveFileName" /> could not be interpreted as a zip archive.-or-<paramref name="mode" /> is <see cref="F:System.IO.Compression.ZipArchiveMode.Update" />, but an entry is missing or corrupt and cannot be read.-or-<paramref name="mode" /> is <see cref="F:System.IO.Compression.ZipArchiveMode.Update" />, but an entry is too large to fit into memory.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFile.OpenRead(System.String)">
+      <summary>開啟位於指定路徑的 zip 封存以讀取。</summary>
+      <returns>已開啟的 zip 封存。</returns>
+      <param name="archiveFileName">要開啟之封存的路徑 (指定為相對或絕對路徑)。相對路徑會解譯為與目前的工作目錄相對。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="archiveFileName" /> is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="archiveFileName" /> is null.</exception>
+      <exception cref="T:System.IO.PathTooLongException">In <paramref name="archiveFileName" />, the specified path, file name, or both exceed the system-defined maximum length.For example, on Windows-based platforms, paths must not exceed 248 characters, and file names must not exceed 260 characters.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">
+        <paramref name="archiveFileName" /> is invalid or does not exist (for example, it is on an unmapped drive).</exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="archiveFileName" /> could not be opened.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">
+        <paramref name="archiveFileName" /> specifies a directory.-or-The caller does not have the required permission to access the file specified in <paramref name="archiveFileName" />.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">The file specified in <paramref name="archiveFileName" /> is not found.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="archiveFileName" /> contains an invalid format.</exception>
+      <exception cref="T:System.IO.InvalidDataException">
+        <paramref name="archiveFileName" /> could not be interpreted as a zip archive.</exception>
+    </member>
+    <member name="T:System.IO.Compression.ZipFileExtensions">
+      <summary>提供 <see cref="T:System.IO.Compression.ZipArchive" /> 和 <see cref="T:System.IO.Compression.ZipArchiveEntry" /> 類別的擴充方法。</summary>
+    </member>
+    <member name="M:System.IO.Compression.ZipFileExtensions.CreateEntryFromFile(System.IO.Compression.ZipArchive,System.String,System.String)">
+      <summary>透過將檔案壓縮並加入至 zip 封存的方式進行封存。</summary>
+      <returns>zip 封存中之新項目的包裝函式。</returns>
+      <param name="destination">要將檔案加入至其中的 Zip 封存。</param>
+      <param name="sourceFileName">要封存的檔案之路徑。您可以指定相對或相對路徑。相對路徑會解譯為與目前的工作目錄相對。</param>
+      <param name="entryName">要在 Zip 封存中建立之項目的名稱。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="sourceFileName" /> 為 <see cref="F:System.String.Empty" />，只含有空白字元，或者含有至少一個無效字元。-或-<paramref name="entryName" /> 為 <see cref="F:System.String.Empty" />。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="sourceFileName" /> 或 <paramref name="entryName" /> 是 null。</exception>
+      <exception cref="T:System.IO.PathTooLongException">在 <paramref name="sourceFileName" /> 中，指定的路徑、檔案名稱或兩者都超過系統定義的最大長度。例如：在 Windows 平台上，路徑不得超過 248 個字元，而檔案名稱不得超過 260 個字元。</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">
+        <paramref name="sourceFileName" /> 無效 (例如，位於未對應的磁碟機上)。</exception>
+      <exception cref="T:System.IO.IOException">無法開啟 <paramref name="sourceFileName" /> 指定的檔案。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">
+        <paramref name="sourceFileName" /> 指定目錄。-或-呼叫端沒有所需的使用權限來存取 <paramref name="sourceFileName" /> 指定的檔案。</exception>
+      <exception cref="T:System.IO.FileNotFoundException">找不到 <paramref name="sourceFileName" /> 所指定的檔案。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="sourceFileName" /> 參數的格式無效。-或-Zip 封存不支援寫入。</exception>
+      <exception cref="T:System.ObjectDisposedException">Zip 封存已經處置。</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFileExtensions.CreateEntryFromFile(System.IO.Compression.ZipArchive,System.String,System.String,System.IO.Compression.CompressionLevel)">
+      <summary>透過將檔案以指定之壓縮等級壓縮並加入至 zip 封存的方式進行封存。</summary>
+      <returns>zip 封存中之新項目的包裝函式。</returns>
+      <param name="destination">要將檔案加入至其中的 Zip 封存。</param>
+      <param name="sourceFileName">要封存的檔案之路徑。您可以指定相對或相對路徑。相對路徑會解譯為與目前的工作目錄相對。</param>
+      <param name="entryName">要在 Zip 封存中建立之項目的名稱。</param>
+      <param name="compressionLevel">其中一個列舉值，指出當建立項目時是否要強調速度或壓縮的效益。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="sourceFileName" /> 為 <see cref="F:System.String.Empty" />，只含有空白字元，或者含有至少一個無效字元。-或-<paramref name="entryName" /> 為 <see cref="F:System.String.Empty" />。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="sourceFileName" /> 或 <paramref name="entryName" /> 是 null。</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">
+        <paramref name="sourceFileName" /> 無效 (例如，位於未對應的磁碟機上)。</exception>
+      <exception cref="T:System.IO.PathTooLongException">在 <paramref name="sourceFileName" /> 中，指定的路徑、檔案名稱或兩者都超過系統定義的最大長度。例如：在 Windows 平台上，路徑不得超過 248 個字元，而檔案名稱不得超過 260 個字元。</exception>
+      <exception cref="T:System.IO.IOException">無法開啟 <paramref name="sourceFileName" /> 指定的檔案。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">
+        <paramref name="sourceFileName" /> 指定目錄。-或-呼叫端沒有所需的使用權限來存取 <paramref name="sourceFileName" /> 指定的檔案。</exception>
+      <exception cref="T:System.IO.FileNotFoundException">找不到 <paramref name="sourceFileName" /> 所指定的檔案。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="sourceFileName" /> 參數的格式無效。-或-Zip 封存不支援寫入。</exception>
+      <exception cref="T:System.ObjectDisposedException">Zip 封存已經處置。</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFileExtensions.ExtractToDirectory(System.IO.Compression.ZipArchive,System.String)">
+      <summary>將 zip 封存中的所有檔案解壓縮到檔案系統上的目錄。</summary>
+      <param name="source">做為檔案解壓縮來源的 zip 封存。</param>
+      <param name="destinationDirectoryName">要在其中放置解壓縮檔案的目錄路徑。您可以指定相對或相對路徑。相對路徑會解譯為與目前的工作目錄相對。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="destinationDirectoryName" /> 為 <see cref="F:System.String.Empty" />，只含有空白字元，或者含有至少一個無效字元。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destinationDirectoryName" /> 為 null。</exception>
+      <exception cref="T:System.IO.PathTooLongException">指定的路徑超過系統定義的最大長度。例如：在 Windows 平台上，路徑不得超過 248 個字元，而檔案名稱不得超過 260 個字元。</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">指定的路徑無效 (例如，位於未對應的磁碟上)。</exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="destinationDirectoryName" /> 指定的目錄已存在。-或-封存檔中的項目名稱是<see cref="F:System.String.Empty" />，只包含空白字元，或包含至少一個無效的字元。-或-從封存解壓縮封存項目會建立 <paramref name="destinationDirectoryName" /> 所指定目錄外的檔案。(例如，如果項目名稱包含父目錄存取子，這就可能發生)。-或-在封存中兩個或多個項目具有相同的名稱。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">呼叫端不具有寫入目的地目錄的必要權限。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="destinationDirectoryName" /> 包含無效的格式。</exception>
+      <exception cref="T:System.IO.InvalidDataException">找不到封存項目，或是其已損毀。-或-封存項目使用不支援的壓縮方法加以壓縮。</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFileExtensions.ExtractToFile(System.IO.Compression.ZipArchiveEntry,System.String)">
+      <summary>將 zip 封存中的項目解壓縮至檔案。</summary>
+      <param name="source">做為檔案解壓縮來源的 zip 封存項目。</param>
+      <param name="destinationFileName">要從項目內容建立的檔案的路徑。您可以指定相對或相對路徑。相對路徑會解譯為與目前的工作目錄相對。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="destinationFileName" /> 是長度為零的字串、只包含泛空白字元，或包含一個或多個無效的字元 (如 <see cref="F:System.IO.Path.InvalidPathChars" /> 所定義)。-或-<paramref name="destinationFileName" /> 指定目錄。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destinationFileName" /> 為 null。</exception>
+      <exception cref="T:System.IO.PathTooLongException">指定的路徑、檔案名稱或兩者都超過系統定義的最大長度。例如：在 Windows 平台上，路徑不得超過 248 個字元，而檔案名稱不得超過 260 個字元。</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">指定的路徑無效 (例如，位於未對應的磁碟上)。</exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="destinationFileName" /> 已存在。-或-發生 I/O 錯誤。-或-項目目前已開啟以進行寫入。-或-項目已經從封存中刪除。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">呼叫端沒有所需的使用權限來建立新檔。</exception>
+      <exception cref="T:System.IO.InvalidDataException">此項目可能是從封存中遺失，或已損毀且無法讀取。-或-藉由使用不支援的壓縮方法壓縮了項目。</exception>
+      <exception cref="T:System.ObjectDisposedException">這個項目所屬的 Zip 封存已經過處置。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="destinationFileName" /> 的格式無效。-或-這個項目的 Zip 封存的開啟模式是 <see cref="F:System.IO.Compression.ZipArchiveMode.Create" />，該模式不允許擷取項目。</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFileExtensions.ExtractToFile(System.IO.Compression.ZipArchiveEntry,System.String,System.Boolean)">
+      <summary>將 zip 封存中的項目解壓縮至檔案，並選擇性覆寫名稱相同的現有檔案。</summary>
+      <param name="source">做為檔案解壓縮來源的 zip 封存項目。</param>
+      <param name="destinationFileName">要從項目內容建立的檔案的路徑。您可以指定相對或相對路徑。相對路徑會解譯為與目前的工作目錄相對。</param>
+      <param name="overwrite">true 表示要覆寫與目的檔案同名的現有檔案，否則為 false。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="destinationFileName" /> 是長度為零的字串、只包含泛空白字元，或包含一個或多個無效的字元 (如 <see cref="F:System.IO.Path.InvalidPathChars" /> 所定義)。-或-<paramref name="destinationFileName" /> 指定目錄。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destinationFileName" /> 為 null。</exception>
+      <exception cref="T:System.IO.PathTooLongException">指定的路徑、檔案名稱或兩者都超過系統定義的最大長度。例如：在 Windows 平台上，路徑不得超過 248 個字元，而檔案名稱不得超過 260 個字元。</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">指定的路徑無效 (例如，位於未對應的磁碟上)。</exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="destinationFileName" /> 已存在且 <paramref name="overwrite" /> 為 false。-或-發生 I/O 錯誤。-或-項目目前已開啟以進行寫入。-或-項目已經從封存中刪除。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">呼叫端沒有所需的使用權限來建立新檔。</exception>
+      <exception cref="T:System.IO.InvalidDataException">此項目可能是從封存中遺失，或已損毀且無法讀取。-或-藉由使用不支援的壓縮方法壓縮了項目。</exception>
+      <exception cref="T:System.ObjectDisposedException">這個項目所屬的 Zip 封存已經過處置。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="destinationFileName" /> 的格式無效。-或-這個項目的 Zip 封存的開啟模式是 <see cref="F:System.IO.Compression.ZipArchiveMode.Create" />，該模式不允許擷取項目。</exception>
+    </member>
+  </members>
+</doc>

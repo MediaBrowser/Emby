@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.IO.FileSystem.Primitives</name>
+  </assembly>
+  <members>
+    <member name="T:System.IO.FileAccess">
+      <summary>読み取り専用、書き込み専用、読み取り/書き込みの各ファイル アクセスの定数を定義します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileAccess.Read">
+      <summary>ファイルの読み取りアクセス。ファイルからデータを読み取ることができます。読み取り/書き込みアクセスの場合は Write と組み合わせます。</summary>
+    </member>
+    <member name="F:System.IO.FileAccess.ReadWrite">
+      <summary>ファイルへの読み取り/書き込みアクセス。ファイルへのデータの書き込みとファイルからの読み取りができます。</summary>
+    </member>
+    <member name="F:System.IO.FileAccess.Write">
+      <summary>ファイルへの書き込みアクセス。ファイルにデータを書き込むことができます。読み取り/書き込みアクセスの場合は Read と組み合わせます。</summary>
+    </member>
+    <member name="T:System.IO.FileAttributes">
+      <summary>ファイルとディレクトリに属性を提供します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileAttributes.Archive">
+      <summary>ファイルは、バックアップまたは削除の候補です。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Compressed">
+      <summary>ファイルは圧縮ファイルです。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Device">
+      <summary>将来使用するために予約されています。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Directory">
+      <summary>ファイルはディレクトリです。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Encrypted">
+      <summary>ファイルまたはディレクトリは暗号化されています。ファイルの場合は、ファイルのすべてのデータが暗号化されています。ディレクトリの場合は、新規作成されるファイルおよびディレクトリが既定で暗号化されます。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Hidden">
+      <summary>ファイルは隠しファイルです。したがって通常のディレクトリ リストには表示されません。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.IntegrityStream">
+      <summary>ファイルまたはディレクトリには、データ整合性のサポートが含まれます。この値がファイルに適用されると、ファイルのすべてのデータ ストリームは整合性サポートを持ちます。この値がディレクトリに適用されると、そのディレクトリ内のすべての新しいファイルとサブディレクトリは、既定で一貫性サポートを含みます。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Normal">
+      <summary>ファイルは、特別な属性を持たない標準ファイルです。この属性は、単独で使用された場合のみ有効です。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.NoScrubData">
+      <summary>ファイルまたはディレクトリは、データ整合性のスキャン対象から除外されます。この値がディレクトリに適用されると、そのディレクトリ内のすべての新しいファイルとサブディレクトリが既定でデータ一貫性から除外されます。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.NotContentIndexed">
+      <summary>ファイルは、オペレーティング システムによるコンテンツ インデックス サービスでインデックスされません。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Offline">
+      <summary>ファイルはオフラインです。オフラインのファイルのデータは、即時には使用できません。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.ReadOnly">
+      <summary>ファイルは読み取り専用です。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.ReparsePoint">
+      <summary>ファイルには、ファイルまたはディレクトリに関連付けられたユーザー定義のデータ ブロックである、リパース ポイントが含まれています。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.SparseFile">
+      <summary>ファイルはスパース ファイルです。スパース ファイルは、通常、データの大部分が 0 である大きなファイルです。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.System">
+      <summary>ファイルはシステム ファイルです。つまり、このファイルはオペレーティング システムの一部であるか、オペレーティング システムによって排他的に使用されます。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Temporary">
+      <summary>一時ファイルです。一時ファイルには、アプリケーションを実行中は必要で、アプリケーションを終了すると不要になるデータが含まれています。ファイル システムは、データを大容量ストレージにフラッシュするのではなく、すべてのデータをメモリに保持するよう試みて、すばやくアクセスできるようにします。一時ファイルが不要になったら、アプリケーションが直ちに削除する必要があります。</summary>
+    </member>
+    <member name="T:System.IO.FileMode">
+      <summary>オペレーティング システムがファイルを開く方法を指定します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileMode.Append">
+      <summary>ファイルが存在する場合はそのファイルを開き、ファイルの末尾をシークします。存在しない場合は新しいファイルを作成します。これには <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Append" /> 許可が必要です。FileMode.Append は、必ず FileAccess.Write と共に使用します。ファイルの末尾の前の位置をシークしようとすると、<see cref="T:System.IO.IOException" /> 例外がスローされ、読み取り処理がすべて失敗し、<see cref="T:System.NotSupportedException" /> 例外がスローされます。</summary>
+    </member>
+    <member name="F:System.IO.FileMode.Create">
+      <summary>オペレーティング システムが新しいファイルを作成することを指定します。ファイルが既に存在する場合は上書きされます。これには <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" /> 許可が必要です。FileMode.Create は、ファイルが存在しない場合は <see cref="F:System.IO.FileMode.CreateNew" /> を使用した要求、ファイルが存在する場合は <see cref="F:System.IO.FileMode.Truncate" /> を使用した要求と等価です。ファイルが既に存在していても、隠しファイルの場合は <see cref="T:System.UnauthorizedAccessException" /> 例外がスローされます。</summary>
+    </member>
+    <member name="F:System.IO.FileMode.CreateNew">
+      <summary>オペレーティング システムが新しいファイルを作成することを指定します。これには <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" /> 許可が必要です。ファイルが既に存在する場合は <see cref="T:System.IO.IOException" /> 例外がスローされます。</summary>
+    </member>
+    <member name="F:System.IO.FileMode.Open">
+      <summary>オペレーティング システムが既存のファイルを開くことを指定します。ファイルを開けるかどうかは、<see cref="T:System.IO.FileAccess" /> 列挙体で指定される値によって異なります。ファイルが存在しない場合は、<see cref="T:System.IO.FileNotFoundException" /> 例外がスローされます。</summary>
+    </member>
+    <member name="F:System.IO.FileMode.OpenOrCreate">
+      <summary>ファイルが存在する場合はオペレーティング システムがそのファイルを開き、存在しない場合は新しいファイルを作成することを指定します。ファイルを FileAccess.Read で開く場合は <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Read" /> アクセス許可が必要です。ファイル アクセスが FileAccess.Write の場合は、<see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" /> アクセス許可が必要です。ファイルを FileAccess.ReadWrite で開く場合は <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Read" /> と <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" /> の両方のアクセス許可が必要です。</summary>
+    </member>
+    <member name="F:System.IO.FileMode.Truncate">
+      <summary>オペレーティング システムが既存のファイルを開くことを指定します。ファイルは、開かれると、サイズが 0 バイトになるように切り詰められます。これには <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" /> 許可が必要です。FileMode.Truncate を使用して開いたファイルから読み取ろうとすると、<see cref="T:System.ArgumentException" /> 例外が発生します。</summary>
+    </member>
+    <member name="T:System.IO.FileShare">
+      <summary>同一のファイルに対して他の <see cref="T:System.IO.FileStream" /> オブジェクトが保有できるアクセスの種類を制御する定数を格納します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileShare.Delete">
+      <summary>後続のファイルの削除を許可します。</summary>
+    </member>
+    <member name="F:System.IO.FileShare.Inheritable">
+      <summary>ファイル ハンドルを子プロセスで継承できるようにします。Win32 では、直接サポートされません。</summary>
+    </member>
+    <member name="F:System.IO.FileShare.None">
+      <summary>現在のファイルの共有を解除します。ファイルを閉じるまで、このプロセスまたは別のプロセスがファイルを開く要求をしても失敗します。</summary>
+    </member>
+    <member name="F:System.IO.FileShare.Read">
+      <summary>後続の読み取り用のファイルを開くことを許可します。このフラグが指定されていない場合は、ファイルを閉じるまで、このプロセスまたは別のプロセスが読み取り用のファイルを開く要求をしても失敗します。ただし、このフラグが指定されていても、ファイルにアクセスするために追加のアクセス許可が必要になることがあります。</summary>
+    </member>
+    <member name="F:System.IO.FileShare.ReadWrite">
+      <summary>後続の読み取り用または書き込み用のファイルを開くことを許可します。このフラグが指定されていない場合は、ファイルを閉じるまで、このプロセスまたは別のプロセスが読み取り用または書き込み用のファイルを開く要求をしても失敗します。ただし、このフラグが指定されていても、ファイルにアクセスするために追加のアクセス許可が必要になることがあります。</summary>
+    </member>
+    <member name="F:System.IO.FileShare.Write">
+      <summary>後続の書き込み用のファイルを開くことを許可します。このフラグが指定されていない場合は、ファイルを閉じるまで、このプロセスまたは別のプロセスが書き込み用のファイルを開く要求をしても失敗します。ただし、このフラグが指定されていても、ファイルにアクセスするために追加のアクセス許可が必要になることがあります。</summary>
+    </member>
+  </members>
+</doc>

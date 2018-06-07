@@ -1,0 +1,786 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.ObjectModel</name>
+  </assembly>
+  <members>
+    <member name="T:System.Collections.ObjectModel.KeyedCollection`2">
+      <summary>キーが値に埋め込まれているコレクションの抽象基本クラスを提供します。</summary>
+      <typeparam name="TKey">コレクション内のキーの型。</typeparam>
+      <typeparam name="TItem">コレクション内の項目の型。</typeparam>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.#ctor">
+      <summary>既定の等値比較子を使用する <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.#ctor(System.Collections.Generic.IEqualityComparer{`0})">
+      <summary>指定した等値比較子を使用する <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="comparer">キーを比較する場合に使用する <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> ジェネリック インターフェイスの実装。または、<see cref="P:System.Collections.Generic.EqualityComparer`1.Default" /> から取得する、キーの型の既定の等値比較子を使用する場合は null。</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.#ctor(System.Collections.Generic.IEqualityComparer{`0},System.Int32)">
+      <summary>指定した等値比較子を使用し、指定したしきい値を超えた場合に検索ディクショナリを作成する、<see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="comparer">キーを比較する場合に使用する <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> ジェネリック インターフェイスの実装。または、<see cref="P:System.Collections.Generic.EqualityComparer`1.Default" /> から取得する、キーの型の既定の等値比較子を使用する場合は null。</param>
+      <param name="dictionaryCreationThreshold">検索ディクショナリを作成せずにコレクションが保有できる要素数 (0 を指定すると最初の項目の追加時に検索ディクショナリが作成される)。検索ディクショナリを作成しない場合は -1。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="dictionaryCreationThreshold" /> is less than –1.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.ChangeItemKey(`1,`0)">
+      <summary>検索ディクショナリの指定した要素に関連付けられたキーを変更します。</summary>
+      <param name="item">変更するキーの要素。</param>
+      <param name="newKey">
+        <paramref name="item" /> の新しいキー。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="item" /> is null.-or-<paramref name="key" /> is null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="item" /> is not found.-or-<paramref name="key" /> already exists in the <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.ClearItems">
+      <summary>
+        <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> からすべての要素を削除します。</summary>
+    </member>
+    <member name="P:System.Collections.ObjectModel.KeyedCollection`2.Comparer">
+      <summary>コレクションの複数のキーの値が等しいかどうかを確認するために使用される、ジェネリック等値比較子を取得します。</summary>
+      <returns>コレクションの複数のキーの値が等しいかどうかを確認するために使用される <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> ジェネリック インターフェイスの実装。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.Contains(`0)">
+      <summary>指定したキーの要素がコレクションに含まれているかどうかを確認します。</summary>
+      <returns>指定したキーを持つ要素が <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> に格納されている場合は true。それ以外の場合は false。</returns>
+      <param name="key">
+        <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> 内で検索されるキー。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> is null.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.KeyedCollection`2.Dictionary">
+      <summary>
+        <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> の検索ディクショナリを取得します。</summary>
+      <returns>存在する場合は <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> の検索ディクショナリ。それ以外の場合は null。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.GetKeyForItem(`1)">
+      <summary>派生クラスで実装された場合、指定した要素からキーを抽出します。</summary>
+      <returns>指定した要素のキー。</returns>
+      <param name="item">キーの抽出元要素。</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.InsertItem(System.Int32,`1)">
+      <summary>
+        <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> 内の指定したインデックスの位置に要素を挿入します。</summary>
+      <param name="index">
+        <paramref name="item" /> を挿入する位置の、0 から始まるインデックス番号。</param>
+      <param name="item">挿入するオブジェクト。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> is less than 0.-or-<paramref name="index" /> is greater than <see cref="P:System.Collections.ObjectModel.Collection`1.Count" />.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.KeyedCollection`2.Item(`0)">
+      <summary>指定したキーを持つ要素を取得します。</summary>
+      <returns>指定したキーを持つ要素。指定したキーを持つ要素が見つからない場合は、例外がスローされます。</returns>
+      <param name="key">取得する要素のキー。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> is null.</exception>
+      <exception cref="T:System.Collections.Generic.KeyNotFoundException">An element with the specified key does not exist in the collection.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.Remove(`0)">
+      <summary>指定したキーを持つ要素を <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> から削除します。</summary>
+      <returns>要素が正常に削除された場合は true。それ以外の場合は false。このメソッドは、<paramref name="key" /> が <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> に見つからない場合にも false を返します。</returns>
+      <param name="key">削除する要素のキー。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> is null.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.RemoveItem(System.Int32)">
+      <summary>
+        <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> の指定したインデックスにある要素を削除します。</summary>
+      <param name="index">削除する要素のインデックス。</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.SetItem(System.Int32,`1)">
+      <summary>指定したインデックス位置の項目を、指定した項目で置き換えます。</summary>
+      <param name="index">置き換えられる項目の 0 から始まるインデックス。</param>
+      <param name="item">新しい項目。</param>
+    </member>
+    <member name="T:System.Collections.ObjectModel.ObservableCollection`1">
+      <summary>項目が追加、削除されたとき、またはリスト全体が更新されたときに通知を提供する動的なデータ コレクションを表します。</summary>
+      <typeparam name="T">コレクション内の要素の型。</typeparam>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.#ctor">
+      <summary>
+        <see cref="T:System.Collections.ObjectModel.ObservableCollection`1" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+      <summary>指定したコレクションからコピーされる要素を格納する <see cref="T:System.Collections.ObjectModel.ObservableCollection`1" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="collection">要素のコピー元のコレクション。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collection" /> パラメーターに null を指定することはできません。</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.BlockReentrancy">
+      <summary>このコレクションを変更するための再入試行を禁止します。</summary>
+      <returns>オブジェクトの破棄に使用できる <see cref="T:System.IDisposable" /> オブジェクト。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.CheckReentrancy">
+      <summary>このコレクションを変更するための再入試行をチェックします。</summary>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="M:System.Collections.ObjectModel.ObservableCollection`1.BlockReentrancy" /> が呼び出され、その <see cref="T:System.IDisposable" /> 戻り値がまだ破棄されていない場合。通常、これは、<see cref="E:System.Collections.ObjectModel.ObservableCollection`1.CollectionChanged" /> イベントの発生中に、コレクションに対して追加の変更が実行されることを意味します。ただし、このような状況が発生するかどうかは、派生クラスが <see cref="M:System.Collections.ObjectModel.ObservableCollection`1.BlockReentrancy" /> の呼び出しを選択するタイミングに応じて異なります。</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.ClearItems">
+      <summary>コレクションからすべての項目を削除します。</summary>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ObservableCollection`1.CollectionChanged">
+      <summary>項目が追加、削除、変更、移動された場合、またはリスト全体が更新されたときに発生します。</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.InsertItem(System.Int32,`0)">
+      <summary>コレクション内の指定したインデックスの位置に項目を挿入します。</summary>
+      <param name="index">
+        <paramref name="item" /> を挿入する位置の、0 から始まるインデックス。</param>
+      <param name="item">挿入するオブジェクト。</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.Move(System.Int32,System.Int32)">
+      <summary>指定したインデックスが示す位置にある項目を、コレクション内の新しい場所に移動します。</summary>
+      <param name="oldIndex">移動する項目の場所を指定する、0 から始まるインデックス。</param>
+      <param name="newIndex">項目の新しい場所を指定する、0 から始まるインデックス。</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.MoveItem(System.Int32,System.Int32)">
+      <summary>指定したインデックスが示す位置にある項目を、コレクション内の新しい場所に移動します。</summary>
+      <param name="oldIndex">移動する項目の場所を指定する、0 から始まるインデックス。</param>
+      <param name="newIndex">項目の新しい場所を指定する、0 から始まるインデックス。</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+      <summary>指定された引数を使用して、<see cref="E:System.Collections.ObjectModel.ObservableCollection`1.CollectionChanged" /> イベントを発生させます。</summary>
+      <param name="e">発生させるイベントの引数。</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs)">
+      <summary>指定された引数を使用して、<see cref="E:System.Collections.ObjectModel.ObservableCollection`1.PropertyChanged" /> イベントを発生させます。</summary>
+      <param name="e">発生させるイベントの引数。</param>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ObservableCollection`1.PropertyChanged">
+      <summary>プロパティ値が変更するときに発生します。</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.RemoveItem(System.Int32)">
+      <summary>指定したインデックスが示す位置にある項目をコレクションから削除します。</summary>
+      <param name="index">削除する要素の、0 から始まるインデックス番号。</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.SetItem(System.Int32,`0)">
+      <summary>指定したインデックス位置にある要素を置き換えます。</summary>
+      <param name="index">置き換える要素の 0 から始まるインデックス番号。</param>
+      <param name="item">指定したインデックス位置に存在する要素の新しい値。</param>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ObservableCollection`1.System#ComponentModel#INotifyPropertyChanged#PropertyChanged">
+      <summary>プロパティ値が変更するときに発生します。</summary>
+    </member>
+    <member name="T:System.Collections.ObjectModel.ReadOnlyDictionary`2">
+      <summary>キーと値のペアの読み取り専用ジェネリック コレクションを表します。</summary>
+      <typeparam name="TKey">ディクショナリ内のキーの型。</typeparam>
+      <typeparam name="TValue">ディクショナリ内の値の型。</typeparam>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.#ctor(System.Collections.Generic.IDictionary{`0,`1})">
+      <summary>指定したディクショナリのラッパーである、<see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="dictionary">ラップするディクショナリ。</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ContainsKey(`0)">
+      <summary>指定されたキーを持つ要素がディクショナリに格納されているかどうかを確認します。</summary>
+      <returns>指定したキーを持つ要素がディクショナリに格納されている場合は true。それ以外の場合は false。</returns>
+      <param name="key">ディクショナリ内で検索するキー。</param>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.Count">
+      <summary>ディクショナリ内の項目の数を取得します。</summary>
+      <returns>ディクショナリ内の項目の数。</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.Dictionary">
+      <summary>この <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" /> オブジェクトによってラップされるディクショナリを取得します。</summary>
+      <returns>このオブジェクトにラップされているディクショナリ。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.GetEnumerator">
+      <summary>
+        <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" /> を反復処理する列挙子を返します。</summary>
+      <returns>コレクションの反復処理に使用できる列挙子。</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.Item(`0)">
+      <summary>指定したキーを持つ要素を取得します。</summary>
+      <returns>指定したキーを持つ要素。</returns>
+      <param name="key">取得する要素のキー。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> は null なので、</exception>
+      <exception cref="T:System.Collections.Generic.KeyNotFoundException">プロパティは取得されますが、<paramref name="key" /> が見つかりません。</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.Keys">
+      <summary>ディクショナリのキーが格納されているキー コレクションを取得します。</summary>
+      <returns>ディクショナリのキーが格納されているキー コレクション。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#Add(System.Collections.Generic.KeyValuePair{`0,`1})">
+      <summary>常に <see cref="T:System.NotSupportedException" /> 例外をスローします。</summary>
+      <param name="item">ディクショナリに追加するオブジェクト。</param>
+      <exception cref="T:System.NotSupportedException">常にスローします。</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#Clear">
+      <summary>常に <see cref="T:System.NotSupportedException" /> 例外をスローします。</summary>
+      <exception cref="T:System.NotSupportedException">常にスローします。</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#Contains(System.Collections.Generic.KeyValuePair{`0,`1})">
+      <summary>特定の値がディクショナリに格納されているかどうかを確認します。</summary>
+      <returns>
+        <paramref name="item" /> がディクショナリに存在する場合は true。それ以外の場合は false。</returns>
+      <param name="item">ディクショナリ内で検索するオブジェクト。</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#CopyTo(System.Collections.Generic.KeyValuePair{`0,`1}[],System.Int32)">
+      <summary>指定した配列インデックスを開始位置として、ディクショナリの要素を配列にコピーします。</summary>
+      <param name="array">ディクショナリから要素がコピーされる 1 次元配列。配列では 0 から始まるインデックスを使用する必要があります。</param>
+      <param name="arrayIndex">コピーの開始位置となる、<paramref name="array" /> 内の 0 から始まるインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="arrayIndex" /> が 0 未満です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> が多次元です。またはコピー元のディクショナリの要素数が、コピー先の <paramref name="array" /> の <paramref name="arrayIndex" /> から最後までの領域を超えています。または型 <paramref name="T" /> をコピー先の <paramref name="array" /> の型に自動的にキャストすることはできません。</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#IsReadOnly">
+      <summary>ディクショナリが読み取り専用かどうかを示す値を取得します。</summary>
+      <returns>常に true。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#Remove(System.Collections.Generic.KeyValuePair{`0,`1})">
+      <summary>常に <see cref="T:System.NotSupportedException" /> 例外をスローします。</summary>
+      <returns>常に <see cref="T:System.NotSupportedException" /> 例外をスローします。</returns>
+      <param name="item">ディクショナリから削除するオブジェクト。</param>
+      <exception cref="T:System.NotSupportedException">常にスローします。</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Add(`0,`1)">
+      <summary>常に <see cref="T:System.NotSupportedException" /> 例外をスローします。</summary>
+      <param name="key">追加する要素のキーとして使用するオブジェクト。</param>
+      <param name="value">追加する要素の値として使用するオブジェクト。</param>
+      <exception cref="T:System.NotSupportedException">常にスローします。</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Item(`0)">
+      <summary>指定したキーを持つ要素を取得します。</summary>
+      <returns>指定したキーを持つ要素。</returns>
+      <param name="key">取得または設定する要素のキー。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> は null なので、</exception>
+      <exception cref="T:System.Collections.Generic.KeyNotFoundException">プロパティは取得されますが、<paramref name="key" /> が見つかりません。</exception>
+      <exception cref="T:System.NotSupportedException">プロパティが設定されています。</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Keys">
+      <summary>ディクショナリのキーを含むコレクションを取得します。</summary>
+      <returns>
+        <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" /> を実装するオブジェクトのキーが格納されているコレクション。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Remove(`0)">
+      <summary>常に <see cref="T:System.NotSupportedException" /> 例外をスローします。</summary>
+      <returns>常に <see cref="T:System.NotSupportedException" /> 例外をスローします。</returns>
+      <param name="key">削除する要素のキー。</param>
+      <exception cref="T:System.NotSupportedException">常にスローします。</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Values">
+      <summary>ディクショナリ内の値を含むコレクションを取得します。</summary>
+      <returns>
+        <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" /> を実装するオブジェクト内の値が格納されているコレクション。</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey@TValue}#Keys">
+      <summary>読み取り専用のディクショナリのキーを含む列挙可能なコレクションを取得します。</summary>
+      <returns>読み取り専用のディクショナリのキーを含む列挙可能なコレクション。</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey@TValue}#Values">
+      <summary>読み取り専用のディクショナリの値を含む列挙可能なコレクションを取得します。</summary>
+      <returns>読み取り専用のディクショナリの値を含む列挙可能なコレクション。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>指定した配列インデックスを開始位置として、ディクショナリの要素を配列にコピーします。</summary>
+      <param name="array">ディクショナリから要素がコピーされる 1 次元配列。配列では 0 から始まるインデックスを使用する必要があります。</param>
+      <param name="index">コピーの開始位置となる、<paramref name="array" /> 内の 0 から始まるインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> が 0 未満です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> が多次元です。またはコピー元のディクショナリの要素数が、コピー先の <paramref name="array" /> の <paramref name="index" /> から最後までの領域を超えています。または コピー元のディクショナリの型をコピー先の <paramref name="array" /> の型に自動的にキャストすることはできません<paramref name="。" /></exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#ICollection#IsSynchronized">
+      <summary>ディクショナリへのアクセスが同期されている (スレッド セーフである) かどうかを示す値を取得します。</summary>
+      <returns>ディクショナリへのアクセスが同期されている (スレッド セーフである) 場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#ICollection#SyncRoot">
+      <summary>ディクショナリへのアクセスを同期するために使用できるオブジェクトを取得します。</summary>
+      <returns>ディクショナリへのアクセスを同期するために使用できるオブジェクト。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Add(System.Object,System.Object)">
+      <summary>常に <see cref="T:System.NotSupportedException" /> 例外をスローします。</summary>
+      <param name="key">追加する要素のキー。</param>
+      <param name="value">追加する要素の値。</param>
+      <exception cref="T:System.NotSupportedException">常にスローします。</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Clear">
+      <summary>常に <see cref="T:System.NotSupportedException" /> 例外をスローします。</summary>
+      <exception cref="T:System.NotSupportedException">常にスローします。</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Contains(System.Object)">
+      <summary>指定されたキーを持つ要素がディクショナリに格納されているかどうかを確認します。</summary>
+      <returns>指定したキーを持つ要素がディクショナリに格納されている場合は true。それ以外の場合は false。</returns>
+      <param name="key">ディクショナリ内で検索するキー。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#GetEnumerator">
+      <summary>ディクショナリの列挙子を返します。</summary>
+      <returns>このディクショナリの列挙子。</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#IsFixedSize">
+      <summary>ディクショナリが固定サイズかどうかを示す値を取得します。</summary>
+      <returns>ディクショナリが固定サイズの場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#IsReadOnly">
+      <summary>ディクショナリが読み取り専用かどうかを示す値を取得します。</summary>
+      <returns>常に true。</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Item(System.Object)">
+      <summary>指定したキーを持つ要素を取得します。</summary>
+      <returns>指定したキーを持つ要素。</returns>
+      <param name="key">取得または設定する要素のキー。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> は null なので、</exception>
+      <exception cref="T:System.NotSupportedException">プロパティが設定されています。またはこのプロパティが設定されていますが、<paramref name="key" /> がコレクション内に存在しません。また、ディクショナリが固定サイズです。</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Keys">
+      <summary>ディクショナリのキーを含むコレクションを取得します。</summary>
+      <returns>ディクショナリのキーが格納されているコレクション。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Remove(System.Object)">
+      <summary>常に <see cref="T:System.NotSupportedException" /> 例外をスローします。</summary>
+      <param name="key">削除する要素のキー。</param>
+      <exception cref="T:System.NotSupportedException">常にスローします。</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Values">
+      <summary>ディクショナリ内の値を含むコレクションを取得します。</summary>
+      <returns>ディクショナリ内の値が格納されているコレクション。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IEnumerable#GetEnumerator">
+      <summary>コレクションを反復処理する列挙子を返します。</summary>
+      <returns>コレクションの反復処理に使用できる列挙子。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.TryGetValue(`0,`1@)">
+      <summary>指定されたキーに関連付けられている値を取得します。</summary>
+      <returns>指定したキーを持つ要素が <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" /> を実装するオブジェクトに格納されている場合は true。それ以外の場合は false。</returns>
+      <param name="key">値を取得するキー。</param>
+      <param name="value">このメソッドが返されるときに、キーが見つかった場合は、指定したキーに関連付けられている値。それ以外の場合は <paramref name="value" /> パラメーターの型に対する既定の値。このパラメーターは初期化せずに渡されます。</param>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.Values">
+      <summary>ディクショナリ内の値を含むコレクションを取得します。</summary>
+      <returns>
+        <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" /> を実装するオブジェクト内の値が格納されているコレクション。</returns>
+    </member>
+    <member name="T:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection">
+      <summary>
+        <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" /> オブジェクトのキーの読み取り専用コレクションを表します。</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.CopyTo(`0[],System.Int32)">
+      <summary>特定の配列インデックスを開始位置として、コレクションの要素を配列にコピーします。</summary>
+      <param name="array">コレクション要素のコピー先となる 1 次元配列。配列では 0 から始まるインデックスを使用する必要があります。</param>
+      <param name="arrayIndex">コピーの開始位置となる、<paramref name="array" /> 内の 0 から始まるインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="arrayIndex" /> が 0 未満です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> が多次元です。またはコピー元のコレクションの要素数が、コピー先の <paramref name="array" /> の <paramref name="arrayIndex" /> から最後までの領域を超えています。または型 <paramref name="T" /> をコピー先の <paramref name="array" /> の型に自動的にキャストすることはできません。</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.Count">
+      <summary>コレクション内の要素の数を取得します。</summary>
+      <returns>コレクション内の要素の数。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.GetEnumerator">
+      <summary>コレクションを反復処理する列挙子を返します。</summary>
+      <returns>コレクションの反復処理に使用できる列挙子。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#Generic#ICollection{T}#Add(`0)">
+      <summary>常に <see cref="T:System.NotSupportedException" /> 例外をスローします。</summary>
+      <param name="item">コレクションに追加するオブジェクト。</param>
+      <exception cref="T:System.NotSupportedException">常にスローします。</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#Generic#ICollection{T}#Clear">
+      <summary>常に <see cref="T:System.NotSupportedException" /> 例外をスローします。</summary>
+      <exception cref="T:System.NotSupportedException">常にスローします。</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#Generic#ICollection{T}#Contains(`0)">
+      <summary>コレクションに特定の値が格納されているかどうかを判断します。</summary>
+      <returns>
+        <paramref name="item" /> がコレクションに存在する場合は true。それ以外の場合は false。</returns>
+      <param name="item">コレクション内で検索するオブジェクト。</param>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#Generic#ICollection{T}#IsReadOnly">
+      <summary>コレクションが読み取り専用かどうかを示す値を取得します。</summary>
+      <returns>常に true。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#Generic#ICollection{T}#Remove(`0)">
+      <summary>常に <see cref="T:System.NotSupportedException" /> 例外をスローします。</summary>
+      <returns>
+        <paramref name="item" /> がコレクションから正常に削除された場合は true。それ以外の場合は false。また、このメソッドは、元のコレクションに <paramref name="item" /> が見つからない場合にも false を返します。</returns>
+      <param name="item">コレクションから削除するオブジェクト。</param>
+      <exception cref="T:System.NotSupportedException">常にスローします。</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>特定の配列インデックスを開始位置として、コレクションの要素を配列にコピーします。</summary>
+      <param name="array">コレクション要素のコピー先となる 1 次元配列。配列では 0 から始まるインデックスを使用する必要があります。</param>
+      <param name="index">コピーの開始位置となる、<paramref name="array" /> 内の 0 から始まるインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> が 0 未満です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> が多次元です。またはコピー元のコレクションの要素数が、コピー先の <paramref name="array" /> の <paramref name="index" /> から最後までの領域を超えています。</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>コレクションへのアクセスが同期されている (スレッド セーフである) かどうかを示す値を取得します。</summary>
+      <returns>コレクションへのアクセスが同期されている (スレッド セーフである) 場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#ICollection#SyncRoot">
+      <summary>コレクションへのアクセスを同期するために使用できるオブジェクトを取得します。</summary>
+      <returns>コレクションへのアクセスを同期するために使用できるオブジェクト。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#IEnumerable#GetEnumerator">
+      <summary>コレクションを反復処理する列挙子を返します。</summary>
+      <returns>コレクションの反復処理に使用できる列挙子。</returns>
+    </member>
+    <member name="T:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection">
+      <summary>
+        <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" /> オブジェクトの値の読み取り専用コレクションを表します。</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.CopyTo(`1[],System.Int32)">
+      <summary>特定の配列インデックスを開始位置として、コレクションの要素を配列にコピーします。</summary>
+      <param name="array">コレクション要素のコピー先となる 1 次元配列。配列では 0 から始まるインデックスを使用する必要があります。</param>
+      <param name="arrayIndex">コピーの開始位置となる、<paramref name="array" /> 内の 0 から始まるインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="arrayIndex" /> が 0 未満です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> が多次元です。またはコピー元のコレクションの要素数が、コピー先の <paramref name="array" /> の <paramref name="arrayIndex" /> から最後までの領域を超えています。または型 <paramref name="T" /> をコピー先の <paramref name="array" /> の型に自動的にキャストすることはできません。</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.Count">
+      <summary>コレクション内の要素の数を取得します。</summary>
+      <returns>コレクション内の要素の数。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.GetEnumerator">
+      <summary>コレクションを反復処理する列挙子を返します。</summary>
+      <returns>コレクションの反復処理に使用できる列挙子。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#Generic#ICollection{T}#Add(`1)">
+      <summary>常に <see cref="T:System.NotSupportedException" /> 例外をスローします。</summary>
+      <param name="item">コレクションに追加するオブジェクト。</param>
+      <exception cref="T:System.NotSupportedException">常にスローします。</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#Generic#ICollection{T}#Clear">
+      <summary>常に <see cref="T:System.NotSupportedException" /> 例外をスローします。</summary>
+      <exception cref="T:System.NotSupportedException">常にスローします。</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#Generic#ICollection{T}#Contains(`1)">
+      <summary>コレクションに特定の値が格納されているかどうかを判断します。</summary>
+      <returns>
+        <paramref name="item" /> がコレクションに存在する場合は true。それ以外の場合は false。</returns>
+      <param name="item">コレクション内で検索するオブジェクト。</param>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#Generic#ICollection{T}#IsReadOnly">
+      <summary>コレクションが読み取り専用かどうかを示す値を取得します。</summary>
+      <returns>常に true。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#Generic#ICollection{T}#Remove(`1)">
+      <summary>常に <see cref="T:System.NotSupportedException" /> 例外をスローします。</summary>
+      <returns>
+        <paramref name="item" /> がコレクションから正常に削除された場合は true。それ以外の場合は false。また、このメソッドは、元のコレクションに <paramref name="item" /> が見つからない場合にも false を返します。</returns>
+      <param name="item">コレクションから削除するオブジェクト。</param>
+      <exception cref="T:System.NotSupportedException">常にスローします。</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>特定の配列インデックスを開始位置として、コレクションの要素を配列にコピーします。</summary>
+      <param name="array">コレクション要素のコピー先となる 1 次元配列。配列では 0 から始まるインデックスを使用する必要があります。</param>
+      <param name="index">コピーの開始位置となる、<paramref name="array" /> 内の 0 から始まるインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> が 0 未満です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> が多次元です。またはコピー元のコレクションの要素数が、コピー先の <paramref name="array" /> の <paramref name="index" /> から最後までの領域を超えています。</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>コレクションへのアクセスが同期されている (スレッド セーフである) かどうかを示す値を取得します。</summary>
+      <returns>コレクションへのアクセスが同期されている (スレッド セーフである) 場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#ICollection#SyncRoot">
+      <summary>コレクションへのアクセスを同期するために使用できるオブジェクトを取得します。</summary>
+      <returns>コレクションへのアクセスを同期するために使用できるオブジェクト。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#IEnumerable#GetEnumerator">
+      <summary>コレクションを反復処理する列挙子を返します。</summary>
+      <returns>コレクションの反復処理に使用できる列挙子。</returns>
+    </member>
+    <member name="T:System.Collections.ObjectModel.ReadOnlyObservableCollection`1">
+      <summary>読み取り専用の <see cref="T:System.Collections.ObjectModel.ObservableCollection`1" /> を表します。</summary>
+      <typeparam name="T">コレクション内の要素の型。</typeparam>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.#ctor(System.Collections.ObjectModel.ObservableCollection{`0})">
+      <summary>指定した <see cref="T:System.Collections.ObjectModel.ObservableCollection`1" /> のラッパーとして使用される <see cref="T:System.Collections.ObjectModel.ReadOnlyObservableCollection`1" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="list">
+        <see cref="T:System.Collections.ObjectModel.ReadOnlyObservableCollection`1" /> クラスのこのインスタンスを作成するために使用する <see cref="T:System.Collections.ObjectModel.ObservableCollection`1" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="list" /> は null なので、</exception>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.CollectionChanged">
+      <summary>項目が追加または削除されるときに発生します。</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+      <summary>指定された引数を使用して、<see cref="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.CollectionChanged" /> イベントを発生させます。</summary>
+      <param name="args">発生させるイベントの引数。</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs)">
+      <summary>指定された引数を使用して、<see cref="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.PropertyChanged" /> イベントを発生させます。</summary>
+      <param name="args">発生させるイベントの引数。</param>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.PropertyChanged">
+      <summary>プロパティ値が変更するときに発生します。</summary>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.System#Collections#Specialized#INotifyCollectionChanged#CollectionChanged">
+      <summary>コレクションが変更された場合に発生します。</summary>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.System#ComponentModel#INotifyPropertyChanged#PropertyChanged">
+      <summary>プロパティ値が変更するときに発生します。</summary>
+    </member>
+    <member name="T:System.Collections.Specialized.INotifyCollectionChanged">
+      <summary>項目が追加、削除されたときやリスト全体が更新されたときなど、動的な変更をリスナーに通知します。</summary>
+    </member>
+    <member name="E:System.Collections.Specialized.INotifyCollectionChanged.CollectionChanged">
+      <summary>コレクションが変更された場合に発生します。</summary>
+    </member>
+    <member name="T:System.Collections.Specialized.NotifyCollectionChangedAction">
+      <summary>
+        <see cref="E:System.Collections.Specialized.INotifyCollectionChanged.CollectionChanged" /> イベントを発生させるアクションを説明します。</summary>
+    </member>
+    <member name="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add">
+      <summary>1 つ以上の項目がコレクションに追加されました。</summary>
+    </member>
+    <member name="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move">
+      <summary>コレクション内で 1 つ以上の項目が移動されました。</summary>
+    </member>
+    <member name="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove">
+      <summary>1 つ以上の項目がコレクションから削除されました。</summary>
+    </member>
+    <member name="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace">
+      <summary>コレクション内で 1 つ以上の項目が置き換えられました。</summary>
+    </member>
+    <member name="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset">
+      <summary>コレクションの内容が大幅に変更されました。</summary>
+    </member>
+    <member name="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs">
+      <summary>
+        <see cref="E:System.Collections.Specialized.INotifyCollectionChanged.CollectionChanged" /> イベントにデータを提供します。</summary>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction)">
+      <summary>
+        <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" /> の変更を説明する <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="action">イベントの原因となったアクション。これは、<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" /> に設定する必要があります。</param>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Collections.IList)">
+      <summary>複数項目の変更を表す <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="action">イベントの原因となったアクション。<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />、<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add" />、または <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove" /> に設定できます。</param>
+      <param name="changedItems">変更の影響を受ける項目。</param>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Collections.IList,System.Collections.IList)">
+      <summary>
+        <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" /> による複数項目の変更を表す <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="action">イベントの原因となったアクション。<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" /> のみに設定できます。</param>
+      <param name="newItems">元の項目を置き換える新しい項目。</param>
+      <param name="oldItems">置き換えられる元の項目。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="action" /> が Replace ではない場合。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="oldItems" /> または <paramref name="newItems" /> が null の場合。</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Collections.IList,System.Collections.IList,System.Int32)">
+      <summary>
+        <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" /> による複数項目の変更を表す <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="action">イベントの原因となったアクション。<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" /> のみに設定できます。</param>
+      <param name="newItems">元の項目を置き換える新しい項目。</param>
+      <param name="oldItems">置き換えられる元の項目。</param>
+      <param name="startingIndex">置き換えられる項目の最初の項目のインデックス。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="action" /> が Replace ではない場合。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="oldItems" /> または <paramref name="newItems" /> が null の場合。</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Collections.IList,System.Int32)">
+      <summary>複数項目の変更または <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" /> による変更を表す <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="action">イベントの原因となったアクション。<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />、<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add" />、または <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove" /> に設定できます。</param>
+      <param name="changedItems">変更の影響を受ける項目。</param>
+      <param name="startingIndex">変更が発生したインデックス。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="action" /> が Reset、Add、Remove ではない場合、<paramref name="action" /> が Reset で、かつ<paramref name="changedItems" /> が null ではないか、 <paramref name="startingIndex" /> が -1 ではない場合、または action が Add または Remove で、かつ<paramref name="startingIndex" /> が -1 より小さい場合。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="action" /> が Add または Remove で、<paramref name="changedItems" /> が null の場合。</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Collections.IList,System.Int32,System.Int32)">
+      <summary>
+        <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" /> による複数項目の変更を表す <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="action">イベントの原因となったアクション。<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" /> のみに設定できます。</param>
+      <param name="changedItems">変更の影響を受ける項目。</param>
+      <param name="index">変更された項目の新しいインデックス。</param>
+      <param name="oldIndex">変更された項目の古いインデックス。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="action" /> が Move ではない場合、または <paramref name="index" /> が 0 未満の場合。</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Object)">
+      <summary>1 項目の変更を表す <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="action">イベントの原因となったアクション。<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />、<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add" />、または <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove" /> に設定できます。</param>
+      <param name="changedItem">変更の影響を受ける項目。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="action" /> が Reset、Add、Remove ではない場合、または <paramref name="action" /> が Reset で、かつ <paramref name="changedItem" /> が null ではない場合。</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Object,System.Int32)">
+      <summary>1 項目の変更を表す <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="action">イベントの原因となったアクション。<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />、<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add" />、または <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove" /> に設定できます。</param>
+      <param name="changedItem">変更の影響を受ける項目。</param>
+      <param name="index">変更が発生したインデックス。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="action" /> が Reset、Add、Remove ではない場合、または <paramref name="action" /> が Reset で、かつ <paramref name="changedItems" /> が null ではないか、<paramref name="index" /> が -1 ではない場合。</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Object,System.Int32,System.Int32)">
+      <summary>1 項目の <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" /> の変更を表す <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="action">イベントの原因となったアクション。<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" /> のみに設定できます。</param>
+      <param name="changedItem">変更の影響を受ける項目。</param>
+      <param name="index">変更された項目の新しいインデックス。</param>
+      <param name="oldIndex">変更された項目の古いインデックス。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="action" /> が Move ではない場合、または <paramref name="index" /> が 0 未満の場合。</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Object,System.Object)">
+      <summary>
+        <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" /> による 1 項目の変更を表す <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="action">イベントの原因となったアクション。<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" /> のみに設定できます。</param>
+      <param name="newItem">元の項目を置き換える新しい項目。</param>
+      <param name="oldItem">置き換えられる元の項目。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="action" /> が Replace ではない場合。</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Object,System.Object,System.Int32)">
+      <summary>
+        <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" /> による 1 項目の変更を表す <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="action">イベントの原因となったアクション。これは、<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" /> に設定できます。</param>
+      <param name="newItem">元の項目を置き換える新しい項目。</param>
+      <param name="oldItem">置き換えられる元の項目。</param>
+      <param name="index">置き換えられる項目のインデックス。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="action" /> が Replace ではない場合。</exception>
+    </member>
+    <member name="P:System.Collections.Specialized.NotifyCollectionChangedEventArgs.Action">
+      <summary>イベントの原因となったアクションを取得します。</summary>
+      <returns>イベントの原因となったアクションを説明する <see cref="T:System.Collections.Specialized.NotifyCollectionChangedAction" /> 値。</returns>
+    </member>
+    <member name="P:System.Collections.Specialized.NotifyCollectionChangedEventArgs.NewItems">
+      <summary>変更に関連する新しい項目のリストを取得します。</summary>
+      <returns>変更に関連する新しい項目のリスト。</returns>
+    </member>
+    <member name="P:System.Collections.Specialized.NotifyCollectionChangedEventArgs.NewStartingIndex">
+      <summary>変更が発生した位置のインデックスを取得します。</summary>
+      <returns>変更が発生した位置の 0 から始まるインデックス。</returns>
+    </member>
+    <member name="P:System.Collections.Specialized.NotifyCollectionChangedEventArgs.OldItems">
+      <summary>
+        <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" />、Remove、または Move アクションで影響を受ける項目のリストを取得します。</summary>
+      <returns>
+        <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" />、Remove、または Move アクションで影響を受ける項目のリスト。</returns>
+    </member>
+    <member name="P:System.Collections.Specialized.NotifyCollectionChangedEventArgs.OldStartingIndex">
+      <summary>
+        <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" />、Remove、または Replace アクションが発生した位置のインデックスを取得します。</summary>
+      <returns>
+        <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" />、Remove、または Replace アクションが発生した位置の 0 から始まるインデックス。</returns>
+    </member>
+    <member name="T:System.Collections.Specialized.NotifyCollectionChangedEventHandler">
+      <summary>
+        <see cref="E:System.Collections.Specialized.INotifyCollectionChanged.CollectionChanged" /> イベントを処理するメソッドを表します。</summary>
+      <param name="sender">イベントを発生させたオブジェクト。</param>
+      <param name="e">イベントに関する情報。</param>
+    </member>
+    <member name="T:System.ComponentModel.DataErrorsChangedEventArgs">
+      <summary>
+        <see cref="E:System.ComponentModel.INotifyDataErrorInfo.ErrorsChanged" /> イベントにデータを提供します。</summary>
+    </member>
+    <member name="M:System.ComponentModel.DataErrorsChangedEventArgs.#ctor(System.String)">
+      <summary>
+        <see cref="T:System.ComponentModel.DataErrorsChangedEventArgs" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="propertyName">エラーがあるプロパティの名前です。エラーがオブジェクト レベルの場合、null または <see cref="F:System.String.Empty" /> です。</param>
+    </member>
+    <member name="P:System.ComponentModel.DataErrorsChangedEventArgs.PropertyName">
+      <summary>エラーのあるプロパティの名前を取得します。</summary>
+      <returns>エラーのあるプロパティの名前。エラーがオブジェクト レベルの場合、null または <see cref="F:System.String.Empty" /> となります。</returns>
+    </member>
+    <member name="T:System.ComponentModel.INotifyDataErrorInfo">
+      <summary>カスタムの同期検証および非同期検証サポートを提供するためにデータ エンティティ クラスに実装できるメンバーを定義します。</summary>
+    </member>
+    <member name="E:System.ComponentModel.INotifyDataErrorInfo.ErrorsChanged">
+      <summary>プロパティまたはエンティティ全体の検証エラーが変更されたときに発生します。</summary>
+    </member>
+    <member name="M:System.ComponentModel.INotifyDataErrorInfo.GetErrors(System.String)">
+      <summary>指定されたプロパティまたはエンティティ全体の検証エラーを取得します。</summary>
+      <returns>プロパティまたはエンティティの検証エラー。</returns>
+      <param name="propertyName">検証エラーを取得するプロパティの名前。または、エンティティ レベルのエラーを取得する場合は null または <see cref="F:System.String.Empty" />。</param>
+    </member>
+    <member name="P:System.ComponentModel.INotifyDataErrorInfo.HasErrors">
+      <summary>エンティティに検証エラーがあるかどうかを示す値を取得します。</summary>
+      <returns>現在エンティティに検証エラーがある場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="T:System.ComponentModel.INotifyPropertyChanged">
+      <summary>プロパティ値が変更されたことをクライアントに通知します。</summary>
+    </member>
+    <member name="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged">
+      <summary>プロパティ値が変更するときに発生します。</summary>
+    </member>
+    <member name="T:System.ComponentModel.INotifyPropertyChanging">
+      <summary>プロパティ値が変更されようとしていることをクライアントに通知します。</summary>
+    </member>
+    <member name="E:System.ComponentModel.INotifyPropertyChanging.PropertyChanging">
+      <summary>プロパティ値が変更されようとしている場合に発生します。</summary>
+    </member>
+    <member name="T:System.ComponentModel.PropertyChangedEventArgs">
+      <summary>
+        <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged" /> イベントにデータを提供します。</summary>
+    </member>
+    <member name="M:System.ComponentModel.PropertyChangedEventArgs.#ctor(System.String)">
+      <summary>
+        <see cref="T:System.ComponentModel.PropertyChangedEventArgs" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="propertyName">変更されたプロパティの名前。</param>
+    </member>
+    <member name="P:System.ComponentModel.PropertyChangedEventArgs.PropertyName">
+      <summary>変更されたプロパティの名前を取得します。</summary>
+      <returns>変更されたプロパティの名前。</returns>
+    </member>
+    <member name="T:System.ComponentModel.PropertyChangedEventHandler">
+      <summary>コンポーネントでプロパティが変更されたときに発生する <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged" /> イベントを処理するメソッドを表します</summary>
+      <param name="sender">イベントのソース。</param>
+      <param name="e">イベント データを格納している <see cref="T:System.ComponentModel.PropertyChangedEventArgs" />。</param>
+    </member>
+    <member name="T:System.ComponentModel.PropertyChangingEventArgs">
+      <summary>
+        <see cref="E:System.ComponentModel.INotifyPropertyChanging.PropertyChanging" /> イベントにデータを提供します。</summary>
+    </member>
+    <member name="M:System.ComponentModel.PropertyChangingEventArgs.#ctor(System.String)">
+      <summary>
+        <see cref="T:System.ComponentModel.PropertyChangingEventArgs" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="propertyName">値が変更されようとしているプロパティの名前。</param>
+    </member>
+    <member name="P:System.ComponentModel.PropertyChangingEventArgs.PropertyName">
+      <summary>値が変更されようとしているプロパティの名前を取得します。</summary>
+      <returns>値が変更されようとしているプロパティの名前。</returns>
+    </member>
+    <member name="T:System.ComponentModel.PropertyChangingEventHandler">
+      <summary>
+        <see cref="T:System.ComponentModel.INotifyPropertyChanging" /> インターフェイスの <see cref="E:System.ComponentModel.INotifyPropertyChanging.PropertyChanging" /> イベントを処理するメソッドを表します。</summary>
+      <param name="sender">イベントのソース。</param>
+      <param name="e">イベント データを格納している <see cref="T:System.ComponentModel.PropertyChangingEventArgs" />。</param>
+    </member>
+    <member name="T:System.Windows.Input.ICommand">
+      <summary>コマンドを定義します。</summary>
+    </member>
+    <member name="M:System.Windows.Input.ICommand.CanExecute(System.Object)">
+      <summary>現在の状態でコマンドが実行可能かどうかを決定するメソッドを定義します。</summary>
+      <returns>
+このコマンドを実行できる場合は true。それ以外の場合は false。</returns>
+      <param name="parameter">コマンドにより使用されるデータです。コマンドにデータを渡す必要がない場合は、このオブジェクトを null に設定できます。</param>
+    </member>
+    <member name="E:System.Windows.Input.ICommand.CanExecuteChanged">
+      <summary>コマンドを実行するかどうかに影響するような変更があった場合に発生します。</summary>
+    </member>
+    <member name="M:System.Windows.Input.ICommand.Execute(System.Object)">
+      <summary>コマンドが起動される際に呼び出すメソッドを定義します。</summary>
+      <param name="parameter">コマンドにより使用されるデータです。コマンドにデータを渡す必要がない場合は、このオブジェクトを null に設定できます。</param>
+    </member>
+  </members>
+</doc>

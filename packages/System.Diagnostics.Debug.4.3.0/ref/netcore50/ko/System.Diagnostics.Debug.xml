@@ -1,0 +1,406 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Diagnostics.Debug</name>
+  </assembly>
+  <members>
+    <member name="T:System.Diagnostics.Debug">
+      <summary>코드를 디버깅하는 데 필요한 메서드 및 속성 집합을 제공합니다.이 클래스는 상속될 수 없습니다.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Assert(System.Boolean)">
+      <summary>조건을 확인합니다. 조건이 false이면 호출 스택을 보여 주는 메시지 상자를 표시합니다.</summary>
+      <param name="condition">계산할 조건식입니다.조건이 true이면 오류 메시지가 전송되지 않고 메시지 상자가 표시되지 않습니다.</param>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Assert(System.Boolean,System.String)">
+      <summary>조건을 확인합니다. 조건이 false이면 지정된 메시지를 출력하고 호출 스택을 보여 주는 메시지 상자를 표시합니다.</summary>
+      <param name="condition">계산할 조건식입니다.조건이 true이면 지정된 메시지가 전송되지 않고 메시지 상자가 표시되지 않습니다.</param>
+      <param name="message">
+        <see cref="P:System.Diagnostics.Trace.Listeners" /> 컬렉션에 보낼 메시지입니다. </param>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Assert(System.Boolean,System.String,System.String)">
+      <summary>조건을 확인합니다. 조건이 false이면 두 개의 지정된 메시지를 출력하고 호출 스택을 보여 주는 메시지 상자를 표시합니다.</summary>
+      <param name="condition">계산할 조건식입니다.조건이 true이면 지정된 메시지가 전송되지 않고 메시지 상자가 표시되지 않습니다.</param>
+      <param name="message">
+        <see cref="P:System.Diagnostics.Trace.Listeners" /> 컬렉션에 보낼 메시지입니다. </param>
+      <param name="detailMessage">
+        <see cref="P:System.Diagnostics.Trace.Listeners" /> 컬렉션에 보낼 자세한 메시지입니다. </param>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Assert(System.Boolean,System.String,System.String,System.Object[])">
+      <summary>조건을 확인합니다. 조건이 false이면 두 개의 메시지(단순 및 서식 있는 메시지)를 출력하고 호출 스택을 보여 주는 메시지 상자를 표시합니다.</summary>
+      <param name="condition">계산할 조건식입니다.조건이 true이면 지정된 메시지가 전송되지 않고 메시지 상자가 표시되지 않습니다.</param>
+      <param name="message">
+        <see cref="P:System.Diagnostics.Trace.Listeners" /> 컬렉션에 보낼 메시지입니다. </param>
+      <param name="detailMessageFormat">
+        <see cref="P:System.Diagnostics.Trace.Listeners" /> 컬렉션에 보낼 복합 서식 문자열(설명 참조)입니다.이 메시지에는 <paramref name="args" /> 배열의 개체에 해당하는 0개 이상의 서식 항목과 혼합된 텍스트가 포함됩니다.</param>
+      <param name="args">형식을 지정할 개체를 0개 이상 포함하는 개체 배열입니다.</param>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Fail(System.String)">
+      <summary>지정한 오류 메시지를 내보냅니다.</summary>
+      <param name="message">내보낼 메시지입니다. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Fail(System.String,System.String)">
+      <summary>오류 메시지와 자세한 오류 메시지를 내보냅니다.</summary>
+      <param name="message">내보낼 메시지입니다. </param>
+      <param name="detailMessage">내보낼 자세한 메시지입니다. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Write(System.Object)">
+      <summary>
+        <see cref="P:System.Diagnostics.Debug.Listeners" /> 컬렉션의 추적 수신기에 개체의 <see cref="M:System.Object.ToString" /> 메서드 값을 씁니다.</summary>
+      <param name="value">
+        <see cref="P:System.Diagnostics.Debug.Listeners" />에 이름을 보낸 개체입니다. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Write(System.Object,System.String)">
+      <summary>
+        <see cref="P:System.Diagnostics.Debug.Listeners" /> 컬렉션의 추적 수신기에 개체의 <see cref="M:System.Object.ToString" /> 메서드 값 및 범주 이름을 씁니다.</summary>
+      <param name="value">
+        <see cref="P:System.Diagnostics.Debug.Listeners" />에 이름을 보낸 개체입니다. </param>
+      <param name="category">출력을 구성하는 데 사용되는 범주 이름입니다. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Write(System.String)">
+      <summary>
+        <see cref="P:System.Diagnostics.Debug.Listeners" /> 컬렉션의 추적 수신기에 메시지를 씁니다.</summary>
+      <param name="message">쓸 메시지입니다. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Write(System.String,System.String)">
+      <summary>
+        <see cref="P:System.Diagnostics.Debug.Listeners" /> 컬렉션의 추적 수신기에 범주 이름과 메시지를 씁니다.</summary>
+      <param name="message">쓸 메시지입니다. </param>
+      <param name="category">출력을 구성하는 데 사용되는 범주 이름입니다. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteIf(System.Boolean,System.Object)">
+      <summary>조건이 true이면 <see cref="P:System.Diagnostics.Debug.Listeners" /> 컬렉션의 추적 수신기에 개체의 <see cref="M:System.Object.ToString" /> 메서드 값을 씁니다.</summary>
+      <param name="condition">계산할 조건식입니다.조건이 true이면 컬렉션의 추적 수신기에 값을 씁니다.</param>
+      <param name="value">
+        <see cref="P:System.Diagnostics.Debug.Listeners" />에 이름을 보낸 개체입니다. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteIf(System.Boolean,System.Object,System.String)">
+      <summary>조건이 true이면 <see cref="P:System.Diagnostics.Debug.Listeners" /> 컬렉션의 추적 수신기에 개체의 <see cref="M:System.Object.ToString" /> 메서드 값 및 범주 이름을 씁니다.</summary>
+      <param name="condition">계산할 조건식입니다.조건이 true이면 컬렉션의 추적 수신기에 범주 이름과 값을 씁니다.</param>
+      <param name="value">
+        <see cref="P:System.Diagnostics.Debug.Listeners" />에 이름을 보낸 개체입니다. </param>
+      <param name="category">출력을 구성하는 데 사용되는 범주 이름입니다. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteIf(System.Boolean,System.String)">
+      <summary>조건이 true이면 <see cref="P:System.Diagnostics.Debug.Listeners" /> 컬렉션의 추적 수신기에 메시지를 씁니다.</summary>
+      <param name="condition">계산할 조건식입니다.조건이 true이면 컬렉션의 추적 수신기에 메시지를 씁니다.</param>
+      <param name="message">쓸 메시지입니다. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteIf(System.Boolean,System.String,System.String)">
+      <summary>조건이 true이면 <see cref="P:System.Diagnostics.Debug.Listeners" /> 컬렉션의 추적 수신기에 범주 이름과 메시지를 씁니다.</summary>
+      <param name="condition">계산할 조건식입니다.조건이 true이면 컬렉션의 추적 수신기에 범주 이름과 메시지를 씁니다.</param>
+      <param name="message">쓸 메시지입니다. </param>
+      <param name="category">출력을 구성하는 데 사용되는 범주 이름입니다. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLine(System.Object)">
+      <summary>
+        <see cref="P:System.Diagnostics.Debug.Listeners" /> 컬렉션의 추적 수신기에 개체의 <see cref="M:System.Object.ToString" /> 메서드 값을 씁니다.</summary>
+      <param name="value">
+        <see cref="P:System.Diagnostics.Debug.Listeners" />에 이름을 보낸 개체입니다. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLine(System.Object,System.String)">
+      <summary>
+        <see cref="P:System.Diagnostics.Debug.Listeners" /> 컬렉션의 추적 수신기에 개체의 <see cref="M:System.Object.ToString" /> 메서드 값 및 범주 이름을 씁니다.</summary>
+      <param name="value">
+        <see cref="P:System.Diagnostics.Debug.Listeners" />에 이름을 보낸 개체입니다. </param>
+      <param name="category">출력을 구성하는 데 사용되는 범주 이름입니다. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLine(System.String)">
+      <summary>
+        <see cref="P:System.Diagnostics.Debug.Listeners" /> 컬렉션의 추적 수신기에 메시지를 쓰고 뒤에 줄 종결자를 붙입니다.</summary>
+      <param name="message">쓸 메시지입니다. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLine(System.String,System.Object[])">
+      <summary>
+        <see cref="P:System.Diagnostics.Debug.Listeners" /> 컬렉션의 추적 수신기에 서식이 지정된 메시지를 쓰고 뒤에 줄 종결자를 붙입니다.</summary>
+      <param name="format">
+        <paramref name="args" /> 배열의 개체에 해당하는 0개 이상의 서식 항목과 결합된 텍스트를 포함하는 합성 서식 문자열(설명 참조)입니다.</param>
+      <param name="args">형식을 지정할 개체를 0개 이상 포함하는 개체 배열입니다. </param>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLine(System.String,System.String)">
+      <summary>
+        <see cref="P:System.Diagnostics.Debug.Listeners" /> 컬렉션의 추적 수신기에 범주 이름과 메시지를 씁니다.</summary>
+      <param name="message">쓸 메시지입니다. </param>
+      <param name="category">출력을 구성하는 데 사용되는 범주 이름입니다. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLineIf(System.Boolean,System.Object)">
+      <summary>조건이 true이면 <see cref="P:System.Diagnostics.Debug.Listeners" /> 컬렉션의 추적 수신기에 개체의 <see cref="M:System.Object.ToString" /> 메서드 값을 씁니다.</summary>
+      <param name="condition">계산할 조건식입니다.조건이 true이면 컬렉션의 추적 수신기에 값을 씁니다.</param>
+      <param name="value">
+        <see cref="P:System.Diagnostics.Debug.Listeners" />에 이름을 보낸 개체입니다. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLineIf(System.Boolean,System.Object,System.String)">
+      <summary>조건이 true이면 <see cref="P:System.Diagnostics.Debug.Listeners" /> 컬렉션의 추적 수신기에 개체의 <see cref="M:System.Object.ToString" /> 메서드 값 및 범주 이름을 씁니다.</summary>
+      <param name="condition">계산할 조건식입니다.조건이 true이면 컬렉션의 추적 수신기에 범주 이름과 값을 씁니다.</param>
+      <param name="value">
+        <see cref="P:System.Diagnostics.Debug.Listeners" />에 이름을 보낸 개체입니다. </param>
+      <param name="category">출력을 구성하는 데 사용되는 범주 이름입니다. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLineIf(System.Boolean,System.String)">
+      <summary>조건이 true이면 <see cref="P:System.Diagnostics.Debug.Listeners" /> 컬렉션의 추적 수신기에 메시지를 씁니다.</summary>
+      <param name="condition">계산할 조건식입니다.조건이 true이면 컬렉션의 추적 수신기에 메시지를 씁니다.</param>
+      <param name="message">쓸 메시지입니다. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLineIf(System.Boolean,System.String,System.String)">
+      <summary>조건이 true이면 <see cref="P:System.Diagnostics.Debug.Listeners" /> 컬렉션의 추적 수신기에 범주 이름과 메시지를 씁니다.</summary>
+      <param name="condition">메시지를 작성하려면 true이고, 그렇지 않으면 false입니다. </param>
+      <param name="message">쓸 메시지입니다. </param>
+      <param name="category">출력을 구성하는 데 사용되는 범주 이름입니다. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Diagnostics.Debugger">
+      <summary>디버거와 통신할 수 있습니다.이 클래스는 상속될 수 없습니다.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Debugger.Break">
+      <summary>연결된 디버거에 중단점을 신호로 알립니다.</summary>
+      <exception cref="T:System.Security.SecurityException">
+        <see cref="T:System.Security.Permissions.UIPermission" />가 디버거를 중단하도록 설정되지 않은 경우 </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.Debugger.IsAttached">
+      <summary>디버거가 프로세스에 연결되어 있는지 여부를 나타내는 값을 가져옵니다.</summary>
+      <returns>디버거가 연결되어 있으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Debugger.Launch">
+      <summary>디버거를 시작하고 프로세스에 연결합니다.</summary>
+      <returns>디버거가 시작되었거나 이미 연결된 경우 true이고, 그렇지 않으면 false입니다.</returns>
+      <exception cref="T:System.Security.SecurityException">
+        <see cref="T:System.Security.Permissions.UIPermission" />가 디버거를 시작하도록 설정되지 않은 경우 </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerBrowsableAttribute">
+      <summary>디버거 변수 창에 멤버를 표시할지 여부와 표시 방법을 결정합니다.이 클래스는 상속될 수 없습니다.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerBrowsableAttribute.#ctor(System.Diagnostics.DebuggerBrowsableState)">
+      <summary>
+        <see cref="T:System.Diagnostics.DebuggerBrowsableAttribute" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+      <param name="state">멤버 표시 방법을 지정하는 <see cref="T:System.Diagnostics.DebuggerBrowsableState" /> 값 중 하나입니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="state" />가 <see cref="T:System.Diagnostics.DebuggerBrowsableState" /> 값이 아닌 경우</exception>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerBrowsableAttribute.State">
+      <summary>특성의 표시 상태를 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.DebuggerBrowsableState" /> 값 중 하나입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerBrowsableState">
+      <summary>디버거의 표시 명령을 제공합니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Diagnostics.DebuggerBrowsableState.Collapsed">
+      <summary>요소를 축소된 형태로 표시합니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.DebuggerBrowsableState.Never">
+      <summary>요소를 표시하지 않습니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.DebuggerBrowsableState.RootHidden">
+      <summary>루트 요소를 표시하지 않으며, 요소가 항목의 컬렉션 또는 배열인 경우 자식 요소를 표시합니다.</summary>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerDisplayAttribute">
+      <summary>디버거 변수 창에 클래스나 필드가 표시되는 방법을 결정합니다.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerDisplayAttribute.#ctor(System.String)">
+      <summary>
+        <see cref="T:System.Diagnostics.DebuggerDisplayAttribute" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+      <param name="value">형식의 인스턴스에 대한 값 열에 표시될 문자열이며 빈 문자열("")을 사용하면 값 열이 숨겨집니다.</param>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerDisplayAttribute.Name">
+      <summary>디버거 변수 창에 표시할 이름을 가져오거나 설정합니다.</summary>
+      <returns>디버거 변수 창에 표시할 이름입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerDisplayAttribute.Target">
+      <summary>특성의 대상 형식을 가져오거나 설정합니다.</summary>
+      <returns>특성의 대상 형식입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <see cref="P:System.Diagnostics.DebuggerDisplayAttribute.Target" />이 null로 설정됩니다.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerDisplayAttribute.TargetTypeName">
+      <summary>특성 대상의 형식 이름을 가져오거나 설정합니다.</summary>
+      <returns>특성 대상의 형식 이름입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerDisplayAttribute.Type">
+      <summary>디버거 변수 창의 형식 열에 표시할 문자열을 가져오거나 설정합니다.</summary>
+      <returns>디버거 변수 창의 형식 열에 표시할 문자열입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerDisplayAttribute.Value">
+      <summary>디버거 변수 창의 값 열에 표시할 문자열을 가져옵니다.</summary>
+      <returns>디버거 변수의 값 열에 표시할 문자열입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerHiddenAttribute">
+      <summary>
+        <see cref="T:System.Diagnostics.DebuggerHiddenAttribute" />를 지정합니다.이 클래스는 상속될 수 없습니다.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerHiddenAttribute.#ctor">
+      <summary>
+        <see cref="T:System.Diagnostics.DebuggerHiddenAttribute" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerNonUserCodeAttribute">
+      <summary>응용 프로그램의 사용자 코드 부분이 아닌 형식이나 멤버를 식별합니다.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerNonUserCodeAttribute.#ctor">
+      <summary>
+        <see cref="T:System.Diagnostics.DebuggerNonUserCodeAttribute" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerStepThroughAttribute">
+      <summary>코드를 한 단계씩 실행하는 대신 단계별로 실행되도록 디버거에 지시합니다.이 클래스는 상속될 수 없습니다.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerStepThroughAttribute.#ctor">
+      <summary>
+        <see cref="T:System.Diagnostics.DebuggerStepThroughAttribute" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerTypeProxyAttribute">
+      <summary>형식의 표시 프록시를 지정합니다.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerTypeProxyAttribute.#ctor(System.String)">
+      <summary>프록시의 형식 이름을 사용하여 <see cref="T:System.Diagnostics.DebuggerTypeProxyAttribute" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+      <param name="typeName">프록시 형식의 형식 이름입니다.</param>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerTypeProxyAttribute.#ctor(System.Type)">
+      <summary>프록시의 형식을 사용하여 <see cref="T:System.Diagnostics.DebuggerTypeProxyAttribute" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+      <param name="type">프록시 형식입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="type" />가 null입니다.</exception>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerTypeProxyAttribute.ProxyTypeName">
+      <summary>프록시 형식의 형식 이름을 가져옵니다. </summary>
+      <returns>프록시 형식의 형식 이름입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerTypeProxyAttribute.Target">
+      <summary>특성의 대상 형식을 가져오거나 설정합니다.</summary>
+      <returns>특성에 대한 대상 형식입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <see cref="P:System.Diagnostics.DebuggerTypeProxyAttribute.Target" />이 null로 설정됩니다.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerTypeProxyAttribute.TargetTypeName">
+      <summary>대상 형식의 이름을 가져오거나 설정합니다.</summary>
+      <returns>대상 형식의 이름입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+  </members>
+</doc>

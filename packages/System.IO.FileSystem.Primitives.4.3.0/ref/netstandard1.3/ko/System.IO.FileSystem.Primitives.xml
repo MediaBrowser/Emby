@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.IO.FileSystem.Primitives</name>
+  </assembly>
+  <members>
+    <member name="T:System.IO.FileAccess">
+      <summary>파일에 대한 읽기, 쓰기 또는 읽기/쓰기 액세스에 사용하는 상수를 정의합니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileAccess.Read">
+      <summary>파일에 대한 읽기 액세스입니다.데이터를 파일에서 읽을 수 있습니다.읽기/쓰기 액세스에 대한 Write와 함께 사용합니다.</summary>
+    </member>
+    <member name="F:System.IO.FileAccess.ReadWrite">
+      <summary>파일에 대한 읽기 및 쓰기 액세스입니다.데이터를 파일에 쓰고 파일에서 읽을 수 있습니다.</summary>
+    </member>
+    <member name="F:System.IO.FileAccess.Write">
+      <summary>파일에 대한 쓰기 액세스입니다.데이터를 파일에 쓸 수 있습니다.읽기/쓰기 액세스에 대한 Read와 함께 사용합니다.</summary>
+    </member>
+    <member name="T:System.IO.FileAttributes">
+      <summary>파일과 디렉터리에 특성을 제공합니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileAttributes.Archive">
+      <summary>파일은 백업 또는 제거용으로 적합합니다. </summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Compressed">
+      <summary>파일이 압축되어 있습니다.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Device">
+      <summary>다음에 사용하도록 예약됩니다.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Directory">
+      <summary>파일이 디렉터리입니다.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Encrypted">
+      <summary>파일이나 디렉터리가 암호화되어 있습니다.파일의 경우 파일의 모든 데이터가 암호화됨을 의미합니다.디렉터리의 경우 새로 만들어진 파일과 디렉터리에 대해 기본적으로 암호화가 수행됨을 의미합니다.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Hidden">
+      <summary>파일이 숨겨져 있으므로 원래 디렉터리 목록에 포함되지 않습니다.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.IntegrityStream">
+      <summary>데이터 무결성 지원 기능이 포함된 파일 또는 디렉터리입니다.이 값이 파일에 적용되면 파일의 모든 데이터 스트림은 무결성이 지원됩니다.이 값이 디렉터리에 적용되면 해당 디렉터리 내의 모든 새 파일과 하위 디렉터리에 기본적으로 무결성 지원이 포함됩니다.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Normal">
+      <summary>파일에 특수한 특성이 없는 표준 파일입니다.이 특성은 단독으로 사용될 때만 유효합니다.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.NoScrubData">
+      <summary>파일 또는 디렉터리가 데이터 무결성 검사에서 제외됩니다.이 값은 디렉터리에 적용 되 면 새 파일과 기본적으로 해당 디렉터리 내의 하위 디렉터리 무결성 지원이 포함 됩니다.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.NotContentIndexed">
+      <summary>파일이 운영 체제의 내용 인덱스 서비스에 의해 인덱싱되지 않습니다.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Offline">
+      <summary>파일이 오프라인 상태입니다.파일의 데이터를 즉시 사용할 수 없습니다.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.ReadOnly">
+      <summary>파일이 읽기 전용입니다.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.ReparsePoint">
+      <summary>파일에 파일 또는 디렉터리와 연관된 사용자 정의 데이터의 블록인 재분석 지점이 포함되어 있습니다.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.SparseFile">
+      <summary>파일이 스파스 파일입니다.스파스 파일은 일반적으로 데이터가 대부분 0으로 구성된 큰 파일입니다.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.System">
+      <summary>파일이 시스템 파일입니다.즉, 파일이 운영 체제의 일부이거나 운영 체제에서 단독으로 사용하는 파일입니다.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Temporary">
+      <summary>임시 파일입니다.임시 파일에는 응용 프로그램이 실행 중일 때 필요한 데이터가 포함되어 있지만, 응용 프로그램이 종료된 후에는 필요하지 않습니다.파일 시스템에서는 액세스 속도를 높이기 위해 데이터를 대용량 저장소로 플러시하지 않고 모든 데이터를 메모리에 유지합니다.임시 파일이 더 이상 필요하지 않게 되면 응용 프로그램에서 이를 즉시 삭제해야 합니다.</summary>
+    </member>
+    <member name="T:System.IO.FileMode">
+      <summary>운영 체제에서 파일을 여는 방법을 지정합니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileMode.Append">
+      <summary>해당 파일이 있을 경우 파일을 열고 파일의 끝까지 검색하거나 새 파일을 만듭니다.<see cref="F:System.Security.Permissions.FileIOPermissionAccess.Append" /> 권한이 필요합니다.FileMode.Append는 FileAccess.Write와 함께만 사용할 수 있습니다.파일이 끝나기 이전 위치까지 검색하려고 하면 <see cref="T:System.IO.IOException" /> 예외를 throw하고 읽기 시도가 실패하면 <see cref="T:System.NotSupportedException" /> 예외를 throw합니다.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.Create">
+      <summary>운영 체제에서 새 파일을 만들도록 지정합니다.파일이 이미 있으면 해당 파일을 덮어씁니다.<see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" /> 권한이 필요합니다.FileMode.Create는 파일이 없으면 <see cref="F:System.IO.FileMode.CreateNew" />를 사용하고, 파일이 있으면 <see cref="F:System.IO.FileMode.Truncate" />를 사용하도록 요청하는 것과 마찬가지입니다.파일이 이미 있지만 숨김 파일이면 <see cref="T:System.UnauthorizedAccessException" /> 예외가 throw됩니다.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.CreateNew">
+      <summary>운영 체제에서 새 파일을 만들도록 지정합니다.<see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" /> 권한이 필요합니다.파일이 이미 있으면 <see cref="T:System.IO.IOException" /> 예외가 throw됩니다.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.Open">
+      <summary>운영 체제에서 기존 파일을 열도록 지정합니다.파일을 열 수 있는지 여부는 <see cref="T:System.IO.FileAccess" /> 열거형에서 지정된 값에 따라 달라집니다.파일이 없으면 <see cref="T:System.IO.FileNotFoundException" /> 예외가 throw됩니다.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.OpenOrCreate">
+      <summary>파일이 있으면 운영 체제에서 파일을 열고 그렇지 않으면 새 파일을 만들도록 지정합니다.FileAccess.Read를 사용하여 파일을 여는 경우 <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Read" /> 권한이 필요합니다.파일 액세스가 FileAccess.Write이면 <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" /> 권한이 필요합니다.FileAccess.ReadWrite를 사용하여 파일을 여는 경우 <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Read" />와 <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" /> 권한이 모두 필요합니다.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.Truncate">
+      <summary>운영 체제에서 기존 파일을 열도록 지정합니다.파일을 열면 크기가 0바이트가 되도록 잘라야 합니다.<see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" /> 권한이 필요합니다.FileMode.Truncate로 연 파일에서 읽으려고 하면 <see cref="T:System.ArgumentException" /> 예외가 발생합니다.</summary>
+    </member>
+    <member name="T:System.IO.FileShare">
+      <summary>동일한 파일에 대해 다른 <see cref="T:System.IO.FileStream" /> 개체가 가질 수 있는 액세스 종류를 제어하는 상수를 포함합니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileShare.Delete">
+      <summary>파일의 후속 삭제를 허용합니다.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.Inheritable">
+      <summary>파일 핸들을 자식 프로세스에서 상속할 수 있도록 합니다.Win32에서는 이러한 방식이 직접 지원되지 않습니다.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.None">
+      <summary>현재 파일의 공유를 거절합니다.파일을 닫아야만 이 프로세스나 다른 프로세스에서 파일을 열려는 요청이 수행됩니다.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.Read">
+      <summary>다음에 파일을 읽기용으로 여는 것을 허용합니다.이 플래그가 지정되어 있지 않은 경우 파일을 닫아야만 이 프로세스나 다른 프로세스에서 파일을 읽기용으로 열려는 요청이 수행됩니다.그러나 이 플래그가 지정되어 있으면 파일에 액세스하는 데 추가 권한이 필요할 수도 있습니다.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.ReadWrite">
+      <summary>다음에 파일을 읽기용 또는 쓰기용으로 여는 것을 허용합니다.이 플래그가 지정되어 있지 않은 경우 파일을 닫아야만 이 프로세스나 다른 프로세스에서 파일을 읽기용 또는 쓰기용으로 열려는 요청이 수행됩니다.그러나 이 플래그가 지정되어 있으면 파일에 액세스하는 데 추가 권한이 필요할 수도 있습니다.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.Write">
+      <summary>다음에 파일을 쓰기용으로 여는 것을 허용합니다.이 플래그가 지정되어 있지 않은 경우 파일을 닫아야만 이 프로세스나 다른 프로세스에서 파일을 쓰기용으로 열려는 요청이 수행됩니다.그러나 이 플래그가 지정되어 있으면 파일에 액세스하는 데 추가 권한이 필요할 수도 있습니다.</summary>
+    </member>
+  </members>
+</doc>

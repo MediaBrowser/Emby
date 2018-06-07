@@ -1,0 +1,1112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Collections.Concurrent</name>
+  </assembly>
+  <members>
+    <member name="T:System.Collections.Concurrent.BlockingCollection`1">
+      <summary>Предоставляет возможности блокировки и ограничения для потокобезопасных коллекций, реализующих <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" />.</summary>
+      <typeparam name="T">Тип элементов в коллекции.</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> без верхней границы.</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.#ctor(System.Collections.Concurrent.IProducerConsumerCollection{`0})">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> без верхней границы, используя предоставленную коллекцию <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> в качестве базового хранилища данных.</summary>
+      <param name="collection">Коллекция, используемая в качестве базового хранилища данных.</param>
+      <exception cref="T:System.ArgumentNullException">Аргументом параметра <paramref name="collection" /> является null.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.#ctor(System.Collections.Concurrent.IProducerConsumerCollection{`0},System.Int32)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> указанной верхней границей, используя предоставленную коллекцию <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> в качестве базового хранилища данных.</summary>
+      <param name="collection">Коллекция, используемая в качестве базового хранилища данных.</param>
+      <param name="boundedCapacity">Предельный размер коллекции.</param>
+      <exception cref="T:System.ArgumentNullException">Аргументом параметра <paramref name="collection" /> является null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="boundedCapacity" /> не является положительным значением.</exception>
+      <exception cref="T:System.ArgumentException">Предоставленный <paramref name="collection" /> содержит больше значений, чем разрешается <paramref name="boundedCapacity" />.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.#ctor(System.Int32)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> указанной верхней границей.</summary>
+      <param name="boundedCapacity">Предельный размер коллекции.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="boundedCapacity" /> не является положительным значением.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.Add(`0)">
+      <summary>Добавляет элемент в коллекцию <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <param name="item">Элемент, добавляемый в коллекцию.Это значение может быть пустой ссылкой.</param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> удален.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> была помечена как полный относительно дополнения.-или-Указанная коллекция не принимает такой элемент.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.Add(`0,System.Threading.CancellationToken)">
+      <summary>Добавляет элемент в коллекцию <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <param name="item">Элемент, добавляемый в коллекцию.Это значение может быть пустой ссылкой.</param>
+      <param name="cancellationToken">Маркер отмены, который следует контролировать.</param>
+      <exception cref="T:System.OperationCanceledException">Если <see cref="T:System.Threading.CancellationToken" /> отменяется.</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> был удален, или был удален <see cref="T:System.Threading.CancellationTokenSource" />, которому принадлежит <paramref name="cancellationToken" />.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> была помечена как полный относительно дополнения.-или-Указанная коллекция не принимает такой элемент.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.AddToAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0)">
+      <summary>Добавляет указанный элемент в один из указанных экземпляров <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Индекс коллекции в массиве <paramref name="collections" />, в которую добавляется элемент.</returns>
+      <param name="collections">Массив коллекций.</param>
+      <param name="item">Элемент, добавляемый в одну из коллекций.</param>
+      <exception cref="T:System.ObjectDisposedException">Хотя бы один из экземпляров <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> был удален.</exception>
+      <exception cref="T:System.ArgumentNullException">Аргументом параметра <paramref name="collections" /> является null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Число <paramref name="collections" /> больше, чем максимальный размер (62 для STA и 63 для MTA).</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> аргумент является массивом длины 0, содержит элемент null или хотя бы одна коллекция была помечена как готовая для добавления.</exception>
+      <exception cref="T:System.InvalidOperationException">Хотя бы одна базовая коллекция не приняла элемент.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.AddToAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0,System.Threading.CancellationToken)">
+      <summary>Добавляет указанный элемент в один из указанных экземпляров <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Индекс коллекции в массиве <paramref name="collections" />, в которую добавляется элемент.</returns>
+      <param name="collections">Массив коллекций.</param>
+      <param name="item">Элемент, добавляемый в одну из коллекций.</param>
+      <param name="cancellationToken">Маркер отмены, который следует контролировать.</param>
+      <exception cref="T:System.OperationCanceledException">Если <see cref="T:System.Threading.CancellationToken" /> отменяется.</exception>
+      <exception cref="T:System.InvalidOperationException">Хотя бы одна базовая коллекция не приняла элемент.</exception>
+      <exception cref="T:System.ArgumentNullException">Аргументом параметра <paramref name="collections" /> является null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Число <paramref name="collections" /> больше, чем максимальный размер (62 для STA и 63 для MTA).</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> аргумент является массивом длины 0, содержит элемент null или хотя бы одна коллекция была помечена как готовая для добавления.</exception>
+      <exception cref="T:System.ObjectDisposedException">По крайней мере один из экземпляров <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> был удален или <see cref="T:System.Threading.CancellationTokenSource" />, создавший <paramref name="cancellationToken" />, был удален.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.BlockingCollection`1.BoundedCapacity">
+      <summary>Получает предельную емкость данного экземпляра <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Предельная емкость данной коллекции или значение int.MaxValue, если предельное значение не указано.</returns>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> удален.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.CompleteAdding">
+      <summary>Помечает экземпляры <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> как не допускающие добавления дополнительных элементов.</summary>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> удален.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.CopyTo(`0[],System.Int32)">
+      <summary>Копирует все элементы из экземпляра <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> в совместимый одномерный массив, начиная с указанного индекса в целевом массиве.</summary>
+      <param name="array">Одномерный массив, в который копируются элементы экземпляра <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.Индекс в массиве должен начинаться с нуля.</param>
+      <param name="index">Отсчитываемый от нуля индекс в массиве <paramref name="array" />, с которого начинается копирование.</param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> удален.</exception>
+      <exception cref="T:System.ArgumentNullException">Аргументом параметра <paramref name="array" /> является null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Аргумент <paramref name="index" /> меньше нуля.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> аргумент является равным или больше длины <paramref name="array" />.Массив назначения слишком мал для хранения всех элементов BlockingCcollection.Ранг массива не соответствует.Тип массива не совместим с типом элементов BlockingCollection.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.BlockingCollection`1.Count">
+      <summary>Возвращает число элементов, содержащихся в очереди <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Количество элементов, содержащихся в коллекции <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</returns>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> удален.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.Dispose">
+      <summary>Освобождает все ресурсы, используемые текущим экземпляром класса <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.Dispose(System.Boolean)">
+      <summary>Освобождает ресурсы, используемые экземпляром <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <param name="disposing">Значение, определяющее, выполняется ли ликвидация явно (true) или в результате выполнения метода завершения (false).</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.GetConsumingEnumerable">
+      <summary>Предоставляет получающий интерфейс <see cref="T:System.Collections.Generic.IEnumerator`1" /> для элементов коллекции.</summary>
+      <returns>Интерфейс <see cref="T:System.Collections.Generic.IEnumerable`1" />, удаляющий и возвращающий элементы из коллекции.</returns>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> удален.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.GetConsumingEnumerable(System.Threading.CancellationToken)">
+      <summary>Предоставляет получающий интерфейс <see cref="T:System.Collections.Generic.IEnumerable`1" /> для элементов коллекции.</summary>
+      <returns>Интерфейс <see cref="T:System.Collections.Generic.IEnumerable`1" />, удаляющий и возвращающий элементы из коллекции.</returns>
+      <param name="cancellationToken">Маркер отмены, который следует контролировать.</param>
+      <exception cref="T:System.OperationCanceledException">Если <see cref="T:System.Threading.CancellationToken" /> отменяется.</exception>
+      <exception cref="T:System.ObjectDisposedException">Был удален <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> или <see cref="T:System.Threading.CancellationTokenSource" />, создавший параметр <paramref name="cancellationToken" />.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.BlockingCollection`1.IsAddingCompleted">
+      <summary>Получает значение, указывающее, помечена ли данная коллекция <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> как закрытая для добавления элементов.</summary>
+      <returns>Значение, указывающее, помечена ли коллекция как закрытая для добавления.</returns>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> удален.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.BlockingCollection`1.IsCompleted">
+      <summary>Получает значение, указывающее, помечена ли данная коллекция <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> как закрытая для добавления элементов и является ли она пустой.</summary>
+      <returns>Значение, указывающее, помечена ли данная коллекция как закрытая для добавления элементов и является ли она пустой.</returns>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> удален.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.System#Collections#Generic#IEnumerable{T}#GetEnumerator">
+      <summary>Предоставляет интерфейс <see cref="T:System.Collections.Generic.IEnumerator`1" /> для элементов коллекции.</summary>
+      <returns>Интерфейс <see cref="T:System.Collections.Generic.IEnumerator`1" /> для элементов коллекции.</returns>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> удален.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>Копирует все элементы из экземпляра <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> в совместимый одномерный массив, начиная с указанного индекса в целевом массиве.</summary>
+      <param name="array">Одномерный массив, в который копируются элементы экземпляра <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.Индекс в массиве должен начинаться с нуля.</param>
+      <param name="index">Отсчитываемый от нуля индекс в массиве <paramref name="array" />, с которого начинается копирование.</param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> удален.</exception>
+      <exception cref="T:System.ArgumentNullException">Аргументом параметра <paramref name="array" /> является null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Аргумент <paramref name="index" /> меньше нуля.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> аргумент является равным или больше, чем длина <paramref name="array" />, массив является многомерным или параметр типа для коллекции нельзя автоматически привести к типу массива назначения.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.BlockingCollection`1.System#Collections#ICollection#IsSynchronized">
+      <summary>Получает значение, определяющее, синхронизирован ли доступ к интерфейсу <see cref="T:System.Collections.ICollection" />.</summary>
+      <returns>Всегда возвращает значение false.</returns>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> удален.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.BlockingCollection`1.System#Collections#ICollection#SyncRoot">
+      <summary>Возвращает объект, который используется для синхронизации доступа к коллекции <see cref="T:System.Collections.ICollection" />.Данное свойство не поддерживается.</summary>
+      <returns>Возвращает значение null.</returns>
+      <exception cref="T:System.NotSupportedException">Свойство SyncRoot не поддерживается.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Предоставляет интерфейс <see cref="T:System.Collections.IEnumerator" /> для элементов коллекции.</summary>
+      <returns>Интерфейс <see cref="T:System.Collections.IEnumerator" /> для элементов коллекции.</returns>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> удален.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.Take">
+      <summary>Удаляет элемент из <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Элемент, удаленный из коллекции.</returns>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> удален.</exception>
+      <exception cref="T:System.InvalidOperationException">Базовая коллекция была изменена за пределами данного экземпляра <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> или коллекция <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> пуста и помечена как полная и более недоступная для добавления объектов.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.Take(System.Threading.CancellationToken)">
+      <summary>Удаляет элемент из <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Элемент, удаленный из коллекции.</returns>
+      <param name="cancellationToken">Объект, который можно использовать для отмены операции извлечения.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <see cref="T:System.Threading.CancellationToken" /> отменен.</exception>
+      <exception cref="T:System.ObjectDisposedException">Был удален <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> или отменен <see cref="T:System.Threading.CancellationTokenSource" />, создавший токен.</exception>
+      <exception cref="T:System.InvalidOperationException">Основная коллекция была изменена вне данного экземпляра <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />, или коллекция BlockingCollection помечена как закрытая для добавления, или коллекция <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> пуста.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TakeFromAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0@)">
+      <summary>Извлекает элемент из одного из указанных экземпляров <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Индекс коллекции в массиве <paramref name="collections" />, из которой удален элемент.</returns>
+      <param name="collections">Массив коллекций.</param>
+      <param name="item">Элемент, удаленный из одной из коллекций.</param>
+      <exception cref="T:System.ObjectDisposedException">Хотя бы один из экземпляров <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> был удален.</exception>
+      <exception cref="T:System.ArgumentNullException">Аргументом параметра <paramref name="collections" /> является null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Число <paramref name="collections" /> больше, чем максимальный размер (62 для STA и 63 для MTA).</exception>
+      <exception cref="T:System.ArgumentException">Аргумент <paramref name="collections" /> является массивом с нулевой длиной или содержит элемент null, или в коллекции был вызван метод<see cref="M:System.Collections.Concurrent.BlockingCollection`1.CompleteAdding" />.</exception>
+      <exception cref="T:System.InvalidOperationException">Хотя бы одна из базовых коллекций была изменена вне ее экземпляра <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TakeFromAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0@,System.Threading.CancellationToken)">
+      <summary>Извлекает элемент из любого из указанных экземпляров <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />, контролируя указанный токен отмены.</summary>
+      <returns>Индекс коллекции в массиве <paramref name="collections" />, из которой удален элемент.</returns>
+      <param name="collections">Массив коллекций.</param>
+      <param name="item">Элемент, удаленный из одной из коллекций.</param>
+      <param name="cancellationToken">Маркер отмены, который следует контролировать.</param>
+      <exception cref="T:System.OperationCanceledException">Если <see cref="T:System.Threading.CancellationToken" /> отменяется.</exception>
+      <exception cref="T:System.InvalidOperationException">Хотя бы одна из базовых коллекций была изменена вне ее экземпляра <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Аргументом параметра <paramref name="collections" /> является null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Число <paramref name="collections" /> больше, чем максимальный размер (62 для STA и 63 для MTA).</exception>
+      <exception cref="T:System.ArgumentException">Аргумент <paramref name="collections" /> является массивом с нулевой длиной или содержит элемент null, или в коллекции был вызван метод<see cref="M:System.Collections.Concurrent.BlockingCollection`1.CompleteAdding" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">Хотя бы один из экземпляров <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> был удален.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.ToArray">
+      <summary>Копирует элементы из экземпляра <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> в новый массив.</summary>
+      <returns>Массив, содержащий копии элементов коллекции.</returns>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> удален.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAdd(`0)">
+      <summary>Пытается добавить указанный элемент в <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Значение true, если <paramref name="item" /> удалось добавить; в противном случае — значение false.Если элемент является дубликатом, а соответствующая коллекция не поддерживает повторяющиеся элементы, создается исключение <see cref="T:System.InvalidOperationException" />.</returns>
+      <param name="item">Элемент, добавляемый в коллекцию.</param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> удален.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> была помечена как полный относительно дополнения.-или-Указанная коллекция не принимает такой элемент.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAdd(`0,System.Int32)">
+      <summary>Пытается добавить указанный элемент в коллекцию <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> в течение указанного временного периода.</summary>
+      <returns>Значение true, если элемент <paramref name="item" /> удалось добавить в коллекцию в течение указанного времени; в противном случае — значение false.Если элемент является дубликатом, а соответствующая коллекция не поддерживает повторяющиеся элементы, создается исключение <see cref="T:System.InvalidOperationException" />.</returns>
+      <param name="item">Элемент, добавляемый в коллекцию.</param>
+      <param name="millisecondsTimeout">Время ожидания в миллисекундах или функция <see cref="F:System.Threading.Timeout.Infinite" /> (-1) в случае неограниченного времени ожидания.</param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> удален.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="millisecondsTimeout" /> является отрицательным числом, отличным от -1, которое представляет неограниченное время ожидания.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> была помечена как полный относительно дополнения.-или-Указанная коллекция не принимает такой элемент.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAdd(`0,System.Int32,System.Threading.CancellationToken)">
+      <summary>Пытается добавить указанный элемент в коллекцию <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> в течение указанного временного периода, контролируя токен отмены.</summary>
+      <returns>Значение true, если элемент <paramref name="item" /> удалось добавить в коллекцию в течение указанного времени; в противном случае — значение false.Если элемент является дубликатом, а соответствующая коллекция не поддерживает повторяющиеся элементы, создается исключение <see cref="T:System.InvalidOperationException" />.</returns>
+      <param name="item">Элемент, добавляемый в коллекцию.</param>
+      <param name="millisecondsTimeout">Время ожидания в миллисекундах или функция <see cref="F:System.Threading.Timeout.Infinite" /> (-1) в случае неограниченного времени ожидания.</param>
+      <param name="cancellationToken">Маркер отмены, который следует контролировать.</param>
+      <exception cref="T:System.OperationCanceledException">Если <see cref="T:System.Threading.CancellationToken" /> отменяется.</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> был удален, или был удален базовый <see cref="T:System.Threading.CancellationTokenSource" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="millisecondsTimeout" /> является отрицательным числом, отличным от -1, которое представляет неограниченное время ожидания.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> была помечена как полный относительно дополнения.-или-Указанная коллекция не принимает такой элемент.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAdd(`0,System.TimeSpan)">
+      <summary>Пытается добавить указанный элемент в <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Значение true, если элемент <paramref name="item" /> удалось добавить в коллекцию в течение указанного промежутка  времени; в противном случае — значение false.</returns>
+      <param name="item">Элемент, добавляемый в коллекцию.</param>
+      <param name="timeout">Объект <see cref="T:System.TimeSpan" />, представляющий время ожидания в миллисекундах, или объект <see cref="T:System.TimeSpan" />, представляющий -1 миллисекунду для неограниченного ожидания.</param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> удален.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> является отрицательным числом отличный значение -1 миллисекунд, которое представляет неограниченное время ожидания - или - время ожидания больше <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> была помечена как полный относительно дополнения.-или-Указанная коллекция не принимает такой элемент.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAddToAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0)">
+      <summary>Пытается добавить указанный элемент к одному из указанных экземпляров <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Индекс коллекции, в которую был добавлен элемент, в массиве <paramref name="collections" />, или -1, если добавить элемент не удалось.</returns>
+      <param name="collections">Массив коллекций.</param>
+      <param name="item">Элемент, добавляемый в одну из коллекций.</param>
+      <exception cref="T:System.ObjectDisposedException">Хотя бы один из экземпляров <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> был удален.</exception>
+      <exception cref="T:System.ArgumentNullException">Аргументом параметра <paramref name="collections" /> является null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Число <paramref name="collections" /> больше, чем максимальный размер (62 для STA и 63 для MTA).</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> аргумент является массивом длины 0, содержит элемент null или хотя бы одна коллекция была помечена как готовая для добавления.</exception>
+      <exception cref="T:System.InvalidOperationException">Хотя бы одна базовая коллекция не приняла элемент.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAddToAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0,System.Int32)">
+      <summary>Пытается добавить указанный элемент к одному из указанных экземпляров <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Индекс коллекции, в которую был добавлен элемент, в массиве <paramref name="collections" />, или -1, если добавить элемент не удалось.</returns>
+      <param name="collections">Массив коллекций.</param>
+      <param name="item">Элемент, добавляемый в одну из коллекций.</param>
+      <param name="millisecondsTimeout">Время ожидания в миллисекундах или функция <see cref="F:System.Threading.Timeout.Infinite" /> (-1) в случае неограниченного времени ожидания.</param>
+      <exception cref="T:System.ObjectDisposedException">Хотя бы один из экземпляров <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> был удален.</exception>
+      <exception cref="T:System.ArgumentNullException">Аргументом параметра <paramref name="collections" /> является null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="millisecondsTimeout" /> является отрицательным числом, отличным от -1, которое представляет неограниченное время ожидания.-или-Число <paramref name="collections" /> больше, чем максимальный размер (62 для STA и 63 для MTA).</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> аргумент является массивом длины 0, содержит элемент null или хотя бы одна коллекция была помечена как готовая для добавления.</exception>
+      <exception cref="T:System.InvalidOperationException">Хотя бы одна базовая коллекция не приняла элемент.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAddToAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0,System.Int32,System.Threading.CancellationToken)">
+      <summary>Пытается добавить указанный элемент к одному из указанных экземпляров <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Индекс коллекции, в которую был добавлен элемент, в массиве <paramref name="collections" />, или -1, если добавить элемент не удалось.</returns>
+      <param name="collections">Массив коллекций.</param>
+      <param name="item">Элемент, добавляемый в одну из коллекций.</param>
+      <param name="millisecondsTimeout">Время ожидания в миллисекундах или функция <see cref="F:System.Threading.Timeout.Infinite" /> (-1) в случае неограниченного времени ожидания.</param>
+      <param name="cancellationToken">Маркер отмены, который следует контролировать.</param>
+      <exception cref="T:System.OperationCanceledException">Если <see cref="T:System.Threading.CancellationToken" /> отменяется.</exception>
+      <exception cref="T:System.InvalidOperationException">Хотя бы одна базовая коллекция не приняла элемент.</exception>
+      <exception cref="T:System.ArgumentNullException">Аргументом параметра <paramref name="collections" /> является null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="millisecondsTimeout" /> является отрицательным числом, отличным от -1, которое представляет неограниченное время ожидания.-или-Число <paramref name="collections" /> больше, чем максимальный размер (62 для STA и 63 для MTA).</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> аргумент является массивом длины 0, содержит элемент null или хотя бы одна коллекция была помечена как готовая для добавления.</exception>
+      <exception cref="T:System.ObjectDisposedException">Хотя бы один из экземпляров <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> был удален.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAddToAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0,System.TimeSpan)">
+      <summary>Пытается добавить указанный элемент в любой из указанных экземпляров <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />, контролируя указанный токен отмены.</summary>
+      <returns>Индекс коллекции, в которую был добавлен элемент, в массиве <paramref name="collections" />, или -1, если добавить элемент не удалось.</returns>
+      <param name="collections">Массив коллекций.</param>
+      <param name="item">Элемент, добавляемый в одну из коллекций.</param>
+      <param name="timeout">Объект <see cref="T:System.TimeSpan" />, представляющий время ожидания в миллисекундах, или объект <see cref="T:System.TimeSpan" />, представляющий -1 миллисекунду для неограниченного ожидания.</param>
+      <exception cref="T:System.ObjectDisposedException">По крайней мере один из экземпляров <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> или <see cref="T:System.Threading.CancellationTokenSource" />, создавший <paramref name="cancellationToken" /> был удален.</exception>
+      <exception cref="T:System.ArgumentNullException">Аргументом параметра <paramref name="collections" /> является null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> является отрицательным числом отличный значение -1 миллисекунд, которое представляет неограниченное время ожидания - или - время ожидания больше <see cref="F:System.Int32.MaxValue" />.-или-Число <paramref name="collections" /> больше, чем максимальный размер (62 для STA и 63 для MTA).</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> аргумент является массивом длины 0, содержит элемент null или хотя бы одна коллекция была помечена как готовая для добавления.</exception>
+      <exception cref="T:System.InvalidOperationException">Хотя бы одна базовая коллекция не приняла элемент.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTake(`0@)">
+      <summary>Пытается удалить элемент из коллекции <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Значение true, если элемент можно удалить; в противном случае — значение false.</returns>
+      <param name="item">Элемент, который необходимо удалить из коллекции.</param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> удален.</exception>
+      <exception cref="T:System.InvalidOperationException">Базовая коллекция была изменена вне данного экземпляра <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTake(`0@,System.Int32)">
+      <summary>Пытается удалить элемент из коллекции <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> в течение указанного временного периода.</summary>
+      <returns>Значение true, если элемент удалось удалить из коллекции в течение указанного времени; в противном случае — значение false.</returns>
+      <param name="item">Элемент, который необходимо удалить из коллекции.</param>
+      <param name="millisecondsTimeout">Время ожидания в миллисекундах или функция <see cref="F:System.Threading.Timeout.Infinite" /> (-1) в случае неограниченного времени ожидания.</param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> удален.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="millisecondsTimeout" /> является отрицательным числом, отличным от -1, которое представляет неограниченное время ожидания.</exception>
+      <exception cref="T:System.InvalidOperationException">Базовая коллекция была изменена вне данного экземпляра <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTake(`0@,System.Int32,System.Threading.CancellationToken)">
+      <summary>Пытается удалить элемент из коллекции <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> в течение указанного временного периода, контролируя токен отмены.</summary>
+      <returns>Значение true, если элемент удалось удалить из коллекции в течение указанного времени; в противном случае — значение false.</returns>
+      <param name="item">Элемент, который необходимо удалить из коллекции.</param>
+      <param name="millisecondsTimeout">Время ожидания в миллисекундах или функция <see cref="F:System.Threading.Timeout.Infinite" /> (-1) в случае неограниченного времени ожидания.</param>
+      <param name="cancellationToken">Маркер отмены, который следует контролировать.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <see cref="T:System.Threading.CancellationToken" /> был отменен.</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> был удален, или был удален базовый <see cref="T:System.Threading.CancellationTokenSource" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="millisecondsTimeout" /> является отрицательным числом, отличным от -1, которое представляет неограниченное время ожидания.</exception>
+      <exception cref="T:System.InvalidOperationException">Базовая коллекция была изменена вне данного экземпляра <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTake(`0@,System.TimeSpan)">
+      <summary>Пытается удалить элемент из коллекции <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> в течение указанного временного периода.</summary>
+      <returns>Значение true, если элемент удалось удалить из коллекции в течение указанного времени; в противном случае — значение false.</returns>
+      <param name="item">Элемент, который необходимо удалить из коллекции.</param>
+      <param name="timeout">Объект, представляющий время ожидания в миллисекундах, или объект, представляющий -1 миллисекунду для неограниченного ожидания. </param>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> удален.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="timeout" /> является отрицательным числом, отличным от -1, которое представляет неограниченное время ожидания.-или- Значение <paramref name="timeout" /> больше значения <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.InvalidOperationException">Базовая коллекция была изменена вне данного экземпляра <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTakeFromAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0@)">
+      <summary>Пытается удалить элемент из любого из указанных экземпляров <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Индекс коллекции, из которой был удален элемент, в массиве <paramref name="collections" />, или -1, если удалить элемент не удалось.</returns>
+      <param name="collections">Массив коллекций.</param>
+      <param name="item">Элемент, удаленный из одной из коллекций.</param>
+      <exception cref="T:System.ObjectDisposedException">Хотя бы один из экземпляров <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> был удален.</exception>
+      <exception cref="T:System.ArgumentNullException">Аргументом параметра <paramref name="collections" /> является null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Число <paramref name="collections" /> больше, чем максимальный размер (62 для STA и 63 для MTA).</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> аргумент является массивом длины 0 или содержит элемент null.</exception>
+      <exception cref="T:System.InvalidOperationException">Хотя бы одна из базовых коллекций была изменена вне ее экземпляра <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTakeFromAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0@,System.Int32)">
+      <summary>Пытается удалить элемент из любого из указанных экземпляров <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Индекс коллекции, из которой был удален элемент, в массиве <paramref name="collections" />, или -1, если удалить элемент не удалось.</returns>
+      <param name="collections">Массив коллекций.</param>
+      <param name="item">Элемент, удаленный из одной из коллекций.</param>
+      <param name="millisecondsTimeout">Время ожидания в миллисекундах или функция <see cref="F:System.Threading.Timeout.Infinite" /> (-1) в случае неограниченного времени ожидания.</param>
+      <exception cref="T:System.ObjectDisposedException">Хотя бы один из экземпляров <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> был удален.</exception>
+      <exception cref="T:System.ArgumentNullException">Аргументом параметра <paramref name="collections" /> является null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="millisecondsTimeout" /> является отрицательным числом, отличным от -1, которое представляет неограниченное время ожидания.-или-Число <paramref name="collections" /> больше, чем максимальный размер (62 для STA и 63 для MTA).</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> аргумент является массивом длины 0 или содержит элемент null.</exception>
+      <exception cref="T:System.InvalidOperationException">Хотя бы одна из базовых коллекций была изменена вне ее экземпляра <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTakeFromAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0@,System.Int32,System.Threading.CancellationToken)">
+      <summary>Пытается удалить элемент из любого из указанных экземпляров <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Индекс коллекции, из которой был удален элемент, в массиве <paramref name="collections" />, или -1, если удалить элемент не удалось.</returns>
+      <param name="collections">Массив коллекций.</param>
+      <param name="item">Элемент, удаленный из одной из коллекций.</param>
+      <param name="millisecondsTimeout">Время ожидания в миллисекундах или функция <see cref="F:System.Threading.Timeout.Infinite" /> (-1) в случае неограниченного времени ожидания.</param>
+      <param name="cancellationToken">Маркер отмены, который следует контролировать.</param>
+      <exception cref="T:System.OperationCanceledException">Если <see cref="T:System.Threading.CancellationToken" /> отменяется.</exception>
+      <exception cref="T:System.InvalidOperationException">Хотя бы одна из базовых коллекций была изменена вне ее экземпляра <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Аргументом параметра <paramref name="collections" /> является null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="millisecondsTimeout" /> является отрицательным числом, отличным от -1, которое представляет неограниченное время ожидания.-или-Число <paramref name="collections" /> больше, чем максимальный размер (62 для STA и 63 для MTA).</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> аргумент является массивом длины 0 или содержит элемент null.</exception>
+      <exception cref="T:System.ObjectDisposedException">Хотя бы один из экземпляров <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> был удален.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTakeFromAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0@,System.TimeSpan)">
+      <summary>Пытается удалить элемент из любого из указанных экземпляров <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Индекс коллекции, из которой был удален элемент, в массиве <paramref name="collections" />, или -1, если удалить элемент не удалось.</returns>
+      <param name="collections">Массив коллекций.</param>
+      <param name="item">Элемент, удаленный из одной из коллекций.</param>
+      <param name="timeout">Объект <see cref="T:System.TimeSpan" />, представляющий время ожидания в миллисекундах, или объект <see cref="T:System.TimeSpan" />, представляющий -1 миллисекунду для неограниченного ожидания.</param>
+      <exception cref="T:System.ObjectDisposedException">Хотя бы один из экземпляров <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> был удален.</exception>
+      <exception cref="T:System.ArgumentNullException">Аргументом параметра <paramref name="collections" /> является null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> является отрицательным числом отличный значение -1 миллисекунд, которое представляет неограниченное время ожидания - или - время ожидания больше <see cref="F:System.Int32.MaxValue" />.-или-Число <paramref name="collections" /> больше, чем максимальный размер (62 для STA и 63 для MTA).</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> аргумент является массивом длины 0 или содержит элемент null.</exception>
+      <exception cref="T:System.InvalidOperationException">Хотя бы одна из базовых коллекций была изменена вне ее экземпляра <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</exception>
+    </member>
+    <member name="T:System.Collections.Concurrent.ConcurrentBag`1">
+      <summary>Представляет потокобезопасную неупорядоченную коллекцию объектов.</summary>
+      <typeparam name="T">Тип элементов, хранимых в коллекции.</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+      <summary>Инициализирует новый экземпляр <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />, который содержит элементы, скопированные из указанного коллекции.</summary>
+      <param name="collection">Коллекция, элементы которой копируются в новую коллекцию <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="collection" /> является ссылкой на null (Nothing в Visual Basic).</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.Add(`0)">
+      <summary>Добавляет объект в <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.</summary>
+      <param name="item">Объект, который должен быть добавлен в коллекцию <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.Значение ссылочных типов может быть пустой ссылкой (Nothing в Visual Basic).</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.CopyTo(`0[],System.Int32)">
+      <summary>Копирует элементы коллекции <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> в существующий одномерный массив <see cref="T:System.Array" />, начиная с указанного значения индекса массива.</summary>
+      <param name="array">Одномерный массив класса <see cref="T:System.Array" />, который является целевым массивом для элементов, копируемых из коллекции <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.Индексация массива <see cref="T:System.Array" /> должна начинаться с нуля.</param>
+      <param name="index">Отсчитываемый от нуля индекс в массиве <paramref name="array" />, с которого начинается копирование.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="array" /> является ссылкой на null (Nothing в Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> меньше нуля.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> является равным или больше, чем длина <paramref name="array" /> - или - число элементов в источнике <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> больше, чем свободное пространство от <paramref name="index" /> до конца массива назначения <paramref name="array" />.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentBag`1.Count">
+      <summary>Возвращает число элементов, содержащихся в коллекции <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.</summary>
+      <returns>Число элементов, содержащихся в коллекции <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.GetEnumerator">
+      <summary>Возвращает перечислитель для просмотра коллекции <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.</summary>
+      <returns>Перечислитель для содержимого коллекции <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentBag`1.IsEmpty">
+      <summary>Получает значение, указывающее, является ли коллекция <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> пустой.</summary>
+      <returns>Значение true, если коллекция <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> является пустой; в противном случае — значение false.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.System#Collections#Concurrent#IProducerConsumerCollection{T}#TryAdd(`0)">
+      <summary>Пытается добавить объект в коллекцию <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.</summary>
+      <returns>Всегда возвращает значение true</returns>
+      <param name="item">Объект, который должен быть добавлен в коллекцию <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.Значение ссылочных типов может быть пустой ссылкой (Nothing в Visual Basic).</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>Копирует элементы коллекции <see cref="T:System.Collections.ICollection" /> в массив <see cref="T:System.Array" />, начиная с указанного индекса в массиве <see cref="T:System.Array" />.</summary>
+      <param name="array">Одномерный массив класса <see cref="T:System.Array" />, который является целевым массивом для элементов, копируемых из коллекции <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.Индексация массива <see cref="T:System.Array" /> должна начинаться с нуля.</param>
+      <param name="index">Отсчитываемый от нуля индекс в массиве <paramref name="array" />, с которого начинается копирование.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="array" /> является ссылкой на null (Nothing в Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> меньше нуля.</exception>
+      <exception cref="T:System.ArgumentException">Массив <paramref name="array" /> является многомерным.-или- В параметре <paramref name="array" /> не используется индексация с нуля.- или -<paramref name="index" /> является равным или больше, чем длина <paramref name="array" /> - или - число элементов в источнике <see cref="T:System.Collections.ICollection" /> больше, чем свободное пространство от <paramref name="index" /> до конца массива назначения <paramref name="array" />.-или- Тип исходной коллекции <see cref="T:System.Collections.ICollection" /> нельзя автоматически привести к типу массива назначения <paramref name="array" />.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentBag`1.System#Collections#ICollection#IsSynchronized">
+      <summary>Получает значение, указывающее, является ли доступ к коллекции <see cref="T:System.Collections.ICollection" /> синхронизированным с SyncRoot.</summary>
+      <returns>Значение true, если доступ к коллекции <see cref="T:System.Collections.ICollection" /> синхронизирован с SyncRoot, в противном случае — значение false.Это свойство всегда возвращает значение false для коллекции <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentBag`1.System#Collections#ICollection#SyncRoot">
+      <summary>Возвращает объект, который используется для синхронизации доступа к коллекции <see cref="T:System.Collections.ICollection" />.Данное свойство не поддерживается.</summary>
+      <returns>Возвращает значение null (Nothing в Visual Basic).</returns>
+      <exception cref="T:System.NotSupportedException">Свойство SyncRoot не поддерживается.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Возвращает перечислитель для просмотра коллекции <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.</summary>
+      <returns>Перечислитель для содержимого коллекции <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.ToArray">
+      <summary>Копирует элементы <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> в новый массив.</summary>
+      <returns>Новый массив, содержащий снимок элементов, скопированных из коллекции <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.TryPeek(`0@)">
+      <summary>Пытается вернуть объект из коллекции <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> без его удаления.</summary>
+      <returns>Значение true, если объект был успешно возвращен; в противном случае — значение false.</returns>
+      <param name="result">Параметр <paramref name="result" />, возвращаемый данным методом, содержит объект из коллекции <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> или значение по умолчанию типа <paramref name="T" />, если операцию не удалось выполнить.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.TryTake(`0@)">
+      <summary>Пытается удалить и вернуть объект из коллекции <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.</summary>
+      <returns>Значение true, если объект был успешно удален; в противном случае — значение false.</returns>
+      <param name="result">Параметр <paramref name="result" />, возвращаемый данным методом, содержит объект, удаленный из коллекции <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> или значение по умолчанию типа <paramref name="T" />, если операцию не удалось выполнить.</param>
+    </member>
+    <member name="T:System.Collections.Concurrent.ConcurrentDictionary`2">
+      <summary>Представляет потокобезопасную коллекцию пар "ключ-значение", доступ к которой могут одновременно получать несколько потоков. </summary>
+      <typeparam name="TKey">Тип ключей в словаре.</typeparam>
+      <typeparam name="TValue">Тип значений в словаре.</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor">
+      <summary>Инициализирует новый пустой экземпляр класса <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />, который обладает уровнем параллелизма по умолчанию и указанной начальной емкостью, а также использует для данного типа ключа компаратор по умолчанию.</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}})">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />, который содержит элементы, скопированные их указанной коллекции <see cref="T:System.Collections.Generic.IEnumerable`1" />, обладает уровнем параллелизма по умолчанию и заданной начальной емкостью, а также использует для данного типа ключа компаратор по умолчанию.</summary>
+      <param name="collection">Объект <see cref="T:System.Collections.Generic.IEnumerable`1" />, элементы которого копируются в новый объект <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collection" /> или любой из его ключей — null.</exception>
+      <exception cref="T:System.ArgumentException">Параметр <paramref name="collection" /> содержит один или более повторяющихся ключей.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}},System.Collections.Generic.IEqualityComparer{`0})">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />, который содержит элементы, скопированные из указанной коллекции <see cref="T:System.Collections.IEnumerable" />, обладает уровнем параллелизма по умолчанию, начальной емкостью по умолчанию, а также использует заданный интерфейс <see cref="T:System.Collections.Generic.IEqualityComparer`1" />.</summary>
+      <param name="collection">Объект <see cref="T:System.Collections.Generic.IEnumerable`1" />, элементы которого копируются в новый объект <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</param>
+      <param name="comparer">Реализация интерфейса <see cref="T:System.Collections.Generic.IEqualityComparer`1" />, используемая при сравнении ключей.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="collection" /> или <paramref name="comparer" /> имеет значение null.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor(System.Collections.Generic.IEqualityComparer{`0})">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />, который является пустым, имеет уровень параллелизма и емкость по умолчанию, а также использует заданный объект <see cref="T:System.Collections.Generic.IEqualityComparer`1" />.</summary>
+      <param name="comparer">Реализация сравнения равенства, используемая при сравнении ключей.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="comparer" /> имеет значение null.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}},System.Collections.Generic.IEqualityComparer{`0})">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />, который содержит элементы, скопированные из заданной коллекции <see cref="T:System.Collections.IEnumerable" />, и использует указанный компаратор <see cref="T:System.Collections.Generic.IEqualityComparer`1" />.</summary>
+      <param name="concurrencyLevel">Предполагаемое количество потоков, которые будут параллельно обновлять коллекцию <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</param>
+      <param name="collection">Объект <see cref="T:System.Collections.Generic.IEnumerable`1" />, элементы которого копируются в новый объект <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</param>
+      <param name="comparer">Реализация интерфейса <see cref="T:System.Collections.Generic.IEqualityComparer`1" />, используемая при сравнении ключей.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="collection" /> или <paramref name="comparer" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="concurrencyLevel" /> меньше 1.</exception>
+      <exception cref="T:System.ArgumentException">Параметр <paramref name="collection" /> содержит один или более повторяющихся ключей.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor(System.Int32,System.Int32)">
+      <summary>Инициализирует новый пустой экземпляр класса <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />, который обладает указанными уровнем параллелизма и емкостью, а также использует для данного типа ключей компаратор по умолчанию.</summary>
+      <param name="concurrencyLevel">Предполагаемое количество потоков, которые будут параллельно обновлять коллекцию <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</param>
+      <param name="capacity">Начальное количество элементов, которое может содержать коллекция <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="concurrencyLevel" /> меньше 1.-или-Значение параметра <paramref name="capacity" /> меньше 0.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor(System.Int32,System.Int32,System.Collections.Generic.IEqualityComparer{`0})">
+      <summary>Инициализирует новый пустой экземпляр класса <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />, который обладает указанными уровнем параллелизма и начальной емкостью, а также использует заданный компаратор <see cref="T:System.Collections.Generic.IEqualityComparer`1" />.</summary>
+      <param name="concurrencyLevel">Предполагаемое количество потоков, которые будут параллельно обновлять коллекцию <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</param>
+      <param name="capacity">Начальное количество элементов, которое может содержать коллекция <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</param>
+      <param name="comparer">Реализация интерфейса <see cref="T:System.Collections.Generic.IEqualityComparer`1" />, используемая при сравнении ключей.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="comparer" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение <paramref name="concurrencyLevel" /> или <paramref name="capacity" /> меньше 1.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.AddOrUpdate(`0,System.Func{`0,`1},System.Func{`0,`1,`1})">
+      <summary>Использует заданные функции, чтобы добавить пару "ключ-значение" в коллекцию <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />, если данный ключ еще не существует, или чтобы обновить пару "ключ-значение" в коллекции <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> в случае существования ключа.</summary>
+      <returns>Новое значение для ключа.Это значение будет результатом выполнения функции addValueFactory (если ключ не существовал) или updateValueFactory (если ключ имелся).</returns>
+      <param name="key">Ключ, который добавляется или значение которого обновляется</param>
+      <param name="addValueFactory">Функция, используемая для создания значения для несуществующего ключа</param>
+      <param name="updateValueFactory">Функция, используемая для создания нового значения для существующего ключа на основе его текущего значения</param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="key" />, <paramref name="addValueFactory" /> или <paramref name="updateValueFactory" /> — null.</exception>
+      <exception cref="T:System.OverflowException">Словарь уже содержит максимальное количество элементов (<see cref="F:System.Int32.MaxValue" />).</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.AddOrUpdate(`0,`1,System.Func{`0,`1,`1})">
+      <summary>Добавляет пару "ключ-значение" в коллекцию <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />, если данный ключ еще не существует, или обновляет пару "ключ-значение" в коллекции <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />, используя указанную функцию, в случае существования ключа.</summary>
+      <returns>Новое значение для ключа.Это может быть либо значение addValue (если ключ отсутствовал), либо результат updateValueFactory (если ключ имелся).</returns>
+      <param name="key">Ключ, который добавляется или значение которого обновляется</param>
+      <param name="addValue">Значение, добавляемое для несуществующего ключа</param>
+      <param name="updateValueFactory">Функция, используемая для создания нового значения для существующего ключа на основе его текущего значения</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="key" /> или <paramref name="updateValueFactory" /> имеет значение null.</exception>
+      <exception cref="T:System.OverflowException">Словарь уже содержит максимальное количество элементов (<see cref="F:System.Int32.MaxValue" />).</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.Clear">
+      <summary>Удаляет все ключи и значения из словаря <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.ContainsKey(`0)">
+      <summary>Определяет, содержится ли указанный ключ в словаре <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</summary>
+      <returns>true, если <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> содержит элемент с указанным ключом, в противном случае — false.</returns>
+      <param name="key">Ключ для поиска в <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="key" /> имеет значение null.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.Count">
+      <summary>Возвращает число пар "ключ-значение", содержащихся в словаре <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</summary>
+      <returns>Число пар "ключ-значение", содержащихся в словаре <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</returns>
+      <exception cref="T:System.OverflowException">Словарь уже содержит максимальное количество элементов (<see cref="F:System.Int32.MaxValue" />).</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.GetEnumerator">
+      <summary>Возвращает перечислитель для просмотра коллекции <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</summary>
+      <returns>Перечислитель для объекта <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.GetOrAdd(`0,System.Func{`0,`1})">
+      <summary>Добавляет пару "ключ-значение" в <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />, используя указанную функцию, если ключ еще не существует.</summary>
+      <returns>Значение для ключа.Этим значением будет существующее значение ключа, если ключ уже имеется в словаре, или новое значение, возвращенное функцией valueFactory, если ключ не существовал в словаре.</returns>
+      <param name="key">Ключ добавляемого элемента.</param>
+      <param name="valueFactory">Функция, используемая для создания значения для ключа</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="key" /> или <paramref name="valueFactory" /> имеет значение null.</exception>
+      <exception cref="T:System.OverflowException">Словарь уже содержит максимальное количество элементов (<see cref="F:System.Int32.MaxValue" />).</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.GetOrAdd(`0,`1)">
+      <summary>Добавляет пару "ключ-значение" в коллекцию <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />, если ключ еще не существует.</summary>
+      <returns>Значение для ключа.Этим значением будет существующее значение ключа, если ключ уже имеется в словаре, или новое значение, если ключ не существовал в словаре.</returns>
+      <param name="key">Ключ добавляемого элемента.</param>
+      <param name="value">Значение, которое необходимо добавить, если ключ еще не существует</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="key" /> имеет значение null.</exception>
+      <exception cref="T:System.OverflowException">Словарь уже содержит максимальное количество элементов (<see cref="F:System.Int32.MaxValue" />).</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.IsEmpty">
+      <summary>Получает значение, указывающее, является ли коллекция <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> пустой.</summary>
+      <returns>Значение true, если объект <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> пуст; в противном случае — false.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.Item(`0)">
+      <summary>Возвращает или задает значение, связанное с указанным ключом.</summary>
+      <returns>Значение пары "ключ-значение" по указанному индексу.</returns>
+      <param name="key">Ключ, значение которого требуется получить или задать.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="key" /> имеет значение null.</exception>
+      <exception cref="T:System.Collections.Generic.KeyNotFoundException">Свойство извлечено, параметр <paramref name="key" /> не существует в коллекции.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.Keys">
+      <summary>Получает коллекцию, содержащую ключи из словаря <see cref="T:System.Collections.Generic.Dictionary`2" />.</summary>
+      <returns>Коллекция всех ключей в <see cref="T:System.Collections.Generic.Dictionary`2" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#ICollection{T}#Add(System.Collections.Generic.KeyValuePair{`0,`1})">
+      <summary>Добавляет элемент в коллекцию.</summary>
+      <param name="keyValuePair">Объект <see cref="T:System.Collections.Generic.KeyValuePair`2" />, добавляемый в словарь.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#ICollection{T}#Contains(System.Collections.Generic.KeyValuePair{`0,`1})">
+      <summary>Получает значение, указывающее, содержит ли коллекция <see cref="T:System.Collections.Generic.ICollection`1" /> элемент с указанным ключом.</summary>
+      <returns>true, если <see cref="T:System.Collections.Generic.ICollection`1" /> содержит элемент с указанным ключом, в противном случае — false.</returns>
+      <param name="keyValuePair">Ключ для поиска в <see cref="T:System.Collections.Generic.ICollection`1" />.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#ICollection{T}#CopyTo(System.Collections.Generic.KeyValuePair{`0,`1}[],System.Int32)">
+      <summary>Копирует элементы коллекции <see cref="T:System.Collections.ICollection" /> в массив, начиная с указанного индекса массива.</summary>
+      <param name="array">Одномерный массив для приема элементов, копируемых из <see cref="T:System.Collections.ICollection" />.Индекс в массиве должен начинаться с нуля.</param>
+      <param name="index">Отсчитываемый от нуля индекс в массиве <paramref name="array" />, с которого начинается копирование.</param>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#ICollection{T}#IsReadOnly">
+      <summary>Возвращает значение, указывающее, доступен ли список <see cref="T:System.Collections.ICollection" /> только для чтения.</summary>
+      <returns>Значение true, если коллекция <see cref="T:System.Collections.ICollection" /> доступна только для чтения, в противном случае — значение false. </returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#ICollection{T}#Remove(System.Collections.Generic.KeyValuePair{`0,`1})">
+      <summary>Удаляет указанную пару "ключ-значение" из коллекции.</summary>
+      <returns>Значение true, если элемент успешно удален, в противном случае — значение false.Этот метод возвращает также false, если <paramref name="key" /> не был найден в исходном <see cref="T:System.Collections.Generic.ICollection`1" />.</returns>
+      <param name="keyValuePair">Объект класса <see cref="T:System.Collections.Generic.KeyValuePair`2" /> для удаления.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Add(`0,`1)">
+      <summary>Добавляет указанную пару "ключ-значение" в коллекцию <see cref="T:System.Collections.Generic.IDictionary`2" />.</summary>
+      <param name="key">Объект, используемый в качестве ключа добавляемого элемента.</param>
+      <param name="value">Объект, используемый в качестве значения добавляемого элемента.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="key" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentException">Элемент с таким ключом уже существует в <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</exception>
+      <exception cref="T:System.OverflowException">Словарь уже содержит максимальное количество элементов (<see cref="F:System.Int32.MaxValue" />).</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Remove(`0)">
+      <summary>Удаляет элемент с указанным ключом из объекта <see cref="T:System.Collections.Generic.IDictionary`2" />.</summary>
+      <returns>Значение true, если элемент успешно удален, в противном случае — значение false.Этот метод возвращает также false, если <paramref name="key" /> не был найден в исходном <see cref="T:System.Collections.Generic.IDictionary`2" />.</returns>
+      <param name="key">Ключ элемента, который требуется удалить.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="key" /> имеет значение null.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey@TValue}#Keys">
+      <summary>Получает коллекцию, содержащую ключи из словаря <see cref="T:System.Collections.Generic.Dictionary`2" />.</summary>
+      <returns>Коллекция, содержащая ключи в <see cref="T:System.Collections.Generic.Dictionary`2" />.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey@TValue}#Values">
+      <summary>Получает коллекцию, содержащую все значения <see cref="T:System.Collections.Generic.Dictionary`2" />.</summary>
+      <returns>Коллекция, содержащая значения словаря <see cref="T:System.Collections.Generic.Dictionary`2" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>Копирует элементы коллекции <see cref="T:System.Collections.ICollection" /> в массив, начиная с указанного индекса массива.</summary>
+      <param name="array">Одномерный массив для приема элементов, копируемых из <see cref="T:System.Collections.ICollection" />.Индекс в массиве должен начинаться с нуля.</param>
+      <param name="index">Отсчитываемый от нуля индекс в массиве <paramref name="array" />, с которого начинается копирование.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="array" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> меньше 0.</exception>
+      <exception cref="T:System.ArgumentException">Значение параметра <paramref name="index" /> больше или равно длине массива <paramref name="array" />. -или-Количество элементов в исходной коллекции <see cref="T:System.Collections.ICollection" /> превышает доступное место, начиная с индекса <paramref name="index" /> до конца массива назначения <paramref name="array" />.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#ICollection#IsSynchronized">
+      <summary>Получает значение, указывающее, является ли доступ к коллекции <see cref="T:System.Collections.ICollection" /> синхронизированным с SyncRoot.</summary>
+      <returns>true, если доступ к классу <see cref="T:System.Collections.ICollection" /> является синхронизированным (потокобезопасным); в противном случае — false.Для <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> Это свойство всегда возвращает значение false.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#ICollection#SyncRoot">
+      <summary>Возвращает объект, который используется для синхронизации доступа к коллекции <see cref="T:System.Collections.ICollection" />.Данное свойство не поддерживается.</summary>
+      <returns>Всегда возвращает значение NULL.</returns>
+      <exception cref="T:System.NotSupportedException">Данное свойство не поддерживается.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#Add(System.Object,System.Object)">
+      <summary>Добавляет указанные ключ и значение в словарь.</summary>
+      <param name="key">Объект, который используется в качестве ключа.</param>
+      <param name="value">Объект, который используется в качестве значения.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="key" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentException">Параметр <paramref name="key" /> имеет тип, который не может быть присвоен типу ключа <see cref="T:System.Collections.Generic.Dictionary`2" />. -или- Тип параметра <paramref name="value" /> не допускает присваивание типу значений словаря <see cref="T:System.Collections.Generic.Dictionary`2" />. -или-Значение с таким ключом уже существует в <see cref="T:System.Collections.Generic.Dictionary`2" />.</exception>
+      <exception cref="T:System.OverflowException">Словарь уже содержит максимальное количество элементов (<see cref="F:System.Int32.MaxValue" />).</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#Contains(System.Object)">
+      <summary>Получает значение, указывающее, содержит ли коллекция <see cref="T:System.Collections.Generic.IDictionary`2" /> элемент с указанным ключом.</summary>
+      <returns>true, если <see cref="T:System.Collections.Generic.IDictionary`2" /> содержит элемент с указанным ключом, в противном случае — false.</returns>
+      <param name="key">Ключ для поиска в <see cref="T:System.Collections.Generic.IDictionary`2" />.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="key" /> имеет значение null.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#GetEnumerator">
+      <summary>Предоставляет объект <see cref="T:System.Collections.IDictionaryEnumerator" /> для коллекции <see cref="T:System.Collections.Generic.IDictionary`2" />.</summary>
+      <returns>
+        <see cref="T:System.Collections.IDictionaryEnumerator" /> для <see cref="T:System.Collections.Generic.IDictionary`2" />.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#IsFixedSize">
+      <summary>Возвращает значение, показывающее, имеет ли список <see cref="T:System.Collections.Generic.IDictionary`2" /> фиксированный размер.</summary>
+      <returns>Значение true, если список <see cref="T:System.Collections.Generic.IDictionary`2" /> имеет фиксированный размер, в противном случае — значение false.Для <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> Данное свойство всегда возвращает значение false.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#IsReadOnly">
+      <summary>Возвращает значение, указывающее, доступен ли список <see cref="T:System.Collections.Generic.IDictionary`2" /> только для чтения.</summary>
+      <returns>Значение true, если коллекция <see cref="T:System.Collections.Generic.IDictionary`2" /> доступна только для чтения, в противном случае — значение false.Для <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> Данное свойство всегда возвращает значение false.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#Item(System.Object)">
+      <summary>Возвращает или задает значение, связанное с указанным ключом.</summary>
+      <returns>Значение, связанное с указанным ключом, или null, если <paramref name="key" /> отсутствует в словаре или тип параметра <paramref name="key" /> не допускает присваивание типу ключа <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</returns>
+      <param name="key">Ключ, значение которого требуется получить или задать.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="key" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentException">Присваивается значение, а параметр <paramref name="key" /> имеет тип, который не может быть присвоен типу ключа или типу значения <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#Keys">
+      <summary>Получает <see cref="T:System.Collections.ICollection" />, который содержит ключи <see cref="T:System.Collections.Generic.IDictionary`2" />.</summary>
+      <returns>Интерфейс, содержащий ключи <see cref="T:System.Collections.Generic.IDictionary`2" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#Remove(System.Object)">
+      <summary>Удаляет элемент с указанным ключом из объекта <see cref="T:System.Collections.IDictionary" />.</summary>
+      <param name="key">Ключ элемента, который требуется удалить.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="key" /> имеет значение null.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#Values">
+      <summary>Возвращает коллекцию <see cref="T:System.Collections.ICollection" />, которая содержит значения из <see cref="T:System.Collections.IDictionary" />.</summary>
+      <returns>Интерфейс, который содержит значения в объекте <see cref="T:System.Collections.IDictionary" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Возвращает перечислитель для просмотра коллекции <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</summary>
+      <returns>Перечислитель для объекта <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.ToArray">
+      <summary>Копирует пары "ключ-значение", хранящиеся в коллекции <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />, в новый массив.</summary>
+      <returns>Новый массив, содержащий снимок пар "ключ-значение", скопированных из коллекции <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.TryAdd(`0,`1)">
+      <summary>Пытается добавить указанную пару "ключ-значение" в коллекцию <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</summary>
+      <returns>true, если пара ключ/значение были добавлены в <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> успешно; значение false, если ключ уже существует.</returns>
+      <param name="key">Ключ добавляемого элемента.</param>
+      <param name="value">Добавляемое значение элемента.Для ссылочных типов допускается значение null.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="key" /> имеет значение null.</exception>
+      <exception cref="T:System.OverflowException">Словарь уже содержит максимальное количество элементов (<see cref="F:System.Int32.MaxValue" />).</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.TryGetValue(`0,`1@)">
+      <summary>Пытается получить значение, связанное с указанным ключом, из коллекции <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</summary>
+      <returns>Значение true, если ключ был найден в коллекции <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />; в противном случае — значение false.</returns>
+      <param name="key">Ключ значения, которое необходимо получить.</param>
+      <param name="value">При возвращении этого метода содержит объект из <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> при сбое операции с указанным ключом, или значение по умолчанию типа.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="key" /> имеет значение null.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.TryRemove(`0,`1@)">
+      <summary>Пытается удалить и вернуть значение с указанным ключом из коллекции <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</summary>
+      <returns>Значение true, если объект успешно удален, в противном случае — значение false.</returns>
+      <param name="key">Ключ удаляемого и возвращаемого элемента.</param>
+      <param name="value">Параметр возвращаемый данным методом, содержит объект, удаленный из коллекции <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> или значение по умолчанию типа TValue, если <paramref name="key" /> не существует. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="key" /> имеет значение null.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.TryUpdate(`0,`1,`1)">
+      <summary>Сравнивает существующее значение указанного ключа с заданным значением и в случае их равенства обновляет ключ третьим значением.</summary>
+      <returns>Значение true, если значение с ключом <paramref name="key" /> оказалось равным значению параметра <paramref name="comparisonValue" /> и было заменено значением <paramref name="newValue" />; в противном случае — значение false.</returns>
+      <param name="key">Ключ, значение которого сравнивается со значением параметра <paramref name="comparisonValue" /> и, возможно, заменяется.</param>
+      <param name="newValue">Значение, которым заменяется значение элемента, который задал ключ <paramref name="key" /> в случае положительного результата сравнения на равенство.</param>
+      <param name="comparisonValue">Значение, которое сравнивается со значением элемента, задавшим <paramref name="key" />.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="key" /> имеет значение null.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.Values">
+      <summary>Получает коллекцию, содержащую все значения <see cref="T:System.Collections.Generic.Dictionary`2" />.</summary>
+      <returns>Коллекция, содержащая значения словаря <see cref="T:System.Collections.Generic.Dictionary`2" />. </returns>
+    </member>
+    <member name="T:System.Collections.Concurrent.ConcurrentQueue`1">
+      <summary>Предоставляет потокобезопасную коллекцию, обслуживаемую по принципу "первым поступил — первым обслужен" (FIFO).</summary>
+      <typeparam name="T">Тип элементов в очереди.</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />.</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />, содержащий элементы, скопированные из указанной коллекции.</summary>
+      <param name="collection">Коллекция, элементы которой копируются в новую коллекцию <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />.</param>
+      <exception cref="T:System.ArgumentNullException">Аргументом параметра <paramref name="collection" /> является null.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.CopyTo(`0[],System.Int32)">
+      <summary>Копирует элементы коллекции <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> в существующий одномерный массив <see cref="T:System.Array" />, начиная с указанного значения индекса массива.</summary>
+      <param name="array">Одномерный массив <see cref="T:System.Array" />, в который копируются элементы коллекции <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />.Индексация в массиве <see cref="T:System.Array" /> должна начинаться с нуля.</param>
+      <param name="index">Индекс (с нуля) в массиве <paramref name="array" />, с которого начинается копирование.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> является пустой ссылкой (Nothing в Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> меньше нуля.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> является равным или больше, чем длина <paramref name="array" /> - или - число элементов в источнике <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> больше, чем свободное пространство от <paramref name="index" /> до конца массива назначения <paramref name="array" />.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentQueue`1.Count">
+      <summary>Получает число элементов, содержащихся в интерфейсе <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />.</summary>
+      <returns>Число элементов, содержащихся в интерфейсе <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.Enqueue(`0)">
+      <summary>Добавляет объект в конец коллекции <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />.</summary>
+      <param name="item">Объект, добавляемый в конец коллекции <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />.Значение ссылочных типов может быть пустой ссылкой (Nothing в Visual Basic).</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.GetEnumerator">
+      <summary>Возвращает перечислитель, осуществляющий перебор элементов списка <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />.</summary>
+      <returns>Перечислитель для содержимого коллекции <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentQueue`1.IsEmpty">
+      <summary>Получает значение, указывающее, является ли коллекция <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> пустой.</summary>
+      <returns>Значение true, если коллекция <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> является пустой; в противном случае — значение false.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.System#Collections#Concurrent#IProducerConsumerCollection{T}#TryAdd(`0)">
+      <summary>Пытается добавить объект в коллекцию <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" />.</summary>
+      <returns>Значение true, если объект был успешно добавлен; в противном случае — значение false.</returns>
+      <param name="item">Объект, добавляемый в коллекцию <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" />.Значение ссылочных типов может быть пустой ссылкой (Nothing в Visual Basic).</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.System#Collections#Concurrent#IProducerConsumerCollection{T}#TryTake(`0@)">
+      <summary>Пытается удалить и вернуть объект из коллекции <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" />.</summary>
+      <returns>Значение true, если элемент был успешно удален и возвращен; в противном случае — значение false.</returns>
+      <param name="item">В случае успешного выполнения операции параметр <paramref name="item" />, возвращаемый данным методом, содержит удаленный объект.Если объект, доступный для удаления, не найден, значение не определено.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>Копирует элементы коллекции <see cref="T:System.Collections.ICollection" /> в массив <see cref="T:System.Array" />, начиная с указанного индекса массива <see cref="T:System.Array" />.</summary>
+      <param name="array">Одномерный массив <see cref="T:System.Array" />, в который копируются элементы коллекции <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.Индексация в массиве <see cref="T:System.Array" /> должна начинаться с нуля.</param>
+      <param name="index">Индекс (с нуля) в массиве <paramref name="array" />, с которого начинается копирование.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> является пустой ссылкой (Nothing в Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> меньше нуля.</exception>
+      <exception cref="T:System.ArgumentException">Массив <paramref name="array" /> является многомерным. -или- В параметре <paramref name="array" /> не используется индексация с нуля. - или -<paramref name="index" /> является равным или больше, чем длина <paramref name="array" /> - или - число элементов в источнике <see cref="T:System.Collections.ICollection" /> больше, чем свободное пространство от <paramref name="index" /> до конца массива назначения <paramref name="array" />. -или- Тип исходной коллекции <see cref="T:System.Collections.ICollection" /> нельзя автоматически привести к типу массива назначения <paramref name="array" />.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentQueue`1.System#Collections#ICollection#IsSynchronized">
+      <summary>Получает значение, указывающее, является ли доступ к коллекции <see cref="T:System.Collections.ICollection" /> синхронизированным с SyncRoot.</summary>
+      <returns>Значение true, если доступ к коллекции <see cref="T:System.Collections.ICollection" /> синхронизирован с SyncRoot, в противном случае — значение false.Это свойство всегда возвращает значение false для коллекции <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentQueue`1.System#Collections#ICollection#SyncRoot">
+      <summary>Получает объект, с помощью которого можно синхронизировать доступ к коллекции <see cref="T:System.Collections.ICollection" />.Данное свойство не поддерживается.</summary>
+      <returns>Возвращает значение null (Nothing в Visual Basic).</returns>
+      <exception cref="T:System.NotSupportedException">Свойство SyncRoot не поддерживается.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Возвращает перечислитель, осуществляющий перебор коллекции.</summary>
+      <returns>Объект <see cref="T:System.Collections.IEnumerator" />, который может использоваться для итерации элементов коллекции.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.ToArray">
+      <summary>Копирует элементы, хранящиеся в коллекции <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />, в новый массив.</summary>
+      <returns>Новый массив, содержащий снимок элементов, скопированных из коллекции <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.TryDequeue(`0@)">
+      <summary>Пытается удалить и вернуть объект, находящийся в начале коллекции параллельной очереди.</summary>
+      <returns>Значение true, если элемент был успешно удален и возвращен из начала коллекции <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />; в противном случае — значение false.</returns>
+      <param name="result">В случае успешного выполнения операции параметр <paramref name="result" />, возвращаемый данным методом, содержит удаленный объект.Если объект, доступный для удаления, не найден, значение не определено.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.TryPeek(`0@)">
+      <summary>Пытается вернуть объект из начала коллекции <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> без его удаления.</summary>
+      <returns>Значение true, если объект был успешно возвращен; в противном случае — значение false.</returns>
+      <param name="result">Параметр <paramref name="result" />, возвращаемый данным методом, содержит объект, расположенный в начале коллекции <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />, или неопределенное значение, если операцию не удалось выполнить.</param>
+    </member>
+    <member name="T:System.Collections.Concurrent.ConcurrentStack`1">
+      <summary>Предоставляет потокобезопасную коллекцию, обслуживаемую по принципу "последним поступил — первым обслужен" (LIFO).</summary>
+      <typeparam name="T">Тип элементов в стеке.</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />, который содержит элементы, скопированные из указанной коллекции.</summary>
+      <param name="collection">Коллекция, элементы которой копируются в новую коллекцию <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="collection" /> argument is null.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.Clear">
+      <summary>Удаляет все объекты из <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.CopyTo(`0[],System.Int32)">
+      <summary>Копирует элементы коллекции <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> в существующий одномерный массив <see cref="T:System.Array" />, начиная с указанного значения индекса массива.</summary>
+      <param name="array">Одномерный массив <see cref="T:System.Array" />, в который копируются элементы коллекции <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.Массив <see cref="T:System.Array" /> должен иметь индексацию, начинающуюся с нуля.</param>
+      <param name="index">Отсчитываемый от нуля индекс в массиве <paramref name="array" />, указывающий начало копирования.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> is a null reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> is less than zero.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> is equal to or greater than the length of the <paramref name="array" /> -or- The number of elements in the source <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentStack`1.Count">
+      <summary>Получает число элементов, содержащихся в интерфейсе <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</summary>
+      <returns>Число элементов, содержащихся в интерфейсе <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.GetEnumerator">
+      <summary>Возвращает перечислитель, осуществляющий перебор элементов списка <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</summary>
+      <returns>Перечислитель для коллекции <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentStack`1.IsEmpty">
+      <summary>Возвращает значение, указывающее, является ли коллекция <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> пустой.</summary>
+      <returns>Значение true, если коллекция <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> является пустой; в противном случае — значение false.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.Push(`0)">
+      <summary>Вставляет объект в верхнюю часть <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</summary>
+      <param name="item">Объект, вставляемый в <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.Значение ссылочных типов может быть пустой ссылкой (Nothing в Visual Basic).</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.PushRange(`0[])">
+      <summary>Вставляет неделимым блоком несколько объектов в качестве верхнего элемента коллекции <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</summary>
+      <param name="items">Объекты, вставляемые в коллекцию <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="items" /> is a null reference (Nothing in Visual Basic).</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.PushRange(`0[],System.Int32,System.Int32)">
+      <summary>Вставляет неделимым блоком несколько объектов в качестве верхнего элемента коллекции <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</summary>
+      <param name="items">Объекты, вставляемые в коллекцию <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</param>
+      <param name="startIndex">Отсчитываемое от нуля смещение в массиве <paramref name="items" />, с которого начинается вставка элементов в начало коллекции <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</param>
+      <param name="count">Число элементов, вставляемых в начало коллекции <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="items" /> is a null reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> or <paramref name="count" /> is negative.Or <paramref name="startIndex" /> is greater than or equal to the length of <paramref name="items" />.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="startIndex" /> + <paramref name="count" /> is greater than the length of <paramref name="items" />.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.System#Collections#Concurrent#IProducerConsumerCollection{T}#TryAdd(`0)">
+      <summary>Пытается добавить объект в коллекцию <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" />.</summary>
+      <returns>Значение true, если объект был успешно добавлен; в противном случае — значение false.</returns>
+      <param name="item">Объект, добавляемый в коллекцию <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" />.Значение ссылочных типов может быть пустой ссылкой (Nothing в Visual Basic).</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.System#Collections#Concurrent#IProducerConsumerCollection{T}#TryTake(`0@)">
+      <summary>Пытается удалить и вернуть объект из коллекции <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" />.</summary>
+      <returns>Значение true, если элемент был успешно удален и возвращен; в противном случае — значение false.</returns>
+      <param name="item">В случае успешного выполнения операции параметр <paramref name="item" />, возвращаемый данным методом, содержит удаленный объект.Если объект, доступный для удаления, не найден, значение не определено.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>Копирует элементы коллекции <see cref="T:System.Collections.ICollection" /> в массив <see cref="T:System.Array" />, начиная с указанного индекса массива <see cref="T:System.Array" />.</summary>
+      <param name="array">Одномерный массив <see cref="T:System.Array" />, в который копируются элементы коллекции <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.Массив <see cref="T:System.Array" /> должен иметь индексацию, начинающуюся с нуля.</param>
+      <param name="index">Отсчитываемый от нуля индекс в массиве <paramref name="array" />, указывающий начало копирования.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> is a null reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> is less than zero.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> is multidimensional.-or- <paramref name="array" /> does not have zero-based indexing.-or- <paramref name="index" /> is equal to or greater than the length of the <paramref name="array" /> -or- The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.-or- The type of the source <see cref="T:System.Collections.ICollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentStack`1.System#Collections#ICollection#IsSynchronized">
+      <summary>Возвращает значение, указывающее, синхронизирован ли доступ к коллекции <see cref="T:System.Collections.ICollection" /> с SyncRoot.</summary>
+      <returns>Значение true, если доступ к коллекции <see cref="T:System.Collections.ICollection" /> синхронизирован с SyncRoot, в противном случае — значение false.Это свойство всегда возвращает значение false для коллекции <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentStack`1.System#Collections#ICollection#SyncRoot">
+      <summary>Получает объект, с помощью которого можно синхронизировать доступ к коллекции <see cref="T:System.Collections.ICollection" />.Данное свойство не поддерживается.</summary>
+      <returns>Возвращает значение null (Nothing в Visual Basic).</returns>
+      <exception cref="T:System.NotSupportedException">The SyncRoot property is not supported</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Возвращает перечислитель, который осуществляет итерацию по коллекции.</summary>
+      <returns>Объект <see cref="T:System.Collections.IEnumerator" />, который может использоваться для итерации элементов коллекции.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.ToArray">
+      <summary>Копирует элементы, хранящиеся в коллекции <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />, в новый массив.</summary>
+      <returns>Новый массив, содержащий снимок элементов, скопированных из коллекции <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.TryPeek(`0@)">
+      <summary>Пытается вернуть объект из начала коллекции <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> без его удаления.</summary>
+      <returns>Значение true, если объект был успешно возвращен; в противном случае — значение false.</returns>
+      <param name="result">Параметр <paramref name="result" />, возвращаемый этим методом, содержит объект, расположенный в начале коллекции <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />, или неопределенное значение, если операцию не удалось выполнить.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.TryPop(`0@)">
+      <summary>Пытается извлечь и вернуть объект, расположенный в начале коллекции <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</summary>
+      <returns>Значение true, если элемент был успешно удален и возвращен из начала коллекции <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />; в противном случае — значение false.</returns>
+      <param name="result">В случае успешного выполнения операции параметр <paramref name="result" />, возвращаемый данным методом, содержит удаленный объект.Если объект, доступный для удаления, не найден, значение не определено.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.TryPopRange(`0[])">
+      <summary>Пытается извлечь и вернуть несколько объектов из начала коллекции <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> в виде неделимого блока.</summary>
+      <returns>Число объектов, успешно извлеченных из начала коллекции <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> и вставленных в массив <paramref name="items" />.</returns>
+      <param name="items">Массив <see cref="T:System.Array" />, в который будут добавлены объекты, извлеченные из начала коллекции <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="items" /> is a null argument (Nothing in Visual Basic).</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.TryPopRange(`0[],System.Int32,System.Int32)">
+      <summary>Пытается извлечь и вернуть несколько объектов из начала коллекции <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> в виде неделимого блока.</summary>
+      <returns>Число объектов, успешно извлеченных из верхней части стека и вставленных в массив <paramref name="items" />.</returns>
+      <param name="items">Массив <see cref="T:System.Array" />, в который будут добавлены объекты, извлеченные из начала коллекции <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</param>
+      <param name="startIndex">Отсчитываемое от нуля смещение в массиве <paramref name="items" />, с которого начинается вставка элементов из начала коллекции <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</param>
+      <param name="count">Число элементов, извлекаемых из начала коллекции <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> и вставляемых в массив <paramref name="items" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="items" /> is a null reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> or <paramref name="count" /> is negative.Or <paramref name="startIndex" /> is greater than or equal to the length of <paramref name="items" />.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="startIndex" /> + <paramref name="count" /> is greater than the length of <paramref name="items" />.</exception>
+    </member>
+    <member name="T:System.Collections.Concurrent.EnumerablePartitionerOptions">
+      <summary>Указывает Параметры для управления поведением буферизации модуля разделения.</summary>
+    </member>
+    <member name="F:System.Collections.Concurrent.EnumerablePartitionerOptions.NoBuffering">
+      <summary>Создать модуль разделения, в котором используются элементы из исходного перечисляемого поочередно и который не использует промежуточное хранилище, которое может быть более эффективно использовано несколькими потоками.Данный параметр обеспечивает поддержку малой задержки (элементы будут обрабатываться сразу же, как только они становятся доступными из источника) и частичную поддержку зависимостей между элементами (невозможна взаимоблокировка потока при ожидании элемента, за обработку которого отвечает сам этот поток).</summary>
+    </member>
+    <member name="F:System.Collections.Concurrent.EnumerablePartitionerOptions.None">
+      <summary>Используйте поведение умолчанию, при котором должна применяться буферизация для достижения оптимальной производительности.</summary>
+    </member>
+    <member name="T:System.Collections.Concurrent.IProducerConsumerCollection`1">
+      <summary>Определяет методы для работы с потокобезопасными коллекциями, предназначенными для использования потоками-производителями и потоками-получателями.Этот интерфейс обеспечивает унифицированное представление для коллекций производителей/потребителей, чтобы абстракции более высокого уровня, такие как <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />, могли использовать коллекцию в качестве базового механизма хранения.</summary>
+      <typeparam name="T">Определяет тип элементов коллекции.</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.IProducerConsumerCollection`1.CopyTo(`0[],System.Int32)">
+      <summary>Копирует элементы коллекции <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> в массив <see cref="T:System.Array" /> начиная с указанного индекса.</summary>
+      <param name="array">Одномерный массив <see cref="T:System.Array" />, в который копируются элементы коллекции <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" />. Индексация в массиве должна вестись с нуля.</param>
+      <param name="index">Индекс (с нуля) в массиве <paramref name="array" />, с которого начинается копирование.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> является пустой ссылкой (Nothing в Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> меньше нуля.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> является равным или больше, чем длина <paramref name="array" />, или число элементов в источнике <paramref name="index" /> больше, чем свободное пространство от <paramref name="array" /> до конца массива назначения. </exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.IProducerConsumerCollection`1.ToArray">
+      <summary>Копирует элементы, содержащиеся в коллекции <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" />, в новый массив.</summary>
+      <returns>Новый массив, содержащий элементы, скопированные из коллекции <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.IProducerConsumerCollection`1.TryAdd(`0)">
+      <summary>Пытается добавить объект в коллекцию <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" />.</summary>
+      <returns>Значение true, если объект был успешно добавлен; в противном случае — значение false.</returns>
+      <param name="item">Объект, добавляемый в коллекцию <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" />.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="item" /> недопустим для данной коллекции.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.IProducerConsumerCollection`1.TryTake(`0@)">
+      <summary>Пытается удалить и вернуть объект из коллекции <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" />.</summary>
+      <returns>Значение true, если объект был успешно удален и возвращен; в противном случае — значение false.</returns>
+      <param name="item">В случае успешного удаления и возвращения объекта параметр <paramref name="item" />, возвращаемый данным методом, содержит удаленный объект.Если объект, доступный для удаления, не найден, значение не определено.</param>
+    </member>
+    <member name="T:System.Collections.Concurrent.OrderablePartitioner`1">
+      <summary>Представляет конкретный способ разделения упорядочиваемого источника данных на несколько разделов.</summary>
+      <typeparam name="TSource">Тип элементов коллекции.</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.OrderablePartitioner`1.#ctor(System.Boolean,System.Boolean,System.Boolean)">
+      <summary>Вызывается из конструкторов в производных классах для инициализации класса <see cref="T:System.Collections.Concurrent.OrderablePartitioner`1" /> заданными ограничениями ключей индекса.</summary>
+      <param name="keysOrderedInEachPartition">Указывает, упорядочиваются ли элементы каждого раздела в порядке возрастания ключей.</param>
+      <param name="keysOrderedAcrossPartitions">Указывает, располагаются ли элементы более раннего раздела всегда перед элементами более позднего раздела.Если значение данного параметра равно true, порядковый ключ каждого элемента раздела 0 меньше порядкового ключа любого элемента раздела 1, порядковый ключ каждого элемента раздела 1 меньше порядкового ключа любого элемента раздела 2 и т. д.</param>
+      <param name="keysNormalized">Указывает, нормализованы ли ключи.Если true, все порядковые ключи являются несовпадающими целыми числами в диапазоне [0 .. количество_элементов-1].Если значение равно false, порядковые ключи по-прежнему не должны совпадать, однако учитывается лишь их относительных порядок, а не абсолютные значения.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.OrderablePartitioner`1.GetDynamicPartitions">
+      <summary>Создает объект, который может разделить базовую коллекцию на переменное число разделов.</summary>
+      <returns>Объект, который может создать разделы в базовом источнике данных.</returns>
+      <exception cref="T:System.NotSupportedException">Создание динамических разделов не поддерживается базовым классом.Должен быть реализован в производных классах.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.OrderablePartitioner`1.GetOrderableDynamicPartitions">
+      <summary>Создает объект, который может разделить базовую коллекцию на переменное число разделов.</summary>
+      <returns>Объект, который может создать разделы в базовом источнике данных.</returns>
+      <exception cref="T:System.NotSupportedException">Создание динамических разделов не поддерживается этим модулем разделения.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.OrderablePartitioner`1.GetOrderablePartitions(System.Int32)">
+      <summary>Делит базовую коллекцию на указанное число упорядочиваемых разделов.</summary>
+      <returns>Список, содержащий перечислители <paramref name="partitionCount" />.</returns>
+      <param name="partitionCount">Число создаваемых разделов.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.OrderablePartitioner`1.GetPartitions(System.Int32)">
+      <summary>Делит базовую коллекцию на указанное число упорядоченных разделов.</summary>
+      <returns>Список, содержащий перечислители <paramref name="partitionCount" />.</returns>
+      <param name="partitionCount">Число создаваемых разделов.</param>
+    </member>
+    <member name="P:System.Collections.Concurrent.OrderablePartitioner`1.KeysNormalized">
+      <summary>Получает значение, указывающее, нормализованы ли ключи.</summary>
+      <returns>Значение true, если ключи нормализованы; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.OrderablePartitioner`1.KeysOrderedAcrossPartitions">
+      <summary>Получает значение, указывающее, располагаются ли элементы более раннего раздела всегда перед элементами более позднего раздела.</summary>
+      <returns>Значение true, если элементы более раннего раздела всегда находятся перед элементами более позднего раздела; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.OrderablePartitioner`1.KeysOrderedInEachPartition">
+      <summary>Получает значение, указывающее, упорядочиваются ли элементы каждого раздела в порядке возрастания ключей.</summary>
+      <returns>Значение true, если в каждом разделе элементы размещены в порядке возрастания ключей; в противном случае — значение false.</returns>
+    </member>
+    <member name="T:System.Collections.Concurrent.Partitioner">
+      <summary>Предоставляет общие стратегии создания разделов в массивах, списках и перечисляемых коллекциях.</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>Создает упорядочиваемый разделитель из экземпляра <see cref="T:System.Collections.Generic.IEnumerable`1" />.</summary>
+      <returns>Упорядочиваемый модуль разделения, созданный на основе входного массива.</returns>
+      <param name="source">Разделяемая перечисляемая коллекция.</param>
+      <typeparam name="TSource">Тип элементов исходной перечисляемой коллекции.</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Concurrent.EnumerablePartitionerOptions)">
+      <summary>Создает упорядочиваемый разделитель из экземпляра <see cref="T:System.Collections.Generic.IEnumerable`1" />.</summary>
+      <returns>Упорядочиваемый модуль разделения, созданный на основе входного массива.</returns>
+      <param name="source">Разделяемая перечисляемая коллекция.</param>
+      <param name="partitionerOptions">Параметры для управления поведением буферизации модуля разделения.</param>
+      <typeparam name="TSource">Тип элементов исходной перечисляемой коллекции.</typeparam>
+      <exception cref="T:System.ArgumentOutOfRangeException">Аргумент <paramref name="partitionerOptions" /> задает недопустимое значение для <see cref="T:System.Collections.Concurrent.EnumerablePartitionerOptions" />.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create``1(System.Collections.Generic.IList{``0},System.Boolean)">
+      <summary>Создает упорядочиваемый разделитель из экземпляра <see cref="T:System.Collections.Generic.IList`1" />.</summary>
+      <returns>Упорядочиваемый модуль разделения, созданный на основе входного списка.</returns>
+      <param name="list">Разделяемый список.</param>
+      <param name="loadBalance">Логическое значение, которое указывает, должен ли созданный модуль разделения динамически распределять нагрузку между разделами или статически создавать разделы.</param>
+      <typeparam name="TSource">Тип элементов исходного списка.</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create(System.Int32,System.Int32)">
+      <summary>Создает модуль разделения, который осуществляет деление указанного пользователем диапазона.</summary>
+      <returns>Модуль разделения.</returns>
+      <param name="fromInclusive">Нижняя граница диапазона (включительно).</param>
+      <param name="toExclusive">Верхняя граница диапазона (не включительно).</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Аргумент <paramref name="toExclusive" /> меньше или равен аргументу <paramref name="fromInclusive" />.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create(System.Int32,System.Int32,System.Int32)">
+      <summary>Создает модуль разделения, который осуществляет деление указанного пользователем диапазона.</summary>
+      <returns>Модуль разделения.</returns>
+      <param name="fromInclusive">Нижняя граница диапазона (включительно).</param>
+      <param name="toExclusive">Верхняя граница диапазона (не включительно).</param>
+      <param name="rangeSize">Размер каждого поддиапазона.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Аргумент <paramref name="toExclusive" /> меньше или равен аргументу <paramref name="fromInclusive" />.– или –Аргумент <paramref name="rangeSize" /> меньше или равен нулю.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create(System.Int64,System.Int64)">
+      <summary>Создает модуль разделения, который осуществляет деление указанного пользователем диапазона.</summary>
+      <returns>Модуль разделения.</returns>
+      <param name="fromInclusive">Нижняя граница диапазона (включительно).</param>
+      <param name="toExclusive">Верхняя граница диапазона (не включительно).</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Аргумент <paramref name="toExclusive" /> меньше или равен аргументу <paramref name="fromInclusive" />.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create(System.Int64,System.Int64,System.Int64)">
+      <summary>Создает модуль разделения, который осуществляет деление указанного пользователем диапазона.</summary>
+      <returns>Модуль разделения.</returns>
+      <param name="fromInclusive">Нижняя граница диапазона (включительно).</param>
+      <param name="toExclusive">Верхняя граница диапазона (не включительно).</param>
+      <param name="rangeSize">Размер каждого поддиапазона.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Аргумент <paramref name="toExclusive" /> меньше или равен аргументу <paramref name="fromInclusive" />.– или –Аргумент <paramref name="rangeSize" /> меньше или равен нулю.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create``1(``0[],System.Boolean)">
+      <summary>Создает упорядочиваемый разделитель из экземпляра <see cref="T:System.Array" />.</summary>
+      <returns>Упорядочиваемый модуль разделения, созданный на основе входного массива.</returns>
+      <param name="array">Разделяемый массив.</param>
+      <param name="loadBalance">Логическое значение, которое указывает, должен ли созданный модуль разделения динамически распределять нагрузку между разделами или статически создавать разделы.</param>
+      <typeparam name="TSource">Тип элементов исходного массива.</typeparam>
+    </member>
+    <member name="T:System.Collections.Concurrent.Partitioner`1">
+      <summary>Представляет конкретный способ разделения источника данных на несколько разделов.</summary>
+      <typeparam name="TSource">Тип элементов коллекции.</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner`1.#ctor">
+      <summary>Создает новый экземпляр модуля разделения.</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner`1.GetDynamicPartitions">
+      <summary>Создает объект, который может разделить базовую коллекцию на переменное число разделов.</summary>
+      <returns>Объект, который может создать разделы в базовом источнике данных.</returns>
+      <exception cref="T:System.NotSupportedException">Создание динамических разделов не поддерживается базовым классом.Это необходимо реализовать в производном классе.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner`1.GetPartitions(System.Int32)">
+      <summary>Делит базовую коллекцию на указанное число разделов.</summary>
+      <returns>Список, содержащий перечислители <paramref name="partitionCount" />.</returns>
+      <param name="partitionCount">Число создаваемых разделов.</param>
+    </member>
+    <member name="P:System.Collections.Concurrent.Partitioner`1.SupportsDynamicPartitions">
+      <summary>Получает значение, определяющее, могут ли быть динамически созданы дополнительные разделы.</summary>
+      <returns>Значение true, если объект <see cref="T:System.Collections.Concurrent.Partitioner`1" /> может динамически создавать разделы по запросу; значение false, если объект <see cref="T:System.Collections.Concurrent.Partitioner`1" /> может только статически выделять разделы.</returns>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Diagnostics.Tools</name>
+  </assembly>
+  <members>
+    <member name="T:System.CodeDom.Compiler.GeneratedCodeAttribute">
+      <summary>标识由工具生成的代码。此类不能被继承。</summary>
+    </member>
+    <member name="M:System.CodeDom.Compiler.GeneratedCodeAttribute.#ctor(System.String,System.String)">
+      <summary>初始化 <see cref="T:System.CodeDom.Compiler.GeneratedCodeAttribute" /> 类的新实例，并在初始化时指定生成代码的工具的名称和版本。</summary>
+      <param name="tool">生成代码的工具的名称。</param>
+      <param name="version">生成代码的工具的版本。</param>
+    </member>
+    <member name="P:System.CodeDom.Compiler.GeneratedCodeAttribute.Tool">
+      <summary>获取生成代码的工具的名称。</summary>
+      <returns>生成代码的工具的名称。</returns>
+    </member>
+    <member name="P:System.CodeDom.Compiler.GeneratedCodeAttribute.Version">
+      <summary>获取生成代码的工具的版本。</summary>
+      <returns>生成代码的工具的版本。</returns>
+    </member>
+    <member name="T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute">
+      <summary>取消报告特定的静态分析工具规则冲突，允许一个代码项目上应用多个取消报告设置。</summary>
+    </member>
+    <member name="M:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.#ctor(System.String,System.String)">
+      <summary>初始化 <see cref="T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute" /> 类的新实例，同时指定静态分析工具的类别和分析规则的标识符。</summary>
+      <param name="category">该属性的类别。</param>
+      <param name="checkId">应用该属性的分析工具规则的标识符。</param>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Category">
+      <summary>获取标识特性分类的类别。</summary>
+      <returns>标识特性的类别。</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.CheckId">
+      <summary>获取要取消的静态分析工具规则的标识符。</summary>
+      <returns>要取消的静态分析工具规则的标识符。</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Justification">
+      <summary>获取或设置用于取消代码分析消息的规则。</summary>
+      <returns>用于取消消息的规则。</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.MessageId">
+      <summary>获取或设置扩展排除条件的可选参数。</summary>
+      <returns>一个包含扩展的排除条件的字符串。</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Scope">
+      <summary>获取或设置与属性相关的代码的范围。</summary>
+      <returns>与属性相关的代码的范围。</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Target">
+      <summary>获取或设置表示属性目标的完全限定路径。</summary>
+      <returns>表示属性目标的完全限定路径。</returns>
+    </member>
+  </members>
+</doc>

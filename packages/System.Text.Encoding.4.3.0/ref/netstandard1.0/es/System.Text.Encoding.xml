@@ -1,0 +1,972 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Text.Encoding</name>
+  </assembly>
+  <members>
+    <member name="T:System.Text.Decoder">
+      <summary>Convierte una secuencia de bytes codificados en un juego de caracteres.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Decoder.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.Decoder" />.</summary>
+    </member>
+    <member name="M:System.Text.Decoder.Convert(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32,System.Int32,System.Boolean,System.Int32@,System.Int32@,System.Boolean@)">
+      <summary>Convierte una matriz de bytes codificados en caracteres codificados URF-16 y almacena el resultado en una matriz de caracteres.</summary>
+      <param name="bytes">Matriz de bytes que se va a convertir.</param>
+      <param name="byteIndex">Primer elemento de <paramref name="bytes" /> que se va a convertir.</param>
+      <param name="byteCount">Número de elementos de <paramref name="bytes" /> que se van a convertir.</param>
+      <param name="chars">Matriz para almacenar los caracteres convertidos.</param>
+      <param name="charIndex">Primer elemento de <paramref name="chars" /> en el que se almacenan los datos.</param>
+      <param name="charCount">Número máximo de elementos de <paramref name="chars" /> que se van a utilizar en la conversión.</param>
+      <param name="flush">Es true para indicar que no se van a convertir más datos; de lo contrario, es false.</param>
+      <param name="bytesUsed">El resultado que devuelve este método contiene el número de bytes utilizados en la conversión.Este parámetro se pasa sin inicializar.</param>
+      <param name="charsUsed">El resultado que devuelve este método contiene el número de caracteres de <paramref name="chars" /> que ha creado la conversión.Este parámetro se pasa sin inicializar.</param>
+      <param name="completed">El resultado que devuelve este método contiene true si se han convertido todos los caracteres especificados por <paramref name="byteCount" />; de lo contrario, contiene false.Este parámetro se pasa sin inicializar.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="chars" /> o <paramref name="bytes" /> es null (Nothing).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="charIndex" />, <paramref name="charCount" />, <paramref name="byteIndex" /> o <paramref name="byteCount" /> es menor que cero.O bienLongitud de <paramref name="chars" />. - <paramref name="charIndex" /> es menor que <paramref name="charCount" />.O bienLongitud de <paramref name="bytes" />. - <paramref name="byteIndex" /> es menor que <paramref name="byteCount" />.</exception>
+      <exception cref="T:System.ArgumentException">El búfer de salida no tiene capacidad para contener las entradas convertidas.El búfer de salida debe tener un tamaño mayor o igual que el indicado por el método <see cref="Overload:System.Text.Decoder.GetCharCount" />.</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación más completa)- y -La propiedad <see cref="P:System.Text.Decoder.Fallback" /> está establecida en <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.Decoder.Fallback">
+      <summary>Obtiene o establece un objeto <see cref="T:System.Text.DecoderFallback" /> para el objeto <see cref="T:System.Text.Decoder" /> actual.</summary>
+      <returns>Un objeto <see cref="T:System.Text.DecoderFallback" />.</returns>
+      <exception cref="T:System.ArgumentNullException">El valor en una operación de establecimiento es null (Nothing).</exception>
+      <exception cref="T:System.ArgumentException">No se puede asignar un nuevo valor en una operación de establecimiento porque el objeto <see cref="T:System.Text.DecoderFallbackBuffer" /> actual contiene datos que aún no se han descodificado. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Decoder.FallbackBuffer">
+      <summary>Obtiene el objeto <see cref="T:System.Text.DecoderFallbackBuffer" /> asociado al objeto <see cref="T:System.Text.Decoder" /> actual.</summary>
+      <returns>Un objeto <see cref="T:System.Text.DecoderFallbackBuffer" />.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Decoder.GetCharCount(System.Byte[],System.Int32,System.Int32)">
+      <summary>Cuando se reemplaza en una clase derivada, calcula el número de caracteres generado mediante la descodificación de una secuencia de bytes de la matriz de bytes especificada.</summary>
+      <returns>Número de caracteres que se genera al descodificar la secuencia de bytes especificada y cualquier byte del búfer interno.</returns>
+      <param name="bytes">Matriz de bytes que contiene la secuencia de bytes que se va a descodificar. </param>
+      <param name="index">Índice del primer byte que se va a descodificar. </param>
+      <param name="count">Número de bytes que se van a descodificar. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="bytes" /> es null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="index" /> o <paramref name="count" /> es menor que cero.O bien <paramref name="index" /> y <paramref name="count" /> no denotan un intervalo válido en <paramref name="bytes" />. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación más completa)- y -La propiedad <see cref="P:System.Text.Decoder.Fallback" /> está establecida en <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Decoder.GetCharCount(System.Byte[],System.Int32,System.Int32,System.Boolean)">
+      <summary>Cuando se reemplaza en una clase derivada, calcula el número de caracteres generado mediante la descodificación de una secuencia de bytes de la matriz de bytes especificada.Un parámetro indica si el estado interno del descodificador se borra después del cálculo.</summary>
+      <returns>Número de caracteres que se genera al descodificar la secuencia de bytes especificada y cualquier byte del búfer interno.</returns>
+      <param name="bytes">Matriz de bytes que contiene la secuencia de bytes que se va a descodificar. </param>
+      <param name="index">Índice del primer byte que se va a descodificar. </param>
+      <param name="count">Número de bytes que se van a descodificar. </param>
+      <param name="flush">Es true para simular el borrado del estado interno del codificador después del cálculo; de lo contrario, es false. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="bytes" /> es null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="index" /> o <paramref name="count" /> es menor que cero.O bien <paramref name="index" /> y <paramref name="count" /> no denotan un intervalo válido en <paramref name="bytes" />. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación más completa)- y -La propiedad <see cref="P:System.Text.Decoder.Fallback" /> está establecida en <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Decoder.GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)">
+      <summary>Cuando se reemplaza en una clase derivada, descodifica una secuencia de bytes de la matriz de bytes especificada y cualquier byte del búfer interno en la matriz de caracteres especificada.</summary>
+      <returns>Número real de caracteres escrito en <paramref name="chars" />.</returns>
+      <param name="bytes">Matriz de bytes que contiene la secuencia de bytes que se va a descodificar. </param>
+      <param name="byteIndex">Índice del primer byte que se va a descodificar. </param>
+      <param name="byteCount">Número de bytes que se van a descodificar. </param>
+      <param name="chars">Matriz de caracteres que va a contener el juego de caracteres resultante. </param>
+      <param name="charIndex">Índice en el que se inicia la escritura del conjunto de caracteres resultante. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="bytes" /> es null (Nothing).O bien El valor de <paramref name="chars" /> es null  (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteIndex" />, <paramref name="byteCount" /> o <paramref name="charIndex" /> es menor que cero.O bien <paramref name="byteindex" /> y <paramref name="byteCount" /> no denotan un intervalo válido en <paramref name="bytes" />.O bien <paramref name="charIndex" /> no es un índice válido para <paramref name="chars" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="chars" /> no tiene suficiente capacidad desde <paramref name="charIndex" /> hasta el final de la matriz para aloja los caracteres resultantes. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación más completa)- y -La propiedad <see cref="P:System.Text.Decoder.Fallback" /> está establecida en <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Decoder.GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32,System.Boolean)">
+      <summary>Cuando se reemplaza en una clase derivada, descodifica una secuencia de bytes de la matriz de bytes especificada y cualquier byte del búfer interno en la matriz de caracteres especificada.Un parámetro indica si el estado interno del descodificador se borra después de la conversión.</summary>
+      <returns>Número real de caracteres escrito en el parámetro <paramref name="chars" />.</returns>
+      <param name="bytes">Matriz de bytes que contiene la secuencia de bytes que se va a descodificar. </param>
+      <param name="byteIndex">Índice del primer byte que se va a descodificar. </param>
+      <param name="byteCount">Número de bytes que se van a descodificar. </param>
+      <param name="chars">Matriz de caracteres que va a contener el juego de caracteres resultante. </param>
+      <param name="charIndex">Índice en el que se inicia la escritura del conjunto de caracteres resultante. </param>
+      <param name="flush">Es true para borrar el estado interno del descodificador después de la conversión; de lo contrario, es false. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="bytes" /> es null (Nothing).O bien El valor de <paramref name="chars" /> es null  (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteIndex" />, <paramref name="byteCount" /> o <paramref name="charIndex" /> es menor que cero.O bien <paramref name="byteindex" /> y <paramref name="byteCount" /> no denotan un intervalo válido en <paramref name="bytes" />.O bien <paramref name="charIndex" /> no es un índice válido para <paramref name="chars" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="chars" /> no tiene suficiente capacidad desde <paramref name="charIndex" /> hasta el final de la matriz para aloja los caracteres resultantes. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación más completa)- y -La propiedad <see cref="P:System.Text.Decoder.Fallback" /> está establecida en <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Decoder.Reset">
+      <summary>Cuando se reemplaza en una clase derivada, reestablece el estado inicial del descodificador.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.DecoderExceptionFallback">
+      <summary>Proporciona un mecanismo de control de errores, denominado reserva, para una secuencia codificada de bytes de entrada que no se puede convertir en un carácter de entrada.La reserva produce una excepción en lugar de descodificar la secuencia de bytes de entrada.Esta clase no puede heredarse.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderExceptionFallback.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.DecoderExceptionFallback" />. </summary>
+    </member>
+    <member name="M:System.Text.DecoderExceptionFallback.CreateFallbackBuffer">
+      <summary>Devuelve un búfer de reserva del descodificador que produce una excepción si no puede convertir una secuencia de bytes en un carácter. </summary>
+      <returns>Búfer de reserva del descodificador que produce una excepción cuando no puede descodificar una secuencia de bytes.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderExceptionFallback.Equals(System.Object)">
+      <summary>Indica si el objeto <see cref="T:System.Text.DecoderExceptionFallback" /> actual y un objeto especificado son iguales.</summary>
+      <returns>
+            Es true si <paramref name="value" /> no es null y es un objeto <see cref="T:System.Text.DecoderExceptionFallback" />; de lo contrario, es false.</returns>
+      <param name="value">Objeto que deriva de la clase <see cref="T:System.Text.DecoderExceptionFallback" />.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderExceptionFallback.GetHashCode">
+      <summary>Recupera el código hash de esta instancia.</summary>
+      <returns>Siempre se devuelve el mismo valor arbitrario, por lo que no tiene especial importancia. </returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderExceptionFallback.MaxCharCount">
+      <summary>Obtiene el número máximo de caracteres que esta instancia puede devolver.</summary>
+      <returns>El valor devuelto siempre es cero.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.DecoderFallback">
+      <summary>Proporciona un mecanismo de control de errores, denominado reserva, para una secuencia codificada de bytes de entrada que no se puede convertir en un carácter de salida. </summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderFallback.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.DecoderFallback" />. </summary>
+    </member>
+    <member name="M:System.Text.DecoderFallback.CreateFallbackBuffer">
+      <summary>Cuando se reemplaza en una clase derivada, inicializa una nueva instancia de la clase <see cref="T:System.Text.DecoderFallbackBuffer" />. </summary>
+      <returns>Objeto que proporciona un búfer de retroceso para un descodificador.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderFallback.ExceptionFallback">
+      <summary>Obtiene un objeto que produce una excepción cuando no se puede descodificar una secuencia de bytes de entrada.</summary>
+      <returns>Tipo derivado de la clase <see cref="T:System.Text.DecoderFallback" />.El valor predeterminado es un objeto <see cref="T:System.Text.DecoderExceptionFallback" />.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderFallback.MaxCharCount">
+      <summary>Cuando se invalida en una clase derivada, obtiene el número máximo de caracteres que puede devolver el objeto <see cref="T:System.Text.DecoderFallback" /> actual.</summary>
+      <returns>Número máximo de caracteres que puede devolver el objeto <see cref="T:System.Text.DecoderFallback" /> actual.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderFallback.ReplacementFallback">
+      <summary>Obtiene un objeto que genera una cadena de sustitución de una secuencia de bytes de entrada que no se puede descodificar.</summary>
+      <returns>Tipo derivado de la clase <see cref="T:System.Text.DecoderFallback" />.El valor predeterminado es un objeto <see cref="T:System.Text.DecoderReplacementFallback" /> que emite el carácter INTERROGACIÓN DE CIERRE ("?", U+003F) en lugar de las secuencias de bytes desconocidas.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Text.DecoderFallbackBuffer">
+      <summary>Proporciona un búfer que permite a un controlador de retroceso devolver una cadena alternativa a un descodificador cuando no puede descodificar una secuencia de bytes de entrada. </summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderFallbackBuffer.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.DecoderFallbackBuffer" />. </summary>
+    </member>
+    <member name="M:System.Text.DecoderFallbackBuffer.Fallback(System.Byte[],System.Int32)">
+      <summary>Cuando se invalida en una clase derivada, prepara el búfer de reserva para controlar la secuencia de bytes de entrada especificada.</summary>
+      <returns>Es true si el búfer de reserva puede procesar <paramref name="bytesUnknown" />; es false si el búfer de reserva omite <paramref name="bytesUnknown" />.</returns>
+      <param name="bytesUnknown">Matriz de bytes de entrada.</param>
+      <param name="index">Posición de índice de un byte en <paramref name="bytesUnknown" />.</param>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderFallbackBuffer.GetNextChar">
+      <summary>Cuando se invalida en una clase derivada, recupera el carácter siguiente en el búfer de reserva.</summary>
+      <returns>Carácter siguiente en el búfer de reserva.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderFallbackBuffer.MovePrevious">
+      <summary>Cuando se invalida en una clase derivada, realiza la siguiente llamada al método <see cref="M:System.Text.DecoderFallbackBuffer.GetNextChar" /> para obtener acceso a la posición del carácter del búfer de datos situada antes de la posición del carácter actual. </summary>
+      <returns>Es true si el resultado de la operación <see cref="M:System.Text.DecoderFallbackBuffer.MovePrevious" /> es correcto; en caso contrario, es false.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderFallbackBuffer.Remaining">
+      <summary>Cuando se invalida en una clase derivada, obtiene el número de caracteres del objeto <see cref="T:System.Text.DecoderFallbackBuffer" /> actual que están pendientes de ser procesados.</summary>
+      <returns>Número de caracteres en el búfer de reserva actual que aún no se han procesado.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderFallbackBuffer.Reset">
+      <summary>Inicializa todos los datos y la información de estado relacionados con este búfer de reserva.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Text.DecoderFallbackException">
+      <summary>Excepción que se produce cuando una operación de retroceso del descodificador (decoder fallback) no se realiza correctamente.Esta clase no puede heredarse.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderFallbackException.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.DecoderFallbackException" />. </summary>
+    </member>
+    <member name="M:System.Text.DecoderFallbackException.#ctor(System.String)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.DecoderFallbackException" />.Un parámetro especifica el mensaje de error.</summary>
+      <param name="message">Mensaje de error.</param>
+    </member>
+    <member name="M:System.Text.DecoderFallbackException.#ctor(System.String,System.Byte[],System.Int32)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.DecoderFallbackException" />.Los parámetros especifican el mensaje de error, la matriz de bytes que se está descodificando y el índice del byte que no se puede descodificar.</summary>
+      <param name="message">Mensaje de error.</param>
+      <param name="bytesUnknown">Matriz de bytes de entrada.</param>
+      <param name="index">Posición de índice en <paramref name="bytesUnknown" /> del byte que no se puede descodificar.</param>
+    </member>
+    <member name="M:System.Text.DecoderFallbackException.#ctor(System.String,System.Exception)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.DecoderFallbackException" />.Los parámetros especifican el mensaje de error y la excepción interna que es la causa de esta excepción.</summary>
+      <param name="message">Mensaje de error.</param>
+      <param name="innerException">Excepción que produjo esta excepción.</param>
+    </member>
+    <member name="P:System.Text.DecoderFallbackException.BytesUnknown">
+      <summary>Obtiene la secuencia de bytes de entrada que produjo la excepción.</summary>
+      <returns>Matriz de bytes de entrada que no se puede descodificar. </returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderFallbackException.Index">
+      <summary>Obtiene la posición de índice en la secuencia de bytes de entrada del byte que produjo la excepción.</summary>
+      <returns>Posición de índice en la matriz de bytes de entrada del byte que no se puede descodificar.La posición de índice es de base cero.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Text.DecoderReplacementFallback">
+      <summary>Proporciona un mecanismo de control de errores, denominado reserva, para una secuencia codificada de bytes de entrada que no se puede convertir en un carácter de salida.La reserva emite una cadena de reemplazo especificada por el usuario en lugar de una secuencia descodificada de bytes de entrada.Esta clase no puede heredarse.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderReplacementFallback.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.DecoderReplacementFallback" />. </summary>
+    </member>
+    <member name="M:System.Text.DecoderReplacementFallback.#ctor(System.String)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.DecoderReplacementFallback" /> utilizando una cadena de reemplazo especificada.</summary>
+      <param name="replacement">Cadena emitida en una operación de descodificación en lugar de una secuencia de bytes de entrada que no se puede descodificar.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="replacement" />is null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="replacement" /> contiene un par suplente no válido.En otras palabras, el par suplente no consta de un componente suplente alto seguido de un componente suplente bajo.</exception>
+    </member>
+    <member name="M:System.Text.DecoderReplacementFallback.CreateFallbackBuffer">
+      <summary>Crea un objeto <see cref="T:System.Text.DecoderFallbackBuffer" /> que se inicializa con la cadena de reemplazo de este objeto <see cref="T:System.Text.DecoderReplacementFallback" />.</summary>
+      <returns>Un objeto <see cref="T:System.Text.DecoderFallbackBuffer" /> que especifica una cadena que se va a utilizar en lugar de la entrada de la operación de descodificación original.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderReplacementFallback.DefaultString">
+      <summary>Obtiene la cadena de reemplazo que es el valor del objeto <see cref="T:System.Text.DecoderReplacementFallback" />.</summary>
+      <returns>Una cadena de reemplazo que se emite en lugar de una secuencia de bytes de entrada que no se puede descodificar.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderReplacementFallback.Equals(System.Object)">
+      <summary>Indica si el valor de un objeto especificado es igual al objeto <see cref="T:System.Text.DecoderReplacementFallback" />.</summary>
+      <returns>true si <paramref name="value" /> es un objeto <see cref="T:System.Text.DecoderReplacementFallback" /> cuya propiedad <see cref="P:System.Text.DecoderReplacementFallback.DefaultString" /> es igual a la propiedad <see cref="P:System.Text.DecoderReplacementFallback.DefaultString" /> del objeto <see cref="T:System.Text.DecoderReplacementFallback" /> actual; en caso contrario, false. </returns>
+      <param name="value">Un objeto <see cref="T:System.Text.DecoderReplacementFallback" />.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderReplacementFallback.GetHashCode">
+      <summary>Recupera el código hash del valor del objeto <see cref="T:System.Text.DecoderReplacementFallback" />.</summary>
+      <returns>El código hash del valor del objeto.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderReplacementFallback.MaxCharCount">
+      <summary>Obtiene el número de caracteres de la cadena de reemplazo para el objeto <see cref="T:System.Text.DecoderReplacementFallback" />.</summary>
+      <returns>El número de caracteres de la cadena que se emite en lugar de una secuencia de bytes que no se puede descodificar, es decir, la longitud de la cadena devuelta por la propiedad <see cref="P:System.Text.DecoderReplacementFallback.DefaultString" />.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.Encoder">
+      <summary>Codifica un juego de caracteres en una secuencia de bytes.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoder.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.Encoder" />.</summary>
+    </member>
+    <member name="M:System.Text.Encoder.Convert(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@,System.Int32@,System.Boolean@)">
+      <summary>Convierte una matriz de caracteres Unicode en una secuencia de bytes codificada y almacena el resultado en una matriz de bytes.</summary>
+      <param name="chars">Matriz de caracteres que se van a convertir.</param>
+      <param name="charIndex">Primer elemento de <paramref name="chars" /> que se va a convertir.</param>
+      <param name="charCount">Número de elementos de <paramref name="chars" /> que se van a convertir.</param>
+      <param name="bytes">Matriz donde se almacenan los bytes convertidos.</param>
+      <param name="byteIndex">Primer elemento de <paramref name="bytes" /> en el que se almacenan datos.</param>
+      <param name="byteCount">Número máximo de elementos de <paramref name="bytes" /> que se van a utilizar en la conversión.</param>
+      <param name="flush">Es true para indicar que no se van a convertir más datos; en caso contrario, es false.</param>
+      <param name="charsUsed">El resultado de este método contiene el número de caracteres de <paramref name="chars" /> utilizados en la conversión.Este parámetro se pasa sin inicializar.</param>
+      <param name="bytesUsed">El resultado de este método contiene el número de bytes generados por la conversión.Este parámetro se pasa sin inicializar.</param>
+      <param name="completed">El resultado que devuelve este método contiene true si se han convertido todos los caracteres especificados por <paramref name="charCount" />; de lo contrario, contiene false.Este parámetro se pasa sin inicializar.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="chars" /> o <paramref name="bytes" /> es null (Nothing).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="charIndex" />, <paramref name="charCount" />, <paramref name="byteIndex" /> o <paramref name="byteCount" /> es menor que cero.O bienLongitud de <paramref name="chars" />. - <paramref name="charIndex" /> es menor que <paramref name="charCount" />.O bienLongitud de <paramref name="bytes" />. - <paramref name="byteIndex" /> es menor que <paramref name="byteCount" />.</exception>
+      <exception cref="T:System.ArgumentException">El búfer de salida no tiene capacidad para contener las entradas convertidas.El búfer de salida debe tener un tamaño mayor o igual que el indicado por el método <see cref="Overload:System.Text.Encoder.GetByteCount" />.</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación más completa)- y -La propiedad <see cref="P:System.Text.Encoder.Fallback" /> está establecida en <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoder.Fallback">
+      <summary>Obtiene o establece un objeto <see cref="T:System.Text.EncoderFallback" /> para el objeto <see cref="T:System.Text.Encoder" /> actual.</summary>
+      <returns>Un objeto <see cref="T:System.Text.EncoderFallback" />.</returns>
+      <exception cref="T:System.ArgumentNullException">El valor en una operación de establecimiento es null (Nothing).</exception>
+      <exception cref="T:System.ArgumentException">No se puede asignar un nuevo valor en una operación de establecimiento porque el objeto <see cref="T:System.Text.EncoderFallbackBuffer" /> actual contiene datos que todavía no se han codificado. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación más completa)- y -La propiedad <see cref="P:System.Text.Encoder.Fallback" /> está establecida en <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoder.FallbackBuffer">
+      <summary>Obtiene el objeto <see cref="T:System.Text.EncoderFallbackBuffer" /> asociado al objeto <see cref="T:System.Text.Encoder" /> actual.</summary>
+      <returns>Un objeto <see cref="T:System.Text.EncoderFallbackBuffer" />.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoder.GetByteCount(System.Char[],System.Int32,System.Int32,System.Boolean)">
+      <summary>Cuando se reemplaza en una clase derivada, calcula el número de bytes generado al codificar un juego de caracteres de la matriz de caracteres especificada.Un parámetro indica si se debe borrar el estado interno del codificador después del cálculo.</summary>
+      <returns>Número de bytes generado al codificar los caracteres especificados y cualquier carácter del búfer interno.</returns>
+      <param name="chars">Matriz de caracteres que contiene el juego de caracteres que se va a codificar. </param>
+      <param name="index">Índice del primer carácter que se va a codificar. </param>
+      <param name="count">Número de caracteres que se van a codificar. </param>
+      <param name="flush">Es true para simular el borrado del estado interno del codificador después del cálculo; de lo contrario, es false. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="index" /> o <paramref name="count" /> es menor que cero.O bien <paramref name="index" /> y <paramref name="count" /> no denotan un intervalo válido en <paramref name="chars" />. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación más completa)- y -La propiedad <see cref="P:System.Text.Encoder.Fallback" /> está establecida en <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoder.GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Boolean)">
+      <summary>Cuando se reemplaza en una clase derivada, codifica un juego de caracteres de la matriz de caracteres especificada y cualquier carácter del búfer interno en la matriz de bytes especificada.Un parámetro indica si se debe borrar el estado interno del codificador después de la conversión.</summary>
+      <returns>Número real de bytes escritos en <paramref name="bytes" />.</returns>
+      <param name="chars">Matriz de caracteres que contiene el juego de caracteres que se va a codificar. </param>
+      <param name="charIndex">Índice del primer carácter que se va a codificar. </param>
+      <param name="charCount">Número de caracteres que se van a codificar. </param>
+      <param name="bytes">Matriz de bytes que va a contener la secuencia de bytes resultante. </param>
+      <param name="byteIndex">Índice en el que se inicia la escritura de la secuencia de bytes resultante. </param>
+      <param name="flush">Es true para borrar el estado interno del codificador después de la conversión; de lo contrario, es false. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="chars" /> es null  (Nothing).O bien El valor de <paramref name="bytes" /> es null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="charIndex" />, <paramref name="charCount" /> o <paramref name="byteIndex" /> es menor que cero.O bien <paramref name="charIndex" /> y <paramref name="charCount" /> no denotan un intervalo válido en <paramref name="chars" />.O bien <paramref name="byteIndex" /> no es un índice válido en <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="bytes" /> no tiene suficiente capacidad desde <paramref name="byteIndex" /> hasta el final de la matriz para alojar los bytes resultantes. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación más completa)- y -La propiedad <see cref="P:System.Text.Encoder.Fallback" /> está establecida en <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoder.Reset">
+      <summary>Cuando se reemplaza en una clase derivada, restablece el estado inicial del codificador.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.EncoderExceptionFallback">
+      <summary>Proporciona un mecanismo de control de errores, denominado reserva, para un carácter de entrada que no se puede convertir en una secuencia de bytes de salida.La reserva produce una excepción si un carácter de entrada no se puede convertir en una secuencia de bytes de salida.Esta clase no puede heredarse.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderExceptionFallback.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.EncoderExceptionFallback" />.</summary>
+    </member>
+    <member name="M:System.Text.EncoderExceptionFallback.CreateFallbackBuffer">
+      <summary>Devuelve un búfer de reserva del codificador que produce una excepción si no puede convertir una secuencia de caracteres en una secuencia de bytes.</summary>
+      <returns>Búfer de reserva del codificador que produce una excepción cuando no puede codificar una secuencia de caracteres.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderExceptionFallback.Equals(System.Object)">
+      <summary>Indica si el objeto <see cref="T:System.Text.EncoderExceptionFallback" /> actual y un objeto especificado son iguales.</summary>
+      <returns>true si <paramref name="value" /> no es null (Nothing en Visual Basic .NET) y es un objeto <see cref="T:System.Text.EncoderExceptionFallback" />; de lo contrario, false.</returns>
+      <param name="value">Objeto que deriva de la clase <see cref="T:System.Text.EncoderExceptionFallback" />.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderExceptionFallback.GetHashCode">
+      <summary>Recupera el código hash de esta instancia.</summary>
+      <returns>Siempre se devuelve el mismo valor arbitrario, por lo que no tiene especial importancia. </returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderExceptionFallback.MaxCharCount">
+      <summary>Obtiene el número máximo de caracteres que esta instancia puede devolver.</summary>
+      <returns>El valor devuelto siempre es cero.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.EncoderFallback">
+      <summary>Proporciona un mecanismo de control de errores, denominado reserva, para un carácter de entrada que no puede convertirse en una secuencia codificada de bytes de salida. </summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallback.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.EncoderFallback" />.</summary>
+    </member>
+    <member name="M:System.Text.EncoderFallback.CreateFallbackBuffer">
+      <summary>Cuando se reemplaza en una clase derivada, inicializa una nueva instancia de la clase <see cref="T:System.Text.EncoderFallbackBuffer" />. </summary>
+      <returns>Objeto que proporciona un búfer de retroceso para un codificador.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallback.ExceptionFallback">
+      <summary>Obtiene un objeto que produce una excepción cuando no se puede codificar un carácter de entrada.</summary>
+      <returns>Tipo derivado de la clase <see cref="T:System.Text.EncoderFallback" />.El valor predeterminado es un objeto <see cref="T:System.Text.EncoderExceptionFallback" />.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallback.MaxCharCount">
+      <summary>Cuando se invalida en una clase derivada, obtiene el número máximo de caracteres que puede devolver el objeto <see cref="T:System.Text.EncoderFallback" /> actual.</summary>
+      <returns>Número máximo de caracteres que puede devolver el objeto <see cref="T:System.Text.EncoderFallback" /> actual.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallback.ReplacementFallback">
+      <summary>Obtiene un objeto que genera una cadena de sustitución de un carácter de entrada que no se puede codificar.</summary>
+      <returns>Tipo derivado de la clase <see cref="T:System.Text.EncoderFallback" />.El valor predeterminado es un objeto <see cref="T:System.Text.EncoderReplacementFallback" /> que reemplaza los caracteres de entrada desconocidos por el carácter INTERROGACIÓN DE CIERRE ("?", U+003F).</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Text.EncoderFallbackBuffer">
+      <summary>Proporciona un búfer que permite a un controlador de retroceso devolver una cadena alternativa a un codificador cuando no puede codificar un carácter de entrada. </summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackBuffer.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.EncoderFallbackBuffer" />.</summary>
+    </member>
+    <member name="M:System.Text.EncoderFallbackBuffer.Fallback(System.Char,System.Char,System.Int32)">
+      <summary>Cuando se invalida en una clase derivada, prepara el búfer de reserva para controlar el par suplente especificado.</summary>
+      <returns>true si el búfer de reserva puede procesar <paramref name="charUnknownHigh" /> y <paramref name="charUnknownLow" />; false si el búfer de reserva omite el par suplente.</returns>
+      <param name="charUnknownHigh">Suplente alto del par de entrada.</param>
+      <param name="charUnknownLow">Suplente bajo del par de entrada.</param>
+      <param name="index">Posición de índice del par suplente en el búfer de entrada.</param>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackBuffer.Fallback(System.Char,System.Int32)">
+      <summary>Cuando se invalida en una clase derivada, prepara el búfer de reserva para controlar el carácter de entrada especificado. </summary>
+      <returns>Es true si el búfer de reserva puede procesar <paramref name="charUnknown" />; es false si el búfer de reserva omite <paramref name="charUnknown" />.</returns>
+      <param name="charUnknown">Carácter de entrada.</param>
+      <param name="index">Posición de índice del carácter en el búfer de entrada.</param>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackBuffer.GetNextChar">
+      <summary>Cuando se invalida en una clase derivada, recupera el carácter siguiente en el búfer de reserva.</summary>
+      <returns>Carácter siguiente en el búfer de reserva.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackBuffer.MovePrevious">
+      <summary>Cuando se invalida en una clase derivada, realiza la siguiente llamada al método <see cref="M:System.Text.EncoderFallbackBuffer.GetNextChar" /> para obtener acceso a la posición del carácter del búfer de datos situada antes de la posición del carácter actual. </summary>
+      <returns>Es true si el resultado de la operación <see cref="M:System.Text.EncoderFallbackBuffer.MovePrevious" /> es correcto; en caso contrario, es false.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallbackBuffer.Remaining">
+      <summary>Cuando se invalida en una clase derivada, obtiene el número de caracteres del objeto <see cref="T:System.Text.EncoderFallbackBuffer" /> actual que están pendientes de ser procesados.</summary>
+      <returns>Número de caracteres en el búfer de reserva actual que aún no se han procesado.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackBuffer.Reset">
+      <summary>Inicializa todos los datos y la información de estado relacionados con este búfer de reserva.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Text.EncoderFallbackException">
+      <summary>La excepción que se produce cuando se produce un error en la operación de reserva de codificador.Esta clase no puede heredarse.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackException.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.EncoderFallbackException" />.</summary>
+    </member>
+    <member name="M:System.Text.EncoderFallbackException.#ctor(System.String)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.EncoderFallbackException" />.Un parámetro especifica el mensaje de error.</summary>
+      <param name="message">Mensaje de error.</param>
+    </member>
+    <member name="M:System.Text.EncoderFallbackException.#ctor(System.String,System.Exception)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.EncoderFallbackException" />.Los parámetros especifican el mensaje de error y la excepción interna que es la causa de esta excepción.</summary>
+      <param name="message">Mensaje de error.</param>
+      <param name="innerException">Excepción que produjo esta excepción.</param>
+    </member>
+    <member name="P:System.Text.EncoderFallbackException.CharUnknown">
+      <summary>Obtiene el carácter de entrada que produjo la excepción.</summary>
+      <returns>El carácter que no se puede codificar.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallbackException.CharUnknownHigh">
+      <summary>Obtiene el carácter de componente alto del par suplente que produjo la excepción.</summary>
+      <returns>El carácter de componente alto del par suplente que no se puede codificar.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallbackException.CharUnknownLow">
+      <summary>Obtiene el carácter de componente bajo del par suplente que produjo la excepción.</summary>
+      <returns>El carácter de componente bajo del par suplente que no se puede codificar.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallbackException.Index">
+      <summary>Obtiene la posición de índice en el búfer de entrada del carácter que ha producido la excepción.</summary>
+      <returns>La posición de índice en el búfer de entrada del carácter que no se puede codificar.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackException.IsUnknownSurrogate">
+      <summary>Indica si la entrada que ha producido la excepción es un par suplente.</summary>
+      <returns>Es true si la entrada era un par suplente; en caso contrario, es false.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.EncoderReplacementFallback">
+      <summary>Proporciona un mecanismo de control de errores, denominado reserva, para un carácter de entrada que no se puede convertir en una secuencia de bytes de salida.El recurso de reserva usa una cadena de reemplazo especificada por el usuario en lugar del carácter de entrada original.Esta clase no puede heredarse.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderReplacementFallback.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.EncoderReplacementFallback" />.</summary>
+    </member>
+    <member name="M:System.Text.EncoderReplacementFallback.#ctor(System.String)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.EncoderReplacementFallback" /> utilizando una cadena de reemplazo especificada.</summary>
+      <param name="replacement">Cadena que se convierte en una operación de codificación en lugar de un carácter de entrada que no se puede codificar.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="replacement" />is null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="replacement" /> contiene un par suplente no válido.En otras palabras, el par suplente no consta de un componente suplente alto seguido de un componente suplente bajo.</exception>
+    </member>
+    <member name="M:System.Text.EncoderReplacementFallback.CreateFallbackBuffer">
+      <summary>Crea un objeto <see cref="T:System.Text.EncoderFallbackBuffer" /> que se inicializa con la cadena de reemplazo de este objeto <see cref="T:System.Text.EncoderReplacementFallback" />.</summary>
+      <returns>Objeto <see cref="T:System.Text.EncoderFallbackBuffer" /> que es igual a este objeto <see cref="T:System.Text.EncoderReplacementFallback" />. </returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderReplacementFallback.DefaultString">
+      <summary>Obtiene la cadena de reemplazo que es el valor del objeto <see cref="T:System.Text.EncoderReplacementFallback" />.</summary>
+      <returns>Una cadena de reemplazo que se utiliza en lugar de un carácter de entrada que no se puede codificar.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderReplacementFallback.Equals(System.Object)">
+      <summary>Indica si el valor de un objeto especificado es igual al objeto <see cref="T:System.Text.EncoderReplacementFallback" />.</summary>
+      <returns>true si el parámetro <paramref name="value" /> especifica un objeto <see cref="T:System.Text.EncoderReplacementFallback" /> y la cadena de reemplazo de ese objeto es igual a la cadena de reemplazo de este objeto <see cref="T:System.Text.EncoderReplacementFallback" />; en caso contrario, false. </returns>
+      <param name="value">Un objeto <see cref="T:System.Text.EncoderReplacementFallback" />.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderReplacementFallback.GetHashCode">
+      <summary>Recupera el código hash del valor del objeto <see cref="T:System.Text.EncoderReplacementFallback" />.</summary>
+      <returns>El código hash del valor del objeto.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderReplacementFallback.MaxCharCount">
+      <summary>Obtiene el número de caracteres de la cadena de reemplazo para el objeto <see cref="T:System.Text.EncoderReplacementFallback" />.</summary>
+      <returns>El número de caracteres de la cadena utilizada en lugar de un carácter de entrada que no se puede codificar.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.Encoding">
+      <summary>Representa una codificación de caracteres.Para examinar el código fuente de .NET Framework para este tipo, visite la página de Reference Source.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.Encoding" />.</summary>
+    </member>
+    <member name="M:System.Text.Encoding.#ctor(System.Int32)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.Encoding" /> que corresponde a la página de códigos especificada.</summary>
+      <param name="codePage">Identificador de página de códigos de la codificación preferida.o bien 0, para utilizar la codificación predeterminada. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="codePage" /> es menor que cero. </exception>
+    </member>
+    <member name="M:System.Text.Encoding.#ctor(System.Int32,System.Text.EncoderFallback,System.Text.DecoderFallback)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.Encoding" /> que corresponde a la página de códigos indicada que tiene las estrategias de reserva de codificador y descodificador especificadas. </summary>
+      <param name="codePage">Identificador de página de códigos de codificación. </param>
+      <param name="encoderFallback">Objeto que proporciona un procedimiento de control de errores cuando no se puede codificar un carácter con la codificación actual. </param>
+      <param name="decoderFallback">Objeto que proporciona un procedimiento de control de errores cuando una secuencia de bytes no se puede descodificar con la codificación actual. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="codePage" /> es menor que cero. </exception>
+    </member>
+    <member name="P:System.Text.Encoding.ASCII">
+      <summary>Obtiene una codificación para el juego de caracteres ASCII (de 7 bits).</summary>
+      <returns>Codificación para el juego de caracteres ASCII (7 bits).</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.BigEndianUnicode">
+      <summary>Obtiene una codificación para el formato UTF-16 que utiliza el orden de bytes big endian.</summary>
+      <returns>Objeto de codificación para el formato UTF-16 que utiliza el orden de bytes big endian.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.Clone">
+      <summary>Cuando se reemplaza en una clase derivada, crea una copia superficial del objeto <see cref="T:System.Text.Encoding" /> actual.</summary>
+      <returns>Copia del objeto <see cref="T:System.Text.Encoding" /> actual.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.CodePage">
+      <summary>Cuando se reemplaza en una clase derivada, obtiene el identificador de la página de códigos de la clase <see cref="T:System.Text.Encoding" /> actual.</summary>
+      <returns>Identificador de la página de códigos de la clase <see cref="T:System.Text.Encoding" /> actual.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.Convert(System.Text.Encoding,System.Text.Encoding,System.Byte[])">
+      <summary>Convierte una matriz de bytes completa de una codificación a otra.</summary>
+      <returns>Matriz de tipo <see cref="T:System.Byte" /> que contiene el resultado de convertir <paramref name="bytes" /> de <paramref name="srcEncoding" /> a <paramref name="dstEncoding" />.</returns>
+      <param name="srcEncoding">Formato de codificación de <paramref name="bytes" />. </param>
+      <param name="dstEncoding">Formato de codificación de destino. </param>
+      <param name="bytes">Bytes que se van a convertir. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="srcEncoding" /> es null.o bien El valor de <paramref name="dstEncoding" /> es null.o bien El valor de <paramref name="bytes" /> es null. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación completa)- y -srcEncoding.El valor de <see cref="P:System.Text.Encoding.DecoderFallback" /> está establecido en <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación completa)- y -dstEncoding.El valor de <see cref="P:System.Text.Encoding.EncoderFallback" /> está establecido en <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.Convert(System.Text.Encoding,System.Text.Encoding,System.Byte[],System.Int32,System.Int32)">
+      <summary>Convierte un intervalo de bytes de una matriz de una codificación a otra.</summary>
+      <returns>Matriz de tipo <see cref="T:System.Byte" /> que contiene el resultado de convertir un intervalo de bytes de <paramref name="bytes" /> de <paramref name="srcEncoding" /> a <paramref name="dstEncoding" />.</returns>
+      <param name="srcEncoding">Codificación de la matriz de origen, <paramref name="bytes" />. </param>
+      <param name="dstEncoding">Codificación de la matriz de salida. </param>
+      <param name="bytes">Matriz de bytes que se va a convertir. </param>
+      <param name="index">Índice del primer elemento de <paramref name="bytes" /> que se va a convertir. </param>
+      <param name="count">Número de bytes que se va a convertir. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="srcEncoding" /> es null.o bien El valor de <paramref name="dstEncoding" /> es null.o bien El valor de <paramref name="bytes" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> y <paramref name="count" /> no especifican un intervalo válido en la matriz de bytes. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación completa)- y -srcEncoding.El valor de <see cref="P:System.Text.Encoding.DecoderFallback" /> está establecido en <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación completa)- y -dstEncoding.El valor de <see cref="P:System.Text.Encoding.EncoderFallback" /> está establecido en <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.DecoderFallback">
+      <summary>Obtiene o establece el objeto <see cref="T:System.Text.DecoderFallback" /> para el objeto <see cref="T:System.Text.Encoding" /> actual.</summary>
+      <returns>Objeto de reserva del descodificador para el objeto <see cref="T:System.Text.Encoding" /> actual. </returns>
+      <exception cref="T:System.ArgumentNullException">El valor en una operación de conjunto es null.</exception>
+      <exception cref="T:System.InvalidOperationException">No se puede asignar un valor en una operación de conjunto porque el objeto <see cref="T:System.Text.Encoding" /> actual es de sólo lectura.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.EncoderFallback">
+      <summary>Obtiene o establece el objeto <see cref="T:System.Text.EncoderFallback" /> para el objeto <see cref="T:System.Text.Encoding" /> actual.</summary>
+      <returns>Objeto de reserva del codificador para el objeto <see cref="T:System.Text.Encoding" /> actual. </returns>
+      <exception cref="T:System.ArgumentNullException">El valor en una operación de conjunto es null.</exception>
+      <exception cref="T:System.InvalidOperationException">No se puede asignar un valor en una operación de conjunto porque el objeto <see cref="T:System.Text.Encoding" /> actual es de sólo lectura.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.EncodingName">
+      <summary>Cuando se reemplaza en una clase derivada, obtiene la descripción inteligible de la codificación actual.</summary>
+      <returns>Descripción inteligible de la clase <see cref="T:System.Text.Encoding" /> actual.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.Equals(System.Object)">
+      <summary>Determina si el objeto <see cref="T:System.Object" /> especificado es igual a la instancia actual.</summary>
+      <returns>true si <paramref name="value" /> es una instancia de <see cref="T:System.Text.Encoding" /> y es igual a la instancia actual; en caso contrario, false. </returns>
+      <param name="value">Objeto <see cref="T:System.Object" /> que se va a comparar con la instancia actual. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetByteCount(System.Char*,System.Int32)">
+      <summary>Cuando se reemplaza en una clase derivada, calcula el número de bytes que se generan al codificar un juego de caracteres a partir del puntero de caracteres especificado.</summary>
+      <returns>Número de bytes que se generan al codificar los caracteres especificados.</returns>
+      <param name="chars">Puntero al primer carácter que se va a codificar. </param>
+      <param name="count">Número de caracteres que se van a codificar. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="chars" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> es menor que cero. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación completa)- y -El valor de <see cref="P:System.Text.Encoding.EncoderFallback" /> está establecido en <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetByteCount(System.Char[])">
+      <summary>Cuando se reemplaza en una clase derivada, calcula el número de bytes que se generan al codificar todos los caracteres de la matriz de caracteres especificada.</summary>
+      <returns>Número de bytes generados al codificar todos los caracteres de la matriz de caracteres especificada.</returns>
+      <param name="chars">Matriz de caracteres que contiene los caracteres que se codifican. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="chars" /> es null. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación completa)- y -El valor de <see cref="P:System.Text.Encoding.EncoderFallback" /> está establecido en <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetByteCount(System.Char[],System.Int32,System.Int32)">
+      <summary>Cuando se reemplaza en una clase derivada, calcula el número de bytes que se generan al codificar un juego de caracteres de la matriz de caracteres especificada.</summary>
+      <returns>Número de bytes que se generan al codificar los caracteres especificados.</returns>
+      <param name="chars">Matriz de caracteres que contiene el juego de caracteres que se va a codificar. </param>
+      <param name="index">Índice del primer carácter que se va a codificar. </param>
+      <param name="count">Número de caracteres que se van a codificar. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="chars" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="index" /> u <paramref name="count" /> es menor que cero.o bien <paramref name="index" /> y <paramref name="count" /> no denotan un intervalo válido en <paramref name="chars" />. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación completa)- y -El valor de <see cref="P:System.Text.Encoding.EncoderFallback" /> está establecido en <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetByteCount(System.String)">
+      <summary>Cuando se reemplaza en una clase derivada, calcula el número de bytes que se generan al codificar los caracteres de la cadena especificada.</summary>
+      <returns>Número de bytes que se generan al codificar los caracteres especificados.</returns>
+      <param name="s">Cadena que contiene el juego de caracteres que se va a codificar. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="s" /> es null. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación completa)- y -El valor de <see cref="P:System.Text.Encoding.EncoderFallback" /> está establecido en <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetBytes(System.Char*,System.Int32,System.Byte*,System.Int32)">
+      <summary>Cuando se reemplaza en una clase derivada, codifica un juego de caracteres a partir del puntero de caracteres especificado en una secuencia de bytes que se almacenan a partir del puntero de bytes especificado.</summary>
+      <returns>Número real de bytes escritos en la ubicación indicada por el parámetro <paramref name="bytes" />.</returns>
+      <param name="chars">Puntero al primer carácter que se va a codificar. </param>
+      <param name="charCount">Número de caracteres que se van a codificar. </param>
+      <param name="bytes">Puntero a la ubicación en la que se iniciará la escritura de la secuencia de bytes resultante. </param>
+      <param name="byteCount">Número máximo de bytes que se pueden escribir. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="chars" /> es null.o bien El valor de <paramref name="bytes" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="charCount" /> u <paramref name="byteCount" /> es menor que cero. </exception>
+      <exception cref="T:System.ArgumentException">El valor de <paramref name="byteCount" /> es menor que el número resultante de bytes. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación completa)- y -El valor de <see cref="P:System.Text.Encoding.EncoderFallback" /> está establecido en <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetBytes(System.Char[])">
+      <summary>Cuando se reemplaza en una clase derivada, codifica todos los caracteres de la matriz de caracteres especificada en una secuencia de bytes.</summary>
+      <returns>Matriz de bytes que contiene los resultados de codificar el juego de caracteres especificado.</returns>
+      <param name="chars">Matriz de caracteres que contiene los caracteres que se codifican. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="chars" /> es null. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación completa)- y -El valor de <see cref="P:System.Text.Encoding.EncoderFallback" /> está establecido en <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetBytes(System.Char[],System.Int32,System.Int32)">
+      <summary>Cuando se reemplaza en una clase derivada, codifica un juego de caracteres de la matriz de caracteres especificada en una secuencia de bytes.</summary>
+      <returns>Matriz de bytes que contiene los resultados de codificar el juego de caracteres especificado.</returns>
+      <param name="chars">Matriz de caracteres que contiene el juego de caracteres que se va a codificar. </param>
+      <param name="index">Índice del primer carácter que se va a codificar. </param>
+      <param name="count">Número de caracteres que se van a codificar. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="chars" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="index" /> u <paramref name="count" /> es menor que cero.o bien <paramref name="index" /> y <paramref name="count" /> no denotan un intervalo válido en <paramref name="chars" />. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación completa)- y -El valor de <see cref="P:System.Text.Encoding.EncoderFallback" /> está establecido en <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>Cuando se reemplaza en una clase derivada, codifica un juego de caracteres de la matriz de caracteres especificada en la matriz de bytes especificada.</summary>
+      <returns>Número real de bytes escritos en <paramref name="bytes" />.</returns>
+      <param name="chars">Matriz de caracteres que contiene el juego de caracteres que se va a codificar. </param>
+      <param name="charIndex">Índice del primer carácter que se va a codificar. </param>
+      <param name="charCount">Número de caracteres que se van a codificar. </param>
+      <param name="bytes">Matriz de bytes que contendrá la secuencia de bytes resultante. </param>
+      <param name="byteIndex">Índice en el que se inicia la escritura de la secuencia de bytes resultante. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="chars" /> es null.o bien El valor de <paramref name="bytes" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="charIndex" />, <paramref name="charCount" /> o <paramref name="byteIndex" /> es menor que cero.o bien <paramref name="charIndex" /> y <paramref name="charCount" /> no denotan un intervalo válido en <paramref name="chars" />.o bien <paramref name="byteIndex" /> no es un índice válido para <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="bytes" /> no tiene suficiente capacidad desde <paramref name="byteIndex" /> hasta el final de la matriz para alojar los bytes resultantes. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación completa)- y -El valor de <see cref="P:System.Text.Encoding.EncoderFallback" /> está establecido en <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetBytes(System.String)">
+      <summary>Cuando se reemplaza en una clase derivada, codifica todos los caracteres de la cadena especificada en una secuencia de bytes.</summary>
+      <returns>Matriz de bytes que contiene los resultados de codificar el juego de caracteres especificado.</returns>
+      <param name="s">Cadena que contiene los caracteres que se van a codificar. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="s" /> es null. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación completa)- y -El valor de <see cref="P:System.Text.Encoding.EncoderFallback" /> está establecido en <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetBytes(System.String,System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>Cuando se reemplaza en una clase derivada, codifica un juego de caracteres de la cadena especificada en la matriz de bytes especificada.</summary>
+      <returns>Número real de bytes escritos en <paramref name="bytes" />.</returns>
+      <param name="s">Cadena que contiene el juego de caracteres que se va a codificar. </param>
+      <param name="charIndex">Índice del primer carácter que se va a codificar. </param>
+      <param name="charCount">Número de caracteres que se van a codificar. </param>
+      <param name="bytes">Matriz de bytes que contendrá la secuencia de bytes resultante. </param>
+      <param name="byteIndex">Índice en el que se inicia la escritura de la secuencia de bytes resultante. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="s" /> es null.o bien El valor de <paramref name="bytes" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="charIndex" />, <paramref name="charCount" /> o <paramref name="byteIndex" /> es menor que cero.o bien <paramref name="charIndex" /> y <paramref name="charCount" /> no denotan un intervalo válido en <paramref name="chars" />.o bien <paramref name="byteIndex" /> no es un índice válido para <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="bytes" /> no tiene suficiente capacidad desde <paramref name="byteIndex" /> hasta el final de la matriz para alojar los bytes resultantes. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación completa)- y -El valor de <see cref="P:System.Text.Encoding.EncoderFallback" /> está establecido en <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetCharCount(System.Byte*,System.Int32)">
+      <summary>Cuando se reemplaza en una clase derivada, calcula el número de caracteres que se generan al descodificar una secuencia de bytes a partir del puntero de bytes especificado.</summary>
+      <returns>Número de caracteres que se generan al descodificar la secuencia especificada de bytes.</returns>
+      <param name="bytes">Puntero al primer byte que se va a descodificar. </param>
+      <param name="count">Número de bytes que se van a descodificar. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="bytes" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> es menor que cero. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación completa)- y -El valor de <see cref="P:System.Text.Encoding.DecoderFallback" /> está establecido en <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetCharCount(System.Byte[])">
+      <summary>Cuando se reemplaza en una clase derivada, calcula el número de caracteres que se generan al descodificar todos los bytes de la matriz de bytes especificada.</summary>
+      <returns>Número de caracteres que se generan al descodificar la secuencia especificada de bytes.</returns>
+      <param name="bytes">Matriz de bytes que contiene la secuencia de bytes que se va a descodificar. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="bytes" /> es null. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación completa)- y -El valor de <see cref="P:System.Text.Encoding.DecoderFallback" /> está establecido en <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetCharCount(System.Byte[],System.Int32,System.Int32)">
+      <summary>Cuando se reemplaza en una clase derivada, calcula el número de caracteres que se generan al descodificar una secuencia de bytes de la matriz de bytes especificada.</summary>
+      <returns>Número de caracteres que se generan al descodificar la secuencia especificada de bytes.</returns>
+      <param name="bytes">Matriz de bytes que contiene la secuencia de bytes que se va a descodificar. </param>
+      <param name="index">Índice del primer byte que se va a descodificar. </param>
+      <param name="count">Número de bytes que se van a descodificar. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="bytes" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="index" /> u <paramref name="count" /> es menor que cero.o bien <paramref name="index" /> y <paramref name="count" /> no denotan un intervalo válido en <paramref name="bytes" />. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación completa)- y -El valor de <see cref="P:System.Text.Encoding.DecoderFallback" /> está establecido en <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetChars(System.Byte*,System.Int32,System.Char*,System.Int32)">
+      <summary>Cuando se reemplaza en una clase derivada, descodifica una secuencia de bytes a partir del puntero de bytes especificado en un juego de caracteres que se almacenan a partir del puntero de caracteres especificado.</summary>
+      <returns>Número real de caracteres escritos en la ubicación indicada por el parámetro <paramref name="chars" />.</returns>
+      <param name="bytes">Puntero al primer byte que se va a descodificar. </param>
+      <param name="byteCount">Número de bytes que se van a descodificar. </param>
+      <param name="chars">Puntero a la ubicación en la que se iniciará la escritura del juego de caracteres resultante. </param>
+      <param name="charCount">Número máximo de caracteres que se van a escribir. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="bytes" /> es null.o bien El valor de <paramref name="chars" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="byteCount" /> u <paramref name="charCount" /> es menor que cero. </exception>
+      <exception cref="T:System.ArgumentException">El valor de <paramref name="charCount" /> es menor que el número de caracteres resultante. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación completa)- y -El valor de <see cref="P:System.Text.Encoding.DecoderFallback" /> está establecido en <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetChars(System.Byte[])">
+      <summary>Cuando se reemplaza en una clase derivada, descodifica todos los bytes de la matriz de bytes especificada en un juego de caracteres.</summary>
+      <returns>Matriz de caracteres que contiene los resultados obtenidos al descodificar la secuencia de bytes especificada.</returns>
+      <param name="bytes">Matriz de bytes que contiene la secuencia de bytes que se va a descodificar. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="bytes" /> es null. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación completa)- y -El valor de <see cref="P:System.Text.Encoding.DecoderFallback" /> está establecido en <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetChars(System.Byte[],System.Int32,System.Int32)">
+      <summary>Cuando se reemplaza en una clase derivada, descodifica una secuencia de bytes de la matriz de bytes especificada en un juego de caracteres.</summary>
+      <returns>Matriz de caracteres que contiene los resultados obtenidos al descodificar la secuencia de bytes especificada.</returns>
+      <param name="bytes">Matriz de bytes que contiene la secuencia de bytes que se va a descodificar. </param>
+      <param name="index">Índice del primer byte que se va a descodificar. </param>
+      <param name="count">Número de bytes que se van a descodificar. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="bytes" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="index" /> u <paramref name="count" /> es menor que cero.o bien <paramref name="index" /> y <paramref name="count" /> no denotan un intervalo válido en <paramref name="bytes" />. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación completa)- y -El valor de <see cref="P:System.Text.Encoding.DecoderFallback" /> está establecido en <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)">
+      <summary>Cuando se reemplaza en una clase derivada, descodifica una secuencia de bytes de la matriz de bytes especificada en la matriz de caracteres especificada.</summary>
+      <returns>Número real de caracteres escritos en <paramref name="chars" />.</returns>
+      <param name="bytes">Matriz de bytes que contiene la secuencia de bytes que se va a descodificar. </param>
+      <param name="byteIndex">Índice del primer byte que se va a descodificar. </param>
+      <param name="byteCount">Número de bytes que se van a descodificar. </param>
+      <param name="chars">Matriz de caracteres que contendrá el juego de caracteres resultante. </param>
+      <param name="charIndex">Índice en el que se inicia la escritura del juego de caracteres resultante. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="bytes" /> es null.o bien El valor de <paramref name="chars" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="byteIndex" />, <paramref name="byteCount" /> o <paramref name="charIndex" /> es menor que cero.o bien <paramref name="byteindex" /> y <paramref name="byteCount" /> no denotan un intervalo válido en <paramref name="bytes" />.o bien <paramref name="charIndex" /> no es un índice válido para <paramref name="chars" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="chars" /> no tiene suficiente capacidad desde <paramref name="charIndex" /> hasta el final de la matriz para aloja los caracteres resultantes. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación completa)- y -El valor de <see cref="P:System.Text.Encoding.DecoderFallback" /> está establecido en <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetDecoder">
+      <summary>Cuando se reemplaza en una clase derivada, obtiene un descodificador que convierte una secuencia de bytes codificada en una secuencia de caracteres.</summary>
+      <returns>Clase <see cref="T:System.Text.Decoder" /> que convierte una secuencia de bytes codificada en una secuencia de caracteres.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetEncoder">
+      <summary>Cuando se reemplaza en una clase derivada, obtiene un codificador que convierte una secuencia de caracteres Unicode en una secuencia de bytes codificada.</summary>
+      <returns>Clase <see cref="T:System.Text.Encoder" /> que convierte una secuencia de caracteres Unicode en una secuencia de bytes codificada.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetEncoding(System.Int32)">
+      <summary>Devuelve la codificación asociada al identificador de página de códigos especificado.</summary>
+      <returns>Codificación asociada a la página de códigos especificada.</returns>
+      <param name="codepage">Identificador de página de códigos de la codificación preferida.Se hace una lista de los valores posibles en la columna Página de códigos de la tabla que aparece en el tema de la clase <see cref="T:System.Text.Encoding" />.o bien 0 (cero), para utilizar la codificación predeterminada. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="codepage" /> es menor que cero o mayor que 65535. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="codepage" /> no es compatible con la plataforma subyacente. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="codepage" /> no es compatible con la plataforma subyacente. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetEncoding(System.Int32,System.Text.EncoderFallback,System.Text.DecoderFallback)">
+      <summary>Devuelve la codificación asociada al identificador de página de códigos especificado.Los parámetros especifican un controlador de errores para los caracteres que no se pueden codificar y para las secuencias de bytes que no se pueden descodificar.</summary>
+      <returns>Codificación asociada a la página de códigos especificada.</returns>
+      <param name="codepage">Identificador de página de códigos de la codificación preferida.Se hace una lista de los valores posibles en la columna Página de códigos de la tabla que aparece en el tema de la clase <see cref="T:System.Text.Encoding" />.o bien 0 (cero), para utilizar la codificación predeterminada. </param>
+      <param name="encoderFallback">Objeto que proporciona un procedimiento de control de errores cuando no se puede codificar un carácter con la codificación actual. </param>
+      <param name="decoderFallback">Objeto que proporciona un procedimiento de control de errores cuando una secuencia de bytes no se puede descodificar con la codificación actual. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="codepage" /> es menor que cero o mayor que 65535. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="codepage" /> no es compatible con la plataforma subyacente. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="codepage" /> no es compatible con la plataforma subyacente. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetEncoding(System.String)">
+      <summary>Devuelve la codificación asociada al nombre especificado de la página de códigos.</summary>
+      <returns>Codificación asociada a la página de códigos especificada.</returns>
+      <param name="name">Nombre de la página de códigos de la codificación preferida.Cualquier valor devuelto por la propiedad <see cref="P:System.Text.Encoding.WebName" /> es válido.Se hace una lista de los valores posibles en la columna Nombre de la tabla que aparece en el tema de la clase <see cref="T:System.Text.Encoding" />.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> no es un nombre de página de códigos válido.o bien La página de códigos indicada por <paramref name="name" /> no es compatible con la plataforma subyacente. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetEncoding(System.String,System.Text.EncoderFallback,System.Text.DecoderFallback)">
+      <summary>Devuelve la codificación asociada al nombre especificado de la página de códigos.Los parámetros especifican un controlador de errores para los caracteres que no se pueden codificar y para las secuencias de bytes que no se pueden descodificar.</summary>
+      <returns>Codificación asociada a la página de códigos especificada.</returns>
+      <param name="name">Nombre de la página de códigos de la codificación preferida.Cualquier valor devuelto por la propiedad <see cref="P:System.Text.Encoding.WebName" /> es válido.Se hace una lista de los valores posibles en la columna Nombre de la tabla que aparece en el tema de la clase <see cref="T:System.Text.Encoding" />.</param>
+      <param name="encoderFallback">Objeto que proporciona un procedimiento de control de errores cuando no se puede codificar un carácter con la codificación actual. </param>
+      <param name="decoderFallback">Objeto que proporciona un procedimiento de control de errores cuando una secuencia de bytes no se puede descodificar con la codificación actual. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> no es un nombre de página de códigos válido.o bien La página de códigos indicada por <paramref name="name" /> no es compatible con la plataforma subyacente. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetHashCode">
+      <summary>Devuelve el código hash de la instancia actual.</summary>
+      <returns>Código hash de la instancia actual.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetMaxByteCount(System.Int32)">
+      <summary>Cuando se reemplaza en una clase derivada, calcula el número máximo de bytes que se generan al codificar el número de caracteres especificado.</summary>
+      <returns>Número máximo de bytes generados al codificar el número de caracteres especificado.</returns>
+      <param name="charCount">Número de caracteres que se van a codificar. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charCount" /> es menor que cero. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación completa)- y -El valor de <see cref="P:System.Text.Encoding.EncoderFallback" /> está establecido en <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetMaxCharCount(System.Int32)">
+      <summary>Cuando se reemplaza en una clase derivada, calcula el número máximo de caracteres que se generan al descodificar el número de bytes especificado.</summary>
+      <returns>Número máximo de caracteres que se generan al descodificar el número de bytes especificado.</returns>
+      <param name="byteCount">Número de bytes que se van a descodificar. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteCount" /> es menor que cero. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación completa)- y -El valor de <see cref="P:System.Text.Encoding.DecoderFallback" /> está establecido en <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetPreamble">
+      <summary>Cuando se reemplaza en una clase derivada, devuelve una secuencia de bytes que especifica la codificación utilizada.</summary>
+      <returns>Matriz de bytes que contiene una secuencia de bytes que especifica la codificación utilizada.o bien Matriz de bytes de longitud cero, si no se requiere un preámbulo.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetString(System.Byte*,System.Int32)">
+      <summary>Cuando se reemplaza en una clase derivada, descodifica un número determinado de bytes a partir de una dirección especificada en una cadena. </summary>
+      <returns>Cadena que contiene el resultado de la descodificación de la secuencia de bytes especificada. </returns>
+      <param name="bytes">Puntero a una matriz de bytes. </param>
+      <param name="byteCount">Número de bytes que se van a descodificar. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" />es un puntero nulo. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteCount" /> es menor que cero. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Se ha producido una acción de reserva (consulte Codificación de caracteres en .NET Framework para obtener una explicación completa)- y -El valor de <see cref="P:System.Text.Encoding.DecoderFallback" /> está establecido en <see cref="T:System.Text.DecoderExceptionFallback" />. </exception>
+    </member>
+    <member name="M:System.Text.Encoding.GetString(System.Byte[])">
+      <summary>Cuando se reemplaza en una clase derivada, descodifica todos los bytes de la matriz de bytes especificada en una cadena.</summary>
+      <returns>Cadena que contiene el resultado de la descodificación de la secuencia de bytes especificada.</returns>
+      <param name="bytes">Matriz de bytes que contiene la secuencia de bytes que se va a descodificar. </param>
+      <exception cref="T:System.ArgumentException">La matriz de bytes contiene puntos de código Unicode no válidos.</exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="bytes" /> es null. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación completa)- y -El valor de <see cref="P:System.Text.Encoding.DecoderFallback" /> está establecido en <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetString(System.Byte[],System.Int32,System.Int32)">
+      <summary>Cuando se reemplaza en una clase derivada, descodifica una secuencia de bytes de la matriz de bytes especificada en una cadena.</summary>
+      <returns>Cadena que contiene el resultado de la descodificación de la secuencia de bytes especificada.</returns>
+      <param name="bytes">Matriz de bytes que contiene la secuencia de bytes que se va a descodificar. </param>
+      <param name="index">Índice del primer byte que se va a descodificar. </param>
+      <param name="count">Número de bytes que se van a descodificar. </param>
+      <exception cref="T:System.ArgumentException">La matriz de bytes contiene puntos de código Unicode no válidos.</exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="bytes" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="index" /> u <paramref name="count" /> es menor que cero.o bien <paramref name="index" /> y <paramref name="count" /> no denotan un intervalo válido en <paramref name="bytes" />. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Se ha producido una acción de reserva (vea Codificación de caracteres en .NET Framework para obtener una explicación completa)- y -El valor de <see cref="P:System.Text.Encoding.DecoderFallback" /> está establecido en <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.IsSingleByte">
+      <summary>Cuando se reemplaza en una clase derivada, obtiene un valor que indica si la codificación actual utiliza puntos de código de un solo byte.</summary>
+      <returns>true si la clase <see cref="T:System.Text.Encoding" /> actual utiliza puntos de código de un solo byte; en caso contrario, false.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.RegisterProvider(System.Text.EncodingProvider)">
+      <summary>Registra un proveedor de codificación. </summary>
+      <param name="provider">Subclase de <see cref="T:System.Text.EncodingProvider" /> que proporciona acceso a codificaciones de caracteres adicionales. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="provider" /> es null. </exception>
+    </member>
+    <member name="P:System.Text.Encoding.Unicode">
+      <summary>Obtiene una codificación para el formato UTF-16 utilizando el orden de bytes little endian.</summary>
+      <returns>Codificación para el formato UTF-16 utilizando el orden de bytes little endian.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.UTF32">
+      <summary>Obtiene una codificación para el formato UTF-32 utilizando el orden de bytes little endian.</summary>
+      <returns>Objeto de codificación para el formato UTF-32 utilizando el orden de bytes little endian.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.UTF7">
+      <summary>Obtiene una codificación para el formato UTF-7.</summary>
+      <returns>Codificación para el formato UTF-7.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.UTF8">
+      <summary>Obtiene una codificación para el formato UTF-8.</summary>
+      <returns>Codificación para el formato UTF-8.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.WebName">
+      <summary>Cuando se reemplaza en una clase derivada, obtiene el nombre registrado en IANA (Internet Assigned Numbers Authority) para la codificación actual.</summary>
+      <returns>Nombre IANA de la clase <see cref="T:System.Text.Encoding" /> actual.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.EncodingProvider">
+      <summary>Proporciona la clase base para un proveedor de codificación, que proporciona las codificaciones que no están disponibles en una plataforma concreta. </summary>
+    </member>
+    <member name="M:System.Text.EncodingProvider.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.EncodingProvider" />. </summary>
+    </member>
+    <member name="M:System.Text.EncodingProvider.GetEncoding(System.Int32)">
+      <summary>Devuelve la codificación asociada al identificador de página de códigos especificado. </summary>
+      <returns>La codificación asociada a la página de códigos especificada o null si <see cref="T:System.Text.EncodingProvider" /> no puede devolver una codificación válida que corresponde a <paramref name="codepage" />. </returns>
+      <param name="codepage">El identificador de página de códigos de la codificación solicitada. </param>
+    </member>
+    <member name="M:System.Text.EncodingProvider.GetEncoding(System.Int32,System.Text.EncoderFallback,System.Text.DecoderFallback)">
+      <summary>Devuelve la codificación asociada al identificador de página de códigos especificado.Los parámetros especifican un controlador de errores para los caracteres que no se pueden codificar y para las secuencias de bytes que no se pueden descodificar.</summary>
+      <returns>La codificación asociada a la página de códigos especificada o null si <see cref="T:System.Text.EncodingProvider" /> no puede devolver una codificación válida que corresponde a <paramref name="codepage" />. </returns>
+      <param name="codepage">El identificador de página de códigos de la codificación solicitada. </param>
+      <param name="encoderFallback">Un objeto que proporciona un procedimiento de control de errores cuando no se puede codificar un carácter con esta codificación. </param>
+      <param name="decoderFallback">Un objeto que proporciona un procedimiento de control de errores cuando no se puede descodificar una secuencia de bytes a esta codificación. </param>
+    </member>
+    <member name="M:System.Text.EncodingProvider.GetEncoding(System.String)">
+      <summary>Devuelve la codificación con el nombre especificado. </summary>
+      <returns>La codificación que se ha asociado con el nombre especificado, o null si <see cref="T:System.Text.EncodingProvider" /> no puede devolver una codificación válida que corresponde a <paramref name="name" />.</returns>
+      <param name="name">El nombre de la codificación solicitada. </param>
+    </member>
+    <member name="M:System.Text.EncodingProvider.GetEncoding(System.String,System.Text.EncoderFallback,System.Text.DecoderFallback)">
+      <summary>Devuelve que la codificación asociada con el nombre especificado.Los parámetros especifican un controlador de errores para los caracteres que no se pueden codificar y para las secuencias de bytes que no se pueden descodificar.</summary>
+      <returns>La codificación que se ha asociado con el nombre especificado, o null si <see cref="T:System.Text.EncodingProvider" /> no puede devolver una codificación válida que corresponde a <paramref name="name" />. </returns>
+      <param name="name">El nombre de la codificación preferida. </param>
+      <param name="encoderFallback">Un objeto que proporciona un procedimiento de control de errores cuando no se puede codificar un carácter con esta codificación. </param>
+      <param name="decoderFallback">Objeto que proporciona un procedimiento de control de errores cuando una secuencia de bytes no se puede descodificar con la codificación actual. </param>
+    </member>
+  </members>
+</doc>

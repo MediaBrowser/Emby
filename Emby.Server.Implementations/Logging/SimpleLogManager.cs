@@ -64,7 +64,7 @@ namespace Emby.Server.Implementations.Logging
             }
         }
 
-        private async ValueTask<string> TryMoveToArchive(string file, CancellationToken cancellationToken, int retryCount = 0)
+        private async Task<string> TryMoveToArchive(string file, CancellationToken cancellationToken, int retryCount = 0)
         {
             var archivePath = GetArchiveFilePath();
 
@@ -146,7 +146,7 @@ namespace Emby.Server.Implementations.Logging
                 logger.Dispose();
 
                 var task = TryMoveToArchive(logger.Path, CancellationToken.None);
-                Task.WaitAll(task.AsTask());
+                Task.WaitAll(task);
             }
 
             _fileLogger = null;

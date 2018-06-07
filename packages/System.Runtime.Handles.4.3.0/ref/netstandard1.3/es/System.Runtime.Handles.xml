@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Runtime.Handles</name>
+  </assembly>
+  <members>
+    <member name="T:Microsoft.Win32.SafeHandles.SafeWaitHandle">
+      <summary>Representa una clase contenedora para un identificador de espera. </summary>
+    </member>
+    <member name="M:Microsoft.Win32.SafeHandles.SafeWaitHandle.#ctor(System.IntPtr,System.Boolean)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:Microsoft.Win32.SafeHandles.SafeWaitHandle" />. </summary>
+      <param name="existingHandle">Objeto <see cref="T:System.IntPtr" /> que representa el identificador preexistente que se va a utilizar.</param>
+      <param name="ownsHandle">Se establece en true para liberar de forma confiable el identificador durante la fase de finalización; se establece en false para impedir que se libere de forma confiable (no se recomienda).</param>
+    </member>
+    <member name="P:Microsoft.Win32.SafeHandles.SafeWaitHandle.IsInvalid"></member>
+    <member name="T:System.IO.HandleInheritability">
+      <summary>Especifica si el controlador subyacente puede heredarse mediante procesos secundarios.</summary>
+    </member>
+    <member name="F:System.IO.HandleInheritability.Inheritable">
+      <summary>Especifica que el controlador puede heredarse mediante procesos secundarios.</summary>
+    </member>
+    <member name="F:System.IO.HandleInheritability.None">
+      <summary>Especifica que el controlador no se puede heredar mediante procesos secundarios.</summary>
+    </member>
+    <member name="T:System.Runtime.InteropServices.CriticalHandle">
+      <summary>Representa una clase contenedora para los recursos de identificador.</summary>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.#ctor(System.IntPtr)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Runtime.InteropServices.CriticalHandle" /> con el valor de identificador no válido especificado.</summary>
+      <param name="invalidHandleValue">Valor de un identificador no válido (normalmente 0 ó -1).</param>
+      <exception cref="T:System.TypeLoadException">La clase derivada reside en un ensamblado sin el permiso de acceso a código no administrado.</exception>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.Dispose">
+      <summary>Libera todos los recursos utilizados por <see cref="T:System.Runtime.InteropServices.CriticalHandle" />. </summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.Dispose(System.Boolean)">
+      <summary>Libera los recursos no administrados utilizados por la clase <see cref="T:System.Runtime.InteropServices.CriticalHandle" /> que especifica si se va a realizar una operación de desecho normal.</summary>
+      <param name="disposing">true para una operación de desecho normal; false para finalizar el identificador.</param>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.Finalize">
+      <summary>Libera todos los recursos asociados al identificador.</summary>
+    </member>
+    <member name="F:System.Runtime.InteropServices.CriticalHandle.handle">
+      <summary>Especifica el identificador que se va a ajustar.</summary>
+    </member>
+    <member name="P:System.Runtime.InteropServices.CriticalHandle.IsClosed">
+      <summary>Obtiene un valor que indica si el identificador está cerrado.</summary>
+      <returns>Es true si el identificador está cerrado; en caso contrario, es false.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Runtime.InteropServices.CriticalHandle.IsInvalid">
+      <summary>Cuando se invalida en una clase derivada, obtiene un valor que indica si este identificador es no válido.</summary>
+      <returns>true si el identificador es válido; en caso contrario, false.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.ReleaseHandle">
+      <summary>Cuando se invalida en una clase derivada, ejecuta el código necesario para liberar el identificador.</summary>
+      <returns>true si se libera el identificador correctamente; de lo contrario, en caso de un grave error,  false.En este caso, genera un Asistente para la depuración administrada MDA de releaseHandleFailed.</returns>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.SetHandle(System.IntPtr)">
+      <summary>Establece el identificador en el identificador preexistente.</summary>
+      <param name="handle">El identificador preexistente que se va a utilizar.</param>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.SetHandleAsInvalid">
+      <summary>Marca un identificador como no válido.</summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Runtime.InteropServices.SafeHandle">
+      <summary>Representa una clase contenedora para los identificadores del sistema operativo.Se debe heredar esta clase.</summary>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.#ctor(System.IntPtr,System.Boolean)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Runtime.InteropServices.SafeHandle" /> con un valor de identificador no válido especificado.</summary>
+      <param name="invalidHandleValue">Valor de un identificador no válido (normalmente 0 ó -1).Su implementación de <see cref="P:System.Runtime.InteropServices.SafeHandle.IsInvalid" /> debería devolver true para este valor.</param>
+      <param name="ownsHandle">Es true para permitir con confiabilidad que <see cref="T:System.Runtime.InteropServices.SafeHandle" /> libere el identificador durante la fase de finalización; en caso contrario, es false (no se recomienda). </param>
+      <exception cref="T:System.TypeLoadException">La clase derivada reside en un ensamblado sin el permiso de acceso a código no administrado. </exception>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.DangerousAddRef(System.Boolean@)">
+      <summary>Incrementa manualmente el contador de referencia de las instancias <see cref="T:System.Runtime.InteropServices.SafeHandle" />.</summary>
+      <param name="success">true si el contador de referencia se incrementó correctamente; en caso contrario, false.</param>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.DangerousGetHandle">
+      <summary>Devuelve el valor del campo <see cref="F:System.Runtime.InteropServices.SafeHandle.handle" />.</summary>
+      <returns>Un IntPtr que representa el valor del campo <see cref="F:System.Runtime.InteropServices.SafeHandle.handle" />.Si el identificador se marcó como no válido con <see cref="M:System.Runtime.InteropServices.SafeHandle.SetHandleAsInvalid" />, este método devolverá el valor del identificador original, que puede ser un valor obsoleto.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.DangerousRelease">
+      <summary>Disminuye manualmente el contador de referencia de la instancia <see cref="T:System.Runtime.InteropServices.SafeHandle" />.</summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.Dispose">
+      <summary>Libera todos los recursos que utiliza la clase <see cref="T:System.Runtime.InteropServices.SafeHandle" />.</summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.Dispose(System.Boolean)">
+      <summary>Libera los recursos no administrados usados por la clase <see cref="T:System.Runtime.InteropServices.SafeHandle" /> especificando si se lleva a cabo una operación de eliminación normal.</summary>
+      <param name="disposing">true para una operación de eliminación normal; false para finalizar el identificador.</param>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.Finalize">
+      <summary>Libera todos los recursos asociados al identificador.</summary>
+    </member>
+    <member name="F:System.Runtime.InteropServices.SafeHandle.handle">
+      <summary>Especifica el identificador que se va a ajustar.</summary>
+    </member>
+    <member name="P:System.Runtime.InteropServices.SafeHandle.IsClosed">
+      <summary>Obtiene un valor que indica si el identificador está cerrado.</summary>
+      <returns>true si el identificador está cerrado; en caso contrario, false.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Runtime.InteropServices.SafeHandle.IsInvalid">
+      <summary>Cuando se invalida en una clase derivada, obtiene un valor que indica si este identificador es no válido.</summary>
+      <returns>true si el valor del identificador no es válido; en caso contrario, false.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.ReleaseHandle">
+      <summary>Cuando se invalida en una clase derivada, ejecuta el código necesario para liberar el identificador.</summary>
+      <returns>true si el identificador se libera correctamente; en caso contrario, si se produce un error grave,  false.En este caso, genera un Ayudante para la depuración administrada MDA de releaseHandleFailed.</returns>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.SetHandle(System.IntPtr)">
+      <summary>Establece el identificador en el identificador preexistente.</summary>
+      <param name="handle">El identificador preexistente que se va a utilizar. </param>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.SetHandleAsInvalid">
+      <summary>Marca un identificador para indicar que ya no se utiliza.</summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Threading.WaitHandleExtensions">
+      <summary>Proporciona métodos útiles para trabajar con un controlador seguro para una espera de administrar. </summary>
+    </member>
+    <member name="M:System.Threading.WaitHandleExtensions.GetSafeWaitHandle(System.Threading.WaitHandle)">
+      <summary>Obtiene el identificador seguro para un identificador de espera del sistema operativo nativo. </summary>
+      <returns>El identificador de espera seguro que contiene el sistema operativo nativo de identificador de espera. </returns>
+      <param name="waitHandle">Un identificador de sistema operativo nativo. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="waitHandle" />is null. </exception>
+    </member>
+    <member name="M:System.Threading.WaitHandleExtensions.SetSafeWaitHandle(System.Threading.WaitHandle,Microsoft.Win32.SafeHandles.SafeWaitHandle)">
+      <summary>Establece un controlador seguro para un identificador de espera del sistema operativo nativo. </summary>
+      <param name="waitHandle">Un identificador de espera que encapsula un objeto específico del sistema operativo que espera para obtener acceso exclusivo a un recurso compartido. </param>
+      <param name="value">El controlador seguro para incluir el identificador del sistema operativo. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="waitHandle" />is null. </exception>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,1819 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Xml.XDocument</name>
+  </assembly>
+  <members>
+    <member name="T:System.Xml.Linq.Extensions">
+      <summary>LINQ to XML 확장 메서드가 들어 있습니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Ancestors``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>소스 컬렉션에 있는 모든 노드의 상위 항목이 들어 있는 요소 컬렉션을 반환합니다.</summary>
+      <returns>소스 컬렉션에 있는 모든 노드의 상위 항목이 들어 있는 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+      <param name="source">소스 컬렉션이 들어 있는 <see cref="T:System.Xml.Linq.XNode" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</param>
+      <typeparam name="T">
+        <see cref="T:System.Xml.Linq.XNode" />로 제한된 <paramref name="source" />의 개체 형식입니다.</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Ancestors``1(System.Collections.Generic.IEnumerable{``0},System.Xml.Linq.XName)">
+      <summary>소스 컬렉션에 있는 모든 노드의 상위 항목이 들어 있는 필터링된 요소 컬렉션을 반환합니다.일치하는 <see cref="T:System.Xml.Linq.XName" />이 있는 요소만 컬렉션에 포함됩니다.</summary>
+      <returns>소스 컬렉션에 있는 모든 노드의 상위 항목이 들어 있는 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.일치하는 <see cref="T:System.Xml.Linq.XName" />이 있는 요소만 컬렉션에 포함됩니다.</returns>
+      <param name="source">소스 컬렉션이 들어 있는 <see cref="T:System.Xml.Linq.XNode" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</param>
+      <param name="name">일치시킬 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+      <typeparam name="T">
+        <see cref="T:System.Xml.Linq.XNode" />로 제한된 <paramref name="source" />의 개체 형식입니다.</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.AncestorsAndSelf(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement})">
+      <summary>소스 컬렉션의 모든 요소와 소스 컬렉션에 있는 모든 요소의 상위 항목이 들어 있는 요소 컬렉션을 반환합니다.</summary>
+      <returns>소스 컬렉션의 모든 요소와 소스 컬렉션에 있는 모든 요소의 상위 항목이 들어 있는 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+      <param name="source">소스 컬렉션이 들어 있는 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.AncestorsAndSelf(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement},System.Xml.Linq.XName)">
+      <summary>소스 컬렉션의 모든 요소와 소스 컬렉션에 있는 모든 요소의 상위 항목이 들어 있는 필터링된 요소 컬렉션을 반환합니다.일치하는 <see cref="T:System.Xml.Linq.XName" />이 있는 요소만 컬렉션에 포함됩니다.</summary>
+      <returns>소스 컬렉션의 모든 요소와 소스 컬렉션에 있는 모든 요소의 상위 항목이 들어 있는 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.일치하는 <see cref="T:System.Xml.Linq.XName" />이 있는 요소만 컬렉션에 포함됩니다.</returns>
+      <param name="source">소스 컬렉션이 들어 있는 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</param>
+      <param name="name">일치시킬 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Attributes(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement})">
+      <summary>소스 컬렉션에 있는 모든 요소의 특성 컬렉션을 반환합니다.</summary>
+      <returns>소스 컬렉션에 있는 모든 요소의 특성이 들어 있는 <see cref="T:System.Xml.Linq.XAttribute" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+      <param name="source">소스 컬렉션이 들어 있는 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Attributes(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement},System.Xml.Linq.XName)">
+      <summary>소스 컬렉션에 있는 모든 요소의 필터링된 특성 컬렉션을 반환합니다.일치하는 <see cref="T:System.Xml.Linq.XName" />이 있는 요소만 컬렉션에 포함됩니다.</summary>
+      <returns>소스 컬렉션에 있는 모든 요소의 필터링된 특성 컬렉션이 들어 있는 <see cref="T:System.Xml.Linq.XAttribute" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.일치하는 <see cref="T:System.Xml.Linq.XName" />이 있는 요소만 컬렉션에 포함됩니다.</returns>
+      <param name="source">소스 컬렉션이 들어 있는 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</param>
+      <param name="name">일치시킬 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.DescendantNodes``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>소스 컬렉션에 있는 모든 문서 및 요소의 하위 노드 컬렉션을 반환합니다.</summary>
+      <returns>소스 컬렉션에 있는 모든 문서 및 요소의 하위 노드에 대한 <see cref="T:System.Xml.Linq.XNode" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+      <param name="source">소스 컬렉션이 들어 있는 <see cref="T:System.Xml.Linq.XContainer" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</param>
+      <typeparam name="T">
+        <see cref="T:System.Xml.Linq.XContainer" />로 제한된 <paramref name="source" />의 개체 형식입니다.</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.DescendantNodesAndSelf(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement})">
+      <summary>소스 컬렉션의 모든 요소와 소스 컬렉션에 있는 모든 요소의 하위 노드가 들어 있는 노드 컬렉션을 반환합니다.</summary>
+      <returns>소스 컬렉션의 모든 요소와 소스 컬렉션에 있는 모든 요소의 하위 노드가 들어 있는 <see cref="T:System.Xml.Linq.XNode" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+      <param name="source">소스 컬렉션이 들어 있는 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Descendants``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>소스 컬렉션에 있는 모든 요소 및 문서의 하위 요소가 들어 있는 요소 컬렉션을 반환합니다.</summary>
+      <returns>소스 컬렉션에 있는 모든 요소 및 문서의 하위 요소가 들어 있는 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+      <param name="source">소스 컬렉션이 들어 있는 <see cref="T:System.Xml.Linq.XContainer" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</param>
+      <typeparam name="T">
+        <see cref="T:System.Xml.Linq.XContainer" />로 제한된 <paramref name="source" />의 개체 형식입니다.</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Descendants``1(System.Collections.Generic.IEnumerable{``0},System.Xml.Linq.XName)">
+      <summary>소스 컬렉션에 있는 모든 요소 및 문서의 하위 요소가 들어 있는 필터링된 요소 컬렉션을 반환합니다.일치하는 <see cref="T:System.Xml.Linq.XName" />이 있는 요소만 컬렉션에 포함됩니다.</summary>
+      <returns>소스 컬렉션에 있는 모든 요소 및 문서의 하위 요소가 들어 있는 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.일치하는 <see cref="T:System.Xml.Linq.XName" />이 있는 요소만 컬렉션에 포함됩니다.</returns>
+      <param name="source">소스 컬렉션이 들어 있는 <see cref="T:System.Xml.Linq.XContainer" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</param>
+      <param name="name">일치시킬 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+      <typeparam name="T">
+        <see cref="T:System.Xml.Linq.XContainer" />로 제한된 <paramref name="source" />의 개체 형식입니다.</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.DescendantsAndSelf(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement})">
+      <summary>소스 컬렉션의 모든 요소와 소스 컬렉션에 있는 모든 요소의 하위 요소가 들어 있는 요소 컬렉션을 반환합니다.</summary>
+      <returns>소스 컬렉션의 모든 요소와 소스 컬렉션에 있는 모든 요소의 하위 요소가 들어 있는 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+      <param name="source">소스 컬렉션이 들어 있는 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.DescendantsAndSelf(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement},System.Xml.Linq.XName)">
+      <summary>소스 컬렉션의 모든 요소와 소스 컬렉션에 있는 모든 요소의 하위 항목이 들어 있는 필터링된 요소 컬렉션을 반환합니다.일치하는 <see cref="T:System.Xml.Linq.XName" />이 있는 요소만 컬렉션에 포함됩니다.</summary>
+      <returns>소스 컬렉션의 모든 요소와 소스 컬렉션에 있는 모든 요소의 하위 항목이 들어 있는 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.일치하는 <see cref="T:System.Xml.Linq.XName" />이 있는 요소만 컬렉션에 포함됩니다.</returns>
+      <param name="source">소스 컬렉션이 들어 있는 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</param>
+      <param name="name">일치시킬 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Elements``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>소스 컬렉션에 있는 모든 요소 및 문서의 자식 요소 컬렉션을 반환합니다.</summary>
+      <returns>소스 컬렉션에 있는 모든 요소 또는 문서의 자식 요소에 대한 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+      <param name="source">소스 컬렉션이 들어 있는 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</param>
+      <typeparam name="T">
+        <see cref="T:System.Xml.Linq.XContainer" />로 제한된 <paramref name="source" />의 개체 형식입니다.</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Elements``1(System.Collections.Generic.IEnumerable{``0},System.Xml.Linq.XName)">
+      <summary>소스 컬렉션에 있는 모든 요소 및 문서의 필터링된 자식 요소 컬렉션을 반환합니다.일치하는 <see cref="T:System.Xml.Linq.XName" />이 있는 요소만 컬렉션에 포함됩니다.</summary>
+      <returns>소스 컬렉션에 있는 모든 요소 및 문서의 자식 요소에 대한 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.일치하는 <see cref="T:System.Xml.Linq.XName" />이 있는 요소만 컬렉션에 포함됩니다.</returns>
+      <param name="source">소스 컬렉션이 들어 있는 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</param>
+      <param name="name">일치시킬 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+      <typeparam name="T">
+        <see cref="T:System.Xml.Linq.XContainer" />로 제한된 <paramref name="source" />의 개체 형식입니다.</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.InDocumentOrder``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>소스 컬렉션의 모든 노드가 문서 순으로 정렬되어 들어 있는 노드 컬렉션을 반환합니다.</summary>
+      <returns>소스 컬렉션의 모든 노드가 문서 순으로 정렬되어 들어 있는 <see cref="T:System.Xml.Linq.XNode" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+      <param name="source">소스 컬렉션이 들어 있는 <see cref="T:System.Xml.Linq.XNode" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</param>
+      <typeparam name="T">
+        <see cref="T:System.Xml.Linq.XNode" />로 제한된 <paramref name="source" />의 개체 형식입니다.</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Nodes``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>소스 컬렉션에 있는 모든 문서 및 요소의 자식 노드 컬렉션을 반환합니다.</summary>
+      <returns>소스 컬렉션에 있는 모든 문서 및 요소의 자식 노드에 대한 <see cref="T:System.Xml.Linq.XNode" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+      <param name="source">소스 컬렉션이 들어 있는 <see cref="T:System.Xml.Linq.XNode" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</param>
+      <typeparam name="T">
+        <see cref="T:System.Xml.Linq.XContainer" />로 제한된 <paramref name="source" />의 개체 형식입니다.</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Remove(System.Collections.Generic.IEnumerable{System.Xml.Linq.XAttribute})">
+      <summary>부모 요소에서 소스 컬렉션의 모든 특성을 제거합니다.</summary>
+      <param name="source">소스 컬렉션이 들어 있는 <see cref="T:System.Xml.Linq.XAttribute" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Remove``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>부모 노드에서 소스 컬렉션의 모든 노드를 제거합니다.</summary>
+      <param name="source">소스 컬렉션이 들어 있는 <see cref="T:System.Xml.Linq.XNode" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</param>
+      <typeparam name="T">
+        <see cref="T:System.Xml.Linq.XNode" />로 제한된 <paramref name="source" />의 개체 형식입니다.</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.LoadOptions">
+      <summary>XML을 구문 분석할 때 적용되는 로드 옵션을 지정합니다. </summary>
+    </member>
+    <member name="F:System.Xml.Linq.LoadOptions.None">
+      <summary>의미 없는 공백을 유지하지 않고 기본 URI 및 줄 정보를 로드하지 않습니다.</summary>
+    </member>
+    <member name="F:System.Xml.Linq.LoadOptions.PreserveWhitespace">
+      <summary>구문 분석할 때 의미 없는 공백을 유지합니다.</summary>
+    </member>
+    <member name="F:System.Xml.Linq.LoadOptions.SetBaseUri">
+      <summary>
+        <see cref="T:System.Xml.XmlReader" />에서 기본 URI 정보를 요청하고 <see cref="P:System.Xml.Linq.XObject.BaseUri" /> 속성을 통해 사용할 수 있게 합니다.</summary>
+    </member>
+    <member name="F:System.Xml.Linq.LoadOptions.SetLineInfo">
+      <summary>
+        <see cref="T:System.Xml.XmlReader" />에서 줄 정보를 <see cref="T:System.Xml.Linq.XObject" />의 속성을 통해 사용할 수 있게 합니다.</summary>
+    </member>
+    <member name="T:System.Xml.Linq.ReaderOptions">
+      <summary>
+        <see cref="T:System.Xml.XmlReader" />를 사용하여 <see cref="T:System.Xml.Linq.XDocument" />를 로드할 때 중복 네임스페이스를 생략할지 여부를 지정합니다.</summary>
+    </member>
+    <member name="F:System.Xml.Linq.ReaderOptions.None">
+      <summary>판독기 옵션을 지정하지 않았습니다.</summary>
+    </member>
+    <member name="F:System.Xml.Linq.ReaderOptions.OmitDuplicateNamespaces">
+      <summary>
+        <see cref="T:System.Xml.Linq.XDocument" />를 로드할 때 중복 네임스페이스를 생략합니다.</summary>
+    </member>
+    <member name="T:System.Xml.Linq.SaveOptions">
+      <summary>serialization 옵션을 지정합니다.</summary>
+    </member>
+    <member name="F:System.Xml.Linq.SaveOptions.DisableFormatting">
+      <summary>serialize할 때 의미 없는 공백을 모두 유지합니다.</summary>
+    </member>
+    <member name="F:System.Xml.Linq.SaveOptions.None">
+      <summary>serialize할 때 XML을 서식 지정(들여쓰기)합니다.</summary>
+    </member>
+    <member name="F:System.Xml.Linq.SaveOptions.OmitDuplicateNamespaces">
+      <summary>serialize하는 동안 중복된 네임스페이스 선언을 제거합니다.</summary>
+    </member>
+    <member name="T:System.Xml.Linq.XAttribute">
+      <summary>XML 특성을 나타냅니다.</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.#ctor(System.Xml.Linq.XAttribute)">
+      <summary>다른 <see cref="T:System.Xml.Linq.XAttribute" /> 개체를 사용하여 <see cref="T:System.Xml.Linq.XAttribute" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+      <param name="other">복사할 <see cref="T:System.Xml.Linq.XAttribute" /> 개체입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="other" /> 매개 변수가 null인 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.#ctor(System.Xml.Linq.XName,System.Object)">
+      <summary>지정된 이름 및 값을 사용하여 <see cref="T:System.Xml.Linq.XAttribute" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+      <param name="name">특성의 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+      <param name="value">특성의 값이 들어 있는 <see cref="T:System.Object" />입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 또는 <paramref name="value" /> 매개 변수가 null인 경우</exception>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.EmptySequence">
+      <summary>특성의 빈 컬렉션을 가져옵니다.</summary>
+      <returns>빈 컬렉션이 들어 있는 <see cref="T:System.Xml.Linq.XAttribute" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.IsNamespaceDeclaration">
+      <summary>이 특성이 네임스페이스 선언인지 확인합니다.</summary>
+      <returns>이 특성이 네임스페이스 선언이면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.Name">
+      <summary>이 특성의 확장된 이름을 가져옵니다.</summary>
+      <returns>이 특성의 이름이 들어 있는 <see cref="T:System.Xml.Linq.XName" />입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.NextAttribute">
+      <summary>부모 요소의 다음 특성을 가져옵니다.</summary>
+      <returns>부모 요소의 다음 특성이 들어 있는 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.NodeType">
+      <summary>이 노드에 대한 노드 형식을 가져옵니다.</summary>
+      <returns>노드 형식입니다.<see cref="T:System.Xml.Linq.XAttribute" /> 개체의 경우 이 값은 <see cref="F:System.Xml.XmlNodeType.Attribute" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.UInt32}">
+      <summary>이 <see cref="T:System.Xml.Linq.XAttribute" />의 값을 <see cref="T:System.UInt32" />의 <see cref="T:System.Nullable`1" />로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XAttribute" />의 콘텐츠가 들어 있는 <see cref="T:System.UInt32" />의 <see cref="T:System.Nullable`1" />입니다.</returns>
+      <param name="attribute">
+        <see cref="T:System.UInt32" />의 <see cref="T:System.Nullable`1" />로 캐스팅할 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</param>
+      <exception cref="T:System.FormatException">특성에 유효한 <see cref="T:System.UInt32" /> 값이 들어 있지 않은 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.UInt64}">
+      <summary>이 <see cref="T:System.Xml.Linq.XAttribute" />의 값을 <see cref="T:System.UInt64" />의 <see cref="T:System.Nullable`1" />로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XAttribute" />의 콘텐츠가 들어 있는 <see cref="T:System.UInt64" />의 <see cref="T:System.Nullable`1" />입니다.</returns>
+      <param name="attribute">
+        <see cref="T:System.UInt64" />의 <see cref="T:System.Nullable`1" />로 캐스팅할 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</param>
+      <exception cref="T:System.FormatException">특성에 유효한 <see cref="T:System.UInt64" /> 값이 들어 있지 않은 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.TimeSpan}">
+      <summary>이 <see cref="T:System.Xml.Linq.XAttribute" />의 값을 <see cref="T:System.TimeSpan" />의 <see cref="T:System.Nullable`1" />로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XAttribute" />의 콘텐츠가 들어 있는 <see cref="T:System.TimeSpan" />의 <see cref="T:System.Nullable`1" />입니다.</returns>
+      <param name="attribute">
+        <see cref="T:System.TimeSpan" />의 <see cref="T:System.Nullable`1" />로 캐스팅할 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</param>
+      <exception cref="T:System.FormatException">특성에 유효한 <see cref="T:System.TimeSpan" /> 값이 들어 있지 않은 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Int64}">
+      <summary>이 <see cref="T:System.Xml.Linq.XAttribute" />의 값을 <see cref="T:System.Int64" />의 <see cref="T:System.Nullable`1" />로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XAttribute" />의 콘텐츠가 들어 있는 <see cref="T:System.Int64" />의 <see cref="T:System.Nullable`1" />입니다.</returns>
+      <param name="attribute">
+        <see cref="T:System.Int64" />의 <see cref="T:System.Nullable`1" />로 캐스팅할 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</param>
+      <exception cref="T:System.FormatException">특성에 유효한 <see cref="T:System.Int64" /> 값이 들어 있지 않은 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Single}">
+      <summary>이 <see cref="T:System.Xml.Linq.XAttribute" />의 값을 <see cref="T:System.Single" />의 <see cref="T:System.Nullable`1" />로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XAttribute" />의 콘텐츠가 들어 있는 <see cref="T:System.Single" />의 <see cref="T:System.Nullable`1" />입니다.</returns>
+      <param name="attribute">
+        <see cref="T:System.Single" />의 <see cref="T:System.Nullable`1" />로 캐스팅할 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</param>
+      <exception cref="T:System.FormatException">특성에 유효한 <see cref="T:System.Single" /> 값이 들어 있지 않은 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.UInt32">
+      <summary>이 <see cref="T:System.Xml.Linq.XAttribute" />의 값을 <see cref="T:System.UInt32" />로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XAttribute" />의 콘텐츠가 들어 있는 <see cref="T:System.UInt32" />입니다.</returns>
+      <param name="attribute">
+        <see cref="T:System.UInt32" />로 캐스팅할 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</param>
+      <exception cref="T:System.FormatException">특성에 유효한 <see cref="T:System.UInt32" /> 값이 들어 있지 않은 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> 매개 변수가 null인 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.UInt64">
+      <summary>이 <see cref="T:System.Xml.Linq.XAttribute" />의 값을 <see cref="T:System.UInt64" />로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XAttribute" />의 콘텐츠가 들어 있는 <see cref="T:System.UInt64" />입니다.</returns>
+      <param name="attribute">
+        <see cref="T:System.UInt64" />로 캐스팅할 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</param>
+      <exception cref="T:System.FormatException">특성에 유효한 <see cref="T:System.UInt64" /> 값이 들어 있지 않은 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> 매개 변수가 null인 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.TimeSpan">
+      <summary>이 <see cref="T:System.Xml.Linq.XAttribute" />의 값을 <see cref="T:System.TimeSpan" />으로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XAttribute" />의 콘텐츠가 들어 있는 <see cref="T:System.TimeSpan" />입니다.</returns>
+      <param name="attribute">
+        <see cref="T:System.TimeSpan" />으로 캐스팅할 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</param>
+      <exception cref="T:System.FormatException">특성에 유효한 <see cref="T:System.TimeSpan" /> 값이 들어 있지 않은 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> 매개 변수가 null인 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Single">
+      <summary>이 <see cref="T:System.Xml.Linq.XAttribute" />의 값을 <see cref="T:System.Single" />로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XAttribute" />의 콘텐츠가 들어 있는 <see cref="T:System.Single" />입니다.</returns>
+      <param name="attribute">
+        <see cref="T:System.Single" />로 캐스팅할 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</param>
+      <exception cref="T:System.FormatException">특성에 유효한 <see cref="T:System.Single" /> 값이 들어 있지 않은 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> 매개 변수가 null인 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.String">
+      <summary>이 <see cref="T:System.Xml.Linq.XAttribute" />의 값을 <see cref="T:System.String" />으로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XAttribute" />의 콘텐츠가 들어 있는 <see cref="T:System.String" />입니다.</returns>
+      <param name="attribute">
+        <see cref="T:System.String" />으로 캐스팅할 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Int32}">
+      <summary>이 <see cref="T:System.Xml.Linq.XAttribute" />의 값을 <see cref="T:System.Int32" />의 <see cref="T:System.Nullable`1" />로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XAttribute" />의 콘텐츠가 들어 있는 <see cref="T:System.Int32" />의 <see cref="T:System.Nullable`1" />입니다.</returns>
+      <param name="attribute">
+        <see cref="T:System.Int32" />의 <see cref="T:System.Nullable`1" />로 캐스팅할 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Double">
+      <summary>이 <see cref="T:System.Xml.Linq.XAttribute" />의 값을 <see cref="T:System.Double" />로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XAttribute" />의 콘텐츠가 들어 있는 <see cref="T:System.Double" />입니다.</returns>
+      <param name="attribute">
+        <see cref="T:System.Double" />로 캐스팅할 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</param>
+      <exception cref="T:System.FormatException">특성에 유효한 <see cref="T:System.Double" /> 값이 들어 있지 않은 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> 매개 변수가 null인 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Guid">
+      <summary>이 <see cref="T:System.Xml.Linq.XAttribute" />의 값을 <see cref="T:System.Guid" />로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XAttribute" />의 콘텐츠가 들어 있는 <see cref="T:System.Guid" />입니다.</returns>
+      <param name="attribute">
+        <see cref="T:System.Guid" />로 캐스팅할 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</param>
+      <exception cref="T:System.FormatException">특성에 유효한 <see cref="T:System.Guid" /> 값이 들어 있지 않은 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> 매개 변수가 null인 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Int32">
+      <summary>이 <see cref="T:System.Xml.Linq.XAttribute" />의 값을 <see cref="T:System.Int32" />로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XAttribute" />의 콘텐츠가 들어 있는 <see cref="T:System.Int32" />입니다.</returns>
+      <param name="attribute">
+        <see cref="T:System.Int32" />로 캐스팅할 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</param>
+      <exception cref="T:System.FormatException">특성에 유효한 <see cref="T:System.Int32" /> 값이 들어 있지 않은 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> 매개 변수가 null인 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Decimal">
+      <summary>이 <see cref="T:System.Xml.Linq.XAttribute" />의 값을 <see cref="T:System.Decimal" />로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XAttribute" />의 콘텐츠가 들어 있는 <see cref="T:System.Decimal" />입니다.</returns>
+      <param name="attribute">
+        <see cref="T:System.Decimal" />로 캐스팅할 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</param>
+      <exception cref="T:System.FormatException">특성에 유효한 <see cref="T:System.Decimal" /> 값이 들어 있지 않은 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> 매개 변수가 null인 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Boolean">
+      <summary>이 <see cref="T:System.Xml.Linq.XAttribute" />의 값을 <see cref="T:System.Boolean" />으로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XAttribute" />의 콘텐츠가 들어 있는 <see cref="T:System.Boolean" />입니다.</returns>
+      <param name="attribute">
+        <see cref="T:System.Boolean" />으로 캐스팅할 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</param>
+      <exception cref="T:System.FormatException">특성에 유효한 <see cref="T:System.Boolean" /> 값이 들어 있지 않은 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> 매개 변수가 null인 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.DateTime">
+      <summary>이 <see cref="T:System.Xml.Linq.XAttribute" />의 값을 <see cref="T:System.DateTime" />으로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XAttribute" />의 콘텐츠가 들어 있는 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="attribute">
+        <see cref="T:System.DateTime" />으로 캐스팅할 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</param>
+      <exception cref="T:System.FormatException">특성에 유효한 <see cref="T:System.DateTime" /> 값이 들어 있지 않은 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> 매개 변수가 null인 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.DateTimeOffset">
+      <summary>이 <see cref="T:System.Xml.Linq.XAttribute" />의 값을 <see cref="T:System.DateTimeOffset" />으로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XAttribute" />의 콘텐츠가 들어 있는 <see cref="T:System.DateTimeOffset" />입니다.</returns>
+      <param name="attribute">
+        <see cref="T:System.DateTimeOffset" />으로 캐스팅할 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</param>
+      <exception cref="T:System.FormatException">특성에 유효한 <see cref="T:System.DateTimeOffset" /> 값이 들어 있지 않은 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> 매개 변수가 null인 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Decimal}">
+      <summary>이 <see cref="T:System.Xml.Linq.XAttribute" />의 값을 <see cref="T:System.Decimal" />의 <see cref="T:System.Nullable`1" />로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XAttribute" />의 콘텐츠가 들어 있는 <see cref="T:System.Decimal" />의 <see cref="T:System.Nullable`1" />입니다.</returns>
+      <param name="attribute">
+        <see cref="T:System.Decimal" />의 <see cref="T:System.Nullable`1" />로 캐스팅할 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</param>
+      <exception cref="T:System.FormatException">특성에 유효한 <see cref="T:System.Decimal" /> 값이 들어 있지 않은 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.DateTimeOffset}">
+      <summary>이 <see cref="T:System.Xml.Linq.XAttribute" />의 값을 <see cref="T:System.DateTimeOffset" />의 <see cref="T:System.Nullable`1" />로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XAttribute" />의 콘텐츠가 들어 있는 <see cref="T:System.DateTimeOffset" />의 <see cref="T:System.Nullable`1" />입니다.</returns>
+      <param name="attribute">
+        <see cref="T:System.DateTimeOffset" />의 <see cref="T:System.Nullable`1" />로 캐스팅할 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</param>
+      <exception cref="T:System.FormatException">특성에 유효한 <see cref="T:System.DateTimeOffset" /> 값이 들어 있지 않은 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Guid}">
+      <summary>이 <see cref="T:System.Xml.Linq.XAttribute" />의 값을 <see cref="T:System.Guid" />의 <see cref="T:System.Nullable`1" />로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XAttribute" />의 콘텐츠가 들어 있는 <see cref="T:System.Guid" />의 <see cref="T:System.Nullable`1" />입니다.</returns>
+      <param name="attribute">
+        <see cref="T:System.Guid" />의 <see cref="T:System.Nullable`1" />로 캐스팅할 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</param>
+      <exception cref="T:System.FormatException">특성에 유효한 <see cref="T:System.Guid" /> 값이 들어 있지 않은 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Double}">
+      <summary>이 <see cref="T:System.Xml.Linq.XAttribute" />의 값을 <see cref="T:System.Double" />의 <see cref="T:System.Nullable`1" />로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XAttribute" />의 콘텐츠가 들어 있는 <see cref="T:System.Double" />의 <see cref="T:System.Nullable`1" />입니다.</returns>
+      <param name="attribute">
+        <see cref="T:System.Double" />의 <see cref="T:System.Nullable`1" />로 캐스팅할 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</param>
+      <exception cref="T:System.FormatException">특성에 유효한 <see cref="T:System.Double" /> 값이 들어 있지 않은 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Int64">
+      <summary>이 <see cref="T:System.Xml.Linq.XAttribute" />의 값을 <see cref="T:System.Int64" />로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XAttribute" />의 콘텐츠가 들어 있는 <see cref="T:System.Int64" />입니다.</returns>
+      <param name="attribute">
+        <see cref="T:System.Int64" />로 캐스팅할 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</param>
+      <exception cref="T:System.FormatException">특성에 유효한 <see cref="T:System.Int64" /> 값이 들어 있지 않은 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> 매개 변수가 null인 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.DateTime}">
+      <summary>이 <see cref="T:System.Xml.Linq.XAttribute" />의 값을 <see cref="T:System.DateTime" />의 <see cref="T:System.Nullable`1" />로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XAttribute" />의 콘텐츠가 들어 있는 <see cref="T:System.DateTime" />의 <see cref="T:System.Nullable`1" />입니다.</returns>
+      <param name="attribute">
+        <see cref="T:System.DateTime" />의 <see cref="T:System.Nullable`1" />로 캐스팅할 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</param>
+      <exception cref="T:System.FormatException">특성에 유효한 <see cref="T:System.DateTime" /> 값이 들어 있지 않은 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Boolean}">
+      <summary>이 <see cref="T:System.Xml.Linq.XAttribute" />의 값을 <see cref="T:System.Boolean" />의 <see cref="T:System.Nullable`1" />로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XAttribute" />의 콘텐츠가 들어 있는 <see cref="T:System.Boolean" />의 <see cref="T:System.Nullable`1" />입니다.</returns>
+      <param name="attribute">
+        <see cref="T:System.Boolean" />의 <see cref="T:System.Nullable`1" />로 캐스팅할 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</param>
+      <exception cref="T:System.FormatException">특성에 유효한 <see cref="T:System.Boolean" /> 값이 들어 있지 않은 경우</exception>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.PreviousAttribute">
+      <summary>부모 요소의 이전 특성을 가져옵니다.</summary>
+      <returns>부모 요소의 이전 특성이 들어 있는 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.Remove">
+      <summary>부모 요소에서 이 특성을 제거합니다.</summary>
+      <exception cref="T:System.InvalidOperationException">부모 요소가 null인 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.SetValue(System.Object)">
+      <summary>이 특성의 값을 설정합니다.</summary>
+      <param name="value">이 특성에 할당할 값입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> 매개 변수가 null인 경우</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="value" />가 <see cref="T:System.Xml.Linq.XObject" />인 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.ToString">
+      <summary>현재 <see cref="T:System.Xml.Linq.XAttribute" /> 개체를 문자열 표현으로 변환합니다.</summary>
+      <returns>특성 및 해당 값의 XML 텍스트 표현이 들어 있는 <see cref="T:System.String" />입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.Value">
+      <summary>이 특성의 값을 가져오거나 설정합니다.</summary>
+      <returns>이 특성의 값이 들어 있는 <see cref="T:System.String" />입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">설정 시 <paramref name="value" />가 null인 경우</exception>
+    </member>
+    <member name="T:System.Xml.Linq.XCData">
+      <summary>CDATA가 들어 있는 텍스트 노드를 나타냅니다. </summary>
+    </member>
+    <member name="M:System.Xml.Linq.XCData.#ctor(System.String)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XCData" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+      <param name="value">
+        <see cref="T:System.Xml.Linq.XCData" /> 노드의 값이 들어 있는 문자열입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XCData.#ctor(System.Xml.Linq.XCData)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XCData" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+      <param name="other">복사할 <see cref="T:System.Xml.Linq.XCData" /> 노드입니다.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XCData.NodeType">
+      <summary>이 노드에 대한 노드 형식을 가져옵니다.</summary>
+      <returns>노드 형식입니다.<see cref="T:System.Xml.Linq.XCData" /> 개체의 경우 이 값은 <see cref="F:System.Xml.XmlNodeType.CDATA" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XCData.WriteTo(System.Xml.XmlWriter)">
+      <summary>이 CDATA 개체를 <see cref="T:System.Xml.XmlWriter" />에 씁니다.</summary>
+      <param name="writer">이 메서드가 쓸 <see cref="T:System.Xml.XmlWriter" />입니다.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XComment">
+      <summary>XML 주석을 나타냅니다. </summary>
+    </member>
+    <member name="M:System.Xml.Linq.XComment.#ctor(System.String)">
+      <summary>지정된 문자열 콘텐츠를 사용하여 <see cref="T:System.Xml.Linq.XComment" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+      <param name="value">새 <see cref="T:System.Xml.Linq.XComment" /> 개체의 콘텐츠가 들어 있는 문자열입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> 매개 변수가 null인 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XComment.#ctor(System.Xml.Linq.XComment)">
+      <summary>기존 주석 노드를 사용하여 <see cref="T:System.Xml.Linq.XComment" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+      <param name="other">복사할 <see cref="T:System.Xml.Linq.XComment" /> 노드입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="other" /> 매개 변수가 null인 경우</exception>
+    </member>
+    <member name="P:System.Xml.Linq.XComment.NodeType">
+      <summary>이 노드에 대한 노드 형식을 가져옵니다.</summary>
+      <returns>노드 형식입니다.<see cref="T:System.Xml.Linq.XComment" /> 개체의 경우 이 값은 <see cref="F:System.Xml.XmlNodeType.Comment" />입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XComment.Value">
+      <summary>이 주석의 문자열 값을 가져오거나 설정합니다.</summary>
+      <returns>이 주석의 문자열 값이 들어 있는 <see cref="T:System.String" />입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" />은 null입니다.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XComment.WriteTo(System.Xml.XmlWriter)">
+      <summary>이 주석을 <see cref="T:System.Xml.XmlWriter" />에 씁니다.</summary>
+      <param name="writer">이 메서드가 쓸 <see cref="T:System.Xml.XmlWriter" />입니다.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XContainer">
+      <summary>다른 노드를 포함하는 노드를 나타냅니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Add(System.Object)">
+      <summary>지정된 콘텐츠를 이 <see cref="T:System.Xml.Linq.XContainer" />의 자식으로 추가합니다.</summary>
+      <param name="content">추가할 단순 콘텐츠 또는 콘텐츠 컬렉션이 들어 있는 콘텐츠 개체입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Add(System.Object[])">
+      <summary>지정된 콘텐츠를 이 <see cref="T:System.Xml.Linq.XContainer" />의 자식으로 추가합니다.</summary>
+      <param name="content">콘텐츠 개체의 매개 변수 목록입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.AddFirst(System.Object)">
+      <summary>지정된 콘텐츠를 이 문서 또는 요소의 첫 번째 자식으로 추가합니다.</summary>
+      <param name="content">추가할 단순 콘텐츠 또는 콘텐츠 컬렉션이 들어 있는 콘텐츠 개체입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.AddFirst(System.Object[])">
+      <summary>지정된 콘텐츠를 이 문서 또는 요소의 첫 번째 자식으로 추가합니다.</summary>
+      <param name="content">콘텐츠 개체의 매개 변수 목록입니다.</param>
+      <exception cref="T:System.InvalidOperationException">부모 노드가 null인 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.CreateWriter">
+      <summary>
+        <see cref="T:System.Xml.Linq.XContainer" />에 노드를 추가하는 데 사용할 수 있는 <see cref="T:System.Xml.XmlWriter" />를 만듭니다.</summary>
+      <returns>콘텐츠를 쓸 준비가 된 <see cref="T:System.Xml.XmlWriter" />입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.DescendantNodes">
+      <summary>이 문서 또는 요소의 하위 노드가 문서순으로 들어 있는 컬렉션을 반환합니다.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XContainer" />의 하위 노드가 문서순으로 들어 있는 <see cref="T:System.Xml.Linq.XNode" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Descendants">
+      <summary>이 문서 또는 요소의 하위 요소가 문서순으로 들어 있는 컬렉션을 반환합니다.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XContainer" />의 하위 요소가 들어 있는 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Descendants(System.Xml.Linq.XName)">
+      <summary>이 문서 또는 요소의 하위 요소가 문서순으로 들어 있는 필터링된 컬렉션을 반환합니다.일치하는 <see cref="T:System.Xml.Linq.XName" />이 있는 요소만 컬렉션에 포함됩니다.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XContainer" />에서 지정된 <see cref="T:System.Xml.Linq.XName" />과 일치하는 하위 요소가 들어 있는 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+      <param name="name">일치시킬 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Element(System.Xml.Linq.XName)">
+      <summary>지정된 <see cref="T:System.Xml.Linq.XName" />을 갖는 문서순으로 첫 번째 자식 요소를 가져옵니다.</summary>
+      <returns>지정된 <see cref="T:System.Xml.Linq.XName" />과 일치하는 <see cref="T:System.Xml.Linq.XElement" />이거나 null입니다.</returns>
+      <param name="name">일치시킬 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Elements">
+      <summary>이 요소 또는 문서의 자식 요소가 문서순으로 들어 있는 컬렉션을 반환합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XContainer" />의 자식 요소가 문서순으로 들어 있는 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Elements(System.Xml.Linq.XName)">
+      <summary>이 요소 또는 문서의 자식 요소가 문서순으로 들어 있는 필터링된 컬렉션을 반환합니다.일치하는 <see cref="T:System.Xml.Linq.XName" />이 있는 요소만 컬렉션에 포함됩니다.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XContainer" />에서 <see cref="T:System.Xml.Linq.XName" />이 일치하는 자식 요소가 문서 순으로 들어 있는 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+      <param name="name">일치시킬 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XContainer.FirstNode">
+      <summary>이 노드의 첫 번째 자식 노드를 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XContainer" />의 첫 번째 자식 노드가 들어 있는 <see cref="T:System.Xml.Linq.XNode" />입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Xml.Linq.XContainer.LastNode">
+      <summary>이 노드의 마지막 자식 노드를 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XContainer" />의 마지막 자식 노드가 들어 있는 <see cref="T:System.Xml.Linq.XNode" />입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Nodes">
+      <summary>이 요소 또는 문서의 자식 노드가 문서순으로 들어 있는 컬렉션을 반환합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XContainer" />의 콘텐츠가 문서순으로 들어 있는 <see cref="T:System.Xml.Linq.XNode" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.RemoveNodes">
+      <summary>이 문서 또는 요소에서 자식 노드를 제거합니다.</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.ReplaceNodes(System.Object)">
+      <summary>이 문서 또는 요소의 자식 노드를 지정된 콘텐츠로 바꿉니다.</summary>
+      <param name="content">단순 콘텐츠가 들어 있는 콘텐츠 개체이거나 자식 노드를 바꾸는 콘텐츠 개체 컬렉션입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.ReplaceNodes(System.Object[])">
+      <summary>이 문서 또는 요소의 자식 노드를 지정된 콘텐츠로 바꿉니다.</summary>
+      <param name="content">콘텐츠 개체의 매개 변수 목록입니다.</param>
+    </member>
+    <member name="T:System.Xml.Linq.XDeclaration">
+      <summary>XML 선언을 나타냅니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XDeclaration.#ctor(System.String,System.String,System.String)">
+      <summary>지정된 버전, 인코딩 및 독립 실행형 상태를 사용하여 <see cref="T:System.Xml.Linq.XDeclaration" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="version">XML의 버전이며, 일반적으로 "1.0"입니다.</param>
+      <param name="encoding">XML 문서의 인코딩입니다.</param>
+      <param name="standalone">XML이 독립 실행형인지 아니면 외부 엔터티를 확인해야 하는지 여부를 지정하는 "yes" 또는 "no"가 들어 있는 문자열입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDeclaration.#ctor(System.Xml.Linq.XDeclaration)">
+      <summary>다른 <see cref="T:System.Xml.Linq.XDeclaration" /> 개체를 사용하여 <see cref="T:System.Xml.Linq.XDeclaration" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+      <param name="other">이 <see cref="T:System.Xml.Linq.XDeclaration" /> 개체를 초기화하는 데 사용되는 <see cref="T:System.Xml.Linq.XDeclaration" />입니다.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XDeclaration.Encoding">
+      <summary>이 문서의 인코딩을 가져오거나 설정합니다.</summary>
+      <returns>이 문서의 코드 페이지 이름이 들어 있는 <see cref="T:System.String" />입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDeclaration.Standalone">
+      <summary>이 문서의 독립 실행형 속성을 가져오거나 설정합니다.</summary>
+      <returns>이 문서의 독립 실행형 속성이 들어 있는 <see cref="T:System.String" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XDeclaration.ToString">
+      <summary>선언을 형식 지정 문자열로 제공합니다.</summary>
+      <returns>형식 지정 XML 문자열이 들어 있는 <see cref="T:System.String" />입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDeclaration.Version">
+      <summary>이 문서의 버전 속성을 가져오거나 설정합니다.</summary>
+      <returns>이 문서의 버전 속성이 들어 있는 <see cref="T:System.String" />입니다.</returns>
+    </member>
+    <member name="T:System.Xml.Linq.XDocument">
+      <summary>XML 문서를 나타냅니다.<see cref="T:System.Xml.Linq.XDocument" /> 개체의 구성 요소 및 사용에 대한 자세한 내용은 XDocument 클래스 개요를 참조하세요.이 유형에 대한 .NET Framework 소스 코드를 검색하려면 참조 소스를 참조하세요.</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.#ctor">
+      <summary>
+        <see cref="T:System.Xml.Linq.XDocument" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.#ctor(System.Object[])">
+      <summary>지정된 콘텐츠를 사용하여 <see cref="T:System.Xml.Linq.XDocument" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="content">이 문서에 추가할 콘텐츠 개체의 매개 변수 목록입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.#ctor(System.Xml.Linq.XDeclaration,System.Object[])">
+      <summary>지정된 <see cref="T:System.Xml.Linq.XDeclaration" /> 및 콘텐츠를 사용하여 <see cref="T:System.Xml.Linq.XDocument" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="declaration">문서의 <see cref="T:System.Xml.Linq.XDeclaration" />입니다.</param>
+      <param name="content">문서의 콘텐츠입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.#ctor(System.Xml.Linq.XDocument)">
+      <summary>기존 <see cref="T:System.Xml.Linq.XDocument" /> 개체를 사용하여 <see cref="T:System.Xml.Linq.XDocument" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="other">복사할 <see cref="T:System.Xml.Linq.XDocument" /> 개체입니다.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XDocument.Declaration">
+      <summary>이 문서의 XML 선언을 가져오거나 설정합니다.</summary>
+      <returns>이 문서의 XML 선언이 포함된 <see cref="T:System.Xml.Linq.XDeclaration" />입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDocument.DocumentType">
+      <summary>이 문서의 DTD(문서 종류 정의)를 가져옵니다.</summary>
+      <returns>이 문서의 DTD가 포함된 <see cref="T:System.Xml.Linq.XDocumentType" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.IO.Stream)">
+      <summary>지정된 스트림을 사용하여 새 <see cref="T:System.Xml.Linq.XDocument" /> 인스턴스를 만듭니다.</summary>
+      <returns>스트림에 포함된 데이터를 읽는 <see cref="T:System.Xml.Linq.XDocument" /> 개체입니다. </returns>
+      <param name="stream">XML 데이터가 포함된 스트림입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.IO.Stream,System.Xml.Linq.LoadOptions)">
+      <summary>지정된 스트림을 사용하여 새 <see cref="T:System.Xml.Linq.XDocument" /> 인스턴스를 만들고, 선택적으로 공백 및 줄 정보를 유지하고 기본 URI를 설정합니다.</summary>
+      <returns>스트림에 포함된 데이터를 읽는 <see cref="T:System.Xml.Linq.XDocument" /> 개체입니다.</returns>
+      <param name="stream">XML 데이터가 포함된 스트림입니다.</param>
+      <param name="options">기본 URI 및 줄 정보의 로드 여부를 지정하는 <see cref="T:System.Xml.Linq.LoadOptions" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.IO.TextReader)">
+      <summary>
+        <see cref="T:System.IO.TextReader" />에서 새 <see cref="T:System.Xml.Linq.XDocument" />를 만듭니다. </summary>
+      <returns>지정된 <see cref="T:System.IO.TextReader" />의 콘텐츠가 포함된 <see cref="T:System.Xml.Linq.XDocument" />입니다.</returns>
+      <param name="textReader">
+        <see cref="T:System.Xml.Linq.XDocument" />의 콘텐츠가 포함된 <see cref="T:System.IO.TextReader" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.IO.TextReader,System.Xml.Linq.LoadOptions)">
+      <summary>
+        <see cref="T:System.IO.TextReader" />를 사용하여 새 <see cref="T:System.Xml.Linq.XDocument" />를 만들고, 선택적으로 공백 및 줄 정보를 유지하고 기본 URI를 설정합니다.</summary>
+      <returns>지정된 <see cref="T:System.IO.TextReader" />에서 읽은 XML이 포함된 <see cref="T:System.Xml.Linq.XDocument" />입니다.</returns>
+      <param name="textReader">
+        <see cref="T:System.Xml.Linq.XDocument" />의 콘텐츠가 포함된 <see cref="T:System.IO.TextReader" />입니다.</param>
+      <param name="options">기본 URI와 줄 정보의 로드 여부 및 공백 동작을 지정하는 <see cref="T:System.Xml.Linq.LoadOptions" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.String)">
+      <summary>파일을 사용하여 새 <see cref="T:System.Xml.Linq.XDocument" />를 만듭니다. </summary>
+      <returns>지정된 파일의 내용이 포함된 <see cref="T:System.Xml.Linq.XDocument" />입니다.</returns>
+      <param name="uri">새 <see cref="T:System.Xml.Linq.XDocument" />에 로드할 파일을 참조하는 URI 문자열입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.String,System.Xml.Linq.LoadOptions)">
+      <summary>파일을 사용하여 새 <see cref="T:System.Xml.Linq.XDocument" />를 만들고, 선택적으로 공백 및 줄 정보를 유지하고 기본 URI를 설정합니다.</summary>
+      <returns>지정된 파일의 내용이 포함된 <see cref="T:System.Xml.Linq.XDocument" />입니다.</returns>
+      <param name="uri">새 <see cref="T:System.Xml.Linq.XDocument" />에 로드할 파일을 참조하는 URI 문자열입니다.</param>
+      <param name="options">기본 URI와 줄 정보의 로드 여부 및 공백 동작을 지정하는 <see cref="T:System.Xml.Linq.LoadOptions" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.Xml.XmlReader)">
+      <summary>
+        <see cref="T:System.Xml.XmlReader" />를 사용하여 새 <see cref="T:System.Xml.Linq.XDocument" />를 만듭니다. </summary>
+      <returns>지정된 <see cref="T:System.Xml.XmlReader" />의 콘텐츠가 포함된 <see cref="T:System.Xml.Linq.XDocument" />입니다.</returns>
+      <param name="reader">
+        <see cref="T:System.Xml.Linq.XDocument" />의 콘텐츠가 포함된 <see cref="T:System.Xml.XmlReader" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.Xml.XmlReader,System.Xml.Linq.LoadOptions)">
+      <summary>
+        <see cref="T:System.Xml.XmlReader" />에서 <see cref="T:System.Xml.Linq.XDocument" />를 로드하고, 선택적으로 기본 URI를 설정하고 줄 정보를 유지합니다.</summary>
+      <returns>지정된 <see cref="T:System.Xml.XmlReader" />에서 읽은 XML이 포함된 <see cref="T:System.Xml.Linq.XDocument" />입니다.</returns>
+      <param name="reader">
+        <see cref="T:System.Xml.Linq.XDocument" />의 콘텐츠를 읽어올 <see cref="T:System.Xml.XmlReader" />입니다.</param>
+      <param name="options">기본 URI 및 줄 정보의 로드 여부를 지정하는 <see cref="T:System.Xml.Linq.LoadOptions" />입니다.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XDocument.NodeType">
+      <summary>이 노드에 대한 노드 형식을 가져옵니다.</summary>
+      <returns>노드 형식입니다.<see cref="T:System.Xml.Linq.XDocument" /> 개체의 경우 이 값은 <see cref="F:System.Xml.XmlNodeType.Document" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Parse(System.String)">
+      <summary>문자열을 사용하여 새 <see cref="T:System.Xml.Linq.XDocument" />를 만듭니다.</summary>
+      <returns>XML이 포함된 문자열을 사용하여 채운 <see cref="T:System.Xml.Linq.XDocument" />입니다.</returns>
+      <param name="text">XML이 포함된 문자열입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Parse(System.String,System.Xml.Linq.LoadOptions)">
+      <summary>문자열을 사용하여 새 <see cref="T:System.Xml.Linq.XDocument" />를 만들고, 선택적으로 공백 및 줄 정보를 유지하고 기본 URI를 설정합니다.</summary>
+      <returns>XML이 포함된 문자열을 사용하여 채운 <see cref="T:System.Xml.Linq.XDocument" />입니다.</returns>
+      <param name="text">XML이 포함된 문자열입니다.</param>
+      <param name="options">기본 URI와 줄 정보의 로드 여부 및 공백 동작을 지정하는 <see cref="T:System.Xml.Linq.LoadOptions" />입니다.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XDocument.Root">
+      <summary>이 문서에 대한 XML 트리의 루트 요소를 가져옵니다.</summary>
+      <returns>XML 트리의 루트 <see cref="T:System.Xml.Linq.XElement" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Save(System.IO.Stream)">
+      <summary>이 <see cref="T:System.Xml.Linq.XDocument" />를 지정된 <see cref="T:System.IO.Stream" />에 출력합니다.</summary>
+      <param name="stream">이 <see cref="T:System.Xml.Linq.XDocument" />를 출력할 스트림입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Save(System.IO.Stream,System.Xml.Linq.SaveOptions)">
+      <summary>이 <see cref="T:System.Xml.Linq.XDocument" />를 지정된 <see cref="T:System.IO.Stream" />에 출력하고 선택적으로 서식 지정 동작을 지정합니다.</summary>
+      <param name="stream">이 <see cref="T:System.Xml.Linq.XDocument" />를 출력할 스트림입니다.</param>
+      <param name="options">서식 지정 동작을 지정하는 <see cref="T:System.Xml.Linq.SaveOptions" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Save(System.IO.TextWriter)">
+      <summary>이 <see cref="T:System.Xml.Linq.XDocument" />를 <see cref="T:System.IO.TextWriter" />로 serialize합니다.</summary>
+      <param name="textWriter">
+        <see cref="T:System.Xml.Linq.XDocument" />를 쓸 <see cref="T:System.IO.TextWriter" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Save(System.IO.TextWriter,System.Xml.Linq.SaveOptions)">
+      <summary>이 <see cref="T:System.Xml.Linq.XDocument" />를 <see cref="T:System.IO.TextWriter" />로 serialize하고, 선택적으로 서식 지정을 해제합니다.</summary>
+      <param name="textWriter">XML을 출력할 <see cref="T:System.IO.TextWriter" />입니다.</param>
+      <param name="options">서식 지정 동작을 지정하는 <see cref="T:System.Xml.Linq.SaveOptions" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Save(System.Xml.XmlWriter)">
+      <summary>이 <see cref="T:System.Xml.Linq.XDocument" />를 <see cref="T:System.Xml.XmlWriter" />로 serialize합니다.</summary>
+      <param name="writer">
+        <see cref="T:System.Xml.Linq.XDocument" />를 쓸 <see cref="T:System.Xml.XmlWriter" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.WriteTo(System.Xml.XmlWriter)">
+      <summary>이 문서를 <see cref="T:System.Xml.XmlWriter" />에 씁니다.</summary>
+      <param name="writer">이 메서드가 쓸 <see cref="T:System.Xml.XmlWriter" />입니다.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XDocumentType">
+      <summary>XML DTD(문서 종류 정의)를 나타냅니다. </summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XDocumentType.#ctor(System.String,System.String,System.String,System.String)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XDocumentType" /> 클래스의 인스턴스를 초기화합니다. </summary>
+      <param name="name">DTD의 정규화된 이름이 들어 있는 <see cref="T:System.String" />이며, 이 이름은 XML 문서에 있는 루트 요소의 정규화된 이름과 같습니다.</param>
+      <param name="publicId">외부 공용 DTD의 공용 식별자가 들어 있는 <see cref="T:System.String" />입니다.</param>
+      <param name="systemId">외부 전용 DTD의 시스템 식별자가 들어 있는 <see cref="T:System.String" />입니다.</param>
+      <param name="internalSubset">내부 DTD의 내부 하위 집합이 들어 있는 <see cref="T:System.String" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocumentType.#ctor(System.Xml.Linq.XDocumentType)">
+      <summary>다른 <see cref="T:System.Xml.Linq.XDocumentType" /> 개체를 사용하여 <see cref="T:System.Xml.Linq.XDocumentType" /> 클래스의 인스턴스를 초기화합니다.</summary>
+      <param name="other">복사할 <see cref="T:System.Xml.Linq.XDocumentType" /> 개체입니다.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XDocumentType.InternalSubset">
+      <summary>이 DTD(문서 종류 정의)의 내부 하위 집합을 가져오거나 설정합니다.</summary>
+      <returns>이 DTD(문서 종류 정의)의 내부 하위 집합이 들어 있는 <see cref="T:System.String" />입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDocumentType.Name">
+      <summary>이 DTD(문서 종류 정의)의 이름을 가져오거나 설정합니다.</summary>
+      <returns>이 DTD(문서 종류 정의)의 이름이 들어 있는 <see cref="T:System.String" />입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDocumentType.NodeType">
+      <summary>이 노드에 대한 노드 형식을 가져옵니다.</summary>
+      <returns>노드 형식입니다.<see cref="T:System.Xml.Linq.XDocumentType" /> 개체의 경우 이 값은 <see cref="F:System.Xml.XmlNodeType.DocumentType" />입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDocumentType.PublicId">
+      <summary>이 DTD(문서 종류 정의)의 공용 식별자를 가져오거나 설정합니다.</summary>
+      <returns>이 DTD(문서 종류 정의)의 공용 식별자가 들어 있는 <see cref="T:System.String" />입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDocumentType.SystemId">
+      <summary>이 DTD(문서 종류 정의)의 시스템 식별자를 가져오거나 설정합니다.</summary>
+      <returns>이 DTD(문서 종류 정의)의 시스템 식별자가 들어 있는 <see cref="T:System.String" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XDocumentType.WriteTo(System.Xml.XmlWriter)">
+      <summary>이 <see cref="T:System.Xml.Linq.XDocumentType" />을 <see cref="T:System.Xml.XmlWriter" />에 씁니다.</summary>
+      <param name="writer">이 메서드가 쓸 <see cref="T:System.Xml.XmlWriter" />입니다.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XElement">
+      <summary>XML 요소를 나타냅니다.참조 XElement 클래스 개요 및 사용 정보 및 예제에 대 한이 페이지의 주의 섹션입니다.이 형식에 대 한.NET Framework 소스 코드를 찾아보려면 참조는 참조 원본.</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.#ctor(System.Xml.Linq.XElement)">
+      <summary>다른 <see cref="T:System.Xml.Linq.XElement" /> 개체를 사용하여 <see cref="T:System.Xml.Linq.XElement" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="other">복사할 <see cref="T:System.Xml.Linq.XElement" /> 개체입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.#ctor(System.Xml.Linq.XName)">
+      <summary>지정된 이름을 사용하여 <see cref="T:System.Xml.Linq.XElement" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+      <param name="name">요소의 이름이 들어 있는 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.#ctor(System.Xml.Linq.XName,System.Object)">
+      <summary>지정된 이름 및 콘텐츠를 사용하여 <see cref="T:System.Xml.Linq.XElement" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="name">요소 이름이 들어 있는 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+      <param name="content">요소의 콘텐츠입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.#ctor(System.Xml.Linq.XName,System.Object[])">
+      <summary>지정된 이름 및 콘텐츠를 사용하여 <see cref="T:System.Xml.Linq.XElement" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="name">요소 이름이 들어 있는 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+      <param name="content">요소의 초기 콘텐츠입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.#ctor(System.Xml.Linq.XStreamingElement)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XStreamingElement" /> 개체를 사용하여 <see cref="T:System.Xml.Linq.XElement" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="other">이 <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠에 대해 반복할 실행되지 않은 쿼리가 들어 있는 <see cref="T:System.Xml.Linq.XStreamingElement" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.AncestorsAndSelf">
+      <summary>이 요소와 이 요소의 상위 요소가 포함된 요소 컬렉션을 반환합니다. </summary>
+      <returns>이 요소와 이 요소의 상위 요소가 들어 있는 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다. </returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.AncestorsAndSelf(System.Xml.Linq.XName)">
+      <summary>이 요소와 이 요소의 상위 요소가 포함된 필터링된 요소 컬렉션을 반환합니다.일치하는 <see cref="T:System.Xml.Linq.XName" />이 있는 요소만 컬렉션에 포함됩니다.</summary>
+      <returns>이 요소와 이 요소의 상위 요소가 들어 있는 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.일치하는 <see cref="T:System.Xml.Linq.XName" />이 있는 요소만 컬렉션에 포함됩니다.</returns>
+      <param name="name">일치시킬 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Attribute(System.Xml.Linq.XName)">
+      <summary>지정된 <see cref="T:System.Xml.Linq.XName" />이 있는 이 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Xml.Linq.XAttribute" />를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.Xml.Linq.XName" />이 있는 <see cref="T:System.Xml.Linq.XAttribute" />이거나, 지정된 이름의 특성이 없으면 null입니다.</returns>
+      <param name="name">가져올 <see cref="T:System.Xml.Linq.XAttribute" />의 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Attributes">
+      <summary>이 요소의 특성 컬렉션을 반환합니다.</summary>
+      <returns>이 요소에 있는 특성에 대한 <see cref="T:System.Xml.Linq.XAttribute" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Attributes(System.Xml.Linq.XName)">
+      <summary>이 요소의 필터링된 특성 컬렉션을 반환합니다.일치하는 <see cref="T:System.Xml.Linq.XName" />이 있는 요소만 컬렉션에 포함됩니다.</summary>
+      <returns>이 요소의 특성이 들어 있는 <see cref="T:System.Xml.Linq.XAttribute" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.일치하는 <see cref="T:System.Xml.Linq.XName" />이 있는 요소만 컬렉션에 포함됩니다.</returns>
+      <param name="name">일치시킬 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.DescendantNodesAndSelf">
+      <summary>이 요소와 이 요소의 모든 하위 노드가 문서 순으로 포함된 노드 컬렉션을 반환합니다.</summary>
+      <returns>이 요소와 이 요소의 모든 하위 노드가 문서 순으로 들어 있는 <see cref="T:System.Xml.Linq.XNode" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.DescendantsAndSelf">
+      <summary>이 요소와 이 요소의 모든 하위 요소가 문서 순으로 포함된 요소 컬렉션을 반환합니다.</summary>
+      <returns>이 요소와 이 요소의 모든 하위 요소가 문서 순으로 들어 있는 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.DescendantsAndSelf(System.Xml.Linq.XName)">
+      <summary>이 요소와 이 요소의 모든 하위 요소가 문서 순으로 포함된 필터링된 요소 컬렉션을 반환합니다.일치하는 <see cref="T:System.Xml.Linq.XName" />이 있는 요소만 컬렉션에 포함됩니다.</summary>
+      <returns>이 요소와 이 요소의 모든 하위 요소가 문서 순으로 들어 있는 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.일치하는 <see cref="T:System.Xml.Linq.XName" />이 있는 요소만 컬렉션에 포함됩니다.</returns>
+      <param name="name">일치시킬 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.EmptySequence">
+      <summary>요소의 빈 컬렉션을 가져옵니다.</summary>
+      <returns>빈 컬렉션이 들어 있는 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.FirstAttribute">
+      <summary>이 요소의 첫 번째 특성을 가져옵니다.</summary>
+      <returns>이 요소의 첫 번째 특성이 들어 있는 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.GetDefaultNamespace">
+      <summary>이 <see cref="T:System.Xml.Linq.XElement" />의 기본 <see cref="T:System.Xml.Linq.XNamespace" />를 가져옵니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XElement" />의 기본 네임스페이스가 들어 있는 <see cref="T:System.Xml.Linq.XNamespace" />입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.GetNamespaceOfPrefix(System.String)">
+      <summary>이 <see cref="T:System.Xml.Linq.XElement" />의 특정 접두사에 연결된 네임스페이스를 가져옵니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XElement" />의 접두사에 연결된 네임스페이스의 <see cref="T:System.Xml.Linq.XNamespace" />입니다.</returns>
+      <param name="prefix">조회할 네임스페이스 접두사가 포함된 문자열입니다.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.GetPrefixOfNamespace(System.Xml.Linq.XNamespace)">
+      <summary>이 <see cref="T:System.Xml.Linq.XElement" />의 네임스페이스에 연결된 접두사를 가져옵니다.</summary>
+      <returns>네임스페이스 접두사가 들어 있는 <see cref="T:System.String" />입니다.</returns>
+      <param name="ns">조회할 <see cref="T:System.Xml.Linq.XNamespace" />입니다.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.HasAttributes">
+      <summary>이 요소에 특성이 하나 이상 있는지를 나타내는 값을 가져옵니다.</summary>
+      <returns>이 요소에 특성이 최소한 하나 있으면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.HasElements">
+      <summary>이 요소에 자식 요소가 하나 이상 있는지를 나타내는 값을 가져옵니다.</summary>
+      <returns>이 요소에 자식 요소가 최소한 하나 있으면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.IsEmpty">
+      <summary>이 요소에 콘텐츠가 없는지를 나타내는 값을 가져옵니다.</summary>
+      <returns>이 요소에 콘텐츠가 없으면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.LastAttribute">
+      <summary>이 요소의 마지막 특성을 가져옵니다.</summary>
+      <returns>이 요소의 마지막 특성이 들어 있는 <see cref="T:System.Xml.Linq.XAttribute" />입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.IO.Stream)">
+      <summary>지정된 스트림을 사용하여 새 <see cref="T:System.Xml.Linq.XElement" /> 인스턴스를 만듭니다.</summary>
+      <returns>스트림에 포함된 데이터를 읽는 데 사용되는 <see cref="T:System.Xml.Linq.XElement" /> 개체입니다.</returns>
+      <param name="stream">XML 데이터가 포함된 스트림입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.IO.Stream,System.Xml.Linq.LoadOptions)">
+      <summary>지정된 스트림을 사용하여 새 <see cref="T:System.Xml.Linq.XElement" /> 인스턴스를 만들고, 선택적으로 공백 및 줄 정보를 유지하고 기본 URI를 설정합니다.</summary>
+      <returns>스트림에 포함된 데이터를 읽는 데 사용되는 <see cref="T:System.Xml.Linq.XElement" /> 개체입니다.</returns>
+      <param name="stream">XML 데이터가 포함된 스트림입니다.</param>
+      <param name="options">기본 URI 및 줄 정보의 로드 여부를 지정하는 <see cref="T:System.Xml.Linq.LoadOptions" /> 개체입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.IO.TextReader)">
+      <summary>
+        <see cref="T:System.IO.TextReader" />에서 <see cref="T:System.Xml.Linq.XElement" />를 로드합니다. </summary>
+      <returns>지정된 <see cref="T:System.IO.TextReader" />에서 읽은 XML이 들어 있는 <see cref="T:System.Xml.Linq.XElement" />입니다.</returns>
+      <param name="textReader">
+        <see cref="T:System.Xml.Linq.XElement" /> 콘텐츠를 읽어올 <see cref="T:System.IO.TextReader" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.IO.TextReader,System.Xml.Linq.LoadOptions)">
+      <summary>
+        <see cref="T:System.IO.TextReader" />에서 <see cref="T:System.Xml.Linq.XElement" />를 로드하고, 선택적으로 공백 및 줄 정보를 유지합니다. </summary>
+      <returns>지정된 <see cref="T:System.IO.TextReader" />에서 읽은 XML이 들어 있는 <see cref="T:System.Xml.Linq.XElement" />입니다.</returns>
+      <param name="textReader">
+        <see cref="T:System.Xml.Linq.XElement" /> 콘텐츠를 읽어올 <see cref="T:System.IO.TextReader" />입니다.</param>
+      <param name="options">기본 URI와 줄 정보의 로드 여부 및 공백 동작을 지정하는 <see cref="T:System.Xml.Linq.LoadOptions" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.String)">
+      <summary>파일에서 <see cref="T:System.Xml.Linq.XElement" />를 로드합니다.</summary>
+      <returns>지정된 파일의 내용이 들어 있는 <see cref="T:System.Xml.Linq.XElement" />입니다.</returns>
+      <param name="uri">새 <see cref="T:System.Xml.Linq.XElement" />에 로드할 파일을 참조하는 URI 문자열입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.String,System.Xml.Linq.LoadOptions)">
+      <summary>파일에서 <see cref="T:System.Xml.Linq.XElement" />를 로드하고, 선택적으로 공백 및 줄 정보를 유지하고 기본 URI를 설정합니다.</summary>
+      <returns>지정된 파일의 내용이 들어 있는 <see cref="T:System.Xml.Linq.XElement" />입니다.</returns>
+      <param name="uri">
+        <see cref="T:System.Xml.Linq.XElement" />에 로드할 파일을 참조하는 URI 문자열입니다.</param>
+      <param name="options">기본 URI와 줄 정보의 로드 여부 및 공백 동작을 지정하는 <see cref="T:System.Xml.Linq.LoadOptions" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.Xml.XmlReader)">
+      <summary>
+        <see cref="T:System.Xml.XmlReader" />에서 <see cref="T:System.Xml.Linq.XElement" />를 로드합니다. </summary>
+      <returns>An <see cref="T:System.Xml.Linq.XElement" /> that contains the XML that was read from the specified <see cref="T:System.Xml.XmlReader" />.</returns>
+      <param name="reader">
+        <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠를 읽어올 <see cref="T:System.Xml.XmlReader" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.Xml.XmlReader,System.Xml.Linq.LoadOptions)">
+      <summary>
+        <see cref="T:System.Xml.XmlReader" />에서 <see cref="T:System.Xml.Linq.XElement" />를 로드하고, 선택적으로 공백 및 줄 정보를 유지하고 기본 URI를 설정합니다.</summary>
+      <returns>An <see cref="T:System.Xml.Linq.XElement" /> that contains the XML that was read from the specified <see cref="T:System.Xml.XmlReader" />.</returns>
+      <param name="reader">
+        <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠를 읽어올 <see cref="T:System.Xml.XmlReader" />입니다.</param>
+      <param name="options">기본 URI와 줄 정보의 로드 여부 및 공백 동작을 지정하는 <see cref="T:System.Xml.Linq.LoadOptions" />입니다.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.Name">
+      <summary>이 요소의 이름을 가져오거나 설정합니다.</summary>
+      <returns>이 요소의 이름이 들어 있는 <see cref="T:System.Xml.Linq.XName" />입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.NodeType">
+      <summary>이 노드에 대한 노드 형식을 가져옵니다.</summary>
+      <returns>노드 형식입니다.<see cref="T:System.Xml.Linq.XElement" /> 개체의 경우 이 값은 <see cref="F:System.Xml.XmlNodeType.Element" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.UInt32}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.UInt32" />.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠가 들어 있는 <see cref="T:System.UInt32" />의 <see cref="T:System.Nullable`1" />입니다.</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.UInt32" />.</param>
+      <exception cref="T:System.FormatException">요소에 유효한 <see cref="T:System.UInt32" /> 값이 들어 있지 않은 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.UInt64}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.UInt64" />.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠가 들어 있는 <see cref="T:System.UInt64" />의 <see cref="T:System.Nullable`1" />입니다.</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.UInt64" />.</param>
+      <exception cref="T:System.FormatException">요소에 유효한 <see cref="T:System.UInt64" /> 값이 들어 있지 않은 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Single}">
+      <summary>이 <see cref="T:System.Xml.Linq.XElement" />의 값을 <see cref="T:System.Single" />의 <see cref="T:System.Nullable`1" />로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠가 들어 있는 <see cref="T:System.Single" />의 <see cref="T:System.Nullable`1" />입니다.</returns>
+      <param name="element">
+        <see cref="T:System.Single" />의 <see cref="T:System.Nullable`1" />로 캐스팅할 <see cref="T:System.Xml.Linq.XElement" />입니다.</param>
+      <exception cref="T:System.FormatException">요소에 유효한 <see cref="T:System.Single" /> 값이 들어 있지 않은 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.TimeSpan}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.TimeSpan" />.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠가 들어 있는 <see cref="T:System.TimeSpan" />의 <see cref="T:System.Nullable`1" />입니다.</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.TimeSpan" />.</param>
+      <exception cref="T:System.FormatException">요소에 유효한 <see cref="T:System.TimeSpan" /> 값이 들어 있지 않은 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Single">
+      <summary>이 <see cref="T:System.Xml.Linq.XElement" />의 값을 <see cref="T:System.Single" />으로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠가 들어 있는 <see cref="T:System.Single" />입니다.</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Single" />.</param>
+      <exception cref="T:System.FormatException">요소에 유효한 <see cref="T:System.Single" /> 값이 들어 있지 않은 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 매개 변수가 null입니다.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.UInt32">
+      <summary>이 <see cref="T:System.Xml.Linq.XElement" />의 값을 <see cref="T:System.UInt32" />으로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠가 들어 있는 <see cref="T:System.UInt32" />입니다.</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.UInt32" />.</param>
+      <exception cref="T:System.FormatException">요소에 유효한 <see cref="T:System.UInt32" /> 값이 들어 있지 않은 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 매개 변수가 null입니다.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.UInt64">
+      <summary>이 <see cref="T:System.Xml.Linq.XElement" />의 값을 <see cref="T:System.UInt64" />으로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠가 들어 있는 <see cref="T:System.UInt64" />입니다.</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.UInt64" />.</param>
+      <exception cref="T:System.FormatException">요소에 유효한 <see cref="T:System.UInt64" /> 값이 들어 있지 않은 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 매개 변수가 null입니다.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.String">
+      <summary>이 <see cref="T:System.Xml.Linq.XElement" />의 값을 <see cref="T:System.String" />으로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠가 들어 있는 <see cref="T:System.String" />입니다.</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.String" />.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.TimeSpan">
+      <summary>이 <see cref="T:System.Xml.Linq.XElement" />의 값을 <see cref="T:System.TimeSpan" />으로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠가 들어 있는 <see cref="T:System.TimeSpan" />입니다.</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.TimeSpan" />.</param>
+      <exception cref="T:System.FormatException">요소에 유효한 <see cref="T:System.TimeSpan" /> 값이 들어 있지 않은 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 매개 변수가 null입니다.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Boolean">
+      <summary>이 <see cref="T:System.Xml.Linq.XElement" />의 값을 <see cref="T:System.Boolean" />으로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠가 들어 있는 <see cref="T:System.Boolean" />입니다.</returns>
+      <param name="element">
+        <see cref="T:System.Boolean" />으로 캐스팅할 <see cref="T:System.Xml.Linq.XElement" />입니다.</param>
+      <exception cref="T:System.FormatException">요소에 유효한 <see cref="T:System.Boolean" /> 값이 들어 있지 않은 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 매개 변수가 null입니다.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.DateTime">
+      <summary>이 <see cref="T:System.Xml.Linq.XElement" />의 값을 <see cref="T:System.DateTime" />으로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠가 들어 있는 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.DateTime" />.</param>
+      <exception cref="T:System.FormatException">요소에 유효한 <see cref="T:System.DateTime" /> 값이 들어 있지 않은 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 매개 변수가 null입니다.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Int64">
+      <summary>이 <see cref="T:System.Xml.Linq.XElement" />의 값을 <see cref="T:System.Int64" />로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠가 들어 있는 <see cref="T:System.Int64" />입니다.</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Int64" />.</param>
+      <exception cref="T:System.FormatException">요소에 유효한 <see cref="T:System.Int64" /> 값이 들어 있지 않은 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 매개 변수가 null입니다.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Int32">
+      <summary>이 <see cref="T:System.Xml.Linq.XElement" />의 값을 <see cref="T:System.Int32" />로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠가 들어 있는 <see cref="T:System.Int32" />입니다.</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Int32" />.</param>
+      <exception cref="T:System.FormatException">요소에 유효한 <see cref="T:System.Int32" /> 값이 들어 있지 않은 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 매개 변수가 null입니다.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Double">
+      <summary>이 <see cref="T:System.Xml.Linq.XElement" />의 값을 <see cref="T:System.Double" />으로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠가 들어 있는 <see cref="T:System.Double" />입니다.</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Double" />.</param>
+      <exception cref="T:System.FormatException">요소에 유효한 <see cref="T:System.Double" /> 값이 들어 있지 않은 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 매개 변수가 null입니다.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Guid">
+      <summary>이 <see cref="T:System.Xml.Linq.XElement" />의 값을 <see cref="T:System.Guid" />으로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠가 들어 있는 <see cref="T:System.Guid" />입니다.</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Guid" />.</param>
+      <exception cref="T:System.FormatException">요소에 유효한 <see cref="T:System.Guid" /> 값이 들어 있지 않은 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 매개 변수가 null입니다.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.DateTimeOffset">
+      <summary>이 <see cref="T:System.Xml.Linq.XAttribute" />의 값을 <see cref="T:System.DateTimeOffset" />으로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠가 들어 있는 <see cref="T:System.DateTimeOffset" />입니다.</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.DateTimeOffset" />.</param>
+      <exception cref="T:System.FormatException">요소에 유효한 <see cref="T:System.DateTimeOffset" /> 값이 들어 있지 않은 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 매개 변수가 null입니다.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Decimal">
+      <summary>이 <see cref="T:System.Xml.Linq.XElement" />의 값을 <see cref="T:System.Decimal" />으로 캐스팅합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠가 들어 있는 <see cref="T:System.Decimal" />입니다.</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Decimal" />.</param>
+      <exception cref="T:System.FormatException">요소에 유효한 <see cref="T:System.Decimal" /> 값이 들어 있지 않은 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 매개 변수가 null입니다.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Guid}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.Guid" />.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠가 들어 있는 <see cref="T:System.Guid" />의 <see cref="T:System.Nullable`1" />입니다.</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.Guid" />.</param>
+      <exception cref="T:System.FormatException">요소에 유효한 <see cref="T:System.Guid" /> 값이 들어 있지 않은 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Int32}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.Int32" />.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠가 들어 있는 <see cref="T:System.Int32" />의 <see cref="T:System.Nullable`1" />입니다.</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.Int32" />.</param>
+      <exception cref="T:System.FormatException">요소에 유효한 <see cref="T:System.Int32" /> 값이 들어 있지 않은 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Double}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.Double" />.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠가 들어 있는 <see cref="T:System.Double" />의 <see cref="T:System.Nullable`1" />입니다.</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.Double" />.</param>
+      <exception cref="T:System.FormatException">요소에 유효한 <see cref="T:System.Double" /> 값이 들어 있지 않은 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.DateTimeOffset}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.DateTimeOffset" />.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠가 들어 있는 <see cref="T:System.DateTimeOffset" />의 <see cref="T:System.Nullable`1" />입니다.</returns>
+      <param name="element">
+        <see cref="T:System.DateTimeOffset" />의 <see cref="T:System.Nullable`1" />로 캐스팅할 <see cref="T:System.Xml.Linq.XElement" />입니다.</param>
+      <exception cref="T:System.FormatException">요소에 유효한 <see cref="T:System.DateTimeOffset" /> 값이 들어 있지 않은 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Decimal}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.Decimal" />.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠가 들어 있는 <see cref="T:System.Decimal" />의 <see cref="T:System.Nullable`1" />입니다.</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.Decimal" />.</param>
+      <exception cref="T:System.FormatException">요소에 유효한 <see cref="T:System.Decimal" /> 값이 들어 있지 않은 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Int64}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.Int64" />.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠가 들어 있는 <see cref="T:System.Int64" />의 <see cref="T:System.Nullable`1" />입니다.</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.Int64" />.</param>
+      <exception cref="T:System.FormatException">요소에 유효한 <see cref="T:System.Int64" /> 값이 들어 있지 않은 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Boolean}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.Boolean" />.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠가 들어 있는 <see cref="T:System.Boolean" />의 <see cref="T:System.Nullable`1" />입니다.</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.Boolean" />.</param>
+      <exception cref="T:System.FormatException">요소에 유효한 <see cref="T:System.Boolean" /> 값이 들어 있지 않은 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.DateTime}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.DateTime" />.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XElement" />의 콘텐츠가 들어 있는 <see cref="T:System.DateTime" />의 <see cref="T:System.Nullable`1" />입니다.</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.DateTime" />.</param>
+      <exception cref="T:System.FormatException">요소에 유효한 <see cref="T:System.DateTime" /> 값이 들어 있지 않은 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Parse(System.String)">
+      <summary>XML이 들어 있는 문자열에서 <see cref="T:System.Xml.Linq.XElement" />를 로드합니다.</summary>
+      <returns>XML이 들어 있는 문자열을 사용하여 채운 <see cref="T:System.Xml.Linq.XElement" />입니다.</returns>
+      <param name="text">XML이 들어 있는 <see cref="T:System.String" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Parse(System.String,System.Xml.Linq.LoadOptions)">
+      <summary>XML이 들어 있는 문자열에서 <see cref="T:System.Xml.Linq.XElement" />를 로드하고, 선택적으로 공백 및 줄 정보를 유지합니다.</summary>
+      <returns>XML이 들어 있는 문자열을 사용하여 채운 <see cref="T:System.Xml.Linq.XElement" />입니다.</returns>
+      <param name="text">XML이 들어 있는 <see cref="T:System.String" />입니다.</param>
+      <param name="options">기본 URI와 줄 정보의 로드 여부 및 공백 동작을 지정하는 <see cref="T:System.Xml.Linq.LoadOptions" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.RemoveAll">
+      <summary>이 <see cref="T:System.Xml.Linq.XElement" />에서 노드 및 특성을 제거합니다.</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.RemoveAttributes">
+      <summary>이 <see cref="T:System.Xml.Linq.XElement" />의 특성을 제거합니다.</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.ReplaceAll(System.Object)">
+      <summary>이 요소의 자식 노드 및 특성을 지정된 콘텐츠로 바꿉니다.</summary>
+      <param name="content">이 요소의 자식 노드 및 특성을 대체할 콘텐츠입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.ReplaceAll(System.Object[])">
+      <summary>이 요소의 자식 노드 및 특성을 지정된 콘텐츠로 바꿉니다.</summary>
+      <param name="content">콘텐츠 개체의 매개 변수 목록입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.ReplaceAttributes(System.Object)">
+      <summary>이 요소의 특성을 지정된 콘텐츠로 바꿉니다.</summary>
+      <param name="content">이 요소의 특성을 대체할 콘텐츠입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.ReplaceAttributes(System.Object[])">
+      <summary>이 요소의 특성을 지정된 콘텐츠로 바꿉니다.</summary>
+      <param name="content">콘텐츠 개체의 매개 변수 목록입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Save(System.IO.Stream)">
+      <summary>이 <see cref="T:System.Xml.Linq.XElement" />를 지정된 <see cref="T:System.IO.Stream" />에 출력합니다.</summary>
+      <param name="stream">이 <see cref="T:System.Xml.Linq.XElement" />를 출력할 스트림입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Save(System.IO.Stream,System.Xml.Linq.SaveOptions)">
+      <summary>이 <see cref="T:System.Xml.Linq.XElement" />를 지정된 <see cref="T:System.IO.Stream" />에 출력하고 선택적으로 형식 지정 동작을 지정합니다.</summary>
+      <param name="stream">이 <see cref="T:System.Xml.Linq.XElement" />를 출력할 스트림입니다.</param>
+      <param name="options">서식 지정 동작을 지정하는 <see cref="T:System.Xml.Linq.SaveOptions" /> 개체입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Save(System.IO.TextWriter)">
+      <summary>이 요소를 <see cref="T:System.IO.TextWriter" />로 serialize합니다.</summary>
+      <param name="textWriter">
+        <see cref="T:System.Xml.Linq.XElement" />를 쓸 <see cref="T:System.IO.TextWriter" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Save(System.IO.TextWriter,System.Xml.Linq.SaveOptions)">
+      <summary>이 요소를 <see cref="T:System.IO.TextWriter" />로 serialize하고, 선택적으로 형식 지정을 해제합니다.</summary>
+      <param name="textWriter">XML을 출력할 <see cref="T:System.IO.TextWriter" />입니다.</param>
+      <param name="options">형식 지정 동작을 지정하는 <see cref="T:System.Xml.Linq.SaveOptions" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Save(System.Xml.XmlWriter)">
+      <summary>이 요소를 <see cref="T:System.Xml.XmlWriter" />로 serialize합니다.</summary>
+      <param name="writer">
+        <see cref="T:System.Xml.Linq.XElement" />를 쓸 <see cref="T:System.Xml.XmlWriter" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.SetAttributeValue(System.Xml.Linq.XName,System.Object)">
+      <summary>특성 값을 설정하거나 특성을 추가 또는 제거합니다. </summary>
+      <param name="name">변경할 특성의 이름이 들어 있는 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+      <param name="value">특성에 할당할 값입니다.값이 null이면 특성이 제거됩니다.그렇지 않으면 값이 문자열 표현으로 변환되어 특성의 <see cref="P:System.Xml.Linq.XAttribute.Value" /> 속성에 할당됩니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="value" />가 <see cref="T:System.Xml.Linq.XObject" />의 인스턴스인 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.SetElementValue(System.Xml.Linq.XName,System.Object)">
+      <summary>자식 요소의 값을 설정하거나 자식 요소를 추가 또는 제거합니다.</summary>
+      <param name="name">변경할 자식 요소의 이름이 들어 있는 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+      <param name="value">자식 요소에 할당할 값입니다.값이 null이면 자식 요소가 제거됩니다.그렇지 않으면 값이 문자열 표현으로 변환되어 자식 요소의 <see cref="P:System.Xml.Linq.XElement.Value" /> 속성에 할당됩니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="value" />가 <see cref="T:System.Xml.Linq.XObject" />의 인스턴스인 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.SetValue(System.Object)">
+      <summary>이 요소의 값을 설정합니다.</summary>
+      <param name="value">이 요소에 할당할 값입니다.값은 문자열 표현으로 변환되어 특성의 <see cref="P:System.Xml.Linq.XElement.Value" /> 속성에 할당됩니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" />은 null입니다.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="value" />가 <see cref="T:System.Xml.Linq.XObject" />인 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.System#Xml#Serialization#IXmlSerializable#GetSchema">
+      <summary>이 개체의 XML 표현을 설명하는 XML 스키마 정의를 가져옵니다.</summary>
+      <returns>
+        <see cref="M:System.Xml.Serialization.IXmlSerializable.WriteXml(System.Xml.XmlWriter)" /> 메서드에 의해 생성되고 <see cref="M:System.Xml.Serialization.IXmlSerializable.ReadXml(System.Xml.XmlReader)" /> 메서드가 사용하는 개체의 XML 표현을 설명하는 <see cref="T:System.Xml.Schema.XmlSchema" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.System#Xml#Serialization#IXmlSerializable#ReadXml(System.Xml.XmlReader)">
+      <summary>개체의 XML 표현에서 개체를 생성합니다.</summary>
+      <param name="reader">개체를 deserialize할 <see cref="T:System.Xml.XmlReader" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.System#Xml#Serialization#IXmlSerializable#WriteXml(System.Xml.XmlWriter)">
+      <summary>개체를 XML 표현으로 변환합니다.</summary>
+      <param name="writer">이 개체를 serialize할 <see cref="T:System.Xml.XmlWriter" />입니다.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.Value">
+      <summary>이 요소의 연결된 텍스트 콘텐츠를 가져오거나 설정합니다.</summary>
+      <returns>이 요소의 모든 텍스트 콘텐츠가 들어 있는 <see cref="T:System.String" />입니다.텍스트 노드가 여러 개인 경우 노드가 결합됩니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.WriteTo(System.Xml.XmlWriter)">
+      <summary>이 요소를 <see cref="T:System.Xml.XmlWriter" />에 씁니다.</summary>
+      <param name="writer">이 메서드가 쓸 <see cref="T:System.Xml.XmlWriter" />입니다.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XName">
+      <summary>XML 요소 또는 특성의 이름을 나타냅니다. </summary>
+    </member>
+    <member name="M:System.Xml.Linq.XName.Equals(System.Object)">
+      <summary>지정된 <see cref="T:System.Xml.Linq.XName" />이 이 <see cref="T:System.Xml.Linq.XName" />과 같은지 확인합니다.</summary>
+      <returns>지정된 <see cref="T:System.Xml.Linq.XName" />이 현재 <see cref="T:System.Xml.Linq.XName" />과 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="obj">현재 <see cref="T:System.Xml.Linq.XName" />과 비교할 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.Get(System.String)">
+      <summary>확장된 이름을 사용하여 <see cref="T:System.Xml.Linq.XName" /> 개체를 가져옵니다.</summary>
+      <returns>확장된 이름을 사용하여 생성한 <see cref="T:System.Xml.Linq.XName" /> 개체입니다.</returns>
+      <param name="expandedName">{namespace}localname 형식의 확장된 XML 이름이 들어 있는 <see cref="T:System.String" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.Get(System.String,System.String)">
+      <summary>로컬 이름 및 네임스페이스를 사용하여 <see cref="T:System.Xml.Linq.XName" /> 개체를 가져옵니다.</summary>
+      <returns>지정된 로컬 이름 및 네임스페이스를 사용하여 만든 <see cref="T:System.Xml.Linq.XName" /> 개체입니다.</returns>
+      <param name="localName">정규화되지 않은 로컬 이름입니다.</param>
+      <param name="namespaceName">XML 네임스페이스입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.GetHashCode">
+      <summary>이 <see cref="T:System.Xml.Linq.XName" />의 해시 코드를 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XName" />에 대한 해시 코드가 들어 있는 <see cref="T:System.Int32" />입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XName.LocalName">
+      <summary>이름의 정규화되지 않은 로컬 부분을 가져옵니다.</summary>
+      <returns>이름의 정규화되지 않은 로컬 부분이 들어 있는 <see cref="T:System.String" />입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XName.Namespace">
+      <summary>정규화된 이름의 네임스페이스 부분을 가져옵니다.</summary>
+      <returns>이름의 네임스페이스 부분이 들어 있는 <see cref="T:System.Xml.Linq.XNamespace" />입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XName.NamespaceName">
+      <summary>이 <see cref="T:System.Xml.Linq.XName" />에 대한 <see cref="T:System.Xml.Linq.XNamespace" />의 URI를 반환합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XName" />에 대한 <see cref="T:System.Xml.Linq.XNamespace" />의 URI입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XName.op_Equality(System.Xml.Linq.XName,System.Xml.Linq.XName)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XName" />의 두 인스턴스가 같은지 여부를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />와 <paramref name="right" />가 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+      <param name="right">비교할 두 번째 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.op_Implicit(System.String)~System.Xml.Linq.XName">
+      <summary>확장된 XML 이름 형식({namespace}localname)의 문자열을 <see cref="T:System.Xml.Linq.XName" /> 개체로 변환합니다.</summary>
+      <returns>확장된 이름을 사용하여 생성한 <see cref="T:System.Xml.Linq.XName" /> 개체입니다.</returns>
+      <param name="expandedName">{namespace}localname 형식의 확장된 XML 이름이 들어 있는 문자열입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.op_Inequality(System.Xml.Linq.XName,System.Xml.Linq.XName)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XName" />의 두 인스턴스가 다른지 여부를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />와 <paramref name="right" />가 같지 않으면 true이고, 같으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+      <param name="right">비교할 두 번째 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.System#IEquatable{T}#Equals(System.Xml.Linq.XName)">
+      <summary>현재 <see cref="T:System.Xml.Linq.XName" />이 지정된 <see cref="T:System.Xml.Linq.XName" />과 같은지 확인합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XName" />이 지정된 <see cref="T:System.Xml.Linq.XName" />과 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="other">이 <see cref="T:System.Xml.Linq.XName" />과 비교할 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.ToString">
+      <summary>확장된 XML 이름을 {namespace}localname 형식으로 반환합니다.</summary>
+      <returns>{namespace}localname 형식의 확장된 XML 이름이 들어 있는 <see cref="T:System.String" />입니다.</returns>
+    </member>
+    <member name="T:System.Xml.Linq.XNamespace">
+      <summary>XML 네임스페이스를 나타냅니다.이 클래스는 상속될 수 없습니다.</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.Equals(System.Object)">
+      <summary>지정된 <see cref="T:System.Xml.Linq.XNamespace" />가 현재 <see cref="T:System.Xml.Linq.XNamespace" />와 같은지 여부를 확인합니다.</summary>
+      <returns>지정된 <see cref="T:System.Xml.Linq.XNamespace" />가 현재 <see cref="T:System.Xml.Linq.XNamespace" />와 같은지 여부를 나타내는 <see cref="T:System.Boolean" />입니다.</returns>
+      <param name="obj">현재 <see cref="T:System.Xml.Linq.XNamespace" />와 비교할 <see cref="T:System.Xml.Linq.XNamespace" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.Get(System.String)">
+      <summary>지정된 URI(Uniform Resource Identifier)에 대한 <see cref="T:System.Xml.Linq.XNamespace" />를 가져옵니다.</summary>
+      <returns>지정된 URI로 만든 <see cref="T:System.Xml.Linq.XNamespace" />입니다.</returns>
+      <param name="namespaceName">네임스페이스 URI가 들어 있는 <see cref="T:System.String" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.GetHashCode">
+      <summary>이 <see cref="T:System.Xml.Linq.XNamespace" />의 해시 코드를 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XNamespace" />에 대한 해시 코드가 들어 있는 <see cref="T:System.Int32" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.GetName(System.String)">
+      <summary>이 <see cref="T:System.Xml.Linq.XNamespace" /> 및 지정된 로컬 이름을 사용하여 만든 <see cref="T:System.Xml.Linq.XName" /> 개체를 반환합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XNamespace" /> 및 지정된 로컬 이름을 사용하여 만든 <see cref="T:System.Xml.Linq.XName" />입니다.</returns>
+      <param name="localName">로컬 이름이 들어 있는 <see cref="T:System.String" />입니다.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XNamespace.NamespaceName">
+      <summary>이 네임스페이스의 URI(Uniform Resource Identifier)를 가져옵니다.</summary>
+      <returns>네임스페이스의 URI가 들어 있는 <see cref="T:System.String" />입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XNamespace.None">
+      <summary>어떠한 네임스페이스에도 해당하지 않는 <see cref="T:System.Xml.Linq.XNamespace" /> 개체를 가져옵니다.</summary>
+      <returns>어떠한 네임스페이스에도 해당하지 않는 <see cref="T:System.Xml.Linq.XNamespace" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.op_Addition(System.Xml.Linq.XNamespace,System.String)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XNamespace" /> 개체를 로컬 이름과 결합하여 <see cref="T:System.Xml.Linq.XName" />을 만듭니다.</summary>
+      <returns>네임스페이스 및 로컬 이름을 사용하여 만든 새 <see cref="T:System.Xml.Linq.XName" />입니다.</returns>
+      <param name="ns">네임스페이스가 들어 있는 <see cref="T:System.Xml.Linq.XNamespace" />입니다.</param>
+      <param name="localName">로컬 이름이 들어 있는 <see cref="T:System.String" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.op_Equality(System.Xml.Linq.XNamespace,System.Xml.Linq.XNamespace)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XNamespace" />의 두 인스턴스가 같은지 여부를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />와 <paramref name="right" />가 서로 같은지 여부를 나타내는 <see cref="T:System.Boolean" />입니다.</returns>
+      <param name="left">비교할 첫 번째 <see cref="T:System.Xml.Linq.XNamespace" />입니다.</param>
+      <param name="right">비교할 두 번째 <see cref="T:System.Xml.Linq.XNamespace" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.op_Implicit(System.String)~System.Xml.Linq.XNamespace">
+      <summary>URI(Uniform Resource Identifier)가 들어 있는 문자열을 <see cref="T:System.Xml.Linq.XNamespace" />로 변환합니다.</summary>
+      <returns>URI 문자열로 만든 <see cref="T:System.Xml.Linq.XNamespace" />입니다.</returns>
+      <param name="namespaceName">네임스페이스 URI가 들어 있는 <see cref="T:System.String" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.op_Inequality(System.Xml.Linq.XNamespace,System.Xml.Linq.XNamespace)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XNamespace" />의 두 인스턴스가 다른지 여부를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />와 <paramref name="right" />가 서로 다른지 여부를 나타내는 <see cref="T:System.Boolean" />입니다.</returns>
+      <param name="left">비교할 첫 번째 <see cref="T:System.Xml.Linq.XNamespace" />입니다.</param>
+      <param name="right">비교할 두 번째 <see cref="T:System.Xml.Linq.XNamespace" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.ToString">
+      <summary>이 <see cref="T:System.Xml.Linq.XNamespace" />의 URI를 반환합니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XNamespace" />의 URI입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XNamespace.Xml">
+      <summary>XML URI(http://www.w3.org/XML/1998/namespace)에 해당하는 <see cref="T:System.Xml.Linq.XNamespace" /> 개체를 가져옵니다.</summary>
+      <returns>XML URI(http://www.w3.org/XML/1998/namespace)에 해당하는 <see cref="T:System.Xml.Linq.XNamespace" />입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XNamespace.Xmlns">
+      <summary>xmlns URI(http://www.w3.org/2000/xmlns/)에 해당하는 <see cref="T:System.Xml.Linq.XNamespace" /> 개체를 가져옵니다.</summary>
+      <returns>xmlns URI(http://www.w3.org/2000/xmlns/)에 해당하는 <see cref="T:System.Xml.Linq.XNamespace" />입니다.</returns>
+    </member>
+    <member name="T:System.Xml.Linq.XNode">
+      <summary>XML 트리에서 노드(요소, 주석, 문서 형식, 처리 명령 또는 텍스트 노드)의 추상 개념을 나타냅니다.  </summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.AddAfterSelf(System.Object)">
+      <summary>이 노드 바로 뒤에 지정된 콘텐츠를 추가합니다.</summary>
+      <param name="content">이 노드 뒤에 추가할 단순 콘텐츠 또는 콘텐츠 개체 컬렉션이 포함된 콘텐츠 개체입니다.</param>
+      <exception cref="T:System.InvalidOperationException">The parent is null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.AddAfterSelf(System.Object[])">
+      <summary>이 노드 바로 뒤에 지정된 콘텐츠를 추가합니다.</summary>
+      <param name="content">콘텐츠 개체의 매개 변수 목록입니다.</param>
+      <exception cref="T:System.InvalidOperationException">The parent is null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.AddBeforeSelf(System.Object)">
+      <summary>이 노드 바로 앞에 지정된 콘텐츠를 추가합니다.</summary>
+      <param name="content">이 노드 앞에 추가할 단순 콘텐츠 또는 콘텐츠 개체 컬렉션이 포함된 콘텐츠 개체입니다.</param>
+      <exception cref="T:System.InvalidOperationException">The parent is null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.AddBeforeSelf(System.Object[])">
+      <summary>이 노드 바로 앞에 지정된 콘텐츠를 추가합니다.</summary>
+      <param name="content">콘텐츠 개체의 매개 변수 목록입니다.</param>
+      <exception cref="T:System.InvalidOperationException">The parent is null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.Ancestors">
+      <summary>이 노드의 상위 요소 컬렉션을 반환합니다.</summary>
+      <returns>이 노드의 상위 요소에 대한 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.Ancestors(System.Xml.Linq.XName)">
+      <summary>이 노드의 필터링된 상위 요소 컬렉션을 반환합니다.일치하는 <see cref="T:System.Xml.Linq.XName" />이 있는 요소만 컬렉션에 포함됩니다.</summary>
+      <returns>이 노드의 상위 요소에 대한 <see cref="T:System.Xml.Linq.XElement" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.일치하는 <see cref="T:System.Xml.Linq.XName" />이 있는 요소만 컬렉션에 포함됩니다.반환된 컬렉션의 노드 순서는 문서와 반대입니다.이 메서드는 지연된 실행을 사용합니다.</returns>
+      <param name="name">일치시킬 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.CompareDocumentOrder(System.Xml.Linq.XNode,System.Xml.Linq.XNode)">
+      <summary>두 노드를 비교하여 상대적인 XML 문서 순서를 확인합니다.</summary>
+      <returns>노드가 서로 같으면 0, <paramref name="n1" />이 <paramref name="n2" />보다 앞에 나오면 -1, <paramref name="n2" />이 <paramref name="n1" />보다 뒤에 나오면 1이 포함된 int입니다.</returns>
+      <param name="n1">비교할 첫 번째 <see cref="T:System.Xml.Linq.XNode" />입니다.</param>
+      <param name="n2">비교할 두 번째 <see cref="T:System.Xml.Linq.XNode" />입니다.</param>
+      <exception cref="T:System.InvalidOperationException">The two nodes do not share a common ancestor.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.CreateReader">
+      <summary>이 노드에 대한 <see cref="T:System.Xml.XmlReader" />를 만듭니다.</summary>
+      <returns>이 노드 및 하위 요소를 읽는 데 사용할 수 있는 <see cref="T:System.Xml.XmlReader" />입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.CreateReader(System.Xml.Linq.ReaderOptions)">
+      <summary>
+        <paramref name="readerOptions" /> 매개 변수에서 지정된 옵션을 사용하여 <see cref="T:System.Xml.XmlReader" />를 만듭니다.</summary>
+      <returns>
+        <see cref="T:System.Xml.XmlReader" /> 개체입니다.</returns>
+      <param name="readerOptions">중복된 네임스페이스를 생략할지를 지정하는 <see cref="T:System.Xml.Linq.ReaderOptions" /> 개체입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.DeepEquals(System.Xml.Linq.XNode,System.Xml.Linq.XNode)">
+      <summary>모든 하위 노드의 값을 포함하여 두 노드의 값을 비교합니다.</summary>
+      <returns>노드가 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="n1">비교할 첫 번째 <see cref="T:System.Xml.Linq.XNode" />입니다.</param>
+      <param name="n2">비교할 두 번째 <see cref="T:System.Xml.Linq.XNode" />입니다.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XNode.DocumentOrderComparer">
+      <summary>두 노드의 상대 위치를 비교할 수 있는 비교자를 가져옵니다.</summary>
+      <returns>두 노드의 상대 위치를 비교할 수 있는 <see cref="T:System.Xml.Linq.XNodeDocumentOrderComparer" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ElementsAfterSelf">
+      <summary>이 노드 뒤에 있는 형제 요소의 컬렉션을 문서 순으로 반환합니다.</summary>
+      <returns>이 노드 뒤에 있는 형제 요소에 대한 <see cref="T:System.Xml.Linq.XElement" />의 문서 순 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ElementsAfterSelf(System.Xml.Linq.XName)">
+      <summary>이 노드 뒤에 있는 형제 요소의 필터링된 컬렉션을 문서 순으로 반환합니다.일치하는 <see cref="T:System.Xml.Linq.XName" />이 있는 요소만 컬렉션에 포함됩니다.</summary>
+      <returns>이 노드 뒤에 있는 형제 요소에 대한 <see cref="T:System.Xml.Linq.XElement" />의 문서 순 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.일치하는 <see cref="T:System.Xml.Linq.XName" />이 있는 요소만 컬렉션에 포함됩니다.</returns>
+      <param name="name">일치시킬 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ElementsBeforeSelf">
+      <summary>이 노드 앞에 있는 형제 요소의 컬렉션을 문서 순으로 반환합니다.</summary>
+      <returns>이 노드 앞에 있는 형제 요소에 대한 <see cref="T:System.Xml.Linq.XElement" />의 문서 순 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ElementsBeforeSelf(System.Xml.Linq.XName)">
+      <summary>이 노드 앞에 있는 형제 요소의 필터링된 컬렉션을 문서 순으로 반환합니다.일치하는 <see cref="T:System.Xml.Linq.XName" />이 있는 요소만 컬렉션에 포함됩니다.</summary>
+      <returns>이 노드 앞에 있는 형제 요소에 대한 <see cref="T:System.Xml.Linq.XElement" />의 문서 순 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.일치하는 <see cref="T:System.Xml.Linq.XName" />이 있는 요소만 컬렉션에 포함됩니다.</returns>
+      <param name="name">일치시킬 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XNode.EqualityComparer">
+      <summary>두 노드의 값이 같은지 비교할 수 있는 비교자를 가져옵니다.</summary>
+      <returns>두 노드의 값이 같은지 비교할 수 있는 <see cref="T:System.Xml.Linq.XNodeEqualityComparer" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.IsAfter(System.Xml.Linq.XNode)">
+      <summary>문서 순서를 기준으로 현재 노드가 지정된 노드보다 뒤에 나오는지 확인합니다.</summary>
+      <returns>이 노드가 지정된 노드보다 뒤에 나오면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="node">문서 순서를 비교할 <see cref="T:System.Xml.Linq.XNode" /> 입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.IsBefore(System.Xml.Linq.XNode)">
+      <summary>문서 순서를 기준으로 현재 노드가 지정된 노드보다 앞에 나오는지 확인합니다.</summary>
+      <returns>이 노드가 지정된 노드보다 앞에 나오면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="node">문서 순서를 비교할 <see cref="T:System.Xml.Linq.XNode" /> 입니다.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XNode.NextNode">
+      <summary>이 노드의 다음 형제 노드를 가져옵니다.</summary>
+      <returns>다음 형제 노드가 포함된 <see cref="T:System.Xml.Linq.XNode" />입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.NodesAfterSelf">
+      <summary>이 노드 뒤에 있는 형제 노드의 컬렉션을 문서 순으로 반환합니다.</summary>
+      <returns>이 노드 뒤에 있는 형제 노드에 대한 <see cref="T:System.Xml.Linq.XNode" />의 문서 순 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.NodesBeforeSelf">
+      <summary>이 노드 앞에 있는 형제 노드의 컬렉션을 문서 순으로 반환합니다.</summary>
+      <returns>이 노드 앞에 있는 형제 노드에 대한 <see cref="T:System.Xml.Linq.XNode" />의 문서 순 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XNode.PreviousNode">
+      <summary>이 노드의 이전 형제 노드를 가져옵니다.</summary>
+      <returns>이전 형제 노드가 포함된 <see cref="T:System.Xml.Linq.XNode" />입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ReadFrom(System.Xml.XmlReader)">
+      <summary>
+        <see cref="T:System.Xml.XmlReader" />를 사용하여 <see cref="T:System.Xml.Linq.XNode" />를 만듭니다.</summary>
+      <returns>판독기에서 읽은 노드 및 해당 하위 노드가 포함된 <see cref="T:System.Xml.Linq.XNode" />입니다.노드의 런타임 형식은 판독기에서 읽은 첫 번째 노드의 형식(<see cref="P:System.Xml.Linq.XObject.NodeType" />)에 따라 결정됩니다.</returns>
+      <param name="reader">이 <see cref="T:System.Xml.Linq.XNode" />로 읽어올 노드에 배치된 <see cref="T:System.Xml.XmlReader" />입니다.</param>
+      <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Xml.XmlReader" /> is not positioned on a recognized node type.</exception>
+      <exception cref="T:System.Xml.XmlException">The underlying <see cref="T:System.Xml.XmlReader" /> throws an exception.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.Remove">
+      <summary>부모에서 이 노드를 제거합니다.</summary>
+      <exception cref="T:System.InvalidOperationException">The parent is null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ReplaceWith(System.Object)">
+      <summary>이 노드를 지정된 콘텐츠로 바꿉니다.</summary>
+      <param name="content">이 노드를 대체할 콘텐츠입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ReplaceWith(System.Object[])">
+      <summary>이 노드를 지정된 콘텐츠로 바꿉니다.</summary>
+      <param name="content">새 콘텐츠의 매개 변수 목록입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ToString">
+      <summary>이 노드의 들여쓰기된 XML을 반환합니다.</summary>
+      <returns>들여쓰기된 XML이 포함된 <see cref="T:System.String" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ToString(System.Xml.Linq.SaveOptions)">
+      <summary>이 노드의 XML을 반환하고, 선택적으로 서식 지정을 해제합니다.</summary>
+      <returns>XML이 포함된 <see cref="T:System.String" />입니다.</returns>
+      <param name="options">서식 지정 동작을 지정하는 <see cref="T:System.Xml.Linq.SaveOptions" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.WriteTo(System.Xml.XmlWriter)">
+      <summary>이 노드를 <see cref="T:System.Xml.XmlWriter" />로 씁니다.</summary>
+      <param name="writer">이 메서드가 쓸 <see cref="T:System.Xml.XmlWriter" />입니다.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XNodeDocumentOrderComparer">
+      <summary>노드의 문서 순서를 비교하는 기능이 들어 있습니다.이 클래스는 상속될 수 없습니다.</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeDocumentOrderComparer.#ctor">
+      <summary>
+        <see cref="T:System.Xml.Linq.XNodeDocumentOrderComparer" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeDocumentOrderComparer.Compare(System.Xml.Linq.XNode,System.Xml.Linq.XNode)">
+      <summary>두 노드를 비교하여 상대적인 문서 순서를 확인합니다.</summary>
+      <returns>노드가 서로 같으면 0, <paramref name="x" />가 <paramref name="y" />보다 앞에 나오면 -1, <paramref name="x" />가 <paramref name="y" />보다 뒤에 나오면 1이 들어 있는 <see cref="T:System.Int32" />입니다.</returns>
+      <param name="x">비교할 첫 번째 <see cref="T:System.Xml.Linq.XNode" />입니다.</param>
+      <param name="y">비교할 두 번째 <see cref="T:System.Xml.Linq.XNode" />입니다.</param>
+      <exception cref="T:System.InvalidOperationException">두 노드가 공통 상위 노드를 공유하지 않는 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeDocumentOrderComparer.System#Collections#IComparer#Compare(System.Object,System.Object)">
+      <summary>두 노드를 비교하여 상대적인 문서 순서를 확인합니다.</summary>
+      <returns>노드가 서로 같으면 0, <paramref name="x" />가 <paramref name="y" />보다 앞에 나오면 -1, <paramref name="x" />가 <paramref name="y" />보다 뒤에 나오면 1이 들어 있는 <see cref="T:System.Int32" />입니다.</returns>
+      <param name="x">비교할 첫 번째 <see cref="T:System.Xml.Linq.XNode" />입니다.</param>
+      <param name="y">비교할 두 번째 <see cref="T:System.Xml.Linq.XNode" />입니다.</param>
+      <exception cref="T:System.InvalidOperationException">두 노드가 공통 상위 노드를 공유하지 않는 경우</exception>
+      <exception cref="T:System.ArgumentException">두 노드가 <see cref="T:System.Xml.Linq.XNode" />에서 파생되지 않는 경우</exception>
+    </member>
+    <member name="T:System.Xml.Linq.XNodeEqualityComparer">
+      <summary>노드가 서로 같은지 비교합니다.이 클래스는 상속될 수 없습니다.</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeEqualityComparer.#ctor">
+      <summary>
+        <see cref="T:System.Xml.Linq.XNodeEqualityComparer" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeEqualityComparer.Equals(System.Xml.Linq.XNode,System.Xml.Linq.XNode)">
+      <summary>두 노드의 값을 비교합니다.</summary>
+      <returns>노드가 서로 같은지를 나타내는 <see cref="T:System.Boolean" />입니다.</returns>
+      <param name="x">비교할 첫 번째 <see cref="T:System.Xml.Linq.XNode" />입니다.</param>
+      <param name="y">비교할 두 번째 <see cref="T:System.Xml.Linq.XNode" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeEqualityComparer.GetHashCode(System.Xml.Linq.XNode)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XNode" />에 따른 해시 코드를 반환합니다.</summary>
+      <returns>노드에 대한 값 기반 해시 코드가 포함된 <see cref="T:System.Int32" />입니다.</returns>
+      <param name="obj">해시할 <see cref="T:System.Xml.Linq.XNode" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeEqualityComparer.System#Collections#IEqualityComparer#Equals(System.Object,System.Object)">
+      <summary>두 노드의 값을 비교합니다.</summary>
+      <returns>노드가 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="x">비교할 첫 번째 <see cref="T:System.Xml.Linq.XNode" />입니다.</param>
+      <param name="y">비교할 두 번째 <see cref="T:System.Xml.Linq.XNode" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeEqualityComparer.System#Collections#IEqualityComparer#GetHashCode(System.Object)">
+      <summary>노드의 값에 따른 해시 코드를 반환합니다.</summary>
+      <returns>노드에 대한 값 기반 해시 코드가 포함된 <see cref="T:System.Int32" />입니다.</returns>
+      <param name="obj">해시할 노드입니다.</param>
+    </member>
+    <member name="T:System.Xml.Linq.XObject">
+      <summary>X 트리의 노드 또는 특성을 나타냅니다. </summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.AddAnnotation(System.Object)">
+      <summary>이 <see cref="T:System.Xml.Linq.XObject" />의 주석 목록에 개체를 추가합니다.</summary>
+      <param name="annotation">추가할 주석이 들어 있는 <see cref="T:System.Object" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.Annotation``1">
+      <summary>이 <see cref="T:System.Xml.Linq.XObject" />에서 지정된 형식의 첫 번째 주석 개체를 가져옵니다. </summary>
+      <returns>지정된 형식과 일치하는 첫 번째 주석 개체이거나, 지정된 형식의 주석이 없으면 null입니다.</returns>
+      <typeparam name="T">검색할 주석의 형식입니다.</typeparam>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.Annotation(System.Type)">
+      <summary>이 <see cref="T:System.Xml.Linq.XObject" />에서 지정된 형식의 첫 번째 주석 개체를 가져옵니다.</summary>
+      <returns>지정된 형식과 일치하는 첫 번째 주석 개체가 들어 있는 <see cref="T:System.Object" />이거나, 지정된 형식의 주석이 없으면 null입니다.</returns>
+      <param name="type">검색할 주석의 <see cref="T:System.Type" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.Annotations``1">
+      <summary>이 <see cref="T:System.Xml.Linq.XObject" />에서 지정된 형식의 주석 컬렉션을 가져옵니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XObject" />의 주석이 들어 있는 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+      <typeparam name="T">검색할 주석의 형식입니다.</typeparam>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.Annotations(System.Type)">
+      <summary>이 <see cref="T:System.Xml.Linq.XObject" />에서 지정된 형식의 주석 컬렉션을 가져옵니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XObject" />에서 지정된 형식과 일치하는 주석이 들어 있는 <see cref="T:System.Object" />의 <see cref="T:System.Collections.Generic.IEnumerable`1" />입니다.</returns>
+      <param name="type">검색할 주석의 <see cref="T:System.Type" />입니다.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XObject.BaseUri">
+      <summary>이 <see cref="T:System.Xml.Linq.XObject" />의 기본 URI를 가져옵니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XObject" />의 기본 URI가 들어 있는 <see cref="T:System.String" />입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="E:System.Xml.Linq.XObject.Changed">
+      <summary>이 <see cref="T:System.Xml.Linq.XObject" /> 또는 해당 하위 항목이 변경될 때 발생합니다.</summary>
+    </member>
+    <member name="E:System.Xml.Linq.XObject.Changing">
+      <summary>이 <see cref="T:System.Xml.Linq.XObject" /> 또는 해당 하위 항목이 변경되기 직전에 발생합니다.</summary>
+    </member>
+    <member name="P:System.Xml.Linq.XObject.Document">
+      <summary>이 <see cref="T:System.Xml.Linq.XObject" />의 <see cref="T:System.Xml.Linq.XDocument" />를 가져옵니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XObject" />의 <see cref="T:System.Xml.Linq.XDocument" />입니다. </returns>
+    </member>
+    <member name="P:System.Xml.Linq.XObject.NodeType">
+      <summary>이 <see cref="T:System.Xml.Linq.XObject" />에 대한 노드 형식을 가져옵니다.</summary>
+      <returns>이 <see cref="T:System.Xml.Linq.XObject" />에 대한 노드 형식입니다. </returns>
+    </member>
+    <member name="P:System.Xml.Linq.XObject.Parent">
+      <summary>이 <see cref="T:System.Xml.Linq.XObject" />의 부모 <see cref="T:System.Xml.Linq.XElement" />를 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XObject" />의 부모 <see cref="T:System.Xml.Linq.XElement" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.RemoveAnnotations``1">
+      <summary>이 <see cref="T:System.Xml.Linq.XObject" />에서 지정된 형식의 주석을 제거합니다.</summary>
+      <typeparam name="T">제거할 주석의 형식입니다.</typeparam>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.RemoveAnnotations(System.Type)">
+      <summary>이 <see cref="T:System.Xml.Linq.XObject" />에서 지정된 형식의 주석을 제거합니다.</summary>
+      <param name="type">제거할 주석의 <see cref="T:System.Type" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.System#Xml#IXmlLineInfo#HasLineInfo">
+      <summary>이 <see cref="T:System.Xml.Linq.XObject" />에 줄 정보가 있는지 여부를 나타내는 값을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XObject" />에 줄 정보가 있으면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XObject.System#Xml#IXmlLineInfo#LineNumber">
+      <summary>내부 <see cref="T:System.Xml.XmlReader" />에서 이 <see cref="T:System.Xml.Linq.XObject" />에 대해 보고하는 줄 번호를 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Xml.XmlReader" />에서 이 <see cref="T:System.Xml.Linq.XObject" />에 대해 보고한 줄 번호가 들어 있는 <see cref="T:System.Int32" />입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XObject.System#Xml#IXmlLineInfo#LinePosition">
+      <summary>내부 <see cref="T:System.Xml.XmlReader" />에서 이 <see cref="T:System.Xml.Linq.XObject" />에 대해 보고하는 줄 위치를 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Xml.XmlReader" />에서 이 <see cref="T:System.Xml.Linq.XObject" />에 대해 보고한 줄 위치가 들어 있는 <see cref="T:System.Int32" />입니다.</returns>
+    </member>
+    <member name="T:System.Xml.Linq.XObjectChange">
+      <summary>
+        <see cref="T:System.Xml.Linq.XObject" />에 대한 이벤트가 발생할 때 이벤트 형식을 지정합니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChange.Add">
+      <summary>
+        <see cref="T:System.Xml.Linq.XContainer" />에 추가되었거나 추가될 <see cref="T:System.Xml.Linq.XObject" />입니다.</summary>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChange.Name">
+      <summary>이름이 변경되었거나 변경될 <see cref="T:System.Xml.Linq.XObject" />입니다.</summary>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChange.Remove">
+      <summary>
+        <see cref="T:System.Xml.Linq.XContainer" />에서 제거되었거나 제거될 <see cref="T:System.Xml.Linq.XObject" />입니다.</summary>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChange.Value">
+      <summary>변경되었거나 변경될 <see cref="T:System.Xml.Linq.XObject" />의 값입니다.또한 빈 요소의 serialization이 변경된 경우(빈 태그가 시작/끝 태그 쌍으로 변경되었거나 그 반대로 변경된 경우) 이 이벤트가 발생합니다.</summary>
+    </member>
+    <member name="T:System.Xml.Linq.XObjectChangeEventArgs">
+      <summary>
+        <see cref="E:System.Xml.Linq.XObject.Changing" /> 및 <see cref="E:System.Xml.Linq.XObject.Changed" /> 이벤트에 대한 데이터를 제공합니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XObjectChangeEventArgs.#ctor(System.Xml.Linq.XObjectChange)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XObjectChangeEventArgs" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+      <param name="objectChange">LINQ to XML 이벤트에 대한 이벤트 인수가 들어 있는 <see cref="T:System.Xml.Linq.XObjectChange" />입니다.</param>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChangeEventArgs.Add">
+      <summary>
+        <see cref="F:System.Xml.Linq.XObjectChange.Add" /> 변경 이벤트에 대한 이벤트 인수입니다.</summary>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChangeEventArgs.Name">
+      <summary>
+        <see cref="F:System.Xml.Linq.XObjectChange.Name" /> 변경 이벤트에 대한 이벤트 인수입니다.</summary>
+    </member>
+    <member name="P:System.Xml.Linq.XObjectChangeEventArgs.ObjectChange">
+      <summary>변경 형식을 가져옵니다.</summary>
+      <returns>변경 형식이 들어 있는 <see cref="T:System.Xml.Linq.XObjectChange" />입니다.</returns>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChangeEventArgs.Remove">
+      <summary>
+        <see cref="F:System.Xml.Linq.XObjectChange.Remove" /> 변경 이벤트에 대한 이벤트 인수입니다.</summary>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChangeEventArgs.Value">
+      <summary>
+        <see cref="F:System.Xml.Linq.XObjectChange.Value" /> 변경 이벤트에 대한 이벤트 인수입니다.</summary>
+    </member>
+    <member name="T:System.Xml.Linq.XProcessingInstruction">
+      <summary>XML 처리 명령을 나타냅니다. </summary>
+    </member>
+    <member name="M:System.Xml.Linq.XProcessingInstruction.#ctor(System.String,System.String)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XProcessingInstruction" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+      <param name="target">이 <see cref="T:System.Xml.Linq.XProcessingInstruction" />의 대상 응용 프로그램이 들어 있는 <see cref="T:System.String" />입니다.</param>
+      <param name="data">이 <see cref="T:System.Xml.Linq.XProcessingInstruction" />의 문자열 데이터입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="target" /> 또는 <paramref name="data" /> 매개 변수가 null인 경우</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="target" />이 XML 이름에 대한 제약 조건에 맞지 않는 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XProcessingInstruction.#ctor(System.Xml.Linq.XProcessingInstruction)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XProcessingInstruction" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+      <param name="other">복사할 <see cref="T:System.Xml.Linq.XProcessingInstruction" /> 노드입니다.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XProcessingInstruction.Data">
+      <summary>이 처리 명령의 문자열 값을 가져오거나 설정합니다.</summary>
+      <returns>이 처리 명령의 문자열 값이 들어 있는 <see cref="T:System.String" />입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> 문자열이 null인 경우</exception>
+    </member>
+    <member name="P:System.Xml.Linq.XProcessingInstruction.NodeType">
+      <summary>이 노드에 대한 노드 형식을 가져옵니다.</summary>
+      <returns>노드 형식입니다.<see cref="T:System.Xml.Linq.XProcessingInstruction" /> 개체의 경우 이 값은 <see cref="F:System.Xml.XmlNodeType.ProcessingInstruction" />입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XProcessingInstruction.Target">
+      <summary>이 처리 명령의 대상 응용 프로그램이 들어 있는 문자열을 가져오거나 설정합니다.</summary>
+      <returns>이 처리 명령의 대상 응용 프로그램이 들어 있는 <see cref="T:System.String" />입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> 문자열이 null인 경우</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="target" />이 XML 이름에 대한 제약 조건에 맞지 않는 경우</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XProcessingInstruction.WriteTo(System.Xml.XmlWriter)">
+      <summary>이 처리 명령을 <see cref="T:System.Xml.XmlWriter" />에 씁니다.</summary>
+      <param name="writer">이 처리 명령을 쓸 <see cref="T:System.Xml.XmlWriter" />입니다.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XStreamingElement">
+      <summary>XML 트리에서 지연된 스트리밍 출력을 지원하는 요소를 나타냅니다.</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.#ctor(System.Xml.Linq.XName)">
+      <summary>지정된 <see cref="T:System.Xml.Linq.XName" />에서 <see cref="T:System.Xml.Linq.XElement" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="name">요소의 이름이 들어 있는 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.#ctor(System.Xml.Linq.XName,System.Object)">
+      <summary>지정된 이름 및 콘텐츠를 사용하여 <see cref="T:System.Xml.Linq.XStreamingElement" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="name">요소 이름이 들어 있는 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+      <param name="content">요소의 콘텐츠입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.#ctor(System.Xml.Linq.XName,System.Object[])">
+      <summary>지정된 이름 및 콘텐츠를 사용하여 <see cref="T:System.Xml.Linq.XStreamingElement" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="name">요소 이름이 들어 있는 <see cref="T:System.Xml.Linq.XName" />입니다.</param>
+      <param name="content">요소의 콘텐츠입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Add(System.Object)">
+      <summary>지정된 콘텐츠를 이 <see cref="T:System.Xml.Linq.XStreamingElement" />에 자식으로 추가합니다.</summary>
+      <param name="content">스트리밍 요소에 추가할 콘텐츠입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Add(System.Object[])">
+      <summary>지정된 콘텐츠를 이 <see cref="T:System.Xml.Linq.XStreamingElement" />에 자식으로 추가합니다.</summary>
+      <param name="content">스트리밍 요소에 추가할 콘텐츠입니다.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XStreamingElement.Name">
+      <summary>이 스트리밍 요소의 이름을 가져오거나 설정합니다.</summary>
+      <returns>이 스트리밍 요소의 이름이 들어 있는 <see cref="T:System.Xml.Linq.XName" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Save(System.IO.Stream)">
+      <summary>이 <see cref="T:System.Xml.Linq.XStreamingElement" />를 지정된 <see cref="T:System.IO.Stream" />에 출력합니다.</summary>
+      <param name="stream">이 <see cref="T:System.Xml.Linq.XDocument" />를 출력할 스트림입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Save(System.IO.Stream,System.Xml.Linq.SaveOptions)">
+      <summary>이 <see cref="T:System.Xml.Linq.XStreamingElement" />를 지정된 <see cref="T:System.IO.Stream" />에 출력하고 선택적으로 서식 지정 동작을 지정합니다.</summary>
+      <param name="stream">이 <see cref="T:System.Xml.Linq.XDocument" />를 출력할 스트림입니다.</param>
+      <param name="options">서식 지정 동작을 지정하는 <see cref="T:System.Xml.Linq.SaveOptions" /> 개체입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Save(System.IO.TextWriter)">
+      <summary>이 스트리밍 요소를 <see cref="T:System.IO.TextWriter" />로 serialize합니다.</summary>
+      <param name="textWriter">
+        <see cref="T:System.Xml.Linq.XStreamingElement" />를 쓸 <see cref="T:System.IO.TextWriter" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Save(System.IO.TextWriter,System.Xml.Linq.SaveOptions)">
+      <summary>이 스트리밍 요소를 <see cref="T:System.IO.TextWriter" />로 serialize하고, 선택적으로 서식 지정을 해제합니다.</summary>
+      <param name="textWriter">XML을 출력할 <see cref="T:System.IO.TextWriter" />입니다.</param>
+      <param name="options">형식 지정 동작을 지정하는 <see cref="T:System.Xml.Linq.SaveOptions" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Save(System.Xml.XmlWriter)">
+      <summary>이 스트리밍 요소를 <see cref="T:System.Xml.XmlWriter" />로 serialize합니다.</summary>
+      <param name="writer">
+        <see cref="T:System.Xml.Linq.XElement" />를 쓸 <see cref="T:System.Xml.XmlWriter" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.ToString">
+      <summary>이 스트리밍 요소의 형식 지정(들여쓰기)된 XML을 반환합니다.</summary>
+      <returns>들여쓰기된 XML이 들어 있는 <see cref="T:System.String" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.ToString(System.Xml.Linq.SaveOptions)">
+      <summary>이 스트리밍 요소의 XML을 반환하고, 선택적으로 서식 지정을 해제합니다.</summary>
+      <returns>XML이 들어 있는 <see cref="T:System.String" />입니다.</returns>
+      <param name="options">형식 지정 동작을 지정하는 <see cref="T:System.Xml.Linq.SaveOptions" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.WriteTo(System.Xml.XmlWriter)">
+      <summary>이 스트리밍 요소를 <see cref="T:System.Xml.XmlWriter" />에 씁니다.</summary>
+      <param name="writer">이 메서드가 쓸 <see cref="T:System.Xml.XmlWriter" />입니다.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XText">
+      <summary>텍스트 노드를 나타냅니다. </summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XText.#ctor(System.String)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XText" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+      <param name="value">
+        <see cref="T:System.Xml.Linq.XText" /> 노드의 값이 들어 있는 <see cref="T:System.String" />입니다.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XText.#ctor(System.Xml.Linq.XText)">
+      <summary>다른 <see cref="T:System.Xml.Linq.XText" /> 개체를 사용하여 <see cref="T:System.Xml.Linq.XText" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="other">복사할 <see cref="T:System.Xml.Linq.XText" /> 노드입니다.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XText.NodeType">
+      <summary>이 노드에 대한 노드 형식을 가져옵니다.</summary>
+      <returns>노드 형식입니다.<see cref="T:System.Xml.Linq.XText" /> 개체의 경우 이 값은 <see cref="F:System.Xml.XmlNodeType.Text" />입니다.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XText.Value">
+      <summary>이 노드의 값을 가져오거나 설정합니다.</summary>
+      <returns>이 노드의 값이 들어 있는 <see cref="T:System.String" />입니다.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XText.WriteTo(System.Xml.XmlWriter)">
+      <summary>이 노드를 <see cref="T:System.Xml.XmlWriter" />로 씁니다.</summary>
+      <param name="writer">이 메서드가 쓸 <see cref="T:System.Xml.XmlWriter" />입니다.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+  </members>
+</doc>

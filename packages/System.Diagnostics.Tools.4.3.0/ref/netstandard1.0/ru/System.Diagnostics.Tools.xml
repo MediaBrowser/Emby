@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Diagnostics.Tools</name>
+  </assembly>
+  <members>
+    <member name="T:System.CodeDom.Compiler.GeneratedCodeAttribute">
+      <summary>Идентифицирует год, сгенерированный инструментом.Этот класс не наследуется.</summary>
+    </member>
+    <member name="M:System.CodeDom.Compiler.GeneratedCodeAttribute.#ctor(System.String,System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.CodeDom.Compiler.GeneratedCodeAttribute" /> с указанием имени и версии средства, сгенерировавшего код.</summary>
+      <param name="tool">Имя средства, сгенерировавшего код.</param>
+      <param name="version">Версия средства, сгенерировавшего код.</param>
+    </member>
+    <member name="P:System.CodeDom.Compiler.GeneratedCodeAttribute.Tool">
+      <summary>Получает имя средства, сгенерировавшего код.</summary>
+      <returns>Имя средства, сгенерировавшего код.</returns>
+    </member>
+    <member name="P:System.CodeDom.Compiler.GeneratedCodeAttribute.Version">
+      <summary>Получает версию средства, сгенерировавшего код.</summary>
+      <returns>Версия средства, сгенерировавшего код.</returns>
+    </member>
+    <member name="T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute">
+      <summary>Подавляет сообщение о нарушении правила определенного инструмента статического анализа, позволяет подавить все сообщения, которые относятся к одному артефакту кода.</summary>
+    </member>
+    <member name="M:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.#ctor(System.String,System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute" /> с указанными категорией инструмента статического анализа и идентификатором правила анализа. </summary>
+      <param name="category">Категория атрибута.</param>
+      <param name="checkId">Идентификатор правила инструмента анализа, к которому относится атрибут.</param>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Category">
+      <summary>Возвращает категорию, определяющую классификацию атрибута.</summary>
+      <returns>Категория, определяющая атрибут.</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.CheckId">
+      <summary>Возвращает идентификатор подавляемого правила инструмента анализа.</summary>
+      <returns>Идентификатор подавляемого правила инструмента анализа.</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Justification">
+      <summary>Возвращает или определяет причину подавления сообщения анализа кода.</summary>
+      <returns>Причина подавления сообщения.</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.MessageId">
+      <summary>Возвращает или устанавливает необязательное расширение аргумента для критерия исключения.</summary>
+      <returns>Строка, содержащая расширенный критерий исключения.</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Scope">
+      <summary>Возвращает или задает область кода, к которой относится атрибут.</summary>
+      <returns>Область кода, к которой относится атрибут.</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Target">
+      <summary>Возвращает или задает полный путь, представляющий целевой элемент атрибута.</summary>
+      <returns>Полный путь, представляющий целевой элемент атрибута.</returns>
+    </member>
+  </members>
+</doc>

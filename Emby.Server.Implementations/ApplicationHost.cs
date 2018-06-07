@@ -119,6 +119,7 @@ using StringExtensions = MediaBrowser.Controller.Extensions.StringExtensions;
 using X509Certificate = System.Security.Cryptography.X509Certificates.X509Certificate;
 using MediaBrowser.Controller.Authentication;
 using System.Diagnostics;
+using ServiceStack.Text.Jsv;
 
 namespace Emby.Server.Implementations
 {
@@ -336,6 +337,7 @@ namespace Emby.Server.Implementations
         private IEncodingManager EncodingManager { get; set; }
         private IChannelManager ChannelManager { get; set; }
         private ISyncManager SyncManager { get; set; }
+        protected ITextEncoding TextEncoding { get; private set; }
 
         /// <summary>
         /// Gets or sets the user data repository.
@@ -934,9 +936,9 @@ namespace Emby.Server.Implementations
             StringExtensions.LocalizationManager = LocalizationManager;
             RegisterSingleInstance(LocalizationManager);
 
-            ITextEncoding textEncoding = new TextEncoding.TextEncoding(FileSystemManager, LogManager.GetLogger("TextEncoding"), JsonSerializer);
-            RegisterSingleInstance(textEncoding);
-            BlurayExaminer = new BdInfoExaminer(FileSystemManager, textEncoding);
+            TextEncoding = new TextEncoding.TextEncoding(FileSystemManager, LogManager.GetLogger("TextEncoding"), JsonSerializer);
+            RegisterSingleInstance(TextEncoding);
+            BlurayExaminer = new BdInfoExaminer(FileSystemManager, TextEncoding);
             RegisterSingleInstance(BlurayExaminer);
 
             RegisterSingleInstance<IXmlReaderSettingsFactory>(new XmlReaderSettingsFactory());
@@ -976,7 +978,7 @@ namespace Emby.Server.Implementations
             CertificateInfo = GetCertificateInfo(true);
             Certificate = GetCertificate(CertificateInfo);
 
-            HttpServer = HttpServerFactory.CreateServer(this, LogManager, ServerConfigurationManager, NetworkManager, streamHelper, "Emby", "web/index.html", textEncoding, SocketFactory, CryptographyProvider, JsonSerializer, XmlSerializer, EnvironmentInfo, Certificate, FileSystemManager, SupportsDualModeSockets);
+            HttpServer = CreateServer(this, LogManager, ServerConfigurationManager, NetworkManager, streamHelper, "Emby", "web/index.html", TextEncoding, SocketFactory, CryptographyProvider, JsonSerializer, XmlSerializer, EnvironmentInfo, Certificate, FileSystemManager, SupportsDualModeSockets);
             HttpServer.GlobalResponse = LocalizationManager.GetLocalizedString("StartupEmbyServerIsLoading");
             RegisterSingleInstance(HttpServer);
 
@@ -1061,7 +1063,7 @@ namespace Emby.Server.Implementations
             AuthService = new AuthService(UserManager, authContext, ServerConfigurationManager, ConnectManager, SessionManager, NetworkManager);
             RegisterSingleInstance<IAuthService>(AuthService);
 
-            SubtitleEncoder = new SubtitleEncoder(LibraryManager, LogManager.GetLogger("SubtitleEncoder"), ApplicationPaths, FileSystemManager, MediaEncoder, JsonSerializer, HttpClient, MediaSourceManager, ProcessFactory, textEncoding);
+            SubtitleEncoder = new SubtitleEncoder(LibraryManager, LogManager.GetLogger("SubtitleEncoder"), ApplicationPaths, FileSystemManager, MediaEncoder, JsonSerializer, HttpClient, MediaSourceManager, ProcessFactory, TextEncoding);
             RegisterSingleInstance(SubtitleEncoder);
 
             RegisterSingleInstance(CreateResourceFileManager());
@@ -1078,6 +1080,49 @@ namespace Emby.Server.Implementations
             SetStaticProperties();
 
             ((UserManager)UserManager).Initialize();
+        }
+
+        public static IHttpServer CreateServer(IServerApplicationHost applicationHost,
+            ILogManager logManager,
+            IServerConfigurationManager config,
+            INetworkManager networkmanager,
+            IStreamHelper streamProvider,
+            string serverName,
+            string defaultRedirectpath,
+            ITextEncoding textEncoding,
+            ISocketFactory socketFactory,
+            ICryptoProvider cryptoProvider,
+            IJsonSerializer json,
+            IXmlSerializer xml,
+            IEnvironmentInfo environment,
+            X509Certificate certificate,
+            IFileSystem fileSystem,
+            bool enableDualModeSockets)
+        {
+            var logger = logManager.GetLogger("HttpServer");
+
+            return new HttpListenerHost(applicationHost,
+                logger,
+                config,
+                serverName,
+                defaultRedirectpath,
+                networkmanager,
+                streamProvider,
+                textEncoding,
+                socketFactory,
+                cryptoProvider,
+                json,
+                xml,
+                environment,
+                certificate,
+                GetParseFn,
+                enableDualModeSockets,
+                fileSystem);
+        }
+
+        private static Func<string, object> GetParseFn(Type propertyType)
+        {
+            return s => JsvReader.GetParseFn(propertyType)(s);
         }
 
         public virtual string PackageRuntime
@@ -1097,7 +1142,13 @@ namespace Emby.Server.Implementations
         {
             var builder = new StringBuilder();
 
-            builder.AppendLine(string.Format("Command line: {0}", string.Join(" ", Environment.GetCommandLineArgs())));
+            // Distinct these to prevent users from reporting problems that aren't actually problems
+            var commandLineArgs = Environment
+                .GetCommandLineArgs()
+                .Distinct()
+                .ToArray();
+
+            builder.AppendLine(string.Format("Command line: {0}", string.Join(" ", commandLineArgs)));
 
             builder.AppendLine(string.Format("Operating system: {0}", Environment.OSVersion));
             builder.AppendLine(string.Format("64-Bit OS: {0}", Environment.Is64BitOperatingSystem));
@@ -1541,7 +1592,7 @@ namespace Emby.Server.Implementations
         }
 
         private CertificateInfo CertificateInfo { get; set; }
-        private X509Certificate Certificate { get; set; }
+        protected X509Certificate Certificate { get; private set; }
 
         private IEnumerable<string> GetUrlPrefixes()
         {
@@ -1563,6 +1614,8 @@ namespace Emby.Server.Implementations
             });
         }
 
+        protected abstract IHttpListener CreateHttpListener();
+
         /// <summary>
         /// Starts the server.
         /// </summary>
@@ -1570,7 +1623,7 @@ namespace Emby.Server.Implementations
         {
             try
             {
-                HttpServer.StartServer(GetUrlPrefixes().ToArray());
+                ((HttpListenerHost)HttpServer).StartServer(GetUrlPrefixes().ToArray(), CreateHttpListener());
                 return;
             }
             catch (Exception ex)
@@ -1591,7 +1644,7 @@ namespace Emby.Server.Implementations
 
             try
             {
-                HttpServer.StartServer(GetUrlPrefixes().ToArray());
+                ((HttpListenerHost)HttpServer).StartServer(GetUrlPrefixes().ToArray(), CreateHttpListener());
             }
             catch (Exception ex)
             {
@@ -2114,7 +2167,7 @@ namespace Emby.Server.Implementations
         }
 
         private readonly ConcurrentDictionary<string, bool> _validAddressResults = new ConcurrentDictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
-        private async ValueTask<bool> IsIpAddressValidAsync(IpAddressInfo address, CancellationToken cancellationToken)
+        private async Task<bool> IsIpAddressValidAsync(IpAddressInfo address, CancellationToken cancellationToken)
         {
             if (address.Equals(IpAddressInfo.Loopback) ||
                 address.Equals(IpAddressInfo.IPv6Loopback))

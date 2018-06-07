@@ -1,0 +1,1075 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Text.Encoding</name>
+  </assembly>
+  <members>
+    <member name="T:System.Text.Decoder">
+      <summary>エンコード済みバイト シーケンスを文字のセットに変換します。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Decoder.#ctor">
+      <summary>
+        <see cref="T:System.Text.Decoder" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Text.Decoder.Convert(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32,System.Int32,System.Boolean,System.Int32@,System.Int32@,System.Boolean@)">
+      <summary>エンコード済みバイト配列を UTF-16 エンコード文字に変換し、その結果を文字列配列に格納します。</summary>
+      <param name="bytes">変換するバイト配列。</param>
+      <param name="byteIndex">
+        <paramref name="bytes" /> の変換する最初の要素。</param>
+      <param name="byteCount">変換する <paramref name="bytes" /> の要素の数。</param>
+      <param name="chars">変換後の文字を格納する配列。</param>
+      <param name="charIndex">データを格納する <paramref name="chars" /> の最初の要素。</param>
+      <param name="charCount">変換に使用する <paramref name="chars" /> 内の最大要素数。</param>
+      <param name="flush">これ以上データの変換を行わないことを示す場合は true。それ以外の場合は false。</param>
+      <param name="bytesUsed">このメソッドから制御が戻るときに、変換に使用されたバイト数を格納します。このパラメーターは初期化せずに渡されます。</param>
+      <param name="charsUsed">このメソッドから制御が戻るときに、<paramref name="chars" /> に格納されている変換の結果生成された文字数を格納します。このパラメーターは初期化せずに渡されます。</param>
+      <param name="completed">このメソッドから制御が戻るときに、<paramref name="byteCount" /> で指定したすべての文字が変換された場合は true です。それ以外の場合は false です。このパラメーターは初期化せずに渡されます。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> または <paramref name="bytes" /> が null  (Nothing) です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" />、<paramref name="charCount" />、<paramref name="byteIndex" />、または <paramref name="byteCount" /> が 0 未満です。または<paramref name="chars" /> の長さ。 -<paramref name="charIndex" /> が <paramref name="charCount" /> より小さい。または<paramref name="bytes" /> の長さ。 -<paramref name="byteIndex" /> が <paramref name="byteCount" /> より小さい。</exception>
+      <exception cref="T:System.ArgumentException">出力バッファーの容量が小さいために変換済み出力を格納できません。出力バッファーは、<see cref="Overload:System.Text.Decoder.GetCharCount" /> メソッドで示されるサイズ以上にする必要があります。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Decoder.Fallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.Decoder.Fallback">
+      <summary>現在の <see cref="T:System.Text.Decoder" /> オブジェクトの <see cref="T:System.Text.DecoderFallback" /> オブジェクトを取得または設定します。</summary>
+      <returns>
+        <see cref="T:System.Text.DecoderFallback" /> オブジェクト。</returns>
+      <exception cref="T:System.ArgumentNullException">設定操作の値が null  (Nothing) です。</exception>
+      <exception cref="T:System.ArgumentException">現在の <see cref="T:System.Text.DecoderFallbackBuffer" /> オブジェクトにまだデコードされていないデータが含まれるため、設定操作に新しい値を代入できません。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Decoder.FallbackBuffer">
+      <summary>現在の <see cref="T:System.Text.Decoder" /> オブジェクトに関連付けられている <see cref="T:System.Text.DecoderFallbackBuffer" /> オブジェクトを取得します。</summary>
+      <returns>
+        <see cref="T:System.Text.DecoderFallbackBuffer" /> オブジェクト。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Decoder.GetCharCount(System.Byte[],System.Int32,System.Int32)">
+      <summary>派生クラスでオーバーライドされた場合、指定したバイト配列に格納されているバイト シーケンスをデコードすることによって生成される文字数を計算します。</summary>
+      <returns>指定したバイト シーケンス、および内部バッファー内のバイトをデコードすることによって生成される文字数。</returns>
+      <param name="bytes">デコード対象のバイト シーケンスが格納されたバイト配列。</param>
+      <param name="index">デコードする最初のバイトのインデックス。</param>
+      <param name="count">デコードするバイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> が null  (Nothing) です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が 0 未満です。または<paramref name="index" /> および <paramref name="count" /> が <paramref name="bytes" /> 内の有効な範囲を示していません。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Decoder.Fallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Decoder.GetCharCount(System.Byte[],System.Int32,System.Int32,System.Boolean)">
+      <summary>派生クラスでオーバーライドされた場合、指定したバイト配列に格納されているバイト シーケンスをデコードすることによって生成される文字数を計算します。パラメーターでは、計算後にデコーダーの内部状態をクリアするかどうかを示します。</summary>
+      <returns>指定したバイト シーケンス、および内部バッファー内のバイトをデコードすることによって生成される文字数。</returns>
+      <param name="bytes">デコード対象のバイト シーケンスが格納されたバイト配列。</param>
+      <param name="index">デコードする最初のバイトのインデックス。</param>
+      <param name="count">デコードするバイト数。</param>
+      <param name="flush">計算後にエンコーダーの内部状態をクリアするようシミュレートする場合は true。それ以外の場合は false。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> が null  (Nothing) です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が 0 未満です。または<paramref name="index" /> および <paramref name="count" /> が <paramref name="bytes" /> 内の有効な範囲を示していません。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Decoder.Fallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Decoder.GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)">
+      <summary>派生クラスでオーバーライドされた場合、指定したバイト配列に格納されているバイト シーケンス、および内部バッファー内のバイトを、指定した文字配列にデコードします。</summary>
+      <returns>
+        <paramref name="chars" /> に書き込まれた実際の文字数。</returns>
+      <param name="bytes">デコード対象のバイト シーケンスが格納されたバイト配列。</param>
+      <param name="byteIndex">デコードする最初のバイトのインデックス。</param>
+      <param name="byteCount">デコードするバイト数。</param>
+      <param name="chars">結果の文字のセットを格納する文字配列。</param>
+      <param name="charIndex">結果の文字のセットを書き込む開始位置のインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> が null  (Nothing) です。または<paramref name="chars" /> が null  (Nothing) です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteIndex" />、<paramref name="byteCount" />、または <paramref name="charIndex" /> が 0 未満です。または<paramref name="byteindex" /> および <paramref name="byteCount" /> が <paramref name="bytes" /> 内の有効な範囲を示していません。または<paramref name="charIndex" /> が <paramref name="chars" /> の有効なインデックスではありません。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="chars" /> には、<paramref name="charIndex" /> から配列の末尾までに十分なサイズがなく、結果の文字を格納できません。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Decoder.Fallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Decoder.GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32,System.Boolean)">
+      <summary>派生クラスでオーバーライドされた場合、指定したバイト配列に格納されているバイト シーケンス、および内部バッファー内のバイトを、指定した文字配列にデコードします。パラメーターでは、変換後にデコーダーの内部状態をクリアするかどうかを示します。</summary>
+      <returns>
+        <paramref name="chars" /> パラメーターに書き込まれた実際の文字数。</returns>
+      <param name="bytes">デコード対象のバイト シーケンスが格納されたバイト配列。</param>
+      <param name="byteIndex">デコードする最初のバイトのインデックス。</param>
+      <param name="byteCount">デコードするバイト数。</param>
+      <param name="chars">結果の文字のセットを格納する文字配列。</param>
+      <param name="charIndex">結果の文字のセットを書き込む開始位置のインデックス。</param>
+      <param name="flush">変換後にデコーダーの内部状態をクリアする場合は true。それ以外の場合は false。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> が null  (Nothing) です。または<paramref name="chars" /> が null  (Nothing) です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteIndex" />、<paramref name="byteCount" />、または <paramref name="charIndex" /> が 0 未満です。または<paramref name="byteindex" /> および <paramref name="byteCount" /> が <paramref name="bytes" /> 内の有効な範囲を示していません。または<paramref name="charIndex" /> が <paramref name="chars" /> の有効なインデックスではありません。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="chars" /> には、<paramref name="charIndex" /> から配列の末尾までに十分なサイズがなく、結果の文字を格納できません。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Decoder.Fallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Decoder.Reset">
+      <summary>派生クラスでオーバーライドされた場合、デコーダーを初期状態に戻します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.DecoderExceptionFallback">
+      <summary>エンコード済み入力バイト シーケンスを入力文字に変換できない場合のために、フォールバックと呼ばれるエラー処理メカニズムを提供します。フォールバックは、入力バイト シーケンスをデコードしないで例外をスローします。このクラスは継承できません。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderExceptionFallback.#ctor">
+      <summary>
+        <see cref="T:System.Text.DecoderExceptionFallback" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Text.DecoderExceptionFallback.CreateFallbackBuffer">
+      <summary>バイトのシーケンスを文字に変換できない場合は、例外をスローするデコーダー フォールバック バッファーを返します。</summary>
+      <returns>バイト シーケンスをデコードできないときに、例外をスローするデコーダー フォールバック バッファー。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderExceptionFallback.Equals(System.Object)">
+      <summary>現在の <see cref="T:System.Text.DecoderExceptionFallback" /> オブジェクトと指定したオブジェクトが等しいかどうかを示します。</summary>
+      <returns>
+        <paramref name="value" /> が null でなく、かつ <see cref="T:System.Text.DecoderExceptionFallback" /> オブジェクトである場合は true。それ以外の場合は false。</returns>
+      <param name="value">
+        <see cref="T:System.Text.DecoderExceptionFallback" /> クラスから派生するオブジェクト。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderExceptionFallback.GetHashCode">
+      <summary>このインスタンスのハッシュ コードを取得します。</summary>
+      <returns>戻り値は常に同じ任意の値で、特に重要ではありません。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderExceptionFallback.MaxCharCount">
+      <summary>このインスタンスが返すことができる最大文字数を取得します。</summary>
+      <returns>戻り値は、常に 0 です。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.DecoderFallback">
+      <summary>エンコード済み入力バイト シーケンスを出力文字に変換できない場合のために、フォールバックと呼ばれるエラー処理機構を提供します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderFallback.#ctor">
+      <summary>
+        <see cref="T:System.Text.DecoderFallback" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Text.DecoderFallback.CreateFallbackBuffer">
+      <summary>派生クラスでオーバーライドされた場合、<see cref="T:System.Text.DecoderFallbackBuffer" /> クラスの新しいインスタンスを初期化します。</summary>
+      <returns>デコーダーのフォールバック バッファーを提供するオブジェクト。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderFallback.ExceptionFallback">
+      <summary>入力バイト シーケンスをデコードできないときに例外をスローするオブジェクトを取得します。</summary>
+      <returns>
+        <see cref="T:System.Text.DecoderFallback" /> クラスから派生した型。既定値は <see cref="T:System.Text.DecoderExceptionFallback" /> オブジェクトです。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderFallback.MaxCharCount">
+      <summary>派生クラスでオーバーライドされた場合、現在の <see cref="T:System.Text.DecoderFallback" /> オブジェクトが返すことができる最大文字数を取得します。</summary>
+      <returns>現在の <see cref="T:System.Text.DecoderFallback" /> オブジェクトが返すことができる最大文字数。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderFallback.ReplacementFallback">
+      <summary>デコードできない入力バイト シーケンスの代わりに代替文字列を出力するオブジェクトを取得します。</summary>
+      <returns>
+        <see cref="T:System.Text.DecoderFallback" /> クラスから派生した型。既定値は、未知のバイト シーケンスの代わりに疑問符文字 ("?"、U+003F) を生成する <see cref="T:System.Text.DecoderReplacementFallback" /> オブジェクトです。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Text.DecoderFallbackBuffer">
+      <summary>フォールバック ハンドラーが入力バイト シーケンスをデコードできないときに、デコーダーに別の文字列を返せるようにするためのバッファーを提供します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderFallbackBuffer.#ctor">
+      <summary>
+        <see cref="T:System.Text.DecoderFallbackBuffer" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Text.DecoderFallbackBuffer.Fallback(System.Byte[],System.Int32)">
+      <summary>派生クラスでオーバーライドされた場合、指定した入力バイト シーケンスを処理するためのフォールバック バッファーを確保します。</summary>
+      <returns>フォールバック バッファーが <paramref name="bytesUnknown" /> を処理できる場合は true、フォールバック バッファーが <paramref name="bytesUnknown" /> を無視する場合は false。</returns>
+      <param name="bytesUnknown">入力バイト配列。</param>
+      <param name="index">
+        <paramref name="bytesUnknown" /> におけるバイトのインデックス位置。</param>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderFallbackBuffer.GetNextChar">
+      <summary>派生クラスでオーバーライドされた場合、フォールバック バッファーの次の文字を取得します。</summary>
+      <returns>フォールバック バッファーの次の文字。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderFallbackBuffer.MovePrevious">
+      <summary>派生クラスでオーバーライドされた場合、<see cref="M:System.Text.DecoderFallbackBuffer.GetNextChar" /> メソッドに対する次の呼び出しで、データ バッファーにおける現在の文字位置の前の文字位置に移動します。</summary>
+      <returns>
+        <see cref="M:System.Text.DecoderFallbackBuffer.MovePrevious" /> 処理が正常に実行された場合は true。それ以外の場合は false。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderFallbackBuffer.Remaining">
+      <summary>派生クラスでオーバーライドされた場合、現在の <see cref="T:System.Text.DecoderFallbackBuffer" /> オブジェクト内に処理されずに残っている文字数を取得します。</summary>
+      <returns>現在のフォールバック バッファーに処理されずに残っている文字数。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderFallbackBuffer.Reset">
+      <summary>このフォールバック バッファーに関連するすべてのデータおよびステータス情報を初期化します。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Text.DecoderFallbackException">
+      <summary>デコーダー フォールバック操作が失敗したときにスローされる例外。このクラスは継承できません。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderFallbackException.#ctor">
+      <summary>
+        <see cref="T:System.Text.DecoderFallbackException" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Text.DecoderFallbackException.#ctor(System.String)">
+      <summary>
+        <see cref="T:System.Text.DecoderFallbackException" /> クラスの新しいインスタンスを初期化します。パラメーターでは、エラー メッセージを指定します。</summary>
+      <param name="message">エラー メッセージ。</param>
+    </member>
+    <member name="M:System.Text.DecoderFallbackException.#ctor(System.String,System.Byte[],System.Int32)">
+      <summary>
+        <see cref="T:System.Text.DecoderFallbackException" /> クラスの新しいインスタンスを初期化します。パラメーターでは、エラー メッセージ、デコードするバイト配列、およびデコードできないバイトのインデックスを指定します。</summary>
+      <param name="message">エラー メッセージ。</param>
+      <param name="bytesUnknown">入力バイト配列。</param>
+      <param name="index">デコードできないバイトの <paramref name="bytesUnknown" /> におけるインデックス位置。</param>
+    </member>
+    <member name="M:System.Text.DecoderFallbackException.#ctor(System.String,System.Exception)">
+      <summary>
+        <see cref="T:System.Text.DecoderFallbackException" /> クラスの新しいインスタンスを初期化します。パラメーターでは、エラー メッセージと、この例外の原因となった内部例外を指定します。</summary>
+      <param name="message">エラー メッセージ。</param>
+      <param name="innerException">この例外の原因となった例外。</param>
+    </member>
+    <member name="P:System.Text.DecoderFallbackException.BytesUnknown">
+      <summary>例外の原因となった入力バイト シーケンスを取得します。</summary>
+      <returns>デコードできない入力バイト配列。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderFallbackException.Index">
+      <summary>例外の原因となったバイトの入力バイト シーケンスにおけるインデックス位置を取得します。</summary>
+      <returns>デコードできないバイトの入力バイト配列におけるインデックス位置。インデックス位置は 0 から始まります。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Text.DecoderReplacementFallback">
+      <summary>エンコード済み入力バイト シーケンスを出力文字に変換できない場合のために、フォールバックと呼ばれるエラー処理機構を提供します。フォールバックは、デコード対象の入力バイト シーケンスの代わりに、ユーザーが指定した置換文字列を作成します。このクラスは継承できません。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderReplacementFallback.#ctor">
+      <summary>
+        <see cref="T:System.Text.DecoderReplacementFallback" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Text.DecoderReplacementFallback.#ctor(System.String)">
+      <summary>指定した置換文字列を使用して、<see cref="T:System.Text.DecoderReplacementFallback" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="replacement">デコードできないバイト シーケンスの代わりにデコード操作で作成される文字列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="replacement" /> は null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="replacement" /> に無効なサロゲート ペアが含まれています。つまり、このサロゲート ペアは、1 つの上位サロゲートとその後ろに配置される 1 つの下位サロゲートで構成されていません。</exception>
+    </member>
+    <member name="M:System.Text.DecoderReplacementFallback.CreateFallbackBuffer">
+      <summary>この <see cref="T:System.Text.DecoderReplacementFallback" /> オブジェクトの置換文字列で初期化される <see cref="T:System.Text.DecoderFallbackBuffer" /> オブジェクトを作成します。</summary>
+      <returns>元のデコード操作入力の代わりに使用する文字列を指定する <see cref="T:System.Text.DecoderFallbackBuffer" /> オブジェクト。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderReplacementFallback.DefaultString">
+      <summary>
+        <see cref="T:System.Text.DecoderReplacementFallback" /> オブジェクトの値である置換文字列を取得します。</summary>
+      <returns>デコードできない入力バイト シーケンスの代わりに作成される代替文字列。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderReplacementFallback.Equals(System.Object)">
+      <summary>指定したオブジェクトの値が、<see cref="T:System.Text.DecoderReplacementFallback" /> オブジェクトと等しいかどうかを示します。</summary>
+      <returns>true if <paramref name="value" /> is a <see cref="T:System.Text.DecoderReplacementFallback" /> object having a <see cref="P:System.Text.DecoderReplacementFallback.DefaultString" /> property that is equal to the <see cref="P:System.Text.DecoderReplacementFallback.DefaultString" /> property of the current <see cref="T:System.Text.DecoderReplacementFallback" /> object; otherwise, false.</returns>
+      <param name="value">
+        <see cref="T:System.Text.DecoderReplacementFallback" /> オブジェクト。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderReplacementFallback.GetHashCode">
+      <summary>
+        <see cref="T:System.Text.DecoderReplacementFallback" /> オブジェクトの値のハッシュ コードを取得します。</summary>
+      <returns>このオブジェクトの値のハッシュ コード。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderReplacementFallback.MaxCharCount">
+      <summary>
+        <see cref="T:System.Text.DecoderReplacementFallback" /> オブジェクトの置換文字列に含まれる文字数を取得します。</summary>
+      <returns>デコードできないバイト シーケンスの代わりに生成された文字列の文字数、つまり、<see cref="P:System.Text.DecoderReplacementFallback.DefaultString" /> プロパティによって返された文字列の長さ。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.Encoder">
+      <summary>文字のセットをバイト シーケンスに変換します。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoder.#ctor">
+      <summary>
+        <see cref="T:System.Text.Encoder" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Text.Encoder.Convert(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@,System.Int32@,System.Boolean@)">
+      <summary>配列に格納された Unicode 文字をエンコード済みバイト シーケンスに変換し、その結果をバイト配列に格納します。</summary>
+      <param name="chars">変換する文字配列。</param>
+      <param name="charIndex">
+        <paramref name="chars" /> の変換する最初の要素。</param>
+      <param name="charCount">変換する <paramref name="chars" /> の要素の数。</param>
+      <param name="bytes">変換後のバイトを格納する配列。</param>
+      <param name="byteIndex">データを格納する <paramref name="bytes" /> の最初の要素。</param>
+      <param name="byteCount">変換に使用する <paramref name="bytes" /> 内の最大要素数。</param>
+      <param name="flush">これ以上データの変換を行わないことを示す場合は true。それ以外の場合は false。</param>
+      <param name="charsUsed">このメソッドから制御が戻るときに、<paramref name="chars" /> 内で変換に使用された文字数を格納します。このパラメーターは初期化せずに渡されます。</param>
+      <param name="bytesUsed">このメソッドから制御が戻るときに、変換の結果生成されたバイト数を格納します。このパラメーターは初期化せずに渡されます。</param>
+      <param name="completed">このメソッドから制御が戻るときに、<paramref name="charCount" /> で指定したすべての文字が変換された場合は true を格納します。それ以外の場合は false を格納します。このパラメーターは初期化せずに渡されます。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> または <paramref name="bytes" /> が null  (Nothing) です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" />、<paramref name="charCount" />、<paramref name="byteIndex" />、または <paramref name="byteCount" /> が 0 未満です。または<paramref name="chars" /> の長さ。 -<paramref name="charIndex" /> が <paramref name="charCount" /> より小さい。または<paramref name="bytes" /> の長さ。 -<paramref name="byteIndex" /> が <paramref name="byteCount" /> より小さい。</exception>
+      <exception cref="T:System.ArgumentException">出力バッファーの容量が小さいために変換済み出力を格納できません。出力バッファーは、<see cref="Overload:System.Text.Encoder.GetByteCount" /> メソッドで示されるサイズ以上にする必要があります。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoder.Fallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoder.Fallback">
+      <summary>現在の <see cref="T:System.Text.Encoder" /> オブジェクトの <see cref="T:System.Text.EncoderFallback" /> オブジェクトを取得または設定します。</summary>
+      <returns>
+        <see cref="T:System.Text.EncoderFallback" /> オブジェクト。</returns>
+      <exception cref="T:System.ArgumentNullException">設定操作の値が null  (Nothing) です。</exception>
+      <exception cref="T:System.ArgumentException">現在の <see cref="T:System.Text.EncoderFallbackBuffer" /> オブジェクトにまだエンコードされていないデータが含まれるため、設定操作に新しい値を代入できません。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoder.Fallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoder.FallbackBuffer">
+      <summary>現在の <see cref="T:System.Text.Encoder" /> オブジェクトに関連付けられている <see cref="T:System.Text.EncoderFallbackBuffer" /> オブジェクトを取得します。</summary>
+      <returns>
+        <see cref="T:System.Text.EncoderFallbackBuffer" /> オブジェクト。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoder.GetByteCount(System.Char[],System.Int32,System.Int32,System.Boolean)">
+      <summary>派生クラスでオーバーライドされた場合、指定した文字配列に格納されている文字のセットをエンコードすることによって生成されるバイト数を計算します。パラメーターでは、計算後にエンコーダーの内部状態をクリアするかどうかを示します。</summary>
+      <returns>指定した文字、および内部バッファー内の文字をエンコードすることによって生成されるバイト数。</returns>
+      <param name="chars">エンコード対象の文字のセットを格納している文字配列。</param>
+      <param name="index">エンコードする最初の文字のインデックス。</param>
+      <param name="count">エンコードする文字数。</param>
+      <param name="flush">計算後にエンコーダーの内部状態をクリアするようシミュレートする場合は true。それ以外の場合は false。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が 0 未満です。または<paramref name="index" /> および <paramref name="count" /> が <paramref name="chars" /> 内の有効な範囲を示していません。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoder.Fallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoder.GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Boolean)">
+      <summary>派生クラスでオーバーライドされた場合、指定した文字配列に格納されている文字のセット、および内部バッファー内の文字を、指定したバイト配列にエンコードします。パラメーターでは、変換後にエンコーダーの内部状態をクリアするかどうかを示します。</summary>
+      <returns>
+        <paramref name="bytes" /> に書き込まれた実際のバイト数。</returns>
+      <param name="chars">エンコード対象の文字のセットを格納している文字配列。</param>
+      <param name="charIndex">エンコードする最初の文字のインデックス。</param>
+      <param name="charCount">エンコードする文字数。</param>
+      <param name="bytes">結果のバイト シーケンスを格納するバイト配列。</param>
+      <param name="byteIndex">結果のバイト シーケンスを書き込む開始位置のインデックス。</param>
+      <param name="flush">変換後にエンコーダーの内部状態をクリアする場合は true。それ以外の場合は false。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> が null  (Nothing) です。または<paramref name="bytes" /> が null  (Nothing) です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" />、<paramref name="charCount" />、または <paramref name="byteIndex" /> が 0 未満です。または<paramref name="charIndex" /> および <paramref name="charCount" /> が <paramref name="chars" /> 内の有効な範囲を示していません。または<paramref name="byteIndex" /> が <paramref name="bytes" /> の有効なインデックスではありません。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="bytes" /> には、<paramref name="byteIndex" /> から配列の末尾までに十分なサイズがなく、結果のバイトを格納できません。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoder.Fallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoder.Reset">
+      <summary>派生クラスでオーバーライドされた場合、エンコーダーを初期状態に戻します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.EncoderExceptionFallback">
+      <summary>出力バイト シーケンスに変換できない入力文字のために、フォールバックと呼ばれるエラー処理メカニズムを提供します。フォールバックは、入力文字を出力バイト シーケンスに変換できない場合に例外をスローします。このクラスは継承できません。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderExceptionFallback.#ctor">
+      <summary>
+        <see cref="T:System.Text.EncoderExceptionFallback" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Text.EncoderExceptionFallback.CreateFallbackBuffer">
+      <summary>文字シーケンスをバイト シーケンスに変換できない場合は、例外をスローするエンコーダー フォールバック バッファーを返します。</summary>
+      <returns>文字シーケンスをエンコードできないときに、例外をスローするエンコーダー フォールバック バッファー。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderExceptionFallback.Equals(System.Object)">
+      <summary>現在の <see cref="T:System.Text.EncoderExceptionFallback" /> オブジェクトと指定したオブジェクトが等しいかどうかを示します。</summary>
+      <returns>
+        <paramref name="value" /> が null (Visual Basic .NET では Nothing) でなく、かつ <see cref="T:System.Text.EncoderExceptionFallback" /> オブジェクトである場合は true。それ以外の場合は false。</returns>
+      <param name="value">
+        <see cref="T:System.Text.EncoderExceptionFallback" /> クラスから派生するオブジェクト。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderExceptionFallback.GetHashCode">
+      <summary>このインスタンスのハッシュ コードを取得します。</summary>
+      <returns>戻り値は常に同じ任意の値で、特に重要ではありません。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderExceptionFallback.MaxCharCount">
+      <summary>このインスタンスが返すことができる最大文字数を取得します。</summary>
+      <returns>戻り値は、常に 0 です。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.EncoderFallback">
+      <summary>入力文字をエンコード済み出力バイト シーケンスに変換できない場合のために、フォールバックと呼ばれるエラー処理機構を提供します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallback.#ctor">
+      <summary>
+        <see cref="T:System.Text.EncoderFallback" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Text.EncoderFallback.CreateFallbackBuffer">
+      <summary>派生クラスでオーバーライドされた場合、<see cref="T:System.Text.EncoderFallbackBuffer" /> クラスの新しいインスタンスを初期化します。</summary>
+      <returns>エンコーダーのフォールバック バッファーを提供するオブジェクト。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallback.ExceptionFallback">
+      <summary>入力文字をエンコードできない場合に例外をスローするオブジェクトを取得します。</summary>
+      <returns>
+        <see cref="T:System.Text.EncoderFallback" /> クラスから派生した型。既定値は <see cref="T:System.Text.EncoderExceptionFallback" /> オブジェクトです。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallback.MaxCharCount">
+      <summary>派生クラスでオーバーライドされた場合、現在の <see cref="T:System.Text.EncoderFallback" /> オブジェクトが返すことができる最大文字数を取得します。</summary>
+      <returns>現在の <see cref="T:System.Text.EncoderFallback" /> オブジェクトが返すことができる最大文字数。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallback.ReplacementFallback">
+      <summary>エンコードできない入力文字の代わりに代替文字列を出力するオブジェクトを取得します。</summary>
+      <returns>
+        <see cref="T:System.Text.EncoderFallback" /> クラスから派生した型。既定値は、未知の入力文字を疑問符文字 ("?"、U+003F) に置換する <see cref="T:System.Text.EncoderReplacementFallback" /> オブジェクトです。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Text.EncoderFallbackBuffer">
+      <summary>フォールバック ハンドラーが入力文字をエンコードできないときに、エンコーダーに別の文字列を返せるようにするためのバッファーを提供します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackBuffer.#ctor">
+      <summary>
+        <see cref="T:System.Text.EncoderFallbackBuffer" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Text.EncoderFallbackBuffer.Fallback(System.Char,System.Char,System.Int32)">
+      <summary>派生クラスでオーバーライドされた場合、指定したサロゲート ペアを処理するためのフォールバック バッファーを確保します。</summary>
+      <returns>フォールバック バッファーが <paramref name="charUnknownHigh" /> および <paramref name="charUnknownLow" /> を処理できる場合は true。フォールバック バッファーがサロゲート ペアを無視する場合は false。</returns>
+      <param name="charUnknownHigh">入力ペアの上位サロゲート。</param>
+      <param name="charUnknownLow">入力ペアの下位サロゲート。</param>
+      <param name="index">入力バッファーにおけるサロゲート ペアのインデックス位置。</param>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackBuffer.Fallback(System.Char,System.Int32)">
+      <summary>派生クラスでオーバーライドされた場合、指定した入力文字を処理するためのフォールバック バッファーを確保します。</summary>
+      <returns>フォールバック バッファーが <paramref name="charUnknown" /> を処理できる場合は true、フォールバック バッファーが <paramref name="charUnknown" /> を無視する場合は false。</returns>
+      <param name="charUnknown">入力文字。</param>
+      <param name="index">入力バッファーにおける文字のインデックス位置。</param>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackBuffer.GetNextChar">
+      <summary>派生クラスでオーバーライドされた場合、フォールバック バッファーの次の文字を取得します。</summary>
+      <returns>フォールバック バッファーの次の文字。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackBuffer.MovePrevious">
+      <summary>派生クラスでオーバーライドされた場合、<see cref="M:System.Text.EncoderFallbackBuffer.GetNextChar" /> メソッドに対する次の呼び出しで、データ バッファーにおける現在の文字位置の前の文字位置に移動します。</summary>
+      <returns>
+        <see cref="M:System.Text.EncoderFallbackBuffer.MovePrevious" /> 処理が正常に実行された場合は true。それ以外の場合は false。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallbackBuffer.Remaining">
+      <summary>派生クラスでオーバーライドされた場合、現在の <see cref="T:System.Text.EncoderFallbackBuffer" /> オブジェクト内に処理されずに残っている文字数を取得します。</summary>
+      <returns>現在のフォールバック バッファーに処理されずに残っている文字数。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackBuffer.Reset">
+      <summary>このフォールバック バッファーに関連するすべてのデータおよびステータス情報を初期化します。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Text.EncoderFallbackException">
+      <summary>エンコーダー フォールバック操作が失敗したときにスローされる例外。このクラスは継承できません。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackException.#ctor">
+      <summary>
+        <see cref="T:System.Text.EncoderFallbackException" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Text.EncoderFallbackException.#ctor(System.String)">
+      <summary>
+        <see cref="T:System.Text.EncoderFallbackException" /> クラスの新しいインスタンスを初期化します。パラメーターでは、エラー メッセージを指定します。</summary>
+      <param name="message">エラー メッセージ。</param>
+    </member>
+    <member name="M:System.Text.EncoderFallbackException.#ctor(System.String,System.Exception)">
+      <summary>
+        <see cref="T:System.Text.EncoderFallbackException" /> クラスの新しいインスタンスを初期化します。パラメーターでは、エラー メッセージと、この例外の原因となった内部例外を指定します。</summary>
+      <param name="message">エラー メッセージ。</param>
+      <param name="innerException">この例外の原因となった例外。</param>
+    </member>
+    <member name="P:System.Text.EncoderFallbackException.CharUnknown">
+      <summary>例外の原因となった入力文字を取得します。</summary>
+      <returns>エンコードできない文字。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallbackException.CharUnknownHigh">
+      <summary>例外の原因となったサロゲート ペアの上位サロゲートを取得します。</summary>
+      <returns>エンコードできないサロゲート ペアの上位サロゲート。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallbackException.CharUnknownLow">
+      <summary>例外の原因となったサロゲート ペアの下位サロゲートを取得します。</summary>
+      <returns>エンコードできないサロゲート ペアの下位サロゲート。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallbackException.Index">
+      <summary>例外の原因となった文字の入力バッファーにおけるインデックス位置を取得します。</summary>
+      <returns>エンコードできない入力文字の入力バッファーにおけるインデックス位置。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackException.IsUnknownSurrogate">
+      <summary>例外の原因となった入力がサロゲート ペアであるかどうかを示します。</summary>
+      <returns>入力がサロゲート ペアである場合は true。それ以外の場合は false。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.EncoderReplacementFallback">
+      <summary>出力バイト シーケンスに変換できない入力文字のために、フォールバックと呼ばれるエラー処理機構を提供します。フォールバックでは、元の入力文字の代わりに、ユーザー指定の置換文字列を使用します。このクラスは継承できません。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderReplacementFallback.#ctor">
+      <summary>
+        <see cref="T:System.Text.EncoderReplacementFallback" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Text.EncoderReplacementFallback.#ctor(System.String)">
+      <summary>指定した置換文字列を使用して、<see cref="T:System.Text.EncoderReplacementFallback" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="replacement">エンコードできない入力文字の代わりにエンコード操作で変換される文字列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="replacement" /> は null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="replacement" /> に無効なサロゲート ペアが含まれています。つまり、このサロゲートは、1 つの上位サロゲートとその後ろに配置される 1 つの下位サロゲートで構成されていません。</exception>
+    </member>
+    <member name="M:System.Text.EncoderReplacementFallback.CreateFallbackBuffer">
+      <summary>この <see cref="T:System.Text.EncoderReplacementFallback" /> オブジェクトの置換文字列で初期化される <see cref="T:System.Text.EncoderFallbackBuffer" /> オブジェクトを作成します。</summary>
+      <returns>この <see cref="T:System.Text.EncoderReplacementFallback" /> オブジェクトと等しい <see cref="T:System.Text.EncoderFallbackBuffer" /> オブジェクト。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderReplacementFallback.DefaultString">
+      <summary>
+        <see cref="T:System.Text.EncoderReplacementFallback" /> オブジェクトの値である置換文字列を取得します。</summary>
+      <returns>エンコードできない入力文字の代わりに使用される代替文字列。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderReplacementFallback.Equals(System.Object)">
+      <summary>指定したオブジェクトの値が、<see cref="T:System.Text.EncoderReplacementFallback" /> オブジェクトと等しいかどうかを示します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターが <see cref="T:System.Text.EncoderReplacementFallback" /> オブジェクトを指定しており、かつそのオブジェクトの置換文字列がこの <see cref="T:System.Text.EncoderReplacementFallback" /> オブジェクトの置換文字列と等しい場合は true。それ以外の場合は false。</returns>
+      <param name="value">
+        <see cref="T:System.Text.EncoderReplacementFallback" /> オブジェクト。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderReplacementFallback.GetHashCode">
+      <summary>
+        <see cref="T:System.Text.EncoderReplacementFallback" /> オブジェクトの値のハッシュ コードを取得します。</summary>
+      <returns>このオブジェクトの値のハッシュ コード。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderReplacementFallback.MaxCharCount">
+      <summary>
+        <see cref="T:System.Text.EncoderReplacementFallback" /> オブジェクトの置換文字列に含まれる文字数を取得します。</summary>
+      <returns>エンコードできない入力文字の代わりに使用される文字列に含まれる文字数。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.Encoding">
+      <summary>文字エンコーディングを表します。この種類の .NET Framework ソース コードを参照して、次を参照してください。、参照ソースです。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.#ctor">
+      <summary>
+        <see cref="T:System.Text.Encoding" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Text.Encoding.#ctor(System.Int32)">
+      <summary>指定したコード ページに対応する <see cref="T:System.Text.Encoding" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="codePage">使用するエンコーディングのコード ページ ID。または既定のエンコーディングを使用する場合は 0。 </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="codePage" /> が 0 未満です。</exception>
+    </member>
+    <member name="M:System.Text.Encoding.#ctor(System.Int32,System.Text.EncoderFallback,System.Text.DecoderFallback)">
+      <summary>新しいインスタンスを初期化、<see cref="T:System.Text.Encoding" />で、指定したエンコーダーおよびデコーダー フォールバックの戦略では、指定されたコード ページに対応するクラスです。</summary>
+      <param name="codePage">エンコーディングのコード ページ ID。</param>
+      <param name="encoderFallback">現在のエンコーディングで文字をエンコードできない場合にエラー処理プロシージャを提供するオブジェクト。</param>
+      <param name="decoderFallback">現在のエンコーディングでバイト シーケンスをデコードできない場合にエラー処理プロシージャを提供するオブジェクト。 </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="codePage" /> が 0 未満です。</exception>
+    </member>
+    <member name="P:System.Text.Encoding.ASCII">
+      <summary>ASCII (7 ビット) 文字セットのエンコーディングを取得します。</summary>
+      <returns>ASCII (7 ビット) 文字セットのエンコーディング。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.BigEndianUnicode">
+      <summary>ビッグ エンディアンのバイト順を使用する UTF-16 形式のエンコーディングを取得します。</summary>
+      <returns>ビッグ エンディアンのバイト順を使用する UTF-16 形式のエンコーディング オブジェクト。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.Clone">
+      <summary>派生クラスでオーバーライドされた場合、現在の <see cref="T:System.Text.Encoding" /> オブジェクトの簡易コピーを作成します。</summary>
+      <returns>現在の <see cref="T:System.Text.Encoding" /> オブジェクトのコピー。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.CodePage">
+      <summary>派生クラスでオーバーライドされた場合、現在の <see cref="T:System.Text.Encoding" /> のコード ページ ID を取得します。</summary>
+      <returns>現在の <see cref="T:System.Text.Encoding" /> のコード ページ ID。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.Convert(System.Text.Encoding,System.Text.Encoding,System.Byte[])">
+      <summary>バイト配列全体を、あるエンコーディングから別のエンコーディングに変換します。</summary>
+      <returns>
+        <paramref name="bytes" /> を <paramref name="srcEncoding" /> から <paramref name="dstEncoding" /> へ変換した結果を格納する <see cref="T:System.Byte" /> 型の配列。</returns>
+      <param name="srcEncoding">
+        <paramref name="bytes" /> のエンコーディング形式。</param>
+      <param name="dstEncoding">変換後のエンコーディング形式。</param>
+      <param name="bytes">変換対象のバイト。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="srcEncoding" /> は null です。または <paramref name="dstEncoding" /> は null です。または <paramref name="bytes" /> は null です。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。およびsrcEncoding です。<see cref="P:System.Text.Encoding.DecoderFallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。およびdstEncoding です。<see cref="P:System.Text.Encoding.EncoderFallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.Convert(System.Text.Encoding,System.Text.Encoding,System.Byte[],System.Int32,System.Int32)">
+      <summary>バイト配列内のバイトの範囲を、あるエンコーディングから別のエンコーディングに変換します。</summary>
+      <returns>
+        <paramref name="bytes" /> に含まれる特定の範囲のバイトを <paramref name="srcEncoding" /> から <paramref name="dstEncoding" /> に変換した結果が格納されている <see cref="T:System.Byte" /> 型の配列。</returns>
+      <param name="srcEncoding">変換前の配列 <paramref name="bytes" /> のエンコーディング。</param>
+      <param name="dstEncoding">変換後の配列のエンコーディング。</param>
+      <param name="bytes">変換対象のバイト配列。</param>
+      <param name="index">変換対象の <paramref name="bytes" /> の最初の要素を示すインデックス。</param>
+      <param name="count">変換するバイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="srcEncoding" /> は null です。または <paramref name="dstEncoding" /> は null です。または <paramref name="bytes" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> および <paramref name="count" /> がバイト配列内の有効範囲を指定していません。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。およびsrcEncoding です。<see cref="P:System.Text.Encoding.DecoderFallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。およびdstEncoding です。<see cref="P:System.Text.Encoding.EncoderFallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.DecoderFallback">
+      <summary>現在の <see cref="T:System.Text.Encoding" /> オブジェクトの <see cref="T:System.Text.DecoderFallback" /> オブジェクトを取得または設定します。</summary>
+      <returns>現在の <see cref="T:System.Text.Encoding" /> オブジェクトのデコーダー フォールバック オブジェクト。</returns>
+      <exception cref="T:System.ArgumentNullException">設定操作の値が null です。</exception>
+      <exception cref="T:System.InvalidOperationException">現在の <see cref="T:System.Text.Encoding" /> オブジェクトが読み取り専用であるため、値を設定操作に割り当てることができません。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.EncoderFallback">
+      <summary>現在の <see cref="T:System.Text.Encoding" /> オブジェクトの <see cref="T:System.Text.EncoderFallback" /> オブジェクトを取得または設定します。</summary>
+      <returns>現在の <see cref="T:System.Text.Encoding" /> オブジェクトのエンコーダー フォールバック オブジェクト。</returns>
+      <exception cref="T:System.ArgumentNullException">設定操作の値が null です。</exception>
+      <exception cref="T:System.InvalidOperationException">現在の <see cref="T:System.Text.Encoding" /> オブジェクトが読み取り専用であるため、値を設定操作に割り当てることができません。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.EncodingName">
+      <summary>派生クラスでオーバーライドされた場合、現在のエンコーディングについての記述を、ユーザーが判読できる形式で取得します。</summary>
+      <returns>ユーザーが判読できる形式の、現在の <see cref="T:System.Text.Encoding" /> の記述。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.Equals(System.Object)">
+      <summary>指定した <see cref="T:System.Object" /> が、現在のインスタンスと等しいかどうかを判断します。</summary>
+      <returns>
+        <paramref name="value" /> が <see cref="T:System.Text.Encoding" /> のインスタンスで、現在のインスタンスと等しい場合は true。それ以外の場合は false。</returns>
+      <param name="value">現在のインスタンスと比較する <see cref="T:System.Object" />。 </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetByteCount(System.Char*,System.Int32)">
+      <summary>派生クラスでオーバーライドされた場合、指定した文字ポインターから始まる文字のセットをエンコードすることによって生成されるバイト数を計算します。</summary>
+      <returns>指定した文字をエンコードすることによって生成されるバイト数。</returns>
+      <param name="chars">エンコードする最初の文字へのポインター。</param>
+      <param name="count">エンコードする文字数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> が 0 未満です。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.EncoderFallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetByteCount(System.Char[])">
+      <summary>派生クラスでオーバーライドされた場合、指定した文字配列に格納されているすべての文字をエンコードすることによって生成されるバイト数を計算します。</summary>
+      <returns>指定した文字配列に格納されているすべての文字をエンコードすることによって生成されるバイト数。</returns>
+      <param name="chars">エンコード対象の文字を格納している文字配列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> は null です。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.EncoderFallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetByteCount(System.Char[],System.Int32,System.Int32)">
+      <summary>派生クラスでオーバーライドされた場合、指定した文字配列に格納されている文字のセットをエンコードすることによって生成されるバイト数を計算します。</summary>
+      <returns>指定した文字をエンコードすることによって生成されるバイト数。</returns>
+      <param name="chars">エンコード対象の文字のセットを格納している文字配列。</param>
+      <param name="index">エンコードする最初の文字のインデックス。</param>
+      <param name="count">エンコードする文字数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が 0 未満です。または <paramref name="index" /> および <paramref name="count" /> が <paramref name="chars" /> 内の有効な範囲を示していません。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.EncoderFallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetByteCount(System.String)">
+      <summary>派生クラスでオーバーライドされた場合、指定した文字列に含まれる文字をエンコードすることによって生成されるバイト数を計算します。</summary>
+      <returns>指定した文字をエンコードすることによって生成されるバイト数。</returns>
+      <param name="s">エンコード対象の文字のセットを格納している文字列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> は null です。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.EncoderFallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetBytes(System.Char*,System.Int32,System.Byte*,System.Int32)">
+      <summary>派生クラスでオーバーライドされた場合、指定した文字ポインターで始まる文字のセットを、指定したバイト ポインターを開始位置として格納されるバイト シーケンスにエンコードします。</summary>
+      <returns>
+        <paramref name="bytes" /> パラメーターによって示される位置に書き込む実際のバイト数。</returns>
+      <param name="chars">エンコードする最初の文字へのポインター。</param>
+      <param name="charCount">エンコードする文字数。</param>
+      <param name="bytes">結果のバイト シーケンスの書き込みを開始する位置へのポインター。</param>
+      <param name="byteCount">書き込む最大バイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> は null です。または <paramref name="bytes" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charCount" /> または <paramref name="byteCount" /> が 0 未満です。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="byteCount" /> が結果のバイト数より少なくなっています。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.EncoderFallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetBytes(System.Char[])">
+      <summary>派生クラスでオーバーライドされた場合、指定した文字配列に格納されているすべての文字をバイト シーケンスにエンコードします。</summary>
+      <returns>指定した文字のセットをエンコードした結果を格納しているバイト配列。</returns>
+      <param name="chars">エンコード対象の文字を格納している文字配列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> は null です。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.EncoderFallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetBytes(System.Char[],System.Int32,System.Int32)">
+      <summary>派生クラスでオーバーライドされた場合、指定した文字配列に格納されている文字のセットをバイト シーケンスにエンコードします。</summary>
+      <returns>指定した文字のセットをエンコードした結果を格納しているバイト配列。</returns>
+      <param name="chars">エンコード対象の文字のセットを格納している文字配列。</param>
+      <param name="index">エンコードする最初の文字のインデックス。</param>
+      <param name="count">エンコードする文字数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が 0 未満です。または <paramref name="index" /> および <paramref name="count" /> が <paramref name="chars" /> 内の有効な範囲を示していません。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.EncoderFallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>派生クラスでオーバーライドされた場合、指定した文字配列に格納されている文字のセットを、指定したバイト配列にエンコードします。</summary>
+      <returns>
+        <paramref name="bytes" /> に書き込まれた実際のバイト数。</returns>
+      <param name="chars">エンコード対象の文字のセットを格納している文字配列。</param>
+      <param name="charIndex">エンコードする最初の文字のインデックス。</param>
+      <param name="charCount">エンコードする文字数。</param>
+      <param name="bytes">結果のバイト シーケンスを格納するバイト配列。</param>
+      <param name="byteIndex">結果のバイト シーケンスを書き込む開始位置のインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> は null です。または <paramref name="bytes" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" />、<paramref name="charCount" />、または <paramref name="byteIndex" /> が 0 未満です。または <paramref name="charIndex" /> および <paramref name="charCount" /> が <paramref name="chars" /> 内の有効な範囲を示していません。または <paramref name="byteIndex" /> が <paramref name="bytes" /> の有効なインデックスではありません。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="bytes" /> には、<paramref name="byteIndex" /> から配列の末尾までに十分なサイズがなく、結果のバイトを格納できません。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.EncoderFallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetBytes(System.String)">
+      <summary>派生クラスでオーバーライドされた場合、指定した文字列に含まれるすべての文字をバイト シーケンスにエンコードします。</summary>
+      <returns>指定した文字のセットをエンコードした結果を格納しているバイト配列。</returns>
+      <param name="s">エンコードする文字を含む文字列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> は null です。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.EncoderFallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetBytes(System.String,System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>派生クラスでオーバーライドされた場合、指定した文字列に含まれる文字のセットを、指定したバイト配列にエンコードします。</summary>
+      <returns>
+        <paramref name="bytes" /> に書き込まれた実際のバイト数。</returns>
+      <param name="s">エンコード対象の文字のセットを格納している文字列。</param>
+      <param name="charIndex">エンコードする最初の文字のインデックス。</param>
+      <param name="charCount">エンコードする文字数。</param>
+      <param name="bytes">結果のバイト シーケンスを格納するバイト配列。</param>
+      <param name="byteIndex">結果のバイト シーケンスを書き込む開始位置のインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> は null です。または <paramref name="bytes" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" />、<paramref name="charCount" />、または <paramref name="byteIndex" /> が 0 未満です。または <paramref name="charIndex" /> および <paramref name="charCount" /> が <paramref name="chars" /> 内の有効な範囲を示していません。または <paramref name="byteIndex" /> が <paramref name="bytes" /> の有効なインデックスではありません。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="bytes" /> には、<paramref name="byteIndex" /> から配列の末尾までに十分なサイズがなく、結果のバイトを格納できません。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.EncoderFallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetCharCount(System.Byte*,System.Int32)">
+      <summary>派生クラスでオーバーライドされた場合、指定したバイト ポインターから始まるバイト シーケンスをデコードすることによって生成される文字数を計算します。</summary>
+      <returns>指定したバイト シーケンスをデコードすることによって生成される文字数。</returns>
+      <param name="bytes">デコードする最初のバイトへのポインター。</param>
+      <param name="count">デコードするバイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> が 0 未満です。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.DecoderFallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetCharCount(System.Byte[])">
+      <summary>派生クラスでオーバーライドされた場合、指定したバイト配列に格納されているすべてのバイトをデコードすることによって生成される文字数を計算します。</summary>
+      <returns>指定したバイト シーケンスをデコードすることによって生成される文字数。</returns>
+      <param name="bytes">デコード対象のバイト シーケンスが格納されたバイト配列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> は null です。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.DecoderFallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetCharCount(System.Byte[],System.Int32,System.Int32)">
+      <summary>派生クラスでオーバーライドされた場合、指定したバイト配列に格納されているバイト シーケンスをデコードすることによって生成される文字数を計算します。</summary>
+      <returns>指定したバイト シーケンスをデコードすることによって生成される文字数。</returns>
+      <param name="bytes">デコード対象のバイト シーケンスが格納されたバイト配列。</param>
+      <param name="index">デコードする最初のバイトのインデックス。</param>
+      <param name="count">デコードするバイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が 0 未満です。または <paramref name="index" /> および <paramref name="count" /> が <paramref name="bytes" /> 内の有効な範囲を示していません。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.DecoderFallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetChars(System.Byte*,System.Int32,System.Char*,System.Int32)">
+      <summary>派生クラスでオーバーライドされた場合、指定したバイト ポインターで始まるバイト シーケンスを、指定した文字ポインターを開始位置として格納される文字のセットにデコードします。</summary>
+      <returns>
+        <paramref name="chars" /> パラメーターによって示される位置に書き込まれた実際の文字数。</returns>
+      <param name="bytes">デコードする最初のバイトへのポインター。</param>
+      <param name="byteCount">デコードするバイト数。</param>
+      <param name="chars">結果の文字セットの書き込みを開始する位置へのポインター。</param>
+      <param name="charCount">書き込む文字の最大数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> は null です。または <paramref name="chars" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteCount" /> または <paramref name="charCount" /> が 0 未満です。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="charCount" /> が結果の文字数より少なくなっています。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.DecoderFallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetChars(System.Byte[])">
+      <summary>派生クラスでオーバーライドされた場合、指定したバイト配列に格納されているすべてのバイトを文字のセットにデコードします。</summary>
+      <returns>指定したバイト シーケンスのデコード結果が格納された文字配列。</returns>
+      <param name="bytes">デコード対象のバイト シーケンスが格納されたバイト配列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> は null です。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.DecoderFallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetChars(System.Byte[],System.Int32,System.Int32)">
+      <summary>派生クラスでオーバーライドされた場合、指定したバイト配列に格納されているバイト シーケンスを文字のセットにデコードします。</summary>
+      <returns>指定したバイト シーケンスのデコード結果が格納された文字配列。</returns>
+      <param name="bytes">デコード対象のバイト シーケンスが格納されたバイト配列。</param>
+      <param name="index">デコードする最初のバイトのインデックス。</param>
+      <param name="count">デコードするバイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が 0 未満です。または <paramref name="index" /> および <paramref name="count" /> が <paramref name="bytes" /> 内の有効な範囲を示していません。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.DecoderFallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)">
+      <summary>派生クラスでオーバーライドされた場合、指定したバイト配列に格納されているバイト シーケンスを、指定した文字配列にデコードします。</summary>
+      <returns>
+        <paramref name="chars" /> に書き込まれた実際の文字数。</returns>
+      <param name="bytes">デコード対象のバイト シーケンスが格納されたバイト配列。</param>
+      <param name="byteIndex">デコードする最初のバイトのインデックス。</param>
+      <param name="byteCount">デコードするバイト数。</param>
+      <param name="chars">結果の文字のセットを格納する文字配列。</param>
+      <param name="charIndex">結果の文字のセットを書き込む開始位置のインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> は null です。または <paramref name="chars" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteIndex" />、<paramref name="byteCount" />、または <paramref name="charIndex" /> が 0 未満です。または <paramref name="byteindex" /> および <paramref name="byteCount" /> が <paramref name="bytes" /> 内の有効な範囲を示していません。または <paramref name="charIndex" /> が <paramref name="chars" /> の有効なインデックスではありません。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="chars" /> には、<paramref name="charIndex" /> から配列の末尾までに十分なサイズがなく、結果の文字を格納できません。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.DecoderFallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetDecoder">
+      <summary>派生クラスでオーバーライドされた場合、エンコード済みバイト シーケンスを文字シーケンスに変換するデコーダーを取得します。</summary>
+      <returns>エンコード済みバイト シーケンスを文字シーケンスに変換する <see cref="T:System.Text.Decoder" />。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetEncoder">
+      <summary>派生クラスでオーバーライドされた場合、Unicode 文字のシーケンスをエンコード済みバイト シーケンスに変換するエンコーダーを取得します。</summary>
+      <returns>Unicode 文字のシーケンスをエンコード済みバイト シーケンスに変換する <see cref="T:System.Text.Encoder" />。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetEncoding(System.Int32)">
+      <summary>指定したコード ページ ID に関連付けられたエンコーディングを返します。</summary>
+      <returns>指定したコード ページに関連付けられたエンコーディング。</returns>
+      <param name="codepage">使用するエンコーディングのコード ページ ID。使用可能な値は、<see cref="T:System.Text.Encoding" /> クラスのトピックに記載されている表の、コード ページの列にリストされています。または既定のエンコーディングを使用する場合は 0。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="codepage" /> が 0 未満、または 65535 を超えます。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="codepage" /> は、基になるプラットフォームでサポートされていません。 </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="codepage" /> は、基になるプラットフォームでサポートされていません。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetEncoding(System.Int32,System.Text.EncoderFallback,System.Text.DecoderFallback)">
+      <summary>指定したコード ページ ID に関連付けられたエンコーディングを返します。パラメーターには、エンコードできない文字とデコードできないバイト シーケンスのためのエラー ハンドラーを指定します。</summary>
+      <returns>指定したコード ページに関連付けられたエンコーディング。</returns>
+      <param name="codepage">使用するエンコーディングのコード ページ ID。使用可能な値は、<see cref="T:System.Text.Encoding" /> クラスのトピックに記載されている表の、コード ページの列にリストされています。または既定のエンコーディングを使用する場合は 0。</param>
+      <param name="encoderFallback">現在のエンコーディングで文字をエンコードできない場合にエラー処理プロシージャを提供するオブジェクト。</param>
+      <param name="decoderFallback">現在のエンコーディングでバイト シーケンスをデコードできない場合にエラー処理プロシージャを提供するオブジェクト。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="codepage" /> が 0 未満、または 65535 を超えます。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="codepage" /> は、基になるプラットフォームでサポートされていません。 </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="codepage" /> は、基になるプラットフォームでサポートされていません。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetEncoding(System.String)">
+      <summary>指定したコード ページ名に関連付けられたエンコーディングを返します。</summary>
+      <returns>指定したコード ページに関連付けられたエンコード。</returns>
+      <param name="name">使用するエンコーディングのコード ページ名。<see cref="P:System.Text.Encoding.WebName" /> プロパティが返す値はすべて有効です。使用可能な値は、<see cref="T:System.Text.Encoding" /> クラスのトピックに記載されている表の、名前の列にリストされています。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> が有効なコード ページ名ではありません。または<paramref name="name" /> が示すコード ページは基になるプラットフォームでサポートされていません。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetEncoding(System.String,System.Text.EncoderFallback,System.Text.DecoderFallback)">
+      <summary>指定したコード ページ名に関連付けられたエンコーディングを返します。パラメーターには、エンコードできない文字とデコードできないバイト シーケンスのためのエラー ハンドラーを指定します。</summary>
+      <returns>指定したコード ページに関連付けられたエンコーディング。</returns>
+      <param name="name">使用するエンコーディングのコード ページ名。<see cref="P:System.Text.Encoding.WebName" /> プロパティが返す値はすべて有効です。使用可能な値は、<see cref="T:System.Text.Encoding" /> クラスのトピックに記載されている表の、名前の列にリストされています。</param>
+      <param name="encoderFallback">現在のエンコーディングで文字をエンコードできない場合にエラー処理プロシージャを提供するオブジェクト。</param>
+      <param name="decoderFallback">現在のエンコーディングでバイト シーケンスをデコードできない場合にエラー処理プロシージャを提供するオブジェクト。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> が有効なコード ページ名ではありません。または<paramref name="name" /> が示すコード ページは基になるプラットフォームでサポートされていません。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetHashCode">
+      <summary>現在のインスタンスのハッシュ コードを返します。</summary>
+      <returns>現在のインスタンスのハッシュ コード。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetMaxByteCount(System.Int32)">
+      <summary>派生クラスでオーバーライドされた場合、指定した文字数をエンコードすることによって生成される最大バイト数を計算します。</summary>
+      <returns>指定した文字数をエンコードすることによって生成される最大バイト数。</returns>
+      <param name="charCount">エンコードする文字数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charCount" /> が 0 未満です。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.EncoderFallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetMaxCharCount(System.Int32)">
+      <summary>派生クラスでオーバーライドされた場合、指定したバイト数をデコードすることによって生成される最大文字数を計算します。</summary>
+      <returns>指定したバイト数をデコードすることによって生成される最大文字数。</returns>
+      <param name="byteCount">デコードするバイト数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteCount" /> が 0 未満です。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.DecoderFallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetPreamble">
+      <summary>派生クラスでオーバーライドされた場合、使用するエンコーディングを指定するバイト シーケンスを返します。</summary>
+      <returns>使用するエンコーディングを指定するバイト シーケンスを格納するバイト配列。またはプリアンブルが不要な場合は、長さ 0 のバイト配列。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetString(System.Byte*,System.Int32)">
+      <summary>派生クラスでオーバーライドされると、指定した文字列に、指定したアドレスから始まるバイト数をデコードします。</summary>
+      <returns>指定したバイト シーケンスのデコード結果が格納されている文字列。 </returns>
+      <param name="bytes">バイト配列へのポインター。</param>
+      <param name="byteCount">デコードするバイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" />null ポインターです。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteCount" /> が 0 未満です。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (を参照してください.NET Framework における文字エンコーディングを詳しく解説の)および<see cref="P:System.Text.Encoding.DecoderFallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+    </member>
+    <member name="M:System.Text.Encoding.GetString(System.Byte[])">
+      <summary>派生クラスでオーバーライドされた場合、指定したバイト配列に格納されているすべてのバイトを文字列にデコードします。</summary>
+      <returns>指定したバイト シーケンスのデコード結果が格納されている文字列。</returns>
+      <param name="bytes">デコード対象のバイト シーケンスが格納されたバイト配列。</param>
+      <exception cref="T:System.ArgumentException">このバイト配列には、無効な Unicode コード ポイントが含まれています。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> は null です。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.DecoderFallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetString(System.Byte[],System.Int32,System.Int32)">
+      <summary>派生クラスでオーバーライドされた場合、指定したバイト配列に格納されているバイト シーケンスを文字列にデコードします。</summary>
+      <returns>指定したバイト シーケンスのデコード結果が格納されている文字列。</returns>
+      <param name="bytes">デコード対象のバイト シーケンスが格納されたバイト配列。</param>
+      <param name="index">デコードする最初のバイトのインデックス。</param>
+      <param name="count">デコードするバイト数。</param>
+      <exception cref="T:System.ArgumentException">このバイト配列には、無効な Unicode コード ポイントが含まれています。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が 0 未満です。または <paramref name="index" /> および <paramref name="count" /> が <paramref name="bytes" /> 内の有効な範囲を示していません。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.DecoderFallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.IsSingleByte">
+      <summary>派生クラスでオーバーライドされた場合、現在のエンコーディングが 1 バイトのコード ポイントを使用するかどうかを示す値を取得します。</summary>
+      <returns>現在の <see cref="T:System.Text.Encoding" /> が 1 バイトのコード ポイントを使用する場合は true。それ以外の場合は false。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.RegisterProvider(System.Text.EncodingProvider)">
+      <summary>エンコードするプロバイダーを登録します。</summary>
+      <param name="provider">サブクラス<see cref="T:System.Text.EncodingProvider" />追加の文字エン コードへのアクセスを提供します。 </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="provider" /> は null です。</exception>
+    </member>
+    <member name="P:System.Text.Encoding.Unicode">
+      <summary>リトル エンディアン バイト順を使用する UTF-16 形式のエンコーディングを取得します。</summary>
+      <returns>リトル エンディアンのバイト順を使用する UTF-16 形式のエンコーディング。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.UTF32">
+      <summary>リトル エンディアン バイト順を使用する UTF-32 形式のエンコーディングを取得します。</summary>
+      <returns>リトル エンディアンのバイト順を使用する UTF-32 形式のエンコーディング オブジェクト。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.UTF7">
+      <summary>UTF-7 形式のエンコーディングを取得します。</summary>
+      <returns>UTF-7 形式のエンコード。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.UTF8">
+      <summary>UTF-8 形式のエンコーディングを取得します。</summary>
+      <returns>UTF-8 形式のエンコード。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.WebName">
+      <summary>派生クラスでオーバーライドされた場合、現在のエンコーディングの IANA (Internet Assigned Numbers Authority) に登録されている名前を取得します。</summary>
+      <returns>現在の <see cref="T:System.Text.Encoding" /> の IANA 名。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.EncodingProvider">
+      <summary>特定のプラットフォームで使用するエンコードを指定するエンコードのプロバイダーの基本クラスを提供します。</summary>
+    </member>
+    <member name="M:System.Text.EncodingProvider.#ctor">
+      <summary>
+        <see cref="T:System.Text.EncodingProvider" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Text.EncodingProvider.GetEncoding(System.Int32)">
+      <summary>指定したコード ページ ID に関連付けられたエンコーディングを返します。</summary>
+      <returns>されているエンコーディングに関連付けられた、指定されたコード ページまたはnull場合この<see cref="T:System.Text.EncodingProvider" />、有効なエンコーディングに対応するを返すことができない<paramref name="codepage" />です。</returns>
+      <param name="codepage">要求されたエンコーディングのコード ページ識別子。</param>
+    </member>
+    <member name="M:System.Text.EncodingProvider.GetEncoding(System.Int32,System.Text.EncoderFallback,System.Text.DecoderFallback)">
+      <summary>指定したコード ページ ID に関連付けられたエンコーディングを返します。パラメーターには、エンコードできない文字とデコードできないバイト シーケンスのためのエラー ハンドラーを指定します。</summary>
+      <returns>されているエンコーディングに関連付けられた、指定されたコード ページまたはnull場合この<see cref="T:System.Text.EncodingProvider" />、有効なエンコーディングに対応するを返すことができない<paramref name="codepage" />です。</returns>
+      <param name="codepage">要求されたエンコーディングのコード ページ識別子。</param>
+      <param name="encoderFallback">このエンコーディングと文字をエンコードできないときに、エラー処理の手順を提供するオブジェクトです。</param>
+      <param name="decoderFallback">このエンコーディングとに、バイト シーケンスをデコードできない場合に、エラー処理の手順を提供するオブジェクト。</param>
+    </member>
+    <member name="M:System.Text.EncodingProvider.GetEncoding(System.String)">
+      <summary>指定した名前のエンコードを返します。</summary>
+      <returns>されているエンコーディングに関連付けられた、指定された名前、またはnull場合この<see cref="T:System.Text.EncodingProvider" />、有効なエンコーディングに対応するを返すことはできません<paramref name="name" />です。</returns>
+      <param name="name">要求されたエンコーディングの名前。</param>
+    </member>
+    <member name="M:System.Text.EncodingProvider.GetEncoding(System.String,System.Text.EncoderFallback,System.Text.DecoderFallback)">
+      <summary>指定した名前に関連付けられたエンコーディングを返します。パラメーターには、エンコードできない文字とデコードできないバイト シーケンスのためのエラー ハンドラーを指定します。</summary>
+      <returns>されているエンコーディングに関連付けられた、指定された名前、またはnull場合この<see cref="T:System.Text.EncodingProvider" />、有効なエンコーディングに対応するを返すことはできません<paramref name="name" />です。</returns>
+      <param name="name">エンコーディングの名前です。</param>
+      <param name="encoderFallback">このエンコーディングと文字をエンコードできないときに、エラー処理の手順を提供するオブジェクトです。</param>
+      <param name="decoderFallback">現在のエンコーディングでバイト シーケンスをデコードできない場合にエラー処理プロシージャを提供するオブジェクト。</param>
+    </member>
+  </members>
+</doc>

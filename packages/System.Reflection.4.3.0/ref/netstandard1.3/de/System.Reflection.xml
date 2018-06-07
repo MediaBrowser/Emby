@@ -1,0 +1,1129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Reflection</name>
+  </assembly>
+  <members>
+    <member name="T:System.Reflection.AmbiguousMatchException">
+      <summary>Die Ausnahme, die ausgelöst wird, wenn das Binden an einen Member dazu führt, dass mehrere Member den Bindungskriterien entsprechen.Diese Klasse kann nicht vererbt werden.</summary>
+    </member>
+    <member name="M:System.Reflection.AmbiguousMatchException.#ctor">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Reflection.AmbiguousMatchException" />-Klasse mit einer leeren Meldungszeichenfolge und einer auf null festgelegten ursächlichen Ausnahme.</summary>
+    </member>
+    <member name="M:System.Reflection.AmbiguousMatchException.#ctor(System.String)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Reflection.AmbiguousMatchException" />-Klasse mit einer auf die angegebene Meldung festgelegten Meldungszeichenfolge und einer auf null festgelegten ursächlichen Ausnahme.</summary>
+      <param name="message">Eine Zeichenfolge, die die Ursache für das Auslösen dieser Ausnahme angibt. </param>
+    </member>
+    <member name="M:System.Reflection.AmbiguousMatchException.#ctor(System.String,System.Exception)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Reflection.AmbiguousMatchException" />-Klasse mit einer angegebenen Fehlermeldung und einem Verweis auf die innere Ausnahme, die diese Ausnahme ausgelöst hat.</summary>
+      <param name="message">Die Fehlermeldung, in der die Ursache der Ausnahme erklärt wird. </param>
+      <param name="inner">Die Ausnahme, die die Ursache der aktuellen Ausnahme ist.Wenn der <paramref name="inner" />-Parameter nicht null ist, wird die aktuelle Ausnahme in einem catch-Block ausgelöst, der die innere Ausnahme behandelt.</param>
+    </member>
+    <member name="T:System.Reflection.Assembly">
+      <summary>Stellt eine Assembly dar, die ein wiederverwendbarer, in verschiedenen Versionen einsetzbarer und selbstbeschreibender Baustein einer Anwendung der Common Language Runtime (CLR) ist.</summary>
+    </member>
+    <member name="P:System.Reflection.Assembly.CustomAttributes">
+      <summary>Ruft eine Sammlung ab, die die benutzerdefinierten Attribute dieser Assembly enthält.</summary>
+      <returns>Eine Sammlung, die die benutzerdefinierten Attribute dieser Assembly enthält.</returns>
+    </member>
+    <member name="P:System.Reflection.Assembly.DefinedTypes">
+      <summary>Ruft eine Auflistung der Typen ab, die in dieser Assembly definiert sind.</summary>
+      <returns>Eine Sammlung der Typen, die in dieser Assembly definiert sind.</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.Equals(System.Object)">
+      <summary>Bestimmt, ob diese Assembly und das angegebene Objekt gleich sind.</summary>
+      <returns>true, wenn <paramref name="o" /> gleich dieser Instanz ist, andernfalls false.</returns>
+      <param name="o">Das Objekt, das mit dieser Instanz verglichen werden soll. </param>
+    </member>
+    <member name="P:System.Reflection.Assembly.ExportedTypes">
+      <summary>Ruft eine Auflistung der in dieser Assembly definierten öffentlichen Typen ab, die außerhalb der Assembly sichtbar sind.</summary>
+      <returns>Eine Sammlung der in dieser Assembly definierten öffentlichen Typen, die außerhalb der Assembly sichtbar sind.</returns>
+    </member>
+    <member name="P:System.Reflection.Assembly.FullName">
+      <summary>Ruft den Anzeigenamen der Assembly ab.</summary>
+      <returns>Der Anzeigename der Assembly.</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetHashCode">
+      <summary>Gibt den Hashcode für diese Instanz zurück.</summary>
+      <returns>Ein 32-Bit-Hashcode als ganze Zahl mit Vorzeichen.</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetManifestResourceInfo(System.String)">
+      <summary>Gibt Informationen darüber zurück, wie die angegebene Ressource beibehalten wurde.</summary>
+      <returns>Ein Objekt, das Informationen zur Topologie der Ressource enthält, oder null, falls die Ressource nicht gefunden wurde.</returns>
+      <param name="resourceName">Der Ressourcenname unter Berücksichtigung der Groß- und Kleinschreibung. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="resourceName" /> ist null. </exception>
+      <exception cref="T:System.ArgumentException">Der <paramref name="resourceName" />-Parameter ist eine leere Zeichenfolge (""). </exception>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetManifestResourceNames">
+      <summary>Gibt die Namen aller Ressourcen in dieser Assembly zurück.</summary>
+      <returns>Ein Array, das die Namen sämtlicher Ressourcen enthält.</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetManifestResourceStream(System.String)">
+      <summary>Lädt die angegebene Manifestressource aus dieser Assembly.</summary>
+      <returns>Die Manifestressource oder null, wenn während des Kompilierens keine Ressourcen angegeben wurden oder wenn die Ressource für den Aufrufer nicht sichtbar ist.</returns>
+      <param name="name">Der Name der angeforderten Manifestressource unter Berücksichtigung der Groß- und Kleinschreibung. </param>
+      <exception cref="T:System.ArgumentNullException">Der <paramref name="name" />-Parameter ist null. </exception>
+      <exception cref="T:System.ArgumentException">Der <paramref name="name" />-Parameter ist eine leere Zeichenfolge (""). </exception>
+      <exception cref="T:System.IO.FileLoadException">In der .NET for Windows Store apps oder Portable Klassenbibliothek, fangen Sie die Ausnahme Basisklasse <see cref="T:System.IO.IOException" />, stattdessen.Eine gefundene Datei konnte nicht geladen werden. </exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="name" /> wurde nicht gefunden. </exception>
+      <exception cref="T:System.BadImageFormatException">
+        <paramref name="name" /> ist keine gültige Assembly. </exception>
+      <exception cref="T:System.NotImplementedException">Die Länge der Ressource ist größer als <see cref="F:System.Int64.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetName">
+      <summary>Ruft einen <see cref="T:System.Reflection.AssemblyName" /> für diese Assembly ab.</summary>
+      <returns>Ein Objekt, das den vollständig analysierten Anzeigenamen für diese Assembly enthält.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetType(System.String)">
+      <summary>Ruft das <see cref="T:System.Type" />-Objekt mit dem angegebenen Namen aus der Assemblyinstanz ab.</summary>
+      <returns>Ein Objekt, das die angegebene Klasse darstellt, oder null, wenn die Klasse nicht gefunden wird.</returns>
+      <param name="name">Der vollständige Name des Typs. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> ist ungültig. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> ist null. </exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="name" /> erfordert eine abhängige Assembly, die nicht gefunden werden konnte. </exception>
+      <exception cref="T:System.IO.FileLoadException">In der .NET for Windows Store apps oder Portable Klassenbibliothek, fangen Sie die Ausnahme Basisklasse <see cref="T:System.IO.IOException" />, stattdessen.<paramref name="name" /> erfordert eine abhängige Assembly, die gefunden wurde, jedoch nicht geladen werden konnte.- oder - Die aktuelle Assembly wurde in den ReflectionOnly-Kontext geladen, und <paramref name="name" /> erfordert eine abhängige Assembly, die nicht vorab geladen wurde. </exception>
+      <exception cref="T:System.BadImageFormatException">
+        <paramref name="name" /> erfordert eine abhängige Assembly, die Datei ist jedoch keine gültige Assembly. - oder - <paramref name="name" /> erfordert eine abhängige Assembly, die für eine Version der Laufzeit kompiliert wurde, die höher als die derzeit geladene Version ist. </exception>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetType(System.String,System.Boolean,System.Boolean)">
+      <summary>Ruft das <see cref="T:System.Type" />-Objekt mit dem angegebenen Namen in der Assemblyinstanz ab, wobei optional die Groß- und Kleinschreibung unberücksichtigt bleiben und optional eine Ausnahme ausgelöst werden kann, wenn der Typ nicht gefunden wurde.</summary>
+      <returns>Ein Objekt, das die angegebene Klasse darstellt.</returns>
+      <param name="name">Der vollständige Name des Typs. </param>
+      <param name="throwOnError">true, damit eine Ausnahme ausgelöst wird, wenn der Typ nicht gefunden wurde. false, damit null zurückgegeben wird. </param>
+      <param name="ignoreCase">true, um die Groß- und Kleinschreibung des Typnamens zu ignorieren, andernfalls false. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> ist ungültig.- oder -  <paramref name="name" /> ist länger als 1024 Zeichen. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> ist null. </exception>
+      <exception cref="T:System.TypeLoadException">
+        <paramref name="throwOnError" /> ist true, und der Typ kann nicht gefunden werden.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="name" /> erfordert eine abhängige Assembly, die nicht gefunden werden konnte. </exception>
+      <exception cref="T:System.IO.FileLoadException">
+        <paramref name="name" /> erfordert eine abhängige Assembly, die gefunden wurde, jedoch nicht geladen werden konnte.- oder - Die aktuelle Assembly wurde in den ReflectionOnly-Kontext geladen, und <paramref name="name" /> erfordert eine abhängige Assembly, die nicht vorab geladen wurde. </exception>
+      <exception cref="T:System.BadImageFormatException">
+        <paramref name="name" /> erfordert eine abhängige Assembly, die Datei ist jedoch keine gültige Assembly. - oder - <paramref name="name" /> erfordert eine abhängige Assembly, die für eine Version der Laufzeit kompiliert wurde, die höher als die derzeit geladene Version ist.</exception>
+    </member>
+    <member name="P:System.Reflection.Assembly.IsDynamic">
+      <summary>Ruft einen Wert ab, der angibt, ob die aktuelle Assembly dynamisch im aktuellen Prozess mithilfe der Reflektionsausgabe generiert wurde.</summary>
+      <returns>true, wenn die aktuelle Assembly dynamisch im aktuellen Prozess generiert wurde, andernfalls false.</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.Load(System.Reflection.AssemblyName)">
+      <summary>Lädt eine Assembly bei Angabe von <see cref="T:System.Reflection.AssemblyName" />.</summary>
+      <returns>Die geladene Assembly.</returns>
+      <param name="assemblyRef">Das Objekt, das die zu ladende Assembly beschreibt. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="assemblyRef" /> ist null. </exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="assemblyRef" /> wurde nicht gefunden. </exception>
+      <exception cref="T:System.IO.FileLoadException">In der .NET for Windows Store apps oder Portable Klassenbibliothek, fangen Sie die Ausnahme Basisklasse <see cref="T:System.IO.IOException" />, stattdessen.Eine gefundene Datei konnte nicht geladen werden. </exception>
+      <exception cref="T:System.BadImageFormatException">
+        <paramref name="assemblyRef" /> ist keine gültige Assembly.- oder - Version 2.0 oder höher der Common Language Runtime ist derzeit geladen, und <paramref name="assemblyRef" /> wurde mit einer höheren Version kompiliert.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="*AllFiles*" PathDiscovery="*AllFiles*" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Reflection.Assembly.ManifestModule">
+      <summary>Ruft das Modul mit dem Manifest für die aktuelle Assembly ab. </summary>
+      <returns>Das Modul mit dem Manifest für die Assembly. </returns>
+    </member>
+    <member name="P:System.Reflection.Assembly.Modules">
+      <summary>Ruft eine Sammlung ab, die die Module in dieser Assembly enthält.</summary>
+      <returns>Eine Sammlung, die die Module in dieser Assembly enthält.</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.ToString">
+      <summary>Gibt den vollständigen Namen der Assembly zurück, der auch als Anzeigename bezeichnet wird.</summary>
+      <returns>Der vollständige Name der Assembly oder der Klassenname, wenn der vollständige Name der Assembly nicht bestimmt werden kann.</returns>
+    </member>
+    <member name="T:System.Reflection.AssemblyContentType">
+      <summary>Stellt Informationen über den Typ des Codes in einer Assembly bereit.</summary>
+    </member>
+    <member name="F:System.Reflection.AssemblyContentType.Default">
+      <summary>Die Assembly enthält .NET Framework-Code.</summary>
+    </member>
+    <member name="F:System.Reflection.AssemblyContentType.WindowsRuntime">
+      <summary>Die Assembly enthält Windows-Runtime-Code.</summary>
+    </member>
+    <member name="T:System.Reflection.AssemblyName">
+      <summary>Beschreibt die eindeutige Identität einer Assembly vollständig.</summary>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.#ctor">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Reflection.AssemblyName" />-Klasse.</summary>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.#ctor(System.String)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Reflection.AssemblyName" />-Klasse mit dem angegebenen Anzeigenamen.</summary>
+      <param name="assemblyName">Der Anzeigename der Assembly, wie von der <see cref="P:System.Reflection.AssemblyName.FullName" />-Eigenschaft zurückgegeben.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="assemblyName" /> ist null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="assemblyName" /> ist eine Zeichenfolge der Länge 0 (null). </exception>
+      <exception cref="T:System.IO.FileLoadException">Unter .NET for Windows Store apps oder in der Portable Klassenbibliothek verwenden Sie stattdessen die Basisklassenausnahme <see cref="T:System.IO.IOException" />.Die Assembly, auf die verwiesen wird, wurde nicht gefunden oder konnte nicht geladen werden.</exception>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.ContentType">
+      <summary>Ruft einen Wert ab oder legt einen Wert fest, der angibt, welche Art von Inhalt die Assembly enthält.</summary>
+      <returns>Ein Wert, der angibt, welche Art von Inhalts der Assembly enthält.</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.CultureName">
+      <summary>Ruft den Namen der Kultur ab, die dieser Assembly zugeordnet ist, oder legt den Namen fest.</summary>
+      <returns>Der Kulturname.</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.Flags">
+      <summary>Ruft die Attribute der Assembly ab oder legt diese fest.</summary>
+      <returns>Ein Wert, der die Attribute der Assembly darstellt.</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.FullName">
+      <summary>Ruft den vollständigen Namen der Assembly ab, der auch als Anzeigename bezeichnet wird.</summary>
+      <returns>Eine Zeichenfolge, die den vollständigen Namen der Assembly darstellt, der auch als Anzeigename bezeichnet wird.</returns>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.GetPublicKey">
+      <summary>Ruft den öffentlichen Schlüssel der Assembly ab.</summary>
+      <returns>Ein Bytearray mit dem öffentlichen Schlüssel der Assembly.</returns>
+      <exception cref="T:System.Security.SecurityException">Es wurde ein öffentlicher Schlüssel bereitgestellt (z. B. mithilfe der <see cref="M:System.Reflection.AssemblyName.SetPublicKey(System.Byte[])" />-Methode), es wurde jedoch kein öffentliches Schlüsseltoken bereitgestellt. </exception>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.GetPublicKeyToken">
+      <summary>Ruft das Token des öffentlichen Schlüssels ab, d. h. die letzten 8 Byte des SHA-1-Hashs des öffentlichen Schlüssels, mit dem die Anwendung oder Assembly signiert ist.</summary>
+      <returns>Ein Bytearray, das öffentliche Schlüsseltoken enthält.</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.Name">
+      <summary>Ruft den einfachen Namen der Assembly ab oder legt diesen fest.Dies ist üblicherweise (jedoch nicht unbedingt) der Dateiname der Manifestdatei der Assembly, abzüglich ihrer Erweiterung.</summary>
+      <returns>Der einfache Name der Assembly.</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.ProcessorArchitecture">
+      <summary>Ruft einen Wert ab, der den Prozessor und die Bits pro Wort für die Plattform angibt, auf die eine ausführbare Datei zielt, oder legt diesen Wert fest.</summary>
+      <returns>Einer der Enumerationswerte, der den Prozessor und die Bits pro Wort für die Plattform angibt, auf die eine ausführbare Datei zielt.</returns>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.SetPublicKey(System.Byte[])">
+      <summary>Legt den öffentlichen Schlüssel zum Identifizieren der Assembly fest.</summary>
+      <param name="publicKey">Ein Bytearray mit dem öffentlichen Schlüssel der Assembly. </param>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.SetPublicKeyToken(System.Byte[])">
+      <summary>Legt das Token des öffentlichen Schlüssels fest, d. h. die letzten 8 Bytes des SHA-1-Hashs des öffentlichen Schlüssels, mit dem die Anwendung oder Assembly signiert ist.</summary>
+      <param name="publicKeyToken">Ein Bytearray mit dem Token des öffentlichen Schlüssels der Assembly. </param>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.ToString">
+      <summary>Gibt den vollständigen Namen der Assembly zurück, der auch als Anzeigename bezeichnet wird.</summary>
+      <returns>Der vollständige Name der Assembly oder der Klassenname, wenn der vollständige Name nicht bestimmt werden kann.</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.Version">
+      <summary>Ruft die Haupt-, Neben-, Build- und Revisionsnummer der Assembly ab oder legt diese fest.</summary>
+      <returns>Ein Objekt, das die Haupt-, Neben-, Build- und Revisionsnummer der Assembly darstellt.</returns>
+    </member>
+    <member name="T:System.Reflection.ConstructorInfo">
+      <summary>Ermittelt die Attribute eines Klassenkonstruktors und bietet Zugriff auf Metadaten des Konstruktors. </summary>
+    </member>
+    <member name="F:System.Reflection.ConstructorInfo.ConstructorName">
+      <summary>Stellt den Namen der Klassenkonstruktor-Methode dar, der in den Metadaten gespeichert ist.Dieser Name lautet immer ".ctor".Dieses Feld ist schreibgeschützt.</summary>
+    </member>
+    <member name="M:System.Reflection.ConstructorInfo.Equals(System.Object)">
+      <summary>Gibt einen Wert zurück, der angibt, ob diese Instanz gleich einem angegebenen Objekt ist.</summary>
+      <returns>true, wenn <paramref name="obj" /> dem Typ und dem Wert dieser Instanz entspricht, andernfalls false.</returns>
+      <param name="obj">Ein Objekt, das mit dieser Instanz verglichen werden soll, oder null.</param>
+    </member>
+    <member name="M:System.Reflection.ConstructorInfo.GetHashCode">
+      <summary>Gibt den Hashcode für diese Instanz zurück.</summary>
+      <returns>Ein 32-Bit-Ganzzahl-Hashcode mit Vorzeichen.</returns>
+    </member>
+    <member name="M:System.Reflection.ConstructorInfo.Invoke(System.Object[])">
+      <summary>Ruft den Konstruktor auf, der von der Instanz reflektiert wird, die die angegebenen Parameter enthält. Hierbei werden Standardwerte für die selten verwendeten Parameter bereitgestellt.</summary>
+      <returns>Eine Instanz der Klasse, die dem Konstruktor zugeordnet ist.</returns>
+      <param name="parameters">Ein Array von Werten, das Anzahl, Reihenfolge und Typ (gemäß den Einschränkungen des Standardbinders) der Parameter für diesen Konstruktor entspricht.Wenn dieser Konstruktor keine Parameter hat, verwenden Sie entweder ein Array mit null Elementen oder null, wie in Object[] parameters = new Object[0].Jedes nicht explizit mit einem Wert initialisierte Objekt in diesem Array enthält den Standardwert für den jeweiligen Objekttyp.Bei Elementen mit Verweistyp ist dieser Wert null.Bei Elementen mit Werttyp ist dieser Wert je nach Typ des jeweiligen Elements 0, 0,0 oder false.</param>
+      <exception cref="T:System.MemberAccessException">Die Klasse ist abstrakt.- oder - Der Konstruktor ist ein Klasseninitialisierer. </exception>
+      <exception cref="T:System.MethodAccessException">Unter .NET for Windows Store apps oder in der Portable Klassenbibliothek verwenden Sie stattdessen die Basisklassenausnahme <see cref="T:System.MemberAccessException" />.Der Konstruktor ist privat oder geschützt, und dem Aufrufer fehlt <see cref="F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess" />. </exception>
+      <exception cref="T:System.ArgumentException">Das <paramref name="parameters" />-Array enthält keine Werte, die den von diesem Konstruktor akzeptierten Typen entsprechen. </exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">Der aufgerufene Konstruktor löst eine Ausnahme aus. </exception>
+      <exception cref="T:System.Reflection.TargetParameterCountException">Es wurde eine falsche Anzahl von Parametern übergeben. </exception>
+      <exception cref="T:System.NotSupportedException">Das Erstellen der Typen <see cref="T:System.TypedReference" />, <see cref="T:System.ArgIterator" /> und <see cref="T:System.RuntimeArgumentHandle" /> wird nicht unterstützt.</exception>
+      <exception cref="T:System.Security.SecurityException">Der Aufrufer verfügt nicht über die notwendigen Zugriffsberechtigungen für den Code.</exception>
+    </member>
+    <member name="F:System.Reflection.ConstructorInfo.TypeConstructorName">
+      <summary>Stellt den Namen der Typkonstruktor-Methode dar, der in den Metadaten gespeichert ist.Dieser Name lautet immer ".cctor".Diese Eigenschaft ist schreibgeschützt.</summary>
+    </member>
+    <member name="T:System.Reflection.CustomAttributeData">
+      <summary>Stellt Zugriff auf benutzerdefinierte Attributdaten für Assemblys, Module, Typen, Member und Parameter bereit, die in den ReflectionOnly-Kontext geladen werden.</summary>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeData.AttributeType">
+      <summary>Ruft den Attributtyp ab.</summary>
+      <returns>Der Typ des Attributs.</returns>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeData.ConstructorArguments">
+      <summary>Ruft die Liste positioneller Argumente ab, die für die durch das <see cref="T:System.Reflection.CustomAttributeData" />-Objekt dargestellte Attributinstanz angegeben werden.</summary>
+      <returns>Eine Sammlung von Strukturen, die die für die benutzerdefinierte Attributinstanz angegebenen Positionsargumente darstellen.</returns>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeData.NamedArguments">
+      <summary>Ruft die Liste benannter Argumente ab, die für die durch das <see cref="T:System.Reflection.CustomAttributeData" />-Objekt dargestellte Attributinstanz angegeben werden.</summary>
+      <returns>Eine Sammlung von Strukturen, die die für die benutzerdefinierte Attributinstanz angegebenen benannten Argumente darstellen.</returns>
+    </member>
+    <member name="T:System.Reflection.CustomAttributeNamedArgument">
+      <summary>Stellt ein benanntes Argument eines benutzerdefinierten Attributs im ReflectionOnly-Kontext dar.</summary>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeNamedArgument.IsField">
+      <summary>Ruft einen Wert ab, der angibt, ob das benannte Argument ein Feld ist.</summary>
+      <returns>true, wenn das benannte Argument ein Feld ist; andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeNamedArgument.MemberName">
+      <summary>Ruft den Namen des Attributmembers ab, der zum Festlegen des benannten Arguments verwendet wird.</summary>
+      <returns>Der Name des Attributmembers, der zum Festlegen des benannten Arguments verwendet wird.</returns>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeNamedArgument.TypedValue">
+      <summary>Ruft eine <see cref="T:System.Reflection.CustomAttributeTypedArgument" />-Struktur ab, die verwendet werden kann, um den Typ und den Wert des aktuellen benannten Arguments abzurufen.</summary>
+      <returns>Eine Struktur, die verwendet werden kann, um den Typ und den Wert des aktuellen benannten Arguments abzurufen.</returns>
+    </member>
+    <member name="T:System.Reflection.CustomAttributeTypedArgument">
+      <summary>Stellt ein Argument eines benutzerdefinierten Attributs im ReflectionOnly-Kontext oder ein Element eines Arrayarguments dar.</summary>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeTypedArgument.ArgumentType">
+      <summary>Ruft den Typ des Arguments oder des Arrayargumentelements ab.</summary>
+      <returns>Ein <see cref="T:System.Type" />-Objekt, das den Typ des Arguments oder des Arrayelements darstellt.</returns>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeTypedArgument.Value">
+      <summary>Ruft für ein einfaches Argument oder ein Element eines Arrayarguments den Wert des Arguments ab. Ruft für ein Arrayargument eine Auflistung von Werten ab.</summary>
+      <returns>Ein Objekt, das den Wert des Arguments oder Elements darstellt, oder eine generische <see cref="T:System.Collections.ObjectModel.ReadOnlyCollection`1" /> von <see cref="T:System.Reflection.CustomAttributeTypedArgument" />-Objekten, die die Werte eines Arraytyparguments darstellen.</returns>
+    </member>
+    <member name="T:System.Reflection.EventInfo">
+      <summary>Ermittelt die Attribute eines Ereignisses und ermöglicht den Zugriff auf die Metadaten des Ereignisses.</summary>
+    </member>
+    <member name="M:System.Reflection.EventInfo.AddEventHandler(System.Object,System.Delegate)">
+      <summary>Fügt einer Ereignisquelle einen Ereignishandler hinzu.</summary>
+      <param name="target">Die Ereignisquelle. </param>
+      <param name="handler">Kapselt eine oder mehrere Methoden, die aufgerufen werden, wenn das Ereignis durch den Zielparameter ausgelöst wird. </param>
+      <exception cref="T:System.InvalidOperationException">Das Ereignis besitzt keinen öffentlichen add-Accessor.</exception>
+      <exception cref="T:System.ArgumentException">Der übergebene Handler kann nicht verwendet werden. </exception>
+      <exception cref="T:System.MethodAccessException">Unter .NET for Windows Store apps oder in der Portable Klassenbibliothek verwenden Sie stattdessen die Basisklassenausnahme <see cref="T:System.MemberAccessException" />.Der Aufrufer besitzt keine Zugriffsberechtigung für den Member. </exception>
+      <exception cref="T:System.Reflection.TargetException">Unter .NET for Windows Store apps oder in der Portable Klassenbibliothek verwenden Sie stattdessen <see cref="T:System.Exception" />.Der <paramref name="target" />-Parameter ist null, und das Ereignis ist nicht statisch.- oder - <see cref="T:System.Reflection.EventInfo" /> ist für das Ziel nicht deklariert. </exception>
+    </member>
+    <member name="P:System.Reflection.EventInfo.AddMethod">
+      <summary>Ruft das <see cref="T:System.Reflection.MethodInfo" />-Objekt für die <see cref="M:System.Reflection.EventInfo.AddEventHandler(System.Object,System.Delegate)" />-Methode des Ereignisses, einschließlich nicht öffentliche Methoden ab.</summary>
+      <returns>Das <see cref="T:System.Reflection.MethodInfo" />-Objekt für die <see cref="M:System.Reflection.EventInfo.AddEventHandler(System.Object,System.Delegate)" />-Methode.</returns>
+    </member>
+    <member name="P:System.Reflection.EventInfo.Attributes">
+      <summary>Ruft die Attribute für dieses Ereignis ab.</summary>
+      <returns>Die Schreibschutzattribute für dieses Ereignis.</returns>
+    </member>
+    <member name="M:System.Reflection.EventInfo.Equals(System.Object)">
+      <summary>Gibt einen Wert zurück, der angibt, ob diese Instanz gleich einem angegebenen Objekt ist.</summary>
+      <returns>true, wenn <paramref name="obj" /> dem Typ und dem Wert dieser Instanz entspricht, andernfalls false.</returns>
+      <param name="obj">Ein Objekt, das mit dieser Instanz verglichen werden soll, oder null.</param>
+    </member>
+    <member name="P:System.Reflection.EventInfo.EventHandlerType">
+      <summary>Ruft das Type-Objekt des zugrunde liegenden Ereignishandlerdelegaten ab, der dem jeweiligen Ereignis zugeordnet ist.</summary>
+      <returns>Ein schreibgeschütztes Type-Objekt, das den Ereignishandler des Delegaten darstellt.</returns>
+      <exception cref="T:System.Security.SecurityException">Der Aufrufer verfügt nicht über die erforderliche Berechtigung. </exception>
+    </member>
+    <member name="M:System.Reflection.EventInfo.GetHashCode">
+      <summary>Gibt den Hashcode für diese Instanz zurück.</summary>
+      <returns>Ein 32-Bit-Ganzzahl-Hashcode mit Vorzeichen.</returns>
+    </member>
+    <member name="P:System.Reflection.EventInfo.IsSpecialName">
+      <summary>Ruft einen Wert ab, der angibt, ob EventInfo einen Namen mit einer speziellen Bedeutung besitzt.</summary>
+      <returns>true, wenn das Ereignis einen besonderen Namen besitzt, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.EventInfo.RaiseMethod">
+      <summary>Ruft die Methode ab, die beim Auslösen des Ereignisses aufgerufen wird, einschließlich nicht-öffentlicher Methoden.</summary>
+      <returns>Die Methode, die beim Auslösen des Ereignisses aufgerufen wird.</returns>
+    </member>
+    <member name="M:System.Reflection.EventInfo.RemoveEventHandler(System.Object,System.Delegate)">
+      <summary>Entfernt einen Ereignishandler aus einer Ereignisquelle.</summary>
+      <param name="target">Die Ereignisquelle. </param>
+      <param name="handler">Der Delegat, dessen Zuordnung zu den vom Ziel ausgelösten Ereignissen aufgehoben werden soll. </param>
+      <exception cref="T:System.InvalidOperationException">Das Ereignis besitzt keinen öffentlichen remove-Accessor. </exception>
+      <exception cref="T:System.ArgumentException">Der übergebene Handler kann nicht verwendet werden. </exception>
+      <exception cref="T:System.Reflection.TargetException">Unter .NET for Windows Store apps oder in der Portable Klassenbibliothek verwenden Sie stattdessen <see cref="T:System.Exception" />.Der <paramref name="target" />-Parameter ist null, und das Ereignis ist nicht statisch.- oder - <see cref="T:System.Reflection.EventInfo" /> ist für das Ziel nicht deklariert. </exception>
+      <exception cref="T:System.MethodAccessException">Unter .NET for Windows Store apps oder in der Portable Klassenbibliothek verwenden Sie stattdessen die Basisklassenausnahme <see cref="T:System.MemberAccessException" />.Der Aufrufer besitzt keine Zugriffsberechtigung für den Member. </exception>
+    </member>
+    <member name="P:System.Reflection.EventInfo.RemoveMethod">
+      <summary>Ruft das MethodInfo-Objekt zum Entfernen einer Methode des Ereignisses einschließlich nicht öffentlicher Methoden ab.</summary>
+      <returns>Das MethodInfo-Objekt zum Entfernen einer Methode des Ereignisses.</returns>
+    </member>
+    <member name="T:System.Reflection.FieldInfo">
+      <summary>Ermittelt die Attribute eines Felds und ermöglicht den Zugriff auf die Metadaten des Felds. </summary>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.Attributes">
+      <summary>Ruft die Attribute ab, die diesem Feld zugeordnet sind.</summary>
+      <returns>Die FieldAttributes für das Feld.</returns>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.Equals(System.Object)">
+      <summary>Gibt einen Wert zurück, der angibt, ob diese Instanz gleich einem angegebenen Objekt ist.</summary>
+      <returns>true, wenn <paramref name="obj" /> dem Typ und dem Wert dieser Instanz entspricht, andernfalls false.</returns>
+      <param name="obj">Ein Objekt, das mit dieser Instanz verglichen werden soll, oder null.</param>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.FieldType">
+      <summary>Ruft den Typ dieses Feldobjekts ab.</summary>
+      <returns>Der Typ dieses Feldobjekts.</returns>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.GetFieldFromHandle(System.RuntimeFieldHandle)">
+      <summary>Ruft eine <see cref="T:System.Reflection.FieldInfo" /> für das durch das angegebene Handle dargestellte Feld ab.</summary>
+      <returns>Ein <see cref="T:System.Reflection.FieldInfo" />-Objekt, das das durch <paramref name="handle" /> angegebene Feld darstellt.</returns>
+      <param name="handle">Eine <see cref="T:System.RuntimeFieldHandle" />-Struktur, die das Handle für die interne Metadatendarstellung eines Felds enthält. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="handle" /> ist ungültig.</exception>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.GetFieldFromHandle(System.RuntimeFieldHandle,System.RuntimeTypeHandle)">
+      <summary>Ruft eine <see cref="T:System.Reflection.FieldInfo" /> für das durch das angegebene Handle dargestellte Feld für den angegebenen generischen Typ ab.</summary>
+      <returns>Ein <see cref="T:System.Reflection.FieldInfo" />-Objekt, das das von <paramref name="handle" /> angegebene Feld darstellt, in dem durch <paramref name="declaringType" /> angegebenen generischen Typ.</returns>
+      <param name="handle">Eine <see cref="T:System.RuntimeFieldHandle" />-Struktur, die das Handle für die interne Metadatendarstellung eines Felds enthält.</param>
+      <param name="declaringType">Eine <see cref="T:System.RuntimeTypeHandle" />-Struktur, die das Handle für den generischen Typ enthält, der das Feld definiert.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="handle" /> ist ungültig.- oder -<paramref name="declaringType" /> ist nicht mit <paramref name="handle" /> kompatibel.Beispielsweise ist <paramref name="declaringType" /> das Laufzeittyphandle der generischen Typdefinition, und <paramref name="handle" /> stammt von einem konstruierten Typ.Siehe Hinweise.</exception>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.GetHashCode">
+      <summary>Gibt den Hashcode für diese Instanz zurück.</summary>
+      <returns>Ein 32-Bit-Ganzzahl-Hashcode mit Vorzeichen.</returns>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.GetValue(System.Object)">
+      <summary>Gibt den Wert eines Felds zurück, das durch ein angegebenes Objekt unterstützt wird, wenn es in einer abgeleiteten Klasse überschrieben wird.</summary>
+      <returns>Ein Objekt mit dem Wert des Felds, das von dieser Instanz reflektiert wird.</returns>
+      <param name="obj">Das Objekt, dessen Feldwert zurückgegeben wird. </param>
+      <exception cref="T:System.Reflection.TargetException">Unter .NET for Windows Store apps oder in der Portable Klassenbibliothek verwenden Sie stattdessen <see cref="T:System.Exception" />.Das Feld ist nicht statisch, und <paramref name="obj" /> ist null. </exception>
+      <exception cref="T:System.NotSupportedException">Ein Feld ist als literal markiert, aber das Feld weist keine der akzeptierten literalen Typen auf. </exception>
+      <exception cref="T:System.FieldAccessException">Unter .NET for Windows Store apps oder in der Portable Klassenbibliothek verwenden Sie stattdessen die Basisklassenausnahme <see cref="T:System.MemberAccessException" />.Der Aufrufer besitzt keine Zugriffsberechtigungen für dieses Feld. </exception>
+      <exception cref="T:System.ArgumentException">Die Methode ist weder deklariert noch von der Klasse von <paramref name="obj" /> geerbt. </exception>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsAssembly">
+      <summary>Ruft einen Wert ab, der angibt, ob die potenzielle Sichtbarkeit dieses Felds von <see cref="F:System.Reflection.FieldAttributes.Assembly" /> beschrieben wird, d h. ob das Feld höchstens für andere Typen in derselben Assembly und nicht für abgeleitete Typen außerhalb der Assembly sichtbar ist.</summary>
+      <returns>true, wenn die Sichtbarkeit dieses Felds von <see cref="F:System.Reflection.FieldAttributes.Assembly" /> genau beschrieben wird, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsFamily">
+      <summary>Ruft einen Wert ab, der angibt, ob die Sichtbarkeit dieses Felds von <see cref="F:System.Reflection.FieldAttributes.Family" /> beschrieben wird, d. h., das Feld ist nur innerhalb seiner Klasse und in den abgeleiteten Klassen sichtbar.</summary>
+      <returns>true, wenn der Zugriff auf dieses Feld von <see cref="F:System.Reflection.FieldAttributes.Family" /> genau beschrieben wird, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsFamilyAndAssembly">
+      <summary>Ruft einen Wert ab, der angibt, ob die Sichtbarkeit dieses Felds von <see cref="F:System.Reflection.FieldAttributes.FamANDAssem" /> beschrieben wird, d. h., auf das Feld kann von abgeleiteten Klassen zugegriffen werden, jedoch nur, wenn sich diese in derselben Assembly befinden.</summary>
+      <returns>true, wenn der Zugriff auf dieses Feld von <see cref="F:System.Reflection.FieldAttributes.FamANDAssem" /> genau beschrieben wird, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsFamilyOrAssembly">
+      <summary>Ruft einen Wert ab, der angibt, ob die potenzielle Sichtbarkeit dieses Felds von <see cref="F:System.Reflection.FieldAttributes.FamORAssem" /> beschrieben wird, d. h., auf das Feld kann von Klassen in derselben Assembly und von abgeleiteten Klassen zugegriffen werden, wobei deren Position keine Rolle spielt.</summary>
+      <returns>true, wenn der Zugriff auf dieses Feld von <see cref="F:System.Reflection.FieldAttributes.FamORAssem" /> genau beschrieben wird, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsInitOnly">
+      <summary>Ruft einen Wert ab, der angibt, ob das Feld nur im Rumpf des Konstruktors festgelegt werden kann.</summary>
+      <returns>true, wenn für das Feld das InitOnly-Attribut festgelegt ist, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsLiteral">
+      <summary>Ruft einen Wert ab, der angibt, ob der Wert während der Kompilierung geschrieben wird und nicht geändert werden kann.</summary>
+      <returns>true, wenn für das Feld das Literal-Attribut festgelegt ist, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsPrivate">
+      <summary>Ruft einen Wert ab, der angibt, ob das Feld privat ist.</summary>
+      <returns>true, wenn das Feld privat ist, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsPublic">
+      <summary>Ruft einen Wert ab, der angibt, ob das Feld öffentlich ist.</summary>
+      <returns>true, wenn das Feld öffentlich ist, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsSpecialName">
+      <summary>Ruft einen Wert ab, der angibt, ob das entsprechende SpecialName-Attribut für den <see cref="T:System.Reflection.FieldAttributes" />-Enumerator festgelegt wurde.</summary>
+      <returns>true, wenn das SpecialName-Attribut in <see cref="T:System.Reflection.FieldAttributes" /> festgelegt ist, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsStatic">
+      <summary>Ruft einen Wert ab, der angibt, ob das Feld statisch ist.</summary>
+      <returns>true, wenn das Feld statisch ist, andernfalls false.</returns>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.SetValue(System.Object,System.Object)">
+      <summary>Legt den Wert des Felds fest, das vom angegebenen Objekt unterstützt wird.</summary>
+      <param name="obj">Das Objekt, dessen Feldwert festgelegt wird. </param>
+      <param name="value">Der Wert, der dem Feld zugewiesen werden soll. </param>
+      <exception cref="T:System.FieldAccessException">Unter .NET for Windows Store apps oder in der Portable Klassenbibliothek verwenden Sie stattdessen die Basisklassenausnahme <see cref="T:System.MemberAccessException" />.Der Aufrufer besitzt keine Zugriffsberechtigungen für dieses Feld. </exception>
+      <exception cref="T:System.Reflection.TargetException">Unter .NET for Windows Store apps oder in der Portable Klassenbibliothek verwenden Sie stattdessen <see cref="T:System.Exception" />.Der <paramref name="obj" />-Parameter ist null, und das Feld ist ein Instanzfeld. </exception>
+      <exception cref="T:System.ArgumentException">Das Feld ist in dem Objekt nicht vorhanden.- oder - Der <paramref name="value" />-Parameter kann nicht konvertiert und in dem Feld gespeichert werden. </exception>
+    </member>
+    <member name="T:System.Reflection.IntrospectionExtensions">
+      <summary>Enthält Methoden zum Konvertieren von <see cref="T:System.Type" />-Objekten.</summary>
+    </member>
+    <member name="M:System.Reflection.IntrospectionExtensions.GetTypeInfo(System.Type)">
+      <summary>Gibt die <see cref="T:System.Reflection.TypeInfo" />-Darstellung eines angegebenen Typs zurück.</summary>
+      <returns>Das konvertierte Objekt.</returns>
+      <param name="type">Der Zieltyp der Konvertierung.</param>
+    </member>
+    <member name="T:System.Reflection.IReflectableType">
+      <summary>Stellt einen Typ dar, über den Sie reflektieren können.</summary>
+    </member>
+    <member name="M:System.Reflection.IReflectableType.GetTypeInfo">
+      <summary>Ruft ein Objekt ab, das diesen Typ darstellt.</summary>
+      <returns>Ein Objekt, das diesen Typ darstellt.</returns>
+    </member>
+    <member name="T:System.Reflection.LocalVariableInfo">
+      <summary>Ermittelt die Attribute einer lokalen Variablen und stellt Zugriff auf die Metadaten der lokalen Variablen bereit.</summary>
+    </member>
+    <member name="M:System.Reflection.LocalVariableInfo.#ctor">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Reflection.LocalVariableInfo" />-Klasse.</summary>
+    </member>
+    <member name="P:System.Reflection.LocalVariableInfo.IsPinned">
+      <summary>Ruft einen <see cref="T:System.Boolean" />-Wert ab, der angibt, ob das Objekt, auf das die lokale Variable verweist, im Arbeitsspeicher fixiert ist.</summary>
+      <returns>true, wenn das Objekt, auf das die Variable verweist, im Arbeitsspeicher fixiert ist, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.LocalVariableInfo.LocalIndex">
+      <summary>Ruft den Index der lokalen Variablen innerhalb des Methodentexts ab.</summary>
+      <returns>Ein ganzzahliger Wert, der die Reihenfolge der Deklaration der lokalen Variablen innerhalb des Methodentexts darstellt.</returns>
+    </member>
+    <member name="P:System.Reflection.LocalVariableInfo.LocalType">
+      <summary>Ruft den Typ der lokalen Variablen ab.</summary>
+      <returns>Der Typ der lokalen Variablen.</returns>
+    </member>
+    <member name="M:System.Reflection.LocalVariableInfo.ToString">
+      <summary>Gibt eine für den Benutzer lesbare Zeichenfolge zurück, die die lokale Variable beschreibt.</summary>
+      <returns>Eine Zeichenfolge, die Informationen zu der lokalen Variablen anzeigt, einschließlich des Typnamens, des Index, und des Status hinsichtlich der Fixierung im Arbeitsspeicher.</returns>
+    </member>
+    <member name="T:System.Reflection.ManifestResourceInfo">
+      <summary>Ermöglicht den Zugriff auf Manifestressourcen, bei denen es sich um XML-Dateien handelt, die Anwendungsabhängigkeiten beschreiben.  </summary>
+    </member>
+    <member name="M:System.Reflection.ManifestResourceInfo.#ctor(System.Reflection.Assembly,System.String,System.Reflection.ResourceLocation)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Reflection.ManifestResourceInfo" />-Klasse für eine Ressource, die in der angegebenen Assembly und Datei enthalten ist und den angegebenen Speicherort aufweist.</summary>
+      <param name="containingAssembly">Die Assembly, die die Manifestressource enthält.</param>
+      <param name="containingFileName">Der Name der Datei mit der Manifestressource, wenn die Datei nicht mit der Manifestdatei identisch ist.</param>
+      <param name="resourceLocation">Eine bitweise Kombination von Enumerationswerten, die Informationen zum Speicherort der Manifestressource bereitstellt. </param>
+    </member>
+    <member name="P:System.Reflection.ManifestResourceInfo.FileName">
+      <summary>Ruft den Namen der Datei mit der Manifestressource ab, wenn diese nicht mit der Manifestdatei identisch ist.  </summary>
+      <returns>Der Dateiname der Manifestressource.</returns>
+    </member>
+    <member name="P:System.Reflection.ManifestResourceInfo.ReferencedAssembly">
+      <summary>Ruft die Assembly ab, in der diese Manifestressource enthalten ist. </summary>
+      <returns>Die Assembly, in der die Manifestressource enthalten ist.</returns>
+    </member>
+    <member name="P:System.Reflection.ManifestResourceInfo.ResourceLocation">
+      <summary>Ruft den Speicherort der Manifestressource ab. </summary>
+      <returns>Eine bitweise Kombination von <see cref="T:System.Reflection.ResourceLocation" />-Flags, die den Speicherort der Manifestressource angibt. </returns>
+    </member>
+    <member name="T:System.Reflection.MemberInfo">
+      <summary>Ruft Informationen zu den Attributen eines Members ab und bietet Zugriff auf die Metadaten des Members.</summary>
+    </member>
+    <member name="P:System.Reflection.MemberInfo.CustomAttributes">
+      <summary>Ruft eine Sammlung ab, die die benutzerdefinierten Attribute dieses Members enthält.</summary>
+      <returns>Eine Sammlung, die die benutzerdefinierten Attribute dieses Members enthält.</returns>
+    </member>
+    <member name="P:System.Reflection.MemberInfo.DeclaringType">
+      <summary>Ruft die Klasse ab, die diesen Member deklariert.</summary>
+      <returns>Das Type-Objekt für die Klasse, in der dieser Member deklariert ist.</returns>
+    </member>
+    <member name="M:System.Reflection.MemberInfo.Equals(System.Object)">
+      <summary>Gibt einen Wert zurück, der angibt, ob diese Instanz gleich einem angegebenen Objekt ist.</summary>
+      <returns>true, wenn <paramref name="obj" /> dem Typ und dem Wert dieser Instanz entspricht, andernfalls false.</returns>
+      <param name="obj">Ein Objekt, das mit dieser Instanz verglichen werden soll, oder null.</param>
+    </member>
+    <member name="M:System.Reflection.MemberInfo.GetHashCode">
+      <summary>Gibt den Hashcode für diese Instanz zurück.</summary>
+      <returns>Ein 32-Bit-Ganzzahl-Hashcode mit Vorzeichen.</returns>
+    </member>
+    <member name="P:System.Reflection.MemberInfo.Module">
+      <summary>Ruft das Modul ab, in dem der Typ definiert ist, der den von der aktuellen <see cref="T:System.Reflection.MemberInfo" />-Klasse dargestellten Member deklariert.</summary>
+      <returns>Die <see cref="T:System.Reflection.Module" />-Klasse, in der der Typ definiert ist, der den von der aktuellen <see cref="T:System.Reflection.MemberInfo" />-Klasse dargestellten Member deklariert.</returns>
+      <exception cref="T:System.NotImplementedException">Diese Methode ist nicht implementiert.</exception>
+    </member>
+    <member name="P:System.Reflection.MemberInfo.Name">
+      <summary>Ruft den Namen des aktuellen Members ab.</summary>
+      <returns>Ein <see cref="T:System.String" /> mit dem Namen dieses Members.</returns>
+    </member>
+    <member name="T:System.Reflection.MethodBase">
+      <summary>Stellt Informationen über Methoden und Konstruktoren zur Verfügung. </summary>
+    </member>
+    <member name="P:System.Reflection.MethodBase.Attributes">
+      <summary>Ruft die Attribute ab, die dieser Methode zugeordnet sind.</summary>
+      <returns>Einer der <see cref="T:System.Reflection.MethodAttributes" />-Werte.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.CallingConvention">
+      <summary>Ruft einen Wert ab, der die Aufrufkonventionen für diese Methode angibt.</summary>
+      <returns>Die <see cref="T:System.Reflection.CallingConventions" /> für diese Methode.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.ContainsGenericParameters">
+      <summary>Ruft einen Wert ab, der angibt, ob die generische Methode nicht zugewiesene generische Typparameter enthält.</summary>
+      <returns>true, wenn das aktuelle <see cref="T:System.Reflection.MethodBase" />-Objekt eine generische Methode darstellt, die nicht zugewiesene generische Typparameter enthält, andernfalls false.</returns>
+    </member>
+    <member name="M:System.Reflection.MethodBase.Equals(System.Object)">
+      <summary>Gibt einen Wert zurück, der angibt, ob diese Instanz gleich einem angegebenen Objekt ist.</summary>
+      <returns>true, wenn <paramref name="obj" /> dem Typ und dem Wert dieser Instanz entspricht, andernfalls false.</returns>
+      <param name="obj">Ein Objekt, das mit dieser Instanz verglichen werden soll, oder null.</param>
+    </member>
+    <member name="M:System.Reflection.MethodBase.GetGenericArguments">
+      <summary>Gibt ein Array von <see cref="T:System.Type" />-Objekten zurück, die die Typargumente einer generischen Methode oder die Typparameter einer generischen Methodendefinition darstellen.</summary>
+      <returns>Ein Array von <see cref="T:System.Type" />-Objekten, die die Typargumente einer generischen Methode oder die Typparameter einer generischen Methodendefinition darstellen.Gibt ein leeres Array zurück, wenn die aktuelle Methode keine generische Methode ist.</returns>
+      <exception cref="T:System.NotSupportedException">Das aktuelle Objekt ist eine <see cref="T:System.Reflection.ConstructorInfo" />.Generische Konstruktoren werden in .NET Framework, Version 2.0, nicht unterstützt.Diese Ausnahme ist das Standardverhalten, wenn diese Methode nicht in einer abgeleiteten Klasse überschrieben wird.</exception>
+    </member>
+    <member name="M:System.Reflection.MethodBase.GetHashCode">
+      <summary>Gibt den Hashcode für diese Instanz zurück.</summary>
+      <returns>Ein 32-Bit-Ganzzahl-Hashcode mit Vorzeichen.</returns>
+    </member>
+    <member name="M:System.Reflection.MethodBase.GetMethodFromHandle(System.RuntimeMethodHandle)">
+      <summary>Ruft Methodeninformationen unter Verwendung der internen Metadatendarstellung (Handle) der Methode ab.</summary>
+      <returns>Eine MethodBase mit Informationen über die Methode.</returns>
+      <param name="handle">Das Handle der Methode. </param>
+      <exception cref="T:System.ArgumentException">"<paramref name="handle" />" ist ungültig.</exception>
+    </member>
+    <member name="M:System.Reflection.MethodBase.GetMethodFromHandle(System.RuntimeMethodHandle,System.RuntimeTypeHandle)">
+      <summary>Ruft für den angegebenen generischen Typ ein <see cref="T:System.Reflection.MethodBase" />-Objekt für den Konstruktor oder die Methode ab, der bzw. die durch das angegebene Handle dargestellt wird.</summary>
+      <returns>Ein <see cref="T:System.Reflection.MethodBase" />-Objekt, das die von <paramref name="handle" /> angegebene Methode oder den Konstruktor darstellt, in dem durch <paramref name="declaringType" /> angegebenen generischen Typ.</returns>
+      <param name="handle">Ein Handle für die interne Metadatendarstellung eines Konstruktors oder einer Methode.</param>
+      <param name="declaringType">Ein Handle für den generischen Typ, der den Konstruktor oder die Methode definiert.</param>
+      <exception cref="T:System.ArgumentException">"<paramref name="handle" />" ist ungültig.</exception>
+    </member>
+    <member name="M:System.Reflection.MethodBase.GetParameters">
+      <summary>Ruft beim Überschreiben in einer abgeleiteten Klasse die Parameter der angegebenen Methode oder des angegebenen Konstruktors ab.</summary>
+      <returns>Ein Array vom Typ ParameterInfo, das Informationen enthält, die mit der Signatur der durch diese MethodBase-Instanz reflektierten Methode (oder des Konstruktors) übereinstimmen.</returns>
+    </member>
+    <member name="M:System.Reflection.MethodBase.Invoke(System.Object,System.Object[])">
+      <summary>Ruft die Methode oder den Konstruktor, die bzw. der von der aktuellen Instanz dargestellt wird, mit den angegebenen Parametern auf.</summary>
+      <returns>Ein Objekt, das den Rückgabewert der aufgerufenen Methode enthält, oder null, wenn es sich um einen Konstruktor handelt.VorsichtElemente des <paramref name="parameters" />-Arrays, das Parameter darstellt, die mit dem ref-Schlüsselwort oder out-Schlüsselwort deklariert wurden, werden auch möglicherweise geändert.</returns>
+      <param name="obj">Das Objekt, für das die Methode oder der Konstruktor aufgerufen werden soll.Wenn eine Methode statisch ist, wird dieses Argument ignoriert.Wenn ein Konstruktor statisch ist, muss dieses Argument null oder eine Instanz der Klasse sein, die den Konstruktor definiert.</param>
+      <param name="parameters">Eine Argumentliste für die aufgerufene Methode oder den aufgerufenen Konstruktor.Dies ist ein Array von Objekten, deren Anzahl, Anordnung und Typ mit Anzahl, Anordnung und Typ der Parameter der aufzurufenden Methode oder des aufzurufenden Konstruktors identisch sind.Wenn keine Parameter vorhanden sind, muss <paramref name="parameters" /> den Wert null aufweisen.Wenn die Methode oder der Konstruktor, die bzw. der von dieser Instanz dargestellt wird, einen ref-Parameter (ByRef in Visual Basic) akzeptiert, ist für diesen Parameter kein besonderes Attribut erforderlich, um die Methode oder den Konstruktor mit dieser Funktion aufzurufen.Jedes nicht explizit mit einem Wert initialisierte Objekt in diesem Array enthält den Standardwert für den jeweiligen Objekttyp.Bei Elementen mit Verweistyp ist dieser Wert null.Bei Elementen mit Werttyp ist dieser Wert je nach Typ des jeweiligen Elements 0, 0,0 oder false.</param>
+      <exception cref="T:System.Reflection.TargetException">Unter .NET for Windows Store apps oder in der Portable Klassenbibliothek verwenden Sie stattdessen <see cref="T:System.Exception" />.Der <paramref name="obj" />-Parameter ist null, und die Methode ist nicht statisch.- oder - Die Methode ist nicht deklariert oder durch die Klasse von <paramref name="obj" /> geerbt. - oder -Ein statischer Konstruktor wird aufgerufen, und <paramref name="obj" /> ist weder null noch eine Instanz der Klasse, die den Konstruktor deklariert hat.</exception>
+      <exception cref="T:System.ArgumentException">Die Elemente des <paramref name="parameters" />-Arrays stimmen nicht mit der Signatur der Methode oder des Konstruktors überein, die bzw. der von dieser Instanz reflektiert wurde. </exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">Die aufgerufene Methode oder der aufgerufene Konstruktor löst eine Ausnahme aus. - oder -Die aktuelle Instanz ist eine <see cref="T:System.Reflection.Emit.DynamicMethod" />, die nicht überprüfbaren Code enthält.Weitere Informationen finden Sie in den Hinweisen zu <see cref="T:System.Reflection.Emit.DynamicMethod" /> im Abschnitt "Überprüfung".</exception>
+      <exception cref="T:System.Reflection.TargetParameterCountException">Das <paramref name="parameters" />-Array weist nicht die richtige Anzahl von Argumenten auf. </exception>
+      <exception cref="T:System.MethodAccessException">Unter .NET for Windows Store apps oder in der Portable Klassenbibliothek verwenden Sie stattdessen die Basisklassenausnahme <see cref="T:System.MemberAccessException" />.Der Aufrufer hat keine Berechtigung, die Methode oder den Konstruktor auszuführen, der von der aktuellen - Instanz dargestellt wird. </exception>
+      <exception cref="T:System.InvalidOperationException">Der Typ, der die Methode als einen offenen generischen Typ deklariert.Das heißt, die <see cref="P:System.Type.ContainsGenericParameters" />-Eigenschaft gibt für den deklarierenden Typ true zurück.</exception>
+      <exception cref="T:System.NotSupportedException">Die aktuelle Instanz ist ein <see cref="T:System.Reflection.Emit.MethodBuilder" />.</exception>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsAbstract">
+      <summary>Ruft einen Wert ab, der angibt, ob es sich um eine abstrakte Methode handelt.</summary>
+      <returns>true, wenn die Methode abstrakt ist, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsAssembly">
+      <summary>Ruft einen Wert ab, der angibt, ob die potenzielle Sichtbarkeit dieser Methode bzw. dieses Konstruktors von <see cref="F:System.Reflection.MethodAttributes.Assembly" /> beschrieben wird, d. h., die Methode oder der Konstruktor ist höchstens für andere Typen in derselben Assembly sichtbar, nicht jedoch für abgeleitete Typen außerhalb der Assembly.</summary>
+      <returns>true, wenn die Sichtbarkeit dieser Methode oder dieses Konstruktors von <see cref="F:System.Reflection.MethodAttributes.Assembly" /> genau beschrieben wird, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsConstructor">
+      <summary>Ruft einen Wert ab, der angibt, ob die Methode ein Konstruktor ist.</summary>
+      <returns>true, wenn diese Methode ein von einem <see cref="T:System.Reflection.ConstructorInfo" />-Objekt dargestellter Konstruktor ist (weitere Informationen finden Sie in den Hinweisen zu <see cref="T:System.Reflection.Emit.ConstructorBuilder" />-Objekten), andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsFamily">
+      <summary>Ruft einen Wert ab, der angibt, ob die Sichtbarkeit dieser Methode bzw. dieses Konstruktors durch <see cref="F:System.Reflection.MethodAttributes.Family" /> beschrieben wird, d. h., die Methode oder der Konstruktor ist nur sichtbar innerhalb ihrer bzw. seiner Klassen und in den abgeleiteten Klassen.</summary>
+      <returns>true, wenn der Zugriff auf diese Methode oder diesen Konstruktor von <see cref="F:System.Reflection.MethodAttributes.Family" /> genau beschrieben wird, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsFamilyAndAssembly">
+      <summary>Ruft einen Wert ab, der angibt, ob die Sichtbarkeit dieser Methode oder dieses Konstruktors durch <see cref="F:System.Reflection.MethodAttributes.FamANDAssem" /> beschrieben wird, d. h., die Methode oder der Konstruktor kann von abgeleiteten Klassen aufgerufen werden, jedoch nur, wenn sie bzw. er sich in derselben Assembly befindet.</summary>
+      <returns>true, wenn der Zugriff auf diese Methode oder diesen Konstruktor von <see cref="F:System.Reflection.MethodAttributes.FamANDAssem" /> genau beschrieben wird, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsFamilyOrAssembly">
+      <summary>Ruft einen Wert ab, der angibt, ob die potenzielle Sichtbarkeit dieser Methode oder dieses Konstruktors durch <see cref="F:System.Reflection.MethodAttributes.FamORAssem" /> beschrieben wird, d. h., die Methode bzw. der Konstruktor kann von Klassen in derselben Assembly und von abgeleiteten Klassen abgerufen werden, wobei es keine Rolle spielt, an welcher Position sich diese befinden.</summary>
+      <returns>true, wenn der Zugriff auf diese Methode oder diesen Konstruktor von <see cref="F:System.Reflection.MethodAttributes.FamORAssem" /> genau beschrieben wird, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsFinal">
+      <summary>Ruft einen Wert ab, der angibt, ob diese Methode final ist.</summary>
+      <returns>true, wenn diese Methode final ist, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsGenericMethod">
+      <summary>Ruft einen Wert ab, der angibt, ob es sich um eine generische Methode handelt.</summary>
+      <returns>true, wenn die aktuelle <see cref="T:System.Reflection.MethodBase" /> eine generische Methode darstellt, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsGenericMethodDefinition">
+      <summary>Ruft einen Wert ab, der angibt, ob die Methode eine generische Methodendefinition ist.</summary>
+      <returns>true, wenn das aktuelle <see cref="T:System.Reflection.MethodBase" />-Objekt die Definition einer generischen Methode darstellt, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsHideBySig">
+      <summary>Ruft einen Wert ab, der angibt, ob nur ein Member derselben Art mit einer identischen Signatur in der abgeleiteten Klasse verborgen ist.</summary>
+      <returns>true, wenn der Member durch die Signatur verborgen ist, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsPrivate">
+      <summary>Ruft einen Wert ab, der angibt, ob es sich um einen privaten Member handelt.</summary>
+      <returns>true, wenn der Zugriff auf diese Methode auf andere Member der Klasse selbst beschränkt ist, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsPublic">
+      <summary>Ruft einen Wert ab, der angibt, ob dies eine öffentliche Methode ist.</summary>
+      <returns>true, wenn diese Methode öffentlich ist, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsSpecialName">
+      <summary>Ruft einen Wert ab, der angibt, ob diese Methode einen besonderen Namen hat.</summary>
+      <returns>true, wenn diese Methode einen besonderen Namen hat, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsStatic">
+      <summary>Ruft einen Wert ab, der angibt, ob die Methode static ist.</summary>
+      <returns>true, wenn diese Methode static ist, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsVirtual">
+      <summary>Ruft einen Wert ab, der angibt, ob die Methode virtual ist.</summary>
+      <returns>true, wenn diese Methode virtual ist, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.MethodImplementationFlags">
+      <summary>Ruft die <see cref="T:System.Reflection.MethodImplAttributes" />-Flags ab, die die Attribute einer Methodenimplementierung angeben.</summary>
+      <returns>Die Methodenimplementierungsflags.</returns>
+    </member>
+    <member name="T:System.Reflection.MethodInfo">
+      <summary>Ermittelt die Attribute einer Methode und ermöglicht den Zugriff auf die Metadaten der Methode.</summary>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.CreateDelegate(System.Type)">
+      <summary>Erstellt aus dieser Methode einen Delegaten vom angegebenen Typ.</summary>
+      <returns>Der Delegat für diese Methode.</returns>
+      <param name="delegateType">Der Typ des zu erstellenden Delegaten.</param>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.CreateDelegate(System.Type,System.Object)">
+      <summary>Erstellt einen Delegaten vom angegebenen Typ mit dem angegebenen Ziel aus dieser Methode.</summary>
+      <returns>Der Delegat für diese Methode.</returns>
+      <param name="delegateType">Der Typ des zu erstellenden Delegaten.</param>
+      <param name="target">Das Objekt, auf das der Delegat abzielte.</param>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.Equals(System.Object)">
+      <summary>Gibt einen Wert zurück, der angibt, ob diese Instanz gleich einem angegebenen Objekt ist.</summary>
+      <returns>true, wenn <paramref name="obj" /> dem Typ und dem Wert dieser Instanz entspricht, andernfalls false.</returns>
+      <param name="obj">Ein Objekt, das mit dieser Instanz verglichen werden soll, oder null.</param>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.GetGenericArguments">
+      <summary>Gibt ein Array von <see cref="T:System.Type" />-Objekten zurück, die die Typargumente einer generischen Methode oder die Typparameter einer generischen Methodendefinition darstellen.</summary>
+      <returns>Ein Array von <see cref="T:System.Type" />-Objekten, die die Typargumente einer generischen Methode oder die Typparameter einer generischen Methodendefinition darstellen.Gibt ein leeres Array zurück, wenn die aktuelle Methode keine generische Methode ist.</returns>
+      <exception cref="T:System.NotSupportedException">Diese Methode wird nicht unterstützt.</exception>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.GetGenericMethodDefinition">
+      <summary>Gibt ein <see cref="T:System.Reflection.MethodInfo" />-Objekt zurück, das eine generische Methodendefinition darstellt, aus der die aktuelle Methode konstruiert werden kann.</summary>
+      <returns>Ein <see cref="T:System.Reflection.MethodInfo" />-Objekt, das eine generische Methodendefinition darstellt, aus der die aktuelle Methode konstruiert werden kann.</returns>
+      <exception cref="T:System.InvalidOperationException">Die aktuelle Methode ist keine generische Methode.Das heißt, <see cref="P:System.Reflection.MethodInfo.IsGenericMethod" /> gibt false zurück.</exception>
+      <exception cref="T:System.NotSupportedException">Diese Methode wird nicht unterstützt.</exception>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.GetHashCode">
+      <summary>Gibt den Hashcode für diese Instanz zurück.</summary>
+      <returns>Ein 32-Bit-Hashcode als ganze Zahl mit Vorzeichen.</returns>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.MakeGenericMethod(System.Type[])">
+      <summary>Ersetzt die Typparameter der aktuellen generischen Methodendefinition durch die Elemente eines Arrays von Typen und gibt ein <see cref="T:System.Reflection.MethodInfo" />-Objekt zurück, das die sich ergebende konstruierte Methode darstellt.</summary>
+      <returns>Ein <see cref="T:System.Reflection.MethodInfo" />-Objekt, das die konstruierte Methode darstellt, die durch Ersetzen der Typparameter der aktuellen generischen Methodendefinition durch die Elemente von <paramref name="typeArguments" /> erstellt wurde.</returns>
+      <param name="typeArguments">Ein Array von Typen, die die Typparameter der aktuellen generischen Methodendefinition ersetzen sollen.</param>
+      <exception cref="T:System.InvalidOperationException">Die aktuelle <see cref="T:System.Reflection.MethodInfo" /> stellt keine generische Methodendefinition dar.Das heißt, <see cref="P:System.Reflection.MethodInfo.IsGenericMethodDefinition" /> gibt false zurück.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="typeArguments" /> ist null.- oder -  Eines der Elemente von <paramref name="typeArguments" /> ist null. </exception>
+      <exception cref="T:System.ArgumentException">Die Anzahl von Elementen in <paramref name="typeArguments" /> entspricht nicht der Anzahl von Typparametern in der aktuellen generischen Methodendefinition.- oder -  Eines der Elemente von <paramref name="typeArguments" /> entspricht nicht den für den entsprechenden Typparameter der aktuellen generischen Methodendefinition angegebenen Einschränkungen. </exception>
+      <exception cref="T:System.NotSupportedException">Diese Methode wird nicht unterstützt.</exception>
+    </member>
+    <member name="P:System.Reflection.MethodInfo.ReturnParameter">
+      <summary>Ruft ein <see cref="T:System.Reflection.ParameterInfo" />-Objekt ab, das Informationen zum Rückgabetyp der Methode enthält, z: B. ob der Rückgabetyp benutzerdefinierte Modifizierer hat. </summary>
+      <returns>Ein <see cref="T:System.Reflection.ParameterInfo" />-Objekt, das Informationen zum Rückgabetyp enthält.</returns>
+      <exception cref="T:System.NotImplementedException">Diese Methode ist nicht implementiert.</exception>
+    </member>
+    <member name="P:System.Reflection.MethodInfo.ReturnType">
+      <summary>Ruft den Rückgabetyp dieser Methode ab.</summary>
+      <returns>Der Rückgabetyp dieser Methode.</returns>
+    </member>
+    <member name="T:System.Reflection.Module">
+      <summary>Führt die Reflektion für ein Modul durch.</summary>
+    </member>
+    <member name="P:System.Reflection.Module.Assembly">
+      <summary>Ruft die entsprechende <see cref="T:System.Reflection.Assembly" /> für diese Instanz von <see cref="T:System.Reflection.Module" /> ab.</summary>
+      <returns>Ein Assembly-Objekt.</returns>
+    </member>
+    <member name="P:System.Reflection.Module.CustomAttributes">
+      <summary>Ruft eine Sammlung ab, die die benutzerdefinierten Attribute dieses Moduls enthält.</summary>
+      <returns>Eine Sammlung, die die benutzerdefinierten Attribute dieses Moduls enthält.</returns>
+    </member>
+    <member name="M:System.Reflection.Module.Equals(System.Object)">
+      <summary>Bestimmt, ob dieses Modul und das angegebene Objekt gleich sind.</summary>
+      <returns>true, wenn <paramref name="o" /> gleich dieser Instanz ist, andernfalls false.</returns>
+      <param name="o">Das Objekt, das mit dieser Instanz verglichen werden soll. </param>
+    </member>
+    <member name="P:System.Reflection.Module.FullyQualifiedName">
+      <summary>Ruft eine Zeichenfolge ab, die den vollqualifizierten Namen und Pfad zu diesem Modul darstellt.</summary>
+      <returns>Der vollqualifizierte Modulname.</returns>
+      <exception cref="T:System.Security.SecurityException">Der Aufrufer verfügt nicht über die erforderlichen Berechtigungen. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Reflection.Module.GetHashCode">
+      <summary>Gibt den Hashcode für diese Instanz zurück.</summary>
+      <returns>Ein 32-Bit-Ganzzahl-Hashcode mit Vorzeichen.</returns>
+    </member>
+    <member name="M:System.Reflection.Module.GetType(System.String,System.Boolean,System.Boolean)">
+      <summary>Gibt den angegebenen Typ zurück, wobei angegeben wird, ob bei der Suche im Modul die Groß- und Kleinschreibung berücksichtigt wird, und ob eine Ausnahme ausgelöst werden soll, wenn der Typ nicht gefunden werden kann.</summary>
+      <returns>Ein <see cref="T:System.Type" />-Objekt, das den angegebenen Typ darstellt, wenn der Typ in diesem Modul deklariert ist, andernfalls null.</returns>
+      <param name="className">Der Name des zu suchenden Typs.Der Name muss vollqualifiziert sein und den Namespace enthalten.</param>
+      <param name="throwOnError">true, damit eine Ausnahme ausgelöst wird, wenn der Typ nicht gefunden werden kann, false, damit null zurückgegeben wird. </param>
+      <param name="ignoreCase">true für eine Suche ohne Berücksichtigung der Groß- und Kleinschreibung, andernfalls false. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="className" /> ist null. </exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">Die Klasseninitialisierer werden aufgerufen, und eine Ausnahme wird ausgelöst. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="className" /> ist eine Zeichenfolge der Länge 0 (null). </exception>
+      <exception cref="T:System.TypeLoadException">
+        <paramref name="throwOnError" /> ist true, und der Typ kann nicht gefunden werden. </exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="className" /> erfordert eine abhängige Assembly, die nicht gefunden werden konnte. </exception>
+      <exception cref="T:System.IO.FileLoadException">
+        <paramref name="className" /> erfordert eine abhängige Assembly, die gefunden wurde, jedoch nicht geladen werden konnte.- oder -Die aktuelle Assembly wurde in den ReflectionOnly-Kontext geladen, und <paramref name="className" /> erfordert eine abhängige Assembly, die nicht vorab geladen wurde. </exception>
+      <exception cref="T:System.BadImageFormatException">
+        <paramref name="className" /> erfordert eine abhängige Assembly, die Datei ist jedoch keine gültige Assembly. - oder -<paramref name="className" /> erfordert eine abhängige Assembly, die für eine Version der Laufzeit kompiliert wurde, die höher als die derzeit geladene Version ist.</exception>
+    </member>
+    <member name="P:System.Reflection.Module.Name">
+      <summary>Ruft einen String ab, der den Namen des Moduls ohne den Pfad darstellt.</summary>
+      <returns>Der Modulname ohne Pfad.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Reflection.Module.ToString">
+      <summary>Gibt den Namen des Moduls zurück.</summary>
+      <returns>Ein String, der den Namen dieses Moduls darstellt.</returns>
+    </member>
+    <member name="T:System.Reflection.ParameterInfo">
+      <summary>Ermittelt die Attribute eines Parameters und ermöglicht den Zugriff auf die Metadaten von Parametern.</summary>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.Attributes">
+      <summary>Ruft die Attribute für diesen Parameter ab.</summary>
+      <returns>Ein ParameterAttributes-Objekt, das die Attribute für diesen Parameter darstellt.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.CustomAttributes">
+      <summary>Ruft eine Sammlung ab, die die benutzerdefinierten Attribute dieses Parameters enthält.</summary>
+      <returns>Eine Sammlung, die die benutzerdefinierten Attribute dieses Parameters enthält.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.DefaultValue">
+      <summary>Ruft einen Wert ab, der den Standardwert angibt, sofern der Parameter über einen Standardwert verfügt.</summary>
+      <returns>Der Standardwert des Parameters oder <see cref="F:System.DBNull.Value" />, wenn der Parameter über keinen Standardwert verfügt.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.HasDefaultValue">
+      <summary>Ruft einen Wert ab, der angibt, ob dieser Parameter über einen Standardwert verfügt.</summary>
+      <returns>true, wenn dieser Paramater über einen Standardwert verfügt; andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.IsIn">
+      <summary>Ruft einen Wert ab, der angibt, ob dies ein Eingabeparameter ist.</summary>
+      <returns>true, wenn der Parameter ein Eingabeparameter ist, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.IsOptional">
+      <summary>Ruft einen Wert ab, der angibt, ob dieser Parameter optional ist.</summary>
+      <returns>true, wenn der Parameter optional ist, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.IsOut">
+      <summary>Ruft einen Wert ab, der angibt, ob dies ein Ausgabeparameter ist.</summary>
+      <returns>true, wenn der Parameter ein Ausgabeparameter ist, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.IsRetval">
+      <summary>Ruft einen Wert ab, der angibt, ob dies ein Retval-Parameter ist.</summary>
+      <returns>true, wenn der Parameter Retval ist, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.Member">
+      <summary>Ruft einen Wert ab, der den Member angibt, in dem der Parameter implementiert ist.</summary>
+      <returns>Der Member, der den durch diesen <see cref="T:System.Reflection.ParameterInfo" /> dargestellten Parameter eingesetzt hat.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.Name">
+      <summary>Ruft den Namen des Parameters ab.</summary>
+      <returns>Der einfache Name dieses Parameters.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.ParameterType">
+      <summary>Ruft den Type dieses Parameters ab.</summary>
+      <returns>Das Type-Objekt, das den Type dieses Parameters darstellt.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.Position">
+      <summary>Ruft die nullbasierte Position des Parameters in der formalen Parameterliste ab.</summary>
+      <returns>Eine ganze Zahl, die die Position des Parameters in der Parameterliste darstellt.</returns>
+    </member>
+    <member name="T:System.Reflection.PropertyInfo">
+      <summary>Ermittelt die Attribute einer Eigenschaft und bietet Zugriff auf die Metadaten der Eigenschaft.</summary>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.Attributes">
+      <summary>Ruft die Attribute für diese Eigenschaft ab.</summary>
+      <returns>Attribute für diese Eigenschaft.</returns>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.CanRead">
+      <summary>Ruft einen Wert ab, der angibt, ob die Eigenschaft gelesen werden kann.</summary>
+      <returns>true, wenn dieses Objekt gelesen werden kann, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.CanWrite">
+      <summary>Ruft einen Wert ab, der angibt, ob in die Eigenschaft geschrieben werden kann.</summary>
+      <returns>true, wenn in diese Eigenschaft geschrieben werden kann, andernfalls false.</returns>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.Equals(System.Object)">
+      <summary>Gibt einen Wert zurück, der angibt, ob diese Instanz gleich einem angegebenen Objekt ist.</summary>
+      <returns>true, wenn <paramref name="obj" /> dem Typ und dem Wert dieser Instanz entspricht, andernfalls false.</returns>
+      <param name="obj">Ein Objekt, das mit dieser Instanz verglichen werden soll, oder null.</param>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.GetConstantValue">
+      <summary>Gibt einen literalen Wert zurück, der der Eigenschaft von einem Compiler zugeordnet wurde. </summary>
+      <returns>Ein <see cref="T:System.Object" />, das den literalen Wert enthält, der der Eigenschaft zugeordnet ist.Wenn der literale Wert ein Klassentyp mit einem Elementwert von 0 (null) ist, lautet der Rückgabewert null.</returns>
+      <exception cref="T:System.InvalidOperationException">Die Konstantentabelle enthält in nicht verwalteten Metadaten keinen konstanten Wert für die aktuelle Eigenschaft.</exception>
+      <exception cref="T:System.FormatException">Der Typ des Werts ist keiner der durch die Common Language Specification (CLS) erlaubten Typen.Weitere Informationen finden Sie in der Spezifikation der ECMA Partition II zu Metadaten (auf Englisch).</exception>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.GetHashCode">
+      <summary>Gibt den Hashcode für diese Instanz zurück.</summary>
+      <returns>Ein 32-Bit-Hashcode als ganze Zahl mit Vorzeichen.</returns>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.GetIndexParameters">
+      <summary>Gibt beim Überschreiben in einer abgeleiteten Klasse ein Array aller Indexparameter für die Eigenschaft zurück.</summary>
+      <returns>Ein Array vom Typ ParameterInfo, das die Parameter für die Indizes enthält.Wenn die Eigenschaft nicht indiziert ist, enthält das Array 0 (null) Elemente.</returns>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.GetMethod">
+      <summary>Ruft den get-Accessor für diese Eigenschaft ab.</summary>
+      <returns>Der get-Accessor für diese Eigenschaft.</returns>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.GetValue(System.Object)">
+      <summary>Gibt den Eigenschaftswert eines angegebenen Objekts zurück.</summary>
+      <returns>Der -Eigenschaftswert des angegebenen Objekts.</returns>
+      <param name="obj">Das Objekt, dessen Eigenschaftswert zurückgegeben wird.</param>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.GetValue(System.Object,System.Object[])">
+      <summary>Gibt den Wert der Eigenschaft für das angegebene Objekt mit optionalen Indexwerten für indizierte Eigenschaften fest.</summary>
+      <returns>Der -Eigenschaftswert des angegebenen Objekts.</returns>
+      <param name="obj">Das Objekt, dessen Eigenschaftswert zurückgegeben wird. </param>
+      <param name="index">Optionale Indexwerte für indizierte Eigenschaften.Die Indizes indizierter Eigenschaften sind nullbasiert.Dieser Wert sollte bei nicht indizierten Eigenschaften null sein.</param>
+      <exception cref="T:System.ArgumentException">Das <paramref name="index" />-Array enthält nicht den Typ der benötigten Argumente.- oder -  Der get-Accessor der Eigenschaft kann nicht gefunden werden. </exception>
+      <exception cref="T:System.Reflection.TargetException">Unter .NET for Windows Store apps oder in der Portable Klassenbibliothek verwenden Sie stattdessen <see cref="T:System.Exception" />.Das Objekt entspricht nicht dem Zieltyp, oder eine Eigenschaft ist eine Instanzeneigenschaft, aber <paramref name="obj" /> ist null. </exception>
+      <exception cref="T:System.Reflection.TargetParameterCountException">Die Anzahl der Parameter in <paramref name="index" /> entspricht nicht der Anzahl von Parametern, die die indizierte Eigenschaft akzeptiert. </exception>
+      <exception cref="T:System.MethodAccessException">Unter .NET for Windows Store apps oder in der Portable Klassenbibliothek verwenden Sie stattdessen die Basisklassenausnahme <see cref="T:System.MemberAccessException" />.Es wurde unzulässig versucht, auf eine private oder geschützte Methode innerhalb einer Klasse zuzugreifen. </exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">Fehler beim Abrufen des Eigenschaftswerts.Ein Indexwert für eine indizierte Eigenschaft liegt beispielsweise außerhalb des gültigen Bereichs.Die <see cref="P:System.Exception.InnerException" />-Eigenschaft gibt die Ursache des Fehlers an.</exception>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.IsSpecialName">
+      <summary>Ruft einen Wert ab, der angibt, ob es sich bei der Eigenschaft um den besonderen Namen handelt.</summary>
+      <returns>true, wenn es sich bei der Eigenschaft um den besonderen Namen handelt, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.PropertyType">
+      <summary>Ruft den Typ dieser Eigenschaft ab.</summary>
+      <returns>Der Typ dieser Eigenschaft.</returns>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.SetMethod">
+      <summary>Ruft den set-Accessor für diese Eigenschaft ab.</summary>
+      <returns>Die set -Accessor für diese Eigenschaft oder null , wenn die Eigenschaft schreibgeschützt ist.</returns>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.SetValue(System.Object,System.Object)">
+      <summary>Legt den Eigenschaftswert des angegebenen Objekts fest.</summary>
+      <param name="obj">Das Objekt, dessen Eigenschaftswert festgelegt wird.</param>
+      <param name="value">Der neue Eigenschaftswert.</param>
+      <exception cref="T:System.ArgumentException">Der set-Accessor der Eigenschaft kann nicht gefunden werden. - oder - <paramref name="value" />kann nicht konvertiert werden, um den Typ des <see cref="P:System.Reflection.PropertyInfo.PropertyType" />. </exception>
+      <exception cref="T:System.Reflection.TargetException">Unter .NET for Windows Store apps oder in der Portable Klassenbibliothek verwenden Sie stattdessen <see cref="T:System.Exception" />.Der Typ des <paramref name="obj" /> entspricht nicht den Zieltyp, oder eine Eigenschaft ist eine Instanzeneigenschaft, aber <paramref name="obj" /> ist null. </exception>
+      <exception cref="T:System.MethodAccessException">Unter .NET for Windows Store apps oder in der Portable Klassenbibliothek verwenden Sie stattdessen die Basisklassenausnahme <see cref="T:System.MemberAccessException" />. Es wurde unzulässig versucht, auf eine private oder geschützte Methode innerhalb einer Klasse zuzugreifen. </exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">Fehler beim Festlegen des Eigenschaftswerts.Die <see cref="P:System.Exception.InnerException" />-Eigenschaft gibt die Ursache des Fehlers an.</exception>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.SetValue(System.Object,System.Object,System.Object[])">
+      <summary>Legt den Wert der Eigenschaft für das angegebene Objekt mit optionalen Indexwerten für Indexeigenschaften fest.</summary>
+      <param name="obj">Das Objekt, dessen Eigenschaftswert festgelegt wird. </param>
+      <param name="value">Der neue Eigenschaftswert. </param>
+      <param name="index">Optionale Indexwerte für indizierte Eigenschaften.Dieser Wert sollte bei nicht indizierten Eigenschaften null sein.</param>
+      <exception cref="T:System.ArgumentException">Das <paramref name="index" />-Array enthält nicht den Typ der benötigten Argumente.- oder -  Der set-Accessor der Eigenschaft kann nicht gefunden werden. - oder - <paramref name="value" />kann nicht konvertiert werden, um den Typ des <see cref="P:System.Reflection.PropertyInfo.PropertyType" />.</exception>
+      <exception cref="T:System.Reflection.TargetException">Unter .NET for Windows Store apps oder in der Portable Klassenbibliothek verwenden Sie stattdessen <see cref="T:System.Exception" />.Das Objekt entspricht nicht dem Zieltyp, oder eine Eigenschaft ist eine Instanzeneigenschaft, aber <paramref name="obj" /> ist null. </exception>
+      <exception cref="T:System.Reflection.TargetParameterCountException">Die Anzahl der Parameter in <paramref name="index" /> entspricht nicht der Anzahl von Parametern, die die indizierte Eigenschaft akzeptiert. </exception>
+      <exception cref="T:System.MethodAccessException">Unter .NET for Windows Store apps oder in der Portable Klassenbibliothek verwenden Sie stattdessen die Basisklassenausnahme <see cref="T:System.MemberAccessException" />.Es wurde unzulässig versucht, auf eine private oder geschützte Methode innerhalb einer Klasse zuzugreifen. </exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">Fehler beim Festlegen des Eigenschaftswerts.Ein Indexwert für eine indizierte Eigenschaft liegt beispielsweise außerhalb des gültigen Bereichs.Die <see cref="P:System.Exception.InnerException" />-Eigenschaft gibt die Ursache des Fehlers an.</exception>
+    </member>
+    <member name="T:System.Reflection.ReflectionContext">
+      <summary>Stellt einen Kontext dar, der Reflektionsobjekte bereitstellen kann.</summary>
+    </member>
+    <member name="M:System.Reflection.ReflectionContext.#ctor">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Reflection.ReflectionContext" />-Klasse.</summary>
+    </member>
+    <member name="M:System.Reflection.ReflectionContext.GetTypeForObject(System.Object)">
+      <summary>Ruft die Darstellung des Typs des angegebenen Objekts in diesem Reflektionskontext ab.</summary>
+      <returns>Ein Objekt, das den Typ des angegebenen Objekts darstellt.</returns>
+      <param name="value">Das darzustellende Objekt.</param>
+    </member>
+    <member name="M:System.Reflection.ReflectionContext.MapAssembly(System.Reflection.Assembly)">
+      <summary>Ruft die Darstellung einer Assembly in diesem Reflektionskontext ab, die durch ein Objekt von einem anderen Reflektionskontext dargestellt wird.</summary>
+      <returns>Die Darstellung der Assembly in diesem Reflektionskontext.</returns>
+      <param name="assembly">Die in diesem Kontext darzustellende externe Darstellung der Assembly.</param>
+    </member>
+    <member name="M:System.Reflection.ReflectionContext.MapType(System.Reflection.TypeInfo)">
+      <summary>Ruft die Darstellung eines Typs in diesem Reflektionskontext ab, der durch ein Objekt von einem anderen Reflektionskontext dargestellt wird.</summary>
+      <returns>Die Darstellung des Typs in diesem Reflektionskontext.</returns>
+      <param name="type">Die in diesem Kontext darzustellende externe Darstellung des Typs.</param>
+    </member>
+    <member name="T:System.Reflection.ReflectionTypeLoadException">
+      <summary>Diese Ausnahme wird durch die <see cref="M:System.Reflection.Module.GetTypes" />-Methode ausgelöst, wenn eine der Klassen in einem Modul nicht geladen werden kann.Diese Klasse kann nicht vererbt werden.</summary>
+    </member>
+    <member name="M:System.Reflection.ReflectionTypeLoadException.#ctor(System.Type[],System.Exception[])">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Reflection.ReflectionTypeLoadException" />-Klasse mit den angegebenen Klassen und den zugeordneten Ausnahmen.</summary>
+      <param name="classes">Ein Array vom Typ Type mit den Klassen, die im Modul definiert und geladen wurden.Dieses Array kann NULL-Verweise (Nothing in Visual Basic) enthalten.</param>
+      <param name="exceptions">Ein Array vom Typ Exception mit den Ausnahmen, die durch das Klassenladeprogramm ausgelöst wurden.Die Nullverweise (Nothing in Visual Basic) im <paramref name="classes" />-Array entsprechen den Ausnahmen in diesem <paramref name="exceptions" />-Array.</param>
+    </member>
+    <member name="M:System.Reflection.ReflectionTypeLoadException.#ctor(System.Type[],System.Exception[],System.String)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Reflection.ReflectionTypeLoadException" />-Klasse mit den angegebenen Klassen, deren zugeordneten Ausnahmen und Beschreibungen der Ausnahmen.</summary>
+      <param name="classes">Ein Array vom Typ Type mit den Klassen, die im Modul definiert und geladen wurden.Dieses Array kann NULL-Verweise (Nothing in Visual Basic) enthalten.</param>
+      <param name="exceptions">Ein Array vom Typ Exception mit den Ausnahmen, die durch das Klassenladeprogramm ausgelöst wurden.Die Nullverweise (Nothing in Visual Basic) im <paramref name="classes" />-Array entsprechen den Ausnahmen in diesem <paramref name="exceptions" />-Array.</param>
+      <param name="message">String mit einer Beschreibung der Ursache für das Auslösen der Ausnahme. </param>
+    </member>
+    <member name="P:System.Reflection.ReflectionTypeLoadException.LoaderExceptions">
+      <summary>Ruft das Array der Ausnahmen ab, die durch das Klassenladeprogramm ausgelöst wurden.</summary>
+      <returns>Ein Array vom Typ Exception mit den Ausnahmen, die durch das Klassenladeprogramm ausgelöst wurden.Die NULL-Werte im <paramref name="classes" />-Array dieser Instanz entsprechen den Ausnahmen in diesem Array.</returns>
+    </member>
+    <member name="P:System.Reflection.ReflectionTypeLoadException.Types">
+      <summary>Ruft das Array der Klassen ab, die im Modul definiert und geladen wurden.</summary>
+      <returns>Ein Array vom Typ Type mit den Klassen, die im Modul definiert und geladen wurden.Dieses Array kann einige null-Werte enthalten.</returns>
+    </member>
+    <member name="T:System.Reflection.ResourceLocation">
+      <summary>Gibt den Speicherort der Ressource an.</summary>
+    </member>
+    <member name="F:System.Reflection.ResourceLocation.ContainedInAnotherAssembly">
+      <summary>Gibt an, dass die Ressource in einer anderen Assembly enthalten ist.</summary>
+    </member>
+    <member name="F:System.Reflection.ResourceLocation.ContainedInManifestFile">
+      <summary>Gibt an, dass die Ressource in der Manifestdatei enthalten ist.</summary>
+    </member>
+    <member name="F:System.Reflection.ResourceLocation.Embedded">
+      <summary>Gibt eine eingebettete (d. h. nicht verknüpfte) Ressource an.</summary>
+    </member>
+    <member name="T:System.Reflection.TargetInvocationException">
+      <summary>Die Ausnahme, die durch Methoden ausgelöst wird, die durch Reflektion aufgerufen werden.Diese Klasse kann nicht vererbt werden.</summary>
+    </member>
+    <member name="M:System.Reflection.TargetInvocationException.#ctor(System.Exception)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Reflection.TargetInvocationException" />-Klasse mit einem Verweis auf die innere Ausnahme, die die Ausnahme ausgelöst hat.</summary>
+      <param name="inner">Die Ausnahme, die die Ursache der aktuellen Ausnahme ist.Wenn der <paramref name="inner" />-Parameter nicht null ist, wird die aktuelle Ausnahme in einem catch-Block ausgelöst, der die innere Ausnahme behandelt.</param>
+    </member>
+    <member name="M:System.Reflection.TargetInvocationException.#ctor(System.String,System.Exception)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Reflection.TargetInvocationException" />-Klasse mit einer angegebenen Fehlermeldung und einem Verweis auf die innere Ausnahme, die diese Ausnahme ausgelöst hat.</summary>
+      <param name="message">Die Fehlermeldung, in der die Ursache der Ausnahme erklärt wird. </param>
+      <param name="inner">Die Ausnahme, die die Ursache der aktuellen Ausnahme ist.Wenn der <paramref name="inner" />-Parameter nicht null ist, wird die aktuelle Ausnahme in einem catch-Block ausgelöst, der die innere Ausnahme behandelt.</param>
+    </member>
+    <member name="T:System.Reflection.TargetParameterCountException">
+      <summary>Die Ausnahme, die ausgelöst wird, wenn die Anzahl der Parameter für einen Aufruf nicht der erwarteten Anzahl entspricht.Diese Klasse kann nicht vererbt werden.</summary>
+    </member>
+    <member name="M:System.Reflection.TargetParameterCountException.#ctor">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Reflection.TargetParameterCountException" />-Klasse mit einer leeren Meldungszeichenfolge und der Ursache der Ausnahme.</summary>
+    </member>
+    <member name="M:System.Reflection.TargetParameterCountException.#ctor(System.String)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Reflection.TargetParameterCountException" />-Klasse, deren Meldungszeichenfolge auf die angegebene Meldung und die ursächliche Ausnahme festgelegt ist.</summary>
+      <param name="message">String mit einer Beschreibung der Ursache für das Auslösen dieser Ausnahme. </param>
+    </member>
+    <member name="M:System.Reflection.TargetParameterCountException.#ctor(System.String,System.Exception)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Reflection.TargetParameterCountException" />-Klasse mit einer angegebenen Fehlermeldung und einem Verweis auf die innere Ausnahme, die diese Ausnahme verursacht hat.</summary>
+      <param name="message">Die Fehlermeldung, in der die Ursache der Ausnahme erklärt wird. </param>
+      <param name="inner">Die Ausnahme, die die Ursache der aktuellen Ausnahme ist.Wenn der <paramref name="inner" />-Parameter nicht null ist, wird die aktuelle Ausnahme in einem catch-Block ausgelöst, der die innere Ausnahme behandelt.</param>
+    </member>
+    <member name="T:System.Reflection.TypeInfo">
+      <summary>Stellt Typdeklarationen dar für Klassentypen, Schnittstellentypen, Arraytypen, Werttypen, Enumerationstypen, Typparameter, generische Typdefinitionen und offen oder geschlossen konstruierte generische Typen. </summary>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.Assembly"></member>
+    <member name="P:System.Reflection.TypeInfo.AssemblyQualifiedName"></member>
+    <member name="M:System.Reflection.TypeInfo.AsType">
+      <summary>Gibt den aktuellen Typ als ein <see cref="T:System.Type" />-Objekt zurück.</summary>
+      <returns>Der aktuelle Typ.</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.Attributes"></member>
+    <member name="P:System.Reflection.TypeInfo.BaseType"></member>
+    <member name="P:System.Reflection.TypeInfo.ContainsGenericParameters"></member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredConstructors">
+      <summary>Ruft eine Sammlung der Konstruktoren ab, die durch den aktuellen Typ deklariert werden.</summary>
+      <returns>Eine Sammlung der Konstruktoren, deklariert durch den aktuellen Typ.</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredEvents">
+      <summary>Ruft eine Sammlung von Ereignissen ab, die durch den aktuellen Typ definiert werden.</summary>
+      <returns>Eine Sammlung von Ereignissen, definiert durch den aktuellen Typ.</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredFields">
+      <summary>Ruft eine Sammlung von Feldern ab, die durch den aktuellen Typ definiert werden.</summary>
+      <returns>Eine Sammlung von Feldern, definiert durch den aktuellen Typ.</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredMembers">
+      <summary>Ruft eine Sammlung von Membern ab, die durch den aktuellen Typ definiert werden.</summary>
+      <returns>Eine Sammlung von Membern, definiert durch den aktuellen Typ.</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredMethods">
+      <summary>Ruft eine Sammlung von Methoden ab, die durch den aktuellen Typ definiert werden.</summary>
+      <returns>Eine Sammlung von Methoden, definiert durch den aktuellen Typ.</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredNestedTypes">
+      <summary>Ruft eine Sammlung der geschachtelten Typen ab, die durch den aktuellen Typ definiert werden.</summary>
+      <returns>Eine Sammlung von geschachtelten Typen definiert durch den aktuellen Typ.</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredProperties">
+      <summary>Ruft eine Sammlung von Eigenschaften ab, die durch den aktuellen Typ definiert werden. </summary>
+      <returns>Eine Sammlung von Eigenschaften, definiert durch den aktuellen Typ.</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaringMethod"></member>
+    <member name="P:System.Reflection.TypeInfo.FullName"></member>
+    <member name="P:System.Reflection.TypeInfo.GenericParameterAttributes"></member>
+    <member name="P:System.Reflection.TypeInfo.GenericParameterPosition"></member>
+    <member name="P:System.Reflection.TypeInfo.GenericTypeArguments"></member>
+    <member name="P:System.Reflection.TypeInfo.GenericTypeParameters">
+      <summary>Ruft ein Array der generischen Typparameter der aktuellen Instanz ab. </summary>
+      <returns>Ein Array, das die die generischen Typparameter der aktuellen Instanz enthält, oder ein Array von <see cref="P:System.Array.Length" /> Null, wenn die aktuelle Instanz keine generische Typparameter aufweist. </returns>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetArrayRank"></member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredEvent(System.String)">
+      <summary>Gibt ein Objekt zurück, das das angegebene öffentliche Ereignis darstellt, das vom aktuellen Typ deklariert wird.</summary>
+      <returns>Ein Objekt, das das angegebene Ereignis darstellt, sofern diese gefunden wird; andernfalls null.</returns>
+      <param name="name">Der Name des Ereignisses.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> ist null. </exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredField(System.String)">
+      <summary>Gibt ein Objekt zurück, das das angegebene öffentliche Feld darstellt, das vom aktuellen Typ deklariert wird.</summary>
+      <returns>Ein Objekt, das das angegebene Feld darstellt, sofern dieses gefunden wird; andernfalls null.</returns>
+      <param name="name">Der Name des Felds.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> ist null. </exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredMethod(System.String)">
+      <summary>Gibt ein Objekt zurück, das die angegebene öffentliche Methode darstellt, die vom aktuellen Typ deklariert wird.</summary>
+      <returns>Ein Objekt, das die angegebene Methode darstellt, sofern diese gefunden wird; andernfalls null.</returns>
+      <param name="name">Der Name der Methode.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> ist null. </exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredMethods(System.String)">
+      <summary>Gibt eine Auflistung zurück, die alle öffentlichen Methoden enthält, die für den aktuellen Typ deklariert werden, die mit dem angegebenen Namen übereinstimmen.</summary>
+      <returns>Eine Sammlung, die Methoden enthält, die mit <paramref name="name" /> übereinstimmen.</returns>
+      <param name="name">Der zu suchende Methodenname.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> ist null. </exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredNestedType(System.String)">
+      <summary>Gibt ein Objekt zurück, das den angegebenen öffentlichen geschachtelten Typ darstellt, der vom aktuellen Typ deklariert wird.</summary>
+      <returns>Ein Objekt, das den angegebenen geschachtelten Typ darstellt, sofern dieser gefunden wird; andernfalls null.</returns>
+      <param name="name">Der Name des verschachtelten Typs.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> ist null. </exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredProperty(System.String)">
+      <summary>Gibt ein Objekt zurück, das die angegebene öffentliche Eigenschaft darstellt, die vom aktuellen Typ deklariert wird.</summary>
+      <returns>Ein Objekt, das die angegebene Eigenschaft darstellt, sofern diese gefunden wird; andernfalls null.</returns>
+      <param name="name">Der Name der Eigenschaft.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> ist null. </exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetElementType"></member>
+    <member name="M:System.Reflection.TypeInfo.GetGenericParameterConstraints"></member>
+    <member name="M:System.Reflection.TypeInfo.GetGenericTypeDefinition"></member>
+    <member name="P:System.Reflection.TypeInfo.GUID"></member>
+    <member name="P:System.Reflection.TypeInfo.HasElementType"></member>
+    <member name="P:System.Reflection.TypeInfo.ImplementedInterfaces">
+      <summary>Ruft eine Auflistung der Schnittstellen ab, die vom aktuellen Typ implementiert werden.</summary>
+      <returns>Eine Sammlung der Schnittstellen, die vom aktuellen Typ implementiert werden.</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.IsAbstract"></member>
+    <member name="P:System.Reflection.TypeInfo.IsAnsiClass"></member>
+    <member name="P:System.Reflection.TypeInfo.IsArray"></member>
+    <member name="M:System.Reflection.TypeInfo.IsAssignableFrom(System.Reflection.TypeInfo)">
+      <summary>Gibt einen Wert zurück, der angibt, ob der angegebene Typ dem aktuellen Typ zugewiesen werden kann.</summary>
+      <returns>true, wenn der angegebene Typ diesem Typ zugeordnet werden kann; andernfalls false.</returns>
+      <param name="typeInfo">Der zu überprüfende Typ.</param>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.IsAutoClass"></member>
+    <member name="P:System.Reflection.TypeInfo.IsAutoLayout"></member>
+    <member name="P:System.Reflection.TypeInfo.IsByRef"></member>
+    <member name="P:System.Reflection.TypeInfo.IsClass"></member>
+    <member name="P:System.Reflection.TypeInfo.IsEnum"></member>
+    <member name="P:System.Reflection.TypeInfo.IsExplicitLayout"></member>
+    <member name="P:System.Reflection.TypeInfo.IsGenericParameter"></member>
+    <member name="P:System.Reflection.TypeInfo.IsGenericType"></member>
+    <member name="P:System.Reflection.TypeInfo.IsGenericTypeDefinition"></member>
+    <member name="P:System.Reflection.TypeInfo.IsImport"></member>
+    <member name="P:System.Reflection.TypeInfo.IsInterface"></member>
+    <member name="P:System.Reflection.TypeInfo.IsLayoutSequential"></member>
+    <member name="P:System.Reflection.TypeInfo.IsMarshalByRef"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNested"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedAssembly"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedFamANDAssem"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedFamily"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedFamORAssem"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedPrivate"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedPublic"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNotPublic"></member>
+    <member name="P:System.Reflection.TypeInfo.IsPointer"></member>
+    <member name="P:System.Reflection.TypeInfo.IsPrimitive"></member>
+    <member name="P:System.Reflection.TypeInfo.IsPublic"></member>
+    <member name="P:System.Reflection.TypeInfo.IsSealed"></member>
+    <member name="P:System.Reflection.TypeInfo.IsSerializable"></member>
+    <member name="P:System.Reflection.TypeInfo.IsSpecialName"></member>
+    <member name="M:System.Reflection.TypeInfo.IsSubclassOf(System.Type)"></member>
+    <member name="P:System.Reflection.TypeInfo.IsUnicodeClass"></member>
+    <member name="P:System.Reflection.TypeInfo.IsValueType"></member>
+    <member name="P:System.Reflection.TypeInfo.IsVisible"></member>
+    <member name="M:System.Reflection.TypeInfo.MakeArrayType"></member>
+    <member name="M:System.Reflection.TypeInfo.MakeArrayType(System.Int32)"></member>
+    <member name="M:System.Reflection.TypeInfo.MakeByRefType"></member>
+    <member name="M:System.Reflection.TypeInfo.MakeGenericType(System.Type[])"></member>
+    <member name="M:System.Reflection.TypeInfo.MakePointerType"></member>
+    <member name="P:System.Reflection.TypeInfo.Namespace"></member>
+    <member name="M:System.Reflection.TypeInfo.System#Reflection#IReflectableType#GetTypeInfo">
+      <summary>Gibt eine Darstellung des aktuellen Typs als ein <see cref="T:System.Reflection.TypeInfo" />-Objekt zurück.</summary>
+      <returns>Ein Verweis auf den aktuellen Typ.</returns>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Resources.ResourceManager</name>
+  </assembly>
+  <members>
+    <member name="T:System.Resources.MissingManifestResourceException">
+      <summary>주 어셈블리에 중립 문화권에 대한 리소스가 포함되어 있지 않은데 적절한 위성 어셈블리가 없을 경우 throw되는 예외입니다.</summary>
+    </member>
+    <member name="M:System.Resources.MissingManifestResourceException.#ctor">
+      <summary>기본 속성을 사용하여 <see cref="T:System.Resources.MissingManifestResourceException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Resources.MissingManifestResourceException.#ctor(System.String)">
+      <summary>지정된 오류 메시지를 사용하여 <see cref="T:System.Resources.MissingManifestResourceException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="message">예외에 대한 이유를 설명하는 오류 메시지입니다. </param>
+    </member>
+    <member name="M:System.Resources.MissingManifestResourceException.#ctor(System.String,System.Exception)">
+      <summary>지정된 오류 메시지와 해당 예외의 근본 원인인 내부 예외에 대한 참조를 사용하여 <see cref="T:System.Resources.MissingManifestResourceException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="message">예외에 대한 이유를 설명하는 오류 메시지입니다. </param>
+      <param name="inner">현재 예외의 원인이 되는 예외입니다.<paramref name="inner" /> 매개 변수가 null이 아니면 현재 예외는 내부 예외를 처리하는 catch 블록에서 발생합니다.</param>
+    </member>
+    <member name="T:System.Resources.NeutralResourcesLanguageAttribute">
+      <summary>리소스 관리자에게 응용 프로그램의 기본 문화권을 알립니다.이 클래스는 상속될 수 없습니다.</summary>
+    </member>
+    <member name="M:System.Resources.NeutralResourcesLanguageAttribute.#ctor(System.String)">
+      <summary>
+        <see cref="T:System.Resources.NeutralResourcesLanguageAttribute" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="cultureName">현재 어셈블리의 중립 리소스가 쓰여진 문화권의 이름입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="cultureName" /> 매개 변수가 null인 경우 </exception>
+    </member>
+    <member name="P:System.Resources.NeutralResourcesLanguageAttribute.CultureName">
+      <summary>문화권 이름을 가져옵니다.</summary>
+      <returns>주 어셈블리에 대한 기본 문화권의 이름입니다.</returns>
+    </member>
+    <member name="T:System.Resources.ResourceManager">
+      <summary>런타임에 문화권별 리소스에 편리한 액세스를 제공하는 리소스 관리자를 나타냅니다.보안 정보: 신뢰할 수 없는 데이터를 사용하여 이 클래스에서 메서드를 호출하는 것은 보안상 위험합니다.신뢰할 수 있는 데이터만 사용하여 클래스의 메서드를 호출합니다.자세한 내용은 참조 Untrusted Data Security Risks.</summary>
+    </member>
+    <member name="M:System.Resources.ResourceManager.#ctor(System.String,System.Reflection.Assembly)">
+      <summary>지정된 어셈블리에서 지정된 루트 이름의 파일에 포함된 리소스를 찾는 <see cref="T:System.Resources.ResourceManager" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="baseName">확장명이 없지만 정규화된 네임스페이스 이름을 포함하는 리소스 파일의 루트 이름입니다.예를 들어 MyApplication.MyResource.en-US.resources라는 리소스 파일의 루트 이름은 MyApplication.MyResource입니다.</param>
+      <param name="assembly">리소스에 대한 주 어셈블리입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="baseName" /> 또는 <paramref name="assembly" /> 매개 변수가 null인 경우 </exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.#ctor(System.Type)">
+      <summary>지정된 형식 개체의 정보를 기초로 위성 어셈블리에서 리소스를 찾는 <see cref="T:System.Resources.ResourceManager" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="resourceSource">리소스 관리자가 .resources 파일을 찾는 데 필요한 모든 정보를 파생시키는 형식입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="resourceSource" /> 매개 변수가 null인 경우 </exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.GetString(System.String)">
+      <summary>지정된 문자열 리소스의 값을 반환합니다.</summary>
+      <returns>호출자의 현재 UI 문화권에 대해 지역화된 리소스의 값이거나, 리소스 집합에서 <paramref name="name" />을 찾을 수 없으면 null입니다.</returns>
+      <param name="name">검색할 리소스의 이름입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 매개 변수가 null인 경우 </exception>
+      <exception cref="T:System.InvalidOperationException">지정된 리소스의 값이 문자열이 아닌 경우 </exception>
+      <exception cref="T:System.Resources.MissingManifestResourceException">사용할 수 있는 리소스 집합을 찾을 수 없고 기본 문화권에 대한 리소스가 없는 경우이 예외를 처리하는 방법에 대한 자세한 내용은 <see cref="T:System.Resources.ResourceManager" /> 클래스 항목의 "MissingManifestResourceException 및 MissingSatelliteAssemblyException 예외 처리" 단원을 참조하십시오.</exception>
+      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">기본 문화권의 리소스가 찾을 수 없는 위성 어셈블리에 있을 경우이 예외를 처리하는 방법에 대한 자세한 내용은 <see cref="T:System.Resources.ResourceManager" /> 클래스 항목의 "MissingManifestResourceException 및 MissingSatelliteAssemblyException 예외 처리" 단원을 참조하십시오.</exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.GetString(System.String,System.Globalization.CultureInfo)">
+      <summary>지정된 문화권에 대해 지역화된 문자열 리소스의 값을 반환합니다.</summary>
+      <returns>지정된 문화권에 대해 지역화된 리소스의 값이거나, 리소스 집합에서 <paramref name="name" />을 찾을 수 없으면 null입니다.</returns>
+      <param name="name">검색할 리소스의 이름입니다. </param>
+      <param name="culture">지역화하는 리소스에 대한 문화권을 나타내는 개체입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 매개 변수가 null인 경우 </exception>
+      <exception cref="T:System.InvalidOperationException">지정된 리소스의 값이 문자열이 아닌 경우 </exception>
+      <exception cref="T:System.Resources.MissingManifestResourceException">사용할 수 있는 리소스 집합을 찾을 수 없고 기본 문화권에 대한 리소스가 없는 경우이 예외를 처리하는 방법에 대한 자세한 내용은 <see cref="T:System.Resources.ResourceManager" /> 클래스 항목의 "MissingManifestResourceException 및 MissingSatelliteAssemblyException 예외 처리" 단원을 참조하십시오.</exception>
+      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">기본 문화권의 리소스가 찾을 수 없는 위성 어셈블리에 있을 경우이 예외를 처리하는 방법에 대한 자세한 내용은 <see cref="T:System.Resources.ResourceManager" /> 클래스 항목의 "MissingManifestResourceException 및 MissingSatelliteAssemblyException 예외 처리" 단원을 참조하십시오.</exception>
+    </member>
+    <member name="T:System.Resources.SatelliteContractVersionAttribute">
+      <summary>
+        <see cref="T:System.Resources.ResourceManager" /> 개체에서 특정 버전의 위성 어셈블리를 요청하도록 지시합니다.</summary>
+    </member>
+    <member name="M:System.Resources.SatelliteContractVersionAttribute.#ctor(System.String)">
+      <summary>
+        <see cref="T:System.Resources.SatelliteContractVersionAttribute" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="version">로드할 위성 어셈블리의 버전을 지정하는 문자열입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="version" /> 매개 변수가 null인 경우 </exception>
+    </member>
+    <member name="P:System.Resources.SatelliteContractVersionAttribute.Version">
+      <summary>필요한 리소스가 있는 위성 어셈블리의 버전을 가져옵니다.</summary>
+      <returns>필요한 리소스가 있는 위성 어셈블리의 버전을 포함하는 문자열입니다.</returns>
+    </member>
+  </members>
+</doc>

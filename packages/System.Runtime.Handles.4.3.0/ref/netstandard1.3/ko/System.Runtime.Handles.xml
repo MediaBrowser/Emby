@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Runtime.Handles</name>
+  </assembly>
+  <members>
+    <member name="T:Microsoft.Win32.SafeHandles.SafeWaitHandle">
+      <summary>대기 핸들에 대한 래퍼 클래스를 나타냅니다. </summary>
+    </member>
+    <member name="M:Microsoft.Win32.SafeHandles.SafeWaitHandle.#ctor(System.IntPtr,System.Boolean)">
+      <summary>
+        <see cref="T:Microsoft.Win32.SafeHandles.SafeWaitHandle" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+      <param name="existingHandle">사용할 기존 핸들을 나타내는 <see cref="T:System.IntPtr" /> 개체입니다.</param>
+      <param name="ownsHandle">종료 단계에서 핸들을 안정적으로 해제하려면 true이고, 안정적으로 해제할 수 없게 하려면 false(권장되지 않음)입니다.</param>
+    </member>
+    <member name="P:Microsoft.Win32.SafeHandles.SafeWaitHandle.IsInvalid"></member>
+    <member name="T:System.IO.HandleInheritability">
+      <summary>기본 핸들을 자식 프로세스에 상속할 수 있는지 여부를 지정합니다.</summary>
+    </member>
+    <member name="F:System.IO.HandleInheritability.Inheritable">
+      <summary>핸들을 자식 프로세스에 상속할 수 있도록 지정합니다.</summary>
+    </member>
+    <member name="F:System.IO.HandleInheritability.None">
+      <summary>핸들을 자식 프로세스에 상속할 수 없도록 지정합니다.</summary>
+    </member>
+    <member name="T:System.Runtime.InteropServices.CriticalHandle">
+      <summary>핸들 리소스의 래퍼 클래스를 나타냅니다.</summary>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.#ctor(System.IntPtr)">
+      <summary>지정된 잘못된 핸들 값을 사용하여 <see cref="T:System.Runtime.InteropServices.CriticalHandle" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="invalidHandleValue">잘못된 핸들의 값(일반적으로 0 또는 -1)입니다.</param>
+      <exception cref="T:System.TypeLoadException">비관리 코드 액세스 권한이 없는 어셈블리에 파생 클래스가 있는 경우</exception>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.Dispose">
+      <summary>
+        <see cref="T:System.Runtime.InteropServices.CriticalHandle" />에서 사용하는 모든 리소스를 해제합니다. </summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.Dispose(System.Boolean)">
+      <summary>일반적인 삭제 작업을 수행할지 여부를 지정하여 <see cref="T:System.Runtime.InteropServices.CriticalHandle" /> 클래스에서 사용하는 관리되지 않는 리소스를 해제합니다.</summary>
+      <param name="disposing">일반적인 삭제 작업을 수행하려면 true로 설정하고, 핸들을 종료하려면 false로 설정합니다.</param>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.Finalize">
+      <summary>핸들에 연결된 모든 리소스를 해제합니다.</summary>
+    </member>
+    <member name="F:System.Runtime.InteropServices.CriticalHandle.handle">
+      <summary>래핑할 핸들을 지정합니다.</summary>
+    </member>
+    <member name="P:System.Runtime.InteropServices.CriticalHandle.IsClosed">
+      <summary>핸들이 닫혔는지 여부를 나타내는 값을 가져옵니다.</summary>
+      <returns>핸들이 닫혔으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Runtime.InteropServices.CriticalHandle.IsInvalid">
+      <summary>파생 클래스에서 재정의된 경우 핸들 값이 잘못되었는지 여부를 나타내는 값을 가져옵니다.</summary>
+      <returns>핸들이 잘못되었으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.ReleaseHandle">
+      <summary>파생 클래스에서 재정의된 경우 핸들을 해제하는 데 필요한 코드를 실행합니다.</summary>
+      <returns>핸들이 성공적으로 해제되면 true이고, 심각한 오류가 발생하면 false입니다.이러한 경우 releaseHandleFailed MDA 관리 디버깅 도우미가 생성됩니다.</returns>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.SetHandle(System.IntPtr)">
+      <summary>지정된 기존 핸들에 대한 핸들을 설정합니다.</summary>
+      <param name="handle">사용할 기존 핸들입니다.</param>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.SetHandleAsInvalid">
+      <summary>핸들을 잘못된 핸들로 표시합니다.</summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Runtime.InteropServices.SafeHandle">
+      <summary>운영 체제 핸들의 래퍼 클래스를 나타냅니다.이 클래스는 상속되어야 합니다.</summary>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.#ctor(System.IntPtr,System.Boolean)">
+      <summary>지정된 잘못된 핸들 값을 사용하여 <see cref="T:System.Runtime.InteropServices.SafeHandle" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="invalidHandleValue">잘못된 핸들의 값(일반적으로 0 또는 -1)입니다.구현한 <see cref="P:System.Runtime.InteropServices.SafeHandle.IsInvalid" />는 이 값에 대해 true를 반환해야 합니다.</param>
+      <param name="ownsHandle">종료 단계에 true에서 핸들을 안정적으로 해제할 수 있게 하려면 <see cref="T:System.Runtime.InteropServices.SafeHandle" />이고, 그렇지 않으면 false(권장되지 않음)입니다. </param>
+      <exception cref="T:System.TypeLoadException">비관리 코드 액세스 권한이 없는 어셈블리에 파생 클래스가 있는 경우 </exception>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.DangerousAddRef(System.Boolean@)">
+      <summary>
+        <see cref="T:System.Runtime.InteropServices.SafeHandle" /> 인스턴스의 참조 카운터의 값을 수동으로 증가시킵니다.</summary>
+      <param name="success">참조 카운터 값이 성공적으로 증가하면 true이고, 그렇지 않으면 false입니다.</param>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.DangerousGetHandle">
+      <summary>
+        <see cref="F:System.Runtime.InteropServices.SafeHandle.handle" /> 필드의 값을 반환합니다.</summary>
+      <returns>IntPtr 필드의 값을 나타내는 <see cref="F:System.Runtime.InteropServices.SafeHandle.handle" />입니다.<see cref="M:System.Runtime.InteropServices.SafeHandle.SetHandleAsInvalid" />를 사용하여 핸들을 잘못된 핸들로 표시했으면 이 메서드는 오래된 값일 수 있는 원래 핸들 값을 그대로 반환합니다.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.DangerousRelease">
+      <summary>
+        <see cref="T:System.Runtime.InteropServices.SafeHandle" /> 인스턴스의 참조 카운터의 값을 수동으로 감소시킵니다.</summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.Dispose">
+      <summary>
+        <see cref="T:System.Runtime.InteropServices.SafeHandle" /> 클래스에서 사용하는 모든 리소스를 해제합니다.</summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.Dispose(System.Boolean)">
+      <summary>일반적인 삭제 작업을 수행할지 여부를 지정하여 <see cref="T:System.Runtime.InteropServices.SafeHandle" /> 클래스에서 사용하는 관리되지 않는 리소스를 해제합니다.</summary>
+      <param name="disposing">일반적인 삭제 작업을 수행하려면 true로 설정하고, 핸들을 종료하려면 false로 설정합니다.</param>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.Finalize">
+      <summary>핸들에 연결된 모든 리소스를 해제합니다.</summary>
+    </member>
+    <member name="F:System.Runtime.InteropServices.SafeHandle.handle">
+      <summary>래핑할 핸들을 지정합니다.</summary>
+    </member>
+    <member name="P:System.Runtime.InteropServices.SafeHandle.IsClosed">
+      <summary>핸들이 닫혔는지 여부를 나타내는 값을 가져옵니다.</summary>
+      <returns>핸들이 닫혔으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Runtime.InteropServices.SafeHandle.IsInvalid">
+      <summary>파생 클래스에서 재정의된 경우 핸들 값이 잘못되었는지 여부를 나타내는 값을 가져옵니다.</summary>
+      <returns>핸들 값이 잘못되었으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.ReleaseHandle">
+      <summary>파생 클래스에서 재정의된 경우 핸들을 해제하는 데 필요한 코드를 실행합니다.</summary>
+      <returns>핸들이 성공적으로 해제되면 true이고, 심각한 오류가 발생하면  false입니다.이러한 경우 releaseHandleFailed MDA 관리 디버깅 도우미가 생성됩니다.</returns>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.SetHandle(System.IntPtr)">
+      <summary>지정된 기존 핸들에 대한 핸들을 설정합니다.</summary>
+      <param name="handle">사용할 기존 핸들입니다. </param>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.SetHandleAsInvalid">
+      <summary>더 이상 사용되지 않는 핸들로 표시합니다.</summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Threading.WaitHandleExtensions">
+      <summary>Safehandle 대기에 대 한 작업에 대 한 처리 하기 위한 편리한 메서드를 제공 합니다. </summary>
+    </member>
+    <member name="M:System.Threading.WaitHandleExtensions.GetSafeWaitHandle(System.Threading.WaitHandle)">
+      <summary>네이티브 운영 체제 대기 핸들에 대 한 안전한 핸들을 가져옵니다. </summary>
+      <returns>기본 운영 체제를 래핑하는 안전 하 게 대기 핸들을 대기 핸들입니다. </returns>
+      <param name="waitHandle">기본 운영 체제 핸들입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="waitHandle" />가 null인 경우 </exception>
+    </member>
+    <member name="M:System.Threading.WaitHandleExtensions.SetSafeWaitHandle(System.Threading.WaitHandle,Microsoft.Win32.SafeHandles.SafeWaitHandle)">
+      <summary>기본 운영 체제 대기 핸들에 대 한 안전한 핸들을 설정합니다. </summary>
+      <param name="waitHandle">공유 리소스에 대 한 단독 액세스를 위해 대기 하는 운영 체제 관련 개체를 캡슐화 하는 대기 핸들입니다. </param>
+      <param name="value">Safehandle 운영 체제 핸들을 래핑합니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="waitHandle" />가 null인 경우 </exception>
+    </member>
+  </members>
+</doc>

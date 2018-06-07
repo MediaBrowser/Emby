@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>Microsoft.Win32.Primitives</name>
+  </assembly>
+  <members>
+    <member name="T:System.ComponentModel.Win32Exception">
+      <summary>Win32 エラー コードの例外がスローされます。</summary>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor">
+      <summary>最後に発生した Win32 エラーを使用して、<see cref="T:System.ComponentModel.Win32Exception" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor(System.Int32)">
+      <summary>指定したエラーを使用して、<see cref="T:System.ComponentModel.Win32Exception" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="error">この例外に関連付けられている Win32 エラー コード。</param>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor(System.Int32,System.String)">
+      <summary>指定したエラーと詳細説明を使用して、<see cref="T:System.ComponentModel.Win32Exception" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="error">この例外に関連付けられている Win32 エラー コード。</param>
+      <param name="message">エラーの詳細説明。</param>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor(System.String)">
+      <summary>詳細説明を指定して、<see cref="T:System.ComponentModel.Win32Exception" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">エラーの詳細説明。</param>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor(System.String,System.Exception)">
+      <summary>詳細説明と例外を指定して、<see cref="T:System.ComponentModel.Win32Exception" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">エラーの詳細説明。</param>
+      <param name="innerException">この例外の原因である内部例外への参照。</param>
+    </member>
+    <member name="P:System.ComponentModel.Win32Exception.NativeErrorCode">
+      <summary>この例外に関連付けられている Win32 エラー コードを取得します。</summary>
+      <returns>この例外に関連付けられている Win32 エラー コード。</returns>
+    </member>
+  </members>
+</doc>

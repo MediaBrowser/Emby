@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Threading.Timer</name>
+  </assembly>
+  <members>
+    <member name="T:System.Threading.Timer">
+      <summary>提供一套機制，可於指定間隔執行方法。此類別無法被繼承。若要瀏覽此類型的 .NET Framework 原始程式碼，請參閱參考來源。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Timer.#ctor(System.Threading.TimerCallback,System.Object,System.Int32,System.Int32)">
+      <summary>初始化 Timer 類別的新執行個體，使用 32 位元帶正負號的整數來指定時間間隔。</summary>
+      <param name="callback">
+        <see cref="T:System.Threading.TimerCallback" /> 委派，表示要執行的方法。</param>
+      <param name="state">包含回呼方法所使用資訊的物件，或 null。</param>
+      <param name="dueTime">叫用 <paramref name="callback" /> 前所延遲的時間量，以毫秒為單位。指定 <see cref="F:System.Threading.Timeout.Infinite" /> 以防止計時器啟動。指定零 (0) 以立即啟動計時器。</param>
+      <param name="period">
+        <paramref name="callback" /> 引動過程的間隔時間 (以毫秒為單位)。指定 <see cref="F:System.Threading.Timeout.Infinite" /> 以停用週期的訊號功能。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter is negative and is not equal to <see cref="F:System.Threading.Timeout.Infinite" />. </exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="callback" /> parameter is null. </exception>
+    </member>
+    <member name="M:System.Threading.Timer.#ctor(System.Threading.TimerCallback,System.Object,System.TimeSpan,System.TimeSpan)">
+      <summary>初始化 Timer 類別的新執行個體，使用 <see cref="T:System.TimeSpan" /> 值來測量時間間隔。</summary>
+      <param name="callback">代表要執行之方法的委派。</param>
+      <param name="state">包含回呼方法所使用資訊的物件，或 null。</param>
+      <param name="dueTime">
+        <paramref name="callback" /> 參數叫用它的方法前所延遲的時間量。指定負 1 (-1) 毫秒以防止啟動計時器。指定零 (0) 以立即啟動計時器。</param>
+      <param name="period">為 <paramref name="callback" /> 所參考方法於兩次引動過程之間的時間間隔。指定負 1 (-1) 毫秒以停用定期的信號方式。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The number of milliseconds in the value of <paramref name="dueTime" /> or <paramref name="period" /> is negative and not equal to <see cref="F:System.Threading.Timeout.Infinite" />, or is greater than <see cref="F:System.Int32.MaxValue" />. </exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="callback" /> parameter is null. </exception>
+    </member>
+    <member name="M:System.Threading.Timer.Change(System.Int32,System.Int32)">
+      <summary>變更開始的時間和計時器的方法引動過程之間的時間間隔，使用 32 位元帶正負號的整數來測量時間間隔。</summary>
+      <returns>如果已成功更新計時器，則為 true，否則為 false。</returns>
+      <param name="dueTime">延遲的時間長度 (以毫秒為單位)，一旦超過這個時間就叫用先前建構 <see cref="T:System.Threading.Timer" /> 時指定的回呼方法。指定 <see cref="F:System.Threading.Timeout.Infinite" /> 以防止計時器重新啟動。指定零 (0) 以立即重新啟動計時器。</param>
+      <param name="period">建構 <see cref="T:System.Threading.Timer" /> 時指定的回呼方法的引動過程間隔時間 (以毫秒為單位)。指定 <see cref="F:System.Threading.Timeout.Infinite" /> 以停用週期的訊號功能。</param>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.Timer" /> has already been disposed. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter is negative and is not equal to <see cref="F:System.Threading.Timeout.Infinite" />. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.Timer.Change(System.TimeSpan,System.TimeSpan)">
+      <summary>變更開始的時間和計時器的方法引動過程之間的時間間隔，使用 <see cref="T:System.TimeSpan" /> 值來測量時間間隔。</summary>
+      <returns>如果已成功更新計時器，則為 true，否則為 false。</returns>
+      <param name="dueTime">
+        <see cref="T:System.TimeSpan" /> ，表示延遲的時間量，一旦超過這個時間就叫用先前建構 <see cref="T:System.Threading.Timer" /> 時指定的回呼方法。指定負 1 (-1) 毫秒以防止重新啟動計時器。指定零 (0) 以立即重新啟動計時器。</param>
+      <param name="period">建構 <see cref="T:System.Threading.Timer" /> 時指定的回呼方法的引動過程之間的時間間隔。指定負 1 (-1) 毫秒以停用定期的信號方式。</param>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.Timer" /> has already been disposed. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter, in milliseconds, is less than -1. </exception>
+      <exception cref="T:System.NotSupportedException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter, in milliseconds, is greater than 4294967294. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.Timer.Dispose">
+      <summary>將 <see cref="T:System.Threading.Timer" /> 目前的執行個體所使用的資源全部釋出。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.TimerCallback">
+      <summary>表示處理來自 <see cref="T:System.Threading.Timer" /> 的呼叫的方法。</summary>
+      <param name="state">物件，含有關於這個委派所叫用方法的應用程式特定資訊；或 null。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+  </members>
+</doc>

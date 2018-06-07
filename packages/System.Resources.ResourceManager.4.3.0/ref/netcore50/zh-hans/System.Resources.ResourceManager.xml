@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Resources.ResourceManager</name>
+  </assembly>
+  <members>
+    <member name="T:System.Resources.MissingManifestResourceException">
+      <summary>主程序集不包含非特定区域性的资源和适当的附属程序集缺少时引发的异常。</summary>
+    </member>
+    <member name="M:System.Resources.MissingManifestResourceException.#ctor">
+      <summary>使用默认属性初始化 <see cref="T:System.Resources.MissingManifestResourceException" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Resources.MissingManifestResourceException.#ctor(System.String)">
+      <summary>使用指定的错误消息初始化 <see cref="T:System.Resources.MissingManifestResourceException" /> 类的新实例。</summary>
+      <param name="message">解释异常原因的错误信息。</param>
+    </member>
+    <member name="M:System.Resources.MissingManifestResourceException.#ctor(System.String,System.Exception)">
+      <summary>使用指定错误消息和对导致此异常的内部异常的引用来初始化 <see cref="T:System.Resources.MissingManifestResourceException" /> 类的新实例。</summary>
+      <param name="message">解释异常原因的错误信息。</param>
+      <param name="inner">导致当前异常的异常。如果 <paramref name="inner" /> 参数不为 null，则当前异常将在处理内部异常的 catch 块中引发。</param>
+    </member>
+    <member name="T:System.Resources.NeutralResourcesLanguageAttribute">
+      <summary>通知应用程序默认区域性的资源控制器。此类不能被继承。</summary>
+    </member>
+    <member name="M:System.Resources.NeutralResourcesLanguageAttribute.#ctor(System.String)">
+      <summary>初始化 <see cref="T:System.Resources.NeutralResourcesLanguageAttribute" /> 类的新实例。</summary>
+      <param name="cultureName">用其编写的当前程序集的非特定语言资源的区域性的名称。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="cultureName" /> 参数为 null。</exception>
+    </member>
+    <member name="P:System.Resources.NeutralResourcesLanguageAttribute.CultureName">
+      <summary>获取区域性名称。</summary>
+      <returns>主程序集的默认区域性的名称。</returns>
+    </member>
+    <member name="T:System.Resources.ResourceManager">
+      <summary>表示资源管理器，其可在运行时提供对于特定文化资源的便利访问安全说明：在此类不受信任的数据中调用方法存在安全风险。仅在受信任的数据类中调用方法。有关详细信息，请参阅 Untrusted Data Security Risks。</summary>
+    </member>
+    <member name="M:System.Resources.ResourceManager.#ctor(System.String,System.Reflection.Assembly)">
+      <summary>初始化 <see cref="T:System.Resources.ResourceManager" /> 类的新实例，该实例在给定的程序集中查找从指定根名称导出的文件中包含的资源。</summary>
+      <param name="baseName">资源文件的根名称，没有其扩展名但是包含所有完全限定的命名空间名称。例如，名为 MyApplication.MyResource.en-US.resources 的资源文件的根名称为 MyApplication.MyResource。</param>
+      <param name="assembly">资源的主程序集。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="baseName" /> 或 <paramref name="assembly" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.#ctor(System.Type)">
+      <summary>它根据指定的对象中的信息在附属程序集内查找资源来初始化 <see cref="T:System.Resources.ResourceManager" /> 类的新实例。</summary>
+      <param name="resourceSource">一个类型，从资源管理器中派生所有用于查找 .resources 文件的信息。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="resourceSource" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.GetString(System.String)">
+      <summary>返回指定的字符串资源的值。</summary>
+      <returns>为调用方的当前 UI 区域性本地化的资源的值，如果在资源集中找不到 <paramref name="name" />，则为 null。</returns>
+      <param name="name">要检索的资源的名称。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 参数为 null。</exception>
+      <exception cref="T:System.InvalidOperationException">指定资源的值不是字符串。</exception>
+      <exception cref="T:System.Resources.MissingManifestResourceException">未找到可用的资源集，并且没有默认区域性的资源。有关如何处理此异常的信息，请参见<see cref="T:System.Resources.ResourceManager" /> 选件类主题中的“处理 MissingManifestResourceException 和 MissingSatelliteAssemblyException 异常”一节。</exception>
+      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">默认区域性的资源位于无法找到的附属程序集。有关如何处理此异常的信息，请参见<see cref="T:System.Resources.ResourceManager" /> 选件类主题中的“处理 MissingManifestResourceException 和 MissingSatelliteAssemblyException 异常”一节。</exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.GetString(System.String,System.Globalization.CultureInfo)">
+      <summary>返回为指定区域性本地化的字符串资源的值。</summary>
+      <returns>为指定区域性本地化的资源的值，如果在资源集中找不到 <paramref name="name" />，则为 null。</returns>
+      <param name="name">要检索的资源的名称。</param>
+      <param name="culture">一个对象，表示为其本地化资源的区域性。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 参数为 null。</exception>
+      <exception cref="T:System.InvalidOperationException">指定资源的值不是字符串。</exception>
+      <exception cref="T:System.Resources.MissingManifestResourceException">未找到可用的资源集，并且没有默认区域性的资源。有关如何处理此异常的信息，请参见<see cref="T:System.Resources.ResourceManager" /> 选件类主题中的“处理 MissingManifestResourceException 和 MissingSatelliteAssemblyException 异常”一节。</exception>
+      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">默认区域性的资源位于无法找到的附属程序集。有关如何处理此异常的信息，请参见<see cref="T:System.Resources.ResourceManager" /> 选件类主题中的“处理 MissingManifestResourceException 和 MissingSatelliteAssemblyException 异常”一节。</exception>
+    </member>
+    <member name="T:System.Resources.SatelliteContractVersionAttribute">
+      <summary>指示 <see cref="T:System.Resources.ResourceManager" /> 对象要求附属程序集的特定版本。</summary>
+    </member>
+    <member name="M:System.Resources.SatelliteContractVersionAttribute.#ctor(System.String)">
+      <summary>初始化 <see cref="T:System.Resources.SatelliteContractVersionAttribute" /> 类的新实例。</summary>
+      <param name="version">一个字符串，指定要加载的附属程序集的版本。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="version" /> 参数为 null。</exception>
+    </member>
+    <member name="P:System.Resources.SatelliteContractVersionAttribute.Version">
+      <summary>获取具有所需资源的附属程序集的版本。</summary>
+      <returns>一个字符串，它包含具有所需资源的附属程序集的版本。</returns>
+    </member>
+  </members>
+</doc>

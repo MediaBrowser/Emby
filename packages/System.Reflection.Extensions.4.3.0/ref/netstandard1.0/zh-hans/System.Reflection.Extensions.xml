@@ -1,0 +1,492 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Reflection.Extensions</name>
+  </assembly>
+  <members>
+    <member name="T:System.Reflection.CustomAttributeExtensions">
+      <summary>包含检索自定义特性的静态方法。</summary>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.Assembly)">
+      <summary>检索应用于指定程序集的指定类型的自定义特性。</summary>
+      <returns>与 <paramref name="T" /> 相匹配的自定义属性；否则，如果没有找到这类属性，则为 null。</returns>
+      <param name="element">要检查的程序集。</param>
+      <typeparam name="T">要搜索的特性类型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 为 null。</exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">找到多个请求的属性。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.Assembly,System.Type)">
+      <summary>检索应用于指定程序集的指定类型的自定义特性。</summary>
+      <returns>与 <paramref name="attributeType" /> 匹配的自定义特性，如果未找到此类特性，则为 null。</returns>
+      <param name="element">要检查的程序集。</param>
+      <param name="attributeType">要搜索的特性类型。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 或 <paramref name="attributeType" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> 不从 <see cref="T:System.Attribute" /> 派生。</exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">找到多个请求的属性。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.MemberInfo)">
+      <summary>检索应用于指定成员的指定类型的自定义特性。</summary>
+      <returns>与 <paramref name="T" /> 相匹配的自定义属性；否则，如果没有找到这类属性，则为 null。</returns>
+      <param name="element">要检查的成员。</param>
+      <typeparam name="T">要搜索的特性类型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 为 null。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> 不是构造函数、方法、属性、事件、类型或字段。</exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">找到多个请求的属性。</exception>
+      <exception cref="T:System.TypeLoadException">无法加载自定义特性类型。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.MemberInfo,System.Boolean)">
+      <summary>检索应用于指定成员的指定类型的自定义特性，并可选择检查该成员的上级。</summary>
+      <returns>与 <paramref name="T" /> 相匹配的自定义属性；否则，如果没有找到这类属性，则为 null。</returns>
+      <param name="element">要检查的成员。</param>
+      <param name="inherit">如果检查 <paramref name="element" /> 的上级，则为 true；否则为 false。</param>
+      <typeparam name="T">要搜索的特性类型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 为 null。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> 不是构造函数、方法、属性、事件、类型或字段。</exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">找到多个请求的属性。</exception>
+      <exception cref="T:System.TypeLoadException">无法加载自定义特性类型。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.MemberInfo,System.Type)">
+      <summary>检索应用于指定成员的指定类型的自定义特性。</summary>
+      <returns>与 <paramref name="attributeType" /> 匹配的自定义特性，如果未找到此类特性，则为 null。</returns>
+      <param name="element">要检查的成员。</param>
+      <param name="attributeType">要搜索的特性类型。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 或 <paramref name="attributeType" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> 不从 <see cref="T:System.Attribute" /> 派生。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> 不是构造函数、方法、属性、事件、类型或字段。</exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">找到多个请求的属性。</exception>
+      <exception cref="T:System.TypeLoadException">无法加载自定义特性类型。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.MemberInfo,System.Type,System.Boolean)">
+      <summary>检索应用于指定成员的指定类型的自定义特性，并可选择检查该成员的上级。</summary>
+      <returns>与 <paramref name="attributeType" /> 匹配的自定义特性，如果未找到此类特性，则为 null。</returns>
+      <param name="element">要检查的成员。</param>
+      <param name="attributeType">要搜索的特性类型。</param>
+      <param name="inherit">如果检查 <paramref name="element" /> 的上级，则为 true；否则为 false。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 或 <paramref name="attributeType" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> 不从 <see cref="T:System.Attribute" /> 派生。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> 不是构造函数、方法、属性、事件、类型或字段。</exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">找到多个请求的属性。</exception>
+      <exception cref="T:System.TypeLoadException">无法加载自定义特性类型。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.Module)">
+      <summary>检索应用于指定模块的指定类型的自定义特性。</summary>
+      <returns>与 <paramref name="T" /> 相匹配的自定义属性；否则，如果没有找到这类属性，则为 null。</returns>
+      <param name="element">要检查的模块。</param>
+      <typeparam name="T">要搜索的特性类型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 为 null。</exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">找到多个请求的属性。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.Module,System.Type)">
+      <summary>检索应用于指定模块的指定类型的自定义特性。</summary>
+      <returns>与 <paramref name="attributeType" /> 匹配的自定义特性，如果未找到此类特性，则为 null。</returns>
+      <param name="element">要检查的模块。</param>
+      <param name="attributeType">要搜索的特性类型。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 或 <paramref name="attributeType" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> 不从 <see cref="T:System.Attribute" /> 派生。</exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">找到多个请求的属性。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.ParameterInfo)">
+      <summary>检索应用于指定参数的指定类型的自定义特性。</summary>
+      <returns>与 <paramref name="T" /> 相匹配的自定义属性；否则，如果没有找到这类属性，则为 null。</returns>
+      <param name="element">要检查的参数。</param>
+      <typeparam name="T">要搜索的特性类型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 为 null。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> 不是构造函数、方法、属性、事件、类型或字段。</exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">找到多个请求的属性。</exception>
+      <exception cref="T:System.TypeLoadException">无法加载自定义特性类型。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.ParameterInfo,System.Boolean)">
+      <summary>检索应用于指定参数的指定类型的自定义特性，并可选择检查该参数的上级。</summary>
+      <returns>与 <paramref name="T" /> 相匹配的自定义属性；否则，如果没有找到这类属性，则为 null。</returns>
+      <param name="element">要检查的参数。</param>
+      <param name="inherit">如果检查 <paramref name="element" /> 的上级，则为 true；否则为 false。</param>
+      <typeparam name="T">要搜索的特性类型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 为 null。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> 不是构造函数、方法、属性、事件、类型或字段。</exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">找到多个请求的属性。</exception>
+      <exception cref="T:System.TypeLoadException">无法加载自定义特性类型。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.ParameterInfo,System.Type)">
+      <summary>检索应用于指定参数的指定类型的自定义特性。</summary>
+      <returns>与 <paramref name="attributeType" /> 匹配的自定义特性，如果未找到此类特性，则为 null。</returns>
+      <param name="element">要检查的参数。</param>
+      <param name="attributeType">要搜索的特性类型。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 或 <paramref name="attributeType" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> 不从 <see cref="T:System.Attribute" /> 派生。</exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">找到多个请求的属性。</exception>
+      <exception cref="T:System.TypeLoadException">无法加载自定义特性类型。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.ParameterInfo,System.Type,System.Boolean)">
+      <summary>检索应用于指定参数的指定类型的自定义特性，并可选择检查该参数的上级。</summary>
+      <returns>匹配 <paramref name="attributeType" /> 的自定义特性，如果未找到此类特性，则为 null。</returns>
+      <param name="element">要检查的参数。</param>
+      <param name="attributeType">要搜索的特性类型。</param>
+      <param name="inherit">如果检查 <paramref name="element" /> 的上级，则为 true；否则为 false。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 或 <paramref name="attributeType" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> 不从 <see cref="T:System.Attribute" /> 派生。</exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">找到多个请求的属性。</exception>
+      <exception cref="T:System.TypeLoadException">无法加载自定义特性类型。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.Assembly)">
+      <summary>检索应用于指定程序集的指定类型的自定义特性集合</summary>
+      <returns>将应用于与 <paramref name="element" /> 并与 <paramref name="T" /> 匹配的自定义特性的集合，如果此类特性不存在，则为空集合。</returns>
+      <param name="element">要检查的程序集。</param>
+      <typeparam name="T">要搜索的特性类型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.Assembly)">
+      <summary>检索应用于指定程序集的自定义特性集合。</summary>
+      <returns>将应用于 <paramref name="element" /> 的自定义特性的集合，如果此类特性不存在，则为空集合。</returns>
+      <param name="element">要检查的程序集。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.Assembly,System.Type)">
+      <summary>检索应用于指定程序集的指定类型的自定义特性集合</summary>
+      <returns>将应用于与 <paramref name="element" /> 并与 <paramref name="attributeType" /> 匹配的自定义特性的集合，如果此类特性不存在，则为空集合。</returns>
+      <param name="element">要检查的程序集。</param>
+      <param name="attributeType">要搜索的特性类型。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 或 <paramref name="attributeType" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> 不从 <see cref="T:System.Attribute" /> 派生。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.MemberInfo)">
+      <summary>检索应用于指定成员的自定义特性集合。</summary>
+      <returns>将应用于 <paramref name="element" /> 的自定义特性的集合，如果此类特性不存在，则为空集合。</returns>
+      <param name="element">要检查的成员。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 为 null。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> 不是构造函数、方法、属性、事件、类型或字段。</exception>
+      <exception cref="T:System.TypeLoadException">无法加载自定义特性类型。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.MemberInfo)">
+      <summary>检索应用于指定成员的指定类型的自定义特性集合。</summary>
+      <returns>将应用于与 <paramref name="element" /> 并与 <paramref name="T" /> 匹配的自定义特性的集合，如果此类特性不存在，则为空集合。</returns>
+      <param name="element">要检查的成员。</param>
+      <typeparam name="T">要搜索的特性类型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 为 null。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> 不是构造函数、方法、属性、事件、类型或字段。</exception>
+      <exception cref="T:System.TypeLoadException">无法加载自定义特性类型。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.MemberInfo,System.Boolean)">
+      <summary>检索应用于指定成员的指定类型的自定义特性集合，并可选择检查该成员的上级。</summary>
+      <returns>将应用于与 <paramref name="element" /> 并与 <paramref name="T" /> 匹配的自定义特性的集合，如果此类特性不存在，则为空集合。</returns>
+      <param name="element">要检查的成员。</param>
+      <param name="inherit">如果检查 <paramref name="element" /> 的上级，则为 true；否则为 false。</param>
+      <typeparam name="T">要搜索的特性类型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 为 null。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> 不是构造函数、方法、属性、事件、类型或字段。</exception>
+      <exception cref="T:System.TypeLoadException">无法加载自定义特性类型。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.MemberInfo,System.Boolean)">
+      <summary>检索应用于指定成员的自定义特性集合，并可选择检查该成员的上级。</summary>
+      <returns>将应用于与指定的条件匹配的 <paramref name="element" /> 的自定义特性的集合，如果此类特性不存在，则为空集。</returns>
+      <param name="element">要检查的成员。</param>
+      <param name="inherit">如果检查 <paramref name="element" /> 的上级，则为 true；否则为 false。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 为 null。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> 不是构造函数、方法、属性、事件、类型或字段。</exception>
+      <exception cref="T:System.TypeLoadException">无法加载自定义特性类型。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.MemberInfo,System.Type)">
+      <summary>检索应用于指定成员的指定类型的自定义特性集合。</summary>
+      <returns>将应用于与 <paramref name="element" /> 并与 <paramref name="attributeType" /> 匹配的自定义特性的集合，如果此类特性不存在，则为空集合。</returns>
+      <param name="element">要检查的成员。</param>
+      <param name="attributeType">要搜索的特性类型。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 或 <paramref name="attributeType" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> 不从 <see cref="T:System.Attribute" /> 派生。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> 不是构造函数、方法、属性、事件、类型或字段。</exception>
+      <exception cref="T:System.TypeLoadException">无法加载自定义特性类型。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.MemberInfo,System.Type,System.Boolean)">
+      <summary>检索应用于指定成员的指定类型的自定义特性集合，并可选择检查该成员的上级。</summary>
+      <returns>将应用于与 <paramref name="element" /> 并与 <paramref name="attributeType" /> 匹配的自定义特性的集合，如果此类特性不存在，则为空集合。</returns>
+      <param name="element">要检查的成员。</param>
+      <param name="attributeType">要搜索的特性类型。</param>
+      <param name="inherit">如果检查 <paramref name="element" /> 的上级，则为 true；否则为 false。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 或 <paramref name="attributeType" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> 不从 <see cref="T:System.Attribute" /> 派生。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> 不是构造函数、方法、属性、事件、类型或字段。</exception>
+      <exception cref="T:System.TypeLoadException">无法加载自定义特性类型。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.Module)">
+      <summary>检索应用于指定模块的自定义特性集合。</summary>
+      <returns>将应用于 <paramref name="element" /> 的自定义特性的集合，如果此类特性不存在，则为空集合。</returns>
+      <param name="element">要检查的模块。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.Module)">
+      <summary>检索应用于指定模块的指定类型的自定义特性集合。</summary>
+      <returns>将应用于与 <paramref name="element" /> 并与 <paramref name="T" /> 匹配的自定义特性的集合，如果此类特性不存在，则为空集合。</returns>
+      <param name="element">要检查的模块。</param>
+      <typeparam name="T">要搜索的特性类型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.Module,System.Type)">
+      <summary>检索应用于指定模块的指定类型的自定义特性集合。</summary>
+      <returns>将应用于与 <paramref name="element" /> 并与 <paramref name="attributeType" /> 匹配的自定义特性的集合，如果此类特性不存在，则为空集合。</returns>
+      <param name="element">要检查的模块。</param>
+      <param name="attributeType">要搜索的特性类型。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 或 <paramref name="attributeType" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> 不从 <see cref="T:System.Attribute" /> 派生。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.ParameterInfo)">
+      <summary>检索应用于指定参数的自定义特性的集合。</summary>
+      <returns>将应用于 <paramref name="element" /> 的自定义特性的集合，如果此类特性不存在，则为空集合。</returns>
+      <param name="element">要检查的参数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 为 null。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> 不是构造函数、方法、属性、事件、类型或字段。</exception>
+      <exception cref="T:System.TypeLoadException">无法加载自定义特性类型。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.ParameterInfo)">
+      <summary>检索应用于指定参数的指定类型的自定义特性集合。</summary>
+      <returns>将应用于与 <paramref name="element" /> 并与 <paramref name="T" /> 匹配的自定义特性的集合，如果此类特性不存在，则为空集合。</returns>
+      <param name="element">要检查的参数。</param>
+      <typeparam name="T">要搜索的特性类型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 为 null。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> 不是构造函数、方法、属性、事件、类型或字段。</exception>
+      <exception cref="T:System.TypeLoadException">无法加载自定义特性类型。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.ParameterInfo,System.Boolean)">
+      <summary>检索应用于指定参数的自定义特性集合，并可选择检查该参数的上级。</summary>
+      <returns>将应用于 <paramref name="element" /> 的自定义特性的集合，如果此类特性不存在，则为空集合。</returns>
+      <param name="element">要检查的参数。</param>
+      <param name="inherit">如果检查 <paramref name="element" /> 的上级，则为 true；否则为 false。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 为 null。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> 不是构造函数、方法、属性、事件、类型或字段。</exception>
+      <exception cref="T:System.TypeLoadException">无法加载自定义特性类型。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.ParameterInfo,System.Boolean)">
+      <summary>检索应用于指定参数的指定类型的自定义特性集合，并可选择检查该参数的上级。</summary>
+      <returns>将应用于与 <paramref name="element" /> 并与 <paramref name="T" /> 匹配的自定义特性的集合，如果此类特性不存在，则为空集合。</returns>
+      <param name="element">要检查的参数。</param>
+      <param name="inherit">如果检查 <paramref name="element" /> 的上级，则为 true；否则为 false。</param>
+      <typeparam name="T">要搜索的特性类型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 为 null。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> 不是构造函数、方法、属性、事件、类型或字段。</exception>
+      <exception cref="T:System.TypeLoadException">无法加载自定义特性类型。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.ParameterInfo,System.Type)">
+      <summary>检索应用于指定参数的指定类型的自定义特性集合。</summary>
+      <returns>将应用于与 <paramref name="element" /> 并与 <paramref name="attributeType" /> 匹配的自定义特性的集合，如果此类特性不存在，则为空集合。</returns>
+      <param name="element">要检查的参数。</param>
+      <param name="attributeType">要搜索的特性类型。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 或 <paramref name="attributeType" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> 不从 <see cref="T:System.Attribute" /> 派生。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> 不是构造函数、方法、属性、事件、类型或字段。</exception>
+      <exception cref="T:System.TypeLoadException">无法加载自定义特性类型。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.ParameterInfo,System.Type,System.Boolean)">
+      <summary>检索应用于指定参数的指定类型的自定义特性集合，并可选择检查该参数的上级。</summary>
+      <returns>将应用于与 <paramref name="element" /> 并与 <paramref name="attributeType" /> 匹配的自定义特性的集合，如果此类特性不存在，则为空集合。</returns>
+      <param name="element">要检查的参数。</param>
+      <param name="attributeType">要搜索的特性类型。</param>
+      <param name="inherit">如果检查 <paramref name="element" /> 的上级，则为 true；否则为 false。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 或 <paramref name="attributeType" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> 不从 <see cref="T:System.Attribute" /> 派生。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> 不是构造函数、方法、属性、事件、类型或字段。</exception>
+      <exception cref="T:System.TypeLoadException">无法加载自定义特性类型。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.Assembly,System.Type)">
+      <summary>确定是否将指定类型的任何自定义属性应用于指定的程序集。</summary>
+      <returns>如果将指定类型的特性应用于 <paramref name="element" />，则为 true；否则为 false。</returns>
+      <param name="element">要检查的程序集。</param>
+      <param name="attributeType">要搜索的特性类型。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 或 <paramref name="attributeType" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> 不从 <see cref="T:System.Attribute" /> 派生。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.MemberInfo,System.Type)">
+      <summary>确定是否将指定类型的任何自定义属性应用于指定的成员。</summary>
+      <returns>如果将指定类型的特性应用于 <paramref name="element" />，则为 true；否则为 false。</returns>
+      <param name="element">要检查的成员。</param>
+      <param name="attributeType">要搜索的特性类型。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 或 <paramref name="attributeType" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> 不从 <see cref="T:System.Attribute" /> 派生。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> 不是构造函数、方法、属性、事件、类型或字段。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.MemberInfo,System.Type,System.Boolean)">
+      <summary>指示一个指定类型的自定义特性是否应用于一个指定的数字，并选择性地应用于其的上级。</summary>
+      <returns>如果将指定类型的特性应用于 <paramref name="element" />，则为 true；否则为 false。</returns>
+      <param name="element">要检查的成员。</param>
+      <param name="attributeType">要搜索的特性类型。</param>
+      <param name="inherit">如果检查 <paramref name="element" /> 的上级，则为 true；否则为 false。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 或 <paramref name="attributeType" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> 不从 <see cref="T:System.Attribute" /> 派生。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> 不是构造函数、方法、属性、事件、类型或字段。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.Module,System.Type)">
+      <summary>确定是否将指定类型的任何自定义属性应用于指定的模块。</summary>
+      <returns>如果将指定类型的特性应用于 <paramref name="element" />，则为 true；否则为 false。</returns>
+      <param name="element">要检查的模块。</param>
+      <param name="attributeType">要搜索的特性类型。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 或 <paramref name="attributeType" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> 不从 <see cref="T:System.Attribute" /> 派生。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.ParameterInfo,System.Type)">
+      <summary>确定是否将指定类型的任何自定义属性应用于指定的参数。</summary>
+      <returns>如果将指定类型的特性应用于 <paramref name="element" />，则为 true；否则为 false。</returns>
+      <param name="element">要检查的参数。</param>
+      <param name="attributeType">要搜索的特性类型。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 或 <paramref name="attributeType" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> 不从 <see cref="T:System.Attribute" /> 派生。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.ParameterInfo,System.Type,System.Boolean)">
+      <summary>指示一个指定类型的自定义特性是否应用于一个指定的参数，并选择性地应用于其的上级。</summary>
+      <returns>如果将指定类型的特性应用于 <paramref name="element" />，则为 true；否则为 false。</returns>
+      <param name="element">要检查的参数。</param>
+      <param name="attributeType">要搜索的特性类型。</param>
+      <param name="inherit">如果检查 <paramref name="element" /> 的上级，则为 true；否则为 false。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 或 <paramref name="attributeType" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> 不从 <see cref="T:System.Attribute" /> 派生。</exception>
+    </member>
+    <member name="T:System.Reflection.InterfaceMapping">
+      <summary>将某个接口的映射检索到实现该接口的类上的实际方法中。</summary>
+    </member>
+    <member name="F:System.Reflection.InterfaceMapping.InterfaceMethods">
+      <summary>显示在接口上定义的方法。</summary>
+    </member>
+    <member name="F:System.Reflection.InterfaceMapping.InterfaceType">
+      <summary>显示表示接口的类型。</summary>
+    </member>
+    <member name="F:System.Reflection.InterfaceMapping.TargetMethods">
+      <summary>显示实现接口的方法。</summary>
+    </member>
+    <member name="F:System.Reflection.InterfaceMapping.TargetType">
+      <summary>表示用于创建接口映射的类型。</summary>
+    </member>
+    <member name="T:System.Reflection.RuntimeReflectionExtensions">
+      <summary>提供检索有关运行时类型的信息的方法。</summary>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetMethodInfo(System.Delegate)">
+      <summary>获取指示指定委托表示的方法的对象。</summary>
+      <returns>表示该方法的对象。</returns>
+      <param name="del">要检查的委托。</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeBaseDefinition(System.Reflection.MethodInfo)">
+      <summary>检索表示在此方法最先声明的直接或间接类上的指定方法的对象。</summary>
+      <returns>表示在基类中指定的方法的初始声明的对象。</returns>
+      <param name="method">关于检索信息的方法。</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeEvent(System.Type,System.String)">
+      <summary>检索一个表示指定事件的对象。</summary>
+      <returns>表示指定事件的对象，若未找到该事件则为 null。</returns>
+      <param name="type">包含该事件的类型。</param>
+      <param name="name">事件的名称。</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeEvents(System.Type)">
+      <summary>检索表示指定类型定义的所有事件的集合。</summary>
+      <returns>指定类型的事件集合。</returns>
+      <param name="type">包含该事件的类型。</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeField(System.Type,System.String)">
+      <summary>检索表示指定字段的对象。</summary>
+      <returns>表示指定字段的对象，若未找到该字段则为 null。</returns>
+      <param name="type">包含字段的类型。</param>
+      <param name="name">字段名。</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeFields(System.Type)">
+      <summary>检索表示指定类型定义的所有字段的集合。</summary>
+      <returns>指定类型的字段集合。</returns>
+      <param name="type">包含字段的类型。</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeInterfaceMap(System.Reflection.TypeInfo,System.Type)">
+      <summary>返回指定类型和指定接口的接口映射。</summary>
+      <returns>表示指定接口和类型的接口映射的对象。</returns>
+      <param name="typeInfo">要检索其映射的类型。</param>
+      <param name="interfaceType">要检索其映射的接口。</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeMethod(System.Type,System.String,System.Type[])">
+      <summary>检索表示指定方法的对象。</summary>
+      <returns>表示指定方法的对象，若未找到该方法则为 null。</returns>
+      <param name="type">包含方法的类型。</param>
+      <param name="name">方法的名称。</param>
+      <param name="parameters">包含方法的参数的数组。</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeMethods(System.Type)">
+      <summary>检索表示指定类型定义的所有方法的集合。</summary>
+      <returns>指定类型的方法集合。</returns>
+      <param name="type">包含方法的类型。</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeProperties(System.Type)">
+      <summary>检索表示指定类型定义的所有属性的集合。</summary>
+      <returns>指定类型的属性集合。</returns>
+      <param name="type">包含属性的类型。</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeProperty(System.Type,System.String)">
+      <summary>检索表示指定属性的对象。</summary>
+      <returns>表示指定属性的对象，若未找到该属性则为 null。</returns>
+      <param name="type">包含该属性的类型。</param>
+      <param name="name">属性的名称。</param>
+    </member>
+  </members>
+</doc>

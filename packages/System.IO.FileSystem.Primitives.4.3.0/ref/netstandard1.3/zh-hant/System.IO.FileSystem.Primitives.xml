@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.IO.FileSystem.Primitives</name>
+  </assembly>
+  <members>
+    <member name="T:System.IO.FileAccess">
+      <summary>定義存取檔案的讀取、寫入或讀取/寫入常數</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileAccess.Read">
+      <summary>檔案的讀取權限，資料可以從檔案讀取，與讀/寫存取的 Write 結合。</summary>
+    </member>
+    <member name="F:System.IO.FileAccess.ReadWrite">
+      <summary>讀取和寫入檔案的存取權限，資料可以寫入檔案和從檔案讀取。</summary>
+    </member>
+    <member name="F:System.IO.FileAccess.Write">
+      <summary>寫入檔案的存取權限，資料可以寫入檔案，與讀/寫存取的 Read 結合。</summary>
+    </member>
+    <member name="T:System.IO.FileAttributes">
+      <summary>提供檔案和目錄的屬性 (Attribute)。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileAttributes.Archive">
+      <summary>用於備份或移除的候選檔案。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Compressed">
+      <summary>檔案已壓縮。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Device">
+      <summary>保留供將來使用。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Directory">
+      <summary>檔案是目錄。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Encrypted">
+      <summary>檔案或目錄已加密。對檔案而言，這表示檔案中的所有資料都被加密。對於目錄而言，這表示加密 (Encryption) 是新建檔案和目錄的預設值。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Hidden">
+      <summary>檔案是隱藏的，因此不會包括在一般目錄的清單內。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.IntegrityStream">
+      <summary>包含資料完整性支援的檔案或目錄。將這個值套用至檔案時，檔案中的所有資料流都有整合性支援。將這個值套用至目錄時，該目錄中所有新的檔案和子目錄預設會包含完整性支援。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Normal">
+      <summary>此檔案是沒有特殊屬性的標準檔案。此屬性只有在單獨使用時有效。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.NoScrubData">
+      <summary>從資料完整性掃描中排除的檔案或目錄。將這個值套用至目錄時，預設會從資料完整性中排除該目錄中所有新的檔案和子目錄。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.NotContentIndexed">
+      <summary>作業系統的內容索引服務將不會編製檔案的索引。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Offline">
+      <summary>檔案為離線狀態。檔案資料不是直接可供使用的。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.ReadOnly">
+      <summary>檔案是唯讀的。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.ReparsePoint">
+      <summary>檔案包含重新剖析的位置，它是與檔案或目錄有關聯的使用者定義的區塊。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.SparseFile">
+      <summary>檔案是疏鬆檔案。疏鬆檔案基本上為其資料幾乎包含零值的大型檔案。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.System">
+      <summary>檔案是系統檔案。也就是說，檔案是作業系統的一部分，或由作業系統獨佔使用。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Temporary">
+      <summary>檔案是暫存的。暫存檔案，包含應用程式正在執行時所需的資料（但卻是應用程式完成後不需要的資料）。檔案系統會嘗試將所有資料保留在記憶體中以便更快速存取，而不是將資料清除回大型存放區。不再需要暫存檔案時，應用程式應盡快加以刪除。</summary>
+    </member>
+    <member name="T:System.IO.FileMode">
+      <summary>指定作業系統應該如何開啟檔案。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileMode.Append">
+      <summary>在檔案存在時開啟它並搜尋至檔案末端，或建立新檔案。這個需要 <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Append" /> 使用權限。FileMode.Append 只能與 FileAccess.Write 一起使用。嘗試搜尋到檔案結尾前的位置會擲回 <see cref="T:System.IO.IOException" /> 例外狀況，而且任何讀取嘗試都會失敗並擲回 <see cref="T:System.NotSupportedException" /> 例外狀況。</summary>
+    </member>
+    <member name="F:System.IO.FileMode.Create">
+      <summary>指定作業系統應該建立新檔案。如果檔案已經存在，將覆寫此檔案。這個需要 <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" /> 使用權限。FileMode.Create 等於要求檔案不存在時使用 <see cref="F:System.IO.FileMode.CreateNew" />，否則使用 <see cref="F:System.IO.FileMode.Truncate" />。若檔案已經存在但為隱藏檔，則擲回 <see cref="T:System.UnauthorizedAccessException" /> 例外狀況。</summary>
+    </member>
+    <member name="F:System.IO.FileMode.CreateNew">
+      <summary>指定作業系統應該建立新檔案。這個需要 <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" /> 使用權限。如果檔案已經存在，則會擲回 <see cref="T:System.IO.IOException" /> 例外狀況。</summary>
+    </member>
+    <member name="F:System.IO.FileMode.Open">
+      <summary>指定作業系統應該開啟現有的檔案。能否順利開啟檔案，取決於 <see cref="T:System.IO.FileAccess" /> 列舉指定的值。如果檔案不存在，就會擲回 <see cref="T:System.IO.FileNotFoundException" /> 例外狀況。</summary>
+    </member>
+    <member name="F:System.IO.FileMode.OpenOrCreate">
+      <summary>指定作業系統，如果檔案存在應該開啟檔案，否則，應該建立新的檔案。如果檔案是以 FileAccess.Read 開啟，則需要 <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Read" /> 使用權限。如果檔案存取方式是 FileAccess.Write，則需要 <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" /> 使用權限。如果檔案是以 FileAccess.ReadWrite 開啟，則需要 <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Read" /> 和 <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" /> 使用權限。</summary>
+    </member>
+    <member name="F:System.IO.FileMode.Truncate">
+      <summary>指定作業系統應該開啟現有的檔案。檔案一旦開啟，應該截斷檔案使其大小為零個位元組。這個需要 <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" /> 使用權限。嘗試讀取以 FileMode.Truncate 開啟的檔案會導致 <see cref="T:System.ArgumentException" /> 例外狀況。</summary>
+    </member>
+    <member name="T:System.IO.FileShare">
+      <summary>包含常數，用來控制其他 <see cref="T:System.IO.FileStream" /> 物件對於相同檔案可以用的存取方式。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileShare.Delete">
+      <summary>允許後續刪除檔案。</summary>
+    </member>
+    <member name="F:System.IO.FileShare.Inheritable">
+      <summary>使檔案控制代碼 (File Handle) 可由子處理序 (Process) 來繼承。這並非直接由 Win32 來支援。</summary>
+    </member>
+    <member name="F:System.IO.FileShare.None">
+      <summary>拒絕共用目前檔案。任何 (由這個處理序或其他處理序) 開啟檔案的要求將會失敗，直到關閉檔案。</summary>
+    </member>
+    <member name="F:System.IO.FileShare.Read">
+      <summary>允許後序開啟檔案進行讀取。如果未指定這個旗標，任何 (由這個處理序或其他處理序) 開啟檔案進行讀取的要求將會失敗，直到關閉檔案。然而，即使有指定這個旗標，可能仍然需要其他使用權限，才能存取檔案。</summary>
+    </member>
+    <member name="F:System.IO.FileShare.ReadWrite">
+      <summary>允許後序開啟檔案進行讀取或寫入。如果未指定這個旗標，任何要開啟檔案以進行讀取或寫入的要求 (由這個處理序或其他處理序) 將會失敗，直到關閉檔案。然而，即使有指定這個旗標，可能仍然需要其他使用權限，才能存取檔案。</summary>
+    </member>
+    <member name="F:System.IO.FileShare.Write">
+      <summary>允許後序開啟檔案進行寫入。如果未指定這個旗標，任何 (由這個處理序或其他處理序) 開啟檔案進行寫入的要求將會失敗，直到關閉檔案。然而，即使有指定這個旗標，可能仍然需要其他使用權限，才能存取檔案。</summary>
+    </member>
+  </members>
+</doc>

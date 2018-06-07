@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.IO.FileSystem.Primitives</name>
+  </assembly>
+  <members>
+    <member name="T:System.IO.FileAccess">
+      <summary>定义用于文件读取、写入或读取/写入访问权限的常数。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileAccess.Read">
+      <summary>对文件的读访问。可从文件中读取数据。与 Write 组合以进行读写访问。</summary>
+    </member>
+    <member name="F:System.IO.FileAccess.ReadWrite">
+      <summary>对文件的读访问和写访问。可从文件读取数据和将数据写入文件。</summary>
+    </member>
+    <member name="F:System.IO.FileAccess.Write">
+      <summary>文件的写访问。可将数据写入文件。同 Read 组合即构成读/写访问权。</summary>
+    </member>
+    <member name="T:System.IO.FileAttributes">
+      <summary>提供文件和目录的属性。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileAttributes.Archive">
+      <summary>该文件是备份或移除的候选文件。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Compressed">
+      <summary>此文件是压缩文件。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Device">
+      <summary>保留供将来使用。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Directory">
+      <summary>此文件是一个目录。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Encrypted">
+      <summary>此文件或目录已加密。对于文件来说，表示文件中的所有数据都是加密的。对于目录来说，表示新创建的文件和目录在默认情况下是加密的。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Hidden">
+      <summary>文件是隐藏的，因此没有包括在普通的目录列表中。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.IntegrityStream">
+      <summary>文件或目录包括完整性支持数据。在此值适用于文件时，文件中的所有数据流具有完整性支持。此值将应用于一个目录时，所有新文件和子目录在该目录中和默认情况下应包括完整性支持。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Normal">
+      <summary>该文件是没有特殊属性的标准文件。仅当其单独使用时，此特性才有效。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.NoScrubData">
+      <summary>文件或目录从完整性扫描数据中排除。此值将应用于一个目录时，所有新文件和子目录在该目录中和默认情况下应不包括数据完整性。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.NotContentIndexed">
+      <summary>将不会通过操作系统的内容索引服务来索引此文件。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Offline">
+      <summary>此文件处于脱机状态，文件数据不能立即供使用。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.ReadOnly">
+      <summary>此文件是只读的。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.ReparsePoint">
+      <summary>文件包含一个重新分析点，它是一个与文件或目录关联的用户定义的数据块。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.SparseFile">
+      <summary>此文件是稀疏文件。稀疏文件一般是数据通常为零的大文件。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.System">
+      <summary>此文件是系统文件。即，该文件是操作系统的一部分或者由操作系统以独占方式使用。</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Temporary">
+      <summary>文件是临时文件。临时文件包含当执行应用程序时需要的，但当应用程序完成后不需要的数据。文件系统尝试将所有数据保存在内存中，而不是将数据刷新回大容量存储，以便可以快速访问。当临时文件不再需要时，应用程序应立即删除它。</summary>
+    </member>
+    <member name="T:System.IO.FileMode">
+      <summary>指定操作系统打开文件的方式。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileMode.Append">
+      <summary>若存在文件，则打开该文件并查找到文件尾，或者创建一个新文件。这需要 <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Append" /> 权限。FileMode.Append 只能与 FileAccess.Write 一起使用。试图查找文件尾之前的位置时会引发 <see cref="T:System.IO.IOException" /> 异常，并且任何试图读取的操作都会失败并引发 <see cref="T:System.NotSupportedException" /> 异常。</summary>
+    </member>
+    <member name="F:System.IO.FileMode.Create">
+      <summary>指定操作系统应创建新文件。如果文件已存在，它将被覆盖。这需要 <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" /> 权限。FileMode.Create 等效于这样的请求：如果文件不存在，则使用 <see cref="F:System.IO.FileMode.CreateNew" />；否则使用 <see cref="F:System.IO.FileMode.Truncate" />。如果该文件已存在但为隐藏文件，则将引发 <see cref="T:System.UnauthorizedAccessException" />异常。</summary>
+    </member>
+    <member name="F:System.IO.FileMode.CreateNew">
+      <summary>指定操作系统应创建新文件。这需要 <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" /> 权限。如果文件已存在，则将引发 <see cref="T:System.IO.IOException" />异常。</summary>
+    </member>
+    <member name="F:System.IO.FileMode.Open">
+      <summary>指定操作系统应打开现有文件。打开文件的能力取决于 <see cref="T:System.IO.FileAccess" /> 枚举所指定的值。如果文件不存在，引发一个 <see cref="T:System.IO.FileNotFoundException" /> 异常。</summary>
+    </member>
+    <member name="F:System.IO.FileMode.OpenOrCreate">
+      <summary>指定操作系统应打开文件（如果文件存在）；否则，应创建新文件。如果用 FileAccess.Read 打开文件，则需要 <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Read" />权限。如果文件访问为 FileAccess.Write，则需要 <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" />权限。如果用 FileAccess.ReadWrite 打开文件，则同时需要 <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Read" /> 和 <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" />权限。</summary>
+    </member>
+    <member name="F:System.IO.FileMode.Truncate">
+      <summary>指定操作系统应打开现有文件。该文件被打开时，将被截断为零字节大小。这需要 <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" /> 权限。尝试从使用 FileMode.Truncate 打开的文件中进行读取将导致 <see cref="T:System.ArgumentException" /> 异常。</summary>
+    </member>
+    <member name="T:System.IO.FileShare">
+      <summary>包含用于控制其他 <see cref="T:System.IO.FileStream" /> 对象对同一文件可以具有的访问类型的常数。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileShare.Delete">
+      <summary>允许随后删除文件。</summary>
+    </member>
+    <member name="F:System.IO.FileShare.Inheritable">
+      <summary>使文件句柄可由子进程继承。Win32 不直接支持此功能。</summary>
+    </member>
+    <member name="F:System.IO.FileShare.None">
+      <summary>谢绝共享当前文件。文件关闭前，打开该文件的任何请求（由此进程或另一进程发出的请求）都将失败。</summary>
+    </member>
+    <member name="F:System.IO.FileShare.Read">
+      <summary>允许随后打开文件读取。如果未指定此标志，则文件关闭前，任何打开该文件以进行读取的请求（由此进程或另一进程发出的请求）都将失败。但是，即使指定了此标志，仍可能需要附加权限才能够访问该文件。</summary>
+    </member>
+    <member name="F:System.IO.FileShare.ReadWrite">
+      <summary>允许随后打开文件读取或写入。如果未指定此标志，则文件关闭前，任何打开该文件以进行读取或写入的请求（由此进程或另一进程发出）都将失败。但是，即使指定了此标志，仍可能需要附加权限才能够访问该文件。</summary>
+    </member>
+    <member name="F:System.IO.FileShare.Write">
+      <summary>允许随后打开文件写入。如果未指定此标志，则文件关闭前，任何打开该文件以进行写入的请求（由此进程或另一进过程发出的请求）都将失败。但是，即使指定了此标志，仍可能需要附加权限才能够访问该文件。</summary>
+    </member>
+  </members>
+</doc>

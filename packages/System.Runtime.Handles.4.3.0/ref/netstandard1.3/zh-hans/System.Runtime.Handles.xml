@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Runtime.Handles</name>
+  </assembly>
+  <members>
+    <member name="T:Microsoft.Win32.SafeHandles.SafeWaitHandle">
+      <summary>表示等待句柄的包装类。</summary>
+    </member>
+    <member name="M:Microsoft.Win32.SafeHandles.SafeWaitHandle.#ctor(System.IntPtr,System.Boolean)">
+      <summary>初始化 <see cref="T:Microsoft.Win32.SafeHandles.SafeWaitHandle" /> 类的新实例。</summary>
+      <param name="existingHandle">
+        <see cref="T:System.IntPtr" /> 对象，表示要使用的预先存在的句柄。</param>
+      <param name="ownsHandle">如果为 true，则在完成阶段可靠地释放句柄；如果为 false，则阻止可靠释放（建议不要这样做）。</param>
+    </member>
+    <member name="P:Microsoft.Win32.SafeHandles.SafeWaitHandle.IsInvalid"></member>
+    <member name="T:System.IO.HandleInheritability">
+      <summary>指定基础句柄是否已由子进程继承。</summary>
+    </member>
+    <member name="F:System.IO.HandleInheritability.Inheritable">
+      <summary>指定句柄已由子进程继承。</summary>
+    </member>
+    <member name="F:System.IO.HandleInheritability.None">
+      <summary>指定句柄未由子进程继承。</summary>
+    </member>
+    <member name="T:System.Runtime.InteropServices.CriticalHandle">
+      <summary>表示句柄资源的包装类。</summary>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.#ctor(System.IntPtr)">
+      <summary>用指定的无效句柄值初始化 <see cref="T:System.Runtime.InteropServices.CriticalHandle" /> 类的新实例。</summary>
+      <param name="invalidHandleValue">无效句柄的值（通常为 0 或 -1）。</param>
+      <exception cref="T:System.TypeLoadException">该派生类位于没有非托管代码访问权限的程序集中。</exception>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.Dispose">
+      <summary>释放由 <see cref="T:System.Runtime.InteropServices.CriticalHandle" /> 使用的所有资源。</summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.Dispose(System.Boolean)">
+      <summary>释放 <see cref="T:System.Runtime.InteropServices.CriticalHandle" /> 类所使用的非托管资源，并指定是否执行常规释放 (Dispose) 操作。</summary>
+      <param name="disposing">如进行常规释放操作，则为 true；如终结句柄，则为 false。</param>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.Finalize">
+      <summary>释放与句柄关联的所有资源。</summary>
+    </member>
+    <member name="F:System.Runtime.InteropServices.CriticalHandle.handle">
+      <summary>指定要包装的句柄。</summary>
+    </member>
+    <member name="P:System.Runtime.InteropServices.CriticalHandle.IsClosed">
+      <summary>获取一个值，该值指示句柄是否已关闭。</summary>
+      <returns>如果句柄已关闭，则为 true；否则为 false。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Runtime.InteropServices.CriticalHandle.IsInvalid">
+      <summary>在派生类中重写后，获取一个值，该值指示句柄值是否无效。</summary>
+      <returns>如果句柄有效，则为 true；否则为 false。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.ReleaseHandle">
+      <summary>如果在派生类中重写，执行释放句柄所需的代码。</summary>
+      <returns>如果句柄释放成功，则为 true；如果出现灾难性故障，则为 false。这种情况下，该方法生成一个 releaseHandleFailed MDA 托管调试助手。</returns>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.SetHandle(System.IntPtr)">
+      <summary>将句柄设置为预先存在的指定句柄。</summary>
+      <param name="handle">要使用的预先存在的句柄。</param>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.SetHandleAsInvalid">
+      <summary>将句柄标记为无效。</summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Runtime.InteropServices.SafeHandle">
+      <summary>表示操作系统句柄的包装类。必须继承此类。</summary>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.#ctor(System.IntPtr,System.Boolean)">
+      <summary>用指定的无效句柄值初始化 <see cref="T:System.Runtime.InteropServices.SafeHandle" /> 类的新实例。</summary>
+      <param name="invalidHandleValue">无效句柄的值（通常为 0 或 -1）。<see cref="P:System.Runtime.InteropServices.SafeHandle.IsInvalid" /> 的实现应对此值返回 true。</param>
+      <param name="ownsHandle">在终止阶段使 true 可靠地释放句柄，则为 <see cref="T:System.Runtime.InteropServices.SafeHandle" />；否则为 false（不建议使用）。</param>
+      <exception cref="T:System.TypeLoadException">该派生类位于没有非托管代码访问权限的程序集中。</exception>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.DangerousAddRef(System.Boolean@)">
+      <summary>手动递增 <see cref="T:System.Runtime.InteropServices.SafeHandle" /> 实例中的引用计数器。</summary>
+      <param name="success">如果成功递增引用计数器，则为 true；否则为 false。</param>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.DangerousGetHandle">
+      <summary>返回 <see cref="F:System.Runtime.InteropServices.SafeHandle.handle" /> 字段的值。</summary>
+      <returns>IntPtr，表示 <see cref="F:System.Runtime.InteropServices.SafeHandle.handle" /> 字段的值。如果句柄已使用 <see cref="M:System.Runtime.InteropServices.SafeHandle.SetHandleAsInvalid" /> 标记为无效，此方法仍返回原来的句柄值，该值可能已失效。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.DangerousRelease">
+      <summary>手动递减 <see cref="T:System.Runtime.InteropServices.SafeHandle" /> 实例中的引用计数器。</summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.Dispose">
+      <summary>释放 <see cref="T:System.Runtime.InteropServices.SafeHandle" /> 类使用的所有资源。</summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.Dispose(System.Boolean)">
+      <summary>释放 <see cref="T:System.Runtime.InteropServices.SafeHandle" /> 类所使用的非托管资源，指定是否执行常规释放操作。</summary>
+      <param name="disposing">如进行常规释放操作，则为 true；如终结句柄，则为 false。</param>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.Finalize">
+      <summary>释放与句柄关联的所有资源。</summary>
+    </member>
+    <member name="F:System.Runtime.InteropServices.SafeHandle.handle">
+      <summary>指定要包装的句柄。</summary>
+    </member>
+    <member name="P:System.Runtime.InteropServices.SafeHandle.IsClosed">
+      <summary>获取一个值，该值指示句柄是否已关闭。</summary>
+      <returns>如果句柄已关闭，则为 true；否则为 false。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Runtime.InteropServices.SafeHandle.IsInvalid">
+      <summary>在派生类中重写时，获取一个值，该值指示句柄值是否无效。</summary>
+      <returns>如果句柄值无效，则为 true；否则为 false。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.ReleaseHandle">
+      <summary>在派生类中重写时，执行释放句柄所需的代码。</summary>
+      <returns>如果句柄释放成功，则为 true；如果出现灾难性故障，则为  false。这种情况下，它生成一个 releaseHandleFailed MDA 托管调试助手。</returns>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.SetHandle(System.IntPtr)">
+      <summary>将句柄设置为预先存在的指定句柄。</summary>
+      <param name="handle">要使用的预先存在的句柄。</param>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.SetHandleAsInvalid">
+      <summary>将句柄标记为不再使用。</summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Threading.WaitHandleExtensions">
+      <summary>提供了便利方法，以使用安全句柄为等待处理。</summary>
+    </member>
+    <member name="M:System.Threading.WaitHandleExtensions.GetSafeWaitHandle(System.Threading.WaitHandle)">
+      <summary>获取安全句柄的本机操作系统等待句柄。</summary>
+      <returns>包装本机操作系统的安全等待句柄等待句柄。</returns>
+      <param name="waitHandle">本机操作系统句柄。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="waitHandle" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Threading.WaitHandleExtensions.SetSafeWaitHandle(System.Threading.WaitHandle,Microsoft.Win32.SafeHandles.SafeWaitHandle)">
+      <summary>设置安全句柄的本机操作系统等待句柄。</summary>
+      <param name="waitHandle">封装等待对共享资源的独占访问的特定于操作系统的对象某种等待句柄。</param>
+      <param name="value">安全句柄来包装操作系统句柄。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="waitHandle" /> 为 null。</exception>
+    </member>
+  </members>
+</doc>

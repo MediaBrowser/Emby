@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.IO.FileSystem.Primitives</name>
+  </assembly>
+  <members>
+    <member name="T:System.IO.FileAccess">
+      <summary>Definiert Konstanten für Lese-, Schreib- oder Lese-/Schreibzugriff auf eine Datei.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileAccess.Read">
+      <summary>Lesezugriff auf die Datei.Aus der Datei können Daten gelesen werden.In Kombination mit Write ist Lese-/Schreibzugriff möglich.</summary>
+    </member>
+    <member name="F:System.IO.FileAccess.ReadWrite">
+      <summary>Lese- und Schreibzugriff auf die Datei.Daten können aus der Datei gelesen und in diese geschrieben werden.</summary>
+    </member>
+    <member name="F:System.IO.FileAccess.Write">
+      <summary>Schreibzugriff auf die Datei.In die Datei können Daten geschrieben werden.In Kombination mit Read ist Lese-/Schreibzugriff möglich.</summary>
+    </member>
+    <member name="T:System.IO.FileAttributes">
+      <summary>Stellt Attribute für Dateien und Verzeichnisse bereit.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileAttributes.Archive">
+      <summary>Die Datei ist ein Kandidat für die Sicherung oder zum Entfernen. </summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Compressed">
+      <summary>Die Datei ist komprimiert.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Device">
+      <summary>Für zukünftige Verwendung reserviert.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Directory">
+      <summary>Die Datei ist ein Verzeichnis.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Encrypted">
+      <summary>Die Datei oder das Verzeichnis ist verschlüsselt.Bei einer Datei bedeutet dies, dass alle Daten in der Datei verschlüsselt sind.Bei einem Verzeichnis bedeutet dies, dass neu erstellte Dateien und Verzeichnisse standardmäßig verschlüsselt werden.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Hidden">
+      <summary>Die Datei ist versteckt und daher nicht in einer normalen Verzeichnisliste enthalten.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.IntegrityStream">
+      <summary>Die Datei oder das Verzeichnis enthält die Datenintegritätsunterstützung.Wenn dieser Wert auf eine Datei angewendet wird, haben alle Datenstreams in der Datei Integritätsunterstützung.Wenn dieser Wert auf ein Verzeichnis angewendet wird, erhalten alle neuen Dateien und Unterverzeichnisse innerhalb dieses Verzeichnisses standardmäßig Integritätsunterstützung.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Normal">
+      <summary>Die Datei ist eine Standarddatei, die über keine speziellen Attribute verfügt.Dieses Attribut ist nur gültig, wenn es allein verwendet wird.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.NoScrubData">
+      <summary>Die Datei oder das Verzeichnis ist von der Datenintegritätsüberprüfung ausgeschlossen.Wenn dieser Wert standardmäßig auf ein Verzeichnis angewendet wird, werden alle neuen Dateien und Unterverzeichnisse innerhalb dieses Verzeichnisses aus der Datenintegrität ausgeschlossen.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.NotContentIndexed">
+      <summary>Die Datei wird nicht vom Inhaltsindexdienst des Betriebssystems indiziert.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Offline">
+      <summary>Die Datei ist eine Offlinedatei.Die Daten der Datei sind nicht sofort verfügbar.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.ReadOnly">
+      <summary>Die Datei ist schreibgeschützt.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.ReparsePoint">
+      <summary>Die Datei enthält einen Analysepunkt. Dies ist ein Block mit benutzerdefinierten Daten, die mit einer Datei oder einem Verzeichnis verknüpft sind.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.SparseFile">
+      <summary>Die Datei ist eine Datei mit geringer Dichte.Dünn besetzte Dateien sind normalerweise große Dateien, deren Daten hauptsächlich aus Nullen bestehen.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.System">
+      <summary>Die Datei ist eine Systemdatei.Die Datei ist also Teil des Betriebssystems oder wird ausschließlich durch das Betriebssystem verwendet.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Temporary">
+      <summary>Die Datei ist temporär.Eine temporäre Datei enthält Daten, die benötigt werden, während eine Anwendung ausgeführt wird, die aber nicht benötigt wird, nachdem die Anwendung beendet ist.Dateisysteme versuchen, für einen schnelleren Zugriff alle Daten im Speicher zu behalten, anstatt diese zurück in den Massenspeicher zu entleeren.Eine temporäre Datei sollte von der Anwendung gelöscht werden, sobald sie nicht mehr benötigt wird.</summary>
+    </member>
+    <member name="T:System.IO.FileMode">
+      <summary>Gibt an, wie das Betriebssystem eine Datei öffnen soll.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileMode.Append">
+      <summary>Öffnet die Datei, sofern vorhanden, und sucht bis zum Ende der Datei oder erstellt eine neue Datei.Erfordert die <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Append" />-Berechtigung.FileMode.Append kann nur gemeinsam mit FileAccess.Write verwendet werden.Beim Suchen einer Position hinter dem Ende der Datei wird eine <see cref="T:System.IO.IOException" />-Ausnahme ausgelöst, und sämtliche Leseversuche führen zu Fehlern und lösen eine <see cref="T:System.NotSupportedException" />-Ausnahme aus.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.Create">
+      <summary>Gibt an, dass das Betriebssystem eine neue Datei erstellen soll.Wenn die Datei bereits vorhanden ist, wird diese überschrieben.Erfordert die <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" />-Berechtigung.FileMode.Create entspricht der Anforderung, dass <see cref="F:System.IO.FileMode.CreateNew" /> verwendet werden soll, wenn die Datei nicht vorhanden ist, und andernfalls <see cref="F:System.IO.FileMode.Truncate" /> verwendet werden soll.Wenn die Datei bereits vorhanden ist, aber eine versteckte Datei ist, wird eine <see cref="T:System.UnauthorizedAccessException" />-Ausnahme ausgelöst.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.CreateNew">
+      <summary>Gibt an, dass das Betriebssystem eine neue Datei erstellen soll.Erfordert die <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" />-Berechtigung.Wenn die Datei bereits vorhanden ist, wird eine <see cref="T:System.IO.IOException" />-Ausnahme ausgelöst.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.Open">
+      <summary>Gibt an, dass das Betriebssystem eine vorhandene Datei öffnen soll.Die Möglichkeit, die Datei zu öffnen, hängt von dem Wert ab, der durch die <see cref="T:System.IO.FileAccess" />-Enumeration angegeben wird.Eine <see cref="T:System.IO.FileNotFoundException" />-Ausnahme wird ausgelöst, wenn die Datei nicht vorhanden ist.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.OpenOrCreate">
+      <summary>Gibt an, dass das Betriebssystem eine Datei öffnen soll, sofern diese vorhanden ist, oder andernfalls eine neue Datei erstellen soll.Wenn die Datei mit FileAccess.Read geöffnet wird, ist eine <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Read" />-Berechtigung erforderlich.Wenn der Dateizugriff FileAccess.Write ist, ist <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" />-Berechtigung erforderlich.Wenn die Datei mit FileAccess.ReadWrite geöffnet wird, sind <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Read" /> und <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" />-Berechtigungen erforderlich.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.Truncate">
+      <summary>Gibt an, dass das Betriebssystem eine vorhandene Datei öffnen soll.Wenn die Datei geöffnet wird, sollte sie abgeschnitten werden, sodass ihre Größe 0 Bytes beträgt.Erfordert die <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" />-Berechtigung.Wenn versucht wird, eine mit FileMode.Truncate geöffnete Datei zu lesen, wird eine <see cref="T:System.ArgumentException" />-Ausnahme ausgelöst.</summary>
+    </member>
+    <member name="T:System.IO.FileShare">
+      <summary>Enthält Konstanten für das Steuern der Zugriffsart anderer <see cref="T:System.IO.FileStream" />-Objekte auf die gleiche Datei.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileShare.Delete">
+      <summary>Ermöglicht anschließendes Löschen einer Datei.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.Inheritable">
+      <summary>Ermöglicht die Vererbung des Dateihandles durch untergeordnete Prozesse.Dies wird nicht direkt durch Win32 unterstützt.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.None">
+      <summary>Verhindert die gemeinsame Nutzung der aktuellen Datei.Alle Anforderungen zum Öffnen der Datei (durch diesen oder einen anderen Prozess) schlagen fehl, bis die Datei geschlossen wird.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.Read">
+      <summary>Ermöglicht das nachfolgende Öffnen der Datei zum Lesen.Wenn dieses Flag nicht festgelegt wurde, schlagen alle Anforderungen (durch diesen oder einen anderen Prozess) fehl, die Datei zum Lesen zu öffnen, bis die Datei geschlossen wird.Selbst wenn dieses Flag angegeben wurde, können dennoch weitere Berechtigungen für den Zugriff auf die Datei erforderlich sein.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.ReadWrite">
+      <summary>Ermöglicht das nachfolgende Öffnen der Datei zum Lesen oder Schreiben.Wenn dieses Flag nicht angegeben wurde, schlagen alle Anforderungen (durch diesen oder einen anderen Prozess) fehl, die Datei zum Lesen oder Schreiben zu öffnen, bis die Datei geschlossen wird.Selbst wenn dieses Flag angegeben wurde, können dennoch weitere Berechtigungen für den Zugriff auf die Datei erforderlich sein.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.Write">
+      <summary>Ermöglicht das nachfolgende Öffnen der Datei zum Schreiben.Wenn dieses Flag nicht festgelegt wurde, schlagen alle Anforderungen (durch diesen oder einen anderen Prozess) fehl, die Datei zum Schreiben zu öffnen, bis die Datei geschlossen wird.Selbst wenn dieses Flag angegeben wurde, können dennoch weitere Berechtigungen für den Zugriff auf die Datei erforderlich sein.</summary>
+    </member>
+  </members>
+</doc>
