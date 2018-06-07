@@ -43,7 +43,7 @@ namespace MediaBrowser.Providers.TV
             _xmlSettings = xmlSettings;
         }
 
-        public async ValueTask<bool> Run(Series series, bool addNewItems, CancellationToken cancellationToken)
+        public async Task<bool> Run(Series series, bool addNewItems, CancellationToken cancellationToken)
         {
             var tvdbId = series.GetProviderId(MetadataProviders.Tvdb);
 
@@ -161,7 +161,7 @@ namespace MediaBrowser.Providers.TV
         /// </summary>
         /// <param name="series">The series.</param>
         /// <returns>Task.</returns>
-        private async ValueTask<bool> AddMissingEpisodes(Series series,
+        private async Task<bool> AddMissingEpisodes(Series series,
             IList<BaseItem> allItems,
             bool addMissingEpisodes,
             string seriesDataPath,

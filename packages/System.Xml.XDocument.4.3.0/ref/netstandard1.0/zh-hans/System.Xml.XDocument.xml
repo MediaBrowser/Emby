@@ -1,0 +1,1741 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Xml.XDocument</name>
+  </assembly>
+  <members>
+    <member name="T:System.Xml.Linq.Extensions">
+      <summary>包含 LINQ to XML 扩展方法。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Ancestors``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>返回元素集合，其中包含源集合中每个节点的上级。</summary>
+      <returns>一个包含源集合中每个节点的上级的 <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">一个包含源集合的 <see cref="T:System.Xml.Linq.XNode" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="T">
+        <paramref name="source" /> 中对象的类型，被约束为 <see cref="T:System.Xml.Linq.XNode" />。</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Ancestors``1(System.Collections.Generic.IEnumerable{``0},System.Xml.Linq.XName)">
+      <summary>返回经过筛选的元素集合，其中包含源集合中每个节点的上级。集合中只包括具有匹配 <see cref="T:System.Xml.Linq.XName" /> 的元素。</summary>
+      <returns>一个包含源集合中每个节点的上级的 <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。集合中只包括具有匹配 <see cref="T:System.Xml.Linq.XName" /> 的元素。</returns>
+      <param name="source">一个包含源集合的 <see cref="T:System.Xml.Linq.XNode" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="name">要匹配的 <see cref="T:System.Xml.Linq.XName" />。</param>
+      <typeparam name="T">
+        <paramref name="source" /> 中对象的类型，被约束为 <see cref="T:System.Xml.Linq.XNode" />。</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.AncestorsAndSelf(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement})">
+      <summary>返回元素集合，其中包含源集合中的每个元素及其上级。</summary>
+      <returns>一个包含源集合中每个元素及其上级的 <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">一个包含源集合的 <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.AncestorsAndSelf(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement},System.Xml.Linq.XName)">
+      <summary>返回经过筛选的元素集合，其中包含源集合中的每个元素及其上级。集合中只包括具有匹配 <see cref="T:System.Xml.Linq.XName" /> 的元素。</summary>
+      <returns>一个包含源集合中每个元素及其上级的 <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。集合中只包括具有匹配 <see cref="T:System.Xml.Linq.XName" /> 的元素。</returns>
+      <param name="source">一个包含源集合的 <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="name">要匹配的 <see cref="T:System.Xml.Linq.XName" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Attributes(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement})">
+      <summary>返回源集合中每个元素的属性的集合。</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XAttribute" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />，其中包含源集合中每个元素的属性。</returns>
+      <param name="source">一个包含源集合的 <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Attributes(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement},System.Xml.Linq.XName)">
+      <summary>返回源集合中经过筛选的每个元素的属性的集合。集合中只包括具有匹配 <see cref="T:System.Xml.Linq.XName" /> 的元素。</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XAttribute" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />，其中包含源集合中经过筛选的每个元素的属性集合。集合中只包括具有匹配 <see cref="T:System.Xml.Linq.XName" /> 的元素。</returns>
+      <param name="source">一个包含源集合的 <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="name">要匹配的 <see cref="T:System.Xml.Linq.XName" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.DescendantNodes``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>返回源集合中每个文档和元素的子代节点的集合。</summary>
+      <returns>源集合中每个文档和元素的子代节点的 <see cref="T:System.Xml.Linq.XNode" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">一个包含源集合的 <see cref="T:System.Xml.Linq.XContainer" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="T">
+        <paramref name="source" /> 中对象的类型，被约束为 <see cref="T:System.Xml.Linq.XContainer" />。</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.DescendantNodesAndSelf(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement})">
+      <summary>返回节点的集合，其中包含源集合中的每个元素及其子代节点。</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XNode" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />，其中包含源集合中的每个元素及其子代节点。</returns>
+      <param name="source">一个包含源集合的 <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Descendants``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>返回元素集合，其中包含源集合中每个元素和文档的子代元素。</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />，其中包含源集合中每个元素和文档的子代元素。</returns>
+      <param name="source">一个包含源集合的 <see cref="T:System.Xml.Linq.XContainer" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="T">
+        <paramref name="source" /> 中对象的类型，被约束为 <see cref="T:System.Xml.Linq.XContainer" />。</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Descendants``1(System.Collections.Generic.IEnumerable{``0},System.Xml.Linq.XName)">
+      <summary>返回经过筛选的元素集合，其中包含源集合中每个元素和文档的子代元素。集合中只包括具有匹配 <see cref="T:System.Xml.Linq.XName" /> 的元素。</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />，其中包含源集合中每个元素和文档的子代元素。集合中只包括具有匹配 <see cref="T:System.Xml.Linq.XName" /> 的元素。</returns>
+      <param name="source">一个包含源集合的 <see cref="T:System.Xml.Linq.XContainer" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="name">要匹配的 <see cref="T:System.Xml.Linq.XName" />。</param>
+      <typeparam name="T">
+        <paramref name="source" /> 中对象的类型，被约束为 <see cref="T:System.Xml.Linq.XContainer" />。</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.DescendantsAndSelf(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement})">
+      <summary>返回元素集合，其中包含源集合中的每个元素及其子代元素。</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />，其中包含源集合中的每个元素及其子代元素。</returns>
+      <param name="source">一个包含源集合的 <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.DescendantsAndSelf(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement},System.Xml.Linq.XName)">
+      <summary>返回经过筛选的元素集合，其中包含源集合中的每个元素及其子代元素。集合中只包括具有匹配 <see cref="T:System.Xml.Linq.XName" /> 的元素。</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />，其中包含源集合中的每个元素及其子代元素。集合中只包括具有匹配 <see cref="T:System.Xml.Linq.XName" /> 的元素。</returns>
+      <param name="source">一个包含源集合的 <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="name">要匹配的 <see cref="T:System.Xml.Linq.XName" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Elements``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>返回源集合中每个元素和文档的子元素的集合。</summary>
+      <returns>源集合中每个元素或文档的子元素的 <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">一个包含源集合的 <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="T">
+        <paramref name="source" /> 中对象的类型，被约束为 <see cref="T:System.Xml.Linq.XContainer" />。</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Elements``1(System.Collections.Generic.IEnumerable{``0},System.Xml.Linq.XName)">
+      <summary>返回源集合中经过筛选的每个元素和文档的子元素集合。集合中只包括具有匹配 <see cref="T:System.Xml.Linq.XName" /> 的元素。</summary>
+      <returns>源集合中每个元素和文档的子元素的 <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。集合中只包括具有匹配 <see cref="T:System.Xml.Linq.XName" /> 的元素。</returns>
+      <param name="source">一个包含源集合的 <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="name">要匹配的 <see cref="T:System.Xml.Linq.XName" />。</param>
+      <typeparam name="T">
+        <paramref name="source" /> 中对象的类型，被约束为 <see cref="T:System.Xml.Linq.XContainer" />。</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.InDocumentOrder``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>返回节点集合（其中包含源集合中的所有节点），并按文档顺序排列。</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XNode" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />，其中包含源集合中的所有节点（按文档顺序排列）。</returns>
+      <param name="source">一个包含源集合的 <see cref="T:System.Xml.Linq.XNode" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="T">
+        <paramref name="source" /> 中对象的类型，被约束为 <see cref="T:System.Xml.Linq.XNode" />。</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Nodes``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>返回源集合中每个文档和元素的子节点集合。</summary>
+      <returns>源集合中每个文档和元素的子节点的 <see cref="T:System.Xml.Linq.XNode" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">一个包含源集合的 <see cref="T:System.Xml.Linq.XNode" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="T">
+        <paramref name="source" /> 中对象的类型，被约束为 <see cref="T:System.Xml.Linq.XContainer" />。</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Remove(System.Collections.Generic.IEnumerable{System.Xml.Linq.XAttribute})">
+      <summary>将源集合中的每个属性从其父元素中移除。</summary>
+      <param name="source">一个包含源集合的 <see cref="T:System.Xml.Linq.XAttribute" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Remove``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>将源集合中的每个节点从其父节点中移除。</summary>
+      <param name="source">一个包含源集合的 <see cref="T:System.Xml.Linq.XNode" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="T">
+        <paramref name="source" /> 中对象的类型，被约束为 <see cref="T:System.Xml.Linq.XNode" />。</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.LoadOptions">
+      <summary>指定分析 XML 时的加载选项。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.LoadOptions.None">
+      <summary>不保留无关紧要的空白，也不加载基 URI 和行信息。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.LoadOptions.PreserveWhitespace">
+      <summary>分析时保留无关紧要的空白。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.LoadOptions.SetBaseUri">
+      <summary>从 <see cref="T:System.Xml.XmlReader" /> 请求基 URI 信息，并通过 <see cref="P:System.Xml.Linq.XObject.BaseUri" /> 属性使此信息可用。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.LoadOptions.SetLineInfo">
+      <summary>从 <see cref="T:System.Xml.XmlReader" /> 请求行信息并通过 <see cref="T:System.Xml.Linq.XObject" /> 上的属性使此信息可用。</summary>
+    </member>
+    <member name="T:System.Xml.Linq.ReaderOptions">
+      <summary>指定是否在使用 <see cref="T:System.Xml.XmlReader" /> 加载 <see cref="T:System.Xml.Linq.XDocument" /> 时省略重复的命名空间。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.ReaderOptions.None">
+      <summary>未指定任何读取器选项。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.ReaderOptions.OmitDuplicateNamespaces">
+      <summary>在加载 <see cref="T:System.Xml.Linq.XDocument" /> 时省略重复的命名空间。</summary>
+    </member>
+    <member name="T:System.Xml.Linq.SaveOptions">
+      <summary>指定序列化选项。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.SaveOptions.DisableFormatting">
+      <summary>序列化时保留所有无关紧要的空白。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.SaveOptions.None">
+      <summary>序列化时对 XML 进行格式设置（缩进）。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.SaveOptions.OmitDuplicateNamespaces">
+      <summary>在进行序列化时移除重复的命名空间声明。</summary>
+    </member>
+    <member name="T:System.Xml.Linq.XAttribute">
+      <summary>表示一个 XML 属性。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.#ctor(System.Xml.Linq.XAttribute)">
+      <summary>从其他 <see cref="T:System.Xml.Linq.XAttribute" /> 对象初始化 <see cref="T:System.Xml.Linq.XAttribute" /> 类的新实例。</summary>
+      <param name="other">要从其复制的 <see cref="T:System.Xml.Linq.XAttribute" /> 对象。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="other" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.#ctor(System.Xml.Linq.XName,System.Object)">
+      <summary>从指定的名称和值初始化 <see cref="T:System.Xml.Linq.XAttribute" /> 类的新实例。</summary>
+      <param name="name">属性的 <see cref="T:System.Xml.Linq.XName" />。</param>
+      <param name="value">一个包含属性值的 <see cref="T:System.Object" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 或 <paramref name="value" /> 参数为 null。</exception>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.EmptySequence">
+      <summary>获取空的属性集合。</summary>
+      <returns>一个包含空集合的 <see cref="T:System.Xml.Linq.XAttribute" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.IsNamespaceDeclaration">
+      <summary>确定此属性是否为命名空间声明。</summary>
+      <returns>如果此属性为命名空间声明，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.Name">
+      <summary>获取此属性 (Attribute) 的展开名称。</summary>
+      <returns>一个包含此属性 (Attribute) 名称的 <see cref="T:System.Xml.Linq.XName" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.NextAttribute">
+      <summary>获取父元素的下一个属性 (Attribute)。</summary>
+      <returns>一个包含父元素下一个属性 (Attribute) 的 <see cref="T:System.Xml.Linq.XAttribute" />。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.NodeType">
+      <summary>获取此节点的节点类型。</summary>
+      <returns>节点类型。对于 <see cref="T:System.Xml.Linq.XAttribute" /> 对象，该值为 <see cref="F:System.Xml.XmlNodeType.Attribute" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.UInt32}">
+      <summary>将此 <see cref="T:System.Xml.Linq.XAttribute" /> 的值强制转换为 <see cref="T:System.Nullable`1" /> 类型的 <see cref="T:System.UInt32" />。</summary>
+      <returns>一个包含此 <see cref="T:System.Xml.Linq.XAttribute" /> 的内容的 <see cref="T:System.UInt32" /> 类型的 <see cref="T:System.Nullable`1" />。</returns>
+      <param name="attribute">要强制转换为 <see cref="T:System.UInt32" /> 类型的 <see cref="T:System.Nullable`1" /> 的 <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">此属性不包含有效的 <see cref="T:System.UInt32" /> 值。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.UInt64}">
+      <summary>将此 <see cref="T:System.Xml.Linq.XAttribute" /> 的值强制转换为 <see cref="T:System.Nullable`1" /> 类型的 <see cref="T:System.UInt64" />。</summary>
+      <returns>一个包含此 <see cref="T:System.Xml.Linq.XAttribute" /> 的内容的 <see cref="T:System.UInt64" /> 类型的 <see cref="T:System.Nullable`1" />。</returns>
+      <param name="attribute">要强制转换为 <see cref="T:System.UInt64" /> 类型的 <see cref="T:System.Nullable`1" /> 的 <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性不包含有效的 <see cref="T:System.UInt64" /> 值。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.TimeSpan}">
+      <summary>将此 <see cref="T:System.Xml.Linq.XAttribute" /> 的值强制转换为 <see cref="T:System.Nullable`1" /> 类型的 <see cref="T:System.TimeSpan" />。</summary>
+      <returns>包含此 <see cref="T:System.Xml.Linq.XAttribute" /> 的内容的 <see cref="T:System.TimeSpan" /> 类型的 <see cref="T:System.Nullable`1" />。</returns>
+      <param name="attribute">要强制转换为 <see cref="T:System.TimeSpan" /> 类型的 <see cref="T:System.Nullable`1" /> 的 <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性不包含有效的 <see cref="T:System.TimeSpan" /> 值。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Int64}">
+      <summary>将此 <see cref="T:System.Xml.Linq.XAttribute" /> 的值强制转换为 <see cref="T:System.Nullable`1" /> 类型的 <see cref="T:System.Int64" />。</summary>
+      <returns>一个包含此 <see cref="T:System.Xml.Linq.XAttribute" /> 的内容的 <see cref="T:System.Int64" /> 类型的 <see cref="T:System.Nullable`1" />。</returns>
+      <param name="attribute">要强制转换为 <see cref="T:System.Int64" /> 类型的 <see cref="T:System.Nullable`1" /> 的 <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">此属性不包含有效的 <see cref="T:System.Int64" /> 值。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Single}">
+      <summary>将此 <see cref="T:System.Xml.Linq.XAttribute" /> 的值强制转换为 <see cref="T:System.Nullable`1" /> 类型的 <see cref="T:System.Single" />。</summary>
+      <returns>一个包含此 <see cref="T:System.Xml.Linq.XAttribute" /> 的内容的 <see cref="T:System.Single" /> 类型的 <see cref="T:System.Nullable`1" />。</returns>
+      <param name="attribute">要强制转换为 <see cref="T:System.Single" /> 类型的 <see cref="T:System.Nullable`1" /> 的 <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">此属性不包含有效的 <see cref="T:System.Single" /> 值。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.UInt32">
+      <summary>将此 <see cref="T:System.Xml.Linq.XAttribute" /> 的值强制转换为 <see cref="T:System.UInt32" />。</summary>
+      <returns>一个 <see cref="T:System.UInt32" />，其中包含此 <see cref="T:System.Xml.Linq.XAttribute" /> 的内容。</returns>
+      <param name="attribute">要强制转换为 <see cref="T:System.UInt32" /> 类型的 <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">此属性不包含有效的 <see cref="T:System.UInt32" /> 值。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.UInt64">
+      <summary>将此 <see cref="T:System.Xml.Linq.XAttribute" /> 的值强制转换为 <see cref="T:System.UInt64" />。</summary>
+      <returns>一个 <see cref="T:System.UInt64" />，其中包含此 <see cref="T:System.Xml.Linq.XAttribute" /> 的内容。</returns>
+      <param name="attribute">要强制转换为 <see cref="T:System.UInt64" /> 的 <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性不包含有效的 <see cref="T:System.UInt64" /> 值。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.TimeSpan">
+      <summary>将此 <see cref="T:System.Xml.Linq.XAttribute" /> 的值强制转换为 <see cref="T:System.TimeSpan" />。</summary>
+      <returns>一个 <see cref="T:System.TimeSpan" />，其中包含此 <see cref="T:System.Xml.Linq.XAttribute" /> 的内容。</returns>
+      <param name="attribute">要强制转换为 <see cref="T:System.TimeSpan" /> 的 <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性不包含有效的 <see cref="T:System.TimeSpan" /> 值。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Single">
+      <summary>将此 <see cref="T:System.Xml.Linq.XAttribute" /> 的值强制转换为 <see cref="T:System.Single" />。</summary>
+      <returns>一个 <see cref="T:System.Single" />，其中包含此 <see cref="T:System.Xml.Linq.XAttribute" /> 的内容。</returns>
+      <param name="attribute">要强制转换为 <see cref="T:System.Single" /> 的 <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">此属性不包含有效的 <see cref="T:System.Single" /> 值。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.String">
+      <summary>将此 <see cref="T:System.Xml.Linq.XAttribute" /> 的值强制转换为 <see cref="T:System.String" />。</summary>
+      <returns>一个 <see cref="T:System.String" />，其中包含此 <see cref="T:System.Xml.Linq.XAttribute" /> 的内容。</returns>
+      <param name="attribute">要强制转换为 <see cref="T:System.String" /> 的 <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Int32}">
+      <summary>将此 <see cref="T:System.Xml.Linq.XAttribute" /> 的值强制转换为 <see cref="T:System.Nullable`1" /> 类型的 <see cref="T:System.Int32" />。</summary>
+      <returns>一个包含此 <see cref="T:System.Xml.Linq.XAttribute" /> 的内容的 <see cref="T:System.Nullable`1" /> 类型的 <see cref="T:System.Int32" />。</returns>
+      <param name="attribute">要强制转换为 <see cref="T:System.Int32" /> 类型的 <see cref="T:System.Nullable`1" /> 的 <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Double">
+      <summary>将此 <see cref="T:System.Xml.Linq.XAttribute" /> 的值强制转换为 <see cref="T:System.Double" />。</summary>
+      <returns>一个 <see cref="T:System.Double" />，其中包含此 <see cref="T:System.Xml.Linq.XAttribute" /> 的内容。</returns>
+      <param name="attribute">要强制转换为 <see cref="T:System.Double" /> 的 <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">此属性不包含有效的 <see cref="T:System.Double" /> 值。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Guid">
+      <summary>将此 <see cref="T:System.Xml.Linq.XAttribute" /> 的值强制转换为 <see cref="T:System.Guid" />。</summary>
+      <returns>一个 <see cref="T:System.Guid" />，其中包含此 <see cref="T:System.Xml.Linq.XAttribute" /> 的内容。</returns>
+      <param name="attribute">要强制转换为 <see cref="T:System.Guid" /> 的 <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">此属性不包含有效的 <see cref="T:System.Guid" /> 值。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Int32">
+      <summary>将此 <see cref="T:System.Xml.Linq.XAttribute" /> 的值强制转换为 <see cref="T:System.Int32" />。</summary>
+      <returns>一个 <see cref="T:System.Int32" />，其中包含此 <see cref="T:System.Xml.Linq.XAttribute" /> 的内容。</returns>
+      <param name="attribute">要强制转换为 <see cref="T:System.Int32" /> 的 <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">此属性不包含有效的 <see cref="T:System.Int32" /> 值。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Decimal">
+      <summary>将此 <see cref="T:System.Xml.Linq.XAttribute" /> 的值强制转换为 <see cref="T:System.Decimal" />。</summary>
+      <returns>一个 <see cref="T:System.Decimal" />，其中包含此 <see cref="T:System.Xml.Linq.XAttribute" /> 的内容。</returns>
+      <param name="attribute">要强制转换为 <see cref="T:System.Decimal" /> 类型的 <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">此属性不包含有效的 <see cref="T:System.Decimal" /> 值。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Boolean">
+      <summary>将此 <see cref="T:System.Xml.Linq.XAttribute" /> 的值强制转换为 <see cref="T:System.Boolean" />。</summary>
+      <returns>一个 <see cref="T:System.Boolean" />，其中包含此 <see cref="T:System.Xml.Linq.XAttribute" /> 的内容。</returns>
+      <param name="attribute">要强制转换为 <see cref="T:System.Boolean" /> 类型的 <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性不包含有效的 <see cref="T:System.Boolean" /> 值。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.DateTime">
+      <summary>将此 <see cref="T:System.Xml.Linq.XAttribute" /> 的值强制转换为 <see cref="T:System.DateTime" />。</summary>
+      <returns>一个 <see cref="T:System.DateTime" />，其中包含此 <see cref="T:System.Xml.Linq.XAttribute" /> 的内容。</returns>
+      <param name="attribute">要强制转换为 <see cref="T:System.DateTime" /> 类型的 <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性不包含有效的 <see cref="T:System.DateTime" /> 值。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.DateTimeOffset">
+      <summary>将此 <see cref="T:System.Xml.Linq.XAttribute" /> 的值强制转换为 <see cref="T:System.DateTimeOffset" />。</summary>
+      <returns>一个 <see cref="T:System.DateTimeOffset" />，其中包含此 <see cref="T:System.Xml.Linq.XAttribute" /> 的内容。</returns>
+      <param name="attribute">要强制转换为 <see cref="T:System.DateTimeOffset" /> 类型的 <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性不包含有效的 <see cref="T:System.DateTimeOffset" /> 值。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Decimal}">
+      <summary>将此 <see cref="T:System.Xml.Linq.XAttribute" /> 的值强制转换为 <see cref="T:System.Nullable`1" /> 类型的 <see cref="T:System.Decimal" />。</summary>
+      <returns>一个包含此 <see cref="T:System.Xml.Linq.XAttribute" /> 的内容的 <see cref="T:System.Decimal" /> 类型的 <see cref="T:System.Nullable`1" />。</returns>
+      <param name="attribute">要强制转换为 <see cref="T:System.Decimal" /> 类型的 <see cref="T:System.Nullable`1" /> 的 <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">此属性不包含有效的 <see cref="T:System.Decimal" /> 值。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.DateTimeOffset}">
+      <summary>将此 <see cref="T:System.Xml.Linq.XAttribute" /> 的值强制转换为 <see cref="T:System.DateTimeOffset" /> 类型的 <see cref="T:System.Nullable`1" />。</summary>
+      <returns>包含此 <see cref="T:System.Xml.Linq.XAttribute" /> 的内容的 <see cref="T:System.DateTimeOffset" /> 类型的 <see cref="T:System.Nullable`1" />。</returns>
+      <param name="attribute">要强制转换为 <see cref="T:System.DateTimeOffset" /> 类型的 <see cref="T:System.Nullable`1" /> 的 <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性不包含有效的 <see cref="T:System.DateTimeOffset" /> 值。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Guid}">
+      <summary>将此 <see cref="T:System.Xml.Linq.XAttribute" /> 的值强制转换为 <see cref="T:System.Guid" /> 类型的 <see cref="T:System.Nullable`1" />。</summary>
+      <returns>一个包含此 <see cref="T:System.Xml.Linq.XAttribute" /> 的内容的 <see cref="T:System.Guid" /> 类型的 <see cref="T:System.Nullable`1" />。</returns>
+      <param name="attribute">要强制转换为 <see cref="T:System.Guid" /> 类型的 <see cref="T:System.Nullable`1" /> 的 <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">此属性不包含有效的 <see cref="T:System.Guid" /> 值。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Double}">
+      <summary>将此 <see cref="T:System.Xml.Linq.XAttribute" /> 的值强制转换为 <see cref="T:System.Double" /> 类型的 <see cref="T:System.Nullable`1" />。</summary>
+      <returns>一个包含此 <see cref="T:System.Xml.Linq.XAttribute" /> 的内容的 <see cref="T:System.Double" /> 类型的 <see cref="T:System.Nullable`1" />。</returns>
+      <param name="attribute">要强制转换为 <see cref="T:System.Double" /> 类型的 <see cref="T:System.Nullable`1" /> 的 <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">此属性不包含有效的 <see cref="T:System.Double" /> 值。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Int64">
+      <summary>将此 <see cref="T:System.Xml.Linq.XAttribute" /> 的值强制转换为 <see cref="T:System.Int64" />。</summary>
+      <returns>一个 <see cref="T:System.Int64" />，其中包含此 <see cref="T:System.Xml.Linq.XAttribute" /> 的内容。</returns>
+      <param name="attribute">要强制转换为 <see cref="T:System.Int64" /> 的 <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">此属性不包含有效的 <see cref="T:System.Int64" /> 值。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.DateTime}">
+      <summary>将此 <see cref="T:System.Xml.Linq.XAttribute" /> 的值强制转换为 <see cref="T:System.Nullable`1" /> 类型的 <see cref="T:System.DateTime" />。</summary>
+      <returns>包含此 <see cref="T:System.Xml.Linq.XAttribute" /> 的内容的 <see cref="T:System.DateTime" /> 类型的 <see cref="T:System.Nullable`1" />。</returns>
+      <param name="attribute">要强制转换为 <see cref="T:System.DateTime" /> 类型的 <see cref="T:System.Nullable`1" /> 的 <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性不包含有效的 <see cref="T:System.DateTime" /> 值。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Boolean}">
+      <summary>将此 <see cref="T:System.Xml.Linq.XAttribute" /> 的值强制转换为 <see cref="T:System.Nullable`1" /> 类型的 <see cref="T:System.Boolean" />。</summary>
+      <returns>包含此 <see cref="T:System.Xml.Linq.XAttribute" /> 的内容的 <see cref="T:System.Boolean" /> 类型的 <see cref="T:System.Nullable`1" />。</returns>
+      <param name="attribute">要强制转换为 <see cref="T:System.Boolean" /> 类型的 <see cref="T:System.Nullable`1" /> 的 <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性不包含有效的 <see cref="T:System.Boolean" /> 值。</exception>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.PreviousAttribute">
+      <summary>获取父元素的上一个属性 (Attribute)。</summary>
+      <returns>一个包含父元素的上一个属性 (Attribute) 的 <see cref="T:System.Xml.Linq.XAttribute" />。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.Remove">
+      <summary>从此属性的父元素中移除它。</summary>
+      <exception cref="T:System.InvalidOperationException">父元素为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.SetValue(System.Object)">
+      <summary>设置此属性的值。</summary>
+      <param name="value">分配给此属性的值。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> 参数为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="value" /> 是 <see cref="T:System.Xml.Linq.XObject" />。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.ToString">
+      <summary>将当前的 <see cref="T:System.Xml.Linq.XAttribute" /> 对象转换为字符串表示形式。</summary>
+      <returns>一个 <see cref="T:System.String" />，其中包含一个属性及其值的 XML 文本表示形式。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.Value">
+      <summary>获取或设置此属性的值。</summary>
+      <returns>一个包含此属性的值的 <see cref="T:System.String" />。</returns>
+      <exception cref="T:System.ArgumentNullException">进行设置时，<paramref name="value" /> 为 null。</exception>
+    </member>
+    <member name="T:System.Xml.Linq.XCData">
+      <summary>表示一个包含 CDATA 的文本节点。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XCData.#ctor(System.String)">
+      <summary>初始化 <see cref="T:System.Xml.Linq.XCData" /> 类的新实例。</summary>
+      <param name="value">一个字符串，其中包含 <see cref="T:System.Xml.Linq.XCData" /> 节点的值。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XCData.#ctor(System.Xml.Linq.XCData)">
+      <summary>初始化 <see cref="T:System.Xml.Linq.XCData" /> 类的新实例。</summary>
+      <param name="other">要从其复制的 <see cref="T:System.Xml.Linq.XCData" /> 节点。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XCData.NodeType">
+      <summary>获取此节点的节点类型。</summary>
+      <returns>节点类型。对于 <see cref="T:System.Xml.Linq.XCData" /> 对象，此值为 <see cref="F:System.Xml.XmlNodeType.CDATA" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XCData.WriteTo(System.Xml.XmlWriter)">
+      <summary>将此 CDATA 对象写入 <see cref="T:System.Xml.XmlWriter" />。</summary>
+      <param name="writer">此方法将写入的 <see cref="T:System.Xml.XmlWriter" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XComment">
+      <summary>表示一个 XML 注释。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XComment.#ctor(System.String)">
+      <summary>使用指定的字符串内容初始化 <see cref="T:System.Xml.Linq.XComment" /> 类的新实例。</summary>
+      <param name="value">一个字符串，其中包含新 <see cref="T:System.Xml.Linq.XComment" /> 对象的内容。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XComment.#ctor(System.Xml.Linq.XComment)">
+      <summary>从现有注释节点初始化 <see cref="T:System.Xml.Linq.XComment" /> 类的新实例。</summary>
+      <param name="other">要从其复制的 <see cref="T:System.Xml.Linq.XComment" /> 节点。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="other" /> 参数为 null。</exception>
+    </member>
+    <member name="P:System.Xml.Linq.XComment.NodeType">
+      <summary>获取此节点的节点类型。</summary>
+      <returns>节点类型。对于 <see cref="T:System.Xml.Linq.XComment" /> 对象，此值为 <see cref="F:System.Xml.XmlNodeType.Comment" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XComment.Value">
+      <summary>获取或设置此注释的字符串值。</summary>
+      <returns>一个 <see cref="T:System.String" />，其中包含此注释的字符串值。</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XComment.WriteTo(System.Xml.XmlWriter)">
+      <summary>将此注释写入 <see cref="T:System.Xml.XmlWriter" />。</summary>
+      <param name="writer">此方法将写入的 <see cref="T:System.Xml.XmlWriter" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XContainer">
+      <summary>表示可包含其他节点的节点。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Add(System.Object)">
+      <summary>将指定的内容添加为此 <see cref="T:System.Xml.Linq.XContainer" /> 的子级。</summary>
+      <param name="content">要添加的包含简单内容的内容对象或内容对象集合。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Add(System.Object[])">
+      <summary>将指定的内容添加为此 <see cref="T:System.Xml.Linq.XContainer" /> 的子级。</summary>
+      <param name="content">内容对象的参数列表。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.AddFirst(System.Object)">
+      <summary>将指定的内容作为此文档或元素的第一个子级添加。</summary>
+      <param name="content">要添加的包含简单内容的内容对象或内容对象集合。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.AddFirst(System.Object[])">
+      <summary>将指定的内容作为此文档或元素的第一个子级添加。</summary>
+      <param name="content">内容对象的参数列表。</param>
+      <exception cref="T:System.InvalidOperationException">父级为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.CreateWriter">
+      <summary>创建可用于将节点添加至 <see cref="T:System.Xml.Linq.XContainer" /> 的 <see cref="T:System.Xml.XmlWriter" />。</summary>
+      <returns>已准备好写入内容的 <see cref="T:System.Xml.XmlWriter" />。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.DescendantNodes">
+      <summary>按文档顺序返回此文档或元素的子代节点集合。</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XNode" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />，其中按文档顺序包含 <see cref="T:System.Xml.Linq.XContainer" /> 的子代节点。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Descendants">
+      <summary>按文档顺序返回此文档或元素的子代元素集合。</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />，其中包含 <see cref="T:System.Xml.Linq.XContainer" /> 的子代元素。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Descendants(System.Xml.Linq.XName)">
+      <summary>按文档顺序返回此文档或元素的经过筛选的子代元素集合。集合中只包括具有匹配 <see cref="T:System.Xml.Linq.XName" /> 的元素。</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />，其中包含与指定 <see cref="T:System.Xml.Linq.XName" /> 匹配的 <see cref="T:System.Xml.Linq.XContainer" /> 的子代元素。</returns>
+      <param name="name">要匹配的 <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Element(System.Xml.Linq.XName)">
+      <summary>获取具有指定 <see cref="T:System.Xml.Linq.XName" /> 的第一个（按文档顺序）子元素。</summary>
+      <returns>与指定 <see cref="T:System.Xml.Linq.XName" /> 匹配的 <see cref="T:System.Xml.Linq.XElement" />，或者为 null。</returns>
+      <param name="name">要匹配的 <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Elements">
+      <summary>按文档顺序返回此元素或文档的子元素集合。</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />，其中按文档顺序包含此 <see cref="T:System.Xml.Linq.XContainer" /> 的子元素。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Elements(System.Xml.Linq.XName)">
+      <summary>按文档顺序返回此元素或文档的经过筛选的子元素集合。集合中只包括具有匹配 <see cref="T:System.Xml.Linq.XName" /> 的元素。</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />，其中按文档顺序包含具有匹配 <see cref="T:System.Xml.Linq.XName" /> 的 <see cref="T:System.Xml.Linq.XContainer" /> 的子级。</returns>
+      <param name="name">要匹配的 <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XContainer.FirstNode">
+      <summary>获取此节点的第一个子节点。</summary>
+      <returns>一个 <see cref="T:System.Xml.Linq.XNode" />，其中包含 <see cref="T:System.Xml.Linq.XContainer" /> 的第一个子节点。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Xml.Linq.XContainer.LastNode">
+      <summary>获取此节点的最后一个子节点。</summary>
+      <returns>一个 <see cref="T:System.Xml.Linq.XNode" />，其中包含 <see cref="T:System.Xml.Linq.XContainer" /> 的最后一个子节点。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Nodes">
+      <summary>按文档顺序返回此元素或文档的子节点集合。</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XNode" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />，其中按文档顺序包含此 <see cref="T:System.Xml.Linq.XContainer" /> 的内容。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.RemoveNodes">
+      <summary>从此文档或元素中移除子节点。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.ReplaceNodes(System.Object)">
+      <summary>使用指定的内容替换此文档或元素的子节点。</summary>
+      <param name="content">一个用于替换子节点的包含简单内容的内容对象或内容对象集合。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.ReplaceNodes(System.Object[])">
+      <summary>使用指定的内容替换此文档或元素的子节点。</summary>
+      <param name="content">内容对象的参数列表。</param>
+    </member>
+    <member name="T:System.Xml.Linq.XDeclaration">
+      <summary>表示一个 XML 声明。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XDeclaration.#ctor(System.String,System.String,System.String)">
+      <summary>使用指定的版本、编码和独立状态初始化 <see cref="T:System.Xml.Linq.XDeclaration" /> 类的新实例。</summary>
+      <param name="version">XML 的版本，通常为"1.0"。</param>
+      <param name="encoding">XML 文档的编码。</param>
+      <param name="standalone">包含"yes"或"no"的字符串，用来指定 XML 是独立的还是需要解析外部实体。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDeclaration.#ctor(System.Xml.Linq.XDeclaration)">
+      <summary>从其他 <see cref="T:System.Xml.Linq.XDeclaration" /> 对象初始化 <see cref="T:System.Xml.Linq.XDeclaration" /> 类的新实例。</summary>
+      <param name="other">用于初始化此 <see cref="T:System.Xml.Linq.XDeclaration" /> 对象的 <see cref="T:System.Xml.Linq.XDeclaration" />。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XDeclaration.Encoding">
+      <summary>获取或设置此文档的编码。</summary>
+      <returns>一个包含此文档的代码页名称的 <see cref="T:System.String" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDeclaration.Standalone">
+      <summary>获取或设置此文档的独立属性。</summary>
+      <returns>一个包含此文档的独立属性的 <see cref="T:System.String" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XDeclaration.ToString">
+      <summary>提供声明作为已格式化的字符串。</summary>
+      <returns>一个 <see cref="T:System.String" />，其中包含已格式化的 XML 字符串。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDeclaration.Version">
+      <summary>获取或设置此文档的版本属性。</summary>
+      <returns>一个包含此文档的版本属性的 <see cref="T:System.String" />。</returns>
+    </member>
+    <member name="T:System.Xml.Linq.XDocument">
+      <summary>表示 XML 文档。有关 <see cref="T:System.Xml.Linq.XDocument" /> 对象的组件和用法，请参见 XDocument 类概述。若要浏览此类型的 .NET Framework 源代码，请参阅引用源。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.#ctor">
+      <summary>初始化 <see cref="T:System.Xml.Linq.XDocument" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.#ctor(System.Object[])">
+      <summary>用指定的内容初始化 <see cref="T:System.Xml.Linq.XDocument" /> 类的新实例。</summary>
+      <param name="content">要添加到此文档的内容对象的参数列表。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.#ctor(System.Xml.Linq.XDeclaration,System.Object[])">
+      <summary>用指定的 <see cref="T:System.Xml.Linq.XDeclaration" /> 和内容初始化 <see cref="T:System.Xml.Linq.XDocument" /> 类的新实例。</summary>
+      <param name="declaration">文档的 <see cref="T:System.Xml.Linq.XDeclaration" />。</param>
+      <param name="content">文档的内容。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.#ctor(System.Xml.Linq.XDocument)">
+      <summary>从现有的 <see cref="T:System.Xml.Linq.XDocument" /> 对象初始化 <see cref="T:System.Xml.Linq.XDocument" /> 类的新实例。</summary>
+      <param name="other">要复制的 <see cref="T:System.Xml.Linq.XDocument" /> 对象。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XDocument.Declaration">
+      <summary>获取或设置此文档的 XML 声明。</summary>
+      <returns>一个包含此文档的 XML 声明的 <see cref="T:System.Xml.Linq.XDeclaration" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDocument.DocumentType">
+      <summary>获取此文档的文档类型定义 (DTD)。</summary>
+      <returns>一个包含此文档的 DTD 的 <see cref="T:System.Xml.Linq.XDocumentType" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.IO.Stream)">
+      <summary>使用指定流创建一个新的 <see cref="T:System.Xml.Linq.XDocument" /> 实例。</summary>
+      <returns>一个可读取流中所包含数据的 <see cref="T:System.Xml.Linq.XDocument" /> 对象。</returns>
+      <param name="stream">包含 XML 数据的流。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.IO.Stream,System.Xml.Linq.LoadOptions)">
+      <summary>使用指定流创建新的 <see cref="T:System.Xml.Linq.XDocument" /> 实例，也可以选择保留空白，设置基 URI 和保留行信息。</summary>
+      <returns>一个可读取流中所包含数据的 <see cref="T:System.Xml.Linq.XDocument" /> 对象。</returns>
+      <param name="stream">包含 XML 数据的流。</param>
+      <param name="options">一个 <see cref="T:System.Xml.Linq.LoadOptions" />，指定是否加载基 URI 和行信息。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.IO.TextReader)">
+      <summary>从 <see cref="T:System.IO.TextReader" /> 创建新的 <see cref="T:System.Xml.Linq.XDocument" />。</summary>
+      <returns>一个 <see cref="T:System.Xml.Linq.XDocument" />，其中包含指定 <see cref="T:System.IO.TextReader" /> 的内容。</returns>
+      <param name="textReader">一个 <see cref="T:System.IO.TextReader" />，其中包含 <see cref="T:System.Xml.Linq.XDocument" /> 的内容。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.IO.TextReader,System.Xml.Linq.LoadOptions)">
+      <summary>从 <see cref="T:System.IO.TextReader" /> 创建新的 <see cref="T:System.Xml.Linq.XDocument" />，还可以选择保留空白和行信息以及设置基 URI。</summary>
+      <returns>一个 <see cref="T:System.Xml.Linq.XDocument" />，其中包含从指定的 <see cref="T:System.IO.TextReader" /> 读取的 XML。</returns>
+      <param name="textReader">一个 <see cref="T:System.IO.TextReader" />，其中包含 <see cref="T:System.Xml.Linq.XDocument" /> 的内容。</param>
+      <param name="options">一个 <see cref="T:System.Xml.Linq.LoadOptions" />，指定空白行为以及是否加载基 URI 和行信息。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.String)">
+      <summary>从文件创建新的 <see cref="T:System.Xml.Linq.XDocument" />。</summary>
+      <returns>一个 <see cref="T:System.Xml.Linq.XDocument" />，其中包含指定文件的内容。</returns>
+      <param name="uri">一个 URI 字符串，它引用要加载到新 <see cref="T:System.Xml.Linq.XDocument" /> 中的文件。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.String,System.Xml.Linq.LoadOptions)">
+      <summary>从文件创建新的 <see cref="T:System.Xml.Linq.XDocument" />，还可以选择保留空白和行信息以及设置基 URI。</summary>
+      <returns>一个 <see cref="T:System.Xml.Linq.XDocument" />，其中包含指定文件的内容。</returns>
+      <param name="uri">一个 URI 字符串，它引用要加载到新 <see cref="T:System.Xml.Linq.XDocument" /> 中的文件。</param>
+      <param name="options">一个 <see cref="T:System.Xml.Linq.LoadOptions" />，指定空白行为以及是否加载基 URI 和行信息。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.Xml.XmlReader)">
+      <summary>从 <see cref="T:System.Xml.XmlReader" /> 创建新的 <see cref="T:System.Xml.Linq.XDocument" />。</summary>
+      <returns>一个 <see cref="T:System.Xml.Linq.XDocument" />，其中包含指定 <see cref="T:System.Xml.XmlReader" /> 的内容。</returns>
+      <param name="reader">一个 <see cref="T:System.Xml.XmlReader" />，其中包含 <see cref="T:System.Xml.Linq.XDocument" /> 的内容。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.Xml.XmlReader,System.Xml.Linq.LoadOptions)">
+      <summary>从 <see cref="T:System.Xml.XmlReader" /> 加载 <see cref="T:System.Xml.Linq.XDocument" />，还可以选择设置基 URI 和保留行信息。</summary>
+      <returns>一个 <see cref="T:System.Xml.Linq.XDocument" />，其中包含从指定的 <see cref="T:System.Xml.XmlReader" /> 读取的 XML。</returns>
+      <param name="reader">一个从其读取 <see cref="T:System.Xml.Linq.XDocument" /> 内容的 <see cref="T:System.Xml.XmlReader" />。</param>
+      <param name="options">一个 <see cref="T:System.Xml.Linq.LoadOptions" />，指定是否加载基 URI 和行信息。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XDocument.NodeType">
+      <summary>获取此节点的节点类型。</summary>
+      <returns>节点类型。对于 <see cref="T:System.Xml.Linq.XDocument" /> 对象，此值为 <see cref="F:System.Xml.XmlNodeType.Document" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Parse(System.String)">
+      <summary>从字符串创建新的 <see cref="T:System.Xml.Linq.XDocument" />。</summary>
+      <returns>一个使用包含 XML 的字符串填充的 <see cref="T:System.Xml.Linq.XDocument" />。</returns>
+      <param name="text">包含 XML 的字符串。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Parse(System.String,System.Xml.Linq.LoadOptions)">
+      <summary>从字符串创建新 <see cref="T:System.Xml.Linq.XDocument" />，还可以选择保留空白和行信息以及设置基 URI。</summary>
+      <returns>一个使用包含 XML 的字符串填充的 <see cref="T:System.Xml.Linq.XDocument" />。</returns>
+      <param name="text">包含 XML 的字符串。</param>
+      <param name="options">一个 <see cref="T:System.Xml.Linq.LoadOptions" />，指定空白行为以及是否加载基 URI 和行信息。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XDocument.Root">
+      <summary>获取此文档的 XML 树的根元素。</summary>
+      <returns>XML 树的根 <see cref="T:System.Xml.Linq.XElement" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Save(System.IO.Stream)">
+      <summary>将此 <see cref="T:System.Xml.Linq.XDocument" /> 输出到指定的 <see cref="T:System.IO.Stream" />。</summary>
+      <param name="stream">将此 <see cref="T:System.Xml.Linq.XDocument" /> 输出到的流。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Save(System.IO.Stream,System.Xml.Linq.SaveOptions)">
+      <summary>将此 <see cref="T:System.Xml.Linq.XDocument" /> 输出到指定的 <see cref="T:System.IO.Stream" />，并可选择指定格式设置行为。</summary>
+      <param name="stream">将此 <see cref="T:System.Xml.Linq.XDocument" /> 输出到的流。</param>
+      <param name="options">一个指定格式设置行为的 <see cref="T:System.Xml.Linq.SaveOptions" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Save(System.IO.TextWriter)">
+      <summary>将此 <see cref="T:System.Xml.Linq.XDocument" /> 序列化为 <see cref="T:System.IO.TextWriter" />。</summary>
+      <param name="textWriter">将向其中写入 <see cref="T:System.Xml.Linq.XDocument" /> 的 <see cref="T:System.IO.TextWriter" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Save(System.IO.TextWriter,System.Xml.Linq.SaveOptions)">
+      <summary>将此 <see cref="T:System.Xml.Linq.XDocument" /> 序列化为 <see cref="T:System.IO.TextWriter" />，还可以选择禁用格式设置。</summary>
+      <param name="textWriter">要将 XML 输出到的 <see cref="T:System.IO.TextWriter" />。</param>
+      <param name="options">一个指定格式设置行为的 <see cref="T:System.Xml.Linq.SaveOptions" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Save(System.Xml.XmlWriter)">
+      <summary>将此 <see cref="T:System.Xml.Linq.XDocument" /> 序列化为 <see cref="T:System.Xml.XmlWriter" />。</summary>
+      <param name="writer">将向其中写入 <see cref="T:System.Xml.Linq.XDocument" /> 的 <see cref="T:System.Xml.XmlWriter" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.WriteTo(System.Xml.XmlWriter)">
+      <summary>将此文档写入 <see cref="T:System.Xml.XmlWriter" />。</summary>
+      <param name="writer">此方法将写入的 <see cref="T:System.Xml.XmlWriter" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XDocumentType">
+      <summary>表示 XML 文档类型定义 (DTD)。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XDocumentType.#ctor(System.String,System.String,System.String,System.String)">
+      <summary>初始化 <see cref="T:System.Xml.Linq.XDocumentType" /> 类的实例。</summary>
+      <param name="name">一个包含 DTD 的限定名的 <see cref="T:System.String" />，此名称与 XML 文档的根元素的限定名相同。</param>
+      <param name="publicId">一个 <see cref="T:System.String" />，其中包含外部公共 DTD 的公共标识符。</param>
+      <param name="systemId">一个 <see cref="T:System.String" />，其中包含外部专用 DTD 的系统标识符。</param>
+      <param name="internalSubset">一个 <see cref="T:System.String" />，其中包含内部 DTD 的内部子集。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocumentType.#ctor(System.Xml.Linq.XDocumentType)">
+      <summary>从其他 <see cref="T:System.Xml.Linq.XDocumentType" /> 对象初始化 <see cref="T:System.Xml.Linq.XDocumentType" /> 类的实例。</summary>
+      <param name="other">要从其复制的 <see cref="T:System.Xml.Linq.XDocumentType" /> 对象。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XDocumentType.InternalSubset">
+      <summary>获取或设置此文档类型定义 (DTD) 的内部子集。</summary>
+      <returns>一个 <see cref="T:System.String" />，其中包含此文档类型定义的 (DTD) 的内部子集。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDocumentType.Name">
+      <summary>获取或设置此文档类型定义 (DTD) 的名称。</summary>
+      <returns>一个 <see cref="T:System.String" />，其中包含此文档类型定义的 (DTD) 的名称。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDocumentType.NodeType">
+      <summary>获取此节点的节点类型。</summary>
+      <returns>节点类型。对于 <see cref="T:System.Xml.Linq.XDocumentType" /> 对象，该值为 <see cref="F:System.Xml.XmlNodeType.DocumentType" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDocumentType.PublicId">
+      <summary>获取或设置此文档类型定义 (DTD) 的公共标识符。</summary>
+      <returns>一个 <see cref="T:System.String" />，其中包含此文档类型定义 (DTD) 的公共标识符。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDocumentType.SystemId">
+      <summary>获取或设置此文档类型定义 (DTD) 的系统标识符。</summary>
+      <returns>一个 <see cref="T:System.String" />，其中包含此文档类型定义 (DTD) 的系统标识符。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XDocumentType.WriteTo(System.Xml.XmlWriter)">
+      <summary>将此 <see cref="T:System.Xml.Linq.XDocumentType" /> 写入到 <see cref="T:System.Xml.XmlWriter" />。</summary>
+      <param name="writer">此方法将写入的 <see cref="T:System.Xml.XmlWriter" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XElement">
+      <summary>表示一个 XML 元素。请参阅XElement 类概述和有关使用情况信息和示例的此页上的备注部分。若要浏览此类型的.NET Framework 源代码，请参阅参考源。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.#ctor(System.Xml.Linq.XElement)">
+      <summary>从其他 <see cref="T:System.Xml.Linq.XElement" /> 对象初始化 <see cref="T:System.Xml.Linq.XElement" /> 类的新实例。</summary>
+      <param name="other">要从其复制的 <see cref="T:System.Xml.Linq.XElement" /> 对象。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.#ctor(System.Xml.Linq.XName)">
+      <summary>用指定的名称初始化 <see cref="T:System.Xml.Linq.XElement" /> 类的新实例。</summary>
+      <param name="name">一个包含元素名称的 <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.#ctor(System.Xml.Linq.XName,System.Object)">
+      <summary>用指定的名称和内容初始化 <see cref="T:System.Xml.Linq.XElement" /> 类的新实例。</summary>
+      <param name="name">一个包含元素名称的 <see cref="T:System.Xml.Linq.XName" />。</param>
+      <param name="content">元素的内容。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.#ctor(System.Xml.Linq.XName,System.Object[])">
+      <summary>用指定的名称和内容初始化 <see cref="T:System.Xml.Linq.XElement" /> 类的新实例。</summary>
+      <param name="name">一个包含元素名称的 <see cref="T:System.Xml.Linq.XName" />。</param>
+      <param name="content">元素的初始内容。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.#ctor(System.Xml.Linq.XStreamingElement)">
+      <summary>从 <see cref="T:System.Xml.Linq.XStreamingElement" /> 对象初始化 <see cref="T:System.Xml.Linq.XElement" /> 类的新实例。</summary>
+      <param name="other">一个包含未求值查询的 <see cref="T:System.Xml.Linq.XStreamingElement" />，将对此 <see cref="T:System.Xml.Linq.XElement" /> 的内容循环进行这样的查询。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.AncestorsAndSelf">
+      <summary>返回元素集合，其中包含此元素及其上级。</summary>
+      <returns>元素（其中包含此元素及其上级）的 <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.AncestorsAndSelf(System.Xml.Linq.XName)">
+      <summary>返回经过筛选的元素集合，其中包含此元素及其上级。集合中只包括具有匹配 <see cref="T:System.Xml.Linq.XName" /> 的元素。</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />，其中包含此元素及其上级。集合中只包括具有匹配 <see cref="T:System.Xml.Linq.XName" /> 的元素。</returns>
+      <param name="name">要匹配的 <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Attribute(System.Xml.Linq.XName)">
+      <summary>返回具有指定 <see cref="T:System.Xml.Linq.XName" /> 的此 <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Xml.Linq.XAttribute" />。</summary>
+      <returns>具有指定 <see cref="T:System.Xml.Linq.XName" /> 的 <see cref="T:System.Xml.Linq.XAttribute" />；如果没有具有指定名称的属性，则为 null。</returns>
+      <param name="name">要获取的 <see cref="T:System.Xml.Linq.XAttribute" /> 的 <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Attributes">
+      <summary>返回此元素的属性集合。</summary>
+      <returns>此元素的属性的 <see cref="T:System.Xml.Linq.XAttribute" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Attributes(System.Xml.Linq.XName)">
+      <summary>返回经过筛选的此元素的属性集合。集合中只包括具有匹配 <see cref="T:System.Xml.Linq.XName" /> 的元素。</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XAttribute" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />，其中包含此元素的属性。集合中只包括具有匹配 <see cref="T:System.Xml.Linq.XName" /> 的元素。</returns>
+      <param name="name">要匹配的 <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.DescendantNodesAndSelf">
+      <summary>返回节点的集合，而这些节点包含此元素以及此元素的所有子代节点，并将它们按文档顺序排列。</summary>
+      <returns>一个包含此元素以及此元素的所有子代节点（按文档顺序排列）的 <see cref="T:System.Xml.Linq.XNode" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.DescendantsAndSelf">
+      <summary>返回元素的集合，而这些元素包含此元素以及此元素的所有子代元素，并按文档顺序排列它们。</summary>
+      <returns>元素（其中包含此元素以及此元素的所有子代元素，并按文档顺序排列）的 <see cref="T:System.Collections.Generic.IEnumerable`1" /> 的 <see cref="T:System.Xml.Linq.XElement" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.DescendantsAndSelf(System.Xml.Linq.XName)">
+      <summary>返回经过筛选的元素集合，这些元素包含此元素以及此元素的所有子代元素，并按文档顺序排列它们。集合中只包括具有匹配 <see cref="T:System.Xml.Linq.XName" /> 的元素。</summary>
+      <returns>元素（其中包含此元素以及此元素的所有子代元素，并按文档顺序排列）的 <see cref="T:System.Collections.Generic.IEnumerable`1" /> 的 <see cref="T:System.Xml.Linq.XElement" />。集合中只包括具有匹配 <see cref="T:System.Xml.Linq.XName" /> 的元素。</returns>
+      <param name="name">要匹配的 <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.EmptySequence">
+      <summary>获取空的元素集合。</summary>
+      <returns>一个包含空集合的 <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.FirstAttribute">
+      <summary>获取此元素的第一个属性。</summary>
+      <returns>一个包含此元素第一个属性的 <see cref="T:System.Xml.Linq.XAttribute" />。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.GetDefaultNamespace">
+      <summary>获取此 <see cref="T:System.Xml.Linq.XElement" /> 的默认 <see cref="T:System.Xml.Linq.XNamespace" />。</summary>
+      <returns>一个 <see cref="T:System.Xml.Linq.XNamespace" />，其中包含此 <see cref="T:System.Xml.Linq.XElement" /> 的默认命名空间。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.GetNamespaceOfPrefix(System.String)">
+      <summary>获取此 <see cref="T:System.Xml.Linq.XElement" /> 的与特定前缀关联的命名空间。</summary>
+      <returns>与此 <see cref="T:System.Xml.Linq.XElement" /> 的前缀关联的命名空间的 <see cref="T:System.Xml.Linq.XNamespace" />。</returns>
+      <param name="prefix">包含要查找的命名空间前缀的字符串。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.GetPrefixOfNamespace(System.Xml.Linq.XNamespace)">
+      <summary>获取与此 <see cref="T:System.Xml.Linq.XElement" /> 的命名空间关联的前缀。</summary>
+      <returns>一个包含命名空间前缀的 <see cref="T:System.String" />。</returns>
+      <param name="ns">要查找的 <see cref="T:System.Xml.Linq.XNamespace" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.HasAttributes">
+      <summary>获取一个值，该值指示此元素是否至少具有一个属性。</summary>
+      <returns>如果此元素至少具有一个属性，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.HasElements">
+      <summary>获取一个值，该值指示此元素是否至少具有一个子元素。</summary>
+      <returns>如果此元素至少具有一个子元素，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.IsEmpty">
+      <summary>获取一个值，该值指示此元素是否不包含内容。</summary>
+      <returns>如果元素不包含内容，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.LastAttribute">
+      <summary>获取此元素的最后一个属性。</summary>
+      <returns>一个包含此元素最后一个属性的 <see cref="T:System.Xml.Linq.XAttribute" />。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.IO.Stream)">
+      <summary>使用指定的流创建一个新的 <see cref="T:System.Xml.Linq.XElement" /> 实例。</summary>
+      <returns>一个用于读取流中所包含数据的 <see cref="T:System.Xml.Linq.XElement" /> 对象。</returns>
+      <param name="stream">包含 XML 数据的流。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.IO.Stream,System.Xml.Linq.LoadOptions)">
+      <summary>使用指定流创建新的 <see cref="T:System.Xml.Linq.XElement" /> 实例，也可以选择保留空白，设置基 URI 和保留行信息。</summary>
+      <returns>一个用于读取流中所包含数据的 <see cref="T:System.Xml.Linq.XElement" /> 对象。</returns>
+      <param name="stream">包含 XML 数据的流。</param>
+      <param name="options">一个 <see cref="T:System.Xml.Linq.LoadOptions" /> 对象，指定是否加载基 URI 和行信息。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.IO.TextReader)">
+      <summary>从 <see cref="T:System.IO.TextReader" /> 加载 <see cref="T:System.Xml.Linq.XElement" />。</summary>
+      <returns>一个 <see cref="T:System.Xml.Linq.XElement" />，其中包含从指定的 <see cref="T:System.IO.TextReader" /> 读取的 XML。</returns>
+      <param name="textReader">一个从其读取 <see cref="T:System.Xml.Linq.XElement" /> 内容的 <see cref="T:System.IO.TextReader" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.IO.TextReader,System.Xml.Linq.LoadOptions)">
+      <summary>从 <see cref="T:System.IO.TextReader" /> 加载 <see cref="T:System.Xml.Linq.XElement" />，还可以选择保留空白和行信息。</summary>
+      <returns>一个 <see cref="T:System.Xml.Linq.XElement" />，其中包含从指定的 <see cref="T:System.IO.TextReader" /> 读取的 XML。</returns>
+      <param name="textReader">一个从其读取 <see cref="T:System.Xml.Linq.XElement" /> 内容的 <see cref="T:System.IO.TextReader" />。</param>
+      <param name="options">一个 <see cref="T:System.Xml.Linq.LoadOptions" />，指定空白行为以及是否加载基 URI 和行信息。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.String)">
+      <summary>从文件加载 <see cref="T:System.Xml.Linq.XElement" />。</summary>
+      <returns>一个包含指定文件的内容的 <see cref="T:System.Xml.Linq.XElement" />。</returns>
+      <param name="uri">一个 URI 字符串，用来引用要加载到新 <see cref="T:System.Xml.Linq.XElement" /> 中的文件。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.String,System.Xml.Linq.LoadOptions)">
+      <summary>从文件加载 <see cref="T:System.Xml.Linq.XElement" />，还可以选择保留空白、设置基 URI 和保留行信息。</summary>
+      <returns>一个包含指定文件的内容的 <see cref="T:System.Xml.Linq.XElement" />。</returns>
+      <param name="uri">一个 URI 字符串，它引用要加载到 <see cref="T:System.Xml.Linq.XElement" /> 中的文件。</param>
+      <param name="options">一个 <see cref="T:System.Xml.Linq.LoadOptions" />，指定空白行为以及是否加载基 URI 和行信息。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.Xml.XmlReader)">
+      <summary>从 <see cref="T:System.Xml.XmlReader" /> 加载 <see cref="T:System.Xml.Linq.XElement" />。</summary>
+      <returns>一个 <see cref="T:System.Xml.Linq.XElement" />，其中包含从指定的 <see cref="T:System.Xml.XmlReader" /> 读取的 XML。</returns>
+      <param name="reader">一个从其读取 <see cref="T:System.Xml.Linq.XElement" /> 内容的 <see cref="T:System.Xml.XmlReader" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.Xml.XmlReader,System.Xml.Linq.LoadOptions)">
+      <summary>从 <see cref="T:System.Xml.XmlReader" /> 加载 <see cref="T:System.Xml.Linq.XElement" /> 时，可以选择保留空白、设置基 URI 和保留行信息。</summary>
+      <returns>一个 <see cref="T:System.Xml.Linq.XElement" />，其中包含从指定的 <see cref="T:System.Xml.XmlReader" /> 读取的 XML。</returns>
+      <param name="reader">一个从其读取 <see cref="T:System.Xml.Linq.XElement" /> 内容的 <see cref="T:System.Xml.XmlReader" />。</param>
+      <param name="options">一个 <see cref="T:System.Xml.Linq.LoadOptions" />，指定空白行为以及是否加载基 URI 和行信息。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.Name">
+      <summary>获取或设置此元素的名称。</summary>
+      <returns>一个包含此元素的名称的 <see cref="T:System.Xml.Linq.XName" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.NodeType">
+      <summary>获取此节点的节点类型。</summary>
+      <returns>节点类型。对于 <see cref="T:System.Xml.Linq.XElement" /> 对象，此值为 <see cref="F:System.Xml.XmlNodeType.Element" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.UInt32}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.UInt32" />.</summary>
+      <returns>一个包含此 <see cref="T:System.Xml.Linq.XElement" /> 的内容的 <see cref="T:System.UInt32" /> 类型的 <see cref="T:System.Nullable`1" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.UInt32" />.</param>
+      <exception cref="T:System.FormatException">元素不包含有效的 <see cref="T:System.UInt32" /> 值。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.UInt64}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.UInt64" />.</summary>
+      <returns>一个包含此 <see cref="T:System.Xml.Linq.XElement" /> 的内容的 <see cref="T:System.UInt64" /> 类型的 <see cref="T:System.Nullable`1" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.UInt64" />.</param>
+      <exception cref="T:System.FormatException">元素不包含有效的 <see cref="T:System.UInt64" /> 值。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Single}">
+      <summary>将此 <see cref="T:System.Xml.Linq.XElement" /> 的值强制转换为 <see cref="T:System.Single" /> 类型的 <see cref="T:System.Nullable`1" />。</summary>
+      <returns>一个包含此 <see cref="T:System.Xml.Linq.XElement" /> 的内容的 <see cref="T:System.Single" /> 类型的 <see cref="T:System.Nullable`1" />。</returns>
+      <param name="element">强制转换为 <see cref="T:System.Single" /> 类型的 <see cref="T:System.Nullable`1" /> 的 <see cref="T:System.Xml.Linq.XElement" />。</param>
+      <exception cref="T:System.FormatException">元素不包含有效的 <see cref="T:System.Single" /> 值。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.TimeSpan}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.TimeSpan" />.</summary>
+      <returns>一个包含此 <see cref="T:System.Xml.Linq.XElement" /> 的内容的 <see cref="T:System.TimeSpan" /> 类型的 <see cref="T:System.Nullable`1" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.TimeSpan" />.</param>
+      <exception cref="T:System.FormatException">元素不包含有效的 <see cref="T:System.TimeSpan" /> 值。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Single">
+      <summary>将此 <see cref="T:System.Xml.Linq.XElement" /> 的值强制转换为 <see cref="T:System.Single" />。</summary>
+      <returns>一个 <see cref="T:System.Single" />，其中包含此 <see cref="T:System.Xml.Linq.XElement" /> 的内容。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Single" />.</param>
+      <exception cref="T:System.FormatException">元素不包含有效的 <see cref="T:System.Single" /> 值。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.UInt32">
+      <summary>将此 <see cref="T:System.Xml.Linq.XElement" /> 的值强制转换为 <see cref="T:System.UInt32" />。</summary>
+      <returns>一个 <see cref="T:System.UInt32" />，其中包含此 <see cref="T:System.Xml.Linq.XElement" /> 的内容。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.UInt32" />.</param>
+      <exception cref="T:System.FormatException">元素不包含有效的 <see cref="T:System.UInt32" /> 值。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.UInt64">
+      <summary>将此 <see cref="T:System.Xml.Linq.XElement" /> 的值强制转换为 <see cref="T:System.UInt64" />。</summary>
+      <returns>一个 <see cref="T:System.UInt64" />，其中包含此 <see cref="T:System.Xml.Linq.XElement" /> 的内容。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.UInt64" />.</param>
+      <exception cref="T:System.FormatException">元素不包含有效的 <see cref="T:System.UInt64" /> 值。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.String">
+      <summary>将此 <see cref="T:System.Xml.Linq.XElement" /> 的值强制转换为 <see cref="T:System.String" />。</summary>
+      <returns>一个 <see cref="T:System.String" />，其中包含此 <see cref="T:System.Xml.Linq.XElement" /> 的内容。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.String" />.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.TimeSpan">
+      <summary>将此 <see cref="T:System.Xml.Linq.XElement" /> 的值强制转换为 <see cref="T:System.TimeSpan" />。</summary>
+      <returns>一个 <see cref="T:System.TimeSpan" />，其中包含此 <see cref="T:System.Xml.Linq.XElement" /> 的内容。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.TimeSpan" />.</param>
+      <exception cref="T:System.FormatException">元素不包含有效的 <see cref="T:System.TimeSpan" /> 值。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Boolean">
+      <summary>将此 <see cref="T:System.Xml.Linq.XElement" /> 的值强制转换为 <see cref="T:System.Boolean" />。</summary>
+      <returns>一个 <see cref="T:System.Boolean" />，其中包含此 <see cref="T:System.Xml.Linq.XElement" /> 的内容。</returns>
+      <param name="element">强制转换为 <see cref="T:System.Boolean" /> 类型的 <see cref="T:System.Xml.Linq.XElement" />。</param>
+      <exception cref="T:System.FormatException">元素不包含有效的 <see cref="T:System.Boolean" /> 值。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.DateTime">
+      <summary>将此 <see cref="T:System.Xml.Linq.XElement" /> 的值强制转换为 <see cref="T:System.DateTime" />。</summary>
+      <returns>一个 <see cref="T:System.DateTime" />，其中包含此 <see cref="T:System.Xml.Linq.XElement" /> 的内容。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.DateTime" />.</param>
+      <exception cref="T:System.FormatException">元素不包含有效的 <see cref="T:System.DateTime" /> 值。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Int64">
+      <summary>将此 <see cref="T:System.Xml.Linq.XElement" /> 的值强制转换为 <see cref="T:System.Int64" />。</summary>
+      <returns>一个 <see cref="T:System.Int64" />，其中包含此 <see cref="T:System.Xml.Linq.XElement" /> 的内容。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Int64" />.</param>
+      <exception cref="T:System.FormatException">元素不包含有效的 <see cref="T:System.Int64" /> 值。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Int32">
+      <summary>将此 <see cref="T:System.Xml.Linq.XElement" /> 的值强制转换为 <see cref="T:System.Int32" />。</summary>
+      <returns>一个 <see cref="T:System.Int32" />，其中包含此 <see cref="T:System.Xml.Linq.XElement" /> 的内容。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Int32" />.</param>
+      <exception cref="T:System.FormatException">元素不包含有效的 <see cref="T:System.Int32" /> 值。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Double">
+      <summary>将此 <see cref="T:System.Xml.Linq.XElement" /> 的值强制转换为 <see cref="T:System.Double" />。</summary>
+      <returns>一个 <see cref="T:System.Double" />，其中包含此 <see cref="T:System.Xml.Linq.XElement" /> 的内容。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Double" />.</param>
+      <exception cref="T:System.FormatException">元素不包含有效的 <see cref="T:System.Double" /> 值。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Guid">
+      <summary>将此 <see cref="T:System.Xml.Linq.XElement" /> 的值强制转换为 <see cref="T:System.Guid" />。</summary>
+      <returns>一个 <see cref="T:System.Guid" />，其中包含此 <see cref="T:System.Xml.Linq.XElement" /> 的内容。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Guid" />.</param>
+      <exception cref="T:System.FormatException">元素不包含有效的 <see cref="T:System.Guid" /> 值。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.DateTimeOffset">
+      <summary>将此 <see cref="T:System.Xml.Linq.XAttribute" /> 的值强制转换为 <see cref="T:System.DateTimeOffset" />。</summary>
+      <returns>一个 <see cref="T:System.DateTimeOffset" />，其中包含此 <see cref="T:System.Xml.Linq.XElement" /> 的内容。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.DateTimeOffset" />.</param>
+      <exception cref="T:System.FormatException">元素不包含有效的 <see cref="T:System.DateTimeOffset" /> 值。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Decimal">
+      <summary>将此 <see cref="T:System.Xml.Linq.XElement" /> 的值强制转换为 <see cref="T:System.Decimal" />。</summary>
+      <returns>一个 <see cref="T:System.Decimal" />，其中包含此 <see cref="T:System.Xml.Linq.XElement" /> 的内容。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Decimal" />.</param>
+      <exception cref="T:System.FormatException">元素不包含有效的 <see cref="T:System.Decimal" /> 值。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Guid}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.Guid" />.</summary>
+      <returns>一个包含此 <see cref="T:System.Xml.Linq.XElement" /> 的内容的 <see cref="T:System.Guid" /> 类型的 <see cref="T:System.Nullable`1" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.Guid" />.</param>
+      <exception cref="T:System.FormatException">元素不包含有效的 <see cref="T:System.Guid" /> 值。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Int32}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.Int32" />.</summary>
+      <returns>一个包含此 <see cref="T:System.Xml.Linq.XElement" /> 的内容的 <see cref="T:System.Int32" /> 类型的 <see cref="T:System.Nullable`1" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.Int32" />.</param>
+      <exception cref="T:System.FormatException">元素不包含有效的 <see cref="T:System.Int32" /> 值。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Double}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.Double" />.</summary>
+      <returns>一个包含此 <see cref="T:System.Xml.Linq.XElement" /> 的内容的 <see cref="T:System.Double" /> 类型的 <see cref="T:System.Nullable`1" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.Double" />.</param>
+      <exception cref="T:System.FormatException">元素不包含有效的 <see cref="T:System.Double" /> 值。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.DateTimeOffset}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.DateTimeOffset" />.</summary>
+      <returns>一个包含此 <see cref="T:System.Xml.Linq.XElement" /> 的内容的 <see cref="T:System.DateTimeOffset" /> 类型的 <see cref="T:System.Nullable`1" />。</returns>
+      <param name="element">强制转换为 <see cref="T:System.DateTimeOffset" /> 类型的 <see cref="T:System.Nullable`1" /> 的 <see cref="T:System.Xml.Linq.XElement" />。</param>
+      <exception cref="T:System.FormatException">元素不包含有效的 <see cref="T:System.DateTimeOffset" /> 值。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Decimal}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.Decimal" />.</summary>
+      <returns>一个包含此 <see cref="T:System.Xml.Linq.XElement" /> 的内容的 <see cref="T:System.Decimal" /> 类型的 <see cref="T:System.Nullable`1" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.Decimal" />.</param>
+      <exception cref="T:System.FormatException">元素不包含有效的 <see cref="T:System.Decimal" /> 值。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Int64}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.Int64" />.</summary>
+      <returns>一个包含此 <see cref="T:System.Xml.Linq.XElement" /> 的内容的 <see cref="T:System.Int64" /> 类型的 <see cref="T:System.Nullable`1" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.Int64" />.</param>
+      <exception cref="T:System.FormatException">元素不包含有效的 <see cref="T:System.Int64" /> 值。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Boolean}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.Boolean" />.</summary>
+      <returns>一个包含此 <see cref="T:System.Xml.Linq.XElement" /> 的内容的 <see cref="T:System.Boolean" /> 类型的 <see cref="T:System.Nullable`1" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.Boolean" />.</param>
+      <exception cref="T:System.FormatException">元素不包含有效的 <see cref="T:System.Boolean" /> 值。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.DateTime}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.DateTime" />.</summary>
+      <returns>一个包含此 <see cref="T:System.Xml.Linq.XElement" /> 的内容的 <see cref="T:System.DateTime" /> 类型的 <see cref="T:System.Nullable`1" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.DateTime" />.</param>
+      <exception cref="T:System.FormatException">元素不包含有效的 <see cref="T:System.DateTime" /> 值。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Parse(System.String)">
+      <summary>从包含 XML 的字符串加载 <see cref="T:System.Xml.Linq.XElement" />。</summary>
+      <returns>一个使用包含 XML 的字符串填充的 <see cref="T:System.Xml.Linq.XElement" />。</returns>
+      <param name="text">一个包含 XML 的 <see cref="T:System.String" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Parse(System.String,System.Xml.Linq.LoadOptions)">
+      <summary>从包含 XML 的字符串加载 <see cref="T:System.Xml.Linq.XElement" />，还可以选择保留空白和行信息。</summary>
+      <returns>一个使用包含 XML 的字符串填充的 <see cref="T:System.Xml.Linq.XElement" />。</returns>
+      <param name="text">一个包含 XML 的 <see cref="T:System.String" />。</param>
+      <param name="options">一个 <see cref="T:System.Xml.Linq.LoadOptions" />，指定空白行为以及是否加载基 URI 和行信息。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.RemoveAll">
+      <summary>从此 <see cref="T:System.Xml.Linq.XElement" /> 中移除节点和属性。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.RemoveAttributes">
+      <summary>移除此 <see cref="T:System.Xml.Linq.XElement" /> 的属性。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.ReplaceAll(System.Object)">
+      <summary>将此元素的子节点和属性替换为指定的内容。</summary>
+      <param name="content">替换此元素的子节点和属性时将使用的内容。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.ReplaceAll(System.Object[])">
+      <summary>将此元素的子节点和属性替换为指定的内容。</summary>
+      <param name="content">内容对象的参数列表。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.ReplaceAttributes(System.Object)">
+      <summary>将此元素的属性替换为指定的内容。</summary>
+      <param name="content">替换此元素的属性时将使用的内容。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.ReplaceAttributes(System.Object[])">
+      <summary>将此元素的属性替换为指定的内容。</summary>
+      <param name="content">内容对象的参数列表。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Save(System.IO.Stream)">
+      <summary>将此 <see cref="T:System.Xml.Linq.XElement" /> 输出到指定的 <see cref="T:System.IO.Stream" />。</summary>
+      <param name="stream">将此 <see cref="T:System.Xml.Linq.XElement" /> 输出到的流。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Save(System.IO.Stream,System.Xml.Linq.SaveOptions)">
+      <summary>将此 <see cref="T:System.Xml.Linq.XElement" /> 输出到指定的 <see cref="T:System.IO.Stream" />，（可选）并指定格式设置行为。</summary>
+      <param name="stream">将此 <see cref="T:System.Xml.Linq.XElement" /> 输出到的流。</param>
+      <param name="options">一个 <see cref="T:System.Xml.Linq.SaveOptions" /> 对象，该对象指定格式设置行为。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Save(System.IO.TextWriter)">
+      <summary>将此元素序列化为 <see cref="T:System.IO.TextWriter" />。</summary>
+      <param name="textWriter">将向其中写入 <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.IO.TextWriter" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Save(System.IO.TextWriter,System.Xml.Linq.SaveOptions)">
+      <summary>将此元素序列化为 <see cref="T:System.IO.TextWriter" />，并可以选择禁用格式设置。</summary>
+      <param name="textWriter">要将 XML 输出到的 <see cref="T:System.IO.TextWriter" />。</param>
+      <param name="options">一个指定格式设置行为的 <see cref="T:System.Xml.Linq.SaveOptions" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Save(System.Xml.XmlWriter)">
+      <summary>将此元素序列化为 <see cref="T:System.Xml.XmlWriter" />。</summary>
+      <param name="writer">将向其中写入 <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Xml.XmlWriter" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.SetAttributeValue(System.Xml.Linq.XName,System.Object)">
+      <summary>设置属性的值、添加属性或移除属性。</summary>
+      <param name="name">一个 <see cref="T:System.Xml.Linq.XName" />，其中包含要更改的属性的名称。</param>
+      <param name="value">分配给属性的值。如果该值为 null，则移除该属性 (Attribute)。否则，会将值转换为其字符串表示形式，并分配给该属性 (Attribute) 的 <see cref="P:System.Xml.Linq.XAttribute.Value" /> 属性 (Property)。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="value" /> 是 <see cref="T:System.Xml.Linq.XObject" /> 的一个实例。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.SetElementValue(System.Xml.Linq.XName,System.Object)">
+      <summary>设置子元素的值、添加子元素或移除子元素。</summary>
+      <param name="name">一个 <see cref="T:System.Xml.Linq.XName" />，其中包含要更改的子元素的名称。</param>
+      <param name="value">要分配给子元素的值。如果值为 null，则移除子元素。否则，会将值转换为其字符串表示形式，并将该值分配给子元素的 <see cref="P:System.Xml.Linq.XElement.Value" /> 属性。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="value" /> 是 <see cref="T:System.Xml.Linq.XObject" /> 的一个实例。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.SetValue(System.Object)">
+      <summary>设置此元素的值。</summary>
+      <param name="value">要分配给此元素的值。将值转换为其字符串表示形式，并将此值分配给 <see cref="P:System.Xml.Linq.XElement.Value" /> 属性 (Property)。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="value" /> 是 <see cref="T:System.Xml.Linq.XObject" />。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.System#Xml#Serialization#IXmlSerializable#GetSchema">
+      <summary>获取说明此对象的 XML 表示形式的 XML 构架定义。</summary>
+      <returns>
+        <see cref="T:System.Xml.Schema.XmlSchema" />，描述由 <see cref="M:System.Xml.Serialization.IXmlSerializable.WriteXml(System.Xml.XmlWriter)" /> 方法产生并由 <see cref="M:System.Xml.Serialization.IXmlSerializable.ReadXml(System.Xml.XmlReader)" /> 方法使用的对象的 XML 表示形式。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.System#Xml#Serialization#IXmlSerializable#ReadXml(System.Xml.XmlReader)">
+      <summary>从对象的 XML 表示形式生成该对象。</summary>
+      <param name="reader">从其中反序列化对象的 <see cref="T:System.Xml.XmlReader" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.System#Xml#Serialization#IXmlSerializable#WriteXml(System.Xml.XmlWriter)">
+      <summary>将对象转换为其 XML 表示形式。</summary>
+      <param name="writer">将此对象序列化到的 <see cref="T:System.Xml.XmlWriter" />。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.Value">
+      <summary>获取或设置此元素的串连文本内容。</summary>
+      <returns>一个包含此元素所有文本内容的 <see cref="T:System.String" />。如果有多个文本节点，则将其串连起来。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.WriteTo(System.Xml.XmlWriter)">
+      <summary>将此元素写入 <see cref="T:System.Xml.XmlWriter" />。</summary>
+      <param name="writer">此方法将写入的 <see cref="T:System.Xml.XmlWriter" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XName">
+      <summary>表示 XML 元素或属性的名称。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XName.Equals(System.Object)">
+      <summary>确定指定的 <see cref="T:System.Xml.Linq.XName" /> 是否等于此 <see cref="T:System.Xml.Linq.XName" />。</summary>
+      <returns>如果指定的 <see cref="T:System.Xml.Linq.XName" /> 等于当前的 <see cref="T:System.Xml.Linq.XName" />，则为 true；否则为 false。</returns>
+      <param name="obj">要与当前 <see cref="T:System.Xml.Linq.XName" /> 进行比较的 <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.Get(System.String)">
+      <summary>从展开名称获取 <see cref="T:System.Xml.Linq.XName" /> 对象。</summary>
+      <returns>从展开名称构造的 <see cref="T:System.Xml.Linq.XName" /> 对象。</returns>
+      <param name="expandedName">一个 <see cref="T:System.String" />，其中包含格式为 {namespace}localname 的展开 XML 名称。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.Get(System.String,System.String)">
+      <summary>从本地名称和命名空间获取 <see cref="T:System.Xml.Linq.XName" /> 对象。</summary>
+      <returns>使用指定的本地名称和命名空间创建的 <see cref="T:System.Xml.Linq.XName" /> 对象。</returns>
+      <param name="localName">本地（非限定）名称。</param>
+      <param name="namespaceName">一个 XML 命名空间。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.GetHashCode">
+      <summary>获取此 <see cref="T:System.Xml.Linq.XName" /> 的哈希代码。</summary>
+      <returns>一个 <see cref="T:System.Int32" />，其中包含 <see cref="T:System.Xml.Linq.XName" /> 的哈希代码。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XName.LocalName">
+      <summary>获取名称的本地（非限定）部分。</summary>
+      <returns>一个 <see cref="T:System.String" />，其中包含名称的本地（非限定）部分。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XName.Namespace">
+      <summary>获取完全限定名的命名空间部分。</summary>
+      <returns>一个 <see cref="T:System.Xml.Linq.XNamespace" />，其中包含名称的命名空间部分。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XName.NamespaceName">
+      <summary>返回此 <see cref="T:System.Xml.Linq.XName" /> 的 <see cref="T:System.Xml.Linq.XNamespace" /> 的 URI。</summary>
+      <returns>此 <see cref="T:System.Xml.Linq.XName" /> 的 <see cref="T:System.Xml.Linq.XNamespace" /> 的 URI。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XName.op_Equality(System.Xml.Linq.XName,System.Xml.Linq.XName)">
+      <summary>返回一个值，该值指示 <see cref="T:System.Xml.Linq.XName" /> 的两个实例是否相等。</summary>
+      <returns>如果 <paramref name="left" /> 和 <paramref name="right" /> 相等，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个 <see cref="T:System.Xml.Linq.XName" />。</param>
+      <param name="right">要比较的第二个 <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.op_Implicit(System.String)~System.Xml.Linq.XName">
+      <summary>将已格式化为展开的 XML 名称（即 {namespace}localname）的字符串转换为 <see cref="T:System.Xml.Linq.XName" /> 对象。</summary>
+      <returns>从展开名称构造的 <see cref="T:System.Xml.Linq.XName" /> 对象。</returns>
+      <param name="expandedName">一个字符串，其中包含 {namespace}localname 格式的展开的 XML 名称。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.op_Inequality(System.Xml.Linq.XName,System.Xml.Linq.XName)">
+      <summary>返回一个值，该值指示 <see cref="T:System.Xml.Linq.XName" /> 的两个实例是否相等。</summary>
+      <returns>如果 <paramref name="left" /> 和 <paramref name="right" /> 不相等，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个 <see cref="T:System.Xml.Linq.XName" />。</param>
+      <param name="right">要比较的第二个 <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.System#IEquatable{T}#Equals(System.Xml.Linq.XName)">
+      <summary>指出当前的 <see cref="T:System.Xml.Linq.XName" /> 是否与指定的 <see cref="T:System.Xml.Linq.XName" /> 相等。</summary>
+      <returns>如果此 <see cref="T:System.Xml.Linq.XName" /> 与指定的 <see cref="T:System.Xml.Linq.XName" /> 相等，则为 true；否则为 false。</returns>
+      <param name="other">与此 <see cref="T:System.Xml.Linq.XName" /> 进行比较的 <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.ToString">
+      <summary>以 {namespace}localname 格式返回展开的 XML 名称。</summary>
+      <returns>一个 <see cref="T:System.String" />，其中包含格式为 {namespace}localname 的展开的 XML 名称。</returns>
+    </member>
+    <member name="T:System.Xml.Linq.XNamespace">
+      <summary>表示一个 XML 命名空间。此类不能被继承。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.Equals(System.Object)">
+      <summary>确定指定的 <see cref="T:System.Xml.Linq.XNamespace" /> 是否等于当前的 <see cref="T:System.Xml.Linq.XNamespace" />。</summary>
+      <returns>一个 <see cref="T:System.Boolean" />，指示指定的 <see cref="T:System.Xml.Linq.XNamespace" /> 是否等于当前的 <see cref="T:System.Xml.Linq.XNamespace" />。</returns>
+      <param name="obj">要与当前 <see cref="T:System.Xml.Linq.XNamespace" /> 进行比较的 <see cref="T:System.Xml.Linq.XNamespace" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.Get(System.String)">
+      <summary>获取指定的统一资源标识符 (URI) 的 <see cref="T:System.Xml.Linq.XNamespace" />。</summary>
+      <returns>从指定的 URI 创建的 <see cref="T:System.Xml.Linq.XNamespace" />。</returns>
+      <param name="namespaceName">一个包含命名空间 URI 的 <see cref="T:System.String" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.GetHashCode">
+      <summary>获取此 <see cref="T:System.Xml.Linq.XNamespace" /> 的哈希代码。</summary>
+      <returns>一个 <see cref="T:System.Int32" />，其中包含 <see cref="T:System.Xml.Linq.XNamespace" /> 的哈希代码。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.GetName(System.String)">
+      <summary>返回从此 <see cref="T:System.Xml.Linq.XNamespace" /> 和指定的本地名称创建的 <see cref="T:System.Xml.Linq.XName" /> 对象。</summary>
+      <returns>从此 <see cref="T:System.Xml.Linq.XNamespace" /> 和指定的本地名称创建的 <see cref="T:System.Xml.Linq.XName" />。</returns>
+      <param name="localName">一个包含本地名称的 <see cref="T:System.String" />。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XNamespace.NamespaceName">
+      <summary>获取此命名空间的统一资源标识符 (URI)。</summary>
+      <returns>一个包含命名空间 URI 的 <see cref="T:System.String" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XNamespace.None">
+      <summary>获取不与命名空间对应的 <see cref="T:System.Xml.Linq.XNamespace" /> 对象。</summary>
+      <returns>不与命名空间对应的 <see cref="T:System.Xml.Linq.XNamespace" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.op_Addition(System.Xml.Linq.XNamespace,System.String)">
+      <summary>将 <see cref="T:System.Xml.Linq.XNamespace" /> 对象与本地名进行组合来创建 <see cref="T:System.Xml.Linq.XName" />。</summary>
+      <returns>从命名空间和本地名称构造的新 <see cref="T:System.Xml.Linq.XName" />。</returns>
+      <param name="ns">一个包含命名空间的 <see cref="T:System.Xml.Linq.XNamespace" />。</param>
+      <param name="localName">一个包含本地名称的 <see cref="T:System.String" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.op_Equality(System.Xml.Linq.XNamespace,System.Xml.Linq.XNamespace)">
+      <summary>返回一个指示 <see cref="T:System.Xml.Linq.XNamespace" /> 的两个实例是否相等的值。</summary>
+      <returns>一个 <see cref="T:System.Boolean" />，指示 <paramref name="left" /> 和 <paramref name="right" /> 是否相等。</returns>
+      <param name="left">要比较的第一个 <see cref="T:System.Xml.Linq.XNamespace" />。</param>
+      <param name="right">要比较的第二个 <see cref="T:System.Xml.Linq.XNamespace" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.op_Implicit(System.String)~System.Xml.Linq.XNamespace">
+      <summary>将包含统一资源标识符 (URI) 的字符串转换为 <see cref="T:System.Xml.Linq.XNamespace" />。</summary>
+      <returns>从 URI 字符串构造的 <see cref="T:System.Xml.Linq.XNamespace" />。</returns>
+      <param name="namespaceName">一个包含命名空间 URI 的 <see cref="T:System.String" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.op_Inequality(System.Xml.Linq.XNamespace,System.Xml.Linq.XNamespace)">
+      <summary>返回一个值，该值指示 <see cref="T:System.Xml.Linq.XNamespace" /> 的两个实例是否相等。</summary>
+      <returns>一个 <see cref="T:System.Boolean" />，指示 <paramref name="left" /> 和 <paramref name="right" /> 是否不等。</returns>
+      <param name="left">要比较的第一个 <see cref="T:System.Xml.Linq.XNamespace" />。</param>
+      <param name="right">要比较的第二个 <see cref="T:System.Xml.Linq.XNamespace" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.ToString">
+      <summary>返回此 <see cref="T:System.Xml.Linq.XNamespace" /> 的 URI。</summary>
+      <returns>此 <see cref="T:System.Xml.Linq.XNamespace" /> 的 URI。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XNamespace.Xml">
+      <summary>获取与 XML URI (http://www.w3.org/XML/1998/namespace) 对应的 <see cref="T:System.Xml.Linq.XNamespace" /> 对象。</summary>
+      <returns>与 XML URI (http://www.w3.org/XML/1998/namespace) 对应的 <see cref="T:System.Xml.Linq.XNamespace" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XNamespace.Xmlns">
+      <summary>获取与 xmlns URI (http://www.w3.org/2000/xmlns/) 对应的 <see cref="T:System.Xml.Linq.XNamespace" /> 对象。</summary>
+      <returns>与 xmlns URI (http://www.w3.org/2000/xmlns/) 对应的 <see cref="T:System.Xml.Linq.XNamespace" />。</returns>
+    </member>
+    <member name="T:System.Xml.Linq.XNode">
+      <summary>表示 XML 树中节点的抽象概念（元素、注释、文档类型、处理指令或文本节点）。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.AddAfterSelf(System.Object)">
+      <summary>紧跟在此节点之后添加指定的内容。</summary>
+      <param name="content">要添加到此节点之后的包含简单内容的内容对象或内容对象集合。</param>
+      <exception cref="T:System.InvalidOperationException">The parent is null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.AddAfterSelf(System.Object[])">
+      <summary>紧跟在此节点之后添加指定的内容。</summary>
+      <param name="content">内容对象的参数列表。</param>
+      <exception cref="T:System.InvalidOperationException">The parent is null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.AddBeforeSelf(System.Object)">
+      <summary>紧邻此节点之前添加指定的内容。</summary>
+      <param name="content">要添加到此节点之前的包含简单内容的内容对象或内容对象集合。</param>
+      <exception cref="T:System.InvalidOperationException">The parent is null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.AddBeforeSelf(System.Object[])">
+      <summary>紧邻此节点之前添加指定的内容。</summary>
+      <param name="content">内容对象的参数列表。</param>
+      <exception cref="T:System.InvalidOperationException">The parent is null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.Ancestors">
+      <summary>返回此节点的上级元素的集合。</summary>
+      <returns>此节点上级元素的 <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.Ancestors(System.Xml.Linq.XName)">
+      <summary>返回此节点的经过筛选的上级元素的集合。集合中只包括具有匹配 <see cref="T:System.Xml.Linq.XName" /> 的元素。</summary>
+      <returns>此节点上级元素的 <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。集合中只包括具有匹配 <see cref="T:System.Xml.Linq.XName" /> 的元素。返回的集合中的节点顺序与文档顺序相反。此方法使用延迟执行。</returns>
+      <param name="name">要匹配的 <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.CompareDocumentOrder(System.Xml.Linq.XNode,System.Xml.Linq.XNode)">
+      <summary>比较两个节点以确定其相对的 XML 文档顺序。</summary>
+      <returns>如果节点相等，则为包含 0 的 int；如果 <paramref name="n1" /> 位于 <paramref name="n2" /> 之前，则为包含 -1；如果 <paramref name="n1" /> 位于 <paramref name="n2" /> 之后，则为包含 1。</returns>
+      <param name="n1">要比较的第一个 <see cref="T:System.Xml.Linq.XNode" />。</param>
+      <param name="n2">要比较的第二个 <see cref="T:System.Xml.Linq.XNode" />。</param>
+      <exception cref="T:System.InvalidOperationException">The two nodes do not share a common ancestor.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.CreateReader">
+      <summary>创建此节点的 <see cref="T:System.Xml.XmlReader" />。</summary>
+      <returns>一个可用于读取此节点及其子代的 <see cref="T:System.Xml.XmlReader" />。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.CreateReader(System.Xml.Linq.ReaderOptions)">
+      <summary>使用 <paramref name="readerOptions" /> 参数指定的选项创建 <see cref="T:System.Xml.XmlReader" />。</summary>
+      <returns>
+        <see cref="T:System.Xml.XmlReader" /> 对象。</returns>
+      <param name="readerOptions">一个指定是否省略重复的命名空间的 <see cref="T:System.Xml.Linq.ReaderOptions" /> 对象。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.DeepEquals(System.Xml.Linq.XNode,System.Xml.Linq.XNode)">
+      <summary>比较两个节点的值，包括所有子代节点的值。</summary>
+      <returns>如果节点相等，则为 true；否则为 false。</returns>
+      <param name="n1">要比较的第一个 <see cref="T:System.Xml.Linq.XNode" />。</param>
+      <param name="n2">要比较的第二个 <see cref="T:System.Xml.Linq.XNode" />。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XNode.DocumentOrderComparer">
+      <summary>获取可以比较两个节点相对位置的比较器。</summary>
+      <returns>一个可以比较两个节点的相对位置的 <see cref="T:System.Xml.Linq.XNodeDocumentOrderComparer" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ElementsAfterSelf">
+      <summary>按文档顺序返回此节点后的同级元素集合。</summary>
+      <returns>此节点后同级元素按文档顺序排列的 <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ElementsAfterSelf(System.Xml.Linq.XName)">
+      <summary>按文档顺序返回此节点后经过筛选的同级元素的集合。集合中只包括具有匹配 <see cref="T:System.Xml.Linq.XName" /> 的元素。</summary>
+      <returns>此节点后同级元素按文档顺序排列的 <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。集合中只包括具有匹配 <see cref="T:System.Xml.Linq.XName" /> 的元素。</returns>
+      <param name="name">要匹配的 <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ElementsBeforeSelf">
+      <summary>按文档顺序返回此节点前的同级元素集合。</summary>
+      <returns>此节点前同级元素按文档顺序排列的 <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ElementsBeforeSelf(System.Xml.Linq.XName)">
+      <summary>按文档顺序返回此节点前经过筛选的同级元素的集合。集合中只包括具有匹配 <see cref="T:System.Xml.Linq.XName" /> 的元素。</summary>
+      <returns>此节点前同级元素按文档顺序排列的 <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。集合中只包括具有匹配 <see cref="T:System.Xml.Linq.XName" /> 的元素。</returns>
+      <param name="name">要匹配的 <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XNode.EqualityComparer">
+      <summary>获取可以比较两个节点值是否相等的比较器。</summary>
+      <returns>可以比较两个节点值是否相等的 <see cref="T:System.Xml.Linq.XNodeEqualityComparer" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.IsAfter(System.Xml.Linq.XNode)">
+      <summary>确定当前节点是否按文档顺序显示在指定节点之后。</summary>
+      <returns>如果此节点显示在指定节点之后，则为 true；否则为 false。</returns>
+      <param name="node">要比较文档顺序的 <see cref="T:System.Xml.Linq.XNode" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.IsBefore(System.Xml.Linq.XNode)">
+      <summary>确定当前节点是否按文档顺序显示在指定节点之前。</summary>
+      <returns>如果此节点显示在指定节点之前，则为 true；否则为 false。</returns>
+      <param name="node">要比较文档顺序的 <see cref="T:System.Xml.Linq.XNode" />。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XNode.NextNode">
+      <summary>获取此节点的下一个同级节点。</summary>
+      <returns>包含下一个同级节点的 <see cref="T:System.Xml.Linq.XNode" />。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.NodesAfterSelf">
+      <summary>按文档顺序返回此节点后的同级节点的集合。</summary>
+      <returns>此节点后同级节点（按文档顺序排列）的 <see cref="T:System.Xml.Linq.XNode" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.NodesBeforeSelf">
+      <summary>按文档顺序返回此节点前的同级节点的集合。</summary>
+      <returns>此节点前同级节点（按文档顺序排列）的 <see cref="T:System.Xml.Linq.XNode" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XNode.PreviousNode">
+      <summary>获取此节点的上一个同级节点。</summary>
+      <returns>包含上一个同级节点的 <see cref="T:System.Xml.Linq.XNode" />。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ReadFrom(System.Xml.XmlReader)">
+      <summary>从 <see cref="T:System.Xml.XmlReader" /> 创建 <see cref="T:System.Xml.Linq.XNode" />。</summary>
+      <returns>一个包含从此读取器读取的节点及其子代节点的 <see cref="T:System.Xml.Linq.XNode" />。节点的运行时类型由读取器中出现的第一个节点的节点类型 (<see cref="P:System.Xml.Linq.XObject.NodeType" />) 确定。</returns>
+      <param name="reader">一个定位于要读取到此 <see cref="T:System.Xml.Linq.XNode" /> 中的节点的 <see cref="T:System.Xml.XmlReader" />。</param>
+      <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Xml.XmlReader" /> is not positioned on a recognized node type.</exception>
+      <exception cref="T:System.Xml.XmlException">The underlying <see cref="T:System.Xml.XmlReader" /> throws an exception.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.Remove">
+      <summary>从节点父级中删除此节点。</summary>
+      <exception cref="T:System.InvalidOperationException">The parent is null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ReplaceWith(System.Object)">
+      <summary>将此节点替换为指定的内容。</summary>
+      <param name="content">替换此节点时所用的内容。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ReplaceWith(System.Object[])">
+      <summary>将此节点替换为指定的内容。</summary>
+      <param name="content">新内容的参数列表。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ToString">
+      <summary>返回此节点的缩进 XML。</summary>
+      <returns>一个包含缩进 XML 的 <see cref="T:System.String" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ToString(System.Xml.Linq.SaveOptions)">
+      <summary>返回此节点的 XML，还可以选择禁用格式设置。</summary>
+      <returns>一个包含 XML 的 <see cref="T:System.String" />。</returns>
+      <param name="options">一个指定格式设置行为的 <see cref="T:System.Xml.Linq.SaveOptions" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.WriteTo(System.Xml.XmlWriter)">
+      <summary>将此节点写入 <see cref="T:System.Xml.XmlWriter" />。</summary>
+      <param name="writer">此方法将写入的 <see cref="T:System.Xml.XmlWriter" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XNodeDocumentOrderComparer">
+      <summary>包含用于比较节点的文档顺序的功能。此类不能被继承。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeDocumentOrderComparer.#ctor">
+      <summary>初始化 <see cref="T:System.Xml.Linq.XNodeDocumentOrderComparer" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeDocumentOrderComparer.Compare(System.Xml.Linq.XNode,System.Xml.Linq.XNode)">
+      <summary>比较两个节点以确定其相对的文档顺序。</summary>
+      <returns>如果节点相等，则为包含 0 的 <see cref="T:System.Int32" />；如果 <paramref name="x" /> 位于 <paramref name="y" /> 之前，则包含 -1；如果 <paramref name="x" /> 位于 <paramref name="y" /> 之后，则包含 1。</returns>
+      <param name="x">要比较的第一个 <see cref="T:System.Xml.Linq.XNode" />。</param>
+      <param name="y">要比较的第二个 <see cref="T:System.Xml.Linq.XNode" />。</param>
+      <exception cref="T:System.InvalidOperationException">两个节点不共用一个公共上级。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeDocumentOrderComparer.System#Collections#IComparer#Compare(System.Object,System.Object)">
+      <summary>比较两个节点以确定其相对的文档顺序。</summary>
+      <returns>如果节点相等，则为包含 0 的 <see cref="T:System.Int32" />；如果 <paramref name="x" /> 位于 <paramref name="y" /> 之前，则包含 -1；如果 <paramref name="x" /> 位于 <paramref name="y" /> 之后，则包含 1。</returns>
+      <param name="x">要比较的第一个 <see cref="T:System.Xml.Linq.XNode" />。</param>
+      <param name="y">要比较的第二个 <see cref="T:System.Xml.Linq.XNode" />。</param>
+      <exception cref="T:System.InvalidOperationException">两个节点不共用一个公共上级。</exception>
+      <exception cref="T:System.ArgumentException">两个节点并非派生自 <see cref="T:System.Xml.Linq.XNode" />。</exception>
+    </member>
+    <member name="T:System.Xml.Linq.XNodeEqualityComparer">
+      <summary>比较节点以确定其是否相等。此类不能被继承。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeEqualityComparer.#ctor">
+      <summary>初始化 <see cref="T:System.Xml.Linq.XNodeEqualityComparer" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeEqualityComparer.Equals(System.Xml.Linq.XNode,System.Xml.Linq.XNode)">
+      <summary>比较两个节点的值。</summary>
+      <returns>指示节点是否相等的 <see cref="T:System.Boolean" />。</returns>
+      <param name="x">要比较的第一个 <see cref="T:System.Xml.Linq.XNode" />。</param>
+      <param name="y">要比较的第二个 <see cref="T:System.Xml.Linq.XNode" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeEqualityComparer.GetHashCode(System.Xml.Linq.XNode)">
+      <summary>返回基于 <see cref="T:System.Xml.Linq.XNode" /> 的哈希代码。</summary>
+      <returns>一个 <see cref="T:System.Int32" />，其中包含节点的基于值的哈希代码。</returns>
+      <param name="obj">要散列的 <see cref="T:System.Xml.Linq.XNode" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeEqualityComparer.System#Collections#IEqualityComparer#Equals(System.Object,System.Object)">
+      <summary>比较两个节点的值。</summary>
+      <returns>如果节点相等，则为 true；否则为 false。</returns>
+      <param name="x">要比较的第一个 <see cref="T:System.Xml.Linq.XNode" />。</param>
+      <param name="y">要比较的第二个 <see cref="T:System.Xml.Linq.XNode" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeEqualityComparer.System#Collections#IEqualityComparer#GetHashCode(System.Object)">
+      <summary>返回基于节点值的哈希代码。</summary>
+      <returns>一个 <see cref="T:System.Int32" />，其中包含节点的基于值的哈希代码。</returns>
+      <param name="obj">要散列的节点。</param>
+    </member>
+    <member name="T:System.Xml.Linq.XObject">
+      <summary>表示 XML 树中的节点或属性。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.AddAnnotation(System.Object)">
+      <summary>将对象添加到此 <see cref="T:System.Xml.Linq.XObject" /> 的批注列表。</summary>
+      <param name="annotation">一个 <see cref="T:System.Object" />，其中包含要添加的批注。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.Annotation``1">
+      <summary>从此 <see cref="T:System.Xml.Linq.XObject" /> 获取指定类型的第一个批注对象。</summary>
+      <returns>与指定类型匹配的第一个批注对象；如果没有指定类型的批注，则为 null。</returns>
+      <typeparam name="T">要检索的批注类型。</typeparam>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.Annotation(System.Type)">
+      <summary>从此 <see cref="T:System.Xml.Linq.XObject" /> 获取指定类型的第一个批注对象。</summary>
+      <returns>包含与指定类型匹配的第一个批注对象的 <see cref="T:System.Object" />；如果没有指定类型的批注，则为 null。</returns>
+      <param name="type">要检索的批注的 <see cref="T:System.Type" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.Annotations``1">
+      <summary>获取此 <see cref="T:System.Xml.Linq.XObject" /> 的指定类型的批注集合。</summary>
+      <returns>一个 <see cref="T:System.Collections.Generic.IEnumerable`1" />，其中包含此 <see cref="T:System.Xml.Linq.XObject" /> 的批注。</returns>
+      <typeparam name="T">要检索的批注类型。</typeparam>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.Annotations(System.Type)">
+      <summary>获取此 <see cref="T:System.Xml.Linq.XObject" /> 的指定类型的批注集合。</summary>
+      <returns>
+        <see cref="T:System.Object" /> 的 <see cref="T:System.Collections.Generic.IEnumerable`1" />，其中包含与此 <see cref="T:System.Xml.Linq.XObject" /> 的指定类型匹配的批注。</returns>
+      <param name="type">要检索的批注的 <see cref="T:System.Type" />。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XObject.BaseUri">
+      <summary>获取此 <see cref="T:System.Xml.Linq.XObject" /> 的基 URI。</summary>
+      <returns>一个 <see cref="T:System.String" />，其中包含此 <see cref="T:System.Xml.Linq.XObject" /> 的基 URI。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="E:System.Xml.Linq.XObject.Changed">
+      <summary>在此 <see cref="T:System.Xml.Linq.XObject" /> 或其任何子代发生了更改时引发。</summary>
+    </member>
+    <member name="E:System.Xml.Linq.XObject.Changing">
+      <summary>当此 <see cref="T:System.Xml.Linq.XObject" /> 或其任何子代要发生更改时引发。</summary>
+    </member>
+    <member name="P:System.Xml.Linq.XObject.Document">
+      <summary>获取此 <see cref="T:System.Xml.Linq.XObject" /> 的 <see cref="T:System.Xml.Linq.XDocument" />。</summary>
+      <returns>此 <see cref="T:System.Xml.Linq.XObject" /> 的 <see cref="T:System.Xml.Linq.XDocument" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XObject.NodeType">
+      <summary>获取此 <see cref="T:System.Xml.Linq.XObject" /> 的节点类型。</summary>
+      <returns>此 <see cref="T:System.Xml.Linq.XObject" /> 的节点类型。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XObject.Parent">
+      <summary>获取此 <see cref="T:System.Xml.Linq.XObject" /> 的父级 <see cref="T:System.Xml.Linq.XElement" />。</summary>
+      <returns>此 <see cref="T:System.Xml.Linq.XObject" /> 的父级 <see cref="T:System.Xml.Linq.XElement" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.RemoveAnnotations``1">
+      <summary>从此 <see cref="T:System.Xml.Linq.XObject" /> 移除指定类型的批注。</summary>
+      <typeparam name="T">要移除的批注的类型。</typeparam>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.RemoveAnnotations(System.Type)">
+      <summary>从此 <see cref="T:System.Xml.Linq.XObject" /> 移除指定类型的批注。</summary>
+      <param name="type">要移除的批注的 <see cref="T:System.Type" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.System#Xml#IXmlLineInfo#HasLineInfo">
+      <summary>获取一个值，该值指示此 <see cref="T:System.Xml.Linq.XObject" /> 是否具有行信息。</summary>
+      <returns>如果 <see cref="T:System.Xml.Linq.XObject" /> 具有行信息，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XObject.System#Xml#IXmlLineInfo#LineNumber">
+      <summary>获取基础 <see cref="T:System.Xml.XmlReader" /> 为此 <see cref="T:System.Xml.Linq.XObject" /> 报告的行号。</summary>
+      <returns>一个 <see cref="T:System.Int32" />，其中包含 <see cref="T:System.Xml.XmlReader" /> 为此 <see cref="T:System.Xml.Linq.XObject" /> 报告的行号。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XObject.System#Xml#IXmlLineInfo#LinePosition">
+      <summary>获取基础 <see cref="T:System.Xml.XmlReader" /> 为此 <see cref="T:System.Xml.Linq.XObject" /> 报告的行位置。</summary>
+      <returns>一个 <see cref="T:System.Int32" />，其中包含 <see cref="T:System.Xml.XmlReader" /> 为此 <see cref="T:System.Xml.Linq.XObject" /> 报告的行位置。</returns>
+    </member>
+    <member name="T:System.Xml.Linq.XObjectChange">
+      <summary>指定为 <see cref="T:System.Xml.Linq.XObject" /> 引发事件时的事件类型。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChange.Add">
+      <summary>
+        <see cref="T:System.Xml.Linq.XObject" /> 已经或将要添加到 <see cref="T:System.Xml.Linq.XContainer" />。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChange.Name">
+      <summary>
+        <see cref="T:System.Xml.Linq.XObject" /> 已经或将要重命名。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChange.Remove">
+      <summary>
+        <see cref="T:System.Xml.Linq.XObject" /> 已经或将要从 <see cref="T:System.Xml.Linq.XContainer" /> 中移除。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChange.Value">
+      <summary>
+        <see cref="T:System.Xml.Linq.XObject" /> 的值已经或将要更改。此外，在序列化空元素过程中进行的更改（从空标记更改为开始/结束标记对，反之亦然）会引发此事件。</summary>
+    </member>
+    <member name="T:System.Xml.Linq.XObjectChangeEventArgs">
+      <summary>为 <see cref="E:System.Xml.Linq.XObject.Changing" /> 和 <see cref="E:System.Xml.Linq.XObject.Changed" /> 事件提供数据。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XObjectChangeEventArgs.#ctor(System.Xml.Linq.XObjectChange)">
+      <summary>初始化 <see cref="T:System.Xml.Linq.XObjectChangeEventArgs" /> 类的新实例。</summary>
+      <param name="objectChange">一个 <see cref="T:System.Xml.Linq.XObjectChange" />，其中包含 LINQ to XML 事件的事件参数。</param>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChangeEventArgs.Add">
+      <summary>
+        <see cref="F:System.Xml.Linq.XObjectChange.Add" /> 更改事件的事件参数。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChangeEventArgs.Name">
+      <summary>
+        <see cref="F:System.Xml.Linq.XObjectChange.Name" /> 更改事件的事件参数。</summary>
+    </member>
+    <member name="P:System.Xml.Linq.XObjectChangeEventArgs.ObjectChange">
+      <summary>获取更改类型。</summary>
+      <returns>一个包含更改类型的 <see cref="T:System.Xml.Linq.XObjectChange" />。</returns>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChangeEventArgs.Remove">
+      <summary>
+        <see cref="F:System.Xml.Linq.XObjectChange.Remove" /> 更改事件的事件参数。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChangeEventArgs.Value">
+      <summary>
+        <see cref="F:System.Xml.Linq.XObjectChange.Value" /> 更改事件的事件参数。</summary>
+    </member>
+    <member name="T:System.Xml.Linq.XProcessingInstruction">
+      <summary>表示 XML 处理指令。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XProcessingInstruction.#ctor(System.String,System.String)">
+      <summary>初始化 <see cref="T:System.Xml.Linq.XProcessingInstruction" /> 类的新实例。</summary>
+      <param name="target">一个包含此 <see cref="T:System.Xml.Linq.XProcessingInstruction" /> 的目标应用程序的 <see cref="T:System.String" />。</param>
+      <param name="data">此 <see cref="T:System.Xml.Linq.XProcessingInstruction" /> 的字符串数据。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="target" /> 或 <paramref name="data" /> 参数为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="target" /> 没有遵循 XML 名称的约束。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XProcessingInstruction.#ctor(System.Xml.Linq.XProcessingInstruction)">
+      <summary>初始化 <see cref="T:System.Xml.Linq.XProcessingInstruction" /> 类的新实例。</summary>
+      <param name="other">要从其复制的 <see cref="T:System.Xml.Linq.XProcessingInstruction" /> 节点。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XProcessingInstruction.Data">
+      <summary>获取或设置此处理指令的字符串值。</summary>
+      <returns>一个 <see cref="T:System.String" />，其中包含此处理指令的字符串值。</returns>
+      <exception cref="T:System.ArgumentNullException">字符串 <paramref name="value" /> 为 null。</exception>
+    </member>
+    <member name="P:System.Xml.Linq.XProcessingInstruction.NodeType">
+      <summary>获取此节点的节点类型。</summary>
+      <returns>节点类型。对于 <see cref="T:System.Xml.Linq.XProcessingInstruction" /> 对象，该值为 <see cref="F:System.Xml.XmlNodeType.ProcessingInstruction" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XProcessingInstruction.Target">
+      <summary>获取或设置包含此处理指令的目标应用程序的字符串。</summary>
+      <returns>一个包含此处理指令的目标应用程序的 <see cref="T:System.String" />。</returns>
+      <exception cref="T:System.ArgumentNullException">字符串 <paramref name="value" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="target" /> 没有遵循 XML 名称的约束。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XProcessingInstruction.WriteTo(System.Xml.XmlWriter)">
+      <summary>将此处理指令写入 <see cref="T:System.Xml.XmlWriter" />。</summary>
+      <param name="writer">要将此处理指令写入的 <see cref="T:System.Xml.XmlWriter" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XStreamingElement">
+      <summary>表示支持延迟流输出的 XML 树中的元素。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.#ctor(System.Xml.Linq.XName)">
+      <summary>从指定的 <see cref="T:System.Xml.Linq.XName" /> 初始化 <see cref="T:System.Xml.Linq.XElement" /> 类的新实例。</summary>
+      <param name="name">一个包含元素名称的 <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.#ctor(System.Xml.Linq.XName,System.Object)">
+      <summary>用指定的名称和内容初始化 <see cref="T:System.Xml.Linq.XStreamingElement" /> 类的新实例。</summary>
+      <param name="name">一个包含元素名称的 <see cref="T:System.Xml.Linq.XName" />。</param>
+      <param name="content">元素的内容。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.#ctor(System.Xml.Linq.XName,System.Object[])">
+      <summary>用指定的名称和内容初始化 <see cref="T:System.Xml.Linq.XStreamingElement" /> 类的新实例。</summary>
+      <param name="name">一个包含元素名称的 <see cref="T:System.Xml.Linq.XName" />。</param>
+      <param name="content">元素的内容。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Add(System.Object)">
+      <summary>将指定的内容作为子级添加到此 <see cref="T:System.Xml.Linq.XStreamingElement" />。</summary>
+      <param name="content">要添加到流元素的内容。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Add(System.Object[])">
+      <summary>将指定的内容作为子级添加到此 <see cref="T:System.Xml.Linq.XStreamingElement" />。</summary>
+      <param name="content">要添加到流元素的内容。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XStreamingElement.Name">
+      <summary>获取或设置此流元素的名称。</summary>
+      <returns>一个 <see cref="T:System.Xml.Linq.XName" />，其中包含此流元素的名称。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Save(System.IO.Stream)">
+      <summary>将此 <see cref="T:System.Xml.Linq.XStreamingElement" /> 输出到指定的 <see cref="T:System.IO.Stream" />。</summary>
+      <param name="stream">要将此 <see cref="T:System.Xml.Linq.XDocument" /> 输出到的流。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Save(System.IO.Stream,System.Xml.Linq.SaveOptions)">
+      <summary>将此 <see cref="T:System.Xml.Linq.XStreamingElement" /> 输出到指定的 <see cref="T:System.IO.Stream" />，（可选）并指定格式设置行为。</summary>
+      <param name="stream">要将此 <see cref="T:System.Xml.Linq.XDocument" /> 输出到的流。</param>
+      <param name="options">一个 <see cref="T:System.Xml.Linq.SaveOptions" /> 对象，该对象指定格式设置行为。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Save(System.IO.TextWriter)">
+      <summary>将此流元素序列化为 <see cref="T:System.IO.TextWriter" />。</summary>
+      <param name="textWriter">将向其中写入 <see cref="T:System.Xml.Linq.XStreamingElement" /> 的 <see cref="T:System.IO.TextWriter" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Save(System.IO.TextWriter,System.Xml.Linq.SaveOptions)">
+      <summary>将此流元素序列化为 <see cref="T:System.IO.TextWriter" />，可以选择禁用格式设置。</summary>
+      <param name="textWriter">要将 XML 输出到的 <see cref="T:System.IO.TextWriter" />。</param>
+      <param name="options">一个指定格式设置行为的 <see cref="T:System.Xml.Linq.SaveOptions" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Save(System.Xml.XmlWriter)">
+      <summary>将此流元素序列化为 <see cref="T:System.Xml.XmlWriter" />。</summary>
+      <param name="writer">将向其中写入 <see cref="T:System.Xml.Linq.XElement" /> 的 <see cref="T:System.Xml.XmlWriter" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.ToString">
+      <summary>返回此流元素的格式设置（缩进）XML。</summary>
+      <returns>一个包含缩进 XML 的 <see cref="T:System.String" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.ToString(System.Xml.Linq.SaveOptions)">
+      <summary>返回此流元素的 XML，还可以选择禁用格式设置。</summary>
+      <returns>一个包含 XML 的 <see cref="T:System.String" />。</returns>
+      <param name="options">一个指定格式设置行为的 <see cref="T:System.Xml.Linq.SaveOptions" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.WriteTo(System.Xml.XmlWriter)">
+      <summary>将此流元素写入 <see cref="T:System.Xml.XmlWriter" />。</summary>
+      <param name="writer">此方法将写入的 <see cref="T:System.Xml.XmlWriter" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XText">
+      <summary>表示一个文本节点。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XText.#ctor(System.String)">
+      <summary>初始化 <see cref="T:System.Xml.Linq.XText" /> 类的新实例。</summary>
+      <param name="value">包含 <see cref="T:System.Xml.Linq.XText" /> 节点值的 <see cref="T:System.String" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XText.#ctor(System.Xml.Linq.XText)">
+      <summary>从其他 <see cref="T:System.Xml.Linq.XText" /> 对象初始化 <see cref="T:System.Xml.Linq.XText" /> 类的新实例。</summary>
+      <param name="other">要从其复制的 <see cref="T:System.Xml.Linq.XText" /> 节点。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XText.NodeType">
+      <summary>获取此节点的节点类型。</summary>
+      <returns>节点类型。对于 <see cref="T:System.Xml.Linq.XText" /> 对象，此值为 <see cref="F:System.Xml.XmlNodeType.Text" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XText.Value">
+      <summary>获取或设置此节点的值。</summary>
+      <returns>一个 <see cref="T:System.String" />，其中包含此节点的值。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XText.WriteTo(System.Xml.XmlWriter)">
+      <summary>将此节点写入 <see cref="T:System.Xml.XmlWriter" />。</summary>
+      <param name="writer">此方法将写入的 <see cref="T:System.Xml.XmlWriter" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+  </members>
+</doc>

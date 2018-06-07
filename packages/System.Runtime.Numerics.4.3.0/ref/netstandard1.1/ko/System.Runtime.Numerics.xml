@@ -1,0 +1,1229 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Runtime.Numerics</name>
+  </assembly>
+  <members>
+    <member name="T:System.Numerics.BigInteger">
+      <summary>부호 있는 임의의 큰 정수를 나타냅니다.</summary>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.Byte[])">
+      <summary>바이트 배열의 값을 사용하여 <see cref="T:System.Numerics.BigInteger" /> 구조체의 새 인스턴스를 초기화합니다.</summary>
+      <param name="value">little-endian 순서로 된 바이트 값의 배열입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is null.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.Decimal)">
+      <summary>
+        <see cref="T:System.Decimal" /> 값을 사용하여 <see cref="T:System.Numerics.BigInteger" /> 구조체의 새 인스턴스를 초기화합니다.</summary>
+      <param name="value">10진수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.Double)">
+      <summary>배정밀도 부동 소수점 값을 사용하여 <see cref="T:System.Numerics.BigInteger" /> 구조체의 새 인스턴스를 초기화합니다.</summary>
+      <param name="value">배정밀도 부동 소수점 값입니다.</param>
+      <exception cref="T:System.OverflowException">The value of <paramref name="value" /> is <see cref="F:System.Double.NaN" />.-or-The value of <paramref name="value" /> is <see cref="F:System.Double.NegativeInfinity" />.-or-The value of <paramref name="value" /> is <see cref="F:System.Double.PositiveInfinity" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.Int32)">
+      <summary>부호 있는 32비트 정수 값을 사용하여 <see cref="T:System.Numerics.BigInteger" /> 구조체의 새 인스턴스를 초기화합니다.</summary>
+      <param name="value">32비트 부호 있는 정수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.Int64)">
+      <summary>부호 있는 64비트 정수 값을 사용하여 <see cref="T:System.Numerics.BigInteger" /> 구조체의 새 인스턴스를 초기화합니다.</summary>
+      <param name="value">64비트 부호 있는 정수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.Single)">
+      <summary>단정밀도 부동 소수점 값을 사용하여 <see cref="T:System.Numerics.BigInteger" /> 구조체의 새 인스턴스를 초기화합니다.</summary>
+      <param name="value">단정밀도 부동 소수점 값입니다.</param>
+      <exception cref="T:System.OverflowException">The value of <paramref name="value" /> is <see cref="F:System.Single.NaN" />.-or-The value of <paramref name="value" /> is <see cref="F:System.Single.NegativeInfinity" />.-or-The value of <paramref name="value" /> is <see cref="F:System.Single.PositiveInfinity" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.UInt32)">
+      <summary>부호 없는 32비트 정수 값을 사용하여 <see cref="T:System.Numerics.BigInteger" /> 구조체의 새 인스턴스를 초기화합니다.</summary>
+      <param name="value">부호 없는 32비트 정수 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.UInt64)">
+      <summary>부호 없는 64비트 정수 값을 사용하여 <see cref="T:System.Numerics.BigInteger" /> 구조체의 새 인스턴스를 초기화합니다.</summary>
+      <param name="value">부호 없는 64비트 정수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Abs(System.Numerics.BigInteger)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 개체의 절대 값을 가져옵니다.</summary>
+      <returns>
+        <paramref name="value" />의 절대 값입니다.</returns>
+      <param name="value">숫자입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Add(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 값을 두 개 더한 다음 결과를 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />와 <paramref name="right" />의 합입니다.</returns>
+      <param name="left">더할 첫 번째 값입니다.</param>
+      <param name="right">더할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Compare(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>두 <see cref="T:System.Numerics.BigInteger" /> 값을 비교하고 첫 번째 값이 두 번째 값보다 작은지, 같은지 또는 큰지를 나타내는 정수를 반환합니다.</summary>
+      <returns>다음 표와 같이 <paramref name="left" /> 및 <paramref name="right" />의 상대 값을 나타내는 부호 있는 정수입니다.값조건0보다 작음<paramref name="left" />가 <paramref name="right" />보다 작은 경우0<paramref name="left" />가 <paramref name="right" />와 같습니다.0보다 큼<paramref name="left" />가 <paramref name="right" />보다 큰 경우</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.CompareTo(System.Int64)">
+      <summary>이 인스턴스를 부호 있는 64비트 정수와 비교하고 이 인스턴스의 값이 부호 있는 64비트 정수 값보다 작은지, 같은지 또는 큰지를 나타내는 정수를 반환합니다.</summary>
+      <returns>다음 표와 같이 이 인스턴스와 <paramref name="other" /> 사이의 관계를 나타내는 부호 있는 정수 값입니다.반환 값설명0보다 작음현재 인스턴스가 <paramref name="other" />보다 작습니다.0현재 인스턴스가 <paramref name="other" />와 같습니다.0보다 큼현재 인스턴스가 <paramref name="other" />보다 큽니다.</returns>
+      <param name="other">비교할 부호 있는 64비트 정수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.CompareTo(System.Numerics.BigInteger)">
+      <summary>이 인스턴스를 두 번째 <see cref="T:System.Numerics.BigInteger" />와 비교하고 이 인스턴스의 값이 지정된 개체의 값보다 작은지, 같은지 또는 큰지를 나타내는 정수를 반환합니다.</summary>
+      <returns>다음 표와 같이 이 인스턴스와 <paramref name="other" /> 사이의 관계를 나타내는 부호 있는 정수 값입니다.반환 값설명0보다 작음현재 인스턴스가 <paramref name="other" />보다 작습니다.0현재 인스턴스가 <paramref name="other" />와 같습니다.0보다 큼현재 인스턴스가 <paramref name="other" />보다 큽니다.</returns>
+      <param name="other">비교할 개체입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.CompareTo(System.UInt64)">
+      <summary>이 인스턴스를 부호 없는 64비트 정수와 비교하고 이 인스턴스의 값이 부호 없는 64비트 정수 값보다 작은지, 같은지 또는 큰지를 나타내는 정수를 반환합니다.</summary>
+      <returns>다음 표와 같이 이 인스턴스와 <paramref name="other" />의 상대 값을 나타내는 부호 있는 정수입니다.반환 값설명0보다 작음현재 인스턴스가 <paramref name="other" />보다 작습니다.0현재 인스턴스가 <paramref name="other" />와 같습니다.0보다 큼현재 인스턴스가 <paramref name="other" />보다 큽니다.</returns>
+      <param name="other">비교할 부호 없는 64비트 정수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Divide(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 값 하나를 다른 값으로 나눈 후 결과를 반환합니다.</summary>
+      <returns>나누기의 몫입니다.</returns>
+      <param name="dividend">나눌 대상 값입니다.</param>
+      <param name="divisor">나눌 값입니다.</param>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="divisor" /> is 0 (zero).</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.DivRem(System.Numerics.BigInteger,System.Numerics.BigInteger,System.Numerics.BigInteger@)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 값 하나를 다른 값으로 나눈 후 결과를 반환하고 출력 매개 변수에 나머지를 반환합니다.</summary>
+      <returns>나누기의 몫입니다.</returns>
+      <param name="dividend">나눌 대상 값입니다.</param>
+      <param name="divisor">나눌 값입니다.</param>
+      <param name="remainder">이 메서드가 반환되면 나누기의 나머지를 나타내는 <see cref="T:System.Numerics.BigInteger" /> 값을 포함합니다.이 매개 변수는 초기화되지 않은 상태로 전달됩니다.</param>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="divisor" /> is 0 (zero).</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Equals(System.Int64)">
+      <summary>현재 인스턴스와 부호 있는 64비트 정수의 값이 같은지를 나타내는 값을 반환합니다.</summary>
+      <returns>부호 있는 64비트 정수와 현재 인스턴스의 값이 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="other">비교할 부호 있는 64비트 정수 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Equals(System.Numerics.BigInteger)">
+      <summary>현재 인스턴스와 지정된 <see cref="T:System.Numerics.BigInteger" /> 개체의 값이 같은지를 나타내는 값을 반환합니다.</summary>
+      <returns>이 <see cref="T:System.Numerics.BigInteger" /> 개체와 <paramref name="other" />의 값이 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="other">비교할 개체입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Equals(System.Object)">
+      <summary>현재 인스턴스와 지정된 개체의 값이 같은지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="obj" /> 매개 변수가 <see cref="T:System.Numerics.BigInteger" /> 개체이거나 <see cref="T:System.Numerics.BigInteger" /> 값으로 암시적 변환이 가능한 형식이고 해당 값이 현재 <see cref="T:System.Numerics.BigInteger" /> 개체의 값과 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="obj">비교할 개체입니다. </param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Equals(System.UInt64)">
+      <summary>현재 인스턴스와 부호 없는 64비트 정수의 값이 같은지를 나타내는 값을 반환합니다.</summary>
+      <returns>현재 인스턴스와 부호 없는 64비트 정수의 값이 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="other">비교할 부호 없는 64비트 정수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.GetHashCode">
+      <summary>현재 <see cref="T:System.Numerics.BigInteger" /> 개체에 대한 해시 코드를 반환합니다.</summary>
+      <returns>부호 있는 32비트 정수 해시 코드입니다.</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.GreatestCommonDivisor(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>두 <see cref="T:System.Numerics.BigInteger" /> 값의 최대 공약수를 구합니다.</summary>
+      <returns>
+        <paramref name="left" />와 <paramref name="right" />의 최대 공약수입니다.</returns>
+      <param name="left">첫 번째 값입니다.</param>
+      <param name="right">두 번째 값입니다.</param>
+    </member>
+    <member name="P:System.Numerics.BigInteger.IsEven">
+      <summary>현재 <see cref="T:System.Numerics.BigInteger" /> 개체의 값이 짝수인지를 나타냅니다.</summary>
+      <returns>
+        <see cref="T:System.Numerics.BigInteger" /> 개체의 값이 짝수이면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="P:System.Numerics.BigInteger.IsOne">
+      <summary>현재 <see cref="T:System.Numerics.BigInteger" /> 개체의 값이 <see cref="P:System.Numerics.BigInteger.One" />인지를 나타냅니다.</summary>
+      <returns>
+        <see cref="T:System.Numerics.BigInteger" /> 개체의 값이 <see cref="P:System.Numerics.BigInteger.One" />이면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="P:System.Numerics.BigInteger.IsPowerOfTwo">
+      <summary>현재 <see cref="T:System.Numerics.BigInteger" /> 개체의 2의 거듭제곱인지를 나타냅니다.</summary>
+      <returns>
+        <see cref="T:System.Numerics.BigInteger" /> 개체의 값이 2의 거듭제곱이면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="P:System.Numerics.BigInteger.IsZero">
+      <summary>현재 <see cref="T:System.Numerics.BigInteger" /> 개체의 값이 <see cref="P:System.Numerics.BigInteger.Zero" />인지를 나타냅니다.</summary>
+      <returns>
+        <see cref="T:System.Numerics.BigInteger" /> 개체의 값이 <see cref="P:System.Numerics.BigInteger.Zero" />이면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Log(System.Numerics.BigInteger)">
+      <summary>지정된 숫자의 자연(밑 e) 로그를 반환합니다.</summary>
+      <returns>설명 섹션의 테이블과 같이 <paramref name="value" />의 자연(기준 e) 로그입니다.</returns>
+      <param name="value">로그가 있는 숫자입니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The natural log of <paramref name="value" /> is out of range of the <see cref="T:System.Double" /> data type.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Log(System.Numerics.BigInteger,System.Double)">
+      <summary>지정된 밑을 사용하여 지정된 숫자의 로그를 반환합니다.</summary>
+      <returns>설명 섹션의 테이블과 같이 밑이 <paramref name="baseValue" />인 <paramref name="value" />의 로그입니다.</returns>
+      <param name="value">로그가 있는 숫자입니다.</param>
+      <param name="baseValue">로그의 밑입니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The log of <paramref name="value" /> is out of range of the <see cref="T:System.Double" /> data type.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Log10(System.Numerics.BigInteger)">
+      <summary>밑을 10으로 사용하여 지정된 숫자의 로그를 반환합니다.</summary>
+      <returns>설명 섹션의 테이블과 같이 밑이 10인 <paramref name="value" />의 로그입니다.</returns>
+      <param name="value">로그가 있는 숫자입니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The base 10 log of <paramref name="value" /> is out of range of the <see cref="T:System.Double" /> data type.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Max(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>두 <see cref="T:System.Numerics.BigInteger" /> 값 중 더 큰 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" /> 또는 <paramref name="right" /> 매개 변수 중 더 큰 값입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Min(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>두 <see cref="T:System.Numerics.BigInteger" /> 값 중 더 작은 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" /> 또는 <paramref name="right" /> 매개 변수 중 더 작은 값입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="P:System.Numerics.BigInteger.MinusOne">
+      <summary>숫자 -1을 나타내는 값을 가져옵니다.</summary>
+      <returns>값이 -1인 정수입니다.</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.ModPow(System.Numerics.BigInteger,System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>다른 숫자의 승수로 거듭제곱한 숫자에 대해 모듈러스 나누기를 수행합니다.</summary>
+      <returns>
+        <paramref name="value" />exponent를 <paramref name="modulus" />로 나눈 나머지입니다.</returns>
+      <param name="value">
+        <paramref name="exponent" /> 지수로 사용할 숫자입니다.</param>
+      <param name="exponent">
+        <paramref name="value" />를 거듭제곱할 지수입니다.</param>
+      <param name="modulus">
+        <paramref name="value" />의 <paramref name="exponent" />승을 나눌 숫자입니다.</param>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="modulus" /> is zero.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="exponent" /> is negative.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Multiply(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>두 <see cref="T:System.Numerics.BigInteger" /> 값의 곱을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" /> 및 <paramref name="right" /> 매개 변수의 곱입니다.</returns>
+      <param name="left">곱할 첫 번째 숫자입니다.</param>
+      <param name="right">곱할 두 번째 숫자입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Negate(System.Numerics.BigInteger)">
+      <summary>지정된 <see cref="T:System.Numerics.BigInteger" /> 값을 부정합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수에 -1을 곱한 결과입니다.</returns>
+      <param name="value">부정할 값입니다.</param>
+    </member>
+    <member name="P:System.Numerics.BigInteger.One">
+      <summary>숫자 1을 나타내는 값을 가져옵니다.</summary>
+      <returns>값이 1인 개체입니다.</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Addition(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>지정한 두 <see cref="T:System.Numerics.BigInteger" /> 개체의 값을 더합니다.</summary>
+      <returns>
+        <paramref name="left" /> 및 <paramref name="right" />의 합입니다.</returns>
+      <param name="left">더할 첫 번째 값입니다.</param>
+      <param name="right">더할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_BitwiseAnd(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>두 <see cref="T:System.Numerics.BigInteger" /> 값에 대해 비트 And 연산을 수행합니다.</summary>
+      <returns>비트 And 연산의 결과입니다.</returns>
+      <param name="left">첫 번째 값입니다.</param>
+      <param name="right">두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_BitwiseOr(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>두 <see cref="T:System.Numerics.BigInteger" /> 값에 대해 비트 Or 연산을 수행합니다.</summary>
+      <returns>비트 Or 연산의 결과입니다.</returns>
+      <param name="left">첫 번째 값입니다.</param>
+      <param name="right">두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Decrement(System.Numerics.BigInteger)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 값을 1씩 감소합니다.</summary>
+      <returns>1씩 감소하는 <paramref name="value" /> 매개 변수의 값입니다.</returns>
+      <param name="value">감소시킬 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Division(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>정수 나누기를 사용하여 지정된 <see cref="T:System.Numerics.BigInteger" /> 값을 지정된 다른 <see cref="T:System.Numerics.BigInteger" /> 값으로 나눕니다.</summary>
+      <returns>나누기의 정수 계열 결과입니다.</returns>
+      <param name="dividend">나눌 대상 값입니다.</param>
+      <param name="divisor">나눌 값입니다.</param>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="divisor" /> is 0 (zero).</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Equality(System.Int64,System.Numerics.BigInteger)">
+      <summary>부호 있는 정수(Long) 값과 <see cref="T:System.Numerics.BigInteger" /> 값이 같은지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" /> 및 <paramref name="right" /> 매개 변수의 값이 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Equality(System.Numerics.BigInteger,System.Int64)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 값과 부호 있는 정수(Long) 값이 같은지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" /> 및 <paramref name="right" /> 매개 변수의 값이 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Equality(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>두 <see cref="T:System.Numerics.BigInteger" /> 개체의 값이 같은지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" /> 및 <paramref name="right" /> 매개 변수의 값이 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Equality(System.Numerics.BigInteger,System.UInt64)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 값과 부호 없는 정수(Long) 값이 같은지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" /> 및 <paramref name="right" /> 매개 변수의 값이 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Equality(System.UInt64,System.Numerics.BigInteger)">
+      <summary>부호 없는 정수(Long) 값과 <see cref="T:System.Numerics.BigInteger" /> 값이 같은지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" /> 및 <paramref name="right" /> 매개 변수의 값이 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_ExclusiveOr(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>두 <see cref="T:System.Numerics.BigInteger" /> 값에 대해 배타적 비트 Or(XOr) 연산을 수행합니다.</summary>
+      <returns>비트 Or 연산의 결과입니다.</returns>
+      <param name="left">첫 번째 값입니다.</param>
+      <param name="right">두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Decimal)~System.Numerics.BigInteger">
+      <summary>
+        <see cref="T:System.Decimal" /> 개체를 <see cref="T:System.Numerics.BigInteger" /> 값으로 변환하는 명시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값이 포함된 개체입니다.</returns>
+      <param name="value">
+        <see cref="T:System.Numerics.BigInteger" />로 변환할 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Double)~System.Numerics.BigInteger">
+      <summary>
+        <see cref="T:System.Double" /> 값을 <see cref="T:System.Numerics.BigInteger" /> 값으로 변환하는 명시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값이 포함된 개체입니다.</returns>
+      <param name="value">
+        <see cref="T:System.Numerics.BigInteger" />로 변환할 값입니다.</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is <see cref="F:System.Double.NaN" />.-or-<paramref name="value" /> is <see cref="F:System.Double.PositiveInfinity" />.-or-<paramref name="value" /> is <see cref="F:System.Double.NegativeInfinity" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Int16">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 개체를 부호 있는 16비트 정수 값으로 변환하는 명시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값이 포함된 개체입니다.</returns>
+      <param name="value">부호 있는 16비트 정수로 변환할 값입니다.</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.Int16.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.Int16.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Decimal">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 개체를 <see cref="T:System.Decimal" /> 값으로 변환하는 명시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값이 포함된 개체입니다.</returns>
+      <param name="value">
+        <see cref="T:System.Decimal" />로 변환할 값입니다.</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.Decimal.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.Decimal.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Double">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 개체를 <see cref="T:System.Double" /> 값으로 변환하는 명시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값이 포함된 개체입니다.</returns>
+      <param name="value">
+        <see cref="T:System.Double" />로 변환할 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Byte">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 개체를 부호 없는 바이트 값으로 변환하는 명시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값이 포함된 개체입니다.</returns>
+      <param name="value">
+        <see cref="T:System.Byte" />로 변환할 값입니다.</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.Byte.MinValue" />. -or-<paramref name="value" /> is greater than <see cref="F:System.Byte.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.UInt64">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 개체를 부호 없는 64비트 정수 값으로 변환하는 명시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값이 포함된 개체입니다.</returns>
+      <param name="value">부호 없는 64비트 정수로 변환할 값입니다.</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.UInt64.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.UInt64.MaxValue" />. </exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Int32">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 개체를 부호 있는 32비트 정수 값으로 변환하는 명시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값이 포함된 개체입니다.</returns>
+      <param name="value">부호 있는 32비트 정수로 변환할 값입니다. </param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.Int32.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.Int32.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.SByte">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 개체를 부호 있는 8비트 값으로 변환하는 명시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값이 포함된 개체입니다.</returns>
+      <param name="value">부호 있는 8비트 값으로 변환할 값입니다.</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.SByte.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.SByte.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Int64">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 개체를 부호 있는 64비트 정수 값으로 변환하는 명시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값이 포함된 개체입니다.</returns>
+      <param name="value">부호 있는 64비트 정수로 변환할 값입니다.</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.Int64.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.Int64.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Single">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 개체를 단정밀도 부동 소수점 값으로 변환하는 명시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 가능한 가장 가까운 표현을 포함하는 개체입니다.</returns>
+      <param name="value">단정밀도 부동 소수점 값으로 변환할 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.UInt32">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 개체를 부호 없는 32비트 정수 값으로 변환하는 명시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값이 포함된 개체입니다.</returns>
+      <param name="value">부호 없는 32비트 정수로 변환할 값입니다.</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.UInt32.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.UInt32.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.UInt16">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 개체를 부호 없는 16비트 정수 값으로 변환하는 명시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값이 포함된 개체입니다.</returns>
+      <param name="value">부호 없는 16비트 정수로 변환할 값입니다.</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.UInt16.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.UInt16.MaxValue" />. </exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Single)~System.Numerics.BigInteger">
+      <summary>
+        <see cref="T:System.Single" /> 개체를 <see cref="T:System.Numerics.BigInteger" /> 값으로 변환하는 명시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값이 포함된 개체입니다.</returns>
+      <param name="value">
+        <see cref="T:System.Numerics.BigInteger" />로 변환할 값입니다.</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is <see cref="F:System.Single.NaN" />.-or-<paramref name="value" /> is <see cref="F:System.Single.PositiveInfinity" />.-or-<paramref name="value" /> is <see cref="F:System.Single.NegativeInfinity" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThan(System.Int64,System.Numerics.BigInteger)">
+      <summary>부호 있는 64비트 정수가 <see cref="T:System.Numerics.BigInteger" /> 값보다 큰지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />가 <paramref name="right" />보다 크면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThan(System.Numerics.BigInteger,System.Int64)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" />가 부호 있는 64 정수 값보다 큰지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />가 <paramref name="right" />보다 크면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThan(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 값이 다른 <see cref="T:System.Numerics.BigInteger" /> 값보다 큰지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />가 <paramref name="right" />보다 크면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThan(System.Numerics.BigInteger,System.UInt64)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 값이 부호 없는 64비트 정수보다 큰지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />가 <paramref name="right" />보다 크면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThan(System.UInt64,System.Numerics.BigInteger)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 값이 부호 없는 64비트 정수보다 큰지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />가 <paramref name="right" />보다 크면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThanOrEqual(System.Int64,System.Numerics.BigInteger)">
+      <summary>부호 있는 64비트 정수가 <see cref="T:System.Numerics.BigInteger" /> 값보다 크거나 같은지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />가 <paramref name="right" />보다 크면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThanOrEqual(System.Numerics.BigInteger,System.Int64)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 값이 부호 있는 64비트 정수 값보다 크거나 같은지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />가 <paramref name="right" />보다 크면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThanOrEqual(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 값이 다른 <see cref="T:System.Numerics.BigInteger" /> 값보다 크거나 같은지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />가 <paramref name="right" />보다 크면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThanOrEqual(System.Numerics.BigInteger,System.UInt64)">
+      <summary>\<see cref="T:System.Numerics.BigInteger" /> 값이 부호 없는 64비트 정수 값보다 크거나 같은지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />가 <paramref name="right" />보다 크면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThanOrEqual(System.UInt64,System.Numerics.BigInteger)">
+      <summary>부호 없는 64비트 정수가 <see cref="T:System.Numerics.BigInteger" /> 값보다 크거나 같은지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />가 <paramref name="right" />보다 크면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.Byte)~System.Numerics.BigInteger">
+      <summary>부호 없는 바이트를 <see cref="T:System.Numerics.BigInteger" /> 값으로 변환하는 암시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값이 포함된 개체입니다.</returns>
+      <param name="value">
+        <see cref="T:System.Numerics.BigInteger" />로 변환할 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.Int16)~System.Numerics.BigInteger">
+      <summary>부호 있는 16비트 정수를 <see cref="T:System.Numerics.BigInteger" /> 값으로 변환하는 암시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값이 포함된 개체입니다.</returns>
+      <param name="value">
+        <see cref="T:System.Numerics.BigInteger" />로 변환할 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.Int32)~System.Numerics.BigInteger">
+      <summary>부호 있는 32비트 정수를 <see cref="T:System.Numerics.BigInteger" /> 값으로 변환하는 암시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값이 포함된 개체입니다.</returns>
+      <param name="value">
+        <see cref="T:System.Numerics.BigInteger" />로 변환할 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.Int64)~System.Numerics.BigInteger">
+      <summary>부호 있는 64비트 정수를 <see cref="T:System.Numerics.BigInteger" /> 값으로 변환하는 암시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값이 포함된 개체입니다.</returns>
+      <param name="value">
+        <see cref="T:System.Numerics.BigInteger" />로 변환할 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.SByte)~System.Numerics.BigInteger">
+      <summary>부호 있는 8비트 정수를 <see cref="T:System.Numerics.BigInteger" /> 값으로 변환하는 암시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값이 포함된 개체입니다.</returns>
+      <param name="value">
+        <see cref="T:System.Numerics.BigInteger" />로 변환할 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.UInt16)~System.Numerics.BigInteger">
+      <summary>부호 없는 16비트 정수를 <see cref="T:System.Numerics.BigInteger" /> 값으로 변환하는 암시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값이 포함된 개체입니다.</returns>
+      <param name="value">
+        <see cref="T:System.Numerics.BigInteger" />로 변환할 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.UInt32)~System.Numerics.BigInteger">
+      <summary>부호 없는 32비트 정수를 <see cref="T:System.Numerics.BigInteger" /> 값으로 변환하는 암시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값이 포함된 개체입니다.</returns>
+      <param name="value">
+        <see cref="T:System.Numerics.BigInteger" />로 변환할 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.UInt64)~System.Numerics.BigInteger">
+      <summary>부호 없는 64비트 정수를 <see cref="T:System.Numerics.BigInteger" /> 값으로 변환하는 암시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값이 포함된 개체입니다.</returns>
+      <param name="value">
+        <see cref="T:System.Numerics.BigInteger" />로 변환할 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Increment(System.Numerics.BigInteger)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 값을 1씩 증가합니다.</summary>
+      <returns>1씩 증가하는 <paramref name="value" /> 매개 변수의 값입니다.</returns>
+      <param name="value">증가시킬 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Inequality(System.Int64,System.Numerics.BigInteger)">
+      <summary>부호 있는 64비트 정수와 <see cref="T:System.Numerics.BigInteger" /> 값이 다른지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />와 <paramref name="right" />가 같지 않으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Inequality(System.Numerics.BigInteger,System.Int64)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 값과 부호 있는 64비트 정수가 다른지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />와 <paramref name="right" />가 다르면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Inequality(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>두 <see cref="T:System.Numerics.BigInteger" /> 개체의 값이 다른지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />와 <paramref name="right" />가 다르면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Inequality(System.Numerics.BigInteger,System.UInt64)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 값과 부호 없는 64비트 정수가 다른지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />와 <paramref name="right" />가 다르면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Inequality(System.UInt64,System.Numerics.BigInteger)">
+      <summary>부호 없는 64비트 정수와 <see cref="T:System.Numerics.BigInteger" /> 값이 다른지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />와 <paramref name="right" />가 다르면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LeftShift(System.Numerics.BigInteger,System.Int32)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 값을 지정된 비트 수만큼 왼쪽으로 이동합니다.</summary>
+      <returns>지정된 비트 수만큼 왼쪽으로 이동한 값입니다.</returns>
+      <param name="value">비트를 이동할 값입니다.</param>
+      <param name="shift">
+        <paramref name="value" />를 왼쪽으로 이동할 비트 수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThan(System.Int64,System.Numerics.BigInteger)">
+      <summary>부호 있는 64비트 정수가 <see cref="T:System.Numerics.BigInteger" /> 값보다 작은지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />가 <paramref name="right" />보다 작으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThan(System.Numerics.BigInteger,System.Int64)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 값이 부호 있는 64비트 정수보다 작은지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />가 <paramref name="right" />보다 작으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThan(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 값이 다른 <see cref="T:System.Numerics.BigInteger" /> 값보다 작은지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />가 <paramref name="right" />보다 작으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThan(System.Numerics.BigInteger,System.UInt64)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 값이 부호 없는 64비트 정수보다 작은지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />가 <paramref name="right" />보다 작으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThan(System.UInt64,System.Numerics.BigInteger)">
+      <summary>부호 없는 64비트 정수가 <see cref="T:System.Numerics.BigInteger" /> 값보다 작은지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />가 <paramref name="right" />보다 작으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.Int64,System.Numerics.BigInteger)">
+      <summary>부호 있는 64비트 정수가 <see cref="T:System.Numerics.BigInteger" /> 값보다 작거나 같은지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />가 <paramref name="right" />보다 작거나 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.Numerics.BigInteger,System.Int64)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 값이 부호 있는 64비트 정수보다 작거나 같은지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />가 <paramref name="right" />보다 작거나 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 값이 다른 <see cref="T:System.Numerics.BigInteger" /> 값보다 작거나 같은지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />가 <paramref name="right" />보다 작거나 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.Numerics.BigInteger,System.UInt64)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 값이 부호 없는 64비트 정수보다 작거나 같은지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />가 <paramref name="right" />보다 작거나 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.UInt64,System.Numerics.BigInteger)">
+      <summary>부호 없는 64비트 정수가 <see cref="T:System.Numerics.BigInteger" /> 값보다 작거나 같은지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />가 <paramref name="right" />보다 작거나 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Modulus(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>지정된 두 <see cref="T:System.Numerics.BigInteger" /> 값을 나눈 나머지를 반환합니다.</summary>
+      <returns>나눈 나머지입니다.</returns>
+      <param name="dividend">나눌 대상 값입니다.</param>
+      <param name="divisor">나눌 값입니다.</param>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="divisor" /> is 0 (zero).</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Multiply(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>지정된 두 <see cref="T:System.Numerics.BigInteger" /> 값을 곱합니다.</summary>
+      <returns>
+        <paramref name="left" /> 및 <paramref name="right" /> 제품입니다.</returns>
+      <param name="left">곱할 첫 번째 값입니다.</param>
+      <param name="right">곱할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_OnesComplement(System.Numerics.BigInteger)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 값에 대한 비트 1의 보수를 반환합니다.</summary>
+      <returns>
+        <paramref name="value" />에 대한 비트 1의 보수입니다.</returns>
+      <param name="value">정수 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_RightShift(System.Numerics.BigInteger,System.Int32)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 값을 지정된 비트 수만큼 오른쪽으로 이동합니다.</summary>
+      <returns>지정된 비트 수만큼 오른쪽으로 이동한 값입니다.</returns>
+      <param name="value">비트를 이동할 값입니다.</param>
+      <param name="shift">
+        <paramref name="value" />를 오른쪽으로 이동할 비트 수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Subtraction(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>다른 <see cref="T:System.Numerics.BigInteger" /> 값에서 <see cref="T:System.Numerics.BigInteger" /> 값을 뺍니다.</summary>
+      <returns>
+        <paramref name="left" />에서 <paramref name="right" />를 뺀 결과입니다.</returns>
+      <param name="left">뺄 대상 값(피감수)입니다.</param>
+      <param name="right">뺄 값(감수)입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_UnaryNegation(System.Numerics.BigInteger)">
+      <summary>지정된 BigInteger 값을 부정합니다. </summary>
+      <returns>
+        <paramref name="value" /> 매개 변수에 -1을 곱한 결과입니다.</returns>
+      <param name="value">부정할 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_UnaryPlus(System.Numerics.BigInteger)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 피연산자의 값을 반환합니다.피연산자의 부호는 변경되지 않습니다.</summary>
+      <returns>
+        <paramref name="value" /> 피연산자의 값입니다.</returns>
+      <param name="value">정수 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Parse(System.String)">
+      <summary>숫자의 문자열 표현을 해당하는 <see cref="T:System.Numerics.BigInteger" />로 변환합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수에 지정된 숫자에 해당하는 값입니다.</returns>
+      <param name="value">변환할 숫자가 포함된 문자열입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is null.</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="value" /> is not in the correct format.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Parse(System.String,System.Globalization.NumberStyles)">
+      <summary>숫자를 지정된 스타일로 나타낸 문자열 표현을 해당 <see cref="T:System.Numerics.BigInteger" />로 변환합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수에 지정된 숫자에 해당하는 값입니다.</returns>
+      <param name="value">변환할 숫자가 포함된 문자열입니다. </param>
+      <param name="style">
+        <paramref name="value" />에 사용할 수 있는 서식을 지정하는 열거형 값의 비트 조합입니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="style" /> is not a <see cref="T:System.Globalization.NumberStyles" /> value.-or-<paramref name="style" /> includes the <see cref="F:System.Globalization.NumberStyles.AllowHexSpecifier" /> or <see cref="F:System.Globalization.NumberStyles.HexNumber" /> flag along with another value.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is null.</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="value" /> does not comply with the input pattern specified by <see cref="T:System.Globalization.NumberStyles" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Parse(System.String,System.Globalization.NumberStyles,System.IFormatProvider)">
+      <summary>지정된 스타일 및 문화권별 형식으로 된 숫자의 문자열 표현을 해당하는 <see cref="T:System.Numerics.BigInteger" />로 변환합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수에 지정된 숫자에 해당하는 값입니다.</returns>
+      <param name="value">변환할 숫자가 포함된 문자열입니다.</param>
+      <param name="style">
+        <paramref name="value" />에 사용할 수 있는 형식을 지정하는 열거형 값의 비트 조합입니다.</param>
+      <param name="provider">
+        <paramref name="value" />에 대한 문화권별 서식 지정 정보를 제공하는 개체입니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="style" /> is not a <see cref="T:System.Globalization.NumberStyles" /> value.-or-<paramref name="style" /> includes the <see cref="F:System.Globalization.NumberStyles.AllowHexSpecifier" /> or <see cref="F:System.Globalization.NumberStyles.HexNumber" /> flag along with another value.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is null.</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="value" /> does not comply with the input pattern specified by <paramref name="style" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Parse(System.String,System.IFormatProvider)">
+      <summary>숫자를 지정된 문화권별 형식으로 나타낸 문자열 표현을 해당 <see cref="T:System.Numerics.BigInteger" />로 변환합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수에 지정된 숫자에 해당하는 값입니다.</returns>
+      <param name="value">변환할 숫자가 포함된 문자열입니다.</param>
+      <param name="provider">
+        <paramref name="value" />에 대한 문화권별 서식 지정 정보를 제공하는 개체입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is null.</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="value" /> is not in the correct format.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Pow(System.Numerics.BigInteger,System.Int32)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 값을 지정된 값의 거듭제곱으로 변환합니다.</summary>
+      <returns>
+        <paramref name="exponent" />를 <paramref name="value" />번 거듭제곱한 결과입니다.</returns>
+      <param name="value">
+        <paramref name="exponent" /> 지수로 사용할 숫자입니다.</param>
+      <param name="exponent">
+        <paramref name="value" />를 거듭제곱할 지수입니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of the <paramref name="exponent" /> parameter is negative.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Remainder(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>두 <see cref="T:System.Numerics.BigInteger" /> 값에 대해 정수 나누기를 수행합니다.</summary>
+      <returns>
+        <paramref name="dividend" />를 <paramref name="divisor" />로 나눈 나머지입니다.</returns>
+      <param name="dividend">나눌 대상 값입니다.</param>
+      <param name="divisor">나눌 값입니다.</param>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="divisor" /> is 0 (zero).</exception>
+    </member>
+    <member name="P:System.Numerics.BigInteger.Sign">
+      <summary>현재 <see cref="T:System.Numerics.BigInteger" /> 개체의 부호(음수, 양수 또는 0)를 나타내는 숫자를 가져옵니다.</summary>
+      <returns>다음 표와 같이 <see cref="T:System.Numerics.BigInteger" /> 개체의 부호를 나타내는 숫자입니다.숫자설명-1이 개체의 값이 음수입니다.0이 개체의 값이 0입니다.1이 개체의 값이 양수입니다.</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Subtract(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>다른 값에서 하나의 <see cref="T:System.Numerics.BigInteger" /> 값을 뺀 결과를 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />에서 <paramref name="right" />를 뺀 결과입니다.</returns>
+      <param name="left">뺄 대상 값(피감수)입니다.</param>
+      <param name="right">뺄 값(감수)입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.System#IComparable#CompareTo(System.Object)">
+      <summary>현재 인스턴스와 동일한 형식의 다른 개체를 비교하고 정렬 순서에서 현재 인스턴스의 위치가 다른 개체보다 앞인지, 뒤인지 또는 동일한지를 나타내는 정수를 반환합니다.</summary>
+      <returns>이 인스턴스와 <paramref name="obj" />의 상대 순서를 나타내는 부호 있는 정수입니다.반환 값 설명 0보다 작음 이 인스턴스가 정렬 순서에서 <paramref name="obj" /> 앞에 옵니다. 0 이 인스턴스가 정렬 순서에서 <paramref name="obj" />와 동일한 위치에서 발생합니다. 0보다 큼 이 인스턴스가 정렬 순서에서 <paramref name="obj" /> 뒤에 옵니다.또는 <paramref name="value" />가 null인 경우 </returns>
+      <param name="obj">이 인스턴스와 비교할 개체 또는 null입니다. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="obj" /> is not a <see cref="T:System.Numerics.BigInteger" />. </exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.ToByteArray">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 값을 바이트 배열로 변환합니다.</summary>
+      <returns>현재 <see cref="T:System.Numerics.BigInteger" /> 개체를 바이트 배열로 변환한 값입니다.</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.ToString">
+      <summary>현재 <see cref="T:System.Numerics.BigInteger" /> 개체의 숫자 값을 해당하는 문자열 표현으로 변환합니다.</summary>
+      <returns>현재 <see cref="T:System.Numerics.BigInteger" /> 값의 문자열 표현입니다.</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.ToString(System.IFormatProvider)">
+      <summary>지정된 문화권별 서식 지정 정보를 사용하여 현재 <see cref="T:System.Numerics.BigInteger" /> 개체의 숫자 값을 해당 문자열 표현으로 변환합니다.</summary>
+      <returns>
+        <paramref name="provider" /> 매개 변수로 지정된 서식에 따른 현재 <see cref="T:System.Numerics.BigInteger" /> 값의 문자열 표현입니다.</returns>
+      <param name="provider">문화권별 서식 지정 정보를 제공하는 개체입니다.</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.ToString(System.String)">
+      <summary>지정된 서식을 사용하여 현재 <see cref="T:System.Numerics.BigInteger" /> 개체의 숫자 값을 해당하는 문자열 표현으로 변환합니다.</summary>
+      <returns>
+        <paramref name="format" /> 매개 변수로 지정된 서식에 따른 현재 <see cref="T:System.Numerics.BigInteger" /> 값의 문자열 표현입니다.</returns>
+      <param name="format">표준 또는 사용자 지정 숫자 서식 문자열입니다.</param>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> is not a valid format string.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.ToString(System.String,System.IFormatProvider)">
+      <summary>지정된 형식 및 문화권별 형싣 정보를 사용하여 현재 <see cref="T:System.Numerics.BigInteger" /> 개체의 숫자 값을 해당 문자열 표현으로 변환합니다.</summary>
+      <returns>
+        <paramref name="format" /> 및 <paramref name="provider" /> 매개 변수로 지정된 현재 <see cref="T:System.Numerics.BigInteger" /> 값의 문자열 표현입니다.</returns>
+      <param name="format">표준 또는 사용자 지정 숫자 서식 문자열입니다.</param>
+      <param name="provider">문화권별 서식 지정 정보를 제공하는 개체입니다.</param>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> is not a valid format string.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.TryParse(System.String,System.Globalization.NumberStyles,System.IFormatProvider,System.Numerics.BigInteger@)">
+      <summary>지정된 문화권별 형식과 지정된 스타일을 사용한 숫자의 문자열 표현을 해당 <see cref="T:System.Numerics.BigInteger" />로 변환해 보고, 변환에 성공했는지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수가 변환되면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="value">숫자의 문자열 표현입니다.이 문자열은 <paramref name="style" />이 지정하는 스타일을 사용하여 해석됩니다.</param>
+      <param name="style">
+        <paramref name="value" />에 나타날 수 있는 스타일 요소를 나타내는 열거형 값의 비트 조합입니다.지정할 일반적인 값은 <see cref="F:System.Globalization.NumberStyles.Integer" />입니다.</param>
+      <param name="provider">
+        <paramref name="value" />에 대한 문화권별 서식 지정 정보를 제공하는 개체입니다.</param>
+      <param name="result">이 메서드가 반환되면 <paramref name="value" />에 포함된 숫자 또는 변환에 실패한 경우 <see cref="P:System.Numerics.BigInteger.Zero" />에 해당하는 <see cref="T:System.Numerics.BigInteger" />를 포함합니다.<paramref name="value" /> 매개 변수가 null이거나 <paramref name="style" />과 호환되지 않는 형식으로 되어 있으면 변환에 실패합니다.이 매개 변수는 초기화되지 않은 상태로 전달됩니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="style" /> is not a <see cref="T:System.Globalization.NumberStyles" /> value.-or-<paramref name="style" /> includes the <see cref="F:System.Globalization.NumberStyles.AllowHexSpecifier" /> or <see cref="F:System.Globalization.NumberStyles.HexNumber" /> flag along with another value. </exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.TryParse(System.String,System.Numerics.BigInteger@)">
+      <summary>숫자의 문자열 표현을 해당 <see cref="T:System.Numerics.BigInteger" />로 변환하고, 변환에 성공했는지를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="value" />가 성공적으로 변환되었으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="value">숫자의 문자열 표현입니다.</param>
+      <param name="result">이 메서드가 반환되면 <paramref name="value" />에 포함된 숫자 또는 변환에 실패한 경우 0에 해당하는 <see cref="T:System.Numerics.BigInteger" />를 포함합니다.<paramref name="value" /> 매개 변수가 null이거나 올바른 형식이 아니면 변환에 실패합니다.이 매개 변수는 초기화되지 않은 상태로 전달됩니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is null.</exception>
+    </member>
+    <member name="P:System.Numerics.BigInteger.Zero">
+      <summary>숫자 0을 나타내는 값을 가져옵니다.</summary>
+      <returns>값이 0인 정수입니다.</returns>
+    </member>
+    <member name="T:System.Numerics.Complex">
+      <summary>복소수를 나타냅니다.</summary>
+    </member>
+    <member name="M:System.Numerics.Complex.#ctor(System.Double,System.Double)">
+      <summary>지정된 실수 값과 허수 값을 사용하여 <see cref="T:System.Numerics.Complex" /> 구조체의 새 인스턴스를 초기화합니다.</summary>
+      <param name="real">복소수의 실수 부분입니다.</param>
+      <param name="imaginary">복소수의 허수 부분입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Abs(System.Numerics.Complex)">
+      <summary>복소수의 절대 값 또는 크기를 가져옵니다.</summary>
+      <returns>
+        <paramref name="value" />의 절대 값입니다.</returns>
+      <param name="value">복소수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Acos(System.Numerics.Complex)">
+      <summary>지정된 복소수의 아크코사인인 각도를 반환합니다.</summary>
+      <returns>
+        <paramref name="value" />의 아크코사인인 각도인, 라디안 단위로 측정됩니다.</returns>
+      <param name="value">코사인을 나타내는 복소수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Add(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>두 개의 복소수를 더한 후 결과를 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />와 <paramref name="right" />의 합입니다.</returns>
+      <param name="left">더할 첫 번째 복소수입니다.</param>
+      <param name="right">더할 두 번째 복소수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Asin(System.Numerics.Complex)">
+      <summary>지정된 복소수의 아크사인인 각도를 반환합니다.</summary>
+      <returns>
+        <paramref name="value" />의 아크사인인 각도입니다.</returns>
+      <param name="value">복소수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Atan(System.Numerics.Complex)">
+      <summary>지정된 복소수의 아크탄젠트인 각도를 반환합니다.</summary>
+      <returns>
+        <paramref name="value" />의 아크탄젠트인 각도입니다.</returns>
+      <param name="value">복소수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Conjugate(System.Numerics.Complex)">
+      <summary>복소수의 켤레 복소수를 계산한 후 결과를 반환합니다.</summary>
+      <returns>
+        <paramref name="value" />의 켤레 복소수입니다.</returns>
+      <param name="value">복소수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Cos(System.Numerics.Complex)">
+      <summary>지정된 복소수의 코사인을 반환합니다.</summary>
+      <returns>
+        <paramref name="value" />의 코사인입니다.</returns>
+      <param name="value">복소수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Cosh(System.Numerics.Complex)">
+      <summary>지정된 복소수의 하이퍼볼릭 코사인을 반환합니다.</summary>
+      <returns>
+        <paramref name="value" />의 하이퍼볼릭 코사인입니다.</returns>
+      <param name="value">복소수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Divide(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>한 복소수를 다른 복소수로 나눈 후 결과를 반환합니다.</summary>
+      <returns>나누기의 몫입니다.</returns>
+      <param name="dividend">나눌 복소수입니다.</param>
+      <param name="divisor">값을 나눌 복소수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Equals(System.Numerics.Complex)">
+      <summary>현재 인스턴스와 지정된 복소수의 값이 같은지 여부를 나타내는 값을 반환합니다.</summary>
+      <returns>이 복소수와 <paramref name="value" />가 동일한 값을 가지면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="value">비교할 복소수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Equals(System.Object)">
+      <summary>현재 인스턴스와 지정된 개체의 값이 같은지 여부를 나타내는 값을 반환합니다. </summary>
+      <returns>
+        <paramref name="obj" /> 매개 변수가 <see cref="T:System.Numerics.Complex" /> 개체이거나 <see cref="T:System.Numerics.Complex" /> 개체로 암시적 변환이 가능한 형식이고 해당 값이 현재 <see cref="T:System.Numerics.Complex" /> 개체의 값과 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="obj">비교할 개체입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Exp(System.Numerics.Complex)">
+      <summary>e를 복소수로 지정된 지수만큼 거듭제곱하여 반환합니다.</summary>
+      <returns>e의 <paramref name="value" />승입니다.</returns>
+      <param name="value">지수를 지정하는 복소수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.FromPolarCoordinates(System.Double,System.Double)">
+      <summary>점의 극좌표를 사용하여 복소수를 만듭니다.</summary>
+      <returns>복소수입니다.</returns>
+      <param name="magnitude">원점(x축과 y축의 교차점)에서 숫자까지의 거리인 크기입니다.</param>
+      <param name="phase">선에서 가로 축까지의 각도인 위상으로서, 라디안 단위로 측정됩니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.GetHashCode">
+      <summary>현재 <see cref="T:System.Numerics.Complex" /> 개체에 대한 해시 코드를 반환합니다.</summary>
+      <returns>부호 있는 32비트 정수 해시 코드입니다.</returns>
+    </member>
+    <member name="P:System.Numerics.Complex.Imaginary">
+      <summary>현재 <see cref="T:System.Numerics.Complex" /> 개체의 허수 구성 요소를 가져옵니다.</summary>
+      <returns>복소수의 허수 구성 요소입니다.</returns>
+    </member>
+    <member name="F:System.Numerics.Complex.ImaginaryOne">
+      <summary>0과 같은 실수와 1과 같은 허수를 포함하는 새 <see cref="T:System.Numerics.Complex" /> 인스턴스를 반환합니다.</summary>
+    </member>
+    <member name="M:System.Numerics.Complex.Log(System.Numerics.Complex)">
+      <summary>지정된 복소수의 자연(밑 e) 로그를 반환합니다.</summary>
+      <returns>
+        <paramref name="value" />의 자연(밑 e) 로그입니다.</returns>
+      <param name="value">복소수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Log(System.Numerics.Complex,System.Double)">
+      <summary>지정된 밑을 사용하여 지정된 복소수의 로그를 반환합니다.</summary>
+      <returns>밑이 <paramref name="baseValue" />인 <paramref name="value" />의 로그입니다.</returns>
+      <param name="value">복소수입니다.</param>
+      <param name="baseValue">로그의 밑입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Log10(System.Numerics.Complex)">
+      <summary>밑이 10인 지정된 복소수의 로그를 반환합니다.</summary>
+      <returns>밑이 10인 <paramref name="value" />의 로그입니다.</returns>
+      <param name="value">복소수입니다.</param>
+    </member>
+    <member name="P:System.Numerics.Complex.Magnitude">
+      <summary>복소수의 크기 또는 절대 값을 가져옵니다.</summary>
+      <returns>현재 인스턴스의 크기입니다.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Multiply(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>두 복소수의 곱을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" /> 및 <paramref name="right" /> 매개 변수의 곱입니다.</returns>
+      <param name="left">곱할 첫 번째 복소수입니다.</param>
+      <param name="right">곱할 두 번째 복소수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Negate(System.Numerics.Complex)">
+      <summary>지정된 복소수의 덧셈 역원을 반환합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 <see cref="P:System.Numerics.Complex.Real" /> 및 <see cref="P:System.Numerics.Complex.Imaginary" /> 구성 요소에 -1을 곱한 결과입니다.</returns>
+      <param name="value">복소수입니다.</param>
+    </member>
+    <member name="F:System.Numerics.Complex.One">
+      <summary>1과 같은 실수와 0과 같은 허수를 포함하는 새 <see cref="T:System.Numerics.Complex" /> 인스턴스를 반환합니다.</summary>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Addition(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>두 복소수를 더합니다.</summary>
+      <returns>
+        <paramref name="left" />와 <paramref name="right" />의 합입니다.</returns>
+      <param name="left">더할 첫 번째 값입니다.</param>
+      <param name="right">더할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Division(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>지정된 복소수를 다른 지정된 복소수로 나눕니다.</summary>
+      <returns>
+        <paramref name="left" />를 <paramref name="right" />로 나눈 결과입니다.</returns>
+      <param name="left">나눌 대상 값입니다.</param>
+      <param name="right">나눌 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Equality(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>두 복소수가 같은지 여부를 나타내는 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="left" /> 및 <paramref name="right" /> 매개 변수의 값이 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="left">비교할 첫 번째 복소수입니다.</param>
+      <param name="right">비교할 두 번째 복소수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Explicit(System.Decimal)~System.Numerics.Complex">
+      <summary>
+        <see cref="T:System.Decimal" /> 값을 복소수로 변환하는 명시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" />와 일치하는 실수 구성 요소와 0과 일치하는 허수 구성 요소가 있는 복소수입니다. </returns>
+      <param name="value">복소수로 변환할 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Explicit(System.Numerics.BigInteger)~System.Numerics.Complex">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 값을 복소수로 변환하는 명시적 변환을 정의합니다. </summary>
+      <returns>
+        <paramref name="value" />와 일치하는 실수 구성 요소와 0과 일치하는 허수 구성 요소가 있는 복소수입니다. </returns>
+      <param name="value">복소수로 변환할 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Byte)~System.Numerics.Complex">
+      <summary>부호 없는 바이트를 복소수로 변환하는 암시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값을 실수 부분으로 포함하고 0을 허수 부분으로 포함하는 개체입니다.</returns>
+      <param name="value">복소수로 변환할 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Double)~System.Numerics.Complex">
+      <summary>배정밀도 부동 소수점 숫자를 복소수로 변환하는 암시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값을 실수 부분으로 포함하고 0을 허수 부분으로 포함하는 개체입니다.</returns>
+      <param name="value">복소수로 변환할 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Int16)~System.Numerics.Complex">
+      <summary>부호 있는 16비트 정수를 복소수로 변환하는 암시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값을 실수 부분으로 포함하고 0을 허수 부분으로 포함하는 개체입니다.</returns>
+      <param name="value">복소수로 변환할 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Int32)~System.Numerics.Complex">
+      <summary>부호 있는 32비트 정수를 복소수로 변환하는 암시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값을 실수 부분으로 포함하고 0을 허수 부분으로 포함하는 개체입니다.</returns>
+      <param name="value">복소수로 변환할 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Int64)~System.Numerics.Complex">
+      <summary>부호 있는 64비트 정수를 복소수로 변환하는 암시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값을 실수 부분으로 포함하고 0을 허수 부분으로 포함하는 개체입니다.</returns>
+      <param name="value">복소수로 변환할 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.SByte)~System.Numerics.Complex">
+      <summary>부호 있는 바이트를 복소수로 변환하는 암시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값을 실수 부분으로 포함하고 0을 허수 부분으로 포함하는 개체입니다.</returns>
+      <param name="value">복소수로 변환할 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Single)~System.Numerics.Complex">
+      <summary>단정밀도 부동 소수점 숫자를 복소수로 변환하는 암시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값을 실수 부분으로 포함하고 0을 허수 부분으로 포함하는 개체입니다.</returns>
+      <param name="value">복소수로 변환할 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.UInt16)~System.Numerics.Complex">
+      <summary>부호 없는 16비트 정수를 복소수로 변환하는 암시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값을 실수 부분으로 포함하고 0을 허수 부분으로 포함하는 개체입니다.</returns>
+      <param name="value">복소수로 변환할 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.UInt32)~System.Numerics.Complex">
+      <summary>부호 없는 32비트 정수를 복소수로 변환하는 암시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값을 실수 부분으로 포함하고 0을 허수 부분으로 포함하는 개체입니다.</returns>
+      <param name="value">복소수로 변환할 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.UInt64)~System.Numerics.Complex">
+      <summary>부호 없는 64비트 정수를 복소수로 변환하는 암시적 변환을 정의합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 값을 실수 부분으로 포함하고 0을 허수 부분으로 포함하는 개체입니다.</returns>
+      <param name="value">복소수로 변환할 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Inequality(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>두 복소수가 다른지 여부를 나타내는 값을 반환합니다.</summary>
+      <returns>true if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
+      <param name="left">비교할 첫 번째 값입니다.</param>
+      <param name="right">비교할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Multiply(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>지정된 두 복소수를 곱합니다.</summary>
+      <returns>
+        <paramref name="left" />와 <paramref name="right" />의 곱입니다.</returns>
+      <param name="left">곱할 첫 번째 값입니다.</param>
+      <param name="right">곱할 두 번째 값입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Subtraction(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>한 복소수에서 다른 복소수를 뺍니다.</summary>
+      <returns>
+        <paramref name="left" />에서 <paramref name="right" />를 뺀 결과입니다.</returns>
+      <param name="left">뺄 대상 값(피감수)입니다.</param>
+      <param name="right">뺄 값(감수)입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_UnaryNegation(System.Numerics.Complex)">
+      <summary>지정된 복소수의 덧셈 역원을 반환합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수의 <see cref="P:System.Numerics.Complex.Real" /> 및 <see cref="P:System.Numerics.Complex.Imaginary" /> 구성 요소에 -1을 곱한 결과입니다.</returns>
+      <param name="value">부정할 값입니다.</param>
+    </member>
+    <member name="P:System.Numerics.Complex.Phase">
+      <summary>복소수의 위상을 가져옵니다.</summary>
+      <returns>복소수의 위상(라디안 단위)입니다.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Pow(System.Numerics.Complex,System.Double)">
+      <summary>지정된 복소수를 배정밀도 부동 소수점 숫자로 지정된 지수만큼 거듭제곱하여 반환합니다.</summary>
+      <returns>복소수 <paramref name="value" />를 지수 <paramref name="power" />만큼 거듭제곱한 값입니다.</returns>
+      <param name="value">지수만큼 거듭제곱할 복소수입니다.</param>
+      <param name="power">거듭제곱을 지정하는 배정밀도 부동 소수점 숫자입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Pow(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>지정된 복소수를 복소수로 지정된 지수만큼 거듭제곱하여 반환합니다.</summary>
+      <returns>복소수 <paramref name="value" />를 지수 <paramref name="power" />만큼 거듭제곱한 값입니다.</returns>
+      <param name="value">지수만큼 거듭제곱할 복소수입니다.</param>
+      <param name="power">지수를 지정하는 복소수입니다.</param>
+    </member>
+    <member name="P:System.Numerics.Complex.Real">
+      <summary>현재 <see cref="T:System.Numerics.Complex" /> 개체의 실수 구성 요소를 가져옵니다.</summary>
+      <returns>복소수의 실수 구성 요소입니다.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Reciprocal(System.Numerics.Complex)">
+      <summary>복소수의 역수를 반환합니다.</summary>
+      <returns>
+        <paramref name="value" />의 역수입니다.</returns>
+      <param name="value">복소수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Sin(System.Numerics.Complex)">
+      <summary>지정된 복소수의 사인을 반환합니다.</summary>
+      <returns>
+        <paramref name="value" />의 사인입니다.</returns>
+      <param name="value">복소수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Sinh(System.Numerics.Complex)">
+      <summary>지정된 복소수의 하이퍼볼릭 사인을 반환합니다.</summary>
+      <returns>
+        <paramref name="value" />의 하이퍼볼릭 사인입니다.</returns>
+      <param name="value">복소수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Sqrt(System.Numerics.Complex)">
+      <summary>지정된 복소수의 제곱근을 반환합니다.</summary>
+      <returns>
+        <paramref name="value" />의 제곱근입니다.</returns>
+      <param name="value">복소수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Subtract(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>한 복소수에서 다른 복소수를 뺀 후 결과를 반환합니다.</summary>
+      <returns>
+        <paramref name="left" />에서 <paramref name="right" />를 뺀 결과입니다.</returns>
+      <param name="left">뺄 대상 값(피감수)입니다.</param>
+      <param name="right">뺄 값(감수)입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Tan(System.Numerics.Complex)">
+      <summary>지정된 복소수의 탄젠트를 반환합니다.</summary>
+      <returns>
+        <paramref name="value" />의 탄젠트입니다.</returns>
+      <param name="value">복소수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Tanh(System.Numerics.Complex)">
+      <summary>지정된 복소수의 하이퍼볼릭 탄젠트를 반환합니다.</summary>
+      <returns>
+        <paramref name="value" />의 하이퍼볼릭 탄젠트입니다.</returns>
+      <param name="value">복소수입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.ToString">
+      <summary>현재 복소수 값을 데카르트 형식의 해당하는 문자열 표현으로 변환합니다.</summary>
+      <returns>현재 인스턴스에 대한 데카르트 형식의 문자열 표현입니다.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.ToString(System.IFormatProvider)">
+      <summary>지정된 문화권별 서식 정보를 사용하여 현재 복소수 값을 데카르트 형식의 해당하는 문자열 표현으로 변환합니다.</summary>
+      <returns>
+        <paramref name="provider" />에서 지정한 형식에 따른 현재 인스턴스에 대한 데카르트 형식의 문자열 표현입니다.</returns>
+      <param name="provider">문화권별 서식 지정 정보를 제공하는 개체입니다.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.ToString(System.String)">
+      <summary>실수와 허수 부분에 대해 지정된 서식을 사용하여 현재 복소수 값을 데카르트 형식의 해당하는 문자열 표현으로 변환합니다.</summary>
+      <returns>현재 인스턴스에 대한 데카르트 형식의 문자열 표현입니다.</returns>
+      <param name="format">표준 또는 사용자 지정 숫자 서식 문자열입니다.</param>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" />이 유효한 형식 문자열이 아닙니다.</exception>
+    </member>
+    <member name="M:System.Numerics.Complex.ToString(System.String,System.IFormatProvider)">
+      <summary>실수와 허수 부분에 대해 지정된 서식과 문화권별 서식 정보를 사용하여 현재 복소수 값을 데카르트 형식의 해당하는 문자열 표현으로 변환합니다.</summary>
+      <returns>
+        <paramref name="format" /> 및 <paramref name="provider" />에서 지정한 형식에 따른 현재 인스턴스에 대한 데카르트 형식의 문자열 표현입니다.</returns>
+      <param name="format">표준 또는 사용자 지정 숫자 서식 문자열입니다.</param>
+      <param name="provider">문화권별 서식 지정 정보를 제공하는 개체입니다.</param>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" />이 유효한 형식 문자열이 아닙니다.</exception>
+    </member>
+    <member name="F:System.Numerics.Complex.Zero">
+      <summary>0과 같은 실수와 0과 같은 허수를 포함하는 새 <see cref="T:System.Numerics.Complex" /> 인스턴스를 반환합니다.</summary>
+    </member>
+  </members>
+</doc>

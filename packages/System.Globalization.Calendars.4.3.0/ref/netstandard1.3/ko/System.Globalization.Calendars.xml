@@ -1,0 +1,2078 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Globalization.Calendars</name>
+  </assembly>
+  <members>
+    <member name="T:System.Globalization.ChineseLunisolarCalendar">
+      <summary>시간을 월, 일 및 연도로 구분해서 표시합니다.연도는 중국식 달력을 사용하여 계산되고, 일 및 월은 음양력을 사용하여 계산됩니다.</summary>
+    </member>
+    <member name="M:System.Globalization.ChineseLunisolarCalendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.ChineseLunisolarCalendar" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+    </member>
+    <member name="P:System.Globalization.ChineseLunisolarCalendar.Eras">
+      <summary>현재 <see cref="T:System.Globalization.ChineseLunisolarCalendar" /> 개체에서 지원하는 날짜 및 시간 범위에 해당하는 연대를 가져옵니다.</summary>
+      <returns>관련 연대를 지정하는 부호 있는 32비트 정수의 배열입니다.<see cref="T:System.Globalization.ChineseLunisolarCalendar" /> 개체의 반환 값은 항상 <see cref="F:System.Globalization.ChineseLunisolarCalendar.ChineseEra" /> 값과 동일한 하나의 요소가 들어 있는 배열입니다.</returns>
+    </member>
+    <member name="M:System.Globalization.ChineseLunisolarCalendar.GetEra(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" /> 형식에 해당하는 연대를 검색합니다.</summary>
+      <returns>
+        <paramref name="time" /> 매개 변수의 연대를 나타내는 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" /> 형식입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" />가 <see cref="P:System.Globalization.ChineseLunisolarCalendar.MinSupportedDateTime" />보다 작거나 <see cref="P:System.Globalization.ChineseLunisolarCalendar.MaxSupportedDateTime" />보다 큰 경우</exception>
+    </member>
+    <member name="P:System.Globalization.ChineseLunisolarCalendar.MaxSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.ChineseLunisolarCalendar" /> 클래스에서 지원하는 최대 날짜와 시간을 가져옵니다.</summary>
+      <returns>그레고리오력에서 2101년 1월 28일이 끝나는 순간을 나타내는 <see cref="T:System.DateTime" /> 형식이며, DateTime(2101, 1, 28, 23, 59, 59, 999) 생성자와 거의 동일합니다.</returns>
+    </member>
+    <member name="P:System.Globalization.ChineseLunisolarCalendar.MinSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.ChineseLunisolarCalendar" /> 클래스에서 지원하는 최소 날짜와 시간을 가져옵니다.</summary>
+      <returns>그레고리오력에서 1901년 2월 19일을 나타내는 <see cref="T:System.DateTime" /> 형식이며, DateTime(1901, 2, 19) 생성자와 동일합니다.</returns>
+    </member>
+    <member name="T:System.Globalization.EastAsianLunisolarCalendar">
+      <summary>시간이 월, 일, 연도 및 연대로 구분되고 날짜가 태양과 달의 주기를 기준으로 하는 달력을 나타냅니다.</summary>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>지정된 날짜에서 지정된 월 수만큼 경과한 날짜를 계산합니다.</summary>
+      <returns>
+        <paramref name="time" /> 매개 변수에 지정된 월 수를 더한 결과로 만들어지는 새 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="time">
+        <paramref name="months" />를 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="months">더할 월 수입니다. </param>
+      <exception cref="T:System.ArgumentException">결과가 <see cref="T:System.DateTime" />의 지원되는 범위를 벗어난 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" />가 -120,000보다 작거나 120,000보다 큰 경우 또는<paramref name="time" />가 <see cref="P:System.Globalization.Calendar.MinSupportedDateTime" />보다 작거나 <see cref="P:System.Globalization.Calendar.MaxSupportedDateTime" />보다 큰 경우</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>지정된 날짜에서 지정된 연도 수만큼 경과한 날짜를 계산합니다.</summary>
+      <returns>
+        <paramref name="time" /> 매개 변수에 지정된 연도 수를 더한 결과로 만들어지는 새 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="time">
+        <paramref name="years" />를 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="years">더할 연도 수입니다. </param>
+      <exception cref="T:System.ArgumentException">결과가 <see cref="T:System.DateTime" />의 지원되는 범위를 벗어난 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" />가 <see cref="P:System.Globalization.Calendar.MinSupportedDateTime" />보다 작거나 <see cref="P:System.Globalization.Calendar.MaxSupportedDateTime" />보다 큰 경우</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetCelestialStem(System.Int32)">
+      <summary>육십갑자(60년) 주기의 지정된 연도를 구성하는 10간을 계산합니다.</summary>
+      <returns>1부터 10까지의 숫자입니다.</returns>
+      <param name="sexagenaryYear">육십갑자 주기의 연도를 나타내는 1부터 60까지의 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="sexagenaryYear" />가 1보다 작거나 60보다 큰 경우</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>지정된 날짜의 일(월 기준)을 계산합니다.</summary>
+      <returns>
+        <paramref name="time" /> 매개변수에 지정된 일(월 기준)을 나타내는 1부터 31까지의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>지정된 날짜의 요일을 계산합니다.</summary>
+      <returns>
+        <paramref name="time" /> 매개 변수에 지정된 요일을 나타내는 <see cref="T:System.DayOfWeek" /> 값 중 하나입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" />가 <see cref="P:System.Globalization.Calendar.MinSupportedDateTime" />보다 작거나 <see cref="P:System.Globalization.Calendar.MaxSupportedDateTime" />보다 큰 경우</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetDayOfYear(System.DateTime)">
+      <summary>지정된 날짜의 일(연도 기준)을 계산합니다.</summary>
+      <returns>평년의 경우 1부터 354까지의 정수이고 윤년의 경우 1부터 384까지의 정수입니다. 이 값은 <paramref name="time" /> 매개 변수에 지정된 일(연도 기준)을 나타냅니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연도 및 연대의 지정된 월에 있는 일 수를 계산합니다.</summary>
+      <returns>지정된 연도 및 연대의 지정된 월에 있는 일 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">평년의 경우 1부터 12까지의 정수이고 윤년의 경우 1부터 13까지의 정수입니다. 이 값은 월을 나타냅니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" /> 또는 <paramref name="era" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>지정된 연도 및 연대의 일 수를 계산합니다.</summary>
+      <returns>지정된 연도 및 연대의 일 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 또는 <paramref name="era" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>지정된 연도 및 연대의 윤월을 계산합니다.</summary>
+      <returns>지정한 연도와 연대에서 윤월을 나타내는 1부터 13까지의 양의 정수입니다. 또는이 달력이 윤월을 지원하지 않거나 <paramref name="year" /> 및 <paramref name="era" /> 매개 변수가 윤년을 지정하지 않는 경우 0입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다.</param>
+      <param name="era">연대를 나타내는 정수입니다.</param>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetMonth(System.DateTime)">
+      <summary>지정된 날짜의 월을 반환합니다.</summary>
+      <returns>
+        <paramref name="time" /> 매개 변수에 지정된 월을 나타내는 1부터 13까지의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>지정된 연도 및 연대의 월 수를 계산합니다.</summary>
+      <returns>지정된 연대에 있는 지정된 연도의 월 수입니다.반환 값은 평년의 경우 12개월이고 윤년의 경우 13개월입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 또는 <paramref name="era" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetSexagenaryYear(System.DateTime)">
+      <summary>지정된 날짜에 해당하는 육십갑자(60년) 주기의 연도를 계산합니다.</summary>
+      <returns>
+        <paramref name="date" /> 매개 변수에 해당하는 1부터 60까지의 육십갑자 값입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다.</param>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetTerrestrialBranch(System.Int32)">
+      <summary>육십갑자(60년) 주기의 지정된 연도를 구성하는 12지를 계산합니다.</summary>
+      <returns>1부터 12까지의 정수입니다.</returns>
+      <param name="sexagenaryYear">육십갑자 주기의 연도를 나타내는 1부터 60까지의 정수입니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="sexagenaryYear" />가 1보다 작거나 60보다 큰 경우</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetYear(System.DateTime)">
+      <summary>지정된 날짜의 연도를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 연도를 나타내는 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 날짜가 윤일인지 여부를 확인합니다.</summary>
+      <returns>지정된 날짜가 윤일이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 정수입니다(1 ~ 13). </param>
+      <param name="day">일을 나타내는 정수입니다(1 ~ 31). </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" />, <paramref name="day" /> 또는 <paramref name="era" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>지정한 연대 및 연도의 특정 월이 윤월인지 여부를 확인합니다.</summary>
+      <returns>
+        <paramref name="month" /> 매개 변수가 윤월이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 정수입니다(1 ~ 13). </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" /> 또는 <paramref name="era" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 연도가 윤년인지 여부를 확인합니다.</summary>
+      <returns>지정된 연도가 윤년이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 또는 <paramref name="era" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 날짜, 시간 및 연대로 설정된 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>지정된 날짜, 시간 및 연대로 설정된 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 정수입니다(1 ~ 13). </param>
+      <param name="day">일을 나타내는 정수입니다(1 ~ 31). </param>
+      <param name="hour">시간을 나타내는 정수입니다(0 ~ 23). </param>
+      <param name="minute">분을 나타내는 정수입니다(0 ~ 59). </param>
+      <param name="second">초를 나타내는 정수입니다(0 ~ 59). </param>
+      <param name="millisecond">밀리초를 나타내는 정수입니다(0 ~ 999). </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" />, <paramref name="day" />, <paramref name="hour" />, <paramref name="minute" />, <paramref name="second" />, <paramref name="millisecond" /> 또는 <paramref name="era" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.ToFourDigitYear(System.Int32)">
+      <summary>지정된 연도를 네 자릿수 연도로 변환합니다.</summary>
+      <returns>
+        <paramref name="year" /> 매개 변수를 네 자릿수로 표시하는 정수입니다.</returns>
+      <param name="year">변환할 연도를 나타내는 두 자릿수 또는 네 자릿수의 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.EastAsianLunisolarCalendar.TwoDigitYearMax">
+      <summary>두 자릿수 연도로 표시할 수 있는 100년 범위의 마지막 연도를 가져오거나 설정합니다.</summary>
+      <returns>두 자릿수 연도로 표시할 수 있는 100년 범위의 마지막 연도입니다.</returns>
+      <exception cref="T:System.InvalidOperationException">현재 <see cref="T:System.Globalization.EastAsianLunisolarCalendar" />가 읽기 전용인 경우</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">set 작업의 값이 99보다 작거나 현재 달력에서 지원되는 최대 연도보다 큰 경우</exception>
+    </member>
+    <member name="T:System.Globalization.GregorianCalendar">
+      <summary>그레고리오력을 나타냅니다.</summary>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.#ctor">
+      <summary>기본 <see cref="T:System.Globalization.GregorianCalendarTypes" /> 값을 사용하여 <see cref="T:System.Globalization.GregorianCalendar" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.#ctor(System.Globalization.GregorianCalendarTypes)">
+      <summary>지정된 <see cref="T:System.Globalization.GregorianCalendarTypes" /> 값을 사용하여 <see cref="T:System.Globalization.GregorianCalendar" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="type">만들 달력의 언어 버전을 나타내는 <see cref="T:System.Globalization.GregorianCalendarTypes" /> 값입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="type" />가 <see cref="T:System.Globalization.GregorianCalendarTypes" /> 열거형의 멤버가 아닌 경우</exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>지정된 <see cref="T:System.DateTime" />에서 지정된 월 수만큼 경과한 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />에 지정된 월 수를 더한 결과로 만들어지는 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="time">월을 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="months">더할 월 수입니다. </param>
+      <exception cref="T:System.ArgumentException">결과 <see cref="T:System.DateTime" />이 지원되는 범위 밖에 있는 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" />가 -120000보다 작은 경우또는 <paramref name="months" />가 120000보다 큰 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>지정된 <see cref="T:System.DateTime" />에서 지정된 연도 수만큼 경과한 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />에 지정된 연도 수를 더한 결과로 만들어지는 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="time">연도를 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="years">더할 연도 수입니다. </param>
+      <exception cref="T:System.ArgumentException">결과 <see cref="T:System.DateTime" />이 지원되는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.GregorianCalendar.CalendarType">
+      <summary>현재 <see cref="T:System.Globalization.GregorianCalendar" />의 언어 버전을 나타내는 <see cref="T:System.Globalization.GregorianCalendarTypes" /> 값을 가져오거나 설정합니다.</summary>
+      <returns>현재 <see cref="T:System.Globalization.GregorianCalendar" />의 언어 버전을 나타내는 <see cref="T:System.Globalization.GregorianCalendarTypes" /> 값입니다.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">set 작업에 지정된 값이 <see cref="T:System.Globalization.GregorianCalendarTypes" /> 열거형의 멤버가 아닌 경우</exception>
+      <exception cref="T:System.InvalidOperationException">set 작업에서 현재 인스턴스가 읽기 전용인 경우</exception>
+    </member>
+    <member name="P:System.Globalization.GregorianCalendar.Eras">
+      <summary>
+        <see cref="T:System.Globalization.GregorianCalendar" />에 있는 연대의 목록을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.GregorianCalendar" />에 있는 연대를 나타내는 정수의 배열입니다.</returns>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 날짜(월 기준)를 반환합니다.</summary>
+      <returns>
+        <paramref name="time" />의 날짜(월 기준)를 나타내는 1에서 31 사이의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 요일을 반환합니다.</summary>
+      <returns>
+        <paramref name="time" />의 요일을 나타내는 <see cref="T:System.DayOfWeek" />입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetDayOfYear(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 날짜(연도 기준)를 반환합니다.</summary>
+      <returns>
+        <paramref name="time" />의 날짜(연도 기준)를 나타내는 1에서 366 사이의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 연도에 있는 지정된 월의 날짜 수를 반환합니다.</summary>
+      <returns>지정된 연대의 지정된 연도에 있는 지정된 월의 날짜 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>지정된 연대에 있는 지정된 연도의 날짜 수를 반환합니다.</summary>
+      <returns>지정된 연대에 있는 지정된 연도의 날짜 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우</exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetEra(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 연대를 반환합니다.</summary>
+      <returns>
+        <paramref name="time" />의 연대를 나타내는 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>지정한 연도 및 연대의 윤월을 계산합니다.</summary>
+      <returns>그레고리오력이 윤월을 인식하지 않기 때문에 항상 0입니다.</returns>
+      <param name="year">연도입니다.</param>
+      <param name="era">연대입니다.<see cref="F:System.Globalization.GregorianCalendar.ADEra" /> 또는 GregorianCalendar.Eras[Calendar.CurrentEra]를 지정합니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 그레고리오력의 연도 1보다 작거나 그레고리오력의 연도 9999보다 큰 경우또는<paramref name="era" />가 <see cref="F:System.Globalization.GregorianCalendar.ADEra" /> 또는 GregorianCalendar.Eras[Calendar.CurrentEra]가 아닌 경우</exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetMonth(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 월을 반환합니다.</summary>
+      <returns>
+        <paramref name="time" />의 월을 나타내는 1에서 12 사이의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>지정된 연대에 있는 지정된 연도의 월 수를 반환합니다.</summary>
+      <returns>지정된 연대에 있는 지정된 연도의 월 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetYear(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 연도를 반환합니다.</summary>
+      <returns>
+        <paramref name="time" />의 연도를 나타내는 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 날짜가 윤일인지 여부를 확인합니다.</summary>
+      <returns>지정된 날짜가 윤일이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="day">일을 나타내는 1에서 31 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 또는 <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="day" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 연도에 있는 지정된 월이 윤월인지 여부를 확인합니다.</summary>
+      <returns>이 메서드는 파생 클래스에서 다시 정의되지 않는 한 항상 false를 반환합니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 연도가 윤년인지 여부를 확인합니다.</summary>
+      <returns>지정된 연도가 윤년이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.GregorianCalendar.MaxSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.GregorianCalendar" /> 형식에서 지원하는 마지막 날짜와 시간을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.GregorianCalendar" /> 형식에서 지원하는 마지막 날짜와 시간으로, 그레고리오력에서 서기 9999년 12월 31일이 끝나는 순간에 해당하며 <see cref="F:System.DateTime.MaxValue" />와 같습니다.</returns>
+    </member>
+    <member name="P:System.Globalization.GregorianCalendar.MinSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.GregorianCalendar" /> 형식에서 지원하는 시작 날짜와 시간을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.GregorianCalendar" /> 형식에서 지원하는 시작 날짜와 시간으로, 그레고리오력에서 서기 0001년 1월 1이 시작되는 순간에 해당하며 <see cref="F:System.DateTime.MinValue" />와 같습니다.</returns>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 날짜와 시간으로 설정된 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>현재 연대의 지정된 날짜와 시간으로 설정된 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="day">일을 나타내는 1에서 31 사이의 정수입니다. </param>
+      <param name="hour">시간을 나타내는 0에서 23 사이의 정수입니다. </param>
+      <param name="minute">분을 나타내는 0에서 59 사이의 정수입니다. </param>
+      <param name="second">초를 나타내는 0에서 59 사이의 정수입니다. </param>
+      <param name="millisecond">밀리초를 나타내는 0에서 999 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="day" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="hour" />가 0보다 작거나 23보다 큰 경우또는 <paramref name="minute" />이 0보다 작거나 59보다 큰 경우또는 <paramref name="second" />가 0보다 작거나 59보다 큰 경우또는 <paramref name="millisecond" />가 0보다 작거나 999보다 큰 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.ToFourDigitYear(System.Int32)">
+      <summary>
+        <see cref="P:System.Globalization.GregorianCalendar.TwoDigitYearMax" /> 속성으로 해당 세기를 확인하여 지정된 연도를 네 자릿수 연도로 변환합니다.</summary>
+      <returns>
+        <paramref name="year" />를 네 자릿수로 표시하는 정수입니다.</returns>
+      <param name="year">변환할 연도를 나타내는 두 자릿수 또는 네 자릿수의 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.GregorianCalendar.TwoDigitYearMax">
+      <summary>두 자릿수 연도로 표시할 수 있는 100년 범위의 마지막 연도를 가져오거나 설정합니다.</summary>
+      <returns>두 자릿수 연도로 표시할 수 있는 100년 범위의 마지막 연도입니다.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">set 작업에서 지정된 값이 99보다 작은 경우 또는 set 작업에서 지정한 값이 8011 (또는 MaxSupportedDateTime.Year)보다 큰 경우</exception>
+      <exception cref="T:System.InvalidOperationException">set 작업에서 현재 인스턴스가 읽기 전용인 경우</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.GregorianCalendarTypes">
+      <summary>여러 언어 버전의 그레고리오력을 정의합니다.</summary>
+    </member>
+    <member name="F:System.Globalization.GregorianCalendarTypes.Arabic">
+      <summary>아랍어 버전의 그레고리오력을 나타냅니다.</summary>
+    </member>
+    <member name="F:System.Globalization.GregorianCalendarTypes.Localized">
+      <summary>
+        <see cref="T:System.Globalization.DateTimeFormatInfo" />를 사용하는 <see cref="T:System.Globalization.CultureInfo" /> 언어를 기반으로 하는 지역화된 버전의 그레고리오력을 나타냅니다.</summary>
+    </member>
+    <member name="F:System.Globalization.GregorianCalendarTypes.MiddleEastFrench">
+      <summary>중동 프랑스어 버전의 그레고리오력을 나타냅니다.</summary>
+    </member>
+    <member name="F:System.Globalization.GregorianCalendarTypes.TransliteratedEnglish">
+      <summary>음역된 영어 버전의 그레고리오력을 나타냅니다.</summary>
+    </member>
+    <member name="F:System.Globalization.GregorianCalendarTypes.TransliteratedFrench">
+      <summary>음역된 프랑스어 버전의 그레고리오력을 나타냅니다.</summary>
+    </member>
+    <member name="F:System.Globalization.GregorianCalendarTypes.USEnglish">
+      <summary>미국 영어 버전의 그레고리오력을 나타냅니다.</summary>
+    </member>
+    <member name="T:System.Globalization.HebrewCalendar">
+      <summary>히브리식 달력을 나타냅니다.</summary>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.HebrewCalendar" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>지정된 <see cref="T:System.DateTime" />에서 지정된 월 수만큼 경과한 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />에 지정된 월 수를 더한 결과로 만들어지는 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="time">
+        <paramref name="months" />를 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="months">더할 월 수입니다. </param>
+      <exception cref="T:System.ArgumentException">결과 <see cref="T:System.DateTime" />이 지원되는 범위 밖에 있는 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" />가 -120,000보다 작거나 120,000보다 큰 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>지정된 <see cref="T:System.DateTime" />에서 지정된 연도 수만큼 경과한 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />에 지정된 연도 수를 더한 결과로 만들어지는 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="time">
+        <paramref name="years" />를 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="years">더할 연도 수입니다. </param>
+      <exception cref="T:System.ArgumentException">결과 <see cref="T:System.DateTime" />이 지원되는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.HebrewCalendar.Eras">
+      <summary>
+        <see cref="T:System.Globalization.HebrewCalendar" />에 있는 연대의 목록을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.HebrewCalendar" /> 형식에 있는 연대를 나타내는 정수의 배열입니다.반환 값은 항상 <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" />와 동일한 하나의 요소가 들어 있는 배열입니다.</returns>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 날짜(월 기준)를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 날짜(월 기준)를 나타내는 1에서 30 사이의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 요일을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 요일을 나타내는 <see cref="T:System.DayOfWeek" />입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetDayOfYear(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 날짜(연도 기준)를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 날짜(연도 기준)를 나타내는 1에서 385 사이의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" />이 그레고리오력의 1583년 9월 17일보다 이전이거나 <see cref="P:System.Globalization.HebrewCalendar.MaxSupportedDateTime" />보다 큰 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 연도에 있는 지정된 월의 날짜 수를 반환합니다.</summary>
+      <returns>지정된 연대의 지정된 연도에 있는 지정된 월의 날짜 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 13 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다.<see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> 또는 Calendar.Eras[Calendar.CurrentEra]를 지정합니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" /> 또는 <paramref name="era" />가 현재 <see cref="T:System.Globalization.HebrewCalendar" /> 개체에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>지정된 연대에 있는 지정된 연도의 날짜 수를 반환합니다.</summary>
+      <returns>지정된 연대에 있는 지정된 연도의 날짜 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다.<see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> 또는 HebrewCalendar.Eras[Calendar.CurrentEra]를 지정합니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 또는 <paramref name="era" />가 현재 <see cref="T:System.Globalization.HebrewCalendar" /> 개체에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetEra(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 연대를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 연대를 나타내는 정수입니다.반환 값은 항상 <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" />입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>지정한 연도 및 연대의 윤월을 계산합니다.</summary>
+      <returns>지정한 연도와 연대에서 윤월을 나타내는 양의 정수입니다.반환 값은 <paramref name="year" /> 및 <paramref name="era" /> 매개 변수가 윤년을 지정하면 7이고, 해당 연도가 윤년이 아니면 0입니다.</returns>
+      <param name="year">연도입니다.</param>
+      <param name="era">연대입니다.<see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> 또는 HebrewCalendar.Eras[Calendar.CurrentEra]를 지정합니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" />가 <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> 또는 HebrewCalendar.Eras[Calendar.CurrentEra]가 아닌 경우또는<paramref name="year" />가 히브리식 달력의 연도 5343보다 작거나 히브리식 달력의 연도 5999보다 큰 경우</exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetMonth(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 월을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 월을 나타내는 1에서 13 사이의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" />가 <see cref="P:System.Globalization.HebrewCalendar.MinSupportedDateTime" />보다 작거나 <see cref="P:System.Globalization.HebrewCalendar.MaxSupportedDateTime" />보다 큰 경우</exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>지정된 연대에 있는 지정된 연도의 월 수를 반환합니다.</summary>
+      <returns>지정된 연대에 있는 지정된 연도의 월 수입니다.반환 값은 평년의 경우 12이고 윤년의 경우 13입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다.<see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> 또는 HebrewCalendar.Eras[Calendar.CurrentEra]를 지정합니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 또는 <paramref name="era" />가 현재 <see cref="T:System.Globalization.HebrewCalendar" /> 개체에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetYear(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" /> 값의 연도를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" /> 값의 연도를 나타내는 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" />이 현재 <see cref="T:System.Globalization.HebrewCalendar" /> 개체에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 날짜가 윤일인지 여부를 확인합니다.</summary>
+      <returns>지정된 날짜가 윤일이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 13 사이의 정수입니다. </param>
+      <param name="day">일을 나타내는 1에서 30 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다.<see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> 또는 HebrewCalendar.Eras[Calendar.CurrentEra]를 지정합니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" />, <paramref name="day" /> 또는 <paramref name="era" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 연도에 있는 지정된 월이 윤월인지 여부를 확인합니다.</summary>
+      <returns>지정된 월이 윤월이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 13 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다.<see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> 또는 HebrewCalendar.Eras[Calendar.CurrentEra]를 지정합니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" /> 또는 <paramref name="era" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 연도가 윤년인지 여부를 확인합니다.</summary>
+      <returns>지정된 연도가 윤년이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다.<see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> 또는 HebrewCalendar.Eras[Calendar.CurrentEra]를 지정합니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 또는 <paramref name="era" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.HebrewCalendar.MaxSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.HebrewCalendar" /> 형식에서 지원하는 마지막 날짜와 시간을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.HebrewCalendar" /> 형식에서 지원하는 마지막 날짜와 시간으로, 그레고리오력에서 서기 2239년 9월 29일이 끝나는 순간에 해당합니다.</returns>
+    </member>
+    <member name="P:System.Globalization.HebrewCalendar.MinSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.HebrewCalendar" /> 형식에서 지원하는 시작 날짜와 시간을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.HebrewCalendar" /> 형식에서 지원하는 시작 날짜와 시간으로, 그레고리오력에서 서기 1583년 1월 1일이 시작되는 순간에 해당합니다.</returns>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 날짜와 시간으로 설정된 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>현재 연대의 지정된 날짜와 시간으로 설정된 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 13 사이의 정수입니다. </param>
+      <param name="day">일을 나타내는 1에서 30 사이의 정수입니다. </param>
+      <param name="hour">시간을 나타내는 0에서 23 사이의 정수입니다. </param>
+      <param name="minute">분을 나타내는 0에서 59 사이의 정수입니다. </param>
+      <param name="second">초를 나타내는 0에서 59 사이의 정수입니다. </param>
+      <param name="millisecond">밀리초를 나타내는 0에서 999 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다.<see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> 또는 HebrewCalendar.Eras[Calendar.CurrentEra]를 지정합니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" />, <paramref name="day" /> 또는 <paramref name="era" />가 현재 <see cref="T:System.Globalization.HebrewCalendar" /> 개체에서 지원하는 범위 밖에 있는 경우또는 <paramref name="hour" />가 0보다 작거나 23보다 큰 경우또는 <paramref name="minute" />이 0보다 작거나 59보다 큰 경우또는 <paramref name="second" />가 0보다 작거나 59보다 큰 경우또는 <paramref name="millisecond" />가 0보다 작거나 999보다 큰 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.ToFourDigitYear(System.Int32)">
+      <summary>
+        <see cref="P:System.Globalization.HebrewCalendar.TwoDigitYearMax" /> 속성으로 해당 세기를 확인하여 지정된 연도를 네 자릿수 연도로 변환합니다.</summary>
+      <returns>
+        <paramref name="year" /> 매개 변수가 두 자릿수 연도이면 반환 값은 이에 해당하는 네 자릿수 연도입니다.<paramref name="year" /> 매개 변수가 네 자릿수 연도이면 <paramref name="year" /> 매개 변수가 변경되지 않은 채 그대로 반환됩니다.</returns>
+      <param name="year">0부터 99까지의 두 자릿수 연도 또는 5343부터 5999까지의 네 자릿수 히브리식 달력 연도입니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 0보다 작은 경우또는<paramref name="year" />가 <see cref="P:System.Globalization.HebrewCalendar.MinSupportedDateTime" />보다 작거나 <see cref="P:System.Globalization.HebrewCalendar.MaxSupportedDateTime" />보다 큰 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.HebrewCalendar.TwoDigitYearMax">
+      <summary>두 자릿수 연도로 표시할 수 있는 100년 범위의 마지막 연도를 가져오거나 설정합니다.</summary>
+      <returns>두 자릿수 연도로 표시할 수 있는 100년 범위의 마지막 연도입니다.</returns>
+      <exception cref="T:System.InvalidOperationException">현재 <see cref="T:System.Globalization.HebrewCalendar" /> 개체가 읽기 전용인 경우</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">set 작업에서 히브리식 달력 연도 값이 5343보다 작지만 99는 아니거나, 5999보다 큰 경우 </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.HijriCalendar">
+      <summary>회교식 달력을 나타냅니다.</summary>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.HijriCalendar" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>지정된 <see cref="T:System.DateTime" />에서 지정된 월 수만큼 경과한 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />에 지정된 월 수를 더한 결과로 만들어지는 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="time">월을 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="months">더할 월 수입니다. </param>
+      <exception cref="T:System.ArgumentException">결과 <see cref="T:System.DateTime" />입니다.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" />가 -120000보다 작은 경우또는 <paramref name="months" />가 120000보다 큰 경우 </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>지정된 <see cref="T:System.DateTime" />에서 지정된 연도 수만큼 경과한 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />에 지정된 연도 수를 더한 결과로 만들어지는 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="time">연도를 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="years">더할 연도 수입니다. </param>
+      <exception cref="T:System.ArgumentException">결과 <see cref="T:System.DateTime" />이 지원되는 범위 밖에 있는 경우 </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Globalization.HijriCalendar.Eras">
+      <summary>
+        <see cref="T:System.Globalization.HijriCalendar" />에 있는 연대의 목록을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.HijriCalendar" />에 있는 연대를 나타내는 정수의 배열입니다.</returns>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 날짜(월 기준)를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 날짜(월 기준)를 나타내는 1에서 30 사이의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 요일을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 요일을 나타내는 <see cref="T:System.DayOfWeek" />입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetDayOfYear(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 날짜(연도 기준)를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 날짜(연도 기준)를 나타내는 1에서 355 사이의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연도 및 연대의 지정된 월에 있는 일 수를 반환합니다.</summary>
+      <returns>지정된 연대의 지정된 연도에 있는 지정된 월의 날짜 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" />가 이 달력에서 지원하는 범위 밖에 있는 경우 또는 <paramref name="year" />가 이 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>지정된 연도 및 연대의 일 수를 반환합니다.</summary>
+      <returns>지정된 연도 및 연대의 일 수입니다.평년의 일 수는 354일이고 윤년의 일 수는 355일입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 또는 <paramref name="era" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetEra(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 연대를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 연대를 나타내는 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>지정한 연도 및 연대의 윤월을 계산합니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.HijriCalendar" /> 형식에서는 윤월의 개념을 지원하지 않기 때문에 항상 0입니다.</returns>
+      <param name="year">연도입니다.</param>
+      <param name="era">연대입니다.<see cref="F:System.Globalization.Calendar.CurrentEra" /> 또는 <see cref="F:System.Globalization.HijriCalendar.HijriEra" />를 지정합니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 회교식 달력의 연도 1보다 작거나 9666보다 큰 경우또는<paramref name="era" />가 <see cref="F:System.Globalization.Calendar.CurrentEra" /> 또는 <see cref="F:System.Globalization.HijriCalendar.HijriEra" />가 아닌 경우</exception>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetMonth(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 월을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 월을 나타내는 1에서 12 사이의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>지정된 연도 및 연대의 월 수를 반환합니다.</summary>
+      <returns>지정된 연도 및 연대의 월 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" />가 이 달력에서 지원하는 범위 밖에 있는 경우 또는 <paramref name="year" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetYear(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 연도를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 연도를 나타내는 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Globalization.HijriCalendar.HijriAdjustment">
+      <summary>라마단의 시작 날짜 및 끝 날짜의 변동 사항과 국가별 날짜 차이를 조절하기 위해 달력 날짜에서 더하거나 뺄 일 수를 가져오거나 설정합니다.</summary>
+      <returns>달력 날짜에서 더하거나 뺄 일 수를 나타내는 -2에서 2 사이의 정수입니다.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">속성이 잘못된 값으로 설정된 경우 </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>지정한 날짜가 윤일인지 여부를 확인합니다.</summary>
+      <returns>지정된 날짜가 윤일이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="day">일을 나타내는 1에서 30 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" />가 이 달력에서 지원하는 범위 밖에 있는 경우 또는 <paramref name="year" />가 이 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 이 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="day" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>지정한 연대 및 연도의 특정 월이 윤월인지 여부를 확인합니다.</summary>
+      <returns>이 메서드는 항상 false를 반환합니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" />가 이 달력에서 지원하는 범위 밖에 있는 경우 또는 <paramref name="year" />가 이 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 연도가 윤년인지 여부를 확인합니다.</summary>
+      <returns>지정된 연도가 윤년이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" />가 이 달력에서 지원하는 범위 밖에 있는 경우 또는 <paramref name="year" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.HijriCalendar.MaxSupportedDateTime">
+      <summary>이 달력에서 지원하는 마지막 날짜와 시간을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.HijriCalendar" /> 형식에서 지원하는 마지막 날짜와 시간으로, 그레고리오력에서 서기 9999년 12월 31일이 끝나는 순간에 해당합니다.</returns>
+    </member>
+    <member name="P:System.Globalization.HijriCalendar.MinSupportedDateTime">
+      <summary>이 달력에서 지원하는 시작 날짜와 시간을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.HijriCalendar" /> 형식에서 지원하는 시작 날짜와 시간으로, 그레고리오력에서 서기 622년 7월 18일이 시작되는 순간에 해당합니다.</returns>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 날짜, 시간 및 연대로 설정된 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>현재 연대의 지정된 날짜와 시간으로 설정된 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="day">일을 나타내는 1에서 30 사이의 정수입니다. </param>
+      <param name="hour">시간을 나타내는 0에서 23 사이의 정수입니다. </param>
+      <param name="minute">분을 나타내는 0에서 59 사이의 정수입니다. </param>
+      <param name="second">초를 나타내는 0에서 59 사이의 정수입니다. </param>
+      <param name="millisecond">밀리초를 나타내는 0에서 999 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" />가 이 달력에서 지원하는 범위 밖에 있는 경우 또는 <paramref name="year" />가 이 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 이 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="day" />가 이 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="hour" />가 0보다 작거나 23보다 큰 경우또는 <paramref name="minute" />이 0보다 작거나 59보다 큰 경우또는 <paramref name="second" />가 0보다 작거나 59보다 큰 경우또는 <paramref name="millisecond" />가 0보다 작거나 999보다 큰 경우 </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.ToFourDigitYear(System.Int32)">
+      <summary>
+        <see cref="P:System.Globalization.HijriCalendar.TwoDigitYearMax" /> 속성으로 해당 세기를 확인하여 지정된 연도를 네 자릿수 연도로 변환합니다.</summary>
+      <returns>
+        <paramref name="year" />를 네 자릿수로 표시하는 정수입니다.</returns>
+      <param name="year">변환할 연도를 나타내는 두 자릿수 또는 네 자릿수의 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.HijriCalendar.TwoDigitYearMax">
+      <summary>두 자릿수 연도로 표시할 수 있는 100년 범위의 마지막 연도를 가져오거나 설정합니다.</summary>
+      <returns>두 자릿수 연도로 표시할 수 있는 100년 범위의 마지막 연도입니다.</returns>
+      <exception cref="T:System.InvalidOperationException">이 달력이 읽기 전용인 경우</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">set 작업의 값이 100보다 작거나 9666보다 큰 경우</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.JapaneseCalendar">
+      <summary>일본식 달력을 나타냅니다.</summary>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.JapaneseCalendar" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <exception cref="T:System.TypeInitializationException">누락된 문화권 정보가 있어 <see cref="T:System.Globalization.JapaneseCalendar" /> 개체를 초기화할 수 없습니다.</exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>지정된 <see cref="T:System.DateTime" />에서 지정된 월 수만큼 경과한 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />에 지정된 월 수를 더한 결과로 만들어지는 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="time">월을 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="months">더할 월 수입니다. </param>
+      <exception cref="T:System.ArgumentException">결과 <see cref="T:System.DateTime" />이 지원되는 범위 밖에 있는 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" />가 -120000보다 작은 경우또는 <paramref name="months" />가 120000보다 큰 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>지정된 <see cref="T:System.DateTime" />에서 지정된 연도 수만큼 경과한 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />에 지정된 연도 수를 더한 결과로 만들어지는 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="time">연도를 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="years">더할 연도 수입니다. </param>
+      <exception cref="T:System.ArgumentException">결과 <see cref="T:System.DateTime" />이 지원되는 범위 밖에 있는 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" />이 <see cref="T:System.Globalization.JapaneseCalendar" /> 형식에서 지원하는 범위 밖에 있는 경우또는<paramref name="years" />가 -10,000보다 작거나 10,000보다 큰 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.JapaneseCalendar.Eras">
+      <summary>
+        <see cref="T:System.Globalization.JapaneseCalendar" />에 있는 연대의 목록을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.JapaneseCalendar" />에 있는 연대를 나타내는 정수의 배열입니다.</returns>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 날짜(월 기준)를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 날짜(월 기준)를 나타내는 1에서 31 사이의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 요일을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 요일을 나타내는 <see cref="T:System.DayOfWeek" />입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetDayOfYear(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 날짜(연도 기준)를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 날짜(연도 기준)를 나타내는 1에서 366 사이의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 연도에 있는 지정된 월의 날짜 수를 반환합니다.</summary>
+      <returns>지정된 연대의 지정된 연도에 있는 지정된 월의 날짜 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>지정된 연대에 있는 지정된 연도의 날짜 수를 반환합니다.</summary>
+      <returns>지정된 연대에 있는 지정된 연도의 날짜 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetEra(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 연대를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 연대를 나타내는 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">결과 <see cref="T:System.DateTime" />이 지원되는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>지정한 연도 및 연대의 윤월을 계산합니다.</summary>
+      <returns>반환 값은 <see cref="T:System.Globalization.JapaneseCalendar" /> 형식이 윤월 개념을 지원하지 않기 때문에 항상 0입니다.</returns>
+      <param name="year">연도입니다.</param>
+      <param name="era">연대입니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 또는 <paramref name="era" />가 <see cref="T:System.Globalization.JapaneseCalendar" /> 형식에서 지원하는 범위 밖에 있는 경우</exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetMonth(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 월을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 월을 나타내는 1에서 12 사이의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>지정된 연대에 있는 지정된 연도의 월 수를 반환합니다.</summary>
+      <returns>반환 값은 항상 12입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetWeekOfYear(System.DateTime,System.Globalization.CalendarWeekRule,System.DayOfWeek)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 날짜가 포함된 주(연도 기준)를 반환합니다.</summary>
+      <returns>
+        <paramref name="time" /> 매개 변수의 날짜가 포함된 주(연도 기준)를 나타내는 1부터 시작하는 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="rule">주를 정의하는 <see cref="T:System.Globalization.CalendarWeekRule" /> 값 중 하나입니다. </param>
+      <param name="firstDayOfWeek">주의 첫째 요일을 나타내는 <see cref="T:System.DayOfWeek" /> 값 중 하나입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 또는 <paramref name="firstDayOfWeek" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="rule" />은(는) 올바른 <see cref="T:System.Globalization.CalendarWeekRule" /> 값이 아닙니다. </exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetYear(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 연도를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 연도를 나타내는 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 날짜가 윤일인지 여부를 확인합니다.</summary>
+      <returns>지정된 날짜가 윤일이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="day">일을 나타내는 1에서 31 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="day" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 연도에 있는 지정된 월이 윤월인지 여부를 확인합니다.</summary>
+      <returns>이 메서드는 파생 클래스에서 다시 정의되지 않는 한 항상 false를 반환합니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 연도가 윤년인지 여부를 확인합니다.</summary>
+      <returns>지정된 연도가 윤년이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.JapaneseCalendar.MaxSupportedDateTime">
+      <summary>현재 <see cref="T:System.Globalization.JapaneseCalendar" /> 개체에서 지원하는 마지막 날짜와 시간을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.JapaneseCalendar" /> 형식에서 지원하는 마지막 날짜와 시간으로, 그레고리오력에서 서기 9999년 12월 31일이 끝나는 순간에 해당합니다.</returns>
+    </member>
+    <member name="P:System.Globalization.JapaneseCalendar.MinSupportedDateTime">
+      <summary>현재 <see cref="T:System.Globalization.JapaneseCalendar" /> 개체에서 지원하는 시작 날짜와 시간을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.JapaneseCalendar" /> 형식에서 지원하는 시작 날짜와 시간입니다. 이 값은 그레고리오력에서 서기 1868년 9월 8일이 시작되는 순간에 해당합니다. </returns>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 날짜와 시간으로 설정된 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>현재 연대의 지정된 날짜와 시간으로 설정된 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="day">일을 나타내는 1에서 31 사이의 정수입니다. </param>
+      <param name="hour">시간을 나타내는 0에서 23 사이의 정수입니다. </param>
+      <param name="minute">분을 나타내는 0에서 59 사이의 정수입니다. </param>
+      <param name="second">초를 나타내는 0에서 59 사이의 정수입니다. </param>
+      <param name="millisecond">밀리초를 나타내는 0에서 999 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="day" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="hour" />가 0보다 작거나 23보다 큰 경우또는 <paramref name="minute" />이 0보다 작거나 59보다 큰 경우또는 <paramref name="second" />가 0보다 작거나 59보다 큰 경우또는 <paramref name="millisecond" />가 0보다 작거나 999보다 큰 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.ToFourDigitYear(System.Int32)">
+      <summary>
+        <see cref="P:System.Globalization.JapaneseCalendar.TwoDigitYearMax" /> 속성으로 해당 세기를 확인하여 지정된 연도를 네 자릿수 연도로 변환합니다.</summary>
+      <returns>
+        <paramref name="year" />를 네 자릿수로 표시하는 정수입니다.</returns>
+      <param name="year">변환할 연도를 나타내는 정수이며 일반적으로 두 자리입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.JapaneseCalendar.TwoDigitYearMax">
+      <summary>두 자릿수 연도로 표시할 수 있는 100년 범위의 마지막 연도를 가져오거나 설정합니다.</summary>
+      <returns>두 자릿수 연도로 표시할 수 있는 100년 범위의 마지막 연도입니다.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">set 작업에서 지정된 값이 99보다 작은 경우 또는 set 작업에서 지정한 값이 8011 또는 MaxSupportedDateTime.Year보다 큰 경우</exception>
+      <exception cref="T:System.InvalidOperationException">set 작업에서 현재 인스턴스가 읽기 전용인 경우</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.JapaneseLunisolarCalendar">
+      <summary>시간을 월, 일 및 연도로 구분해서 표시합니다.연도는 일본식 달력을 사용하여 계산되고, 일 및 월은 음양력을 사용하여 계산됩니다.</summary>
+    </member>
+    <member name="M:System.Globalization.JapaneseLunisolarCalendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.JapaneseLunisolarCalendar" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+    </member>
+    <member name="P:System.Globalization.JapaneseLunisolarCalendar.Eras">
+      <summary>
+        <see cref="T:System.Globalization.JapaneseLunisolarCalendar" /> 개체와 관련된 연대를 가져옵니다.</summary>
+      <returns>관련 연대를 지정하는 부호 있는 32비트 정수의 배열입니다.</returns>
+    </member>
+    <member name="M:System.Globalization.JapaneseLunisolarCalendar.GetEra(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />에 해당하는 연대를 검색합니다.</summary>
+      <returns>
+        <paramref name="time" /> 매개 변수에 지정된 연대를 나타내는 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="P:System.Globalization.JapaneseLunisolarCalendar.MaxSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.JapaneseLunisolarCalendar" /> 클래스에서 지원하는 최대 날짜와 시간을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.JapaneseLunisolarCalendar" /> 클래스에서 지원하는 마지막 날짜와 시간으로, 그레고리오력에서 서기 2050년 1월 22일이 끝나는 순간에 해당합니다.</returns>
+    </member>
+    <member name="P:System.Globalization.JapaneseLunisolarCalendar.MinSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.JapaneseLunisolarCalendar" /> 클래스에서 지원하는 최소 날짜와 시간을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.JapaneseLunisolarCalendar" /> 클래스에서 지원하는 시작 날짜와 시간으로, 그레고리오력에서 서기 1960년 1월 28일이 시작되는 순간에 해당합니다.</returns>
+    </member>
+    <member name="T:System.Globalization.JulianCalendar">
+      <summary>율리우스력을 나타냅니다.</summary>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.JulianCalendar" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>지정된 <see cref="T:System.DateTime" />에서 지정된 월 수만큼 경과한 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />에 지정된 월 수를 더한 결과로 만들어지는 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="time">월을 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="months">더할 월 수입니다. </param>
+      <exception cref="T:System.ArgumentException">결과 <see cref="T:System.DateTime" />이 지원되는 범위 밖에 있는 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" />가 -120000보다 작은 경우또는 <paramref name="months" />가 120000보다 큰 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>지정된 <see cref="T:System.DateTime" />에서 지정된 연도 수만큼 경과한 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />에 지정된 연도 수를 더한 결과로 만들어지는 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="time">연도를 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="years">더할 연도 수입니다. </param>
+      <exception cref="T:System.ArgumentException">결과 <see cref="T:System.DateTime" />이 지원되는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.JulianCalendar.Eras">
+      <summary>
+        <see cref="T:System.Globalization.JulianCalendar" />에 있는 연대의 목록을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.JulianCalendar" />에 있는 연대를 나타내는 정수의 배열입니다.</returns>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 날짜(월 기준)를 반환합니다.</summary>
+      <returns>
+        <paramref name="time" />의 날짜(월 기준)를 나타내는 1에서 31 사이의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 요일을 반환합니다.</summary>
+      <returns>
+        <paramref name="time" />의 요일을 나타내는 <see cref="T:System.DayOfWeek" />입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetDayOfYear(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 날짜(연도 기준)를 반환합니다.</summary>
+      <returns>
+        <paramref name="time" />의 날짜(연도 기준)를 나타내는 1에서 366 사이의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 연도에 있는 지정된 월의 날짜 수를 반환합니다.</summary>
+      <returns>지정된 연대의 지정된 연도에 있는 지정된 월의 날짜 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 또는 <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>지정된 연대에 있는 지정된 연도의 날짜 수를 반환합니다.</summary>
+      <returns>지정된 연대에 있는 지정된 연도의 날짜 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 또는 <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetEra(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 연대를 반환합니다.</summary>
+      <returns>
+        <paramref name="time" />의 연대를 나타내는 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>지정한 연도 및 연대의 윤월을 계산합니다.</summary>
+      <returns>지정한 연도와 연대에서 윤월을 나타내는 양의 정수입니다.또는 이 메서드는 달력이 윤월을 지원하지 않거나 <paramref name="year" /> 및 <paramref name="era" />가 윤년을 지정하지 않는 경우 0을 반환합니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다.</param>
+      <param name="era">연대를 나타내는 정수입니다.</param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetMonth(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 월을 반환합니다.</summary>
+      <returns>
+        <paramref name="time" />의 월을 나타내는 1에서 12 사이의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>지정된 연대에 있는 지정된 연도의 월 수를 반환합니다.</summary>
+      <returns>지정된 연대에 있는 지정된 연도의 월 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 또는 <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetYear(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 연도를 반환합니다.</summary>
+      <returns>
+        <paramref name="time" />의 연도를 나타내는 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 날짜가 윤일인지 여부를 확인합니다.</summary>
+      <returns>지정된 날짜가 윤일이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="day">일을 나타내는 1에서 31 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="day" />가 달력에서 지원하는 범위 밖에 있는 경우 또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 연도에 있는 지정된 월이 윤월인지 여부를 확인합니다.</summary>
+      <returns>이 메서드는 파생 클래스에서 다시 정의되지 않는 한 항상 false를 반환합니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우 또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 연도가 윤년인지 여부를 확인합니다.</summary>
+      <returns>지정된 연도가 윤년이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우 또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.JulianCalendar.MaxSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.JulianCalendar" /> 클래스에서 지원하는 마지막 날짜와 시간을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.JulianCalendar" /> 클래스에서 지원하는 마지막 날짜와 시간으로, 그레고리오력에서 서기 9999년 12월 31일이 끝나는 순간에 해당합니다.</returns>
+    </member>
+    <member name="P:System.Globalization.JulianCalendar.MinSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.JulianCalendar" /> 클래스에서 지원하는 시작 날짜와 시간을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.JulianCalendar" /> 클래스에서 지원하는 시작 날짜와 시간으로, 그레고리오력에서 서기 0001년 1월 1일이 시작되는 순간에 해당합니다.</returns>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 날짜와 시간으로 설정된 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>현재 연대의 지정된 날짜와 시간으로 설정된 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="day">일을 나타내는 1에서 31 사이의 정수입니다. </param>
+      <param name="hour">시간을 나타내는 0에서 23 사이의 정수입니다. </param>
+      <param name="minute">분을 나타내는 0에서 59 사이의 정수입니다. </param>
+      <param name="second">초를 나타내는 0에서 59 사이의 정수입니다. </param>
+      <param name="millisecond">밀리초를 나타내는 0에서 999 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="day" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="hour" />가 0보다 작거나 23보다 큰 경우또는 <paramref name="minute" />이 0보다 작거나 59보다 큰 경우또는 <paramref name="second" />가 0보다 작거나 59보다 큰 경우또는 <paramref name="millisecond" />가 0보다 작거나 999보다 큰 경우 또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.ToFourDigitYear(System.Int32)">
+      <summary>
+        <see cref="P:System.Globalization.JulianCalendar.TwoDigitYearMax" /> 속성으로 해당 세기를 확인하여 지정된 연도를 네 자릿수 연도로 변환합니다.</summary>
+      <returns>
+        <paramref name="year" />를 네 자릿수로 표시하는 정수입니다.</returns>
+      <param name="year">변환할 연도를 나타내는 두 자릿수 또는 네 자릿수의 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.JulianCalendar.TwoDigitYearMax">
+      <summary>두 자릿수 연도로 표시할 수 있는 100년 범위의 마지막 연도를 가져오거나 설정합니다.</summary>
+      <returns>두 자릿수 연도로 표시할 수 있는 100년 범위의 마지막 연도입니다.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">set 작업에서 지정된 값이 99보다 작은 경우 또는 set 작업에서 지정한 값이 8011 (또는 MaxSupportedDateTime.Year)보다 큰 경우</exception>
+      <exception cref="T:System.InvalidOperationException">set 작업에서 현재 인스턴스가 읽기 전용인 경우</exception>
+    </member>
+    <member name="T:System.Globalization.KoreanCalendar">
+      <summary>한국식 달력을 나타냅니다.</summary>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.KoreanCalendar" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <exception cref="T:System.TypeInitializationException">누락된 문화권 정보가 있어 <see cref="T:System.Globalization.KoreanCalendar" /> 개체를 초기화할 수 없습니다.</exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>지정된 <see cref="T:System.DateTime" />에서 지정된 월 수만큼 경과한 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />에 지정된 월 수를 더한 결과로 만들어지는 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="time">월을 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="months">더할 월 수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" />가 -120000보다 작은 경우또는 <paramref name="months" />가 120000보다 큰 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>지정된 <see cref="T:System.DateTime" />에서 지정된 연도 수만큼 경과한 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />에 지정된 연도 수를 더한 결과로 만들어지는 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="time">연도를 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="years">더할 연도 수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="years" /> 또는 <paramref name="time" />이 범위를 벗어난 경우</exception>
+    </member>
+    <member name="P:System.Globalization.KoreanCalendar.Eras">
+      <summary>
+        <see cref="T:System.Globalization.KoreanCalendar" />에 있는 연대의 목록을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.KoreanCalendar" />에 있는 연대를 나타내는 정수의 배열입니다.</returns>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 날짜(월 기준)를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 날짜(월 기준)를 나타내는 1에서 31 사이의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 요일을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 요일을 나타내는 <see cref="T:System.DayOfWeek" />입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetDayOfYear(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 날짜(연도 기준)를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 날짜(연도 기준)를 나타내는 1에서 366 사이의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 연도에 있는 지정된 월의 날짜 수를 반환합니다.</summary>
+      <returns>지정된 연대의 지정된 연도에 있는 지정된 월의 날짜 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>지정된 연대에 있는 지정된 연도의 날짜 수를 반환합니다.</summary>
+      <returns>지정된 연대에 있는 지정된 연도의 날짜 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetEra(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 연대를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 연대를 나타내는 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>지정한 연도 및 연대의 윤월을 계산합니다.</summary>
+      <returns>반환 값은 <see cref="T:System.Globalization.KoreanCalendar" /> 클래스가 윤월 개념을 지원하지 않기 때문에 항상 0입니다.</returns>
+      <param name="year">연도입니다.</param>
+      <param name="era">연대입니다.</param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetMonth(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 월을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 월을 나타내는 1에서 12 사이의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>지정된 연대에 있는 지정된 연도의 월 수를 반환합니다.</summary>
+      <returns>지정된 연대에 있는 지정된 연도의 월 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetWeekOfYear(System.DateTime,System.Globalization.CalendarWeekRule,System.DayOfWeek)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 날짜가 포함된 주(연도 기준)를 반환합니다.</summary>
+      <returns>
+        <paramref name="time" /> 매개 변수의 날짜가 포함된 주(연도 기준)를 나타내는 1부터 시작하는 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="rule">주를 정의하는 <see cref="T:System.Globalization.CalendarWeekRule" /> 값 중 하나입니다. </param>
+      <param name="firstDayOfWeek">주의 첫째 요일을 나타내는 <see cref="T:System.DayOfWeek" /> 값 중 하나입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 또는 <paramref name="firstDayOfWeek" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="rule" />은(는) 올바른 <see cref="T:System.Globalization.CalendarWeekRule" /> 값이 아닙니다. </exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetYear(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 연도를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 연도를 나타내는 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 날짜가 윤일인지 여부를 확인합니다.</summary>
+      <returns>지정된 날짜가 윤일이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="day">일을 나타내는 1에서 31 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="day" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 연도에 있는 지정된 월이 윤월인지 여부를 확인합니다.</summary>
+      <returns>이 메서드는 파생 클래스에서 다시 정의되지 않는 한 항상 false를 반환합니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 연도가 윤년인지 여부를 확인합니다.</summary>
+      <returns>지정된 연도가 윤년이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.KoreanCalendar.MaxSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.KoreanCalendar" /> 클래스에서 지원하는 마지막 날짜와 시간을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.KoreanCalendar" /> 클래스에서 지원하는 마지막 날짜와 시간으로, 그레고리오력에서 서기 9999년 12월 31일의 마지막 순간에 해당합니다.</returns>
+    </member>
+    <member name="P:System.Globalization.KoreanCalendar.MinSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.KoreanCalendar" /> 클래스에서 지원하는 시작 날짜와 시간을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.KoreanCalendar" /> 클래스에서 지원하는 시작 날짜와 시간으로, 그레고리오력에서 서기 1년 1월 1일이 시작되는 순간에 해당합니다.</returns>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 날짜와 시간으로 설정된 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>현재 연대의 지정된 날짜와 시간으로 설정된 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="day">일을 나타내는 1에서 31 사이의 정수입니다. </param>
+      <param name="hour">시간을 나타내는 0에서 23 사이의 정수입니다. </param>
+      <param name="minute">분을 나타내는 0에서 59 사이의 정수입니다. </param>
+      <param name="second">초를 나타내는 0에서 59 사이의 정수입니다. </param>
+      <param name="millisecond">밀리초를 나타내는 0에서 999 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="day" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="hour" />가 0보다 작거나 23보다 큰 경우또는 <paramref name="minute" />이 0보다 작거나 59보다 큰 경우또는 <paramref name="second" />가 0보다 작거나 59보다 큰 경우또는 <paramref name="millisecond" />가 0보다 작거나 999보다 큰 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.ToFourDigitYear(System.Int32)">
+      <summary>
+        <see cref="P:System.Globalization.KoreanCalendar.TwoDigitYearMax" /> 속성으로 해당 세기를 확인하여 지정된 연도를 네 자릿수 연도로 변환합니다.</summary>
+      <returns>
+        <paramref name="year" />를 네 자릿수로 표시하는 정수입니다.</returns>
+      <param name="year">변환할 연도를 나타내는 두 자릿수 또는 네 자릿수의 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Globalization.KoreanCalendar.TwoDigitYearMax">
+      <summary>두 자릿수 연도로 표시할 수 있는 100년 범위의 마지막 연도를 가져오거나 설정합니다.</summary>
+      <returns>두 자릿수 연도로 표시할 수 있는 100년 범위의 마지막 연도입니다.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">set 작업에서 지정된 값이 99보다 작은 경우 또는 set 작업에서 지정한 값이 8011 (또는 MaxSupportedDateTime.Year)보다 큰 경우</exception>
+      <exception cref="T:System.InvalidOperationException">set 작업에서 현재 인스턴스가 읽기 전용인 경우</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.KoreanLunisolarCalendar">
+      <summary>시간을 월, 일 및 연도로 구분해서 표시합니다.연도는 그레고리오력을 사용하여 계산되고 일 및 월은 음양력을 사용하여 계산됩니다.</summary>
+    </member>
+    <member name="M:System.Globalization.KoreanLunisolarCalendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.KoreanLunisolarCalendar" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+    </member>
+    <member name="P:System.Globalization.KoreanLunisolarCalendar.Eras">
+      <summary>현재 <see cref="T:System.Globalization.KoreanLunisolarCalendar" /> 개체에서 지원하는 날짜 및 시간 범위에 해당하는 연대를 가져옵니다.</summary>
+      <returns>관련 연대를 지정하는 부호 있는 32비트 정수의 배열입니다.<see cref="T:System.Globalization.KoreanLunisolarCalendar" /> 개체의 반환 값은 항상 <see cref="F:System.Globalization.KoreanLunisolarCalendar.GregorianEra" /> 값과 동일한 하나의 요소가 들어 있는 배열입니다.</returns>
+    </member>
+    <member name="M:System.Globalization.KoreanLunisolarCalendar.GetEra(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />에 해당하는 연대를 검색합니다.</summary>
+      <returns>
+        <paramref name="time" /> 매개 변수로 지정된 연대를 나타내는 정수입니다.<see cref="T:System.Globalization.KoreanLunisolarCalendar" /> 개체의 반환 값은 항상 <see cref="F:System.Globalization.KoreanLunisolarCalendar.GregorianEra" /> 값입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" />이 <see cref="P:System.Globalization.KoreanLunisolarCalendar.MinSupportedDateTime" />보다 작거나 <see cref="P:System.Globalization.KoreanLunisolarCalendar.MaxSupportedDateTime" />보다 큰 날짜 및 시간을 나타내는 경우</exception>
+    </member>
+    <member name="P:System.Globalization.KoreanLunisolarCalendar.MaxSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.KoreanLunisolarCalendar" /> 클래스에서 지원하는 최대 날짜와 시간을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.KoreanLunisolarCalendar" /> 클래스에서 지원하는 마지막 날짜와 시간으로, 그레고리오력에서 서기 2051년 2월 10일이 끝나는 순간에 해당합니다.</returns>
+    </member>
+    <member name="P:System.Globalization.KoreanLunisolarCalendar.MinSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.KoreanLunisolarCalendar" /> 클래스에서 지원하는 최소 날짜와 시간을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.KoreanLunisolarCalendar" /> 클래스에서 지원하는 시작 날짜와 시간으로, 그레고리오력에서 서기 918년 2월 14일이 시작되는 순간에 해당합니다.</returns>
+    </member>
+    <member name="T:System.Globalization.PersianCalendar">
+      <summary>페르시아력을 나타냅니다.</summary>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.PersianCalendar" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>지정된 <see cref="T:System.DateTime" /> 개체에서 지정된 월 수만큼 오프셋된 <see cref="T:System.DateTime" /> 개체를 반환합니다.</summary>
+      <returns>
+        <paramref name="time" /> 매개 변수로 지정된 날짜에 <paramref name="months" /> 매개 변수로 지정된 월 수를 더한 결과로 만들어지는 날짜를 나타내는 <see cref="T:System.DateTime" /> 개체입니다.</returns>
+      <param name="time">월을 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="months">더할 월 수를 나타내는 양수 또는 음수입니다. </param>
+      <exception cref="T:System.ArgumentException">결과 <see cref="T:System.DateTime" />이 지원되는 범위 밖에 있는 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" />가 -120,000보다 작거나 120,000보다 큰 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>지정된 <see cref="T:System.DateTime" /> 개체에서 지정된 연도 수만큼 오프셋된 <see cref="T:System.DateTime" /> 개체를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" /> 개체에 지정된 연도 수를 더한 결과로 만들어지는 <see cref="T:System.DateTime" /> 개체입니다.</returns>
+      <param name="time">연도를 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="years">더할 연도 수를 나타내는 양수 또는 음수입니다. </param>
+      <exception cref="T:System.ArgumentException">결과 <see cref="T:System.DateTime" />이 지원되는 범위 밖에 있는 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="years" />가 -10,000보다 작거나 10,000보다 큰 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.PersianCalendar.Eras">
+      <summary>
+        <see cref="T:System.Globalization.PersianCalendar" /> 개체에 있는 연대의 목록을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.PersianCalendar" /> 개체에 있는 연대를 나타내는 정수의 배열입니다.이 배열은 값이 <see cref="F:System.Globalization.PersianCalendar.PersianEra" />인 단일 요소로 구성됩니다.</returns>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" /> 개체의 날짜(월 기준)를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" /> 개체의 날짜(월 기준)를 나타내는 1부터 31까지의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 매개 변수가 <see cref="P:System.Globalization.PersianCalendar.MinSupportedDateTime" />보다 작거나 <see cref="P:System.Globalization.PersianCalendar.MaxSupportedDateTime" />보다 큰 날짜를 나타내는 경우</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" /> 개체의 요일을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" /> 개체의 요일을 나타내는 <see cref="T:System.DayOfWeek" /> 값입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetDayOfYear(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" /> 개체의 날짜(연도 기준)를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" /> 개체의 날짜(연도 기준)를 나타내는 1부터 366까지의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 매개 변수가 <see cref="P:System.Globalization.PersianCalendar.MinSupportedDateTime" />보다 작거나 <see cref="P:System.Globalization.PersianCalendar.MaxSupportedDateTime" />보다 큰 날짜를 나타내는 경우</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연도 및 연대의 지정된 월에 있는 일 수를 반환합니다.</summary>
+      <returns>지정된 연도 및 연대의 지정된 월에 있는 일 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다(1 ~ 9378). </param>
+      <param name="month">월을 나타내는 정수입니다. 이 정수의 범위는 <paramref name="year" />가 9378이 아닌 경우 1부터 12까지이고, <paramref name="year" />가 9378인 경우 1부터 10까지입니다.</param>
+      <param name="era">연대를 나타내는 정수입니다(0 ~ 1). </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" /> 또는 <paramref name="era" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>지정된 연대에 있는 지정된 연도의 날짜 수를 반환합니다.</summary>
+      <returns>지정된 연도 및 연대의 일 수입니다.평년의 일 수는 365일이고 윤년의 일 수는 366일입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다(1 ~ 9378). </param>
+      <param name="era">연대를 나타내는 정수입니다(0 ~ 1). </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 또는 <paramref name="era" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetEra(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" /> 개체의 연대를 반환합니다.</summary>
+      <returns>항상 <see cref="F:System.Globalization.PersianCalendar.PersianEra" />를 반환합니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 매개 변수가 <see cref="P:System.Globalization.PersianCalendar.MinSupportedDateTime" />보다 작거나 <see cref="P:System.Globalization.PersianCalendar.MaxSupportedDateTime" />보다 큰 날짜를 나타내는 경우</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>지정된 연도 및 연대의 윤월을 반환합니다.</summary>
+      <returns>반환 값은 항상 0입니다.</returns>
+      <param name="year">변환할 연도를 나타내는 정수입니다(1 ~ 9378). </param>
+      <param name="era">연대를 나타내는 정수입니다(0 ~ 1). </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 또는 <paramref name="era" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetMonth(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" /> 개체의 월을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" /> 개체의 월을 나타내는 1부터 12까지의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 매개 변수가 <see cref="P:System.Globalization.PersianCalendar.MinSupportedDateTime" />보다 작거나 <see cref="P:System.Globalization.PersianCalendar.MaxSupportedDateTime" />보다 큰 날짜를 나타내는 경우</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>지정된 연대에 있는 지정된 연도의 월 수를 반환합니다.</summary>
+      <returns>
+        <paramref name="year" /> 매개 변수가 9378이면 10을 반환하고, 그렇지 않으면 항상 12를 반환합니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다(1 ~ 9378). </param>
+      <param name="era">연대를 나타내는 정수입니다(0 ~ 1). </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 또는 <paramref name="era" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetYear(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" /> 개체의 연도를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 연도를 나타내는 1에서 9378 사이의 정수입니다. </returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 매개 변수가 <see cref="P:System.Globalization.PersianCalendar.MinSupportedDateTime" />보다 작거나 <see cref="P:System.Globalization.PersianCalendar.MaxSupportedDateTime" />보다 큰 날짜를 나타내는 경우</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>지정한 날짜가 윤일인지 여부를 확인합니다.</summary>
+      <returns>지정된 날짜가 윤일이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다(1 ~ 9378). </param>
+      <param name="month">월을 나타내는 정수입니다. 이 정수의 범위는 <paramref name="year" />가 9378이 아닌 경우 1부터 12까지이고, <paramref name="year" />가 9378인 경우 1부터 10까지입니다.</param>
+      <param name="day">일을 나타내는 정수입니다(1 ~ 31). </param>
+      <param name="era">연대를 나타내는 정수입니다(0 ~ 1). </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" />, <paramref name="day" /> 또는 <paramref name="era" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>지정한 연대 및 연도의 특정 월이 윤월인지 여부를 확인합니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.PersianCalendar" /> 클래스에서 윤월의 개념을 지원하지 않으므로 항상 false를 반환합니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다(1 ~ 9378). </param>
+      <param name="month">월을 나타내는 정수입니다. 이 정수의 범위는 <paramref name="year" />가 9378이 아닌 경우 1부터 12까지이고, <paramref name="year" />가 9378인 경우 1부터 10까지입니다.</param>
+      <param name="era">연대를 나타내는 정수입니다(0 ~ 1). </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" /> 또는 <paramref name="era" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 연도가 윤년인지 여부를 확인합니다.</summary>
+      <returns>지정된 연도가 윤년이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다(1 ~ 9378). </param>
+      <param name="era">연대를 나타내는 정수입니다(0 ~ 1). </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 또는 <paramref name="era" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.PersianCalendar.MaxSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.PersianCalendar" /> 클래스에서 지원하는 마지막 날짜와 시간을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.PersianCalendar" /> 클래스에서 지원하는 마지막 날짜와 시간으로, 그레고리오력에서 서기 9999년 12월 31일이 끝나는 순간에 해당합니다.</returns>
+    </member>
+    <member name="P:System.Globalization.PersianCalendar.MinSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.PersianCalendar" /> 클래스에서 지원하는 시작 날짜와 시간을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.PersianCalendar" /> 클래스에서 지원하는 시작 날짜와 시간으로, 그레고리오력에서 서기 622년 3월 21일이 시작되는 순간에 해당합니다.</returns>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 날짜, 시간 및 연대로 설정된 <see cref="T:System.DateTime" /> 개체를 반환합니다.</summary>
+      <returns>현재 연대의 지정된 날짜와 시간으로 설정된 <see cref="T:System.DateTime" /> 개체입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다(1 ~ 9378). </param>
+      <param name="month">월을 나타내는 정수입니다(1 ~ 12). </param>
+      <param name="day">일을 나타내는 정수입니다(1 ~ 31). </param>
+      <param name="hour">시간을 나타내는 정수입니다(0 ~ 23). </param>
+      <param name="minute">분을 나타내는 정수입니다(0 ~ 59). </param>
+      <param name="second">초를 나타내는 정수입니다(0 ~ 59). </param>
+      <param name="millisecond">밀리초를 나타내는 정수입니다(0 ~ 999). </param>
+      <param name="era">연대를 나타내는 정수입니다(0 ~ 1). </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" />, <paramref name="day" />, <paramref name="hour" />, <paramref name="minute" />, <paramref name="second" />, <paramref name="millisecond" /> 또는 <paramref name="era" />가 이 달력에서 지원하는 범위 밖에 있는 경우</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.ToFourDigitYear(System.Int32)">
+      <summary>지정된 연도를 네 자릿수 연도로 변환합니다.</summary>
+      <returns>
+        <paramref name="year" />를 네 자릿수로 표시하는 정수입니다.</returns>
+      <param name="year">변환할 연도를 나타내는 정수입니다(1 ~ 9378). </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 0보다 작거나 9378보다 큰 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.PersianCalendar.TwoDigitYearMax">
+      <summary>두 자릿수 연도로 표시할 수 있는 100년 범위의 마지막 연도를 가져오거나 설정합니다.</summary>
+      <returns>두 자릿수 연도로 표시할 수 있는 100년 범위의 마지막 연도입니다.</returns>
+      <exception cref="T:System.InvalidOperationException">이 달력이 읽기 전용인 경우</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">set 작업의 값이 100보다 작거나 9378보다 큰 경우</exception>
+    </member>
+    <member name="T:System.Globalization.TaiwanCalendar">
+      <summary>대만식 달력입니다.</summary>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.TaiwanCalendar" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <exception cref="T:System.TypeInitializationException">누락된 문화권 정보가 있어 <see cref="T:System.Globalization.TaiwanCalendar" /> 개체를 초기화할 수 없습니다.</exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>지정된 <see cref="T:System.DateTime" />에서 지정된 월 수만큼 경과한 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />에 지정된 월 수를 더한 결과로 만들어지는 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="time">월을 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="months">더할 월 수입니다. </param>
+      <exception cref="T:System.ArgumentException">결과 <see cref="T:System.DateTime" />이 지원되는 범위 밖에 있는 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" />가 -120000보다 작은 경우또는 <paramref name="months" />가 120000보다 큰 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>지정된 <see cref="T:System.DateTime" />에서 지정된 연도 수만큼 경과한 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />에 지정된 연도 수를 더한 결과로 만들어지는 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="time">연도를 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="years">더할 연도 수입니다. </param>
+      <exception cref="T:System.ArgumentException">결과 <see cref="T:System.DateTime" />이 지원되는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.TaiwanCalendar.Eras">
+      <summary>
+        <see cref="T:System.Globalization.TaiwanCalendar" />에 있는 연대의 목록을 가져옵니다.</summary>
+      <returns>항상 현재 연대를 값으로 갖는 단일 요소로 구성된 배열입니다.</returns>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 날짜(월 기준)를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 날짜(월 기준)를 나타내는 1에서 31 사이의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 요일을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 요일을 나타내는 <see cref="T:System.DayOfWeek" />입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetDayOfYear(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 날짜(연도 기준)를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 날짜(연도 기준)를 나타내는 1에서 366 사이의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 연도에 있는 지정된 월의 날짜 수를 반환합니다.</summary>
+      <returns>지정된 연대의 지정된 연도에 있는 지정된 월의 날짜 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>지정된 연대에 있는 지정된 연도의 날짜 수를 반환합니다.</summary>
+      <returns>지정된 연대에 있는 지정된 연도의 날짜 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetEra(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 연대를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 연대를 나타내는 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>지정한 연도 및 연대의 윤월을 계산합니다.</summary>
+      <returns>반환 값은 <see cref="T:System.Globalization.TaiwanCalendar" /> 클래스가 윤월 개념을 지원하지 않으므로 항상 0입니다.</returns>
+      <param name="year">연도입니다.</param>
+      <param name="era">연대입니다.</param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetMonth(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 월을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 월을 나타내는 1에서 12 사이의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>지정된 연대에 있는 지정된 연도의 월 수를 반환합니다.</summary>
+      <returns>지정된 연대에 있는 지정된 연도의 월 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetWeekOfYear(System.DateTime,System.Globalization.CalendarWeekRule,System.DayOfWeek)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 날짜가 포함된 주(연도 기준)를 반환합니다.</summary>
+      <returns>
+        <paramref name="time" /> 매개 변수의 날짜가 포함된 주(연도 기준)를 나타내는 양의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="rule">주를 정의하는 <see cref="T:System.Globalization.CalendarWeekRule" /> 값 중 하나입니다. </param>
+      <param name="firstDayOfWeek">주의 첫째 요일을 나타내는 <see cref="T:System.DayOfWeek" /> 값 중 하나입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 또는 <paramref name="firstDayOfWeek" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="rule" />은(는) 올바른 <see cref="T:System.Globalization.CalendarWeekRule" /> 값이 아닙니다. </exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetYear(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 연도를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 연도를 나타내는 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 날짜가 윤일인지 여부를 확인합니다.</summary>
+      <returns>지정된 날짜가 윤일이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="day">일을 나타내는 1에서 31 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="day" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 연도에 있는 지정된 월이 윤월인지 여부를 확인합니다.</summary>
+      <returns>이 메서드는 파생 클래스에서 다시 정의되지 않는 한 항상 false를 반환합니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 연도가 윤년인지 여부를 확인합니다.</summary>
+      <returns>지정된 연도가 윤년이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.TaiwanCalendar.MaxSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.TaiwanCalendar" /> 클래스에서 지원하는 마지막 날짜와 시간을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.TaiwanCalendar" /> 클래스에서 지원하는 마지막 날짜와 시간으로, 그레고리오력에서 서기 9999년 12월 31일이 끝나는 순간에 해당합니다.</returns>
+    </member>
+    <member name="P:System.Globalization.TaiwanCalendar.MinSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.TaiwanCalendar" /> 클래스에서 지원하는 시작 날짜와 시간을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.TaiwanCalendar" /> 클래스에서 지원하는 시작 날짜와 시간으로, 그레고리오력에서 서기 1912년 1월 1일이 시작되는 순간에 해당합니다.</returns>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 날짜와 시간으로 설정된 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>현재 연대의 지정된 날짜와 시간으로 설정된 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="day">일을 나타내는 1에서 31 사이의 정수입니다. </param>
+      <param name="hour">시간을 나타내는 0에서 23 사이의 정수입니다. </param>
+      <param name="minute">분을 나타내는 0에서 59 사이의 정수입니다. </param>
+      <param name="second">초를 나타내는 0에서 59 사이의 정수입니다. </param>
+      <param name="millisecond">밀리초를 나타내는 0에서 999 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="day" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="hour" />가 0보다 작거나 23보다 큰 경우또는 <paramref name="minute" />이 0보다 작거나 59보다 큰 경우또는 <paramref name="second" />가 0보다 작거나 59보다 큰 경우또는 <paramref name="millisecond" />가 0보다 작거나 999보다 큰 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.ToFourDigitYear(System.Int32)">
+      <summary>
+        <see cref="P:System.Globalization.TaiwanCalendar.TwoDigitYearMax" /> 속성으로 해당 세기를 확인하여 지정된 연도를 네 자릿수 연도로 변환합니다.</summary>
+      <returns>
+        <paramref name="year" />를 네 자릿수로 표시하는 정수입니다.</returns>
+      <param name="year">변환할 연도를 나타내는 두 자릿수 또는 네 자릿수의 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.TaiwanCalendar.TwoDigitYearMax">
+      <summary>두 자릿수 연도로 표시할 수 있는 100년 범위의 마지막 연도를 가져오거나 설정합니다.</summary>
+      <returns>두 자릿수 연도로 표시할 수 있는 100년 범위의 마지막 연도입니다.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">set 작업에서 지정된 값이 99보다 작은 경우 또는 set 작업에서 지정한 값이 8011 (또는 MaxSupportedDateTime.Year)보다 큰 경우</exception>
+      <exception cref="T:System.InvalidOperationException">set 작업에서 현재 인스턴스가 읽기 전용인 경우</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.TaiwanLunisolarCalendar">
+      <summary>대만식 음양력을 나타냅니다.대만식 달력과 마찬가지로 연도는 그레고리오력을 사용하여 계산되고 일 및 월은 음양력을 사용하여 계산됩니다.</summary>
+    </member>
+    <member name="M:System.Globalization.TaiwanLunisolarCalendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.TaiwanLunisolarCalendar" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+    </member>
+    <member name="P:System.Globalization.TaiwanLunisolarCalendar.Eras">
+      <summary>현재 <see cref="T:System.Globalization.TaiwanLunisolarCalendar" /> 개체와 관련된 연대를 가져옵니다.</summary>
+      <returns>항상 현재 연대를 값으로 갖는 단일 요소로 구성된 배열입니다.</returns>
+    </member>
+    <member name="M:System.Globalization.TaiwanLunisolarCalendar.GetEra(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />에 해당하는 연대를 검색합니다.</summary>
+      <returns>
+        <paramref name="time" /> 매개 변수에 지정된 연대를 나타내는 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="P:System.Globalization.TaiwanLunisolarCalendar.MaxSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.TaiwanLunisolarCalendar" /> 클래스에서 지원하는 최대 날짜와 시간을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.TaiwanLunisolarCalendar" /> 클래스에서 지원하는 마지막 날짜와 시간으로, 그레고리오력에서 서기 2051년 2월 10일이 끝나는 순간에 해당합니다.</returns>
+    </member>
+    <member name="P:System.Globalization.TaiwanLunisolarCalendar.MinSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.TaiwanLunisolarCalendar" /> 클래스에서 지원하는 최소 날짜와 시간을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.TaiwanLunisolarCalendar" /> 클래스에서 지원하는 시작 날짜와 시간으로, 그레고리오력에서 서기 1912년 2월 18일이 시작되는 순간에 해당합니다.</returns>
+    </member>
+    <member name="T:System.Globalization.ThaiBuddhistCalendar">
+      <summary>태국 불교식 달력을 나타냅니다.</summary>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.ThaiBuddhistCalendar" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>지정된 <see cref="T:System.DateTime" />에서 지정된 월 수만큼 경과한 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />에 지정된 월 수를 더한 결과로 만들어지는 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="time">월을 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="months">더할 월 수입니다. </param>
+      <exception cref="T:System.ArgumentException">결과 <see cref="T:System.DateTime" />이 지원되는 범위 밖에 있는 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" />가 -120000보다 작은 경우또는 <paramref name="months" />가 120000보다 큰 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>지정된 <see cref="T:System.DateTime" />에서 지정된 연도 수만큼 경과한 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />에 지정된 연도 수를 더한 결과로 만들어지는 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="time">연도를 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="years">더할 연도 수입니다. </param>
+      <exception cref="T:System.ArgumentException">결과 <see cref="T:System.DateTime" />이 지원되는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.ThaiBuddhistCalendar.Eras">
+      <summary>
+        <see cref="T:System.Globalization.ThaiBuddhistCalendar" /> 클래스에 있는 연대의 목록을 가져옵니다.</summary>
+      <returns>항상 현재 연대를 값으로 갖는 단일 요소로 구성된 배열입니다.</returns>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 날짜(월 기준)를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 날짜(월 기준)를 나타내는 1에서 31 사이의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 요일을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 요일을 나타내는 <see cref="T:System.DayOfWeek" />입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetDayOfYear(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 날짜(연도 기준)를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 날짜(연도 기준)를 나타내는 1에서 366 사이의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 연도에 있는 지정된 월의 날짜 수를 반환합니다.</summary>
+      <returns>지정된 연대의 지정된 연도에 있는 지정된 월의 날짜 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>지정된 연대에 있는 지정된 연도의 날짜 수를 반환합니다.</summary>
+      <returns>지정된 연대에 있는 지정된 연도의 날짜 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetEra(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 연대를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 연대를 나타내는 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>지정한 연도 및 연대의 윤월을 계산합니다.</summary>
+      <returns>반환 값은 <see cref="T:System.Globalization.ThaiBuddhistCalendar" /> 클래스가 윤월 개념을 지원하지 않으므로 항상 0입니다.</returns>
+      <param name="year">연도입니다.</param>
+      <param name="era">연대입니다.</param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetMonth(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 월을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 월을 나타내는 1에서 12 사이의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>지정된 연대에 있는 지정된 연도의 월 수를 반환합니다.</summary>
+      <returns>지정된 연대에 있는 지정된 연도의 월 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetWeekOfYear(System.DateTime,System.Globalization.CalendarWeekRule,System.DayOfWeek)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 날짜가 포함된 주(연도 기준)를 반환합니다.</summary>
+      <returns>
+        <paramref name="time" /> 매개 변수의 날짜가 포함된 주(연도 기준)를 나타내는 1부터 시작하는 양의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="rule">주를 정의하는 <see cref="T:System.Globalization.CalendarWeekRule" /> 값 중 하나입니다. </param>
+      <param name="firstDayOfWeek">주의 첫째 요일을 나타내는 <see cref="T:System.DayOfWeek" /> 값 중 하나입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 또는 <paramref name="firstDayOfWeek" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="rule" />은(는) 올바른 <see cref="T:System.Globalization.CalendarWeekRule" /> 값이 아닙니다. </exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetYear(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 연도를 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />의 연도를 나타내는 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 날짜가 윤일인지 여부를 확인합니다.</summary>
+      <returns>지정된 날짜가 윤일이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="day">일을 나타내는 1에서 31 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="day" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 연도에 있는 지정된 월이 윤월인지 여부를 확인합니다.</summary>
+      <returns>이 메서드는 파생 클래스에서 다시 정의되지 않는 한 항상 false를 반환합니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 연도가 윤년인지 여부를 확인합니다.</summary>
+      <returns>지정된 연도가 윤년이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.ThaiBuddhistCalendar.MaxSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.ThaiBuddhistCalendar" /> 클래스에서 지원하는 마지막 날짜와 시간을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.ThaiBuddhistCalendar" /> 클래스에서 지원하는 마지막 날짜와 시간으로, 그레고리오력에서 서기 9999년 12월 31일이 끝나는 순간에 해당합니다.</returns>
+    </member>
+    <member name="P:System.Globalization.ThaiBuddhistCalendar.MinSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.ThaiBuddhistCalendar" /> 클래스에서 지원하는 시작 날짜와 시간을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.ThaiBuddhistCalendar" /> 클래스에서 지원하는 시작 날짜와 시간으로, 그레고리오력에서 서기 1년 1월 1일이 시작되는 순간에 해당합니다.</returns>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 날짜와 시간으로 설정된 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>현재 연대의 지정된 날짜와 시간으로 설정된 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 1에서 12 사이의 정수입니다. </param>
+      <param name="day">일을 나타내는 1에서 31 사이의 정수입니다. </param>
+      <param name="hour">시간을 나타내는 0에서 23 사이의 정수입니다. </param>
+      <param name="minute">분을 나타내는 0에서 59 사이의 정수입니다. </param>
+      <param name="second">초를 나타내는 0에서 59 사이의 정수입니다. </param>
+      <param name="millisecond">밀리초를 나타내는 0에서 999 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="day" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="hour" />가 0보다 작거나 23보다 큰 경우또는 <paramref name="minute" />이 0보다 작거나 59보다 큰 경우또는 <paramref name="second" />가 0보다 작거나 59보다 큰 경우또는 <paramref name="millisecond" />가 0보다 작거나 999보다 큰 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.ToFourDigitYear(System.Int32)">
+      <summary>
+        <see cref="P:System.Globalization.ThaiBuddhistCalendar.TwoDigitYearMax" /> 속성으로 해당 세기를 확인하여 지정된 연도를 네 자릿수 연도로 변환합니다.</summary>
+      <returns>
+        <paramref name="year" />를 네 자릿수로 표시하는 정수입니다.</returns>
+      <param name="year">변환할 연도를 나타내는 두 자릿수 또는 네 자릿수의 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Globalization.ThaiBuddhistCalendar.TwoDigitYearMax">
+      <summary>두 자릿수 연도로 표시할 수 있는 100년 범위의 마지막 연도를 가져오거나 설정합니다.</summary>
+      <returns>두 자릿수 연도로 표시할 수 있는 100년 범위의 마지막 연도입니다.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">set 작업에서 지정된 값이 99보다 작은 경우 또는 set 작업에서 지정한 값이 8011 (또는 MaxSupportedDateTime.Year)보다 큰 경우</exception>
+      <exception cref="T:System.InvalidOperationException">set 작업에서 현재 인스턴스가 읽기 전용인 경우</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.UmAlQuraCalendar">
+      <summary>사우디아라비아 회교식(Um Al Qura) 달력을 나타냅니다.</summary>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.UmAlQuraCalendar" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>지정된 첫 날짜에서 지정된 월 수만큼 경과한 날짜를 계산합니다.</summary>
+      <returns>
+        <paramref name="time" /> 매개 변수에서 지정한 날짜에 <paramref name="months" /> 매개 변수에서 지정한 월 수를 더하여 생성한 날짜입니다.</returns>
+      <param name="time">월을 더할 날짜입니다.<see cref="T:System.Globalization.UmAlQuraCalendar" /> 클래스는 04/30/1900 00.00.00(그레고리오력 날짜)에서 11/16/2077 23:59:59(그레고리오력 날짜) 사이의 날짜만 지원합니다.</param>
+      <param name="months">더할 월 수를 나타내는 양수 또는 음수입니다. </param>
+      <exception cref="T:System.ArgumentException">결과 날짜가 <see cref="T:System.Globalization.UmAlQuraCalendar" /> 클래스에서 지원하는 범위 밖에 있는 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" />가 -120,000보다 작거나 120,000보다 큰 경우 또는<paramref name="time" />이 이 달력에서 지원하는 범위 밖에 있는 경우</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>지정된 첫 날짜에서 지정된 연도 수만큼 경과한 날짜를 계산합니다.</summary>
+      <returns>
+        <paramref name="time" /> 매개 변수에서 지정한 날짜에 <paramref name="years" /> 매개 변수에서 지정한 연도 수를 더하여 생성한 날짜입니다.</returns>
+      <param name="time">연도를 더할 날짜입니다.<see cref="T:System.Globalization.UmAlQuraCalendar" /> 클래스는 04/30/1900 00.00.00(그레고리오력 날짜)에서 11/16/2077 23:59:59(그레고리오력 날짜) 사이의 날짜만 지원합니다.</param>
+      <param name="years">더할 연도 수를 나타내는 양수 또는 음수입니다. </param>
+      <exception cref="T:System.ArgumentException">결과 날짜가 <see cref="T:System.Globalization.UmAlQuraCalendar" /> 클래스에서 지원하는 범위 밖에 있는 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="years" />가 -10,000보다 작거나 10,000보다 큰 경우 또는<paramref name="time" />이 이 달력에서 지원하는 범위 밖에 있는 경우</exception>
+    </member>
+    <member name="P:System.Globalization.UmAlQuraCalendar.Eras">
+      <summary>현재 <see cref="T:System.Globalization.UmAlQuraCalendar" />에서 지원하는 연대의 목록을 가져옵니다.</summary>
+      <returns>값이 <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />인 단일 요소로 구성된 배열입니다.</returns>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>지정된 날짜가 나타나는 일(월 기준)을 계산합니다.</summary>
+      <returns>
+        <paramref name="time" /> 매개변수에서 지정한 일을 나타내는 1에서 30 사이의 정수입니다. </returns>
+      <param name="time">읽으려는 날짜 값입니다.<see cref="T:System.Globalization.UmAlQuraCalendar" /> 클래스는 04/30/1900 00.00.00(그레고리오력 날짜)에서 11/16/2077 23:59:59(그레고리오력 날짜) 사이의 날짜만 지원합니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" />이 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>지정된 날짜가 나타나는 요일을 계산합니다.</summary>
+      <returns>
+        <paramref name="time" /> 매개 변수로 지정된 요일을 나타내는 <see cref="T:System.DayOfWeek" /> 값입니다.</returns>
+      <param name="time">읽으려는 날짜 값입니다.<see cref="T:System.Globalization.UmAlQuraCalendar" /> 클래스는 04/30/1900 00.00.00(그레고리오력 날짜)에서 11/16/2077 23:59:59(그레고리오력 날짜) 사이의 날짜만 지원합니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" />이 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetDayOfYear(System.DateTime)">
+      <summary>지정된 날짜가 나타나는 일(연도 기준)을 계산합니다.</summary>
+      <returns>
+        <paramref name="time" /> 매개 변수로 지정된 일(연도 기준)을 나타내는 1부터 355까지의 정수입니다.</returns>
+      <param name="time">읽으려는 날짜 값입니다.<see cref="T:System.Globalization.UmAlQuraCalendar" /> 클래스는 04/30/1900 00.00.00(그레고리오력 날짜)에서 11/16/2077 23:59:59(그레고리오력 날짜) 사이의 날짜만 지원합니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" />이 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 연도 및 연대의 지정된 월에 있는 일 수를 계산합니다.</summary>
+      <returns>지정된 연도 및 연대의 지정된 월에 있는 일 수입니다.반환 값은 평년의 경우 29이고 윤년의 경우 30입니다.</returns>
+      <param name="year">연도입니다. </param>
+      <param name="month">월을 나타내는 정수입니다(1 ~ 12). </param>
+      <param name="era">연대입니다.UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] 또는 <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />를 지정합니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" /> 또는 <paramref name="era" />가 <see cref="T:System.Globalization.UmAlQuraCalendar" /> 클래스에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>지정된 연대에 있는 지정된 연도의 일 수를 계산합니다.</summary>
+      <returns>지정된 연도 및 연대의 일 수입니다.평년의 일 수는 354일이고 윤년의 일 수는 355일입니다.</returns>
+      <param name="year">연도입니다. </param>
+      <param name="era">연대입니다.UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] 또는 <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />를 지정합니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 또는 <paramref name="era" />가 <see cref="T:System.Globalization.UmAlQuraCalendar" /> 클래스에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetEra(System.DateTime)">
+      <summary>지정된 날짜가 나타나는 연대를 계산합니다.</summary>
+      <returns>항상 <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" /> 값을 반환합니다.</returns>
+      <param name="time">읽으려는 날짜 값입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" />이 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>지정한 연도 및 연대의 윤월을 계산합니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.UmAlQuraCalendar" /> 클래스에서는 윤월을 지원하지 않기 때문에 항상 0입니다.</returns>
+      <param name="year">연도입니다.</param>
+      <param name="era">연대입니다.UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] 또는 <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />를 지정합니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 1318보다 작거나 1450보다 큰 경우또는<paramref name="era" />가 UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] 또는 <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />가 아닌 경우</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetMonth(System.DateTime)">
+      <summary>지정된 날짜가 나타나는 월을 계산합니다.</summary>
+      <returns>
+        <paramref name="time" /> 매개변수에서 지정하는 날짜의 월을 나타내는 1에서 12 사이의 정수입니다.</returns>
+      <param name="time">읽으려는 날짜 값입니다.<see cref="T:System.Globalization.UmAlQuraCalendar" /> 클래스는 04/30/1900 00.00.00(그레고리오력 날짜)에서 11/16/2077 23:59:59(그레고리오력 날짜) 사이의 날짜만 지원합니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" />이 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>지정된 연대에 있는 지정된 연도의 월 수를 계산합니다.</summary>
+      <returns>항상 12입니다.</returns>
+      <param name="year">연도입니다. </param>
+      <param name="era">연대입니다.UmAlQuaraCalendar.Eras[UmAlQuraCalendar.CurrentEra] 또는 <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />를 지정합니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="era" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetYear(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />이 나타내는 날짜의 연도를 계산합니다.</summary>
+      <returns>
+        <paramref name="time" /> 매개 변수로 지정된 연도를 나타내는 정수입니다.</returns>
+      <param name="time">읽으려는 날짜 값입니다.<see cref="T:System.Globalization.UmAlQuraCalendar" /> 클래스는 04/30/1900 00.00.00(그레고리오력 날짜)에서 11/16/2077 23:59:59(그레고리오력 날짜) 사이의 날짜만 지원합니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" />이 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>지정한 날짜가 윤일인지 여부를 확인합니다.</summary>
+      <returns>지정된 날짜가 윤일이면 true이고, 그렇지 않으면 false입니다.반환 값은 <see cref="T:System.Globalization.UmAlQuraCalendar" /> 클래스가 윤일을 지원하지 않으므로 항상 false입니다.</returns>
+      <param name="year">연도입니다. </param>
+      <param name="month">월을 나타내는 정수입니다(1 ~ 12). </param>
+      <param name="day">일을 나타내는 정수입니다(1 ~ 30). </param>
+      <param name="era">연대입니다.UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] 또는 <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />를 지정합니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" />, <paramref name="day" /> 또는 <paramref name="era" />가 <see cref="T:System.Globalization.UmAlQuraCalendar" /> 클래스에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>지정한 연대 및 연도의 특정 월이 윤월인지 여부를 확인합니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.UmAlQuraCalendar" /> 클래스에서는 윤월을 지원하지 않기 때문에 항상 false입니다.</returns>
+      <param name="year">연도입니다. </param>
+      <param name="month">월을 나타내는 정수입니다(1 ~ 12). </param>
+      <param name="era">연대입니다.UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] 또는 <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />를 지정합니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" /> 또는 <paramref name="era" />가 <see cref="T:System.Globalization.UmAlQuraCalendar" /> 클래스에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>지정된 연대의 지정된 연도가 윤년인지 여부를 확인합니다.</summary>
+      <returns>지정된 연도가 윤년이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도입니다. </param>
+      <param name="era">연대입니다.UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] 또는 <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />를 지정합니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 또는 <paramref name="era" />가 <see cref="T:System.Globalization.UmAlQuraCalendar" /> 클래스에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.UmAlQuraCalendar.MaxSupportedDateTime">
+      <summary>이 달력에서 지원하는 마지막 날짜와 시간을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.UmAlQuraCalendar" /> 클래스에서 지원하는 마지막 날짜와 시간으로, 그레고리오력에서 서기 2077년 11월 16일이 끝나는 순간에 해당합니다.</returns>
+    </member>
+    <member name="P:System.Globalization.UmAlQuraCalendar.MinSupportedDateTime">
+      <summary>이 달력에서 지원하는 시작 날짜와 시간을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.UmAlQuraCalendar" /> 클래스에서 지원하는 시작 날짜와 시간으로, 그레고리오력에서 서기 1900년 3월 30일이 시작되는 순간에 해당합니다.</returns>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>지정된 날짜, 시간 및 연대로 설정된 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>현재 연대의 지정된 날짜와 시간으로 설정된 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="year">연도입니다. </param>
+      <param name="month">월을 나타내는 정수입니다(1 ~ 12). </param>
+      <param name="day">일을 나타내는 정수입니다(1 ~ 29). </param>
+      <param name="hour">시간을 나타내는 정수입니다(0 ~ 23). </param>
+      <param name="minute">분을 나타내는 정수입니다(0 ~ 59). </param>
+      <param name="second">초를 나타내는 정수입니다(0 ~ 59). </param>
+      <param name="millisecond">밀리초를 나타내는 정수입니다(0 ~ 999). </param>
+      <param name="era">연대입니다.UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] 또는 <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />를 지정합니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />, <paramref name="month" />, <paramref name="day" /> 또는 <paramref name="era" />가 <see cref="T:System.Globalization.UmAlQuraCalendar" /> 클래스에서 지원하는 범위 밖에 있는 경우또는 <paramref name="hour" />가 0보다 작거나 23보다 큰 경우또는 <paramref name="minute" />이 0보다 작거나 59보다 큰 경우또는 <paramref name="second" />가 0보다 작거나 59보다 큰 경우또는 <paramref name="millisecond" />가 0보다 작거나 999보다 큰 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.ToFourDigitYear(System.Int32)">
+      <summary>
+        <see cref="P:System.Globalization.UmAlQuraCalendar.TwoDigitYearMax" /> 속성으로 해당 세기를 확인하여 지정된 연도를 네 자릿수 연도로 변환합니다.</summary>
+      <returns>
+        <paramref name="year" /> 매개 변수가 두 자릿수 연도이면 반환 값은 이에 해당하는 네 자릿수 연도입니다.<paramref name="year" /> 매개 변수가 네 자릿수 연도이면 <paramref name="year" /> 매개 변수가 변경되지 않은 채 그대로 반환됩니다.</returns>
+      <param name="year">0에서 99 사이의 두 자릿수 연도 또는 1318에서 1450 사이의 네 자릿수 Um Al Qura 달력 연도입니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 이 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.UmAlQuraCalendar.TwoDigitYearMax">
+      <summary>두 자릿수 연도로 표시할 수 있는 100년 범위의 마지막 연도를 가져오거나 설정합니다.</summary>
+      <returns>두 자릿수 연도로 표시할 수 있는 100년 범위의 마지막 연도입니다.</returns>
+      <exception cref="T:System.InvalidOperationException">이 달력이 읽기 전용인 경우</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Set 작업에서 Um Al Qura 달력 연도 값이 1318보다 작지만 99는 아니거나, 1450보다 큰 경우</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+  </members>
+</doc>

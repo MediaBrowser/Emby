@@ -1,0 +1,1355 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Reflection.Primitives</name>
+  </assembly>
+  <members>
+    <member name="T:System.Reflection.CallingConventions">
+      <summary>Définit les conventions d'appel valides pour une méthode.</summary>
+    </member>
+    <member name="F:System.Reflection.CallingConventions.Any">
+      <summary>Spécifie si la convention d'appel Standard ou VarArgs peut être utilisée.</summary>
+    </member>
+    <member name="F:System.Reflection.CallingConventions.ExplicitThis">
+      <summary>Spécifie que la signature est une signature de pointeur fonction, représentant un appel à une instance ou une méthode virtuelle (pas une méthode statique).Si ExplicitThis est défini, HasThis doit aussi être défini.Le premier argument passé à la méthode appelée est toujours un pointeur this, mais le type du premier argument est désormais inconnu.Par conséquent, un jeton qui décrit le type (ou la classe) du pointeur this est explicitement stocké dans sa signature de métadonnées.</summary>
+    </member>
+    <member name="F:System.Reflection.CallingConventions.HasThis">
+      <summary>Spécifie une instance ou une méthode virtuelle (pas une méthode statique).Au moment de l'exécution, un pointeur vers l'objet cible est passé à la méthode appelée en tant que premier argument (le pointeur this).La signature stockée dans les métadonnées n'inclut pas le type du premier argument, car la méthode est connue et sa classe propriétaire peut être découverte à partir des métadonnées.</summary>
+    </member>
+    <member name="F:System.Reflection.CallingConventions.Standard">
+      <summary>Spécifie la convention d'appel par défaut telle que déterminée par le Common Language Runtime.Utilisez cette convention d'appel pour les méthodes statiques.Pour les méthodes d'instance ou virtuelles, utilisez HasThis.</summary>
+    </member>
+    <member name="F:System.Reflection.CallingConventions.VarArgs">
+      <summary>Spécifie la convention d'appel pour les méthodes avec des arguments variables.</summary>
+    </member>
+    <member name="T:System.Reflection.EventAttributes">
+      <summary>Spécifie les attributs d'un événement.</summary>
+    </member>
+    <member name="F:System.Reflection.EventAttributes.None">
+      <summary>Spécifie que l'événement ne possède aucun attribut.</summary>
+    </member>
+    <member name="F:System.Reflection.EventAttributes.RTSpecialName">
+      <summary>Indique que le Common Language Runtime doit vérifier l'encodage des noms.</summary>
+    </member>
+    <member name="F:System.Reflection.EventAttributes.SpecialName">
+      <summary>Spécifie qu'il s'agit d'un événement spécial, tel qu'indiqué par son nom.</summary>
+    </member>
+    <member name="T:System.Reflection.FieldAttributes">
+      <summary>Spécifie les indicateurs qui décrivent les attributs d'un champ.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Assembly">
+      <summary>Spécifie que le champ est accessible dans tout l'assembly.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.FamANDAssem">
+      <summary>Spécifie que le champ est uniquement accessible aux sous-types de l'assembly.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Family">
+      <summary>Spécifie que le champ est accessible aux types et aux sous-types uniquement.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.FamORAssem">
+      <summary>Spécifie que le champ est accessible aux sous-types, n'importe où, ainsi que dans la totalité de l'assembly.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.FieldAccessMask">
+      <summary>Spécifie le niveau d'accès d'un champ donné.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.HasDefault">
+      <summary>Spécifie que le champ a une valeur par défaut.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.HasFieldMarshal">
+      <summary>Spécifie que le champ comporte des données de marshaling.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.HasFieldRVA">
+      <summary>Spécifie que le champ a une adresse virtuelle relative (RVA, Relative Virtual Address).L'adresse RVA correspond à l'emplacement du corps de la méthode dans l'image actuelle, sous forme d'une adresse qui est fonction du début du fichier image dans laquelle elle se trouve.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.InitOnly">
+      <summary>Spécifie que le champ est uniquement initialisé et peut être défini uniquement dans le corps d'un constructeur. </summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Literal">
+      <summary>Spécifie que la valeur du champ est une constante de compilation (liaison statique ou anticipée).Toute tentative pour le définir lève un <see cref="T:System.FieldAccessException" />.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.NotSerialized">
+      <summary>Spécifie qu'il n'est pas nécessaire de sérialiser le champ dans le cas d'un type distant.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.PinvokeImpl">
+      <summary>Réservé à une utilisation future.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Private">
+      <summary>Spécifie que seul le type parent peut accéder au champ.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.PrivateScope">
+      <summary>Spécifie que le champ ne peut pas être référencé.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Public">
+      <summary>Spécifie que le champ est accessible à tout membre pour lequel cette portée est visible.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.RTSpecialName">
+      <summary>Spécifie que le Common Language Runtime (API internes de métadonnées) doit vérifier l'encodage des noms.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.SpecialName">
+      <summary>Définit une méthode particulière dont la spécificité est décrite par le nom.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Static">
+      <summary>Spécifie que le champ représente le type défini ou qu'il est par instance.</summary>
+    </member>
+    <member name="T:System.Reflection.GenericParameterAttributes">
+      <summary>Décrit les contraintes sur un paramètre de type générique d'un type ou d'une méthode générique.</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.Contravariant">
+      <summary>Le paramètre de type générique est contravariant.Un paramètre de type contravariant peut apparaître comme type de paramètre dans les signatures de méthode.</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.Covariant">
+      <summary>Le paramètre de type générique est covariant.Un paramètre de type covariant peut apparaître comme type de résultat d'une méthode, type d'un champ en lecture seule, type de base déclaré ou interface implémentée.</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.DefaultConstructorConstraint">
+      <summary>Un type ne peut être substitué au paramètre de type générique que s'il possède un constructeur sans paramètre.</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.None">
+      <summary>Il n'existe aucun indicateur spécial.</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.NotNullableValueTypeConstraint">
+      <summary>Un type ne peut être substitué au paramètre de type générique que s'il s'agit d'un type valeur et s'il n'est pas nullable.</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.ReferenceTypeConstraint">
+      <summary>Un type ne peut être substitué au paramètre de type générique que s'il s'agit d'un type référence.</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.SpecialConstraintMask">
+      <summary>Sélectionne la combinaison de tous les indicateurs de contrainte spéciaux.Cette valeur est le résultat de l'utilisation de l'opérateur OR logique pour combiner les indicateurs suivants : <see cref="F:System.Reflection.GenericParameterAttributes.DefaultConstructorConstraint" />, <see cref="F:System.Reflection.GenericParameterAttributes.ReferenceTypeConstraint" /> et <see cref="F:System.Reflection.GenericParameterAttributes.NotNullableValueTypeConstraint" />.</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.VarianceMask">
+      <summary>Sélectionne la combinaison de tous les indicateurs de variance.Cette valeur est le résultat de l'utilisation de l'opérateur OR logique pour combiner les indicateurs suivants : <see cref="F:System.Reflection.GenericParameterAttributes.Contravariant" /> et <see cref="F:System.Reflection.GenericParameterAttributes.Covariant" />.</summary>
+    </member>
+    <member name="T:System.Reflection.MethodAttributes">
+      <summary>Spécifie les identificateurs des attributs de méthode.Ces indicateurs sont définis dans le fichier corhdr.h.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Abstract">
+      <summary>Indique que la classe ne fournit pas d'implémentation pour cette méthode.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Assembly">
+      <summary>Indique que la méthode est accessible à n'importe quelle classe de cet assembly.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.CheckAccessOnOverride">
+      <summary>Indique que la méthode ne peut être substituée que lorsqu'elle est également accessible.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.FamANDAssem">
+      <summary>Indique que la méthode est accessible aux membres de ce type et à ses types dérivés de cet assembly uniquement.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Family">
+      <summary>Indique que la méthode est accessible aux membres de cette classe et à ses classes dérivées uniquement.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.FamORAssem">
+      <summary>Indique que la méthode est accessible aux classes dérivées, quel que soit leur emplacement, ainsi qu'à toutes les classes de l'assembly.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Final">
+      <summary>Indique que la méthode ne peut pas être substituée.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.HasSecurity">
+      <summary>Indique qu'une sécurité est associée à la méthode.Indicateur réservé pour une utilisation au moment de l'exécution uniquement.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.HideBySig">
+      <summary>Indique que la méthode est masquée-par-nom-et-signature ; sinon, elle est masquée-par-nom uniquement.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.MemberAccessMask">
+      <summary>Récupère les informations d'accessibilité.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.NewSlot">
+      <summary>Indique que la méthode obtient toujours un nouvel emplacement vtable.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.PinvokeImpl">
+      <summary>Indique que l'implémentation de la méthode est transmise via PInvoke (Platform Invocation Services).</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Private">
+      <summary>Indique que la méthode est uniquement accessible à la classe en cours.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.PrivateScope">
+      <summary>Indique que la méthode ne peut pas être référencée.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Public">
+      <summary>Indique que la méthode est accessible à tout objet pour lequel cet objet figure dans la portée.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.RequireSecObject">
+      <summary>Indique que la méthode appelle une autre méthode contenant du code de sécurité.Indicateur réservé pour une utilisation au moment de l'exécution uniquement.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.ReuseSlot">
+      <summary>Indique que la méthode va réutiliser un emplacement vtable existant.Il s'agit du comportement par défaut.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.RTSpecialName">
+      <summary>Indique que le Common Language Runtime vérifie l'encodage des noms.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.SpecialName">
+      <summary>Indique qu'il s'agit d'une méthode spéciale.Le nom de la méthode décrit sa spécificité.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Static">
+      <summary>Indique que la méthode est définie sur le type ; sinon, elle est définie par instance.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.UnmanagedExport">
+      <summary>Indique que la méthode managée est exportée par thunk vers du code non managé.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Virtual">
+      <summary>Indique qu'il s'agit d'une méthode virtuelle.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.VtableLayoutMask">
+      <summary>Récupère les attributs vtable.</summary>
+    </member>
+    <member name="T:System.Reflection.MethodImplAttributes">
+      <summary>Spécifie les indicateurs des attributs de l'implémentation d'une méthode.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.AggressiveInlining">
+      <summary>Spécifie que la méthode doit être inline dans la mesure du possible.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.CodeTypeMask">
+      <summary>Spécifie des indicateurs se rapportant au type de code.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.ForwardRef">
+      <summary>Spécifie que la méthode n'est pas définie.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.IL">
+      <summary>Spécifie que l'implémentation de la méthode est en code MSIL (Microsoft Intermediate Language).</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.InternalCall">
+      <summary>Spécifie un appel interne.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.Managed">
+      <summary>Spécifie que la méthode est implémentée dans du code managé. </summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.ManagedMask">
+      <summary>Spécifie si la méthode est implémentée dans du code managé ou non managé.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.Native">
+      <summary>Spécifie que l'implémentation de la méthode est native.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.NoInlining">
+      <summary>Spécifie que la méthode ne peut pas être « inline ».</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.NoOptimization">
+      <summary>Spécifie que la méthode n'est pas optimisée par le compilateur juste-à-temps ou par la génération de code natif (consultez Ngen.exe) lors du débogage des problèmes de génération de code potentiels.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.OPTIL">
+      <summary>Spécifie que l'implémentation de la méthode est en langage OPTIL (Optimized Intermediate Language).</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.PreserveSig">
+      <summary>Spécifie que la signature de la méthode est exportée exactement telle que déclarée.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.Runtime">
+      <summary>Spécifie que l'implémentation de la méthode est fournie par le runtime.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.Synchronized">
+      <summary>Spécifie que la méthode est à thread unique dans la totalité du corps.Les méthodes statiques (Shared en Visual Basic) verrouillent le type tandis que les méthodes d'instance verrouillent l'instance.Vous pouvez également utiliser l'instruction lock C# ou la fonction SyncLock Visual Basic.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.Unmanaged">
+      <summary>Spécifie que la méthode est implémentée en code non managé.</summary>
+    </member>
+    <member name="T:System.Reflection.ParameterAttributes">
+      <summary>Définit les attributs pouvant être associés à un paramètre.Ils sont définis dans CorHdr.h.</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.HasDefault">
+      <summary>Spécifie que le paramètre a une valeur par défaut.</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.HasFieldMarshal">
+      <summary>Spécifie que le paramètre comporte des données de marshaling de champ.</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.In">
+      <summary>Spécifie que le paramètre est un paramètre d'entrée.</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.Lcid">
+      <summary>Spécifie que le paramètre est un identificateur de paramètres régionaux (LCID).</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.None">
+      <summary>Spécifie qu'il n'existe aucun attribut de paramètre.</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.Optional">
+      <summary>Spécifie que le paramètre est facultatif.</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.Out">
+      <summary>Spécifie que le paramètre est un paramètre de sortie.</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.Retval">
+      <summary>Spécifie que le paramètre est une valeur de retour.</summary>
+    </member>
+    <member name="T:System.Reflection.PropertyAttributes">
+      <summary>Définit les attributs pouvant être associés à une propriété.Ces valeurs d'attribut sont définies dans corhdr.h.</summary>
+    </member>
+    <member name="F:System.Reflection.PropertyAttributes.HasDefault">
+      <summary>Spécifie que la propriété a une valeur par défaut.</summary>
+    </member>
+    <member name="F:System.Reflection.PropertyAttributes.None">
+      <summary>Spécifie qu'aucun attribut n'est associé à une propriété.</summary>
+    </member>
+    <member name="F:System.Reflection.PropertyAttributes.RTSpecialName">
+      <summary>Spécifie que les API internes de métadonnées doivent vérifier l'encodage des noms.</summary>
+    </member>
+    <member name="F:System.Reflection.PropertyAttributes.SpecialName">
+      <summary>Spécifie que la propriété est particulière, dont la spécificité est décrite par le nom.</summary>
+    </member>
+    <member name="T:System.Reflection.TypeAttributes">
+      <summary>Spécifie les attributs de type.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Abstract">
+      <summary>Spécifie que le type est abstrait.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.AnsiClass">
+      <summary>LPTSTR est interprété comme ANSI.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.AutoClass">
+      <summary>LPTSTR est interprété automatiquement.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.AutoLayout">
+      <summary>Spécifie que le Common Language Runtime dispose automatiquement les champs de la classe.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.BeforeFieldInit">
+      <summary>Spécifie que l'appel à des méthodes statiques du type ne force pas le système à initialiser le type.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Class">
+      <summary>Spécifie que le type est une classe.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.ClassSemanticsMask">
+      <summary>Spécifie des informations de sémantiques se rapportant à la classe ; la classe actuelle est liée au contexte (dans le cas contraire, agile).</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.CustomFormatClass">
+      <summary>LPSTR est interprété par des moyens spécifiques à l'implémentation, notamment la possibilité de lever <see cref="T:System.NotSupportedException" />.Non utilisé dans l'implémentation Microsoft du .NET Framework.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.CustomFormatMask">
+      <summary>Utilisé pour récupérer des informations d'encodage non standard pour une interopérabilité native.La signification des valeurs de ces 2 bits n'est pas spécifiée.Non utilisé dans l'implémentation Microsoft du .NET Framework.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.ExplicitLayout">
+      <summary>Spécifie que les champs de la classe sont placés aux offsets spécifiés.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.HasSecurity">
+      <summary>La sécurité est associée au type.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Import">
+      <summary>Spécifie que la classe ou l'interface est importée à partir d'un autre module.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Interface">
+      <summary>Spécifie que le type est une interface.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.LayoutMask">
+      <summary>Spécifie des informations relatives à la disposition de la classe.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedAssembly">
+      <summary>Spécifie que la classe est imbriquée et qu'elle a une visibilité de niveau assembly. Par conséquent, elle est uniquement accessible aux méthodes contenues dans son assembly.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedFamANDAssem">
+      <summary>Spécifie que la classe est imbriquée et qu'elle a une visibilité de niveau assembly et family. Par conséquent, elle est uniquement accessible aux méthodes se trouvant à l'intersection entre sa famille et son assembly.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedFamily">
+      <summary>Spécifie que la classe est imbriquée et qu'elle a une visibilité de niveau family. Par conséquent, elle est uniquement accessible aux méthodes contenues dans son propre type et dans ses types dérivés, le cas échéant.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedFamORAssem">
+      <summary>Spécifie que la classe est imbriquée et qu'elle a une visibilité de niveau assembly ou family. Par conséquent, elle est uniquement accessible aux méthodes comprises dans l'union de sa famille et de son assembly.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedPrivate">
+      <summary>Spécifie que la classe est imbriquée et qu'elle a une visibilité privée.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedPublic">
+      <summary>Spécifie que la classe est imbriquée et qu'elle a une visibilité publique.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NotPublic">
+      <summary>Spécifie que la classe n'est pas publique.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Public">
+      <summary>Spécifie que la classe est publique.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.RTSpecialName">
+      <summary>Le runtime doit vérifier l'encodage des noms.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Sealed">
+      <summary>Spécifie que la classe est concrète et qu'elle ne peut pas être étendue.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.SequentialLayout">
+      <summary>Spécifie que les champs de la classe sont placés séquentiellement, en respectant l'ordre dans lequel ils ont été émis aux métadonnées.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Serializable">
+      <summary>Spécifie que la classe peut être sérialisée.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.SpecialName">
+      <summary>Spécifie qu'il s'agit d'une classe spéciale, tel qu'indiqué par son nom.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.StringFormatMask">
+      <summary>Utilisé pour récupérer des informations de chaîne pour une interopérabilité native.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.UnicodeClass">
+      <summary>LPTSTR est interprété comme UNICODE.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.VisibilityMask">
+      <summary>Spécifie des informations sur la visibilité du type.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.WindowsRuntime">
+      <summary>Spécifie un type Windows Runtime.</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.FlowControl">
+      <summary>Décrit comment une instruction modifie le flux de contrôle.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Branch">
+      <summary>Instruction de branchement.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Break">
+      <summary>Instruction de rupture.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Call">
+      <summary>Instruction d'appel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Cond_Branch">
+      <summary>Instruction de branchement conditionnel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Meta">
+      <summary>Fournit des informations sur une instruction ultérieure.Par exemple, l'instruction Unaligned de Reflection.Emit.Opcodes comporte FlowControl.Meta et spécifie que l'instruction de pointeur qui suit peut ne pas être alignée.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Next">
+      <summary>Flux de contrôle normal.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Return">
+      <summary>Instruction de retour.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Throw">
+      <summary>Instruction de levée d'exception.</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.OpCode">
+      <summary>Décrit une instruction en langage intermédiaire (IL, intermediate language).</summary>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.Equals(System.Object)">
+      <summary>Vérifie si l'objet donné est égal à ce Opcode.</summary>
+      <returns>true si <paramref name="obj" /> est une instance de Opcode et s'il est égal à cet objet ; sinon false.</returns>
+      <param name="obj">Objet à comparer à cet objet. </param>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.Equals(System.Reflection.Emit.OpCode)">
+      <summary>Détermine si l'instance actuelle est égale à l'objet <see cref="T:System.Reflection.Emit.OpCode" /> spécifié.</summary>
+      <returns>true si la valeur de <paramref name="obj" /> est égale à la valeur de l'instance actuelle ; sinon, false.</returns>
+      <param name="obj">
+        <see cref="T:System.Reflection.Emit.OpCode" /> à comparer à l'instance en cours.</param>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.FlowControl">
+      <summary>Caractéristiques du contrôle de flux de l'instruction IL.</summary>
+      <returns>Lecture seule.Type de contrôle de flux.</returns>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.GetHashCode">
+      <summary>Retourne le code de hachage généré pour ce Opcode.</summary>
+      <returns>Retourne le code de hachage de cette instance.</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.Name">
+      <summary>Nom de l'instruction IL.</summary>
+      <returns>Lecture seule.Nom de l'instruction IL.</returns>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.op_Equality(System.Reflection.Emit.OpCode,System.Reflection.Emit.OpCode)">
+      <summary>Indique si deux structures <see cref="T:System.Reflection.Emit.OpCode" /> sont égales.</summary>
+      <returns>true si <paramref name="a" /> est égal à <paramref name="b" /> ; sinon false.</returns>
+      <param name="a">
+        <see cref="T:System.Reflection.Emit.OpCode" /> à comparer à <paramref name="b" />.</param>
+      <param name="b">
+        <see cref="T:System.Reflection.Emit.OpCode" /> à comparer à <paramref name="a" />.</param>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.op_Inequality(System.Reflection.Emit.OpCode,System.Reflection.Emit.OpCode)">
+      <summary>Indique si deux structures <see cref="T:System.Reflection.Emit.OpCode" /> ne sont pas égales.</summary>
+      <returns>true si <paramref name="a" /> n'est pas égal à <paramref name="b" /> ; sinon, false.</returns>
+      <param name="a">
+        <see cref="T:System.Reflection.Emit.OpCode" /> à comparer à <paramref name="b" />.</param>
+      <param name="b">
+        <see cref="T:System.Reflection.Emit.OpCode" /> à comparer à <paramref name="a" />.</param>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.OpCodeType">
+      <summary>Type de l'instruction IL.</summary>
+      <returns>Lecture seule.Type de l'instruction IL.</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.OperandType">
+      <summary>Type d'opérande d'une instruction IL.</summary>
+      <returns>Lecture seule.Type d'opérande d'une instruction IL.</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.Size">
+      <summary>Taille de l'instruction IL.</summary>
+      <returns>Lecture seule.Taille de l'instruction IL.</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.StackBehaviourPop">
+      <summary>Manière dont l'instruction IL dépile la pile.</summary>
+      <returns>Lecture seule.Manière dont l'instruction IL dépile la pile.</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.StackBehaviourPush">
+      <summary>Manière dont l'instruction IL exécute un push de l'opérande dans la pile.</summary>
+      <returns>Lecture seule.Manière dont l'instruction IL exécute un push de l'opérande dans la pile.</returns>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.ToString">
+      <summary>Retourne ce Opcode en tant que <see cref="T:System.String" />.</summary>
+      <returns>Retourne un <see cref="T:System.String" /> contenant le nom de ce Opcode.</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.Value">
+      <summary>Obtient la valeur numérique de l'instruction en langage intermédiaire (IL).</summary>
+      <returns>Lecture seule.Valeur numérique de l'instruction IL.</returns>
+    </member>
+    <member name="T:System.Reflection.Emit.OpCodes">
+      <summary>Fournit les représentations sous forme de champs des instructions MSIL (Microsoft Intermediate Language) pour l'émission par les membres de la classe <see cref="T:System.Reflection.Emit.ILGenerator" /> (par exemple, <see cref="M:System.Reflection.Emit.ILGenerator.Emit(System.Reflection.Emit.OpCode)" />).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Add">
+      <summary>Ajoute deux valeurs et exécute un push du résultat dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Add_Ovf">
+      <summary>Ajoute deux entiers, effectue un contrôle de dépassement de capacité et exécute un push du résultat dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Add_Ovf_Un">
+      <summary>Ajoute deux valeurs entières non signées, effectue un contrôle de dépassement de capacité et exécute un push du résultat dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.And">
+      <summary>Calcule l'opération de bits AND de deux valeurs et exécute un push du résultat dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Arglist">
+      <summary>Retourne un pointeur non managé vers la liste d'arguments de la méthode actuelle.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Beq">
+      <summary>Transfère le contrôle à une instruction cible si les deux valeurs sont égales.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Beq_S">
+      <summary>Transfère le contrôle à une instruction cible (forme abrégée) si les deux valeurs sont égales.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bge">
+      <summary>Transfère le contrôle à une instruction cible si la première valeur est supérieure ou égale à la deuxième.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bge_S">
+      <summary>Transfère le contrôle à une instruction cible (forme abrégée) si la première valeur est supérieure ou égale à la deuxième.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bge_Un">
+      <summary>Transfère le contrôle à une instruction cible si la première valeur est supérieure à la deuxième lors de la comparaison des valeurs entières non signées ou des valeurs float non ordonnées.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bge_Un_S">
+      <summary>Transfère le contrôle à une instruction cible (forme abrégée) si la première valeur est supérieure à la deuxième lors de la comparaison des valeurs entières non signées ou des valeurs float non ordonnées.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bgt">
+      <summary>Transfère le contrôle à une instruction cible si la première valeur est supérieure à la deuxième.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bgt_S">
+      <summary>Transfère le contrôle à une instruction cible (forme abrégée) si la première valeur est supérieure à la deuxième.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bgt_Un">
+      <summary>Transfère le contrôle à une instruction cible si la première valeur est supérieure à la deuxième lors de la comparaison des valeurs entières non signées ou des valeurs float non ordonnées.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bgt_Un_S">
+      <summary>Transfère le contrôle à une instruction cible (forme abrégée) si la première valeur est supérieure à la deuxième lors de la comparaison des valeurs entières non signées ou des valeurs float non ordonnées.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ble">
+      <summary>Transfère le contrôle à une instruction cible si la première valeur est inférieure ou égale à la deuxième.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ble_S">
+      <summary>Transfère le contrôle à une instruction cible (forme abrégée) si la première valeur est inférieure ou égale à la deuxième.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ble_Un">
+      <summary>Transfère le contrôle à une instruction cible si la première valeur est inférieure ou égale à la deuxième lors de la comparaison des valeurs entières non signées ou des valeurs float non ordonnées.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ble_Un_S">
+      <summary>Transfère le contrôle à une instruction cible (forme abrégée) si la première valeur est inférieure ou égale à la deuxième lors de la comparaison des valeurs entières non signées ou des valeurs float non ordonnées.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Blt">
+      <summary>Transfère le contrôle à une instruction cible si la première valeur est inférieure à la deuxième.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Blt_S">
+      <summary>Transfère le contrôle à une instruction cible (forme abrégée) si la première valeur est inférieure à la deuxième.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Blt_Un">
+      <summary>Transfère le contrôle à une instruction cible si la première valeur est inférieure à la deuxième lors de la comparaison des valeurs entières non signées ou des valeurs float non ordonnées.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Blt_Un_S">
+      <summary>Transfère le contrôle à une instruction cible (forme abrégée) si la première valeur est inférieure à la deuxième lors de la comparaison des valeurs entières non signées ou des valeurs float non ordonnées.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bne_Un">
+      <summary>Transfère le contrôle à une instruction cible lorsque deux valeurs entières non signées ou valeurs float non ordonnées ne sont pas égales.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bne_Un_S">
+      <summary>Transfère le contrôle à une instruction cible lorsque deux valeurs entières non signées ou valeurs float non ordonnées ne sont pas égales.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Box">
+      <summary>Convertit un type de valeur en référence d'objet (type O).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Br">
+      <summary>Transfère le contrôle à une instruction cible de manière non conditionnelle.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Br_S">
+      <summary>Transfère le contrôle à une instruction cible de manière non conditionnelle (forme abrégée).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Break">
+      <summary>Active l'infrastructure CLI de façon à informer le débogueur qu'un point d'arrêt a été dépassé.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Brfalse">
+      <summary>Transfère le contrôle à une instruction cible si <paramref name="value" /> est égal à false, une référence null (Nothing en Visual Basic) ou zéro.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Brfalse_S">
+      <summary>Transfère le contrôle à une instruction cible si <paramref name="value" /> est égal à false, une référence null ou zéro.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Brtrue">
+      <summary>Transfère le contrôle à une instruction cible si <paramref name="value" /> est true, différent de null ou différent de zéro.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Brtrue_S">
+      <summary>Transfère le contrôle à une instruction cible (forme abrégée) si <paramref name="value" /> est true, différent de null ou différent de zéro.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Call">
+      <summary>Appelle la méthode indiquée par le descripteur de méthode passé.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Calli">
+      <summary>Appelle la méthode indiquée dans la pile d'évaluation (sous la forme d'un pointeur vers un point d'entrée) avec les arguments décrits par une convention d'appel.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Callvirt">
+      <summary>Appelle une méthode à liaison tardive sur un objet, en exécutant un push de la valeur de retour dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Castclass">
+      <summary>Tente d'effectuer un cast d'un objet passé par référence en classe spécifiée.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ceq">
+      <summary>Compare deux valeurs.Si elles sont égales, la valeur entière 1 ((int32) fait l'objet d'un push dans la pile d'évaluation ; sinon, le push est exécuté sur la valeur 0 (int32).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Cgt">
+      <summary>Compare deux valeurs.Si la première valeur est supérieure à la deuxième, la valeur entière 1 ((int32) fait l'objet d'un push dans la pile d'évaluation ; sinon, le push est exécuté sur la valeur 0 (int32).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Cgt_Un">
+      <summary>Compare deux valeurs non signées ou non ordonnées.Si la première valeur est supérieure à la deuxième, la valeur entière 1 ((int32) fait l'objet d'un push dans la pile d'évaluation ; sinon, le push est exécuté sur la valeur 0 (int32).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ckfinite">
+      <summary>Lève <see cref="T:System.ArithmeticException" /> si la valeur n'est pas un nombre fini.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Clt">
+      <summary>Compare deux valeurs.Si la première valeur est inférieure à la deuxième, la valeur entière 1 ((int32) fait l'objet d'un push dans la pile d'évaluation ; sinon, le push est exécuté sur la valeur 0 (int32).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Clt_Un">
+      <summary>Compare les valeurs non signées ou non ordonnées <paramref name="value1" /> et <paramref name="value2" />.Si <paramref name="value1" /> est inférieur à <paramref name="value2" />, la valeur entière 1 ((int32) fait alors l'objet d'un push dans la pile d'évaluation ; sinon, le push est exécuté sur la valeur 0 (int32).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Constrained">
+      <summary>Contraint le type sur lequel un appel à une méthode virtuelle est effectué.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_I">
+      <summary>Convertit la valeur située en haut de la pile d'évaluation en native int.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_I1">
+      <summary>Convertit la valeur située en haut de la pile d'évaluation en int8 et l'étend (remplit) à int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_I2">
+      <summary>Convertit la valeur située en haut de la pile d'évaluation en int16 et l'étend (remplit) à int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_I4">
+      <summary>Convertit la valeur située en haut de la pile d'évaluation en int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_I8">
+      <summary>Convertit la valeur située en haut de la pile d'évaluation en int64.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I">
+      <summary>Convertit la valeur signée située en haut de la pile d'évaluation en native int signé, en levant <see cref="T:System.OverflowException" /> en cas de dépassement de capacité.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I_Un">
+      <summary>Convertit la valeur non signée située en haut de la pile d'évaluation en native int signé, en levant <see cref="T:System.OverflowException" /> en cas de dépassement de capacité.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I1">
+      <summary>Convertit la valeur signée située en haut de la pile d'évaluation en int8 signé et l'étend à int32, en levant <see cref="T:System.OverflowException" /> en cas de dépassement de capacité.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I1_Un">
+      <summary>Convertit la valeur non signée située en haut de la pile d'évaluation en int8 signé et l'étend à int32, en levant <see cref="T:System.OverflowException" /> en cas de dépassement de capacité.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I2">
+      <summary>Convertit la valeur signée située en haut de la pile d'évaluation en int16 signé et l'étend à int32, en levant <see cref="T:System.OverflowException" /> en cas de dépassement de capacité.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I2_Un">
+      <summary>Convertit la valeur non signée située en haut de la pile d'évaluation en int16 signé et l'étend à int32, en levant <see cref="T:System.OverflowException" /> en cas de dépassement de capacité.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I4">
+      <summary>Convertit la valeur signée située en haut de la pile d'évaluation en int32 signé, en levant <see cref="T:System.OverflowException" /> en cas de dépassement de capacité.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I4_Un">
+      <summary>Convertit la valeur non signée située en haut de la pile d'évaluation en int32 signé, en levant <see cref="T:System.OverflowException" /> en cas de dépassement de capacité.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I8">
+      <summary>Convertit la valeur signée située en haut de la pile d'évaluation en int64 signé, en levant <see cref="T:System.OverflowException" /> en cas de dépassement de capacité.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I8_Un">
+      <summary>Convertit la valeur non signée située en haut de la pile d'évaluation en int64 signé, en levant <see cref="T:System.OverflowException" /> en cas de dépassement de capacité.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U">
+      <summary>Convertit la valeur signée située en haut de la pile d'évaluation en unsigned native int, en levant <see cref="T:System.OverflowException" /> en cas de dépassement de capacité.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U_Un">
+      <summary>Convertit la valeur non signée située en haut de la pile d'évaluation en unsigned native int, en levant <see cref="T:System.OverflowException" /> en cas de dépassement de capacité.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U1">
+      <summary>Convertit la valeur signée située en haut de la pile d'évaluation en unsigned int8 et l'étend à int32, en levant <see cref="T:System.OverflowException" /> en cas de dépassement de capacité.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U1_Un">
+      <summary>Convertit la valeur non signée située en haut de la pile d'évaluation en unsigned int8 et l'étend à int32, en levant <see cref="T:System.OverflowException" /> en cas de dépassement de capacité.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U2">
+      <summary>Convertit la valeur signée située en haut de la pile d'évaluation en unsigned int16 et l'étend à int32, en levant <see cref="T:System.OverflowException" /> en cas de dépassement de capacité.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U2_Un">
+      <summary>Convertit la valeur non signée située en haut de la pile d'évaluation en unsigned int16 et l'étend à int32, en levant <see cref="T:System.OverflowException" /> en cas de dépassement de capacité.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U4">
+      <summary>Convertit la valeur signée située en haut de la pile d'évaluation en unsigned int32, en levant <see cref="T:System.OverflowException" /> en cas de dépassement de capacité.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U4_Un">
+      <summary>Convertit la valeur non signée située en haut de la pile d'évaluation en unsigned int32, en levant <see cref="T:System.OverflowException" /> en cas de dépassement de capacité.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U8">
+      <summary>Convertit la valeur signée située en haut de la pile d'évaluation en unsigned int64, en levant <see cref="T:System.OverflowException" /> en cas de dépassement de capacité.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U8_Un">
+      <summary>Convertit la valeur non signée située en haut de la pile d'évaluation en unsigned int64, en levant <see cref="T:System.OverflowException" /> en cas de dépassement de capacité.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_R_Un">
+      <summary>Convertit la valeur entière non signée située en haut de la pile d'évaluation en float32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_R4">
+      <summary>Convertit la valeur située en haut de la pile d'évaluation en float32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_R8">
+      <summary>Convertit la valeur située en haut de la pile d'évaluation en float64.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_U">
+      <summary>Convertit la valeur située en haut de la pile d'évaluation en unsigned native int et l'étend à native int.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_U1">
+      <summary>Convertit la valeur située en haut de la pile d'évaluation en unsigned int8 et l'étend à int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_U2">
+      <summary>Convertit la valeur située en haut de la pile d'évaluation en unsigned int16 et l'étend à int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_U4">
+      <summary>Convertit la valeur située en haut de la pile d'évaluation en unsigned int32 et l'étend à int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_U8">
+      <summary>Convertit la valeur située en haut de la pile d'évaluation en unsigned int64 et l'étend à int64.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Cpblk">
+      <summary>Copie un nombre d'octets spécifié d'une adresse source vers une adresse de destination.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Cpobj">
+      <summary>Copie le type de valeur situé à l'adresse d'un objet (type &amp;, * ou native int) à l'adresse de l'objet de destination (type &amp;, * ou native int).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Div">
+      <summary>Divise une valeur par une autre et exécute un push du résultat en tant que valeur à virgule flottante (type F) ou quotient (type int32) dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Div_Un">
+      <summary>Divise une valeur entière non signée par une autre et exécute un push du résultat (int32) dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Dup">
+      <summary>Copie la valeur actuelle la plus haute dans la pile d'évaluation et exécute un push de la copie dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Endfilter">
+      <summary>Transfère à nouveau le contrôle de la clause filter d'une exception au gestionnaire d'exceptions CLI.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Endfinally">
+      <summary>Transfère à nouveau le contrôle de la clause fault ou finally d'un bloc d'exception au gestionnaire d'exceptions CLI.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Initblk">
+      <summary>Initialise un bloc de mémoire spécifié situé à une adresse spécifique en utilisant une taille et une valeur initiale données.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Initobj">
+      <summary>Initialise tous les champs du type de valeur figurant à l'adresse spécifiée en utilisant la référence null ou la valeur 0 du type primitif qui convient.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Isinst">
+      <summary>Vérifie si une référence d'objet (type O) est une instance d'une classe particulière.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Jmp">
+      <summary>Quitte la méthode actuelle et passe à la méthode spécifiée.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg">
+      <summary>Charge un argument (référencé par une valeur d'index spécifiée) dans la pile.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg_0">
+      <summary>Charge l'argument à l'index 0 dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg_1">
+      <summary>Charge l'argument à l'index 1 dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg_2">
+      <summary>Charge l'argument à l'index 2 dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg_3">
+      <summary>Charge l'argument à l'index 3 dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg_S">
+      <summary>Charge l'argument (référencé par un index sous la forme abrégée) dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarga">
+      <summary>Charge une adresse d'argument dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarga_S">
+      <summary>Charge une adresse d'argument, sous la forme abrégée, dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4">
+      <summary>Exécute un push d'une valeur fournie de type int32 dans la pile d'évaluation en tant que int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_0">
+      <summary>Exécute un push de la valeur entière 0 dans la pile d'évaluation en tant que int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_1">
+      <summary>Exécute un push de la valeur entière 1 dans la pile d'évaluation en tant que int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_2">
+      <summary>Exécute un push de la valeur entière 2 dans la pile d'évaluation en tant que int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_3">
+      <summary>Exécute un push de la valeur entière 3 dans la pile d'évaluation en tant que int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_4">
+      <summary>Exécute un push de la valeur entière 4 dans la pile d'évaluation en tant que int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_5">
+      <summary>Exécute un push de la valeur entière 5 dans la pile d'évaluation en tant que int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_6">
+      <summary>Exécute un push de la valeur entière 6 dans la pile d'évaluation en tant que int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_7">
+      <summary>Exécute un push de la valeur entière 7 dans la pile d'évaluation en tant que int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_8">
+      <summary>Exécute un push de la valeur entière 8 dans la pile d'évaluation en tant que int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_M1">
+      <summary>Exécute un push de la valeur entière -1 dans la pile d'évaluation en tant que int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_S">
+      <summary>Exécute un push de la valeur int8 fournie dans la pile d'évaluation en tant que int32 (forme abrégée).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I8">
+      <summary>Exécute un push d'une valeur fournie de type int64 dans la pile d'évaluation en tant que int64.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_R4">
+      <summary>Exécute un push d'une valeur fournie de type float32 dans la pile d'évaluation en tant que type F (float).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_R8">
+      <summary>Exécute un push d'une valeur fournie de type float64 dans la pile d'évaluation en tant que type F (float).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem">
+      <summary>Charge l'élément à un index de tableau spécifié en haut de la pile d'évaluation en tant que type spécifié par l'instruction. </summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_I">
+      <summary>Charge l'élément avec le type native int à un index de tableau spécifié en haut de la pile d'évaluation en tant que native int.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_I1">
+      <summary>Charge l'élément avec le type int8 à un index de tableau spécifié en haut de la pile d'évaluation en tant que int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_I2">
+      <summary>Charge l'élément avec le type int16 à un index de tableau spécifié en haut de la pile d'évaluation en tant que int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_I4">
+      <summary>Charge l'élément avec le type int32 à un index de tableau spécifié en haut de la pile d'évaluation en tant que int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_I8">
+      <summary>Charge l'élément avec le type int64 à un index de tableau spécifié en haut de la pile d'évaluation en tant que int64.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_R4">
+      <summary>Charge l'élément avec le type float32 à un index de tableau spécifié en haut de la pile d'évaluation en tant que type F (float).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_R8">
+      <summary>Charge l'élément avec le type float64 à un index de tableau spécifié en haut de la pile d'évaluation en tant que type F (float).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_Ref">
+      <summary>Charge l'élément contenant une référence d'objet à un index de tableau spécifié en haut de la pile d'évaluation en tant que type O (référence d'objet).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_U1">
+      <summary>Charge l'élément avec le type unsigned int8 à un index de tableau spécifié en haut de la pile d'évaluation en tant que int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_U2">
+      <summary>Charge l'élément avec le type unsigned int16 à un index de tableau spécifié en haut de la pile d'évaluation en tant que int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_U4">
+      <summary>Charge l'élément avec le type unsigned int32 à un index de tableau spécifié en haut de la pile d'évaluation en tant que int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelema">
+      <summary>Charge l'adresse de l'élément de tableau situé à un index de tableau spécifié en haut de la pile d'évaluation en tant que type &amp; (pointeur managé).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldfld">
+      <summary>Recherche la valeur d'un champ dans l'objet dont la référence est actuellement située dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldflda">
+      <summary>Recherche l'adresse d'un champ dans l'objet dont la référence est actuellement située dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldftn">
+      <summary>Exécute un push d'un pointeur non managé (type native int) sur le code natif implémentant une méthode spécifique dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_I">
+      <summary>Charge indirectement une valeur de type native int en tant que native int dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_I1">
+      <summary>Charge indirectement une valeur de type int8 en tant que int32 dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_I2">
+      <summary>Charge indirectement une valeur de type int16 en tant que int32 dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_I4">
+      <summary>Charge indirectement une valeur de type int32 en tant que int32 dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_I8">
+      <summary>Charge indirectement une valeur de type int64 en tant que int64 dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_R4">
+      <summary>Charge indirectement une valeur de type float32 en tant que type F (float) dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_R8">
+      <summary>Charge indirectement une valeur de type float64 en tant que type F (float) dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_Ref">
+      <summary>Charge indirectement une référence d'objet en tant que type O (référence d'objet) dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_U1">
+      <summary>Charge indirectement une valeur de type unsigned int8 en tant que int32 dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_U2">
+      <summary>Charge indirectement une valeur de type unsigned int16 en tant que int32 dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_U4">
+      <summary>Charge indirectement une valeur de type unsigned int32 en tant que int32 dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldlen">
+      <summary>Exécute un push du nombre d'éléments d'un tableau unidimensionnel de base zéro dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc">
+      <summary>Charge la variable locale à un index spécifique dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc_0">
+      <summary>Charge la variable locale à l'index 0 dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc_1">
+      <summary>Charge la variable locale à l'index 1 dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc_2">
+      <summary>Charge la variable locale à l'index 2 dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc_3">
+      <summary>Charge la variable locale à l'index 3 dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc_S">
+      <summary>Charge la variable locale à un index spécifique dans la pile d'évaluation (forme abrégée).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloca">
+      <summary>Charge l'adresse de la variable locale à un index spécifique dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloca_S">
+      <summary>Charge l'adresse de la variable locale à un index spécifique dans la pile d'évaluation (forme abrégée).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldnull">
+      <summary>Exécute un push d'une référence null (type O) dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldobj">
+      <summary>Copie l'objet de type de valeur sur lequel pointe une adresse en haut de la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldsfld">
+      <summary>Exécute un push de la valeur d'un champ statique dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldsflda">
+      <summary>Exécute un push de l'adresse d'un champ statique dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldstr">
+      <summary>Exécute un push d'une nouvelle référence d'objet à un littéral de chaîne stocké dans les métadonnées.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldtoken">
+      <summary>Convertit un jeton de métadonnées en sa représentation runtime et exécute un push de cette représentation dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldvirtftn">
+      <summary>Exécute un push d'un pointeur non managé (type native int) sur le code natif implémentant une méthode virtuelle spécifique associée à un objet spécifié dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Leave">
+      <summary>Quitte une région de code protégée, en transférant le contrôle à une instruction cible spécifique de manière non conditionnelle.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Leave_S">
+      <summary>Quitte une région de code protégée, en transférant le contrôle à une instruction cible (forme abrégée) de manière non conditionnelle.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Localloc">
+      <summary>Alloue un certain nombre d'octets à partir du pool de mémoires dynamique local et exécute un push de l'adresse (pointeur transitoire, type *) du premier octet alloué dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Mkrefany">
+      <summary>Exécute un push d'une référence typée à une instance d'un type spécifique dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Mul">
+      <summary>Multiplie deux valeurs et exécute un push du résultat dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Mul_Ovf">
+      <summary>Multiplie deux valeurs entières, effectue un contrôle de dépassement de capacité et exécute un push du résultat dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Mul_Ovf_Un">
+      <summary>Multiplie deux valeurs entières non signées, effectue un contrôle de dépassement de capacité et exécute un push du résultat dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Neg">
+      <summary>Met en négatif une valeur et exécute un push du résultat dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Newarr">
+      <summary>Exécute un push dans la pile d'évaluation sur une référence d'objet à un nouveau tableau unidimensionnel de base zéro dont les éléments sont d'un type spécifique.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Newobj">
+      <summary>Crée un objet ou une instance d'un type de valeur, en exécutant un push d'une référence d'objet (type O) dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Nop">
+      <summary>Remplit l'espace si les opcodes sont corrigés.Aucune opération significative n'est exécutée bien qu'un cycle de traitement puisse être utilisé.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Not">
+      <summary>Calcule le complément de bits de la valeur entière située en haut de la pile et exécute un push du résultat dans la pile d'évaluation en tant que type identique.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Or">
+      <summary>Calcule le complément de bits de deux valeurs entières situées en haut de la pile et exécute un push du résultat dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Pop">
+      <summary>Supprime la valeur actuellement située en haut de la pile.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix1">
+      <summary>Cette instruction est réservée.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix2">
+      <summary>Cette instruction est réservée.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix3">
+      <summary>Cette instruction est réservée.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix4">
+      <summary>Cette instruction est réservée.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix5">
+      <summary>Cette instruction est réservée.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix6">
+      <summary>Cette instruction est réservée.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix7">
+      <summary>Cette instruction est réservée.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefixref">
+      <summary>Cette instruction est réservée.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Readonly">
+      <summary>Spécifie que l'opération d'adresse de tableau suivante n'exécute aucun contrôle de type au moment de l'exécution et qu'il retourne un pointeur managé dont la mutabilité est restreinte.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Refanytype">
+      <summary>Récupère le jeton de type incorporé dans une référence typée.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Refanyval">
+      <summary>Récupère l'adresse (type &amp;) incorporée dans une référence typée.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Rem">
+      <summary>Divise une valeur par une autre et exécute un push du reste dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Rem_Un">
+      <summary>Divise une valeur non signée par une autre et exécute un push du reste dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ret">
+      <summary>Effectue un retour à partir de la méthode actuelle en exécutant un push d'une valeur de retour (si elle existe) à partir de la pile d'évaluation de l'appelé dans celle de l'appelant.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Rethrow">
+      <summary>Lève de nouveau l'exception actuelle.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Shl">
+      <summary>Déplace une valeur entière vers la gauche (décalage des zéros) d'un nombre de bits spécifié, en exécutant un push du résultat dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Shr">
+      <summary>Déplace une valeur entière (dans le signe) vers la droite d'un nombre de bits spécifié, en exécutant un push du résultat dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Shr_Un">
+      <summary>Déplace une valeur entière non signée (décalage des zéros) vers la droite d'un nombre de bits spécifié, en exécutant un push du résultat dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Sizeof">
+      <summary>Exécute un push de la taille (en octets) d'un type de valeur fourni dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Starg">
+      <summary>Stocke la valeur en haut de la pile d'évaluation à l'emplacement d'argument situé à un index spécifié.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Starg_S">
+      <summary>Stocke la valeur en haut de la pile d'évaluation à l'emplacement d'argument situé à un index spécifié (forme abrégée).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem">
+      <summary>Remplace l'élément de tableau à un index donné par la valeur de la pile d'évaluation dont le type est spécifié dans l'instruction.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_I">
+      <summary>Remplace l'élément de tableau situé à un index donné par la valeur native int dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_I1">
+      <summary>Remplace l'élément de tableau situé à un index donné par la valeur int8 dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_I2">
+      <summary>Remplace l'élément de tableau situé à un index donné par la valeur int16 dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_I4">
+      <summary>Remplace l'élément de tableau situé à un index donné par la valeur int32 dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_I8">
+      <summary>Remplace l'élément de tableau situé à un index donné par la valeur int64 dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_R4">
+      <summary>Remplace l'élément de tableau situé à un index donné par la valeur float32 dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_R8">
+      <summary>Remplace l'élément de tableau situé à un index donné par la valeur float64 dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_Ref">
+      <summary>Remplace l'élément de tableau situé à un index donné par la valeur de référence d'objet (type O) dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stfld">
+      <summary>Remplace la valeur stockée dans le champ d'une référence d'objet ou d'un pointeur par une nouvelle valeur.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_I">
+      <summary>Stocke une valeur de type native int à une adresse fournie.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_I1">
+      <summary>Stocke une valeur de type int8 à une adresse fournie.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_I2">
+      <summary>Stocke une valeur de type int16 à une adresse fournie.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_I4">
+      <summary>Stocke une valeur de type int32 à une adresse fournie.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_I8">
+      <summary>Stocke une valeur de type int64 à une adresse fournie.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_R4">
+      <summary>Stocke une valeur de type float32 à une adresse fournie.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_R8">
+      <summary>Stocke une valeur de type float64 à une adresse fournie.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_Ref">
+      <summary>Stocke une valeur de référence d'objet à une adresse fournie.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc">
+      <summary>Dépile la valeur actuelle du haut de la pile d'évaluation et la stocke dans la liste de variables locales à un index spécifié.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc_0">
+      <summary>Dépile la valeur actuelle du haut de la pile d'évaluation et la stocke dans la liste de variables locales à l'index 0.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc_1">
+      <summary>Dépile la valeur actuelle du haut de la pile d'évaluation et la stocke dans la liste de variables locales à l'index 1.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc_2">
+      <summary>Dépile la valeur actuelle du haut de la pile d'évaluation et la stocke dans la liste de variables locales à l'index 2.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc_3">
+      <summary>Dépile la valeur actuelle du haut de la pile d'évaluation et la stocke dans la liste de variables locales à l'index 3.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc_S">
+      <summary>Dépile la valeur actuelle du haut de la pile d'évaluation et la stocke dans la liste de variables locales à <paramref name="index" /> (forme abrégée).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stobj">
+      <summary>Copie une valeur d'un type spécifié de la pile d'évaluation vers une adresse mémoire fournie.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stsfld">
+      <summary>Remplace la valeur d'un champ statique par une valeur de la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Sub">
+      <summary>Soustrait une valeur d'une autre et exécute un push du résultat dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Sub_Ovf">
+      <summary>Soustrait une valeur entière d'une autre, effectue un contrôle de dépassement de capacité et exécute un push du résultat dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Sub_Ovf_Un">
+      <summary>Soustrait une valeur entière non signée d'une autre, effectue un contrôle de dépassement de capacité et exécute un push du résultat dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Switch">
+      <summary>Implémente un tableau de saut.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Tailcall">
+      <summary>Exécute une instruction d'appel de méthode suffixée afin que le frame de pile de la méthode actuelle soit supprimé avant cette exécution.</summary>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCodes.TakesSingleByteArgument(System.Reflection.Emit.OpCode)">
+      <summary>Retourne true ou false si l'opcode fourni utilise un argument à octet unique.</summary>
+      <returns>True ou false.</returns>
+      <param name="inst">Instance d'un objet Opcode. </param>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Throw">
+      <summary>Lève l'objet exception actuellement situé dans la pile d'évaluation.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Unaligned">
+      <summary>Indique qu'une adresse actuellement située en haut de la pile d'évaluation peut ne pas être alignée avec la taille naturelle de l'instruction ldind, stind, ldfld, stfld, ldobj, stobj, initblk ou cpblk qui suit immédiatement.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Unbox">
+      <summary>Convertit la représentation boxed d'un type de valeur dans sa forme unboxed.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Unbox_Any">
+      <summary>Convertit la représentation boxed d'un type spécifié en instruction dans sa forme unboxed. </summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Volatile">
+      <summary>Spécifie qu'une adresse actuellement située en haut de la pile d'évaluation peut être volatile et que les résultats de la lecture de cet emplacement ne peuvent pas être mis en cache ou que plusieurs magasins situés à cet emplacement ne peuvent pas être supprimés.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Xor">
+      <summary>Calcule l'opération de bits XOR des deux premières valeurs de la pile d'évaluation en exécutant un push du résultat dans la pile d'évaluation.</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.OpCodeType">
+      <summary>Décrit les types d'instructions MSIL (Microsoft Intermediate Language).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodeType.Macro">
+      <summary>Il s'agit d'instructions MSIL (Microsoft Intermediate Language) utilisées pour représenter d'autres instructions MSIL.Par exemple, ldarg.0 représente l'instruction ldarg avec un argument de 0.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodeType.Nternal">
+      <summary>Décrit une instruction MSIL (Microsoft Intermediate Language) réservée.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodeType.Objmodel">
+      <summary>Décrit une instruction MSIL qui s'applique aux objets.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodeType.Prefix">
+      <summary>Décrit une instruction de préfixe qui modifie le comportement de l'instruction suivante.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodeType.Primitive">
+      <summary>Décrit une instruction intégrée.</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.OperandType">
+      <summary>Décrit le type d'opérande d'une instruction MSIL (Microsoft Intermediate Language).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineBrTarget">
+      <summary>L'opérande est une cible de branchement entier 32 bits.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineField">
+      <summary>L'opérande est un jeton de métadonnées 32 bits.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineI">
+      <summary>L'opérande est un entier 32 bits.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineI8">
+      <summary>L'opérande est un entier 64 bits.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineMethod">
+      <summary>L'opérande est un jeton de métadonnées 32 bits.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineNone">
+      <summary>Aucun opérande.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineR">
+      <summary>L'opérande est un nombre à virgule flottante IEEE 64 bits.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineSig">
+      <summary>L'opérande est un jeton de signature de métadonnées 32 bits.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineString">
+      <summary>L'opérande est un jeton de chaîne de métadonnées 32 bits.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineSwitch">
+      <summary>L'opérande est l'argument entier 32 bits d'une instruction switch.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineTok">
+      <summary>L'opérande est un jeton FieldRef, MethodRef ou TypeRef.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineType">
+      <summary>L'opérande est un jeton de métadonnées 32 bits.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineVar">
+      <summary>L'opérande est un entier 16 bits contenant le nombre ordinal d'une variable locale ou d'un argument.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.ShortInlineBrTarget">
+      <summary>L'opérande est une cible de branchement entier 8 bits.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.ShortInlineI">
+      <summary>L'opérande est un entier 8 bits.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.ShortInlineR">
+      <summary>L'opérande est un nombre à virgule flottante IEEE 32 bits.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.ShortInlineVar">
+      <summary>L'opérande est un entier 8 bits contenant le nombre ordinal d'une variable locale ou d'un argument.</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.PackingSize">
+      <summary>Spécifie un ou deux facteurs qui déterminent l'alignement de mémoire des champs lorsqu'un type est marshalé.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size1">
+      <summary>La taille de compactage est égale à 1 octet.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size128">
+      <summary>La taille de compactage est égale à 128 octets.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size16">
+      <summary>La taille de compactage est égale à 16 octets.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size2">
+      <summary>La taille de compactage est égale à 2 octets.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size32">
+      <summary>La taille de compactage est égale à 32 octets.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size4">
+      <summary>La taille de compactage est égale à 4 octets.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size64">
+      <summary>La taille de compactage est égale à 64 octets.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size8">
+      <summary>La taille de compactage est égale à 8 octets.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Unspecified">
+      <summary>La taille de compactage n'est pas spécifiée.</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.StackBehaviour">
+      <summary>Décrit comment les valeurs font l'objet d'un push ou sont dépilées sur une pile ou à partir de cette dernière.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pop0">
+      <summary>Aucune valeur n'est dépilée de la pile.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pop1">
+      <summary>Dépile une valeur de la pile.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pop1_pop1">
+      <summary>Dépile une valeur de la pile pour les premier et deuxième opérandes.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi">
+      <summary>Dépile un entier 32 bits de la pile.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_pop1">
+      <summary>Dépile un entier 32 bits de la pile pour les premier et deuxième opérandes, respectivement.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_popi">
+      <summary>Dépile un entier 32 bits de la pile pour les premier et deuxième opérandes.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_popi_popi">
+      <summary>Dépile un entier 32 bits de la pile pour le premier, le deuxième et le troisième opérande.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_popi8">
+      <summary>Dépile un entier 32 bits et un entier 64 bits de la pile pour les premier et deuxième opérandes, respectivement.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_popr4">
+      <summary>Dépile un entier 32 bits et un nombre à virgule flottante 32 bits de la pile pour les premier et deuxième opérandes, respectivement.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_popr8">
+      <summary>Dépile un entier 32 bits et un nombre à virgule flottante 64 bits de la pile pour les premier et deuxième opérandes, respectivement.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref">
+      <summary>Dépile une référence de la pile.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_pop1">
+      <summary>Dépile une référence et une valeur de la pile pour les premier et deuxième opérandes, respectivement.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi">
+      <summary>Dépile une référence et un entier 32 bits de la pile pour les premier et deuxième opérandes, respectivement.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_pop1">
+      <summary>Dépile une réference de la pile pour le premier opérande, une valeur pour le deuxième opérande et un entier 32 bits pour le troisième opérande.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_popi">
+      <summary>Dépile une référence de la pile pour le premier opérande et une valeur pour les deuxième et troisième opérandes.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_popi8">
+      <summary>Dépile une référence de la pile pour le premier opérande, une valeur pour le deuxième opérande et un entier 64 bits pour le troisième opérande.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_popr4">
+      <summary>Dépile une réference de la pile pour le premier opérande, une valeur pour le deuxième opérande et un entier 32 bits pour le troisième opérande.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_popr8">
+      <summary>Dépile une référence de la pile pour le premier opérande, une valeur pour le deuxième opérande et un nombre à virgule flottante 64 bits pour le troisième opérande.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_popref">
+      <summary>Dépile une référence de la pile pour le premier opérande, une valeur pour le deuxième opérande et une référence pour le troisième opérande.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Push0">
+      <summary>Aucune valeur ne fait l'objet d'un push sur la pile.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Push1">
+      <summary>Exécute un push sur une valeur sur la pile.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Push1_push1">
+      <summary>Exécute un push sur une valeur sur la pile pour le premier et le deuxième opérande.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pushi">
+      <summary>Exécute un push sur un entier 32 bits sur la pile.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pushi8">
+      <summary>Exécute un push sur un entier 64 bits sur la pile.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pushr4">
+      <summary>Exécute un push sur un nombre à virgule flottante 32 bits sur la pile.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pushr8">
+      <summary>Exécute un push sur un nombre à virgule flottante 64 bits sur la pile.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pushref">
+      <summary>Exécute un push sur une référence sur la pile.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Varpop">
+      <summary>Dépile une référence de la pile.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Varpush">
+      <summary>Exécute un push sur une référence sur la pile.</summary>
+    </member>
+  </members>
+</doc>

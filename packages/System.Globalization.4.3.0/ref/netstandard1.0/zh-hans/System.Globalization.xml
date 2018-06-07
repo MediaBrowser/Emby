@@ -1,0 +1,1688 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Globalization</name>
+  </assembly>
+  <members>
+    <member name="T:System.Globalization.Calendar">
+      <summary>将时间分成段来表示，如分成星期、月和年。</summary>
+    </member>
+    <member name="M:System.Globalization.Calendar.#ctor">
+      <summary>初始化 <see cref="T:System.Globalization.Calendar" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddDays(System.DateTime,System.Int32)">
+      <summary>返回与指定 <see cref="T:System.DateTime" /> 相距指定天数的 <see cref="T:System.DateTime" />。</summary>
+      <returns>将指定天数添加到指定的 <see cref="T:System.DateTime" /> 中时得到的 <see cref="T:System.DateTime" />。</returns>
+      <param name="time">
+        <see cref="T:System.DateTime" />，将向其添加天数。</param>
+      <param name="days">要添加的天数。</param>
+      <exception cref="T:System.ArgumentException">得到的 <see cref="T:System.DateTime" /> 超出了此日历支持的范围。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="days" /> 超出了 <see cref="T:System.DateTime" /> 返回值支持的范围。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddHours(System.DateTime,System.Int32)">
+      <summary>返回与指定 <see cref="T:System.DateTime" /> 相距指定小时数的 <see cref="T:System.DateTime" />。</summary>
+      <returns>将指定小时数添加到指定的 <see cref="T:System.DateTime" /> 中时得到的 <see cref="T:System.DateTime" />。</returns>
+      <param name="time">
+        <see cref="T:System.DateTime" />，将向其添加小时数。</param>
+      <param name="hours">要添加的小时数。</param>
+      <exception cref="T:System.ArgumentException">得到的 <see cref="T:System.DateTime" /> 超出了此日历支持的范围。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="hours" /> 超出了 <see cref="T:System.DateTime" /> 返回值支持的范围。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddMilliseconds(System.DateTime,System.Double)">
+      <summary>返回与指定 <see cref="T:System.DateTime" /> 相距指定毫秒数的 <see cref="T:System.DateTime" />。</summary>
+      <returns>将指定毫秒数添加到指定的 <see cref="T:System.DateTime" /> 中时得到的 <see cref="T:System.DateTime" />。</returns>
+      <param name="time">要添加毫秒的 <see cref="T:System.DateTime" />。</param>
+      <param name="milliseconds">要添加的毫秒数。</param>
+      <exception cref="T:System.ArgumentException">得到的 <see cref="T:System.DateTime" /> 超出了此日历支持的范围。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="milliseconds" /> 超出了 <see cref="T:System.DateTime" /> 返回值支持的范围。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddMinutes(System.DateTime,System.Int32)">
+      <summary>返回与指定的 <see cref="T:System.DateTime" /> 相距指定分钟数的 <see cref="T:System.DateTime" />。</summary>
+      <returns>将指定分钟数添加到指定的 <see cref="T:System.DateTime" /> 中时得到的 <see cref="T:System.DateTime" />。</returns>
+      <param name="time">
+        <see cref="T:System.DateTime" />，将向其添加分钟数。</param>
+      <param name="minutes">要添加的分钟数。</param>
+      <exception cref="T:System.ArgumentException">得到的 <see cref="T:System.DateTime" /> 超出了此日历支持的范围。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="minutes" /> 超出了 <see cref="T:System.DateTime" /> 返回值支持的范围。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>当在派生类中重写时，将返回与指定的 <see cref="T:System.DateTime" /> 相距指定月数的 <see cref="T:System.DateTime" />。</summary>
+      <returns>将指定的月数添加到指定的 <see cref="T:System.DateTime" /> 中时得到的 <see cref="T:System.DateTime" />。</returns>
+      <param name="time">
+        <see cref="T:System.DateTime" />，将向其添加月数。</param>
+      <param name="months">要添加的月数。</param>
+      <exception cref="T:System.ArgumentException">得到的 <see cref="T:System.DateTime" /> 超出了此日历支持的范围。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> 超出了 <see cref="T:System.DateTime" /> 返回值支持的范围。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddSeconds(System.DateTime,System.Int32)">
+      <summary>返回与指定 <see cref="T:System.DateTime" /> 相距指定秒数的 <see cref="T:System.DateTime" />。</summary>
+      <returns>将指定的秒数添加到指定的 <see cref="T:System.DateTime" /> 中时得到的 <see cref="T:System.DateTime" />。</returns>
+      <param name="time">
+        <see cref="T:System.DateTime" />，将向其添加秒数。</param>
+      <param name="seconds">要添加的秒数。</param>
+      <exception cref="T:System.ArgumentException">得到的 <see cref="T:System.DateTime" /> 超出了此日历支持的范围。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="seconds" /> 超出了 <see cref="T:System.DateTime" /> 返回值支持的范围。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddWeeks(System.DateTime,System.Int32)">
+      <summary>返回与指定 <see cref="T:System.DateTime" /> 相距指定周数的 <see cref="T:System.DateTime" />。</summary>
+      <returns>将指定周数添加到指定的 <see cref="T:System.DateTime" /> 中时得到的 <see cref="T:System.DateTime" />。</returns>
+      <param name="time">
+        <see cref="T:System.DateTime" />，将向其添加星期数。</param>
+      <param name="weeks">要添加的星期数。</param>
+      <exception cref="T:System.ArgumentException">得到的 <see cref="T:System.DateTime" /> 超出了此日历支持的范围。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="weeks" /> 超出了 <see cref="T:System.DateTime" /> 返回值支持的范围。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddYears(System.DateTime,System.Int32)">
+      <summary>当在派生类中重写时，将返回与指定的 <see cref="T:System.DateTime" /> 相距指定年数的 <see cref="T:System.DateTime" />。</summary>
+      <returns>将指定年数添加到指定的 <see cref="T:System.DateTime" /> 中时得到的 <see cref="T:System.DateTime" />。</returns>
+      <param name="time">
+        <see cref="T:System.DateTime" />，将向其添加年数。</param>
+      <param name="years">要添加的年数。</param>
+      <exception cref="T:System.ArgumentException">得到的 <see cref="T:System.DateTime" /> 超出了此日历支持的范围。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="years" /> 超出了 <see cref="T:System.DateTime" /> 返回值支持的范围。</exception>
+    </member>
+    <member name="F:System.Globalization.Calendar.CurrentEra">
+      <summary>表示当前日历的当前纪元。</summary>
+    </member>
+    <member name="P:System.Globalization.Calendar.Eras">
+      <summary>当在派生类中重写时，获取当前日历中的纪元列表。</summary>
+      <returns>表示当前日历中的纪元的整数数组。</returns>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDayOfMonth(System.DateTime)">
+      <summary>当在派生类中重写时，将返回指定 <see cref="T:System.DateTime" /> 中的日期是该月的几号。</summary>
+      <returns>一个正整数，表示 <paramref name="time" /> 参数中的月中日期。</returns>
+      <param name="time">要读取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDayOfWeek(System.DateTime)">
+      <summary>当在派生类中重写时，将返回指定 <see cref="T:System.DateTime" /> 中的日期是星期几。</summary>
+      <returns>一个 <see cref="T:System.DayOfWeek" /> 值，表示 <paramref name="time" /> 参数中的周中日期。</returns>
+      <param name="time">要读取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDayOfYear(System.DateTime)">
+      <summary>当在派生类中重写时，将返回指定 <see cref="T:System.DateTime" /> 中的日期是该年中的第几天。</summary>
+      <returns>一个正整数，表示 <paramref name="time" /> 参数中的年中日期。</returns>
+      <param name="time">要读取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDaysInMonth(System.Int32,System.Int32)">
+      <summary>返回当前纪元的指定月份和年份中的天数。</summary>
+      <returns>当前纪元中指定年份的指定月份中的天数。</returns>
+      <param name="year">表示年份的整数。</param>
+      <param name="month">一个表示月份的正整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 超出了日历支持的范围。- 或 -<paramref name="month" /> 超出了日历支持的范围。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>当在派生类中重写时，返回指定月份、纪元年份中的天数。</summary>
+      <returns>指定纪元中指定年份的指定月份中的天数。</returns>
+      <param name="year">表示年份的整数。</param>
+      <param name="month">一个表示月份的正整数。</param>
+      <param name="era">表示纪元的整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 超出了日历支持的范围。- 或 -<paramref name="month" /> 超出了日历支持的范围。- 或 -<paramref name="era" /> 超出了日历支持的范围。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDaysInYear(System.Int32)">
+      <summary>返回当前纪元的指定年份中的天数。</summary>
+      <returns>当前纪元中指定年份的天数。</returns>
+      <param name="year">表示年份的整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 超出了日历支持的范围。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>当在派生类中重写时，返回指定纪元年份中的天数。</summary>
+      <returns>指定纪元中指定年份的天数。</returns>
+      <param name="year">表示年份的整数。</param>
+      <param name="era">表示纪元的整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 超出了日历支持的范围。- 或 -<paramref name="era" /> 超出了日历支持的范围。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetEra(System.DateTime)">
+      <summary>当在派生类中重写时，将返回指定的 <see cref="T:System.DateTime" /> 中的纪元。</summary>
+      <returns>表示 <paramref name="time" /> 中的纪元的整数。</returns>
+      <param name="time">要读取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetHour(System.DateTime)">
+      <summary>返回指定的 <see cref="T:System.DateTime" /> 中的小时值。</summary>
+      <returns>0 与 23 之间的一个整数，它表示 <paramref name="time" /> 中的小时。</returns>
+      <param name="time">要读取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>计算指定纪元年份的闰月。</summary>
+      <returns>一个正整数，表示指定纪元年份中的闰月。- 或 -如果此日历不支持闰月，或者 <paramref name="year" /> 和 <paramref name="era" /> 参数未指定闰年，则为零。</returns>
+      <param name="year">年份。</param>
+      <param name="era">纪元。</param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetMilliseconds(System.DateTime)">
+      <summary>返回指定的 <see cref="T:System.DateTime" /> 中的毫秒值。</summary>
+      <returns>一个介于 0 到 999 之间的双精度浮点数字，表示 <paramref name="time" /> 参数中的毫秒数。</returns>
+      <param name="time">要读取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetMinute(System.DateTime)">
+      <summary>返回指定的 <see cref="T:System.DateTime" /> 中的分钟值。</summary>
+      <returns>0 到 59 之间的一个整数，它表示 <paramref name="time" /> 中的分钟值。</returns>
+      <param name="time">要读取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetMonth(System.DateTime)">
+      <summary>当在派生类中重写时，将返回指定的 <see cref="T:System.DateTime" /> 中的月份。</summary>
+      <returns>一个正整数，表示 <paramref name="time" /> 中的月份。</returns>
+      <param name="time">要读取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetMonthsInYear(System.Int32)">
+      <summary>返回当前纪元中指定年份的月数。</summary>
+      <returns>当前纪元中指定年份的月数。</returns>
+      <param name="year">表示年份的整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 超出了日历支持的范围。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>当在派生类中重写时，将返回指定纪元中指定年份的月数。</summary>
+      <returns>指定纪元中指定年份的月数。</returns>
+      <param name="year">表示年份的整数。</param>
+      <param name="era">表示纪元的整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 超出了日历支持的范围。- 或 -<paramref name="era" /> 超出了日历支持的范围。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetSecond(System.DateTime)">
+      <summary>返回指定的 <see cref="T:System.DateTime" /> 中的秒值。</summary>
+      <returns>0 到 59 之间的一个整数，它表示 <paramref name="time" /> 中的秒数。</returns>
+      <param name="time">要读取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetWeekOfYear(System.DateTime,System.Globalization.CalendarWeekRule,System.DayOfWeek)">
+      <summary>返回一年中包括指定 <see cref="T:System.DateTime" /> 值中的日期的那个星期。</summary>
+      <returns>一个正整数，表示一年中包括 <paramref name="time" /> 参数中的日期的那个星期。</returns>
+      <param name="time">日期和时间值。</param>
+      <param name="rule">定义日历周的枚举值。</param>
+      <param name="firstDayOfWeek">表示一周的第一天的枚举值。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 早于 <see cref="P:System.Globalization.Calendar.MinSupportedDateTime" /> 或晚于 <see cref="P:System.Globalization.Calendar.MaxSupportedDateTime" />。- 或 -<paramref name="firstDayOfWeek" /> 不是有效的 <see cref="T:System.DayOfWeek" /> 值。- 或 -<paramref name="rule" /> 不是有效的 <see cref="T:System.Globalization.CalendarWeekRule" /> 值。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetYear(System.DateTime)">
+      <summary>当在派生类中重写时，将返回指定的 <see cref="T:System.DateTime" /> 中的年份。</summary>
+      <returns>表示 <paramref name="time" /> 中的年份的整数。</returns>
+      <param name="time">要读取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapDay(System.Int32,System.Int32,System.Int32)">
+      <summary>确定当前纪元中的指定日期是否为闰日。</summary>
+      <returns>如果指定的日期是闰日，则为 true；否则为 false。</returns>
+      <param name="year">表示年份的整数。</param>
+      <param name="month">一个表示月份的正整数。</param>
+      <param name="day">一个表示天的正整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 超出了日历支持的范围。- 或 -<paramref name="month" /> 超出了日历支持的范围。- 或 -<paramref name="day" /> 超出了日历支持的范围。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>当在派生类中重写时，将确定指定纪元中的指定日期是否为闰日。</summary>
+      <returns>如果指定的日期是闰日，则为 true；否则为 false。</returns>
+      <param name="year">表示年份的整数。</param>
+      <param name="month">一个表示月份的正整数。</param>
+      <param name="day">一个表示天的正整数。</param>
+      <param name="era">表示纪元的整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 超出了日历支持的范围。- 或 -<paramref name="month" /> 超出了日历支持的范围。- 或 -<paramref name="day" /> 超出了日历支持的范围。- 或 -<paramref name="era" /> 超出了日历支持的范围。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapMonth(System.Int32,System.Int32)">
+      <summary>确定当前纪元中指定年份的指定月份是否为闰月。</summary>
+      <returns>如果指定的月份是闰月，则为 true；否则为 false。</returns>
+      <param name="year">表示年份的整数。</param>
+      <param name="month">一个表示月份的正整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 超出了日历支持的范围。- 或 -<paramref name="month" /> 超出了日历支持的范围。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>当在派生类中重写时，将确定指定纪元中指定年份的指定月份是否为闰月。</summary>
+      <returns>如果指定的月份是闰月，则为 true；否则为 false。</returns>
+      <param name="year">表示年份的整数。</param>
+      <param name="month">一个表示月份的正整数。</param>
+      <param name="era">表示纪元的整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 超出了日历支持的范围。- 或 -<paramref name="month" /> 超出了日历支持的范围。- 或 -<paramref name="era" /> 超出了日历支持的范围。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapYear(System.Int32)">
+      <summary>确定当前纪元中的指定年份是否为闰年。</summary>
+      <returns>如果指定的年是闰年，则为 true；否则为 false。</returns>
+      <param name="year">表示年份的整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 超出了日历支持的范围。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>当在派生类中重写时，将确定指定纪元中的指定年份是否为闰年。</summary>
+      <returns>如果指定的年是闰年，则为 true；否则为 false。</returns>
+      <param name="year">表示年份的整数。</param>
+      <param name="era">表示纪元的整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 超出了日历支持的范围。- 或 -<paramref name="era" /> 超出了日历支持的范围。</exception>
+    </member>
+    <member name="P:System.Globalization.Calendar.IsReadOnly">
+      <summary>获取一个值，该值指示此 <see cref="T:System.Globalization.Calendar" /> 对象是否为只读。</summary>
+      <returns>如果此 <see cref="T:System.Globalization.Calendar" /> 对象为只读，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Globalization.Calendar.MaxSupportedDateTime">
+      <summary>获取此 <see cref="T:System.Globalization.Calendar" /> 对象支持的最晚日期和时间。</summary>
+      <returns>此日历支持的最晚日期和时间。默认值为 <see cref="F:System.DateTime.MaxValue" />。</returns>
+    </member>
+    <member name="P:System.Globalization.Calendar.MinSupportedDateTime">
+      <summary>获取此 <see cref="T:System.Globalization.Calendar" /> 对象支持的最早日期和时间。</summary>
+      <returns>此日历支持的最早日期和时间。默认值为 <see cref="F:System.DateTime.MinValue" />。</returns>
+    </member>
+    <member name="M:System.Globalization.Calendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>返回设置为当前纪元中的指定日期和时间的 <see cref="T:System.DateTime" />。</summary>
+      <returns>设置为当前纪元中的指定日期和时间的 <see cref="T:System.DateTime" />。</returns>
+      <param name="year">表示年份的整数。</param>
+      <param name="month">一个表示月份的正整数。</param>
+      <param name="day">一个表示天的正整数。</param>
+      <param name="hour">0 与 23 之间的一个整数，它表示小时。</param>
+      <param name="minute">0 与 59 之间的一个整数，它表示分钟。</param>
+      <param name="second">0 与 59 之间的一个整数，它表示秒。</param>
+      <param name="millisecond">0 与 999 之间的一个整数，它表示毫秒。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 超出了日历支持的范围。- 或 -<paramref name="month" /> 超出了日历支持的范围。- 或 -<paramref name="day" /> 超出了日历支持的范围。- 或 -<paramref name="hour" /> 小于零或大于 23。- 或 -<paramref name="minute" /> 小于零或大于 59。- 或 -<paramref name="second" /> 小于零或大于 59。- 或 -<paramref name="millisecond" /> 小于零或大于 999。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>当在派生类中重写时，将返回设置为指定纪元中的指定日期和时间的 <see cref="T:System.DateTime" />。</summary>
+      <returns>设置为当前纪元中的指定日期和时间的 <see cref="T:System.DateTime" />。</returns>
+      <param name="year">表示年份的整数。</param>
+      <param name="month">一个表示月份的正整数。</param>
+      <param name="day">一个表示天的正整数。</param>
+      <param name="hour">0 与 23 之间的一个整数，它表示小时。</param>
+      <param name="minute">0 与 59 之间的一个整数，它表示分钟。</param>
+      <param name="second">0 与 59 之间的一个整数，它表示秒。</param>
+      <param name="millisecond">0 与 999 之间的一个整数，它表示毫秒。</param>
+      <param name="era">表示纪元的整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 超出了日历支持的范围。- 或 -<paramref name="month" /> 超出了日历支持的范围。- 或 -<paramref name="day" /> 超出了日历支持的范围。- 或 -<paramref name="hour" /> 小于零或大于 23。- 或 -<paramref name="minute" /> 小于零或大于 59。- 或 -<paramref name="second" /> 小于零或大于 59。- 或 -<paramref name="millisecond" /> 小于零或大于 999。- 或 -<paramref name="era" /> 超出了日历支持的范围。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.ToFourDigitYear(System.Int32)">
+      <summary>使用 <see cref="P:System.Globalization.Calendar.TwoDigitYearMax" /> 属性将指定的年份转换为四位数年份，以确定相应的纪元。</summary>
+      <returns>包含 <paramref name="year" /> 的四位数表示形式的整数。</returns>
+      <param name="year">一个两位数或四位数的整数，表示要转换的年份。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 超出了日历支持的范围。</exception>
+    </member>
+    <member name="P:System.Globalization.Calendar.TwoDigitYearMax">
+      <summary>获取或设置可以用两位数年份表示的 100 年范围内的最后一年。</summary>
+      <returns>可以用两位数年份表示的 100 年范围内的最后一年。</returns>
+      <exception cref="T:System.InvalidOperationException">当前的 <see cref="T:System.Globalization.Calendar" /> 对象为只读。</exception>
+    </member>
+    <member name="T:System.Globalization.CalendarWeekRule">
+      <summary>定义确定年份第一周的不同规则。</summary>
+    </member>
+    <member name="F:System.Globalization.CalendarWeekRule.FirstDay">
+      <summary>指示年的第一周从该年的第一天开始，到所指定周的下一个首日前结束。值为 0。</summary>
+    </member>
+    <member name="F:System.Globalization.CalendarWeekRule.FirstFourDayWeek">
+      <summary>指示年的第一周是第一个在指定的周首日前包含四天或更多天的周。值为 2。</summary>
+    </member>
+    <member name="F:System.Globalization.CalendarWeekRule.FirstFullWeek">
+      <summary>指示年的第一周从所指定周首日的第一个匹配项开始，可以是年的第一天或其后某一天。值为 1。</summary>
+    </member>
+    <member name="T:System.Globalization.CharUnicodeInfo">
+      <summary>检索 Unicode 字符的信息。此类不能被继承。</summary>
+    </member>
+    <member name="M:System.Globalization.CharUnicodeInfo.GetNumericValue(System.Char)">
+      <summary>获取与指定字符关联的数值。</summary>
+      <returns>与指定的字符关联的数值。- 或 --1，如果指定的字符不是一个数值型字符。</returns>
+      <param name="ch">要获取其数值的 Unicode 字符。</param>
+    </member>
+    <member name="M:System.Globalization.CharUnicodeInfo.GetNumericValue(System.String,System.Int32)">
+      <summary>获取与位于指定字符串的指定索引位置的字符关联的数值。</summary>
+      <returns>与位于指定字符串的指定索引位置的字符关联的数值。- 或 --1，如果位于指定字符串的指定索引位置的字符不是一个数值型字符。</returns>
+      <param name="s">
+        <see cref="T:System.String" />，包含要获取其数值的 Unicode 字符。</param>
+      <param name="index">要获取其数值的 Unicode 字符的索引。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> 超出了 <paramref name="s" /> 中的有效索引范围。</exception>
+    </member>
+    <member name="M:System.Globalization.CharUnicodeInfo.GetUnicodeCategory(System.Char)">
+      <summary>获取指定字符的 Unicode 类别。</summary>
+      <returns>一个 <see cref="T:System.Globalization.UnicodeCategory" /> 值，指示指定字符的类别。</returns>
+      <param name="ch">要获取其 Unicode 类别的 Unicode 字符。</param>
+    </member>
+    <member name="M:System.Globalization.CharUnicodeInfo.GetUnicodeCategory(System.String,System.Int32)">
+      <summary>获取位于指定字符串的指定索引位置的字符的 Unicode 类别。</summary>
+      <returns>一个 <see cref="T:System.Globalization.UnicodeCategory" /> 值，指示位于指定字符串的指定索引位置的字符的类别。</returns>
+      <param name="s">
+        <see cref="T:System.String" />，包含要获取其 Unicode 类别的 Unicode 字符。</param>
+      <param name="index">要获取其 Unicode 类别的 Unicode 字符的索引。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> 超出了 <paramref name="s" /> 中的有效索引范围。</exception>
+    </member>
+    <member name="T:System.Globalization.CompareInfo">
+      <summary>实现用于区分区域性的字符串的一组方法。</summary>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.Int32,System.Int32,System.String,System.Int32,System.Int32)">
+      <summary>将一个字符串的一部分与另一个字符串的一部分相比较。</summary>
+      <returns>一个 32 位有符号整数，指示两个比较数之间的词法关系。值条件零这两个字符串相等。小于零<paramref name="string1" /> 的指定部分小于 <paramref name="string2" /> 的指定部分。大于零<paramref name="string1" /> 的指定部分大于 <paramref name="string2" /> 的指定部分。 </returns>
+      <param name="string1">要比较的第一个字符串。</param>
+      <param name="offset1">
+        <paramref name="string1" /> 中的字符从零开始的索引，将从此位置开始比较。</param>
+      <param name="length1">
+        <paramref name="string1" /> 中要比较的连续字符数。</param>
+      <param name="string2">要比较的第二个字符串。</param>
+      <param name="offset2">
+        <paramref name="string2" /> 中的字符从零开始的索引，将从此位置开始比较。</param>
+      <param name="length2">
+        <paramref name="string2" /> 中要比较的连续字符数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset1" />、<paramref name="length1" />、<paramref name="offset2" /> 或 <paramref name="length2" /> 小于零。- 或 - <paramref name="offset1" /> 大于或等于 <paramref name="string1" /> 中的字符数。- 或 - <paramref name="offset2" /> 大于或等于 <paramref name="string2" /> 中的字符数。- 或 - <paramref name="length1" /> 大于从 <paramref name="offset1" /> 到 <paramref name="string1" /> 末尾的字符数。- 或 - <paramref name="length2" /> 大于从 <paramref name="offset2" /> 到 <paramref name="string2" /> 末尾的字符数。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.Int32,System.Int32,System.String,System.Int32,System.Int32,System.Globalization.CompareOptions)">
+      <summary>使用指定的 <see cref="T:System.Globalization.CompareOptions" /> 值将一个字符串的一部分与另一个字符串的一部分相比较。</summary>
+      <returns>一个 32 位有符号整数，指示两个比较数之间的词法关系。值条件零这两个字符串相等。小于零<paramref name="string1" /> 的指定部分小于 <paramref name="string2" /> 的指定部分。大于零<paramref name="string1" /> 的指定部分大于 <paramref name="string2" /> 的指定部分。 </returns>
+      <param name="string1">要比较的第一个字符串。</param>
+      <param name="offset1">
+        <paramref name="string1" /> 中的字符从零开始的索引，将从此位置开始比较。</param>
+      <param name="length1">
+        <paramref name="string1" /> 中要比较的连续字符数。</param>
+      <param name="string2">要比较的第二个字符串。</param>
+      <param name="offset2">
+        <paramref name="string2" /> 中的字符从零开始的索引，将从此位置开始比较。</param>
+      <param name="length2">
+        <paramref name="string2" /> 中要比较的连续字符数。</param>
+      <param name="options">一个值，用于定义应如何比较 <paramref name="string1" /> 和 <paramref name="string2" />。<paramref name="options" /> 可以为枚举值 <see cref="F:System.Globalization.CompareOptions.Ordinal" />，或为以下一个或多个值的按位组合：<see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" />、<see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> 和 <see cref="F:System.Globalization.CompareOptions.StringSort" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset1" />、<paramref name="length1" />、<paramref name="offset2" /> 或 <paramref name="length2" /> 小于零。- 或 - <paramref name="offset1" /> 大于或等于 <paramref name="string1" /> 中的字符数。- 或 - <paramref name="offset2" /> 大于或等于 <paramref name="string2" /> 中的字符数。- 或 - <paramref name="length1" /> 大于从 <paramref name="offset1" /> 到 <paramref name="string1" /> 末尾的字符数。- 或 - <paramref name="length2" /> 大于从 <paramref name="offset2" /> 到 <paramref name="string2" /> 末尾的字符数。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> 包含无效的 <see cref="T:System.Globalization.CompareOptions" /> 值。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.Int32,System.String,System.Int32)">
+      <summary>将一个字符串的结尾部分与另一个字符串的结尾部分相比较。</summary>
+      <returns>一个 32 位有符号整数，指示两个比较数之间的词法关系。值条件零这两个字符串相等。小于零<paramref name="string1" /> 的指定部分小于 <paramref name="string2" /> 的指定部分。大于零<paramref name="string1" /> 的指定部分大于 <paramref name="string2" /> 的指定部分。 </returns>
+      <param name="string1">要比较的第一个字符串。</param>
+      <param name="offset1">
+        <paramref name="string1" /> 中的字符从零开始的索引，将从此位置开始比较。</param>
+      <param name="string2">要比较的第二个字符串。</param>
+      <param name="offset2">
+        <paramref name="string2" /> 中的字符从零开始的索引，将从此位置开始比较。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset1" /> 或 <paramref name="offset2" /> 小于零。- 或 - <paramref name="offset1" /> 大于或等于 <paramref name="string1" /> 中的字符数。- 或 - <paramref name="offset2" /> 大于或等于 <paramref name="string2" /> 中的字符数。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.Int32,System.String,System.Int32,System.Globalization.CompareOptions)">
+      <summary>使用指定的 <see cref="T:System.Globalization.CompareOptions" /> 值将一个字符串的结尾部分与另一个字符串的结尾部分相比较。</summary>
+      <returns>一个 32 位有符号整数，指示两个比较数之间的词法关系。值条件零这两个字符串相等。小于零<paramref name="string1" /> 的指定部分小于 <paramref name="string2" /> 的指定部分。大于零<paramref name="string1" /> 的指定部分大于 <paramref name="string2" /> 的指定部分。 </returns>
+      <param name="string1">要比较的第一个字符串。</param>
+      <param name="offset1">
+        <paramref name="string1" /> 中的字符从零开始的索引，将从此位置开始比较。</param>
+      <param name="string2">要比较的第二个字符串。</param>
+      <param name="offset2">
+        <paramref name="string2" /> 中的字符从零开始的索引，将从此位置开始比较。</param>
+      <param name="options">一个值，用于定义应如何比较 <paramref name="string1" /> 和 <paramref name="string2" />。<paramref name="options" /> 可以为枚举值 <see cref="F:System.Globalization.CompareOptions.Ordinal" />，或为以下一个或多个值的按位组合：<see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" />、<see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> 和 <see cref="F:System.Globalization.CompareOptions.StringSort" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset1" /> 或 <paramref name="offset2" /> 小于零。- 或 - <paramref name="offset1" /> 大于或等于 <paramref name="string1" /> 中的字符数。- 或 - <paramref name="offset2" /> 大于或等于 <paramref name="string2" /> 中的字符数。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> 包含无效的 <see cref="T:System.Globalization.CompareOptions" /> 值。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.String)">
+      <summary>比较两个字符串。</summary>
+      <returns>一个 32 位有符号整数，指示两个比较数之间的词法关系。值条件零这两个字符串相等。小于零 <paramref name="string1" /> 小于 <paramref name="string2" />。大于零 <paramref name="string1" /> 大于 <paramref name="string2" />。</returns>
+      <param name="string1">要比较的第一个字符串。</param>
+      <param name="string2">要比较的第二个字符串。</param>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.String,System.Globalization.CompareOptions)">
+      <summary>使用指定的 <see cref="T:System.Globalization.CompareOptions" /> 值比较两个字符串。</summary>
+      <returns>一个 32 位有符号整数，指示两个比较数之间的词法关系。值条件零这两个字符串相等。小于零 <paramref name="string1" /> 小于 <paramref name="string2" />。大于零 <paramref name="string1" /> 大于 <paramref name="string2" />。 </returns>
+      <param name="string1">要比较的第一个字符串。</param>
+      <param name="string2">要比较的第二个字符串。</param>
+      <param name="options">一个值，用于定义应如何比较 <paramref name="string1" /> 和 <paramref name="string2" />。<paramref name="options" /> 可以为枚举值 <see cref="F:System.Globalization.CompareOptions.Ordinal" />，或为以下一个或多个值的按位组合：<see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" />、<see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> 和 <see cref="F:System.Globalization.CompareOptions.StringSort" />。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> 包含无效的 <see cref="T:System.Globalization.CompareOptions" /> 值。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Equals(System.Object)">
+      <summary>确定指定的对象是否等于当前的 <see cref="T:System.Globalization.CompareInfo" /> 对象。</summary>
+      <returns>如果指定的对象等于当前的 <see cref="T:System.Globalization.CompareInfo" />，则为 true；否则为 false。</returns>
+      <param name="value">将与当前 <see cref="T:System.Globalization.CompareInfo" /> 进行比较的对象。 </param>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.GetCompareInfo(System.String)">
+      <summary>初始化与具有指定名称的区域性关联的新 <see cref="T:System.Globalization.CompareInfo" /> 对象。</summary>
+      <returns>一个新 <see cref="T:System.Globalization.CompareInfo" /> 对象，它与具有指定标识符的区域性关联，并使用当前 <see cref="T:System.Reflection.Assembly" /> 中的字符串比较方法。</returns>
+      <param name="name">表示区域性名称的字符串。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 是无效的区域性名称。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.GetHashCode">
+      <summary>用作当前 <see cref="T:System.Globalization.CompareInfo" /> 的哈希函数，适合在哈希算法和数据结构（如哈希表）中使用。</summary>
+      <returns>当前 <see cref="T:System.Globalization.CompareInfo" /> 的哈希代码。</returns>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.GetHashCode(System.String,System.Globalization.CompareOptions)">
+      <summary>获取基于指定的比较选项的字符串的哈希代码。</summary>
+      <returns>32 位有符号整数哈希代码。 </returns>
+      <param name="source">其哈希代码是要返回的字符串。</param>
+      <param name="options">一个值，确定如何比较字符串。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.Char)">
+      <summary>搜索指定的字符并返回整个源字符串内第一个匹配项的从零开始的索引。</summary>
+      <returns>如果找到，则为 <paramref name="value" /> 在 <paramref name="source" /> 内的第一个匹配项从零开始的索引；否则为 -1。如果 <paramref name="value" /> 为可忽略字符，则将返回 0（零）。</returns>
+      <param name="source">要搜索的字符串。</param>
+      <param name="value">要在 <paramref name="source" /> 中定位的字符。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.Char,System.Globalization.CompareOptions)">
+      <summary>使用指定的 <see cref="T:System.Globalization.CompareOptions" /> 值，搜索指定的字符，并返回整个源字符串内第一个匹配项的从零开始的索引。</summary>
+      <returns>如果在 <paramref name="source" /> 中找到 <paramref name="value" /> 的第一个匹配项的从零开始的索引，使用指定的比较选项；否则为 -1。如果 <paramref name="value" /> 为可忽略字符，则将返回 0（零）。</returns>
+      <param name="source">要搜索的字符串。</param>
+      <param name="value">要在 <paramref name="source" /> 中定位的字符。</param>
+      <param name="options">一个值，用于定义应如何比较这些字符串。<paramref name="options" /> 可以为枚举值 <see cref="F:System.Globalization.CompareOptions.Ordinal" />，或为以下一个或多个值的按位组合：<see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 和 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> 包含无效的 <see cref="T:System.Globalization.CompareOptions" /> 值。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.Char,System.Int32,System.Globalization.CompareOptions)">
+      <summary>使用指定的 <see cref="T:System.Globalization.CompareOptions" /> 值，搜索指定的字符，并返回源字符串中从指定的索引位置到字符串结尾这一部分中第一个匹配项的从零开始的索引。</summary>
+      <returns>使用指定的比较选项，如果在 <paramref name="source" /> 中从 <paramref name="startIndex" /> 一直到 <paramref name="source" /> 的结尾这部分找到 <paramref name="value" /> 的第一个匹配项，则为该项的从零开始的索引；否则为 -1。如果 <paramref name="value" /> 为可忽略字符，则将返回 <paramref name="startIndex" />。</returns>
+      <param name="source">要搜索的字符串。</param>
+      <param name="value">要在 <paramref name="source" /> 中定位的字符。</param>
+      <param name="startIndex">从零开始的搜索的起始索引。</param>
+      <param name="options">一个值，用于定义应如何比较 <paramref name="source" /> 和 <paramref name="value" />。<paramref name="options" /> 可以为枚举值 <see cref="F:System.Globalization.CompareOptions.Ordinal" />，或为以下一个或多个值的按位组合：<see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 和 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> 超出了 <paramref name="source" /> 的有效索引范围。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> 包含无效的 <see cref="T:System.Globalization.CompareOptions" /> 值。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.Char,System.Int32,System.Int32)">
+      <summary>搜索指定的字符，并返回源字符串内从指定的索引位置开始、包含指定的元素数的部分中第一个匹配项的从零开始的索引。</summary>
+      <returns>如果在 <paramref name="source" /> 的从 <paramref name="startIndex" /> 开始、包含 <paramref name="count" /> 所指定的元素数的部分中，找到 <paramref name="value" /> 的第一个匹配项，则为该项的从零开始的索引；否则为 -1。如果 <paramref name="value" /> 为可忽略字符，则将返回 <paramref name="startIndex" />。</returns>
+      <param name="source">要搜索的字符串。</param>
+      <param name="value">要在 <paramref name="source" /> 中定位的字符。</param>
+      <param name="startIndex">从零开始的搜索的起始索引。</param>
+      <param name="count">要搜索的部分中的元素数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> 超出了 <paramref name="source" /> 的有效索引范围。- 或 - <paramref name="count" /> 小于零。- 或 - <paramref name="startIndex" /> 和 <paramref name="count" /> 指定的不是 <paramref name="source" /> 中的有效部分。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.Char,System.Int32,System.Int32,System.Globalization.CompareOptions)">
+      <summary>使用指定的 <see cref="T:System.Globalization.CompareOptions" /> 值，搜索指定的字符，并返回源字符串内从指定的索引位置开始、包含所指定元素数的部分中第一个匹配项的从零开始的索引。</summary>
+      <returns>使用指定的比较选项，如果在 <paramref name="source" /> 中从 <paramref name="startIndex" /> 开始、包含 <paramref name="count" /> 指定的元素数的部分找到 <paramref name="value" /> 的第一个匹配项，则为该项的从零开始的索引；否则为 -1。如果 <paramref name="value" /> 为可忽略字符，则将返回 <paramref name="startIndex" />。</returns>
+      <param name="source">要搜索的字符串。</param>
+      <param name="value">要在 <paramref name="source" /> 中定位的字符。</param>
+      <param name="startIndex">从零开始的搜索的起始索引。</param>
+      <param name="count">要搜索的部分中的元素数。</param>
+      <param name="options">一个值，用于定义应如何比较 <paramref name="source" /> 和 <paramref name="value" />。<paramref name="options" /> 可以为枚举值 <see cref="F:System.Globalization.CompareOptions.Ordinal" />，或为以下一个或多个值的按位组合：<see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 和 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> 超出了 <paramref name="source" /> 的有效索引范围。- 或 - <paramref name="count" /> 小于零。- 或 - <paramref name="startIndex" /> 和 <paramref name="count" /> 指定的不是 <paramref name="source" /> 中的有效部分。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> 包含无效的 <see cref="T:System.Globalization.CompareOptions" /> 值。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.String)">
+      <summary>搜索指定的子字符串并返回整个源字符串内第一个匹配项的从零开始的索引。</summary>
+      <returns>如果找到，则为 <paramref name="value" /> 在 <paramref name="source" /> 内的第一个匹配项从零开始的索引；否则为 -1。如果 <paramref name="value" /> 为可忽略字符，则将返回 0（零）。</returns>
+      <param name="source">要搜索的字符串。</param>
+      <param name="value">要在 <paramref name="source" /> 中定位的字符串。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> 为 null。- 或 - <paramref name="value" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.String,System.Globalization.CompareOptions)">
+      <summary>使用指定的 <see cref="T:System.Globalization.CompareOptions" /> 值，搜索指定的子字符串，并返回整个源字符串内第一个匹配项的从零开始的索引。</summary>
+      <returns>如果在 <paramref name="source" /> 中找到 <paramref name="value" /> 的第一个匹配项的从零开始的索引，使用指定的比较选项；否则为 -1。如果 <paramref name="value" /> 为可忽略字符，则将返回 0（零）。</returns>
+      <param name="source">要搜索的字符串。</param>
+      <param name="value">要在 <paramref name="source" /> 中定位的字符串。</param>
+      <param name="options">一个值，用于定义应如何比较 <paramref name="source" /> 和 <paramref name="value" />。<paramref name="options" /> 可以为枚举值 <see cref="F:System.Globalization.CompareOptions.Ordinal" />，或为以下一个或多个值的按位组合：<see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 和 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> 为 null。- 或 - <paramref name="value" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> 包含无效的 <see cref="T:System.Globalization.CompareOptions" /> 值。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.String,System.Int32,System.Globalization.CompareOptions)">
+      <summary>使用指定的 <see cref="T:System.Globalization.CompareOptions" /> 值，搜索指定的子字符串，并返回源字符串内从指定的索引位置到字符串结尾这一部分中第一个匹配项的从零开始的索引。</summary>
+      <returns>使用指定的比较选项，如果在 <paramref name="source" /> 中从 <paramref name="startIndex" /> 一直到 <paramref name="source" /> 的结尾这部分找到 <paramref name="value" /> 的第一个匹配项，则为该项的从零开始的索引；否则为 -1。如果 <paramref name="value" /> 为可忽略字符，则将返回 <paramref name="startIndex" />。</returns>
+      <param name="source">要搜索的字符串。</param>
+      <param name="value">要在 <paramref name="source" /> 中定位的字符串。</param>
+      <param name="startIndex">从零开始的搜索的起始索引。</param>
+      <param name="options">一个值，用于定义应如何比较 <paramref name="source" /> 和 <paramref name="value" />。<paramref name="options" /> 可以为枚举值 <see cref="F:System.Globalization.CompareOptions.Ordinal" />，或为以下一个或多个值的按位组合：<see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 和 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> 为 null。- 或 - <paramref name="value" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> 超出了 <paramref name="source" /> 的有效索引范围。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> 包含无效的 <see cref="T:System.Globalization.CompareOptions" /> 值。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.String,System.Int32,System.Int32)">
+      <summary>搜索指定的子字符串，并返回源字符串内从指定的索引位置开始、包含指定的元素数的部分中第一个匹配项的从零开始的索引。</summary>
+      <returns>如果在 <paramref name="source" /> 的从 <paramref name="startIndex" /> 开始、包含 <paramref name="count" /> 所指定的元素数的部分中，找到 <paramref name="value" /> 的第一个匹配项，则为该项的从零开始的索引；否则为 -1。如果 <paramref name="value" /> 为可忽略字符，则将返回 <paramref name="startIndex" />。</returns>
+      <param name="source">要搜索的字符串。</param>
+      <param name="value">要在 <paramref name="source" /> 中定位的字符串。</param>
+      <param name="startIndex">从零开始的搜索的起始索引。</param>
+      <param name="count">要搜索的部分中的元素数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> 为 null。- 或 - <paramref name="value" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> 超出了 <paramref name="source" /> 的有效索引范围。- 或 - <paramref name="count" /> 小于零。- 或 - <paramref name="startIndex" /> 和 <paramref name="count" /> 指定的不是 <paramref name="source" /> 中的有效部分。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.String,System.Int32,System.Int32,System.Globalization.CompareOptions)">
+      <summary>使用指定的 <see cref="T:System.Globalization.CompareOptions" /> 值，搜索指定的子字符串，并返回源字符串内从指定的索引位置开始、包含所指定元素数的部分中第一个匹配项的从零开始的索引。</summary>
+      <returns>使用指定的比较选项，如果在 <paramref name="source" /> 中从 <paramref name="startIndex" /> 开始、包含 <paramref name="count" /> 指定的元素数的部分找到 <paramref name="value" /> 的第一个匹配项，则为该项的从零开始的索引；否则为 -1。如果 <paramref name="value" /> 为可忽略字符，则将返回 <paramref name="startIndex" />。</returns>
+      <param name="source">要搜索的字符串。</param>
+      <param name="value">要在 <paramref name="source" /> 中定位的字符串。</param>
+      <param name="startIndex">从零开始的搜索的起始索引。</param>
+      <param name="count">要搜索的部分中的元素数。</param>
+      <param name="options">一个值，用于定义应如何比较 <paramref name="source" /> 和 <paramref name="value" />。<paramref name="options" /> 可以为枚举值 <see cref="F:System.Globalization.CompareOptions.Ordinal" />，或为以下一个或多个值的按位组合：<see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 和 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> 为 null。- 或 - <paramref name="value" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> 超出了 <paramref name="source" /> 的有效索引范围。- 或 - <paramref name="count" /> 小于零。- 或 - <paramref name="startIndex" /> 和 <paramref name="count" /> 指定的不是 <paramref name="source" /> 中的有效部分。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> 包含无效的 <see cref="T:System.Globalization.CompareOptions" /> 值。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IsPrefix(System.String,System.String)">
+      <summary>确定指定的源字符串是否以指定的前缀开头。</summary>
+      <returns>如果 <paramref name="prefix" /> 的长度小于或等于 <paramref name="source" /> 的长度，并且 <paramref name="source" /> 以 <paramref name="prefix" /> 开始，则为 true；否则为 false。</returns>
+      <param name="source">要在其中搜索的字符串。</param>
+      <param name="prefix">要与 <paramref name="source" /> 的开头进行比较的字符串。 </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> 为 null。- 或 - <paramref name="prefix" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IsPrefix(System.String,System.String,System.Globalization.CompareOptions)">
+      <summary>使用指定的 <see cref="T:System.Globalization.CompareOptions" /> 值确定指定的源字符串是否以指定的前缀开头。</summary>
+      <returns>如果 <paramref name="prefix" /> 的长度小于或等于 <paramref name="source" /> 的长度，并且 <paramref name="source" /> 以 <paramref name="prefix" /> 开始，则为 true；否则为 false。</returns>
+      <param name="source">要在其中搜索的字符串。</param>
+      <param name="prefix">要与 <paramref name="source" /> 的开头进行比较的字符串。</param>
+      <param name="options">一个值，用于定义应如何比较 <paramref name="source" /> 和 <paramref name="prefix" />。<paramref name="options" /> 可以为枚举值 <see cref="F:System.Globalization.CompareOptions.Ordinal" />，或为以下一个或多个值的按位组合：<see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 和 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> 为 null。- 或 - <paramref name="prefix" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> 包含无效的 <see cref="T:System.Globalization.CompareOptions" /> 值。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IsSuffix(System.String,System.String)">
+      <summary>确定指定的源字符串是否以指定的后缀结尾。</summary>
+      <returns>如果 <paramref name="suffix" /> 的长度小于或等于 <paramref name="source" /> 的长度，并且 <paramref name="source" /> 以 <paramref name="suffix" /> 结尾，则为 true；否则为 false。</returns>
+      <param name="source">要在其中搜索的字符串。</param>
+      <param name="suffix">要与 <paramref name="source" /> 的结尾进行比较的字符串。 </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> 为 null。- 或 - <paramref name="suffix" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IsSuffix(System.String,System.String,System.Globalization.CompareOptions)">
+      <summary>使用指定的 <see cref="T:System.Globalization.CompareOptions" /> 值确定指定的源字符串是否以指定的后缀结尾。</summary>
+      <returns>如果 <paramref name="suffix" /> 的长度小于或等于 <paramref name="source" /> 的长度，并且 <paramref name="source" /> 以 <paramref name="suffix" /> 结尾，则为 true；否则为 false。</returns>
+      <param name="source">要在其中搜索的字符串。</param>
+      <param name="suffix">要与 <paramref name="source" /> 的结尾进行比较的字符串。</param>
+      <param name="options">一个值，用于定义应如何比较 <paramref name="source" /> 和 <paramref name="suffix" />。<paramref name="options" /> 可以为其自身使用的枚举值 <see cref="F:System.Globalization.CompareOptions.Ordinal" />，或为以下一个或多个值的按位组合：<see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 和 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> 为 null。- 或 - <paramref name="suffix" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> 包含无效的 <see cref="T:System.Globalization.CompareOptions" /> 值。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.Char)">
+      <summary>搜索指定的字符，并返回整个源字符串内最后一个匹配项的从零开始的索引。</summary>
+      <returns>如果找到，则为 <paramref name="value" /> 在 <paramref name="source" /> 内的最后一个匹配项从零开始的索引；否则为 -1。</returns>
+      <param name="source">要搜索的字符串。</param>
+      <param name="value">要在 <paramref name="source" /> 中定位的字符。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.Char,System.Globalization.CompareOptions)">
+      <summary>使用指定的 <see cref="T:System.Globalization.CompareOptions" /> 值，搜索指定的字符，并返回整个源字符串内最后一个匹配项的从零开始的索引。</summary>
+      <returns>使用指定的比较选项，如果在<paramref name="source" /> 中找到 <paramref name="value" /> 的最后一个匹配项，则为从零开始的索引；否则为 -1。</returns>
+      <param name="source">要搜索的字符串。</param>
+      <param name="value">要在 <paramref name="source" /> 中定位的字符。</param>
+      <param name="options">一个值，用于定义应如何比较 <paramref name="source" /> 和 <paramref name="value" />。<paramref name="options" /> 可以为枚举值 <see cref="F:System.Globalization.CompareOptions.Ordinal" />，或为以下一个或多个值的按位组合：<see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 和 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> 包含无效的 <see cref="T:System.Globalization.CompareOptions" /> 值。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.Char,System.Int32,System.Globalization.CompareOptions)">
+      <summary>使用指定的 <see cref="T:System.Globalization.CompareOptions" /> 值，搜索指定的字符，并返回源字符串内从字符串开头到指定的索引位置这一部分中最后一个匹配项的从零开始的索引。</summary>
+      <returns>使用指定的比较选项，如果在 <paramref name="source" /> 中从 <paramref name="source" /> 一直到 <paramref name="startIndex" /> 的开始这部分找到 <paramref name="value" /> 的最后一个匹配项，则为该项的从零开始的索引；否则为 -1。如果 <paramref name="value" /> 为可忽略字符，则将返回 <paramref name="startIndex" />。</returns>
+      <param name="source">要搜索的字符串。</param>
+      <param name="value">要在 <paramref name="source" /> 中定位的字符。</param>
+      <param name="startIndex">向后搜索的从零开始的起始索引。</param>
+      <param name="options">一个值，用于定义应如何比较 <paramref name="source" /> 和 <paramref name="value" />。<paramref name="options" /> 可以为枚举值 <see cref="F:System.Globalization.CompareOptions.Ordinal" />，或为以下一个或多个值的按位组合：<see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 和 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> 超出了 <paramref name="source" /> 的有效索引范围。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> 包含无效的 <see cref="T:System.Globalization.CompareOptions" /> 值。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.Char,System.Int32,System.Int32)">
+      <summary>搜索指定的字符，并返回源字符串内包含指定的元素数、以指定的索引位置结尾的部分中最后一个匹配项的从零开始的索引。</summary>
+      <returns>在包含 <paramref name="count" /> 所指定的元素数并以 <paramref name="startIndex" /> 结尾的这部分 <paramref name="source" /> 中，如果找到 <paramref name="value" /> 的最后一个匹配项，则为该项的从零开始的索引；否则为 -1。如果 <paramref name="value" /> 为可忽略字符，则将返回 <paramref name="startIndex" />。</returns>
+      <param name="source">要搜索的字符串。</param>
+      <param name="value">要在 <paramref name="source" /> 中定位的字符。</param>
+      <param name="startIndex">向后搜索的从零开始的起始索引。</param>
+      <param name="count">要搜索的部分中的元素数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> 超出了 <paramref name="source" /> 的有效索引范围。- 或 - <paramref name="count" /> 小于零。- 或 - <paramref name="startIndex" /> 和 <paramref name="count" /> 指定的不是 <paramref name="source" /> 中的有效部分。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.Char,System.Int32,System.Int32,System.Globalization.CompareOptions)">
+      <summary>使用指定的 <see cref="T:System.Globalization.CompareOptions" /> 值，搜索指定的字符，并返回源字符串内包含所指定元素数、以指定的索引位置结尾的部分中最后一个匹配项的从零开始的索引。</summary>
+      <returns>使用指定的比较选项，如果在 <paramref name="source" /> 中结束于 <paramref name="startIndex" /> 、包含 <paramref name="count" /> 指定的元素数的部分找到 <paramref name="value" /> 的最后一个匹配项，则为该项的从零开始的索引；否则为 -1。如果 <paramref name="value" /> 为可忽略字符，则将返回 <paramref name="startIndex" />。</returns>
+      <param name="source">要搜索的字符串。</param>
+      <param name="value">要在 <paramref name="source" /> 中定位的字符。</param>
+      <param name="startIndex">向后搜索的从零开始的起始索引。</param>
+      <param name="count">要搜索的部分中的元素数。</param>
+      <param name="options">一个值，用于定义应如何比较 <paramref name="source" /> 和 <paramref name="value" />。<paramref name="options" /> 可以为枚举值 <see cref="F:System.Globalization.CompareOptions.Ordinal" />，或为以下一个或多个值的按位组合：<see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 和 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> 超出了 <paramref name="source" /> 的有效索引范围。- 或 - <paramref name="count" /> 小于零。- 或 - <paramref name="startIndex" /> 和 <paramref name="count" /> 指定的不是 <paramref name="source" /> 中的有效部分。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> 包含无效的 <see cref="T:System.Globalization.CompareOptions" /> 值。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.String)">
+      <summary>搜索指定的子字符串，并返回整个源字符串内最后一个匹配项的从零开始的索引。</summary>
+      <returns>如果找到，则为 <paramref name="value" /> 在 <paramref name="source" /> 内的最后一个匹配项从零开始的索引；否则为 -1。</returns>
+      <param name="source">要搜索的字符串。</param>
+      <param name="value">要在 <paramref name="source" /> 中定位的字符串。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> 为 null。- 或 - <paramref name="value" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.String,System.Globalization.CompareOptions)">
+      <summary>使用指定的 <see cref="T:System.Globalization.CompareOptions" /> 值，搜索指定的子字符串，并返回整个源字符串内最后一个匹配项的从零开始的索引。</summary>
+      <returns>使用指定的比较选项，如果在<paramref name="source" /> 中找到 <paramref name="value" /> 的最后一个匹配项，则为从零开始的索引；否则为 -1。</returns>
+      <param name="source">要搜索的字符串。</param>
+      <param name="value">要在 <paramref name="source" /> 中定位的字符串。</param>
+      <param name="options">一个值，用于定义应如何比较 <paramref name="source" /> 和 <paramref name="value" />。<paramref name="options" /> 可以为枚举值 <see cref="F:System.Globalization.CompareOptions.Ordinal" />，或为以下一个或多个值的按位组合：<see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 和 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> 为 null。- 或 - <paramref name="value" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> 包含无效的 <see cref="T:System.Globalization.CompareOptions" /> 值。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.String,System.Int32,System.Globalization.CompareOptions)">
+      <summary>使用指定的 <see cref="T:System.Globalization.CompareOptions" /> 值，搜索指定的子字符串，并返回源字符串内从字符串开头到指定的索引位置这一部分中最后一个匹配项的从零开始的索引。</summary>
+      <returns>使用指定的比较选项，如果在 <paramref name="source" /> 中从 <paramref name="source" /> 一直到 <paramref name="startIndex" /> 的开始这部分找到 <paramref name="value" /> 的最后一个匹配项，则为该项的从零开始的索引；否则为 -1。如果 <paramref name="value" /> 为可忽略字符，则将返回 <paramref name="startIndex" />。</returns>
+      <param name="source">要搜索的字符串。</param>
+      <param name="value">要在 <paramref name="source" /> 中定位的字符串。</param>
+      <param name="startIndex">向后搜索的从零开始的起始索引。</param>
+      <param name="options">一个值，用于定义应如何比较 <paramref name="source" /> 和 <paramref name="value" />。<paramref name="options" /> 可以为枚举值 <see cref="F:System.Globalization.CompareOptions.Ordinal" />，或为以下一个或多个值的按位组合：<see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 和 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> 为 null。- 或 - <paramref name="value" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> 超出了 <paramref name="source" /> 的有效索引范围。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> 包含无效的 <see cref="T:System.Globalization.CompareOptions" /> 值。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.String,System.Int32,System.Int32)">
+      <summary>搜索指定的子字符串，并返回源字符串内包含指定的元素数、以指定的索引位置结尾的部分中最后一个匹配项的从零开始的索引。</summary>
+      <returns>在包含 <paramref name="count" /> 所指定的元素数并以 <paramref name="startIndex" /> 结尾的这部分 <paramref name="source" /> 中，如果找到 <paramref name="value" /> 的最后一个匹配项，则为该项的从零开始的索引；否则为 -1。如果 <paramref name="value" /> 为可忽略字符，则将返回 <paramref name="startIndex" />。</returns>
+      <param name="source">要搜索的字符串。</param>
+      <param name="value">要在 <paramref name="source" /> 中定位的字符串。</param>
+      <param name="startIndex">向后搜索的从零开始的起始索引。</param>
+      <param name="count">要搜索的部分中的元素数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> 为 null。- 或 - <paramref name="value" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> 超出了 <paramref name="source" /> 的有效索引范围。- 或 - <paramref name="count" /> 小于零。- 或 - <paramref name="startIndex" /> 和 <paramref name="count" /> 指定的不是 <paramref name="source" /> 中的有效部分。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.String,System.Int32,System.Int32,System.Globalization.CompareOptions)">
+      <summary>使用指定的 <see cref="T:System.Globalization.CompareOptions" /> 值，搜索指定的子字符串，并返回源字符串内包含所指定元素数、以指定的索引位置结尾的部分中最后一个匹配项的从零开始的索引。</summary>
+      <returns>使用指定的比较选项，如果在 <paramref name="source" /> 中结束于 <paramref name="startIndex" /> 、包含 <paramref name="count" /> 指定的元素数的部分找到 <paramref name="value" /> 的最后一个匹配项，则为该项的从零开始的索引；否则为 -1。如果 <paramref name="value" /> 为可忽略字符，则将返回 <paramref name="startIndex" />。</returns>
+      <param name="source">要搜索的字符串。</param>
+      <param name="value">要在 <paramref name="source" /> 中定位的字符串。</param>
+      <param name="startIndex">向后搜索的从零开始的起始索引。</param>
+      <param name="count">要搜索的部分中的元素数。</param>
+      <param name="options">一个值，用于定义应如何比较 <paramref name="source" /> 和 <paramref name="value" />。<paramref name="options" /> 可以为枚举值 <see cref="F:System.Globalization.CompareOptions.Ordinal" />，或为以下一个或多个值的按位组合：<see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 和 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> 为 null。- 或 - <paramref name="value" /> 为 null。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> 超出了 <paramref name="source" /> 的有效索引范围。- 或 - <paramref name="count" /> 小于零。- 或 - <paramref name="startIndex" /> 和 <paramref name="count" /> 指定的不是 <paramref name="source" /> 中的有效部分。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> 包含无效的 <see cref="T:System.Globalization.CompareOptions" /> 值。</exception>
+    </member>
+    <member name="P:System.Globalization.CompareInfo.Name">
+      <summary>获取用于通过 <see cref="T:System.Globalization.CompareInfo" /> 对象执行排序操作的区域性的名称。</summary>
+      <returns>区域性的名称。</returns>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.ToString">
+      <summary>返回表示当前 <see cref="T:System.Globalization.CompareInfo" /> 对象的字符串。</summary>
+      <returns>表示当前 <see cref="T:System.Globalization.CompareInfo" /> 对象的字符串。</returns>
+    </member>
+    <member name="T:System.Globalization.CompareOptions">
+      <summary>定义要用于 <see cref="T:System.Globalization.CompareInfo" /> 的字符串比较选项。</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.IgnoreCase">
+      <summary>指示字符串比较必须忽略大小写。</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.IgnoreKanaType">
+      <summary>指示字符串比较必须忽略 Kana 类型。假名类型是指日语平假名和片假名字符，它们表示日语中的语音。平假名用于表示日语自有的短语和字词，而片假名用于表示从其他语言借用的字词，如“computer”或“Internet”。语音既可以用平假名也可以用片假名表示。如果选择该值，则认为一个语音的平假名字符等于同一语音的片假名字符。</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.IgnoreNonSpace">
+      <summary>指示字符串比较必须忽略不占空间的组合字符，比如音调符号。Unicode 标准将组合字符定义为与基字符组合起来产生新字符的字符。不占空间的组合字符在呈现时其本身不占用空间位置。</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.IgnoreSymbols">
+      <summary>指示字符串比较必须忽略符号，如空白字符、标点符号、货币符号、百分号、数学符号、“&amp;”符等等。</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.IgnoreWidth">
+      <summary>指示字符串比较必须忽略字符宽度。例如，日语片假名字符可以写为全角或半角形式。如果选择此值，则认为片假名字符的全角形式等同于半角形式。</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.None">
+      <summary>指定字符串比较的默认选项设置。</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.Ordinal">
+      <summary>指示必须使用字符串的连续 Unicode UTF-16 编码值进行字符串比较（使用代码单元进行代码单元比较），这样可以提高比较速度，但不能区分区域性。如果 XXXX16 小于 YYYY16，则以“XXXX16”代码单元开头的字符串位于以“YYYY16”代码单元开头的字符串之前。此值必须单独使用，而不能与其他 <see cref="T:System.Globalization.CompareOptions" /> 值组合在一起。</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.OrdinalIgnoreCase">
+      <summary>字符串比较必须忽略大小写，然后执行序号比较。此方法相当于先使用固定区域性将字符串转换为大写，然后再对结果执行序号比较。</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.StringSort">
+      <summary>指示字符串比较必须使用字符串排序算法。在字符串排序中，连字符、撇号以及其他非字母数字符号都排在字母数字字符之前。</summary>
+    </member>
+    <member name="T:System.Globalization.CultureInfo">
+      <summary>提供有关特定区域性的信息（对于非托管代码开发，则称为“区域设置”）。这些信息包括区域性的名称、书写系统、使用的日历以及对日期和排序字符串的格式化设置。</summary>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.#ctor(System.String)">
+      <summary>根据由名称指定的区域性初始化 <see cref="T:System.Globalization.CultureInfo" /> 类的新实例。</summary>
+      <param name="name">预定义的 <see cref="T:System.Globalization.CultureInfo" /> 名称、现有 <see cref="T:System.Globalization.CultureInfo" /> 的 <see cref="P:System.Globalization.CultureInfo.Name" /> 或仅 Windows 区域性名称。<paramref name="name" /> 不区分大小写。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> is null. </exception>
+      <exception cref="T:System.Globalization.CultureNotFoundException">
+        <paramref name="name" /> is not a valid culture name.For more information, see the Notes to Callers section.</exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.Calendar">
+      <summary>获取区域性使用的默认日历。</summary>
+      <returns>表示区域性使用的默认日历的 <see cref="T:System.Globalization.Calendar" />。</returns>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.Clone">
+      <summary>创建当前 <see cref="T:System.Globalization.CultureInfo" /> 的副本。</summary>
+      <returns>当前 <see cref="T:System.Globalization.CultureInfo" /> 的副本。</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.CompareInfo">
+      <summary>获取为区域性定义如何比较字符串的 <see cref="T:System.Globalization.CompareInfo" />。</summary>
+      <returns>为区域性定义如何比较字符串的 <see cref="T:System.Globalization.CompareInfo" />。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.CurrentCulture">
+      <summary>获取表示当前线程使用的区域性的 <see cref="T:System.Globalization.CultureInfo" /> 对象。</summary>
+      <returns>表示当前线程使用的区域性的对象。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is set to null.</exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.CurrentUICulture">
+      <summary>获取或设置 <see cref="T:System.Globalization.CultureInfo" /> 对象，该对象表示资源管理器在运行时查找区域性特定资源时所用的当前用户接口区域性。</summary>
+      <returns>资源管理器用于在运行时查找查找区域性特定资源的区域性。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is set to null.</exception>
+      <exception cref="T:System.ArgumentException">The property is set to a culture name that cannot be used to locate a resource file.Resource filenames can include only letters, numbers, hyphens, or underscores.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.DateTimeFormat">
+      <summary>获取或设置 <see cref="T:System.Globalization.DateTimeFormatInfo" />，它定义适合区域性的、显示日期和时间的格式。</summary>
+      <returns>一个 <see cref="T:System.Globalization.DateTimeFormatInfo" />，它定义适合区域性的、显示日期和时间的格式。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Globalization.CultureInfo.DateTimeFormat" /> property or any of the <see cref="T:System.Globalization.DateTimeFormatInfo" /> properties is set, and the <see cref="T:System.Globalization.CultureInfo" /> is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.DefaultThreadCurrentCulture">
+      <summary>获取或设置当前应用程序域中线程的默认区域性。</summary>
+      <returns>如果当前系统区域性为应用程序域中的默认线程区域性，则为当前应用程序中线程的默认区域性或 null。</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.DefaultThreadCurrentUICulture">
+      <summary>获取或设置当前应用程序域中线程的默认 UI 区域性。</summary>
+      <returns>如果当前系统 UI 区域性为当前应用程序域中的默认线程 UI 区域性，则当前应用程序域中线程的默认 UI 区域性或 null。</returns>
+      <exception cref="T:System.ArgumentException">In a set operation, the <see cref="P:System.Globalization.CultureInfo.Name" /> property value is invalid. </exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.DisplayName">
+      <summary>获取完整的本地化区域性名称。</summary>
+      <returns>格式为 languagefull [country/regionfull] 的完整本地化区域性名称，其中 languagefull 是语言的全名，country/regionfull 是国家/地区的全名。</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.EnglishName">
+      <summary>获取格式为 languagefull [country/regionfull] 的英语区域性名称。</summary>
+      <returns>格式为 languagefull [country/regionfull] 的英语区域性名称，其中 languagefull 是语言的全名，country/regionfull 是国家/地区的全名。</returns>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.Equals(System.Object)">
+      <summary>确定指定的对象是否与当前 <see cref="T:System.Globalization.CultureInfo" /> 具有相同的区域性。</summary>
+      <returns>如果 <paramref name="value" /> 与当前 <see cref="T:System.Globalization.CultureInfo" /> 具有相同的区域性，则为 true；否则为 false。</returns>
+      <param name="value">将与当前 <see cref="T:System.Globalization.CultureInfo" /> 进行比较的对象。</param>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.GetFormat(System.Type)">
+      <summary>获取一个定义如何格式化指定类型的对象。</summary>
+      <returns>
+        <see cref="P:System.Globalization.CultureInfo.NumberFormat" /> 属性的值，如果 <paramref name="formatType" /> 是 <see cref="T:System.Globalization.NumberFormatInfo" /> 类的 <see cref="T:System.Type" /> 对象，则该属性为包含当前 <see cref="T:System.Globalization.CultureInfo" /> 的默认数字格式信息的 <see cref="T:System.Globalization.NumberFormatInfo" />。- 或 - <see cref="P:System.Globalization.CultureInfo.DateTimeFormat" /> 属性的值，如果 <paramref name="formatType" /> 是 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 类的 <see cref="T:System.Type" /> 对象，则该属性为包含当前 <see cref="T:System.Globalization.CultureInfo" /> 的默认日期和时间格式信息的 <see cref="T:System.Globalization.DateTimeFormatInfo" />。- 或 - 如果 <paramref name="formatType" /> 是其他任何对象，则为 null。</returns>
+      <param name="formatType">要为其获取格式化对象的 <see cref="T:System.Type" />。此方法仅支持 <see cref="T:System.Globalization.NumberFormatInfo" /> 和 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 两种类型。</param>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.GetHashCode">
+      <summary>用作当前 <see cref="T:System.Globalization.CultureInfo" /> 的哈希函数，适合用在哈希算法和数据结构（如哈希表）中。</summary>
+      <returns>当前 <see cref="T:System.Globalization.CultureInfo" /> 的哈希代码。</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.InvariantCulture">
+      <summary>获取不依赖于区域性（固定）的 <see cref="T:System.Globalization.CultureInfo" /> 对象。</summary>
+      <returns>不依赖于区域性（固定）的对象。</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.IsNeutralCulture">
+      <summary>获取一个值，该值指示当前 <see cref="T:System.Globalization.CultureInfo" /> 是否表示非特定区域性。</summary>
+      <returns>如果当前 <see cref="T:System.Globalization.CultureInfo" /> 表示非特定区域性，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.IsReadOnly">
+      <summary>获取一个值，该值指示当前 <see cref="T:System.Globalization.CultureInfo" /> 是否为只读。</summary>
+      <returns>如果当前 true 为只读，则为 <see cref="T:System.Globalization.CultureInfo" />；否则为 false。默认值为 false。</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.Name">
+      <summary>获取格式为 languagecode2-country/regioncode2 的区域性名称。</summary>
+      <returns>格式为 languagecode2-country/regioncode2 的区域性名称。languagecode2 是派生自 ISO 639-1 的小写双字母代码。country/regioncode2 派生自 ISO 3166，一般包含两个大写字母，或一个 BCP-47 语言标记。</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.NativeName">
+      <summary>获取为区域性设置的显示名称，它由语言、国家/地区以及可选脚本组成。</summary>
+      <returns>区域性名称。由语言的全名、国家/地区的全名以及可选脚本组成。有关其格式的讨论，请参见对 <see cref="T:System.Globalization.CultureInfo" /> 类的说明。</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.NumberFormat">
+      <summary>获取或设置 <see cref="T:System.Globalization.NumberFormatInfo" />，它定义适合区域性的、显示数字、货币和百分比的格式。</summary>
+      <returns>一个 <see cref="T:System.Globalization.NumberFormatInfo" />，它定义适合区域性的、显示数字、货币和百分比的格式。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Globalization.CultureInfo.NumberFormat" /> property or any of the <see cref="T:System.Globalization.NumberFormatInfo" /> properties is set, and the <see cref="T:System.Globalization.CultureInfo" /> is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.OptionalCalendars">
+      <summary>获取该区域性可使用的日历的列表。</summary>
+      <returns>类型为 <see cref="T:System.Globalization.Calendar" /> 的数组，表示当前 <see cref="T:System.Globalization.CultureInfo" /> 代表的区域性所使用的日历。</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.Parent">
+      <summary>获取表示当前 <see cref="T:System.Globalization.CultureInfo" /> 的父区域性的 <see cref="T:System.Globalization.CultureInfo" />。</summary>
+      <returns>表示当前 <see cref="T:System.Globalization.CultureInfo" /> 的父区域性的 <see cref="T:System.Globalization.CultureInfo" />。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.ReadOnly(System.Globalization.CultureInfo)">
+      <summary>返回指定的 <see cref="T:System.Globalization.CultureInfo" /> 对象周围的只读包装。</summary>
+      <returns>
+        <paramref name="ci" /> 周围的只读 <see cref="T:System.Globalization.CultureInfo" /> 包装。</returns>
+      <param name="ci">要包装的 <see cref="T:System.Globalization.CultureInfo" /> 对象。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="ci" /> is null. </exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.TextInfo">
+      <summary>获取定义与区域性关联的书写体系的 <see cref="T:System.Globalization.TextInfo" />。</summary>
+      <returns>定义与区域性关联的书写体系的 <see cref="T:System.Globalization.TextInfo" />。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.ToString">
+      <summary>返回一个字符串，该字符串包含当前 <see cref="T:System.Globalization.CultureInfo" /> 的名称，其格式为 languagecode2-country/regioncode2。</summary>
+      <returns>包含当前 <see cref="T:System.Globalization.CultureInfo" /> 名称的字符串。</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.TwoLetterISOLanguageName">
+      <summary>获取当前 <see cref="T:System.Globalization.CultureInfo" /> 的语言的由两个字母构成的 ISO 639-1 代码。</summary>
+      <returns>当前 <see cref="T:System.Globalization.CultureInfo" /> 的语言的由两个字母构成的 ISO 639-1 代码。</returns>
+    </member>
+    <member name="T:System.Globalization.CultureNotFoundException">
+      <summary>当调用的方法尝试构造一个计算机上不可用的区域性时引发的异常。</summary>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor">
+      <summary>初始化 <see cref="T:System.Globalization.CultureNotFoundException" /> 类的新实例，将其消息字符串设置为系统提供的消息。</summary>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor(System.String)">
+      <summary>使用指定的错误消息初始化 <see cref="T:System.Globalization.CultureNotFoundException" /> 类的新实例。</summary>
+      <param name="message">与此异常一起显示的错误消息。</param>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor(System.String,System.Exception)">
+      <summary>使用指定的错误消息和对作为此异常原因的内部异常的引用来初始化 <see cref="T:System.Globalization.CultureNotFoundException" /> 类的新实例。</summary>
+      <param name="message">与此异常一起显示的错误消息。</param>
+      <param name="innerException">导致当前异常的异常。如果 <paramref name="innerException" /> 参数不为空引用，则在处理内部异常的 catch 块中引发当前异常。</param>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor(System.String,System.String)">
+      <summary>使用指定的错误消息和导致此异常的参数的名称来初始化 <see cref="T:System.Globalization.CultureNotFoundException" /> 类的新实例。</summary>
+      <param name="paramName">导致当前异常的参数的名称。</param>
+      <param name="message">与此异常一起显示的错误消息。</param>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor(System.String,System.String,System.Exception)">
+      <summary>使用指定的错误消息、无效的区域性名称和对导致此异常的内部异常的引用来初始化 <see cref="T:System.Globalization.CultureNotFoundException" /> 类的新实例。</summary>
+      <param name="message">与此异常一起显示的错误消息。</param>
+      <param name="invalidCultureName">找不到的区域性名称。</param>
+      <param name="innerException">导致当前异常的异常。如果 <paramref name="innerException" /> 参数不为空引用，则在处理内部异常的 catch 块中引发当前异常。</param>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor(System.String,System.String,System.String)">
+      <summary>使用指定的错误消息、无效的区域性名称和导致此异常的参数的名称来初始化 <see cref="T:System.Globalization.CultureNotFoundException" /> 类的新实例。</summary>
+      <param name="paramName">导致当前异常的参数的名称。</param>
+      <param name="invalidCultureName">找不到的区域性名称。</param>
+      <param name="message">与此异常一起显示的错误消息。</param>
+    </member>
+    <member name="P:System.Globalization.CultureNotFoundException.InvalidCultureName">
+      <summary>获取找不到的区域性名称。</summary>
+      <returns>无效的区域性名称。</returns>
+    </member>
+    <member name="P:System.Globalization.CultureNotFoundException.Message">
+      <summary>获取解释异常原因的错误消息。</summary>
+      <returns>描述异常的详细信息的文本字符串。</returns>
+    </member>
+    <member name="T:System.Globalization.DateTimeFormatInfo">
+      <summary>提供有关日期和时间值格式的区域性特定信息。</summary>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.#ctor">
+      <summary>初始化不依赖于区域性的（固定的）<see cref="T:System.Globalization.DateTimeFormatInfo" /> 类的新可写实例。</summary>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.AbbreviatedDayNames">
+      <summary>获取或设置 <see cref="T:System.String" /> 类型的一维数组，它包含周中各天的特定于区域性的缩写名称。</summary>
+      <returns>
+        <see cref="T:System.String" /> 类型的一维数组，它包含周中各天的特定于区域性的缩写名称。<see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> 的数组包含“Sun”、“Mon”、“Tue”、“Wed”、“Thu”、“Fri”和“Sat”。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.ArgumentException">The property is being set to an array that is multidimensional or that has a length that is not exactly 7. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.AbbreviatedMonthGenitiveNames">
+      <summary>获取或设置与当前 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 对象关联的月份缩写名称的字符串数组。</summary>
+      <returns>月份缩写名称的数组。</returns>
+      <exception cref="T:System.ArgumentException">In a set operation, the array is multidimensional or has a length that is not exactly 13.</exception>
+      <exception cref="T:System.ArgumentNullException">In a set operation, the array or one of the elements of the array is null.</exception>
+      <exception cref="T:System.InvalidOperationException">In a set operation, the current <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only.</exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.AbbreviatedMonthNames">
+      <summary>获取或设置一维字符串数组，它包含各月的特定于区域性的缩写名称。</summary>
+      <returns>一个具有 13 个元素的一维字符串数组，它包含各月的特定于区域性的缩写名称。对于 12 个月的日历，数组的第 13 个元素是一个空字符串。<see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> 的数组包含“Jan”、“Feb”、“Mar”、“Apr”、“May”、“Jun”、“Jul”、“Aug”、“Sep”、“Oct”、“Nov”、“Dec”和“”。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.ArgumentException">The property is being set to an array that is multidimensional or that has a length that is not exactly 13. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.AMDesignator">
+      <summary>获取或设置表示处于“上午”（中午前）的各小时的字符串指示符。</summary>
+      <returns>表示属于上午的各小时的字符串指示符。<see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> 默认为“AM”。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.Calendar">
+      <summary>获取或设置用于当前区域性的日历。</summary>
+      <returns>用于当前区域性的日历。<see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> 默认为 <see cref="T:System.Globalization.GregorianCalendar" /> 对象。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The property is being set to a <see cref="T:System.Globalization.Calendar" /> object that is not valid for the current culture. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.CalendarWeekRule">
+      <summary>获取或设置一个值，该值指定使用哪个规则确定该年的第一个日历周。</summary>
+      <returns>确定该年的第一个日历周的值。<see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> 的默认值是 <see cref="F:System.Globalization.CalendarWeekRule.FirstDay" />。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The property is being set to a value that is not a valid <see cref="T:System.Globalization.CalendarWeekRule" /> value. </exception>
+      <exception cref="T:System.InvalidOperationException">In a set operation, the current <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only.</exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.Clone">
+      <summary>创建 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 的浅表副本。</summary>
+      <returns>从原始 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 复制的新 <see cref="T:System.Globalization.DateTimeFormatInfo" />。</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.CurrentInfo">
+      <summary>获取基于当前区域性对值进行格式设置的只读的 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 对象。</summary>
+      <returns>一个基于当前线程的 <see cref="T:System.Globalization.CultureInfo" /> 对象的只读的 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 对象。</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.DayNames">
+      <summary>获取或设置一维字符串数组，它包含该周中各天的特定于区域性的完整名称。</summary>
+      <returns>一个一维字符串数组，它包含周中各天的特定于区域性的完整名称。<see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> 数组包含“Sunday”、“Monday”、“Tuesday”、“Wednesday”、“Thursday”、“Friday”和“Saturday”。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.ArgumentException">The property is being set to an array that is multidimensional or that has a length that is not exactly 7. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.FirstDayOfWeek">
+      <summary>获取或设置一周的第一天。</summary>
+      <returns>表示一周的第一天的枚举值。<see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> 默认为 <see cref="F:System.DayOfWeek.Sunday" />。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The property is being set to a value that is not a valid <see cref="T:System.DayOfWeek" /> value. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.FullDateTimePattern">
+      <summary>为长日期和长时间值获取或设置自定义格式字符串。</summary>
+      <returns>长日期和时间值的自定义格式字符串。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetAbbreviatedDayName(System.DayOfWeek)">
+      <summary>基于与当前 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 对象关联的区域性，返回周中指定日期的区域性特定的缩写名称。</summary>
+      <returns>由 <paramref name="dayofweek" /> 表示的周中日期的区域性特定的缩写名称。</returns>
+      <param name="dayofweek">一个 <see cref="T:System.DayOfWeek" /> 值。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="dayofweek" /> is not a valid <see cref="T:System.DayOfWeek" /> value. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetAbbreviatedEraName(System.Int32)">
+      <summary>返回包含指定纪元的缩写名称的字符串（如果缩写名称存在）。</summary>
+      <returns>包含指定纪元的缩写名称的字符串（如果缩写名称存在）。- 或 -包含纪元的完整名称的字符串（如果缩写名称不存在）。</returns>
+      <param name="era">表示纪元的整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> does not represent a valid era in the calendar specified in the <see cref="P:System.Globalization.DateTimeFormatInfo.Calendar" /> property. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetAbbreviatedMonthName(System.Int32)">
+      <summary>基于与当前 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 对象关联的区域性，返回指定月份的区域性特定的缩写名称。</summary>
+      <returns>由 <paramref name="month" /> 表示的月份的区域性特定的缩写名称。</returns>
+      <param name="month">一个从 1 到 13 的整数，表示要检索的月份的名称。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="month" /> is less than 1 or greater than 13. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetDayName(System.DayOfWeek)">
+      <summary>基于与当前 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 对象关联的区域性，返回周中指定日期的区域性特定的完整名称。</summary>
+      <returns>由 <paramref name="dayofweek" /> 表示的周中日期的区域性特定的完整名称。</returns>
+      <param name="dayofweek">一个 <see cref="T:System.DayOfWeek" /> 值。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="dayofweek" /> is not a valid <see cref="T:System.DayOfWeek" /> value. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetEra(System.String)">
+      <summary>返回表示指定纪元的整数。</summary>
+      <returns>如果 <paramref name="eraName" /> 有效，则为表示纪元的整数；否则为 -1。</returns>
+      <param name="eraName">包含纪元名称的字符串。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="eraName" /> is null. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetEraName(System.Int32)">
+      <summary>返回包含指定纪元名称的字符串。</summary>
+      <returns>包含纪元名称的字符串。</returns>
+      <param name="era">表示纪元的整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> does not represent a valid era in the calendar specified in the <see cref="P:System.Globalization.DateTimeFormatInfo.Calendar" /> property. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetFormat(System.Type)">
+      <summary>返回指定类型的对象，它提供日期和时间格式化服务。</summary>
+      <returns>如果 <paramref name="formatType" /> 与当前 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 的类型相同，则为当前对象；否则为 null。</returns>
+      <param name="formatType">所需格式化服务的类型。</param>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetInstance(System.IFormatProvider)">
+      <summary>返回与指定的 <see cref="T:System.IFormatProvider" /> 关联的 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 对象。</summary>
+      <returns>一个与 <see cref="T:System.IFormatProvider" /> 关联的 <see cref="T:System.Globalization.DateTimeFormatInfo" />。</returns>
+      <param name="provider">获取 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 对象的 <see cref="T:System.IFormatProvider" />。- 或 - 要获取 <see cref="P:System.Globalization.DateTimeFormatInfo.CurrentInfo" /> 的 null。</param>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetMonthName(System.Int32)">
+      <summary>基于与当前 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 对象关联的区域性，返回指定月份的区域性特定的完整名称。</summary>
+      <returns>由 <paramref name="month" /> 表示的月份的区域性特定的完整名称。</returns>
+      <param name="month">一个从 1 到 13 的整数，表示要检索的月份的名称。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="month" /> is less than 1 or greater than 13. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.InvariantInfo">
+      <summary>获取不依赖于区域性的（固定）默认只读的 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 对象。</summary>
+      <returns>不依赖于区域性的（固定的）默认只读对象。</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.IsReadOnly">
+      <summary>获取一个值，该值指示 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 对象是否为只读。</summary>
+      <returns>如果 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 对象为只读，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.LongDatePattern">
+      <summary>获取或设置长日期值的自定义格式字符串。</summary>
+      <returns>长日期值的自定义格式字符串。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.LongTimePattern">
+      <summary>为长时间值获取或设置自定义格式字符串。</summary>
+      <returns>长时间值的格式模式。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.MonthDayPattern">
+      <summary>获取或设置月份和日期值的自定义格式字符串。</summary>
+      <returns>月份和日期值的自定义格式字符串。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.MonthGenitiveNames">
+      <summary>获取或设置与当前 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 对象关联的月份名称的字符串数组。</summary>
+      <returns>月份名称的字符串数组。</returns>
+      <exception cref="T:System.ArgumentException">In a set operation, the array is multidimensional or has a length that is not exactly 13.</exception>
+      <exception cref="T:System.ArgumentNullException">In a set operation, the array or one of its elements is null.</exception>
+      <exception cref="T:System.InvalidOperationException">In a set operation, the current <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only.</exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.MonthNames">
+      <summary>获取或设置 <see cref="T:System.String" /> 类型的一维数组，它包含月份的特定于区域性的完整名称。</summary>
+      <returns>一个类型 <see cref="T:System.String" /> 的一维数组，它包含月份的特定于区域性的完整名称。在 12 个月的日历中，数组的第 13 个元素是一个空字符串。<see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> 数组包含“January”、“February”、“March”、“April”、“May”、“June”、“July”、“August”、“September”、“October”、“November”、“December”和“”。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.ArgumentException">The property is being set to an array that is multidimensional or that has a length that is not exactly 13. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.PMDesignator">
+      <summary>获取或设置表示处于“下午”（中午后）的各小时的字符串指示符。</summary>
+      <returns>表示处于“下午”（中午后）的各小时的字符串指示符。<see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> 默认为“PM”。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.ReadOnly(System.Globalization.DateTimeFormatInfo)">
+      <summary>返回只读的 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 包装。</summary>
+      <returns>一个只读的 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 包装。</returns>
+      <param name="dtfi">要包装的 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 对象。。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="dtfi" /> is null. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.RFC1123Pattern">
+      <summary>获取自定义的格式字符串，该字符串用于基于 Internet 工程任务组 (IETF) 征求意见文档 (RFC) 1123 规范的时间值。</summary>
+      <returns>基于 IETF RFC 1123 规范的时间值的自定义格式字符串。</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.ShortDatePattern">
+      <summary>获取或设置短日期值的自定义格式字符串。</summary>
+      <returns>短日期值的自定义格式字符串。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.ShortestDayNames">
+      <summary>获取或设置与当前 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 对象关联的唯一最短日期缩写名称的字符串数组。</summary>
+      <returns>日期名称的字符串数组。</returns>
+      <exception cref="T:System.ArgumentException">In a set operation, the array does not have exactly seven elements.</exception>
+      <exception cref="T:System.ArgumentNullException">In a set operation, the value array or one of the elements of the value array is null.</exception>
+      <exception cref="T:System.InvalidOperationException">In a set operation, the current <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only.</exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.ShortTimePattern">
+      <summary>获取或设置短时间值的自定义格式字符串。</summary>
+      <returns>短时间值的自定义格式字符串。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.SortableDateTimePattern">
+      <summary>获取可排序数据和时间值的自定义格式字符串。</summary>
+      <returns>可排序的日期和时间值的自定义格式字符串。</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.UniversalSortableDateTimePattern">
+      <summary>获取通用的可排序数据和时间字符串的自定义格式字符串。</summary>
+      <returns>通用的可排序的日期和时间字符串的自定义格式字符串。</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.YearMonthPattern">
+      <summary>获取或设置年份和月份值的自定义格式字符串。</summary>
+      <returns>年份和月份值的自定义格式字符串。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="T:System.Globalization.NumberFormatInfo">
+      <summary>提供用于对数字值进行格式设置和分析的区域性特定信息。</summary>
+    </member>
+    <member name="M:System.Globalization.NumberFormatInfo.#ctor">
+      <summary>初始化不依赖于区域性的（固定的）<see cref="T:System.Globalization.NumberFormatInfo" /> 类的新可写实例。</summary>
+    </member>
+    <member name="M:System.Globalization.NumberFormatInfo.Clone">
+      <summary>创建 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象的浅表副本。</summary>
+      <returns>从原始 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象复制的新对象。</returns>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyDecimalDigits">
+      <summary>获取或设置在货币值中使用的小数位数。</summary>
+      <returns>要在货币值中使用的小数位数。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> 的默认值为 2。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">该属性被设置为小于 0 或大于 99 的值。</exception>
+      <exception cref="T:System.InvalidOperationException">正在设置该属性，但 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象是只读的。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyDecimalSeparator">
+      <summary>获取或设置要在货币值中用作小数分隔符的字符串。</summary>
+      <returns>要在货币值中用作小数分隔符的字符串。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> 默认为“.”。</returns>
+      <exception cref="T:System.ArgumentNullException">该属性被设置为 null。</exception>
+      <exception cref="T:System.InvalidOperationException">正在设置该属性，但 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象是只读的。</exception>
+      <exception cref="T:System.ArgumentException">此属性当前设置为空字符串。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyGroupSeparator">
+      <summary>获取或设置在货币值中隔开小数点左边的位数组的字符串。</summary>
+      <returns>在货币值中隔开小数点左边的位数组的字符串。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> 默认为“,”。</returns>
+      <exception cref="T:System.ArgumentNullException">该属性被设置为 null。</exception>
+      <exception cref="T:System.InvalidOperationException">正在设置该属性，但 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象是只读的。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyGroupSizes">
+      <summary>获取或设置货币值中小数点左边每一组的位数。</summary>
+      <returns>货币值中小数点左边每一组的位数。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> 的默认值是一个一维数组，该数组只包含一个设置为 3 的元素。</returns>
+      <exception cref="T:System.ArgumentNullException">该属性被设置为 null。</exception>
+      <exception cref="T:System.ArgumentException">试图设置该属性，但此数组包含一个小于 0 或大于 9 的项。- 或 - 试图设置该属性，但此数组包含一个设置为 0 的项（最后一项除外）。</exception>
+      <exception cref="T:System.InvalidOperationException">正在设置该属性，但 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象是只读的。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyNegativePattern">
+      <summary>获取或设置负货币值的格式模式。</summary>
+      <returns>负货币值的格式模式。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> 的默认值是 0，它表示“($n)”，其中“$”是 <see cref="P:System.Globalization.NumberFormatInfo.CurrencySymbol" />，<paramref name="n" /> 是一个数字。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">属性被设置为小于 0 或大于 15 的值。</exception>
+      <exception cref="T:System.InvalidOperationException">正在设置该属性，但 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象是只读的。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyPositivePattern">
+      <summary>获取或设置正货币值的格式模式。</summary>
+      <returns>正货币值的格式模式。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> 的默认值是 0，它表示“$n”，其中“$”是 <see cref="P:System.Globalization.NumberFormatInfo.CurrencySymbol" />，<paramref name="n" /> 是一个数字。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">该属性被设置为小于 0 或大于 3 的值。</exception>
+      <exception cref="T:System.InvalidOperationException">正在设置该属性，但 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象是只读的。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencySymbol">
+      <summary>获取或设置用作货币符号的字符串。</summary>
+      <returns>用作货币符号的字符串。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> 默认为“¤”。</returns>
+      <exception cref="T:System.ArgumentNullException">该属性被设置为 null。</exception>
+      <exception cref="T:System.InvalidOperationException">正在设置该属性，但 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象是只读的。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrentInfo">
+      <summary>获取基于当前区域性对值进行格式设置的只读的 <see cref="T:System.Globalization.NumberFormatInfo" />。</summary>
+      <returns>基于当前线程的区域性的只读的 <see cref="T:System.Globalization.NumberFormatInfo" />。</returns>
+    </member>
+    <member name="M:System.Globalization.NumberFormatInfo.GetFormat(System.Type)">
+      <summary>获取提供数字格式化服务的指定类型的对象。</summary>
+      <returns>如果 <paramref name="formatType" /> 与当前 <see cref="T:System.Globalization.NumberFormatInfo" /> 的类型相同，则为当前 <see cref="T:System.Globalization.NumberFormatInfo" />；否则为 null。</returns>
+      <param name="formatType">所需格式化服务的 <see cref="T:System.Type" />。</param>
+    </member>
+    <member name="M:System.Globalization.NumberFormatInfo.GetInstance(System.IFormatProvider)">
+      <summary>获取与指定 <see cref="T:System.Globalization.NumberFormatInfo" /> 关联的 <see cref="T:System.IFormatProvider" />。</summary>
+      <returns>与指定 <see cref="T:System.Globalization.NumberFormatInfo" /> 关联的 <see cref="T:System.IFormatProvider" />。</returns>
+      <param name="formatProvider">用于获取 <see cref="T:System.Globalization.NumberFormatInfo" /> 的 <see cref="T:System.IFormatProvider" />。- 或 - 要获取 <see cref="P:System.Globalization.NumberFormatInfo.CurrentInfo" /> 的 null。</param>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.InvariantInfo">
+      <summary>获取不依赖于区域性的（固定）只读的 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象。</summary>
+      <returns>不依赖于区域性的（固定的）默认只读对象。</returns>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.IsReadOnly">
+      <summary>获取一个值，该值指示 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象是否为只读。</summary>
+      <returns>如果 true 是只读的，则为 <see cref="T:System.Globalization.NumberFormatInfo" />；否则为 false。</returns>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NaNSymbol">
+      <summary>获取或设置表示 IEEE NaN（非数字）值的字符串。</summary>
+      <returns>表示 IEEE NaN（非数字）值的字符串。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> 默认为“NaN”。</returns>
+      <exception cref="T:System.ArgumentNullException">该属性被设置为 null。</exception>
+      <exception cref="T:System.InvalidOperationException">正在设置该属性，但 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象是只读的。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NegativeInfinitySymbol">
+      <summary>获取或设置表示负无穷大的字符串。</summary>
+      <returns>表示负无穷大的字符串。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> 默认为“Infinity”。</returns>
+      <exception cref="T:System.ArgumentNullException">该属性被设置为 null。</exception>
+      <exception cref="T:System.InvalidOperationException">正在设置该属性，但 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象是只读的。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NegativeSign">
+      <summary>获取或设置表示关联数字是负值的字符串。</summary>
+      <returns>表示关联数字是负值的字符串。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> 默认为“-”。</returns>
+      <exception cref="T:System.ArgumentNullException">该属性被设置为 null。</exception>
+      <exception cref="T:System.InvalidOperationException">正在设置该属性，但 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象是只读的。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NumberDecimalDigits">
+      <summary>获取或设置在数值中使用的小数位数。</summary>
+      <returns>在数值中使用的小数位数。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> 的默认值为 2。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">该属性被设置为小于 0 或大于 99 的值。</exception>
+      <exception cref="T:System.InvalidOperationException">正在设置该属性，但 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象是只读的。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NumberDecimalSeparator">
+      <summary>获取或设置在数值中用作小数分隔符的字符串。</summary>
+      <returns>在数值中用作小数分隔符的字符串。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> 默认为“.”。</returns>
+      <exception cref="T:System.ArgumentNullException">该属性被设置为 null。</exception>
+      <exception cref="T:System.InvalidOperationException">正在设置该属性，但 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象是只读的。</exception>
+      <exception cref="T:System.ArgumentException">此属性当前设置为空字符串。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NumberGroupSeparator">
+      <summary>获取或设置在数值中隔开小数点左边的位数组的字符串。</summary>
+      <returns>在数值中隔开小数点左边的位数组的字符串。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> 默认为“,”。</returns>
+      <exception cref="T:System.ArgumentNullException">该属性被设置为 null。</exception>
+      <exception cref="T:System.InvalidOperationException">正在设置该属性，但 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象是只读的。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NumberGroupSizes">
+      <summary>获取或设置数值中小数点左边每一组的位数。</summary>
+      <returns>数值中小数点左边每一组的位数。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> 的默认值是一个一维数组，该数组只包含一个设置为 3 的元素。</returns>
+      <exception cref="T:System.ArgumentNullException">该属性被设置为 null。</exception>
+      <exception cref="T:System.ArgumentException">试图设置该属性，但此数组包含一个小于 0 或大于 9 的项。- 或 - 试图设置该属性，但此数组包含一个设置为 0 的项（最后一项除外）。</exception>
+      <exception cref="T:System.InvalidOperationException">正在设置该属性，但 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象是只读的。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NumberNegativePattern">
+      <summary>获取或设置负数值的格式模式。</summary>
+      <returns>负数值的格式模式。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">该属性被设置为小于 0 或大于 4 的值。</exception>
+      <exception cref="T:System.InvalidOperationException">正在设置该属性，但 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象是只读的。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentDecimalDigits">
+      <summary>获取或设置在百分比值中使用的小数位数。</summary>
+      <returns>要在百分比值中使用的小数位数。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> 的默认值为 2。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">该属性被设置为小于 0 或大于 99 的值。</exception>
+      <exception cref="T:System.InvalidOperationException">正在设置该属性，但 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象是只读的。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentDecimalSeparator">
+      <summary>获取或设置在百分比值中用作小数点分隔符的字符串。</summary>
+      <returns>在百分比值中用作小数分隔符的字符串。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> 默认为“.”。</returns>
+      <exception cref="T:System.ArgumentNullException">该属性被设置为 null。</exception>
+      <exception cref="T:System.InvalidOperationException">正在设置该属性，但 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象是只读的。</exception>
+      <exception cref="T:System.ArgumentException">此属性当前设置为空字符串。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentGroupSeparator">
+      <summary>获取或设置在百分比值中隔离小数点左边数字组的字符串。</summary>
+      <returns>在百分比值中隔开小数点左边的位数组的字符串。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> 默认为“,”。</returns>
+      <exception cref="T:System.ArgumentNullException">该属性被设置为 null。</exception>
+      <exception cref="T:System.InvalidOperationException">正在设置该属性，但 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象是只读的。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentGroupSizes">
+      <summary>获取或设置在百分比值中小数点左边每一组的位数。</summary>
+      <returns>百分比值中小数点左边的每一组的位数。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> 的默认值是一个一维数组，该数组只包含一个设置为 3 的元素。</returns>
+      <exception cref="T:System.ArgumentNullException">该属性被设置为 null。</exception>
+      <exception cref="T:System.ArgumentException">试图设置该属性，但此数组包含一个小于 0 或大于 9 的项。- 或 - 试图设置该属性，但此数组包含一个设置为 0 的项（最后一项除外）。</exception>
+      <exception cref="T:System.InvalidOperationException">正在设置该属性，但 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象是只读的。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentNegativePattern">
+      <summary>获取或设置负百分比值的格式模式。</summary>
+      <returns>负百分比值的格式模式。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> 的默认值是 0，它表示“-n %”，其中“%”是 <see cref="P:System.Globalization.NumberFormatInfo.PercentSymbol" />，<paramref name="n" /> 是一个数字。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">属性被设置为小于 0 或大于 11 的值。</exception>
+      <exception cref="T:System.InvalidOperationException">正在设置该属性，但 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象是只读的。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentPositivePattern">
+      <summary>获取或设置正百分比值的格式模式。</summary>
+      <returns>正百分比值的格式模式。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> 的默认值是 0，它表示“n %”，其中“%”是 <see cref="P:System.Globalization.NumberFormatInfo.PercentSymbol" />，<paramref name="n" /> 是一个数字。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">该属性被设置为小于 0 或大于 3 的值。</exception>
+      <exception cref="T:System.InvalidOperationException">正在设置该属性，但 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象是只读的。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentSymbol">
+      <summary>获取或设置用作百分比符号的字符串。</summary>
+      <returns>用作百分比符号的字符串。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> 默认为“%”。</returns>
+      <exception cref="T:System.ArgumentNullException">该属性被设置为 null。</exception>
+      <exception cref="T:System.InvalidOperationException">正在设置该属性，但 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象是只读的。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PerMilleSymbol">
+      <summary>获取或设置用作千分比符号的字符串。</summary>
+      <returns>用作千分比符号的字符串。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> 默认为“‰”，它是 Unicode 字符 U+2030。</returns>
+      <exception cref="T:System.ArgumentNullException">该属性被设置为 null。</exception>
+      <exception cref="T:System.InvalidOperationException">正在设置该属性，但 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象是只读的。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PositiveInfinitySymbol">
+      <summary>获取或设置表示正无穷大的字符串。</summary>
+      <returns>表示正无穷大的字符串。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> 默认为“Infinity”。</returns>
+      <exception cref="T:System.ArgumentNullException">该属性被设置为 null。</exception>
+      <exception cref="T:System.InvalidOperationException">正在设置该属性，但 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象是只读的。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PositiveSign">
+      <summary>获取或设置指示关联数字是正值的字符串。</summary>
+      <returns>指示关联数字是正值的字符串。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> 默认为“+”。</returns>
+      <exception cref="T:System.ArgumentNullException">在设置操作中，要分配的值为 null。</exception>
+      <exception cref="T:System.InvalidOperationException">正在设置该属性，但 <see cref="T:System.Globalization.NumberFormatInfo" /> 对象是只读的。</exception>
+    </member>
+    <member name="M:System.Globalization.NumberFormatInfo.ReadOnly(System.Globalization.NumberFormatInfo)">
+      <summary>返回只读的 <see cref="T:System.Globalization.NumberFormatInfo" /> 包装。</summary>
+      <returns>
+        <paramref name="nfi" /> 周围的只读 <see cref="T:System.Globalization.NumberFormatInfo" /> 包装。</returns>
+      <param name="nfi">要包装的 <see cref="T:System.Globalization.NumberFormatInfo" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="nfi" /> 为 null。</exception>
+    </member>
+    <member name="T:System.Globalization.RegionInfo">
+      <summary>包含国家/地区的相关信息。</summary>
+    </member>
+    <member name="M:System.Globalization.RegionInfo.#ctor(System.String)">
+      <summary>基于按名称指定的国家/地区或特定区域性初始化 <see cref="T:System.Globalization.RegionInfo" /> 类的新实例。</summary>
+      <param name="name">包含 ISO 3166 中为国家/地区定义的由两个字母组成的代码的字符串。- 或 -包含特定区域性、自定义区域性或仅适用于 Windows 的区域性的区域性名称的字符串。如果区域性名称未采用 RFC 4646 格式，应用程序应指定整个区域性名称，而不是仅指定国家/地区。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> is null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> is not a valid country/region name or specific culture name.</exception>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.CurrencySymbol">
+      <summary>获取与国家/地区关联的货币符号。</summary>
+      <returns>与国家/地区关联的货币符号。</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.CurrentRegion">
+      <summary>获取表示当前线程所使用的国家/地区的 <see cref="T:System.Globalization.RegionInfo" />。</summary>
+      <returns>表示当前线程所使用的国家/地区的 <see cref="T:System.Globalization.RegionInfo" />。</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.DisplayName">
+      <summary>获取以 .NET Framework 本地化版本语言表示的国家/地区的全名。</summary>
+      <returns>以 .NET Framework 本地化版本语言表示的国家/地区的全名。</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.EnglishName">
+      <summary>获取以英文表示的国家/地区的全名。</summary>
+      <returns>以英文表示的国家/地区的全名。</returns>
+    </member>
+    <member name="M:System.Globalization.RegionInfo.Equals(System.Object)">
+      <summary>确定指定对象与当前 <see cref="T:System.Globalization.RegionInfo" /> 对象是否为同一实例。</summary>
+      <returns>如果 <paramref name="value" /> 参数是一个 <see cref="T:System.Globalization.RegionInfo" /> 对象并且其 <see cref="P:System.Globalization.RegionInfo.Name" /> 属性与当前 <see cref="T:System.Globalization.RegionInfo" /> 对象的 <see cref="P:System.Globalization.RegionInfo.Name" /> 属性相同，则为 true；否则为 false。</returns>
+      <param name="value">将与当前 <see cref="T:System.Globalization.RegionInfo" /> 进行比较的对象。 </param>
+    </member>
+    <member name="M:System.Globalization.RegionInfo.GetHashCode">
+      <summary>用作当前 <see cref="T:System.Globalization.RegionInfo" /> 的哈希函数，适合用在哈希算法和数据结构（如哈希表）中。</summary>
+      <returns>当前 <see cref="T:System.Globalization.RegionInfo" /> 的哈希代码。</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.IsMetric">
+      <summary>获取一个值，该值指示该国家/地区是否使用公制进行度量。</summary>
+      <returns>如果该国家/地区使用公制进行度量，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.ISOCurrencySymbol">
+      <summary>获取与国家/地区关联的由三个字符组成的 ISO 4217 货币符号。</summary>
+      <returns>与国家/地区关联的由三个字符组成的 ISO 4217 货币符号。</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.Name">
+      <summary>获取当前 <see cref="T:System.Globalization.RegionInfo" /> 对象的名称或 ISO 3166 双字母国家/地区代码。</summary>
+      <returns>
+        <see cref="M:System.Globalization.RegionInfo.#ctor(System.String)" /> 构造函数的 <paramref name="name" /> 参数指定的值。返回值为大写。- 或 -在 ISO 3166 中定义的且由 <see cref="M:System.Globalization.RegionInfo.#ctor(System.Int32)" /> 构造函数的 <paramref name="culture" /> 参数指定的国家/地区的双字母代码。返回值为大写。</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.NativeName">
+      <summary>获取一个国家/地区的名称，它使用该国家/地区的本地语言格式表示。</summary>
+      <returns>该国家/地区的本地名称，它使用与 ISO 3166 国家/地区代码关联的语言格式表示。</returns>
+    </member>
+    <member name="M:System.Globalization.RegionInfo.ToString">
+      <summary>返回一个字符串，它包含为当前 <see cref="T:System.Globalization.RegionInfo" /> 指定的区域性名称或 ISO 3166 双字母国家/地区代码。</summary>
+      <returns>一个字符串，它包含为当前 <see cref="T:System.Globalization.RegionInfo" /> 定义的区域性名称或 ISO 3166 双字母国家/地区代码。</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.TwoLetterISORegionName">
+      <summary>获取在 ISO 3166 中定义的由两个字母组成的国家/地区代码。</summary>
+      <returns>在 ISO 3166 中定义的由两个字母组成的国家/地区代码。</returns>
+    </member>
+    <member name="T:System.Globalization.StringInfo">
+      <summary>提供功能将字符串拆分为文本元素并循环访问这些文本元素。</summary>
+    </member>
+    <member name="M:System.Globalization.StringInfo.#ctor">
+      <summary>初始化 <see cref="T:System.Globalization.StringInfo" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Globalization.StringInfo.#ctor(System.String)">
+      <summary>将 <see cref="T:System.Globalization.StringInfo" /> 类的新实例初始化为指定的字符串。</summary>
+      <param name="value">用于初始化此 <see cref="T:System.Globalization.StringInfo" /> 对象的字符串。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Globalization.StringInfo.Equals(System.Object)">
+      <summary>指示当前 <see cref="T:System.Globalization.StringInfo" /> 对象是否与指定的对象相等。</summary>
+      <returns>如果 <paramref name="value" /> 参数是 <see cref="T:System.Globalization.StringInfo" /> 对象并且其 <see cref="P:System.Globalization.StringInfo.String" /> 属性等同于此 <see cref="T:System.Globalization.StringInfo" /> 对象的 <see cref="P:System.Globalization.StringInfo.String" /> 属性，则为 true；否则，为 false。</returns>
+      <param name="value">一个对象。</param>
+    </member>
+    <member name="M:System.Globalization.StringInfo.GetHashCode">
+      <summary>计算当前 <see cref="T:System.Globalization.StringInfo" /> 对象的值的哈希代码。</summary>
+      <returns>基于此 <see cref="T:System.Globalization.StringInfo" /> 对象的字符串值的 32 位有符号整数哈希代码。</returns>
+    </member>
+    <member name="M:System.Globalization.StringInfo.GetNextTextElement(System.String)">
+      <summary>获取指定字符串中的第一个文本元素。</summary>
+      <returns>包含指定字符串中的第一个文本元素的字符串。</returns>
+      <param name="str">要从其获取文本元素的字符串。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Globalization.StringInfo.GetNextTextElement(System.String,System.Int32)">
+      <summary>获取指定字符串中指定索引处的文本元素。</summary>
+      <returns>包含指定字符串中指定索引处的文本元素的字符串。</returns>
+      <param name="str">要从其获取文本元素的字符串。</param>
+      <param name="index">文本元素开始位置的从零开始的索引。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> 超出了 <paramref name="str" /> 的有效索引范围。</exception>
+    </member>
+    <member name="M:System.Globalization.StringInfo.GetTextElementEnumerator(System.String)">
+      <summary>返回一个循环访问整个字符串的文本元素的枚举数。</summary>
+      <returns>整个字符串的 <see cref="T:System.Globalization.TextElementEnumerator" />。</returns>
+      <param name="str">要循环访问的字符串。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Globalization.StringInfo.GetTextElementEnumerator(System.String,System.Int32)">
+      <summary>返回一个枚举数，它循环访问字符串的文本元素并从指定索引处开始。</summary>
+      <returns>在 <paramref name="index" /> 处开始的字符串的 <see cref="T:System.Globalization.TextElementEnumerator" />。</returns>
+      <param name="str">要循环访问的字符串。</param>
+      <param name="index">开始迭代处的从零开始的索引。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> 超出了 <paramref name="str" /> 的有效索引范围。</exception>
+    </member>
+    <member name="P:System.Globalization.StringInfo.LengthInTextElements">
+      <summary>获取当前 <see cref="T:System.Globalization.StringInfo" /> 对象中的文本元素的数目。</summary>
+      <returns>此 <see cref="T:System.Globalization.StringInfo" /> 对象中的基本字符、代理项对和组合字符序列的数目。</returns>
+    </member>
+    <member name="M:System.Globalization.StringInfo.ParseCombiningCharacters(System.String)">
+      <summary>返回指定字符串中每个基字符、高代理项或控制字符的索引。</summary>
+      <returns>一个整数数组，它包含指定字符串中每个基字符、高代理项或控制字符的索引（从零开始）。</returns>
+      <param name="str">要搜索的字符串。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> 为 null。</exception>
+    </member>
+    <member name="P:System.Globalization.StringInfo.String">
+      <summary>获取或设置当前 <see cref="T:System.Globalization.StringInfo" /> 对象的值。</summary>
+      <returns>作为当前 <see cref="T:System.Globalization.StringInfo" /> 对象的值的字符串。</returns>
+      <exception cref="T:System.ArgumentNullException">设置操作中的值为 null。</exception>
+    </member>
+    <member name="T:System.Globalization.TextElementEnumerator">
+      <summary>枚举字符串的文本元素。</summary>
+    </member>
+    <member name="P:System.Globalization.TextElementEnumerator.Current">
+      <summary>获取字符串中的当前文本元素。</summary>
+      <returns>包含字符串中当前文本元素的对象。</returns>
+      <exception cref="T:System.InvalidOperationException">枚举数位于字符串的第一个文本元素之前或最后一个文本元素之后。</exception>
+    </member>
+    <member name="P:System.Globalization.TextElementEnumerator.ElementIndex">
+      <summary>获取枚举数当前置于其上的文本元素的索引。</summary>
+      <returns>枚举数当前置于其上的文本元素的索引。</returns>
+      <exception cref="T:System.InvalidOperationException">枚举数位于字符串的第一个文本元素之前或最后一个文本元素之后。</exception>
+    </member>
+    <member name="M:System.Globalization.TextElementEnumerator.GetTextElement">
+      <summary>获取字符串中的当前文本元素。</summary>
+      <returns>一个包含所读取的字符串中当前文本元素的新字符串。</returns>
+      <exception cref="T:System.InvalidOperationException">枚举数位于字符串的第一个文本元素之前或最后一个文本元素之后。</exception>
+    </member>
+    <member name="M:System.Globalization.TextElementEnumerator.MoveNext">
+      <summary>将枚举数前移到字符串的下一个文本元素。</summary>
+      <returns>如果枚举数成功前移到下一个文本元素，则为 true；如果枚举数已超过字符串的结尾，则为 false。</returns>
+    </member>
+    <member name="M:System.Globalization.TextElementEnumerator.Reset">
+      <summary>将枚举数设置为其初始位置，该位置位于字符串中第一个文本元素之前。</summary>
+    </member>
+    <member name="T:System.Globalization.TextInfo">
+      <summary>定义特定于书写系统的文本属性和行为（如大小写）。</summary>
+    </member>
+    <member name="P:System.Globalization.TextInfo.CultureName">
+      <summary>获取与当前 <see cref="T:System.Globalization.TextInfo" /> 对象关联的区域性的名称。</summary>
+      <returns>区域性的名称。</returns>
+    </member>
+    <member name="M:System.Globalization.TextInfo.Equals(System.Object)">
+      <summary>确定指定的对象是否与当前 <see cref="T:System.Globalization.TextInfo" /> 对象表示同一书写体系。</summary>
+      <returns>如果 <paramref name="obj" /> 与当前 <see cref="T:System.Globalization.TextInfo" /> 表示同一书写系统，则为 true；否则为 false。</returns>
+      <param name="obj">将与当前 <see cref="T:System.Globalization.TextInfo" /> 进行比较的对象。 </param>
+    </member>
+    <member name="M:System.Globalization.TextInfo.GetHashCode">
+      <summary>用作当前 <see cref="T:System.Globalization.TextInfo" /> 的哈希函数，适合用在哈希算法和数据结构（如哈希表）中。</summary>
+      <returns>当前 <see cref="T:System.Globalization.TextInfo" /> 的哈希代码。</returns>
+    </member>
+    <member name="P:System.Globalization.TextInfo.IsReadOnly">
+      <summary>获取一个值，该值指示当前 <see cref="T:System.Globalization.TextInfo" /> 对象是否为只读。</summary>
+      <returns>如果当前 <see cref="T:System.Globalization.TextInfo" /> 对象为只读，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Globalization.TextInfo.IsRightToLeft">
+      <summary>获取一个值，该值指示当前 <see cref="T:System.Globalization.TextInfo" /> 对象是否表示文本从右到左书写的书写系统。</summary>
+      <returns>如果文本从右到左书写，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Globalization.TextInfo.ListSeparator">
+      <summary>获取或设置在列表中分隔项的字符串。</summary>
+      <returns>在列表中分隔项的字符串。</returns>
+      <exception cref="T:System.ArgumentNullException">The value in a set operation is null.</exception>
+      <exception cref="T:System.InvalidOperationException">In a set operation, the current <see cref="T:System.Globalization.TextInfo" /> object is read-only.</exception>
+    </member>
+    <member name="M:System.Globalization.TextInfo.ToLower(System.Char)">
+      <summary>将指定的字符转换为小写。</summary>
+      <returns>转换为小写的指定字符。</returns>
+      <param name="c">要转换为小写的字符。</param>
+    </member>
+    <member name="M:System.Globalization.TextInfo.ToLower(System.String)">
+      <summary>将指定的字符串转换为小写。</summary>
+      <returns>转换为小写的指定字符串。</returns>
+      <param name="str">要转换为小写的字符串。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> is null. </exception>
+    </member>
+    <member name="M:System.Globalization.TextInfo.ToString">
+      <summary>返回表示当前 <see cref="T:System.Globalization.TextInfo" /> 的字符串。</summary>
+      <returns>表示当前 <see cref="T:System.Globalization.TextInfo" /> 的字符串。</returns>
+    </member>
+    <member name="M:System.Globalization.TextInfo.ToUpper(System.Char)">
+      <summary>将指定的字符转换为大写。</summary>
+      <returns>转换为大写的指定字符。</returns>
+      <param name="c">要转换为大写的字符。</param>
+    </member>
+    <member name="M:System.Globalization.TextInfo.ToUpper(System.String)">
+      <summary>将指定的字符串转换为大写。</summary>
+      <returns>转换为大写的指定字符串。</returns>
+      <param name="str">要转换为大写的字符串。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> is null. </exception>
+    </member>
+    <member name="T:System.Globalization.UnicodeCategory">
+      <summary>定义字符的 Unicode 类别。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.ClosePunctuation">
+      <summary>成对的标点符号（例如括号、方括号和大括号）的结束字符。由 Unicode 代码“Pe”（标点，结束）表示。值为 21。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.ConnectorPunctuation">
+      <summary>连接两个字符的连接符标点字符。由 Unicode 代码“Pc”（标点，连接符）表示。值为 18。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.Control">
+      <summary>控制代码字符，其 Unicode 值是 U+007F，或者位于 U+0000 到 U+001F 或 U+0080 到 U+009F 范围内。由 Unicode 代码“Cc”（其他，控制）表示。值为 14。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.CurrencySymbol">
+      <summary>货币符号字符。由 Unicode 代码“Sc”（符号，货币）表示。值为 26。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.DashPunctuation">
+      <summary>短划线或连字符字符。由 Unicode 代码“Pd”（标点，短划线）表示。值为 19。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.DecimalDigitNumber">
+      <summary>十进制数字字符，即范围 0 到 9 内的字符。由 Unicode 代码“Nd”（数字，十进制数字）表示。值为 8。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.EnclosingMark">
+      <summary>封闭符号字符，它将基字符前面的所有字符（包括基字符）括起来。由 Unicode 代码“Me”（符号，封闭）表示。值为 7。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.FinalQuotePunctuation">
+      <summary>右引号或后引号字符。由 Unicode 代码“Pf”（标点，后引号）表示。值为 23。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.Format">
+      <summary>格式字符，它影响文本布局或文本处理操作，但是它通常不会呈现。由 Unicode 代码“Cf”（其他，格式）表示。值为 15。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.InitialQuotePunctuation">
+      <summary>左引号或前引号字符。由 Unicode 代码“Pi”（标点，前引号）表示。值为 22。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.LetterNumber">
+      <summary>由字母表示的数字，而不是十进制数字，例如，罗马数字 5 由字母“V”表示。此指示符由 Unicode 代码“Nl”（数字，字母）表示。值为 9。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.LineSeparator">
+      <summary>用于分隔文本各行的字符。由 Unicode 代码“Zl”（分隔符，行）表示。值为 12。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.LowercaseLetter">
+      <summary>小写字母。由 Unicode 代码“Ll”（字母，小写）表示。值为 1。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.MathSymbol">
+      <summary>数学符号字符，例如“+”或“=”。由 Unicode 代码“Sm”（符号，数学）表示。值为 25。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.ModifierLetter">
+      <summary>修饰符字母字符，它是独立式的间距字符，指示前面字母的修改。由 Unicode 代码“Lm”（字母，修饰符）表示。值为 3。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.ModifierSymbol">
+      <summary>修饰符符号字符，它指示环绕字符的修改。例如，分数斜线号指示其左侧的数字为分子，右侧的数字为分母。此指示符由 Unicode 代码“Sk”（符号，修饰符）表示。值为 27。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.NonSpacingMark">
+      <summary>指示基字符的修改的非间距字符。由 Unicode 代码“Mn”（符号，非间距）表示。值为 5。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OpenPunctuation">
+      <summary>成对的标点符号（例如括号、方括号和大括号）的开始字符。由 Unicode 代码“Ps”（标点，开始）表示。值为 20。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OtherLetter">
+      <summary>不属于大写字母、小写字母、词首字母大写或修饰符字母的字母。由 Unicode 代码“Lo”（字母，其他）表示。值为 4。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OtherNotAssigned">
+      <summary>未指派给任何 Unicode 类别的字符。由 Unicode 代码“Cn”（其他，未分配）表示。值为 29。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OtherNumber">
+      <summary>既不是十进制数字也不是字母数字的数字，例如分数 1/2。此指示符由 Unicode 代码“No”（数字，其他）表示。值为 10。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OtherPunctuation">
+      <summary>不属于连接符、短划线、开始标点、结束标点、前引号或后引号的标点字符。由 Unicode 代码“Po”（标点，其他）表示。值为 24。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OtherSymbol">
+      <summary>不属于数学符号、货币符号或修饰符符号的符号字符。由 Unicode 代码“So”（符号，其他）表示。值为 28。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.ParagraphSeparator">
+      <summary>用于分隔段落的字符。由 Unicode 代码“Zp”（分隔符，段落）表示。值为 13。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.PrivateUse">
+      <summary>专用字符，其 Unicode 值在范围 U+E000 到 U+F8FF 内。由 Unicode 代码“Co”（其他，专用）表示。值为 17。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.SpaceSeparator">
+      <summary>没有标志符号但不属于控制或格式字符的空白字符。由 Unicode 代码“Zs”（分隔符，空白）表示。值为 11。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.SpacingCombiningMark">
+      <summary>间距字符，它指示基字符的修改并影响基字符的标志符号的宽度。由 Unicode 代码“Mc”（符号，间距组合）表示。值为 6。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.Surrogate">
+      <summary>高代理项或低代理项字符。代理项代码值在范围 U+D800 到 U+DFFF 内。由 Unicode 代码“Cs”（其他，代理项）表示。值为 16。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.TitlecaseLetter">
+      <summary>词首字母大写的字母。由 Unicode 代码“Lt”（字母，词首字母大写）表示。值为 2。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.UppercaseLetter">
+      <summary>大写字母。由 Unicode 代码“Lu”（字母，大写）表示。值为 0。</summary>
+    </member>
+  </members>
+</doc>

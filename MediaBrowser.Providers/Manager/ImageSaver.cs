@@ -183,7 +183,7 @@ namespace MediaBrowser.Providers.Manager
             }
         }
 
-        private async ValueTask<string> SaveImageToLocation(Stream source, string path, string retryPath, CancellationToken cancellationToken)
+        private async Task<string> SaveImageToLocation(Stream source, string path, string retryPath, CancellationToken cancellationToken)
         {
             try
             {

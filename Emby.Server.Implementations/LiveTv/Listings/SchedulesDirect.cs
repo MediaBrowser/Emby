@@ -593,7 +593,7 @@ namespace Emby.Server.Implementations.LiveTv.Listings
 
         private readonly ConcurrentDictionary<string, NameValuePair> _tokens = new ConcurrentDictionary<string, NameValuePair>();
         private DateTime _lastErrorResponse;
-        private async ValueTask<string> GetToken(ListingsProviderInfo info, CancellationToken cancellationToken)
+        private async Task<string> GetToken(ListingsProviderInfo info, CancellationToken cancellationToken)
         {
             var username = info.Username;
 
@@ -739,7 +739,7 @@ namespace Emby.Server.Implementations.LiveTv.Listings
             return await Get(options, false, providerInfo).ConfigureAwait(false);
         }
 
-        private async ValueTask<string> GetTokenInternal(string username, string password,
+        private async Task<string> GetTokenInternal(string username, string password,
             CancellationToken cancellationToken)
         {
             var httpOptions = new HttpRequestOptions()
@@ -809,7 +809,7 @@ namespace Emby.Server.Implementations.LiveTv.Listings
             get { return TypeName; }
         }
 
-        private async ValueTask<bool> HasLineup(ListingsProviderInfo info, CancellationToken cancellationToken)
+        private async Task<bool> HasLineup(ListingsProviderInfo info, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(info.ListingsId))
             {

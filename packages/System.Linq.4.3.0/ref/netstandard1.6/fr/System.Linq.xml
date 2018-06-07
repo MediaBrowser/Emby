@@ -1,0 +1,1898 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Linq</name>
+  </assembly>
+  <members>
+    <member name="T:System.Linq.Enumerable">
+      <summary>Fournit un jeu de méthodes static (Shared en Visual Basic) permettant d'exécuter une requête d'objets qui implémentent <see cref="T:System.Collections.Generic.IEnumerable`1" />.</summary>
+    </member>
+    <member name="M:System.Linq.Enumerable.Aggregate``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``0,``0})">
+      <summary>Applique une fonction d'accumulation sur une séquence.</summary>
+      <returns>Valeur d'accumulation finale.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> pour l'agrégat.</param>
+      <param name="func">Fonction d'accumulation à appeler sur chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="func" /> est null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Aggregate``2(System.Collections.Generic.IEnumerable{``0},``1,System.Func{``1,``0,``1})">
+      <summary>Applique une fonction d'accumulation sur une séquence.La valeur initiale spécifiée est utilisée comme valeur d'accumulation initiale.</summary>
+      <returns>Valeur d'accumulation finale.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> pour l'agrégat.</param>
+      <param name="seed">Valeur d'accumulation initiale.</param>
+      <param name="func">Fonction d'accumulation à appeler sur chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TAccumulate">Type de la valeur d'accumulation.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="func" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Aggregate``3(System.Collections.Generic.IEnumerable{``0},``1,System.Func{``1,``0,``1},System.Func{``1,``2})">
+      <summary>Applique une fonction d'accumulation sur une séquence.La valeur initiale spécifiée est utilisée comme valeur d'accumulation initiale et la fonction spécifiée permet de sélectionner la valeur de résultat.</summary>
+      <returns>Valeur d'accumulation finale transformée.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> pour l'agrégat.</param>
+      <param name="seed">Valeur d'accumulation initiale.</param>
+      <param name="func">Fonction d'accumulation à appeler sur chaque élément.</param>
+      <param name="resultSelector">Fonction permettant de transformer la valeur d'accumulation finale en valeur de résultat.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TAccumulate">Type de la valeur d'accumulation.</typeparam>
+      <typeparam name="TResult">Type de la valeur résultante.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="func" /> ou <paramref name="resultSelector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.All``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+      <summary>Détermine si tous les éléments d'une séquence satisfont à une condition.</summary>
+      <returns>true si tous les éléments de la séquence source réussissent le test dans le prédicat spécifié ou si la séquence est vide ; sinon, false.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui contient les éléments auxquels appliquer le prédicat.</param>
+      <param name="predicate">Fonction permettant de tester chaque élément par rapport à une condition.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="predicate" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Any``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>Détermine si une séquence contient des éléments.</summary>
+      <returns>true si la séquence source contient des éléments ; sinon, false.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> à vérifier pour savoir si des éléments y sont présents.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Any``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+      <summary>Détermine si des éléments d'une séquence satisfont à une condition.</summary>
+      <returns>true si des éléments de la séquence source réussissent le test dans le prédicat spécifié ; sinon, false.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui contient les éléments auxquels appliquer le prédicat.</param>
+      <param name="predicate">Fonction permettant de tester chaque élément par rapport à une condition.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="predicate" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.AsEnumerable``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>Retourne l'entrée typée comme <see cref="T:System.Collections.Generic.IEnumerable`1" />.</summary>
+      <returns>Séquence d'entrées typées comme <see cref="T:System.Collections.Generic.IEnumerable`1" />.</returns>
+      <param name="source">Séquence à saisir comme <see cref="T:System.Collections.Generic.IEnumerable`1" />.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Decimal})">
+      <summary>Calcule la moyenne d'une séquence de valeurs <see cref="T:System.Decimal" />.</summary>
+      <returns>Moyenne de la séquence de valeurs.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Decimal" /> dont la moyenne doit être calculée.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Double})">
+      <summary>Calcule la moyenne d'une séquence de valeurs <see cref="T:System.Double" />.</summary>
+      <returns>Moyenne de la séquence de valeurs.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Double" /> dont la moyenne doit être calculée.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Int32})">
+      <summary>Calcule la moyenne d'une séquence de valeurs <see cref="T:System.Int32" />.</summary>
+      <returns>Moyenne de la séquence de valeurs.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Int32" /> dont la moyenne doit être calculée.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Int64})">
+      <summary>Calcule la moyenne d'une séquence de valeurs <see cref="T:System.Int64" />.</summary>
+      <returns>Moyenne de la séquence de valeurs.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Int64" /> dont la moyenne doit être calculée.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Nullable{System.Decimal}})">
+      <summary>Calcule la moyenne d'une séquence de valeurs <see cref="T:System.Decimal" /> nullables.</summary>
+      <returns>Moyenne de la séquence de valeurs ou null si la séquence source est vide ou ne contient que des valeurs null.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Decimal" /> nullables dont la moyenne doit être calculée.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.OverflowException">La somme des éléments de la séquence est supérieure à <see cref="F:System.Decimal.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Nullable{System.Double}})">
+      <summary>Calcule la moyenne d'une séquence de valeurs <see cref="T:System.Double" /> nullables.</summary>
+      <returns>Moyenne de la séquence de valeurs ou null si la séquence source est vide ou ne contient que des valeurs null.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Double" /> nullables dont la moyenne doit être calculée.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Nullable{System.Int32}})">
+      <summary>Calcule la moyenne d'une séquence de valeurs <see cref="T:System.Int32" /> nullables.</summary>
+      <returns>Moyenne de la séquence de valeurs ou null si la séquence source est vide ou ne contient que des valeurs null.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Int32" />  nullables dont la moyenne doit être calculée.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.OverflowException">La somme des éléments de la séquence est supérieure à <see cref="F:System.Int64.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Nullable{System.Int64}})">
+      <summary>Calcule la moyenne d'une séquence de valeurs <see cref="T:System.Int64" /> nullables.</summary>
+      <returns>Moyenne de la séquence de valeurs ou null si la séquence source est vide ou ne contient que des valeurs null.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Int64" /> nullables dont la moyenne doit être calculée.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.OverflowException">La somme des éléments de la séquence est supérieure à <see cref="F:System.Int64.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Nullable{System.Single}})">
+      <summary>Calcule la moyenne d'une séquence de valeurs <see cref="T:System.Single" /> nullables.</summary>
+      <returns>Moyenne de la séquence de valeurs ou null si la séquence source est vide ou ne contient que des valeurs null.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Single" /> nullables dont la moyenne doit être calculée.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Single})">
+      <summary>Calcule la moyenne d'une séquence de valeurs <see cref="T:System.Single" />.</summary>
+      <returns>Moyenne de la séquence de valeurs.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Single" /> dont la moyenne doit être calculée.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Decimal})">
+      <summary>Calcule la moyenne d'une séquence de valeurs <see cref="T:System.Decimal" /> obtenues en appelant une fonction de transformation sur chaque élément de la séquence d'entrée.</summary>
+      <returns>Moyenne de la séquence de valeurs.</returns>
+      <param name="source">Séquence de valeurs utilisées pour calculer une moyenne.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+      <exception cref="T:System.OverflowException">La somme des éléments de la séquence est supérieure à <see cref="F:System.Decimal.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Double})">
+      <summary>Calcule la moyenne d'une séquence de valeurs <see cref="T:System.Double" /> obtenues en appelant une fonction de transformation sur chaque élément de la séquence d'entrée.</summary>
+      <returns>Moyenne de la séquence de valeurs.</returns>
+      <param name="source">Séquence de valeurs dont la moyenne doit être calculée.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32})">
+      <summary>Calcule la moyenne d'une séquence de valeurs <see cref="T:System.Int32" /> obtenues en appelant une fonction de transformation sur chaque élément de la séquence d'entrée.</summary>
+      <returns>Moyenne de la séquence de valeurs.</returns>
+      <param name="source">Séquence de valeurs dont la moyenne doit être calculée.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+      <exception cref="T:System.OverflowException">La somme des éléments de la séquence est supérieure à <see cref="F:System.Int64.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int64})">
+      <summary>Calcule la moyenne d'une séquence de valeurs <see cref="T:System.Int64" /> obtenues en appelant une fonction de transformation sur chaque élément de la séquence d'entrée.</summary>
+      <returns>Moyenne de la séquence de valeurs.</returns>
+      <param name="source">Séquence de valeurs dont la moyenne doit être calculée.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de la source.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+      <exception cref="T:System.OverflowException">La somme des éléments de la séquence est supérieure à <see cref="F:System.Int64.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Decimal}})">
+      <summary>Calcule la moyenne d'une séquence de valeurs <see cref="T:System.Decimal" /> nullables obtenues en appelant une fonction de transformation sur chaque élément de la séquence d'entrée.</summary>
+      <returns>Moyenne de la séquence de valeurs ou null si la séquence source est vide ou ne contient que des valeurs null.</returns>
+      <param name="source">Séquence de valeurs dont la moyenne doit être calculée.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+      <exception cref="T:System.OverflowException">La somme des éléments de la séquence est supérieure à <see cref="F:System.Decimal.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Double}})">
+      <summary>Calcule la moyenne d'une séquence de valeurs <see cref="T:System.Double" /> nullables obtenues en appelant une fonction de transformation sur chaque élément de la séquence d'entrée.</summary>
+      <returns>Moyenne de la séquence de valeurs ou null si la séquence source est vide ou ne contient que des valeurs null.</returns>
+      <param name="source">Séquence de valeurs dont la moyenne doit être calculée.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int32}})">
+      <summary>Calcule la moyenne d'une séquence de valeurs <see cref="T:System.Int32" /> nullables obtenues en appelant une fonction de transformation sur chaque élément de la séquence d'entrée.</summary>
+      <returns>Moyenne de la séquence de valeurs ou null si la séquence source est vide ou ne contient que des valeurs null.</returns>
+      <param name="source">Séquence de valeurs dont la moyenne doit être calculée.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+      <exception cref="T:System.OverflowException">La somme des éléments de la séquence est supérieure à <see cref="F:System.Int64.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int64}})">
+      <summary>Calcule la moyenne d'une séquence de valeurs <see cref="T:System.Int64" /> nullables obtenues en appelant une fonction de transformation sur chaque élément de la séquence d'entrée.</summary>
+      <returns>Moyenne de la séquence de valeurs ou null si la séquence source est vide ou ne contient que des valeurs null.</returns>
+      <param name="source">Séquence de valeurs dont la moyenne doit être calculée.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Single}})">
+      <summary>Calcule la moyenne d'une séquence de valeurs <see cref="T:System.Single" /> nullables obtenues en appelant une fonction de transformation sur chaque élément de la séquence d'entrée.</summary>
+      <returns>Moyenne de la séquence de valeurs ou null si la séquence source est vide ou ne contient que des valeurs null.</returns>
+      <param name="source">Séquence de valeurs dont la moyenne doit être calculée.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Single})">
+      <summary>Calcule la moyenne d'une séquence de valeurs <see cref="T:System.Single" /> obtenues en appelant une fonction de transformation sur chaque élément de la séquence d'entrée.</summary>
+      <returns>Moyenne de la séquence de valeurs.</returns>
+      <param name="source">Séquence de valeurs dont la moyenne doit être calculée.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Cast``1(System.Collections.IEnumerable)">
+      <summary>Effectue un cast des éléments d'un <see cref="T:System.Collections.IEnumerable" /> vers le type spécifié.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui contient chaque élément de la séquence source casté vers le type spécifié.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.IEnumerable" />  les éléments à être castés en type <paramref name="TResult" />.</param>
+      <typeparam name="TResult">Type pour lequel effectuer un cast pour les éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.InvalidCastException">Impossible de caster un élément de la séquence en type <paramref name="TResult" />.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Concat``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+      <summary>Concatène deux séquences.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui contient les éléments concaténés des deux séquences d'entrée.</returns>
+      <param name="first">Première séquence à concaténer.</param>
+      <param name="second">Séquence à concaténer à la première séquence.</param>
+      <typeparam name="TSource">Type des éléments des séquences d'entrée.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="first" /> ou <paramref name="second" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Contains``1(System.Collections.Generic.IEnumerable{``0},``0)">
+      <summary>Détermine si une séquence contient un élément spécifié à l'aide du comparateur d'égalité par défaut.</summary>
+      <returns>true si la séquence source contient un élément avec la valeur spécifiée ; sinon, false.</returns>
+      <param name="source">Séquence dans laquelle localiser une valeur.</param>
+      <param name="value">Valeur à localiser dans la séquence.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Contains``1(System.Collections.Generic.IEnumerable{``0},``0,System.Collections.Generic.IEqualityComparer{``0})">
+      <summary>Détermine si une séquence contient un élément spécifié à l'aide du <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> indiqué.</summary>
+      <returns>true si la séquence source contient un élément avec la valeur spécifiée ; sinon, false.</returns>
+      <param name="source">Séquence dans laquelle localiser une valeur.</param>
+      <param name="value">Valeur à localiser dans la séquence.</param>
+      <param name="comparer">Comparateur d'égalité à l'aide duquel comparer des valeurs.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Count``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>Retourne le nombre total d'éléments dans une séquence.</summary>
+      <returns>Nombre total d'éléments dans la séquence d'entrée.</returns>
+      <param name="source">Séquence qui contient les éléments à compter.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.OverflowException">Le nombre d'éléments dans <paramref name="source" /> est supérieur à <see cref="F:System.Int32.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Count``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+      <summary>Retourne un nombre qui représente les éléments de la séquence spécifiée qui satisfont à une condition.</summary>
+      <returns>Nombre qui représente les éléments de la séquence spécifiée qui satisfont à la condition dans la fonction de prédicat.</returns>
+      <param name="source">Séquence qui contient les éléments à tester et à compter.</param>
+      <param name="predicate">Fonction permettant de tester chaque élément par rapport à une condition.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="predicate" /> est null.</exception>
+      <exception cref="T:System.OverflowException">Le nombre d'éléments dans <paramref name="source" /> est supérieur à <see cref="F:System.Int32.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.DefaultIfEmpty``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>Retourne les éléments de la séquence spécifiée ou la valeur par défaut du paramètre de type dans une collection de singletons si la séquence est vide.</summary>
+      <returns>Objet <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui contient la valeur par défaut pour le type <paramref name="TSource" /> si <paramref name="source" /> est vide ; sinon, <paramref name="source" />.</returns>
+      <param name="source">Séquence pour laquelle retourner une valeur par défaut si aucun élément n'y figure.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.DefaultIfEmpty``1(System.Collections.Generic.IEnumerable{``0},``0)">
+      <summary>Retourne les éléments de la séquence spécifiée ou la valeur indiquée dans une collection de singletons si la séquence est vide.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui contient <paramref name="defaultValue" /> si <paramref name="source" /> est vide ; sinon, <paramref name="source" />.</returns>
+      <param name="source">Séquence pour laquelle retourner la valeur spécifiée si aucun élément n'y figure.</param>
+      <param name="defaultValue">Valeur à retourner si la séquence est vide.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+    </member>
+    <member name="M:System.Linq.Enumerable.Distinct``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>Retourne des éléments distincts d'une séquence et utilise le comparateur d'égalité par défaut pour comparer les valeurs.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui contient des éléments distincts de la séquence source.</returns>
+      <param name="source">Séquence de laquelle supprimer les éléments en double.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Distinct``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
+      <summary>Retourne des éléments distincts d'une séquence et utilise le <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> spécifié pour comparer les valeurs.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui contient des éléments distincts de la séquence source.</returns>
+      <param name="source">Séquence de laquelle supprimer les éléments en double.</param>
+      <param name="comparer">
+        <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> pour comparer les valeurs.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ElementAt``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+      <summary>Retourne l'élément à une position d'index spécifiée dans une séquence.</summary>
+      <returns>Élément situé à la position spécifiée dans la séquence source.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> depuis lequel retourner un élément.</param>
+      <param name="index">Index de base zéro de l'élément à récupérer.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> est inférieur à 0 ou supérieur ou égal au nombre d'éléments contenus dans <paramref name="source" />.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ElementAtOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+      <summary>Retourne l'élément situé à un index spécifié dans une séquence ou une valeur par défaut si l'index est hors limites.</summary>
+      <returns>default (<paramref name="TSource" />) si l'index est en dehors des limites de la séquence source ; sinon, l'élément situé à la position spécifiée dans la séquence source.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> depuis lequel retourner un élément.</param>
+      <param name="index">Index de base zéro de l'élément à récupérer.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Empty``1">
+      <summary>Retourne un <see cref="T:System.Collections.Generic.IEnumerable`1" /> vide qui a l'argument de type spécifié.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> vide dont l'argument de type est <paramref name="TResult" />.</returns>
+      <typeparam name="TResult">Type à assigner au paramètre de type du <see cref="T:System.Collections.Generic.IEnumerable`1" /> générique retourné.</typeparam>
+    </member>
+    <member name="M:System.Linq.Enumerable.Except``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+      <summary>Produit la différence entre deux séquences à l'aide du comparateur d'égalité par défaut pour comparer les valeurs.</summary>
+      <returns>Séquence qui contient la différence entre les éléments de deux séquences.</returns>
+      <param name="first">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> dont les éléments ne se trouvent pas également dans <paramref name="second" /> seront retournés.</param>
+      <param name="second">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> dont les éléments qui figurent également dans la première séquence seront supprimés de la séquence retournée.</param>
+      <typeparam name="TSource">Type des éléments des séquences d'entrée.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="first" /> ou <paramref name="second" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Except``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
+      <summary>Produit la différence entre deux séquences à l'aide du <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> spécifié pour comparer les valeurs.</summary>
+      <returns>Séquence qui contient la différence entre les éléments de deux séquences.</returns>
+      <param name="first">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> dont les éléments ne se trouvent pas également dans <paramref name="second" /> seront retournés.</param>
+      <param name="second">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> dont les éléments qui figurent également dans la première séquence seront supprimés de la séquence retournée.</param>
+      <param name="comparer">
+        <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> pour comparer les valeurs.</param>
+      <typeparam name="TSource">Type des éléments des séquences d'entrée.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="first" /> ou <paramref name="second" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.First``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>Retourne le premier élément d'une séquence.</summary>
+      <returns>Premier élément de la séquence spécifiée.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> duquel retourner le premier élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.InvalidOperationException">La séquence source est vide.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.First``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+      <summary>Retourne le premier élément d'une séquence à satisfaire à la condition spécifiée.</summary>
+      <returns>Premier élément d'une séquence qui réussit le test dans la fonction de prédicat spécifiée.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> depuis lequel retourner un élément.</param>
+      <param name="predicate">Fonction permettant de tester chaque élément par rapport à une condition.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="predicate" /> est null.</exception>
+      <exception cref="T:System.InvalidOperationException">Aucun élément ne satisfait à la condition dans <paramref name="predicate" />.ouLa séquence source est vide.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.FirstOrDefault``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>Retourne le premier élément d'une séquence ou une valeur par défaut si la séquence ne contient aucun élément.</summary>
+      <returns>default (<paramref name="TSource" />) si <paramref name="source" /> est vide ; sinon, le premier élément de <paramref name="source" />.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> duquel retourner le premier élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.FirstOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+      <summary>Retourne le premier élément de la séquence à satisfaire à une condition ou une valeur par défaut si aucun élément correspondant n'est trouvé.</summary>
+      <returns>default (<paramref name="TSource" />) si <paramref name="source" /> est vide ou si aucun élément ne réussit le test spécifié par <paramref name="predicate" /> ; sinon, le premier élément de <paramref name="source" /> qui réussit le test spécifié par <paramref name="predicate" />.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> depuis lequel retourner un élément.</param>
+      <param name="predicate">Fonction permettant de tester chaque élément par rapport à une condition.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="predicate" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.GroupBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+      <summary>Regroupe les éléments d'une séquence selon la fonction de sélection de clé spécifiée.</summary>
+      <returns>IEnumerable&lt;IGrouping&lt;TKey, TSource&gt;&gt; en C# ou IEnumerable(Of IGrouping(Of TKey, TSource)) dans Visual Basic où chaque objet <see cref="T:System.Linq.IGrouping`2" /> contient une séquence d'objets et une clé.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> dont les éléments doivent être regroupés.</param>
+      <param name="keySelector">Fonction permettant d'extraire la clé de chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">Type de clé retournée par <paramref name="keySelector" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="keySelector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.GroupBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
+      <summary>Regroupe les éléments d'une séquence selon la fonction de sélection de clé spécifiée et compare les clés à l'aide du comparateur indiqué.</summary>
+      <returns>IEnumerable&lt;IGrouping&lt;TKey, TSource&gt;&gt; en C# ou IEnumerable(Of IGrouping(Of TKey, TSource)) dans Visual Basic où chaque objet <see cref="T:System.Linq.IGrouping`2" /> contient une collection d'objets et une clé.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> dont les éléments doivent être regroupés.</param>
+      <param name="keySelector">Fonction permettant d'extraire la clé de chaque élément.</param>
+      <param name="comparer">
+        <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> pour comparer les clés.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">Type de clé retournée par <paramref name="keySelector" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="keySelector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.GroupBy``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``2})">
+      <summary>Regroupe les éléments d'une séquence selon la fonction de sélection de clé spécifiée et projette les éléments de chaque groupe à l'aide de la fonction indiquée.</summary>
+      <returns>IEnumerable&lt;IGrouping&lt;TKey, TElement&gt;&gt; en C# ou IEnumerable(Of IGrouping(Of TKey, TElement)) dans Visual Basic où chaque objet <see cref="T:System.Linq.IGrouping`2" /> contient une collection d'objets de type <paramref name="TElement" /> et une clé.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> dont les éléments doivent être regroupés.</param>
+      <param name="keySelector">Fonction permettant d'extraire la clé de chaque élément.</param>
+      <param name="elementSelector">Fonction permettant de mapper chaque élément source à un élément de <see cref="T:System.Linq.IGrouping`2" />.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">Type de clé retournée par <paramref name="keySelector" />.</typeparam>
+      <typeparam name="TElement">Type des éléments dans <see cref="T:System.Linq.IGrouping`2" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="keySelector" /> ou <paramref name="elementSelector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.GroupBy``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
+      <summary>Regroupe les éléments d'une séquence selon une fonction de sélection de clé.Les clés sont comparées à l'aide d'un comparateur et les éléments de chaque groupe sont projetés à l'aide d'une fonction spécifique.</summary>
+      <returns>IEnumerable&lt;IGrouping&lt;TKey, TElement&gt;&gt; en C# ou IEnumerable(Of IGrouping(Of TKey, TElement)) dans Visual Basic où chaque objet <see cref="T:System.Linq.IGrouping`2" /> contient une collection d'objets de type <paramref name="TElement" /> et une clé.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> dont les éléments doivent être regroupés.</param>
+      <param name="keySelector">Fonction permettant d'extraire la clé de chaque élément.</param>
+      <param name="elementSelector">Fonction permettant de mapper chaque élément source à un élément de <see cref="T:System.Linq.IGrouping`2" />.</param>
+      <param name="comparer">
+        <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> pour comparer les clés.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">Type de clé retournée par <paramref name="keySelector" />.</typeparam>
+      <typeparam name="TElement">Type des éléments dans <see cref="T:System.Linq.IGrouping`2" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="keySelector" /> ou <paramref name="elementSelector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.GroupBy``4(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``2},System.Func{``1,System.Collections.Generic.IEnumerable{``2},``3})">
+      <summary>Regroupe les éléments d'une séquence selon la fonction de sélection de clé spécifiée et crée une valeur de résultat à partir de chaque groupe et de la clé correspondante.Les éléments de chaque groupe sont projetés à l'aide d'une fonction spécifique.</summary>
+      <returns>Collection d'éléments de type <paramref name="TResult" /> où chaque élément représente une projection sur un groupe et sa clé.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> dont les éléments doivent être regroupés.</param>
+      <param name="keySelector">Fonction permettant d'extraire la clé de chaque élément.</param>
+      <param name="elementSelector">Fonction permettant de mapper chaque élément source à un élément de <see cref="T:System.Linq.IGrouping`2" />.</param>
+      <param name="resultSelector">Fonction permettant de créer une valeur de résultat à partir de chaque groupe.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">Type de clé retournée par <paramref name="keySelector" />.</typeparam>
+      <typeparam name="TElement">Type des éléments de chaque <see cref="T:System.Linq.IGrouping`2" />.</typeparam>
+      <typeparam name="TResult">Type de la valeur de résultat retournée par <paramref name="resultSelector" />.</typeparam>
+    </member>
+    <member name="M:System.Linq.Enumerable.GroupBy``4(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``2},System.Func{``1,System.Collections.Generic.IEnumerable{``2},``3},System.Collections.Generic.IEqualityComparer{``1})">
+      <summary>Regroupe les éléments d'une séquence selon la fonction de sélection de clé spécifiée et crée une valeur de résultat à partir de chaque groupe et de la clé correspondante.Les valeurs de clé sont comparées à l'aide du comparateur spécifié et les éléments de chaque groupe sont projetés à l'aide d'une fonction spécifique.</summary>
+      <returns>Collection d'éléments de type <paramref name="TResult" /> où chaque élément représente une projection sur un groupe et sa clé.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> dont les éléments doivent être regroupés.</param>
+      <param name="keySelector">Fonction permettant d'extraire la clé de chaque élément.</param>
+      <param name="elementSelector">Fonction permettant de mapper chaque élément source à un élément de <see cref="T:System.Linq.IGrouping`2" />.</param>
+      <param name="resultSelector">Fonction permettant de créer une valeur de résultat à partir de chaque groupe.</param>
+      <param name="comparer">
+        <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> avec lequel comparer les clés.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">Type de clé retournée par <paramref name="keySelector" />.</typeparam>
+      <typeparam name="TElement">Type des éléments de chaque <see cref="T:System.Linq.IGrouping`2" />.</typeparam>
+      <typeparam name="TResult">Type de la valeur de résultat retournée par <paramref name="resultSelector" />.</typeparam>
+    </member>
+    <member name="M:System.Linq.Enumerable.GroupBy``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``1,System.Collections.Generic.IEnumerable{``0},``2})">
+      <summary>Regroupe les éléments d'une séquence selon la fonction de sélection de clé spécifiée et crée une valeur de résultat à partir de chaque groupe et de la clé correspondante.</summary>
+      <returns>Collection d'éléments de type <paramref name="TResult" /> où chaque élément représente une projection sur un groupe et sa clé.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> dont les éléments doivent être regroupés.</param>
+      <param name="keySelector">Fonction permettant d'extraire la clé de chaque élément.</param>
+      <param name="resultSelector">Fonction permettant de créer une valeur de résultat à partir de chaque groupe.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">Type de clé retournée par <paramref name="keySelector" />.</typeparam>
+      <typeparam name="TResult">Type de la valeur de résultat retournée par <paramref name="resultSelector" />.</typeparam>
+    </member>
+    <member name="M:System.Linq.Enumerable.GroupBy``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``1,System.Collections.Generic.IEnumerable{``0},``2},System.Collections.Generic.IEqualityComparer{``1})">
+      <summary>Regroupe les éléments d'une séquence selon la fonction de sélection de clé spécifiée et crée une valeur de résultat à partir de chaque groupe et de la clé correspondante.Les clés sont comparées à l'aide d'un comparateur spécifié.</summary>
+      <returns>Collection d'éléments de type <paramref name="TResult" /> où chaque élément représente une projection sur un groupe et sa clé.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> dont les éléments doivent être regroupés.</param>
+      <param name="keySelector">Fonction permettant d'extraire la clé de chaque élément.</param>
+      <param name="resultSelector">Fonction permettant de créer une valeur de résultat à partir de chaque groupe.</param>
+      <param name="comparer">
+        <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> avec lequel comparer les clés.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">Type de clé retournée par <paramref name="keySelector" />.</typeparam>
+      <typeparam name="TResult">Type de la valeur de résultat retournée par <paramref name="resultSelector" />.</typeparam>
+    </member>
+    <member name="M:System.Linq.Enumerable.GroupJoin``4(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``2},System.Func{``1,``2},System.Func{``0,System.Collections.Generic.IEnumerable{``1},``3})">
+      <summary>Met en corrélation les éléments de deux séquences en fonction de l'égalité des clés et regroupe les résultats.Le comparateur d'égalité par défaut est utilisé pour comparer les clés.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui contient des éléments de type <paramref name="TResult" /> obtenus à la suite d'une jointure groupée de deux séquences.</returns>
+      <param name="outer">Première séquence à joindre.</param>
+      <param name="inner">Séquence à joindre à la première séquence.</param>
+      <param name="outerKeySelector">Fonction permettant d'extraire la clé de jointure de chaque élément de la première séquence.</param>
+      <param name="innerKeySelector">Fonction permettant d'extraire la clé de jointure de chaque élément de la deuxième séquence.</param>
+      <param name="resultSelector">Fonction permettant de créer un élément de résultat à partir d'un élément de la première séquence, ainsi qu'une collection d'éléments correspondants à partir de la deuxième séquence.</param>
+      <typeparam name="TOuter">Type des éléments de la première séquence.</typeparam>
+      <typeparam name="TInner">Type des éléments de la deuxième séquence.</typeparam>
+      <typeparam name="TKey">Type des clés retournées par les fonctions de sélecteur de clé.</typeparam>
+      <typeparam name="TResult">Type des éléments de résultat.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="outer" /> ou <paramref name="inner" /> ou <paramref name="outerKeySelector" /> ou <paramref name="innerKeySelector" /> ou <paramref name="resultSelector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.GroupJoin``4(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``2},System.Func{``1,``2},System.Func{``0,System.Collections.Generic.IEnumerable{``1},``3},System.Collections.Generic.IEqualityComparer{``2})">
+      <summary>Met en corrélation les éléments de deux séquences en fonction de l'égalité des clés et regroupe les résultats.Un <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> spécifié est utilisé pour comparer les clés.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui contient des éléments de type <paramref name="TResult" /> obtenus à la suite d'une jointure groupée de deux séquences.</returns>
+      <param name="outer">Première séquence à joindre.</param>
+      <param name="inner">Séquence à joindre à la première séquence.</param>
+      <param name="outerKeySelector">Fonction permettant d'extraire la clé de jointure de chaque élément de la première séquence.</param>
+      <param name="innerKeySelector">Fonction permettant d'extraire la clé de jointure de chaque élément de la deuxième séquence.</param>
+      <param name="resultSelector">Fonction permettant de créer un élément de résultat à partir d'un élément de la première séquence, ainsi qu'une collection d'éléments correspondants à partir de la deuxième séquence.</param>
+      <param name="comparer">
+        <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> pour hacher et comparer les clés.</param>
+      <typeparam name="TOuter">Type des éléments de la première séquence.</typeparam>
+      <typeparam name="TInner">Type des éléments de la deuxième séquence.</typeparam>
+      <typeparam name="TKey">Type des clés retournées par les fonctions de sélecteur de clé.</typeparam>
+      <typeparam name="TResult">Type des éléments de résultat.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="outer" /> ou <paramref name="inner" /> ou <paramref name="outerKeySelector" /> ou <paramref name="innerKeySelector" /> ou <paramref name="resultSelector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Intersect``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+      <summary>Produit l'intersection de deux séquences à l'aide du comparateur d'égalité par défaut pour comparer les valeurs.</summary>
+      <returns>Séquence qui contient les éléments constituant l'intersection de les deux séquences.</returns>
+      <param name="first">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> dont les éléments distincts qui apparaissent également dans <paramref name="second" /> seront retournés.</param>
+      <param name="second">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> dont les éléments distincts qui apparaissent également dans la première séquence seront retournés.</param>
+      <typeparam name="TSource">Type des éléments des séquences d'entrée.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="first" /> ou <paramref name="second" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Intersect``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
+      <summary>Produit l'intersection entre deux séquences à l'aide du <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> spécifié pour comparer les valeurs.</summary>
+      <returns>Séquence qui contient les éléments constituant l'intersection de les deux séquences.</returns>
+      <param name="first">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> dont les éléments distincts qui apparaissent également dans <paramref name="second" /> seront retournés.</param>
+      <param name="second">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> dont les éléments distincts qui apparaissent également dans la première séquence seront retournés.</param>
+      <param name="comparer">
+        <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> pour comparer les valeurs.</param>
+      <typeparam name="TSource">Type des éléments des séquences d'entrée.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="first" /> ou <paramref name="second" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Join``4(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``2},System.Func{``1,``2},System.Func{``0,``1,``3})">
+      <summary>Met en corrélation les éléments de deux séquences en fonction des clés qui correspondent.Le comparateur d'égalité par défaut est utilisé pour comparer les clés.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui contient des éléments de type <paramref name="TResult" /> obtenus à la suite d'une jointure interne de deux séquences.</returns>
+      <param name="outer">Première séquence à joindre.</param>
+      <param name="inner">Séquence à joindre à la première séquence.</param>
+      <param name="outerKeySelector">Fonction permettant d'extraire la clé de jointure de chaque élément de la première séquence.</param>
+      <param name="innerKeySelector">Fonction permettant d'extraire la clé de jointure de chaque élément de la deuxième séquence.</param>
+      <param name="resultSelector">Fonction permettant de créer un élément de résultat à partir de deux éléments correspondants.</param>
+      <typeparam name="TOuter">Type des éléments de la première séquence.</typeparam>
+      <typeparam name="TInner">Type des éléments de la deuxième séquence.</typeparam>
+      <typeparam name="TKey">Type des clés retournées par les fonctions de sélecteur de clé.</typeparam>
+      <typeparam name="TResult">Type des éléments de résultat.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="outer" /> ou <paramref name="inner" /> ou <paramref name="outerKeySelector" /> ou <paramref name="innerKeySelector" /> ou <paramref name="resultSelector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Join``4(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``2},System.Func{``1,``2},System.Func{``0,``1,``3},System.Collections.Generic.IEqualityComparer{``2})">
+      <summary>Met en corrélation les éléments de deux séquences en fonction des clés qui correspondent.Un <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> spécifié est utilisé pour comparer les clés.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui contient des éléments de type <paramref name="TResult" /> obtenus à la suite d'une jointure interne de deux séquences.</returns>
+      <param name="outer">Première séquence à joindre.</param>
+      <param name="inner">Séquence à joindre à la première séquence.</param>
+      <param name="outerKeySelector">Fonction permettant d'extraire la clé de jointure de chaque élément de la première séquence.</param>
+      <param name="innerKeySelector">Fonction permettant d'extraire la clé de jointure de chaque élément de la deuxième séquence.</param>
+      <param name="resultSelector">Fonction permettant de créer un élément de résultat à partir de deux éléments correspondants.</param>
+      <param name="comparer">
+        <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> pour hacher et comparer les clés.</param>
+      <typeparam name="TOuter">Type des éléments de la première séquence.</typeparam>
+      <typeparam name="TInner">Type des éléments de la deuxième séquence.</typeparam>
+      <typeparam name="TKey">Type des clés retournées par les fonctions de sélecteur de clé.</typeparam>
+      <typeparam name="TResult">Type des éléments de résultat.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="outer" /> ou <paramref name="inner" /> ou <paramref name="outerKeySelector" /> ou <paramref name="innerKeySelector" /> ou <paramref name="resultSelector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Last``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>Retourne le dernier élément d'une séquence.</summary>
+      <returns>Valeur à la dernière position de la séquence source.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> duquel retourner le dernier élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.InvalidOperationException">La séquence source est vide.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Last``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+      <summary>Retourne le dernier élément d'une séquence à satisfaire à la condition spécifiée.</summary>
+      <returns>Dernier élément de la séquence qui réussit le test dans la fonction de prédicat spécifiée.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> depuis lequel retourner un élément.</param>
+      <param name="predicate">Fonction permettant de tester chaque élément par rapport à une condition.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="predicate" /> est null.</exception>
+      <exception cref="T:System.InvalidOperationException">Aucun élément ne satisfait à la condition dans <paramref name="predicate" />.ouLa séquence source est vide.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.LastOrDefault``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>Retourne le dernier élément d'une séquence ou une valeur par défaut si la séquence ne contient aucun élément.</summary>
+      <returns>default (<paramref name="TSource" />) si la séquence source est vide ; sinon, le dernier élément de <see cref="T:System.Collections.Generic.IEnumerable`1" />.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> duquel retourner le dernier élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.LastOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+      <summary>Retourne le dernier élément d'une séquence à satisfaire à une condition ou une valeur par défaut si aucun élément correspondant n'est trouvé.</summary>
+      <returns>default (<paramref name="TSource" />) si la séquence est vide ou si aucun élément ne réussit le test dans la fonction de prédicat ; sinon, le dernier élément qui réussit le test dans cette fonction.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> depuis lequel retourner un élément.</param>
+      <param name="predicate">Fonction permettant de tester chaque élément par rapport à une condition.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="predicate" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.LongCount``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>Retourne un <see cref="T:System.Int64" /> qui représente le nombre total d'éléments dans une séquence.</summary>
+      <returns>Nombre total d'éléments dans la séquence source.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui contient les éléments à compter.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.OverflowException">Le nombre d'éléments est supérieur à <see cref="F:System.Int64.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.LongCount``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+      <summary>Retourne un <see cref="T:System.Int64" /> qui représente le nombre total d'éléments dans une séquence à satisfaire à une condition.</summary>
+      <returns>Nombre qui représente les éléments de la séquence spécifiée qui satisfont à la condition dans la fonction de prédicat.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui contient les éléments à compter.</param>
+      <param name="predicate">Fonction permettant de tester chaque élément par rapport à une condition.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="predicate" /> est null.</exception>
+      <exception cref="T:System.OverflowException">Le nombre d'éléments correspondants est supérieur à <see cref="F:System.Int64.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max(System.Collections.Generic.IEnumerable{System.Decimal})">
+      <summary>Retourne la valeur maximale dans une séquence de valeurs <see cref="T:System.Decimal" />.</summary>
+      <returns>Valeur maximale dans la séquence.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Decimal" /> pour laquelle déterminer la valeur maximale.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max(System.Collections.Generic.IEnumerable{System.Double})">
+      <summary>Retourne la valeur maximale dans une séquence de valeurs <see cref="T:System.Double" />.</summary>
+      <returns>Valeur maximale dans la séquence.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Double" /> pour laquelle déterminer la valeur maximale.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max(System.Collections.Generic.IEnumerable{System.Int32})">
+      <summary>Retourne la valeur maximale dans une séquence de valeurs <see cref="T:System.Int32" />.</summary>
+      <returns>Valeur maximale dans la séquence.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Int32" /> pour laquelle déterminer la valeur maximale.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max(System.Collections.Generic.IEnumerable{System.Int64})">
+      <summary>Retourne la valeur maximale dans une séquence de valeurs <see cref="T:System.Int64" />.</summary>
+      <returns>Valeur maximale dans la séquence.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Int64" /> pour laquelle déterminer la valeur maximale.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max(System.Collections.Generic.IEnumerable{System.Nullable{System.Decimal}})">
+      <summary>Retourne la valeur maximale dans une séquence de valeurs <see cref="T:System.Decimal" /> nullables.</summary>
+      <returns>Valeur de type Nullable&lt;Decimal&gt; en C# ou Nullable(Of Decimal) dans Visual Basic qui correspond à la valeur maximale de la séquence. </returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Decimal" /> nullables pour laquelle déterminer la valeur maximale.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max(System.Collections.Generic.IEnumerable{System.Nullable{System.Double}})">
+      <summary>Retourne la valeur maximale dans une séquence de valeurs <see cref="T:System.Double" /> nullables.</summary>
+      <returns>Valeur de type Nullable&lt;Double&gt; en C# ou Nullable(Of Double) dans Visual Basic qui correspond à la valeur maximale de la séquence.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Double" /> nullables pour laquelle déterminer la valeur maximale.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max(System.Collections.Generic.IEnumerable{System.Nullable{System.Int32}})">
+      <summary>Retourne la valeur maximale dans une séquence de valeurs <see cref="T:System.Int32" /> nullables.</summary>
+      <returns>Valeur de type Nullable&lt;Int32&gt; en C# ou Nullable(Of Int32) dans Visual Basic qui correspond à la valeur maximale de la séquence. </returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Int32" /> nullables pour laquelle déterminer la valeur maximale.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max(System.Collections.Generic.IEnumerable{System.Nullable{System.Int64}})">
+      <summary>Retourne la valeur maximale dans une séquence de valeurs <see cref="T:System.Int64" /> nullables.</summary>
+      <returns>Valeur de type Nullable&lt;Int64&gt; en C# ou Nullable(Of Int64) dans Visual Basic qui correspond à la valeur maximale de la séquence. </returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Int64" /> nullables pour laquelle déterminer la valeur maximale.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max(System.Collections.Generic.IEnumerable{System.Nullable{System.Single}})">
+      <summary>Retourne la valeur maximale dans une séquence de valeurs <see cref="T:System.Single" /> nullables.</summary>
+      <returns>Valeur de type Nullable&lt;Single&gt; en C# ou Nullable(Of Single) dans Visual Basic qui correspond à la valeur maximale de la séquence.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Single" /> nullables pour laquelle déterminer la valeur maximale.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max(System.Collections.Generic.IEnumerable{System.Single})">
+      <summary>Retourne la valeur maximale dans une séquence de valeurs <see cref="T:System.Single" />.</summary>
+      <returns>Valeur maximale dans la séquence.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Single" /> pour laquelle déterminer la valeur maximale.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>Retourne la valeur maximale dans une séquence générique.</summary>
+      <returns>Valeur maximale dans la séquence.</returns>
+      <param name="source">Séquence de valeurs pour laquelle déterminer la valeur maximale.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Decimal})">
+      <summary>Appelle une fonction de transformation sur chaque élément d'une séquence et retourne la valeur <see cref="T:System.Decimal" /> maximale.</summary>
+      <returns>Valeur maximale dans la séquence.</returns>
+      <param name="source">Séquence de valeurs pour laquelle déterminer la valeur maximale.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Double})">
+      <summary>Appelle une fonction de transformation sur chaque élément d'une séquence et retourne la valeur <see cref="T:System.Double" /> maximale.</summary>
+      <returns>Valeur maximale dans la séquence.</returns>
+      <param name="source">Séquence de valeurs pour laquelle déterminer la valeur maximale.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32})">
+      <summary>Appelle une fonction de transformation sur chaque élément d'une séquence et retourne la valeur <see cref="T:System.Int32" /> maximale.</summary>
+      <returns>Valeur maximale dans la séquence.</returns>
+      <param name="source">Séquence de valeurs pour laquelle déterminer la valeur maximale.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int64})">
+      <summary>Appelle une fonction de transformation sur chaque élément d'une séquence et retourne la valeur <see cref="T:System.Int64" /> maximale.</summary>
+      <returns>Valeur maximale dans la séquence.</returns>
+      <param name="source">Séquence de valeurs pour laquelle déterminer la valeur maximale.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Decimal}})">
+      <summary>Appelle une fonction de transformation sur chaque élément d'une séquence et retourne la valeur <see cref="T:System.Decimal" /> nullable maximale.</summary>
+      <returns>Valeur de type Nullable&lt;Decimal&gt; en C# ou Nullable(Of Decimal) dans Visual Basic qui correspond à la valeur maximale de la séquence.</returns>
+      <param name="source">Séquence de valeurs pour laquelle déterminer la valeur maximale.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Double}})">
+      <summary>Appelle une fonction de transformation sur chaque élément d'une séquence et retourne la valeur <see cref="T:System.Double" /> nullable maximale.</summary>
+      <returns>Valeur de type Nullable&lt;Double&gt; en C# ou Nullable(Of Double) dans Visual Basic qui correspond à la valeur maximale de la séquence.</returns>
+      <param name="source">Séquence de valeurs pour laquelle déterminer la valeur maximale.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int32}})">
+      <summary>Appelle une fonction de transformation sur chaque élément d'une séquence et retourne la valeur <see cref="T:System.Int32" /> nullable maximale.</summary>
+      <returns>Valeur de type Nullable&lt;Int32&gt; en C# ou Nullable(Of Int32) dans Visual Basic qui correspond à la valeur maximale de la séquence.</returns>
+      <param name="source">Séquence de valeurs pour laquelle déterminer la valeur maximale.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int64}})">
+      <summary>Appelle une fonction de transformation sur chaque élément d'une séquence et retourne la valeur <see cref="T:System.Int64" /> nullable maximale.</summary>
+      <returns>Valeur de type Nullable&lt;Int64&gt; en C# ou Nullable(Of Int64) dans Visual Basic qui correspond à la valeur maximale de la séquence.</returns>
+      <param name="source">Séquence de valeurs pour laquelle déterminer la valeur maximale.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Single}})">
+      <summary>Appelle une fonction de transformation sur chaque élément d'une séquence et retourne la valeur <see cref="T:System.Single" /> nullable maximale.</summary>
+      <returns>Valeur de type Nullable&lt;Single&gt; en C# ou Nullable(Of Single) dans Visual Basic qui correspond à la valeur maximale de la séquence.</returns>
+      <param name="source">Séquence de valeurs pour laquelle déterminer la valeur maximale.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Single})">
+      <summary>Appelle une fonction de transformation sur chaque élément d'une séquence et retourne la valeur <see cref="T:System.Single" /> maximale.</summary>
+      <returns>Valeur maximale dans la séquence.</returns>
+      <param name="source">Séquence de valeurs pour laquelle déterminer la valeur maximale.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Max``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+      <summary>Appelle une fonction de transformation sur chaque élément d'une séquence générique et retourne la valeur résultante maximale.</summary>
+      <returns>Valeur maximale dans la séquence.</returns>
+      <param name="source">Séquence de valeurs pour laquelle déterminer la valeur maximale.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TResult">Type de la valeur retournée par <paramref name="selector" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min(System.Collections.Generic.IEnumerable{System.Decimal})">
+      <summary>Retourne la valeur minimale dans une séquence de valeurs <see cref="T:System.Decimal" />.</summary>
+      <returns>Valeur minimale dans la séquence.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Decimal" /> pour laquelle déterminer la valeur minimale.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min(System.Collections.Generic.IEnumerable{System.Double})">
+      <summary>Retourne la valeur minimale dans une séquence de valeurs <see cref="T:System.Double" />.</summary>
+      <returns>Valeur minimale dans la séquence.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Double" /> pour laquelle déterminer la valeur minimale.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min(System.Collections.Generic.IEnumerable{System.Int32})">
+      <summary>Retourne la valeur minimale dans une séquence de valeurs <see cref="T:System.Int32" />.</summary>
+      <returns>Valeur minimale dans la séquence.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Int32" /> pour laquelle déterminer la valeur minimale.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min(System.Collections.Generic.IEnumerable{System.Int64})">
+      <summary>Retourne la valeur minimale dans une séquence de valeurs <see cref="T:System.Int64" />.</summary>
+      <returns>Valeur minimale dans la séquence.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Int64" /> pour laquelle déterminer la valeur minimale.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min(System.Collections.Generic.IEnumerable{System.Nullable{System.Decimal}})">
+      <summary>Retourne la valeur minimale dans une séquence de valeurs <see cref="T:System.Decimal" /> nullables.</summary>
+      <returns>Valeur de type Nullable&lt;Decimal&gt; en C# ou Nullable(Of Decimal) dans Visual Basic qui correspond à la valeur minimale de la séquence.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Decimal" /> nullables et pour laquelle déterminer la valeur minimale.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min(System.Collections.Generic.IEnumerable{System.Nullable{System.Double}})">
+      <summary>Retourne la valeur minimale dans une séquence de valeurs <see cref="T:System.Double" /> nullables.</summary>
+      <returns>Valeur de type Nullable&lt;Double&gt; en C# ou Nullable(Of Double) dans Visual Basic qui correspond à la valeur minimale de la séquence.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Double" /> nullables et pour laquelle déterminer la valeur minimale.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min(System.Collections.Generic.IEnumerable{System.Nullable{System.Int32}})">
+      <summary>Retourne la valeur minimale dans une séquence de valeurs <see cref="T:System.Int32" /> nullables.</summary>
+      <returns>Valeur de type Nullable&lt;Int32&gt; en C# ou Nullable(Of Int32) dans Visual Basic qui correspond à la valeur minimale de la séquence.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Int32" /> nullables et pour laquelle déterminer la valeur minimale.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min(System.Collections.Generic.IEnumerable{System.Nullable{System.Int64}})">
+      <summary>Retourne la valeur minimale dans une séquence de valeurs <see cref="T:System.Int64" /> nullables.</summary>
+      <returns>Valeur de type Nullable&lt;Int64&gt; en C# ou Nullable(Of Int64) dans Visual Basic qui correspond à la valeur minimale de la séquence.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Int64" /> nullables et pour laquelle déterminer la valeur minimale.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min(System.Collections.Generic.IEnumerable{System.Nullable{System.Single}})">
+      <summary>Retourne la valeur minimale dans une séquence de valeurs <see cref="T:System.Single" /> nullables.</summary>
+      <returns>Valeur de type Nullable&lt;Single&gt; en C# ou Nullable(Of Single) dans Visual Basic qui correspond à la valeur minimale de la séquence.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Single" /> nullables et pour laquelle déterminer la valeur minimale.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min(System.Collections.Generic.IEnumerable{System.Single})">
+      <summary>Retourne la valeur minimale dans une séquence de valeurs <see cref="T:System.Single" />.</summary>
+      <returns>Valeur minimale dans la séquence.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Single" /> pour laquelle déterminer la valeur minimale.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>Retourne la valeur minimale dans une séquence générique.</summary>
+      <returns>Valeur minimale dans la séquence.</returns>
+      <param name="source">Séquence de valeurs pour laquelle déterminer la valeur minimale.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Decimal})">
+      <summary>Appelle une fonction de transformation sur chaque élément d'une séquence et retourne la valeur <see cref="T:System.Decimal" /> minimale.</summary>
+      <returns>Valeur minimale dans la séquence.</returns>
+      <param name="source">Séquence de valeurs pour laquelle déterminer la valeur minimale.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Double})">
+      <summary>Appelle une fonction de transformation sur chaque élément d'une séquence et retourne la valeur <see cref="T:System.Double" /> minimale.</summary>
+      <returns>Valeur minimale dans la séquence.</returns>
+      <param name="source">Séquence de valeurs pour laquelle déterminer la valeur minimale.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32})">
+      <summary>Appelle une fonction de transformation sur chaque élément d'une séquence et retourne la valeur <see cref="T:System.Int32" /> minimale.</summary>
+      <returns>Valeur minimale dans la séquence.</returns>
+      <param name="source">Séquence de valeurs pour laquelle déterminer la valeur minimale.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int64})">
+      <summary>Appelle une fonction de transformation sur chaque élément d'une séquence et retourne la valeur <see cref="T:System.Int64" /> minimale.</summary>
+      <returns>Valeur minimale dans la séquence.</returns>
+      <param name="source">Séquence de valeurs pour laquelle déterminer la valeur minimale.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Decimal}})">
+      <summary>Appelle une fonction de transformation sur chaque élément d'une séquence et retourne la valeur <see cref="T:System.Decimal" /> nullable minimale.</summary>
+      <returns>Valeur de type Nullable&lt;Decimal&gt; en C# ou Nullable(Of Decimal) dans Visual Basic qui correspond à la valeur minimale de la séquence.</returns>
+      <param name="source">Séquence de valeurs pour laquelle déterminer la valeur minimale.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Double}})">
+      <summary>Appelle une fonction de transformation sur chaque élément d'une séquence et retourne la valeur <see cref="T:System.Double" /> nullable minimale.</summary>
+      <returns>Valeur de type Nullable&lt;Double&gt; en C# ou Nullable(Of Double) dans Visual Basic qui correspond à la valeur minimale de la séquence.</returns>
+      <param name="source">Séquence de valeurs pour laquelle déterminer la valeur minimale.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int32}})">
+      <summary>Appelle une fonction de transformation sur chaque élément d'une séquence et retourne la valeur <see cref="T:System.Int32" /> nullable minimale.</summary>
+      <returns>Valeur de type Nullable&lt;Int32&gt; en C# ou Nullable(Of Int32) dans Visual Basic qui correspond à la valeur minimale de la séquence.</returns>
+      <param name="source">Séquence de valeurs pour laquelle déterminer la valeur minimale.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int64}})">
+      <summary>Appelle une fonction de transformation sur chaque élément d'une séquence et retourne la valeur <see cref="T:System.Int64" /> nullable minimale.</summary>
+      <returns>Valeur de type Nullable&lt;Int64&gt; en C# ou Nullable(Of Int64) dans Visual Basic qui correspond à la valeur minimale de la séquence.</returns>
+      <param name="source">Séquence de valeurs pour laquelle déterminer la valeur minimale.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Single}})">
+      <summary>Appelle une fonction de transformation sur chaque élément d'une séquence et retourne la valeur <see cref="T:System.Single" /> nullable minimale.</summary>
+      <returns>Valeur de type Nullable&lt;Single&gt; en C# ou Nullable(Of Single) dans Visual Basic qui correspond à la valeur minimale de la séquence.</returns>
+      <param name="source">Séquence de valeurs pour laquelle déterminer la valeur minimale.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Single})">
+      <summary>Appelle une fonction de transformation sur chaque élément d'une séquence et retourne la valeur <see cref="T:System.Single" /> minimale.</summary>
+      <returns>Valeur minimale dans la séquence.</returns>
+      <param name="source">Séquence de valeurs pour laquelle déterminer la valeur minimale.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="source" /> ne contient aucun élément.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Min``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+      <summary>Appelle une fonction de transformation sur chaque élément d'une séquence générique et retourne la valeur résultante minimale.</summary>
+      <returns>Valeur minimale dans la séquence.</returns>
+      <param name="source">Séquence de valeurs pour laquelle déterminer la valeur minimale.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TResult">Type de la valeur retournée par <paramref name="selector" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.OfType``1(System.Collections.IEnumerable)">
+      <summary>Filtre les éléments d'un <see cref="T:System.Collections.IEnumerable" /> en fonction du type spécifié.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui contient des éléments de la séquence d'entrée de type <paramref name="TResult" />.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.IEnumerable" /> dont les éléments doivent être filtrés.</param>
+      <typeparam name="TResult">Type en fonction duquel filtrer les éléments de la séquence.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.OrderBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+      <summary>Trie les éléments d'une séquence dans l'ordre croissant selon une clé.</summary>
+      <returns>
+        <see cref="T:System.Linq.IOrderedEnumerable`1" /> dont les éléments sont triés d'après une clé.</returns>
+      <param name="source">Séquence de valeurs à classer.</param>
+      <param name="keySelector">Fonction permettant d'extraire une clé d'un élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">Type de clé retournée par <paramref name="keySelector" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="keySelector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.OrderBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+      <summary>Trie les éléments d'une séquence dans l'ordre croissant à l'aide d'un comparateur spécifié.</summary>
+      <returns>
+        <see cref="T:System.Linq.IOrderedEnumerable`1" /> dont les éléments sont triés d'après une clé.</returns>
+      <param name="source">Séquence de valeurs à classer.</param>
+      <param name="keySelector">Fonction permettant d'extraire une clé d'un élément.</param>
+      <param name="comparer">
+        <see cref="T:System.Collections.Generic.IComparer`1" /> pour comparer les clés.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">Type de clé retournée par <paramref name="keySelector" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="keySelector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.OrderByDescending``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+      <summary>Trie les éléments d'une séquence dans l'ordre décroissant selon une clé.</summary>
+      <returns>
+        <see cref="T:System.Linq.IOrderedEnumerable`1" /> dont les éléments sont triés dans l'ordre décroissant selon une clé.</returns>
+      <param name="source">Séquence de valeurs à classer.</param>
+      <param name="keySelector">Fonction permettant d'extraire une clé d'un élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">Type de clé retournée par <paramref name="keySelector" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="keySelector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.OrderByDescending``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+      <summary>Trie les éléments d'une séquence dans l'ordre décroissant à l'aide d'un comparateur spécifié.</summary>
+      <returns>
+        <see cref="T:System.Linq.IOrderedEnumerable`1" /> dont les éléments sont triés dans l'ordre décroissant selon une clé.</returns>
+      <param name="source">Séquence de valeurs à classer.</param>
+      <param name="keySelector">Fonction permettant d'extraire une clé d'un élément.</param>
+      <param name="comparer">
+        <see cref="T:System.Collections.Generic.IComparer`1" /> pour comparer les clés.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">Type de clé retournée par <paramref name="keySelector" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="keySelector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Range(System.Int32,System.Int32)">
+      <summary>Génère une séquence de nombres entiers dans une plage spécifiée.</summary>
+      <returns>IEnumerable&lt;Int32&gt; en C# ou IEnumerable(Of Int32) dans Visual Basic qui contient une plage d'entiers séquentiels.</returns>
+      <param name="start">Valeur du premier entier de la séquence.</param>
+      <param name="count">Nombre d'entiers séquentiels à générer.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> est inférieur à 0.ou<paramref name="start" /> + <paramref name="count" /> -1 est supérieur à <see cref="F:System.Int32.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Repeat``1(``0,System.Int32)">
+      <summary>Génère une séquence qui contient une valeur répétée.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui contient une valeur répétée.</returns>
+      <param name="element">Valeur à répéter.</param>
+      <param name="count">Nombre de fois que la valeur doit être répétée dans la séquence générée.</param>
+      <typeparam name="TResult">Type de la valeur à répéter dans la séquence de résultat.</typeparam>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> est inférieur à 0.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Reverse``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>Inverse l'ordre des éléments dans une séquence.</summary>
+      <returns>Séquence dont les éléments correspondent à ceux de la séquence d'entrée dans l'ordre inverse.</returns>
+      <param name="source">Séquence de valeurs à inverser.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Select``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+      <summary>Projette chaque élément d'une séquence dans un nouveau formulaire.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> dont les éléments résultent d'un appel de la fonction de transformation sur chaque élément de <paramref name="source" />.</returns>
+      <param name="source">Séquence de valeurs pour laquelle appeler une fonction de transformation.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TResult">Type de la valeur retournée par <paramref name="selector" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Select``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,``1})">
+      <summary>Projette chaque élément d'une séquence dans un nouveau formulaire en incorporant l'index de l'élément.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> dont les éléments résultent d'un appel de la fonction de transformation sur chaque élément de <paramref name="source" />.</returns>
+      <param name="source">Séquence de valeurs pour laquelle appeler une fonction de transformation.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément source ; le deuxième paramètre de la fonction représente l'index de l'élément source.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TResult">Type de la valeur retournée par <paramref name="selector" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.SelectMany``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Collections.Generic.IEnumerable{``1}},System.Func{``0,``1,``2})">
+      <summary>Projette chaque élément d'une séquence sur un <see cref="T:System.Collections.Generic.IEnumerable`1" />, aplatit les séquences résultantes en une seule séquence et appelle une fonction de sélection de résultat sur chaque élément inclus.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> dont les éléments résultent d'un appel de la fonction de transformation <paramref name="collectionSelector" /> de type un-à-plusieurs sur chaque élément de <paramref name="source" /> et qui mappe ensuite chaque élément de la séquence et l'élément source correspondant avec un élément de résultat.</returns>
+      <param name="source">Séquence de valeurs à projeter.</param>
+      <param name="collectionSelector">Fonction de transformation à appliquer à chaque élément de la séquence d'entrée.</param>
+      <param name="resultSelector">Fonction de transformation à appliquer à chaque élément de la séquence intermédiaire.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TCollection">Type des éléments intermédiaires collectés par <paramref name="collectionSelector" />.</typeparam>
+      <typeparam name="TResult">Type des éléments de la séquence résultante.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="collectionSelector" /> ou <paramref name="resultSelector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.SelectMany``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Collections.Generic.IEnumerable{``1}})">
+      <summary>Projette chaque élément d'une séquence sur un <see cref="T:System.Collections.Generic.IEnumerable`1" /> et aplatit les séquences résultantes en une seule séquence.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> dont les éléments résultent d'un appel de la fonction de transformation de type un-à-plusieurs sur chaque élément de la séquence d'entrée.</returns>
+      <param name="source">Séquence de valeurs à projeter.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TResult">Type des éléments de la séquence retournée par <paramref name="selector" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.SelectMany``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,System.Collections.Generic.IEnumerable{``1}},System.Func{``0,``1,``2})">
+      <summary>Projette chaque élément d'une séquence sur un <see cref="T:System.Collections.Generic.IEnumerable`1" />, aplatit les séquences résultantes en une seule séquence et appelle une fonction de sélection de résultat sur chaque élément inclus.L'index de chaque élément source est utilisé dans le formulaire intermédiaire projeté de l'élément.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> dont les éléments résultent d'un appel de la fonction de transformation <paramref name="collectionSelector" /> de type un-à-plusieurs sur chaque élément de <paramref name="source" /> et qui mappe ensuite chaque élément de la séquence et l'élément source correspondant avec un élément de résultat.</returns>
+      <param name="source">Séquence de valeurs à projeter.</param>
+      <param name="collectionSelector">Fonction de transformation à appliquer à chaque élément source ; le deuxième paramètre de la fonction représente l'index de l'élément source.</param>
+      <param name="resultSelector">Fonction de transformation à appliquer à chaque élément de la séquence intermédiaire.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TCollection">Type des éléments intermédiaires collectés par <paramref name="collectionSelector" />.</typeparam>
+      <typeparam name="TResult">Type des éléments de la séquence résultante.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="collectionSelector" /> ou <paramref name="resultSelector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.SelectMany``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,System.Collections.Generic.IEnumerable{``1}})">
+      <summary>Projette chaque élément d'une séquence sur un <see cref="T:System.Collections.Generic.IEnumerable`1" /> et aplatit les séquences résultantes en une seule séquence.L'index de chaque élément source est utilisé dans le formulaire projeté de l'élément.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> dont les éléments résultent d'un appel de la fonction de transformation de type un-à-plusieurs sur chaque élément d'une séquence d'entrée.</returns>
+      <param name="source">Séquence de valeurs à projeter.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément source ; le deuxième paramètre de la fonction représente l'index de l'élément source.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TResult">Type des éléments de la séquence retournée par <paramref name="selector" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.SequenceEqual``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+      <summary>Détermine si deux séquences sont égales par une comparaison des types d'élément réalisée à l'aide du comparateur d'égalité par défaut.</summary>
+      <returns>true si les deux séquences source sont de même longueur et si les types de leurs éléments correspondants sont égaux selon le comparateur d'égalité par défaut ; sinon, false.</returns>
+      <param name="first">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> à comparer à <paramref name="second" />.</param>
+      <param name="second">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> à comparer à la première sequence.</param>
+      <typeparam name="TSource">Type des éléments des séquences d'entrée.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="first" /> ou <paramref name="second" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.SequenceEqual``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
+      <summary>Détermine si deux séquences sont égales en comparant leurs éléments à l'aide d'un <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> spécifié.</summary>
+      <returns>true si les deux séquences source sont de même longueur et si leurs éléments correspondants sont égaux selon <paramref name="comparer" /> ; sinon, false.</returns>
+      <param name="first">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> à comparer à <paramref name="second" />.</param>
+      <param name="second">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> à comparer à la première sequence.</param>
+      <param name="comparer">
+        <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> à utiliser pour comparer les éléments.</param>
+      <typeparam name="TSource">Type des éléments des séquences d'entrée.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="first" /> ou <paramref name="second" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Single``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>Retourne l'élément unique d'une séquence ou lève une exception si cette séquence ne contient pas un seul élément.</summary>
+      <returns>Seul élément de la séquence d'entrée.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> duquel retourner le seul élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.InvalidOperationException">La séquence d'entrée contient plusieurs éléments.ouLa séquence d'entrée est vide.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Single``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+      <summary>Retourne le seul élément d'une séquence qui satisfait à une condition spécifique ou lève une exception si cette séquence contient plusieurs éléments respectant cette condition.</summary>
+      <returns>Seul élément de la séquence d'entrée à satisfaire à une condition.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> duquel retourner le seul élément.</param>
+      <param name="predicate">Fonction permettant de tester un élément pour une condition.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="predicate" /> est null.</exception>
+      <exception cref="T:System.InvalidOperationException">Aucun élément ne satisfait à la condition dans <paramref name="predicate" />.ouPlusieurs éléments satisfont à la condition dans <paramref name="predicate" />.ouLa séquence source est vide.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.SingleOrDefault``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>Retourne l'élément unique d'une séquence ou une valeur par défaut. Cette méthode lève une exception si cette séquence contient plusieurs éléments.</summary>
+      <returns>Élément unique de la séquence d'entrée ou default (<paramref name="TSource" />) si la séquence ne contient aucun élément.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> duquel retourner le seul élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.InvalidOperationException">La séquence d'entrée contient plusieurs éléments.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.SingleOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+      <summary>Retourne l'élément unique d'une séquence ou une valeur par défaut si cette séquence ne contient pas d'élément respectant cette condition. Cette méthode lève une exception si cette séquence contient plusieurs éléments satisfaisant à cette condition.</summary>
+      <returns>Seul élément de la séquence d'entrée à satisfaire à la condition ou default (<paramref name="TSource" />) si cet élément n'est pas trouvé.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> duquel retourner le seul élément.</param>
+      <param name="predicate">Fonction permettant de tester un élément pour une condition.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="predicate" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Skip``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+      <summary>Ignore un nombre spécifié d'éléments dans une séquence puis retourne les éléments restants.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui contient les éléments se trouvant après l'index spécifié dans la séquence d'entrée.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> depuis lequel retourner les éléments.</param>
+      <param name="count">Nombre d'éléments à ignorer avant de retourner les éléments restants.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.SkipWhile``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+      <summary>Ignore des éléments dans une séquence tant que la condition spécifiée a la valeur true, puis retourne les éléments restants.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui contient les éléments de la séquence d'entrée, à partir du premier élément de la série linéaire à ne pas réussir le test spécifié par <paramref name="predicate" />.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> depuis lequel retourner les éléments.</param>
+      <param name="predicate">Fonction permettant de tester chaque élément par rapport à une condition.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="predicate" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.SkipWhile``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,System.Boolean})">
+      <summary>Ignore des éléments dans une séquence tant que la condition spécifiée a la valeur true, puis retourne les éléments restants.L'index de l'élément est utilisé dans la logique de la fonction de prédicat.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui contient les éléments de la séquence d'entrée, à partir du premier élément de la série linéaire à ne pas réussir le test spécifié par <paramref name="predicate" />.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> depuis lequel retourner les éléments.</param>
+      <param name="predicate">Fonction permettant de tester chaque élément source pour une condition ; le deuxième paramètre de la fonction représente l'index de l'élément source.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="predicate" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Decimal})">
+      <summary>Calcule la somme d'une séquence de valeurs <see cref="T:System.Decimal" />.</summary>
+      <returns>Somme des valeurs de la séquence.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Decimal" /> dont la somme doit être calculée.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.OverflowException">La somme est supérieure à <see cref="F:System.Decimal.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Double})">
+      <summary>Calcule la somme d'une séquence de valeurs <see cref="T:System.Double" />.</summary>
+      <returns>Somme des valeurs de la séquence.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Double" /> dont la somme doit être calculée.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Int32})">
+      <summary>Calcule la somme d'une séquence de valeurs <see cref="T:System.Int32" />.</summary>
+      <returns>Somme des valeurs de la séquence.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Int32" /> dont la somme doit être calculée.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.OverflowException">La somme est supérieure à <see cref="F:System.Int32.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Int64})">
+      <summary>Calcule la somme d'une séquence de valeurs <see cref="T:System.Int64" />.</summary>
+      <returns>Somme des valeurs de la séquence.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Int64" /> dont la somme doit être calculée.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.OverflowException">La somme est supérieure à <see cref="F:System.Int64.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Nullable{System.Decimal}})">
+      <summary>Calcule la somme d'une séquence de valeurs <see cref="T:System.Decimal" /> nullables.</summary>
+      <returns>Somme des valeurs de la séquence.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Decimal" /> nullables dont la somme doit être calculée.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.OverflowException">La somme est supérieure à <see cref="F:System.Decimal.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Nullable{System.Double}})">
+      <summary>Calcule la somme d'une séquence de valeurs <see cref="T:System.Double" /> nullables.</summary>
+      <returns>Somme des valeurs de la séquence.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Double" /> nullables dont la somme doit être calculée.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Nullable{System.Int32}})">
+      <summary>Calcule la somme d'une séquence de valeurs <see cref="T:System.Int32" /> nullables.</summary>
+      <returns>Somme des valeurs de la séquence.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Int32" /> nullables dont la somme doit être calculée.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.OverflowException">La somme est supérieure à <see cref="F:System.Int32.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Nullable{System.Int64}})">
+      <summary>Calcule la somme d'une séquence de valeurs <see cref="T:System.Int64" /> nullables.</summary>
+      <returns>Somme des valeurs de la séquence.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Int64" /> nullables dont la somme doit être calculée.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+      <exception cref="T:System.OverflowException">La somme est supérieure à <see cref="F:System.Int64.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Nullable{System.Single}})">
+      <summary>Calcule la somme d'une séquence de valeurs <see cref="T:System.Single" /> nullables.</summary>
+      <returns>Somme des valeurs de la séquence.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Single" /> nullables dont la somme doit être calculée.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Single})">
+      <summary>Calcule la somme d'une séquence de valeurs <see cref="T:System.Single" />.</summary>
+      <returns>Somme des valeurs de la séquence.</returns>
+      <param name="source">Séquence de valeurs <see cref="T:System.Single" /> dont la somme doit être calculée.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Decimal})">
+      <summary>Calcule la somme d'une séquence de valeurs <see cref="T:System.Decimal" /> obtenues en appelant une fonction de transformation sur chaque élément de la séquence d'entrée.</summary>
+      <returns>Somme des valeurs projetées.</returns>
+      <param name="source">Séquence de valeurs utilisées pour calculer une somme.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+      <exception cref="T:System.OverflowException">La somme est supérieure à <see cref="F:System.Decimal.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Double})">
+      <summary>Calcule la somme d'une séquence de valeurs <see cref="T:System.Double" /> obtenues en appelant une fonction de transformation sur chaque élément de la séquence d'entrée.</summary>
+      <returns>Somme des valeurs projetées.</returns>
+      <param name="source">Séquence de valeurs utilisées pour calculer une somme.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32})">
+      <summary>Calcule la somme d'une séquence de valeurs <see cref="T:System.Int32" /> obtenues en appelant une fonction de transformation sur chaque élément de la séquence d'entrée.</summary>
+      <returns>Somme des valeurs projetées.</returns>
+      <param name="source">Séquence de valeurs utilisées pour calculer une somme.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+      <exception cref="T:System.OverflowException">La somme est supérieure à <see cref="F:System.Int32.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int64})">
+      <summary>Calcule la somme d'une séquence de valeurs <see cref="T:System.Int64" /> obtenues en appelant une fonction de transformation sur chaque élément de la séquence d'entrée.</summary>
+      <returns>Somme des valeurs projetées.</returns>
+      <param name="source">Séquence de valeurs utilisées pour calculer une somme.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+      <exception cref="T:System.OverflowException">La somme est supérieure à <see cref="F:System.Int64.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Decimal}})">
+      <summary>Calcule la somme d'une séquence de valeurs <see cref="T:System.Decimal" /> nullables obtenues en appelant une fonction de transformation sur chaque élément de la séquence d'entrée.</summary>
+      <returns>Somme des valeurs projetées.</returns>
+      <param name="source">Séquence de valeurs utilisées pour calculer une somme.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+      <exception cref="T:System.OverflowException">La somme est supérieure à <see cref="F:System.Decimal.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Double}})">
+      <summary>Calcule la somme d'une séquence de valeurs <see cref="T:System.Double" /> nullables obtenues en appelant une fonction de transformation sur chaque élément de la séquence d'entrée.</summary>
+      <returns>Somme des valeurs projetées.</returns>
+      <param name="source">Séquence de valeurs utilisées pour calculer une somme.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int32}})">
+      <summary>Calcule la somme d'une séquence de valeurs <see cref="T:System.Int32" /> nullables obtenues en appelant une fonction de transformation sur chaque élément de la séquence d'entrée.</summary>
+      <returns>Somme des valeurs projetées.</returns>
+      <param name="source">Séquence de valeurs utilisées pour calculer une somme.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+      <exception cref="T:System.OverflowException">La somme est supérieure à <see cref="F:System.Int32.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int64}})">
+      <summary>Calcule la somme d'une séquence de valeurs <see cref="T:System.Int64" /> nullables obtenues en appelant une fonction de transformation sur chaque élément de la séquence d'entrée.</summary>
+      <returns>Somme des valeurs projetées.</returns>
+      <param name="source">Séquence de valeurs utilisées pour calculer une somme.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+      <exception cref="T:System.OverflowException">La somme est supérieure à <see cref="F:System.Int64.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Single}})">
+      <summary>Calcule la somme d'une séquence de valeurs <see cref="T:System.Single" /> nullables obtenues en appelant une fonction de transformation sur chaque élément de la séquence d'entrée.</summary>
+      <returns>Somme des valeurs projetées.</returns>
+      <param name="source">Séquence de valeurs utilisées pour calculer une somme.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Single})">
+      <summary>Calcule la somme d'une séquence de valeurs <see cref="T:System.Single" /> obtenues en appelant une fonction de transformation sur chaque élément de la séquence d'entrée.</summary>
+      <returns>Somme des valeurs projetées.</returns>
+      <param name="source">Séquence de valeurs utilisées pour calculer une somme.</param>
+      <param name="selector">Fonction de transformation à appliquer à chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="selector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Take``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+      <summary>Retourne un nombre spécifié d'éléments contigus à partir du début d'une séquence.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui contient le nombre spécifié d'éléments à partir du début de la séquence d'entrée.</returns>
+      <param name="source">Séquence à partir de laquelle retourner les éléments.</param>
+      <param name="count">Nombre d'éléments à retourner.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.TakeWhile``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+      <summary>Retourne des éléments d'une séquence tant que la condition spécifiée a la valeur true.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui contient les éléments de la séquence d'entrée se trouvant avant l'élément à partir duquel le test échoue.</returns>
+      <param name="source">Séquence à partir de laquelle retourner les éléments.</param>
+      <param name="predicate">Fonction permettant de tester chaque élément par rapport à une condition.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="predicate" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.TakeWhile``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,System.Boolean})">
+      <summary>Retourne des éléments d'une séquence tant que la condition spécifiée a la valeur true.L'index de l'élément est utilisé dans la logique de la fonction de prédicat.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui contient les éléments de la séquence d'entrée se trouvant avant l'élément à partir duquel le test échoue.</returns>
+      <param name="source">Séquence à partir de laquelle retourner les éléments.</param>
+      <param name="predicate">Fonction permettant de tester chaque élément source pour une condition ; le deuxième paramètre de la fonction représente l'index de l'élément source.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="predicate" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ThenBy``2(System.Linq.IOrderedEnumerable{``0},System.Func{``0,``1})">
+      <summary>Réalise un classement des éléments d'une séquence dans l'ordre croissant selon une clé.</summary>
+      <returns>
+        <see cref="T:System.Linq.IOrderedEnumerable`1" /> dont les éléments sont triés d'après une clé.</returns>
+      <param name="source">
+        <see cref="T:System.Linq.IOrderedEnumerable`1" /> qui contient les éléments à trier.</param>
+      <param name="keySelector">Fonction permettant d'extraire une clé de chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">Type de clé retournée par <paramref name="keySelector" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="keySelector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ThenBy``2(System.Linq.IOrderedEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+      <summary>Réalise un classement des éléments d'une séquence dans l'ordre croissant à l'aide d'un comparateur spécifié.</summary>
+      <returns>
+        <see cref="T:System.Linq.IOrderedEnumerable`1" /> dont les éléments sont triés d'après une clé.</returns>
+      <param name="source">
+        <see cref="T:System.Linq.IOrderedEnumerable`1" /> qui contient les éléments à trier.</param>
+      <param name="keySelector">Fonction permettant d'extraire une clé de chaque élément.</param>
+      <param name="comparer">
+        <see cref="T:System.Collections.Generic.IComparer`1" /> pour comparer les clés.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">Type de clé retournée par <paramref name="keySelector" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="keySelector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ThenByDescending``2(System.Linq.IOrderedEnumerable{``0},System.Func{``0,``1})">
+      <summary>Réalise un classement des éléments d'une séquence dans l'ordre décroissant selon une clé.</summary>
+      <returns>
+        <see cref="T:System.Linq.IOrderedEnumerable`1" /> dont les éléments sont triés dans l'ordre décroissant selon une clé.</returns>
+      <param name="source">
+        <see cref="T:System.Linq.IOrderedEnumerable`1" /> qui contient les éléments à trier.</param>
+      <param name="keySelector">Fonction permettant d'extraire une clé de chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">Type de clé retournée par <paramref name="keySelector" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="keySelector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ThenByDescending``2(System.Linq.IOrderedEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+      <summary>Réalise un classement des éléments d'une séquence dans l'ordre décroissant à l'aide d'un comparateur spécifié.</summary>
+      <returns>
+        <see cref="T:System.Linq.IOrderedEnumerable`1" /> dont les éléments sont triés dans l'ordre décroissant selon une clé.</returns>
+      <param name="source">
+        <see cref="T:System.Linq.IOrderedEnumerable`1" /> qui contient les éléments à trier.</param>
+      <param name="keySelector">Fonction permettant d'extraire une clé de chaque élément.</param>
+      <param name="comparer">
+        <see cref="T:System.Collections.Generic.IComparer`1" /> pour comparer les clés.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">Type de clé retournée par <paramref name="keySelector" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="keySelector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ToArray``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>Crée un tableau à partir de <see cref="T:System.Collections.Generic.IEnumerable`1" />.</summary>
+      <returns>Tableau qui contient les éléments de la séquence d'entrée.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> à partir duquel créer un tableau.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ToDictionary``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+      <summary>Crée un <see cref="T:System.Collections.Generic.Dictionary`2" /> à partir d'un <see cref="T:System.Collections.Generic.IEnumerable`1" /> selon une fonction de sélection de clé spécifiée.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.Dictionary`2" /> qui contient des clés et des valeurs.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> à partir duquel créer un <see cref="T:System.Collections.Generic.Dictionary`2" />.</param>
+      <param name="keySelector">Fonction permettant d'extraire une clé de chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">Type de clé retournée par <paramref name="keySelector" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="keySelector" /> est null.ou<paramref name="keySelector" /> produit une clé qui a la valeur null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="keySelector" /> produit des clés en double pour deux éléments.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ToDictionary``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
+      <summary>Crée un <see cref="T:System.Collections.Generic.Dictionary`2" /> à partir de <see cref="T:System.Collections.Generic.IEnumerable`1" /> selon une fonction de sélection de clé spécifiée et un comparateur de clé.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.Dictionary`2" /> qui contient des clés et des valeurs.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> à partir duquel créer un <see cref="T:System.Collections.Generic.Dictionary`2" />.</param>
+      <param name="keySelector">Fonction permettant d'extraire une clé de chaque élément.</param>
+      <param name="comparer">
+        <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> pour comparer les clés.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">Type des clés retournées par <paramref name="keySelector" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="keySelector" /> est null.ou<paramref name="keySelector" /> produit une clé qui a la valeur null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="keySelector" /> produit des clés en double pour deux éléments.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ToDictionary``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``2})">
+      <summary>Crée un <see cref="T:System.Collections.Generic.Dictionary`2" /> à partir de <see cref="T:System.Collections.Generic.IEnumerable`1" /> selon des fonctions de sélection de clé et de sélection d'élément spécifiées.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.Dictionary`2" /> qui contient des valeurs de type <paramref name="TElement" /> sélectionnées dans la séquence d'entrée.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> à partir duquel créer un <see cref="T:System.Collections.Generic.Dictionary`2" />.</param>
+      <param name="keySelector">Fonction permettant d'extraire une clé de chaque élément.</param>
+      <param name="elementSelector">Fonction de transformation permettant de produire une valeur d'élément de résultat à partir de chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">Type de clé retournée par <paramref name="keySelector" />.</typeparam>
+      <typeparam name="TElement">Type de la valeur retournée par <paramref name="elementSelector" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="keySelector" /> ou <paramref name="elementSelector" /> est null.ou<paramref name="keySelector" /> produit une clé qui a la valeur null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="keySelector" /> produit des clés en double pour deux éléments.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ToDictionary``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
+      <summary>Crée un <see cref="T:System.Collections.Generic.Dictionary`2" /> à partir de <see cref="T:System.Collections.Generic.IEnumerable`1" /> selon une fonction de sélection de clé spécifiée, un comparateur et une fonction de sélection d'élément.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.Dictionary`2" /> qui contient des valeurs de type <paramref name="TElement" /> sélectionnées dans la séquence d'entrée.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> à partir duquel créer un <see cref="T:System.Collections.Generic.Dictionary`2" />.</param>
+      <param name="keySelector">Fonction permettant d'extraire une clé de chaque élément.</param>
+      <param name="elementSelector">Fonction de transformation permettant de produire une valeur d'élément de résultat à partir de chaque élément.</param>
+      <param name="comparer">
+        <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> pour comparer les clés.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">Type de clé retournée par <paramref name="keySelector" />.</typeparam>
+      <typeparam name="TElement">Type de la valeur retournée par <paramref name="elementSelector" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="keySelector" /> ou <paramref name="elementSelector" /> est null.ou<paramref name="keySelector" /> produit une clé qui a la valeur null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="keySelector" /> produit des clés en double pour deux éléments.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ToList``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>Crée un <see cref="T:System.Collections.Generic.List`1" /> à partir de <see cref="T:System.Collections.Generic.IEnumerable`1" />.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.List`1" /> qui contient les éléments de la séquence d'entrée.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> à partir duquel créer un <see cref="T:System.Collections.Generic.List`1" />.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ToLookup``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+      <summary>Crée une <see cref="T:System.Linq.Lookup`2" /> à partir de <see cref="T:System.Collections.Generic.IEnumerable`1" /> selon une fonction de sélection de clé spécifiée.</summary>
+      <returns>
+        <see cref="T:System.Linq.Lookup`2" /> qui contient des clés et des valeurs.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> à partir duquel créer une <see cref="T:System.Linq.Lookup`2" />.</param>
+      <param name="keySelector">Fonction permettant d'extraire une clé de chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">Type de clé retournée par <paramref name="keySelector" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="keySelector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ToLookup``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
+      <summary>Crée un <see cref="T:System.Linq.Lookup`2" /> à partir de <see cref="T:System.Collections.Generic.IEnumerable`1" /> selon une fonction de sélection de clé spécifiée et un comparateur de clé.</summary>
+      <returns>
+        <see cref="T:System.Linq.Lookup`2" /> qui contient des clés et des valeurs.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> à partir duquel créer une <see cref="T:System.Linq.Lookup`2" />.</param>
+      <param name="keySelector">Fonction permettant d'extraire une clé de chaque élément.</param>
+      <param name="comparer">
+        <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> pour comparer les clés.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">Type de clé retournée par <paramref name="keySelector" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="keySelector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ToLookup``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``2})">
+      <summary>Crée un <see cref="T:System.Linq.Lookup`2" /> à partir de <see cref="T:System.Collections.Generic.IEnumerable`1" /> selon des fonctions de sélection de clé et de sélection d'élément spécifiées.</summary>
+      <returns>
+        <see cref="T:System.Linq.Lookup`2" /> qui contient des valeurs de type <paramref name="TElement" /> sélectionnées dans la séquence d'entrée.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> à partir duquel créer une <see cref="T:System.Linq.Lookup`2" />.</param>
+      <param name="keySelector">Fonction permettant d'extraire une clé de chaque élément.</param>
+      <param name="elementSelector">Fonction de transformation permettant de produire une valeur d'élément de résultat à partir de chaque élément.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">Type de clé retournée par <paramref name="keySelector" />.</typeparam>
+      <typeparam name="TElement">Type de la valeur retournée par <paramref name="elementSelector" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="keySelector" /> ou <paramref name="elementSelector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.ToLookup``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
+      <summary>Crée une <see cref="T:System.Linq.Lookup`2" /> à partir de <see cref="T:System.Collections.Generic.IEnumerable`1" /> selon une fonction de sélection de clé spécifiée, un comparateur et une fonction de sélection d'élément.</summary>
+      <returns>
+        <see cref="T:System.Linq.Lookup`2" /> qui contient des valeurs de type <paramref name="TElement" /> sélectionnées dans la séquence d'entrée.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> à partir duquel créer une <see cref="T:System.Linq.Lookup`2" />.</param>
+      <param name="keySelector">Fonction permettant d'extraire une clé de chaque élément.</param>
+      <param name="elementSelector">Fonction de transformation permettant de produire une valeur d'élément de résultat à partir de chaque élément.</param>
+      <param name="comparer">
+        <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> pour comparer les clés.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">Type de clé retournée par <paramref name="keySelector" />.</typeparam>
+      <typeparam name="TElement">Type de la valeur retournée par <paramref name="elementSelector" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="keySelector" /> ou <paramref name="elementSelector" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Union``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+      <summary>Produit l'union de deux séquences à l'aide du comparateur d'égalité par défaut.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui contient les éléments des deux séquences d'entrée, à l'exception des éléments en double.</returns>
+      <param name="first">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> dont les éléments distincts constituent le premier jeu de l'union.</param>
+      <param name="second">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> dont les éléments distincts constituent le second jeu de l'union.</param>
+      <typeparam name="TSource">Type des éléments des séquences d'entrée.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="first" /> ou <paramref name="second" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Union``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
+      <summary>Produit l'union de deux séquences à l'aide d'un <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> spécifié.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui contient les éléments des deux séquences d'entrée, à l'exception des éléments en double.</returns>
+      <param name="first">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> dont les éléments distincts constituent le premier jeu de l'union.</param>
+      <param name="second">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> dont les éléments distincts constituent le second jeu de l'union.</param>
+      <param name="comparer">
+        <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> pour comparer les valeurs.</param>
+      <typeparam name="TSource">Type des éléments des séquences d'entrée.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="first" /> ou <paramref name="second" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Where``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+      <summary>Filtre une séquence de valeurs selon un prédicat.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui contient des éléments de la séquence d'entrée satisfaisant à la condition.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> à filtrer.</param>
+      <param name="predicate">Fonction permettant de tester chaque élément par rapport à une condition.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="predicate" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Where``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,System.Boolean})">
+      <summary>Filtre une séquence de valeurs selon un prédicat.L'index de chaque élément est utilisé dans la logique de la fonction de prédicat.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui contient des éléments de la séquence d'entrée satisfaisant à la condition.</returns>
+      <param name="source">
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> à filtrer.</param>
+      <param name="predicate">Fonction permettant de tester chaque élément source pour une condition ; le deuxième paramètre de la fonction représente l'index de l'élément source.</param>
+      <typeparam name="TSource">Type des éléments de <paramref name="source" />.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ou <paramref name="predicate" /> est null.</exception>
+    </member>
+    <member name="M:System.Linq.Enumerable.Zip``3(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``1,``2})">
+      <summary>Applique une fonction spécifiée aux éléments correspondants de deux séquences pour produire une séquence des résultats.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui contient les éléments fusionnés des deux séquences d'entrée.</returns>
+      <param name="first">Première séquence à fusionner.</param>
+      <param name="second">Seconde séquence à fusionner.</param>
+      <param name="resultSelector">Fonction qui spécifie comment fusionner les éléments des deux séquences.</param>
+      <typeparam name="TFirst">Type des éléments de la première séquence d'entrée.</typeparam>
+      <typeparam name="TSecond">Type des éléments de la seconde séquence d'entrée.</typeparam>
+      <typeparam name="TResult">Type des éléments de la séquence résultante.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="first" /> ou <paramref name="second" /> est null.</exception>
+    </member>
+    <member name="T:System.Linq.IGrouping`2">
+      <summary>Représente une collection d'objets qui ont une clé commune.</summary>
+      <typeparam name="TKey">Type de la clé de <see cref="T:System.Linq.IGrouping`2" />.Ce paramètre de type est covariant. Autrement dit, vous pouvez utiliser le type que vous avez spécifié ou tout type plus dérivé. Pour plus d'informations sur la covariance et la contravariance, consultez Covariance et contravariance dans les génériques.</typeparam>
+      <typeparam name="TElement">Type des valeurs de <see cref="T:System.Linq.IGrouping`2" />.</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Linq.IGrouping`2.Key">
+      <summary>Obtient la clé de <see cref="T:System.Linq.IGrouping`2" />.</summary>
+      <returns>Clé de <see cref="T:System.Linq.IGrouping`2" />.</returns>
+    </member>
+    <member name="T:System.Linq.ILookup`2">
+      <summary>Définit un indexeur, la propriété de taille et la méthode de recherche booléenne pour les structures de données qui mappent des clés sur des séquences de valeurs <see cref="T:System.Collections.Generic.IEnumerable`1" />.</summary>
+      <typeparam name="TKey">Type des clés contenues dans <see cref="T:System.Linq.ILookup`2" />.</typeparam>
+      <typeparam name="TElement">Type des éléments contenus dans les séquences <see cref="T:System.Collections.Generic.IEnumerable`1" /> qui constituent les valeurs de <see cref="T:System.Linq.ILookup`2" />.</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Linq.ILookup`2.Contains(`0)">
+      <summary>Détermine si une clé spécifiée existe dans <see cref="T:System.Linq.ILookup`2" />.</summary>
+      <returns>true si <paramref name="key" /> se trouve dans <see cref="T:System.Linq.ILookup`2" /> ; sinon false.</returns>
+      <param name="key">Clé à rechercher dans <see cref="T:System.Linq.ILookup`2" />.</param>
+    </member>
+    <member name="P:System.Linq.ILookup`2.Count">
+      <summary>Obtient le nombre de paires clé/collection de valeurs contenues dans <see cref="T:System.Linq.ILookup`2" />.</summary>
+      <returns>Nombre de paires clé/collection de valeurs contenues dans <see cref="T:System.Linq.ILookup`2" />.</returns>
+    </member>
+    <member name="P:System.Linq.ILookup`2.Item(`0)">
+      <summary>Obtient la séquence de valeurs <see cref="T:System.Collections.Generic.IEnumerable`1" /> indexées par une clé spécifiée.</summary>
+      <returns>Séquence de valeurs <see cref="T:System.Collections.Generic.IEnumerable`1" /> indexées par la clé spécifiée.</returns>
+      <param name="key">Clé de la séquence de valeurs souhaitée.</param>
+    </member>
+    <member name="T:System.Linq.IOrderedEnumerable`1">
+      <summary>Représente une séquence triée.</summary>
+      <typeparam name="TElement">Type des éléments de la séquence.</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Linq.IOrderedEnumerable`1.CreateOrderedEnumerable``1(System.Func{`0,``0},System.Collections.Generic.IComparer{``0},System.Boolean)">
+      <summary>Effectue un classement postérieur sur les éléments d'un <see cref="T:System.Linq.IOrderedEnumerable`1" /> d'après une clé.</summary>
+      <returns>
+        <see cref="T:System.Linq.IOrderedEnumerable`1" /> dont les éléments sont triés d'après une clé.</returns>
+      <param name="keySelector">
+        <see cref="T:System.Func`2" /> utilisé pour extraire la clé de chaque élément.</param>
+      <param name="comparer">
+        <see cref="T:System.Collections.Generic.IComparer`1" /> utilisé pour comparer des clés en vue de leur positionnement dans la séquence retournée.</param>
+      <param name="descending">true pour trier les éléments par ordre décroissant ; false pour trier les éléments par ordre croissant.</param>
+      <typeparam name="TKey">Type de la clé produite par <paramref name="keySelector" />.</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Linq.Lookup`2">
+      <summary>Représente une collection de clés, chacune mappée sur une ou plusieurs valeurs.</summary>
+      <typeparam name="TKey">Type des clés contenues dans <see cref="T:System.Linq.Lookup`2" />.</typeparam>
+      <typeparam name="TElement">Type des éléments de chaque valeur <see cref="T:System.Collections.Generic.IEnumerable`1" /> de <see cref="T:System.Linq.Lookup`2" />.</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Linq.Lookup`2.ApplyResultSelector``1(System.Func{`0,System.Collections.Generic.IEnumerable{`1},``0})">
+      <summary>Applique une fonction de transformation à chaque clé et à ses valeurs associées, puis retourne les résultats.</summary>
+      <returns>Collection qui contient une valeur pour chaque paire clé/collection de valeurs présente dans l'objet <see cref="T:System.Linq.Lookup`2" />.</returns>
+      <param name="resultSelector">Fonction destinée à projeter une valeur de résultat à partir de chaque clé et de ses valeurs associées.</param>
+      <typeparam name="TResult">Type des valeurs de résultat produites par <paramref name="resultSelector" />.</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Linq.Lookup`2.Contains(`0)">
+      <summary>Détermine si une clé spécifiée se trouve dans <see cref="T:System.Linq.Lookup`2" />.</summary>
+      <returns>true si <paramref name="key" /> se trouve dans <see cref="T:System.Linq.Lookup`2" /> ; sinon false.</returns>
+      <param name="key">Clé à rechercher dans <see cref="T:System.Linq.Lookup`2" />.</param>
+    </member>
+    <member name="P:System.Linq.Lookup`2.Count">
+      <summary>Obtient le nombre de paires clé/collection de valeurs contenues dans <see cref="T:System.Linq.Lookup`2" />.</summary>
+      <returns>Nombre de paires clé/collection de valeurs contenues dans <see cref="T:System.Linq.Lookup`2" />.</returns>
+    </member>
+    <member name="M:System.Linq.Lookup`2.GetEnumerator">
+      <summary>Retourne un énumérateur générique qui itère au sein de <see cref="T:System.Linq.Lookup`2" />.</summary>
+      <returns>Énumérateur pour <see cref="T:System.Linq.Lookup`2" />.</returns>
+    </member>
+    <member name="P:System.Linq.Lookup`2.Item(`0)">
+      <summary>Obtient la collection de valeurs indexées par la clé spécifiée.</summary>
+      <returns>Collection de valeurs indexées par la clé spécifiée.</returns>
+      <param name="key">Clé de la collection de valeurs souhaitée.</param>
+    </member>
+    <member name="M:System.Linq.Lookup`2.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Retourne un énumérateur qui itère au sein de <see cref="T:System.Linq.Lookup`2" />.Cette classe ne peut pas être héritée.</summary>
+      <returns>Énumérateur pour <see cref="T:System.Linq.Lookup`2" />.</returns>
+    </member>
+  </members>
+</doc>

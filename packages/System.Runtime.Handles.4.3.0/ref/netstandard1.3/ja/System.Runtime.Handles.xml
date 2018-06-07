@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Runtime.Handles</name>
+  </assembly>
+  <members>
+    <member name="T:Microsoft.Win32.SafeHandles.SafeWaitHandle">
+      <summary>待機ハンドルのラッパー クラスを表します。</summary>
+    </member>
+    <member name="M:Microsoft.Win32.SafeHandles.SafeWaitHandle.#ctor(System.IntPtr,System.Boolean)">
+      <summary>
+        <see cref="T:Microsoft.Win32.SafeHandles.SafeWaitHandle" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="existingHandle">使用する既存のハンドルを表す <see cref="T:System.IntPtr" /> オブジェクト。</param>
+      <param name="ownsHandle">終了処理中にハンドルを安全に解放する場合は true。安全な解放を行わない場合は false (お勧めしません)。</param>
+    </member>
+    <member name="P:Microsoft.Win32.SafeHandles.SafeWaitHandle.IsInvalid"></member>
+    <member name="T:System.IO.HandleInheritability">
+      <summary>基になるハンドルを子プロセスが継承できるかどうかを指定します。</summary>
+    </member>
+    <member name="F:System.IO.HandleInheritability.Inheritable">
+      <summary>ハンドルを子プロセスが継承できるように指定します。</summary>
+    </member>
+    <member name="F:System.IO.HandleInheritability.None">
+      <summary>ハンドルを子プロセスが継承できないように指定します。</summary>
+    </member>
+    <member name="T:System.Runtime.InteropServices.CriticalHandle">
+      <summary>ハンドル リソースのラッパー クラスを表します。</summary>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.#ctor(System.IntPtr)">
+      <summary>指定した無効なハンドル値を使用して、<see cref="T:System.Runtime.InteropServices.CriticalHandle" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="invalidHandleValue">無効なハンドルの値 (通常は 0 または -1)。</param>
+      <exception cref="T:System.TypeLoadException">派生クラスがアンマネージ コードのアクセス許可なしにアセンブリに存在しています。</exception>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.Dispose">
+      <summary>
+        <see cref="T:System.Runtime.InteropServices.CriticalHandle" /> によって使用されているすべてのリソースを解放します。</summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.Dispose(System.Boolean)">
+      <summary>通常の破棄操作を実行するかどうかを指定して、<see cref="T:System.Runtime.InteropServices.CriticalHandle" /> クラスによって使用されているアンマネージ リソースを解放します。</summary>
+      <param name="disposing">通常の破棄操作を実行する場合は true。ハンドルを終了する場合は false。</param>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.Finalize">
+      <summary>ハンドルに関連付けられたすべてのリソースを解放します。</summary>
+    </member>
+    <member name="F:System.Runtime.InteropServices.CriticalHandle.handle">
+      <summary>ラップするハンドルを指定します。</summary>
+    </member>
+    <member name="P:System.Runtime.InteropServices.CriticalHandle.IsClosed">
+      <summary>ハンドルが閉じているかどうかを示す値を取得します。</summary>
+      <returns>ハンドルが閉じている場合は true。それ以外の場合は false。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Runtime.InteropServices.CriticalHandle.IsInvalid">
+      <summary>派生クラスでオーバーライドされると、ハンドル値が無効かどうかを示す値を取得します。</summary>
+      <returns>ハンドルが有効な場合は true。それ以外の場合は false。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.ReleaseHandle">
+      <summary>派生クラスでオーバーライドされると、ハンドルを解放するために必要なコードを実行します。</summary>
+      <returns>ハンドルが正常に解放された場合は true。深刻なエラーが発生した場合は  false。この場合、releaseHandleFailed MDA マネージ デバッグ アシスタントが生成されます。</returns>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.SetHandle(System.IntPtr)">
+      <summary>ハンドルを指定した既存のハンドルに設定します。</summary>
+      <param name="handle">使用する既存のハンドル。</param>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.SetHandleAsInvalid">
+      <summary>ハンドルを無効としてマークします。</summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Runtime.InteropServices.SafeHandle">
+      <summary>オペレーティング システム ハンドルのラッパー クラスを表します。このクラスは継承する必要があります。</summary>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.#ctor(System.IntPtr,System.Boolean)">
+      <summary>指定した無効なハンドル値を使用して、<see cref="T:System.Runtime.InteropServices.SafeHandle" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="invalidHandleValue">無効なハンドルの値 (通常は 0 または -1)。<see cref="P:System.Runtime.InteropServices.SafeHandle.IsInvalid" /> の実装では、この値に対して true を返す必要があります。</param>
+      <param name="ownsHandle">終了処理中に true によってハンドルを確実に解放する場合は <see cref="T:System.Runtime.InteropServices.SafeHandle" />。それ以外の場合は false (お勧めしません)。</param>
+      <exception cref="T:System.TypeLoadException">派生クラスがアンマネージ コードのアクセス許可なしにアセンブリに存在しています。</exception>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.DangerousAddRef(System.Boolean@)">
+      <summary>
+        <see cref="T:System.Runtime.InteropServices.SafeHandle" /> インスタンスの参照カウンターを手動でインクリメントします。</summary>
+      <param name="success">参照カウンターが正常にインクリメントされた場合は true。それ以外の場合は false。</param>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.DangerousGetHandle">
+      <summary>
+        <see cref="F:System.Runtime.InteropServices.SafeHandle.handle" /> フィールドの値を戻します。</summary>
+      <returns>IntPtr フィールドの値を表す <see cref="F:System.Runtime.InteropServices.SafeHandle.handle" />。ハンドルが <see cref="M:System.Runtime.InteropServices.SafeHandle.SetHandleAsInvalid" /> で無効としてマークされている場合にも、このメソッドは元のハンドル値を返すため、返される値が古い値である可能性があります。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.DangerousRelease">
+      <summary>
+        <see cref="T:System.Runtime.InteropServices.SafeHandle" /> インスタンスの参照カウンターを手動でデクリメントします。</summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.Dispose">
+      <summary>
+        <see cref="T:System.Runtime.InteropServices.SafeHandle" /> クラスによって使用されているすべてのリソースを解放します。</summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.Dispose(System.Boolean)">
+      <summary>通常の破棄操作を実行するかどうかを指定して、<see cref="T:System.Runtime.InteropServices.SafeHandle" /> クラスによって使用されているアンマネージ リソースを解放します。</summary>
+      <param name="disposing">通常の破棄操作を実行する場合は true。ハンドルを終了する場合は false。</param>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.Finalize">
+      <summary>ハンドルに関連付けられたすべてのリソースを解放します。</summary>
+    </member>
+    <member name="F:System.Runtime.InteropServices.SafeHandle.handle">
+      <summary>ラップするハンドルを指定します。</summary>
+    </member>
+    <member name="P:System.Runtime.InteropServices.SafeHandle.IsClosed">
+      <summary>ハンドルが閉じているかどうかを示す値を取得します。</summary>
+      <returns>ハンドルが閉じている場合は true。それ以外の場合は false。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Runtime.InteropServices.SafeHandle.IsInvalid">
+      <summary>派生クラスでオーバーライドされると、ハンドル値が無効かどうかを示す値を取得します。</summary>
+      <returns>ハンドル値が無効な場合は true。それ以外の場合は false。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.ReleaseHandle">
+      <summary>派生クラスでオーバーライドされると、ハンドルを解放するために必要なコードを実行します。</summary>
+      <returns>ハンドルが正常に解放された場合は true。深刻なエラーが発生した場合は  false。この場合、releaseHandleFailed MDA マネージ デバッグ アシスタントが生成されます。</returns>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.SetHandle(System.IntPtr)">
+      <summary>ハンドルを指定した既存のハンドルに設定します。</summary>
+      <param name="handle">使用する既存のハンドル。</param>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.SetHandleAsInvalid">
+      <summary>今後は使用しないものとしてハンドルをマークします。</summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Threading.WaitHandleExtensions">
+      <summary>処理の待機時間は、セーフ ハンドルを操作するための便利なメソッドを提供します。</summary>
+    </member>
+    <member name="M:System.Threading.WaitHandleExtensions.GetSafeWaitHandle(System.Threading.WaitHandle)">
+      <summary>ネイティブのオペレーティング システムの待機ハンドル、セーフ ハンドルを取得します。</summary>
+      <returns>ネイティブのオペレーティング システムをラップするセーフ待機ハンドルはハンドルを待機します。</returns>
+      <param name="waitHandle">ネイティブのオペレーティング システムのハンドル。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="waitHandle" /> は null です。</exception>
+    </member>
+    <member name="M:System.Threading.WaitHandleExtensions.SetSafeWaitHandle(System.Threading.WaitHandle,Microsoft.Win32.SafeHandles.SafeWaitHandle)">
+      <summary>ネイティブのオペレーティング システムの待機ハンドルのセーフ ハンドルを設定します。</summary>
+      <param name="waitHandle">共有リソースへの排他的アクセスが待機する、オペレーティング システムに固有のオブジェクトをカプセル化する待機ハンドルを返します。</param>
+      <param name="value">オペレーティング システム ハンドルをラップするセーフ ハンドルです。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="waitHandle" /> は null です。</exception>
+    </member>
+  </members>
+</doc>

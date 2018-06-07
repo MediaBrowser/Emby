@@ -1,0 +1,1142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Collections.Concurrent</name>
+  </assembly>
+  <members>
+    <member name="T:System.Collections.Concurrent.BlockingCollection`1">
+      <summary>Fornisce funzionalità di blocco e limitazione per le raccolte thread-safe che implementano <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" />.</summary>
+      <typeparam name="T">Tipo di elementi contenuti nella raccolta.</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> senza un limite superiore.</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.#ctor(System.Collections.Concurrent.IProducerConsumerCollection{`0})">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> senza un limite superiore e usando l'oggetto <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> fornito come archivio dati sottostante.</summary>
+      <param name="collection">Raccolta da usare come archivio dati sottostante.</param>
+      <exception cref="T:System.ArgumentNullException">L'argomento <paramref name="collection" /> è null.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.#ctor(System.Collections.Concurrent.IProducerConsumerCollection{`0},System.Int32)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> con il limite superiore specificato e usando l'oggetto <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> fornito come archivio dati sottostante.</summary>
+      <param name="collection">Raccolta da usare come archivio dati sottostante.</param>
+      <param name="boundedCapacity">Dimensione delimitata della raccolta.</param>
+      <exception cref="T:System.ArgumentNullException">L'argomento <paramref name="collection" /> è null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="boundedCapacity" /> non è un valore positivo.</exception>
+      <exception cref="T:System.ArgumentException">L'elemento <paramref name="collection" /> contiene più valori rispetto a quelli consentiti da <paramref name="boundedCapacity" />.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.#ctor(System.Int32)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> con il limite superiore specificato.</summary>
+      <param name="boundedCapacity">Dimensione delimitata della raccolta.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="boundedCapacity" /> non è un valore positivo.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.Add(`0)">
+      <summary>Aggiunge l'elemento all'oggetto <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <param name="item">Elemento da aggiungere alla raccolta.Il valore può essere un riferimento Null.</param>
+      <exception cref="T:System.ObjectDisposedException">L'interfaccia <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stato contrassegnato come completo in relazione alle aggiunte.-oppure-La raccolta sottostante non ha accettato l'elemento.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.Add(`0,System.Threading.CancellationToken)">
+      <summary>Aggiunge l'elemento all'oggetto <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <param name="item">Elemento da aggiungere alla raccolta.Il valore può essere un riferimento Null.</param>
+      <param name="cancellationToken">Token di annullamento da osservare.</param>
+      <exception cref="T:System.OperationCanceledException">Se <see cref="T:System.Threading.CancellationToken" /> viene annullato.</exception>
+      <exception cref="T:System.ObjectDisposedException">È stato eliminato <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> oppure <see cref="T:System.Threading.CancellationTokenSource" /> proprietario di <paramref name="cancellationToken" />.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stato contrassegnato come completo in relazione alle aggiunte.-oppure-La raccolta sottostante non ha accettato l'elemento.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.AddToAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0)">
+      <summary>Aggiunge l'elemento specificato a una qualsiasi delle istanze di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> specificate.</summary>
+      <returns>Indice della raccolta nella matrice <paramref name="collections" /> cui è stato aggiunto l'elemento.</returns>
+      <param name="collections">Matrice di raccolte.</param>
+      <param name="item">Elemento da aggiungere a una delle raccolte.</param>
+      <exception cref="T:System.ObjectDisposedException">Almeno una delle istanze di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+      <exception cref="T:System.ArgumentNullException">L'argomento <paramref name="collections" /> è null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il conteggio di <paramref name="collections" /> è più grande della dimensione massima di 62 per STA e 63 per MTA.</exception>
+      <exception cref="T:System.ArgumentException">L'argomento <paramref name="collections" /> è una matrice di lunghezza 0 o contiene un elemento null o almeno uno degli insiemi è stato contrassegnato come completo per l'aggiunta.</exception>
+      <exception cref="T:System.InvalidOperationException">Almeno un insieme sottostante non ha accettato l'elemento.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.AddToAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0,System.Threading.CancellationToken)">
+      <summary>Aggiunge l'elemento specificato a una qualsiasi delle istanze di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> specificate.</summary>
+      <returns>Indice della raccolta nella matrice <paramref name="collections" /> cui è stato aggiunto l'elemento.</returns>
+      <param name="collections">Matrice di raccolte.</param>
+      <param name="item">Elemento da aggiungere a una delle raccolte.</param>
+      <param name="cancellationToken">Token di annullamento da osservare.</param>
+      <exception cref="T:System.OperationCanceledException">Se <see cref="T:System.Threading.CancellationToken" /> viene annullato.</exception>
+      <exception cref="T:System.InvalidOperationException">Almeno un insieme sottostante non ha accettato l'elemento.</exception>
+      <exception cref="T:System.ArgumentNullException">L'argomento <paramref name="collections" /> è null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il conteggio di <paramref name="collections" /> è più grande della dimensione massima di 62 per STA e 63 per MTA.</exception>
+      <exception cref="T:System.ArgumentException">L'argomento <paramref name="collections" /> è una matrice di lunghezza 0 o contiene un elemento null o almeno uno degli insiemi è stato contrassegnato come completo per l'aggiunta.</exception>
+      <exception cref="T:System.ObjectDisposedException">Almeno una delle istanze <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata oppure l'istanza <see cref="T:System.Threading.CancellationTokenSource" /> che ha creato <paramref name="cancellationToken" /> è stata eliminata.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.BlockingCollection`1.BoundedCapacity">
+      <summary>Ottiene un valore che indica la capacità delimitata di questa istanza di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Capacità delimitata di questa raccolta, o int.MaxValue se non è stato fornito alcun limite.</returns>
+      <exception cref="T:System.ObjectDisposedException">L'interfaccia <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.CompleteAdding">
+      <summary>Contrassegna le istanze di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> per non accettare più alcuna aggiunta.</summary>
+      <exception cref="T:System.ObjectDisposedException">L'interfaccia <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.CopyTo(`0[],System.Int32)">
+      <summary>Copia tutti gli elementi dell'istanza di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> in una matrice unidimensionale compatibile, a partire dall'indice specificato della matrice di destinazione.</summary>
+      <param name="array">Matrice unidimensionale che è la destinazione degli elementi copiati dall'istanza di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.La matrice deve avere un'indicizzazione in base zero.</param>
+      <param name="index">Indice in base zero in <paramref name="array" /> in corrispondenza del quale viene avviata la copia.</param>
+      <exception cref="T:System.ObjectDisposedException">L'interfaccia <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+      <exception cref="T:System.ArgumentNullException">L'argomento <paramref name="array" /> è null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">L'argomento <paramref name="index" /> è minore di zero.</exception>
+      <exception cref="T:System.ArgumentException">L'argomento <paramref name="index" /> è uguale a o più grande della lunghezza di <paramref name="array" />.La matrice di destinazione è troppo piccola per contenere tutti gli elementi BlockingCcollection.Il numero di dimensioni della matrice non corrisponde.Il tipo di matrice non è compatibile con il tipo degli elementi BlockingCollection.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.BlockingCollection`1.Count">
+      <summary>Ottiene il numero di elementi contenuti nella classe <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Numero di elementi contenuti in <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</returns>
+      <exception cref="T:System.ObjectDisposedException">L'interfaccia <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.Dispose">
+      <summary>Rilascia tutte le risorse usate dall'istanza corrente della classe <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.Dispose(System.Boolean)">
+      <summary>Rilascia risorse usate dall'istanza di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <param name="disposing">Se eliminato in modo esplicito (true) o destinato a un finalizzatore (false).</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.GetConsumingEnumerable">
+      <summary>Fornisce un oggetto <see cref="T:System.Collections.Generic.IEnumerator`1" /> usato per gli elementi nella raccolta.</summary>
+      <returns>Oggetto <see cref="T:System.Collections.Generic.IEnumerable`1" /> che rimuove e restituisce elementi dalla raccolta.</returns>
+      <exception cref="T:System.ObjectDisposedException">L'interfaccia <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.GetConsumingEnumerable(System.Threading.CancellationToken)">
+      <summary>Fornisce un oggetto <see cref="T:System.Collections.Generic.IEnumerable`1" /> usato per gli elementi nella raccolta.</summary>
+      <returns>Oggetto <see cref="T:System.Collections.Generic.IEnumerable`1" /> che rimuove e restituisce elementi dalla raccolta.</returns>
+      <param name="cancellationToken">Token di annullamento da osservare.</param>
+      <exception cref="T:System.OperationCanceledException">Se <see cref="T:System.Threading.CancellationToken" /> viene annullato.</exception>
+      <exception cref="T:System.ObjectDisposedException">L'oggetto <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stato eliminato o è stato eliminato l'oggetto <see cref="T:System.Threading.CancellationTokenSource" /> che aveva creato <paramref name="cancellationToken" />.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.BlockingCollection`1.IsAddingCompleted">
+      <summary>Ottiene un valore che indica se questo oggetto <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stato contrassegnato come completo per l'aggiunta.</summary>
+      <returns>Viene indicato se questa raccolta è stata contrassegnata come completa per l'aggiunta.</returns>
+      <exception cref="T:System.ObjectDisposedException">L'interfaccia <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.BlockingCollection`1.IsCompleted">
+      <summary>Ottiene un valore che indica se questo oggetto <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stato contrassegnato come completo per l'aggiunta ed è vuoto.</summary>
+      <returns>Viene indicato se questa raccolta è stata contrassegnata come completa per l'aggiunta ed è vuota.</returns>
+      <exception cref="T:System.ObjectDisposedException">L'interfaccia <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.System#Collections#Generic#IEnumerable{T}#GetEnumerator">
+      <summary>Fornisce un oggetto <see cref="T:System.Collections.Generic.IEnumerator`1" /> per gli elementi nella raccolta.</summary>
+      <returns>Oggetto <see cref="T:System.Collections.Generic.IEnumerator`1" /> per gli elementi nella raccolta.</returns>
+      <exception cref="T:System.ObjectDisposedException">L'interfaccia <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>Copia tutti gli elementi dell'istanza di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> in una matrice unidimensionale compatibile, a partire dall'indice specificato della matrice di destinazione.</summary>
+      <param name="array">Matrice unidimensionale che è la destinazione degli elementi copiati dall'istanza di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.La matrice deve avere un'indicizzazione in base zero.</param>
+      <param name="index">Indice in base zero in <paramref name="array" /> in corrispondenza del quale viene avviata la copia.</param>
+      <exception cref="T:System.ObjectDisposedException">L'interfaccia <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+      <exception cref="T:System.ArgumentNullException">L'argomento <paramref name="array" /> è null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">L'argomento <paramref name="index" /> è minore di zero.</exception>
+      <exception cref="T:System.ArgumentException">L'argomento <paramref name="index" /> è uguale a o più grande della lunghezza di <paramref name="array" />, la matrice è multidimensionale o non può essere eseguito automaticamente il cast al tipo della matrice di destinazione del parametro di tipo per l'insieme.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.BlockingCollection`1.System#Collections#ICollection#IsSynchronized">
+      <summary>Ottiene un valore che indica se l'accesso all'interfaccia <see cref="T:System.Collections.ICollection" /> è sincronizzato.</summary>
+      <returns>Restituisce sempre false.</returns>
+      <exception cref="T:System.ObjectDisposedException">L'interfaccia <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.BlockingCollection`1.System#Collections#ICollection#SyncRoot">
+      <summary>Ottiene un oggetto che può essere usato per sincronizzare l'accesso a <see cref="T:System.Collections.ICollection" />.Questa proprietà non è supportata.</summary>
+      <returns>Restituisce null.</returns>
+      <exception cref="T:System.NotSupportedException">La proprietà SyncRoot non è supportata.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Fornisce un oggetto <see cref="T:System.Collections.IEnumerator" /> per gli elementi nella raccolta.</summary>
+      <returns>Oggetto <see cref="T:System.Collections.IEnumerator" /> per gli elementi nella raccolta.</returns>
+      <exception cref="T:System.ObjectDisposedException">L'interfaccia <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.Take">
+      <summary>Rimuove un elemento da <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Elemento rimosso dalla raccolta.</returns>
+      <exception cref="T:System.ObjectDisposedException">L'interfaccia <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+      <exception cref="T:System.InvalidOperationException">L'insieme sottostante è stato modificato all'esterno di questa istanza di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> o <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è vuoto e l'insieme è stato contrassegnato come completo per l'aggiunta.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.Take(System.Threading.CancellationToken)">
+      <summary>Rimuove un elemento da <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Elemento rimosso dalla raccolta.</returns>
+      <param name="cancellationToken">Oggetto che può essere usato per annullare l'operazione di prelevamento.</param>
+      <exception cref="T:System.OperationCanceledException">L'oggetto <see cref="T:System.Threading.CancellationToken" /> viene annullato.</exception>
+      <exception cref="T:System.ObjectDisposedException">L'oggetto <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stato eliminato o è stato annullato l'oggetto <see cref="T:System.Threading.CancellationTokenSource" /> che aveva creato il token.</exception>
+      <exception cref="T:System.InvalidOperationException">L'insieme sottostante è stato modificato al di fuori di questa istanza di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> o BlockingCollection è contrassegnato come completo per l'aggiunta o <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è vuoto.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TakeFromAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0@)">
+      <summary>Preleva un elemento da una delle istanze di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> specificate.</summary>
+      <returns>Indice della raccolta nella matrice <paramref name="collections" /> da cui è stato rimosso l'elemento.</returns>
+      <param name="collections">Matrice di raccolte.</param>
+      <param name="item">Elemento rimosso da una delle raccolte.</param>
+      <exception cref="T:System.ObjectDisposedException">Almeno una delle istanze di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+      <exception cref="T:System.ArgumentNullException">L'argomento <paramref name="collections" /> è null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il conteggio di <paramref name="collections" /> è più grande della dimensione massima di 62 per STA e 63 per MTA.</exception>
+      <exception cref="T:System.ArgumentException">L'argomento <paramref name="collections" /> è una matrice di lunghezza 0 o contiene un elemento null o <see cref="M:System.Collections.Concurrent.BlockingCollection`1.CompleteAdding" /> è stato chiamato nell'insieme.</exception>
+      <exception cref="T:System.InvalidOperationException">Almeno uno degli insiemi sottostanti è stato modificato all'esterno dell'istanza di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TakeFromAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0@,System.Threading.CancellationToken)">
+      <summary>Preleva un elemento da una delle istanze di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> specificate considerando il token di annullamento specificato.</summary>
+      <returns>Indice della raccolta nella matrice <paramref name="collections" /> da cui è stato rimosso l'elemento.</returns>
+      <param name="collections">Matrice di raccolte.</param>
+      <param name="item">Elemento rimosso da una delle raccolte.</param>
+      <param name="cancellationToken">Token di annullamento da osservare.</param>
+      <exception cref="T:System.OperationCanceledException">Se <see cref="T:System.Threading.CancellationToken" /> viene annullato.</exception>
+      <exception cref="T:System.InvalidOperationException">Almeno uno degli insiemi sottostanti è stato modificato all'esterno dell'istanza di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</exception>
+      <exception cref="T:System.ArgumentNullException">L'argomento <paramref name="collections" /> è null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il conteggio di <paramref name="collections" /> è più grande della dimensione massima di 62 per STA e 63 per MTA.</exception>
+      <exception cref="T:System.ArgumentException">L'argomento <paramref name="collections" /> è una matrice di lunghezza 0 o contiene un elemento null o <see cref="M:System.Collections.Concurrent.BlockingCollection`1.CompleteAdding" /> è stato chiamato nell'insieme.</exception>
+      <exception cref="T:System.ObjectDisposedException">Almeno una delle istanze di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.ToArray">
+      <summary>Copia gli elementi dall'istanza di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> in una nuova matrice.</summary>
+      <returns>Matrice che contiene copie degli elementi della raccolta.</returns>
+      <exception cref="T:System.ObjectDisposedException">L'interfaccia <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAdd(`0)">
+      <summary>Prova ad aggiungere l'elemento specificato a <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>true se è possibile aggiungere <paramref name="item" />; in caso contrario, false.Se l'elemento è un duplicato e la raccolta sottostante non accetta elementi duplicati, viene generato un oggetto <see cref="T:System.InvalidOperationException" />.</returns>
+      <param name="item">Elemento da aggiungere alla raccolta.</param>
+      <exception cref="T:System.ObjectDisposedException">L'interfaccia <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stato contrassegnato come completo in relazione alle aggiunte.-oppure-La raccolta sottostante non ha accettato l'elemento.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAdd(`0,System.Int32)">
+      <summary>Prova ad aggiungere l'elemento specificato a <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> nel periodo di tempo specificato.</summary>
+      <returns>true se è stato possibile aggiungere <paramref name="item" /> alla raccolta entro il tempo specificato; in caso contrario, false.Se l'elemento è un duplicato e la raccolta sottostante non accetta elementi duplicati, viene generato un oggetto <see cref="T:System.InvalidOperationException" />.</returns>
+      <param name="item">Elemento da aggiungere alla raccolta.</param>
+      <param name="millisecondsTimeout">Numero di millisecondi di attesa oppure <see cref="F:System.Threading.Timeout.Infinite" /> (-1) per un'attesa indefinita.</param>
+      <exception cref="T:System.ObjectDisposedException">L'interfaccia <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> è un numero negativo diverso da -1 che rappresenta un timeout indeterminato.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stato contrassegnato come completo in relazione alle aggiunte.-oppure-La raccolta sottostante non ha accettato l'elemento.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAdd(`0,System.Int32,System.Threading.CancellationToken)">
+      <summary>Prova ad aggiungere l'elemento specificato a <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> nel periodo di tempo specificato, considerando un token di annullamento.</summary>
+      <returns>true se è stato possibile aggiungere <paramref name="item" /> alla raccolta entro il tempo specificato; in caso contrario, false.Se l'elemento è un duplicato e la raccolta sottostante non accetta elementi duplicati, viene generato un oggetto <see cref="T:System.InvalidOperationException" />.</returns>
+      <param name="item">Elemento da aggiungere alla raccolta.</param>
+      <param name="millisecondsTimeout">Numero di millisecondi di attesa oppure <see cref="F:System.Threading.Timeout.Infinite" /> (-1) per un'attesa indefinita.</param>
+      <param name="cancellationToken">Token di annullamento da osservare.</param>
+      <exception cref="T:System.OperationCanceledException">Se <see cref="T:System.Threading.CancellationToken" /> viene annullato.</exception>
+      <exception cref="T:System.ObjectDisposedException">È stato eliminato <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> o l'oggetto <see cref="T:System.Threading.CancellationTokenSource" /> sottostante.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> è un numero negativo diverso da -1 che rappresenta un timeout indeterminato.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stato contrassegnato come completo in relazione alle aggiunte.-oppure-La raccolta sottostante non ha accettato l'elemento.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAdd(`0,System.TimeSpan)">
+      <summary>Prova ad aggiungere l'elemento specificato a <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>true se è stato possibile aggiungere <paramref name="item" /> alla raccolta nell'intervallo di tempo specificato; in caso contrario, false.</returns>
+      <param name="item">Elemento da aggiungere alla raccolta.</param>
+      <param name="timeout">Oggetto <see cref="T:System.TimeSpan" /> che rappresenta il numero di millisecondi di attesa oppure <see cref="T:System.TimeSpan" /> che rappresenta -1 millisecondi per un'attesa indefinita.</param>
+      <exception cref="T:System.ObjectDisposedException">L'interfaccia <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> è un numero negativo diverso da -1 millisecondi che rappresenta un timeout infinito - o - il timeout è più grande di <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stato contrassegnato come completo in relazione alle aggiunte.-oppure-La raccolta sottostante non ha accettato l'elemento.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAddToAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0)">
+      <summary>Prova ad aggiungere l'elemento specificato a una delle istanze specifiche di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Indice della raccolta nella matrice <paramref name="collections" /> cui è stato aggiunto l'elemento o -1 se non è stato possibile aggiungere l'elemento.</returns>
+      <param name="collections">Matrice di raccolte.</param>
+      <param name="item">Elemento da aggiungere a una delle raccolte.</param>
+      <exception cref="T:System.ObjectDisposedException">Almeno una delle istanze di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+      <exception cref="T:System.ArgumentNullException">L'argomento <paramref name="collections" /> è null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il conteggio di <paramref name="collections" /> è più grande della dimensione massima di 62 per STA e 63 per MTA.</exception>
+      <exception cref="T:System.ArgumentException">L'argomento <paramref name="collections" /> è una matrice di lunghezza 0 o contiene un elemento null o almeno uno degli insiemi è stato contrassegnato come completo per l'aggiunta.</exception>
+      <exception cref="T:System.InvalidOperationException">Almeno un insieme sottostante non ha accettato l'elemento.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAddToAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0,System.Int32)">
+      <summary>Prova ad aggiungere l'elemento specificato a una delle istanze specifiche di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Indice della raccolta nella matrice <paramref name="collections" /> cui è stato aggiunto l'elemento o -1 se non è stato possibile aggiungere l'elemento.</returns>
+      <param name="collections">Matrice di raccolte.</param>
+      <param name="item">Elemento da aggiungere a una delle raccolte.</param>
+      <param name="millisecondsTimeout">Numero di millisecondi di attesa oppure <see cref="F:System.Threading.Timeout.Infinite" /> (-1) per un'attesa indefinita.</param>
+      <exception cref="T:System.ObjectDisposedException">Almeno una delle istanze di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+      <exception cref="T:System.ArgumentNullException">L'argomento <paramref name="collections" /> è null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> è un numero negativo diverso da -1 che rappresenta un timeout indeterminato.-oppure-Il conteggio di <paramref name="collections" /> è più grande della dimensione massima di 62 per STA e 63 per MTA.</exception>
+      <exception cref="T:System.ArgumentException">L'argomento <paramref name="collections" /> è una matrice di lunghezza 0 o contiene un elemento null o almeno uno degli insiemi è stato contrassegnato come completo per l'aggiunta.</exception>
+      <exception cref="T:System.InvalidOperationException">Almeno un insieme sottostante non ha accettato l'elemento.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAddToAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0,System.Int32,System.Threading.CancellationToken)">
+      <summary>Prova ad aggiungere l'elemento specificato a una delle istanze specifiche di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Indice della raccolta nella matrice <paramref name="collections" /> cui è stato aggiunto l'elemento o -1 se non è stato possibile aggiungere l'elemento.</returns>
+      <param name="collections">Matrice di raccolte.</param>
+      <param name="item">Elemento da aggiungere a una delle raccolte.</param>
+      <param name="millisecondsTimeout">Numero di millisecondi di attesa oppure <see cref="F:System.Threading.Timeout.Infinite" /> (-1) per un'attesa indefinita.</param>
+      <param name="cancellationToken">Token di annullamento da osservare.</param>
+      <exception cref="T:System.OperationCanceledException">Se <see cref="T:System.Threading.CancellationToken" /> viene annullato.</exception>
+      <exception cref="T:System.InvalidOperationException">Almeno un insieme sottostante non ha accettato l'elemento.</exception>
+      <exception cref="T:System.ArgumentNullException">L'argomento <paramref name="collections" /> è null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> è un numero negativo diverso da -1 che rappresenta un timeout indeterminato.-oppure-Il conteggio di <paramref name="collections" /> è più grande della dimensione massima di 62 per STA e 63 per MTA.</exception>
+      <exception cref="T:System.ArgumentException">L'argomento <paramref name="collections" /> è una matrice di lunghezza 0 o contiene un elemento null o almeno uno degli insiemi è stato contrassegnato come completo per l'aggiunta.</exception>
+      <exception cref="T:System.ObjectDisposedException">Almeno una delle istanze di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAddToAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0,System.TimeSpan)">
+      <summary>Prova ad aggiungere l'elemento specificato a una delle istanze di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> specificate considerando il token di annullamento specificato.</summary>
+      <returns>Indice della raccolta nella matrice <paramref name="collections" /> cui è stato aggiunto l'elemento o -1 se non è stato possibile aggiungere l'elemento.</returns>
+      <param name="collections">Matrice di raccolte.</param>
+      <param name="item">Elemento da aggiungere a una delle raccolte.</param>
+      <param name="timeout">Oggetto <see cref="T:System.TimeSpan" /> che rappresenta il numero di millisecondi di attesa oppure <see cref="T:System.TimeSpan" /> che rappresenta -1 millisecondi per un'attesa indefinita.</param>
+      <exception cref="T:System.ObjectDisposedException">Almeno una delle istanze <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> o <see cref="T:System.Threading.CancellationTokenSource" /> che hanno creato <paramref name="cancellationToken" /> è stata eliminata.</exception>
+      <exception cref="T:System.ArgumentNullException">L'argomento <paramref name="collections" /> è null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> è un numero negativo diverso da -1 millisecondi che rappresenta un timeout infinito - o - il timeout è più grande di <see cref="F:System.Int32.MaxValue" />.-oppure-Il conteggio di <paramref name="collections" /> è più grande della dimensione massima di 62 per STA e 63 per MTA.</exception>
+      <exception cref="T:System.ArgumentException">L'argomento <paramref name="collections" /> è una matrice di lunghezza 0 o contiene un elemento null o almeno uno degli insiemi è stato contrassegnato come completo per l'aggiunta.</exception>
+      <exception cref="T:System.InvalidOperationException">Almeno un insieme sottostante non ha accettato l'elemento.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTake(`0@)">
+      <summary>Prova a rimuovere un elemento da <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>true se un elemento può essere eliminato; altrimenti, false.</returns>
+      <param name="item">Elemento da rimuovere dalla raccolta.</param>
+      <exception cref="T:System.ObjectDisposedException">L'interfaccia <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+      <exception cref="T:System.InvalidOperationException">L'insieme sottostante è stato modificato all'esterno di questa istanza di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTake(`0@,System.Int32)">
+      <summary>Prova rimuovere un elemento da <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> entro il periodo di tempo specificato.</summary>
+      <returns>È true se è stato possibile rimuovere un elemento dalla raccolta nel tempo specificato; in caso contrario, false.</returns>
+      <param name="item">Elemento da rimuovere dalla raccolta.</param>
+      <param name="millisecondsTimeout">Numero di millisecondi di attesa oppure <see cref="F:System.Threading.Timeout.Infinite" /> (-1) per un'attesa indefinita.</param>
+      <exception cref="T:System.ObjectDisposedException">L'interfaccia <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> è un numero negativo diverso da -1 che rappresenta un timeout indeterminato.</exception>
+      <exception cref="T:System.InvalidOperationException">L'insieme sottostante è stato modificato all'esterno di questa istanza di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTake(`0@,System.Int32,System.Threading.CancellationToken)">
+      <summary>Prova a rimuovere un elemento da <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> nel periodo di tempo specificato, considerando un token di annullamento.</summary>
+      <returns>È true se è stato possibile rimuovere un elemento dalla raccolta nel tempo specificato; in caso contrario, false.</returns>
+      <param name="item">Elemento da rimuovere dalla raccolta.</param>
+      <param name="millisecondsTimeout">Numero di millisecondi di attesa oppure <see cref="F:System.Threading.Timeout.Infinite" /> (-1) per un'attesa indefinita.</param>
+      <param name="cancellationToken">Token di annullamento da osservare.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <see cref="T:System.Threading.CancellationToken" /> annullata.</exception>
+      <exception cref="T:System.ObjectDisposedException">È stato eliminato <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> o l'oggetto <see cref="T:System.Threading.CancellationTokenSource" /> sottostante.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> è un numero negativo diverso da -1 che rappresenta un timeout indeterminato.</exception>
+      <exception cref="T:System.InvalidOperationException">La raccolta sottostante è stata modificata all'esterno di questa istanza di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTake(`0@,System.TimeSpan)">
+      <summary>Prova rimuovere un elemento da <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> entro il periodo di tempo specificato.</summary>
+      <returns>È true se è stato possibile rimuovere un elemento dalla raccolta nel tempo specificato; in caso contrario, false.</returns>
+      <param name="item">Elemento da rimuovere dalla raccolta.</param>
+      <param name="timeout">Oggetto che rappresenta il numero di millisecondi di attesa oppure un oggetto che rappresenta -1 millisecondi per un'attesa indefinita. </param>
+      <exception cref="T:System.ObjectDisposedException">L'interfaccia <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> è un numero negativo diverso da -1 millisecondi che rappresenta un timeout indeterminato.-oppure- <paramref name="timeout" /> è maggiore di <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.InvalidOperationException">L'insieme sottostante è stato modificato all'esterno di questa istanza di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTakeFromAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0@)">
+      <summary>Prova a rimuovere un elemento da una delle istanze specifiche di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Indice della raccolta nella matrice <paramref name="collections" /> da cui è stato rimosso l'elemento o -1 se non è stato possibile rimuovere un elemento.</returns>
+      <param name="collections">Matrice di raccolte.</param>
+      <param name="item">Elemento rimosso da una delle raccolte.</param>
+      <exception cref="T:System.ObjectDisposedException">Almeno una delle istanze di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+      <exception cref="T:System.ArgumentNullException">L'argomento <paramref name="collections" /> è null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il conteggio di <paramref name="collections" /> è più grande della dimensione massima di 62 per STA e 63 per MTA.</exception>
+      <exception cref="T:System.ArgumentException">L'argomento <paramref name="collections" /> è una matrice di lunghezza 0 matrice o contiene un elemento null.</exception>
+      <exception cref="T:System.InvalidOperationException">Almeno uno degli insiemi sottostanti è stato modificato all'esterno dell'istanza di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTakeFromAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0@,System.Int32)">
+      <summary>Prova a rimuovere un elemento da una delle istanze specifiche di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Indice della raccolta nella matrice <paramref name="collections" /> da cui è stato rimosso l'elemento o -1 se non è stato possibile rimuovere un elemento.</returns>
+      <param name="collections">Matrice di raccolte.</param>
+      <param name="item">Elemento rimosso da una delle raccolte.</param>
+      <param name="millisecondsTimeout">Numero di millisecondi di attesa oppure <see cref="F:System.Threading.Timeout.Infinite" /> (-1) per un'attesa indefinita.</param>
+      <exception cref="T:System.ObjectDisposedException">Almeno una delle istanze di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+      <exception cref="T:System.ArgumentNullException">L'argomento <paramref name="collections" /> è null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> è un numero negativo diverso da -1 che rappresenta un timeout indeterminato.-oppure-Il conteggio di <paramref name="collections" /> è più grande della dimensione massima di 62 per STA e 63 per MTA.</exception>
+      <exception cref="T:System.ArgumentException">L'argomento <paramref name="collections" /> è una matrice di lunghezza 0 matrice o contiene un elemento null.</exception>
+      <exception cref="T:System.InvalidOperationException">Almeno uno degli insiemi sottostanti è stato modificato all'esterno dell'istanza di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTakeFromAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0@,System.Int32,System.Threading.CancellationToken)">
+      <summary>Prova a rimuovere un elemento da una delle istanze specifiche di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Indice della raccolta nella matrice <paramref name="collections" /> da cui è stato rimosso l'elemento o -1 se non è stato possibile rimuovere un elemento.</returns>
+      <param name="collections">Matrice di raccolte.</param>
+      <param name="item">Elemento rimosso da una delle raccolte.</param>
+      <param name="millisecondsTimeout">Numero di millisecondi di attesa oppure <see cref="F:System.Threading.Timeout.Infinite" /> (-1) per un'attesa indefinita.</param>
+      <param name="cancellationToken">Token di annullamento da osservare.</param>
+      <exception cref="T:System.OperationCanceledException">Se <see cref="T:System.Threading.CancellationToken" /> viene annullato.</exception>
+      <exception cref="T:System.InvalidOperationException">Almeno uno degli insiemi sottostanti è stato modificato all'esterno dell'istanza di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</exception>
+      <exception cref="T:System.ArgumentNullException">L'argomento <paramref name="collections" /> è null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> è un numero negativo diverso da -1 che rappresenta un timeout indeterminato.-oppure-Il conteggio di <paramref name="collections" /> è più grande della dimensione massima di 62 per STA e 63 per MTA.</exception>
+      <exception cref="T:System.ArgumentException">L'argomento <paramref name="collections" /> è una matrice di lunghezza 0 matrice o contiene un elemento null.</exception>
+      <exception cref="T:System.ObjectDisposedException">Almeno una delle istanze di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTakeFromAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0@,System.TimeSpan)">
+      <summary>Prova a rimuovere un elemento da una delle istanze specifiche di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</summary>
+      <returns>Indice della raccolta nella matrice <paramref name="collections" /> da cui è stato rimosso l'elemento o -1 se non è stato possibile rimuovere un elemento.</returns>
+      <param name="collections">Matrice di raccolte.</param>
+      <param name="item">Elemento rimosso da una delle raccolte.</param>
+      <param name="timeout">Oggetto <see cref="T:System.TimeSpan" /> che rappresenta il numero di millisecondi di attesa oppure <see cref="T:System.TimeSpan" /> che rappresenta -1 millisecondi per un'attesa indefinita.</param>
+      <exception cref="T:System.ObjectDisposedException">Almeno una delle istanze di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> è stata eliminata.</exception>
+      <exception cref="T:System.ArgumentNullException">L'argomento <paramref name="collections" /> è null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> è un numero negativo diverso da -1 millisecondi che rappresenta un timeout infinito - o - il timeout è più grande di <see cref="F:System.Int32.MaxValue" />.-oppure-Il conteggio di <paramref name="collections" /> è più grande della dimensione massima di 62 per STA e 63 per MTA.</exception>
+      <exception cref="T:System.ArgumentException">L'argomento <paramref name="collections" /> è una matrice di lunghezza 0 matrice o contiene un elemento null.</exception>
+      <exception cref="T:System.InvalidOperationException">Almeno uno degli insiemi sottostanti è stato modificato all'esterno dell'istanza di <see cref="T:System.Collections.Concurrent.BlockingCollection`1" />.</exception>
+    </member>
+    <member name="T:System.Collections.Concurrent.ConcurrentBag`1">
+      <summary>Rappresenta una raccolta thread-safe non ordinata di oggetti.</summary>
+      <typeparam name="T">Tipo degli elementi da archiviare nella raccolta.</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> che contiene gli elementi copiati dalla raccolta specificata.</summary>
+      <param name="collection">Raccolta i cui elementi sono copiati nel nuovo oggetto <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collection" /> è un riferimento null (Nothing in Visual Basic).</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.Add(`0)">
+      <summary>Aggiunge un oggetto all'oggetto <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.</summary>
+      <param name="item">Oggetto da aggiungere all'oggetto <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.Il valore può essere un riferimento Null (Nothing in Visual Basic) per i tipi di riferimento.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.CopyTo(`0[],System.Int32)">
+      <summary>Copia gli elementi di <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> in un oggetto <see cref="T:System.Array" /> unidimensionale esistente, partendo dall'indice della matrice specificata.</summary>
+      <param name="array">Oggetto unidimensionale <see cref="T:System.Array" /> che rappresenta la destinazione degli elementi copiati da <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.L'indicizzazione di <see cref="T:System.Array" /> deve essere in base zero.</param>
+      <param name="index">Indice in base zero in <paramref name="array" /> in corrispondenza del quale viene avviata la copia.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> è un riferimento null (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> è minore di zero.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> è uguale o maggiore della lunghezza di <paramref name="array" /> o il numero di elementi nel <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> di origine è maggiore dello spazio disponibile da <paramref name="index" /> alla fine dell'oggetto <paramref name="array" /> di destinazione.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentBag`1.Count">
+      <summary>Ottiene il numero di elementi contenuti in <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.</summary>
+      <returns>Il numero di elementi contenuti in <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.GetEnumerator">
+      <summary>Restituisce un enumeratore che esegue l'iterazione di <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.</summary>
+      <returns>Enumeratore per il contenuto dell'oggetto <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentBag`1.IsEmpty">
+      <summary>Ottiene un valore che indica se <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> è vuoto.</summary>
+      <returns>True se <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> è vuoto; in caso contrario, false.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.System#Collections#Concurrent#IProducerConsumerCollection{T}#TryAdd(`0)">
+      <summary>Tenta di aggiungere un oggetto all'oggetto <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.</summary>
+      <returns>Restituisce sempre true.</returns>
+      <param name="item">Oggetto da aggiungere all'oggetto <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.Il valore può essere un riferimento Null (Nothing in Visual Basic) per i tipi di riferimento.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>Copia gli elementi di <see cref="T:System.Collections.ICollection" /> in <see cref="T:System.Array" /> a partire da un particolare indice <see cref="T:System.Array" />.</summary>
+      <param name="array">Oggetto unidimensionale <see cref="T:System.Array" /> che rappresenta la destinazione degli elementi copiati da <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.L'indicizzazione di <see cref="T:System.Array" /> deve essere in base zero.</param>
+      <param name="index">Indice in base zero in <paramref name="array" /> in corrispondenza del quale viene avviata la copia.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> è un riferimento null (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> è minore di zero.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> è multidimensionale.oppure <paramref name="array" /> non dispone di indicizzazione a base zero.o <paramref name="index" /> è uguale o maggiore della lunghezza di <paramref name="array" /> o il numero di elementi nell'oggetto <see cref="T:System.Collections.ICollection" /> di origine è maggiore dello spazio disponibile da <paramref name="index" /> alla fine dell'oggetto <paramref name="array" /> di destinazione.oppure non è possibile eseguire automaticamente il cast del tipo dell'insieme <see cref="T:System.Collections.ICollection" /> di origine nel tipo dell'oggetto <paramref name="array" /> di destinazione.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentBag`1.System#Collections#ICollection#IsSynchronized">
+      <summary>Ottiene un valore che indica se l'accesso a <see cref="T:System.Collections.ICollection" /> è sincronizzato con SyncRoot.</summary>
+      <returns>True se l'accesso a <see cref="T:System.Collections.ICollection" /> è sincronizzato con SyncRoot; in caso contrario, false.Per <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />, questa proprietà restituisce sempre.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentBag`1.System#Collections#ICollection#SyncRoot">
+      <summary>Ottiene un oggetto che può essere usato per sincronizzare l'accesso a <see cref="T:System.Collections.ICollection" />.Questa proprietà non è supportata.</summary>
+      <returns>Restituisce null (Nothing in Visual Basic).</returns>
+      <exception cref="T:System.NotSupportedException">La proprietà SyncRoot non è supportata.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Restituisce un enumeratore che esegue l'iterazione di <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.</summary>
+      <returns>Enumeratore per il contenuto dell'oggetto <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.ToArray">
+      <summary>Copia gli elementi di <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> in una nuova matrice.</summary>
+      <returns>Nuova matrice contenente uno snapshot degli elementi copiati da <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.TryPeek(`0@)">
+      <summary>Tenta di restituire un oggetto da <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> senza rimuoverlo.</summary>
+      <returns>È true se un oggetto è stato restituito correttamente; in caso contrario, false.</returns>
+      <param name="result">Quando questo metodo viene restituito, <paramref name="result" /> contiene un oggetto da <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> o il valore predefinito di <paramref name="T" /> se l'operazione non riesce.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.TryTake(`0@)">
+      <summary>Tenta di rimuovere e restituire un oggetto dall'oggetto <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.</summary>
+      <returns>È true se un oggetto è stato rimosso correttamente; in caso contrario, false.</returns>
+      <param name="result">Quando questo metodo viene restituito, <paramref name="result" /> contiene l'oggetto rimosso da <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> o il valore predefinito di <paramref name="T" /> se il contenitore è vuoto.</param>
+    </member>
+    <member name="T:System.Collections.Concurrent.ConcurrentDictionary`2">
+      <summary>Rappresenta una raccolta thread-safe di coppie chiave/valore a cui è possibile accedere contemporaneamente da più thread. </summary>
+      <typeparam name="TKey">Tipo di chiavi nel dizionario.</typeparam>
+      <typeparam name="TValue">Tipo di valori nel dizionario.</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor">
+      <summary>Inizializza una nuova istanza vuota della classe <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />, con il livello di concorrenza e la capacità iniziale predefiniti e che usa l'operatore di confronto predefinito per il tipo di chiave.</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}})">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> che contiene elementi copiati dall'oggetto <see cref="T:System.Collections.Generic.IEnumerable`1" />, dispone del livello di concorrenza e della capacità iniziale predefiniti e usa l'operatore di confronto predefinito per il tipo di chiave.</summary>
+      <param name="collection">Oggetto <see cref="T:System.Collections.Generic.IEnumerable`1" /> i cui elementi sono copiati nel nuovo oggetto <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collection" /> o le relative chiavi sono null.</exception>
+      <exception cref="T:System.ArgumentException">Il parametro <paramref name="collection" /> contiene una o più chiavi duplicate.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}},System.Collections.Generic.IEqualityComparer{`0})">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> che contiene elementi copiati dall'oggetto <see cref="T:System.Collections.IEnumerable" /> specificato, con il livello di concorrenza e la capacità iniziale predefiniti e che usa l'oggetto <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> specificato.</summary>
+      <param name="collection">Oggetto <see cref="T:System.Collections.Generic.IEnumerable`1" /> i cui elementi sono copiati nel nuovo oggetto <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</param>
+      <param name="comparer">Implementazione di <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> da usare quando si confrontano le chiavi.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collection" /> o <paramref name="comparer" /> è null.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor(System.Collections.Generic.IEqualityComparer{`0})">
+      <summary>Inizializza una nuova istanza vuota della classe <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />, con il livello di concorrenza e la capacità predefiniti e che usa l'oggetto <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> specificato.</summary>
+      <param name="comparer">Implementazione confronto di uguaglianza da usare quando si confrontano le chiavi.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="comparer" /> è null.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}},System.Collections.Generic.IEqualityComparer{`0})">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> che contiene gli elementi copiati dall'interfaccia <see cref="T:System.Collections.IEnumerable" /> specificata e che usa l'interfaccia <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> indicata.</summary>
+      <param name="concurrencyLevel">Numero stimato di thread che aggiorneranno contemporaneamente l'oggetto <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</param>
+      <param name="collection">Oggetto <see cref="T:System.Collections.Generic.IEnumerable`1" /> i cui elementi sono copiati nel nuovo oggetto <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</param>
+      <param name="comparer">Implementazione di <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> da usare quando si confrontano le chiavi.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collection" /> o <paramref name="comparer" /> è null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="concurrencyLevel" /> è minore di 1.</exception>
+      <exception cref="T:System.ArgumentException">Il parametro <paramref name="collection" /> contiene una o più chiavi duplicate.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor(System.Int32,System.Int32)">
+      <summary>Inizializza una nuova istanza vuota della classe <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />, con il livello di concorrenza e la capacità specificati e che usa l'operatore di confronto predefinito per il tipo di chiave.</summary>
+      <param name="concurrencyLevel">Numero stimato di thread che aggiorneranno contemporaneamente l'oggetto <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</param>
+      <param name="capacity">Il numero iniziale degli elementi che <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> può contenere.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="concurrencyLevel" /> è minore di 1.-oppure-<paramref name="capacity" /> è minore di 0.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor(System.Int32,System.Int32,System.Collections.Generic.IEqualityComparer{`0})">
+      <summary>Inizializza una nuova istanza vuota della classe <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />, con il livello di concorrenza e la capacità iniziale specificati e che usa l'oggetto <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> specificato.</summary>
+      <param name="concurrencyLevel">Numero stimato di thread che aggiorneranno contemporaneamente l'oggetto <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</param>
+      <param name="capacity">Il numero iniziale degli elementi che <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> può contenere.</param>
+      <param name="comparer">Implementazione di <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> da usare quando si confrontano le chiavi.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="comparer" /> è null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="concurrencyLevel" /> o <paramref name="capacity" /> è minore di 1.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.AddOrUpdate(`0,System.Func{`0,`1},System.Func{`0,`1,`1})">
+      <summary>Usa le funzioni specificate per aggiungere una coppia chiave/valore a <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />, se la chiave non esiste già, oppure per aggiornare una coppia chiave/valore in <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> se la chiave esiste già.</summary>
+      <returns>Nuovo valore della chiave.Si tratta del risultato di addValueFactory (se la chiave è assente) o del risultato di updateValueFactory (se la chiave è presente).</returns>
+      <param name="key">Chiave da aggiungere o di cui aggiornare il valore.</param>
+      <param name="addValueFactory">Funzione usata per generare un valore per una chiave assente.</param>
+      <param name="updateValueFactory">Funzione usata per generare un nuovo valore per una chiave esistente in base al valore esistente della chiave.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" />, <paramref name="addValueFactory" /> o <paramref name="updateValueFactory" /> è null.</exception>
+      <exception cref="T:System.OverflowException">Il dizionario contiene già il numero massimo di elementi (<see cref="F:System.Int32.MaxValue" />).</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.AddOrUpdate(`0,`1,System.Func{`0,`1,`1})">
+      <summary>Aggiunge una coppia chiave/valore a <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />, se la chiave non esiste già, oppure aggiorna una coppia chiave/valore in <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> usando la funzione specificata, se la chiave esiste già.</summary>
+      <returns>Nuovo valore della chiave.Sarà il risultato di addValue (se la chiave è assente) o del risultato di updateValueFactory (se la chiave è presente).</returns>
+      <param name="key">Chiave da aggiungere o di cui aggiornare il valore.</param>
+      <param name="addValue">Valore da aggiungere per una chiave assente.</param>
+      <param name="updateValueFactory">Funzione usata per generare un nuovo valore per una chiave esistente in base al valore esistente della chiave.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> o <paramref name="updateValueFactory" /> è null.</exception>
+      <exception cref="T:System.OverflowException">Il dizionario contiene già il numero massimo di elementi (<see cref="F:System.Int32.MaxValue" />).</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.Clear">
+      <summary>Rimuove tutte le chiavi e i valori della raccolta <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.ContainsKey(`0)">
+      <summary>Determina se la raccolta <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> contiene la chiave specificata.</summary>
+      <returns>true se <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> contiene un elemento con la chiave specificata; in caso contrario, false.</returns>
+      <param name="key">Chiave da individuare in <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> è null.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.Count">
+      <summary>Ottiene il numero di coppie chiave/valore contenute in <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</summary>
+      <returns>Numero di coppie chiave/valore contenute in <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</returns>
+      <exception cref="T:System.OverflowException">Il dizionario contiene già il numero massimo di elementi (<see cref="F:System.Int32.MaxValue" />).</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.GetEnumerator">
+      <summary>Restituisce un enumeratore che esegue l'iterazione di <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</summary>
+      <returns>Enumeratore per l'oggetto <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.GetOrAdd(`0,System.Func{`0,`1})">
+      <summary>Aggiunge una coppia chiave/valore a <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> usando la funzione specificata se la chiave non esiste già.</summary>
+      <returns>Valore della chiave.Si tratta del valore esistente se la chiave esiste già nel dizionario o del nuovo valore restituito da valueFactory se la chiave non è presente nel dizionario.</returns>
+      <param name="key">Chiave dell'elemento da aggiungere.</param>
+      <param name="valueFactory">Funzione usata per generare un valore per la chiave.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> o <paramref name="valueFactory" /> è null.</exception>
+      <exception cref="T:System.OverflowException">Il dizionario contiene già il numero massimo di elementi (<see cref="F:System.Int32.MaxValue" />).</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.GetOrAdd(`0,`1)">
+      <summary>Aggiunge una coppia chiave/valore a <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> se la chiave non esiste già.</summary>
+      <returns>Valore della chiave.Si tratta del valore esistente se la chiave esiste già nel dizionario o del nuovo valore se la chiave non è presente nel dizionario.</returns>
+      <param name="key">Chiave dell'elemento da aggiungere.</param>
+      <param name="value">valore da aggiungere, se la chiave non esiste già.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> è null.</exception>
+      <exception cref="T:System.OverflowException">Il dizionario contiene già il numero massimo di elementi (<see cref="F:System.Int32.MaxValue" />).</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.IsEmpty">
+      <summary>Ottiene un valore che indica se <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> è vuoto.</summary>
+      <returns>true se l'oggetto <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> è vuoto; in caso contrario, false.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.Item(`0)">
+      <summary>Ottiene o imposta il valore associato alla chiave specificata.</summary>
+      <returns>Valore del coppia chiave/valore in corrispondenza dell'indice specificato.</returns>
+      <param name="key">Chiave del valore da ottenere o impostare.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> è null.</exception>
+      <exception cref="T:System.Collections.Generic.KeyNotFoundException">Durante il recupero della proprietà, la chiave indicata nel parametro <paramref name="key" /> non è stata trovata nella raccolta.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.Keys">
+      <summary>Ottiene una raccolta contenente le chiavi della classe <see cref="T:System.Collections.Generic.Dictionary`2" />.</summary>
+      <returns>Raccolta di chiavi in <see cref="T:System.Collections.Generic.Dictionary`2" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#ICollection{T}#Add(System.Collections.Generic.KeyValuePair{`0,`1})">
+      <summary>Aggiunge un elemento alla raccolta.</summary>
+      <param name="keyValuePair">Oggetto <see cref="T:System.Collections.Generic.KeyValuePair`2" /> da aggiungere al dizionario.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#ICollection{T}#Contains(System.Collections.Generic.KeyValuePair{`0,`1})">
+      <summary>Ottiene un valore che indica se <see cref="T:System.Collections.Generic.ICollection`1" /> contiene un elemento con la chiave specificata.</summary>
+      <returns>true se <see cref="T:System.Collections.Generic.ICollection`1" /> contiene un elemento con la chiave specificata; in caso contrario, false.</returns>
+      <param name="keyValuePair">Chiave da individuare in <see cref="T:System.Collections.Generic.ICollection`1" />.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#ICollection{T}#CopyTo(System.Collections.Generic.KeyValuePair{`0,`1}[],System.Int32)">
+      <summary>Copia gli elementi dell'interfaccia <see cref="T:System.Collections.ICollection" /> in una matrice, iniziando dall'indice di matrice specificato.</summary>
+      <param name="array">Matrice unidimensionale che è la destinazione degli elementi copiati dall'oggetto <see cref="T:System.Collections.ICollection" />.La matrice deve avere un'indicizzazione in base zero.</param>
+      <param name="index">Indice in base zero in <paramref name="array" /> in corrispondenza del quale viene avviata la copia.</param>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#ICollection{T}#IsReadOnly">
+      <summary>Ottiene un valore che indica se <see cref="T:System.Collections.ICollection" /> è di sola lettura.</summary>
+      <returns>true se <see cref="T:System.Collections.ICollection" /> è di sola lettura; in caso contrario, false. </returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#ICollection{T}#Remove(System.Collections.Generic.KeyValuePair{`0,`1})">
+      <summary>Rimuove la coppia chiave/valore specificata dalla raccolta.</summary>
+      <returns>true se l'elemento viene rimosso correttamente; in caso contrario, false.Questo metodo restituisce anche false se <paramref name="key" /> non è stato trovato nell'interfaccia <see cref="T:System.Collections.Generic.ICollection`1" /> originale.</returns>
+      <param name="keyValuePair">Oggetto <see cref="T:System.Collections.Generic.KeyValuePair`2" /> da rimuovere.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Add(`0,`1)">
+      <summary>Aggiunge a <see cref="T:System.Collections.Generic.IDictionary`2" /> la chiave e il valore specificati.</summary>
+      <param name="key">Oggetto da usare come chiave dell'elemento da aggiungere.</param>
+      <param name="value">Oggetto da usare come valore dell'elemento da aggiungere.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> è null.</exception>
+      <exception cref="T:System.ArgumentException">In <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> è già presente un elemento con la stessa chiave.</exception>
+      <exception cref="T:System.OverflowException">Il dizionario contiene già il numero massimo di elementi (<see cref="F:System.Int32.MaxValue" />).</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Remove(`0)">
+      <summary>Rimuove l'elemento con la chiave specificata da <see cref="T:System.Collections.Generic.IDictionary`2" />.</summary>
+      <returns>true se l'elemento viene rimosso correttamente; in caso contrario, false.Questo metodo restituisce anche false se <paramref name="key" /> non è stato trovato nell'interfaccia <see cref="T:System.Collections.Generic.IDictionary`2" /> originale.</returns>
+      <param name="key">Chiave dell'elemento da rimuovere.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> è null.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey@TValue}#Keys">
+      <summary>Ottiene una raccolta contenente le chiavi della classe <see cref="T:System.Collections.Generic.Dictionary`2" />.</summary>
+      <returns>Raccolta contenente le chiavi presenti in <see cref="T:System.Collections.Generic.Dictionary`2" />.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey@TValue}#Values">
+      <summary>Ottiene una raccolta contenente i valori presenti in <see cref="T:System.Collections.Generic.Dictionary`2" />.</summary>
+      <returns>Raccolta contenente i valori presenti in <see cref="T:System.Collections.Generic.Dictionary`2" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>Copia gli elementi dell'interfaccia <see cref="T:System.Collections.ICollection" /> in una matrice, iniziando dall'indice di matrice specificato.</summary>
+      <param name="array">Matrice unidimensionale che è la destinazione degli elementi copiati dall'oggetto <see cref="T:System.Collections.ICollection" />.La matrice deve avere un'indicizzazione in base zero.</param>
+      <param name="index">Indice in base zero in <paramref name="array" /> in corrispondenza del quale viene avviata la copia.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> è null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> è minore di 0.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> è maggiore o uguale alla lunghezza di <paramref name="array" />. -oppure-Il numero degli elementi nell'oggetto <see cref="T:System.Collections.ICollection" /> di origine è maggiore dello spazio disponibile tra <paramref name="index" /> e la fine dell'oggetto <paramref name="array" /> di destinazione.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#ICollection#IsSynchronized">
+      <summary>Ottiene un valore che indica se l'accesso a <see cref="T:System.Collections.ICollection" /> è sincronizzato con SyncRoot.</summary>
+      <returns>true se l'accesso a <see cref="T:System.Collections.ICollection" /> è sincronizzato (thread-safe); in caso contrario, false.Per <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />, questa proprietà restituisce sempre false.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#ICollection#SyncRoot">
+      <summary>Ottiene un oggetto che può essere usato per sincronizzare l'accesso a <see cref="T:System.Collections.ICollection" />.Questa proprietà non è supportata.</summary>
+      <returns>Restituisce sempre null.</returns>
+      <exception cref="T:System.NotSupportedException">Questa proprietà non è supportata.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#Add(System.Object,System.Object)">
+      <summary>Aggiunge la chiave e il valore specificati al dizionario.</summary>
+      <param name="key">Oggetto da usare come chiave.</param>
+      <param name="value">Oggetto da usare come valore.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> è null.</exception>
+      <exception cref="T:System.ArgumentException">Il tipo di <paramref name="key" /> non può essere assegnato al tipo di chiave dell'oggetto <see cref="T:System.Collections.Generic.Dictionary`2" />. -oppure- <paramref name="value" /> è di un tipo non assegnabile al tipo di valore in <see cref="T:System.Collections.Generic.Dictionary`2" />. -oppure-nell'insieme <see cref="T:System.Collections.Generic.Dictionary`2" /> è già presente un valore con la stessa chiave.</exception>
+      <exception cref="T:System.OverflowException">Il dizionario contiene già il numero massimo di elementi (<see cref="F:System.Int32.MaxValue" />).</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#Contains(System.Object)">
+      <summary>Ottiene un valore che indica se <see cref="T:System.Collections.Generic.IDictionary`2" /> contiene un elemento con la chiave specificata.</summary>
+      <returns>true se <see cref="T:System.Collections.Generic.IDictionary`2" /> contiene un elemento con la chiave specificata; in caso contrario, false.</returns>
+      <param name="key">Chiave da individuare in <see cref="T:System.Collections.Generic.IDictionary`2" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> è null.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#GetEnumerator">
+      <summary>Fornisce un oggetto <see cref="T:System.Collections.IDictionaryEnumerator" /> per l'oggetto <see cref="T:System.Collections.Generic.IDictionary`2" />.</summary>
+      <returns>Oggetto <see cref="T:System.Collections.IDictionaryEnumerator" /> per <see cref="T:System.Collections.Generic.IDictionary`2" />.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#IsFixedSize">
+      <summary>Ottiene un valore che indica se <see cref="T:System.Collections.Generic.IDictionary`2" /> ha dimensioni fisse.</summary>
+      <returns>true se <see cref="T:System.Collections.Generic.IDictionary`2" /> è di dimensioni fisse; in caso contrario, false.Per <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />, questa proprietà restituisce sempre false.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#IsReadOnly">
+      <summary>Ottiene un valore che indica se <see cref="T:System.Collections.Generic.IDictionary`2" /> è di sola lettura.</summary>
+      <returns>true se <see cref="T:System.Collections.Generic.IDictionary`2" /> è di sola lettura; in caso contrario, false.Per <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />, questa proprietà restituisce sempre false.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#Item(System.Object)">
+      <summary>Ottiene o imposta il valore associato alla chiave specificata.</summary>
+      <returns>Valore associato alla chiave specificata o null se <paramref name="key" /> non è presente nel dizionario o se il tipo di <paramref name="key" /> non può essere assegnato al tipo di chiave di <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</returns>
+      <param name="key">Chiave del valore da ottenere o impostare.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> è null.</exception>
+      <exception cref="T:System.ArgumentException">Viene assegnato un valore e il tipo di <paramref name="key" /> non può essere assegnato al tipo di chiave o al tipo di valore dell'oggetto <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /></exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#Keys">
+      <summary>Ottiene un oggetto <see cref="T:System.Collections.ICollection" /> che contiene le chiavi di <see cref="T:System.Collections.Generic.IDictionary`2" />.</summary>
+      <returns>Interfaccia che contiene le chiavi di <see cref="T:System.Collections.Generic.IDictionary`2" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#Remove(System.Object)">
+      <summary>Rimuove l'elemento con la chiave specificata da <see cref="T:System.Collections.IDictionary" />.</summary>
+      <param name="key">Chiave dell'elemento da rimuovere.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> è null.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#Values">
+      <summary>Ottiene un oggetto <see cref="T:System.Collections.ICollection" /> contenente i valori di <see cref="T:System.Collections.IDictionary" />.</summary>
+      <returns>Interfaccia contenente i valori presenti in <see cref="T:System.Collections.IDictionary" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Restituisce un enumeratore che esegue l'iterazione di <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</summary>
+      <returns>Enumeratore per l'oggetto <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.ToArray">
+      <summary>Copia le coppie chiave/valore archiviate in <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> in una nuova matrice.</summary>
+      <returns>Nuova matrice che contiene uno snapshot delle coppie chiave/valore copiate da <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.TryAdd(`0,`1)">
+      <summary>Prova ad aggiungere la chiave e il valore specificati a <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</summary>
+      <returns>true se la coppia chiave/valore è stata aggiunta all'oggetto <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> correttamente; false se la chiave esiste già.</returns>
+      <param name="key">Chiave dell'elemento da aggiungere.</param>
+      <param name="value">Valore dell'elemento da aggiungere.Il valore può essere null per i tipi di riferimento.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> è null.</exception>
+      <exception cref="T:System.OverflowException">Il dizionario contiene già il numero massimo di elementi (<see cref="F:System.Int32.MaxValue" />).</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.TryGetValue(`0,`1@)">
+      <summary>Prova a ottenere il valore associato alla chiave specificata da <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</summary>
+      <returns>true se la chiave viene trovata in <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />. In caso contrario, false.</returns>
+      <param name="key">Chiave del valore da ottenere.</param>
+      <param name="value">Quando questo metodo viene restituito, contiene l'oggetto da <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> con la chiave specificata o il valore predefinito, se l'operazione ha esito negativo.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> è null.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.TryRemove(`0,`1@)">
+      <summary>Prova a rimuovere e restituire il valore con la chiave specificata da <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />.</summary>
+      <returns>true se l'oggetto è stato correttamente rimosso; in caso contrario, false.</returns>
+      <param name="key">Chiave dell'elemento da rimuovere e restituire.</param>
+      <param name="value">Quando questo metodo viene restituito, contiene l'oggetto rimosso da <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> o il valore predefinito del tipo TValue se <paramref name="key" /> non esiste. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> è null.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.TryUpdate(`0,`1,`1)">
+      <summary>Confronta il valore esistente della chiave specificata con un valore specificato e, se sono uguali, aggiorna la chiave con un terzo valore.</summary>
+      <returns>true se il valore con <paramref name="key" /> è uguale a <paramref name="comparisonValue" /> e <paramref name="newValue" /> sostituito con . In caso contrario, false.</returns>
+      <param name="key">Chiave il cui valore viene confrontato con <paramref name="comparisonValue" /> ed eventualmente sostituito.</param>
+      <param name="newValue">Valore che sostituisce il valore dell'elemento con <paramref name="key" /> specificato se il confronto rileva l'uguaglianza.</param>
+      <param name="comparisonValue">Valore confrontato con il valore dell'elemento per cui è specificato <paramref name="key" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> è null.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.Values">
+      <summary>Ottiene una raccolta contenente i valori presenti in <see cref="T:System.Collections.Generic.Dictionary`2" />.</summary>
+      <returns>Raccolta contenente i valori presenti in <see cref="T:System.Collections.Generic.Dictionary`2" />. </returns>
+    </member>
+    <member name="T:System.Collections.Concurrent.ConcurrentQueue`1">
+      <summary>Rappresenta un insieme FIFO (First In, First Out) thread-safe.</summary>
+      <typeparam name="T">Tipo di elementi contenuti nella coda.</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />.</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> che contiene gli elementi copiati dall'insieme specificato.</summary>
+      <param name="collection">Raccolta i cui elementi sono copiati nel nuovo oggetto <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />.</param>
+      <exception cref="T:System.ArgumentNullException">L'argomento <paramref name="collection" /> è null.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.CopyTo(`0[],System.Int32)">
+      <summary>Consente di copiare gli elementi della <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> in una <see cref="T:System.Array" /> unidimensionale esistente, partendo dall'indice della matrice specificata.</summary>
+      <param name="array">Oggetto unidimensionale <see cref="T:System.Array" /> che rappresenta la destinazione degli elementi copiati da <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />.L'indicizzazione di <see cref="T:System.Array" /> deve essere in base zero.</param>
+      <param name="index">Indice in base zero della matrice specificata nel parametro <paramref name="array" /> in corrispondenza del quale ha inizio la copia.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> è un riferimento null (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> è minore di zero.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> è uguale o maggiore della lunghezza di <paramref name="array" /> o il numero di elementi nel <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> di origine è maggiore dello spazio disponibile da <paramref name="index" /> alla fine dell'oggetto <paramref name="array" /> di destinazione.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentQueue`1.Count">
+      <summary>Ottiene il numero di elementi contenuti in <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />.</summary>
+      <returns>Il numero di elementi contenuti in <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.Enqueue(`0)">
+      <summary>Aggiunge un oggetto alla fine di <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />.</summary>
+      <param name="item">Oggetto da aggiungere alla fine di <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />.Il valore può essere un riferimento Null (Nothing in Visual Basic) per i tipi di riferimento.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.GetEnumerator">
+      <summary>Restituisce un enumeratore che scorre la classe <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />.</summary>
+      <returns>Enumeratore per il contenuto di <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentQueue`1.IsEmpty">
+      <summary>Ottiene un valore che indica se <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> è vuoto.</summary>
+      <returns>True se <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> è vuoto; in caso contrario, false.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.System#Collections#Concurrent#IProducerConsumerCollection{T}#TryAdd(`0)">
+      <summary>Tenta di aggiungere un oggetto all'oggetto <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" />.</summary>
+      <returns>È true se l'oggetto viene aggiunto correttamente. In caso contrario, false.</returns>
+      <param name="item">Oggetto da aggiungere alla <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" />.Il valore può essere un riferimento Null (Nothing in Visual Basic) per i tipi di riferimento.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.System#Collections#Concurrent#IProducerConsumerCollection{T}#TryTake(`0@)">
+      <summary>Tenta di rimuovere e restituire un oggetto dall'oggetto <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" />.</summary>
+      <returns>È true se un elemento è stato rimosso e restituito correttamente. In caso contrario, false.</returns>
+      <param name="item">Quando questo metodo termina, se l'operazione è stata completata correttamente, <paramref name="item" /> contiene l'oggetto rimosso.Se non sono presenti oggetti disponibili per la rimozione, il valore non è specificato.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>Copia gli elementi dell'interfaccia <see cref="T:System.Collections.ICollection" /> in un oggetto <see cref="T:System.Array" />, a partire da un particolare indice della matrice <see cref="T:System.Array" />.</summary>
+      <param name="array">Oggetto unidimensionale <see cref="T:System.Array" /> che rappresenta la destinazione degli elementi copiati da <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.L'indicizzazione di <see cref="T:System.Array" /> deve essere in base zero.</param>
+      <param name="index">Indice in base zero della matrice specificata nel parametro <paramref name="array" /> in corrispondenza del quale ha inizio la copia.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> è un riferimento null (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> è minore di zero.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> è multidimensionale. oppure <paramref name="array" /> non dispone di indicizzazione a base zero. o <paramref name="index" /> è uguale o maggiore della lunghezza di <paramref name="array" /> o il numero di elementi nell'oggetto <see cref="T:System.Collections.ICollection" /> di origine è maggiore dello spazio disponibile da <paramref name="index" /> alla fine dell'oggetto <paramref name="array" /> di destinazione. oppure non è possibile eseguire automaticamente il cast del tipo dell'insieme <see cref="T:System.Collections.ICollection" /> di origine nel tipo dell'oggetto <paramref name="array" /> di destinazione.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentQueue`1.System#Collections#ICollection#IsSynchronized">
+      <summary>Ottiene un valore che indica se l'accesso a <see cref="T:System.Collections.ICollection" /> è sincronizzato con SyncRoot.</summary>
+      <returns>True se l'accesso a <see cref="T:System.Collections.ICollection" /> è sincronizzato con SyncRoot; in caso contrario, false.Per <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />, questa proprietà restituisce sempre false.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentQueue`1.System#Collections#ICollection#SyncRoot">
+      <summary>Ottiene un oggetto che può essere utilizzato per sincronizzare l'accesso a <see cref="T:System.Collections.ICollection" />.Questa proprietà non è supportata.</summary>
+      <returns>Restituisce null (Nothing in Visual Basic).</returns>
+      <exception cref="T:System.NotSupportedException">La proprietà SyncRoot non è supportata.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Restituisce un enumeratore che consente di scorrere una raccolta.</summary>
+      <returns>Interfaccia <see cref="T:System.Collections.IEnumerator" /> che può essere utilizzata per scorrere la raccolta.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.ToArray">
+      <summary>Copia gli elementi archiviati in <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> in una nuova matrice.</summary>
+      <returns>Nuova matrice contenente uno snapshot degli elementi copiati da <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.TryDequeue(`0@)">
+      <summary>Tenta di rimuovere e restituire l'oggetto all'inizio della coda simultanea.</summary>
+      <returns>true se un elemento è stato rimosso e restituito correttamente dall'inizio di <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" />. In caso contrario, false.</returns>
+      <param name="result">Quando questo metodo termina, se l'operazione ha esito positivo, <paramref name="result" /> contiene l'oggetto rimosso.Se non sono presenti oggetti disponibili per la rimozione, il valore non è specificato.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.TryPeek(`0@)">
+      <summary>Tenta di restituire un oggetto dall'inizio di <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> senza rimuoverlo.</summary>
+      <returns>È true se un oggetto è stato restituito correttamente. In caso contrario, false.</returns>
+      <param name="result">Quando questo metodo termina, <paramref name="result" /> contiene un oggetto dall'inizio di <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> o un valore non specificato se l'operazione ha esito negativo.</param>
+    </member>
+    <member name="T:System.Collections.Concurrent.ConcurrentStack`1">
+      <summary>Rappresenta un insieme LIFO (Last In, First Out) thread-safe.</summary>
+      <typeparam name="T">Tipo di elementi contenuti nello stack.</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> che contiene gli elementi copiati dall'insieme specificato</summary>
+      <param name="collection">Raccolta i cui elementi sono copiati nel nuovo oggetto <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="collection" /> argument is null.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.Clear">
+      <summary>Rimuove tutti gli oggetti da <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.CopyTo(`0[],System.Int32)">
+      <summary>Copia gli elementi di <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> in un oggetto <see cref="T:System.Array" /> unidimensionale esistente, partendo dall'indice della matrice specificata.</summary>
+      <param name="array">Oggetto unidimensionale <see cref="T:System.Array" /> che rappresenta la destinazione degli elementi copiati da <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.L'indicizzazione di <see cref="T:System.Array" /> deve essere in base zero.</param>
+      <param name="index">Indice in base zero in <paramref name="array" /> in corrispondenza del quale viene avviata la copia.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> is a null reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> is less than zero.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> is equal to or greater than the length of the <paramref name="array" /> -or- The number of elements in the source <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentStack`1.Count">
+      <summary>Ottiene il numero di elementi contenuti in <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</summary>
+      <returns>Il numero di elementi contenuti in <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.GetEnumerator">
+      <summary>Restituisce un enumeratore che esegue l'iterazione di <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</summary>
+      <returns>Enumeratore per l'oggetto <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentStack`1.IsEmpty">
+      <summary>Ottiene un valore che indica se <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> è vuoto.</summary>
+      <returns>True se <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> è vuoto; in caso contrario, false.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.Push(`0)">
+      <summary>Inserisce un oggetto all'inizio di <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</summary>
+      <param name="item">Oggetto da inserire in <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.Il valore può essere un riferimento Null (Nothing in Visual Basic) per i tipi di riferimento.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.PushRange(`0[])">
+      <summary>Inserisce più oggetti all'inizio di <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> in modo separato.</summary>
+      <param name="items">Oggetti da inserire in <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="items" /> is a null reference (Nothing in Visual Basic).</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.PushRange(`0[],System.Int32,System.Int32)">
+      <summary>Inserisce più oggetti all'inizio di <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> in modo separato.</summary>
+      <param name="items">Oggetti da inserire in <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</param>
+      <param name="startIndex">Offset in base zero in <paramref name="items" /> in corrispondenza del quale iniziare l'inserimento di elementi all'inizio di <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</param>
+      <param name="count">Numero di elementi da inserire all'inizio di <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="items" /> is a null reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> or <paramref name="count" /> is negative.Or <paramref name="startIndex" /> is greater than or equal to the length of <paramref name="items" />.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="startIndex" /> + <paramref name="count" /> is greater than the length of <paramref name="items" />.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.System#Collections#Concurrent#IProducerConsumerCollection{T}#TryAdd(`0)">
+      <summary>Tenta di aggiungere un oggetto all'oggetto <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" />.</summary>
+      <returns>È true se l'oggetto viene aggiunto correttamente; in caso contrario, false.</returns>
+      <param name="item">Oggetto da aggiungere a <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" />.Il valore può essere un riferimento Null (Nothing in Visual Basic) per i tipi di riferimento.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.System#Collections#Concurrent#IProducerConsumerCollection{T}#TryTake(`0@)">
+      <summary>Tenta di rimuovere e restituire un oggetto dall'oggetto <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" />.</summary>
+      <returns>È true se un elemento è stato rimosso e restituito correttamente; in caso contrario, false.</returns>
+      <param name="item">Quando questo metodo viene restituito, se l'operazione è stata completata correttamente, <paramref name="item" /> contiene l'oggetto rimosso.Se non sono presenti oggetti disponibili per la rimozione, il valore non è specificato.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>Copia gli elementi di <see cref="T:System.Collections.ICollection" /> in <see cref="T:System.Array" /> a partire da un particolare indice <see cref="T:System.Array" />.</summary>
+      <param name="array">Oggetto unidimensionale <see cref="T:System.Array" /> che rappresenta la destinazione degli elementi copiati da <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.L'indicizzazione di <see cref="T:System.Array" /> deve essere in base zero.</param>
+      <param name="index">Indice in base zero in <paramref name="array" /> in corrispondenza del quale viene avviata la copia.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> is a null reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> is less than zero.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> is multidimensional.-or- <paramref name="array" /> does not have zero-based indexing.-or- <paramref name="index" /> is equal to or greater than the length of the <paramref name="array" /> -or- The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.-or- The type of the source <see cref="T:System.Collections.ICollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentStack`1.System#Collections#ICollection#IsSynchronized">
+      <summary>Ottiene un valore che indica se l'accesso a <see cref="T:System.Collections.ICollection" /> è sincronizzato con SyncRoot.</summary>
+      <returns>True se l'accesso a <see cref="T:System.Collections.ICollection" /> è sincronizzato con SyncRoot; in caso contrario, false.Per <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />, questa proprietà restituisce sempre.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentStack`1.System#Collections#ICollection#SyncRoot">
+      <summary>Ottiene un oggetto che può essere usato per sincronizzare l'accesso a <see cref="T:System.Collections.ICollection" />.Questa proprietà non è supportata.</summary>
+      <returns>Restituisce null (Nothing in Visual Basic).</returns>
+      <exception cref="T:System.NotSupportedException">The SyncRoot property is not supported</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Restituisce un enumeratore che consente di scorrere una raccolta.</summary>
+      <returns>Oggetto <see cref="T:System.Collections.IEnumerator" /> che può essere usato per eseguire l'iterazione della raccolta.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.ToArray">
+      <summary>Copia gli elementi archiviati in <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> in una nuova matrice.</summary>
+      <returns>Nuova matrice contenente uno snapshot degli elementi copiati da <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.TryPeek(`0@)">
+      <summary>Tenta di restituire un oggetto dall'inizio di <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> senza rimuoverlo.</summary>
+      <returns>È true se un oggetto è stato restituito correttamente; in caso contrario, false.</returns>
+      <param name="result">Quando questo metodo termina, <paramref name="result" /> contiene un oggetto dall'inizio di <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> o un valore non specificato se l'operazione ha esito negativo.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.TryPop(`0@)">
+      <summary>Tenta di estrarre e restituire l'oggetto all'inizio di <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</summary>
+      <returns>True se un elemento è stato rimosso e restituito correttamente dall'inizio di <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />; in caso contrario, false.</returns>
+      <param name="result">Quando questo metodo viene restituito, se l'operazione è stata completata correttamente, <paramref name="result" /> contiene l'oggetto rimosso.Se non sono presenti oggetti disponibili per la rimozione, il valore non è specificato.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.TryPopRange(`0[])">
+      <summary>Tenta di estrarre e restituire più oggetti dall'inizio di <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> in modo separato.</summary>
+      <returns>Numero di oggetti estratti correttamente dall'inizio di <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> e inseriti in <paramref name="items" />.</returns>
+      <param name="items">
+        <see cref="T:System.Array" /> a cui verranno aggiunti gli oggetti estratti dall'inizio di <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="items" /> is a null argument (Nothing in Visual Basic).</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.TryPopRange(`0[],System.Int32,System.Int32)">
+      <summary>Tenta di estrarre e restituire più oggetti dall'inizio di <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> in modo separato.</summary>
+      <returns>Numero di oggetti estratti correttamente dall'inizio dello stack e inseriti in <paramref name="items" />.</returns>
+      <param name="items">
+        <see cref="T:System.Array" /> a cui verranno aggiunti gli oggetti estratti dall'inizio di <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</param>
+      <param name="startIndex">Offset in base zero in <paramref name="items" /> in corrispondenza del quale iniziare l'inserimento di elementi dall'inizio di <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" />.</param>
+      <param name="count">Numero di elementi da estrarre dall'inizio di <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> e inserire in <paramref name="items" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="items" /> is a null reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> or <paramref name="count" /> is negative.Or <paramref name="startIndex" /> is greater than or equal to the length of <paramref name="items" />.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="startIndex" /> + <paramref name="count" /> is greater than the length of <paramref name="items" />.</exception>
+    </member>
+    <member name="T:System.Collections.Concurrent.EnumerablePartitionerOptions">
+      <summary>Specifica le opzioni per controllare il comportamento di buffer di un Partitioner.</summary>
+    </member>
+    <member name="F:System.Collections.Concurrent.EnumerablePartitionerOptions.NoBuffering">
+      <summary>Creare un Partitioner che accetta un elemento di un'origine enumerabile alla volta e non utilizza l'archiviazione intermedia a cui possono accedere in modo più efficiente più thread.Questa opzione fornisce supporto per la bassa latenza (gli elementi vengono elaborati non appena sono disponibili nell'origine) e fornisce supporto parziale per le dipendenze tra elementi (un thread non può determinare un deadlock in attesa di un elemento che il thread stesso deve elaborare).</summary>
+    </member>
+    <member name="F:System.Collections.Concurrent.EnumerablePartitionerOptions.None">
+      <summary>Utilizza il funzionamento predefinito, cioè il buffer per ottenere prestazioni ottimali.</summary>
+    </member>
+    <member name="T:System.Collections.Concurrent.IProducerConsumerCollection`1">
+      <summary>Definisce i metodi per modificare gli insiemi thread-safe destinati all'utilizzo da parte di producer/consumer.Questa interfaccia fornisce una rappresentazione unificata per gli insiemi producer-consumer in modo che le astrazioni di livello superiore, quale <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> possano utilizzare l'insieme come meccanismo di archiviazione sottostante.</summary>
+      <typeparam name="T">Specifica il tipo di elementi nell'insieme.</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.IProducerConsumerCollection`1.CopyTo(`0[],System.Int32)">
+      <summary>Copia gli elementi dell'oggetto <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> in un oggetto <see cref="T:System.Array" />, a partire da un indice specificato.</summary>
+      <param name="array">Oggetto unidimensionale <see cref="T:System.Array" /> che rappresenta la destinazione degli elementi copiati da <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" />. L'indicizzazione della matrice deve essere in base zero.</param>
+      <param name="index">Indice in base zero della matrice specificata nel parametro <paramref name="array" /> in corrispondenza del quale ha inizio la copia.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> è un riferimento null (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> è minore di zero.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> è uguale o maggiore della lunghezza di <paramref name="array" /> o il numero di elementi nell'insieme è maggiore dello spazio disponibile da <paramref name="index" /> alla fine dell'oggetto di destinazione <paramref name="array" />. </exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.IProducerConsumerCollection`1.ToArray">
+      <summary>Copia gli elementi contenuti nell'oggetto <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> in una nuova matrice.</summary>
+      <returns>Nuova matrice contenente gli elementi copiati da <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" />.</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.IProducerConsumerCollection`1.TryAdd(`0)">
+      <summary>Tenta di aggiungere un oggetto all'oggetto <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" />.</summary>
+      <returns>È true se l'oggetto viene aggiunto correttamente. In caso contrario, false.</returns>
+      <param name="item">Oggetto da aggiungere alla <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" />.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="item" /> non è valido per questo insieme.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.IProducerConsumerCollection`1.TryTake(`0@)">
+      <summary>Tenta di rimuovere e restituire un oggetto dall'oggetto <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" />.</summary>
+      <returns>È true se un oggetto è stato rimosso e restituito correttamente. In caso contrario, false.</returns>
+      <param name="item">Quando questo metodo termina, se l'oggetto è stato rimosso e restituito correttamente, <paramref name="item" /> contiene l'oggetto rimosso.Se non sono presenti oggetti disponibili per la rimozione, il valore non è specificato.</param>
+    </member>
+    <member name="T:System.Collections.Concurrent.OrderablePartitioner`1">
+      <summary>Rappresenta un determinato modo di suddividere un'origine dati ordinabile in più partizioni.</summary>
+      <typeparam name="TSource">Tipo degli elementi contenuti nell'insieme.</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.OrderablePartitioner`1.#ctor(System.Boolean,System.Boolean,System.Boolean)">
+      <summary>Chiamato dai costruttori nelle classi derivate per inizializzare la classe <see cref="T:System.Collections.Concurrent.OrderablePartitioner`1" /> con i vincoli specificati sulle chiavi di indice.</summary>
+      <param name="keysOrderedInEachPartition">Indica se gli elementi in ogni partizione sono prodotti nell'ordine di chiavi crescenti.</param>
+      <param name="keysOrderedAcrossPartitions">Indica se gli elementi di una partizione precedente vengono sempre prima degli elementi di una partizione più recente.Se è true, ogni elemento nella partizione 0 ha una chiave di ordine inferiore rispetto a qualsiasi elemento della partizione 1, ogni elemento nella partizione 1 ha una chiave di ordine inferiore rispetto a qualsiasi elemento della partizione 2 e così via.</param>
+      <param name="keysNormalized">Indica se le chiavi sono normalizzate.Se restituisce true, tutte le chiavi di ordine sono numeri interi distinti nell'intervallo [0 .. numberOfElements-1].Se è false, le chiavi di ordine devono comunque essere distinte, ma ne viene considerato solo l'ordine relativo, non i valori assoluti.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.OrderablePartitioner`1.GetDynamicPartitions">
+      <summary>Crea un oggetto che può suddividere l'insieme sottostante in un numero variabile di partizioni.</summary>
+      <returns>Oggetto che può creare partizioni sull'origine dati sottostante.</returns>
+      <exception cref="T:System.NotSupportedException">Il partizionamento dinamico non è supportato da questa classe di base.Deve essere implementato nelle classi derivate.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.OrderablePartitioner`1.GetOrderableDynamicPartitions">
+      <summary>Crea un oggetto che può suddividere l'insieme sottostante in un numero variabile di partizioni.</summary>
+      <returns>Oggetto che può creare partizioni sull'origine dati sottostante.</returns>
+      <exception cref="T:System.NotSupportedException">Il partizionamento dinamico non è supportato da questo partitioner.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.OrderablePartitioner`1.GetOrderablePartitions(System.Int32)">
+      <summary>Suddivide l'insieme sottostante nel numero specificato di partizioni ordinabili.</summary>
+      <returns>Elenco che contiene enumeratori <paramref name="partitionCount" />.</returns>
+      <param name="partitionCount">Numero di partizioni da creare.</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.OrderablePartitioner`1.GetPartitions(System.Int32)">
+      <summary>Suddivide l'insieme sottostante nel numero specificato di partizioni ordinate.</summary>
+      <returns>Elenco che contiene enumeratori <paramref name="partitionCount" />.</returns>
+      <param name="partitionCount">Numero di partizioni da creare.</param>
+    </member>
+    <member name="P:System.Collections.Concurrent.OrderablePartitioner`1.KeysNormalized">
+      <summary>Ottiene un valore che indica se le chiavi di ordine sono normalizzate.</summary>
+      <returns>True se le chiavi sono normalizzate. In caso contrario false.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.OrderablePartitioner`1.KeysOrderedAcrossPartitions">
+      <summary>Ottiene un valore che indica se gli elementi di una partizione precedente vengono sempre prima degli elementi di una partizione più recente.</summary>
+      <returns>True se gli elementi di una partizione precedente vengono sempre prima degli elementi di una partizione successiva. In caso contrario false.</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.OrderablePartitioner`1.KeysOrderedInEachPartition">
+      <summary>Ottiene un valore che indica se gli elementi in ogni partizione sono prodotti nell'ordine di chiavi crescenti.</summary>
+      <returns>True se gli elementi in ogni partizione sono prodotti nell'ordine di chiavi crescenti. In caso contrario false.</returns>
+    </member>
+    <member name="T:System.Collections.Concurrent.Partitioner">
+      <summary>Fornisce strategie di partizionamento comuni per matrici, elenchi e tipi enumerabili.</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>Crea un Partitioner ordinabile da un'istanza di <see cref="T:System.Collections.Generic.IEnumerable`1" />.</summary>
+      <returns>Partitioner ordinabile basato sulla matrice di input.</returns>
+      <param name="source">Tipo enumerabile da partizionare.</param>
+      <typeparam name="TSource">Tipo degli elementi nel tipo enumerabile di origine.</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Concurrent.EnumerablePartitionerOptions)">
+      <summary>Crea un Partitioner ordinabile da un'istanza di <see cref="T:System.Collections.Generic.IEnumerable`1" />.</summary>
+      <returns>Partitioner ordinabile basato sulla matrice di input.</returns>
+      <param name="source">Tipo enumerabile da partizionare.</param>
+      <param name="partitionerOptions">Opzioni per controllare il comportamento di buffer del Partitioner.</param>
+      <typeparam name="TSource">Tipo degli elementi nel tipo enumerabile di origine.</typeparam>
+      <exception cref="T:System.ArgumentOutOfRangeException">L'argomento <paramref name="partitionerOptions" /> specifica un valore non valido per <see cref="T:System.Collections.Concurrent.EnumerablePartitionerOptions" />.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create``1(System.Collections.Generic.IList{``0},System.Boolean)">
+      <summary>Crea un Partitioner ordinabile da un'istanza di <see cref="T:System.Collections.Generic.IList`1" />.</summary>
+      <returns>Partitioner ordinabile basato sull'elenco di input.</returns>
+      <param name="list">Elenco da partizionare.</param>
+      <param name="loadBalance">Valore booleano che indica se il partitioner creato deve bilanciare in modo dinamico il carico tra le partizioni anziché partizionarlo in modo statico.</param>
+      <typeparam name="TSource">Tipo degli elementi nell'insieme di origine.</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create(System.Int32,System.Int32)">
+      <summary>Crea un partitioner che divide in blocchi l'intervallo specificato dall'utente.</summary>
+      <returns>Partitioner.</returns>
+      <param name="fromInclusive">Limite inferiore incluso dell'intervallo.</param>
+      <param name="toExclusive">Limite superiore escluso dell'intervallo.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">L'argomento <paramref name="toExclusive" /> è minore di o uguale all'argomento <paramref name="fromInclusive" />.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create(System.Int32,System.Int32,System.Int32)">
+      <summary>Crea un partitioner che divide in blocchi l'intervallo specificato dall'utente.</summary>
+      <returns>Partitioner.</returns>
+      <param name="fromInclusive">Limite inferiore incluso dell'intervallo.</param>
+      <param name="toExclusive">Limite superiore escluso dell'intervallo.</param>
+      <param name="rangeSize">Dimensione di ogni intervallo secondario.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">L'argomento <paramref name="toExclusive" /> è minore di o uguale all'argomento <paramref name="fromInclusive" />.- oppure -L'argomento <paramref name="rangeSize" /> è minore o uguale a 0.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create(System.Int64,System.Int64)">
+      <summary>Crea un partitioner che divide in blocchi l'intervallo specificato dall'utente.</summary>
+      <returns>Partitioner.</returns>
+      <param name="fromInclusive">Limite inferiore incluso dell'intervallo.</param>
+      <param name="toExclusive">Limite superiore escluso dell'intervallo.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">L'argomento <paramref name="toExclusive" /> è minore di o uguale all'argomento <paramref name="fromInclusive" />.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create(System.Int64,System.Int64,System.Int64)">
+      <summary>Crea un partitioner che divide in blocchi l'intervallo specificato dall'utente.</summary>
+      <returns>Partitioner.</returns>
+      <param name="fromInclusive">Limite inferiore incluso dell'intervallo.</param>
+      <param name="toExclusive">Limite superiore escluso dell'intervallo.</param>
+      <param name="rangeSize">Dimensione di ogni intervallo secondario.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">L'argomento <paramref name="toExclusive" /> è minore di o uguale all'argomento <paramref name="fromInclusive" />.- oppure -L'argomento <paramref name="rangeSize" /> è minore o uguale a 0.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create``1(``0[],System.Boolean)">
+      <summary>Crea un Partitioner ordinabile da un'istanza di <see cref="T:System.Array" />.</summary>
+      <returns>Partitioner ordinabile basato sulla matrice di input.</returns>
+      <param name="array">Matrice da partizionare.</param>
+      <param name="loadBalance">Valore booleano che indica se il partitioner creato deve bilanciare in modo dinamico il carico tra le partizioni anziché partizionarlo in modo statico.</param>
+      <typeparam name="TSource">Tipo degli elementi della matrice di origine.</typeparam>
+    </member>
+    <member name="T:System.Collections.Concurrent.Partitioner`1">
+      <summary>Rappresenta un determinato modo di suddividere un'origine dati in più partizioni.</summary>
+      <typeparam name="TSource">Tipo degli elementi contenuti nell'insieme.</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner`1.#ctor">
+      <summary>Crea una nuova istanza del Partitioner.</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner`1.GetDynamicPartitions">
+      <summary>Crea un oggetto che può suddividere l'insieme sottostante in un numero variabile di partizioni.</summary>
+      <returns>Oggetto che può creare partizioni sull'origine dati sottostante.</returns>
+      <exception cref="T:System.NotSupportedException">Il partizionamento dinamico non è supportato da questa classe di base.Occorre implementare questo metodo in una classe derivata.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner`1.GetPartitions(System.Int32)">
+      <summary>Suddivide l'insieme sottostante nel numero specificato di partizioni.</summary>
+      <returns>Elenco che contiene enumeratori <paramref name="partitionCount" />.</returns>
+      <param name="partitionCount">Numero di partizioni da creare.</param>
+    </member>
+    <member name="P:System.Collections.Concurrent.Partitioner`1.SupportsDynamicPartitions">
+      <summary>Ottiene un valore che indica se è possibile creare partizioni aggiuntive in modo dinamico.</summary>
+      <returns>È true se <see cref="T:System.Collections.Concurrent.Partitioner`1" /> può creare partizioni in modo dinamico quando vengono richieste; è false se <see cref="T:System.Collections.Concurrent.Partitioner`1" /> può solo allocare le partizioni in modo statico.</returns>
+    </member>
+  </members>
+</doc>

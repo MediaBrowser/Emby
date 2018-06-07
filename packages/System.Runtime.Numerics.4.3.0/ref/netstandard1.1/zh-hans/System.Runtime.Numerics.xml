@@ -1,0 +1,1078 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Runtime.Numerics</name>
+  </assembly>
+  <members>
+    <member name="T:System.Numerics.BigInteger">
+      <summary>表示任意大的带符号整数。</summary>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.Byte[])">
+      <summary>使用字节数组中的值初始化 <see cref="T:System.Numerics.BigInteger" /> 结构的新实例。</summary>
+      <param name="value">顺序为 little-endian 的字节值的数组。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is null.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.Decimal)">
+      <summary>使用 <see cref="T:System.Decimal" /> 值初始化 <see cref="T:System.Numerics.BigInteger" /> 结构的新实例。</summary>
+      <param name="value">一个小数。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.Double)">
+      <summary>使用双精度浮点值初始化 <see cref="T:System.Numerics.BigInteger" /> 结构的新实例。</summary>
+      <param name="value">一个双精度浮点值。</param>
+      <exception cref="T:System.OverflowException">The value of <paramref name="value" /> is <see cref="F:System.Double.NaN" />.-or-The value of <paramref name="value" /> is <see cref="F:System.Double.NegativeInfinity" />.-or-The value of <paramref name="value" /> is <see cref="F:System.Double.PositiveInfinity" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.Int32)">
+      <summary>使用 32 位带符号整数值初始化 <see cref="T:System.Numerics.BigInteger" /> 结构的新实例。</summary>
+      <param name="value">32 位带符号整数。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.Int64)">
+      <summary>使用 64 位带符号整数值初始化 <see cref="T:System.Numerics.BigInteger" /> 结构的新实例。</summary>
+      <param name="value">64 位带符号整数。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.Single)">
+      <summary>使用单精度浮点值初始化 <see cref="T:System.Numerics.BigInteger" /> 结构的新实例。</summary>
+      <param name="value">单精度浮点值。</param>
+      <exception cref="T:System.OverflowException">The value of <paramref name="value" /> is <see cref="F:System.Single.NaN" />.-or-The value of <paramref name="value" /> is <see cref="F:System.Single.NegativeInfinity" />.-or-The value of <paramref name="value" /> is <see cref="F:System.Single.PositiveInfinity" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.UInt32)">
+      <summary>使用 32 位无符号整数值初始化 <see cref="T:System.Numerics.BigInteger" /> 结构的新实例。</summary>
+      <param name="value">32 位无符号整数值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.UInt64)">
+      <summary>使用 64 位无符号整数值初始化 <see cref="T:System.Numerics.BigInteger" /> 结构的新实例。</summary>
+      <param name="value">64 位无符号整数。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Abs(System.Numerics.BigInteger)">
+      <summary>获取 <see cref="T:System.Numerics.BigInteger" /> 对象的绝对值。</summary>
+      <returns>
+        <paramref name="value" /> 的绝对值。</returns>
+      <param name="value">数字。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Add(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>将两个 <see cref="T:System.Numerics.BigInteger" /> 值相加，并返回结果。</summary>
+      <returns>
+        <paramref name="left" /> 与 <paramref name="right" /> 之和。</returns>
+      <param name="left">要相加的第一个值。</param>
+      <param name="right">要相加的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Compare(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>比较两个 <see cref="T:System.Numerics.BigInteger" /> 值，并返回一个整数，该整数指示第一个值是小于、等于还是大于第二个值。</summary>
+      <returns>一个有符号整数，指示 <paramref name="left" /> 和 <paramref name="right" /> 的相对值，如下表所示。值条件小于零<paramref name="left" /> 小于 <paramref name="right" />。零<paramref name="left" /> 等于 <paramref name="right" />。大于零<paramref name="left" /> 大于 <paramref name="right" />。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.CompareTo(System.Int64)">
+      <summary>将此实例与 64 位带符号整数进行比较，并返回一个整数，该整数指示此实例的值是小于、等于还是大于 64 位带符号整数的值。</summary>
+      <returns>一个带符号整数值，指示此实例与 <paramref name="other" /> 的关系，如下表所示。返回值描述小于零当前实例小于 <paramref name="other" />。零当前实例等于 <paramref name="other" />。大于零当前实例大于 <paramref name="other" />。</returns>
+      <param name="other">要比较的 64 位带符号整数。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.CompareTo(System.Numerics.BigInteger)">
+      <summary>将此实例与另一个 <see cref="T:System.Numerics.BigInteger" /> 进行比较，并返回一个整数，该整数指示此实例的值是小于、等于还是大于指定对象的值。</summary>
+      <returns>一个带符号整数值，指示此实例与 <paramref name="other" /> 的关系，如下表所示。返回值描述小于零当前实例小于 <paramref name="other" />。零当前实例等于 <paramref name="other" />。大于零当前实例大于 <paramref name="other" />。</returns>
+      <param name="other">要比较的对象。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.CompareTo(System.UInt64)">
+      <summary>将此实例与 64 位无符号整数进行比较，并返回一个整数，该整数指示此实例的值是小于、等于还是大于 64 位无符号整数的值。</summary>
+      <returns>一个带符号整数，指示此实例和 <paramref name="other" /> 的相对值，如下表所示。返回值描述小于零当前实例小于 <paramref name="other" />。零当前实例等于 <paramref name="other" />。大于零当前实例大于 <paramref name="other" />。</returns>
+      <param name="other">要比较的 64 位无符号整数。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Divide(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>用另一个值除 <see cref="T:System.Numerics.BigInteger" /> 值并返回结果。</summary>
+      <returns>相除后的商。</returns>
+      <param name="dividend">要作为被除数的值。</param>
+      <param name="divisor">要作为除数的值。</param>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="divisor" /> is 0 (zero).</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.DivRem(System.Numerics.BigInteger,System.Numerics.BigInteger,System.Numerics.BigInteger@)">
+      <summary>用另一个值除一个 <see cref="T:System.Numerics.BigInteger" /> 值，返回结果，并在输出参数中返回余数。</summary>
+      <returns>相除后的商。</returns>
+      <param name="dividend">要作为被除数的值。</param>
+      <param name="divisor">要作为除数的值。</param>
+      <param name="remainder">当此方法返回时，包含一个表示相除余数的 <see cref="T:System.Numerics.BigInteger" /> 值。此参数未经初始化即被传递。</param>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="divisor" /> is 0 (zero).</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Equals(System.Int64)">
+      <summary>返回一个值，该值指示当前实例与 64 位带符号整数是否具有相同的值。</summary>
+      <returns>如果 64 位带符号整数与当前实例具有相同的值，则为 true；否则为 false。</returns>
+      <param name="other">要比较的 64 位带符号整数值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Equals(System.Numerics.BigInteger)">
+      <summary>返回一个值，该值指示当前实例与指定的 <see cref="T:System.Numerics.BigInteger" /> 对象是否具有相同的值。</summary>
+      <returns>如果此 <see cref="T:System.Numerics.BigInteger" /> 对象和 <paramref name="other" /> 具有相同的值，则为 true；否则为 false。</returns>
+      <param name="other">要比较的对象。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Equals(System.Object)">
+      <summary>返回一个值，该值指示当前实例与指定的对象是否具有相同的值。</summary>
+      <returns>如果 <paramref name="obj" /> 参数是 <see cref="T:System.Numerics.BigInteger" /> 对象或者能够隐式转换为 <see cref="T:System.Numerics.BigInteger" /> 值的类型，并且其值等于当前 <see cref="T:System.Numerics.BigInteger" /> 对象的值，则为 true；否则为 false。</returns>
+      <param name="obj">要比较的对象。 </param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Equals(System.UInt64)">
+      <summary>返回一个值，该值指示当前实例与 64 位无符号整数是否具有相同的值。</summary>
+      <returns>如果当前实例与 64 位无符号整数具有相同的值，则为 true；否则为 false。</returns>
+      <param name="other">要比较的 64 位无符号整数。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.GetHashCode">
+      <summary>返回当前 <see cref="T:System.Numerics.BigInteger" /> 对象的哈希代码。</summary>
+      <returns>32 位有符号整数哈希代码。</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.GreatestCommonDivisor(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>查找两个 <see cref="T:System.Numerics.BigInteger" /> 值的最大公约数。</summary>
+      <returns>
+        <paramref name="left" /> 和 <paramref name="right" /> 的最大公约数。</returns>
+      <param name="left">第一个值。</param>
+      <param name="right">第二个值。</param>
+    </member>
+    <member name="P:System.Numerics.BigInteger.IsEven">
+      <summary>指示当前 <see cref="T:System.Numerics.BigInteger" /> 对象的值是否是偶数。</summary>
+      <returns>如果 <see cref="T:System.Numerics.BigInteger" /> 对象的值是偶数，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Numerics.BigInteger.IsOne">
+      <summary>指示当前 <see cref="T:System.Numerics.BigInteger" /> 对象的值是否是 <see cref="P:System.Numerics.BigInteger.One" />。</summary>
+      <returns>如果 <see cref="T:System.Numerics.BigInteger" /> 对象的值是 <see cref="P:System.Numerics.BigInteger.One" />，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Numerics.BigInteger.IsPowerOfTwo">
+      <summary>指示当前 <see cref="T:System.Numerics.BigInteger" /> 对象的值是否是 2 的幂。</summary>
+      <returns>如果 <see cref="T:System.Numerics.BigInteger" /> 对象的值是 2 的幂，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Numerics.BigInteger.IsZero">
+      <summary>指示当前 <see cref="T:System.Numerics.BigInteger" /> 对象的值是否是 <see cref="P:System.Numerics.BigInteger.Zero" />。</summary>
+      <returns>如果 <see cref="T:System.Numerics.BigInteger" /> 对象的值是 <see cref="P:System.Numerics.BigInteger.Zero" />，则为 true；否则为 false。</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Log(System.Numerics.BigInteger)">
+      <summary>返回指定数字的自然对数（底为 e）。</summary>
+      <returns>
+        <paramref name="value" /> 的自然对数（底为 e），如“备注”部分中的表所示。</returns>
+      <param name="value">要查找其对数的数字。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The natural log of <paramref name="value" /> is out of range of the <see cref="T:System.Double" /> data type.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Log(System.Numerics.BigInteger,System.Double)">
+      <summary>返回指定数字在使用指定底时的对数。</summary>
+      <returns>
+        <paramref name="value" /> 的以 <paramref name="baseValue" /> 为底的对数，如“备注”部分中的表所示。</returns>
+      <param name="value">要查找其对数的数字。</param>
+      <param name="baseValue">对数的底。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The log of <paramref name="value" /> is out of range of the <see cref="T:System.Double" /> data type.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Log10(System.Numerics.BigInteger)">
+      <summary>返回指定数字以 10 为底的对数。</summary>
+      <returns>
+        <paramref name="value" /> 的以 10 为底的对数，如“备注”部分中的表所示。</returns>
+      <param name="value">要查找其对数的数字。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The base 10 log of <paramref name="value" /> is out of range of the <see cref="T:System.Double" /> data type.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Max(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>返回两个 <see cref="T:System.Numerics.BigInteger" /> 值中的较大者。</summary>
+      <returns>
+        <paramref name="left" /> 或 <paramref name="right" /> 参数中较大的一个。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Min(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>返回两个 <see cref="T:System.Numerics.BigInteger" /> 值中的较小者。</summary>
+      <returns>
+        <paramref name="left" /> 或 <paramref name="right" /> 参数中较小的一个。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="P:System.Numerics.BigInteger.MinusOne">
+      <summary>获取一个表示数字负一 (-1) 的值。</summary>
+      <returns>其值为负一 (-1) 的整数。</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.ModPow(System.Numerics.BigInteger,System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>对以某个数为底、以另一个数为指数的幂执行模数除法。</summary>
+      <returns>将 <paramref name="value" />exponent 除以 <paramref name="modulus" /> 后的余数。</returns>
+      <param name="value">要计算 <paramref name="exponent" /> 次幂的数字。</param>
+      <param name="exponent">对 <paramref name="value" /> 进行幂运算的指数。</param>
+      <param name="modulus">
+        <paramref name="value" /> 的 <paramref name="exponent" /> 次幂要除以的数值。</param>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="modulus" /> is zero.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="exponent" /> is negative.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Multiply(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>返回两个 <see cref="T:System.Numerics.BigInteger" /> 值的乘积。</summary>
+      <returns>
+        <paramref name="left" /> 和 <paramref name="right" /> 参数的乘积。</returns>
+      <param name="left">要相乘的第一个数。</param>
+      <param name="right">要相乘的第二个数。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Negate(System.Numerics.BigInteger)">
+      <summary>对指定的 <see cref="T:System.Numerics.BigInteger" /> 值求反。</summary>
+      <returns>
+        <paramref name="value" /> 参数乘以负一 (-1) 的结果。</returns>
+      <param name="value">要求反的值。</param>
+    </member>
+    <member name="P:System.Numerics.BigInteger.One">
+      <summary>获取一个表示数字一 (1) 的值。</summary>
+      <returns>其值为一 (1) 的对象。</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Addition(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>将两个指定的 <see cref="T:System.Numerics.BigInteger" /> 对象的值相加。</summary>
+      <returns>
+        <paramref name="left" /> 与 <paramref name="right" /> 之和。</returns>
+      <param name="left">要相加的第一个值。</param>
+      <param name="right">要相加的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_BitwiseAnd(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>对两个 <see cref="T:System.Numerics.BigInteger" /> 值执行按位 And 运算。</summary>
+      <returns>按位 And 运算的结果。</returns>
+      <param name="left">第一个值。</param>
+      <param name="right">第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_BitwiseOr(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>对两个 <see cref="T:System.Numerics.BigInteger" /> 值执行按位 Or 运算。</summary>
+      <returns>按位 Or 运算的结果。</returns>
+      <param name="left">第一个值。</param>
+      <param name="right">第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Decrement(System.Numerics.BigInteger)">
+      <summary>将 <see cref="T:System.Numerics.BigInteger" /> 值减 1。</summary>
+      <returns>
+        <paramref name="value" /> 参数减 1 后的值。</returns>
+      <param name="value">要递减的值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Division(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>通过使用整除，将指定的 <see cref="T:System.Numerics.BigInteger" /> 值除以另一个指定的 <see cref="T:System.Numerics.BigInteger" /> 值。</summary>
+      <returns>相除的整数结果。</returns>
+      <param name="dividend">要作为被除数的值。</param>
+      <param name="divisor">要作为除数的值。</param>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="divisor" /> is 0 (zero).</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Equality(System.Int64,System.Numerics.BigInteger)">
+      <summary>返回一个值，该值指示带符号长整数值与 <see cref="T:System.Numerics.BigInteger" /> 值是否相等。</summary>
+      <returns>如果 <paramref name="left" /> 与 <paramref name="right" /> 参数具有相同的值，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Equality(System.Numerics.BigInteger,System.Int64)">
+      <summary>返回一个值，该值指示 <see cref="T:System.Numerics.BigInteger" /> 值与带符号长整数值是否相等。</summary>
+      <returns>如果 <paramref name="left" /> 与 <paramref name="right" /> 参数具有相同的值，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Equality(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>返回一个值，该值指示两个 <see cref="T:System.Numerics.BigInteger" /> 对象的值是否相等。</summary>
+      <returns>如果 <paramref name="left" /> 与 <paramref name="right" /> 参数具有相同的值，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Equality(System.Numerics.BigInteger,System.UInt64)">
+      <summary>返回一个值，该值指示 <see cref="T:System.Numerics.BigInteger" /> 值与不带符号长整数值是否相等。</summary>
+      <returns>如果 <paramref name="left" /> 与 <paramref name="right" /> 参数具有相同的值，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Equality(System.UInt64,System.Numerics.BigInteger)">
+      <summary>返回一个值，该值指示无符号长整数值与 <see cref="T:System.Numerics.BigInteger" /> 值是否相等。</summary>
+      <returns>如果 <paramref name="left" /> 与 <paramref name="right" /> 参数具有相同的值，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_ExclusiveOr(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>对两个 <see cref="T:System.Numerics.BigInteger" /> 值执行按位异 Or (XOr) 运算。</summary>
+      <returns>按位 Or 运算的结果。</returns>
+      <param name="left">第一个值。</param>
+      <param name="right">第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Decimal)~System.Numerics.BigInteger">
+      <summary>定义从 <see cref="T:System.Decimal" /> 对象到 <see cref="T:System.Numerics.BigInteger" /> 值的显式转换。</summary>
+      <returns>包含 <paramref name="value" /> 参数值的对象。</returns>
+      <param name="value">要转换为 <see cref="T:System.Numerics.BigInteger" /> 的值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Double)~System.Numerics.BigInteger">
+      <summary>定义从 <see cref="T:System.Double" /> 值到 <see cref="T:System.Numerics.BigInteger" /> 值的显式转换。</summary>
+      <returns>包含 <paramref name="value" /> 参数值的对象。</returns>
+      <param name="value">要转换为 <see cref="T:System.Numerics.BigInteger" /> 的值。</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is <see cref="F:System.Double.NaN" />.-or-<paramref name="value" /> is <see cref="F:System.Double.PositiveInfinity" />.-or-<paramref name="value" /> is <see cref="F:System.Double.NegativeInfinity" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Int16">
+      <summary>定义从 <see cref="T:System.Numerics.BigInteger" /> 对象到 16 位带符号整数值的显式转换。</summary>
+      <returns>包含 <paramref name="value" /> 参数值的对象。</returns>
+      <param name="value">要转换为 16 位带符号整数的值。</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.Int16.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.Int16.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Decimal">
+      <summary>定义从 <see cref="T:System.Numerics.BigInteger" /> 对象到 <see cref="T:System.Decimal" /> 值的显式转换。</summary>
+      <returns>包含 <paramref name="value" /> 参数值的对象。</returns>
+      <param name="value">要转换为 <see cref="T:System.Decimal" /> 的值。</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.Decimal.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.Decimal.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Double">
+      <summary>定义从 <see cref="T:System.Numerics.BigInteger" /> 对象到 <see cref="T:System.Double" /> 值的显式转换。</summary>
+      <returns>包含 <paramref name="value" /> 参数值的对象。</returns>
+      <param name="value">要转换为 <see cref="T:System.Double" /> 的值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Byte">
+      <summary>定义从 <see cref="T:System.Numerics.BigInteger" /> 对象到无符号字节值的显式转换。</summary>
+      <returns>包含 <paramref name="value" /> 参数值的对象。</returns>
+      <param name="value">要转换为 <see cref="T:System.Byte" /> 的值。</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.Byte.MinValue" />. -or-<paramref name="value" /> is greater than <see cref="F:System.Byte.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.UInt64">
+      <summary>定义从 <see cref="T:System.Numerics.BigInteger" /> 对象到 64 位无符号整数值的显式转换。</summary>
+      <returns>包含 <paramref name="value" /> 参数值的对象。</returns>
+      <param name="value">要转换为 64 位无符号整数的值。</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.UInt64.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.UInt64.MaxValue" />. </exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Int32">
+      <summary>定义从 <see cref="T:System.Numerics.BigInteger" /> 对象到 32 位带符号整数值的显式转换。</summary>
+      <returns>包含 <paramref name="value" /> 参数值的对象。</returns>
+      <param name="value">要转换为 32 位带符号整数的值。</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.Int32.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.Int32.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.SByte">
+      <summary>定义 <see cref="T:System.Numerics.BigInteger" /> 对象到 8 位带符号值的显式转换。</summary>
+      <returns>包含 <paramref name="value" /> 参数值的对象。</returns>
+      <param name="value">要转换为 8 位带符号值的值。</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.SByte.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.SByte.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Int64">
+      <summary>定义从 <see cref="T:System.Numerics.BigInteger" /> 对象到 64 位带符号整数值的显式转换。</summary>
+      <returns>包含 <paramref name="value" /> 参数值的对象。</returns>
+      <param name="value">要转换为 64 位带符号整数的值。</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.Int64.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.Int64.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Single">
+      <summary>定义 <see cref="T:System.Numerics.BigInteger" /> 对象到单精度浮点值的显式转换。</summary>
+      <returns>一个对象，包含 <paramref name="value" /> 参数的尽可能精确的表示形式。</returns>
+      <param name="value">要转换为单精度浮点值的值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.UInt32">
+      <summary>定义从 <see cref="T:System.Numerics.BigInteger" /> 对象到 32 位无符号整数值的显式转换。</summary>
+      <returns>包含 <paramref name="value" /> 参数值的对象。</returns>
+      <param name="value">要转换为 32 位无符号整数的值。</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.UInt32.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.UInt32.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.UInt16">
+      <summary>定义从 <see cref="T:System.Numerics.BigInteger" /> 对象到 16 位无符号整数值的显式转换。</summary>
+      <returns>包含 <paramref name="value" /> 参数值的对象</returns>
+      <param name="value">要转换为 16 位无符号整数的值。</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.UInt16.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.UInt16.MaxValue" />. </exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Single)~System.Numerics.BigInteger">
+      <summary>定义从 <see cref="T:System.Single" /> 对象到 <see cref="T:System.Numerics.BigInteger" /> 值的显式转换。</summary>
+      <returns>包含 <paramref name="value" /> 参数值的对象。</returns>
+      <param name="value">要转换为 <see cref="T:System.Numerics.BigInteger" /> 的值。</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is <see cref="F:System.Single.NaN" />.-or-<paramref name="value" /> is <see cref="F:System.Single.PositiveInfinity" />.-or-<paramref name="value" /> is <see cref="F:System.Single.NegativeInfinity" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThan(System.Int64,System.Numerics.BigInteger)">
+      <summary>返回一个值，该值指示 64 位带符号整数是否大于 <see cref="T:System.Numerics.BigInteger" /> 值。</summary>
+      <returns>如果 <paramref name="left" /> 大于 <paramref name="right" />，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThan(System.Numerics.BigInteger,System.Int64)">
+      <summary>返回一个值，该值指示 <see cref="T:System.Numerics.BigInteger" /> 是否大于 64 位带符号整数值。</summary>
+      <returns>如果 <paramref name="left" /> 大于 <paramref name="right" />，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThan(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>返回一个值，该值指示 <see cref="T:System.Numerics.BigInteger" /> 值是否大于另一个 <see cref="T:System.Numerics.BigInteger" /> 值。</summary>
+      <returns>如果 <paramref name="left" /> 大于 <paramref name="right" />，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThan(System.Numerics.BigInteger,System.UInt64)">
+      <summary>返回一个值，该值指示 <see cref="T:System.Numerics.BigInteger" /> 值是否大于 64 位无符号整数。</summary>
+      <returns>如果 <paramref name="left" /> 大于 <paramref name="right" />，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThan(System.UInt64,System.Numerics.BigInteger)">
+      <summary>返回一个值，该值指示 <see cref="T:System.Numerics.BigInteger" /> 值是否大于 64 位无符号整数。</summary>
+      <returns>如果 <paramref name="left" /> 大于 <paramref name="right" />，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThanOrEqual(System.Int64,System.Numerics.BigInteger)">
+      <summary>返回一个值，该值指示 64 位带符号整数是否大于等于 <see cref="T:System.Numerics.BigInteger" /> 值。</summary>
+      <returns>如果 <paramref name="left" /> 大于 <paramref name="right" />，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThanOrEqual(System.Numerics.BigInteger,System.Int64)">
+      <summary>返回一个值，该值指示 <see cref="T:System.Numerics.BigInteger" /> 值是否大于等于 64 位带符号整数值。</summary>
+      <returns>如果 <paramref name="left" /> 大于 <paramref name="right" />，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThanOrEqual(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>返回一个值，该值指示 <see cref="T:System.Numerics.BigInteger" /> 值是否大于等于另一个 <see cref="T:System.Numerics.BigInteger" /> 值。</summary>
+      <returns>如果 <paramref name="left" /> 大于 <paramref name="right" />，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThanOrEqual(System.Numerics.BigInteger,System.UInt64)">
+      <summary>返回一个值，该值指示 <see cref="T:System.Numerics.BigInteger" /> 值是否大于等于 64 位无符号整数值。</summary>
+      <returns>如果 <paramref name="left" /> 大于 <paramref name="right" />，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThanOrEqual(System.UInt64,System.Numerics.BigInteger)">
+      <summary>返回一个值，该值指示 64 位无符号整数是否大于等于 <see cref="T:System.Numerics.BigInteger" /> 值。</summary>
+      <returns>如果 <paramref name="left" /> 大于 <paramref name="right" />，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.Byte)~System.Numerics.BigInteger">
+      <summary>定义从无符号字节到 <see cref="T:System.Numerics.BigInteger" /> 值的隐式转换。</summary>
+      <returns>包含 <paramref name="value" /> 参数值的对象。</returns>
+      <param name="value">要转换为 <see cref="T:System.Numerics.BigInteger" /> 的值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.Int16)~System.Numerics.BigInteger">
+      <summary>定义从 16 位带符号整数到 <see cref="T:System.Numerics.BigInteger" /> 值的隐式转换。</summary>
+      <returns>包含 <paramref name="value" /> 参数值的对象。</returns>
+      <param name="value">要转换为 <see cref="T:System.Numerics.BigInteger" /> 的值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.Int32)~System.Numerics.BigInteger">
+      <summary>定义从 32 位带符号整数到 <see cref="T:System.Numerics.BigInteger" /> 值的隐式转换。</summary>
+      <returns>包含 <paramref name="value" /> 参数值的对象。</returns>
+      <param name="value">要转换为 <see cref="T:System.Numerics.BigInteger" /> 的值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.Int64)~System.Numerics.BigInteger">
+      <summary>定义从 64 位带符号整数到 <see cref="T:System.Numerics.BigInteger" /> 值的隐式转换。</summary>
+      <returns>包含 <paramref name="value" /> 参数值的对象。</returns>
+      <param name="value">要转换为 <see cref="T:System.Numerics.BigInteger" /> 的值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.SByte)~System.Numerics.BigInteger">
+      <summary>定义从 8 位带符号整数到 <see cref="T:System.Numerics.BigInteger" /> 值的隐式转换。</summary>
+      <returns>包含 <paramref name="value" /> 参数值的对象。</returns>
+      <param name="value">要转换为 <see cref="T:System.Numerics.BigInteger" /> 的值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.UInt16)~System.Numerics.BigInteger">
+      <summary>定义从 16 位无符号整数到 <see cref="T:System.Numerics.BigInteger" /> 值的隐式转换。</summary>
+      <returns>包含 <paramref name="value" /> 参数值的对象。</returns>
+      <param name="value">要转换为 <see cref="T:System.Numerics.BigInteger" /> 的值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.UInt32)~System.Numerics.BigInteger">
+      <summary>定义从 32 位无符号整数到 <see cref="T:System.Numerics.BigInteger" /> 值的隐式转换。</summary>
+      <returns>包含 <paramref name="value" /> 参数值的对象。</returns>
+      <param name="value">要转换为 <see cref="T:System.Numerics.BigInteger" /> 的值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.UInt64)~System.Numerics.BigInteger">
+      <summary>定义从 64 位无符号整数到 <see cref="T:System.Numerics.BigInteger" /> 值的隐式转换。</summary>
+      <returns>包含 <paramref name="value" /> 参数值的对象。</returns>
+      <param name="value">要转换为 <see cref="T:System.Numerics.BigInteger" /> 的值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Increment(System.Numerics.BigInteger)">
+      <summary>将 <see cref="T:System.Numerics.BigInteger" /> 值加 1。</summary>
+      <returns>
+        <paramref name="value" /> 参数加 1 后的值。</returns>
+      <param name="value">要递增的值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Inequality(System.Int64,System.Numerics.BigInteger)">
+      <summary>返回一个值，该值指示 64 位带符号整数与 <see cref="T:System.Numerics.BigInteger" /> 值是否不相等。</summary>
+      <returns>如果 <paramref name="left" /> 与 <paramref name="right" /> 不相等，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Inequality(System.Numerics.BigInteger,System.Int64)">
+      <summary>返回一个值，该值指示 <see cref="T:System.Numerics.BigInteger" /> 值与 64 位带符号整数是否不相等。</summary>
+      <returns>如果 <paramref name="left" /> 与 <paramref name="right" /> 不相等，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Inequality(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>返回一个值，该值指示两个 <see cref="T:System.Numerics.BigInteger" /> 对象是否具有不同的值。</summary>
+      <returns>如果 <paramref name="left" /> 与 <paramref name="right" /> 不相等，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Inequality(System.Numerics.BigInteger,System.UInt64)">
+      <summary>返回一个值，该值指示 <see cref="T:System.Numerics.BigInteger" /> 值与 64 位无符号整数是否不相等。</summary>
+      <returns>如果 <paramref name="left" /> 与 <paramref name="right" /> 不相等，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Inequality(System.UInt64,System.Numerics.BigInteger)">
+      <summary>返回一个值，该值指示 64 位无符号整数与 <see cref="T:System.Numerics.BigInteger" /> 值是否不相等。</summary>
+      <returns>如果 <paramref name="left" /> 与 <paramref name="right" /> 不相等，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LeftShift(System.Numerics.BigInteger,System.Int32)">
+      <summary>将 <see cref="T:System.Numerics.BigInteger" /> 值向左移动指定的位数。</summary>
+      <returns>一个已向左移动指定位数的值。</returns>
+      <param name="value">要移动其位的值。</param>
+      <param name="shift">将 <paramref name="value" /> 向左移动的位数。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThan(System.Int64,System.Numerics.BigInteger)">
+      <summary>返回一个值，该值指示 64 位带符号整数是否小于 <see cref="T:System.Numerics.BigInteger" /> 值。</summary>
+      <returns>如果 <paramref name="left" /> 小于 <paramref name="right" />，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThan(System.Numerics.BigInteger,System.Int64)">
+      <summary>返回一个值，该值指示 <see cref="T:System.Numerics.BigInteger" /> 值是否小于 64 位带符号整数。</summary>
+      <returns>如果 <paramref name="left" /> 小于 <paramref name="right" />，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThan(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>返回一个值，该值指示 <see cref="T:System.Numerics.BigInteger" /> 值是否小于另一个 <see cref="T:System.Numerics.BigInteger" /> 值。</summary>
+      <returns>如果 <paramref name="left" /> 小于 <paramref name="right" />，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThan(System.Numerics.BigInteger,System.UInt64)">
+      <summary>返回一个值，该值指示 <see cref="T:System.Numerics.BigInteger" /> 值是否小于 64 位无符号整数。</summary>
+      <returns>如果 <paramref name="left" /> 小于 <paramref name="right" />，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThan(System.UInt64,System.Numerics.BigInteger)">
+      <summary>返回一个值，该值指示 64 位无符号整数是否小于 <see cref="T:System.Numerics.BigInteger" /> 值。</summary>
+      <returns>如果 <paramref name="left" /> 小于 <paramref name="right" />，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.Int64,System.Numerics.BigInteger)">
+      <summary>返回一个值，该值指示 64 位带符号整数是否小于等于 <see cref="T:System.Numerics.BigInteger" /> 值。</summary>
+      <returns>如果 <paramref name="left" /> 小于等于 <paramref name="right" />，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.Numerics.BigInteger,System.Int64)">
+      <summary>返回一个值，该值指示 <see cref="T:System.Numerics.BigInteger" /> 值是否小于等于 64 位带符号整数。</summary>
+      <returns>如果 <paramref name="left" /> 小于等于 <paramref name="right" />，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>返回一个值，该值指示 <see cref="T:System.Numerics.BigInteger" /> 值是否小于等于另一个 <see cref="T:System.Numerics.BigInteger" /> 值。</summary>
+      <returns>如果 <paramref name="left" /> 小于等于 <paramref name="right" />，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.Numerics.BigInteger,System.UInt64)">
+      <summary>返回一个值，该值指示 <see cref="T:System.Numerics.BigInteger" /> 值是否小于等于 64 位无符号整数。</summary>
+      <returns>如果 <paramref name="left" /> 小于等于 <paramref name="right" />，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.UInt64,System.Numerics.BigInteger)">
+      <summary>返回一个值，该值指示 64 位无符号整数是否小于等于 <see cref="T:System.Numerics.BigInteger" /> 值。</summary>
+      <returns>如果 <paramref name="left" /> 小于等于 <paramref name="right" />，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Modulus(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>返回两个指定 <see cref="T:System.Numerics.BigInteger" /> 值相除所得的余数。</summary>
+      <returns>相除所得的余数。</returns>
+      <param name="dividend">要作为被除数的值。</param>
+      <param name="divisor">要作为除数的值。</param>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="divisor" /> is 0 (zero).</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Multiply(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>两个指定的 <see cref="T:System.Numerics.BigInteger" /> 值相乘。</summary>
+      <returns>
+        <paramref name="left" /> 和 <paramref name="right" /> 的乘积。</returns>
+      <param name="left">要相乘的第一个值。</param>
+      <param name="right">要相乘的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_OnesComplement(System.Numerics.BigInteger)">
+      <summary>返回 <see cref="T:System.Numerics.BigInteger" /> 值的按位二进制反码。</summary>
+      <returns>
+        <paramref name="value" /> 的按位二进制反码。</returns>
+      <param name="value">一个整数值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_RightShift(System.Numerics.BigInteger,System.Int32)">
+      <summary>将 <see cref="T:System.Numerics.BigInteger" /> 值向右移动指定的位数。</summary>
+      <returns>一个已向右移动指定位数的值。</returns>
+      <param name="value">要移动其位的值。</param>
+      <param name="shift">将 <paramref name="value" /> 向右移动的位数。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Subtraction(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>从另一个 <see cref="T:System.Numerics.BigInteger" /> 值中减去 <see cref="T:System.Numerics.BigInteger" /> 值。</summary>
+      <returns>
+        <paramref name="left" /> 减 <paramref name="right" /> 所得的结果。</returns>
+      <param name="left">要从中减去的值（被减数）。</param>
+      <param name="right">要减去的值（减数）。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_UnaryNegation(System.Numerics.BigInteger)">
+      <summary>对指定的 BigInteger 值求反。</summary>
+      <returns>
+        <paramref name="value" /> 参数乘以负一 (-1) 的结果。</returns>
+      <param name="value">要求反的值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_UnaryPlus(System.Numerics.BigInteger)">
+      <summary>返回 <see cref="T:System.Numerics.BigInteger" /> 操作数的值。（操作数的符号不变。）</summary>
+      <returns>
+        <paramref name="value" /> 操作数的值。</returns>
+      <param name="value">一个整数值。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Parse(System.String)">
+      <summary>将数字的字符串表示形式转换为它的等效 <see cref="T:System.Numerics.BigInteger" /> 表示形式。</summary>
+      <returns>一个值，等于 <paramref name="value" /> 参数中指定的数字。</returns>
+      <param name="value">包含要转换的数字的字符串。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is null.</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="value" /> is not in the correct format.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Parse(System.String,System.Globalization.NumberStyles)">
+      <summary>将指定样式的数字的字符串表示形式转换为它的等效 <see cref="T:System.Numerics.BigInteger" />。</summary>
+      <returns>一个值，等于 <paramref name="value" /> 参数中指定的数字。</returns>
+      <param name="value">包含要转换的数字的字符串。</param>
+      <param name="style">枚举值的按位组合，这些枚举值指定 <paramref name="value" /> 所允许的格式。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="style" /> is not a <see cref="T:System.Globalization.NumberStyles" /> value.-or-<paramref name="style" /> includes the <see cref="F:System.Globalization.NumberStyles.AllowHexSpecifier" /> or <see cref="F:System.Globalization.NumberStyles.HexNumber" /> flag along with another value.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is null.</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="value" /> does not comply with the input pattern specified by <see cref="T:System.Globalization.NumberStyles" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Parse(System.String,System.Globalization.NumberStyles,System.IFormatProvider)">
+      <summary>将指定样式和区域性特定格式的数字的字符串表示形式转换为它的等效 <see cref="T:System.Numerics.BigInteger" />。</summary>
+      <returns>一个值，等于 <paramref name="value" /> 参数中指定的数字。</returns>
+      <param name="value">包含要转换的数字的字符串。</param>
+      <param name="style">枚举值的按位组合，这些枚举值指定 <paramref name="value" /> 所允许的格式。</param>
+      <param name="provider">一个对象，提供有关 <paramref name="value" /> 的区域性特定格式设置信息。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="style" /> is not a <see cref="T:System.Globalization.NumberStyles" /> value.-or-<paramref name="style" /> includes the <see cref="F:System.Globalization.NumberStyles.AllowHexSpecifier" /> or <see cref="F:System.Globalization.NumberStyles.HexNumber" /> flag along with another value.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is null.</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="value" /> does not comply with the input pattern specified by <paramref name="style" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Parse(System.String,System.IFormatProvider)">
+      <summary>将指定的区域性特定格式的数字字符串表示形式转换为它的等效 <see cref="T:System.Numerics.BigInteger" />。</summary>
+      <returns>一个值，等于 <paramref name="value" /> 参数中指定的数字。</returns>
+      <param name="value">包含要转换的数字的字符串。</param>
+      <param name="provider">一个对象，提供有关 <paramref name="value" /> 的区域性特定格式设置信息。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is null.</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="value" /> is not in the correct format.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Pow(System.Numerics.BigInteger,System.Int32)">
+      <summary>求以 <see cref="T:System.Numerics.BigInteger" /> 值为底、以指定的值为指数的幂。</summary>
+      <returns>
+        <paramref name="value" /> 的 <paramref name="exponent" /> 次幂的计算结果。</returns>
+      <param name="value">要计算 <paramref name="exponent" /> 次幂的数字。</param>
+      <param name="exponent">对 <paramref name="value" /> 进行幂运算的指数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of the <paramref name="exponent" /> parameter is negative.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Remainder(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>对两个 <see cref="T:System.Numerics.BigInteger" /> 值执行整除并返回余数。</summary>
+      <returns>将 <paramref name="dividend" /> 除以 <paramref name="divisor" /> 后的余数。</returns>
+      <param name="dividend">要作为被除数的值。</param>
+      <param name="divisor">要作为除数的值。</param>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="divisor" /> is 0 (zero).</exception>
+    </member>
+    <member name="P:System.Numerics.BigInteger.Sign">
+      <summary>获取一个数字，该数字指示当前 <see cref="T:System.Numerics.BigInteger" /> 对象的符号（负、正或零）。</summary>
+      <returns>一个指示 <see cref="T:System.Numerics.BigInteger" /> 对象的符号的数字，如下表所示。数字描述-1此对象的值为负。0此对象的值为 0（零）。1此对象的值为正。</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Subtract(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>从另一个值中减去一个 <see cref="T:System.Numerics.BigInteger" /> 值并返回结果。</summary>
+      <returns>
+        <paramref name="left" /> 减 <paramref name="right" /> 所得的结果。</returns>
+      <param name="left">要从中减去的值（被减数）。</param>
+      <param name="right">要减去的值（减数）。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.System#IComparable#CompareTo(System.Object)">
+      <summary>将当前实例与同一类型的另一个对象进行比较，并返回一个整数，该整数指示当前实例在排序顺序中的位置是位于另一个对象之前、之后还是与其位置相同。</summary>
+      <returns>一个有符号的整数，它指示此实例和 <paramref name="obj" /> 的相对顺序。返回值描述小于零此实例在排序顺序中位于 <paramref name="obj" /> 之前。零此实例与 <paramref name="obj" /> 按排序顺序中出现的位置相同。大于零此实例在排序顺序中位于 <paramref name="obj" /> 之后。- 或 - <paramref name="value" /> 为 null。 </returns>
+      <param name="obj">与此实例进行比较的对象，或为 null。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="obj" /> is not a <see cref="T:System.Numerics.BigInteger" />. </exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.ToByteArray">
+      <summary>将 <see cref="T:System.Numerics.BigInteger" /> 值转换为字节数组。</summary>
+      <returns>转换为字节数组的当前 <see cref="T:System.Numerics.BigInteger" /> 对象的值。</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.ToString">
+      <summary>将当前 <see cref="T:System.Numerics.BigInteger" /> 对象的数值转换为其等效的字符串表示形式。</summary>
+      <returns>当前 <see cref="T:System.Numerics.BigInteger" /> 值的字符串表示形式。</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.ToString(System.IFormatProvider)">
+      <summary>使用指定的区域性特定格式设置信息将当前 <see cref="T:System.Numerics.BigInteger" /> 对象的数值转换为它的等效字符串表示形式。</summary>
+      <returns>当前 <see cref="T:System.Numerics.BigInteger" /> 值的字符串表示形式，该值使用 <paramref name="provider" /> 参数指定的格式。</returns>
+      <param name="provider">一个提供区域性特定的格式设置信息的对象。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.ToString(System.String)">
+      <summary>使用指定的格式将当前 <see cref="T:System.Numerics.BigInteger" /> 对象的数值转换为它的等效字符串表示形式。</summary>
+      <returns>当前 <see cref="T:System.Numerics.BigInteger" /> 值的字符串表示形式，该值使用 <paramref name="format" /> 参数指定的格式。</returns>
+      <param name="format">标准或自定义的数值格式字符串。</param>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> is not a valid format string.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.ToString(System.String,System.IFormatProvider)">
+      <summary>使用指定的格式和区域性特定格式信息将当前 <see cref="T:System.Numerics.BigInteger" /> 对象的数值转换为它的等效字符串表示形式。</summary>
+      <returns>由 <paramref name="format" /> 和 <paramref name="provider" /> 参数指定的当前 <see cref="T:System.Numerics.BigInteger" /> 值的字符串表示形式。</returns>
+      <param name="format">标准或自定义的数值格式字符串。</param>
+      <param name="provider">一个提供区域性特定的格式设置信息的对象。</param>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> is not a valid format string.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.TryParse(System.String,System.Globalization.NumberStyles,System.IFormatProvider,System.Numerics.BigInteger@)">
+      <summary>尝试将指定样式和区域性特定格式的数字的字符串表示形式转换为其 <see cref="T:System.Numerics.BigInteger" /> 等效项，并返回一个指示转换是否成功的值。</summary>
+      <returns>如果 <paramref name="value" /> 参数成功转换，则为 true；否则为 false。</returns>
+      <param name="value">数字的字符串表示形式。该字符串使用由 <paramref name="style" /> 指定的样式来进行解释。</param>
+      <param name="style">枚举值的按位组合，用于指示可出现在 <paramref name="value" /> 中的样式元素。要指定的一个典型值为 <see cref="F:System.Globalization.NumberStyles.Integer" />。</param>
+      <param name="provider">一个对象，提供有关 <paramref name="value" /> 的区域性特定格式设置信息。</param>
+      <param name="result">当此方法返回时，包含与 <paramref name="value" /> 中所包含的数字等效的 <see cref="T:System.Numerics.BigInteger" />；如果转换失败，则包含 <see cref="P:System.Numerics.BigInteger.Zero" />。如果 <paramref name="value" /> 参数为 null 或其格式不符合 <paramref name="style" />，则转换失败。此参数未经初始化即被传递。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="style" /> is not a <see cref="T:System.Globalization.NumberStyles" /> value.-or-<paramref name="style" /> includes the <see cref="F:System.Globalization.NumberStyles.AllowHexSpecifier" /> or <see cref="F:System.Globalization.NumberStyles.HexNumber" /> flag along with another value. </exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.TryParse(System.String,System.Numerics.BigInteger@)">
+      <summary>尝试将数字的字符串表示形式转换为它的等效 <see cref="T:System.Numerics.BigInteger" />，并返回一个指示转换是否成功的值。</summary>
+      <returns>如果 <paramref name="value" /> 成功转换，则为 true；否则为 false。</returns>
+      <param name="value">数字的字符串表示形式。</param>
+      <param name="result">当此方法返回时，包含与 <paramref name="value" /> 中所包含的数字等效的 <see cref="T:System.Numerics.BigInteger" />；如果转换失败，则包含零 (0)。如果 <paramref name="value" /> 参数为 null，或者其格式不正确，则转换失败。此参数未经初始化即被传递。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is null.</exception>
+    </member>
+    <member name="P:System.Numerics.BigInteger.Zero">
+      <summary>获取一个表示数字 0（零）的值。</summary>
+      <returns>其值为 0（零）的整数。</returns>
+    </member>
+    <member name="T:System.Numerics.Complex">
+      <summary>表示一个复数。</summary>
+    </member>
+    <member name="M:System.Numerics.Complex.#ctor(System.Double,System.Double)">
+      <summary>使用指定的实数值和虚数值初始化 <see cref="T:System.Numerics.Complex" /> 结构的新实例。</summary>
+      <param name="real">复数的实部。</param>
+      <param name="imaginary">复数的虚部。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Abs(System.Numerics.Complex)">
+      <summary>获取复数的绝对值（或量值）。</summary>
+      <returns>
+        <paramref name="value" /> 的绝对值。</returns>
+      <param name="value">一个复数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Acos(System.Numerics.Complex)">
+      <summary>返回表示指定复数的反余弦值的角度。</summary>
+      <returns>以弧度为单位的角度，它表示 <paramref name="value" /> 的反余弦。</returns>
+      <param name="value">表示余弦的复数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Add(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>将两个复数相加，并返回结果。</summary>
+      <returns>
+        <paramref name="left" /> 与 <paramref name="right" /> 之和。</returns>
+      <param name="left">要相加的第一个复数。</param>
+      <param name="right">要相加的第二个复数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Asin(System.Numerics.Complex)">
+      <summary>返回表示指定复数的反正弦值的角度。</summary>
+      <returns>表示 <paramref name="value" /> 的反正弦值的角度。</returns>
+      <param name="value">一个复数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Atan(System.Numerics.Complex)">
+      <summary>返回表示指定复数的反正切的角度。</summary>
+      <returns>表示 <paramref name="value" /> 的反正切值的角度。</returns>
+      <param name="value">一个复数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Conjugate(System.Numerics.Complex)">
+      <summary>计算复数的共轭，并返回结果。</summary>
+      <returns>
+        <paramref name="value" /> 的共轭。</returns>
+      <param name="value">一个复数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Cos(System.Numerics.Complex)">
+      <summary>返回指定复数的余弦值。</summary>
+      <returns>
+        <paramref name="value" /> 的余弦值。</returns>
+      <param name="value">一个复数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Cosh(System.Numerics.Complex)">
+      <summary>返回指定复数的双曲余弦值。</summary>
+      <returns>
+        <paramref name="value" /> 的双曲余弦值。</returns>
+      <param name="value">一个复数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Divide(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>用一个复数除另一个复数并返回结果。</summary>
+      <returns>相除后的商。</returns>
+      <param name="dividend">要作为被除数的复数。</param>
+      <param name="divisor">要作为除数的复数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Equals(System.Numerics.Complex)">
+      <summary>返回一个值，该值指示当前实例与指定的复数是否具有相同的值。</summary>
+      <returns>如果此复数与 <paramref name="value" /> 具有相同的值，则为 true；否则为 false。</returns>
+      <param name="value">要比较的复数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Equals(System.Object)">
+      <summary>返回一个值，该值指示当前实例与指定的对象是否具有相同的值。</summary>
+      <returns>如果 <paramref name="obj" /> 参数是一个 <see cref="T:System.Numerics.Complex" /> 对象或是一个能够隐式转换为 <see cref="T:System.Numerics.Complex" /> 对象的类型，并且其值等于当前 <see cref="T:System.Numerics.Complex" /> 对象，则为 true；否则为 false。</returns>
+      <param name="obj">要比较的对象。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Exp(System.Numerics.Complex)">
+      <summary>返回 e 的由一个复数指定的次幂。</summary>
+      <returns>数字 e 的 <paramref name="value" /> 次幂。</returns>
+      <param name="value">指定幂的复数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.FromPolarCoordinates(System.Double,System.Double)">
+      <summary>从点的极坐标创建复数。</summary>
+      <returns>一个复数。</returns>
+      <param name="magnitude">量值，它是从原点（x 轴与 y 轴的交点）到数字的距离。</param>
+      <param name="phase">相位，它是直线相对于水平轴的角度，以弧度为单位。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.GetHashCode">
+      <summary>返回当前 <see cref="T:System.Numerics.Complex" /> 对象的哈希代码。</summary>
+      <returns>32 位有符号整数哈希代码。</returns>
+    </member>
+    <member name="P:System.Numerics.Complex.Imaginary">
+      <summary>获取当前 <see cref="T:System.Numerics.Complex" /> 对象的虚部。</summary>
+      <returns>复数的虚部。</returns>
+    </member>
+    <member name="F:System.Numerics.Complex.ImaginaryOne">
+      <summary>返回新的 <see cref="T:System.Numerics.Complex" /> 实例，其实数等于零，虚数等于一。</summary>
+    </member>
+    <member name="M:System.Numerics.Complex.Log(System.Numerics.Complex)">
+      <summary>返回指定复数的自然对数（底为 e）。</summary>
+      <returns>
+        <paramref name="value" /> 的自然对数（底为 e）。</returns>
+      <param name="value">一个复数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Log(System.Numerics.Complex,System.Double)">
+      <summary>返回指定复数在使用指定底时的对数。</summary>
+      <returns>
+        <paramref name="value" /> 的对数（底为 <paramref name="baseValue" />）。</returns>
+      <param name="value">一个复数。</param>
+      <param name="baseValue">对数的底。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Log10(System.Numerics.Complex)">
+      <summary>返回指定复数以 10 为底的对数。</summary>
+      <returns>
+        <paramref name="value" /> 的以 10 为底的对数。</returns>
+      <param name="value">一个复数。</param>
+    </member>
+    <member name="P:System.Numerics.Complex.Magnitude">
+      <summary>获取复数的量值（或绝对值）。</summary>
+      <returns>当前实例的量值。</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Multiply(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>返回两个复数的乘积。</summary>
+      <returns>
+        <paramref name="left" /> 与 <paramref name="right" /> 参数的乘积。</returns>
+      <param name="left">要相乘的第一个复数。</param>
+      <param name="right">要相乘的第二个复数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Negate(System.Numerics.Complex)">
+      <summary>返回指定复数的加法逆元。</summary>
+      <returns>
+        <paramref name="value" /> 参数的 <see cref="P:System.Numerics.Complex.Real" /> 和 <see cref="P:System.Numerics.Complex.Imaginary" /> 部分乘以 -1 的结果。</returns>
+      <param name="value">一个复数。</param>
+    </member>
+    <member name="F:System.Numerics.Complex.One">
+      <summary>返回新的 <see cref="T:System.Numerics.Complex" /> 实例，其实数等于一，虚数等于零。</summary>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Addition(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>将两个复数相加。</summary>
+      <returns>
+        <paramref name="left" /> 与 <paramref name="right" /> 之和。</returns>
+      <param name="left">要相加的第一个值。</param>
+      <param name="right">要相加的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Division(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>用一个指定复数除另一个指定复数。</summary>
+      <returns>
+        <paramref name="left" /> 除以 <paramref name="right" /> 的结果。</returns>
+      <param name="left">要作为被除数的值。</param>
+      <param name="right">要作为除数的值。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Equality(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>返回一个值，该值指示两个复数是否相等。</summary>
+      <returns>如果 <paramref name="left" /> 与 <paramref name="right" /> 参数具有相同的值，则为 true；否则为 false。</returns>
+      <param name="left">要比较的第一个复数。</param>
+      <param name="right">要比较的第二个复数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Explicit(System.Decimal)~System.Numerics.Complex">
+      <summary>定义从 <see cref="T:System.Decimal" /> 值到复数的显式转换。</summary>
+      <returns>一个复数，其实部等于 <paramref name="value" />，虚部等于零。</returns>
+      <param name="value">要转换为复数的值。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Explicit(System.Numerics.BigInteger)~System.Numerics.Complex">
+      <summary>定义从 <see cref="T:System.Numerics.BigInteger" /> 值到复数的显式转换。</summary>
+      <returns>一个复数，其实部等于 <paramref name="value" />，虚部等于零。</returns>
+      <param name="value">要转换为复数的值。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Byte)~System.Numerics.Complex">
+      <summary>定义从无符号字节到复数的隐式转换。</summary>
+      <returns>一个对象，其中使用 <paramref name="value" /> 参数的值作为其实部，并使用零作为其虚部。</returns>
+      <param name="value">要转换为复数的值。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Double)~System.Numerics.Complex">
+      <summary>定义从双精度浮点数到复数的隐式转换。</summary>
+      <returns>一个对象，其中使用 <paramref name="value" /> 参数的值作为其实部，并使用零作为其虚部。</returns>
+      <param name="value">要转换为复数的值。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Int16)~System.Numerics.Complex">
+      <summary>定义从 16 位带符号整数到复数的隐式转换。</summary>
+      <returns>一个对象，其中使用 <paramref name="value" /> 参数的值作为其实部，并使用零作为其虚部。</returns>
+      <param name="value">要转换为复数的值。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Int32)~System.Numerics.Complex">
+      <summary>定义从 32 位带符号整数到复数的隐式转换。</summary>
+      <returns>一个对象，其中使用 <paramref name="value" /> 参数的值作为其实部，并使用零作为其虚部。</returns>
+      <param name="value">要转换为复数的值。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Int64)~System.Numerics.Complex">
+      <summary>定义从 64 位带符号整数到复数的隐式转换。</summary>
+      <returns>一个对象，其中使用 <paramref name="value" /> 参数的值作为其实部，并使用零作为其虚部。</returns>
+      <param name="value">要转换为复数的值。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.SByte)~System.Numerics.Complex">
+      <summary>定义从带符号字节到复数的隐式转换。</summary>
+      <returns>一个对象，其中使用 <paramref name="value" /> 参数的值作为其实部，并使用零作为其虚部。</returns>
+      <param name="value">要转换为复数的值。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Single)~System.Numerics.Complex">
+      <summary>定义从单精度浮点数到复数的隐式转换。</summary>
+      <returns>一个对象，其中使用 <paramref name="value" /> 参数的值作为其实部，并使用零作为其虚部。</returns>
+      <param name="value">要转换为复数的值。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.UInt16)~System.Numerics.Complex">
+      <summary>定义从 16 位无符号整数到复数的隐式转换。</summary>
+      <returns>一个对象，其中使用 <paramref name="value" /> 参数的值作为其实部，并使用零作为其虚部。</returns>
+      <param name="value">要转换为复数的值。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.UInt32)~System.Numerics.Complex">
+      <summary>定义从 32 位无符号整数到复数的隐式转换。</summary>
+      <returns>一个对象，其中使用 <paramref name="value" /> 参数的值作为其实部，并使用零作为其虚部。</returns>
+      <param name="value">要转换为复数的值。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.UInt64)~System.Numerics.Complex">
+      <summary>定义从 64 位无符号整数到复数的隐式转换。</summary>
+      <returns>一个对象，其中使用 <paramref name="value" /> 参数的值作为其实部，并使用零作为其虚部。</returns>
+      <param name="value">要转换为复数的值。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Inequality(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>返回一个值，该值指示两个复数是否不相等。</summary>
+      <returns>true if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
+      <param name="left">要比较的第一个值。</param>
+      <param name="right">要比较的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Multiply(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>将两个指定复数相乘。</summary>
+      <returns>
+        <paramref name="left" /> 与 <paramref name="right" /> 的乘积。</returns>
+      <param name="left">要相乘的第一个值。</param>
+      <param name="right">要相乘的第二个值。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Subtraction(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>从一个复数中减去另一个复数。</summary>
+      <returns>
+        <paramref name="right" /> 减 <paramref name="left" /> 所得的结果。</returns>
+      <param name="left">要从中减去的值（被减数）。</param>
+      <param name="right">要减去的值（减数）。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_UnaryNegation(System.Numerics.Complex)">
+      <summary>返回指定复数的加法逆元。</summary>
+      <returns>
+        <paramref name="value" /> 参数的 <see cref="P:System.Numerics.Complex.Real" /> 和 <see cref="P:System.Numerics.Complex.Imaginary" /> 部分乘以 -1 的结果。</returns>
+      <param name="value">要求反的值。</param>
+    </member>
+    <member name="P:System.Numerics.Complex.Phase">
+      <summary>获取复数的相位。</summary>
+      <returns>复数的相位（以弧度为单位）。</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Pow(System.Numerics.Complex,System.Double)">
+      <summary>返回指定复数的由双精度浮点数指定的次幂。</summary>
+      <returns>复数 <paramref name="value" /> 的 <paramref name="power" /> 次幂。</returns>
+      <param name="value">要对其求幂的复数。</param>
+      <param name="power">指定幂的双精度浮点数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Pow(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>返回指定复数的由复数指定的次幂。</summary>
+      <returns>复数 <paramref name="value" /> 的 <paramref name="power" /> 次幂。</returns>
+      <param name="value">要对其求幂的复数。</param>
+      <param name="power">指定幂的复数。</param>
+    </member>
+    <member name="P:System.Numerics.Complex.Real">
+      <summary>获取当前 <see cref="T:System.Numerics.Complex" /> 对象的实部。</summary>
+      <returns>复数的实部。</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Reciprocal(System.Numerics.Complex)">
+      <summary>返回复数的乘法倒数。</summary>
+      <returns>
+        <paramref name="value" /> 的倒数。</returns>
+      <param name="value">一个复数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Sin(System.Numerics.Complex)">
+      <summary>返回指定复数的正弦值。</summary>
+      <returns>
+        <paramref name="value" /> 的正弦值。</returns>
+      <param name="value">一个复数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Sinh(System.Numerics.Complex)">
+      <summary>返回指定复数的双曲正弦值。</summary>
+      <returns>
+        <paramref name="value" /> 的双曲正弦值。</returns>
+      <param name="value">一个复数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Sqrt(System.Numerics.Complex)">
+      <summary>返回指定复数的平方根。</summary>
+      <returns>
+        <paramref name="value" /> 的平方根。</returns>
+      <param name="value">一个复数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Subtract(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>从一个复数中减去另一个复数并返回结果。</summary>
+      <returns>
+        <paramref name="right" /> 减 <paramref name="left" /> 所得的结果。</returns>
+      <param name="left">要从中减去的值（被减数）。</param>
+      <param name="right">要减去的值（减数）。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Tan(System.Numerics.Complex)">
+      <summary>返回指定复数的正切值。</summary>
+      <returns>
+        <paramref name="value" /> 的正切值。</returns>
+      <param name="value">一个复数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Tanh(System.Numerics.Complex)">
+      <summary>返回指定复数的双曲正切值。</summary>
+      <returns>
+        <paramref name="value" /> 的双曲正切值。</returns>
+      <param name="value">一个复数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.ToString">
+      <summary>将当前复数的值转换为其采用笛卡尔形式的等效字符串表示形式。</summary>
+      <returns>当前实例的采用笛卡尔形式的字符串表示形式。</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.ToString(System.IFormatProvider)">
+      <summary>使用指定的区域性特定格式设置信息，将当前复数的值转换为其采用笛卡尔形式的等效字符串表示形式。</summary>
+      <returns>由 <paramref name="provider" /> 指定的当前实例的采用笛卡尔形式的字符串表示形式。</returns>
+      <param name="provider">一个提供区域性特定的格式设置信息的对象。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.ToString(System.String)">
+      <summary>通过对当前复数的实部和虚部使用指定格式，将它的值转换为其采用笛卡尔形式的等效字符串表示形式。</summary>
+      <returns>当前实例的采用笛卡尔形式的字符串表示形式。</returns>
+      <param name="format">标准或自定义的数值格式字符串。</param>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> 不是有效的格式字符串。</exception>
+    </member>
+    <member name="M:System.Numerics.Complex.ToString(System.String,System.IFormatProvider)">
+      <summary>通过对当前复数的实部和虚部使用指定格式和区域性特定格式信息，将它的值转换为其采用笛卡尔形式的等效字符串表示形式。</summary>
+      <returns>由 <paramref name="format" /> 和 <paramref name="provider" /> 指定的当前实例的采用笛卡尔形式的字符串表示形式。</returns>
+      <param name="format">标准或自定义的数值格式字符串。</param>
+      <param name="provider">一个提供区域性特定的格式设置信息的对象。</param>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> 不是有效的格式字符串。</exception>
+    </member>
+    <member name="F:System.Numerics.Complex.Zero">
+      <summary>返回新的 <see cref="T:System.Numerics.Complex" /> 实例，其实数和虚数都等于零。</summary>
+    </member>
+  </members>
+</doc>

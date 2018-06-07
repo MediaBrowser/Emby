@@ -1,0 +1,2090 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.IO</name>
+  </assembly>
+  <members>
+    <member name="T:System.IO.BinaryReader">
+      <summary>Lee tipos de datos primitivos como valores binarios en una codificación específica.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.#ctor(System.IO.Stream)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.BinaryReader" /> basada en la secuencia especificada y usando codificación UTF-8.</summary>
+      <param name="input">La secuencia de entrada. </param>
+      <exception cref="T:System.ArgumentException">La secuencia no admite la lectura, es null, o ya está cerrada. </exception>
+    </member>
+    <member name="M:System.IO.BinaryReader.#ctor(System.IO.Stream,System.Text.Encoding)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.BinaryReader" /> basada en la secuencia y codificación de caracteres especificadas.</summary>
+      <param name="input">La secuencia de entrada. </param>
+      <param name="encoding">Codificación de caracteres que se utilizará. </param>
+      <exception cref="T:System.ArgumentException">La secuencia no admite la lectura, es null, o ya está cerrada. </exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="encoding" /> es null. </exception>
+    </member>
+    <member name="M:System.IO.BinaryReader.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.BinaryReader" /> basada en la secuencia y la codificación de caracteres especificadas y, opcionalmente, deja la secuencia abierta.</summary>
+      <param name="input">La secuencia de entrada.</param>
+      <param name="encoding">Codificación de caracteres que se utilizará.</param>
+      <param name="leaveOpen">true para dejar el flujo abierto después de desechar el objeto <see cref="T:System.IO.BinaryReader" />; de lo contrario, false.</param>
+      <exception cref="T:System.ArgumentException">La secuencia no admite la lectura, es null, o ya está cerrada. </exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="encoding" /> o <paramref name="input" /> es null. </exception>
+    </member>
+    <member name="P:System.IO.BinaryReader.BaseStream">
+      <summary>Expone el acceso a la secuencia subyacente de <see cref="T:System.IO.BinaryReader" />.</summary>
+      <returns>Secuencia subyacente asociada a BinaryReader.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.Dispose">
+      <summary>Libera todos los recursos usados por la instancia actual de la clase <see cref="T:System.IO.BinaryReader" />.</summary>
+    </member>
+    <member name="M:System.IO.BinaryReader.Dispose(System.Boolean)">
+      <summary>Libera los recursos no administrados usados que usa la clase <see cref="T:System.IO.BinaryReader" /> y, de forma opcional, libera los recursos administrados.</summary>
+      <param name="disposing">Es true para liberar tanto recursos administrados como no administrados; es false para liberar únicamente recursos no administrados. </param>
+    </member>
+    <member name="M:System.IO.BinaryReader.FillBuffer(System.Int32)">
+      <summary>Rellena el búfer interno con el número especificado de bytes leídos de la secuencia.</summary>
+      <param name="numBytes">Número de bytes que se va a leer. </param>
+      <exception cref="T:System.IO.EndOfStreamException">Se llega al final de la secuencia antes de <paramref name="numBytes" /> se ha podido leer. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Solicitado <paramref name="numBytes" /> es mayor que el tamaño del búfer interno.</exception>
+    </member>
+    <member name="M:System.IO.BinaryReader.PeekChar">
+      <summary>Devuelve el siguiente carácter disponible y no hace avanzar la posición de bytes o caracteres.</summary>
+      <returns>Siguiente carácter que se va a leer, o -1 si no hay más caracteres disponibles o si la secuencia no admite la operación de búsqueda.</returns>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ArgumentException">No se puede descodificar el carácter actual en el búfer de caracteres interno utilizando la <see cref="T:System.Text.Encoding" /> seleccionado para la secuencia.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.Read">
+      <summary>Lee los caracteres de la secuencia subyacente y hace avanzar la posición actual de la secuencia de acuerdo con la Encoding usada y el carácter concreto que se lea de la secuencia.</summary>
+      <returns>Siguiente carácter de la secuencia de entrada o -1 si no hay más caracteres disponibles en este momento.</returns>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.Read(System.Byte[],System.Int32,System.Int32)">
+      <summary>Lee el número especificado de bytes de la secuencia, a partir del punto especificado en la matriz de bytes. </summary>
+      <returns>Número de bytes leídos en <paramref name="buffer" />.Podría ser inferior al número de bytes solicitado si ese número de bytes no está disponible, o podría ser cero si se alcanza el final de la secuencia.</returns>
+      <param name="buffer">Búfer en el que se leen los datos. </param>
+      <param name="index">Punto inicial del búfer en el que comienza la lectura. </param>
+      <param name="count">Número de bytes que se va a leer. </param>
+      <exception cref="T:System.ArgumentException">La longitud del búfer menos <paramref name="index" /> es menor que <paramref name="count" />. o bienEl número de caracteres descodificados para leer es mayor que <paramref name="count" />.Esto puede pasar si un descodificador de Unicode devuelve caracteres de reserva o un par suplente.</exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="buffer" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> o <paramref name="count" /> es negativo. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.Read(System.Char[],System.Int32,System.Int32)">
+      <summary>Lee el número especificado de caracteres de la secuencia, a partir del punto especificado en la matriz de caracteres.</summary>
+      <returns>Número total de caracteres leídos en el búfer.Este podría ser inferior al número de caracteres solicitado si dicho número de caracteres no se encuentra disponible o podría ser cero si se alcanza el final de la secuencia.</returns>
+      <param name="buffer">Búfer en el que se leen los datos. </param>
+      <param name="index">Punto inicial del búfer en el que comienza la lectura. </param>
+      <param name="count">Número de caracteres que se va a leer. </param>
+      <exception cref="T:System.ArgumentException">La longitud del búfer menos <paramref name="index" /> es menor que <paramref name="count" />. o bienEl número de caracteres descodificados para leer es mayor que <paramref name="count" />.Esto puede pasar si un descodificador de Unicode devuelve caracteres de reserva o un par suplente.</exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="buffer" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> o <paramref name="count" /> es negativo. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.Read7BitEncodedInt">
+      <summary>Lee un entero de 32 bits en formato comprimido.</summary>
+      <returns>Entero de 32 bits en formato comprimido.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Se llega al final de la secuencia. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.FormatException">La secuencia está dañada.</exception>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadBoolean">
+      <summary>Lee un valor Boolean de la secuencia actual y hace avanzar un byte la posición actual de la secuencia.</summary>
+      <returns>Es true si el byte es distinto de cero; en caso contrario, es false.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Se llega al final de la secuencia. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadByte">
+      <summary>Lee el siguiente byte de la secuencia actual y hace avanzar un byte la posición actual de la secuencia.</summary>
+      <returns>Siguiente byte que se lee en la secuencia actual.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Se llega al final de la secuencia. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadBytes(System.Int32)">
+      <summary>Lee el número especificado de bytes de la secuencia actual en una matriz de bytes y hace avanzar la posición actual en función del número de bytes leídos.</summary>
+      <returns>Matriz de bytes que contiene los datos leídos de la secuencia subyacente.Este podría ser inferior al número de bytes solicitado si se alcanza el final de la secuencia.</returns>
+      <param name="count">Número de bytes que se va a leer.Este valor debe ser 0 o un número no negativo o se producirá una excepción.</param>
+      <exception cref="T:System.ArgumentException">El número de caracteres descodificados para leer es mayor que <paramref name="count" />.Esto puede pasar si un descodificador de Unicode devuelve caracteres de reserva o un par suplente.</exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> es negativo. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadChar">
+      <summary>Lee el siguiente carácter de la secuencia actual y hace avanzar la posición actual de la secuencia de acuerdo con la Encoding usada y el carácter concreto que se lee de la secuencia.</summary>
+      <returns>Carácter que se lee en la secuencia actual.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Se llega al final de la secuencia. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ArgumentException">Se ha leído un carácter suplente. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadChars(System.Int32)">
+      <summary>Lee el número especificado de caracteres de la secuencia actual, devuelve los datos en una matriz de caracteres y hace avanzar la posición actual de acuerdo con la Encoding usada y el carácter concreto que se lee en la secuencia.</summary>
+      <returns>Matriz de caracteres que contiene los datos leídos de la secuencia subyacente.Podría ser inferior al número de caracteres solicitados si se alcanza el final de la secuencia.</returns>
+      <param name="count">Número de caracteres que se va a leer. </param>
+      <exception cref="T:System.ArgumentException">El número de caracteres descodificados para leer es mayor que <paramref name="count" />.Esto puede pasar si un descodificador de Unicode devuelve caracteres de reserva o un par suplente.</exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> es negativo. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadDecimal">
+      <summary>Lee un valor decimal de la secuencia actual y hace avanzar la posición actual de la secuencia dieciséis bytes.</summary>
+      <returns>Valor decimal que se lee en la secuencia actual.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Se llega al final de la secuencia. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadDouble">
+      <summary>Lee un valor de punto flotante de 8 bytes de la secuencia actual y hace avanzar la posición actual de la secuencia en ocho bytes.</summary>
+      <returns>Valor de punto flotante de 8 bytes que se lee en la secuencia actual.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Se llega al final de la secuencia. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadInt16">
+      <summary>Lee un entero con signo de 2 bytes en la secuencia actual y hace avanzar la posición actual de la secuencia en dos bytes.</summary>
+      <returns>Entero con signo de 2 bytes que se lee en la secuencia actual.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Se llega al final de la secuencia. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadInt32">
+      <summary>Lee un entero con signo de 4 bytes en la secuencia actual y hace avanzar la posición actual de la secuencia en cuatro bytes.</summary>
+      <returns>Entero con signo de 4 bytes que se lee en la secuencia actual.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Se llega al final de la secuencia. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadInt64">
+      <summary>Lee un entero con signo de 8 bytes de la secuencia actual y avanza la posición actual de la secuencia en ocho bytes.</summary>
+      <returns>Entero con signo de 8 bytes que se lee en la secuencia actual.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Se llega al final de la secuencia. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadSByte">
+      <summary>Lee un byte con signo de esta secuencia y hace avanzar la posición actual de la secuencia en un byte.</summary>
+      <returns>Byte con signo que se lee en la secuencia actual.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Se llega al final de la secuencia. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadSingle">
+      <summary>Lee un valor de punto flotante de 4 bytes en la secuencia actual y hace avanzar la posición actual de la secuencia en cuatro bytes.</summary>
+      <returns>Valor de punto flotante de 4 bytes que se lee en la secuencia actual.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Se llega al final de la secuencia. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadString">
+      <summary>Lee una cadena de la secuencia actual.La cadena tiene como prefijo la longitud, codificada como un entero de siete bits cada vez.</summary>
+      <returns>Cadena que se lee.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Se llega al final de la secuencia. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadUInt16">
+      <summary>Lee un entero sin signo de 2 bytes de la secuencia actual con la codificación "little-endian" y hace avanzar la posición de la secuencia en dos bytes.</summary>
+      <returns>Entero sin signo de 2 bytes que se lee en esta secuencia.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Se llega al final de la secuencia. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadUInt32">
+      <summary>Lee un entero sin signo de 4 bytes de la secuencia actual y hace avanzar la posición de la secuencia en cuatro bytes.</summary>
+      <returns>Entero sin signo de 4 bytes que se lee en esta secuencia.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Se llega al final de la secuencia. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadUInt64">
+      <summary>Lee un entero sin signo de 8 bytes de la secuencia actual y hace avanzar la posición de la secuencia en ocho bytes.</summary>
+      <returns>Entero sin signo de 8 bytes que se lee en esta secuencia.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">Se llega al final de la secuencia. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.IO.BinaryWriter">
+      <summary>Escribe tipos primitivos en binario en una secuencia y admite escribir cadenas en una codificación específica.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.BinaryWriter" /> que escribe en una secuencia.</summary>
+    </member>
+    <member name="M:System.IO.BinaryWriter.#ctor(System.IO.Stream)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.BinaryWriter" /> basada en la secuencia y usando codificación UTF-8.</summary>
+      <param name="output">Flujo de salida. </param>
+      <exception cref="T:System.ArgumentException">La secuencia no admite escritura o ya se encuentra cerrada. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="output" /> es null. </exception>
+    </member>
+    <member name="M:System.IO.BinaryWriter.#ctor(System.IO.Stream,System.Text.Encoding)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.BinaryWriter" /> basada en la secuencia y codificación de caracteres especificadas.</summary>
+      <param name="output">Flujo de salida. </param>
+      <param name="encoding">Codificación de caracteres que se utilizará. </param>
+      <exception cref="T:System.ArgumentException">La secuencia no admite escritura o ya se encuentra cerrada. </exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="output" /> o de <paramref name="encoding" /> es null. </exception>
+    </member>
+    <member name="M:System.IO.BinaryWriter.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.BinaryWriter" /> basada en la secuencia y la codificación de caracteres especificadas y, opcionalmente, dejando abierta la secuencia.</summary>
+      <param name="output">Flujo de salida.</param>
+      <param name="encoding">Codificación de caracteres que se utilizará.</param>
+      <param name="leaveOpen">true para dejar la secuencia abierta después de desechar el objeto <see cref="T:System.IO.BinaryWriter" />; de lo contrario, false.</param>
+      <exception cref="T:System.ArgumentException">La secuencia no admite escritura o ya se encuentra cerrada. </exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="output" /> o de <paramref name="encoding" /> es null. </exception>
+    </member>
+    <member name="P:System.IO.BinaryWriter.BaseStream">
+      <summary>Obtiene la secuencia subyacente del objeto <see cref="T:System.IO.BinaryWriter" />.</summary>
+      <returns>Flujo subyacente asociado a BinaryWriter.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Dispose">
+      <summary>Libera todos los recursos usados por la instancia actual de la clase <see cref="T:System.IO.BinaryWriter" />.</summary>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Dispose(System.Boolean)">
+      <summary>Libera los recursos no administrados que utiliza <see cref="T:System.IO.BinaryWriter" /> y libera los recursos administrados de forma opcional.</summary>
+      <param name="disposing">Es true para liberar tanto recursos administrados como no administrados; es false para liberar únicamente recursos no administrados. </param>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Flush">
+      <summary>Borra todos los búferes del sistema de escritura actual y hace que todos los datos almacenados en el búfer se escriban en el dispositivo subyacente.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.IO.BinaryWriter.Null">
+      <summary>Especifica un objeto <see cref="T:System.IO.BinaryWriter" /> sin memoria auxiliar.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.IO.BinaryWriter.OutStream">
+      <summary>Contiene la secuencia subyacente.</summary>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Seek(System.Int32,System.IO.SeekOrigin)">
+      <summary>Establece la posición en la secuencia actual.</summary>
+      <returns>Posición con la secuencia actual.</returns>
+      <param name="offset">Desplazamiento de bytes relacionado con <paramref name="origin" />. </param>
+      <param name="origin">Un campo de <see cref="T:System.IO.SeekOrigin" /> que indica el punto de referencia del que se obtiene la nueva posición. </param>
+      <exception cref="T:System.IO.IOException">El puntero de archivo se ha movido a una posición no válida. </exception>
+      <exception cref="T:System.ArgumentException">El valor de <see cref="T:System.IO.SeekOrigin" /> no es válido. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Boolean)">
+      <summary>Escribe un valor Boolean de un byte en la secuencia actual, que es 0 si es false y 1 si es true.</summary>
+      <param name="value">Valor Boolean que se va a escribir (0 ó 1). </param>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Byte)">
+      <summary>Escribe un byte sin signo en la secuencia actual y avanza la posición de la secuencia en un byte.</summary>
+      <param name="value">Byte sin signo que se va a escribir. </param>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Byte[])">
+      <summary>Escribe una matriz de bytes en la secuencia subyacente.</summary>
+      <param name="buffer">Matriz de bytes que contiene los datos que se van a escribir. </param>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> es null. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Byte[],System.Int32,System.Int32)">
+      <summary>Escribe una región de una matriz de bytes en la secuencia actual.</summary>
+      <param name="buffer">Matriz de bytes que contiene los datos que se van a escribir. </param>
+      <param name="index">Punto inicial de <paramref name="buffer" /> donde comenzará la escritura. </param>
+      <param name="count">Número de bytes que se van a escribir. </param>
+      <exception cref="T:System.ArgumentException">La longitud del búfer menos <paramref name="index" /> es menor que <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> o <paramref name="count" /> son negativos. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Char)">
+      <summary>Escribe un carácter Unicode en la secuencia actual y avanza la posición actual de la secuencia de acuerdo con el Encoding utilizado y los caracteres específicos escritos en la secuencia.</summary>
+      <param name="ch">El carácter Unicode no suplente que se va a escribir. </param>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="ch" /> es un carácter suplente único.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Char[])">
+      <summary>Escribe una matriz de caracteres en la secuencia actual y avanza la posición actual de la secuencia de acuerdo con el Encoding utilizado y los caracteres específicos escritos en esa secuencia.</summary>
+      <param name="chars">Matriz de caracteres que contiene los datos que se van a escribir. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> es null. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Char[],System.Int32,System.Int32)">
+      <summary>Escribe una sección de una matriz de caracteres en la secuencia actual y avanza la posición actual de la secuencia de acuerdo con el Encoding utilizado y quizás los caracteres específicos que se escriben en la secuencia.</summary>
+      <param name="chars">Matriz de caracteres que contiene los datos que se van a escribir. </param>
+      <param name="index">Punto inicial de <paramref name="chars" /> donde se empieza a leer. </param>
+      <param name="count">Número de caracteres que se van a escribir. </param>
+      <exception cref="T:System.ArgumentException">La longitud del búfer menos <paramref name="index" /> es menor que <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> o <paramref name="count" /> son negativos. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Decimal)">
+      <summary>Escribe un valor decimal en la secuencia actual y avanza la posición de la secuencia en dieciséis bytes.</summary>
+      <param name="value">Valor decimal que se va a escribir. </param>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Double)">
+      <summary>Escribe un valor de punto flotante de ocho bytes en la secuencia actual y avanza la posición de la secuencia en ocho bytes.</summary>
+      <param name="value">Valor de punto flotante de ocho bytes que se va a escribir. </param>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Int16)">
+      <summary>Escribe un entero con signo de dos bytes en la secuencia actual y avanza la posición de la secuencia en dos bytes.</summary>
+      <param name="value">Entero con signo de dos bytes que se va a escribir. </param>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Int32)">
+      <summary>Escribe un entero con signo de cuatro bytes en la secuencia actual y avanza la posición de la secuencia en cuatro bytes.</summary>
+      <param name="value">Entero con signo de cuatro bytes que se va a escribir. </param>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Int64)">
+      <summary>Escribe un entero con signo de ocho bytes en la secuencia actual y avanza la posición de la secuencia en ocho bytes.</summary>
+      <param name="value">Entero con signo de ocho bytes que se va a escribir. </param>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.SByte)">
+      <summary>Escribe un byte con signo en la secuencia actual y avanza la posición de la secuencia en un byte.</summary>
+      <param name="value">Byte con signo que se va a escribir. </param>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Single)">
+      <summary>Escribe un valor de punto flotante de cuatro bytes en la secuencia actual y avanza la posición de la secuencia en cuatro bytes.</summary>
+      <param name="value">Valor de punto flotante de cuatro bytes que se va a escribir. </param>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.String)">
+      <summary>Escribe una cadena de longitud prefijada en esta secuencia en la codificación actual de <see cref="T:System.IO.BinaryWriter" /> y hace avanzar la posición actual de la secuencia de acuerdo con la codificación utilizada y los caracteres específicos escritos en dicha secuencia.</summary>
+      <param name="value">Valor que se va a escribir. </param>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> es null. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.UInt16)">
+      <summary>Escribe un entero sin signo de dos bytes en la secuencia actual y avanza la posición de la secuencia en dos bytes.</summary>
+      <param name="value">Entero sin signo de dos bytes que se va a escribir. </param>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.UInt32)">
+      <summary>Escribe un entero sin signo de cuatro bytes en la secuencia actual y avanza la posición de la secuencia en cuatro bytes.</summary>
+      <param name="value">Entero sin signo de cuatro bytes que se va a escribir. </param>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.UInt64)">
+      <summary>Escribe un entero sin signo de ocho bytes en la secuencia actual y avanza la posición de la secuencia en ocho bytes.</summary>
+      <param name="value">Entero sin signo de ocho bytes que se va a escribir. </param>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write7BitEncodedInt(System.Int32)">
+      <summary>Escribe un entero de 32 bits en formato comprimido.</summary>
+      <param name="value">Entero de 32 bits que se va a escribir. </param>
+      <exception cref="T:System.IO.EndOfStreamException">Se llega al final de la secuencia. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <exception cref="T:System.IO.IOException">La secuencia está cerrada. </exception>
+    </member>
+    <member name="T:System.IO.EndOfStreamException">
+      <summary>Excepción que se produce cuando se intenta realizar una operación de lectura más allá del final de una secuencia.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.EndOfStreamException.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.EndOfStreamException" /> con la cadena de mensaje establecida en un mensaje proporcionado por el sistema y HRESULT establecido en COR_E_ENDOFSTREAM.</summary>
+    </member>
+    <member name="M:System.IO.EndOfStreamException.#ctor(System.String)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.EndOfStreamException" /> con la cadena de mensaje establecida en <paramref name="message" /> y HRESULT en COR_E_ENDOFSTREAM.</summary>
+      <param name="message">Cadena que describe el error.Se pretende que el contenido de <paramref name="message" /> sea inteligible.El llamador de este constructor debe asegurarse de que esta cadena se ha traducido para la actual referencia cultural del sistema.</param>
+    </member>
+    <member name="M:System.IO.EndOfStreamException.#ctor(System.String,System.Exception)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.EndOfStreamException" /> con un mensaje de error especificado y una referencia a la excepción interna que representa la causa de esta excepción.</summary>
+      <param name="message">Cadena que describe el error.Se pretende que el contenido de <paramref name="message" /> sea inteligible.El llamador de este constructor debe asegurarse de que esta cadena se ha traducido para la actual referencia cultural del sistema.</param>
+      <param name="innerException">La excepción que es la causa de la excepción actual.Si el parámetro <paramref name="innerException" /> no es null, la excepción actual se produce en un bloque catch que controla la excepción interna.</param>
+    </member>
+    <member name="T:System.IO.InvalidDataException">
+      <summary>Excepción que se inicia cuando el formato de un flujo de datos no es válido.</summary>
+    </member>
+    <member name="M:System.IO.InvalidDataException.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.InvalidDataException" />.</summary>
+    </member>
+    <member name="M:System.IO.InvalidDataException.#ctor(System.String)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.InvalidDataException" /> con el mensaje de error especificado.</summary>
+      <param name="message">Mensaje de error que explica la razón de la excepción.</param>
+    </member>
+    <member name="M:System.IO.InvalidDataException.#ctor(System.String,System.Exception)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.InvalidDataException" /> con una referencia a la excepción interna que representa la causa de esta excepción.</summary>
+      <param name="message">Mensaje de error que explica la razón de la excepción.</param>
+      <param name="innerException">La excepción que es la causa de la excepción actual.Si el parámetro <paramref name="innerException" /> no es null, la excepción actual se produce en un bloque catch que controla la excepción interna.</param>
+    </member>
+    <member name="T:System.IO.MemoryStream">
+      <summary>Crea una secuencia cuya memoria auxiliar es la memoria.Para examinar el código fuente de .NET Framework para este tipo, consulte el Reference Source.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.MemoryStream" /> con una capacidad expansible inicializada con un valor cero.</summary>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor(System.Byte[])">
+      <summary>Inicializa una nueva instancia invariable de la clase <see cref="T:System.IO.MemoryStream" /> de acuerdo con la matriz de bytes especificada.</summary>
+      <param name="buffer">Matriz de bytes sin signo a partir de la cual se crea la secuencia actual. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="buffer" /> es null. </exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor(System.Byte[],System.Boolean)">
+      <summary>Inicializa una nueva instancia invariable de la clase <see cref="T:System.IO.MemoryStream" /> según la matriz de bytes especificada con la propiedad <see cref="P:System.IO.MemoryStream.CanWrite" /> establecida como se ha indicado.</summary>
+      <param name="buffer">Matriz de bytes sin signo a partir de la cual se crea esta secuencia. </param>
+      <param name="writable">Establecimiento de la propiedad <see cref="P:System.IO.MemoryStream.CanWrite" />, que determina si la secuencia admite escritura. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="buffer" /> es null. </exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor(System.Byte[],System.Int32,System.Int32)">
+      <summary>Inicializa una nueva instancia invariable de la clase <see cref="T:System.IO.MemoryStream" /> según la región especificada (índice) de una matriz de bytes.</summary>
+      <param name="buffer">Matriz de bytes sin signo a partir de la cual se crea esta secuencia. </param>
+      <param name="index">Índice en <paramref name="buffer" /> en el que empieza la secuencia. </param>
+      <param name="count">Longitud de la secuencia en bytes. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="buffer" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> o <paramref name="count" /> es menor que cero. </exception>
+      <exception cref="T:System.ArgumentException">La longitud del búfer menos <paramref name="index" /> es menor que <paramref name="count" />.</exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor(System.Byte[],System.Int32,System.Int32,System.Boolean)">
+      <summary>Inicializa una nueva instancia invariable de la clase <see cref="T:System.IO.MemoryStream" /> según la región especificada de una matriz de bytes, con la propiedad <see cref="P:System.IO.MemoryStream.CanWrite" /> establecida como se ha indicado.</summary>
+      <param name="buffer">Matriz de bytes sin signo a partir de la cual se crea esta secuencia. </param>
+      <param name="index">Índice en <paramref name="buffer" /> en el que empieza la secuencia. </param>
+      <param name="count">Longitud de la secuencia en bytes. </param>
+      <param name="writable">Establecimiento de la propiedad <see cref="P:System.IO.MemoryStream.CanWrite" />, que determina si la secuencia admite escritura. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="buffer" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> o <paramref name="count" /> son negativos. </exception>
+      <exception cref="T:System.ArgumentException">La longitud del búfer menos <paramref name="index" /> es menor que <paramref name="count" />.</exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor(System.Byte[],System.Int32,System.Int32,System.Boolean,System.Boolean)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.MemoryStream" /> según la región especificada de una matriz de bytes, con la propiedad <see cref="P:System.IO.MemoryStream.CanWrite" /> establecida como se ha indicado y la posibilidad de llamar a <see cref="M:System.IO.MemoryStream.GetBuffer" /> establecida según lo especificado.</summary>
+      <param name="buffer">Matriz de bytes sin signo a partir de la cual se crea esta secuencia. </param>
+      <param name="index">Índice en <paramref name="buffer" /> en el que empieza la secuencia. </param>
+      <param name="count">Longitud de la secuencia en bytes. </param>
+      <param name="writable">Establecimiento de la propiedad <see cref="P:System.IO.MemoryStream.CanWrite" />, que determina si la secuencia admite escritura. </param>
+      <param name="publiclyVisible">Es true para habilitar <see cref="M:System.IO.MemoryStream.GetBuffer" />, que devuelve la matriz de bytes sin signo desde la cual se creó la secuencia; de lo contrario, es false. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="buffer" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> o <paramref name="count" /> es negativo. </exception>
+      <exception cref="T:System.ArgumentException">La longitud del búfer menos <paramref name="index" /> es menor que <paramref name="count" />. </exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor(System.Int32)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.MemoryStream" /> con una capacidad expansible inicializada según lo especificado.</summary>
+      <param name="capacity">Tamaño inicial de la matriz interna en bytes. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="capacity" /> es negativo. </exception>
+    </member>
+    <member name="P:System.IO.MemoryStream.CanRead">
+      <summary>Obtiene un valor que indica si la secuencia actual admite lectura.</summary>
+      <returns>true si el flujo está abierto.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.MemoryStream.CanSeek">
+      <summary>Obtiene un valor que indica si la secuencia actual admite búsquedas.</summary>
+      <returns>true si el flujo está abierto.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.MemoryStream.CanWrite">
+      <summary>Obtiene un valor que indica si la secuencia actual admite escritura.</summary>
+      <returns>true si el flujo admite escritura; en caso contrario, false.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.MemoryStream.Capacity">
+      <summary>Obtiene o establece el número de bytes asignados a esta secuencia.</summary>
+      <returns>Longitud de la parte utilizable del búfer para la secuencia.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Se establece una capacidad de modo que sea negativa o menor que la longitud actual de la secuencia. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia actual está cerrada. </exception>
+      <exception cref="T:System.NotSupportedException">set se invoca en una secuencia cuya capacidad no se puede modificar. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.CopyToAsync(System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
+      <summary>Lee asincrónicamente todos los bytes de la secuencia actual y los escribe en otra secuencia, utilizando el tamaño de búfer especificado y el token de cancelación.</summary>
+      <returns>Tarea que representa la operación de copia asincrónica.</returns>
+      <param name="destination">Secuencia en la que se copiará el contenido de la secuencia actual.</param>
+      <param name="bufferSize">Tamaño del búfer en bytes.Este valor debe ser mayor que cero.</param>
+      <param name="cancellationToken">Token para supervisar solicitudes de cancelación.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="destination" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="buffersize" /> es un valor negativo o es cero.</exception>
+      <exception cref="T:System.ObjectDisposedException">Se desecha la secuencia actual o la secuencia de destino.</exception>
+      <exception cref="T:System.NotSupportedException">La secuencia actual no admite lectura o la secuencia de destino no admite escritura.</exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.Dispose(System.Boolean)">
+      <summary>Libera los recursos no administrados usados que usa la clase <see cref="T:System.IO.MemoryStream" /> y, de forma opcional, libera los recursos administrados.</summary>
+      <param name="disposing">Es true para liberar tanto recursos administrados como no administrados; es false para liberar únicamente recursos no administrados.</param>
+    </member>
+    <member name="M:System.IO.MemoryStream.Flush">
+      <summary>Reemplaza el método <see cref="M:System.IO.Stream.Flush" /> de modo que no se realice ninguna acción.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.FlushAsync(System.Threading.CancellationToken)">
+      <summary>De forma asincrónica borra todos los búferes de esta secuencia y supervisa las solicitudes de cancelación.</summary>
+      <returns>Tarea que representa la operación de vaciado asincrónico.</returns>
+      <param name="cancellationToken">Token para supervisar solicitudes de cancelación.</param>
+      <exception cref="T:System.ObjectDisposedException">Se ha eliminado la secuencia.</exception>
+    </member>
+    <member name="P:System.IO.MemoryStream.Length">
+      <summary>Obtiene la longitud de la secuencia en bytes.</summary>
+      <returns>Longitud de la secuencia en bytes.</returns>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.MemoryStream.Position">
+      <summary>Obtiene o establece la posición actual dentro de la secuencia.</summary>
+      <returns>Posición actual dentro de la secuencia.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">La posición se establece en un valor negativo o un valor mayor que <see cref="F:System.Int32.MaxValue" />. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia está cerrada. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.Read(System.Byte[],System.Int32,System.Int32)">
+      <summary>Lee un bloque de bytes de la secuencia actual y escribe los datos en un búfer.</summary>
+      <returns>Número total de bytes escritos en el búfer.Puede ser menor que el número de bytes solicitado si ese número de bytes no está disponible, o bien puede ser cero si se alcanza el final de la secuencia antes de que se lea algún byte.</returns>
+      <param name="buffer">Cuando este método finaliza, contiene la matriz de bytes especificada con valores entre <paramref name="offset" /> y (<paramref name="offset" /> + <paramref name="count" /> - 1) reemplazada con los caracteres leídos de la secuencia actual. </param>
+      <param name="offset">Posición de desplazamiento en bytes de base cero de <paramref name="buffer" /> en el que se comienza a almacenar los datos de la secuencia actual.</param>
+      <param name="count">Número máximo de bytes que se pueden leer. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="buffer" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> o <paramref name="count" /> es negativo. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="offset" /> resta de la longitud del búfer es menor que <paramref name="count" />. </exception>
+      <exception cref="T:System.ObjectDisposedException">La instancia de la secuencia actual está cerrada. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+      <summary>Lee de forma asincrónica una secuencia de bytes en la secuencia actual, se hace avanzar la posición dentro de la secuencia el número de bytes leídos y controla las solicitudes de cancelación.</summary>
+      <returns>Tarea que representa la operación de lectura asincrónica.El valor del parámetro <paramref name="TResult" /> contiene el número total de bytes leídos en el búfer.El valor del resultado puede ser menor que el número de bytes solicitados si el número de bytes disponibles actualmente es menor que el número solicitado o puede ser 0 (cero) si se ha llegado al final de la secuencia.</returns>
+      <param name="buffer">Búfer en el que se escriben los datos.</param>
+      <param name="offset">Posición de desplazamiento en bytes de <paramref name="buffer" /> donde se comienza a escribir los datos del flujo.</param>
+      <param name="count">Número máximo de bytes que se pueden leer.</param>
+      <param name="cancellationToken">Token para supervisar solicitudes de cancelación.El valor predeterminado es <see cref="P:System.Threading.CancellationToken.None" />.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="buffer" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> o <paramref name="count" /> es negativo.</exception>
+      <exception cref="T:System.ArgumentException">La suma de <paramref name="offset" /> y <paramref name="count" /> es mayor que la longitud del búfer.</exception>
+      <exception cref="T:System.NotSupportedException">La secuencia no admite lectura.</exception>
+      <exception cref="T:System.ObjectDisposedException">Se ha eliminado la secuencia.</exception>
+      <exception cref="T:System.InvalidOperationException">La secuencia está actualmente en uso por una operación de lectura anterior. </exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.ReadByte">
+      <summary>Lee un byte de la secuencia actual.</summary>
+      <returns>El byte convertido en un <see cref="T:System.Int32" /> o -1 si se llega al final de la secuencia.</returns>
+      <exception cref="T:System.ObjectDisposedException">La instancia de la secuencia actual está cerrada. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.Seek(System.Int64,System.IO.SeekOrigin)">
+      <summary>Establece la posición dentro de la secuencia actual en el valor especificado.</summary>
+      <returns>Nueva posición dentro de la secuencia, calculada mediante la combinación del punto de referencia inicial y del desplazamiento.</returns>
+      <param name="offset">Nueva posición dentro de la secuencia.Esta está relacionada con el parámetro <paramref name="loc" /> y puede ser positiva o negativa.</param>
+      <param name="loc">Valor de tipo <see cref="T:System.IO.SeekOrigin" />, que actúa como el punto de referencia de las operaciones de búsqueda. </param>
+      <exception cref="T:System.IO.IOException">Se ha intentado realizar una búsqueda antes del inicio de la secuencia. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> es mayor que <see cref="F:System.Int32.MaxValue" />. </exception>
+      <exception cref="T:System.ArgumentException">Hay un no válido <see cref="T:System.IO.SeekOrigin" />. o bien<paramref name="offset" /> se produjo un desbordamiento aritmético.</exception>
+      <exception cref="T:System.ObjectDisposedException">La instancia de la secuencia actual está cerrada. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.SetLength(System.Int64)">
+      <summary>Establece la longitud de la secuencia actual en el valor especificado.</summary>
+      <param name="value">Valor en el que establecer la longitud. </param>
+      <exception cref="T:System.NotSupportedException">La secuencia actual no es de tamaño variable y <paramref name="value" /> es mayor que la capacidad actual.o bien La secuencia actual no admite escritura. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="value" /> es negativo o es mayor que la longitud máxima de la <see cref="T:System.IO.MemoryStream" />, donde la longitud máxima es (<see cref="F:System.Int32.MaxValue" /> -origin), y el origen es el índice del búfer subyacente donde comienza la secuencia. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.ToArray">
+      <summary>Escribe el contenido de la secuencia en una matriz de bytes, independientemente de la propiedad <see cref="P:System.IO.MemoryStream.Position" />.</summary>
+      <returns>Nueva matriz de bytes.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.TryGetBuffer(System.ArraySegment{System.Byte}@)">
+      <summary>Devuelve la matriz de bytes sin signo a partir de la cual se creó esta secuencia.El valor devuelto indica si la conversión se realizó correctamente.</summary>
+      <returns>Es true si la conversión se realiza correctamente; en caso contrario, es false.</returns>
+      <param name="buffer">El segmento de matriz de bytes desde el que se creó esta secuencia.</param>
+    </member>
+    <member name="M:System.IO.MemoryStream.Write(System.Byte[],System.Int32,System.Int32)">
+      <summary>Escribe un bloque de bytes en la secuencia actual usando los datos leídos en un búfer.</summary>
+      <param name="buffer">Búfer del que se van a escribir datos. </param>
+      <param name="offset">Desplazamiento en bytes de base cero en la <paramref name="buffer" /> en la que se comienzan a copiar los bytes en la secuencia actual.</param>
+      <param name="count">Número máximo de bytes que se pueden escribir. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="buffer" /> es null. </exception>
+      <exception cref="T:System.NotSupportedException">La secuencia no es compatible con la escritura.Para obtener más información, vea <see cref="P:System.IO.Stream.CanWrite" />.o bien La posición actual está más cerca que <paramref name="count" /> bytes al final de la secuencia y la capacidad no se puede modificar. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="offset" /> resta de la longitud del búfer es menor que <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> o <paramref name="count" /> son negativos. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ObjectDisposedException">La instancia de la secuencia actual está cerrada. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+      <summary>Escribe de forma asincrónica una secuencia de bytes en la secuencia actual, se hace avanzar la posición actual dentro de la secuencia el número de bytes escritos y controla las solicitudes de cancelación.</summary>
+      <returns>Tarea que representa la operación de escritura asincrónica.</returns>
+      <param name="buffer">Búfer del que se van a escribir datos.</param>
+      <param name="offset">Desplazamiento en bytes de base cero de <paramref name="buffer" /> desde donde se comienzan a copiar los bytes en la secuencia.</param>
+      <param name="count">Número máximo de bytes que se pueden escribir.</param>
+      <param name="cancellationToken">Token para supervisar solicitudes de cancelación.El valor predeterminado es <see cref="P:System.Threading.CancellationToken.None" />.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="buffer" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> o <paramref name="count" /> es negativo.</exception>
+      <exception cref="T:System.ArgumentException">La suma de <paramref name="offset" /> y <paramref name="count" /> es mayor que la longitud del búfer.</exception>
+      <exception cref="T:System.NotSupportedException">La secuencia no es compatible con la escritura.</exception>
+      <exception cref="T:System.ObjectDisposedException">Se ha eliminado la secuencia.</exception>
+      <exception cref="T:System.InvalidOperationException">La secuencia está actualmente en uso por una operación de escritura anterior. </exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.WriteByte(System.Byte)">
+      <summary>Escribe un byte en la posición actual de la secuencia actual.</summary>
+      <param name="value">Byte que se va a escribir. </param>
+      <exception cref="T:System.NotSupportedException">La secuencia no es compatible con la escritura.Para obtener más información, vea <see cref="P:System.IO.Stream.CanWrite" />.o bien La posición actual se encuentra al final de la secuencia y la capacidad no se puede modificar. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia actual está cerrada. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.WriteTo(System.IO.Stream)">
+      <summary>Escribe el contenido completo de esta secuencia de memoria en otra secuencia.</summary>
+      <param name="stream">Secuencia en la que se va a escribir esta secuencia de memoria. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="stream" /> es null. </exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia actual o de destino está cerrada. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.IO.SeekOrigin">
+      <summary>Especifica la posición usada para buscar en una secuencia.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.SeekOrigin.Begin">
+      <summary>Especifica el comienzo de una secuencia.</summary>
+    </member>
+    <member name="F:System.IO.SeekOrigin.Current">
+      <summary>Especifica lo posición actual dentro de la secuencia.</summary>
+    </member>
+    <member name="F:System.IO.SeekOrigin.End">
+      <summary>Especifica el final de una secuencia.</summary>
+    </member>
+    <member name="T:System.IO.Stream">
+      <summary>Proporciona una vista genérica de una secuencia de bytes.Esta es una clase abstracta.Para examinar el código fuente de .NET Framework para este tipo, consulte el Reference Source.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.Stream" />. </summary>
+    </member>
+    <member name="P:System.IO.Stream.CanRead">
+      <summary>Cuando se reemplaza en una clase derivada, obtiene un valor que indica si la secuencia actual admite lectura.</summary>
+      <returns>true si la secuencia admite lectura; en caso contrario, false.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.IO.Stream.CanSeek">
+      <summary>Cuando se reemplaza en una clase derivada, obtiene un valor que indica si la secuencia actual admite búsquedas.</summary>
+      <returns>true si la secuencia admite búsquedas; en caso contrario, false.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.IO.Stream.CanTimeout">
+      <summary>Obtiene un valor que determina si se puede agotar el tiempo de espera de la secuencia actual.</summary>
+      <returns>Un valor que determina si se puede agotar el tiempo de espera de la secuencia actual.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.Stream.CanWrite">
+      <summary>Cuando se reemplaza en una clase derivada, obtiene un valor que indica si la secuencia actual admite escritura.</summary>
+      <returns>true si el flujo admite escritura; en caso contrario, false.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.CopyTo(System.IO.Stream)">
+      <summary>Lee los bytes de la secuencia actual y los escribe en otra secuencia de destino.</summary>
+      <param name="destination">Secuencia en la que se copiará el contenido de la secuencia actual.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="destination" /> es null.</exception>
+      <exception cref="T:System.NotSupportedException">La secuencia actual no admite lectura.o bien<paramref name="destination" /> no se admite la escritura.</exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia de actual o <paramref name="destination" /> se cerraron antes de la <see cref="M:System.IO.Stream.CopyTo(System.IO.Stream)" /> se llamó al método.</exception>
+      <exception cref="T:System.IO.IOException">Error de E/S.</exception>
+    </member>
+    <member name="M:System.IO.Stream.CopyTo(System.IO.Stream,System.Int32)">
+      <summary>Lee todos los bytes de la secuencia actual y los escribe en otra secuencia, usando el tamaño de búfer especificado.</summary>
+      <param name="destination">Secuencia en la que se copiará el contenido de la secuencia actual.</param>
+      <param name="bufferSize">Tamaño del búfer.Este valor debe ser mayor que cero.El tamaño predeterminado es 81920.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="destination" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="bufferSize" /> es un valor negativo o es cero.</exception>
+      <exception cref="T:System.NotSupportedException">La secuencia actual no admite lectura.o bien<paramref name="destination" /> no se admite la escritura.</exception>
+      <exception cref="T:System.ObjectDisposedException">La secuencia de actual o <paramref name="destination" /> se cerraron antes de la <see cref="M:System.IO.Stream.CopyTo(System.IO.Stream)" /> se llamó al método.</exception>
+      <exception cref="T:System.IO.IOException">Error de E/S.</exception>
+    </member>
+    <member name="M:System.IO.Stream.CopyToAsync(System.IO.Stream)">
+      <summary>Lee asincrónicamente los bytes de la secuencia actual y los escribe en otra secuencia.</summary>
+      <returns>Tarea que representa la operación de copia asincrónica.</returns>
+      <param name="destination">Secuencia en la que se copiará el contenido de la secuencia actual.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="destination" /> es null.</exception>
+      <exception cref="T:System.ObjectDisposedException">Se desecha la secuencia actual o la secuencia de destino.</exception>
+      <exception cref="T:System.NotSupportedException">La secuencia actual no admite lectura o la secuencia de destino no admite escritura.</exception>
+    </member>
+    <member name="M:System.IO.Stream.CopyToAsync(System.IO.Stream,System.Int32)">
+      <summary>Lee asincrónicamente los bytes de la secuencia actual y los escribe en otra secuencia, usando el tamaño de búfer especificado.</summary>
+      <returns>Tarea que representa la operación de copia asincrónica.</returns>
+      <param name="destination">Secuencia en la que se copiará el contenido de la secuencia actual.</param>
+      <param name="bufferSize">Tamaño del búfer en bytes.Este valor debe ser mayor que cero.El tamaño predeterminado es 81920.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="destination" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="buffersize" /> es un valor negativo o es cero.</exception>
+      <exception cref="T:System.ObjectDisposedException">Se desecha la secuencia actual o la secuencia de destino.</exception>
+      <exception cref="T:System.NotSupportedException">La secuencia actual no admite lectura o la secuencia de destino no admite escritura.</exception>
+    </member>
+    <member name="M:System.IO.Stream.CopyToAsync(System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
+      <summary>Lee asincrónicamente los bytes de la secuencia actual y los escribe en otra secuencia, utilizando el tamaño de búfer y el token de cancelación especificados.</summary>
+      <returns>Tarea que representa la operación de copia asincrónica.</returns>
+      <param name="destination">Secuencia en la que se copiará el contenido de la secuencia actual.</param>
+      <param name="bufferSize">Tamaño del búfer en bytes.Este valor debe ser mayor que cero.El tamaño predeterminado es 81920.</param>
+      <param name="cancellationToken">Token para supervisar solicitudes de cancelación.El valor predeterminado es <see cref="P:System.Threading.CancellationToken.None" />.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="destination" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="buffersize" /> es un valor negativo o es cero.</exception>
+      <exception cref="T:System.ObjectDisposedException">Se desecha la secuencia actual o la secuencia de destino.</exception>
+      <exception cref="T:System.NotSupportedException">La secuencia actual no admite lectura o la secuencia de destino no admite escritura.</exception>
+    </member>
+    <member name="M:System.IO.Stream.Dispose">
+      <summary>Libera todos los recursos usados por <see cref="T:System.IO.Stream" />.</summary>
+    </member>
+    <member name="M:System.IO.Stream.Dispose(System.Boolean)">
+      <summary>Libera los recursos no administrados que usa <see cref="T:System.IO.Stream" /> y libera los recursos administrados de forma opcional.</summary>
+      <param name="disposing">Es true para liberar tanto recursos administrados como no administrados; es false para liberar únicamente recursos no administrados.</param>
+    </member>
+    <member name="M:System.IO.Stream.Flush">
+      <summary>Cuando se reemplaza en una clase derivada, borra todos los búferes de esta secuencia y hace que todos los datos almacenados en el búfer se escriban en el dispositivo subyacente.</summary>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.FlushAsync">
+      <summary>Borra asincrónicamente todos los búferes de esta secuencia y hace que los datos almacenados en búfer se escriban en el dispositivo subyacente.</summary>
+      <returns>Tarea que representa la operación de vaciado asincrónico.</returns>
+      <exception cref="T:System.ObjectDisposedException">Se ha eliminado la secuencia.</exception>
+    </member>
+    <member name="M:System.IO.Stream.FlushAsync(System.Threading.CancellationToken)">
+      <summary>Borra asincrónicamente todos los búferes del flujo actual, hace que todos los datos almacenados en el búfer se escriban en el dispositivo subyacente y supervisa las solicitudes de cancelación.</summary>
+      <returns>Tarea que representa la operación de vaciado asincrónico.</returns>
+      <param name="cancellationToken">Token para supervisar solicitudes de cancelación.El valor predeterminado es <see cref="P:System.Threading.CancellationToken.None" />.</param>
+      <exception cref="T:System.ObjectDisposedException">Se ha eliminado la secuencia.</exception>
+    </member>
+    <member name="P:System.IO.Stream.Length">
+      <summary>Cuando se reemplaza en una clase derivada, obtiene la longitud en bytes de la secuencia.</summary>
+      <returns>Un valor Long que representa la longitud de la secuencia en bytes.</returns>
+      <exception cref="T:System.NotSupportedException">Una clase derivada de Stream no admite la búsqueda. </exception>
+      <exception cref="T:System.ObjectDisposedException">Tras cerrar la secuencia, se llamó a algún método. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.IO.Stream.Null">
+      <summary>Stream sin memoria auxiliar.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.IO.Stream.Position">
+      <summary>Cuando se reemplaza en una clase derivada, se obtiene o se establece la posición dentro de la secuencia actual.</summary>
+      <returns>Posición actual dentro de la secuencia.</returns>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.NotSupportedException">La secuencia no admite búsquedas. </exception>
+      <exception cref="T:System.ObjectDisposedException">Tras cerrar la secuencia, se llamó a algún método. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.Read(System.Byte[],System.Int32,System.Int32)">
+      <summary>Cuando se reemplaza en una clase derivada, se lee una secuencia de bytes en la secuencia actual y se hace avanzar la posición dentro de la secuencia el número de bytes leídos.</summary>
+      <returns>Número total de bytes leídos en el búfer.Puede ser menor que el número de bytes solicitado si dicho número no está disponible, o puede ser cero (0) si se alcanza el final de la secuencia.</returns>
+      <param name="buffer">Matriz de bytes.Cuando este método devuelve un valor, el búfer contiene la matriz de bytes especificada con valores entre <paramref name="offset" /> y (<paramref name="offset" /> + <paramref name="count" /> - 1) reemplazada con los bytes leídos del origen actual.</param>
+      <param name="offset">Desplazamiento en bytes de base cero de <paramref name="buffer" /> donde se comienza a almacenar los datos leídos de la secuencia actual. </param>
+      <param name="count">Número máximo de bytes que se deben leer de la secuencia actual. </param>
+      <exception cref="T:System.ArgumentException">La suma de <paramref name="offset" /> y <paramref name="count" /> es mayor que la longitud del búfer. </exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="buffer" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> o <paramref name="count" /> es negativo. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.NotSupportedException">La secuencia no admite lectura. </exception>
+      <exception cref="T:System.ObjectDisposedException">Tras cerrar la secuencia, se llamó a algún método. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.ReadAsync(System.Byte[],System.Int32,System.Int32)">
+      <summary>Lee asincrónicamente una secuencia de bytes de la secuencia actual y avanza la posición en esta secuencia según el número de bytes leídos.</summary>
+      <returns>Tarea que representa la operación de lectura asincrónica.El valor del parámetro <paramref name="TResult" /> contiene el número total de bytes leídos en el búfer.El valor del resultado puede ser menor que el número de bytes solicitados si el número de bytes disponibles actualmente es menor que el número solicitado o puede ser 0 (cero) si se ha llegado al final de la secuencia.</returns>
+      <param name="buffer">Búfer en el que se escriben los datos.</param>
+      <param name="offset">Posición de desplazamiento en bytes de <paramref name="buffer" /> donde se comienza a escribir los datos del flujo.</param>
+      <param name="count">Número máximo de bytes que se pueden leer.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="buffer" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> o <paramref name="count" /> es negativo.</exception>
+      <exception cref="T:System.ArgumentException">La suma de <paramref name="offset" /> y <paramref name="count" /> es mayor que la longitud del búfer.</exception>
+      <exception cref="T:System.NotSupportedException">La secuencia no admite lectura.</exception>
+      <exception cref="T:System.ObjectDisposedException">Se ha eliminado la secuencia.</exception>
+      <exception cref="T:System.InvalidOperationException">La secuencia está actualmente en uso por una operación de lectura anterior. </exception>
+    </member>
+    <member name="M:System.IO.Stream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+      <summary>Lee de forma asincrónica una secuencia de bytes en la secuencia actual, se hace avanzar la posición dentro de la secuencia el número de bytes leídos y controla las solicitudes de cancelación.</summary>
+      <returns>Tarea que representa la operación de lectura asincrónica.El valor del parámetro <paramref name="TResult" /> contiene el número total de bytes leídos en el búfer.El valor del resultado puede ser menor que el número de bytes solicitados si el número de bytes disponibles actualmente es menor que el número solicitado o puede ser 0 (cero) si se ha llegado al final de la secuencia.</returns>
+      <param name="buffer">Búfer en el que se escriben los datos.</param>
+      <param name="offset">Posición de desplazamiento en bytes de <paramref name="buffer" /> donde se comienza a escribir los datos del flujo.</param>
+      <param name="count">Número máximo de bytes que se pueden leer.</param>
+      <param name="cancellationToken">Token para supervisar solicitudes de cancelación.El valor predeterminado es <see cref="P:System.Threading.CancellationToken.None" />.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="buffer" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> o <paramref name="count" /> es negativo.</exception>
+      <exception cref="T:System.ArgumentException">La suma de <paramref name="offset" /> y <paramref name="count" /> es mayor que la longitud del búfer.</exception>
+      <exception cref="T:System.NotSupportedException">La secuencia no admite lectura.</exception>
+      <exception cref="T:System.ObjectDisposedException">Se ha eliminado la secuencia.</exception>
+      <exception cref="T:System.InvalidOperationException">La secuencia está actualmente en uso por una operación de lectura anterior. </exception>
+    </member>
+    <member name="M:System.IO.Stream.ReadByte">
+      <summary>Lee un byte de la secuencia y hace avanzar la posición de la secuencia en un byte, o devuelve -1 si está al final de la secuencia.</summary>
+      <returns>Byte sin signo convertido en Int32,o bien -1 si está al final de la secuencia.</returns>
+      <exception cref="T:System.NotSupportedException">La secuencia no admite lectura. </exception>
+      <exception cref="T:System.ObjectDisposedException">Tras cerrar la secuencia, se llamó a algún método. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.Stream.ReadTimeout">
+      <summary>Obtiene o establece un valor, en milisegundos, que determina durante cuánto tiempo la secuencia intentará realizar operaciones de lectura antes de que se agote el tiempo de espera. </summary>
+      <returns>Valor, en milisegundos, que determina durante cuánto tiempo la secuencia intentará realizar operaciones de lectura antes de que se agote el tiempo de espera.</returns>
+      <exception cref="T:System.InvalidOperationException">El <see cref="P:System.IO.Stream.ReadTimeout" /> método siempre produce una <see cref="T:System.InvalidOperationException" />. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.Seek(System.Int64,System.IO.SeekOrigin)">
+      <summary>Cuando se reemplaza en una clase derivada, se establece la posición dentro de la secuencia actual.</summary>
+      <returns>La nueva posición dentro de la secuencia actual.</returns>
+      <param name="offset">Desplazamiento de bytes relacionado con el parámetro <paramref name="origin" />. </param>
+      <param name="origin">Valor de tipo <see cref="T:System.IO.SeekOrigin" /> que indica el punto de referencia utilizado para obtener la nueva posición. </param>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.NotSupportedException">La secuencia no admite búsquedas, como en el caso donde la secuencia se cree a partir de los resultados de una canalización o consola. </exception>
+      <exception cref="T:System.ObjectDisposedException">Tras cerrar la secuencia, se llamó a algún método. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.SetLength(System.Int64)">
+      <summary>Cuando se reemplaza en una clase derivada, se establece la longitud de la secuencia actual.</summary>
+      <param name="value">Longitud deseada de la secuencia actual, en bytes. </param>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.NotSupportedException">La secuencia no admite operaciones de lectura ni escritura, como en el caso donde la secuencia se cree a partir de los resultados de una canalización o consola. </exception>
+      <exception cref="T:System.ObjectDisposedException">Tras cerrar la secuencia, se llamó a algún método. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.Write(System.Byte[],System.Int32,System.Int32)">
+      <summary>Cuando se reemplaza en una clase derivada, se escribe una secuencia de bytes en la secuencia actual y se hace avanzar la posición actual dentro de la secuencia el número de bytes escritos.</summary>
+      <param name="buffer">Matriz de bytes.Este método copia <paramref name="count" /> bytes desde <paramref name="buffer" /> al flujo actual.</param>
+      <param name="offset">Desplazamiento en bytes de base cero en la <paramref name="buffer" /> en la que se comienzan a copiar los bytes en la secuencia actual. </param>
+      <param name="count">Número de bytes que se deben escribir en la secuencia actual. </param>
+      <exception cref="T:System.ArgumentException">La suma de <paramref name="offset" /> y <paramref name="count" /> es mayor que la longitud del búfer.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" />  es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> o <paramref name="count" /> es negativo.</exception>
+      <exception cref="T:System.IO.IOException">Se produjo un error de E/S, como no se puede encontrar el archivo especificado.</exception>
+      <exception cref="T:System.NotSupportedException">La secuencia no es compatible con la escritura.</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="M:System.IO.Stream.Write(System.Byte[],System.Int32,System.Int32)" /> se llama después de cerrar la secuencia.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.WriteAsync(System.Byte[],System.Int32,System.Int32)">
+      <summary>Escribe asincrónicamente una secuencia de bytes en la secuencia actual y avanza la posición actual en esta secuencia según el número de bytes escritos.</summary>
+      <returns>Tarea que representa la operación de escritura asincrónica.</returns>
+      <param name="buffer">Búfer del que se van a escribir datos.</param>
+      <param name="offset">Desplazamiento en bytes de base cero de <paramref name="buffer" /> desde donde se comienzan a copiar los bytes en la secuencia.</param>
+      <param name="count">Número máximo de bytes que se pueden escribir.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="buffer" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> o <paramref name="count" /> es negativo.</exception>
+      <exception cref="T:System.ArgumentException">La suma de <paramref name="offset" /> y <paramref name="count" /> es mayor que la longitud del búfer.</exception>
+      <exception cref="T:System.NotSupportedException">La secuencia no es compatible con la escritura.</exception>
+      <exception cref="T:System.ObjectDisposedException">Se ha eliminado la secuencia.</exception>
+      <exception cref="T:System.InvalidOperationException">La secuencia está actualmente en uso por una operación de escritura anterior. </exception>
+    </member>
+    <member name="M:System.IO.Stream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+      <summary>Escribe de forma asincrónica una secuencia de bytes en la secuencia actual, se hace avanzar la posición actual dentro de la secuencia el número de bytes escritos y controla las solicitudes de cancelación.</summary>
+      <returns>Tarea que representa la operación de escritura asincrónica.</returns>
+      <param name="buffer">Búfer del que se van a escribir datos.</param>
+      <param name="offset">Desplazamiento en bytes de base cero de <paramref name="buffer" /> desde donde se comienzan a copiar los bytes en la secuencia.</param>
+      <param name="count">Número máximo de bytes que se pueden escribir.</param>
+      <param name="cancellationToken">Token para supervisar solicitudes de cancelación.El valor predeterminado es <see cref="P:System.Threading.CancellationToken.None" />.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="buffer" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> o <paramref name="count" /> es negativo.</exception>
+      <exception cref="T:System.ArgumentException">La suma de <paramref name="offset" /> y <paramref name="count" /> es mayor que la longitud del búfer.</exception>
+      <exception cref="T:System.NotSupportedException">La secuencia no es compatible con la escritura.</exception>
+      <exception cref="T:System.ObjectDisposedException">Se ha eliminado la secuencia.</exception>
+      <exception cref="T:System.InvalidOperationException">La secuencia está actualmente en uso por una operación de escritura anterior. </exception>
+    </member>
+    <member name="M:System.IO.Stream.WriteByte(System.Byte)">
+      <summary>Escribe un byte a la posición actual en la secuencia y avanza la posición de la secuencia en un byte.</summary>
+      <param name="value">Byte que se debe escribir en la secuencia. </param>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.NotSupportedException">La secuencia no admite escritura o ya se encuentra cerrada. </exception>
+      <exception cref="T:System.ObjectDisposedException">Tras cerrar la secuencia, se llamó a algún método. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.Stream.WriteTimeout">
+      <summary>Obtiene o establece un valor, en milisegundos, que determina durante cuánto tiempo la secuencia intentará realizar operaciones de escritura antes de que se agote el tiempo de espera. </summary>
+      <returns>Valor, en milisegundos, que determina durante cuánto tiempo la secuencia intentará realizar operaciones de escritura antes de que se agote el tiempo de espera.</returns>
+      <exception cref="T:System.InvalidOperationException">El <see cref="P:System.IO.Stream.WriteTimeout" /> método siempre produce una <see cref="T:System.InvalidOperationException" />. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.IO.StreamReader">
+      <summary>Implementa un <see cref="T:System.IO.TextReader" /> que lee los caracteres de una secuencia de bytes en una codificación determinada.Para examinar el código fuente de .NET Framework para este tipo, consulte el Reference Source.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.#ctor(System.IO.Stream)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.StreamReader" /> para el flujo especificado.</summary>
+      <param name="stream">Secuencia que se va a leer. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="stream" /> no se admite la lectura. </exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="stream" /> es null. </exception>
+    </member>
+    <member name="M:System.IO.StreamReader.#ctor(System.IO.Stream,System.Boolean)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.StreamReader" /> para la secuencia especificada, con la opción especificada de detección de marcas de orden de bytes.</summary>
+      <param name="stream">Secuencia que se va a leer. </param>
+      <param name="detectEncodingFromByteOrderMarks">Indica si se deben buscar marcas de orden de byte al comienzo del archivo. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="stream" /> no se admite la lectura. </exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="stream" /> es null. </exception>
+    </member>
+    <member name="M:System.IO.StreamReader.#ctor(System.IO.Stream,System.Text.Encoding)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.StreamReader" /> para la secuencia especificada y con la codificación de caracteres indicada.</summary>
+      <param name="stream">Secuencia que se va a leer. </param>
+      <param name="encoding">Codificación de caracteres que se utilizará. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="stream" /> no se admite la lectura. </exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="stream" /> o <paramref name="encoding" /> es null. </exception>
+    </member>
+    <member name="M:System.IO.StreamReader.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.StreamReader" /> de la secuencia especificada, con la codificación de caracteres especificada y la opción especificada de detección de marcas de orden de bytes.</summary>
+      <param name="stream">Secuencia que se va a leer. </param>
+      <param name="encoding">Codificación de caracteres que se utilizará. </param>
+      <param name="detectEncodingFromByteOrderMarks">Indica si se deben buscar marcas de orden de byte al comienzo del archivo. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="stream" /> no se admite la lectura. </exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="stream" /> o <paramref name="encoding" /> es null. </exception>
+    </member>
+    <member name="M:System.IO.StreamReader.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean,System.Int32)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.StreamReader" /> de la secuencia especificada, con la codificación de caracteres especificada, la opción especificada de detección de marcas de orden de bytes y el tamaño del búfer.</summary>
+      <param name="stream">Secuencia que se va a leer. </param>
+      <param name="encoding">Codificación de caracteres que se utilizará. </param>
+      <param name="detectEncodingFromByteOrderMarks">Indica si se deben buscar marcas de orden de byte al comienzo del archivo. </param>
+      <param name="bufferSize">Tamaño mínimo de búfer. </param>
+      <exception cref="T:System.ArgumentException">La secuencia no admite lectura. </exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="stream" /> o <paramref name="encoding" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="bufferSize" /> es menor o igual que cero. </exception>
+    </member>
+    <member name="M:System.IO.StreamReader.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean,System.Int32,System.Boolean)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.StreamReader" /> de la secuencia especificada basada en la codificación de caracteres especificada, la opción especificada de detección de marcas de orden de bytes y el tamaño del búfer y, opcionalmente, deja abierta la secuencia.</summary>
+      <param name="stream">Secuencia que se va a leer.</param>
+      <param name="encoding">Codificación de caracteres que se utilizará.</param>
+      <param name="detectEncodingFromByteOrderMarks">Es true para buscar marcas de orden de byte al comienzo del archivo; en caso contrario, es false.</param>
+      <param name="bufferSize">Tamaño mínimo de búfer.</param>
+      <param name="leaveOpen">true para dejar el flujo abierto después de desechar el objeto <see cref="T:System.IO.StreamReader" />; de lo contrario, false.</param>
+    </member>
+    <member name="P:System.IO.StreamReader.BaseStream">
+      <summary>Devuelve la secuencia subyacente.</summary>
+      <returns>Secuencia subyacente.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.StreamReader.CurrentEncoding">
+      <summary>Obtiene la codificación de caracteres que actualmente utiliza este objeto <see cref="T:System.IO.StreamReader" />.</summary>
+      <returns>Codificación de caracteres que utiliza actualmente este lector.El valor puede ser diferente después de la primera llamada a cualquier método <see cref="Overload:System.IO.StreamReader.Read" /> de <see cref="T:System.IO.StreamReader" />, ya que la detección automática de la codificación no se realiza hasta la primera llamada a un método <see cref="Overload:System.IO.StreamReader.Read" />.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.DiscardBufferedData">
+      <summary>Borra el búfer interno.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.Dispose(System.Boolean)">
+      <summary>Cierra la secuencia subyacente, libera los recursos no administrados que utiliza <see cref="T:System.IO.StreamReader" /> y, de forma opcional, libera los recursos administrados.</summary>
+      <param name="disposing">Es true para liberar tanto recursos administrados como no administrados; es false para liberar únicamente recursos no administrados. </param>
+    </member>
+    <member name="P:System.IO.StreamReader.EndOfStream">
+      <summary>Obtiene un valor que indica si la actual posición está al final de la secuencia.</summary>
+      <returns>Es true si la actual posición está al final de la secuencia; en caso contrario, es false.</returns>
+      <exception cref="T:System.ObjectDisposedException">Se ha eliminado la secuencia subyacente.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.IO.StreamReader.Null">
+      <summary>Objeto <see cref="T:System.IO.StreamReader" /> en torno a una secuencia vacía.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.Peek">
+      <summary>Devuelve el siguiente carácter disponible pero no lo consume.</summary>
+      <returns>Entero que representa el siguiente carácter que se va a leer, o -1 si no hay caracteres que leer o si la secuencia no admite la operación de búsqueda.</returns>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.Read">
+      <summary>Lee el siguiente carácter de la secuencia de entrada y hace avanzar la posición de los caracteres en un carácter.</summary>
+      <returns>El siguiente carácter de la secuencia de entrada que se representa como un objeto <see cref="T:System.Int32" />, o -1 si no hay más caracteres disponibles.</returns>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.Read(System.Char[],System.Int32,System.Int32)">
+      <summary>Lee un máximo especificado de caracteres de la secuencia actual en un búfer, comenzando en el índice especificado.</summary>
+      <returns>Número de caracteres leídos. Si se llega al final de la secuencia y no se leyó ningún dato es 0.El número será menor o igual que el parámetro <paramref name="count" />, dependiendo de si los datos están disponibles dentro de la secuencia.</returns>
+      <param name="buffer">El resultado que devuelve este método contiene la matriz de caracteres especificada con valores entre <paramref name="index" /> e (<paramref name="index + count - 1" />) reemplazada por los caracteres leídos del origen actual. </param>
+      <param name="index">Índice de <paramref name="buffer" /> en el que comenzará la escritura. </param>
+      <param name="count">Número máximo de caracteres que se van a leer. </param>
+      <exception cref="T:System.ArgumentException">La longitud del búfer menos <paramref name="index" /> es menor que <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="buffer" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> o <paramref name="count" /> es negativo. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S, como el cierre de la secuencia. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Lee de forma asincrónica un número máximo de caracteres especificado en la secuencia actual y escribe los datos en un búfer, comenzando en el índice especificado. </summary>
+      <returns>Tarea que representa la operación de lectura asincrónica.El valor del parámetro <paramref name="TResult" /> contiene el número total de bytes leídos en el búfer.El valor del resultado puede ser menor que el número de bytes solicitados si el número de bytes disponibles actualmente es menor que el número solicitado o puede ser 0 (cero) si se ha llegado al final de la secuencia.</returns>
+      <param name="buffer">Cuando este método finaliza, contiene la matriz de caracteres especificada con valores entre <paramref name="index" /> e (<paramref name="index" /> + <paramref name="count" /> - 1) reemplazada con los caracteres leídos del origen actual.</param>
+      <param name="index">Lugar de <paramref name="buffer" /> en el que comenzará la escritura.</param>
+      <param name="count">Número máximo de caracteres que se van a leer.Si el final de la secuencia se alcanza antes de escribir el número de caracteres especificado en el búfer, el método actual vuelve.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="buffer" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> o <paramref name="count" /> es negativo.</exception>
+      <exception cref="T:System.ArgumentException">La suma de <paramref name="index" /> y <paramref name="count" /> es mayor que la longitud del búfer.</exception>
+      <exception cref="T:System.ObjectDisposedException">Se ha eliminado la secuencia.</exception>
+      <exception cref="T:System.InvalidOperationException">El lector está actualmente en uso por una operación de lectura anterior. </exception>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadBlock(System.Char[],System.Int32,System.Int32)">
+      <summary>Lee un número máximo de caracteres especificado en la secuencia actual y escribe los datos en un búfer, comenzando en el índice especificado.</summary>
+      <returns>Número de caracteres que se han leído.Este número será menor o igual que <paramref name="count" />, dependiendo de si se han leído todos los caracteres de entrada.</returns>
+      <param name="buffer">El resultado que devuelve este método contiene la matriz de caracteres especificada con valores entre <paramref name="index" /> e (<paramref name="index + count - 1" />) reemplazada por los caracteres leídos del origen actual.</param>
+      <param name="index">Lugar de <paramref name="buffer" /> en el que comenzará la escritura.</param>
+      <param name="count">Número máximo de caracteres que se van a leer.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="buffer" /> es null. </exception>
+      <exception cref="T:System.ArgumentException">La longitud del búfer menos <paramref name="index" /> es menor que <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> o <paramref name="count" /> es negativo. </exception>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.StreamReader" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Error de E/S. </exception>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadBlockAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Lee de forma asincrónica un número máximo de caracteres especificado en la secuencia actual y escribe los datos en un búfer, comenzando en el índice especificado.</summary>
+      <returns>Tarea que representa la operación de lectura asincrónica.El valor del parámetro <paramref name="TResult" /> contiene el número total de bytes leídos en el búfer.El valor del resultado puede ser menor que el número de bytes solicitados si el número de bytes disponibles actualmente es menor que el número solicitado o puede ser 0 (cero) si se ha llegado al final de la secuencia.</returns>
+      <param name="buffer">Cuando este método finaliza, contiene la matriz de caracteres especificada con valores entre <paramref name="index" /> e (<paramref name="index" /> + <paramref name="count" /> - 1) reemplazada con los caracteres leídos del origen actual.</param>
+      <param name="index">Lugar de <paramref name="buffer" /> en el que comenzará la escritura.</param>
+      <param name="count">Número máximo de caracteres que se van a leer.Si el final de la secuencia se alcanza antes de escribir el número de caracteres especificado en el búfer, el método vuelve.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="buffer" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> o <paramref name="count" /> es negativo.</exception>
+      <exception cref="T:System.ArgumentException">La suma de <paramref name="index" /> y <paramref name="count" /> es mayor que la longitud del búfer.</exception>
+      <exception cref="T:System.ObjectDisposedException">Se ha eliminado la secuencia.</exception>
+      <exception cref="T:System.InvalidOperationException">El lector está actualmente en uso por una operación de lectura anterior. </exception>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadLine">
+      <summary>Lee una línea de caracteres de la secuencia actual y devuelve los datos como una cadena.</summary>
+      <returns>Línea siguiente de la secuencia de entrada, o null si se alcanza el final de la secuencia de entrada.</returns>
+      <exception cref="T:System.OutOfMemoryException">No hay memoria suficiente como para asignar un búfer a la cadena devuelta. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadLineAsync">
+      <summary>Lee de forma asincrónica una línea de caracteres de la secuencia actual y devuelve los datos como una cadena.</summary>
+      <returns>Tarea que representa la operación de lectura asincrónica.El valor del parámetro <paramref name="TResult" /> contiene la línea siguiente de la secuencia, o es null si se han leído todos los caracteres.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">El número de caracteres en la siguiente línea es mayor que <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">Se ha eliminado la secuencia.</exception>
+      <exception cref="T:System.InvalidOperationException">El lector está actualmente en uso por una operación de lectura anterior. </exception>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadToEnd">
+      <summary>Lee todos los caracteres desde la posición actual hasta el final de la secuencia.</summary>
+      <returns>Resto de la secuencia, como una cadena, desde la posición actual hasta el final.Si la posición actual se encuentra al final de la secuencia, devuelve una cadena vacía ("").</returns>
+      <exception cref="T:System.OutOfMemoryException">No hay memoria suficiente como para asignar un búfer a la cadena devuelta. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadToEndAsync">
+      <summary>Lee de forma asincrónica todos los caracteres desde la posición actual hasta el final de la secuencia y los devuelve como una cadena.</summary>
+      <returns>Tarea que representa la operación de lectura asincrónica.El valor del parámetro <paramref name="TResult" /> contiene una cadena con los caracteres desde la posición actual hasta el final de la secuencia.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">El número de caracteres es mayor que <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">Se ha eliminado la secuencia.</exception>
+      <exception cref="T:System.InvalidOperationException">El lector está actualmente en uso por una operación de lectura anterior. </exception>
+    </member>
+    <member name="T:System.IO.StreamWriter">
+      <summary>Implementa <see cref="T:System.IO.TextWriter" /> para escribir los caracteres de una secuencia en una codificación determinada.Para examinar el código fuente de .NET Framework para este tipo, consulte el fuente de referencia de.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.#ctor(System.IO.Stream)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.StreamWriter" /> para la secuencia especificada usando la codificación UTF-8 y el tamaño de búfer predeterminado.</summary>
+      <param name="stream">Secuencia en la que se va a escribir. </param>
+      <exception cref="T:System.ArgumentException">No se puede escribir en <paramref name="stream" />. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="stream" />is null. </exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.#ctor(System.IO.Stream,System.Text.Encoding)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.StreamWriter" /> para la secuencia especificada usando la codificación especificada y el tamaño de búfer predeterminado.</summary>
+      <param name="stream">Secuencia en la que se va a escribir. </param>
+      <param name="encoding">Codificación de caracteres que se utilizará. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="stream" /> o <paramref name="encoding" /> es null. </exception>
+      <exception cref="T:System.ArgumentException">No se puede escribir en <paramref name="stream" />. </exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.#ctor(System.IO.Stream,System.Text.Encoding,System.Int32)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.StreamWriter" /> para la secuencia especificada usando la codificación y el tamaño de búfer especificados.</summary>
+      <param name="stream">Secuencia en la que se va a escribir. </param>
+      <param name="encoding">Codificación de caracteres que se utilizará. </param>
+      <param name="bufferSize">Tamaño del búfer en bytes. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="stream" /> o <paramref name="encoding" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="bufferSize" /> es negativo. </exception>
+      <exception cref="T:System.ArgumentException">No se puede escribir en <paramref name="stream" />. </exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.#ctor(System.IO.Stream,System.Text.Encoding,System.Int32,System.Boolean)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.StreamWriter" /> para la secuencia especificada usando la codificación y tamaño de búfer especificados y, opcionalmente deja abierta la secuencia.</summary>
+      <param name="stream">Secuencia en la que se va a escribir.</param>
+      <param name="encoding">Codificación de caracteres que se utilizará.</param>
+      <param name="bufferSize">Tamaño del búfer en bytes.</param>
+      <param name="leaveOpen">true para dejar la secuencia abierta después de desechar el objeto <see cref="T:System.IO.StreamWriter" />; de lo contrario, false.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="stream" /> o <paramref name="encoding" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="bufferSize" /> es negativo. </exception>
+      <exception cref="T:System.ArgumentException">No se puede escribir en <paramref name="stream" />. </exception>
+    </member>
+    <member name="P:System.IO.StreamWriter.AutoFlush">
+      <summary>Obtiene o establece un valor que indica si <see cref="T:System.IO.StreamWriter" /> vaciará su búfer en la secuencia subyacente después de cada llamada a <see cref="M:System.IO.StreamWriter.Write(System.Char)" />.</summary>
+      <returns>Es true para que <see cref="T:System.IO.StreamWriter" /> vacíe su búfer; en caso contrario, es false.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.IO.StreamWriter.BaseStream">
+      <summary>Obtiene la secuencia subyacente que interactúa con una memoria auxiliar.</summary>
+      <returns>Secuencia en la que escribe este StreamWriter.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.Dispose(System.Boolean)">
+      <summary>Libera los recursos no administrados que usa <see cref="T:System.IO.StreamWriter" /> y, de forma opcional, libera los recursos administrados.</summary>
+      <param name="disposing">truepara liberar los recursos administrados y no administrados; false para liberar únicamente los recursos no administrados. </param>
+      <exception cref="T:System.Text.EncoderFallbackException">La codificación actual no admite que se muestre la mitad de un par suplente Unicode.</exception>
+    </member>
+    <member name="P:System.IO.StreamWriter.Encoding">
+      <summary>Obtiene el <see cref="T:System.Text.Encoding" /> donde se escribe el resultado.</summary>
+      <returns>
+        <see cref="T:System.Text.Encoding" /> especificado en el constructor para la instancia actual o <see cref="T:System.Text.UTF8Encoding" /> si no se ha especificado una codificación.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.Flush">
+      <summary>Borra todos los búferes del sistema de escritura actual y hace que todos los datos almacenados en el búfer se escriban en la secuencia subyacente.</summary>
+      <exception cref="T:System.ObjectDisposedException">El sistema de escritura actual está cerrado. </exception>
+      <exception cref="T:System.IO.IOException">Se produjo un error de E/S. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">La codificación actual no admite que se muestre la mitad de un par suplente Unicode. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.FlushAsync">
+      <summary>Borra todos los búferes para esta secuencia de forma asincrónica y hace que los datos almacenados en búfer se escriban en el dispositivo subyacente.</summary>
+      <returns>Tarea que representa la operación de vaciado asincrónico.</returns>
+      <exception cref="T:System.ObjectDisposedException">Se ha eliminado la secuencia.</exception>
+    </member>
+    <member name="F:System.IO.StreamWriter.Null">
+      <summary>Proporciona un StreamWriter sin memoria auxiliar, en el que se puede escribir pero no se puede leer.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.Write(System.Char)">
+      <summary>Escribe un carácter en la secuencia.</summary>
+      <param name="value">Carácter que se va a escribir en la secuencia. </param>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> es true o el búfer <see cref="T:System.IO.StreamWriter" /> está lleno, y el sistema de escritura actual está cerrado. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> es true o el búfer <see cref="T:System.IO.StreamWriter" /> está lleno, y el contenido del búfer no puede escribirse en la secuencia de tamaño fijo subyacente porque <see cref="T:System.IO.StreamWriter" /> se encuentra al final de la secuencia. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.Write(System.Char[])">
+      <summary>Escribe una matriz de caracteres en la secuencia.</summary>
+      <param name="buffer">Matriz de caracteres que contiene los datos que se van a escribir.Si <paramref name="buffer" /> es null, no se escribe nada.</param>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> es true o el búfer <see cref="T:System.IO.StreamWriter" /> está lleno, y el sistema de escritura actual está cerrado. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> es true o el búfer <see cref="T:System.IO.StreamWriter" /> está lleno, y el contenido del búfer no puede escribirse en la secuencia de tamaño fijo subyacente porque <see cref="T:System.IO.StreamWriter" /> se encuentra al final de la secuencia. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.Write(System.Char[],System.Int32,System.Int32)">
+      <summary>Escribe una submatriz de caracteres en la secuencia.</summary>
+      <param name="buffer">Matriz de caracteres que contiene los datos que se van a escribir. </param>
+      <param name="index">Posición del carácter en el búfer donde comenzar la lectura de datos. </param>
+      <param name="count">Número máximo de caracteres que se van a escribir. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" />is null. </exception>
+      <exception cref="T:System.ArgumentException">La longitud del búfer menos <paramref name="index" /> es menor que <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="index" /> o <paramref name="count" /> es negativo. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> es true o el búfer <see cref="T:System.IO.StreamWriter" /> está lleno, y el sistema de escritura actual está cerrado. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> es true o el búfer <see cref="T:System.IO.StreamWriter" /> está lleno, y el contenido del búfer no puede escribirse en la secuencia de tamaño fijo subyacente porque <see cref="T:System.IO.StreamWriter" /> se encuentra al final de la secuencia. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.Write(System.String)">
+      <summary>Escribe una cadena en la secuencia.</summary>
+      <param name="value">Cadena que se debe escribir en la secuencia.Si <paramref name="value" /> es null, no se escribe nada.</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> es true o el búfer <see cref="T:System.IO.StreamWriter" /> está lleno, y el sistema de escritura actual está cerrado. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> es true o el búfer <see cref="T:System.IO.StreamWriter" /> está lleno, y el contenido del búfer no puede escribirse en la secuencia de tamaño fijo subyacente porque <see cref="T:System.IO.StreamWriter" /> se encuentra al final de la secuencia. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteAsync(System.Char)">
+      <summary>Escribe un carácter en la secuencia de forma asincrónica.</summary>
+      <returns>Tarea que representa la operación de escritura asincrónica.</returns>
+      <param name="value">Carácter que se va a escribir en la secuencia.</param>
+      <exception cref="T:System.ObjectDisposedException">Se desecha el sistema de escritura de secuencias.</exception>
+      <exception cref="T:System.InvalidOperationException">El escritor de secuencias está actualmente en uso por una operación de escritura anterior.</exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Escribe una submatriz de caracteres en la secuencia de forma asincrónica.</summary>
+      <returns>Tarea que representa la operación de escritura asincrónica.</returns>
+      <param name="buffer">Matriz de caracteres que contiene los datos que se van a escribir.</param>
+      <param name="index">Posición del carácter en el búfer donde comienza la lectura de datos.</param>
+      <param name="count">Número máximo de caracteres que se van a escribir.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" />is null.</exception>
+      <exception cref="T:System.ArgumentException">La suma de <paramref name="index" /> y <paramref name="count" /> es mayor que la longitud del búfer.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="index" /> o <paramref name="count" /> es negativo.</exception>
+      <exception cref="T:System.ObjectDisposedException">Se desecha el sistema de escritura de secuencias.</exception>
+      <exception cref="T:System.InvalidOperationException">El escritor de secuencias está actualmente en uso por una operación de escritura anterior. </exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteAsync(System.String)">
+      <summary>Escribe una cadena en la secuencia de forma asincrónica.</summary>
+      <returns>Tarea que representa la operación de escritura asincrónica.</returns>
+      <param name="value">Cadena que se debe escribir en la secuencia.Si <paramref name="value" /> es null, no se escribe nada.</param>
+      <exception cref="T:System.ObjectDisposedException">Se desecha el sistema de escritura de secuencias.</exception>
+      <exception cref="T:System.InvalidOperationException">El escritor de secuencias está actualmente en uso por una operación de escritura anterior.</exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteLineAsync">
+      <summary>Escribe un terminador de línea de forma asincrónica en la secuencia.</summary>
+      <returns>Tarea que representa la operación de escritura asincrónica.</returns>
+      <exception cref="T:System.ObjectDisposedException">Se desecha el sistema de escritura de secuencias.</exception>
+      <exception cref="T:System.InvalidOperationException">El escritor de secuencias está actualmente en uso por una operación de escritura anterior.</exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteLineAsync(System.Char)">
+      <summary>Escribe un carácter seguido de un terminador de línea de forma asincrónica en la secuencia.</summary>
+      <returns>Tarea que representa la operación de escritura asincrónica.</returns>
+      <param name="value">Carácter que se va a escribir en la secuencia.</param>
+      <exception cref="T:System.ObjectDisposedException">Se desecha el sistema de escritura de secuencias.</exception>
+      <exception cref="T:System.InvalidOperationException">El escritor de secuencias está actualmente en uso por una operación de escritura anterior.</exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteLineAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Escribe una submatriz de caracteres seguida de un terminador de línea de forma asincrónica en la secuencia.</summary>
+      <returns>Tarea que representa la operación de escritura asincrónica.</returns>
+      <param name="buffer">Matriz de caracteres de la que se escriben los datos.</param>
+      <param name="index">Posición del carácter en el búfer donde comenzar la lectura de datos.</param>
+      <param name="count">Número máximo de caracteres que se van a escribir.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" />is null.</exception>
+      <exception cref="T:System.ArgumentException">La suma de <paramref name="index" /> y <paramref name="count" /> es mayor que la longitud del búfer.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="index" /> o <paramref name="count" /> es negativo.</exception>
+      <exception cref="T:System.ObjectDisposedException">Se desecha el sistema de escritura de secuencias.</exception>
+      <exception cref="T:System.InvalidOperationException">El escritor de secuencias está actualmente en uso por una operación de escritura anterior. </exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteLineAsync(System.String)">
+      <summary>Escribe una cadena seguida de un terminador de línea de forma asincrónica en la secuencia.</summary>
+      <returns>Tarea que representa la operación de escritura asincrónica.</returns>
+      <param name="value">Cadena que se va a escribir.Si el valor es null, solo se escribe el terminador de línea.</param>
+      <exception cref="T:System.ObjectDisposedException">Se desecha el sistema de escritura de secuencias.</exception>
+      <exception cref="T:System.InvalidOperationException">El escritor de secuencias está actualmente en uso por una operación de escritura anterior.</exception>
+    </member>
+    <member name="T:System.IO.StringReader">
+      <summary>Implementa <see cref="T:System.IO.TextReader" /> que lee en una cadena.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringReader.#ctor(System.String)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.StringReader" /> que lee en la cadena especificada.</summary>
+      <param name="s">Cadena en la que <see cref="T:System.IO.StringReader" /> debe inicializarse. </param>
+      <exception cref="T:System.ArgumentNullException">El parámetro <paramref name="s" /> es null. </exception>
+    </member>
+    <member name="M:System.IO.StringReader.Dispose(System.Boolean)">
+      <summary>Libera los recursos no administrados que utiliza la clase <see cref="T:System.IO.StringReader" /> y, opcionalmente, libera los recursos administrados.</summary>
+      <param name="disposing">Es true para liberar tanto recursos administrados como no administrados; es false para liberar únicamente recursos no administrados. </param>
+    </member>
+    <member name="M:System.IO.StringReader.Peek">
+      <summary>Devuelve el siguiente carácter disponible pero no lo consume.</summary>
+      <returns>Un entero que representa el siguiente carácter que se va a leer, o -1 si no hay más caracteres disponibles o si la secuencia no admite la operación de búsqueda.</returns>
+      <exception cref="T:System.ObjectDisposedException">El sistema de lectura actual está cerrado. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringReader.Read">
+      <summary>Lee el siguiente carácter de la cadena de entrada y hace avanzar la posición de los caracteres en un carácter.</summary>
+      <returns>Siguiente carácter de la cadena subyacente, o -1 si no hay más caracteres disponibles.</returns>
+      <exception cref="T:System.ObjectDisposedException">El sistema de lectura actual está cerrado. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringReader.Read(System.Char[],System.Int32,System.Int32)">
+      <summary>Lee un bloque de caracteres de la cadena de entrada y hace avanzar la posición de los caracteres en <paramref name="count" />.</summary>
+      <returns>Número total de caracteres leídos en el búfer.Puede ser menor que el número de caracteres solicitado si dicho número de caracteres no está disponible, o puede ser cero si se alcanza el final de la cadena subyacente.</returns>
+      <param name="buffer">Cuando este método finaliza, contiene la matriz de caracteres especificada con valores entre <paramref name="index" /> e (<paramref name="index" /> + <paramref name="count" /> - 1) reemplazada con los caracteres leídos del origen actual. </param>
+      <param name="index">Índice inicial del búfer. </param>
+      <param name="count">Número de caracteres que se va a leer. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> es null. </exception>
+      <exception cref="T:System.ArgumentException">La longitud del búfer menos <paramref name="index" /> es menor que <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> o <paramref name="count" /> son negativos. </exception>
+      <exception cref="T:System.ObjectDisposedException">El sistema de lectura actual está cerrado. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringReader.ReadAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Lee de forma asincrónica un número máximo de caracteres especificado en la cadena actual y escribe los datos en un búfer, comenzando en el índice especificado. </summary>
+      <returns>Tarea que representa la operación de lectura asincrónica.El valor del parámetro <paramref name="TResult" /> contiene el número total de bytes leídos en el búfer.El valor del resultado puede ser menor que el número de bytes solicitados si el número de bytes disponibles actualmente es menor que el número solicitado o puede ser 0 (cero) si se ha llegado al final de la cadena.</returns>
+      <param name="buffer">Cuando este método finaliza, contiene la matriz de caracteres especificada con valores entre <paramref name="index" /> e (<paramref name="index" /> + <paramref name="count" /> - 1) reemplazada con los caracteres leídos del origen actual.</param>
+      <param name="index">Lugar de <paramref name="buffer" /> en el que comenzará la escritura.</param>
+      <param name="count">Número máximo de caracteres que se pueden leer.Si el final de la cadena se alcanza antes de escribir el número de caracteres especificado en el búfer, el método vuelve.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> o <paramref name="count" /> son negativos.</exception>
+      <exception cref="T:System.ArgumentException">La suma de <paramref name="index" /> y <paramref name="count" /> es mayor que la longitud del búfer.</exception>
+      <exception cref="T:System.ObjectDisposedException">El lector de cadenas se ha desechado.</exception>
+      <exception cref="T:System.InvalidOperationException">El lector está actualmente en uso por una operación de lectura anterior. </exception>
+    </member>
+    <member name="M:System.IO.StringReader.ReadBlockAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Lee de forma asincrónica un número máximo de caracteres especificado en la cadena actual y escribe los datos en un búfer, comenzando en el índice especificado.</summary>
+      <returns>Tarea que representa la operación de lectura asincrónica.El valor del parámetro <paramref name="TResult" /> contiene el número total de bytes leídos en el búfer.El valor del resultado puede ser menor que el número de bytes solicitados si el número de bytes disponibles actualmente es menor que el número solicitado o puede ser 0 (cero) si se ha llegado al final de la cadena.</returns>
+      <param name="buffer">Cuando este método finaliza, contiene la matriz de caracteres especificada con valores entre <paramref name="index" /> e (<paramref name="index" /> + <paramref name="count" /> - 1) reemplazada con los caracteres leídos del origen actual.</param>
+      <param name="index">Lugar de <paramref name="buffer" /> en el que comenzará la escritura.</param>
+      <param name="count">Número máximo de caracteres que se pueden leer.Si el final de la cadena se alcanza antes de escribir el número de caracteres especificado en el búfer, el método vuelve.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> o <paramref name="count" /> son negativos.</exception>
+      <exception cref="T:System.ArgumentException">La suma de <paramref name="index" /> y <paramref name="count" /> es mayor que la longitud del búfer.</exception>
+      <exception cref="T:System.ObjectDisposedException">El lector de cadenas se ha desechado.</exception>
+      <exception cref="T:System.InvalidOperationException">El lector está actualmente en uso por una operación de lectura anterior. </exception>
+    </member>
+    <member name="M:System.IO.StringReader.ReadLine">
+      <summary>Lee una línea de caracteres de la cadena actual y devuelve los datos como una cadena.</summary>
+      <returns>Línea siguiente de la cadena actual, o null si se alcanza el final de la cadena.</returns>
+      <exception cref="T:System.ObjectDisposedException">El sistema de lectura actual está cerrado. </exception>
+      <exception cref="T:System.OutOfMemoryException">No hay memoria suficiente como para asignar un búfer a la cadena devuelta. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringReader.ReadLineAsync">
+      <summary>Lee de forma asincrónica una línea de caracteres de la cadena actual y devuelve los datos como una cadena.</summary>
+      <returns>Tarea que representa la operación de lectura asincrónica.El valor del parámetro <paramref name="TResult" /> contiene la línea siguiente del lector de cadenas, o es null si se han leído todos los caracteres.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">El número de caracteres de la siguiente línea es mayor que <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">El lector de cadenas se ha desechado.</exception>
+      <exception cref="T:System.InvalidOperationException">El lector está actualmente en uso por una operación de lectura anterior. </exception>
+    </member>
+    <member name="M:System.IO.StringReader.ReadToEnd">
+      <summary>Lee todos los caracteres desde la posición actual hasta el final de la cadena y los devuelve como una cadena única.</summary>
+      <returns>Contenido desde la posición actual hasta el final de la cadena subyacente.</returns>
+      <exception cref="T:System.OutOfMemoryException">No hay memoria suficiente como para asignar un búfer a la cadena devuelta. </exception>
+      <exception cref="T:System.ObjectDisposedException">El sistema de lectura actual está cerrado. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringReader.ReadToEndAsync">
+      <summary>Lee de forma asincrónica todos los caracteres desde la posición actual hasta el final de la cadena y los devuelve como una cadena única.</summary>
+      <returns>Tarea que representa la operación de lectura asincrónica.El valor del parámetro <paramref name="TResult" /> contiene una cadena con los caracteres desde la posición actual hasta el final de la cadena.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">El número de caracteres es mayor que <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">El lector de cadenas se ha desechado.</exception>
+      <exception cref="T:System.InvalidOperationException">El lector está actualmente en uso por una operación de lectura anterior. </exception>
+    </member>
+    <member name="T:System.IO.StringWriter">
+      <summary>Implementa <see cref="T:System.IO.TextWriter" /> para escribir información en una cadena.La información se almacena en el <see cref="T:System.Text.StringBuilder" /> subyacente.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.StringWriter" />.</summary>
+    </member>
+    <member name="M:System.IO.StringWriter.#ctor(System.IFormatProvider)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.StringWriter" /> con el control de formato especificado.</summary>
+      <param name="formatProvider">Objeto <see cref="T:System.IFormatProvider" /> que controla las operaciones de formato. </param>
+    </member>
+    <member name="M:System.IO.StringWriter.#ctor(System.Text.StringBuilder)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.StringWriter" /> que escribe en el <see cref="T:System.Text.StringBuilder" /> especificado.</summary>
+      <param name="sb">Objeto StringBuilder en el que se va a escribir. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="sb" /> es null. </exception>
+    </member>
+    <member name="M:System.IO.StringWriter.#ctor(System.Text.StringBuilder,System.IFormatProvider)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.StringWriter" /> que escribe en el <see cref="T:System.Text.StringBuilder" /> especificado y tiene el control de formato especificado.</summary>
+      <param name="sb">Objeto StringBuilder en el que se va a escribir. </param>
+      <param name="formatProvider">Objeto <see cref="T:System.IFormatProvider" /> que controla las operaciones de formato. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="sb" /> es null. </exception>
+    </member>
+    <member name="M:System.IO.StringWriter.Dispose(System.Boolean)">
+      <summary>Libera los recursos no administrados que utiliza <see cref="T:System.IO.StringWriter" /> y libera los recursos administrados de forma opcional.</summary>
+      <param name="disposing">Es true para liberar tanto recursos administrados como no administrados; es false para liberar únicamente recursos no administrados. </param>
+    </member>
+    <member name="P:System.IO.StringWriter.Encoding">
+      <summary>Obtiene el <see cref="T:System.Text.Encoding" /> donde se escribe el resultado.</summary>
+      <returns>Encoding donde se escribe el resultado.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.FlushAsync">
+      <summary>Borra asincrónicamente todos los búferes del sistema de escritura actual y hace que todos los datos almacenados en el búfer se escriban en el dispositivo subyacente. </summary>
+      <returns>Tarea que representa la operación de vaciado asincrónico.</returns>
+    </member>
+    <member name="M:System.IO.StringWriter.GetStringBuilder">
+      <summary>Devuelve el <see cref="T:System.Text.StringBuilder" /> subyacente.</summary>
+      <returns>Objeto StringBuilder subyacente.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.ToString">
+      <summary>Devuelve una cadena que contiene los caracteres escritos hasta el momento en el StringWriter actual.</summary>
+      <returns>Cadena que contiene los caracteres escritos en el StringWriter actual.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.Write(System.Char)">
+      <summary>Escribe un carácter en la cadena.</summary>
+      <param name="value">Carácter que se va a escribir. </param>
+      <exception cref="T:System.ObjectDisposedException">El sistema de escritura está cerrado. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.Write(System.Char[],System.Int32,System.Int32)">
+      <summary>Escribe una submatriz de caracteres en la cadena.</summary>
+      <param name="buffer">Matriz de caracteres de la que se escriben los datos. </param>
+      <param name="index">La posición en el búfer en el que se va a empezar a leer datos.</param>
+      <param name="count">Número máximo de caracteres que se van a escribir. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> o <paramref name="count" /> son negativos. </exception>
+      <exception cref="T:System.ArgumentException">(<paramref name="index" /> + <paramref name="count" />) &gt; <paramref name="buffer" />.Length.</exception>
+      <exception cref="T:System.ObjectDisposedException">El sistema de escritura está cerrado. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.Write(System.String)">
+      <summary>Escribe una cadena en la cadena actual.</summary>
+      <param name="value">Cadena que se va a escribir. </param>
+      <exception cref="T:System.ObjectDisposedException">El sistema de escritura está cerrado. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.WriteAsync(System.Char)">
+      <summary>Escribe un carácter en la cadena de forma asincrónica.</summary>
+      <returns>Tarea que representa la operación de escritura asincrónico.</returns>
+      <param name="value">Carácter que se va a escribir en la cadena.</param>
+      <exception cref="T:System.ObjectDisposedException">Se desecha el sistema de escritura de cadenas.</exception>
+      <exception cref="T:System.InvalidOperationException">El sistema de escritura de cadenas está actualmente en uso por una operación de escritura anterior. </exception>
+    </member>
+    <member name="M:System.IO.StringWriter.WriteAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Escribe una submatriz de caracteres en la cadena de forma asincrónica.</summary>
+      <returns>Tarea que representa la operación de escritura asincrónico.</returns>
+      <param name="buffer">Matriz de caracteres de la que se escriben los datos.</param>
+      <param name="index">La posición en el búfer en el que se va a empezar a leer datos.</param>
+      <param name="count">Número máximo de caracteres que se van a escribir.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> es null.</exception>
+      <exception cref="T:System.ArgumentException">La suma de <paramref name="index" /> y <paramref name="count" /> es mayor que la longitud del búfer.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> o <paramref name="count" /> son negativos.</exception>
+      <exception cref="T:System.ObjectDisposedException">Se desecha el sistema de escritura de cadenas.</exception>
+      <exception cref="T:System.InvalidOperationException">El sistema de escritura de cadenas está actualmente en uso por una operación de escritura anterior. </exception>
+    </member>
+    <member name="M:System.IO.StringWriter.WriteAsync(System.String)">
+      <summary>Escribe una cadena en la cadena actual de forma asincrónica.</summary>
+      <returns>Tarea que representa la operación de escritura asincrónico.</returns>
+      <param name="value">Cadena que se va a escribir.Si <paramref name="value" /> es null, no se escribirá nada en la secuencia de texto.</param>
+      <exception cref="T:System.ObjectDisposedException">Se desecha el sistema de escritura de cadenas.</exception>
+      <exception cref="T:System.InvalidOperationException">El sistema de escritura de cadenas está actualmente en uso por una operación de escritura anterior. </exception>
+    </member>
+    <member name="M:System.IO.StringWriter.WriteLineAsync(System.Char)">
+      <summary>Escribe un carácter seguido de un terminador de forma asincrónica de línea en la cadena.</summary>
+      <returns>Tarea que representa la operación de escritura asincrónico.</returns>
+      <param name="value">Carácter que se va a escribir en la cadena.</param>
+      <exception cref="T:System.ObjectDisposedException">Se desecha el sistema de escritura de cadenas.</exception>
+      <exception cref="T:System.InvalidOperationException">El sistema de escritura de cadenas está actualmente en uso por una operación de escritura anterior. </exception>
+    </member>
+    <member name="M:System.IO.StringWriter.WriteLineAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Escribe una submatriz de caracteres seguida de un terminador de línea en la cadena de forma asincrónica.</summary>
+      <returns>Tarea que representa la operación de escritura asincrónico.</returns>
+      <param name="buffer">Matriz de caracteres de la que se escriben los datos.</param>
+      <param name="index">La posición en el búfer en el que se va a empezar a leer datos.</param>
+      <param name="count">Número máximo de caracteres que se van a escribir. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> es null.</exception>
+      <exception cref="T:System.ArgumentException">La suma de <paramref name="index" /> y <paramref name="count" /> es mayor que la longitud del búfer.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> o <paramref name="count" /> son negativos.</exception>
+      <exception cref="T:System.ObjectDisposedException">Se desecha el sistema de escritura de cadenas.</exception>
+      <exception cref="T:System.InvalidOperationException">El sistema de escritura de cadenas está actualmente en uso por una operación de escritura anterior. </exception>
+    </member>
+    <member name="M:System.IO.StringWriter.WriteLineAsync(System.String)">
+      <summary>Escribe una cadena seguida de un terminador de línea de forma asincrónica en la cadena actual.</summary>
+      <returns>Tarea que representa la operación de escritura asincrónico.</returns>
+      <param name="value">Cadena que se va a escribir.Si el valor es null, solo se escribe el terminador de línea.</param>
+      <exception cref="T:System.ObjectDisposedException">Se desecha el sistema de escritura de cadenas.</exception>
+      <exception cref="T:System.InvalidOperationException">El sistema de escritura de cadenas está actualmente en uso por una operación de escritura anterior. </exception>
+    </member>
+    <member name="T:System.IO.TextReader">
+      <summary>Representa un lector que puede leer una serie secuencial de caracteres.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.TextReader" />.</summary>
+    </member>
+    <member name="M:System.IO.TextReader.Dispose">
+      <summary>Libera todos los recursos utilizados por el objeto <see cref="T:System.IO.TextReader" />.</summary>
+    </member>
+    <member name="M:System.IO.TextReader.Dispose(System.Boolean)">
+      <summary>Libera los recursos no administrados que usa <see cref="T:System.IO.TextReader" /> y libera los recursos administrados de forma opcional.</summary>
+      <param name="disposing">Es true si se van a liberar los recursos administrados y no administrados; es false si se van a liberar únicamente los recursos no administrados. </param>
+    </member>
+    <member name="F:System.IO.TextReader.Null">
+      <summary>Proporciona un TextReader sin datos del que leer.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.Peek">
+      <summary>Lee el siguiente carácter sin modificar el estado del sistema de lectura o el origen del carácter.Devuelve el siguiente carácter disponible sin leerlo realmente del lector.</summary>
+      <returns>Un entero que representa el siguiente carácter que se va a leer, o -1 si no hay más caracteres disponibles o si el lector no admite la operación de búsqueda.</returns>
+      <exception cref="T:System.ObjectDisposedException">El objeto <see cref="T:System.IO.TextReader" /> está cerrado. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.Read">
+      <summary>Lee el siguiente carácter en el lector de texto y hace avanzar la posición de los caracteres en un carácter.</summary>
+      <returns>Carácter siguiente del lector de texto o -1 si no hay más caracteres disponibles.La implementación predeterminada devuelve -1.</returns>
+      <exception cref="T:System.ObjectDisposedException">El objeto <see cref="T:System.IO.TextReader" /> está cerrado. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.Read(System.Char[],System.Int32,System.Int32)">
+      <summary>Lee un número máximo de caracteres especificado en el lector actual y escribe los datos en un búfer, comenzando en el índice especificado.</summary>
+      <returns>Número de caracteres que se han leído.Este número será menor o igual que <paramref name="count" />, en función de si los datos están disponibles dentro del lector.Este método devuelve 0 (cero) si se llama cuando no quedan más caracteres para leer.</returns>
+      <param name="buffer">Cuando este método finaliza, contiene la matriz de caracteres especificada con valores entre <paramref name="index" /> e (<paramref name="index" /> + <paramref name="count" /> - 1) reemplazada con los caracteres leídos del origen actual. </param>
+      <param name="index">Lugar de <paramref name="buffer" /> en el que comenzará la escritura. </param>
+      <param name="count">Número máximo de caracteres que se van a leer.Si el final del lector se alcanza antes de escribir el número de caracteres especificado en el búfer, el método vuelve.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="buffer" /> es null. </exception>
+      <exception cref="T:System.ArgumentException">La longitud del búfer menos <paramref name="index" /> es menor que <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="index" /> o <paramref name="count" /> es negativo. </exception>
+      <exception cref="T:System.ObjectDisposedException">El objeto <see cref="T:System.IO.TextReader" /> está cerrado. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.ReadAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Lee un número máximo de caracteres especificado en el lector de texto actual de forma asincrónica y escribe los datos en un búfer, comenzando en el índice especificado. </summary>
+      <returns>Tarea que representa la operación de lectura asincrónica.El valor del parámetro <paramref name="TResult" /> contiene el número total de bytes leídos en el búfer.El valor del resultado puede ser menor que el número de bytes solicitados si el número de bytes disponibles actualmente es menor que el número solicitado o puede ser 0 (cero) si se ha llegado al final del texto.</returns>
+      <param name="buffer">Cuando este método finaliza, contiene la matriz de caracteres especificada con valores entre <paramref name="index" /> e (<paramref name="index" /> + <paramref name="count" /> - 1) reemplazada con los caracteres leídos del origen actual.</param>
+      <param name="index">Lugar de <paramref name="buffer" /> en el que comenzará la escritura.</param>
+      <param name="count">Número máximo de caracteres que se van a leer.Si el final del texto se alcanza antes de leer el número de caracteres especificado en el búfer, el método actual vuelve.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="buffer" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="index" /> o <paramref name="count" /> es negativo.</exception>
+      <exception cref="T:System.ArgumentException">La suma de <paramref name="index" /> y <paramref name="count" /> es mayor que la longitud del búfer.</exception>
+      <exception cref="T:System.ObjectDisposedException">Se ha desechado el lector de texto.</exception>
+      <exception cref="T:System.InvalidOperationException">El lector está actualmente en uso por una operación de lectura anterior. </exception>
+    </member>
+    <member name="M:System.IO.TextReader.ReadBlock(System.Char[],System.Int32,System.Int32)">
+      <summary>Lee un número máximo de caracteres especificado en el lector de texto actual y escribe los datos en un búfer, comenzando en el índice especificado.</summary>
+      <returns>Número de caracteres que se han leído.Este número será menor o igual que <paramref name="count" />, en función de si se han leído todos los caracteres de entrada.</returns>
+      <param name="buffer">Cuando este método finaliza, este parámetro contiene la matriz de caracteres especificada con valores entre <paramref name="index" /> e (<paramref name="index" /> + <paramref name="count" /> -1) reemplazada con los caracteres leídos del origen actual. </param>
+      <param name="index">Lugar de <paramref name="buffer" /> en el que comenzará la escritura.</param>
+      <param name="count">Número máximo de caracteres que se van a leer. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="buffer" /> es null. </exception>
+      <exception cref="T:System.ArgumentException">La longitud del búfer menos <paramref name="index" /> es menor que <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="index" /> o <paramref name="count" /> es negativo. </exception>
+      <exception cref="T:System.ObjectDisposedException">El objeto <see cref="T:System.IO.TextReader" /> está cerrado. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.ReadBlockAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Lee un número máximo de caracteres especificado en el lector de texto actual de forma asincrónica y escribe los datos en un búfer, comenzando en el índice especificado.</summary>
+      <returns>Tarea que representa la operación de lectura asincrónica.El valor del parámetro <paramref name="TResult" /> contiene el número total de bytes leídos en el búfer.El valor del resultado puede ser menor que el número de bytes solicitados si el número de bytes disponibles actualmente es menor que el número solicitado o puede ser 0 (cero) si se ha llegado al final del texto.</returns>
+      <param name="buffer">Cuando este método finaliza, contiene la matriz de caracteres especificada con valores entre <paramref name="index" /> e (<paramref name="index" /> + <paramref name="count" /> - 1) reemplazada con los caracteres leídos del origen actual.</param>
+      <param name="index">Lugar de <paramref name="buffer" /> en el que comenzará la escritura.</param>
+      <param name="count">Número máximo de caracteres que se van a leer.Si el final del texto se alcanza antes de leer el número de caracteres especificado en el búfer, el método actual vuelve.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="buffer" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="index" /> o <paramref name="count" /> es negativo.</exception>
+      <exception cref="T:System.ArgumentException">La suma de <paramref name="index" /> y <paramref name="count" /> es mayor que la longitud del búfer.</exception>
+      <exception cref="T:System.ObjectDisposedException">Se ha desechado el lector de texto.</exception>
+      <exception cref="T:System.InvalidOperationException">El lector está actualmente en uso por una operación de lectura anterior. </exception>
+    </member>
+    <member name="M:System.IO.TextReader.ReadLine">
+      <summary>Lee una línea de caracteres del lector de texto y devuelve los datos como una cadena.</summary>
+      <returns>Línea siguiente del lector o null si se han leído todos los caracteres.</returns>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.OutOfMemoryException">No hay memoria suficiente como para asignar un búfer a la cadena devuelta. </exception>
+      <exception cref="T:System.ObjectDisposedException">El objeto <see cref="T:System.IO.TextReader" /> está cerrado. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El número de caracteres de la siguiente línea es mayor que <see cref="F:System.Int32.MaxValue" /></exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.ReadLineAsync">
+      <summary>Lee de forma asincrónica una línea de caracteres y devuelve los datos como una cadena. </summary>
+      <returns>Tarea que representa la operación de lectura asincrónica.El valor del parámetro <paramref name="TResult" /> contiene la línea siguiente del lector de texto, o es null si se han leído todos los caracteres.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">El número de caracteres de la siguiente línea es mayor que <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">Se ha desechado el lector de texto.</exception>
+      <exception cref="T:System.InvalidOperationException">El lector está actualmente en uso por una operación de lectura anterior. </exception>
+    </member>
+    <member name="M:System.IO.TextReader.ReadToEnd">
+      <summary>Lee todos los caracteres desde la posición actual hasta el final del lector de texto y los devuelve como una cadena.</summary>
+      <returns>Cadena que contiene todos los caracteres desde la posición actual hasta el final del lector.</returns>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.ObjectDisposedException">El objeto <see cref="T:System.IO.TextReader" /> está cerrado. </exception>
+      <exception cref="T:System.OutOfMemoryException">No hay memoria suficiente como para asignar un búfer a la cadena devuelta. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El número de caracteres de la siguiente línea es mayor que <see cref="F:System.Int32.MaxValue" /></exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.ReadToEndAsync">
+      <summary>Lee de forma asincrónica todos los caracteres desde la posición actual hasta el final del lector de texto y los devuelve como una cadena.</summary>
+      <returns>Tarea que representa la operación de lectura asincrónica.El valor del parámetro <paramref name="TResult" /> contiene una cadena con los caracteres desde la posición actual hasta el final del lector de texto.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">El número de caracteres es mayor que <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">Se ha desechado el lector de texto.</exception>
+      <exception cref="T:System.InvalidOperationException">El lector está actualmente en uso por una operación de lectura anterior. </exception>
+    </member>
+    <member name="T:System.IO.TextWriter">
+      <summary>Representa un sistema de escritura que puede escribir una serie secuencial de caracteres.Esta clase es abstracta.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.TextWriter" />.</summary>
+    </member>
+    <member name="M:System.IO.TextWriter.#ctor(System.IFormatProvider)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.IO.TextWriter" /> con el control de formato especificado.</summary>
+      <param name="formatProvider">Objeto <see cref="T:System.IFormatProvider" /> que controla las operaciones de formato. </param>
+    </member>
+    <member name="F:System.IO.TextWriter.CoreNewLine">
+      <summary>Almacena los caracteres de nueva línea usados para el TextWriter.</summary>
+    </member>
+    <member name="M:System.IO.TextWriter.Dispose">
+      <summary>Libera todos los recursos utilizados por el objeto <see cref="T:System.IO.TextWriter" />.</summary>
+    </member>
+    <member name="M:System.IO.TextWriter.Dispose(System.Boolean)">
+      <summary>Libera los recursos no administrados que usa <see cref="T:System.IO.TextWriter" /> y libera los recursos administrados de forma opcional.</summary>
+      <param name="disposing">Es true para liberar tanto recursos administrados como no administrados; es false para liberar únicamente recursos no administrados. </param>
+    </member>
+    <member name="P:System.IO.TextWriter.Encoding">
+      <summary>Cuando se reemplaza en una clase derivada, devuelve la codificación de caracteres en que se escribe el resultado.</summary>
+      <returns>Codificación de caracteres donde se escriben los resultados.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Flush">
+      <summary>Borra todos los búferes del sistema de escritura actual y hace que todos los datos almacenados en el búfer se escriban en el dispositivo subyacente.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.FlushAsync">
+      <summary>Borra asincrónicamente todos los búferes del sistema de escritura actual y hace que todos los datos almacenados en el búfer se escriban en el dispositivo subyacente. </summary>
+      <returns>Tarea que representa la operación de vaciado asincrónico. </returns>
+      <exception cref="T:System.ObjectDisposedException">Se desecha el sistema de escritura de texto.</exception>
+      <exception cref="T:System.InvalidOperationException">El sistema de escritura está actualmente en uso por una operación de escritura anterior. </exception>
+    </member>
+    <member name="P:System.IO.TextWriter.FormatProvider">
+      <summary>Obtiene un objeto que controla las operaciones de formato.</summary>
+      <returns>Objeto <see cref="T:System.IFormatProvider" /> para una referencia cultural específica o para las operaciones de formato de la referencia cultural actual si no se especificó otra referencia cultural.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.TextWriter.NewLine">
+      <summary>Obtiene o establece la cadena de terminador de línea usada por el TextWriter actual.</summary>
+      <returns>Cadena de terminador de línea para el TextWriter actual.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.TextWriter.Null">
+      <summary>Proporciona un TextWriter sin memoria auxiliar, en el que se puede escribir pero no se puede leer.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Boolean)">
+      <summary>Escribe la representación de texto de un valor Boolean en la cadena o secuencia de texto.</summary>
+      <param name="value">Valor Boolean que se va a escribir. </param>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Char)">
+      <summary>Escribe un carácter en la cadena o secuencia de texto.</summary>
+      <param name="value">Carácter que se va a escribir en la secuencia de texto. </param>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Char[])">
+      <summary>Escribe una matriz de caracteres en la cadena o secuencia de texto.</summary>
+      <param name="buffer">Matriz de caracteres que se va a escribir en la secuencia de texto. </param>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Char[],System.Int32,System.Int32)">
+      <summary>Escribe una submatriz de caracteres en la cadena o secuencia de texto.</summary>
+      <param name="buffer">Matriz de caracteres de la que se escriben los datos. </param>
+      <param name="index">Posición del carácter en el búfer donde comenzar la recuperación de datos. </param>
+      <param name="count">Número de caracteres que se van a escribir. </param>
+      <exception cref="T:System.ArgumentException">La longitud del búfer menos <paramref name="index" /> es menor que <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentNullException">El parámetro <paramref name="buffer" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> o <paramref name="count" /> es negativo. </exception>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Decimal)">
+      <summary>Escribe la representación de texto de un valor decimal en la cadena o secuencia de texto.</summary>
+      <param name="value">Valor decimal que se va a escribir. </param>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Double)">
+      <summary>Escribe la representación de texto de un valor de punto flotante de 8 bytes en la cadena o secuencia de texto.</summary>
+      <param name="value">Valor de punto flotante de 8 bytes que se va a escribir. </param>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Int32)">
+      <summary>Escribe la representación de texto de un entero con signo de 4 bytes en la cadena o secuencia de texto.</summary>
+      <param name="value">Entero de 4 bytes con signo que se va a escribir. </param>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Int64)">
+      <summary>Escribe la representación de texto de un entero con signo de 8 bytes en la cadena o secuencia de texto.</summary>
+      <param name="value">Entero de 8 bytes con signo que se va a escribir. </param>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Object)">
+      <summary>Escribe la representación de texto de un objeto en la cadena o secuencia de texto mediante una llamada al método ToString en ese objeto.</summary>
+      <param name="value">Objeto que se va a escribir. </param>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Single)">
+      <summary>Escribe la representación de texto de un valor de punto flotante de 4 bytes en la cadena o secuencia de texto.</summary>
+      <param name="value">Valor de punto flotante de 4 bytes que se va a escribir. </param>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.String)">
+      <summary>Escribe una cadena en la cadena o secuencia de texto.</summary>
+      <param name="value">Cadena que se va a escribir. </param>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.String,System.Object)">
+      <summary>Escribe una cadena con formato en la cadena de texto o en la secuencia, con la misma semántica que el método de <see cref="M:System.String.Format(System.String,System.Object)" />.</summary>
+      <param name="format">Cadena de formato compuesto (vea Comentarios). </param>
+      <param name="arg0">El objeto al que se va a dar formato y escribir. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="format" /> es null. </exception>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> no es una cadena de formato compuesto válido.o bien El índice de un elemento de formato es menor que 0 (cero), o mayor o igual que el número de objetos a los que se va a dar formato (que, para esta sobrecarga del método, es uno). </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.String,System.Object,System.Object)">
+      <summary>Escribe una cadena con formato en la cadena de texto o en la secuencia, con la misma semántica que el método de <see cref="M:System.String.Format(System.String,System.Object,System.Object)" />.</summary>
+      <param name="format">Cadena de formato compuesto (vea Comentarios). </param>
+      <param name="arg0">Primer objeto al que se va a dar formato y escribir. </param>
+      <param name="arg1">Segundo objeto al que se va a dar formato y escribir. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="format" /> es null. </exception>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> no es una cadena de formato compuesto válido.o bien El índice de un elemento de formato es menor que 0 (cero) o mayor o igual que el número de objetos a los que se va a dar formato (que, para esta sobrecarga del método, es dos). </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.String,System.Object,System.Object,System.Object)">
+      <summary>Escribe una cadena con formato en la cadena de texto o en la secuencia, con la misma semántica que el método de <see cref="M:System.String.Format(System.String,System.Object,System.Object,System.Object)" />.</summary>
+      <param name="format">Cadena de formato compuesto (vea Comentarios). </param>
+      <param name="arg0">Primer objeto al que se va a dar formato y escribir. </param>
+      <param name="arg1">Segundo objeto al que se va a dar formato y escribir. </param>
+      <param name="arg2">Tercer objeto al que se va a dar formato y escribir. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="format" /> es null. </exception>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> no es una cadena de formato compuesto válido.o bien El índice de un elemento de formato es menor que 0 (cero), o mayor o igual que el número de objetos a los que se va a dar formato (que, para esta sobrecarga del método, es tres). </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.String,System.Object[])">
+      <summary>Escribe una cadena con formato en la cadena de texto o en la secuencia, con la misma semántica que el método de <see cref="M:System.String.Format(System.String,System.Object[])" />.</summary>
+      <param name="format">Cadena de formato compuesto (vea Comentarios). </param>
+      <param name="arg">Matriz de objetos que contiene cero o más objetos a los que se va a aplicar formato y escribir. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="format" /> o <paramref name="arg" /> es null. </exception>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> no es una cadena de formato compuesto válido.o bien El índice de un elemento de formato es menor que 0 (cero), o mayor o igual que la longitud de la <paramref name="arg" /> matriz. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.UInt32)">
+      <summary>Escribe la representación de texto de un entero sin signo de 4 bytes en la cadena o secuencia de texto.</summary>
+      <param name="value">Entero de 4 bytes sin signo que se va a escribir. </param>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.UInt64)">
+      <summary>Escribe la representación de texto de un entero sin signo de 8 bytes en la cadena o secuencia de texto.</summary>
+      <param name="value">Entero de 8 bytes sin signo que se va a escribir. </param>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteAsync(System.Char)">
+      <summary>Escribe un carácter en la cadena o secuencia de texto de forma asincrónica.</summary>
+      <returns>Tarea que representa la operación de escritura asincrónica.</returns>
+      <param name="value">Carácter que se va a escribir en la secuencia de texto.</param>
+      <exception cref="T:System.ObjectDisposedException">Se desecha el sistema de escritura de texto.</exception>
+      <exception cref="T:System.InvalidOperationException">El sistema de escritura de texto está actualmente en uso por una operación de escritura anterior. </exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteAsync(System.Char[])">
+      <summary>Escribe una matriz de caracteres en la cadena o secuencia de texto de forma asincrónica.</summary>
+      <returns>Tarea que representa la operación de escritura asincrónica.</returns>
+      <param name="buffer">Matriz de caracteres que se va a escribir en la secuencia de texto.Si <paramref name="buffer" /> es null, no se escribe nada.</param>
+      <exception cref="T:System.ObjectDisposedException">Se desecha el sistema de escritura de texto.</exception>
+      <exception cref="T:System.InvalidOperationException">El sistema de escritura de texto está actualmente en uso por una operación de escritura anterior. </exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Escribe una submatriz de caracteres en la cadena o secuencia de texto de forma asincrónica. </summary>
+      <returns>Tarea que representa la operación de escritura asincrónica.</returns>
+      <param name="buffer">Matriz de caracteres de la que se escriben los datos. </param>
+      <param name="index">Posición del carácter en el búfer donde comenzar la recuperación de datos. </param>
+      <param name="count">Número de caracteres que se van a escribir. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="buffer" /> es null.</exception>
+      <exception cref="T:System.ArgumentException">El <paramref name="index" /> plus <paramref name="count" /> es mayor que la longitud del búfer.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> o <paramref name="count" /> es negativo.</exception>
+      <exception cref="T:System.ObjectDisposedException">Se desecha el sistema de escritura de texto.</exception>
+      <exception cref="T:System.InvalidOperationException">El sistema de escritura de texto está actualmente en uso por una operación de escritura anterior. </exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteAsync(System.String)">
+      <summary>Escribe una cadena en la cadena o secuencia de texto de forma asincrónica.</summary>
+      <returns>Tarea que representa la operación de escritura asincrónica. </returns>
+      <param name="value">Cadena que se va a escribir.Si <paramref name="value" /> es null, no se escribirá nada en la secuencia de texto.</param>
+      <exception cref="T:System.ObjectDisposedException">Se desecha el sistema de escritura de texto.</exception>
+      <exception cref="T:System.InvalidOperationException">El sistema de escritura de texto está actualmente en uso por una operación de escritura anterior. </exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine">
+      <summary>Escribe un terminador de línea en la cadena o secuencia.</summary>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Boolean)">
+      <summary>Escribe la representación de texto de un valor Boolean seguida de un terminador de línea en la cadena o secuencia de texto.</summary>
+      <param name="value">Valor Boolean que se va a escribir. </param>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Char)">
+      <summary>Escribe un carácter seguido de un terminador en la cadena o la secuencia de texto.</summary>
+      <param name="value">Carácter que se va a escribir en la secuencia de texto. </param>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Char[])">
+      <summary>Escribe una matriz de caracteres seguida de un terminador de línea en la cadena o secuencia de texto.</summary>
+      <param name="buffer">Matriz de caracteres de la que se leen los datos. </param>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Char[],System.Int32,System.Int32)">
+      <summary>Escribe una submatriz de caracteres seguida de un terminador de línea en la cadena o secuencia de texto.</summary>
+      <param name="buffer">Matriz de caracteres de la que se leen los datos. </param>
+      <param name="index">Posición del carácter en <paramref name="buffer" /> donde comenzar a leer datos. </param>
+      <param name="count">Número máximo de caracteres que se van a escribir. </param>
+      <exception cref="T:System.ArgumentException">La longitud del búfer menos <paramref name="index" /> es menor que <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentNullException">El parámetro <paramref name="buffer" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> o <paramref name="count" /> es negativo. </exception>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Decimal)">
+      <summary>Escribe la representación de texto de un valor decimal seguida de un terminador de línea en la cadena o secuencia de texto.</summary>
+      <param name="value">Valor decimal que se va a escribir. </param>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Double)">
+      <summary>Escribe la representación de texto de un valor de punto flotante de 8 bytes seguida de un terminador de línea en la cadena o secuencia de texto.</summary>
+      <param name="value">Valor de punto flotante de 8 bytes que se va a escribir. </param>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Int32)">
+      <summary>Escribe la representación de texto de un entero con signo de 4 bytes seguida de un terminador de línea en la cadena o secuencia de texto.</summary>
+      <param name="value">Entero de 4 bytes con signo que se va a escribir. </param>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Int64)">
+      <summary>Escribe la representación de texto de un entero con signo de 8 bytes seguida de un terminador de línea en la cadena o secuencia de texto.</summary>
+      <param name="value">Entero de 8 bytes con signo que se va a escribir. </param>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Object)">
+      <summary>Escribe la representación de texto de un objeto mediante una llamada al método ToString en ese objeto, seguida de un terminador de línea en la cadena o secuencia de texto.</summary>
+      <param name="value">Objeto que se va a escribir.Si <paramref name="value" /> es null, sólo se escribe el terminador de línea.</param>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Single)">
+      <summary>Escribe la representación de texto de un valor de punto flotante de 4 bytes seguida de un terminador de línea en la cadena o secuencia de texto.</summary>
+      <param name="value">Valor de punto flotante de 4 bytes que se va a escribir. </param>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.String)">
+      <summary>Escribe una cadena seguida de un terminador en la cadena o la secuencia de texto.</summary>
+      <param name="value">Cadena que se va a escribir.Si <paramref name="value" /> es null, sólo se escribe el terminador de línea.</param>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.String,System.Object)">
+      <summary>Escribe una cadena con formato y una nueva línea en la cadena de texto o a la secuencia, con la misma semántica que el método de <see cref="M:System.String.Format(System.String,System.Object)" />.</summary>
+      <param name="format">Cadena de formato compuesto (vea Comentarios).</param>
+      <param name="arg0">El objeto al que se va a dar formato y escribir. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="format" /> es null. </exception>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> no es una cadena de formato compuesto válido.o bien El índice de un elemento de formato es menor que 0 (cero), o mayor o igual que el número de objetos a los que se va a dar formato (que, para esta sobrecarga del método, es uno). </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.String,System.Object,System.Object)">
+      <summary>Escribe una cadena con formato y una nueva línea en la cadena de texto o a la secuencia, con la misma semántica que el método de <see cref="M:System.String.Format(System.String,System.Object,System.Object)" />.</summary>
+      <param name="format">Cadena de formato compuesto (vea Comentarios).</param>
+      <param name="arg0">Primer objeto al que se va a dar formato y escribir. </param>
+      <param name="arg1">Segundo objeto al que se va a dar formato y escribir. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="format" /> es null. </exception>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> no es una cadena de formato compuesto válido.o bien El índice de un elemento de formato es menor que 0 (cero), o mayor o igual que el número de objetos a los que se va a dar formato (que, para esta sobrecarga del método, es dos). </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.String,System.Object,System.Object,System.Object)">
+      <summary>Escribe una cadena con formato y una nueva línea usando la misma semántica que <see cref="M:System.String.Format(System.String,System.Object)" />.</summary>
+      <param name="format">Cadena de formato compuesto (vea Comentarios).</param>
+      <param name="arg0">Primer objeto al que se va a dar formato y escribir. </param>
+      <param name="arg1">Segundo objeto al que se va a dar formato y escribir. </param>
+      <param name="arg2">Tercer objeto al que se va a dar formato y escribir. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="format" /> es null. </exception>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> no es una cadena de formato compuesto válido.o bien El índice de un elemento de formato es menor que 0 (cero), o mayor o igual que el número de objetos a los que se va a dar formato (que, para esta sobrecarga del método, es tres). </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.String,System.Object[])">
+      <summary>Escribe una cadena con formato y una nueva línea usando la misma semántica que <see cref="M:System.String.Format(System.String,System.Object)" />.</summary>
+      <param name="format">Cadena de formato compuesto (vea Comentarios).</param>
+      <param name="arg">Matriz de objetos que contiene cero o más objetos a los que se va a aplicar formato y escribir. </param>
+      <exception cref="T:System.ArgumentNullException">Una cadena u objeto se pasa como null. </exception>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> no es una cadena de formato compuesto válido.o bien El índice de un elemento de formato es menor que 0 (cero), o mayor o igual que la longitud de la <paramref name="arg" /> matriz. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.UInt32)">
+      <summary>Escribe la representación de texto de un entero sin signo de 4 bytes seguida de un terminador de línea en la cadena o secuencia de texto.</summary>
+      <param name="value">Entero de 4 bytes sin signo que se va a escribir. </param>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.UInt64)">
+      <summary>Escribe la representación de texto de un entero sin signo de 8 bytes seguida de un terminador de línea en la cadena o secuencia de texto.</summary>
+      <param name="value">Entero de 8 bytes sin signo que se va a escribir. </param>
+      <exception cref="T:System.ObjectDisposedException">El <see cref="T:System.IO.TextWriter" /> se cierra. </exception>
+      <exception cref="T:System.IO.IOException">Se produce un error de E/S. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLineAsync">
+      <summary>Escribe un terminador de línea en la cadena o secuencia de forma asincrónica.</summary>
+      <returns>Tarea que representa la operación de escritura asincrónica. </returns>
+      <exception cref="T:System.ObjectDisposedException">Se desecha el sistema de escritura de texto.</exception>
+      <exception cref="T:System.InvalidOperationException">El sistema de escritura de texto está actualmente en uso por una operación de escritura anterior. </exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLineAsync(System.Char)">
+      <summary>Escribe un carácter seguido de un terminador de forma asincrónica en la cadena o la secuencia de texto.</summary>
+      <returns>Tarea que representa la operación de escritura asincrónica.</returns>
+      <param name="value">Carácter que se va a escribir en la secuencia de texto.</param>
+      <exception cref="T:System.ObjectDisposedException">Se desecha el sistema de escritura de texto.</exception>
+      <exception cref="T:System.InvalidOperationException">El sistema de escritura de texto está actualmente en uso por una operación de escritura anterior. </exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLineAsync(System.Char[])">
+      <summary>Escribe una matriz de caracteres seguida de un terminador de línea de forma asincrónica en la cadena o secuencia de texto.</summary>
+      <returns>Tarea que representa la operación de escritura asincrónica.</returns>
+      <param name="buffer">Matriz de caracteres que se va a escribir en la secuencia de texto.Si la matriz de caracteres es null, sólo se escribe el terminador de línea.</param>
+      <exception cref="T:System.ObjectDisposedException">Se desecha el sistema de escritura de texto.</exception>
+      <exception cref="T:System.InvalidOperationException">El sistema de escritura de texto está actualmente en uso por una operación de escritura anterior. </exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLineAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Escribe una submatriz de caracteres seguida de un terminador de línea de forma asincrónica en la cadena o secuencia de texto.</summary>
+      <returns>Tarea que representa la operación de escritura asincrónica.</returns>
+      <param name="buffer">Matriz de caracteres de la que se escriben los datos. </param>
+      <param name="index">Posición del carácter en el búfer donde comenzar la recuperación de datos. </param>
+      <param name="count">Número de caracteres que se van a escribir. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="buffer" /> es null.</exception>
+      <exception cref="T:System.ArgumentException">El <paramref name="index" /> plus <paramref name="count" /> es mayor que la longitud del búfer.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> o <paramref name="count" /> es negativo.</exception>
+      <exception cref="T:System.ObjectDisposedException">Se desecha el sistema de escritura de texto.</exception>
+      <exception cref="T:System.InvalidOperationException">El sistema de escritura de texto está actualmente en uso por una operación de escritura anterior. </exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLineAsync(System.String)">
+      <summary>Escribe una cadena seguido de un terminador de forma asincrónica en la cadena o la secuencia de texto. </summary>
+      <returns>Tarea que representa la operación de escritura asincrónica.</returns>
+      <param name="value">Cadena que se va a escribir.Si el valor es null, solo se escribe el terminador de línea.</param>
+      <exception cref="T:System.ObjectDisposedException">Se desecha el sistema de escritura de texto.</exception>
+      <exception cref="T:System.InvalidOperationException">El sistema de escritura de texto está actualmente en uso por una operación de escritura anterior. </exception>
+    </member>
+  </members>
+</doc>

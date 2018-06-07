@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Diagnostics.Tools</name>
+  </assembly>
+  <members>
+    <member name="T:System.CodeDom.Compiler.GeneratedCodeAttribute">
+      <summary>ツールで生成されたコードを識別します。このクラスは継承できません。</summary>
+    </member>
+    <member name="M:System.CodeDom.Compiler.GeneratedCodeAttribute.#ctor(System.String,System.String)">
+      <summary>コードを生成したツールの名前とバージョンを指定して、<see cref="T:System.CodeDom.Compiler.GeneratedCodeAttribute" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="tool">コードを生成したツールの名前。</param>
+      <param name="version">コードを生成したツールのバージョン。</param>
+    </member>
+    <member name="P:System.CodeDom.Compiler.GeneratedCodeAttribute.Tool">
+      <summary>コードを生成したツールの名前を取得します。</summary>
+      <returns>コードを生成したツールの名前。</returns>
+    </member>
+    <member name="P:System.CodeDom.Compiler.GeneratedCodeAttribute.Version">
+      <summary>コードを生成したツールのバージョンを取得します。</summary>
+      <returns>コードを生成したツールのバージョン。</returns>
+    </member>
+    <member name="T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute">
+      <summary>特定の静的分析ツール規則違反の報告を抑制します。1 つのコードで複数の抑制を実行できます。</summary>
+    </member>
+    <member name="M:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.#ctor(System.String,System.String)">
+      <summary>静的分析ツールのカテゴリおよび分析規則の識別子を指定して、<see cref="T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="category">属性のカテゴリ。</param>
+      <param name="checkId">属性が適用される分析ツール規則の識別子。</param>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Category">
+      <summary>属性の分類を識別するカテゴリを取得します。</summary>
+      <returns>属性を識別するカテゴリ。</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.CheckId">
+      <summary>抑制する静的分析ツール規則の識別子を取得します。</summary>
+      <returns>抑制する静的分析ツール規則の識別子。</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Justification">
+      <summary>コード分析メッセージの抑制に関する位置合わせを取得または設定します。</summary>
+      <returns>メッセージの抑制に対する位置合わせ。</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.MessageId">
+      <summary>除外条件を拡張するオプション引数を取得または設定します。</summary>
+      <returns>拡張された除外条件を格納する文字列。</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Scope">
+      <summary>属性に関係するコードのスコープを取得または設定します。</summary>
+      <returns>属性に関係するコードのスコープ。</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Target">
+      <summary>属性のターゲットを表す絶対パスを取得または設定します。</summary>
+      <returns>属性のターゲットを表す絶対パス。</returns>
+    </member>
+  </members>
+</doc>

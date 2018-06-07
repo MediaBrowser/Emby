@@ -1,0 +1,1167 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Reflection</name>
+  </assembly>
+  <members>
+    <member name="T:System.Reflection.AmbiguousMatchException">
+      <summary>メンバーへのバインド時に、バインディング基準に一致するメンバーが複数ある場合にスローされる例外。このクラスは継承できません。</summary>
+    </member>
+    <member name="M:System.Reflection.AmbiguousMatchException.#ctor">
+      <summary>空のメッセージ文字列を使用し、主要原因となる例外を null に設定して、<see cref="T:System.Reflection.AmbiguousMatchException" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Reflection.AmbiguousMatchException.#ctor(System.String)">
+      <summary>メッセージ文字列セットを特定のメッセージに、主要原因となる例外を null に設定して、<see cref="T:System.Reflection.AmbiguousMatchException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">この例外がスローされた原因を示す文字列。</param>
+    </member>
+    <member name="M:System.Reflection.AmbiguousMatchException.#ctor(System.String,System.Exception)">
+      <summary>指定したエラー メッセージと、この例外の原因である内部例外への参照を使用して、<see cref="T:System.Reflection.AmbiguousMatchException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">例外の原因を説明するエラー メッセージ。</param>
+      <param name="inner">現在の例外の原因である例外。<paramref name="inner" /> パラメーターが null ではない場合、現在の例外は内部例外を処理する catch ブロックで発生します。</param>
+    </member>
+    <member name="T:System.Reflection.Assembly">
+      <summary>再利用でき、バージョン管理可能で自己記述型の共通言語ランタイム アプリケーションのビルド ブロックであるアセンブリを表します。</summary>
+    </member>
+    <member name="P:System.Reflection.Assembly.CustomAttributes">
+      <summary>このアセンブリのカスタム属性を含むコレクションを取得します。</summary>
+      <returns>このアセンブリのカスタム属性を含むコレクション。</returns>
+    </member>
+    <member name="P:System.Reflection.Assembly.DefinedTypes">
+      <summary>このアセンブリで定義されている型のコレクションを取得します。</summary>
+      <returns>このアセンブリで定義されている型のコレクション。</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.Equals(System.Object)">
+      <summary>このアセンブリと指定したオブジェクトが等しいかどうかを判断します。</summary>
+      <returns>true がこのインスタンスと等しい場合は <paramref name="o" />。それ以外の場合は false。</returns>
+      <param name="o">このインスタンスと比較するオブジェクト。</param>
+    </member>
+    <member name="P:System.Reflection.Assembly.ExportedTypes">
+      <summary>アセンブリの外側で参照できる、このアセンブリ内で定義されているパブリック型のコレクションを取得します。</summary>
+      <returns>アセンブリの外側で参照できる、このアセンブリ内で定義されているパブリック型のコレクション。</returns>
+    </member>
+    <member name="P:System.Reflection.Assembly.FullName">
+      <summary>アセンブリの表示名を取得します。</summary>
+      <returns>アセンブリの表示名。</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetHashCode">
+      <summary>このインスタンスのハッシュ コードを返します。</summary>
+      <returns>32 ビット符号付き整数ハッシュ コード。</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetManifestResourceInfo(System.String)">
+      <summary>指定されたリソースが永続化された方法に関する情報を返します。</summary>
+      <returns>リソースのトポロジに関する情報が設定されたオブジェクト。リソースが見つからない場合は null。</returns>
+      <param name="resourceName">リソースの、大文字と小文字が区別される名前。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="resourceName" /> は null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="resourceName" /> パラメーターが空の文字列 ("") です。</exception>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetManifestResourceNames">
+      <summary>このアセンブリのすべてのリソースの名前を返します。</summary>
+      <returns>すべてのリソースの名前を格納している配列。</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetManifestResourceStream(System.String)">
+      <summary>このアセンブリから、指定されたマニフェスト リソースを読み込みます。</summary>
+      <returns>マニフェスト リソース。コンパイル時にリソースが指定されない場合や、リソースが呼び出し元から参照できない場合は null。</returns>
+      <param name="name">要求されているマニフェスト リソースの、大文字と小文字が区別される名前。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> パラメーターが null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> パラメーターが空の文字列 ("") です。</exception>
+      <exception cref="T:System.IO.FileLoadException">.NET for Windows Store apps または ポータブル クラス ライブラリ, 、基本クラスの例外をキャッチ <see cref="T:System.IO.IOException" />, 、代わりにします。見つかったファイルを読み込むことができませんでした。</exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="name" /> は見つかりませんでした。</exception>
+      <exception cref="T:System.BadImageFormatException">
+        <paramref name="name" /> が有効なアセンブリではありません。</exception>
+      <exception cref="T:System.NotImplementedException">リソースの長さが <see cref="F:System.Int64.MaxValue" /> より大きくなっています。</exception>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetName">
+      <summary>このアセンブリの <see cref="T:System.Reflection.AssemblyName" /> を取得します。</summary>
+      <returns>このアセンブリのすべて解析された表示名を格納するオブジェクト。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetType(System.String)">
+      <summary>指定した名前の <see cref="T:System.Type" /> オブジェクトを、アセンブリ インスタンスから取得します。</summary>
+      <returns>指定したクラスを表すオブジェクト。クラスが見つからない場合は null。</returns>
+      <param name="name">型の完全な名前。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> が無効です。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> は null です。</exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="name" /> に必要な依存アセンブリが見つかりませんでした。</exception>
+      <exception cref="T:System.IO.FileLoadException">.NET for Windows Store apps または ポータブル クラス ライブラリ, 、基本クラスの例外をキャッチ <see cref="T:System.IO.IOException" />, 、代わりにします。<paramref name="name" /> に必要な依存アセンブリは見つかりましたが、読み込むことができませんでした。または現在のアセンブリがリフレクションのみのコンテキストに読み込まれましたが、<paramref name="name" /> に必要な依存アセンブリがプリロードされませんでした。</exception>
+      <exception cref="T:System.BadImageFormatException">
+        <paramref name="name" /> は依存アセンブリが必要ですが、ファイルが有効なアセンブリではありません。または<paramref name="name" /> には、現在読み込まれているバージョンよりも新しいバージョンのランタイム用にコンパイルされた依存アセンブリが必要です。</exception>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetType(System.String,System.Boolean,System.Boolean)">
+      <summary>指定した名前の <see cref="T:System.Type" /> オブジェクトをアセンブリ インスタンスから取得します。オプションで、大文字と小文字の区別を無視したり、型が見つからない場合は例外をスローしたりできます。</summary>
+      <returns>指定されているクラスを表すオブジェクト。</returns>
+      <param name="name">型の完全な名前。</param>
+      <param name="throwOnError">型が見つからなかったときに例外をスローする場合は true。false を返す場合は null。</param>
+      <param name="ignoreCase">型名の大文字と小文字の違いを無視する場合は true。それ以外の場合は false。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> が無効です。または <paramref name="name" /> の長さが 1024 文字を超えています。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> は null です。</exception>
+      <exception cref="T:System.TypeLoadException">
+        <paramref name="throwOnError" /> が true であり、型を見つけることができません。</exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="name" /> に必要な依存アセンブリが見つかりませんでした。</exception>
+      <exception cref="T:System.IO.FileLoadException">
+        <paramref name="name" /> に必要な依存アセンブリは見つかりましたが、読み込むことができませんでした。または現在のアセンブリがリフレクションのみのコンテキストに読み込まれましたが、<paramref name="name" /> に必要な依存アセンブリがプリロードされませんでした。</exception>
+      <exception cref="T:System.BadImageFormatException">
+        <paramref name="name" /> は依存アセンブリが必要ですが、ファイルが有効なアセンブリではありません。または<paramref name="name" /> には、現在読み込まれているバージョンよりも新しいバージョンのランタイム用にコンパイルされた依存アセンブリが必要です。</exception>
+    </member>
+    <member name="P:System.Reflection.Assembly.IsDynamic">
+      <summary>現在のアセンブリが、現在のプロセスでリフレクション出力を使用して動的に生成されたかどうかを示す値を取得します。</summary>
+      <returns>現在のアセンブリが現在のプロセスで動的に生成された場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.Load(System.Reflection.AssemblyName)">
+      <summary>
+        <see cref="T:System.Reflection.AssemblyName" /> を指定してアセンブリを読み込みます。</summary>
+      <returns>読み込み済みのアセンブリ。</returns>
+      <param name="assemblyRef">読み込むアセンブリを記述するオブジェクト。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="assemblyRef" /> は null です。</exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="assemblyRef" /> が見つかりません。</exception>
+      <exception cref="T:System.IO.FileLoadException">.NET for Windows Store apps または ポータブル クラス ライブラリ, 、基本クラスの例外をキャッチ <see cref="T:System.IO.IOException" />, 、代わりにします。見つかったファイルを読み込むことができませんでした。</exception>
+      <exception cref="T:System.BadImageFormatException">
+        <paramref name="assemblyRef" /> が有効なアセンブリではありません。または現在、Version 2.0 以降の共通言語ランタイムが読み込まれていますが、それよりも新しいバージョンを使用して <paramref name="assemblyRef" /> がコンパイルされています。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="*AllFiles*" PathDiscovery="*AllFiles*" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Reflection.Assembly.ManifestModule">
+      <summary>現在のアセンブリのマニフェストを格納しているモジュールを取得します。</summary>
+      <returns>アセンブリのマニフェストを格納しているモジュール。</returns>
+    </member>
+    <member name="P:System.Reflection.Assembly.Modules">
+      <summary>このアセンブリ内のモジュールを含むコレクションを取得します。</summary>
+      <returns>このアセンブリのモジュールを含むコレクション。</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.ToString">
+      <summary>アセンブリの完全名を返します。この名前は表示名とも呼ばれます。</summary>
+      <returns>アセンブリの完全名。アセンブリの完全名を判断できない場合は、クラス名。</returns>
+    </member>
+    <member name="T:System.Reflection.AssemblyContentType">
+      <summary>アセンブリに含まれるコードの種類についての情報を提供します。</summary>
+    </member>
+    <member name="F:System.Reflection.AssemblyContentType.Default">
+      <summary>アセンブリはには .NET Framework のコードが含まれています。</summary>
+    </member>
+    <member name="F:System.Reflection.AssemblyContentType.WindowsRuntime">
+      <summary>Windows ランタイム コードを含むアセンブリ</summary>
+    </member>
+    <member name="T:System.Reflection.AssemblyName">
+      <summary>アセンブリの一意の ID を完全に記述します。</summary>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.#ctor">
+      <summary>
+        <see cref="T:System.Reflection.AssemblyName" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.#ctor(System.String)">
+      <summary>指定した表示名を使用して <see cref="T:System.Reflection.AssemblyName" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="assemblyName">
+        <see cref="P:System.Reflection.AssemblyName.FullName" /> プロパティによって返される、アセンブリの表示名。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="assemblyName" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="assemblyName" /> は、長さ 0 の文字列です。</exception>
+      <exception cref="T:System.IO.FileLoadException">Windows ストア アプリのための .NET または汎用性のあるクラス ライブラリで、基本クラスの例外 <see cref="T:System.IO.IOException" /> を代わりにキャッチします。参照アセンブリが見つからないか、読み込むことができませんでした。</exception>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.ContentType">
+      <summary>どのような種類のコンテンツがアセンブリに含まれているかを示す値を取得または設定します。</summary>
+      <returns>どのような種類のコンテンツがアセンブリに含まれているかを示す値。</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.CultureName">
+      <summary>アセンブリに関連付けられたカルチャの名前を取得または設定します。</summary>
+      <returns>カルチャ名。</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.Flags">
+      <summary>アセンブリの属性を取得または設定します。</summary>
+      <returns>アセンブリの属性を表す値。</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.FullName">
+      <summary>アセンブリの完全名を取得します。この名前は表示名とも呼ばれます。</summary>
+      <returns>アセンブリの完全名 (表示名) を表す文字列。</returns>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.GetPublicKey">
+      <summary>アセンブリの公開キーを取得します。</summary>
+      <returns>アセンブリの公開キーを格納するバイト配列。</returns>
+      <exception cref="T:System.Security.SecurityException">公開キーが提供されましたが (たとえば、<see cref="M:System.Reflection.AssemblyName.SetPublicKey(System.Byte[])" /> メソッドの使用により)、公開キー トークンが提供されていません。</exception>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.GetPublicKeyToken">
+      <summary>公開キー トークン (アプリケーションまたはアセンブリに署名するときに使用した公開キーの SHA-1 ハッシュの最後の 8 バイト) を取得します。</summary>
+      <returns>公開キー トークンを格納するバイト配列。</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.Name">
+      <summary>アセンブリの簡易名を取得または設定します。必ずそうとは限りませんが、これは通常、アセンブリのマニフェスト ファイルの名前から拡張子を取り除いたものになります。</summary>
+      <returns>アセンブリの簡易名。</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.ProcessorArchitecture">
+      <summary>実行可能ファイルの対象プラットフォームのプロセッサおよびワードあたりのビット数を識別する値を取得または設定します。</summary>
+      <returns>実行可能ファイルの対象プラットフォームのプロセッサおよびワードあたりのビット数を識別する列挙値のいずれか。</returns>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.SetPublicKey(System.Byte[])">
+      <summary>アセンブリを識別する公開キーを設定します。</summary>
+      <param name="publicKey">アセンブリの公開キーを保持しているバイト配列。</param>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.SetPublicKeyToken(System.Byte[])">
+      <summary>公開キー トークン (アプリケーションまたはアセンブリに署名するときに使用した公開キーの SHA-1 ハッシュの最後の 8 バイト) を設定します。</summary>
+      <param name="publicKeyToken">アセンブリの公開キー トークンを保持しているバイト配列。</param>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.ToString">
+      <summary>アセンブリの完全名を返します。この名前は表示名とも呼ばれます。</summary>
+      <returns>アセンブリの完全名。完全名を判断できない場合は、クラス名。</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.Version">
+      <summary>アセンブリのメジャー番号、マイナー番号、ビルド番号、リビジョン番号を取得または設定します。</summary>
+      <returns>アセンブリのメジャー番号、マイナー番号、ビルド番号、リビジョン番号を表すオブジェクト。</returns>
+    </member>
+    <member name="T:System.Reflection.ConstructorInfo">
+      <summary>クラス コンストラクターの属性を取得し、コンストラクターのメタデータにアクセスできるようにします。</summary>
+    </member>
+    <member name="F:System.Reflection.ConstructorInfo.ConstructorName">
+      <summary>メタデータに格納されているとおりにクラス コンストラクターのメソッドの名前を表します。この名前は常に ".ctor" です。このフィールドは読み取り専用です。</summary>
+    </member>
+    <member name="M:System.Reflection.ConstructorInfo.Equals(System.Object)">
+      <summary>このインスタンスが、指定したオブジェクトに等しいかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="obj" /> がこのインスタンスの型および値に等しい場合は true。それ以外の場合は false。</returns>
+      <param name="obj">対象のインスタンスと比較する対象のオブジェクト、または null。</param>
+    </member>
+    <member name="M:System.Reflection.ConstructorInfo.GetHashCode">
+      <summary>対象のインスタンスのハッシュ コードを返します。</summary>
+      <returns>32 ビット符号付き整数ハッシュ コード。</returns>
+    </member>
+    <member name="M:System.Reflection.ConstructorInfo.Invoke(System.Object[])">
+      <summary>指定されているパラメーターを持つインスタンスがリフレクションするコンストラクターを呼び出します。一般的には使用されないパラメーターには既定値が設定されます。</summary>
+      <returns>コンストラクターに関連付けられているクラスのインスタンス。</returns>
+      <param name="parameters">既定のバインダーの制約下で、このコンストラクターのパラメーターの数、順序、および型と一致する値の配列。このコンストラクターがパラメーターをとらない場合は、Object[] parameters = new Object[0] のように、要素がゼロ個の配列か null を使用します。この配列の中で、何らかの値で明示的に初期化されないオブジェクトには、そのオブジェクト型の既定値が格納されます。参照型の要素の場合、この値は null です。値型の要素の場合、この値は、実際の要素の型に応じて、0、0.0、または false となります。</param>
+      <exception cref="T:System.MemberAccessException">このクラスは抽象クラスです。またはこのコンストラクターはクラス初期化子です。</exception>
+      <exception cref="T:System.MethodAccessException">Windows ストア アプリのための .NET または汎用性のあるクラス ライブラリで、基本クラスの例外 <see cref="T:System.MemberAccessException" /> を代わりにキャッチします。このコンストラクターはプライベート コンストラクターまたはプロテクト コンストラクターであり、呼び出し元に <see cref="F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess" /> がありません。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="parameters" /> 配列には、このコンストラクターが受け入れる型と一致する値が含まれていません。</exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">呼び出されたコンストラクターが例外をスローしました。</exception>
+      <exception cref="T:System.Reflection.TargetParameterCountException">渡されたパラメーターの数が正しくありません。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <see cref="T:System.TypedReference" /> 型、<see cref="T:System.ArgIterator" /> 型、および <see cref="T:System.RuntimeArgumentHandle" /> 型の作成はサポートされません。</exception>
+      <exception cref="T:System.Security.SecurityException">呼び出し元に、必要なコード アクセス許可がありません。</exception>
+    </member>
+    <member name="F:System.Reflection.ConstructorInfo.TypeConstructorName">
+      <summary>メタデータに格納されているとおりに型コンストラクターのメソッドの名前を表します。この名前は常に ".cctor" です。このプロパティは読み取り専用です。</summary>
+    </member>
+    <member name="T:System.Reflection.CustomAttributeData">
+      <summary>リフレクションのみのコンテキストに読み込まれるアセンブリ、モジュール、型、メンバー、およびパラメーターのカスタム属性データにアクセスできるようにします。</summary>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeData.AttributeType">
+      <summary>属性の型を取得します。</summary>
+      <returns>属性の型。</returns>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeData.ConstructorArguments">
+      <summary>
+        <see cref="T:System.Reflection.CustomAttributeData" /> オブジェクトが表す属性インスタンスに対して指定された位置指定引数のリストを取得します。</summary>
+      <returns>カスタム属性インスタンスに対して指定された位置指定引数を表す構造体のコレクション。</returns>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeData.NamedArguments">
+      <summary>
+        <see cref="T:System.Reflection.CustomAttributeData" /> オブジェクトが表す属性インスタンスに対して指定された名前付き引数のリストを取得します。</summary>
+      <returns>カスタム属性インスタンスに対して指定された名前付き引数を表す構造体のコレクション。</returns>
+    </member>
+    <member name="T:System.Reflection.CustomAttributeNamedArgument">
+      <summary>リフレクションのみのコンテキストにおけるカスタム属性の名前付き引数を表します。</summary>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeNamedArgument.IsField">
+      <summary>名前付き引数がフィールドかどうかを示す値を取得します。</summary>
+      <returns>名前付き引数がフィールドの場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeNamedArgument.MemberName">
+      <summary>名前付き引数の設定に使用される属性メンバーを取得します。</summary>
+      <returns>名前付き引数の設定に使用される属性メンバー。</returns>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeNamedArgument.TypedValue">
+      <summary>現在の名前付き引数の型と値を取得するために使用できる <see cref="T:System.Reflection.CustomAttributeTypedArgument" /> 構造体を取得します。</summary>
+      <returns>現在の名前付き引数の型と値を取得するために使用できる構造体。</returns>
+    </member>
+    <member name="T:System.Reflection.CustomAttributeTypedArgument">
+      <summary>リフレクションのみのコンテキストにおけるカスタム属性の引数、または配列引数の要素を表します。</summary>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeTypedArgument.ArgumentType">
+      <summary>引数の型または配列引数要素の型を取得します。</summary>
+      <returns>引数の型または配列要素の型を表す <see cref="T:System.Type" /> オブジェクト。</returns>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeTypedArgument.Value">
+      <summary>単純な引数または配列引数の要素に対しては、引数の値を取得します。配列引数に対しては値のコレクションを取得します。</summary>
+      <returns>引数または要素の値を表すオブジェクト、または配列型引数の値を表す <see cref="T:System.Reflection.CustomAttributeTypedArgument" /> オブジェクトの汎用 <see cref="T:System.Collections.ObjectModel.ReadOnlyCollection`1" />。</returns>
+    </member>
+    <member name="T:System.Reflection.EventInfo">
+      <summary>イベントの属性を取得し、イベントのメタデータにアクセスできるようにします。</summary>
+    </member>
+    <member name="M:System.Reflection.EventInfo.AddEventHandler(System.Object,System.Delegate)">
+      <summary>イベント ハンドラーをイベント ソースに追加します。</summary>
+      <param name="target">イベント ソース。</param>
+      <param name="handler">イベント ソースがイベントを発生させるたびに呼び出されるメソッドをカプセル化します。</param>
+      <exception cref="T:System.InvalidOperationException">このイベントには、パブリックな add アクセサーがありません。</exception>
+      <exception cref="T:System.ArgumentException">渡されたハンドラーを使用できません。</exception>
+      <exception cref="T:System.MethodAccessException">Windows ストア アプリのための .NET または汎用性のあるクラス ライブラリで、基本クラスの例外 <see cref="T:System.MemberAccessException" /> を代わりにキャッチします。呼び出し元に、メンバーへのアクセス許可がありません。</exception>
+      <exception cref="T:System.Reflection.TargetException">Windows ストア アプリのための .NET または汎用性のあるクラス ライブラリで、<see cref="T:System.Exception" /> を代わりにキャッチします。<paramref name="target" /> パラメーターが null で、イベントが静的ではありません。または<see cref="T:System.Reflection.EventInfo" /> が対象で宣言されていません。</exception>
+    </member>
+    <member name="P:System.Reflection.EventInfo.AddMethod">
+      <summary>非パブリック メソッドを含む、イベントの <see cref="M:System.Reflection.EventInfo.AddEventHandler(System.Object,System.Delegate)" /> メソッドの <see cref="T:System.Reflection.MethodInfo" /> オブジェクトを取得します。</summary>
+      <returns>
+        <see cref="M:System.Reflection.EventInfo.AddEventHandler(System.Object,System.Delegate)" /> メソッドの <see cref="T:System.Reflection.MethodInfo" /> オブジェクト。</returns>
+    </member>
+    <member name="P:System.Reflection.EventInfo.Attributes">
+      <summary>このイベントの属性を取得します。</summary>
+      <returns>このイベントの読み取り専用属性。</returns>
+    </member>
+    <member name="M:System.Reflection.EventInfo.Equals(System.Object)">
+      <summary>このインスタンスが、指定したオブジェクトに等しいかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="obj" /> がこのインスタンスの型および値に等しい場合は true。それ以外の場合は false。</returns>
+      <param name="obj">対象のインスタンスと比較する対象のオブジェクト、または null。</param>
+    </member>
+    <member name="P:System.Reflection.EventInfo.EventHandlerType">
+      <summary>このイベントに関連付けられている基になるイベント ハンドラー デリゲートの Type オブジェクトを取得します。</summary>
+      <returns>デリゲート イベント ハンドラーを表す読み取り専用の Type オブジェクト。</returns>
+      <exception cref="T:System.Security.SecurityException">呼び出し元に、必要なアクセス許可がありません。</exception>
+    </member>
+    <member name="M:System.Reflection.EventInfo.GetHashCode">
+      <summary>対象のインスタンスのハッシュ コードを返します。</summary>
+      <returns>32 ビット符号付き整数ハッシュ コード。</returns>
+    </member>
+    <member name="P:System.Reflection.EventInfo.IsSpecialName">
+      <summary>EventInfo に特別な意味を持つ名前が指定されているかどうかを示す値を取得します。</summary>
+      <returns>このイベントに特別な名前が付けられている場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.EventInfo.RaiseMethod">
+      <summary>イベントの発生時に呼び出されるメソッドを、非パブリック メソッドも含めて取得します。</summary>
+      <returns>イベントの発生時に呼び出されるメソッド。</returns>
+    </member>
+    <member name="M:System.Reflection.EventInfo.RemoveEventHandler(System.Object,System.Delegate)">
+      <summary>イベント ハンドラーをイベント ソースから削除します。</summary>
+      <param name="target">イベント ソース。</param>
+      <param name="handler">ターゲットによって発生したイベントから関連付けを解除するデリゲート。</param>
+      <exception cref="T:System.InvalidOperationException">このイベントには、パブリックな remove アクセサーがありません。</exception>
+      <exception cref="T:System.ArgumentException">渡されたハンドラーを使用できません。</exception>
+      <exception cref="T:System.Reflection.TargetException">Windows ストア アプリのための .NET または汎用性のあるクラス ライブラリで、<see cref="T:System.Exception" /> を代わりにキャッチします。<paramref name="target" /> パラメーターが null で、イベントが静的ではありません。または<see cref="T:System.Reflection.EventInfo" /> が対象で宣言されていません。</exception>
+      <exception cref="T:System.MethodAccessException">Windows ストア アプリのための .NET または汎用性のあるクラス ライブラリで、基本クラスの例外 <see cref="T:System.MemberAccessException" /> を代わりにキャッチします。呼び出し元に、メンバーへのアクセス許可がありません。</exception>
+    </member>
+    <member name="P:System.Reflection.EventInfo.RemoveMethod">
+      <summary>非パブリック メソッドを含む、イベントのメソッドを削除するための MethodInfo オブジェクトを取得します。</summary>
+      <returns>イベントのメソッドを削除するための MethodInfo オブジェクト。</returns>
+    </member>
+    <member name="T:System.Reflection.FieldInfo">
+      <summary>フィールドの属性を取得し、フィールドのメタデータにアクセスできるようにします。</summary>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.Attributes">
+      <summary>このフィールドに関連付けられている属性を取得します。</summary>
+      <returns>このフィールドの FieldAttributes。</returns>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.Equals(System.Object)">
+      <summary>このインスタンスが、指定したオブジェクトに等しいかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="obj" /> がこのインスタンスの型および値に等しい場合は true。それ以外の場合は false。</returns>
+      <param name="obj">対象のインスタンスと比較する対象のオブジェクト、または null。</param>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.FieldType">
+      <summary>このフィールド オブジェクトの型を取得します。</summary>
+      <returns>このフィールド オブジェクトの型。</returns>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.GetFieldFromHandle(System.RuntimeFieldHandle)">
+      <summary>指定したハンドルが表すフィールドの <see cref="T:System.Reflection.FieldInfo" /> を取得します。</summary>
+      <returns>
+        <paramref name="handle" /> によって指定されたフィールドを表す <see cref="T:System.Reflection.FieldInfo" /> オブジェクト。</returns>
+      <param name="handle">フィールドの内部メタデータ形式を識別するハンドルを格納している <see cref="T:System.RuntimeFieldHandle" /> 構造体。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="handle" /> が無効です。</exception>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.GetFieldFromHandle(System.RuntimeFieldHandle,System.RuntimeTypeHandle)">
+      <summary>指定したジェネリック型に応じた、指定したハンドルが表すフィールドの <see cref="T:System.Reflection.FieldInfo" /> を取得します。</summary>
+      <returns>
+        <paramref name="declaringType" /> によって指定されたジェネリック型で、<paramref name="handle" /> によって指定されたフィールドを表す <see cref="T:System.Reflection.FieldInfo" /> オブジェクト。</returns>
+      <param name="handle">フィールドの内部メタデータ形式を識別するハンドルを格納している <see cref="T:System.RuntimeFieldHandle" /> 構造体。</param>
+      <param name="declaringType">フィールドを定義するジェネリック型を識別するハンドルを格納している <see cref="T:System.RuntimeTypeHandle" /> 構造体。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="handle" /> が無効です。または<paramref name="declaringType" /> は <paramref name="handle" /> と互換性がありません。たとえば、<paramref name="declaringType" /> はジェネリック型定義の実行時型ハンドルであり、<paramref name="handle" /> は構築された型に基づいています。「解説」を参照してください。</exception>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.GetHashCode">
+      <summary>対象のインスタンスのハッシュ コードを返します。</summary>
+      <returns>32 ビット符号付き整数ハッシュ コード。</returns>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.GetValue(System.Object)">
+      <summary>派生クラスによってオーバーライドされた場合、指定したオブジェクトでサポートされているフィールドの値を返します。</summary>
+      <returns>このインスタンスがリフレクションするフィールドの値を保持しているオブジェクト。</returns>
+      <param name="obj">フィールド値が返されるオブジェクト。</param>
+      <exception cref="T:System.Reflection.TargetException">Windows ストア アプリのための .NET または汎用性のあるクラス ライブラリで、<see cref="T:System.Exception" /> を代わりにキャッチします。フィールドが非静的で <paramref name="obj" /> が null です。</exception>
+      <exception cref="T:System.NotSupportedException">フィールドがリテラルとマークされていますが、フィールドは許可されたリテラル型を持っていません。</exception>
+      <exception cref="T:System.FieldAccessException">Windows ストア アプリのための .NET または汎用性のあるクラス ライブラリで、基本クラスの例外 <see cref="T:System.MemberAccessException" /> を代わりにキャッチします。呼び出し元に、このフィールドに対するアクセス許可がありません。</exception>
+      <exception cref="T:System.ArgumentException">メソッドが、<paramref name="obj" /> のクラスで宣言も継承もされていません。</exception>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsAssembly">
+      <summary>このフィールドを参照可能な範囲が <see cref="F:System.Reflection.FieldAttributes.Assembly" /> によって示されるかどうかを表す値を取得します。ここで判定されるのは、フィールドは同じアセンブリ内の他の型でのみ参照できる可能性があり、アセンブリ外部の派生型では参照できないということです。</summary>
+      <returns>このフィールドの参照範囲が <see cref="F:System.Reflection.FieldAttributes.Assembly" /> によって正しく示される場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsFamily">
+      <summary>このフィールドへの参照範囲が <see cref="F:System.Reflection.FieldAttributes.Family" /> によって示されるかどうかを表す値を取得します。ここで判定されるのは、フィールドはそのフィールドのクラスと派生クラスの内側でのみ参照できるということです。</summary>
+      <returns>このフィールドへのアクセスが <see cref="F:System.Reflection.FieldAttributes.Family" /> によって正しく示される場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsFamilyAndAssembly">
+      <summary>フィールドへの参照範囲が <see cref="F:System.Reflection.FieldAttributes.FamANDAssem" /> によって示されるかどうかを表す値を取得します。ここで判定されるのは、フィールドは派生クラスからアクセスできるが、それらのフィールドが同じアセンブリ内にある場合に限るものであることです。</summary>
+      <returns>このフィールドへのアクセスが <see cref="F:System.Reflection.FieldAttributes.FamANDAssem" /> によって正しく示される場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsFamilyOrAssembly">
+      <summary>このフィールドへの参照可能な範囲が <see cref="F:System.Reflection.FieldAttributes.FamORAssem" /> によって示されるかどうかを表す値を取得します。ここで判定されるのは、フィールドは任意の場所にある派生クラスと、同じアセンブリ内のクラスでアクセスできることです。</summary>
+      <returns>このフィールドへのアクセスが <see cref="F:System.Reflection.FieldAttributes.FamORAssem" /> によって正しく示される場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsInitOnly">
+      <summary>フィールドをコンストラクターの本体だけでしか設定できないのかどうかを示す値を取得します。</summary>
+      <returns>フィールドに InitOnly 属性が設定されている場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsLiteral">
+      <summary>値がコンパイル時に書き込まれ、変更できないかどうかを示す値を取得します。</summary>
+      <returns>フィールドに Literal 属性が設定されている場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsPrivate">
+      <summary>フィールドがプライベートかどうかを示す値を取得します。</summary>
+      <returns>フィールドがプライベートの場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsPublic">
+      <summary>フィールドがパブリックかどうかを示す値を取得します。</summary>
+      <returns>フィールドがパブリックの場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsSpecialName">
+      <summary>対応する SpecialName 属性が <see cref="T:System.Reflection.FieldAttributes" /> 列挙子に設定されているかどうかを示す値を取得します。</summary>
+      <returns>
+        <see cref="T:System.Reflection.FieldAttributes" /> に SpecialName 属性が設定されている場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsStatic">
+      <summary>フィールドが静的かどうかを示す値を取得します。</summary>
+      <returns>フィールドが静的な場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.SetValue(System.Object,System.Object)">
+      <summary>指定したオブジェクトでサポートされているフィールドの値を設定します。</summary>
+      <param name="obj">フィールド値が設定されるオブジェクト。</param>
+      <param name="value">フィールドに代入する値。</param>
+      <exception cref="T:System.FieldAccessException">Windows ストア アプリのための .NET または汎用性のあるクラス ライブラリで、基本クラスの例外 <see cref="T:System.MemberAccessException" /> を代わりにキャッチします。呼び出し元に、このフィールドに対するアクセス許可がありません。</exception>
+      <exception cref="T:System.Reflection.TargetException">Windows ストア アプリのための .NET または汎用性のあるクラス ライブラリで、<see cref="T:System.Exception" /> を代わりにキャッチします。<paramref name="obj" /> パラメーターが null で、フィールドがインスタンス フィールドです。</exception>
+      <exception cref="T:System.ArgumentException">フィールドがオブジェクト上に存在しません。または<paramref name="value" /> パラメーターを変換し、フィールドに格納できません。</exception>
+    </member>
+    <member name="T:System.Reflection.IntrospectionExtensions">
+      <summary>
+        <see cref="T:System.Type" /> オブジェクトを変換するためのメソッドを格納します。</summary>
+    </member>
+    <member name="M:System.Reflection.IntrospectionExtensions.GetTypeInfo(System.Type)">
+      <summary>指定された型の <see cref="T:System.Reflection.TypeInfo" /> 形式を返します。</summary>
+      <returns>変換後のオブジェクト。</returns>
+      <param name="type">変換する型。</param>
+    </member>
+    <member name="T:System.Reflection.IReflectableType">
+      <summary>反映できる型を表します。</summary>
+    </member>
+    <member name="M:System.Reflection.IReflectableType.GetTypeInfo">
+      <summary>この型を表すオブジェクトを取得します。</summary>
+      <returns>この型を表すオブジェクト。</returns>
+    </member>
+    <member name="T:System.Reflection.LocalVariableInfo">
+      <summary>ローカル変数の属性を取得し、ローカル変数のメタデータにアクセスできるようにします。</summary>
+    </member>
+    <member name="M:System.Reflection.LocalVariableInfo.#ctor">
+      <summary>
+        <see cref="T:System.Reflection.LocalVariableInfo" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="P:System.Reflection.LocalVariableInfo.IsPinned">
+      <summary>ローカル変数が参照するオブジェクトがメモリに固定されているかどうかを示す <see cref="T:System.Boolean" /> 値を取得します。</summary>
+      <returns>変数が参照するオブジェクトがメモリに固定されている場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.LocalVariableInfo.LocalIndex">
+      <summary>メソッド本体内のローカル変数のインデックスを取得します。</summary>
+      <returns>メソッド本体内のローカル変数の宣言順序を表す整数値。</returns>
+    </member>
+    <member name="P:System.Reflection.LocalVariableInfo.LocalType">
+      <summary>ローカル変数の型を取得します。</summary>
+      <returns>ローカル変数の型。</returns>
+    </member>
+    <member name="M:System.Reflection.LocalVariableInfo.ToString">
+      <summary>ユーザーが判読できる、ローカル変数を示す文字列を返します。</summary>
+      <returns>型名、インデックス、および固定状態などの、ローカル変数に関する情報を表示する文字列。</returns>
+    </member>
+    <member name="T:System.Reflection.ManifestResourceInfo">
+      <summary>マニフェスト リソースへのアクセスを提供します。これは、アプリケーションの依存関係を記述した XML ファイルです。</summary>
+    </member>
+    <member name="M:System.Reflection.ManifestResourceInfo.#ctor(System.Reflection.Assembly,System.String,System.Reflection.ResourceLocation)">
+      <summary>指定されたアセンブリおよびファイルに含まれ、指定された場所にあるリソースを表す <see cref="T:System.Reflection.ManifestResourceInfo" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="containingAssembly">マニフェスト リソースを格納しているアセンブリ。</param>
+      <param name="containingFileName">マニフェスト リソースを格納しているファイルの名前 (ファイルがマニフェスト ファイルと異なる場合)。</param>
+      <param name="resourceLocation">マニフェスト リソースの場所に関する情報を提供する列挙値のビットごとの組み合わせ。</param>
+    </member>
+    <member name="P:System.Reflection.ManifestResourceInfo.FileName">
+      <summary>マニフェスト リソースを格納しているファイルがマニフェスト ファイルと異なる場合、そのファイル名を取得します。</summary>
+      <returns>マニフェスト リソースのファイル名。</returns>
+    </member>
+    <member name="P:System.Reflection.ManifestResourceInfo.ReferencedAssembly">
+      <summary>マニフェスト リソースを格納しているアセンブリを取得します。</summary>
+      <returns>マニフェスト リソースを格納しているアセンブリ。</returns>
+    </member>
+    <member name="P:System.Reflection.ManifestResourceInfo.ResourceLocation">
+      <summary>マニフェスト リソースの場所を取得します。</summary>
+      <returns>マニフェスト リソースの場所を示す <see cref="T:System.Reflection.ResourceLocation" /> フラグのビットごとの組み合わせ。</returns>
+    </member>
+    <member name="T:System.Reflection.MemberInfo">
+      <summary>メンバーの属性に関する情報を取得し、メンバーのメタデータにアクセスできるようにします。</summary>
+    </member>
+    <member name="P:System.Reflection.MemberInfo.CustomAttributes">
+      <summary>このメンバーのカスタム属性を含むコレクションを取得します。</summary>
+      <returns>このメンバーのカスタム属性を含むコレクション。</returns>
+    </member>
+    <member name="P:System.Reflection.MemberInfo.DeclaringType">
+      <summary>このメンバーを宣言するクラスを取得します。</summary>
+      <returns>このメンバーを宣言するクラスの Type オブジェクト。</returns>
+    </member>
+    <member name="M:System.Reflection.MemberInfo.Equals(System.Object)">
+      <summary>このインスタンスが、指定したオブジェクトに等しいかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="obj" /> がこのインスタンスの型および値に等しい場合は true。それ以外の場合は false。</returns>
+      <param name="obj">対象のインスタンスと比較する対象のオブジェクト、または null。</param>
+    </member>
+    <member name="M:System.Reflection.MemberInfo.GetHashCode">
+      <summary>対象のインスタンスのハッシュ コードを返します。</summary>
+      <returns>32 ビット符号付き整数ハッシュ コード。</returns>
+    </member>
+    <member name="P:System.Reflection.MemberInfo.Module">
+      <summary>現在の <see cref="T:System.Reflection.MemberInfo" /> によって表されるメンバーを宣言する型が定義されているモジュールを取得します。</summary>
+      <returns>現在の <see cref="T:System.Reflection.MemberInfo" /> によって表されるメンバーを宣言する型が定義されている <see cref="T:System.Reflection.Module" />。</returns>
+      <exception cref="T:System.NotImplementedException">このメソッドは実装されていません。</exception>
+    </member>
+    <member name="P:System.Reflection.MemberInfo.Name">
+      <summary>現在のメンバーの名前を取得します。</summary>
+      <returns>このメンバーの名前を格納している <see cref="T:System.String" />。</returns>
+    </member>
+    <member name="T:System.Reflection.MethodBase">
+      <summary>メソッドとコンストラクターに関する情報を提供します。</summary>
+    </member>
+    <member name="P:System.Reflection.MethodBase.Attributes">
+      <summary>このメソッドに関連付けられている属性を取得します。</summary>
+      <returns>
+        <see cref="T:System.Reflection.MethodAttributes" /> 値のいずれか。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.CallingConvention">
+      <summary>このメソッドの呼び出し規約を示す値を取得します。</summary>
+      <returns>このメソッドの <see cref="T:System.Reflection.CallingConventions" />。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.ContainsGenericParameters">
+      <summary>ジェネリック メソッドに、割り当てられていないジェネリック型パラメーターが含まれているかどうかを示す値を取得します。</summary>
+      <returns>現在の <see cref="T:System.Reflection.MethodBase" /> オブジェクトが、割り当てられていないジェネリック型パラメーターを含むジェネリック メソッドを表している場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="M:System.Reflection.MethodBase.Equals(System.Object)">
+      <summary>このインスタンスが、指定したオブジェクトに等しいかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="obj" /> がこのインスタンスの型および値に等しい場合は true。それ以外の場合は false。</returns>
+      <param name="obj">対象のインスタンスと比較する対象のオブジェクト、または null。</param>
+    </member>
+    <member name="M:System.Reflection.MethodBase.GetGenericArguments">
+      <summary>ジェネリック メソッドの型引数、またはジェネリック メソッドの定義の型パラメーターを表す <see cref="T:System.Type" /> オブジェクトの配列を返します。</summary>
+      <returns>ジェネリック メソッドの型引数またはジェネリック メソッド定義の型パラメーターを表す <see cref="T:System.Type" /> オブジェクトの配列。現在のメソッドがジェネリック メソッドではない場合は、空の配列を返します。</returns>
+      <exception cref="T:System.NotSupportedException">現在のオブジェクトは <see cref="T:System.Reflection.ConstructorInfo" /> です。.NET Framework Version 2.0 では、ジェネリック コンストラクターはサポートされていません。このメソッドが派生クラスでオーバーライドされない場合、この例外は既定の動作です。</exception>
+    </member>
+    <member name="M:System.Reflection.MethodBase.GetHashCode">
+      <summary>対象のインスタンスのハッシュ コードを返します。</summary>
+      <returns>32 ビット符号付き整数ハッシュ コード。</returns>
+    </member>
+    <member name="M:System.Reflection.MethodBase.GetMethodFromHandle(System.RuntimeMethodHandle)">
+      <summary>メソッドの内部メタデータ表現 (ハンドル) を使用してメソッド情報を取得します。</summary>
+      <returns>メソッドの情報が格納されている MethodBase。</returns>
+      <param name="handle">メソッドのハンドル。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="handle" /> が無効です。</exception>
+    </member>
+    <member name="M:System.Reflection.MethodBase.GetMethodFromHandle(System.RuntimeMethodHandle,System.RuntimeTypeHandle)">
+      <summary>指定したジェネリック型の、指定したハンドルで表されるコンストラクターまたはメソッドの <see cref="T:System.Reflection.MethodBase" /> オブジェクトを取得します。</summary>
+      <returns>
+        <paramref name="declaringType" /> で指定したジェネリック型の、<paramref name="handle" /> で指定したメソッドまたはコンストラクターを表す <see cref="T:System.Reflection.MethodBase" /> オブジェクト。</returns>
+      <param name="handle">コンストラクターまたはメソッドの内部メタデータ形式を識別するハンドル。</param>
+      <param name="declaringType">コンストラクターまたはメソッドを定義するジェネリック型を識別するハンドル。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="handle" /> が無効です。</exception>
+    </member>
+    <member name="M:System.Reflection.MethodBase.GetParameters">
+      <summary>派生クラスによってオーバーライドされた場合に、指定したメソッドまたはコンストラクターのパラメーターを取得します。</summary>
+      <returns>この MethodBase インスタンスでリフレクションされたメソッド (またはコンストラクター) のシグネチャと一致する情報を格納している ParameterInfo 型の配列。</returns>
+    </member>
+    <member name="M:System.Reflection.MethodBase.Invoke(System.Object,System.Object[])">
+      <summary>指定したパラメーターを使用して、現在のインスタンスによって表されるメソッドまたはコンストラクターを呼び出します。</summary>
+      <returns>呼び出されたメソッドの戻り値を格納しているオブジェクト。コンストラクターの場合は null。注意ref キーワードまたは out キーワードで宣言されたパラメーターを表す <paramref name="parameters" /> 配列の要素も変更できます。</returns>
+      <param name="obj">メソッドまたはコンストラクターを呼び出すオブジェクト。メソッドが静的である場合、この引数は無視されます。コンストラクターが静的である場合、この引数は null またはそのコンストラクターを定義するクラスのインスタンスであることが必要です。</param>
+      <param name="parameters">呼び出すメソッドまたはコンストラクターの引数リスト。これは、呼び出すメソッドまたはコンストラクターのパラメーターと同じ数、順序、および型のオブジェクトの配列です。パラメーターがない場合、<paramref name="parameters" /> は null です。このインスタンスで表されるメソッドまたはコンストラクターが ref パラメーター (Visual Basic では ByRef) を受け取る場合、この関数を使用してメソッドまたはコンストラクターを呼び出すために、このパラメーターに特別な属性は必要ありません。この配列の中で、何らかの値で明示的に初期化されないオブジェクトには、そのオブジェクト型の既定値が格納されます。参照型の要素の場合、この値は null です。値型の要素の場合、この値は、実際の要素の型に応じて、0、0.0、または false となります。</param>
+      <exception cref="T:System.Reflection.TargetException">Windows ストア アプリのための .NET または汎用性のあるクラス ライブラリで、<see cref="T:System.Exception" /> を代わりにキャッチします。<paramref name="obj" /> パラメーターが null で、メソッドが静的でありません。またはメソッドが、<paramref name="obj" /> のクラスで宣言も継承もされていません。または静的コンストラクターが呼び出されており、<paramref name="obj" /> が null またはそのコンストラクターを宣言したクラスのインスタンスのいずれでもありません。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="parameters" /> 配列の要素が、このインスタンスでリフレクションされたメソッドまたはコンストラクターのシグネチャと一致しません。</exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">呼び出されたメソッドまたはコンストラクターが例外をスローします。または現在のインスタンスは、検証できないコードを含んでいる <see cref="T:System.Reflection.Emit.DynamicMethod" /> です。<see cref="T:System.Reflection.Emit.DynamicMethod" /> の解説の「検証」セクションを参照してください。</exception>
+      <exception cref="T:System.Reflection.TargetParameterCountException">
+        <paramref name="parameters" /> 配列に、正しい数の引数の型が格納されていません。</exception>
+      <exception cref="T:System.MethodAccessException">Windows ストア アプリのための .NET または汎用性のあるクラス ライブラリで、基本クラスの例外 <see cref="T:System.MemberAccessException" /> を代わりにキャッチします。呼び出し元には、現在のインスタンスが表すメソッドまたはコンストラクターを実行するアクセス許可がありません。</exception>
+      <exception cref="T:System.InvalidOperationException">メソッドを宣言する型がオープン ジェネリック型です。つまり、<see cref="P:System.Type.ContainsGenericParameters" /> プロパティは、宣言する型に対して true を返します。</exception>
+      <exception cref="T:System.NotSupportedException">現在のインスタンスは <see cref="T:System.Reflection.Emit.MethodBuilder" /> です。</exception>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsAbstract">
+      <summary>メソッドが抽象メソッドかどうかを示す値を取得します。</summary>
+      <returns>このメソッドが抽象メソッドである場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsAssembly">
+      <summary>このメソッドまたはコンストラクターを参照できる範囲が <see cref="F:System.Reflection.MethodAttributes.Assembly" /> によって示されるかどうかを表す値を取得します。ここで判定されるのは、このメソッドまたはコンストラクターが同じアセンブリ内の他の型でのみ参照でき、アセンブリ外部の派生型では参照できないものであることです。</summary>
+      <returns>このメソッドまたはコンストラクターを参照可能な範囲が <see cref="F:System.Reflection.MethodAttributes.Assembly" /> によって正しく示される場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsConstructor">
+      <summary>メソッドがコンストラクターかどうかを示す値を取得します。</summary>
+      <returns>このメソッドが <see cref="T:System.Reflection.ConstructorInfo" /> オブジェクトによって表されるコンストラクターの場合は true (<see cref="T:System.Reflection.Emit.ConstructorBuilder" /> オブジェクトの解説にあるメモを参照)。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsFamily">
+      <summary>このメソッドまたはコンストラクターへの参照範囲が <see cref="F:System.Reflection.MethodAttributes.Family" /> によって正しく示されるかどうかを表す値を取得します。ここで判定されるのは、メソッドまたはコンストラクターはそれらのクラスと派生クラスの内側でのみ参照できるものであることです。</summary>
+      <returns>このメソッドまたはコンストラクターへのアクセスが <see cref="F:System.Reflection.MethodAttributes.Family" /> によって正しく示される場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsFamilyAndAssembly">
+      <summary>このメソッドまたはコンストラクターへの参照範囲が <see cref="F:System.Reflection.MethodAttributes.FamANDAssem" /> によって示されるかどうかを表す値を取得します。ここで判定されるのは、メソッドまたはコンストラクターは派生クラスから呼び出すことができるが、それらが同じアセンブリ内にある場合に限るものであることです。</summary>
+      <returns>このメソッドまたはコンストラクターへのアクセスが <see cref="F:System.Reflection.MethodAttributes.FamANDAssem" /> によって正しく示される場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsFamilyOrAssembly">
+      <summary>このメソッドまたはコンストラクターを参照可能な範囲が <see cref="F:System.Reflection.MethodAttributes.FamORAssem" /> によって示されるかどうかを表す値を取得します。ここで判定されるのは、メソッドまたはコンストラクターは任意の場所にある派生クラスと、同じアセンブリ内のクラスから呼び出すことができるものであることです。</summary>
+      <returns>このメソッドまたはコンストラクターへのアクセスが <see cref="F:System.Reflection.MethodAttributes.FamORAssem" /> によって正しく示される場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsFinal">
+      <summary>このメソッドが final かどうかを示す値を取得します。</summary>
+      <returns>このメソッドが  final の場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsGenericMethod">
+      <summary>メソッドがジェネリック メソッドかどうかを示す値を取得します。</summary>
+      <returns>現在の <see cref="T:System.Reflection.MethodBase" /> がジェネリック メソッドを表している場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsGenericMethodDefinition">
+      <summary>メソッドがジェネリック メソッドの定義かどうかを示す値を取得します。</summary>
+      <returns>現在の <see cref="T:System.Reflection.MethodBase" /> オブジェクトがジェネリック メソッドの定義を表している場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsHideBySig">
+      <summary>派生クラスで、正確に同じシグネチャを持つ同じ種類のメンバーだけが隠しメンバーになるかどうかを示す値を取得します。</summary>
+      <returns>メンバーがシグネチャで隠される場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsPrivate">
+      <summary>このメンバーがプライベートかどうかを示す値を取得します。</summary>
+      <returns>このメソッドへのアクセスがそのクラスの他のメンバーに制限されている場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsPublic">
+      <summary>パブリック メソッドかどうかを示す値を取得します。</summary>
+      <returns>このメソッドがパブリックの場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsSpecialName">
+      <summary>特別な名前のメソッドかどうかを示す値を取得します。</summary>
+      <returns>このメソッドに特別な名前が付けられている場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsStatic">
+      <summary>メソッドが static かどうかを示す値を取得します。</summary>
+      <returns>このメソッドが static の場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsVirtual">
+      <summary>メソッドが virtual かどうかを示す値を取得します。</summary>
+      <returns>このメソッドが virtual の場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.MethodImplementationFlags">
+      <summary>メソッド実装の属性を指定する <see cref="T:System.Reflection.MethodImplAttributes" /> フラグを取得します。</summary>
+      <returns>メソッド実装フラグ。</returns>
+    </member>
+    <member name="T:System.Reflection.MethodInfo">
+      <summary>メソッドの属性を取得し、メソッドのメタデータにアクセスできるようにします。</summary>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.CreateDelegate(System.Type)">
+      <summary>このメソッドから、指定した型のデリゲートを作成します。</summary>
+      <returns>このメソッドのデリゲート。</returns>
+      <param name="delegateType">作成するデリゲートの型。</param>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.CreateDelegate(System.Type,System.Object)">
+      <summary>このメソッドから、指定した型のデリゲートを、指定したターゲットを使用して作成します。</summary>
+      <returns>このメソッドのデリゲート。</returns>
+      <param name="delegateType">作成するデリゲートの型。</param>
+      <param name="target">デリゲートが対象とするオブジェクト。</param>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.Equals(System.Object)">
+      <summary>このインスタンスが、指定されたオブジェクトと等価であるかどうかを示す値を返します。</summary>
+      <returns>true がこのインスタンスの型および値に等しい場合は <paramref name="obj" />。それ以外の場合は false。</returns>
+      <param name="obj">対象のインスタンスと比較する対象のオブジェクト、または null。</param>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.GetGenericArguments">
+      <summary>ジェネリック メソッドの型引数、またはジェネリック メソッドの定義の型パラメーターを表す <see cref="T:System.Type" /> オブジェクトの配列を返します。</summary>
+      <returns>ジェネリック メソッドの型引数またはジェネリック メソッド定義の型パラメーターを表す <see cref="T:System.Type" /> オブジェクトの配列。現在のメソッドがジェネリック メソッドではない場合は、空の配列を返します。</returns>
+      <exception cref="T:System.NotSupportedException">このメソッドはサポートされていません。</exception>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.GetGenericMethodDefinition">
+      <summary>現在のメソッドを構築する元になるジェネリック メソッド定義を表す <see cref="T:System.Reflection.MethodInfo" /> オブジェクトを返します。</summary>
+      <returns>現在のメソッドを構築する元になるジェネリック メソッド定義を表す <see cref="T:System.Reflection.MethodInfo" /> オブジェクト。</returns>
+      <exception cref="T:System.InvalidOperationException">現在のメソッドはジェネリック メソッドではありません。つまり、<see cref="P:System.Reflection.MethodInfo.IsGenericMethod" /> は false を返します。</exception>
+      <exception cref="T:System.NotSupportedException">このメソッドはサポートされていません。</exception>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.GetHashCode">
+      <summary>このインスタンスのハッシュ コードを返します。</summary>
+      <returns>32 ビット符号付き整数ハッシュ コード。</returns>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.MakeGenericMethod(System.Type[])">
+      <summary>現在のジェネリック メソッド定義の型パラメーターを型の配列要素に置き換え、その結果構築されるメソッドを表す <see cref="T:System.Reflection.MethodInfo" /> オブジェクトを返します。</summary>
+      <returns>
+        <paramref name="typeArguments" /> の要素を現在のジェネリック メソッド定義の型パラメーターで置き換えることによって構築されるメソッドを表す <see cref="T:System.Reflection.MethodInfo" /> オブジェクト。</returns>
+      <param name="typeArguments">現在のジェネリック メソッド定義の型パラメーターに置き換えられる型の配列。</param>
+      <exception cref="T:System.InvalidOperationException">現在の <see cref="T:System.Reflection.MethodInfo" /> はジェネリック メソッド定義を表しません。つまり、<see cref="P:System.Reflection.MethodInfo.IsGenericMethodDefinition" /> は false を返します。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="typeArguments" /> は null です。または <paramref name="typeArguments" /> の要素が null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="typeArguments" /> の要素の数が、現在のジェネリック メソッド定義の型パラメーターの数と同じではありません。または <paramref name="typeArguments" /> の要素が、現在のジェネリック メソッド定義の対応する型パラメーターに対して指定された制約を満たしていません。</exception>
+      <exception cref="T:System.NotSupportedException">このメソッドはサポートされていません。</exception>
+    </member>
+    <member name="P:System.Reflection.MethodInfo.ReturnParameter">
+      <summary>戻り値の型にカスタム修飾子があるかどうかなど、メソッドの戻り値の型に関する情報を格納している <see cref="T:System.Reflection.ParameterInfo" /> オブジェクトを取得します。</summary>
+      <returns>戻り値の型に関する情報を格納している <see cref="T:System.Reflection.ParameterInfo" /> オブジェクト。</returns>
+      <exception cref="T:System.NotImplementedException">このメソッドは実装されていません。</exception>
+    </member>
+    <member name="P:System.Reflection.MethodInfo.ReturnType">
+      <summary>このメソッドの戻り値の型を取得します。</summary>
+      <returns>このメソッドの戻り値の型。</returns>
+    </member>
+    <member name="T:System.Reflection.Module">
+      <summary>モジュールのリフレクションを実行します。</summary>
+    </member>
+    <member name="P:System.Reflection.Module.Assembly">
+      <summary>
+        <see cref="T:System.Reflection.Module" /> のこのインスタンスの適切な <see cref="T:System.Reflection.Assembly" /> を取得します。</summary>
+      <returns>Assembly オブジェクト。</returns>
+    </member>
+    <member name="P:System.Reflection.Module.CustomAttributes">
+      <summary>このモジュールのカスタム属性を含むコレクションを取得します。</summary>
+      <returns>このモジュールのカスタム属性を含むコレクション。</returns>
+    </member>
+    <member name="M:System.Reflection.Module.Equals(System.Object)">
+      <summary>このモジュールと指定したオブジェクトが等しいかどうかを判断します。</summary>
+      <returns>
+        <paramref name="o" /> がこのインスタンスと等しい場合は true。それ以外の場合は false。</returns>
+      <param name="o">このインスタンスと比較するオブジェクト。</param>
+    </member>
+    <member name="P:System.Reflection.Module.FullyQualifiedName">
+      <summary>このモジュールの完全修飾名とパスを表す文字列を取得します。</summary>
+      <returns>モジュールの完全修飾名。</returns>
+      <exception cref="T:System.Security.SecurityException">呼び出し元に、必要なアクセス許可がありません。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Reflection.Module.GetHashCode">
+      <summary>対象のインスタンスのハッシュ コードを返します。</summary>
+      <returns>32 ビット符号付き整数ハッシュ コード。</returns>
+    </member>
+    <member name="M:System.Reflection.Module.GetType(System.String,System.Boolean,System.Boolean)">
+      <summary>大文字小文字を区別したモジュール検索を実行するかどうか、および型が見つからない場合に例外をスローするかどうかを指定して、指定された型を返します。</summary>
+      <returns>型がこのモジュールで宣言されている場合は、指定された型を表す <see cref="T:System.Type" /> オブジェクト。それ以外の場合は null。</returns>
+      <param name="className">検索する型の名前。この名前は、名前空間を含む完全修飾名であることが必要です。</param>
+      <param name="throwOnError">型が見つからなかったときに例外をスローする場合は true。null を返す場合は false。</param>
+      <param name="ignoreCase">大文字小文字を区別しない検索を行う場合は true。それ以外の場合は false。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="className" /> は null なので、</exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">クラス初期化子が呼び出され、例外がスローされます。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="className" /> は、長さ 0 の文字列です。</exception>
+      <exception cref="T:System.TypeLoadException">
+        <paramref name="throwOnError" /> が true であり、型を見つけることができません。</exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="className" /> に必要な依存アセンブリが見つかりませんでした。</exception>
+      <exception cref="T:System.IO.FileLoadException">
+        <paramref name="className" /> に必要な依存アセンブリは見つかりましたが、読み込むことができませんでした。または現在のアセンブリがリフレクションのみのコンテキストに読み込まれましたが、<paramref name="className" /> に必要な依存アセンブリがプリロードされませんでした。</exception>
+      <exception cref="T:System.BadImageFormatException">
+        <paramref name="className" /> は依存アセンブリが必要ですが、ファイルが有効なアセンブリではありません。または<paramref name="className" /> には、現在読み込まれているバージョンよりも新しいバージョンのランタイム用にコンパイルされた依存アセンブリが必要です。</exception>
+    </member>
+    <member name="P:System.Reflection.Module.Name">
+      <summary>モジュールの名前をパスを削除した状態で表す文字列を取得します。</summary>
+      <returns>パスを含まないモジュール名。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Reflection.Module.ToString">
+      <summary>モジュールの名前を返します。</summary>
+      <returns>このモジュールの名前を表す文字列。</returns>
+    </member>
+    <member name="T:System.Reflection.ParameterInfo">
+      <summary>パラメーターの属性を取得し、パラメーターのメタデータにアクセスできるようにします。</summary>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.Attributes">
+      <summary>このパラメーターの属性を取得します。</summary>
+      <returns>このパラメーターの属性を表す ParameterAttributes オブジェクト。</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.CustomAttributes">
+      <summary>このパラメーターのカスタム属性を含むコレクションを取得します。</summary>
+      <returns>このパラメーターのカスタム属性を含むコレクション。</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.DefaultValue">
+      <summary>パラメーターに既定値が定義されているかどうかを示す値を取得します。</summary>
+      <returns>パラメーターの既定値。パラメーターに既定値がない場合は <see cref="F:System.DBNull.Value" />。</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.HasDefaultValue">
+      <summary>このパラメーター列に既定値があるかどうかを示す値を取得します。</summary>
+      <returns>このパラメーターが既定値を持つ場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.IsIn">
+      <summary>このパラメーターが入力パラメーターかどうかを示す値を取得します。</summary>
+      <returns>パラメーターが入力パラメーターの場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.IsOptional">
+      <summary>このパラメーターが省略可能かどうかを示す値を取得します。</summary>
+      <returns>パラメーターが省略可能な場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.IsOut">
+      <summary>このパラメーターが出力パラメーターかどうかを示す値を取得します。</summary>
+      <returns>パラメーターが出力パラメーターの場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.IsRetval">
+      <summary>このパラメーターが Retval パラメーターかどうかを示す値を取得します。</summary>
+      <returns>パラメーターが Retval の場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.Member">
+      <summary>パラメーターが実装されるメンバーを示す値を取得します。</summary>
+      <returns>この <see cref="T:System.Reflection.ParameterInfo" /> によって表されるパラメーターを埋め込んだメンバー。</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.Name">
+      <summary>パラメーターの名前を取得します。</summary>
+      <returns>このパラメーターの簡易名。</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.ParameterType">
+      <summary>このパラメーターの種類を取得します。</summary>
+      <returns>このパラメーターの種類を表す Type オブジェクト。</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.Position">
+      <summary>仮パラメーター リスト内の 0 から始まるパラメーターの位置を取得します。</summary>
+      <returns>このパラメーターがパラメーター リスト上で占める位置を表す整数。</returns>
+    </member>
+    <member name="T:System.Reflection.PropertyInfo">
+      <summary>プロパティの属性を取得し、プロパティのメタデータにアクセスできるようにします。</summary>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.Attributes">
+      <summary>このプロパティの属性を取得します。</summary>
+      <returns>このプロパティの属性。</returns>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.CanRead">
+      <summary>プロパティを読み取ることができるかどうかを示す値を取得します。</summary>
+      <returns>このプロパティを読み取ることができる場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.CanWrite">
+      <summary>プロパティに書き込むことができるかどうかを示す値を取得します。</summary>
+      <returns>このプロパティに書き込むことができる場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.Equals(System.Object)">
+      <summary>このインスタンスが、指定されたオブジェクトと等価であるかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="obj" /> がこのインスタンスの型および値に等しい場合は true。それ以外の場合は false。</returns>
+      <param name="obj">対象のインスタンスと比較する対象のオブジェクト、または null。</param>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.GetConstantValue">
+      <summary>コンパイラによってプロパティに関連付けられているリテラル値を返します。</summary>
+      <returns>プロパティに関連付けられているリテラル値を格納している <see cref="T:System.Object" />。リテラル値が、要素値がゼロに設定されているクラス型である場合、戻り値は null です。</returns>
+      <exception cref="T:System.InvalidOperationException">アンマネージ メタデータの定数テーブルに、現在のプロパティの定数値が含まれていません。</exception>
+      <exception cref="T:System.FormatException">値の型が、共通言語仕様 (CLS: Common Language Specification) で許可されている型のいずれでもありません。ECMA Partition II のメタデータの仕様を参照してください。</exception>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.GetHashCode">
+      <summary>このインスタンスのハッシュ コードを返します。</summary>
+      <returns>32 ビット符号付き整数ハッシュ コード。</returns>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.GetIndexParameters">
+      <summary>派生クラスによってオーバーライドされた場合に、プロパティのすべてのインデックス パラメーターの配列を返します。</summary>
+      <returns>インデックスのパラメーターを格納している ParameterInfo 型の配列。プロパティがインデックス付けされていない場合、配列の要素はゼロ (0) です。</returns>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.GetMethod">
+      <summary>このプロパティの get アクセサーを取得します。</summary>
+      <returns>このプロパティの get アクセサー。</returns>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.GetValue(System.Object)">
+      <summary>指定されたオブジェクトのプロパティの値を返します。</summary>
+      <returns>指定されたオブジェクトのプロパティの値。</returns>
+      <param name="obj">プロパティ値が返されるオブジェクト。</param>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.GetValue(System.Object,System.Object[])">
+      <summary>指定したオブジェクトのプロパティの値を返します。インデックス付きプロパティの場合は、オプションでインデックス値を設定できます。</summary>
+      <returns>指定されたオブジェクトのプロパティの値。</returns>
+      <param name="obj">プロパティ値が返されるオブジェクト。</param>
+      <param name="index">インデックス付きプロパティのインデックス値 (省略可能)。インデックス付きプロパティのインデックスは 0 から始まります。インデックス付きでないプロパティの場合は、この値を null にする必要があります。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> 配列に、必要な引数の型が格納されていません。またはプロパティの get アクセサーが見つかりません。</exception>
+      <exception cref="T:System.Reflection.TargetException">Windows ストア アプリのための .NET または汎用性のあるクラス ライブラリで、<see cref="T:System.Exception" /> を代わりにキャッチします。オブジェクトが対象の型と一致しないか、プロパティがインスタンス プロパティであるが、<paramref name="obj" /> が null です。</exception>
+      <exception cref="T:System.Reflection.TargetParameterCountException">
+        <paramref name="index" /> 内のパラメーター数が、インデックス付きプロパティのパラメーター数と一致しません。</exception>
+      <exception cref="T:System.MethodAccessException">Windows ストア アプリのための .NET または汎用性のあるクラス ライブラリで、基本クラスの例外 <see cref="T:System.MemberAccessException" /> を代わりにキャッチします。クラス内のプライベート メソッドまたはプロテクト メソッドに無効なアクセスが試行されました。</exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">プロパティ値の取得中にエラーが発生しました。たとえば、インデックス付きプロパティで指定されたインデックス値が範囲外です。<see cref="P:System.Exception.InnerException" /> プロパティは、例外の原因を示します。</exception>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.IsSpecialName">
+      <summary>特別な名前のプロパティかどうかを示す値を取得します。</summary>
+      <returns>このプロパティに特別な名前が付けられている場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.PropertyType">
+      <summary>このプロパティの型を取得します。</summary>
+      <returns>このプロパティの型。</returns>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.SetMethod">
+      <summary>このプロパティの set アクセサーを取得します。</summary>
+      <returns>set 、このプロパティのアクセサーまたはnullプロパティが読み取り専用の場合。</returns>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.SetValue(System.Object,System.Object)">
+      <summary>指定されたオブジェクトのプロパティの値を設定します。</summary>
+      <param name="obj">プロパティ値が設定されるオブジェクト。</param>
+      <param name="value">変更後のプロパティ値。</param>
+      <exception cref="T:System.ArgumentException">プロパティの set アクセサーが見つかりません。または<paramref name="value" />型に変換することはできません<see cref="P:System.Reflection.PropertyInfo.PropertyType" />です。</exception>
+      <exception cref="T:System.Reflection.TargetException">Windows ストア アプリのための .NET または汎用性のあるクラス ライブラリで、<see cref="T:System.Exception" /> を代わりにキャッチします。型<paramref name="obj" />、ターゲット型に一致しないプロパティが、インスタンスのプロパティまたはが<paramref name="obj" />はnullです。</exception>
+      <exception cref="T:System.MethodAccessException">Windows ストア アプリのための .NET または汎用性のあるクラス ライブラリで、基本クラスの例外 <see cref="T:System.MemberAccessException" /> を代わりにキャッチします。クラス内のプライベート メソッドまたはプロテクト メソッドに無効なアクセスが試行されました。</exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">プロパティ値の設定中にエラーが発生しました。<see cref="P:System.Exception.InnerException" /> プロパティは、例外の原因を示します。</exception>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.SetValue(System.Object,System.Object,System.Object[])">
+      <summary>指定したオブジェクトのプロパティの値を設定します。インデックス プロパティの場合は、オプションでインデックス値を設定できます。</summary>
+      <param name="obj">プロパティ値が設定されるオブジェクト。</param>
+      <param name="value">変更後のプロパティ値。</param>
+      <param name="index">インデックス付きプロパティのインデックス値 (省略可能)。インデックス付きでないプロパティの場合は、この値を null にする必要があります。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> 配列に、必要な引数の型が格納されていません。またはプロパティの set アクセサーが見つかりません。または<paramref name="value" />型に変換することはできません<see cref="P:System.Reflection.PropertyInfo.PropertyType" />です。</exception>
+      <exception cref="T:System.Reflection.TargetException">Windows ストア アプリのための .NET または汎用性のあるクラス ライブラリで、<see cref="T:System.Exception" /> を代わりにキャッチします。オブジェクトが対象の型と一致しないか、プロパティがインスタンス プロパティであるが、<paramref name="obj" /> が null です。</exception>
+      <exception cref="T:System.Reflection.TargetParameterCountException">
+        <paramref name="index" /> 内のパラメーター数が、インデックス付きプロパティのパラメーター数と一致しません。</exception>
+      <exception cref="T:System.MethodAccessException">Windows ストア アプリのための .NET または汎用性のあるクラス ライブラリで、基本クラスの例外 <see cref="T:System.MemberAccessException" /> を代わりにキャッチします。クラス内のプライベート メソッドまたはプロテクト メソッドに無効なアクセスが試行されました。</exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">プロパティ値の設定中にエラーが発生しました。たとえば、インデックス付きプロパティで指定されたインデックス値が範囲外です。<see cref="P:System.Exception.InnerException" /> プロパティは、例外の原因を示します。</exception>
+    </member>
+    <member name="T:System.Reflection.ReflectionContext">
+      <summary>リフレクション オブジェクトを提供できるコンテキストを表します。</summary>
+    </member>
+    <member name="M:System.Reflection.ReflectionContext.#ctor">
+      <summary>
+        <see cref="T:System.Reflection.ReflectionContext" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Reflection.ReflectionContext.GetTypeForObject(System.Object)">
+      <summary>このリフレクション コンテキスト内の指定されたオブジェクトの型の表現を取得します。</summary>
+      <returns>指定されたオブジェクトの型を表すオブジェクト。</returns>
+      <param name="value">表すオブジェクト。</param>
+    </member>
+    <member name="M:System.Reflection.ReflectionContext.MapAssembly(System.Reflection.Assembly)">
+      <summary>別のリフレクション コンテキストのオブジェクトによって表されるアセンブリの表現を、このリフレクション コンテキスト内で取得します。</summary>
+      <returns>このリフレクション コンテキストのアセンブリの表現。</returns>
+      <param name="assembly">このコンテキストで表すアセンブリの外部表現。</param>
+    </member>
+    <member name="M:System.Reflection.ReflectionContext.MapType(System.Reflection.TypeInfo)">
+      <summary>別のリフレクション コンテキストのオブジェクトによって表される型の表現を、このリフレクション コンテキスト内で取得します。</summary>
+      <returns>このリフレクション コンテキストの型の表現。</returns>
+      <param name="type">このコンテキストで表す型の外部表現。</param>
+    </member>
+    <member name="T:System.Reflection.ReflectionTypeLoadException">
+      <summary>モジュールのクラスを読み込むことができない場合に、<see cref="M:System.Reflection.Module.GetTypes" /> メソッドがスローする例外。このクラスは継承できません。</summary>
+    </member>
+    <member name="M:System.Reflection.ReflectionTypeLoadException.#ctor(System.Type[],System.Exception[])">
+      <summary>クラスと、そのクラスに関連付けられた例外を指定して、<see cref="T:System.Reflection.ReflectionTypeLoadException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="classes">モジュールで定義され、読み込まれたクラスを保持している Type 型の配列。この配列には null 参照 (Visual Basic の場合は Nothing) 値が含まれることがあります。</param>
+      <param name="exceptions">クラス ローダーがスローした例外を保持している Exception 型の配列。<paramref name="classes" /> 配列の null 参照 (Visual Basic の場合は Nothing) 値は、この <paramref name="exceptions" /> 配列の例外に合わせて並べられます。</param>
+    </member>
+    <member name="M:System.Reflection.ReflectionTypeLoadException.#ctor(System.Type[],System.Exception[],System.String)">
+      <summary>クラス、そのクラスに関連付けられた例外、例外の説明を指定して、<see cref="T:System.Reflection.ReflectionTypeLoadException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="classes">モジュールで定義され、読み込まれたクラスを保持している Type 型の配列。この配列には null 参照 (Visual Basic の場合は Nothing) 値が含まれることがあります。</param>
+      <param name="exceptions">クラス ローダーがスローした例外を保持している Exception 型の配列。<paramref name="classes" /> 配列の null 参照 (Visual Basic の場合は Nothing) 値は、この <paramref name="exceptions" /> 配列の例外に合わせて並べられます。</param>
+      <param name="message">この例外がスローされた原因を説明する文字列。</param>
+    </member>
+    <member name="P:System.Reflection.ReflectionTypeLoadException.LoaderExceptions">
+      <summary>クラス ローダーがスローした例外の配列を取得します。</summary>
+      <returns>クラス ローダーがスローした例外を保持している Exception 型の配列。このインスタンスの <paramref name="classes" /> 配列の null 値は、この配列の例外に合わせて並べられます。</returns>
+    </member>
+    <member name="P:System.Reflection.ReflectionTypeLoadException.Types">
+      <summary>モジュールで定義され、読み込まれたクラスの配列を取得します。</summary>
+      <returns>モジュールで定義され、読み込まれたクラスを保持している Type 型の配列。この配列には null 値が含まれる場合があります。</returns>
+    </member>
+    <member name="T:System.Reflection.ResourceLocation">
+      <summary>リソースの場所を指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.ResourceLocation.ContainedInAnotherAssembly">
+      <summary>リソースが別のアセンブリに含まれていることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.ResourceLocation.ContainedInManifestFile">
+      <summary>リソースがマニフェスト ファイルに含まれていることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.ResourceLocation.Embedded">
+      <summary>埋め込まれている (リンクされていない) リソースを指定します。</summary>
+    </member>
+    <member name="T:System.Reflection.TargetInvocationException">
+      <summary>リフレクションを通じて呼び出されたメソッドがスローする例外。このクラスは継承できません。</summary>
+    </member>
+    <member name="M:System.Reflection.TargetInvocationException.#ctor(System.Exception)">
+      <summary>この例外の原因である内部例外への参照を指定して、<see cref="T:System.Reflection.TargetInvocationException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="inner">現在の例外の原因である例外。<paramref name="inner" /> パラメーターが null ではない場合、現在の例外は内部例外を処理する catch ブロックで発生します。</param>
+    </member>
+    <member name="M:System.Reflection.TargetInvocationException.#ctor(System.String,System.Exception)">
+      <summary>指定したエラー メッセージと、この例外の原因である内部例外への参照を使用して、<see cref="T:System.Reflection.TargetInvocationException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">例外の原因を説明するエラー メッセージ。</param>
+      <param name="inner">現在の例外の原因である例外。<paramref name="inner" /> パラメーターが null ではない場合、現在の例外は内部例外を処理する catch ブロックで発生します。</param>
+    </member>
+    <member name="T:System.Reflection.TargetParameterCountException">
+      <summary>呼び出し時に指定されたパラメーターの数が、必要なパラメーター数と異なる場合にスローされる例外。このクラスは継承できません。</summary>
+    </member>
+    <member name="M:System.Reflection.TargetParameterCountException.#ctor">
+      <summary>空のメッセージ文字列および例外の主要原因を使用して、<see cref="T:System.Reflection.TargetParameterCountException" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Reflection.TargetParameterCountException.#ctor(System.String)">
+      <summary>メッセージ文字列を特定のメッセージに設定し、主要原因となる例外を指定して、<see cref="T:System.Reflection.TargetParameterCountException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">この例外がスローされた原因を説明する文字列。</param>
+    </member>
+    <member name="M:System.Reflection.TargetParameterCountException.#ctor(System.String,System.Exception)">
+      <summary>指定したエラー メッセージと、この例外の原因である内部例外への参照を使用して、<see cref="T:System.Reflection.TargetParameterCountException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">例外の原因を説明するエラー メッセージ。</param>
+      <param name="inner">現在の例外の原因である例外。<paramref name="inner" /> パラメーターが null ではない場合、現在の例外は内部例外を処理する catch ブロックで発生します。</param>
+    </member>
+    <member name="T:System.Reflection.TypeInfo">
+      <summary>クラス型、インターフェイス型、配列型、値型、列挙型、型パラメーター、ジェネリック型定義、オープン構築ジェネリック型、クローズ構築ジェネリック型の型宣言を表します。</summary>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.Assembly"></member>
+    <member name="P:System.Reflection.TypeInfo.AssemblyQualifiedName"></member>
+    <member name="M:System.Reflection.TypeInfo.AsType">
+      <summary>現在の型を <see cref="T:System.Type" /> オブジェクトとして返します。</summary>
+      <returns>現在の型。</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.Attributes"></member>
+    <member name="P:System.Reflection.TypeInfo.BaseType"></member>
+    <member name="P:System.Reflection.TypeInfo.ContainsGenericParameters"></member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredConstructors">
+      <summary>現在の型によって宣言されたコンストラクターのコレクションを取得します。</summary>
+      <returns>現在の型によって宣言されたコンストラクターのコレクション。</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredEvents">
+      <summary>現在の型によって定義されたイベントのコレクションを取得します。</summary>
+      <returns>現在の型によって定義されたイベントのコレクション。</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredFields">
+      <summary>現在の型によって定義されたフィールドのコレクションを取得します。</summary>
+      <returns>現在の型によって定義されたフィールドのコレクション。</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredMembers">
+      <summary>現在の型によって定義されたメンバーのコレクションを取得します。</summary>
+      <returns>現在の型によって定義されたメンバーのコレクション。</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredMethods">
+      <summary>現在の型によって定義されたメソッドのコレクションを取得します。</summary>
+      <returns>現在の型によって定義されたメソッドのコレクション。</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredNestedTypes">
+      <summary>現在の型によって定義された入れ子の型のコレクションを取得します。</summary>
+      <returns>現在の型によって定義された入れ子の型のコレクション。</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredProperties">
+      <summary>現在の型によって定義されたプロパティのコレクションを取得します。</summary>
+      <returns>現在の型によって定義されたプロパティのコレクション。</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaringMethod"></member>
+    <member name="P:System.Reflection.TypeInfo.FullName"></member>
+    <member name="P:System.Reflection.TypeInfo.GenericParameterAttributes"></member>
+    <member name="P:System.Reflection.TypeInfo.GenericParameterPosition"></member>
+    <member name="P:System.Reflection.TypeInfo.GenericTypeArguments"></member>
+    <member name="P:System.Reflection.TypeInfo.GenericTypeParameters">
+      <summary>現在のインスタンスのジェネリック型パラメーターの配列を取得します。</summary>
+      <returns>現在のインスタンスのジェネリック型パラメーターを含む配列、現在のインスタンスにジェネリック型パラメーターがない場合は、<see cref="P:System.Array.Length" /> 0 の配列です。</returns>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetArrayRank"></member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredEvent(System.String)">
+      <summary>現在の型で宣言済みの指定されたパブリック イベントを表すオブジェクトを返します。</summary>
+      <returns>見つかった場合は指定されたイベントを表すオブジェクト。それ以外の場合は null。</returns>
+      <param name="name">イベントの名前です。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> は null です。</exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredField(System.String)">
+      <summary>現在の型で宣言済みの指定されたパブリック フィールドを表すオブジェクトを返します。</summary>
+      <returns>見つかった場合は指定されたフィールドを表すオブジェクト。それ以外の場合は null。</returns>
+      <param name="name">フィールドの名前。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> は null です。</exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredMethod(System.String)">
+      <summary>現在の型で宣言済みの指定されたパブリック メソッドを表すオブジェクトを返します。</summary>
+      <returns>見つかった場合は指定されたメソッドを表すオブジェクト。それ以外の場合は null。</returns>
+      <param name="name">メソッドの名前。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> は null です。</exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredMethods(System.String)">
+      <summary>現在の型で宣言された、指定した名前に一致するすべてのパブリック メソッドを含むコレクションを返します。</summary>
+      <returns>
+        <paramref name="name" /> と一致するメソッドを含むコレクション。</returns>
+      <param name="name">検索するメソッドの名前。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> は null です。</exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredNestedType(System.String)">
+      <summary>現在の型で宣言済みの指定されたパブリックな入れ子にされた型を表すオブジェクトを返します。</summary>
+      <returns>見つかった場合は指定された入れ子にされた型を表すオブジェクト。それ以外の場合は null。</returns>
+      <param name="name">入れ子にされた型の名前。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> は null です。</exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredProperty(System.String)">
+      <summary>現在の型で宣言済みの指定されたパブリック プロパティを表すオブジェクトを返します。</summary>
+      <returns>見つかった場合は指定されたプロパティを表すオブジェクト。それ以外の場合は null。</returns>
+      <param name="name">プロパティの名前。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> は null です。</exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetElementType"></member>
+    <member name="M:System.Reflection.TypeInfo.GetGenericParameterConstraints"></member>
+    <member name="M:System.Reflection.TypeInfo.GetGenericTypeDefinition"></member>
+    <member name="P:System.Reflection.TypeInfo.GUID"></member>
+    <member name="P:System.Reflection.TypeInfo.HasElementType"></member>
+    <member name="P:System.Reflection.TypeInfo.ImplementedInterfaces">
+      <summary>現在の型で実装されたインターフェイスのコレクションを取得します。</summary>
+      <returns>現在の型で実装されたインターフェイスのコレクション。</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.IsAbstract"></member>
+    <member name="P:System.Reflection.TypeInfo.IsAnsiClass"></member>
+    <member name="P:System.Reflection.TypeInfo.IsArray"></member>
+    <member name="M:System.Reflection.TypeInfo.IsAssignableFrom(System.Reflection.TypeInfo)">
+      <summary>指定した型が現在の型に割り当て可能かどうかを示す値を返します。</summary>
+      <returns>指定した型をこの型に割り当てることができる場合は true。それ以外の場合は false。</returns>
+      <param name="typeInfo">確認する型。</param>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.IsAutoClass"></member>
+    <member name="P:System.Reflection.TypeInfo.IsAutoLayout"></member>
+    <member name="P:System.Reflection.TypeInfo.IsByRef"></member>
+    <member name="P:System.Reflection.TypeInfo.IsClass"></member>
+    <member name="P:System.Reflection.TypeInfo.IsEnum"></member>
+    <member name="P:System.Reflection.TypeInfo.IsExplicitLayout"></member>
+    <member name="P:System.Reflection.TypeInfo.IsGenericParameter"></member>
+    <member name="P:System.Reflection.TypeInfo.IsGenericType"></member>
+    <member name="P:System.Reflection.TypeInfo.IsGenericTypeDefinition"></member>
+    <member name="P:System.Reflection.TypeInfo.IsImport"></member>
+    <member name="P:System.Reflection.TypeInfo.IsInterface"></member>
+    <member name="P:System.Reflection.TypeInfo.IsLayoutSequential"></member>
+    <member name="P:System.Reflection.TypeInfo.IsMarshalByRef"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNested"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedAssembly"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedFamANDAssem"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedFamily"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedFamORAssem"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedPrivate"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedPublic"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNotPublic"></member>
+    <member name="P:System.Reflection.TypeInfo.IsPointer"></member>
+    <member name="P:System.Reflection.TypeInfo.IsPrimitive"></member>
+    <member name="P:System.Reflection.TypeInfo.IsPublic"></member>
+    <member name="P:System.Reflection.TypeInfo.IsSealed"></member>
+    <member name="P:System.Reflection.TypeInfo.IsSerializable"></member>
+    <member name="P:System.Reflection.TypeInfo.IsSpecialName"></member>
+    <member name="M:System.Reflection.TypeInfo.IsSubclassOf(System.Type)"></member>
+    <member name="P:System.Reflection.TypeInfo.IsUnicodeClass"></member>
+    <member name="P:System.Reflection.TypeInfo.IsValueType"></member>
+    <member name="P:System.Reflection.TypeInfo.IsVisible"></member>
+    <member name="M:System.Reflection.TypeInfo.MakeArrayType"></member>
+    <member name="M:System.Reflection.TypeInfo.MakeArrayType(System.Int32)"></member>
+    <member name="M:System.Reflection.TypeInfo.MakeByRefType"></member>
+    <member name="M:System.Reflection.TypeInfo.MakeGenericType(System.Type[])"></member>
+    <member name="M:System.Reflection.TypeInfo.MakePointerType"></member>
+    <member name="P:System.Reflection.TypeInfo.Namespace"></member>
+    <member name="M:System.Reflection.TypeInfo.System#Reflection#IReflectableType#GetTypeInfo">
+      <summary>現在の型の表現を <see cref="T:System.Reflection.TypeInfo" /> オブジェクトとして返します。</summary>
+      <returns>現在の型への参照。</returns>
+    </member>
+  </members>
+</doc>

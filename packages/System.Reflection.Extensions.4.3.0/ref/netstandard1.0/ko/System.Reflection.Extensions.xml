@@ -1,0 +1,522 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Reflection.Extensions</name>
+  </assembly>
+  <members>
+    <member name="T:System.Reflection.CustomAttributeExtensions">
+      <summary>사용자 지정 특성을 검색하기 위한 정적 메서드를 포함합니다.</summary>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.Assembly)">
+      <summary>지정된 어셈블리에 적용된 지정된 형식의 사용자 지정 특성을 검색합니다. </summary>
+      <returns>이런 특성이 없을 경우 <paramref name="T" /> 또는 null과 일치하는 사용자 지정 특성입니다.</returns>
+      <param name="element">조사할 어셈블리입니다.</param>
+      <typeparam name="T">검색할 특성의 형식입니다.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" />가 null입니다. </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">요청된 특성이 둘 이상 발견된 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.Assembly,System.Type)">
+      <summary>지정된 어셈블리에 적용된 지정된 형식의 사용자 지정 특성을 검색합니다.</summary>
+      <returns>이런 특성이 없을 경우 <paramref name="attributeType" /> 또는 null과 일치하는 사용자 지정 특성입니다.</returns>
+      <param name="element">조사할 어셈블리입니다.</param>
+      <param name="attributeType">검색할 특성의 형식입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 또는 <paramref name="attributeType" />이 null인 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" />이 <see cref="T:System.Attribute" />에서 파생되지 않은 경우 </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">요청된 특성이 둘 이상 발견된 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.MemberInfo)">
+      <summary>지정된 멤버에 적용된 지정된 형식의 사용자 지정 특성을 검색합니다.</summary>
+      <returns>이런 특성이 없을 경우 <paramref name="T" /> 또는 null과 일치하는 사용자 지정 특성입니다.</returns>
+      <param name="element">검사할 멤버입니다.</param>
+      <typeparam name="T">검색할 특성의 형식입니다.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" />가 null입니다. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" />가 생성자, 메서드, 속성, 이벤트, 형식 또는 필드가 아닌 경우 </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">요청된 특성이 둘 이상 발견된 경우 </exception>
+      <exception cref="T:System.TypeLoadException">사용자 지정 특성 형식을 로드할 수 없는 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.MemberInfo,System.Boolean)">
+      <summary>지정된 형식의 사용자 지정 특성이 지정된 멤버에 적용되는 컬렉션을 검색하거나 선택적으로 해당 멤버의 상위 항목을 검사합니다.</summary>
+      <returns>이런 특성이 없을 경우 <paramref name="T" /> 또는 null과 일치하는 사용자 지정 특성입니다.</returns>
+      <param name="element">검사할 멤버입니다.</param>
+      <param name="inherit">
+        <paramref name="element" />의 상위 요소를 검사하려면 true이고, 그렇지 않으면 false입니다. </param>
+      <typeparam name="T">검색할 특성의 형식입니다.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" />가 null입니다. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" />가 생성자, 메서드, 속성, 이벤트, 형식 또는 필드가 아닌 경우 </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">요청된 특성이 둘 이상 발견된 경우 </exception>
+      <exception cref="T:System.TypeLoadException">사용자 지정 특성 형식을 로드할 수 없는 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.MemberInfo,System.Type)">
+      <summary>지정된 멤버에 적용된 지정된 형식의 사용자 지정 특성을 검색합니다.</summary>
+      <returns>이런 특성이 없을 경우 <paramref name="attributeType" /> 또는 null과 일치하는 사용자 지정 특성입니다.</returns>
+      <param name="element">검사할 멤버입니다.</param>
+      <param name="attributeType">검색할 특성의 형식입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 또는 <paramref name="attributeType" />이 null인 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" />이 <see cref="T:System.Attribute" />에서 파생되지 않은 경우 </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" />가 생성자, 메서드, 속성, 이벤트, 형식 또는 필드가 아닌 경우 </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">요청된 특성이 둘 이상 발견된 경우 </exception>
+      <exception cref="T:System.TypeLoadException">사용자 지정 특성 형식을 로드할 수 없는 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.MemberInfo,System.Type,System.Boolean)">
+      <summary>지정된 형식의 사용자 지정 특성이 지정된 멤버에 적용되는 컬렉션을 검색하거나 선택적으로 해당 멤버의 상위 항목을 검사합니다.</summary>
+      <returns>이런 특성이 없을 경우 <paramref name="attributeType" /> 또는 null과 일치하는 사용자 지정 특성입니다.</returns>
+      <param name="element">검사할 멤버입니다.</param>
+      <param name="attributeType">검색할 특성의 형식입니다.</param>
+      <param name="inherit">
+        <paramref name="element" />의 상위 요소를 검사하려면 true이고, 그렇지 않으면 false입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 또는 <paramref name="attributeType" />이 null인 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" />이 <see cref="T:System.Attribute" />에서 파생되지 않은 경우 </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" />가 생성자, 메서드, 속성, 이벤트, 형식 또는 필드가 아닌 경우 </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">요청된 특성이 둘 이상 발견된 경우 </exception>
+      <exception cref="T:System.TypeLoadException">사용자 지정 특성 형식을 로드할 수 없는 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.Module)">
+      <summary>지정된 모듈에 적용된 지정된 형식의 사용자 지정 특성을 검색합니다.</summary>
+      <returns>이런 특성이 없을 경우 <paramref name="T" /> 또는 null과 일치하는 사용자 지정 특성입니다.</returns>
+      <param name="element">검사할 모듈입니다.</param>
+      <typeparam name="T">검색할 특성의 형식입니다.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" />가 null입니다. </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">요청된 특성이 둘 이상 발견된 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.Module,System.Type)">
+      <summary>지정된 모듈에 적용된 지정된 형식의 사용자 지정 특성을 검색합니다.</summary>
+      <returns>이런 특성이 없을 경우 <paramref name="attributeType" /> 또는 null과 일치하는 사용자 지정 특성입니다.</returns>
+      <param name="element">검사할 모듈입니다.</param>
+      <param name="attributeType">검색할 특성의 형식입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 또는 <paramref name="attributeType" />이 null인 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" />이 <see cref="T:System.Attribute" />에서 파생되지 않은 경우 </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">요청된 특성이 둘 이상 발견된 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.ParameterInfo)">
+      <summary>지정된 매개 변수에 적용된 지정된 형식의 사용자 지정 특성을 검색합니다.</summary>
+      <returns>이런 특성이 없을 경우 <paramref name="T" /> 또는 null과 일치하는 사용자 지정 특성입니다.</returns>
+      <param name="element">검사할 매개 변수입니다.</param>
+      <typeparam name="T">검색할 특성의 형식입니다.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" />가 null입니다. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" />가 생성자, 메서드, 속성, 이벤트, 형식 또는 필드가 아닌 경우 </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">요청된 특성이 둘 이상 발견된 경우 </exception>
+      <exception cref="T:System.TypeLoadException">사용자 지정 특성 형식을 로드할 수 없는 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.ParameterInfo,System.Boolean)">
+      <summary>지정된 형식의 사용자 지정 특성이 지정된 매개 변수에 적용되는 컬렉션을 검색하거나 선택적으로 해당 매개 변수의 상위 항목을 검사합니다.</summary>
+      <returns>이런 특성이 없을 경우 <paramref name="T" /> 또는 null과 일치하는 사용자 지정 특성입니다.</returns>
+      <param name="element">검사할 매개 변수입니다.</param>
+      <param name="inherit">
+        <paramref name="element" />의 상위 요소를 검사하려면 true이고, 그렇지 않으면 false입니다. </param>
+      <typeparam name="T">검색할 특성의 형식입니다.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" />가 null입니다. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" />가 생성자, 메서드, 속성, 이벤트, 형식 또는 필드가 아닌 경우 </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">요청된 특성이 둘 이상 발견된 경우 </exception>
+      <exception cref="T:System.TypeLoadException">사용자 지정 특성 형식을 로드할 수 없는 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.ParameterInfo,System.Type)">
+      <summary>지정된 매개 변수에 적용된 지정된 형식의 사용자 지정 특성을 검색합니다.</summary>
+      <returns>이런 특성이 없을 경우 <paramref name="attributeType" /> 또는 null과 일치하는 사용자 지정 특성입니다.</returns>
+      <param name="element">검사할 매개 변수입니다.</param>
+      <param name="attributeType">검색할 특성의 형식입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 또는 <paramref name="attributeType" />이 null인 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" />이 <see cref="T:System.Attribute" />에서 파생되지 않은 경우 </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">요청된 특성이 둘 이상 발견된 경우 </exception>
+      <exception cref="T:System.TypeLoadException">사용자 지정 특성 형식을 로드할 수 없는 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.ParameterInfo,System.Type,System.Boolean)">
+      <summary>지정된 형식의 사용자 지정 특성이 지정된 매개 변수에 적용되는 컬렉션을 검색하거나 선택적으로 해당 매개 변수의 상위 항목을 검사합니다.</summary>
+      <returns>
+        <paramref name="attributeType" />과 일치하는 사용자 지정 특성이거나, 이러한 특성이 없으면 null입니다.</returns>
+      <param name="element">검사할 매개 변수입니다.</param>
+      <param name="attributeType">검색할 특성의 형식입니다.</param>
+      <param name="inherit">
+        <paramref name="element" />의 상위 요소를 검사하려면 true이고, 그렇지 않으면 false입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 또는 <paramref name="attributeType" />이 null인 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" />이 <see cref="T:System.Attribute" />에서 파생되지 않은 경우 </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">요청된 특성이 둘 이상 발견된 경우 </exception>
+      <exception cref="T:System.TypeLoadException">사용자 지정 특성 형식을 로드할 수 없는 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.Assembly)">
+      <summary>지정된 어셈블리에 적용된 지정된 형식의 사용자 지정 특성 컬렉션을 검색합니다. </summary>
+      <returns>
+        <paramref name="element" />에 적용되고 <paramref name="T" />에 일치하는 사용자 지정 특성의 컬렉션이며 이런 특성이 없을 경우 빈 컬렉션입니다. </returns>
+      <param name="element">조사할 어셈블리입니다.</param>
+      <typeparam name="T">검색할 특성의 형식입니다.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" />가 null입니다. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.Assembly)">
+      <summary>지정된 어셈블리에 적용된 사용자 지정 특성 컬렉션을 검색합니다.</summary>
+      <returns>
+        <paramref name="element" />에 적용된 사용자 지정 특성의 컬렉션이며 이런 특성이 없을 경우 빈 컬렉션입니다. </returns>
+      <param name="element">조사할 어셈블리입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" />가 null입니다. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.Assembly,System.Type)">
+      <summary>지정된 어셈블리에 적용된 지정된 형식의 사용자 지정 특성 컬렉션을 검색합니다.</summary>
+      <returns>
+        <paramref name="element" />에 적용되고 <paramref name="attributeType" />에 일치하는 사용자 지정 특성의 컬렉션이며 이런 특성이 없을 경우 빈 컬렉션입니다. </returns>
+      <param name="element">조사할 어셈블리입니다.</param>
+      <param name="attributeType">검색할 특성의 형식입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 또는 <paramref name="attributeType" />이 null인 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" />이 <see cref="T:System.Attribute" />에서 파생되지 않은 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.MemberInfo)">
+      <summary>지정된 멤버에 적용된 사용자 지정 특성 컬렉션을 검색합니다.</summary>
+      <returns>
+        <paramref name="element" />에 적용된 사용자 지정 특성의 컬렉션이며 이런 특성이 없을 경우 빈 컬렉션입니다. </returns>
+      <param name="element">검사할 멤버입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" />가 null입니다. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" />가 생성자, 메서드, 속성, 이벤트, 형식 또는 필드가 아닌 경우 </exception>
+      <exception cref="T:System.TypeLoadException">사용자 지정 특성 형식을 로드할 수 없는 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.MemberInfo)">
+      <summary>지정된 멤버에 적용된 지정된 형식의 사용자 지정 특성 컬렉션을 검색합니다.</summary>
+      <returns>
+        <paramref name="element" />에 적용되고 <paramref name="T" />에 일치하는 사용자 지정 특성의 컬렉션이며 이런 특성이 없을 경우 빈 컬렉션입니다. </returns>
+      <param name="element">검사할 멤버입니다.</param>
+      <typeparam name="T">검색할 특성의 형식입니다.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" />가 null입니다. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" />가 생성자, 메서드, 속성, 이벤트, 형식 또는 필드가 아닌 경우 </exception>
+      <exception cref="T:System.TypeLoadException">사용자 지정 특성 형식을 로드할 수 없는 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.MemberInfo,System.Boolean)">
+      <summary>지정된 형식의 사용자 지정 특성이 지정된 멤버에 적용되는 컬렉션을 검색하거나 선택적으로 해당 멤버의 상위 항목을 검사합니다.</summary>
+      <returns>
+        <paramref name="element" />에 적용되고 <paramref name="T" />에 일치하는 사용자 지정 특성의 컬렉션이며 이런 특성이 없을 경우 빈 컬렉션입니다. </returns>
+      <param name="element">검사할 멤버입니다.</param>
+      <param name="inherit">
+        <paramref name="element" />의 상위 요소를 검사하려면 true이고, 그렇지 않으면 false입니다. </param>
+      <typeparam name="T">검색할 특성의 형식입니다.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" />가 null입니다. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" />가 생성자, 메서드, 속성, 이벤트, 형식 또는 필드가 아닌 경우 </exception>
+      <exception cref="T:System.TypeLoadException">사용자 지정 특성 형식을 로드할 수 없는 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.MemberInfo,System.Boolean)">
+      <summary>사용자 지정 특성이 지정된 멤버에 적용되는 컬렉션을 검색하거나 선택적으로 해당 멤버의 상위 항목을 검사합니다.</summary>
+      <returns>지정된 조건과 일치하는 <paramref name="element" />에 적용되는 사용자 지정 특성의 컬렉션이거나, 이러한 특성이 없는 경우 빈 컬렉션입니다. </returns>
+      <param name="element">검사할 멤버입니다.</param>
+      <param name="inherit">
+        <paramref name="element" />의 상위 요소를 검사하려면 true이고, 그렇지 않으면 false입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" />가 null입니다. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" />가 생성자, 메서드, 속성, 이벤트, 형식 또는 필드가 아닌 경우 </exception>
+      <exception cref="T:System.TypeLoadException">사용자 지정 특성 형식을 로드할 수 없는 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.MemberInfo,System.Type)">
+      <summary>지정된 멤버에 적용된 지정된 형식의 사용자 지정 특성 컬렉션을 검색합니다.</summary>
+      <returns>
+        <paramref name="element" />에 적용되고 <paramref name="attributeType" />에 일치하는 사용자 지정 특성의 컬렉션이며 이런 특성이 없을 경우 빈 컬렉션입니다. </returns>
+      <param name="element">검사할 멤버입니다.</param>
+      <param name="attributeType">검색할 특성의 형식입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 또는 <paramref name="attributeType" />이 null인 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" />이 <see cref="T:System.Attribute" />에서 파생되지 않은 경우 </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" />가 생성자, 메서드, 속성, 이벤트, 형식 또는 필드가 아닌 경우 </exception>
+      <exception cref="T:System.TypeLoadException">사용자 지정 특성 형식을 로드할 수 없는 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.MemberInfo,System.Type,System.Boolean)">
+      <summary>지정된 형식의 사용자 지정 특성이 지정된 멤버에 적용되는 컬렉션을 검색하거나 선택적으로 해당 멤버의 상위 항목을 검사합니다.</summary>
+      <returns>
+        <paramref name="element" />에 적용되고 <paramref name="attributeType" />에 일치하는 사용자 지정 특성의 컬렉션이며 이런 특성이 없을 경우 빈 컬렉션입니다.</returns>
+      <param name="element">검사할 멤버입니다.</param>
+      <param name="attributeType">검색할 특성의 형식입니다.</param>
+      <param name="inherit">
+        <paramref name="element" />의 상위 요소를 검사하려면 true이고, 그렇지 않으면 false입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 또는 <paramref name="attributeType" />이 null인 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" />이 <see cref="T:System.Attribute" />에서 파생되지 않은 경우 </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" />가 생성자, 메서드, 속성, 이벤트, 형식 또는 필드가 아닌 경우 </exception>
+      <exception cref="T:System.TypeLoadException">사용자 지정 특성 형식을 로드할 수 없는 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.Module)">
+      <summary>지정된 모듈에 적용된 사용자 지정 특성 컬렉션을 검색합니다.</summary>
+      <returns>
+        <paramref name="element" />에 적용된 사용자 지정 특성의 컬렉션이며 이런 특성이 없을 경우 빈 컬렉션입니다. </returns>
+      <param name="element">검사할 모듈입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" />가 null입니다. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.Module)">
+      <summary>지정된 모듈에 적용된 지정된 형식의 사용자 지정 특성 컬렉션을 검색합니다.</summary>
+      <returns>
+        <paramref name="element" />에 적용되고 <paramref name="T" />에 일치하는 사용자 지정 특성의 컬렉션이며 이런 특성이 없을 경우 빈 컬렉션입니다. </returns>
+      <param name="element">검사할 모듈입니다.</param>
+      <typeparam name="T">검색할 특성의 형식입니다.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" />가 null입니다. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.Module,System.Type)">
+      <summary>지정된 모듈에 적용된 지정된 형식의 사용자 지정 특성 컬렉션을 검색합니다.</summary>
+      <returns>
+        <paramref name="element" />에 적용되고 <paramref name="attributeType" />에 일치하는 사용자 지정 특성의 컬렉션이며 이런 특성이 없을 경우 빈 컬렉션입니다.</returns>
+      <param name="element">검사할 모듈입니다.</param>
+      <param name="attributeType">검색할 특성의 형식입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 또는 <paramref name="attributeType" />이 null인 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" />이 <see cref="T:System.Attribute" />에서 파생되지 않은 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.ParameterInfo)">
+      <summary>지정된 매개 변수에 적용된 사용자 지정 특성 컬렉션을 검색합니다.</summary>
+      <returns>
+        <paramref name="element" />에 적용된 사용자 지정 특성의 컬렉션이며 이런 특성이 없을 경우 빈 컬렉션입니다. </returns>
+      <param name="element">검사할 매개 변수입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" />가 null입니다. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" />가 생성자, 메서드, 속성, 이벤트, 형식 또는 필드가 아닌 경우 </exception>
+      <exception cref="T:System.TypeLoadException">사용자 지정 특성 형식을 로드할 수 없는 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.ParameterInfo)">
+      <summary>지정된 매개 변수에 적용된 지정된 형식의 사용자 지정 특성 컬렉션을 검색합니다.</summary>
+      <returns>
+        <paramref name="element" />에 적용되고 <paramref name="T" />에 일치하는 사용자 지정 특성의 컬렉션이며 이런 특성이 없을 경우 빈 컬렉션입니다. </returns>
+      <param name="element">검사할 매개 변수입니다.</param>
+      <typeparam name="T">검색할 특성의 형식입니다.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" />가 null입니다. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" />가 생성자, 메서드, 속성, 이벤트, 형식 또는 필드가 아닌 경우 </exception>
+      <exception cref="T:System.TypeLoadException">사용자 지정 특성 형식을 로드할 수 없는 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.ParameterInfo,System.Boolean)">
+      <summary>사용자 지정 특성이 지정된 매개 변수에 적용되는 컬렉션을 검색하거나 선택적으로 해당 매개 변수의 상위 항목을 검사합니다.</summary>
+      <returns>
+        <paramref name="element" />에 적용된 사용자 지정 특성의 컬렉션이며 이런 특성이 없을 경우 빈 컬렉션입니다. </returns>
+      <param name="element">검사할 매개 변수입니다.</param>
+      <param name="inherit">
+        <paramref name="element" />의 상위 요소를 검사하려면 true이고, 그렇지 않으면 false입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" />가 null입니다. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" />가 생성자, 메서드, 속성, 이벤트, 형식 또는 필드가 아닌 경우 </exception>
+      <exception cref="T:System.TypeLoadException">사용자 지정 특성 형식을 로드할 수 없는 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.ParameterInfo,System.Boolean)">
+      <summary>지정된 형식의 사용자 지정 특성이 지정된 매개 변수에 적용되는 컬렉션을 검색하거나 선택적으로 해당 매개 변수의 상위 항목을 검사합니다.</summary>
+      <returns>
+        <paramref name="element" />에 적용되고 <paramref name="T" />에 일치하는 사용자 지정 특성의 컬렉션이며 이런 특성이 없을 경우 빈 컬렉션입니다. </returns>
+      <param name="element">검사할 매개 변수입니다.</param>
+      <param name="inherit">
+        <paramref name="element" />의 상위 요소를 검사하려면 true이고, 그렇지 않으면 false입니다. </param>
+      <typeparam name="T">검색할 특성의 형식입니다.</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" />가 null입니다. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" />가 생성자, 메서드, 속성, 이벤트, 형식 또는 필드가 아닌 경우 </exception>
+      <exception cref="T:System.TypeLoadException">사용자 지정 특성 형식을 로드할 수 없는 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.ParameterInfo,System.Type)">
+      <summary>지정된 매개 변수에 적용된 지정된 형식의 사용자 지정 특성 컬렉션을 검색합니다.</summary>
+      <returns>
+        <paramref name="element" />에 적용되고 <paramref name="attributeType" />에 일치하는 사용자 지정 특성의 컬렉션이며 이런 특성이 없을 경우 빈 컬렉션입니다. </returns>
+      <param name="element">검사할 매개 변수입니다.</param>
+      <param name="attributeType">검색할 특성의 형식입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 또는 <paramref name="attributeType" />이 null인 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" />이 <see cref="T:System.Attribute" />에서 파생되지 않은 경우 </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" />가 생성자, 메서드, 속성, 이벤트, 형식 또는 필드가 아닌 경우 </exception>
+      <exception cref="T:System.TypeLoadException">사용자 지정 특성 형식을 로드할 수 없는 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.ParameterInfo,System.Type,System.Boolean)">
+      <summary>지정된 형식의 사용자 지정 특성이 지정된 매개 변수에 적용되는 컬렉션을 검색하거나 선택적으로 해당 매개 변수의 상위 항목을 검사합니다.</summary>
+      <returns>
+        <paramref name="element" />에 적용되고 <paramref name="attributeType" />에 일치하는 사용자 지정 특성의 컬렉션이며 이런 특성이 없을 경우 빈 컬렉션입니다. </returns>
+      <param name="element">검사할 매개 변수입니다.</param>
+      <param name="attributeType">검색할 특성의 형식입니다.</param>
+      <param name="inherit">
+        <paramref name="element" />의 상위 요소를 검사하려면 true이고, 그렇지 않으면 false입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 또는 <paramref name="attributeType" />이 null인 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" />이 <see cref="T:System.Attribute" />에서 파생되지 않은 경우 </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" />가 생성자, 메서드, 속성, 이벤트, 형식 또는 필드가 아닌 경우 </exception>
+      <exception cref="T:System.TypeLoadException">사용자 지정 특성 형식을 로드할 수 없는 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.Assembly,System.Type)">
+      <summary>지정된 형식의 사용자 지정 특성이 지정된 어셈블리에 적용되었는지 여부를 나타냅니다.</summary>
+      <returns>지정된 형식의 특성이 <paramref name="element" />에 적용되는 경우 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="element">조사할 어셈블리입니다.</param>
+      <param name="attributeType">검색할 특성의 형식입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 또는 <paramref name="attributeType" />이 null인 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" />이 <see cref="T:System.Attribute" />에서 파생되지 않은 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.MemberInfo,System.Type)">
+      <summary>지정된 형식의 사용자 지정 특성이 지정된 멤버에 적용되었는지 여부를 나타냅니다.</summary>
+      <returns>지정된 형식의 특성이 <paramref name="element" />에 적용되는 경우 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="element">검사할 멤버입니다.</param>
+      <param name="attributeType">검색할 특성의 형식입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 또는 <paramref name="attributeType" />이 null인 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" />이 <see cref="T:System.Attribute" />에서 파생되지 않은 경우 </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" />가 생성자, 메서드, 속성, 이벤트, 형식 또는 필드가 아닌 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.MemberInfo,System.Type,System.Boolean)">
+      <summary>지정된 형식의 사용자 지정 특성이 지정된 멤버에 적용되었는지, 또는 선택적으로 상위 항목에 적용되었는지 여부를 결정합니다.</summary>
+      <returns>지정된 형식의 특성이 <paramref name="element" />에 적용되는 경우 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="element">검사할 멤버입니다.</param>
+      <param name="attributeType">검색할 특성의 형식입니다.</param>
+      <param name="inherit">
+        <paramref name="element" />의 상위 요소를 검사하려면 true이고, 그렇지 않으면 false입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 또는 <paramref name="attributeType" />이 null인 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" />이 <see cref="T:System.Attribute" />에서 파생되지 않은 경우 </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" />가 생성자, 메서드, 속성, 이벤트, 형식 또는 필드가 아닌 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.Module,System.Type)">
+      <summary>지정된 형식의 사용자 지정 특성이 지정된 모듈에 적용되었는지 여부를 나타냅니다.</summary>
+      <returns>지정된 형식의 특성이 <paramref name="element" />에 적용되는 경우 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="element">검사할 모듈입니다.</param>
+      <param name="attributeType">검색할 특성의 형식입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 또는 <paramref name="attributeType" />이 null인 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" />이 <see cref="T:System.Attribute" />에서 파생되지 않은 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.ParameterInfo,System.Type)">
+      <summary>지정된 형식의 사용자 지정 특성이 지정된 매개 변수에 적용되었는지 여부를 나타냅니다.</summary>
+      <returns>지정된 형식의 특성이 <paramref name="element" />에 적용되는 경우 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="element">검사할 매개 변수입니다.</param>
+      <param name="attributeType">검색할 특성의 형식입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 또는 <paramref name="attributeType" />이 null인 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" />이 <see cref="T:System.Attribute" />에서 파생되지 않은 경우 </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.ParameterInfo,System.Type,System.Boolean)">
+      <summary>지정된 형식의 사용자 지정 특성이 지정된 매개 변수에 적용되는지, 또는 선택적으로 상위 항목에 적용되는지 여부를 나타냅니다.</summary>
+      <returns>지정된 형식의 특성이 <paramref name="element" />에 적용되는 경우 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="element">검사할 매개 변수입니다.</param>
+      <param name="attributeType">검색할 특성의 형식입니다.</param>
+      <param name="inherit">
+        <paramref name="element" />의 상위 요소를 검사하려면 true이고, 그렇지 않으면 false입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> 또는 <paramref name="attributeType" />이 null인 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" />이 <see cref="T:System.Attribute" />에서 파생되지 않은 경우 </exception>
+    </member>
+    <member name="T:System.Reflection.InterfaceMapping">
+      <summary>인터페이스를 구현하는 클래스에 대한 실제 메서드로의 인터페이스 매핑을 검색합니다.</summary>
+    </member>
+    <member name="F:System.Reflection.InterfaceMapping.InterfaceMethods">
+      <summary>인터페이스에 정의된 메서드를 표시합니다.</summary>
+    </member>
+    <member name="F:System.Reflection.InterfaceMapping.InterfaceType">
+      <summary>인터페이스를 나타내는 형식을 보여 줍니다.</summary>
+    </member>
+    <member name="F:System.Reflection.InterfaceMapping.TargetMethods">
+      <summary>인터페이스를 나타내는 메서드를 보여 줍니다.</summary>
+    </member>
+    <member name="F:System.Reflection.InterfaceMapping.TargetType">
+      <summary>인터페이스 매핑을 만드는 데 사용된 형식을 나타냅니다.</summary>
+    </member>
+    <member name="T:System.Reflection.RuntimeReflectionExtensions">
+      <summary>가동시간에 유형에 대한 정보를 검색하는 방법을 제공한다.</summary>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetMethodInfo(System.Delegate)">
+      <summary>지정된 대리자가 나타내는 메서드를 나타내는 개체를 가져옵니다.</summary>
+      <returns>메서드를 나타내는 개체입니다.</returns>
+      <param name="del">검사할 대리자입니다.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeBaseDefinition(System.Reflection.MethodInfo)">
+      <summary>메서드가 처음으로 선언된 직접 또는 간접 기본 클래스에서 지정된 메서드를 표현하는 개체를 검색합니다.</summary>
+      <returns>지정된 메서드의 기본 클래스에서의 초기 선언을 나타내는 개체</returns>
+      <param name="method">정보를 검색할 메서드입니다.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeEvent(System.Type,System.String)">
+      <summary>지정된 이벤트를 나타내는 개체를 검색합니다.</summary>
+      <returns>지정된 이벤트를 나타내는 개체이며 이벤트가 없는 경우 null을 반환합니다.</returns>
+      <param name="type">이벤트가 포함된 형식입니다.</param>
+      <param name="name">이벤트의 이름입니다.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeEvents(System.Type)">
+      <summary>지정된 형식에서 정의된 모든 메소드를 나타내는 컬렉션을 검색합니다.</summary>
+      <returns>지정된 형식의 이벤트 컬렉션입니다.</returns>
+      <param name="type">이벤트가 포함된 형식입니다.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeField(System.Type,System.String)">
+      <summary>지정된 필드를 나타내는 개체를 검색합니다.</summary>
+      <returns>지정된 필드를 나타내는 개체이며 필드가 없는 경우 null을 반환합니다.</returns>
+      <param name="type">필드가 포함된 형식입니다.</param>
+      <param name="name">필드 이름입니다.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeFields(System.Type)">
+      <summary>지정된 형식에서 정의된 모든 메소드를 나타내는 컬렉션을 검색합니다.</summary>
+      <returns>지정된 형식의 필드 컬렉션입니다.</returns>
+      <param name="type">필드가 포함된 형식입니다.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeInterfaceMap(System.Reflection.TypeInfo,System.Type)">
+      <summary>지정된 형식과 지정된 인터페이스에 대한 인터페이스 매핑을 반환합니다.</summary>
+      <returns>지정된 인터페이스 및 형식의 인터페이스 매핑을 나타내는 개체입니다.</returns>
+      <param name="typeInfo">매핑 대상을 검색하는 형식입니다.</param>
+      <param name="interfaceType">매핑을 검색할 인터페이스입니다.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeMethod(System.Type,System.String,System.Type[])">
+      <summary>지정된 메서드를 나타내는 개체를 검색합니다.</summary>
+      <returns>지정된 메서드를 나타내는 개체이며 메서드가 없는 경우 null을 반환합니다.</returns>
+      <param name="type">메서드가 포함된 형식입니다.</param>
+      <param name="name">메서드의 이름입니다.</param>
+      <param name="parameters">매서드의 매개 변수를 포함하는 배열</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeMethods(System.Type)">
+      <summary>지정된 형식에 정의된 모든 메소드를 나타내는 컬렉션을 검색합니다.</summary>
+      <returns>지정된 형식의 메서드 컬렉션입니다.</returns>
+      <param name="type">메서드가 포함된 형식입니다.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeProperties(System.Type)">
+      <summary>지정된 형식에서 정의된 모든 속성을 나타내는 컬렉션을 검색합니다.</summary>
+      <returns>지정된 형식에 대한 속성 컬렉션입니다.</returns>
+      <param name="type">속성이 포함된 형식입니다.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeProperty(System.Type,System.String)">
+      <summary>지정된 속성을 나타내는 개체를 검색합니다.</summary>
+      <returns>지정된 속성을 나타내는 개체이며 속성이 없는 경우 null을 반환합니다.</returns>
+      <param name="type">속성이 포함된 형식입니다.</param>
+      <param name="name">속성 이름</param>
+    </member>
+  </members>
+</doc>

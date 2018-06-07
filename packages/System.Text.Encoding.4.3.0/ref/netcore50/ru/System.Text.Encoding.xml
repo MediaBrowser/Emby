@@ -1,0 +1,956 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Text.Encoding</name>
+  </assembly>
+  <members>
+    <member name="T:System.Text.Decoder">
+      <summary>Преобразует закодированную последовательность байтов в набор символов.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Decoder.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Text.Decoder" />.</summary>
+    </member>
+    <member name="M:System.Text.Decoder.Convert(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32,System.Int32,System.Boolean,System.Int32@,System.Int32@,System.Boolean@)">
+      <summary>Преобразует массив закодированных байтов в закодированные символы UTF-16 и сохраняет результат в массиве символов.</summary>
+      <param name="bytes">Преобразуемый массив байтов.</param>
+      <param name="byteIndex">Первый элемент преобразуемого массива байтов <paramref name="bytes" />.</param>
+      <param name="byteCount">Число преобразуемых элементов <paramref name="bytes" />.</param>
+      <param name="chars">Массив для хранения преобразованных символов.</param>
+      <param name="charIndex">Первый элемент массива <paramref name="chars" />, в котором сохраняются данные.</param>
+      <param name="charCount">Максимальное число элементов <paramref name="chars" /> для использования при преобразовании.</param>
+      <param name="flush">Значение true показывает, что преобразование данных завершено; в противном случае — значение false.</param>
+      <param name="bytesUsed">Когда выполнение этого метода завершается, данный параметр содержит количество байтов, использованных при преобразовании.Этот параметр передается без инициализации.</param>
+      <param name="charsUsed">Когда выполнение этого метода завершается, данный параметр содержит количество символов из массива <paramref name="chars" />, созданных при преобразовании.Этот параметр передается без инициализации.</param>
+      <param name="completed">Этот метод возвращает значение true, если все символы, заданные в параметре <paramref name="byteCount" />, были преобразованы; в противном случае — значение false.Этот параметр передается без инициализации.</param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="chars" /> или <paramref name="bytes" /> равно null (Nothing).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="charIndex" />, <paramref name="charCount" />, <paramref name="byteIndex" /> или <paramref name="byteCount" /> меньше нуля.– или –Длина строки <paramref name="chars" />. - Значение параметра <paramref name="charIndex" /> меньше значения <paramref name="charCount" />.– или –Длина строки <paramref name="bytes" />. - Значение параметра <paramref name="byteIndex" /> меньше значения <paramref name="byteCount" />.</exception>
+      <exception cref="T:System.ArgumentException">Выходной буфер слишком мал для того, чтобы содержать любые преобразованные входные данные.Размер выходного буфера должен быть больше или равен размеру, указанному методом <see cref="Overload:System.Text.Decoder.GetCharCount" />.</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)и Свойству <see cref="P:System.Text.Decoder.Fallback" /> присвоено значение <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.Decoder.Fallback">
+      <summary>Получает или задает объект <see cref="T:System.Text.DecoderFallback" /> для текущего объекта <see cref="T:System.Text.Decoder" />.</summary>
+      <returns>Объект <see cref="T:System.Text.DecoderFallback" />.</returns>
+      <exception cref="T:System.ArgumentNullException">Задано значение null (Nothing).</exception>
+      <exception cref="T:System.ArgumentException">Невозможно задать новое значение, поскольку текущий объект <see cref="T:System.Text.DecoderFallbackBuffer" /> содержит данные, которые еще не были декодированы. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Decoder.FallbackBuffer">
+      <summary>Получает объект <see cref="T:System.Text.DecoderFallbackBuffer" />, связанный с текущим объектом <see cref="T:System.Text.Decoder" />.</summary>
+      <returns>Объект <see cref="T:System.Text.DecoderFallbackBuffer" />.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Decoder.GetCharCount(System.Byte[],System.Int32,System.Int32)">
+      <summary>При переопределении в производном классе вычисляет количество символов, полученных при декодировании последовательности байтов из заданного массива байтов.</summary>
+      <returns>Количество символов, полученных при декодировании заданной последовательности байтов и всех байтов, расположенных во внутреннем буфере.</returns>
+      <param name="bytes">Массив байтов, содержащий последовательность байтов, которую требуется декодировать. </param>
+      <param name="index">Индекс первого декодируемого байта. </param>
+      <param name="count">Число байтов для декодирования. </param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="bytes" /> равно null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> меньше нуля.– или – Значения параметров <paramref name="index" /> и <paramref name="count" /> не указывают допустимый диапазон в <paramref name="bytes" />. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)и Свойству <see cref="P:System.Text.Decoder.Fallback" /> присвоено значение <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Decoder.GetCharCount(System.Byte[],System.Int32,System.Int32,System.Boolean)">
+      <summary>При переопределении в производном классе вычисляет количество символов, полученных при декодировании последовательности байтов из заданного массива байтов.Параметр указывает, следует ли очистить внутреннее состояние декодера после расчета.</summary>
+      <returns>Количество символов, полученных при декодировании заданной последовательности байтов и всех байтов, расположенных во внутреннем буфере.</returns>
+      <param name="bytes">Массив байтов, содержащий последовательность байтов, которую требуется декодировать. </param>
+      <param name="index">Индекс первого декодируемого байта. </param>
+      <param name="count">Число байтов для декодирования. </param>
+      <param name="flush">Значение true соответствует имитации очистки внутреннего состояния кодировщика после расчета; в противоположном случае — значение равно false. </param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="bytes" /> равно null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> меньше нуля.– или – Значения параметров <paramref name="index" /> и <paramref name="count" /> не указывают допустимый диапазон в <paramref name="bytes" />. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)и Свойству <see cref="P:System.Text.Decoder.Fallback" /> присвоено значение <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Decoder.GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)">
+      <summary>При переопределении в производном классе декодирует последовательность байтов из заданного массива байтов и все байты, расположенные во внутреннем буфере, в указанный массив символов.</summary>
+      <returns>Фактическое число символов, записанных в <paramref name="chars" />.</returns>
+      <param name="bytes">Массив байтов, содержащий последовательность байтов, которую требуется декодировать. </param>
+      <param name="byteIndex">Индекс первого декодируемого байта. </param>
+      <param name="byteCount">Число байтов для декодирования. </param>
+      <param name="chars">Массив символов, в который будет помещен результирующий набор символов. </param>
+      <param name="charIndex">Индекс, с которого начинается запись результирующего набора символов. </param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="bytes" /> равно null (Nothing).– или – Значение параметра <paramref name="chars" /> равно null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="byteIndex" />, <paramref name="byteCount" /> или <paramref name="charIndex" /> меньше нуля.– или – Значения параметров <paramref name="byteindex" /> и <paramref name="byteCount" /> не указывают допустимый диапазон в <paramref name="bytes" />.– или – Значение параметра <paramref name="charIndex" /> не является допустимым индексом в <paramref name="chars" />. </exception>
+      <exception cref="T:System.ArgumentException">Недостаточно емкости <paramref name="chars" /> от <paramref name="charIndex" /> до конца массива для размещения полученных символов. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)и Свойству <see cref="P:System.Text.Decoder.Fallback" /> присвоено значение <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Decoder.GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32,System.Boolean)">
+      <summary>При переопределении в производном классе декодирует последовательность байтов из заданного массива байтов и все байты, расположенные во внутреннем буфере, в указанный массив символов.Параметр указывает, следует ли очистить внутреннее состояние декодера после выполнения преобразования.</summary>
+      <returns>Фактическое количество символов, записанных в параметр <paramref name="chars" />.</returns>
+      <param name="bytes">Массив байтов, содержащий последовательность байтов, которую требуется декодировать. </param>
+      <param name="byteIndex">Индекс первого декодируемого байта. </param>
+      <param name="byteCount">Число байтов для декодирования. </param>
+      <param name="chars">Массив символов, в который будет помещен результирующий набор символов. </param>
+      <param name="charIndex">Индекс, с которого начинается запись результирующего набора символов. </param>
+      <param name="flush">Значение true соответствует очистке внутреннего состояния декодера после преобразования; в противоположном случае — значение false. </param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="bytes" /> равно null (Nothing).– или – Значение параметра <paramref name="chars" /> равно null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="byteIndex" />, <paramref name="byteCount" /> или <paramref name="charIndex" /> меньше нуля.– или – Значения параметров <paramref name="byteindex" /> и <paramref name="byteCount" /> не указывают допустимый диапазон в <paramref name="bytes" />.– или – Значение параметра <paramref name="charIndex" /> не является допустимым индексом в <paramref name="chars" />. </exception>
+      <exception cref="T:System.ArgumentException">Недостаточно емкости <paramref name="chars" /> от <paramref name="charIndex" /> до конца массива для размещения полученных символов. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)и Свойству <see cref="P:System.Text.Decoder.Fallback" /> присвоено значение <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Decoder.Reset">
+      <summary>При переопределении в производном классе возвращает декодер в исходное состояние.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.DecoderExceptionFallback">
+      <summary>Предоставляет механизм обработки ошибок, называемый резервным вариантом, для закодированной входной последовательности байтов, которая не может быть преобразована во входной символ.Этот резервный механизм выдает исключение вместо декодирования входной последовательности байтов.Этот класс не наследуется.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderExceptionFallback.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Text.DecoderExceptionFallback" />. </summary>
+    </member>
+    <member name="M:System.Text.DecoderExceptionFallback.CreateFallbackBuffer">
+      <summary>Возвращает буфер резерва декодера, который выдает исключение, когда не может преобразовать последовательность байтов в символ. </summary>
+      <returns>Буфер резерва декодера, который выдает исключение, когда не может декодировать последовательность байтов.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderExceptionFallback.Equals(System.Object)">
+      <summary>Указывает, равен ли текущий объект <see cref="T:System.Text.DecoderExceptionFallback" /> указанному объекту.</summary>
+      <returns>Значение true, если <paramref name="value" /> не равняется null и является объектом <see cref="T:System.Text.DecoderExceptionFallback" />; в противном случае — значение false.</returns>
+      <param name="value">Объект, производный от класса <see cref="T:System.Text.DecoderExceptionFallback" />.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderExceptionFallback.GetHashCode">
+      <summary>Извлекает хэш-код для этого экземпляра.</summary>
+      <returns>Возвращаемое значение всегда является одинаковым произвольным значением и не имеет особой важности. </returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderExceptionFallback.MaxCharCount">
+      <summary>Получает максимальное число символов, которые может вернуть этот экземпляр.</summary>
+      <returns>Возвращаемое значение всегда равно нулю.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.DecoderFallback">
+      <summary>Предоставляет механизм обработки ошибок, называемый резервным вариантом, закодированной входной последовательности байтов, которая не может быть преобразована в выходной символ. </summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderFallback.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Text.DecoderFallback" />. </summary>
+    </member>
+    <member name="M:System.Text.DecoderFallback.CreateFallbackBuffer">
+      <summary>При переопределении в производном классе инициализирует новый экземпляр класса <see cref="T:System.Text.DecoderFallbackBuffer" />. </summary>
+      <returns>Объект, предоставляющий резервный буфер для декодера.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderFallback.ExceptionFallback">
+      <summary>Получает объект, который создает исключение, если входная последовательность байтов не может быть декодирована.</summary>
+      <returns>Тип, производный от класса <see cref="T:System.Text.DecoderFallback" />.Значение объекта по умолчанию равно <see cref="T:System.Text.DecoderExceptionFallback" />.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderFallback.MaxCharCount">
+      <summary>При переопределении в производном классе возвращает максимальное число символов, которые могут быть возвращены текущим объектом <see cref="T:System.Text.DecoderFallback" />.</summary>
+      <returns>Максимальное число символов, которые может вернуть текущий объект <see cref="T:System.Text.DecoderFallback" />.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderFallback.ReplacementFallback">
+      <summary>Получает объект, выводящий замещающую строку вместо входной последовательности байтов, которая не может быть декодирована.</summary>
+      <returns>Тип, производный от класса <see cref="T:System.Text.DecoderFallback" />.Значением по умолчанию является объект <see cref="T:System.Text.DecoderReplacementFallback" />, выпускающий символ ЗНАКА ВОПРОСА ("?", U+003F) вместо неизвестных последовательностей байтов.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Text.DecoderFallbackBuffer">
+      <summary>Предоставляет буфер, который позволяет резервному обработчику возвращать альтернативную строку средству декодирования, если не удается декодировать входную последовательность байтов. </summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderFallbackBuffer.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Text.DecoderFallbackBuffer" />. </summary>
+    </member>
+    <member name="M:System.Text.DecoderFallbackBuffer.Fallback(System.Byte[],System.Int32)">
+      <summary>При переопределении в производном классе готовит резервный буфер для обработки указанной входной последовательности байтов.</summary>
+      <returns>true, если резервный буфер может обработать <paramref name="bytesUnknown" />; false, если резервный буфер игнорирует <paramref name="bytesUnknown" />.</returns>
+      <param name="bytesUnknown">Входной массив байтов.</param>
+      <param name="index">Позиция байта в <paramref name="bytesUnknown" />.</param>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderFallbackBuffer.GetNextChar">
+      <summary>При переопределении в производном классе извлекает следующий символ в резервном буфере.</summary>
+      <returns>Следующий символ в резервном буфере.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderFallbackBuffer.MovePrevious">
+      <summary>При переопределении в производный класс становится причиной того, что в следующем вызове метод <see cref="M:System.Text.DecoderFallbackBuffer.GetNextChar" /> получает доступ к позиции символа в буфере данных, предшествующей текущей позиции символа. </summary>
+      <returns>Значение true, если операция <see cref="M:System.Text.DecoderFallbackBuffer.MovePrevious" /> выполнена успешно; в противном случае — значение false.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderFallbackBuffer.Remaining">
+      <summary>При переопределении в производном классе возвращает максимальное число символов в текущем объекте <see cref="T:System.Text.DecoderFallbackBuffer" />, которые остаются для обработки.</summary>
+      <returns>Количество символов в текущем резервном буфере, которые еще не были обработаны.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderFallbackBuffer.Reset">
+      <summary>Инициализирует все данные и сведения о состоянии, относящиеся к этому резервному буферу.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Text.DecoderFallbackException">
+      <summary>Исключение создается при сбое операции резервирования декодера.Этот класс не наследуется.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderFallbackException.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Text.DecoderFallbackException" />. </summary>
+    </member>
+    <member name="M:System.Text.DecoderFallbackException.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Text.DecoderFallbackException" />.Через параметр задается сообщение об ошибке.</summary>
+      <param name="message">Сообщение об ошибке.</param>
+    </member>
+    <member name="M:System.Text.DecoderFallbackException.#ctor(System.String,System.Byte[],System.Int32)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Text.DecoderFallbackException" />.Параметры указывают сообщение об ошибке, декодируемый массив байтов и индекс байта, который не удается декодировать.</summary>
+      <param name="message">Сообщение об ошибке.</param>
+      <param name="bytesUnknown">Входной массив байтов.</param>
+      <param name="index">Позиция байта, который не удается декодировать, в <paramref name="bytesUnknown" />.</param>
+    </member>
+    <member name="M:System.Text.DecoderFallbackException.#ctor(System.String,System.Exception)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Text.DecoderFallbackException" />.Параметры указывают сообщение об ошибке и внутреннее исключение, вызвавшее данное исключение.</summary>
+      <param name="message">Сообщение об ошибке.</param>
+      <param name="innerException">Исключение, вызвавшее данное исключение.</param>
+    </member>
+    <member name="P:System.Text.DecoderFallbackException.BytesUnknown">
+      <summary>Получает входную последовательность байтов, вызвавшую исключение.</summary>
+      <returns>Входной массив байтов, который не удается декодировать. </returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderFallbackException.Index">
+      <summary>Получает позицию байта, вызвавшего исключение, во входной последовательности байтов.</summary>
+      <returns>Позиция байта, который не удается декодировать, во входном массиве байтов.Отсчет позиции начинается с нуля.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Text.DecoderReplacementFallback">
+      <summary>Предоставляет механизм обработки ошибок, называемый резервным вариантом, закодированной входной последовательности байтов, которая не может быть преобразована в выходной символ.В резервном варианте вместо декодированной последовательности байтов выпускается заданная пользователем замещающая строка.Этот класс не наследуется.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderReplacementFallback.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Text.DecoderReplacementFallback" />. </summary>
+    </member>
+    <member name="M:System.Text.DecoderReplacementFallback.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Text.DecoderReplacementFallback" /> указанной замещающей строкой.</summary>
+      <param name="replacement">Строка, которая выпущена в операции декодирования вместо входной последовательности байтов, которая не может быть декодирована.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="replacement" />is null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="replacement" /> содержит недопустимую суррогатную пару.Другими словами, суррогатная пара не состоит из одного старшего суррогатного компонента, за которым следует один младший суррогатный компонент.</exception>
+    </member>
+    <member name="M:System.Text.DecoderReplacementFallback.CreateFallbackBuffer">
+      <summary>Создает объект <see cref="T:System.Text.DecoderFallbackBuffer" />, который инициализируется с замещающей строкой этого объекта <see cref="T:System.Text.DecoderReplacementFallback" />.</summary>
+      <returns>Объект <see cref="T:System.Text.DecoderFallbackBuffer" />, указывающий строку, которую следует использовать вместо исходной входной последовательности операции декодирования.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderReplacementFallback.DefaultString">
+      <summary>Получает замещающую строку, которая является значением объекта <see cref="T:System.Text.DecoderReplacementFallback" />.</summary>
+      <returns>Замещающая строка, которая выпущена вместо входной последовательности байтов, которая не может быть декодирована.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderReplacementFallback.Equals(System.Object)">
+      <summary>Указывает, равно ли значение заданного объекта объекту <see cref="T:System.Text.DecoderReplacementFallback" />.</summary>
+      <returns>Значение true, если параметр <paramref name="value" /> является объектом <see cref="T:System.Text.DecoderReplacementFallback" /> со свойством <see cref="P:System.Text.DecoderReplacementFallback.DefaultString" />, равным свойству <see cref="P:System.Text.DecoderReplacementFallback.DefaultString" /> текущего объекта <see cref="T:System.Text.DecoderReplacementFallback" />; в противном случае — false. </returns>
+      <param name="value">Объект <see cref="T:System.Text.DecoderReplacementFallback" />.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.DecoderReplacementFallback.GetHashCode">
+      <summary>Извлекает хэш-код для значения объекта <see cref="T:System.Text.DecoderReplacementFallback" />.</summary>
+      <returns>Хэш-код значения объекта.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.DecoderReplacementFallback.MaxCharCount">
+      <summary>Получает количество символов в замещающей строке для объекта <see cref="T:System.Text.DecoderReplacementFallback" />.</summary>
+      <returns>Количество символов в строке, выпущенное вместо последовательности байтов, которое не может быть декодировано, то есть, является длиной строки, возвращенное свойством <see cref="P:System.Text.DecoderReplacementFallback.DefaultString" />.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.Encoder">
+      <summary>Преобразовывает набор символом в последовательность байтов.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoder.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Text.Encoder" />.</summary>
+    </member>
+    <member name="M:System.Text.Encoder.Convert(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@,System.Int32@,System.Boolean@)">
+      <summary>Преобразует массив символов Юникода в последовательность закодированных байтов и сохраняет результат в массиве байтов.</summary>
+      <param name="chars">Массив символов для преобразования.</param>
+      <param name="charIndex">Первый элемент преобразуемого массива байтов <paramref name="chars" />.</param>
+      <param name="charCount">Число преобразуемых элементов массива <paramref name="chars" />.</param>
+      <param name="bytes">Массив, где хранятся преобразованные байты.</param>
+      <param name="byteIndex">Первый элемент массива <paramref name="bytes" />, в котором сохраняются данные.</param>
+      <param name="byteCount">Максимальное число элементов массива <paramref name="bytes" /> для использования при преобразовании.</param>
+      <param name="flush">Значение true используется, чтобы показать, что преобразование данных завершено; в противном случае — false.</param>
+      <param name="charsUsed">Когда выполнение этого метода завершается, данный параметр содержит число символов из <paramref name="chars" />, использованных при преобразовании.Этот параметр передается без инициализации.</param>
+      <param name="bytesUsed">Когда выполнение этого метода завершается, данный параметр содержит количество байтов, созданных при преобразовании.Этот параметр передается без инициализации.</param>
+      <param name="completed">Этот метод возвращает значение true, если все символы, заданные в параметре <paramref name="charCount" />, были преобразованы; в противном случае — значение false.Этот параметр передается без инициализации.</param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="chars" /> или <paramref name="bytes" /> равно null (Nothing).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="charIndex" />, <paramref name="charCount" />, <paramref name="byteIndex" /> или <paramref name="byteCount" /> меньше нуля.– или –Длина строки <paramref name="chars" />. - Значение параметра <paramref name="charIndex" /> меньше значения <paramref name="charCount" />.– или –Длина строки <paramref name="bytes" />. - Значение параметра <paramref name="byteIndex" /> меньше значения <paramref name="byteCount" />.</exception>
+      <exception cref="T:System.ArgumentException">Выходной буфер слишком мал для того, чтобы содержать любые преобразованные входные данные.Размер выходного буфера должен быть больше или равен размеру, указанному методом <see cref="Overload:System.Text.Encoder.GetByteCount" />.</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)и Свойству <see cref="P:System.Text.Encoder.Fallback" /> присвоено значение <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoder.Fallback">
+      <summary>Получает или задает объект <see cref="T:System.Text.EncoderFallback" /> для текущего объекта <see cref="T:System.Text.Encoder" />.</summary>
+      <returns>Объект <see cref="T:System.Text.EncoderFallback" />.</returns>
+      <exception cref="T:System.ArgumentNullException">Задано значение null (Nothing).</exception>
+      <exception cref="T:System.ArgumentException">Невозможно задать новое значение, поскольку текущий объект <see cref="T:System.Text.EncoderFallbackBuffer" /> содержит данные, которые еще не были закодированы. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)и Свойству <see cref="P:System.Text.Encoder.Fallback" /> присвоено значение <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoder.FallbackBuffer">
+      <summary>Получает объект <see cref="T:System.Text.EncoderFallbackBuffer" />, связанный с текущим объектом <see cref="T:System.Text.Encoder" />.</summary>
+      <returns>Объект <see cref="T:System.Text.EncoderFallbackBuffer" />.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoder.GetByteCount(System.Char[],System.Int32,System.Int32,System.Boolean)">
+      <summary>При переопределении в производном классе вычисляет количество байтов, полученных при кодировании набора символов из указанного массива символов.Параметр указывает, следует ли очистить внутреннее состояние кодировщика после расчета.</summary>
+      <returns>Количество байтов, полученных при кодировании заданных символов и всех символов, расположенных во внутреннем буфере.</returns>
+      <param name="chars">Массив символов, содержащий набор кодируемых символов. </param>
+      <param name="index">Индекс первого кодируемого символа. </param>
+      <param name="count">Число кодируемых символов. </param>
+      <param name="flush">Значение true соответствует имитации очистки внутреннего состояния кодировщика после расчета; в противоположном случае — значение равно false. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="chars" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> меньше нуля.– или – Значения параметров <paramref name="index" /> и <paramref name="count" /> не указывают допустимый диапазон в <paramref name="chars" />. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)и Свойству <see cref="P:System.Text.Encoder.Fallback" /> присвоено значение <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoder.GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Boolean)">
+      <summary>При переопределении в производном классе кодирует набор символов из заданного массива символов и все символы, расположенные во внутреннем буфере, в указанный массив байтов.Параметр указывает, следует ли очистить внутреннее состояние кодировщика после выполнения преобразования.</summary>
+      <returns>Фактическое число байтов, записанных в <paramref name="bytes" />.</returns>
+      <param name="chars">Массив символов, содержащий набор кодируемых символов. </param>
+      <param name="charIndex">Индекс первого кодируемого символа. </param>
+      <param name="charCount">Число кодируемых символов. </param>
+      <param name="bytes">Массив байтов, в который будет помещена результирующая последовательность байтов. </param>
+      <param name="byteIndex">Индекс, с которого начинается запись результирующей последовательности байтов. </param>
+      <param name="flush">Значение true соответствует очистке внутреннего состояния кодировщика после преобразования; в противоположном случае — значение false. </param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="chars" /> равно null (Nothing).– или – Значение параметра <paramref name="bytes" /> равно null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="charIndex" />, <paramref name="charCount" /> или <paramref name="byteIndex" /> меньше нуля.– или – Значения параметров <paramref name="charIndex" /> и <paramref name="charCount" /> не указывают допустимый диапазон в <paramref name="chars" />.– или – Значение параметра <paramref name="byteIndex" /> не является допустимым индексом в <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">Недостаточно емкости <paramref name="bytes" /> от <paramref name="byteIndex" /> до конца массива для размещения полученных байтов. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)и Свойству <see cref="P:System.Text.Encoder.Fallback" /> присвоено значение <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoder.Reset">
+      <summary>При переопределении в производном классе возвращает кодировщик в исходное состояние.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.EncoderExceptionFallback">
+      <summary>Предоставляет механизм обработки ошибок, называемый резервным вариантом, для входного символа, который не может быть преобразован в выходную последовательность байтов.Резервным механизм создает исключение, если входной символ не может быть преобразован в закодированную выходную последовательность байтов.Этот класс не наследуется.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderExceptionFallback.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Text.EncoderExceptionFallback" />.</summary>
+    </member>
+    <member name="M:System.Text.EncoderExceptionFallback.CreateFallbackBuffer">
+      <summary>Возвращает буфер резерва кодировщика, который выдает исключение, когда не может преобразовать последовательность символов в последовательность байтов.</summary>
+      <returns>Буфер резерва кодировщика, который выдает исключение, когда не может закодировать последовательность символов.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderExceptionFallback.Equals(System.Object)">
+      <summary>Указывает, равен ли текущий объект <see cref="T:System.Text.EncoderExceptionFallback" /> указанному объекту.</summary>
+      <returns>Значение true, если <paramref name="value" /> не равняется null (Nothing в Visual Basic .NET) и является объектом <see cref="T:System.Text.EncoderExceptionFallback" />; в противном случае — значение false.</returns>
+      <param name="value">Объект, производный от класса <see cref="T:System.Text.EncoderExceptionFallback" />.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderExceptionFallback.GetHashCode">
+      <summary>Извлекает хэш-код для этого экземпляра.</summary>
+      <returns>Возвращаемое значение всегда является одинаковым произвольным значением и не имеет особой важности. </returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderExceptionFallback.MaxCharCount">
+      <summary>Получает максимальное число символов, которые может вернуть этот экземпляр.</summary>
+      <returns>Возвращаемое значение всегда равно нулю.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.EncoderFallback">
+      <summary>Предоставляет механизм обработки ошибок, называемый резервным вариантом, для входного символа, который не может быть преобразован в выходную последовательность закодированных байтов. </summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallback.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Text.EncoderFallback" />.</summary>
+    </member>
+    <member name="M:System.Text.EncoderFallback.CreateFallbackBuffer">
+      <summary>При переопределении в производном классе инициализирует новый экземпляр класса <see cref="T:System.Text.EncoderFallbackBuffer" />. </summary>
+      <returns>Объект, предоставляющий резервный буфер для кодировщика.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallback.ExceptionFallback">
+      <summary>Получает объект, который создает исключение, если входной символ не может быть закодирован.</summary>
+      <returns>Тип, производный от класса <see cref="T:System.Text.EncoderFallback" />.Значение объекта по умолчанию равно <see cref="T:System.Text.EncoderExceptionFallback" />.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallback.MaxCharCount">
+      <summary>При переопределении в производном классе возвращает максимальное число символов, которые могут быть возвращены текущим объектом <see cref="T:System.Text.EncoderFallback" />.</summary>
+      <returns>Максимальное число символов, которые может вернуть текущий объект <see cref="T:System.Text.EncoderFallback" />.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallback.ReplacementFallback">
+      <summary>Получает объект, выводящий замещающую строку вместо входного символа, который не может быть закодирован.</summary>
+      <returns>Тип, производный от класса <see cref="T:System.Text.EncoderFallback" />.Значением по умолчанию является объект <see cref="T:System.Text.EncoderReplacementFallback" />, замещающий неизвестные входные символы символом ЗНАКА ВОПРОСА ("?", U+003F).</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Text.EncoderFallbackBuffer">
+      <summary>Предоставляет буфер, который позволяет резервному обработчику возвращать альтернативную строку средству кодирования, если не удается кодировать входной символ. </summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackBuffer.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Text.EncoderFallbackBuffer" />.</summary>
+    </member>
+    <member name="M:System.Text.EncoderFallbackBuffer.Fallback(System.Char,System.Char,System.Int32)">
+      <summary>При переопределении в производном классе готовит резервный буфер для обработки указанной суррогатной пары.</summary>
+      <returns>true, если резервный буфер может обработать <paramref name="charUnknownHigh" /> и <paramref name="charUnknownLow" />, false, если резервный буфер игнорирует суррогатную пару.</returns>
+      <param name="charUnknownHigh">Старший символ-заместитель входной пары.</param>
+      <param name="charUnknownLow">Младший символ-заместитель входной пары.</param>
+      <param name="index">Позиция индекса суррогатной пары во входном буфере.</param>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackBuffer.Fallback(System.Char,System.Int32)">
+      <summary>При переопределении в производном классе готовит резервный буфер для обработки указанного входного символа. </summary>
+      <returns>true, если резервный буфер может обработать <paramref name="charUnknown" />; false, если резервный буфер игнорирует <paramref name="charUnknown" />.</returns>
+      <param name="charUnknown">Входной символ.</param>
+      <param name="index">Позиция индекса символа во входном буфере.</param>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackBuffer.GetNextChar">
+      <summary>При переопределении в производном классе извлекает следующий символ в резервном буфере.</summary>
+      <returns>Следующий символ в резервном буфере.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackBuffer.MovePrevious">
+      <summary>При переопределении в производный класс становится причиной того, что в следующем вызове метод <see cref="M:System.Text.EncoderFallbackBuffer.GetNextChar" /> получает доступ к позиции символа в буфере данных, предшествующей текущей позиции символа. </summary>
+      <returns>Значение true, если операция <see cref="M:System.Text.EncoderFallbackBuffer.MovePrevious" /> выполнена успешно; в противном случае — значение false.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallbackBuffer.Remaining">
+      <summary>При переопределении в производном классе возвращает максимальное число символов в текущем объекте <see cref="T:System.Text.EncoderFallbackBuffer" />, которые остаются для обработки.</summary>
+      <returns>Количество символов в текущем резервном буфере, которые еще не были обработаны.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackBuffer.Reset">
+      <summary>Инициализирует все данные и сведения о состоянии, относящиеся к этому резервному буферу.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Text.EncoderFallbackException">
+      <summary>Исключение, которое вызывается при сбое во время операции резервирования кодировщика.Этот класс не наследуется.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackException.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Text.EncoderFallbackException" />.</summary>
+    </member>
+    <member name="M:System.Text.EncoderFallbackException.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Text.EncoderFallbackException" />.Через параметр задается сообщение об ошибке.</summary>
+      <param name="message">Сообщение об ошибке.</param>
+    </member>
+    <member name="M:System.Text.EncoderFallbackException.#ctor(System.String,System.Exception)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Text.EncoderFallbackException" />.Параметры указывают сообщение об ошибке и внутреннее исключение, вызвавшее данное исключение.</summary>
+      <param name="message">Сообщение об ошибке.</param>
+      <param name="innerException">Исключение, вызвавшее данное исключение.</param>
+    </member>
+    <member name="P:System.Text.EncoderFallbackException.CharUnknown">
+      <summary>Получает входной символ, вызвавший исключение.</summary>
+      <returns>Символ, который не может быть закодирован.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallbackException.CharUnknownHigh">
+      <summary>Возвращает символ старшего компонента суррогатной пары, вызвавший исключение.</summary>
+      <returns>Старший компонент суррогатной пары, который не может быть закодирован.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallbackException.CharUnknownLow">
+      <summary>Возвращает символ младшего компонента суррогатной пары, вызвавший исключение.</summary>
+      <returns>Символ младшего компонента суррогатной пары, который не может быть закодирован.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderFallbackException.Index">
+      <summary>Получает позицию индекса во входном буфере символа, вызвавшего исключение.</summary>
+      <returns>Позиция индекса во входном буфере символа, который не может быть закодирован.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderFallbackException.IsUnknownSurrogate">
+      <summary>Указывает, являются ли введенные денные, которые стали причиной исключения, суррогатной парой.</summary>
+      <returns>Значение равно true, если запрос был суррогатной парой; в противном случае — false.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.EncoderReplacementFallback">
+      <summary>Предоставляет механизм обработки ошибок, называемый резервным вариантом, для входного символа, который не может быть преобразован в выходную последовательность байтов.В резервном варианте вместо первоначального входного символа используется заданная пользователем замещающая строка.Этот класс не наследуется.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderReplacementFallback.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Text.EncoderReplacementFallback" />.</summary>
+    </member>
+    <member name="M:System.Text.EncoderReplacementFallback.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Text.EncoderReplacementFallback" /> указанной замещающей строкой.</summary>
+      <param name="replacement">Строка, которая преобразуется в операции кодирования вместо входного символа, который не может быть закодирован.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="replacement" />is null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="replacement" /> содержит недопустимую суррогатную пару.Другими словами, суррогат не состоит из одного старшего суррогатного компонента, за которым следует один младший суррогатный компонент.</exception>
+    </member>
+    <member name="M:System.Text.EncoderReplacementFallback.CreateFallbackBuffer">
+      <summary>Создает объект <see cref="T:System.Text.EncoderFallbackBuffer" />, который инициализируется с замещающей строкой этого объекта <see cref="T:System.Text.EncoderReplacementFallback" />.</summary>
+      <returns>Объект <see cref="T:System.Text.EncoderFallbackBuffer" /> равный данному объекту <see cref="T:System.Text.EncoderReplacementFallback" />. </returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderReplacementFallback.DefaultString">
+      <summary>Получает замещающую строку, которая является значением объекта <see cref="T:System.Text.EncoderReplacementFallback" />.</summary>
+      <returns>Подставляемая строка, которая используется вместо входного символа, который не может быть закодирован.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderReplacementFallback.Equals(System.Object)">
+      <summary>Указывает, равно ли значение заданного объекта объекту <see cref="T:System.Text.EncoderReplacementFallback" />.</summary>
+      <returns>trueЕсли <paramref name="value" /> указывает <see cref="T:System.Text.EncoderReplacementFallback" /> объекта и строку замены этого объекта равно строку замены этого <see cref="T:System.Text.EncoderReplacementFallback" /> объекта; в противном случае — false. </returns>
+      <param name="value">Объект <see cref="T:System.Text.EncoderReplacementFallback" />.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.EncoderReplacementFallback.GetHashCode">
+      <summary>Извлекает хэш-код для значения объекта <see cref="T:System.Text.EncoderReplacementFallback" />.</summary>
+      <returns>Хэш-код значения объекта.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.EncoderReplacementFallback.MaxCharCount">
+      <summary>Получает количество символов в замещающей строке для объекта <see cref="T:System.Text.EncoderReplacementFallback" />.</summary>
+      <returns>Количество символов в строке, используемой вместо входного символа, который не может быть закодирован.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.Encoding">
+      <summary>Представляет кодировку символов.Чтобы просмотреть исходный код .NET Framework для этого типа, см. ссылки на источник.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Text.Encoding" />.</summary>
+    </member>
+    <member name="M:System.Text.Encoding.#ctor(System.Int32)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Text.Encoding" />, соответствующий заданной кодовой странице.</summary>
+      <param name="codePage">Идентификатор кодовой страницы предпочтительной кодировки.-или- 0, если требуется использовать кодировку по умолчанию. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="codePage" /> меньше нуля. </exception>
+    </member>
+    <member name="M:System.Text.Encoding.#ctor(System.Int32,System.Text.EncoderFallback,System.Text.DecoderFallback)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Text.Encoding" /> класс, соответствующий указанная кодовая страница с указанным кодировщик и декодер резервные стратегии. </summary>
+      <param name="codePage">Идентификатор кодировки кодовой страницы. </param>
+      <param name="encoderFallback">Объект, предоставляющий процедуру обработки ошибок, когда символ не может быть закодирован с использованием текущей кодировки. </param>
+      <param name="decoderFallback">Объект, предоставляющий процедуру обработки ошибок, когда последовательность байтов не может быть декодирована с использованием текущей кодировки. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="codePage" /> меньше нуля. </exception>
+    </member>
+    <member name="P:System.Text.Encoding.ASCII">
+      <summary>Получает кодировку для набора символов ASCII (7-разрядных).</summary>
+      <returns>Кодировка набора символов ASCII (7-разрядных).</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.BigEndianUnicode">
+      <summary>Получает кодировку для формата UTF-16 с обратным порядком байтов.</summary>
+      <returns>Объект кодировки для формата UTF-16 с обратным порядком байтов.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.Clone">
+      <summary>При переопределении в производном классе создается неполная копия текущего объекта <see cref="T:System.Text.Encoding" />.</summary>
+      <returns>Копия текущего объекта <see cref="T:System.Text.Encoding" />.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.CodePage">
+      <summary>При переопределении в производном классе получает идентификатор кодовой страницы текущего объекта <see cref="T:System.Text.Encoding" />.</summary>
+      <returns>Идентификатор кодовой страницы текущего объекта <see cref="T:System.Text.Encoding" />.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.Convert(System.Text.Encoding,System.Text.Encoding,System.Byte[])">
+      <summary>Преобразует весь массив байтов из одной кодировки в другую.</summary>
+      <returns>Массив типа <see cref="T:System.Byte" />, содержащий результаты преобразования <paramref name="bytes" /> из <paramref name="srcEncoding" /> в <paramref name="dstEncoding" />.</returns>
+      <param name="srcEncoding">Формат кодировки параметра <paramref name="bytes" />. </param>
+      <param name="dstEncoding">Целевой формат кодировки. </param>
+      <param name="bytes">Преобразуемые байты. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="srcEncoding" /> имеет значение null.-или- Свойство <paramref name="dstEncoding" /> имеет значение null.-или- Свойство <paramref name="bytes" /> имеет значение null. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)- и -srcEncoding.Параметру <see cref="P:System.Text.Encoding.DecoderFallback" /> задается значение <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)- и -dstEncoding.Параметру <see cref="P:System.Text.Encoding.EncoderFallback" /> задается значение <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.Convert(System.Text.Encoding,System.Text.Encoding,System.Byte[],System.Int32,System.Int32)">
+      <summary>Преобразует диапазон байтов в массиве байтов из одной кодировки в другую.</summary>
+      <returns>Массив типа <see cref="T:System.Byte" />, содержащий результат преобразования диапазона байтов из массива <paramref name="bytes" /> из <paramref name="srcEncoding" /> в <paramref name="dstEncoding" />.</returns>
+      <param name="srcEncoding">Кодировка исходного массива <paramref name="bytes" />. </param>
+      <param name="dstEncoding">Кодировка выходного массива. </param>
+      <param name="bytes">Преобразуемый массив байтов. </param>
+      <param name="index">Индекс первого элемента преобразуемого массива байтов <paramref name="bytes" />. </param>
+      <param name="count">Число байтов, которые требуется преобразовать. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="srcEncoding" /> имеет значение null.-или- Свойство <paramref name="dstEncoding" /> имеет значение null.-или- Свойство <paramref name="bytes" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> и <paramref name="count" /> не определяют допустимый диапазон в массиве байтов. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)- и -srcEncoding.Параметру <see cref="P:System.Text.Encoding.DecoderFallback" /> задается значение <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)- и -dstEncoding.Параметру <see cref="P:System.Text.Encoding.EncoderFallback" /> задается значение <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.DecoderFallback">
+      <summary>Возвращает или задает объект <see cref="T:System.Text.DecoderFallback" /> для текущего объекта <see cref="T:System.Text.Encoding" />.</summary>
+      <returns>Резервный объект декодера для текущего объекта <see cref="T:System.Text.Encoding" />. </returns>
+      <exception cref="T:System.ArgumentNullException">Для данного свойства задано значение null.</exception>
+      <exception cref="T:System.InvalidOperationException">Невозможно задать значение, поскольку текущий объект <see cref="T:System.Text.Encoding" /> предназначен только для чтения.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.EncoderFallback">
+      <summary>Возвращает или задает объект <see cref="T:System.Text.EncoderFallback" /> для текущего объекта <see cref="T:System.Text.Encoding" />.</summary>
+      <returns>Резервный объект кодировщика для текущего объекта <see cref="T:System.Text.Encoding" />. </returns>
+      <exception cref="T:System.ArgumentNullException">Для данного свойства задано значение null.</exception>
+      <exception cref="T:System.InvalidOperationException">Невозможно задать значение, поскольку текущий объект <see cref="T:System.Text.Encoding" /> предназначен только для чтения.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.EncodingName">
+      <summary>При переопределении в производном классе получает описание текущей кодировки, которое может быть прочитано пользователем.</summary>
+      <returns>Описание текущего объекта <see cref="T:System.Text.Encoding" />, которое может быть прочитано пользователем.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.Equals(System.Object)">
+      <summary>Определяет, равен ли заданный объект <see cref="T:System.Object" /> текущему экземпляру.</summary>
+      <returns>Значение true, если <paramref name="value" /> является экземпляром <see cref="T:System.Text.Encoding" />, равным текущему экземпляру; в противном случае — значение false. </returns>
+      <param name="value">
+        <see cref="T:System.Object" /> для сравнения с текущим экземпляром. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetByteCount(System.Char*,System.Int32)">
+      <summary>При переопределении в производном классе вычисляет количество байтов, полученных при кодировании набора символов, начиная с заданного указателя символа.</summary>
+      <returns>Число байтов, полученных при кодировании заданных символов.</returns>
+      <param name="chars">Указатель на первый кодируемый символ. </param>
+      <param name="count">Число кодируемых символов. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="chars" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="count" /> меньше нуля. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)- и -Параметру <see cref="P:System.Text.Encoding.EncoderFallback" /> задается значение <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetByteCount(System.Char[])">
+      <summary>При переопределении в производном классе вычисляет количество байтов, полученных при кодировании всех символов из заданного массива символов.</summary>
+      <returns>Количество байтов, полученных при кодировании всех символов из указанного массива символов.</returns>
+      <param name="chars">Массив символов, содержащий символы, которые требуется закодировать. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="chars" /> имеет значение null. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)- и -Параметру <see cref="P:System.Text.Encoding.EncoderFallback" /> задается значение <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetByteCount(System.Char[],System.Int32,System.Int32)">
+      <summary>При переопределении в производном классе вычисляет количество байтов, полученных при кодировании набора символов из указанного массива символов.</summary>
+      <returns>Число байтов, полученных при кодировании заданных символов.</returns>
+      <param name="chars">Массив символов, содержащий набор кодируемых символов. </param>
+      <param name="index">Индекс первого кодируемого символа. </param>
+      <param name="count">Число кодируемых символов. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="chars" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> меньше нуля.-или- Значения параметров <paramref name="index" /> и <paramref name="count" /> не указывают допустимый диапазон в <paramref name="chars" />. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)- и -Параметру <see cref="P:System.Text.Encoding.EncoderFallback" /> задается значение <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetByteCount(System.String)">
+      <summary>При переопределении в производном классе вычисляет число байтов, полученных при кодировании символов в заданной строке.</summary>
+      <returns>Число байтов, полученных при кодировании заданных символов.</returns>
+      <param name="s">Строка, содержащая набор символов для кодирования. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="s" /> имеет значение null. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)- и -Параметру <see cref="P:System.Text.Encoding.EncoderFallback" /> задается значение <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetBytes(System.Char*,System.Int32,System.Byte*,System.Int32)">
+      <summary>При переопределении в производном классе кодирует набор символов, начало которого задается указателем символа, в последовательность байтов, которые сохраняются, начиная с заданного указателя байта.</summary>
+      <returns>Фактическое число байтов, записанных в местоположение, которое задано параметром <paramref name="bytes" />.</returns>
+      <param name="chars">Указатель на первый кодируемый символ. </param>
+      <param name="charCount">Число кодируемых символов. </param>
+      <param name="bytes">Указатель на положение, с которого начинается запись результирующей последовательности байтов. </param>
+      <param name="byteCount">Максимальное число байтов для записи. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="chars" /> имеет значение null.-или- Свойство <paramref name="bytes" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="charCount" /> или <paramref name="byteCount" /> меньше нуля. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="byteCount" /> меньше результирующего числа байтов. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)- и -Параметру <see cref="P:System.Text.Encoding.EncoderFallback" /> задается значение <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetBytes(System.Char[])">
+      <summary>При переопределении в производном классе кодирует все символы из указанного массива символов в последовательность байтов.</summary>
+      <returns>Массив байтов, содержащий результаты кодирования указанного набора символов.</returns>
+      <param name="chars">Массив символов, содержащий символы, которые требуется закодировать. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="chars" /> имеет значение null. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)- и -Параметру <see cref="P:System.Text.Encoding.EncoderFallback" /> задается значение <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetBytes(System.Char[],System.Int32,System.Int32)">
+      <summary>При переопределении в производном классе кодирует набор символов из указанного массива символов в последовательность байтов.</summary>
+      <returns>Массив байтов, содержащий результаты кодирования указанного набора символов.</returns>
+      <param name="chars">Массив символов, содержащий набор кодируемых символов. </param>
+      <param name="index">Индекс первого кодируемого символа. </param>
+      <param name="count">Число кодируемых символов. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="chars" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> меньше нуля.-или- Значения параметров <paramref name="index" /> и <paramref name="count" /> не указывают допустимый диапазон в <paramref name="chars" />. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)- и -Параметру <see cref="P:System.Text.Encoding.EncoderFallback" /> задается значение <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>При переопределении в производном классе кодирует набор символов из указанного массива символов в указанный массив байтов.</summary>
+      <returns>Фактическое число байтов, записанных в <paramref name="bytes" />.</returns>
+      <param name="chars">Массив символов, содержащий набор кодируемых символов. </param>
+      <param name="charIndex">Индекс первого кодируемого символа. </param>
+      <param name="charCount">Число кодируемых символов. </param>
+      <param name="bytes">Массив байтов, в который будет помещена результирующая последовательность байтов. </param>
+      <param name="byteIndex">Индекс, с которого начинается запись результирующей последовательности байтов. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="chars" /> имеет значение null.-или- Свойство <paramref name="bytes" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="charIndex" />, <paramref name="charCount" /> или <paramref name="byteIndex" /> меньше нуля.-или- Значения параметров <paramref name="charIndex" /> и <paramref name="charCount" /> не указывают допустимый диапазон в <paramref name="chars" />.-или- Значение параметра <paramref name="byteIndex" /> не является допустимым индексом в <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">Недостаточно емкости <paramref name="bytes" /> от <paramref name="byteIndex" /> до конца массива для размещения полученных байтов. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)- и -Параметру <see cref="P:System.Text.Encoding.EncoderFallback" /> задается значение <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetBytes(System.String)">
+      <summary>При переопределении в производном классе кодирует все символы заданной строки в последовательность байтов.</summary>
+      <returns>Массив байтов, содержащий результаты кодирования указанного набора символов.</returns>
+      <param name="s">Строка, содержащая символы, которые требуется закодировать. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="s" /> имеет значение null. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)- и -Параметру <see cref="P:System.Text.Encoding.EncoderFallback" /> задается значение <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetBytes(System.String,System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>При переопределении в производном классе кодирует набор символов из заданной строки в заданный массив байтов.</summary>
+      <returns>Фактическое число байтов, записанных в <paramref name="bytes" />.</returns>
+      <param name="s">Строка, содержащая набор символов для кодирования. </param>
+      <param name="charIndex">Индекс первого кодируемого символа. </param>
+      <param name="charCount">Число кодируемых символов. </param>
+      <param name="bytes">Массив байтов, в который будет помещена результирующая последовательность байтов. </param>
+      <param name="byteIndex">Индекс, с которого начинается запись результирующей последовательности байтов. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="s" /> имеет значение null.-или- Свойство <paramref name="bytes" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="charIndex" />, <paramref name="charCount" /> или <paramref name="byteIndex" /> меньше нуля.-или- Значения параметров <paramref name="charIndex" /> и <paramref name="charCount" /> не указывают допустимый диапазон в <paramref name="chars" />.-или- Значение параметра <paramref name="byteIndex" /> не является допустимым индексом в <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">Недостаточно емкости <paramref name="bytes" /> от <paramref name="byteIndex" /> до конца массива для размещения полученных байтов. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)- и -Параметру <see cref="P:System.Text.Encoding.EncoderFallback" /> задается значение <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetCharCount(System.Byte*,System.Int32)">
+      <summary>При переопределении в производном классе вычисляет количество символов, полученных при декодировании последовательности байтов, начало которой задается указателем байтов.</summary>
+      <returns>Число символов, полученных при декодировании заданной последовательности байтов.</returns>
+      <param name="bytes">Указатель на первый декодируемый байт. </param>
+      <param name="count">Число байтов для декодирования. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="bytes" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="count" /> меньше нуля. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)- и -Параметру <see cref="P:System.Text.Encoding.DecoderFallback" /> задается значение <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetCharCount(System.Byte[])">
+      <summary>При переопределении в производном классе вычисляет количество символов, полученных при декодировании всех байтов из заданного массива байтов.</summary>
+      <returns>Число символов, полученных при декодировании заданной последовательности байтов.</returns>
+      <param name="bytes">Массив байтов, содержащий последовательность байтов, которую требуется декодировать. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="bytes" /> имеет значение null. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)- и -Параметру <see cref="P:System.Text.Encoding.DecoderFallback" /> задается значение <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetCharCount(System.Byte[],System.Int32,System.Int32)">
+      <summary>При переопределении в производном классе вычисляет количество символов, полученных при декодировании последовательности байтов из заданного массива байтов.</summary>
+      <returns>Число символов, полученных при декодировании заданной последовательности байтов.</returns>
+      <param name="bytes">Массив байтов, содержащий последовательность байтов, которую требуется декодировать. </param>
+      <param name="index">Индекс первого декодируемого байта. </param>
+      <param name="count">Число байтов для декодирования. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="bytes" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> меньше нуля.-или- Значения параметров <paramref name="index" /> и <paramref name="count" /> не указывают допустимый диапазон в <paramref name="bytes" />. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)- и -Параметру <see cref="P:System.Text.Encoding.DecoderFallback" /> задается значение <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetChars(System.Byte*,System.Int32,System.Char*,System.Int32)">
+      <summary>При переопределении в производном классе декодирует последовательность байтов, которая начинается с заданного указателя байта, в набор символов, которые сохраняются, начиная с заданного указателя символа.</summary>
+      <returns>Фактическое число символов, которые записаны в местоположении, обозначаемом с помощью параметра <paramref name="chars" />.</returns>
+      <param name="bytes">Указатель на первый декодируемый байт. </param>
+      <param name="byteCount">Число байтов для декодирования. </param>
+      <param name="chars">Указатель на положение, с которого начинается запись результирующего набора символов. </param>
+      <param name="charCount">Наибольшее количество символов для записи. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="bytes" /> имеет значение null.-или- Свойство <paramref name="chars" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="byteCount" /> или <paramref name="charCount" /> меньше нуля. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="charCount" /> меньше результирующего числа символов. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)- и -Параметру <see cref="P:System.Text.Encoding.DecoderFallback" /> задается значение <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetChars(System.Byte[])">
+      <summary>При переопределении в производном классе декодирует все байты из указанного массива байтов в набор символов.</summary>
+      <returns>Массив символов, содержащий результаты декодирования указанной последовательности байтов.</returns>
+      <param name="bytes">Массив байтов, содержащий последовательность байтов, которую требуется декодировать. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="bytes" /> имеет значение null. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)- и -Параметру <see cref="P:System.Text.Encoding.DecoderFallback" /> задается значение <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetChars(System.Byte[],System.Int32,System.Int32)">
+      <summary>При переопределении в производном классе декодирует последовательность байтов из указанного массива байтов в набор символов.</summary>
+      <returns>Массив символов, содержащий результаты декодирования указанной последовательности байтов.</returns>
+      <param name="bytes">Массив байтов, содержащий последовательность байтов, которую требуется декодировать. </param>
+      <param name="index">Индекс первого декодируемого байта. </param>
+      <param name="count">Число байтов для декодирования. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="bytes" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> меньше нуля.-или- Значения параметров <paramref name="index" /> и <paramref name="count" /> не указывают допустимый диапазон в <paramref name="bytes" />. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)- и -Параметру <see cref="P:System.Text.Encoding.DecoderFallback" /> задается значение <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)">
+      <summary>При переопределении в производном классе декодирует последовательность байтов из указанного массива байтов в указанный массив символов.</summary>
+      <returns>Фактическое число символов, записанных в <paramref name="chars" />.</returns>
+      <param name="bytes">Массив байтов, содержащий последовательность байтов, которую требуется декодировать. </param>
+      <param name="byteIndex">Индекс первого декодируемого байта. </param>
+      <param name="byteCount">Число байтов для декодирования. </param>
+      <param name="chars">Массив символов, в который будет помещен результирующий набор символов. </param>
+      <param name="charIndex">Индекс, с которого начинается запись результирующего набора символов. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="bytes" /> имеет значение null.-или- Свойство <paramref name="chars" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="byteIndex" />, <paramref name="byteCount" /> или <paramref name="charIndex" /> меньше нуля.-или- Значения параметров <paramref name="byteindex" /> и <paramref name="byteCount" /> не указывают допустимый диапазон в <paramref name="bytes" />.-или- Значение параметра <paramref name="charIndex" /> не является допустимым индексом в <paramref name="chars" />. </exception>
+      <exception cref="T:System.ArgumentException">Недостаточно емкости <paramref name="chars" /> от <paramref name="charIndex" /> до конца массива для размещения полученных символов. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)- и -Параметру <see cref="P:System.Text.Encoding.DecoderFallback" /> задается значение <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetDecoder">
+      <summary>При переопределении в производном классе получает декодер, который преобразует последовательность байтов в последовательность символов.</summary>
+      <returns>Объект <see cref="T:System.Text.Decoder" />, преобразующий закодированную последовательность байтов в последовательность символов.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetEncoder">
+      <summary>При переопределении в производном классе получает кодировщик, который преобразует последовательность символов Юникода в закодированную последовательность байтов.</summary>
+      <returns>Объект <see cref="T:System.Text.Encoder" />, преобразующий последовательность символов Юникода в закодированную последовательность байтов.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetEncoding(System.Int32)">
+      <summary>Возвращает кодировку, связанную с указанным идентификатором кодовой страницы.</summary>
+      <returns>Кодирование, связанное с заданной страницей кода.</returns>
+      <param name="codepage">Идентификатор кодовой страницы предпочтительной кодировки.Возможные значения перечислены в столбце кодовой страницы таблицы, которая отображается в теме класса <see cref="T:System.Text.Encoding" />.-или- 0 (ноль), если требуется использовать кодировку по умолчанию. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="codepage" /> меньше нуля или больше 65535. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="codepage" /> не поддерживается используемой платформой. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="codepage" /> не поддерживается используемой платформой. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetEncoding(System.Int32,System.Text.EncoderFallback,System.Text.DecoderFallback)">
+      <summary>Возвращает кодировку, связанную с указанным идентификатором кодовой страницы.С помощью параметров задается обработчик ошибок для символов, которые не удается закодировать, и последовательностей байтов, которые не удается декодировать.</summary>
+      <returns>Кодирование, связанное с заданной страницей кода.</returns>
+      <param name="codepage">Идентификатор кодовой страницы предпочтительной кодировки.Возможные значения перечислены в столбце кодовой страницы таблицы, которая отображается в теме класса <see cref="T:System.Text.Encoding" />.-или- 0 (ноль), если требуется использовать кодировку по умолчанию. </param>
+      <param name="encoderFallback">Объект, предоставляющий процедуру обработки ошибок, когда символ не может быть закодирован с использованием текущей кодировки. </param>
+      <param name="decoderFallback">Объект, предоставляющий процедуру обработки ошибок, когда последовательность байтов не может быть декодирована с использованием текущей кодировки. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="codepage" /> меньше нуля или больше 65535. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="codepage" /> не поддерживается используемой платформой. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="codepage" /> не поддерживается используемой платформой. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetEncoding(System.String)">
+      <summary>Возвращает кодировку, связанную с указанным именем кодовой страницы.</summary>
+      <returns>Кодировка, связанная с указанной кодовой страницей.</returns>
+      <param name="name">Имя кодовой страницы предпочтительной кодировки.Любое значение, возвращаемое свойством <see cref="P:System.Text.Encoding.WebName" />, является допустимым.Возможные значения перечислены в столбце "Имя" таблицы, отображаемой в разделе класса <see cref="T:System.Text.Encoding" />.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> не является допустимым именем кодовой страницы.-или- Кодовая страница, указанная с помощью параметра <paramref name="name" />, не поддерживается используемой платформой. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetEncoding(System.String,System.Text.EncoderFallback,System.Text.DecoderFallback)">
+      <summary>Возвращает кодировку, связанную с указанным именем кодовой страницы.С помощью параметров задается обработчик ошибок для символов, которые не удается закодировать, и последовательностей байтов, которые не удается декодировать.</summary>
+      <returns>Кодирование, связанное с заданной страницей кода.</returns>
+      <param name="name">Имя кодовой страницы предпочтительной кодировки.Любое значение, возвращаемое свойством <see cref="P:System.Text.Encoding.WebName" />, является допустимым.Возможные значения перечислены в столбце "Имя" таблицы, отображаемой в разделе класса <see cref="T:System.Text.Encoding" />.</param>
+      <param name="encoderFallback">Объект, предоставляющий процедуру обработки ошибок, когда символ не может быть закодирован с использованием текущей кодировки. </param>
+      <param name="decoderFallback">Объект, предоставляющий процедуру обработки ошибок, когда последовательность байтов не может быть декодирована с использованием текущей кодировки. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> не является допустимым именем кодовой страницы.-или- Кодовая страница, указанная с помощью параметра <paramref name="name" />, не поддерживается используемой платформой. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetHashCode">
+      <summary>Возвращает хэш-код текущего экземпляра.</summary>
+      <returns>Хэш-код для текущего экземпляра.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetMaxByteCount(System.Int32)">
+      <summary>При переопределении в производном классе вычисляет максимальное количество байтов, полученных при кодировании заданного количества символов.</summary>
+      <returns>Максимальное количество байтов, полученных при кодировании заданного количества символов.</returns>
+      <param name="charCount">Число кодируемых символов. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="charCount" /> меньше нуля. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)- и -Параметру <see cref="P:System.Text.Encoding.EncoderFallback" /> задается значение <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetMaxCharCount(System.Int32)">
+      <summary>При переопределении в производном классе вычисляет максимальное количество символов, полученных при декодировании заданного количества байтов.</summary>
+      <returns>Максимальное количество символов, полученных при декодировании заданного количества байтов.</returns>
+      <param name="byteCount">Число байтов для декодирования. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="byteCount" /> меньше нуля. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)- и -Параметру <see cref="P:System.Text.Encoding.DecoderFallback" /> задается значение <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetPreamble">
+      <summary>При переопределении в производном классе возвращает последовательность байтов, задающую используемую кодировку.</summary>
+      <returns>Массив байтов, в котором содержится последовательность байтов, задающая используемую кодировку.-или- Массив байтов нулевой длины, если преамбула не требуется.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetString(System.Byte*,System.Int32)">
+      <summary>При переопределении в производном классе расшифровывает указанное число байтов, начиная с указанного адреса в строку. </summary>
+      <returns>Строка, содержащая результаты декодирования заданной последовательности байтов. </returns>
+      <param name="bytes">Указатель на массив байтов. </param>
+      <param name="byteCount">Число байтов для декодирования. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" />является указателем null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="byteCount" /> меньше нуля. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Произошла резервной (см. Кодировки в .NET Framework подробное описание)- и -Параметру <see cref="P:System.Text.Encoding.DecoderFallback" /> задается значение <see cref="T:System.Text.DecoderExceptionFallback" />. </exception>
+    </member>
+    <member name="M:System.Text.Encoding.GetString(System.Byte[])">
+      <summary>При переопределении в производном классе декодирует все байты из указанного массива байтов в строку.</summary>
+      <returns>Строка, содержащая результаты декодирования заданной последовательности байтов.</returns>
+      <param name="bytes">Массив байтов, содержащий последовательность байтов, которую требуется декодировать. </param>
+      <exception cref="T:System.ArgumentException">Массив байтов содержит недопустимые точки кода Юникод.</exception>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="bytes" /> имеет значение null. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)- и -Параметру <see cref="P:System.Text.Encoding.DecoderFallback" /> задается значение <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.GetString(System.Byte[],System.Int32,System.Int32)">
+      <summary>При переопределении в производном классе декодирует последовательность байтов из указанного массива байтов в строку.</summary>
+      <returns>Строка, содержащая результаты декодирования заданной последовательности байтов.</returns>
+      <param name="bytes">Массив байтов, содержащий последовательность байтов, которую требуется декодировать. </param>
+      <param name="index">Индекс первого декодируемого байта. </param>
+      <param name="count">Число байтов для декодирования. </param>
+      <exception cref="T:System.ArgumentException">Массив байтов содержит недопустимые точки кода Юникод.</exception>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="bytes" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> меньше нуля.-или- Значения параметров <paramref name="index" /> и <paramref name="count" /> не указывают допустимый диапазон в <paramref name="bytes" />. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Использована альтернативная кодировка (подробное объяснение см. в разделе Кодировки в .NET Framework)- и -Параметру <see cref="P:System.Text.Encoding.DecoderFallback" /> задается значение <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.IsSingleByte">
+      <summary>При переопределении в производном классе получает значение, указывающее, используются ли в текущей кодировке однобайтовые кодовые точки.</summary>
+      <returns>true, если в текущем объекте <see cref="T:System.Text.Encoding" /> используются однобайтовые кодовые точки; в противоположном случае — false.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.Encoding.RegisterProvider(System.Text.EncodingProvider)">
+      <summary>Регистрирует поставщик кодирования. </summary>
+      <param name="provider">Подкласс <see cref="T:System.Text.EncodingProvider" /> , предоставляющий доступ к дополнительной кодировки. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="provider" /> имеет значение null. </exception>
+    </member>
+    <member name="P:System.Text.Encoding.Unicode">
+      <summary>Получает кодировку для формата UTF-16 с прямым порядком байтов.</summary>
+      <returns>Кодировка для формата UTF-16 с прямым порядком байтов.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.UTF32">
+      <summary>Получает кодировку для формата UTF-32 с прямым порядком байтов.</summary>
+      <returns>Объект кодировки для формата UTF-32 с прямым порядком байтов.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.UTF7">
+      <summary>Получает кодировку для формата UTF-7.</summary>
+      <returns>Кодировка для формата UTF-7.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.UTF8">
+      <summary>Получает кодировку для формата UTF-8.</summary>
+      <returns>Кодировка для формата UTF-8.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.Encoding.WebName">
+      <summary>При переопределении в производном классе получает для текущей кодировки имя, зарегистрированное в IANA (Internet Assigned Numbers Authority).</summary>
+      <returns>Имя IANA для текущего объекта <see cref="T:System.Text.Encoding" />.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.EncodingProvider">
+      <summary>Предоставляет базовый класс для поставщика кодировки, который предоставляет кодировки, которые недоступны на определенной платформе. </summary>
+    </member>
+    <member name="M:System.Text.EncodingProvider.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Text.EncodingProvider" />. </summary>
+    </member>
+    <member name="M:System.Text.EncodingProvider.GetEncoding(System.Int32)">
+      <summary>Возвращает кодировку, связанную с указанным идентификатором кодовой страницы. </summary>
+      <returns>Кодировка, связанные с указанной кодовой странице или null при этом <see cref="T:System.Text.EncodingProvider" /> не может возвращать допустимый кодировку, которая соответствует <paramref name="codepage" />. </returns>
+      <param name="codepage">Идентификатор кодовой страницы требуемая кодировка. </param>
+    </member>
+    <member name="M:System.Text.EncodingProvider.GetEncoding(System.Int32,System.Text.EncoderFallback,System.Text.DecoderFallback)">
+      <summary>Возвращает кодировку, связанную с указанным идентификатором кодовой страницы.С помощью параметров задается обработчик ошибок для символов, которые не удается закодировать, и последовательностей байтов, которые не удается декодировать.</summary>
+      <returns>Кодировка, связанные с указанной кодовой странице или null при этом <see cref="T:System.Text.EncodingProvider" /> не может возвращать допустимый кодировку, которая соответствует <paramref name="codepage" />. </returns>
+      <param name="codepage">Идентификатор кодовой страницы требуемая кодировка. </param>
+      <param name="encoderFallback">Объект, предоставляющий процедуру обработки ошибок, когда символ не может быть закодирован с этой кодировкой. </param>
+      <param name="decoderFallback">Объект, предоставляющий процедуру обработки ошибок, когда не удается декодировать последовательность байтов с этой кодировкой. </param>
+    </member>
+    <member name="M:System.Text.EncodingProvider.GetEncoding(System.String)">
+      <summary>Возвращает кодировку, с указанным именем. </summary>
+      <returns>Кодировка, связанный с указанным именем или null при этом <see cref="T:System.Text.EncodingProvider" /> не может возвращать допустимый кодировку, которая соответствует <paramref name="name" />.</returns>
+      <param name="name">Имя запрошенного кодировки. </param>
+    </member>
+    <member name="M:System.Text.EncodingProvider.GetEncoding(System.String,System.Text.EncoderFallback,System.Text.DecoderFallback)">
+      <summary>Возвращает кодировку, связанную с указанным именем.С помощью параметров задается обработчик ошибок для символов, которые не удается закодировать, и последовательностей байтов, которые не удается декодировать.</summary>
+      <returns>Кодировка, связанный с указанным именем или null при этом <see cref="T:System.Text.EncodingProvider" /> не может возвращать допустимый кодировку, которая соответствует <paramref name="name" />. </returns>
+      <param name="name">Имя кодировки. </param>
+      <param name="encoderFallback">Объект, предоставляющий процедуру обработки ошибок, когда символ не может быть закодирован с этой кодировкой. </param>
+      <param name="decoderFallback">Объект, предоставляющий процедуру обработки ошибок, когда последовательность байтов не может быть декодирована с использованием текущей кодировки. </param>
+    </member>
+  </members>
+</doc>

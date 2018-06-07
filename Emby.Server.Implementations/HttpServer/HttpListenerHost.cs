@@ -12,7 +12,6 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Emby.Server.Implementations.HttpServer.SocketSharp;
 using Emby.Server.Implementations.Services;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Common.Security;
@@ -175,22 +174,6 @@ namespace Emby.Server.Implementations.HttpServer
             attributes.Sort((x, y) => x.Priority - y.Priority);
 
             return attributes;
-        }
-
-        private IHttpListener GetListener()
-        {
-            //return new KestrelHost.KestrelListener(_logger, _environment, _fileSystem);
-
-            return new WebSocketSharpListener(_logger,
-                _certificate,
-                _streamHelper,
-                _textEncoding,
-                _networkManager,
-                _socketFactory,
-                _cryptoProvider,
-                _enableDualModeSockets,
-                _fileSystem,
-                _environment);
         }
 
         private void OnWebSocketConnected(WebSocketConnectEventArgs e)
@@ -960,11 +943,11 @@ namespace Emby.Server.Implementations.HttpServer
             Dispose(true);
         }
 
-        public void StartServer(string[] urlPrefixes)
+        public void StartServer(string[] urlPrefixes, IHttpListener httpListener)
         {
             UrlPrefixes = urlPrefixes;
 
-            _listener = GetListener();
+            _listener = httpListener;
 
             _listener.WebSocketConnected = OnWebSocketConnected;
             _listener.ErrorHandler = ErrorHandler;

@@ -1,0 +1,388 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Diagnostics.Debug</name>
+  </assembly>
+  <members>
+    <member name="T:System.Diagnostics.Debug">
+      <summary>コードのデバッグに使用するメソッドとプロパティのセットを提供します。このクラスは継承できません。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Assert(System.Boolean)">
+      <summary>条件をチェックし、その条件が false の場合は、呼び出し履歴を表示するメッセージ ボックスを表示します。</summary>
+      <param name="condition">評価する条件式。条件が true の場合、エラー メッセージは送信されず、メッセージ ボックスも表示されません。</param>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Assert(System.Boolean,System.String)">
+      <summary>条件をチェックし、その条件が false の場合は、指定されたメッセージを出力し、呼び出し履歴を表示するメッセージ ボックスを表示します。</summary>
+      <param name="condition">評価する条件式。条件が true の場合、指定されたメッセージは送信されず、メッセージ ボックスも表示されません。</param>
+      <param name="message">
+        <see cref="P:System.Diagnostics.Trace.Listeners" /> コレクションに送信するメッセージ。</param>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Assert(System.Boolean,System.String,System.String)">
+      <summary>条件をチェックし、その条件が false の場合は、指定された 2 つのメッセージを出力し、呼び出し履歴を表示するメッセージ ボックスを表示します。</summary>
+      <param name="condition">評価する条件式。条件が true の場合、指定されたメッセージは送信されず、メッセージ ボックスも表示されません。</param>
+      <param name="message">
+        <see cref="P:System.Diagnostics.Trace.Listeners" /> コレクションに送信するメッセージ。</param>
+      <param name="detailMessage">
+        <see cref="P:System.Diagnostics.Trace.Listeners" /> コレクションに送信する詳細なメッセージ。</param>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Assert(System.Boolean,System.String,System.String,System.Object[])">
+      <summary>条件をチェックし、その条件が false の場合は、2 つのメッセージ (単純なメッセージと書式設定されたメッセージ) を出力し、呼び出し履歴を表示するメッセージ ボックスを表示します。</summary>
+      <param name="condition">評価する条件式。条件が true の場合、指定されたメッセージは送信されず、メッセージ ボックスも表示されません。</param>
+      <param name="message">
+        <see cref="P:System.Diagnostics.Trace.Listeners" /> コレクションに送信するメッセージ。</param>
+      <param name="detailMessageFormat">
+        <see cref="P:System.Diagnostics.Trace.Listeners" /> コレクションに送信する複合書式指定文字列 (「解説」を参照)。このメッセージのテキストには、<paramref name="args" /> 配列内のオブジェクトに対応する 0 個以上の書式項目を含めることができます。</param>
+      <param name="args">0 個以上の書式設定対象オブジェクトを含んだオブジェクト配列。</param>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Fail(System.String)">
+      <summary>指定したエラー メッセージを出力します。</summary>
+      <param name="message">出力するメッセージ。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Fail(System.String,System.String)">
+      <summary>エラー メッセージと詳細エラー メッセージを出力します。</summary>
+      <param name="message">出力するメッセージ。</param>
+      <param name="detailMessage">出力する詳細メッセージ。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Write(System.Object)">
+      <summary>オブジェクトの <see cref="M:System.Object.ToString" /> メソッドの値を、<see cref="P:System.Diagnostics.Debug.Listeners" /> コレクションのトレース リスナーに書き込みます。</summary>
+      <param name="value">名前が <see cref="P:System.Diagnostics.Debug.Listeners" /> に送信されるオブジェクト。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Write(System.Object,System.String)">
+      <summary>カテゴリ名およびオブジェクトの <see cref="M:System.Object.ToString" /> メソッドの値を、<see cref="P:System.Diagnostics.Debug.Listeners" /> コレクションのトレース リスナーに書き込みます。</summary>
+      <param name="value">名前が <see cref="P:System.Diagnostics.Debug.Listeners" /> に送信されるオブジェクト。</param>
+      <param name="category">出力を編成するために使用されるカテゴリ名。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Write(System.String)">
+      <summary>メッセージを <see cref="P:System.Diagnostics.Debug.Listeners" /> コレクションのトレース リスナーに書き込みます。</summary>
+      <param name="message">書き込むメッセージ。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Write(System.String,System.String)">
+      <summary>カテゴリ名とメッセージを <see cref="P:System.Diagnostics.Debug.Listeners" /> コレクションのトレース リスナーに書き込みます。</summary>
+      <param name="message">書き込むメッセージ。</param>
+      <param name="category">出力を編成するために使用されるカテゴリ名。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteIf(System.Boolean,System.Object)">
+      <summary>条件が true の場合、オブジェクトの <see cref="M:System.Object.ToString" /> メソッドの値を、<see cref="P:System.Diagnostics.Debug.Listeners" /> コレクションのトレース リスナーに書き込みます。</summary>
+      <param name="condition">評価する条件式。条件が true の場合、コレクションのトレース リスナーに値が書き込まれます。</param>
+      <param name="value">名前が <see cref="P:System.Diagnostics.Debug.Listeners" /> に送信されるオブジェクト。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteIf(System.Boolean,System.Object,System.String)">
+      <summary>条件が true の場合、カテゴリ名およびオブジェクトの <see cref="M:System.Object.ToString" /> メソッドの値を、<see cref="P:System.Diagnostics.Debug.Listeners" /> コレクションのトレース リスナーに書き込みます。</summary>
+      <param name="condition">評価する条件式。条件が true の場合、コレクションのトレース リスナーにカテゴリ名と値が書き込まれます。</param>
+      <param name="value">名前が <see cref="P:System.Diagnostics.Debug.Listeners" /> に送信されるオブジェクト。</param>
+      <param name="category">出力を編成するために使用されるカテゴリ名。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteIf(System.Boolean,System.String)">
+      <summary>条件が true の場合、メッセージを <see cref="P:System.Diagnostics.Debug.Listeners" /> コレクションのトレース リスナーに書き込みます。</summary>
+      <param name="condition">評価する条件式。条件が true の場合、コレクションのトレース リスナーにメッセージが書き込まれます。</param>
+      <param name="message">書き込むメッセージ。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteIf(System.Boolean,System.String,System.String)">
+      <summary>条件が true の場合、カテゴリ名とメッセージを <see cref="P:System.Diagnostics.Debug.Listeners" /> コレクションのトレース リスナーに書き込みます。</summary>
+      <param name="condition">評価する条件式。条件が true の場合、コレクションのトレース リスナーにカテゴリ名とメッセージが書き込まれます。</param>
+      <param name="message">書き込むメッセージ。</param>
+      <param name="category">出力を編成するために使用されるカテゴリ名。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLine(System.Object)">
+      <summary>オブジェクトの <see cref="M:System.Object.ToString" /> メソッドの値を、<see cref="P:System.Diagnostics.Debug.Listeners" /> コレクションのトレース リスナーに書き込みます。</summary>
+      <param name="value">名前が <see cref="P:System.Diagnostics.Debug.Listeners" /> に送信されるオブジェクト。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLine(System.Object,System.String)">
+      <summary>カテゴリ名およびオブジェクトの <see cref="M:System.Object.ToString" /> メソッドの値を、<see cref="P:System.Diagnostics.Debug.Listeners" /> コレクションのトレース リスナーに書き込みます。</summary>
+      <param name="value">名前が <see cref="P:System.Diagnostics.Debug.Listeners" /> に送信されるオブジェクト。</param>
+      <param name="category">出力を編成するために使用されるカテゴリ名。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLine(System.String)">
+      <summary>
+        <see cref="P:System.Diagnostics.Debug.Listeners" /> コレクションのトレース リスナーにメッセージを書き込み、続けて行終端記号を書き込みます。</summary>
+      <param name="message">書き込むメッセージ。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLine(System.String,System.Object[])">
+      <summary>
+        <see cref="P:System.Diagnostics.Debug.Listeners" /> コレクションのトレース リスナーに書式指定されたメッセージを書き込み、続けて行終端記号を書き込みます。</summary>
+      <param name="format">0 個以上の書式項目を含む複合書式指定文字列 (「解説」を参照)。各書式項目は、<paramref name="args" /> 配列内のオブジェクトに対応します。</param>
+      <param name="args">0 個以上の書式設定対象オブジェクトを含んだオブジェクト配列。</param>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLine(System.String,System.String)">
+      <summary>カテゴリ名とメッセージを <see cref="P:System.Diagnostics.Debug.Listeners" /> コレクションのトレース リスナーに書き込みます。</summary>
+      <param name="message">書き込むメッセージ。</param>
+      <param name="category">出力を編成するために使用されるカテゴリ名。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLineIf(System.Boolean,System.Object)">
+      <summary>条件が true の場合、オブジェクトの <see cref="M:System.Object.ToString" /> メソッドの値を、<see cref="P:System.Diagnostics.Debug.Listeners" /> コレクションのトレース リスナーに書き込みます。</summary>
+      <param name="condition">評価する条件式。条件が true の場合、コレクションのトレース リスナーに値が書き込まれます。</param>
+      <param name="value">名前が <see cref="P:System.Diagnostics.Debug.Listeners" /> に送信されるオブジェクト。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLineIf(System.Boolean,System.Object,System.String)">
+      <summary>条件が true の場合、カテゴリ名およびオブジェクトの <see cref="M:System.Object.ToString" /> メソッドの値を、<see cref="P:System.Diagnostics.Debug.Listeners" /> コレクションのトレース リスナーに書き込みます。</summary>
+      <param name="condition">評価する条件式。条件が true の場合、コレクションのトレース リスナーにカテゴリ名と値が書き込まれます。</param>
+      <param name="value">名前が <see cref="P:System.Diagnostics.Debug.Listeners" /> に送信されるオブジェクト。</param>
+      <param name="category">出力を編成するために使用されるカテゴリ名。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLineIf(System.Boolean,System.String)">
+      <summary>条件が true の場合、メッセージを <see cref="P:System.Diagnostics.Debug.Listeners" /> コレクションのトレース リスナーに書き込みます。</summary>
+      <param name="condition">評価する条件式。条件が true の場合、コレクションのトレース リスナーにメッセージが書き込まれます。</param>
+      <param name="message">書き込むメッセージ。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLineIf(System.Boolean,System.String,System.String)">
+      <summary>条件が true の場合、カテゴリ名とメッセージを <see cref="P:System.Diagnostics.Debug.Listeners" /> コレクションのトレース リスナーに書き込みます。</summary>
+      <param name="condition">メッセージを書き込む場合は true。それ以外の場合は false。</param>
+      <param name="message">書き込むメッセージ。</param>
+      <param name="category">出力を編成するために使用されるカテゴリ名。</param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Diagnostics.Debugger">
+      <summary>デバッガーとの通信を有効にします。このクラスは継承できません。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Debugger.Break">
+      <summary>アタッチされたデバッガーにブレークポイントを通知します。</summary>
+      <exception cref="T:System.Security.SecurityException">デバッガーに割り込むために <see cref="T:System.Security.Permissions.UIPermission" /> が設定されていません。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.Debugger.IsAttached">
+      <summary>デバッガーがプロセスにアタッチされているかどうかを示す値を取得します。</summary>
+      <returns>デバッガーがアタッチされた場合は true。それ以外の場合は false。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Debugger.Launch">
+      <summary>デバッガーを起動し、プロセスにアタッチします。</summary>
+      <returns>起動に成功した場合、またはデバッガーが既にアタッチされている場合は true。それ以外の場合は false。</returns>
+      <exception cref="T:System.Security.SecurityException">デバッガーを起動する <see cref="T:System.Security.Permissions.UIPermission" /> が設定されていません。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerBrowsableAttribute">
+      <summary>デバッガー変数ウィンドウ内でメンバーを表示するかどうかと、表示方法を決定します。このクラスは継承できません。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerBrowsableAttribute.#ctor(System.Diagnostics.DebuggerBrowsableState)">
+      <summary>
+        <see cref="T:System.Diagnostics.DebuggerBrowsableAttribute" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="state">メンバーを表示する方法を指定する <see cref="T:System.Diagnostics.DebuggerBrowsableState" /> 値の 1 つ。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="state" /> が <see cref="T:System.Diagnostics.DebuggerBrowsableState" /> 値ではありません。</exception>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerBrowsableAttribute.State">
+      <summary>属性の表示状態を取得します。</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.DebuggerBrowsableState" /> 値のいずれか。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerBrowsableState">
+      <summary>デバッガーに対する表示命令を提供します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Diagnostics.DebuggerBrowsableState.Collapsed">
+      <summary>折りたたまれたときの要素を表示します。</summary>
+    </member>
+    <member name="F:System.Diagnostics.DebuggerBrowsableState.Never">
+      <summary>要素を表示しません。</summary>
+    </member>
+    <member name="F:System.Diagnostics.DebuggerBrowsableState.RootHidden">
+      <summary>ルート要素を表示しません。要素が項目のコレクションまたは配列である場合は子要素を表示します。</summary>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerDisplayAttribute">
+      <summary>デバッガー変数ウィンドウ内でクラスまたはフィールドを表示する方法を決定します。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerDisplayAttribute.#ctor(System.String)">
+      <summary>
+        <see cref="T:System.Diagnostics.DebuggerDisplayAttribute" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="value">型のインスタンスの値列に表示される文字列。 空の文字列 ("") を指定すると、値列が非表示となります。</param>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerDisplayAttribute.Name">
+      <summary>デバッガー変数ウィンドウ内に表示する名前を取得または設定します。</summary>
+      <returns>デバッガー変数ウィンドウに表示する名前。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerDisplayAttribute.Target">
+      <summary>属性の対象の型を取得または設定します。</summary>
+      <returns>属性のターゲット型。</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <see cref="P:System.Diagnostics.DebuggerDisplayAttribute.Target" /> が null に設定されます。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerDisplayAttribute.TargetTypeName">
+      <summary>属性の対象の型名を取得または設定します。</summary>
+      <returns>属性の対象の型の名前。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerDisplayAttribute.Type">
+      <summary>デバッガー変数ウィンドウ内の型列に表示する文字列を取得または設定します。</summary>
+      <returns>デバッガー変数ウィンドウの型列に表示する文字列。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerDisplayAttribute.Value">
+      <summary>デバッガー変数ウィンドウの値列に表示する文字列を取得します。</summary>
+      <returns>デバッガー変数の値列に表示する文字列。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerHiddenAttribute">
+      <summary>
+        <see cref="T:System.Diagnostics.DebuggerHiddenAttribute" /> を指定します。このクラスは継承できません。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerHiddenAttribute.#ctor">
+      <summary>
+        <see cref="T:System.Diagnostics.DebuggerHiddenAttribute" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerNonUserCodeAttribute">
+      <summary>アプリケーションのユーザー コードの一部ではない型またはメンバーを識別します。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerNonUserCodeAttribute.#ctor">
+      <summary>
+        <see cref="T:System.Diagnostics.DebuggerNonUserCodeAttribute" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerStepThroughAttribute">
+      <summary>デバッガーに対してコードのステップ インではなくステップ実行を指示します。このクラスは継承できません。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerStepThroughAttribute.#ctor">
+      <summary>
+        <see cref="T:System.Diagnostics.DebuggerStepThroughAttribute" /> クラスの新しいインスタンスを初期化します。 </summary>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerTypeProxyAttribute">
+      <summary>型の表示プロキシを指定します。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerTypeProxyAttribute.#ctor(System.String)">
+      <summary>プロキシの型名を使用して、<see cref="T:System.Diagnostics.DebuggerTypeProxyAttribute" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="typeName">プロキシ型の型名。</param>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerTypeProxyAttribute.#ctor(System.Type)">
+      <summary>プロキシの型を使用して、<see cref="T:System.Diagnostics.DebuggerTypeProxyAttribute" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="type">プロキシ型。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="type" /> は null なので、</exception>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerTypeProxyAttribute.ProxyTypeName">
+      <summary>プロキシ型の型名を取得します。</summary>
+      <returns>プロキシ型の型名。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerTypeProxyAttribute.Target">
+      <summary>属性の対象の型を取得または設定します。</summary>
+      <returns>属性の対象の型。</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <see cref="P:System.Diagnostics.DebuggerTypeProxyAttribute.Target" /> が null に設定されます。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerTypeProxyAttribute.TargetTypeName">
+      <summary>対象の型の名前を取得または設定します。</summary>
+      <returns>対象の型の名前。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+  </members>
+</doc>

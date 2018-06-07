@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Threading.Timer</name>
+  </assembly>
+  <members>
+    <member name="T:System.Threading.Timer">
+      <summary>指定した間隔でメソッドを実行するための機構を提供します。このクラスは継承できません。この型に対応する .NET Framework のソース コードを参照するには、「Reference Source (ソースの参照) 」を参照してください。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Timer.#ctor(System.Threading.TimerCallback,System.Object,System.Int32,System.Int32)">
+      <summary>時間間隔を指定するために 32 ビット符号付き整数を使用して、Timer クラスの新しいインスタンスを初期化します。</summary>
+      <param name="callback">実行するメソッドを表す <see cref="T:System.Threading.TimerCallback" /> デリゲート。</param>
+      <param name="state">コールバック メソッドで使用される情報を格納するオブジェクト。または null。</param>
+      <param name="dueTime">
+        <paramref name="callback" /> が呼び出される前の遅延時間 (ミリ秒単位) です。タイマーが開始されないようにするには <see cref="F:System.Threading.Timeout.Infinite" /> を指定します。0 を指定して、タイマーをすぐに開始します。</param>
+      <param name="period">
+        <paramref name="callback" /> が呼び出される時間間隔 (ミリ秒単位) です。周期的なシグナル通知を無効にする <see cref="F:System.Threading.Timeout.Infinite" /> を指定します。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter is negative and is not equal to <see cref="F:System.Threading.Timeout.Infinite" />. </exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="callback" /> parameter is null. </exception>
+    </member>
+    <member name="M:System.Threading.Timer.#ctor(System.Threading.TimerCallback,System.Object,System.TimeSpan,System.TimeSpan)">
+      <summary>時間間隔を計るために <see cref="T:System.TimeSpan" /> 値を使用して、Timer クラスの新しいインスタンスを初期化します。</summary>
+      <param name="callback">実行するメソッドを表すデリゲート。</param>
+      <param name="state">コールバック メソッドで使用される情報を格納するオブジェクト。または null。</param>
+      <param name="dueTime">
+        <paramref name="callback" /> パラメーターがそのメソッドを呼び出す前に遅延する時間。-1 ミリ秒を指定して、タイマーが開始されないようにします。0 を指定して、タイマーをすぐに開始します。</param>
+      <param name="period">
+        <paramref name="callback" /> によって参照されるメソッドの呼び出し時間間隔。-1 ミリ秒を指定して、周期的なシグナル通知を無効にします。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The number of milliseconds in the value of <paramref name="dueTime" /> or <paramref name="period" /> is negative and not equal to <see cref="F:System.Threading.Timeout.Infinite" />, or is greater than <see cref="F:System.Int32.MaxValue" />. </exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="callback" /> parameter is null. </exception>
+    </member>
+    <member name="M:System.Threading.Timer.Change(System.Int32,System.Int32)">
+      <summary>時間間隔を計るために 32 ビット符号付き整数を使用して、タイマーの開始時刻とメソッドの呼び出しの間隔を変更します。</summary>
+      <returns>タイマーが正常に更新された場合は true。それ以外の場合は false。</returns>
+      <param name="dueTime">
+        <see cref="T:System.Threading.Timer" /> 構築時に指定されたコールバック メソッドを呼び出す前に遅延する時間 (ミリ秒単位)。タイマーが再開されないようにする <see cref="F:System.Threading.Timeout.Infinite" /> を指定します。0 を指定して、タイマーをすぐに再開します。</param>
+      <param name="period">
+        <see cref="T:System.Threading.Timer" /> の構築時に指定されたコールバック メソッドを呼び出す間隔の時間 (ミリ秒単位)。周期的なシグナル通知を無効にする <see cref="F:System.Threading.Timeout.Infinite" /> を指定します。</param>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.Timer" /> has already been disposed. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter is negative and is not equal to <see cref="F:System.Threading.Timeout.Infinite" />. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.Timer.Change(System.TimeSpan,System.TimeSpan)">
+      <summary>時間間隔を計るために <see cref="T:System.TimeSpan" /> 値を使用して、タイマーの開始時刻とメソッドの呼び出しの間隔を変更します。</summary>
+      <returns>タイマーが正常に更新された場合は true。それ以外の場合は false。</returns>
+      <param name="dueTime">
+        <see cref="T:System.TimeSpan" /> は、<see cref="T:System.Threading.Timer" /> の構築時に指定されたコールバック メソッドを呼び出す前に遅延する時間を表します。タイマーが再開されないようにする -1 を指定します。0 を指定して、タイマーをすぐに再開します。</param>
+      <param name="period">
+        <see cref="T:System.Threading.Timer" /> の構築時に指定されたコールバック メソッドを呼び出す時間間隔。-1 ミリ秒を指定して、周期的なシグナル通知を無効にします。</param>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.Timer" /> has already been disposed. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter, in milliseconds, is less than -1. </exception>
+      <exception cref="T:System.NotSupportedException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter, in milliseconds, is greater than 4294967294. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.Timer.Dispose">
+      <summary>
+        <see cref="T:System.Threading.Timer" /> の現在のインスタンスによって使用されているすべてのリソースを解放します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.TimerCallback">
+      <summary>
+        <see cref="T:System.Threading.Timer" /> からの呼び出しを処理するメソッドを表します。</summary>
+      <param name="state">このデリゲートで呼び出されたメソッドに関連するアプリケーション固有の情報を格納するオブジェクト、または null。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+  </members>
+</doc>

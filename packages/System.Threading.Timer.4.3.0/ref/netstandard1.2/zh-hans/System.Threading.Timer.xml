@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Threading.Timer</name>
+  </assembly>
+  <members>
+    <member name="T:System.Threading.Timer">
+      <summary>提供以指定的时间间隔执行方法的机制。此类不能被继承。若要浏览此类型的 .NET Framework 源代码，请参阅引用源。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Timer.#ctor(System.Threading.TimerCallback,System.Object,System.Int32,System.Int32)">
+      <summary>初始化 Timer 类的新实例，该类使用 32 位有符号整数指定时间间隔。</summary>
+      <param name="callback">
+        <see cref="T:System.Threading.TimerCallback" /> 委托，表示要执行的方法。</param>
+      <param name="state">一个包含回调方法要使用的信息的对象，或者为 null。</param>
+      <param name="dueTime">调用 <paramref name="callback" /> 之前延迟的时间量（以毫秒为单位）。指定 <see cref="F:System.Threading.Timeout.Infinite" /> 可防止启动计时器。指定零 (0) 可立即启动计时器。</param>
+      <param name="period">调用 <paramref name="callback" /> 的时间间隔（以毫秒为单位）。指定 <see cref="F:System.Threading.Timeout.Infinite" /> 可以禁用定期终止。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter is negative and is not equal to <see cref="F:System.Threading.Timeout.Infinite" />. </exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="callback" /> parameter is null. </exception>
+    </member>
+    <member name="M:System.Threading.Timer.#ctor(System.Threading.TimerCallback,System.Object,System.TimeSpan,System.TimeSpan)">
+      <summary>初始化 Timer 类的新实例，该类使用 <see cref="T:System.TimeSpan" /> 值度量时间间隔。</summary>
+      <param name="callback">表示要执行的方法的委托。</param>
+      <param name="state">一个包含回调方法要使用的信息的对象，或者为 null。</param>
+      <param name="dueTime">在 <paramref name="callback" /> 参数调用其方法之前延迟的时间量。指定 -1 毫秒以防止启动计时器。指定零 (0) 可立即启动计时器。</param>
+      <param name="period">在调用 <paramref name="callback" /> 所引用的方法之间的时间间隔。指定 -1 毫秒可以禁用定期终止。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The number of milliseconds in the value of <paramref name="dueTime" /> or <paramref name="period" /> is negative and not equal to <see cref="F:System.Threading.Timeout.Infinite" />, or is greater than <see cref="F:System.Int32.MaxValue" />. </exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="callback" /> parameter is null. </exception>
+    </member>
+    <member name="M:System.Threading.Timer.Change(System.Int32,System.Int32)">
+      <summary>更改计时器的启动时间和方法调用之间的间隔，用 32 位有符号整数度量时间间隔。</summary>
+      <returns>如果计时器更新成功，则为 true；否则为 false。</returns>
+      <param name="dueTime">在调用构造 <see cref="T:System.Threading.Timer" /> 时指定的回调方法之前的延迟时间量（以毫秒为单位）。指定 <see cref="F:System.Threading.Timeout.Infinite" /> 可防止重新启动计时器。指定零 (0) 可立即重新启动计时器。</param>
+      <param name="period">调用构造 <see cref="T:System.Threading.Timer" /> 时指定的回调方法的时间间隔（以毫秒为单位）。指定 <see cref="F:System.Threading.Timeout.Infinite" /> 可以禁用定期终止。</param>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.Timer" /> has already been disposed. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter is negative and is not equal to <see cref="F:System.Threading.Timeout.Infinite" />. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.Timer.Change(System.TimeSpan,System.TimeSpan)">
+      <summary>更改计时器的启动时间和方法调用之间的间隔，使用 <see cref="T:System.TimeSpan" /> 值度量时间间隔。</summary>
+      <returns>如果计时器更新成功，则为 true；否则为 false。</returns>
+      <param name="dueTime">一个 <see cref="T:System.TimeSpan" />，表示在调用构造 <see cref="T:System.Threading.Timer" /> 时指定的回调方法之前延迟的时间量。指定负 -1 毫秒以防止计时器重新启动。指定零 (0) 可立即重新启动计时器。</param>
+      <param name="period">在构造 <see cref="T:System.Threading.Timer" /> 时指定的回调方法调用之间的时间间隔。指定 -1 毫秒可以禁用定期终止。</param>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.Timer" /> has already been disposed. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter, in milliseconds, is less than -1. </exception>
+      <exception cref="T:System.NotSupportedException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter, in milliseconds, is greater than 4294967294. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.Timer.Dispose">
+      <summary>释放由 <see cref="T:System.Threading.Timer" /> 的当前实例使用的所有资源。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.TimerCallback">
+      <summary>表示处理来自 <see cref="T:System.Threading.Timer" /> 的调用的方法。</summary>
+      <param name="state">一个对象（包含与该委托所调用的方法相关的特定于应用程序的信息）或为 null。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+  </members>
+</doc>

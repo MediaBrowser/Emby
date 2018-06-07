@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.IO.FileSystem.Primitives</name>
+  </assembly>
+  <members>
+    <member name="T:System.IO.FileAccess">
+      <summary>Defines constants for read, write, or read/write access to a file.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileAccess.Read">
+      <summary>Read access to the file. Data can be read from the file. Combine with Write for read/write access.</summary>
+    </member>
+    <member name="F:System.IO.FileAccess.ReadWrite">
+      <summary>Read and write access to the file. Data can be written to and read from the file.</summary>
+    </member>
+    <member name="F:System.IO.FileAccess.Write">
+      <summary>Write access to the file. Data can be written to the file. Combine with Read for read/write access.</summary>
+    </member>
+    <member name="T:System.IO.FileAttributes">
+      <summary>Provides attributes for files and directories.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileAttributes.Archive">
+      <summary>The file is a candidate for backup or removal. </summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Compressed">
+      <summary>The file is compressed.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Device">
+      <summary>Reserved for future use.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Directory">
+      <summary>The file is a directory.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Encrypted">
+      <summary>The file or directory is encrypted. For a file, this means that all data in the file is encrypted. For a directory, this means that encryption is the default for newly created files and directories.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Hidden">
+      <summary>The file is hidden, and thus is not included in an ordinary directory listing.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.IntegrityStream">
+      <summary>The file or directory includes data integrity support. When this value is applied to a file, all data streams in the file have integrity support. When this value is applied to a directory, all new files and subdirectories within that directory, by default, include integrity support.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Normal">
+      <summary>The file is a standard file that has no special attributes. This attribute is valid only if it is used alone.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.NoScrubData">
+      <summary>The file or directory is excluded from the data integrity scan. When this value is applied to a directory, by default, all new files and subdirectories within that directory are excluded from data integrity.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.NotContentIndexed">
+      <summary>The file will not be indexed by the operating system's content indexing service.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Offline">
+      <summary>The file is offline. The data of the file is not immediately available.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.ReadOnly">
+      <summary>The file is read-only.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.ReparsePoint">
+      <summary>The file contains a reparse point, which is a block of user-defined data associated with a file or a directory.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.SparseFile">
+      <summary>The file is a sparse file. Sparse files are typically large files whose data consists of mostly zeros.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.System">
+      <summary>The file is a system file. That is, the file is part of the operating system or is used exclusively by the operating system.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Temporary">
+      <summary>The file is temporary. A temporary file contains data that is needed while an application is executing but is not needed after the application is finished. File systems try to keep all the data in memory for quicker access rather than flushing the data back to mass storage. A temporary file should be deleted by the application as soon as it is no longer needed.</summary>
+    </member>
+    <member name="T:System.IO.FileMode">
+      <summary>Specifies how the operating system should open a file.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileMode.Append">
+      <summary>Opens the file if it exists and seeks to the end of the file, or creates a new file. This requires <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Append" /> permission. FileMode.Append can be used only in conjunction with FileAccess.Write. Trying to seek to a position before the end of the file throws an <see cref="T:System.IO.IOException" /> exception, and any attempt to read fails and throws a <see cref="T:System.NotSupportedException" /> exception.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.Create">
+      <summary>Specifies that the operating system should create a new file. If the file already exists, it will be overwritten. This requires <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" /> permission. FileMode.Create is equivalent to requesting that if the file does not exist, use <see cref="F:System.IO.FileMode.CreateNew" />; otherwise, use <see cref="F:System.IO.FileMode.Truncate" />. If the file already exists but is a hidden file, an <see cref="T:System.UnauthorizedAccessException" /> exception is thrown.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.CreateNew">
+      <summary>Specifies that the operating system should create a new file. This requires <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" /> permission. If the file already exists, an <see cref="T:System.IO.IOException" /> exception is thrown.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.Open">
+      <summary>Specifies that the operating system should open an existing file. The ability to open the file is dependent on the value specified by the <see cref="T:System.IO.FileAccess" /> enumeration. A <see cref="T:System.IO.FileNotFoundException" /> exception is thrown if the file does not exist.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.OpenOrCreate">
+      <summary>Specifies that the operating system should open a file if it exists; otherwise, a new file should be created. If the file is opened with FileAccess.Read, <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Read" /> permission is required. If the file access is FileAccess.Write, <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" /> permission is required. If the file is opened with FileAccess.ReadWrite, both <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Read" /> and <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" /> permissions are required.  </summary>
+    </member>
+    <member name="F:System.IO.FileMode.Truncate">
+      <summary>Specifies that the operating system should open an existing file. When the file is opened, it should be truncated so that its size is zero bytes. This requires <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" /> permission. Attempts to read from a file opened with FileMode.Truncate cause an <see cref="T:System.ArgumentException" /> exception.</summary>
+    </member>
+    <member name="T:System.IO.FileShare">
+      <summary>Contains constants for controlling the kind of access other <see cref="T:System.IO.FileStream" /> objects can have to the same file.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileShare.Delete">
+      <summary>Allows subsequent deleting of a file.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.Inheritable">
+      <summary>Makes the file handle inheritable by child processes. This is not directly supported by Win32.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.None">
+      <summary>Declines sharing of the current file. Any request to open the file (by this process or another process) will fail until the file is closed.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.Read">
+      <summary>Allows subsequent opening of the file for reading. If this flag is not specified, any request to open the file for reading (by this process or another process) will fail until the file is closed. However, even if this flag is specified, additional permissions might still be needed to access the file.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.ReadWrite">
+      <summary>Allows subsequent opening of the file for reading or writing. If this flag is not specified, any request to open the file for reading or writing (by this process or another process) will fail until the file is closed. However, even if this flag is specified, additional permissions might still be needed to access the file.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.Write">
+      <summary>Allows subsequent opening of the file for writing. If this flag is not specified, any request to open the file for writing (by this process or another process) will fail until the file is closed. However, even if this flag is specified, additional permissions might still be needed to access the file.</summary>
+    </member>
+  </members>
+</doc>

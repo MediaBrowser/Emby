@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8"?><doc>
+  <assembly>
+    <name>System.Diagnostics.DiagnosticSource</name>
+  </assembly>
+  <members>
+    <member name="T:System.Diagnostics.DiagnosticListener">
+      
+    </member>
+    <member name="M:System.Diagnostics.DiagnosticListener.#ctor(System.String)">
+      <param name="name"></param>
+    </member>
+    <member name="P:System.Diagnostics.DiagnosticListener.AllListeners">
+      <returns></returns>
+    </member>
+    <member name="M:System.Diagnostics.DiagnosticListener.Dispose">
+      
+    </member>
+    <member name="M:System.Diagnostics.DiagnosticListener.IsEnabled">
+      <returns></returns>
+    </member>
+    <member name="M:System.Diagnostics.DiagnosticListener.IsEnabled(System.String)">
+      <param name="name"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Diagnostics.DiagnosticListener.IsEnabled(System.String,System.Object,System.Object)">
+      <param name="name"></param>
+      <param name="arg1"></param>
+      <param name="arg2"></param>
+      <returns></returns>
+    </member>
+    <member name="P:System.Diagnostics.DiagnosticListener.Name">
+      <returns></returns>
+    </member>
+    <member name="M:System.Diagnostics.DiagnosticListener.Subscribe(System.IObserver{System.Collections.Generic.KeyValuePair{System.String,System.Object}})">
+      <param name="observer"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Diagnostics.DiagnosticListener.Subscribe(System.IObserver{System.Collections.Generic.KeyValuePair{System.String,System.Object}},System.Func{System.String,System.Object,System.Object,System.Boolean})">
+      <param name="observer"></param>
+      <param name="isEnabled"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Diagnostics.DiagnosticListener.Subscribe(System.IObserver{System.Collections.Generic.KeyValuePair{System.String,System.Object}},System.Predicate{System.String})">
+      <param name="observer"></param>
+      <param name="isEnabled"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Diagnostics.DiagnosticListener.ToString">
+      <returns></returns>
+    </member>
+    <member name="M:System.Diagnostics.DiagnosticListener.Write(System.String,System.Object)">
+      <param name="name"></param>
+      <param name="value"></param>
+    </member>
+    <member name="T:System.Diagnostics.DiagnosticSource">
+      
+    </member>
+    <member name="M:System.Diagnostics.DiagnosticSource.#ctor">
+      
+    </member>
+    <member name="M:System.Diagnostics.DiagnosticSource.IsEnabled(System.String)">
+      <param name="name"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Diagnostics.DiagnosticSource.IsEnabled(System.String,System.Object,System.Object)">
+      <param name="name"></param>
+      <param name="arg1"></param>
+      <param name="arg2"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Diagnostics.DiagnosticSource.StartActivity(System.Diagnostics.Activity,System.Object)">
+      <param name="activity"></param>
+      <param name="args"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Diagnostics.DiagnosticSource.StopActivity(System.Diagnostics.Activity,System.Object)">
+      <param name="activity"></param>
+      <param name="args"></param>
+    </member>
+    <member name="M:System.Diagnostics.DiagnosticSource.Write(System.String,System.Object)">
+      <param name="name"></param>
+      <param name="value"></param>
+    </member>
+    <member name="T:System.Diagnostics.Activity">
+      
+    </member>
+    <member name="M:System.Diagnostics.Activity.#ctor(System.String)">
+      <param name="operationName"></param>
+    </member>
+    <member name="M:System.Diagnostics.Activity.AddBaggage(System.String,System.String)">
+      <param name="key"></param>
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Diagnostics.Activity.AddTag(System.String,System.String)">
+      <param name="key"></param>
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="P:System.Diagnostics.Activity.Baggage">
+      <returns></returns>
+    </member>
+    <member name="P:System.Diagnostics.Activity.Current">
+      <returns></returns>
+    </member>
+    <member name="P:System.Diagnostics.Activity.Duration">
+      <returns></returns>
+    </member>
+    <member name="M:System.Diagnostics.Activity.GetBaggageItem(System.String)">
+      <param name="key"></param>
+      <returns></returns>
+    </member>
+    <member name="P:System.Diagnostics.Activity.Id">
+      <returns></returns>
+    </member>
+    <member name="P:System.Diagnostics.Activity.OperationName">
+      <returns></returns>
+    </member>
+    <member name="P:System.Diagnostics.Activity.Parent">
+      <returns></returns>
+    </member>
+    <member name="P:System.Diagnostics.Activity.ParentId">
+      <returns></returns>
+    </member>
+    <member name="P:System.Diagnostics.Activity.RootId">
+      <returns></returns>
+    </member>
+    <member name="M:System.Diagnostics.Activity.SetEndTime(System.DateTime)">
+      <param name="endTimeUtc"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Diagnostics.Activity.SetParentId(System.String)">
+      <param name="parentId"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Diagnostics.Activity.SetStartTime(System.DateTime)">
+      <param name="startTimeUtc"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Diagnostics.Activity.Start">
+      <returns></returns>
+    </member>
+    <member name="P:System.Diagnostics.Activity.StartTimeUtc">
+      <returns></returns>
+    </member>
+    <member name="M:System.Diagnostics.Activity.Stop">
+      
+    </member>
+    <member name="P:System.Diagnostics.Activity.Tags">
+      <returns></returns>
+    </member>
+  </members>
+</doc>

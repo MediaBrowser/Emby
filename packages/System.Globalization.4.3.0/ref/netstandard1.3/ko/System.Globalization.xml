@@ -1,0 +1,1793 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Globalization</name>
+  </assembly>
+  <members>
+    <member name="T:System.Globalization.Calendar">
+      <summary>시간을 주, 월, 연도로 구분해서 표시합니다.</summary>
+    </member>
+    <member name="M:System.Globalization.Calendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.Calendar" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddDays(System.DateTime,System.Int32)">
+      <summary>지정된 <see cref="T:System.DateTime" />에서 지정된 날짜 수만큼 경과한 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />에 지정된 날짜 수를 더한 결과로 만들어진 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="time">날짜를 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="days">더할 날짜 수입니다. </param>
+      <exception cref="T:System.ArgumentException">생성되는 <see cref="T:System.DateTime" />이 이 달력의 지원되는 범위 밖에 있는 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="days" /> 값이 지원되는 <see cref="T:System.DateTime" /> 반환 값의 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddHours(System.DateTime,System.Int32)">
+      <summary>지정된 <see cref="T:System.DateTime" />에서 지정된 시간 수만큼 경과한 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />에 지정된 시간 수를 더한 결과로 만들어지는 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="time">시간을 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="hours">더할 시간 수입니다. </param>
+      <exception cref="T:System.ArgumentException">생성되는 <see cref="T:System.DateTime" />이 이 달력의 지원되는 범위 밖에 있는 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="hours" /> 값이 지원되는 <see cref="T:System.DateTime" /> 반환 값의 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddMilliseconds(System.DateTime,System.Double)">
+      <summary>지정된 <see cref="T:System.DateTime" />에서 지정된 밀리초 수만큼 경과한 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />에 지정된 밀리초 수를 더한 결과로 만들어지는 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="time">밀리초를 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="milliseconds">더할 밀리초 수입니다.</param>
+      <exception cref="T:System.ArgumentException">생성되는 <see cref="T:System.DateTime" />이 이 달력의 지원되는 범위 밖에 있는 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="milliseconds" /> 값이 지원되는 <see cref="T:System.DateTime" /> 반환 값의 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddMinutes(System.DateTime,System.Int32)">
+      <summary>지정된 <see cref="T:System.DateTime" />에서 지정된 분 수만큼 경과한 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />에 지정된 분 수를 더한 결과로 만들어지는 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="time">분을 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="minutes">더할 분 수입니다. </param>
+      <exception cref="T:System.ArgumentException">생성되는 <see cref="T:System.DateTime" />이 이 달력의 지원되는 범위 밖에 있는 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="minutes" /> 값이 지원되는 <see cref="T:System.DateTime" /> 반환 값의 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>파생 클래스에 재정의될 때 지정된 <see cref="T:System.DateTime" />에서 지정된 월 수만큼 경과한 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />에 지정된 월 수를 더한 결과로 만들어지는 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="time">월을 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="months">더할 월 수입니다. </param>
+      <exception cref="T:System.ArgumentException">생성되는 <see cref="T:System.DateTime" />이 이 달력의 지원되는 범위 밖에 있는 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> 값이 지원되는 <see cref="T:System.DateTime" /> 반환 값의 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddSeconds(System.DateTime,System.Int32)">
+      <summary>지정된 <see cref="T:System.DateTime" />에서 지정된 초 수만큼 경과한 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />에 지정된 초 수를 더한 결과로 만들어지는 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="time">초를 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="seconds">더할 초 수입니다. </param>
+      <exception cref="T:System.ArgumentException">생성되는 <see cref="T:System.DateTime" />이 이 달력의 지원되는 범위 밖에 있는 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="seconds" /> 값이 지원되는 <see cref="T:System.DateTime" /> 반환 값의 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddWeeks(System.DateTime,System.Int32)">
+      <summary>지정된 <see cref="T:System.DateTime" />에서 지정된 주 수만큼 경과한 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />에 지정된 주 수를 더한 결과로 만들어지는 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="time">주를 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="weeks">더할 주 수입니다. </param>
+      <exception cref="T:System.ArgumentException">생성되는 <see cref="T:System.DateTime" />이 이 달력의 지원되는 범위 밖에 있는 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="weeks" /> 값이 지원되는 <see cref="T:System.DateTime" /> 반환 값의 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddYears(System.DateTime,System.Int32)">
+      <summary>파생 클래스에 재정의될 때 지정된 <see cref="T:System.DateTime" />에서 지정된 연도 수만큼 경과한 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>지정된 <see cref="T:System.DateTime" />에 지정된 연도 수를 더한 결과로 만들어지는 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="time">연도를 더할 <see cref="T:System.DateTime" />입니다. </param>
+      <param name="years">더할 연도 수입니다. </param>
+      <exception cref="T:System.ArgumentException">생성되는 <see cref="T:System.DateTime" />이 이 달력의 지원되는 범위 밖에 있는 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="years" /> 값이 지원되는 <see cref="T:System.DateTime" /> 반환 값의 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="F:System.Globalization.Calendar.CurrentEra">
+      <summary>현재 달력의 현재 연대를 나타냅니다. </summary>
+    </member>
+    <member name="P:System.Globalization.Calendar.Eras">
+      <summary>파생 클래스에 재정의될 때 현재 달력의 연대 목록을 가져옵니다.</summary>
+      <returns>현재 달력의 연대를 나타내는 정수의 배열입니다.</returns>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDayOfMonth(System.DateTime)">
+      <summary>파생 클래스에 재정의될 때 지정된 <see cref="T:System.DateTime" />의 날짜(월 기준)를 반환합니다.</summary>
+      <returns>
+        <paramref name="time" /> 매개 변수의 일(월 기준)을 나타내는 양의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDayOfWeek(System.DateTime)">
+      <summary>파생 클래스에 재정의될 때 지정된 <see cref="T:System.DateTime" />의 요일을 반환합니다.</summary>
+      <returns>
+        <paramref name="time" /> 매개 변수의 요일을 나타내는 <see cref="T:System.DayOfWeek" /> 값입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDayOfYear(System.DateTime)">
+      <summary>파생 클래스에 재정의될 때 지정된 <see cref="T:System.DateTime" />의 날짜(연도 기준)를 반환합니다.</summary>
+      <returns>
+        <paramref name="time" /> 매개 변수의 일(연도 기준)을 나타내는 양의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDaysInMonth(System.Int32,System.Int32)">
+      <summary>현재 연대의 지정된 연도 및 월에 있는 일 수를 반환합니다.</summary>
+      <returns>현재 연대의 지정된 연도에 있는 지정된 월의 날짜 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 양의 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>파생 클래스에 재정의될 때 지정된 월, 연도 및 연대의 일 수를 반환합니다.</summary>
+      <returns>지정된 연대의 지정된 연도에 있는 지정된 월의 날짜 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 양의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDaysInYear(System.Int32)">
+      <summary>현재 연대의 지정된 연도에 있는 일 수를 반환합니다.</summary>
+      <returns>현재 연대의 지정된 연도에 있는 날짜 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>파생 클래스에 재정의될 때 지정된 연도 및 연대의 일 수를 반환합니다.</summary>
+      <returns>지정된 연대에 있는 지정된 연도의 날짜 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetEra(System.DateTime)">
+      <summary>파생 클래스에 재정의될 때 지정된 <see cref="T:System.DateTime" />의 연대를 반환합니다.</summary>
+      <returns>
+        <paramref name="time" />의 연대를 나타내는 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetHour(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 시간 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="time" />의 시간을 나타내는 0에서 23 사이의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>지정한 연도 및 연대의 윤월을 계산합니다.</summary>
+      <returns>지정한 연도와 연대에서 윤월을 나타내는 양의 정수입니다.또는이 달력이 윤월을 지원하지 않거나 <paramref name="year" /> 및 <paramref name="era" /> 매개 변수가 윤년을 지정하지 않는 경우 0입니다.</returns>
+      <param name="year">연도입니다.</param>
+      <param name="era">연대입니다.</param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetMilliseconds(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 밀리초 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="time" /> 매개 변수의 밀리초를 나타내는 0부터 999까지의 배정밀도 부동 소수점 숫자입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetMinute(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 분 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="time" />의 분을 나타내는 0에서 59 사이의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetMonth(System.DateTime)">
+      <summary>파생 클래스에 재정의될 때 지정된 <see cref="T:System.DateTime" />의 월을 반환합니다.</summary>
+      <returns>
+        <paramref name="time" />의 월을 나타내는 양의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetMonthsInYear(System.Int32)">
+      <summary>현재 연대에 있는 지정된 연도의 월 수를 반환합니다.</summary>
+      <returns>현재 연대에 있는 지정된 연도의 월 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>파생 클래스에 재정의될 때 지정된 연대에 있는 지정된 연도의 월 수를 반환합니다.</summary>
+      <returns>지정된 연대에 있는 지정된 연도의 월 수입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetSecond(System.DateTime)">
+      <summary>지정된 <see cref="T:System.DateTime" />의 초 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="time" />의 초를 나타내는 0에서 59 사이의 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetWeekOfYear(System.DateTime,System.Globalization.CalendarWeekRule,System.DayOfWeek)">
+      <summary>지정된 <see cref="T:System.DateTime" /> 값의 날짜가 포함된 주(연도 기준)를 반환합니다.</summary>
+      <returns>
+        <paramref name="time" /> 매개 변수의 날짜가 포함된 주(연도 기준)를 나타내는 양의 정수입니다.</returns>
+      <param name="time">날짜 및 시간 값입니다. </param>
+      <param name="rule">주를 정의하는 열거형 값입니다. </param>
+      <param name="firstDayOfWeek">주의 첫째 요일을 정의하는 열거형 값입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" />이 <see cref="P:System.Globalization.Calendar.MinSupportedDateTime" />보다 이전이거나 <see cref="P:System.Globalization.Calendar.MaxSupportedDateTime" />보다 이후인 경우또는<paramref name="firstDayOfWeek" />은(는) 올바른 <see cref="T:System.DayOfWeek" /> 값이 아닙니다.또는 <paramref name="rule" />은(는) 올바른 <see cref="T:System.Globalization.CalendarWeekRule" /> 값이 아닙니다. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetYear(System.DateTime)">
+      <summary>파생 클래스에 재정의될 때 지정된 <see cref="T:System.DateTime" />의 연도를 반환합니다.</summary>
+      <returns>
+        <paramref name="time" />의 연도를 나타내는 정수입니다.</returns>
+      <param name="time">읽을 <see cref="T:System.DateTime" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapDay(System.Int32,System.Int32,System.Int32)">
+      <summary>현재 연대의 지정된 날짜가 윤일인지 여부를 확인합니다.</summary>
+      <returns>지정된 날짜가 윤일이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 양의 정수입니다. </param>
+      <param name="day">일을 나타내는 양의 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="day" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>파생 클래스에 재정의될 때 지정된 연대의 지정된 날짜가 윤일인지 여부를 확인합니다.</summary>
+      <returns>지정된 날짜가 윤일이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 양의 정수입니다. </param>
+      <param name="day">일을 나타내는 양의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="day" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapMonth(System.Int32,System.Int32)">
+      <summary>현재 연대의 지정된 연도에 있는 지정된 월이 윤월인지 여부를 확인합니다.</summary>
+      <returns>지정된 월이 윤월이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 양의 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>파생 클래스에 재정의될 때 지정된 연대의 지정된 연도에 있는 지정된 월이 윤월인지 여부를 확인합니다.</summary>
+      <returns>지정된 월이 윤월이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 양의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapYear(System.Int32)">
+      <summary>지정된 연대의 지정된 연도가 윤년인지 여부를 확인합니다.</summary>
+      <returns>지정된 연도가 윤년이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>파생 클래스에 재정의될 때 지정된 연대의 지정된 연도가 윤년인지 여부를 확인합니다.</summary>
+      <returns>지정된 연도가 윤년이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.Calendar.IsReadOnly">
+      <summary>이 <see cref="T:System.Globalization.Calendar" /> 개체가 읽기 전용인지 여부를 나타내는 값을 가져옵니다.</summary>
+      <returns>이 <see cref="T:System.Globalization.Calendar" /> 개체가 읽기 전용이면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.Calendar.MaxSupportedDateTime">
+      <summary>이 <see cref="T:System.Globalization.Calendar" /> 개체에서 지원하는 마지막 날짜와 시간을 가져옵니다.</summary>
+      <returns>이 달력에서 지원하는 마지막 날짜와 시간입니다.기본값은 <see cref="F:System.DateTime.MaxValue" />입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.Calendar.MinSupportedDateTime">
+      <summary>이 <see cref="T:System.Globalization.Calendar" /> 개체에서 지원하는 시작 날짜와 시간을 가져옵니다.</summary>
+      <returns>이 달력에서 지원하는 시작 날짜와 시간입니다.기본값은 <see cref="F:System.DateTime.MinValue" />입니다.</returns>
+    </member>
+    <member name="M:System.Globalization.Calendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>현재 연대의 지정된 날짜와 시간으로 설정된 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>현재 연대의 지정된 날짜와 시간으로 설정된 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 양의 정수입니다. </param>
+      <param name="day">일을 나타내는 양의 정수입니다. </param>
+      <param name="hour">시간을 나타내는 0에서 23 사이의 정수입니다. </param>
+      <param name="minute">분을 나타내는 0에서 59 사이의 정수입니다. </param>
+      <param name="second">초를 나타내는 0에서 59 사이의 정수입니다. </param>
+      <param name="millisecond">밀리초를 나타내는 0에서 999 사이의 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="day" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="hour" />가 0보다 작거나 23보다 큰 경우또는 <paramref name="minute" />이 0보다 작거나 59보다 큰 경우또는 <paramref name="second" />가 0보다 작거나 59보다 큰 경우또는 <paramref name="millisecond" />가 0보다 작거나 999보다 큰 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>파생 클래스에 재정의될 때 지정된 연대의 지정된 날짜와 시간으로 설정된 <see cref="T:System.DateTime" />을 반환합니다.</summary>
+      <returns>현재 연대의 지정된 날짜와 시간으로 설정된 <see cref="T:System.DateTime" />입니다.</returns>
+      <param name="year">연도를 나타내는 정수입니다. </param>
+      <param name="month">월을 나타내는 양의 정수입니다. </param>
+      <param name="day">일을 나타내는 양의 정수입니다. </param>
+      <param name="hour">시간을 나타내는 0에서 23 사이의 정수입니다. </param>
+      <param name="minute">분을 나타내는 0에서 59 사이의 정수입니다. </param>
+      <param name="second">초를 나타내는 0에서 59 사이의 정수입니다. </param>
+      <param name="millisecond">밀리초를 나타내는 0에서 999 사이의 정수입니다. </param>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="month" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="day" />가 달력에서 지원하는 범위 밖에 있는 경우또는 <paramref name="hour" />가 0보다 작거나 23보다 큰 경우또는 <paramref name="minute" />이 0보다 작거나 59보다 큰 경우또는 <paramref name="second" />가 0보다 작거나 59보다 큰 경우또는 <paramref name="millisecond" />가 0보다 작거나 999보다 큰 경우또는 <paramref name="era" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.ToFourDigitYear(System.Int32)">
+      <summary>
+        <see cref="P:System.Globalization.Calendar.TwoDigitYearMax" /> 속성으로 해당 세기를 확인하여 지정된 연도를 네 자릿수 연도로 변환합니다.</summary>
+      <returns>
+        <paramref name="year" />를 네 자릿수로 표시하는 정수입니다.</returns>
+      <param name="year">변환할 연도를 나타내는 두 자릿수 또는 네 자릿수의 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />가 달력에서 지원하는 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.Calendar.TwoDigitYearMax">
+      <summary>두 자릿수 연도로 표시할 수 있는 100년 범위의 마지막 연도를 가져오거나 설정합니다.</summary>
+      <returns>두 자릿수 연도로 표시할 수 있는 100년 범위의 마지막 연도입니다.</returns>
+      <exception cref="T:System.InvalidOperationException">현재 <see cref="T:System.Globalization.Calendar" /> 개체가 읽기 전용인 경우</exception>
+    </member>
+    <member name="T:System.Globalization.CalendarWeekRule">
+      <summary>해당 연도의 첫째 주를 확인하기 위한 다양한 규칙을 정의합니다.</summary>
+    </member>
+    <member name="F:System.Globalization.CalendarWeekRule.FirstDay">
+      <summary>해당 연도의 첫째 주가 해당 연도의 첫 날에 시작해서 다음 주의 첫째 요일 전에 끝나도록 지정합니다.값은 0입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.CalendarWeekRule.FirstFourDayWeek">
+      <summary>해당 주의 첫째 요일 전까지 4일 이상이 있는 첫째 주가 해당 연도의 첫째 주가 되도록 지정합니다.값은 2입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.CalendarWeekRule.FirstFullWeek">
+      <summary>해당 연도의 첫째 주를 해당 연도의 첫 날이나 다음 날이 있는 주의 첫째 요일에서 시작되도록 지정합니다.값은 1입니다.</summary>
+    </member>
+    <member name="T:System.Globalization.CharUnicodeInfo">
+      <summary>유니코드 문자에 대한 정보를 검색합니다.이 클래스는 상속될 수 없습니다.</summary>
+    </member>
+    <member name="M:System.Globalization.CharUnicodeInfo.GetNumericValue(System.Char)">
+      <summary>지정된 문자와 연결된 숫자 값을 가져옵니다.</summary>
+      <returns>지정된 문자와 연결된 숫자 값입니다.또는 지정된 문자가 숫자 문자가 아니면 -1입니다.</returns>
+      <param name="ch">숫자 값을 가져올 유니코드 문자입니다. </param>
+    </member>
+    <member name="M:System.Globalization.CharUnicodeInfo.GetNumericValue(System.String,System.Int32)">
+      <summary>지정된 문자열의 지정된 인덱스에 있는 문자와 연결된 숫자 값을 가져옵니다.</summary>
+      <returns>지정된 문자열의 지정된 인덱스에 있는 문자와 연결된 숫자 값입니다.또는 지정된 문자열의 지정된 인덱스에 있는 문자가 숫자 문자가 아니면 -1입니다.</returns>
+      <param name="s">숫자 값을 가져올 유니코드 문자가 들어 있는 <see cref="T:System.String" />입니다. </param>
+      <param name="index">숫자 값을 가져올 유니코드 문자의 인덱스입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" />가 null입니다. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" />가 <paramref name="s" />의 올바른 인덱스 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CharUnicodeInfo.GetUnicodeCategory(System.Char)">
+      <summary>지정된 문자의 유니코드 범주를 가져옵니다.</summary>
+      <returns>지정된 문자의 범주를 나타내는 <see cref="T:System.Globalization.UnicodeCategory" /> 값입니다.</returns>
+      <param name="ch">유니코드 범주를 가져올 유니코드 문자입니다. </param>
+    </member>
+    <member name="M:System.Globalization.CharUnicodeInfo.GetUnicodeCategory(System.String,System.Int32)">
+      <summary>지정된 문자열의 지정된 인덱스에 있는 문자의 유니코드 범주를 가져옵니다.</summary>
+      <returns>지정된 문자열의 지정된 인덱스에 있는 문자의 범주를 나타내는 <see cref="T:System.Globalization.UnicodeCategory" /> 값입니다.</returns>
+      <param name="s">유니코드 범주를 가져올 유니코드 문자가 들어 있는 <see cref="T:System.String" />입니다. </param>
+      <param name="index">유니코드 범주를 가져올 유니코드 문자의 인덱스입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" />가 null입니다. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" />가 <paramref name="s" />의 올바른 인덱스 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="T:System.Globalization.CompareInfo">
+      <summary>문화권 구분 문자열 비교를 위한 메서드 집합을 구현합니다.</summary>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.Int32,System.Int32,System.String,System.Int32,System.Int32)">
+      <summary>한 문자열의 특정 섹션을 다른 문자열의 특정 섹션과 비교합니다.</summary>
+      <returns>두 비교 대상 간의 어휘 관계를 나타내는 부호 있는 32비트 정수를 반환합니다.값 조건 0 두 문자열이 같은 경우 0보다 작음 지정된 <paramref name="string1" /> 영역이 지정된 <paramref name="string2" /> 영역보다 작은 경우 0보다 큼 지정된 <paramref name="string1" /> 영역이 지정된 <paramref name="string2" /> 영역보다 큰 경우 </returns>
+      <param name="string1">비교할 첫째 문자열입니다. </param>
+      <param name="offset1">비교를 시작할 <paramref name="string1" />에 있는 문자의 인덱스(0부터 시작)입니다. </param>
+      <param name="length1">비교할 <paramref name="string1" />의 연속된 문자 수입니다. </param>
+      <param name="string2">비교할 둘째 문자열입니다. </param>
+      <param name="offset2">비교를 시작할 <paramref name="string2" />에 있는 문자의 인덱스(0부터 시작)입니다. </param>
+      <param name="length2">비교할 <paramref name="string2" />의 연속된 문자 수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset1" />, <paramref name="length1" />, <paramref name="offset2" /> 또는 <paramref name="length2" />가 0보다 작은 경우또는 <paramref name="offset1" />이 <paramref name="string1" />의 문자 수보다 크거나 같은 경우또는 <paramref name="offset2" />이 <paramref name="string2" />의 문자 수보다 크거나 같은 경우또는 <paramref name="length1" />가 <paramref name="offset1" />에서 <paramref name="string1" /> 끝 사이의 문자 수보다 큰 경우또는 <paramref name="length2" />가 <paramref name="offset2" />에서 <paramref name="string2" /> 끝 사이의 문자 수보다 큰 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.Int32,System.Int32,System.String,System.Int32,System.Int32,System.Globalization.CompareOptions)">
+      <summary>지정된 <see cref="T:System.Globalization.CompareOptions" /> 값을 사용하여 한 문자열의 특정 영역을 다른 문자열의 특정 영역과 비교합니다.</summary>
+      <returns>두 비교 대상 간의 어휘 관계를 나타내는 부호 있는 32비트 정수를 반환합니다.값 조건 0 두 문자열이 같은 경우 0보다 작음 지정된 <paramref name="string1" /> 영역이 지정된 <paramref name="string2" /> 영역보다 작은 경우 0보다 큼 지정된 <paramref name="string1" /> 영역이 지정된 <paramref name="string2" /> 영역보다 큰 경우 </returns>
+      <param name="string1">비교할 첫째 문자열입니다. </param>
+      <param name="offset1">비교를 시작할 <paramref name="string1" />에 있는 문자의 인덱스(0부터 시작)입니다. </param>
+      <param name="length1">비교할 <paramref name="string1" />의 연속된 문자 수입니다. </param>
+      <param name="string2">비교할 둘째 문자열입니다. </param>
+      <param name="offset2">비교를 시작할 <paramref name="string2" />에 있는 문자의 인덱스(0부터 시작)입니다. </param>
+      <param name="length2">비교할 <paramref name="string2" />의 연속된 문자 수입니다. </param>
+      <param name="options">
+        <paramref name="string1" />과 <paramref name="string2" />을 비교하는 방법을 정의하는 값입니다.<paramref name="options" />는 열거형 값 <see cref="F:System.Globalization.CompareOptions.Ordinal" />이거나 <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" />, <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> 및 <see cref="F:System.Globalization.CompareOptions.StringSort" /> 값 중 하나 이상의 비트 조합입니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset1" />, <paramref name="length1" />, <paramref name="offset2" /> 또는 <paramref name="length2" />가 0보다 작은 경우또는 <paramref name="offset1" />이 <paramref name="string1" />의 문자 수보다 크거나 같은 경우또는 <paramref name="offset2" />이 <paramref name="string2" />의 문자 수보다 크거나 같은 경우또는 <paramref name="length1" />가 <paramref name="offset1" />에서 <paramref name="string1" /> 끝 사이의 문자 수보다 큰 경우또는 <paramref name="length2" />가 <paramref name="offset2" />에서 <paramref name="string2" /> 끝 사이의 문자 수보다 큰 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" />에 잘못된 <see cref="T:System.Globalization.CompareOptions" /> 값이 포함된 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.Int32,System.String,System.Int32)">
+      <summary>한 문자열의 끝 섹션을 다른 문자열의 끝 섹션과 비교합니다.</summary>
+      <returns>두 비교 대상 간의 어휘 관계를 나타내는 부호 있는 32비트 정수를 반환합니다.값 조건 0 두 문자열이 같은 경우 0보다 작음 지정된 <paramref name="string1" /> 영역이 지정된 <paramref name="string2" /> 영역보다 작은 경우 0보다 큼 지정된 <paramref name="string1" /> 영역이 지정된 <paramref name="string2" /> 영역보다 큰 경우 </returns>
+      <param name="string1">비교할 첫째 문자열입니다. </param>
+      <param name="offset1">비교를 시작할 <paramref name="string1" />에 있는 문자의 인덱스(0부터 시작)입니다. </param>
+      <param name="string2">비교할 둘째 문자열입니다. </param>
+      <param name="offset2">비교를 시작할 <paramref name="string2" />에 있는 문자의 인덱스(0부터 시작)입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset1" /> 또는 <paramref name="offset2" />가 0보다 작은 경우또는 <paramref name="offset1" />이 <paramref name="string1" />의 문자 수보다 크거나 같은 경우또는 <paramref name="offset2" />이 <paramref name="string2" />의 문자 수보다 크거나 같은 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.Int32,System.String,System.Int32,System.Globalization.CompareOptions)">
+      <summary>지정된 <see cref="T:System.Globalization.CompareOptions" /> 값을 사용하여 한 문자열의 끝 영역을 다른 문자열의 시작 영역과 비교합니다.</summary>
+      <returns>두 비교 대상 간의 어휘 관계를 나타내는 부호 있는 32비트 정수를 반환합니다.값 조건 0 두 문자열이 같은 경우 0보다 작음 지정된 <paramref name="string1" /> 영역이 지정된 <paramref name="string2" /> 영역보다 작은 경우 0보다 큼 지정된 <paramref name="string1" /> 영역이 지정된 <paramref name="string2" /> 영역보다 큰 경우 </returns>
+      <param name="string1">비교할 첫째 문자열입니다. </param>
+      <param name="offset1">비교를 시작할 <paramref name="string1" />에 있는 문자의 인덱스(0부터 시작)입니다. </param>
+      <param name="string2">비교할 둘째 문자열입니다. </param>
+      <param name="offset2">비교를 시작할 <paramref name="string2" />에 있는 문자의 인덱스(0부터 시작)입니다. </param>
+      <param name="options">
+        <paramref name="string1" />과 <paramref name="string2" />을 비교하는 방법을 정의하는 값입니다.<paramref name="options" />는 열거형 값 <see cref="F:System.Globalization.CompareOptions.Ordinal" />이거나 <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" />, <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> 및 <see cref="F:System.Globalization.CompareOptions.StringSort" /> 값 중 하나 이상의 비트 조합입니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset1" /> 또는 <paramref name="offset2" />가 0보다 작은 경우또는 <paramref name="offset1" />이 <paramref name="string1" />의 문자 수보다 크거나 같은 경우또는 <paramref name="offset2" />이 <paramref name="string2" />의 문자 수보다 크거나 같은 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" />에 잘못된 <see cref="T:System.Globalization.CompareOptions" /> 값이 포함된 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.String)">
+      <summary>두 문자열을 비교합니다. </summary>
+      <returns>두 비교 대상 간의 어휘 관계를 나타내는 부호 있는 32비트 정수를 반환합니다.값 조건 0 두 문자열이 같은 경우 0보다 작음 <paramref name="string1" />가 <paramref name="string2" />보다 작은 경우 0보다 큼 <paramref name="string1" />가 <paramref name="string2" />보다 큰 경우 </returns>
+      <param name="string1">비교할 첫째 문자열입니다. </param>
+      <param name="string2">비교할 둘째 문자열입니다. </param>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.String,System.Globalization.CompareOptions)">
+      <summary>지정된 <see cref="T:System.Globalization.CompareOptions" /> 값을 사용하여 두 문자열을 비교합니다.</summary>
+      <returns>두 비교 대상 간의 어휘 관계를 나타내는 부호 있는 32비트 정수를 반환합니다.값 조건 0 두 문자열이 같은 경우 0보다 작음 <paramref name="string1" />가 <paramref name="string2" />보다 작은 경우 0보다 큼 <paramref name="string1" />가 <paramref name="string2" />보다 큰 경우 </returns>
+      <param name="string1">비교할 첫째 문자열입니다. </param>
+      <param name="string2">비교할 둘째 문자열입니다. </param>
+      <param name="options">
+        <paramref name="string1" />과 <paramref name="string2" />을 비교하는 방법을 정의하는 값입니다.<paramref name="options" />는 열거형 값 <see cref="F:System.Globalization.CompareOptions.Ordinal" />이거나 <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" />, <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> 및 <see cref="F:System.Globalization.CompareOptions.StringSort" /> 값 중 하나 이상의 비트 조합입니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" />에 잘못된 <see cref="T:System.Globalization.CompareOptions" /> 값이 포함된 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Equals(System.Object)">
+      <summary>지정한 개체가 현재 <see cref="T:System.Globalization.CompareInfo" /> 개체와 같은지 여부를 확인합니다.</summary>
+      <returns>지정한 개체가 현재 <see cref="T:System.Globalization.CompareInfo" />와 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="value">현재 <see cref="T:System.Globalization.CompareInfo" />와 비교할 개체입니다. </param>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.GetCompareInfo(System.String)">
+      <summary>지정된 이름이 있는 문화권과 연결된 새 <see cref="T:System.Globalization.CompareInfo" /> 개체를 초기화합니다.</summary>
+      <returns>지정된 식별자가 있는 문화권과 연결되어 있고 현재 <see cref="T:System.Reflection.Assembly" />의 문자열 비교 메서드를 사용하는 새 <see cref="T:System.Globalization.CompareInfo" /> 개체입니다.</returns>
+      <param name="name">문화권 이름을 나타내는 문자열입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" />가 null인 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" />이 잘못된 문화권 이름인 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.GetHashCode">
+      <summary>해시 알고리즘 및 해시 테이블 같은 데이터 구조의 현재 <see cref="T:System.Globalization.CompareInfo" />에 대한 해시 함수의 역할을 합니다.</summary>
+      <returns>현재 <see cref="T:System.Globalization.CompareInfo" />의 해시 코드입니다.</returns>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.GetHashCode(System.String,System.Globalization.CompareOptions)">
+      <summary>지정 된 비교 옵션에 따라 문자열에 대 한 해시 코드를 가져옵니다. </summary>
+      <returns>부호 있는 32비트 정수 해시 코드입니다. </returns>
+      <param name="source">해시 코드 인이 반환 될 문자열입니다. </param>
+      <param name="options">문자열 비교 방법을 결정 하는 값입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />가 null인 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.Char)">
+      <summary>전체 소스 문자열에서 지정된 문자를 검색하고, 처음 검색된 항목의 0부터 시작하는 인덱스를 반환합니다.</summary>
+      <returns>
+        <paramref name="source" />에서 <paramref name="value" />를 찾은 경우 맨 처음 검색된 항목의 인덱스(0부터 시작)이고, 그렇지 않으면 -1입니다.<paramref name="value" />이 무시할 수 있는 문자인 경우 0(영)을 반환합니다.</returns>
+      <param name="source">검색할 문자열입니다. </param>
+      <param name="value">
+        <paramref name="source" />에서 찾을 문자입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />가 null인 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.Char,System.Globalization.CompareOptions)">
+      <summary>전체 소스 문자열에서 지정된 <see cref="T:System.Globalization.CompareOptions" /> 값을 사용하여 지정된 문자를 검색하고, 맨 처음 검색된 항목의 인덱스(0부터 시작)를 반환합니다.</summary>
+      <returns>
+        <paramref name="source" />에서 지정된 비교 옵션을 사용하여 <paramref name="value" />를 찾은 경우 맨 처음 검색된 항목의 인덱스(0부터 시작)이고, 그렇지 않으면 -1입니다.<paramref name="value" />이 무시할 수 있는 문자인 경우 0(영)을 반환합니다.</returns>
+      <param name="source">검색할 문자열입니다. </param>
+      <param name="value">
+        <paramref name="source" />에서 찾을 문자입니다. </param>
+      <param name="options">문자열을 비교하는 방법을 정의하는 값입니다.<paramref name="options" />는 열거형 값 <see cref="F:System.Globalization.CompareOptions.Ordinal" />이거나 <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 및 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> 값 중 하나 이상의 비트 조합입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />가 null인 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" />에 잘못된 <see cref="T:System.Globalization.CompareOptions" /> 값이 포함된 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.Char,System.Int32,System.Globalization.CompareOptions)">
+      <summary>소스 문자열 중 지정된 인덱스부터 문자열 끝까지의 영역에서 지정된 <see cref="T:System.Globalization.CompareOptions" /> 값을 사용하여 지정된 문자를 검색하고, 맨 처음 검색된 항목의 인덱스(0부터 시작)를 반환합니다.</summary>
+      <returns>
+        <paramref name="source" /> 중 <paramref name="startIndex" />부터 <paramref name="source" /> 끝까지의 영역에서 지정된 비교 옵션을 사용하여 <paramref name="value" />를 찾은 경우 맨 처음 검색된 항목의 인덱스(0부터 시작)이고, 그렇지 않으면 -1입니다.<paramref name="value" />가 무시할 수 있는 문자인 경우 <paramref name="startIndex" />를 반환합니다.</returns>
+      <param name="source">검색할 문자열입니다. </param>
+      <param name="value">
+        <paramref name="source" />에서 찾을 문자입니다. </param>
+      <param name="startIndex">검색의 0부터 시작하는 인덱스입니다. </param>
+      <param name="options">
+        <paramref name="source" />과 <paramref name="value" />을 비교하는 방법을 정의하는 값입니다.<paramref name="options" />는 열거형 값 <see cref="F:System.Globalization.CompareOptions.Ordinal" />이거나 <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 및 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> 값 중 하나 이상의 비트 조합입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />가 null인 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" />가 <paramref name="source" />에 대한 올바른 인덱스 범위 밖에 있는 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" />에 잘못된 <see cref="T:System.Globalization.CompareOptions" /> 값이 포함된 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.Char,System.Int32,System.Int32)">
+      <summary>소스 문자열 중 지정된 인덱스에서 시작하고 지정된 수의 요소를 포함하는 섹션에서 지정된 문자를 검색하고, 처음 검색된 항목의 0부터 시작하는 인덱스를 반환합니다.</summary>
+      <returns>
+        <paramref name="source" /> 중 <paramref name="startIndex" />에서 시작하고 <paramref name="count" />로 지정된 수의 요소를 포함하는 영역에서 <paramref name="value" />를 찾은 경우 맨 처음 검색된 항목의 인덱스(0부터 시작)이고, 그렇지 않으면 -1입니다.<paramref name="value" />가 무시할 수 있는 문자인 경우 <paramref name="startIndex" />를 반환합니다.</returns>
+      <param name="source">검색할 문자열입니다. </param>
+      <param name="value">
+        <paramref name="source" />에서 찾을 문자입니다. </param>
+      <param name="startIndex">검색의 0부터 시작하는 인덱스입니다. </param>
+      <param name="count">검색할 섹션에 있는 요소 수입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />가 null인 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" />가 <paramref name="source" />에 대한 올바른 인덱스 범위 밖에 있는 경우또는 <paramref name="count" />가 0보다 작은 경우또는 <paramref name="startIndex" /> 및 <paramref name="count" />에서 <paramref name="source" />에 대한 올바른 섹션을 지정하지 않은 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.Char,System.Int32,System.Int32,System.Globalization.CompareOptions)">
+      <summary>소스 문자열 중 지정된 인덱스에서 시작하고 지정된 수의 요소를 포함하는 영역에서 지정된 <see cref="T:System.Globalization.CompareOptions" /> 값을 사용하여 지정된 문자를 검색하고, 맨 처음 검색된 항목의 인덱스(0부터 시작)를 반환합니다.</summary>
+      <returns>
+        <paramref name="source" /> 중 <paramref name="startIndex" />에서 시작하고 <paramref name="count" />로 지정된 수의 요소를 포함하는 영역에서 지정된 비교 옵션을 사용하여 <paramref name="value" />를 찾은 경우 맨 처음 검색된 항목의 인덱스(0부터 시작)이고, 그렇지 않으면 -1입니다.<paramref name="value" />가 무시할 수 있는 문자인 경우 <paramref name="startIndex" />를 반환합니다.</returns>
+      <param name="source">검색할 문자열입니다. </param>
+      <param name="value">
+        <paramref name="source" />에서 찾을 문자입니다. </param>
+      <param name="startIndex">검색의 0부터 시작하는 인덱스입니다. </param>
+      <param name="count">검색할 섹션에 있는 요소 수입니다. </param>
+      <param name="options">
+        <paramref name="source" />과 <paramref name="value" />을 비교하는 방법을 정의하는 값입니다.<paramref name="options" />는 열거형 값 <see cref="F:System.Globalization.CompareOptions.Ordinal" />이거나 <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 및 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> 값 중 하나 이상의 비트 조합입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />가 null인 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" />가 <paramref name="source" />에 대한 올바른 인덱스 범위 밖에 있는 경우또는 <paramref name="count" />가 0보다 작은 경우또는 <paramref name="startIndex" /> 및 <paramref name="count" />에서 <paramref name="source" />에 대한 올바른 섹션을 지정하지 않은 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" />에 잘못된 <see cref="T:System.Globalization.CompareOptions" /> 값이 포함된 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.String)">
+      <summary>전체 소스 문자열에서 지정된 부분 문자열을 검색하고, 처음 검색된 항목의 0부터 시작하는 인덱스를 반환합니다.</summary>
+      <returns>
+        <paramref name="source" />에서 <paramref name="value" />를 찾은 경우 맨 처음 검색된 항목의 인덱스(0부터 시작)이고, 그렇지 않으면 -1입니다.<paramref name="value" />이 무시할 수 있는 문자인 경우 0(영)을 반환합니다.</returns>
+      <param name="source">검색할 문자열입니다. </param>
+      <param name="value">
+        <paramref name="source" />에서 찾을 문자열입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />가 null인 경우또는 <paramref name="value" />가 null인 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.String,System.Globalization.CompareOptions)">
+      <summary>전체 소스 문자열에서 지정된 <see cref="T:System.Globalization.CompareOptions" /> 값을 사용하여 지정된 부분 문자열을 검색하고, 맨 처음 검색된 항목의 인덱스(0부터 시작)를 반환합니다.</summary>
+      <returns>
+        <paramref name="source" />에서 지정된 비교 옵션을 사용하여 <paramref name="value" />를 찾은 경우 맨 처음 검색된 항목의 인덱스(0부터 시작)이고, 그렇지 않으면 -1입니다.<paramref name="value" />이 무시할 수 있는 문자인 경우 0(영)을 반환합니다.</returns>
+      <param name="source">검색할 문자열입니다. </param>
+      <param name="value">
+        <paramref name="source" />에서 찾을 문자열입니다. </param>
+      <param name="options">
+        <paramref name="source" />과 <paramref name="value" />을 비교하는 방법을 정의하는 값입니다.<paramref name="options" />는 열거형 값 <see cref="F:System.Globalization.CompareOptions.Ordinal" />이거나 <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 및 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> 값 중 하나 이상의 비트 조합입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />가 null인 경우또는 <paramref name="value" />가 null인 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" />에 잘못된 <see cref="T:System.Globalization.CompareOptions" /> 값이 포함된 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.String,System.Int32,System.Globalization.CompareOptions)">
+      <summary>소스 문자열 중 지정된 인덱스부터 문자열 끝까지의 영역에서 지정된 <see cref="T:System.Globalization.CompareOptions" /> 값을 사용하여 지정된 부분 문자열을 검색하고, 맨 처음 검색된 항목의 인덱스(0부터 시작)를 반환합니다.</summary>
+      <returns>
+        <paramref name="source" /> 중 <paramref name="startIndex" />부터 <paramref name="source" /> 끝까지의 영역에서 지정된 비교 옵션을 사용하여 <paramref name="value" />를 찾은 경우 맨 처음 검색된 항목의 인덱스(0부터 시작)이고, 그렇지 않으면 -1입니다.<paramref name="value" />가 무시할 수 있는 문자인 경우 <paramref name="startIndex" />를 반환합니다.</returns>
+      <param name="source">검색할 문자열입니다. </param>
+      <param name="value">
+        <paramref name="source" />에서 찾을 문자열입니다. </param>
+      <param name="startIndex">검색의 0부터 시작하는 인덱스입니다. </param>
+      <param name="options">
+        <paramref name="source" />과 <paramref name="value" />을 비교하는 방법을 정의하는 값입니다.<paramref name="options" />는 열거형 값 <see cref="F:System.Globalization.CompareOptions.Ordinal" />이거나 <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 및 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> 값 중 하나 이상의 비트 조합입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />가 null인 경우또는 <paramref name="value" />가 null인 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" />가 <paramref name="source" />에 대한 올바른 인덱스 범위 밖에 있는 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" />에 잘못된 <see cref="T:System.Globalization.CompareOptions" /> 값이 포함된 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.String,System.Int32,System.Int32)">
+      <summary>소스 문자열 중 지정된 인덱스에서 시작하고 지정된 수의 요소를 포함하는 섹션에서 지정된 부분 문자열을 검색하고, 처음 검색된 항목의 0부터 시작하는 인덱스를 반환합니다.</summary>
+      <returns>
+        <paramref name="source" /> 중 <paramref name="startIndex" />에서 시작하고 <paramref name="count" />로 지정된 수의 요소를 포함하는 영역에서 <paramref name="value" />를 찾은 경우 맨 처음 검색된 항목의 인덱스(0부터 시작)이고, 그렇지 않으면 -1입니다.<paramref name="value" />가 무시할 수 있는 문자인 경우 <paramref name="startIndex" />를 반환합니다.</returns>
+      <param name="source">검색할 문자열입니다. </param>
+      <param name="value">
+        <paramref name="source" />에서 찾을 문자열입니다. </param>
+      <param name="startIndex">검색의 0부터 시작하는 인덱스입니다. </param>
+      <param name="count">검색할 섹션에 있는 요소 수입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />가 null인 경우또는 <paramref name="value" />가 null인 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" />가 <paramref name="source" />에 대한 올바른 인덱스 범위 밖에 있는 경우또는 <paramref name="count" />가 0보다 작은 경우또는 <paramref name="startIndex" /> 및 <paramref name="count" />에서 <paramref name="source" />에 대한 올바른 섹션을 지정하지 않은 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.String,System.Int32,System.Int32,System.Globalization.CompareOptions)">
+      <summary>소스 문자열 중 지정된 인덱스에서 시작하고 지정된 수의 요소를 포함하는 영역에서 지정된 <see cref="T:System.Globalization.CompareOptions" /> 값을 사용하여 지정된 부분 문자열을 검색하고, 맨 처음 검색된 항목의 인덱스(0부터 시작)를 반환합니다.</summary>
+      <returns>
+        <paramref name="source" /> 중 <paramref name="startIndex" />에서 시작하고 <paramref name="count" />로 지정된 수의 요소를 포함하는 영역에서 지정된 비교 옵션을 사용하여 <paramref name="value" />를 찾은 경우 맨 처음 검색된 항목의 인덱스(0부터 시작)이고, 그렇지 않으면 -1입니다.<paramref name="value" />가 무시할 수 있는 문자인 경우 <paramref name="startIndex" />를 반환합니다.</returns>
+      <param name="source">검색할 문자열입니다. </param>
+      <param name="value">
+        <paramref name="source" />에서 찾을 문자열입니다. </param>
+      <param name="startIndex">검색의 0부터 시작하는 인덱스입니다. </param>
+      <param name="count">검색할 섹션에 있는 요소 수입니다. </param>
+      <param name="options">
+        <paramref name="source" />과 <paramref name="value" />을 비교하는 방법을 정의하는 값입니다.<paramref name="options" />는 열거형 값 <see cref="F:System.Globalization.CompareOptions.Ordinal" />이거나 <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 및 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> 값 중 하나 이상의 비트 조합입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />가 null인 경우또는 <paramref name="value" />가 null인 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" />가 <paramref name="source" />에 대한 올바른 인덱스 범위 밖에 있는 경우또는 <paramref name="count" />가 0보다 작은 경우또는 <paramref name="startIndex" /> 및 <paramref name="count" />에서 <paramref name="source" />에 대한 올바른 섹션을 지정하지 않은 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" />에 잘못된 <see cref="T:System.Globalization.CompareOptions" /> 값이 포함된 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IsPrefix(System.String,System.String)">
+      <summary>지정된 소스 문자열이 지정된 접두사로 시작하는지를 확인합니다.</summary>
+      <returns>
+        <paramref name="prefix" />의 길이가 <paramref name="prefix" />로 시작하는 <paramref name="source" /> 및 <paramref name="source" />의 길이보다 작거나 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="source">검색할 문자열입니다. </param>
+      <param name="prefix">
+        <paramref name="source" />의 시작 영역과 비교할 문자열입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />가 null인 경우또는 <paramref name="prefix" />가 null인 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IsPrefix(System.String,System.String,System.Globalization.CompareOptions)">
+      <summary>지정된 <see cref="T:System.Globalization.CompareOptions" /> 값을 사용하여 지정된 소스 문자열이 지정된 접두사로 시작하는지 여부를 확인합니다.</summary>
+      <returns>
+        <paramref name="prefix" />의 길이가 <paramref name="prefix" />로 시작하는 <paramref name="source" /> 및 <paramref name="source" />의 길이보다 작거나 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="source">검색할 문자열입니다. </param>
+      <param name="prefix">
+        <paramref name="source" />의 시작 영역과 비교할 문자열입니다. </param>
+      <param name="options">
+        <paramref name="source" />과 <paramref name="prefix" />을 비교하는 방법을 정의하는 값입니다.<paramref name="options" />는 열거형 값 <see cref="F:System.Globalization.CompareOptions.Ordinal" />이거나 <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 및 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> 값 중 하나 이상의 비트 조합입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />가 null인 경우또는 <paramref name="prefix" />가 null인 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" />에 잘못된 <see cref="T:System.Globalization.CompareOptions" /> 값이 포함된 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IsSuffix(System.String,System.String)">
+      <summary>지정된 소스 문자열이 지정된 접미사로 끝나는지를 확인합니다.</summary>
+      <returns>
+        <paramref name="suffix" />의 길이가 <paramref name="suffix" />로 끝나는 <paramref name="source" /> 및 <paramref name="source" />의 길이보다 작거나 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="source">검색할 문자열입니다. </param>
+      <param name="suffix">
+        <paramref name="source" />의 끝 영역과 비교할 문자열입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />가 null인 경우또는 <paramref name="suffix" />가 null인 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IsSuffix(System.String,System.String,System.Globalization.CompareOptions)">
+      <summary>지정된 <see cref="T:System.Globalization.CompareOptions" /> 값을 사용하여 지정된 소스 문자열이 지정된 접미사로 끝나는지 여부를 확인합니다.</summary>
+      <returns>
+        <paramref name="suffix" />의 길이가 <paramref name="suffix" />로 끝나는 <paramref name="source" /> 및 <paramref name="source" />의 길이보다 작거나 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="source">검색할 문자열입니다. </param>
+      <param name="suffix">
+        <paramref name="source" />의 끝 영역과 비교할 문자열입니다. </param>
+      <param name="options">
+        <paramref name="source" />과 <paramref name="suffix" />을 비교하는 방법을 정의하는 값입니다.<paramref name="options" />는 자체적으로 사용하는 열거형 값 <see cref="F:System.Globalization.CompareOptions.Ordinal" />이거나 <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 및 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> 값 중 하나 이상의 비트 조합입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />가 null인 경우또는 <paramref name="suffix" />가 null인 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" />에 잘못된 <see cref="T:System.Globalization.CompareOptions" /> 값이 포함된 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.Char)">
+      <summary>전체 소스 문자열에서 지정된 문자를 검색하고, 마지막에 검색된 항목의 0부터 시작하는 인덱스를 반환합니다.</summary>
+      <returns>
+        <paramref name="source" />에서 <paramref name="value" />를 찾은 경우 맨 마지막에 검색된 항목의 인덱스(0부터 시작)이고, 그렇지 않으면 -1입니다.</returns>
+      <param name="source">검색할 문자열입니다. </param>
+      <param name="value">
+        <paramref name="source" />에서 찾을 문자입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />가 null인 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.Char,System.Globalization.CompareOptions)">
+      <summary>전체 소스 문자열에서 지정된 <see cref="T:System.Globalization.CompareOptions" /> 값을 사용하여 지정된 문자를 검색하고, 마지막에 검색된 항목의 인덱스(0부터 시작)를 반환합니다.</summary>
+      <returns>
+        <paramref name="source" />에서 지정된 비교 옵션을 사용하여 <paramref name="value" />를 찾은 경우 맨 마지막에 검색된 항목의 인덱스(0부터 시작)이고, 그렇지 않으면 -1입니다.</returns>
+      <param name="source">검색할 문자열입니다. </param>
+      <param name="value">
+        <paramref name="source" />에서 찾을 문자입니다. </param>
+      <param name="options">
+        <paramref name="source" />과 <paramref name="value" />을 비교하는 방법을 정의하는 값입니다.<paramref name="options" />는 열거형 값 <see cref="F:System.Globalization.CompareOptions.Ordinal" />이거나 <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 및 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> 값 중 하나 이상의 비트 조합입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />가 null인 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" />에 잘못된 <see cref="T:System.Globalization.CompareOptions" /> 값이 포함된 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.Char,System.Int32,System.Globalization.CompareOptions)">
+      <summary>소스 문자열 중 문자열의 시작 부분부터 지정된 인덱스까지의 영역에서 지정된 <see cref="T:System.Globalization.CompareOptions" /> 값을 사용하여 지정된 문자를 검색하고, 마지막에 검색된 항목의 인덱스(0부터 시작)를 반환합니다.</summary>
+      <returns>
+        <paramref name="source" /> 중 <paramref name="source" />의 맨 앞부터 <paramref name="startIndex" />까지의 영역에서 지정된 비교 옵션을 사용하여 <paramref name="value" />를 찾은 경우 마지막에 검색된 항목의 인덱스(0부터 시작)이고, 그렇지 않으면 -1입니다.<paramref name="value" />가 무시할 수 있는 문자인 경우 <paramref name="startIndex" />를 반환합니다.</returns>
+      <param name="source">검색할 문자열입니다. </param>
+      <param name="value">
+        <paramref name="source" />에서 찾을 문자입니다. </param>
+      <param name="startIndex">역방향 검색의 0부터 시작하는 인덱스입니다. </param>
+      <param name="options">
+        <paramref name="source" />과 <paramref name="value" />을 비교하는 방법을 정의하는 값입니다.<paramref name="options" />는 열거형 값 <see cref="F:System.Globalization.CompareOptions.Ordinal" />이거나 <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 및 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> 값 중 하나 이상의 비트 조합입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />가 null인 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" />가 <paramref name="source" />에 대한 올바른 인덱스 범위 밖에 있는 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" />에 잘못된 <see cref="T:System.Globalization.CompareOptions" /> 값이 포함된 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.Char,System.Int32,System.Int32)">
+      <summary>소스 문자열 중 지정된 수의 요소를 포함하고 지정된 인덱스에서 끝나는 섹션에서 지정된 문자를 검색하고, 마지막에 검색된 항목의 0부터 시작하는 인덱스를 반환합니다.</summary>
+      <returns>
+        <paramref name="source" /> 중 <paramref name="count" />로 지정된 수의 요소를 포함하고 <paramref name="startIndex" />에서 끝나는 영역에서 <paramref name="value" />를 찾은 경우 마지막에 검색된 항목의 인덱스(0부터 시작)이고, 그렇지 않으면 -1입니다.<paramref name="value" />가 무시할 수 있는 문자인 경우 <paramref name="startIndex" />를 반환합니다.</returns>
+      <param name="source">검색할 문자열입니다. </param>
+      <param name="value">
+        <paramref name="source" />에서 찾을 문자입니다. </param>
+      <param name="startIndex">역방향 검색의 0부터 시작하는 인덱스입니다. </param>
+      <param name="count">검색할 섹션에 있는 요소 수입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />가 null인 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" />가 <paramref name="source" />에 대한 올바른 인덱스 범위 밖에 있는 경우또는 <paramref name="count" />가 0보다 작은 경우또는 <paramref name="startIndex" /> 및 <paramref name="count" />에서 <paramref name="source" />에 대한 올바른 섹션을 지정하지 않은 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.Char,System.Int32,System.Int32,System.Globalization.CompareOptions)">
+      <summary>소스 문자열 중 지정된 수의 요소를 포함하고 지정된 인덱스에서 끝나는 영역에서 지정된 <see cref="T:System.Globalization.CompareOptions" /> 값을 사용하여 지정된 문자를 검색하고, 마지막에 검색된 항목의 인덱스(0부터 시작)를 반환합니다.</summary>
+      <returns>
+        <paramref name="source" /> 중 <paramref name="count" />로 지정된 수의 요소를 포함하고 <paramref name="startIndex" />에서 끝나는 영역에서 지정된 비교 옵션을 사용하여 <paramref name="value" />를 찾은 경우 맨 마지막에 검색된 항목의 인덱스(0부터 시작)이고, 그렇지 않으면 -1입니다.<paramref name="value" />가 무시할 수 있는 문자인 경우 <paramref name="startIndex" />를 반환합니다.</returns>
+      <param name="source">검색할 문자열입니다. </param>
+      <param name="value">
+        <paramref name="source" />에서 찾을 문자입니다. </param>
+      <param name="startIndex">역방향 검색의 0부터 시작하는 인덱스입니다. </param>
+      <param name="count">검색할 섹션에 있는 요소 수입니다. </param>
+      <param name="options">
+        <paramref name="source" />과 <paramref name="value" />을 비교하는 방법을 정의하는 값입니다.<paramref name="options" />는 열거형 값 <see cref="F:System.Globalization.CompareOptions.Ordinal" />이거나 <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 및 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> 값 중 하나 이상의 비트 조합입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />가 null인 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" />가 <paramref name="source" />에 대한 올바른 인덱스 범위 밖에 있는 경우또는 <paramref name="count" />가 0보다 작은 경우또는 <paramref name="startIndex" /> 및 <paramref name="count" />에서 <paramref name="source" />에 대한 올바른 섹션을 지정하지 않은 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" />에 잘못된 <see cref="T:System.Globalization.CompareOptions" /> 값이 포함된 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.String)">
+      <summary>전체 소스 문자열에서 지정된 부분 문자열을 검색하고, 마지막에 검색된 항목의 0부터 시작하는 인덱스를 반환합니다.</summary>
+      <returns>
+        <paramref name="source" />에서 <paramref name="value" />를 찾은 경우 맨 마지막에 검색된 항목의 인덱스(0부터 시작)이고, 그렇지 않으면 -1입니다.</returns>
+      <param name="source">검색할 문자열입니다. </param>
+      <param name="value">
+        <paramref name="source" />에서 찾을 문자열입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />가 null인 경우또는 <paramref name="value" />가 null인 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.String,System.Globalization.CompareOptions)">
+      <summary>전체 소스 문자열에서 지정된 <see cref="T:System.Globalization.CompareOptions" /> 값을 사용하여 지정된 부분 문자열을 검색하고, 마지막에 검색된 항목의 인덱스(0부터 시작)를 반환합니다.</summary>
+      <returns>
+        <paramref name="source" />에서 지정된 비교 옵션을 사용하여 <paramref name="value" />를 찾은 경우 맨 마지막에 검색된 항목의 인덱스(0부터 시작)이고, 그렇지 않으면 -1입니다.</returns>
+      <param name="source">검색할 문자열입니다. </param>
+      <param name="value">
+        <paramref name="source" />에서 찾을 문자열입니다. </param>
+      <param name="options">
+        <paramref name="source" />과 <paramref name="value" />을 비교하는 방법을 정의하는 값입니다.<paramref name="options" />는 열거형 값 <see cref="F:System.Globalization.CompareOptions.Ordinal" />이거나 <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 및 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> 값 중 하나 이상의 비트 조합입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />가 null인 경우또는 <paramref name="value" />가 null인 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" />에 잘못된 <see cref="T:System.Globalization.CompareOptions" /> 값이 포함된 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.String,System.Int32,System.Globalization.CompareOptions)">
+      <summary>소스 문자열 중 문자열의 시작 부분부터 지정된 인덱스까지의 영역에서 지정된 <see cref="T:System.Globalization.CompareOptions" /> 값을 사용하여 지정된 부분 문자열을 검색하고, 마지막에 검색된 항목의 인덱스(0부터 시작)를 반환합니다.</summary>
+      <returns>
+        <paramref name="source" /> 중 <paramref name="source" />의 맨 앞부터 <paramref name="startIndex" />까지의 영역에서 지정된 비교 옵션을 사용하여 <paramref name="value" />를 찾은 경우 마지막에 검색된 항목의 인덱스(0부터 시작)이고, 그렇지 않으면 -1입니다.<paramref name="value" />가 무시할 수 있는 문자인 경우 <paramref name="startIndex" />를 반환합니다.</returns>
+      <param name="source">검색할 문자열입니다. </param>
+      <param name="value">
+        <paramref name="source" />에서 찾을 문자열입니다. </param>
+      <param name="startIndex">역방향 검색의 0부터 시작하는 인덱스입니다. </param>
+      <param name="options">
+        <paramref name="source" />과 <paramref name="value" />을 비교하는 방법을 정의하는 값입니다.<paramref name="options" />는 열거형 값 <see cref="F:System.Globalization.CompareOptions.Ordinal" />이거나 <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 및 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> 값 중 하나 이상의 비트 조합입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />가 null인 경우또는 <paramref name="value" />가 null인 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" />가 <paramref name="source" />에 대한 올바른 인덱스 범위 밖에 있는 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" />에 잘못된 <see cref="T:System.Globalization.CompareOptions" /> 값이 포함된 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.String,System.Int32,System.Int32)">
+      <summary>소스 문자열 중 지정된 수의 요소를 포함하고 지정된 인덱스에서 끝나는 섹션에서 지정된 부분 문자열을 검색하고, 마지막에 검색된 항목의 0부터 시작하는 인덱스를 반환합니다.</summary>
+      <returns>
+        <paramref name="source" /> 중 <paramref name="count" />로 지정된 수의 요소를 포함하고 <paramref name="startIndex" />에서 끝나는 영역에서 <paramref name="value" />를 찾은 경우 마지막에 검색된 항목의 인덱스(0부터 시작)이고, 그렇지 않으면 -1입니다.<paramref name="value" />가 무시할 수 있는 문자인 경우 <paramref name="startIndex" />를 반환합니다.</returns>
+      <param name="source">검색할 문자열입니다. </param>
+      <param name="value">
+        <paramref name="source" />에서 찾을 문자열입니다. </param>
+      <param name="startIndex">역방향 검색의 0부터 시작하는 인덱스입니다. </param>
+      <param name="count">검색할 섹션에 있는 요소 수입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />가 null인 경우또는 <paramref name="value" />가 null인 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" />가 <paramref name="source" />에 대한 올바른 인덱스 범위 밖에 있는 경우또는 <paramref name="count" />가 0보다 작은 경우또는 <paramref name="startIndex" /> 및 <paramref name="count" />에서 <paramref name="source" />에 대한 올바른 섹션을 지정하지 않은 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.String,System.Int32,System.Int32,System.Globalization.CompareOptions)">
+      <summary>소스 문자열 중 지정된 수의 요소를 포함하고 지정된 인덱스에서 끝나는 영역에서 지정된 <see cref="T:System.Globalization.CompareOptions" /> 값을 사용하여 지정된 부분 문자열을 검색하고, 마지막에 검색된 항목의 인덱스(0부터 시작)를 반환합니다.</summary>
+      <returns>
+        <paramref name="source" /> 중 <paramref name="count" />로 지정된 수의 요소를 포함하고 <paramref name="startIndex" />에서 끝나는 영역에서 지정된 비교 옵션을 사용하여 <paramref name="value" />를 찾은 경우 맨 마지막에 검색된 항목의 인덱스(0부터 시작)이고, 그렇지 않으면 -1입니다.<paramref name="value" />가 무시할 수 있는 문자인 경우 <paramref name="startIndex" />를 반환합니다.</returns>
+      <param name="source">검색할 문자열입니다. </param>
+      <param name="value">
+        <paramref name="source" />에서 찾을 문자열입니다. </param>
+      <param name="startIndex">역방향 검색의 0부터 시작하는 인덱스입니다. </param>
+      <param name="count">검색할 섹션에 있는 요소 수입니다. </param>
+      <param name="options">
+        <paramref name="source" />과 <paramref name="value" />을 비교하는 방법을 정의하는 값입니다.<paramref name="options" />는 열거형 값 <see cref="F:System.Globalization.CompareOptions.Ordinal" />이거나 <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> 및 <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> 값 중 하나 이상의 비트 조합입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" />가 null인 경우또는 <paramref name="value" />가 null인 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" />가 <paramref name="source" />에 대한 올바른 인덱스 범위 밖에 있는 경우또는 <paramref name="count" />가 0보다 작은 경우또는 <paramref name="startIndex" /> 및 <paramref name="count" />에서 <paramref name="source" />에 대한 올바른 섹션을 지정하지 않은 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" />에 잘못된 <see cref="T:System.Globalization.CompareOptions" /> 값이 포함된 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.CompareInfo.Name">
+      <summary>이 <see cref="T:System.Globalization.CompareInfo" /> 개체에서 정렬 작업에 사용하는 문화권의 이름을 가져옵니다.</summary>
+      <returns>문화권의 이름입니다.</returns>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.ToString">
+      <summary>현재 <see cref="T:System.Globalization.CompareInfo" /> 개체를 나타내는 문자열을 반환합니다.</summary>
+      <returns>현재 <see cref="T:System.Globalization.CompareInfo" /> 개체를 나타내는 문자열입니다.</returns>
+    </member>
+    <member name="T:System.Globalization.CompareOptions">
+      <summary>
+        <see cref="T:System.Globalization.CompareInfo" />와 함께 사용할 문자열 비교 옵션을 정의합니다.</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.IgnoreCase">
+      <summary>이 문자열 비교 옵션은 대/소문자를 무시함을 나타냅니다.</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.IgnoreKanaType">
+      <summary>이 문자열 비교 옵션은 일본어 가나 형식을 무시함을 나타냅니다.가나 형식은 일본어의 발성음을 표현하는 히라가나 문자와 가타카나 문자를 나타냅니다.히라가나는 일본 고유의 어구과 단어를 표현하는 데 사용되고, 가타카나는 "컴퓨터"나 "인터넷" 등과 같은 외래어를 표현하는 데 사용됩니다.발성음은 히라가나와 가타카나 모두로 표현할 수 있습니다.이 값이 선택되어 있으면 하나의 발성음에 대해 히라가나 문자와 가타카나 문자가 같은 것으로 간주됩니다.</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.IgnoreNonSpace">
+      <summary>분음 부호와 같이 공백 없는 조합 문자를 무시하는 문자열 비교를 나타냅니다.유니코드 표준에서는 조합 문자를, 기본 문자와 조합하여 새 문자를 생성할 수 있는 문자로 정의합니다.간격이 없는 조합 문자는 렌더링될 때 스스로 공간을 차지하지 않습니다.</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.IgnoreSymbols">
+      <summary>이 문자열 비교 옵션은 공백 문자, 문장 부호, 통화 기호, 백분율 기호, 수학 기호, 앰퍼샌드 등의 기호를 무시함을 나타냅니다.</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.IgnoreWidth">
+      <summary>이 문자열 비교 옵션은 문자 너비를 무시함을 나타냅니다.예를 들어 일본어의 가타카나 문자는 전자나 반자로 쓸 수 있는데,이 값이 선택되어 있으면 전자로 쓰여진 가타카나 문자와 반자로 쓰여진 가타카나 문자가 같은 것으로 간주됩니다.</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.None">
+      <summary>문자열 비교를 위한 기본 옵션 설정을 나타냅니다.</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.Ordinal">
+      <summary>문자열 비교가 문자열의 후속 유니코드 UTF-16 인코딩 값을 사용해야 함을 나타냅니다(코드 단위별 코드 단위 비교). 이 값을 사용하면 문자열을 빠르게 비교할 수 있지만 문화권을 구분할 수는 없습니다.XXXX16가 YYYY16보다 작은 경우 코드 단위 XXXX16로 시작하는 문자열이 YYYY16로 시작하는 문자열 앞에 옵니다.이 값은 다른 <see cref="T:System.Globalization.CompareOptions" /> 값과 함께 사용할 수 없으며 단독으로 사용해야 합니다.</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.OrdinalIgnoreCase">
+      <summary>문자열 비교에서는 대/소문자를 무시하고 서수 비교를 수행해야 합니다.이 기술은 고정 문화권을 사용하여 문자열을 대문자로 변환한 다음 해당 결과에 대해 서수 비교를 수행하는 것과 같습니다.</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.StringSort">
+      <summary>이 문자열 비교 옵션은 문자열 정렬 알고리즘을 사용해야 함을 나타냅니다.문자열 정렬에서 하이픈, 아포스트로피, 비영숫자 기호 등이 영숫자 문자 앞에 옵니다.</summary>
+    </member>
+    <member name="T:System.Globalization.CultureInfo">
+      <summary>특정 문화권(비관리 코드 개발의 경우 로캘이라고 함)에 대한 정보를 제공합니다.이 정보에는 문화권 이름, 쓰기 시스템, 사용된 달력, 날짜 및 정렬 문자열 형식 등이 포함됩니다.</summary>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.#ctor(System.String)">
+      <summary>이름에 지정된 문화권을 기반으로 <see cref="T:System.Globalization.CultureInfo" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="name">미리 정의된 <see cref="T:System.Globalization.CultureInfo" /> 이름, 기존 <see cref="P:System.Globalization.CultureInfo.Name" />의 <see cref="T:System.Globalization.CultureInfo" /> 또는 Windows 전용 문화권 이름입니다.<paramref name="name" />은(는) 대/소문자를 구분하지 않습니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> is null. </exception>
+      <exception cref="T:System.Globalization.CultureNotFoundException">
+        <paramref name="name" /> is not a valid culture name.For more information, see the Notes to Callers section.</exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.Calendar">
+      <summary>문화권에서 사용하는 기본 달력을 가져옵니다.</summary>
+      <returns>문화권에서 사용하는 기본 달력을 나타내는 <see cref="T:System.Globalization.Calendar" />입니다.</returns>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.Clone">
+      <summary>현재 <see cref="T:System.Globalization.CultureInfo" />의 복사본을 만듭니다.</summary>
+      <returns>현재 <see cref="T:System.Globalization.CultureInfo" />의 복사본입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.CompareInfo">
+      <summary>문화권에 대한 문자열을 비교하는 방법을 정의하는 <see cref="T:System.Globalization.CompareInfo" />를 가져옵니다.</summary>
+      <returns>문화권에 대한 문자열을 비교하는 방법을 정의하는 <see cref="T:System.Globalization.CompareInfo" />입니다.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.CurrentCulture">
+      <summary>현재 스레드에서 사용하는 문화권을 나타내는 <see cref="T:System.Globalization.CultureInfo" /> 개체를 가져오거나 설정합니다.</summary>
+      <returns>현재 스레드에서 사용하는 문화권을 나타내는 개체입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is set to null.</exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.CurrentUICulture">
+      <summary>리소스 관리자가 런타임에 문화권 관련 리소스를 찾기 위해 사용하는 현재 사용자 인터페이스를 나타내는 <see cref="T:System.Globalization.CultureInfo" /> 개체를 가져오거나 설정합니다.</summary>
+      <returns>리소스 관리자가 런타임에 문화권 관련 리소스를 찾기 위해 사용하는 문화권입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is set to null.</exception>
+      <exception cref="T:System.ArgumentException">The property is set to a culture name that cannot be used to locate a resource file.Resource filenames can include only letters, numbers, hyphens, or underscores.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.DateTimeFormat">
+      <summary>날짜와 시간 표시를 위한 문화권 형식을 정의하는 <see cref="T:System.Globalization.DateTimeFormatInfo" />를 가져오거나 설정합니다.</summary>
+      <returns>날짜와 시간 표시를 위한 문화권 형식을 정의하는 <see cref="T:System.Globalization.DateTimeFormatInfo" />입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Globalization.CultureInfo.DateTimeFormat" /> property or any of the <see cref="T:System.Globalization.DateTimeFormatInfo" /> properties is set, and the <see cref="T:System.Globalization.CultureInfo" /> is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.DefaultThreadCurrentCulture">
+      <summary>현재 응용 프로그램 도메인의 스레드에 대한 기본 문화권을 가져오거나 설정합니다.</summary>
+      <returns>기본 문화권은 현재 어플리케이션 도메인에 있는 스레드에 해당하며 현재 시스템 문화권이 응용 프로그램 도메인에 있는 기본 스레드 문화권인 경우 null입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.DefaultThreadCurrentUICulture">
+      <summary>현재 응용 프로그램 도메인의 스레드에 대한 기본 UI 문화권을 가져오거나 설정합니다.</summary>
+      <returns>기본 UI 문화권은 현재 어플리케이션 도메인에 있는 스레드에 해당하며 현재 시스템 UI 문화권이 응용 프로그램 도메인에 있는 기본 스레드 문화권인 경우 null입니다.</returns>
+      <exception cref="T:System.ArgumentException">In a set operation, the <see cref="P:System.Globalization.CultureInfo.Name" /> property value is invalid. </exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.DisplayName">
+      <summary>전체 지역화된 문화 이름을 가져옵니다. </summary>
+      <returns>languagefull [country/regionfull] 형식으로 표시된 완전 지역화된 문화권 이름입니다. 여기서 languagefull은 해당 언어의 전체 이름이고, country/regionfull은 해당 국가/지역의 전체 이름입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.EnglishName">
+      <summary>문화권 이름을 languagefull [country/regionfull](영어) 형식으로 가져옵니다.</summary>
+      <returns>languagefull [country/regionfull] 형식(영어)으로 표시된 문화권 이름입니다. 여기서 languagefull은 해당 언어의 전체 이름이고, country/regionfull은 해당 국가/지역의 전체 이름입니다.</returns>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.Equals(System.Object)">
+      <summary>지정된 개체가 현재 <see cref="T:System.Globalization.CultureInfo" />와 같은 문화권인지 여부를 확인합니다.</summary>
+      <returns>
+        <paramref name="value" />가 현재 <see cref="T:System.Globalization.CultureInfo" />와 같은 문화권이면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="value">현재 <see cref="T:System.Globalization.CultureInfo" />와 비교할 개체입니다. </param>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.GetFormat(System.Type)">
+      <summary>지정된 형식의 서식을 지정하는 방법을 정의하는 개체를 가져옵니다.</summary>
+      <returns>
+        <see cref="P:System.Globalization.CultureInfo.NumberFormat" /> 속성의 값입니다. 이것은 <paramref name="formatType" />이 <see cref="T:System.Globalization.NumberFormatInfo" /> 클래스의 <see cref="T:System.Type" /> 개체인 경우 현재 <see cref="T:System.Globalization.CultureInfo" />에 대한 기본 숫자 형식 정보를 포함하는 <see cref="T:System.Globalization.NumberFormatInfo" />입니다.또는 <paramref name="formatType" />이 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 클래스에 대한 <see cref="T:System.Type" /> 개체인 경우 현재 <see cref="T:System.Globalization.CultureInfo" />에 대한 기본 날짜 및 시간 형식 정보를 포함하는 <see cref="P:System.Globalization.CultureInfo.DateTimeFormat" /> 속성의 값(<see cref="T:System.Globalization.DateTimeFormatInfo" />)입니다.또는 <paramref name="formatType" />이 다른 개체이면 null입니다.</returns>
+      <param name="formatType">형식 지정 개체를 가져오는 <see cref="T:System.Type" />입니다.이 메서드는 <see cref="T:System.Globalization.NumberFormatInfo" /> 및 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 형식만 지원합니다.</param>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.GetHashCode">
+      <summary>해시 알고리즘과 해시 테이블 같은 데이터 구조에 적합한 현재 <see cref="T:System.Globalization.CultureInfo" />에 대한 해시 함수의 역할을 합니다.</summary>
+      <returns>현재 <see cref="T:System.Globalization.CultureInfo" />의 해시 코드입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.InvariantCulture">
+      <summary>문화권 독립(고정)적인 <see cref="T:System.Globalization.CultureInfo" /> 개체를 가져옵니다.</summary>
+      <returns>문화권 독립(고정)적인 개체입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.IsNeutralCulture">
+      <summary>현재 <see cref="T:System.Globalization.CultureInfo" />가 중립 문화권을 표시하는지 여부를 나타내는 값을 가져옵니다.</summary>
+      <returns>현재 <see cref="T:System.Globalization.CultureInfo" />가 중립 문화권을 표시하면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.IsReadOnly">
+      <summary>현재 <see cref="T:System.Globalization.CultureInfo" />가 읽기 전용인지 여부를 나타내는 값을 가져옵니다.</summary>
+      <returns>현재 true가 읽기 전용이면 <see cref="T:System.Globalization.CultureInfo" />이고, 그렇지 않으면 false입니다.기본값은 false입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.Name">
+      <summary>문화권 이름을languagecode2-country/regioncode2 형식으로 가져옵니다.</summary>
+      <returns>languagecode2-country/regioncode2 형식의 문화권 이름입니다.languagecode2는 ISO 639-1에서 파생된 2개의 소문자로 된 코드입니다.country/regioncode2가 ISO 3166에서 파생되며 일반적으로 두 개의 대문자 또는 BCP-47 언어 태그로 구성되어 있습니다.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.NativeName">
+      <summary>문화권에서 표시하도록 설정된 문화권 이름(언어, 국가/지역 및 선택적 스크립트로 구성됨)을 가져옵니다.</summary>
+      <returns>문화권 이름입니다.언어의 전체 이름, 국가/지역의 전체 이름 및 선택적 스크립트로 구성됩니다.이 형식에 대해서는 <see cref="T:System.Globalization.CultureInfo" /> 클래스에 대한 설명에서 다룹니다.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.NumberFormat">
+      <summary>숫자, 통화 및 백분율 표시를 위한 문화권 형식을 정의하는 <see cref="T:System.Globalization.NumberFormatInfo" />를 가져오거나 설정합니다.</summary>
+      <returns>숫자, 통화 및 백분율 표시를 위한 문화권 형식을 정의하는 <see cref="T:System.Globalization.NumberFormatInfo" />입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Globalization.CultureInfo.NumberFormat" /> property or any of the <see cref="T:System.Globalization.NumberFormatInfo" /> properties is set, and the <see cref="T:System.Globalization.CultureInfo" /> is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.OptionalCalendars">
+      <summary>문화권에서 사용할 수 있는 달력 목록을 가져옵니다.</summary>
+      <returns>현재 <see cref="T:System.Globalization.CultureInfo" />로 표시되는 문화권에서 사용할 수 있는 달력을 나타내는 <see cref="T:System.Globalization.Calendar" /> 형식의 배열입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.Parent">
+      <summary>현재 <see cref="T:System.Globalization.CultureInfo" />의 부모 문화권을 나타내는 <see cref="T:System.Globalization.CultureInfo" />를 가져옵니다.</summary>
+      <returns>현재 <see cref="T:System.Globalization.CultureInfo" />의 부모 문화권을 나타내는 <see cref="T:System.Globalization.CultureInfo" />입니다.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.ReadOnly(System.Globalization.CultureInfo)">
+      <summary>지정된 <see cref="T:System.Globalization.CultureInfo" /> 개체의 읽기 전용 래퍼를 반환합니다. </summary>
+      <returns>
+        <paramref name="ci" /> 주변의 읽기 전용 <see cref="T:System.Globalization.CultureInfo" /> 래퍼입니다.</returns>
+      <param name="ci">래핑할 <see cref="T:System.Globalization.CultureInfo" /> 개체입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="ci" /> is null. </exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.TextInfo">
+      <summary>문화권과 관련된 쓰기 시스템을 정의하는 <see cref="T:System.Globalization.TextInfo" />를 가져옵니다.</summary>
+      <returns>문화권과 관련된 쓰기 시스템을 정의하는 <see cref="T:System.Globalization.TextInfo" />입니다.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.ToString">
+      <summary>languagecode2-country/regioncode2 형식으로 현재 <see cref="T:System.Globalization.CultureInfo" />의 이름을 포함하는 문자열을 반환합니다.</summary>
+      <returns>현재 <see cref="T:System.Globalization.CultureInfo" />의 이름이 포함된 문자열입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.TwoLetterISOLanguageName">
+      <summary>현재 <see cref="T:System.Globalization.CultureInfo" /> 언어를 나타내는 두 문자로 된 ISO 639-1 코드를 가져옵니다.</summary>
+      <returns>현재 <see cref="T:System.Globalization.CultureInfo" /> 언어를 나타내는 두 문자로 된 ISO 639-1 코드입니다.</returns>
+    </member>
+    <member name="T:System.Globalization.CultureNotFoundException">
+      <summary>컴퓨터에서 사용할 수 없는 문화권을 생성하려고 하는 메서드가 호출될 때 throw되는 예외입니다.</summary>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor">
+      <summary>시스템 제공 메시지로 설정된 메시지 문자열을 사용하여 <see cref="T:System.Globalization.CultureNotFoundException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor(System.String)">
+      <summary>지정된 오류 메시지를 사용하여 <see cref="T:System.Globalization.CultureNotFoundException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="message">이 예외와 함께 표시할 오류 메시지입니다.</param>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor(System.String,System.Exception)">
+      <summary>지정된 오류 메시지와 해당 예외의 원인인 내부 예외에 대한 참조를 사용하여 <see cref="T:System.Globalization.CultureNotFoundException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="message">이 예외와 함께 표시할 오류 메시지입니다.</param>
+      <param name="innerException">현재 예외의 원인인 예외입니다.<paramref name="innerException" /> 매개 변수가 null 참조가 아닌 경우 내부 예외를 처리하는 catch 블록에서 현재 예외가 발생합니다.</param>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor(System.String,System.String)">
+      <summary>지정된 오류 메시지 및 이 예외의 원인인 매개 변수의 이름을 사용하여 <see cref="T:System.Globalization.CultureNotFoundException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="paramName">현재 예외의 원인인 매개 변수의 이름입니다.</param>
+      <param name="message">이 예외와 함께 표시할 오류 메시지입니다.</param>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor(System.String,System.String,System.Exception)">
+      <summary>지정된 오류 메시지, 잘못된 문화권 이름 및 이 예외의 원인인 내부 예외에 대한 참조를 사용하여 <see cref="T:System.Globalization.CultureNotFoundException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="message">이 예외와 함께 표시할 오류 메시지입니다.</param>
+      <param name="invalidCultureName">찾을 수 없는 문화권 이름입니다.</param>
+      <param name="innerException">현재 예외의 원인인 예외입니다.<paramref name="innerException" /> 매개 변수가 null 참조가 아닌 경우 내부 예외를 처리하는 catch 블록에서 현재 예외가 발생합니다.</param>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor(System.String,System.String,System.String)">
+      <summary>지정된 오류 메시지, 잘못된 문화권 이름 및 이 예외의 원인인 매개 변수의 이름을 사용하여 <see cref="T:System.Globalization.CultureNotFoundException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="paramName">현재 예외의 원인인 매개 변수의 이름입니다.</param>
+      <param name="invalidCultureName">찾을 수 없는 문화권 이름입니다.</param>
+      <param name="message">이 예외와 함께 표시할 오류 메시지입니다.</param>
+    </member>
+    <member name="P:System.Globalization.CultureNotFoundException.InvalidCultureName">
+      <summary>찾을 수 없는 문화권 이름을 가져옵니다.</summary>
+      <returns>잘못된 문화권 이름입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureNotFoundException.Message">
+      <summary>예외에 대한 이유를 설명하는 오류 메시지를 가져옵니다.</summary>
+      <returns>예외를 자세히 설명하는 텍스트 문자열입니다.</returns>
+    </member>
+    <member name="T:System.Globalization.DateTimeFormatInfo">
+      <summary>날짜 및 시간 값 형식에 대한 문화권별 정보를 제공합니다.</summary>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.#ctor">
+      <summary>문화권 독립(고정)적인 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 클래스의 쓰기 가능한 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.AbbreviatedDayNames">
+      <summary>요일의 문화권별 약식 이름이 포함된 <see cref="T:System.String" /> 형식의 1차원 배열을 가져오거나 설정합니다.</summary>
+      <returns>요일의 문화권별 약식 이름이 포함된 <see cref="T:System.String" /> 형식의 1차원 배열입니다.<see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> 배열에는 "Sun", "Mon", "Tue", "Wed", "Thu", "Fri" 및 "Sat"가 포함되어 있습니다.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.ArgumentException">The property is being set to an array that is multidimensional or that has a length that is not exactly 7. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.AbbreviatedMonthGenitiveNames">
+      <summary>현재 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 개체와 연결된 약식 월 이름의 문자열 배열을 가져오거나 설정합니다.</summary>
+      <returns>약식 월 이름의 배열입니다.</returns>
+      <exception cref="T:System.ArgumentException">In a set operation, the array is multidimensional or has a length that is not exactly 13.</exception>
+      <exception cref="T:System.ArgumentNullException">In a set operation, the array or one of the elements of the array is null.</exception>
+      <exception cref="T:System.InvalidOperationException">In a set operation, the current <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only.</exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.AbbreviatedMonthNames">
+      <summary>월의 문화권별 약식 이름이 포함된 1차원 문자열 배열을 가져오거나 설정합니다.</summary>
+      <returns>월의 문화권별 약식 이름이 포함된 13개의 요소를 포함하는 1차원 문자열 배열입니다.12개월 달력의 경우 배열의 13번째 요소는 빈 문자열입니다.<see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> 배열에는 "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" 및 ""가 포함되어 있습니다.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.ArgumentException">The property is being set to an array that is multidimensional or that has a length that is not exactly 13. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.AMDesignator">
+      <summary>"AM(ante meridiem)"(오전) 시간에 대한 문자열 지정자를 가져오거나 설정합니다.</summary>
+      <returns>AM(ante meridiem) 시간에 대한 문자열 지정자입니다.<see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" />의 기본값은 "AM"입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.Calendar">
+      <summary>현재 문화권에 사용할 달력을 가져오거나 설정합니다.</summary>
+      <returns>현재 문화권에 사용할 달력입니다.<see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" />의 기본값은 <see cref="T:System.Globalization.GregorianCalendar" /> 개체입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The property is being set to a <see cref="T:System.Globalization.Calendar" /> object that is not valid for the current culture. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.CalendarWeekRule">
+      <summary>연도의 첫째 주를 결정하는 데 사용되는 규칙을 지정하는 값을 가져오거나 설정합니다.</summary>
+      <returns>연도의 첫째 주를 결정하는 값입니다.<see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" />의 기본값은 <see cref="F:System.Globalization.CalendarWeekRule.FirstDay" />입니다.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The property is being set to a value that is not a valid <see cref="T:System.Globalization.CalendarWeekRule" /> value. </exception>
+      <exception cref="T:System.InvalidOperationException">In a set operation, the current <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only.</exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.Clone">
+      <summary>
+        <see cref="T:System.Globalization.DateTimeFormatInfo" />의 단순 복사본을 만듭니다.</summary>
+      <returns>원래 <see cref="T:System.Globalization.DateTimeFormatInfo" />에서 복사된 새 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 개체입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.CurrentInfo">
+      <summary>현재 문화권에 따라 값의 형식을 지정하는 읽기 전용 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 개체를 가져옵니다.</summary>
+      <returns>현재 스레드의 <see cref="T:System.Globalization.CultureInfo" /> 개체를 기준으로 하는 읽기 전용 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 개체이며,</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.DayNames">
+      <summary>문화권별 전체 요일 이름이 포함된 1차원 문자열 배열을 가져오거나 설정합니다.</summary>
+      <returns>문화권별 전체 요일 이름이 포함된 1차원 문자열 배열입니다.<see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> 배열에는 "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" 및 "Saturday"가 포함되어 있습니다.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.ArgumentException">The property is being set to an array that is multidimensional or that has a length that is not exactly 7. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.FirstDayOfWeek">
+      <summary>주의 첫째 요일을 가져오거나 설정합니다.</summary>
+      <returns>주의 첫째 요일을 나타내는 열거형 값입니다.<see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" />의 기본값은 <see cref="F:System.DayOfWeek.Sunday" />입니다.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The property is being set to a value that is not a valid <see cref="T:System.DayOfWeek" /> value. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.FullDateTimePattern">
+      <summary>긴 날짜 및 긴 시간 값에 대한 사용자 지정 서식 문자열을 가져오거나 설정합니다.</summary>
+      <returns>긴 날짜 및 긴 시간 값에 대한 사용자 지정 서식 문자열입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetAbbreviatedDayName(System.DayOfWeek)">
+      <summary>현재 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 개체와 연결된 문화권에 기반하여 지정된 요일의 문화권별 약식 이름을 반환합니다.</summary>
+      <returns>
+        <paramref name="dayofweek" />로 나타나는 요일의 문화권별 약식 이름입니다.</returns>
+      <param name="dayofweek">
+        <see cref="T:System.DayOfWeek" /> 값입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="dayofweek" /> is not a valid <see cref="T:System.DayOfWeek" /> value. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetAbbreviatedEraName(System.Int32)">
+      <summary>약어가 있는 경우 지정된 연대의 약식 이름이 포함된 문자열을 반환합니다.</summary>
+      <returns>약어가 있는 경우 지정된 연대의 약식 이름이 포함된 문자열입니다.또는 약어가 없는 경우 지정된 연대의 전체 이름이 포함된 문자열입니다.</returns>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> does not represent a valid era in the calendar specified in the <see cref="P:System.Globalization.DateTimeFormatInfo.Calendar" /> property. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetAbbreviatedMonthName(System.Int32)">
+      <summary>현재 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 개체와 연결된 문화권에 기반하여 지정된 월의 문화권별 약식 이름을 반환합니다.</summary>
+      <returns>
+        <paramref name="month" />가 나타내는 월의 문화권별 약식 이름입니다.</returns>
+      <param name="month">검색할 월 이름을 나타내는 1부터 13까지의 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="month" /> is less than 1 or greater than 13. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetDayName(System.DayOfWeek)">
+      <summary>현재 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 개체와 연결된 문화권에 기반하여 지정된 요일의 문화권별 전체 이름을 반환합니다.</summary>
+      <returns>
+        <paramref name="dayofweek" />으로 나타나는 요일의 문화권별 전체 이름입니다.</returns>
+      <param name="dayofweek">
+        <see cref="T:System.DayOfWeek" /> 값입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="dayofweek" /> is not a valid <see cref="T:System.DayOfWeek" /> value. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetEra(System.String)">
+      <summary>지정된 연대를 나타내는 정수를 반환합니다.</summary>
+      <returns>
+        <paramref name="eraName" />이 유효한 경우 해당 연대를 나타내는 정수이고, 그렇지 않으면 -1입니다.</returns>
+      <param name="eraName">연대 이름이 포함된 문자열입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="eraName" /> is null. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetEraName(System.Int32)">
+      <summary>지정된 연대 이름이 포함된 문자열을 반환합니다.</summary>
+      <returns>연대 이름이 포함된 문자열입니다.</returns>
+      <param name="era">연대를 나타내는 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> does not represent a valid era in the calendar specified in the <see cref="P:System.Globalization.DateTimeFormatInfo.Calendar" /> property. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetFormat(System.Type)">
+      <summary>날짜 및 시간 서식 지정 서비스를 제공하는 지정된 형식의 개체를 반환합니다.</summary>
+      <returns>
+        <paramref name="formatType" />이 현재 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 형식과 같은 경우 현재 개체이고, 그렇지 않으면 null입니다.</returns>
+      <param name="formatType">필요한 서식 지정 서비스의 형식입니다. </param>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetInstance(System.IFormatProvider)">
+      <summary>지정된 <see cref="T:System.IFormatProvider" /> 개체와 연결된 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 개체를 반환합니다.</summary>
+      <returns>
+        <see cref="T:System.IFormatProvider" />에 연결된 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 개체입니다.</returns>
+      <param name="provider">
+        <see cref="T:System.Globalization.DateTimeFormatInfo" /> 개체를 가져오는 <see cref="T:System.IFormatProvider" />입니다.또는 <see cref="P:System.Globalization.DateTimeFormatInfo.CurrentInfo" />를 가져오려면 null입니다. </param>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetMonthName(System.Int32)">
+      <summary>현재 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 개체와 연결된 문화권에 기반하여 지정된 월의 문화권별 전체 이름을 반환합니다.</summary>
+      <returns>
+        <paramref name="month" />가 나타내는 월의 문화권별 전체 이름입니다.</returns>
+      <param name="month">검색할 월 이름을 나타내는 1부터 13까지의 정수입니다. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="month" /> is less than 1 or greater than 13. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.InvariantInfo">
+      <summary>문화권 독립(고정)적인 기본 읽기 전용 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 개체를 가져옵니다.</summary>
+      <returns>문화권 독립(고정)적인 읽기 전용 개체입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.IsReadOnly">
+      <summary>
+        <see cref="T:System.Globalization.DateTimeFormatInfo" /> 개체가 읽기 전용인지를 나타내는 값을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Globalization.DateTimeFormatInfo" /> 개체가 읽기 전용이면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.LongDatePattern">
+      <summary>긴 날짜 값의 사용자 지정 서식 문자열을 가져오거나 설정합니다.</summary>
+      <returns>긴 날짜 값의 사용자 지정 서식 문자열입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.LongTimePattern">
+      <summary>긴 시간 값의 사용자 지정 서식 문자열을 가져오거나 설정합니다.</summary>
+      <returns>긴 시간 값의 서식 패턴입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.MonthDayPattern">
+      <summary>월 및 일 값에 대한 사용자 지정 서식 문자열을 가져오거나 설정합니다.</summary>
+      <returns>월 및 일 값에 대한 사용자 지정 서식 문자열입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.MonthGenitiveNames">
+      <summary>현재 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 개체와 연결된 월 이름의 문자열 배열을 가져오거나 설정합니다.</summary>
+      <returns>월 이름의 문자열 배열입니다.</returns>
+      <exception cref="T:System.ArgumentException">In a set operation, the array is multidimensional or has a length that is not exactly 13.</exception>
+      <exception cref="T:System.ArgumentNullException">In a set operation, the array or one of its elements is null.</exception>
+      <exception cref="T:System.InvalidOperationException">In a set operation, the current <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only.</exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.MonthNames">
+      <summary>문화권별 전체 월 이름이 포함된 <see cref="T:System.String" /> 형식의 1차원 배열을 가져오거나 설정합니다.</summary>
+      <returns>문화권별 전체 월 이름이 포함된 <see cref="T:System.String" /> 형식의 1차원 배열입니다.12개월 달력에서 배열의 13번째 요소는 빈 문자열입니다.<see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> 배열에는 "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" 및 ""가 포함되어 있습니다.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.ArgumentException">The property is being set to an array that is multidimensional or that has a length that is not exactly 13. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.PMDesignator">
+      <summary>"PM(post meridiem)"(오후) 시간에 대한 문자열 지정자를 가져오거나 설정합니다.</summary>
+      <returns>"PM(post meridiem)"(오후) 시간에 대한 문자열 지정자입니다.<see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> 기본값은 "PM"입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.ReadOnly(System.Globalization.DateTimeFormatInfo)">
+      <summary>읽기 전용 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 래퍼를 반환합니다.</summary>
+      <returns>읽기 전용 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 래퍼입니다.</returns>
+      <param name="dtfi">래핑할 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 개체입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="dtfi" /> is null. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.RFC1123Pattern">
+      <summary>IETF(Internet Engineering Task Force) RFC(Request for Comments) 1123 사양을 기반으로 하는 시간 값에 대한 사용자 지정 서식 문자열을 가져옵니다.</summary>
+      <returns>IETF RFC 1123 사양을 기반으로 하는 시간 값의 사용자 지정 서식 문자열입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.ShortDatePattern">
+      <summary>짧은 날짜 값의 사용자 지정 서식 문자열을 가져오거나 설정합니다.</summary>
+      <returns>짧은 날짜 값의 사용자 지정 서식 문자열입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.ShortestDayNames">
+      <summary>현재 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 개체와 연결된 가장 짧은 고유 약식 요일 이름의 문자열 배열을 가져오거나 설정합니다.</summary>
+      <returns>요일 이름의 문자열 배열입니다.</returns>
+      <exception cref="T:System.ArgumentException">In a set operation, the array does not have exactly seven elements.</exception>
+      <exception cref="T:System.ArgumentNullException">In a set operation, the value array or one of the elements of the value array is null.</exception>
+      <exception cref="T:System.InvalidOperationException">In a set operation, the current <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only.</exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.ShortTimePattern">
+      <summary>짧은 시간 값의 사용자 지정 서식 문자열을 가져오거나 설정합니다.</summary>
+      <returns>짧은 시간 값의 사용자 지정 서식 문자열입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.SortableDateTimePattern">
+      <summary>정렬 가능한 날짜 및 시간 값에 대한 사용자 지정 서식 문자열을 가져옵니다.</summary>
+      <returns>정렬 가능한 날짜 및 시간 값에 대한 사용자 지정 서식 문자열입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.UniversalSortableDateTimePattern">
+      <summary>정렬 가능한 유니버설 날짜 및 시간 문자열에 대한 사용자 지정 서식 문자열을 가져옵니다.</summary>
+      <returns>정렬 가능한 유니버설 날짜 및 시간 문자열에 대한 사용자 지정 서식 문자열입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.YearMonthPattern">
+      <summary>연도 및 월 값에 대한 사용자 지정 서식 문자열을 가져오거나 설정합니다.</summary>
+      <returns>연도 및 월 값에 대한 사용자 지정 서식 문자열입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="T:System.Globalization.NumberFormatInfo">
+      <summary>숫자 값을 서식 지정하고 구문 분석하는 문화권별 정보를 제공합니다. </summary>
+    </member>
+    <member name="M:System.Globalization.NumberFormatInfo.#ctor">
+      <summary>문화권 독립(고정)적인 <see cref="T:System.Globalization.NumberFormatInfo" /> 클래스의 쓰기 가능한 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Globalization.NumberFormatInfo.Clone">
+      <summary>
+        <see cref="T:System.Globalization.NumberFormatInfo" /> 개체의 부분 복사본을 만듭니다.</summary>
+      <returns>원본 <see cref="T:System.Globalization.NumberFormatInfo" /> 개체에서 복사된 새 개체입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyDecimalDigits">
+      <summary>통화 값에 사용할 소수 자릿수를 가져오거나 설정합니다.</summary>
+      <returns>통화 값에 사용할 소수 자릿수입니다.<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" />의 기본값은 2입니다.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">속성을 0보다 작은 값이나 99보다 큰 값으로 설정하는 경우 </exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Globalization.NumberFormatInfo" /> 개체가 읽기 전용인데 속성을 설정하는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyDecimalSeparator">
+      <summary>통화 값에서 소수 구분 기호로 사용하는 문자열을 가져오거나 설정합니다.</summary>
+      <returns>통화 값에서 소수 구분 기호로 사용하는 문자열입니다.<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" />의 기본값은 "."입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">속성을 null로 설정하는 경우 </exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Globalization.NumberFormatInfo" /> 개체가 읽기 전용인데 속성을 설정하는 경우 </exception>
+      <exception cref="T:System.ArgumentException">속성을 빈 문자열로 설정하는 경우</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyGroupSeparator">
+      <summary>통화 값에서 정수 부분을 구분하는 문자열을 가져오거나 설정합니다.</summary>
+      <returns>통화 값에서 정수 부분을 구분하는 문자열입니다.<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" />의 기본값은 ","입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">속성을 null로 설정하는 경우 </exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Globalization.NumberFormatInfo" /> 개체가 읽기 전용인데 속성을 설정하는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyGroupSizes">
+      <summary>통화 값에서 정수 부분의 각 그룹 자릿수를 가져오거나 설정합니다.</summary>
+      <returns>통화 값에서 정수 부분의 각 그룹 자릿수입니다.<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" />의 기본값은 3으로 설정된 하나의 요소만 있는 1차원 배열입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">속성을 null로 설정하는 경우 </exception>
+      <exception cref="T:System.ArgumentException">속성을 설정하는데 배열에 0보다 작거나 9보다 큰 항목이 들어 있는 경우또는 속성을 설정하는데 배열에 마지막 항목이 아닌 0으로 설정된 항목이 있는 경우 </exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Globalization.NumberFormatInfo" /> 개체가 읽기 전용인데 속성을 설정하는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyNegativePattern">
+      <summary>음수 통화 값의 형식 패턴을 가져오거나 설정합니다.</summary>
+      <returns>음수 통화 값의 형식 패턴입니다.<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" />의 기본값은 "($n)"을 나타내는 0입니다. 여기서, "$"는 <see cref="P:System.Globalization.NumberFormatInfo.CurrencySymbol" />이며 <paramref name="n" />은(는) 숫자입니다.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">가 0 보다 작거나 15 보다 큰 값으로 속성을 설정 하는 합니다. </exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Globalization.NumberFormatInfo" /> 개체가 읽기 전용인데 속성을 설정하는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyPositivePattern">
+      <summary>양수 통화 값의 형식 패턴을 가져오거나 설정합니다.</summary>
+      <returns>양수 통화 값의 형식 패턴입니다.<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" />의 기본값은 "-n%"를 나타내는 0입니다. 여기서, "%"는 <see cref="P:System.Globalization.NumberFormatInfo.CurrencySymbol" />이며 <paramref name="n" />은(는) 숫자입니다.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">가 0 보다 작거나 3 보다 큰 값으로 속성을 설정 하는 합니다. </exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Globalization.NumberFormatInfo" /> 개체가 읽기 전용인데 속성을 설정하는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencySymbol">
+      <summary>통화 기호로 사용할 문자열을 가져오거나 설정합니다.</summary>
+      <returns>통화 기호로 사용할 문자열입니다.<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" />의 기본값은 "¤"입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">속성을 null로 설정하는 경우 </exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Globalization.NumberFormatInfo" /> 개체가 읽기 전용인데 속성을 설정하는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrentInfo">
+      <summary>현재 문화권에 따라 값의 서식을 지정하는 읽기 전용 <see cref="T:System.Globalization.NumberFormatInfo" />을(를) 가져옵니다.</summary>
+      <returns>현재 스레드의 문화권에 기반한 읽기 전용 <see cref="T:System.Globalization.NumberFormatInfo" />입니다.</returns>
+    </member>
+    <member name="M:System.Globalization.NumberFormatInfo.GetFormat(System.Type)">
+      <summary>숫자 서식 지정 서비스를 제공하는 지정된 형식의 개체를 가져옵니다.</summary>
+      <returns>
+        <paramref name="formatType" />이(가) 현재 <see cref="T:System.Globalization.NumberFormatInfo" /> 형식과 같은 경우 현재 <see cref="T:System.Globalization.NumberFormatInfo" />이고, 그렇지 않으면 null입니다.</returns>
+      <param name="formatType">필요한 서식 지정 서비스의 <see cref="T:System.Type" />입니다. </param>
+    </member>
+    <member name="M:System.Globalization.NumberFormatInfo.GetInstance(System.IFormatProvider)">
+      <summary>지정된 <see cref="T:System.Globalization.NumberFormatInfo" />와 연결된 <see cref="T:System.IFormatProvider" />를 가져옵니다.</summary>
+      <returns>지정된 <see cref="T:System.Globalization.NumberFormatInfo" />와 연결된 <see cref="T:System.IFormatProvider" />입니다.</returns>
+      <param name="formatProvider">
+        <see cref="T:System.Globalization.NumberFormatInfo" />을(를) 가져오는 데 사용되는 <see cref="T:System.IFormatProvider" />입니다.또는 <see cref="P:System.Globalization.NumberFormatInfo.CurrentInfo" />을(를) 가져오려면 null입니다. </param>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.InvariantInfo">
+      <summary>문화권 독립(고정)적인 읽기 전용 <see cref="T:System.Globalization.NumberFormatInfo" /> 개체를 가져옵니다.</summary>
+      <returns>문화권 독립(고정)적인 읽기 전용 개체입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.IsReadOnly">
+      <summary>이 <see cref="T:System.Globalization.NumberFormatInfo" /> 개체가 읽기 전용인지 나타내는 값을 가져옵니다.</summary>
+      <returns>true가 읽기 전용이면 <see cref="T:System.Globalization.NumberFormatInfo" />이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NaNSymbol">
+      <summary>IEEE NaN(숫자 아님) 값을 나타내는 문자열을 가져오거나 설정합니다.</summary>
+      <returns>IEEE NaN(숫자 아님) 값을 나타내는 문자열입니다.<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" />의 기본값은 "NaN"입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">속성을 null로 설정하는 경우 </exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Globalization.NumberFormatInfo" /> 개체가 읽기 전용인데 속성을 설정하는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NegativeInfinitySymbol">
+      <summary>음의 무한대를 나타내는 문자열을 가져오거나 설정합니다.</summary>
+      <returns>음의 무한대를 나타내는 문자열입니다.<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" />의 기본값은 "-Infinity"입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">속성을 null로 설정하는 경우 </exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Globalization.NumberFormatInfo" /> 개체가 읽기 전용인데 속성을 설정하는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NegativeSign">
+      <summary>관련 숫자가 음수임을 나타내는 문자열을 가져오거나 설정합니다.</summary>
+      <returns>관련 숫자가 음수임을 나타내는 문자열입니다.<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" />의 기본값은 "-"입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">속성을 null로 설정하는 경우 </exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Globalization.NumberFormatInfo" /> 개체가 읽기 전용인데 속성을 설정하는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NumberDecimalDigits">
+      <summary>숫자 값에 사용하는 소수 자릿수를 가져오거나 설정합니다.</summary>
+      <returns>숫자 값에 사용하는 소수 자릿수입니다.<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" />의 기본값은 2입니다.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">속성을 0보다 작은 값이나 99보다 큰 값으로 설정하는 경우 </exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Globalization.NumberFormatInfo" /> 개체가 읽기 전용인데 속성을 설정하는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NumberDecimalSeparator">
+      <summary>숫자 값에서 소수 구분 기호로 사용하는 문자열을 가져오거나 설정합니다.</summary>
+      <returns>숫자 값에서 소수 구분 기호로 사용하는 문자열입니다.<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" />의 기본값은 "."입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">속성을 null로 설정하는 경우 </exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Globalization.NumberFormatInfo" /> 개체가 읽기 전용인데 속성을 설정하는 경우 </exception>
+      <exception cref="T:System.ArgumentException">속성을 빈 문자열로 설정하는 경우</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NumberGroupSeparator">
+      <summary>숫자 값에서 정수 부분을 구분하는 문자열을 가져오거나 설정합니다.</summary>
+      <returns>숫자 값에서 정수 부분을 구분하는 문자열입니다.<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" />의 기본값은 ","입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">속성을 null로 설정하는 경우 </exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Globalization.NumberFormatInfo" /> 개체가 읽기 전용인데 속성을 설정하는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NumberGroupSizes">
+      <summary>숫자 값에서 정수 부분의 각 그룹 자릿수를 가져오거나 설정합니다.</summary>
+      <returns>숫자 값에서 정수 부분의 각 그룹 자릿수입니다.<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" />의 기본값은 3으로 설정된 하나의 요소만 있는 1차원 배열입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">속성을 null로 설정하는 경우 </exception>
+      <exception cref="T:System.ArgumentException">속성을 설정하는데 배열에 0보다 작거나 9보다 큰 항목이 들어 있는 경우또는 속성을 설정하는데 배열에 마지막 항목이 아닌 0으로 설정된 항목이 있는 경우 </exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Globalization.NumberFormatInfo" /> 개체가 읽기 전용인데 속성을 설정하는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NumberNegativePattern">
+      <summary>음수 숫자 값의 형식 패턴을 가져오거나 설정합니다.</summary>
+      <returns>음수 숫자 값의 형식 패턴입니다. </returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">가 0 보다 작거나 4 보다 큰 값으로 속성을 설정 하는 합니다. </exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Globalization.NumberFormatInfo" /> 개체가 읽기 전용인데 속성을 설정하는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentDecimalDigits">
+      <summary>백분율 값에 사용할 소수 자릿수를 가져오거나 설정합니다. </summary>
+      <returns>백분율 값에 사용할 소수 자릿수입니다.<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" />의 기본값은 2입니다.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">속성을 0보다 작은 값이나 99보다 큰 값으로 설정하는 경우 </exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Globalization.NumberFormatInfo" /> 개체가 읽기 전용인데 속성을 설정하는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentDecimalSeparator">
+      <summary>백분율 값에서 소수 구분 기호로 사용할 문자열을 가져오거나 설정합니다. </summary>
+      <returns>백분율 값에서 소수 구분 기호로 사용할 문자열입니다.<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" />의 기본값은 "."입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">속성을 null로 설정하는 경우 </exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Globalization.NumberFormatInfo" /> 개체가 읽기 전용인데 속성을 설정하는 경우 </exception>
+      <exception cref="T:System.ArgumentException">속성을 빈 문자열로 설정하는 경우</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentGroupSeparator">
+      <summary>백분율 값에서 정수 부분을 구분하는 문자열을 가져오거나 설정합니다. </summary>
+      <returns>백분율 값에서 정수 부분을 구분하는 문자열입니다.<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" />의 기본값은 ","입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">속성을 null로 설정하는 경우 </exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Globalization.NumberFormatInfo" /> 개체가 읽기 전용인데 속성을 설정하는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentGroupSizes">
+      <summary>백분율 값에서 정수 부분의 각 그룹 자릿수를 가져오거나 설정합니다. </summary>
+      <returns>백분율 값에서 정수 부분의 각 그룹 자릿수입니다.<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" />의 기본값은 3으로 설정된 하나의 요소만 있는 1차원 배열입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">속성을 null로 설정하는 경우 </exception>
+      <exception cref="T:System.ArgumentException">속성을 설정하는데 배열에 0보다 작거나 9보다 큰 항목이 들어 있는 경우또는 속성을 설정하는데 배열에 마지막 항목이 아닌 0으로 설정된 항목이 있는 경우 </exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Globalization.NumberFormatInfo" /> 개체가 읽기 전용인데 속성을 설정하는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentNegativePattern">
+      <summary>음수 백분율 값의 형식 패턴을 가져오거나 설정합니다.</summary>
+      <returns>음수 백분율 값의 형식 패턴입니다.<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" />의 기본값은 "-n%"을 나타내는 0입니다. 여기서, "%"는 <see cref="P:System.Globalization.NumberFormatInfo.PercentSymbol" />이며 <paramref name="n" />은(는) 숫자입니다.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">가 0 보다 작은 11 보다 큰 값으로 속성을 설정 하는 합니다. </exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Globalization.NumberFormatInfo" /> 개체가 읽기 전용인데 속성을 설정하는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentPositivePattern">
+      <summary>양수 백분율 값의 형식 패턴을 가져오거나 설정합니다.</summary>
+      <returns>양수 백분율 값의 형식 패턴입니다.<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" />의 기본값은 "n%"를 나타내는 0입니다. 여기서, "%"는 <see cref="P:System.Globalization.NumberFormatInfo.PercentSymbol" />이며 <paramref name="n" />은(는) 숫자입니다.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">가 0 보다 작거나 3 보다 큰 값으로 속성을 설정 하는 합니다. </exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Globalization.NumberFormatInfo" /> 개체가 읽기 전용인데 속성을 설정하는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentSymbol">
+      <summary>백분율 기호로 사용할 문자열을 가져오거나 설정합니다.</summary>
+      <returns>백분율 기호로 사용할 문자열입니다.<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" />의 기본값은 "%"입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">속성을 null로 설정하는 경우 </exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Globalization.NumberFormatInfo" /> 개체가 읽기 전용인데 속성을 설정하는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PerMilleSymbol">
+      <summary>천분율 기호로 사용할 문자열을 가져오거나 설정합니다.</summary>
+      <returns>천분율 기호로 사용할 문자열입니다.<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" />의 기본값은 "‰"이며, 이는 유니코드 문자 U+2030입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">속성을 null로 설정하는 경우 </exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Globalization.NumberFormatInfo" /> 개체가 읽기 전용인데 속성을 설정하는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PositiveInfinitySymbol">
+      <summary>양의 무한대를 나타내는 문자열을 가져오거나 설정합니다.</summary>
+      <returns>양의 무한대를 나타내는 문자열입니다.<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" />의 기본값은 "Infinity"입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">속성을 null로 설정하는 경우 </exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Globalization.NumberFormatInfo" /> 개체가 읽기 전용인데 속성을 설정하는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PositiveSign">
+      <summary>관련 숫자가 양수임을 나타내는 문자열을 가져오거나 설정합니다.</summary>
+      <returns>관련 숫자가 양수임을 나타내는 문자열입니다.<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" />의 기본값은 "+"입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">set 작업에서 할당될 값이 null입니다.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Globalization.NumberFormatInfo" /> 개체가 읽기 전용인데 속성을 설정하는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.NumberFormatInfo.ReadOnly(System.Globalization.NumberFormatInfo)">
+      <summary>읽기 전용 <see cref="T:System.Globalization.NumberFormatInfo" /> 래퍼를 반환합니다.</summary>
+      <returns>
+        <paramref name="nfi" /> 주변의 읽기 전용 <see cref="T:System.Globalization.NumberFormatInfo" /> 래퍼입니다.</returns>
+      <param name="nfi">래핑할 <see cref="T:System.Globalization.NumberFormatInfo" />입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="nfi" />가 null인 경우 </exception>
+    </member>
+    <member name="T:System.Globalization.RegionInfo">
+      <summary>해당 국가/지역에 대한 정보를 포함합니다.</summary>
+    </member>
+    <member name="M:System.Globalization.RegionInfo.#ctor(System.String)">
+      <summary>이름에 의해 지정된 국가/지역 또는 특정 문화권을 기반으로 하여 <see cref="T:System.Globalization.RegionInfo" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="name">해당 국가/지역에 대해 ISO 3166에 정의되어 있는 두 문자로 된 코드를 포함하는 문자열입니다.또는특정 문화권, 사용자 지정 문화권 또는 Windows 전용 문화권에 대한 문화권 이름을 포함하는 문자열입니다.문화권 이름이 RFC 4646 형식이 아니면 응용 프로그램에서 국가/지역뿐 아니라 전체 문화권 이름을 지정해야 합니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> is null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> is not a valid country/region name or specific culture name.</exception>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.CurrencySymbol">
+      <summary>해당 국가/지역과 관련된 통화 기호를 가져옵니다.</summary>
+      <returns>해당 국가/지역과 관련된 통화 기호입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.CurrentRegion">
+      <summary>현재 스레드에서 사용하는 국가/지역을 나타내는 <see cref="T:System.Globalization.RegionInfo" />를 가져옵니다.</summary>
+      <returns>현재 스레드에서 사용하는 국가/지역을 나타내는 <see cref="T:System.Globalization.RegionInfo" />입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.DisplayName">
+      <summary>지역화된 .NET Framework 언어로 표시되는 해당 국가/지역의 전체 이름을 가져옵니다.</summary>
+      <returns>지역화된 .NET Framework 언어로 표시되는 해당 국가/지역의 전체 이름입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.EnglishName">
+      <summary>영어로 표시되는 해당 국가/지역의 전체 이름을 가져옵니다.</summary>
+      <returns>영어로 표시되는 해당 국가/지역의 전체 이름입니다.</returns>
+    </member>
+    <member name="M:System.Globalization.RegionInfo.Equals(System.Object)">
+      <summary>지정된 개체가 현재 <see cref="T:System.Globalization.RegionInfo" />와 같은 인스턴스인지를 결정합니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수가 <see cref="T:System.Globalization.RegionInfo" /> 개체이고 해당 <see cref="P:System.Globalization.RegionInfo.Name" /> 속성이 현재 <see cref="T:System.Globalization.RegionInfo" /> 개체의 <see cref="P:System.Globalization.RegionInfo.Name" /> 속성과 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="value">현재 <see cref="T:System.Globalization.RegionInfo" />와 비교할 개체입니다. </param>
+    </member>
+    <member name="M:System.Globalization.RegionInfo.GetHashCode">
+      <summary>해시 알고리즘과 해시 테이블 같은 데이터 구조에 적합한 현재 <see cref="T:System.Globalization.RegionInfo" />에 대한 해시 함수의 역할을 합니다.</summary>
+      <returns>현재 <see cref="T:System.Globalization.RegionInfo" />의 해시 코드입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.IsMetric">
+      <summary>해당 국가/지역의 측정 단위가 미터법인지를 나타내는 값을 가져옵니다.</summary>
+      <returns>해당 국가/지역의 측정 단위가 미터법이면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.ISOCurrencySymbol">
+      <summary>해당 국가/지역과 관련된 세 문자로 된 ISO 4217 통화 기호를 가져옵니다.</summary>
+      <returns>해당 국가/지역과 관련된 세 문자로 된 ISO 4217 통화 기호입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.Name">
+      <summary>현재 <see cref="T:System.Globalization.RegionInfo" /> 개체에 대한 이름 또는 ISO 3166 두 문자 국가/지역 코드를 가져옵니다.</summary>
+      <returns>
+        <see cref="M:System.Globalization.RegionInfo.#ctor(System.String)" /> 생성자의 <paramref name="name" /> 매개 변수에 지정된 값입니다.반환 값은 대문자로 되어 있습니다.또는<see cref="M:System.Globalization.RegionInfo.#ctor(System.Int32)" /> 생성자의 <paramref name="culture" /> 매개 변수에 지정된 국가/지역에 대해 ISO 3166에 정의되어 있는 두 문자 코드입니다.반환 값은 대문자로 되어 있습니다.</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.NativeName">
+      <summary>국가/지역의 이름은 국가/지역의 네이티브 언어 형식으로 가져옵니다.</summary>
+      <returns>ISO 3166 국가/지역 코드와 연관된 언어 형식으로 표시된, 국가/지역의 네이티브 이름입니다. </returns>
+    </member>
+    <member name="M:System.Globalization.RegionInfo.ToString">
+      <summary>현재 <see cref="T:System.Globalization.RegionInfo" />에 지정된 문화권 이름 또는 ISO 3166 두 문자 국가/지역 코드가 포함된 문자열을 반환합니다.</summary>
+      <returns>현재 <see cref="T:System.Globalization.RegionInfo" />에 정의된 문화권 이름 또는 ISO 3166 두 문자 국가/지역 코드가 포함된 문자열입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.TwoLetterISORegionName">
+      <summary>해당 국가/지역에 대해 ISO 3166에 정의되어 있는 두 문자로 된 코드를 가져옵니다.</summary>
+      <returns>해당 국가/지역에 대해 ISO 3166에 정의되어 있는 두 문자로 된 코드입니다.</returns>
+    </member>
+    <member name="T:System.Globalization.StringInfo">
+      <summary>문자열을 텍스트 요소로 분리한 다음 이 텍스트 요소를 반복하는 기능을 제공합니다.</summary>
+    </member>
+    <member name="M:System.Globalization.StringInfo.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.StringInfo" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+    </member>
+    <member name="M:System.Globalization.StringInfo.#ctor(System.String)">
+      <summary>
+        <see cref="T:System.Globalization.StringInfo" /> 클래스의 새 인스턴스를 지정된 문자열로 초기화합니다.</summary>
+      <param name="value">이 <see cref="T:System.Globalization.StringInfo" /> 개체를 초기화할 문자열입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" />가 null입니다.</exception>
+    </member>
+    <member name="M:System.Globalization.StringInfo.Equals(System.Object)">
+      <summary>현재 <see cref="T:System.Globalization.StringInfo" /> 개체가 지정된 개체와 같은지 여부를 나타냅니다.</summary>
+      <returns>
+        <paramref name="value" /> 매개 변수가 <see cref="T:System.Globalization.StringInfo" /> 개체이고 해당 <see cref="P:System.Globalization.StringInfo.String" /> 속성이 <see cref="T:System.Globalization.StringInfo" /> 개체의 <see cref="P:System.Globalization.StringInfo.String" /> 속성과 같으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="value">개체입니다.</param>
+    </member>
+    <member name="M:System.Globalization.StringInfo.GetHashCode">
+      <summary>현재 <see cref="T:System.Globalization.StringInfo" /> 개체의 값에 대한 해시 코드를 계산합니다.</summary>
+      <returns>이 <see cref="T:System.Globalization.StringInfo" /> 개체의 문자열 값에 기반한 부호 있는 32비트 정수 해시 코드입니다.</returns>
+    </member>
+    <member name="M:System.Globalization.StringInfo.GetNextTextElement(System.String)">
+      <summary>지정된 문자열에 있는 첫째 텍스트 요소를 가져옵니다.</summary>
+      <returns>지정된 문자열에 있는 첫째 텍스트 요소를 포함하는 문자열입니다.</returns>
+      <param name="str">텍스트 요소를 가져올 문자열입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" />가 null입니다. </exception>
+    </member>
+    <member name="M:System.Globalization.StringInfo.GetNextTextElement(System.String,System.Int32)">
+      <summary>지정된 문자열의 지정된 인덱스에 있는 텍스트 요소를 가져옵니다.</summary>
+      <returns>지정된 문자열의 지정된 인덱스에 있는 텍스트 요소를 포함하는 문자열입니다.</returns>
+      <param name="str">텍스트 요소를 가져올 문자열입니다. </param>
+      <param name="index">텍스트 요소가 시작되는 인덱스(0부터 시작)입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" />가 null입니다. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" />가 <paramref name="str" />에 대한 올바른 인덱스 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.StringInfo.GetTextElementEnumerator(System.String)">
+      <summary>전체 문자열의 텍스트 요소를 반복하는 열거자를 반환합니다.</summary>
+      <returns>전체 문자열에 대한 <see cref="T:System.Globalization.TextElementEnumerator" />입니다.</returns>
+      <param name="str">반복할 문자열입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" />가 null입니다. </exception>
+    </member>
+    <member name="M:System.Globalization.StringInfo.GetTextElementEnumerator(System.String,System.Int32)">
+      <summary>지정된 인덱스에서 시작하여 문자열의 텍스트 요소를 반복하는 열거자를 반환합니다.</summary>
+      <returns>
+        <paramref name="index" />에서 시작하는 문자열에 대한 <see cref="T:System.Globalization.TextElementEnumerator" />입니다.</returns>
+      <param name="str">반복할 문자열입니다. </param>
+      <param name="index">반복을 시작할 인덱스(0부터 시작)입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" />가 null입니다. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" />가 <paramref name="str" />에 대한 올바른 인덱스 범위 밖에 있는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.StringInfo.LengthInTextElements">
+      <summary>현재 <see cref="T:System.Globalization.StringInfo" /> 개체의 텍스트 요소 수를 가져옵니다.</summary>
+      <returns>이 <see cref="T:System.Globalization.StringInfo" /> 개체에 있는 기본 문자, 서로게이트 쌍 및 조합 문자 시퀀스의 수입니다.</returns>
+    </member>
+    <member name="M:System.Globalization.StringInfo.ParseCombiningCharacters(System.String)">
+      <summary>지정된 문자열 내에 있는 각 기본 문자, 상위 서로게이트 또는 제어 문자를 반환합니다.</summary>
+      <returns>지정된 문자열 내에 있는 각 기본 문자, 상위 서로게이트 또는 제어 문자의 인덱스(0부터 시작)가 포함되어 있는 정수의 배열입니다.</returns>
+      <param name="str">검색할 문자열입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" />가 null입니다. </exception>
+    </member>
+    <member name="P:System.Globalization.StringInfo.String">
+      <summary>현재 <see cref="T:System.Globalization.StringInfo" /> 개체의 값을 가져오거나 설정합니다.</summary>
+      <returns>현재 <see cref="T:System.Globalization.StringInfo" /> 개체의 값인 문자열입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">set 작업의 값이 null인 경우</exception>
+    </member>
+    <member name="T:System.Globalization.TextElementEnumerator">
+      <summary>문자열의 텍스트 요소를 열거합니다. </summary>
+    </member>
+    <member name="P:System.Globalization.TextElementEnumerator.Current">
+      <summary>문자열의 현재 텍스트 요소를 가져옵니다.</summary>
+      <returns>문자열의 현재 텍스트 요소를 포함하는 개체입니다.</returns>
+      <exception cref="T:System.InvalidOperationException">열거자가 문자열의 첫째 텍스트 요소 앞이나 마지막 텍스트 요소 뒤에 배치되는 경우 </exception>
+    </member>
+    <member name="P:System.Globalization.TextElementEnumerator.ElementIndex">
+      <summary>열거자가 현재 위치하고 있는 텍스트 요소의 인덱스를 가져옵니다.</summary>
+      <returns>열거자가 현재 위치하고 있는 텍스트 요소의 인덱스입니다.</returns>
+      <exception cref="T:System.InvalidOperationException">열거자가 문자열의 첫째 텍스트 요소 앞이나 마지막 텍스트 요소 뒤에 배치되는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.TextElementEnumerator.GetTextElement">
+      <summary>문자열의 현재 텍스트 요소를 가져옵니다.</summary>
+      <returns>읽고 있는 문자열의 현재 텍스트 요소를 포함하는 새 문자열입니다.</returns>
+      <exception cref="T:System.InvalidOperationException">열거자가 문자열의 첫째 텍스트 요소 앞이나 마지막 텍스트 요소 뒤에 배치되는 경우 </exception>
+    </member>
+    <member name="M:System.Globalization.TextElementEnumerator.MoveNext">
+      <summary>열거자를 문자열의 다음 텍스트 요소로 이동합니다.</summary>
+      <returns>열거자가 다음 요소로 이동한 경우 true가 반환되고 문자열의 끝을 지난 경우 false가 반환됩니다.</returns>
+    </member>
+    <member name="M:System.Globalization.TextElementEnumerator.Reset">
+      <summary>문자열의 첫째 텍스트 요소 앞의 초기 위치에 열거자를 지정합니다.</summary>
+    </member>
+    <member name="T:System.Globalization.TextInfo">
+      <summary>대/소문자 구분과 같이 쓰기 시스템과 관련된 텍스트 속성과 동작을 정의합니다. </summary>
+    </member>
+    <member name="P:System.Globalization.TextInfo.CultureName">
+      <summary>현재 <see cref="T:System.Globalization.TextInfo" /> 개체와 연결된 문화권의 이름을 가져옵니다.</summary>
+      <returns>문화권의 이름입니다. </returns>
+    </member>
+    <member name="M:System.Globalization.TextInfo.Equals(System.Object)">
+      <summary>지정된 개체가 현재 <see cref="T:System.Globalization.TextInfo" /> 개체와 같은 쓰기 시스템을 나타내는지를 확인합니다.</summary>
+      <returns>
+        <paramref name="obj" />가 현재 <see cref="T:System.Globalization.TextInfo" />와 같은 쓰기 시스템을 나타내면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="obj">현재 <see cref="T:System.Globalization.TextInfo" />와 비교할 개체입니다. </param>
+    </member>
+    <member name="M:System.Globalization.TextInfo.GetHashCode">
+      <summary>해시 알고리즘과 해시 테이블 같은 데이터 구조에 적합한 현재 <see cref="T:System.Globalization.TextInfo" />에 대한 해시 함수의 역할을 합니다.</summary>
+      <returns>현재 <see cref="T:System.Globalization.TextInfo" />의 해시 코드입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.TextInfo.IsReadOnly">
+      <summary>현재 <see cref="T:System.Globalization.TextInfo" /> 개체가 읽기 전용인지를 나타내는 값을 가져옵니다.</summary>
+      <returns>현재 <see cref="T:System.Globalization.TextInfo" />가 읽기 전용이면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.TextInfo.IsRightToLeft">
+      <summary>현재 <see cref="T:System.Globalization.TextInfo" /> 개체가 텍스트를 오른쪽에서 왼쪽으로 쓰는 쓰기 시스템을 나타내는지를 가리키는 값을 가져옵니다.</summary>
+      <returns>텍스트를 오른쪽에서 왼쪽으로 쓰면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="P:System.Globalization.TextInfo.ListSeparator">
+      <summary>목록에 있는 항목을 구분하는 문자열을 가져오거나 설정합니다.</summary>
+      <returns>목록에 있는 항목을 구분하는 문자열입니다.</returns>
+      <exception cref="T:System.ArgumentNullException">The value in a set operation is null.</exception>
+      <exception cref="T:System.InvalidOperationException">In a set operation, the current <see cref="T:System.Globalization.TextInfo" /> object is read-only.</exception>
+    </member>
+    <member name="M:System.Globalization.TextInfo.ToLower(System.Char)">
+      <summary>지정된 문자를 소문자로 변환합니다.</summary>
+      <returns>소문자로 변환된 지정된 문자입니다.</returns>
+      <param name="c">소문자로 변환할 문자입니다. </param>
+    </member>
+    <member name="M:System.Globalization.TextInfo.ToLower(System.String)">
+      <summary>지정된 문자열을 소문자로 변환합니다.</summary>
+      <returns>소문자로 변환된 지정된 문자열입니다.</returns>
+      <param name="str">소문자로 변환할 문자열입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> is null. </exception>
+    </member>
+    <member name="M:System.Globalization.TextInfo.ToString">
+      <summary>현재 <see cref="T:System.Globalization.TextInfo" />를 나타내는 문자열을 반환합니다.</summary>
+      <returns>현재 <see cref="T:System.Globalization.TextInfo" />를 나타내는 문자열입니다.</returns>
+    </member>
+    <member name="M:System.Globalization.TextInfo.ToUpper(System.Char)">
+      <summary>지정된 문자를 대문자로 변환합니다.</summary>
+      <returns>대문자로 변환된 지정된 문자입니다.</returns>
+      <param name="c">대문자로 변환할 문자입니다. </param>
+    </member>
+    <member name="M:System.Globalization.TextInfo.ToUpper(System.String)">
+      <summary>지정된 문자열을 대문자로 변환합니다.</summary>
+      <returns>대문자로 변환된 지정된 문자열입니다.</returns>
+      <param name="str">대문자로 변환할 문자열입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> is null. </exception>
+    </member>
+    <member name="T:System.Globalization.UnicodeCategory">
+      <summary>문자의 유니코드 범주를 정의합니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.ClosePunctuation">
+      <summary>괄호, 대괄호 및 중괄호처럼 쌍을 이루는 문장 부호의 닫는 문자입니다.유니코드 지정 "Pe"(punctuation, close)로 지정됩니다.값은 21입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.ConnectorPunctuation">
+      <summary>두 문자를 연결하는 연결 문장 부호 문자입니다.유니코드 지정 "Pc"(punctuation, connector)로 지정됩니다.값은 18입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.Control">
+      <summary>유니코드 값이 U+007F이거나 U+0000부터 U+001F까지 또는 U+0080부터 U+009F까지의 범위에 있는 컨트롤 코드 문자입니다.유니코드 지정 "Cc"(other, control)로 지정됩니다.값은 14입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.CurrencySymbol">
+      <summary>통화 기호 문자입니다.유니코드 지정 "Sc"(symbol, currency)로 지정됩니다.값은 26입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.DashPunctuation">
+      <summary>대시 또는 하이픈 문자입니다.유니코드 지정 "Pd"(punctuation, dash)로 지정됩니다.값은 19입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.DecimalDigitNumber">
+      <summary>0부터 9까지의 범위에 있는 10진수 문자입니다.유니코드 지정 "Nd"(number, decimal digit)로 지정됩니다.값은 8입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.EnclosingMark">
+      <summary>묶기 표시 문자, 즉 기본 문자를 포함한 모든 이전 문자를 둘러싸는 간격이 없는 조합 문자입니다.유니코드 지정 "Me"(mark, enclosing)로 지정됩니다.값은 7입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.FinalQuotePunctuation">
+      <summary>닫는 문자 또는 마지막 문장 부호(") 문자입니다.유니코드 지정 "Pf"(punctuation, final quote)로 지정됩니다.값은 23입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.Format">
+      <summary>대개 렌더링되지 않고 텍스트 레이아웃이나 텍스트 처리 작업에 영향을 주는 서식 문자입니다.유니코드 지정 "Cf"(other, format)로 지정됩니다.값은 15입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.InitialQuotePunctuation">
+      <summary>여는 문자 또는 시작 문장 부호 문자입니다.유니코드 지정 "Pi"(punctuation, initial quote)로 지정됩니다.값은 22입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.LetterNumber">
+      <summary>5에 해당하는 로마자 "V"와 같이 10진수 대신 문자로 나타내는 숫자입니다.유니코드 지정 "Nl"(number, letter)로 지정됩니다.값은 9입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.LineSeparator">
+      <summary>텍스트 행을 구분하는 데 사용되는 문자입니다.유니코드 지정 "Zl"(separator, line)으로 지정됩니다.값은 12입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.LowercaseLetter">
+      <summary>소문자입니다.유니코드 지정 "Ll"(letter, lowercase)로 지정됩니다.값은 1입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.MathSymbol">
+      <summary>"+" 또는 "=" 같은 수학 기호 문자입니다.유니코드 지정 "Sm"(symbol, math)으로 지정됩니다.값은 25입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.ModifierLetter">
+      <summary>이전 문자를 제한하는, 간격이 자유로운 문자인 한정자 문자입니다.유니코드 지정 "Lm"(letter, modifier)으로 지정됩니다.값은 3입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.ModifierSymbol">
+      <summary>주위 문자를 제한하는 한정자 기호 문자입니다.예를 들어 분수 기호는 이 기호의 왼쪽 숫자가 분자이고, 오른쪽 숫자가 분모임을 나타냅니다.유니코드 지정 "Sk"(symbol, modifier)로 지정됩니다.값은 27입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.NonSpacingMark">
+      <summary>기본 문자를 제한하는 간격이 없는 문자입니다.유니코드 지정 "Mn"(mark, nonspacing)으로 지정됩니다.값은 5입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OpenPunctuation">
+      <summary>괄호, 대괄호 및 중괄호처럼 쌍을 이루는 문장 부호의 여는 문자입니다.유니코드 지정 "Ps"(punctuation, open)로 지정됩니다.값은 20입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OtherLetter">
+      <summary>대문자, 소문자, 단어의 첫 글자를 대문자로 하는 문자 또는 한정자 문자가 아닌 문자입니다.유니코드 지정 "Lo"(letter, other)로 지정됩니다.값은 4입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OtherNotAssigned">
+      <summary>어떠한 유니코드 범주에도 할당되지 않은 문자입니다.유니코드 지정 "Cn"(other, not assigned)으로 지정됩니다.값은 29입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OtherNumber">
+      <summary>10진수나 문자 숫자가 아닌 숫자(예: 분수 1/2)입니다.유니코드 지정 "No"(number, other)로 지정됩니다.값은 10입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OtherPunctuation">
+      <summary>연결 문장 부호, 대시, 여는 문장 부호, 닫는 문장 부호, 처음 따옴표 또는 마지막 따옴표가 아닌 문장 부호 문자입니다.유니코드 지정 "Po"(punctuation, other)로 지정됩니다.값은 24입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OtherSymbol">
+      <summary>수학 기호, 통화 기호 또는 한정자 기호가 아닌 기호 문자입니다.유니코드 지정 "So"(symbol, other)로 지정됩니다.값은 28입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.ParagraphSeparator">
+      <summary>단락을 구분하는 데 사용되는 문자입니다.유니코드 지정 "Zp"(separator, paragraph)로 지정됩니다.값은 13입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.PrivateUse">
+      <summary>유니코드 값이 U+E000부터 U+F8FF까지의 범위에 있는 전용 문자입니다.유니코드 지정 "Co"(other, private use)로 지정됩니다.값은 17입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.SpaceSeparator">
+      <summary>문자 모양은 없지만 제어 문자나 서식 문자가 아닌 공백 문자입니다.유니코드 지정 "Zs"(separator, space)로 지정됩니다.값은 11입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.SpacingCombiningMark">
+      <summary>기본 문자를 제한하고 이 기본 문자의 문자 모양 너비에 영향을 주는 간격이 있는 문자입니다.유니코드 지정 "Mc"(mark, spacing combining)로 지정됩니다.값은 6입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.Surrogate">
+      <summary>high surrogate 또는 low surrogate 문자입니다.서로게이트 코드 값은 U+D800부터 U+DFFF까지의 범위에 있습니다.유니코드 지정 "Cs"(other, surrogate)로 지정됩니다.값은 16입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.TitlecaseLetter">
+      <summary>제목 스타일 문자입니다.유니코드 지정 "Lt"(letter, titlecase)로 지정됩니다.값은 2입니다.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.UppercaseLetter">
+      <summary>대문자입니다.유니코드 지정 "Lu"(letter, uppercase)로 지정됩니다.값은 0입니다.</summary>
+    </member>
+  </members>
+</doc>

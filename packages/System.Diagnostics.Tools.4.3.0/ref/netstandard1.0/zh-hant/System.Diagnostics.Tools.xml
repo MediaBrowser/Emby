@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Diagnostics.Tools</name>
+  </assembly>
+  <members>
+    <member name="T:System.CodeDom.Compiler.GeneratedCodeAttribute">
+      <summary>識別由工具所產生的程式碼，此類別無法被繼承。</summary>
+    </member>
+    <member name="M:System.CodeDom.Compiler.GeneratedCodeAttribute.#ctor(System.String,System.String)">
+      <summary>初始化 <see cref="T:System.CodeDom.Compiler.GeneratedCodeAttribute" /> 類別的新執行個體，指定產生程式碼的工具名稱和版本。</summary>
+      <param name="tool">產生程式碼的工具名稱。</param>
+      <param name="version">產生程式碼的工具版本。</param>
+    </member>
+    <member name="P:System.CodeDom.Compiler.GeneratedCodeAttribute.Tool">
+      <summary>取得產生程式碼的工具名稱。</summary>
+      <returns>產生程式碼的工具名稱。</returns>
+    </member>
+    <member name="P:System.CodeDom.Compiler.GeneratedCodeAttribute.Version">
+      <summary>取得產生程式碼的工具版本。</summary>
+      <returns>產生程式碼的工具版本。</returns>
+    </member>
+    <member name="T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute">
+      <summary>隱藏對特定靜態分析工具規則違規的回報，並允許多重隱藏一個單一程式碼成品。</summary>
+    </member>
+    <member name="M:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.#ctor(System.String,System.String)">
+      <summary>初始化 <see cref="T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute" /> 類別的新執行個體，指定靜態分析工具的分類和分析規則的識別項。</summary>
+      <param name="category">屬性的分類。</param>
+      <param name="checkId">套用屬性的分析工具規則的識別項。</param>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Category">
+      <summary>取得分類，識別屬性的分類。</summary>
+      <returns>識別屬性的分類。</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.CheckId">
+      <summary>取得隱藏之靜態分析工具規則的識別項。</summary>
+      <returns>隱藏之靜態分析工具規則的識別項。</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Justification">
+      <summary>取得或設定隱藏程式碼分析訊息的對齊。</summary>
+      <returns>隱藏訊息的對齊。</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.MessageId">
+      <summary>取得或設定在排除準則上展開的選擇性引數。</summary>
+      <returns>包含已展開排除準則的字串。</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Scope">
+      <summary>取得或設定與屬性相關的程式碼範圍。</summary>
+      <returns>與屬性相關的程式碼範圍。</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Target">
+      <summary>取得或設定完整路徑，其表示屬性的目標。</summary>
+      <returns>表示屬性目標的完整路徑。</returns>
+    </member>
+  </members>
+</doc>

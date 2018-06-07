@@ -75,8 +75,11 @@ namespace MediaBrowser.Providers.Music
                 {
                     isNameSearch = true;
 
+                    // I'm sure there is a better way but for now it resolves search for 12" Mixes
+                    var queryName = searchInfo.Name.Replace("\"", string.Empty);
+
                     url = string.Format("/ws/2/release/?query=\"{0}\" AND artist:\"{1}\"",
-                       WebUtility.UrlEncode(searchInfo.Name),
+                       WebUtility.UrlEncode(queryName),
                        WebUtility.UrlEncode(searchInfo.GetAlbumArtist()));
                 }
             }
@@ -589,7 +592,7 @@ namespace MediaBrowser.Providers.Music
             return new ValueTuple<string, string>(name, artistId);
         }
 
-        private async ValueTask<string> GetReleaseIdFromReleaseGroupId(string releaseGroupId, CancellationToken cancellationToken)
+        private async Task<string> GetReleaseIdFromReleaseGroupId(string releaseGroupId, CancellationToken cancellationToken)
         {
             var url = string.Format("/ws/2/release?release-group={0}", releaseGroupId);
 
@@ -627,7 +630,7 @@ namespace MediaBrowser.Providers.Music
         /// <param name="releaseEntryId">The release entry id.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task{System.String}.</returns>
-        private async ValueTask<string> GetReleaseGroupFromReleaseId(string releaseEntryId, CancellationToken cancellationToken)
+        private async Task<string> GetReleaseGroupFromReleaseId(string releaseEntryId, CancellationToken cancellationToken)
         {
             var url = string.Format("/ws/2/release-group/?query=reid:{0}", releaseEntryId);
 

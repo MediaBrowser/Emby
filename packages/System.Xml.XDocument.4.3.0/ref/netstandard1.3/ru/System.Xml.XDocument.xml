@@ -1,0 +1,1887 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Xml.XDocument</name>
+  </assembly>
+  <members>
+    <member name="T:System.Xml.Linq.Extensions">
+      <summary>Содержит методы расширения LINQ to XML.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Ancestors``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>Возвращает коллекцию элементов, содержащую предков каждого узла в исходной коллекции.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> для <see cref="T:System.Xml.Linq.XElement" />, содержащий предков каждого узла в исходной коллекции.</returns>
+      <param name="source">Интерфейс <see cref="T:System.Collections.Generic.IEnumerable`1" /> узла <see cref="T:System.Xml.Linq.XNode" />, содержащий исходную коллекцию.</param>
+      <typeparam name="T">Тип объектов в <paramref name="source" />, ограниченный узлом <see cref="T:System.Xml.Linq.XNode" />.</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Ancestors``1(System.Collections.Generic.IEnumerable{``0},System.Xml.Linq.XName)">
+      <summary>Возвращает отфильтрованную коллекцию элементов, содержащую предков каждого узла в исходной коллекции.В коллекцию включаются только элементы, соответствующие <see cref="T:System.Xml.Linq.XName" />.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> для <see cref="T:System.Xml.Linq.XElement" />, содержащий предков каждого узла в исходной коллекции.В коллекцию включаются только элементы, соответствующие <see cref="T:System.Xml.Linq.XName" />.</returns>
+      <param name="source">Интерфейс <see cref="T:System.Collections.Generic.IEnumerable`1" /> узла <see cref="T:System.Xml.Linq.XNode" />, содержащий исходную коллекцию.</param>
+      <param name="name">
+        <see cref="T:System.Xml.Linq.XName" /> для соответствия.</param>
+      <typeparam name="T">Тип объектов в <paramref name="source" />, ограниченный узлом <see cref="T:System.Xml.Linq.XNode" />.</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.AncestorsAndSelf(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement})">
+      <summary>Возвращает коллекцию элементов, которые содержат каждый элемент в исходной коллекции и предков каждого элемента в исходной коллекции.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> для <see cref="T:System.Xml.Linq.XElement" />, содержащий каждый элемент в исходной коллекции и предков каждого элемента в исходной коллекции.</returns>
+      <param name="source">Интерфейс <see cref="T:System.Collections.Generic.IEnumerable`1" /> узла <see cref="T:System.Xml.Linq.XElement" />, содержащий исходную коллекцию.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.AncestorsAndSelf(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement},System.Xml.Linq.XName)">
+      <summary>Возвращает отфильтрованную коллекцию элементов, содержащую каждый элемент в исходной коллекции и предков каждого элемента в исходной коллекции.В коллекцию включаются только элементы, соответствующие <see cref="T:System.Xml.Linq.XName" />.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> для <see cref="T:System.Xml.Linq.XElement" />, содержащий каждый элемент в исходной коллекции и предков каждого элемента в исходной коллекции.В коллекцию включаются только элементы, соответствующие <see cref="T:System.Xml.Linq.XName" />.</returns>
+      <param name="source">Интерфейс <see cref="T:System.Collections.Generic.IEnumerable`1" /> узла <see cref="T:System.Xml.Linq.XElement" />, содержащий исходную коллекцию.</param>
+      <param name="name">
+        <see cref="T:System.Xml.Linq.XName" /> для соответствия.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Attributes(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement})">
+      <summary>Возвращает коллекцию атрибутов каждого элемента в исходной коллекции.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> для <see cref="T:System.Xml.Linq.XAttribute" />, содержащий атрибуты каждого элемента в исходной коллекции.</returns>
+      <param name="source">Интерфейс <see cref="T:System.Collections.Generic.IEnumerable`1" /> узла <see cref="T:System.Xml.Linq.XElement" />, содержащий исходную коллекцию.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Attributes(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement},System.Xml.Linq.XName)">
+      <summary>Возвращает отфильтрованную коллекцию атрибутов каждого элемента в исходной коллекции.В коллекцию включаются только элементы, соответствующие <see cref="T:System.Xml.Linq.XName" />.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> для <see cref="T:System.Xml.Linq.XAttribute" />, содержащий отфильтрованную коллекцию атрибутов каждого элемента в исходной коллекции.В коллекцию включаются только элементы, соответствующие <see cref="T:System.Xml.Linq.XName" />.</returns>
+      <param name="source">Интерфейс <see cref="T:System.Collections.Generic.IEnumerable`1" /> узла <see cref="T:System.Xml.Linq.XElement" />, содержащий исходную коллекцию.</param>
+      <param name="name">
+        <see cref="T:System.Xml.Linq.XName" /> для соответствия.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.DescendantNodes``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>Возвращает коллекцию подчиненных узлов каждого документа и элемента в исходной коллекции.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> для <see cref="T:System.Xml.Linq.XNode" /> подчиненных узлов каждого документа и элемента в исходной коллекции.</returns>
+      <param name="source">Интерфейс <see cref="T:System.Collections.Generic.IEnumerable`1" /> узла <see cref="T:System.Xml.Linq.XContainer" />, содержащий исходную коллекцию.</param>
+      <typeparam name="T">Тип объектов в <paramref name="source" />, ограниченный узлом <see cref="T:System.Xml.Linq.XContainer" />.</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.DescendantNodesAndSelf(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement})">
+      <summary>Возвращает коллекцию узлов, содержащую каждый элемент в исходной коллекции и подчиненные узлы каждого элемента в исходной коллекции.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> для <see cref="T:System.Xml.Linq.XNode" />, содержащий каждый элемент в исходной коллекции и подчиненные узлы каждого элемента в исходной коллекции.</returns>
+      <param name="source">Интерфейс <see cref="T:System.Collections.Generic.IEnumerable`1" /> узла <see cref="T:System.Xml.Linq.XElement" />, содержащий исходную коллекцию.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Descendants``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>Возвращает коллекцию элементов, содержащую подчиненные элементы каждого элемента и документа в исходной коллекции.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> для <see cref="T:System.Xml.Linq.XElement" />, содержащий подчиненные элементы каждого элемента и документа в исходной коллекции.</returns>
+      <param name="source">Интерфейс <see cref="T:System.Collections.Generic.IEnumerable`1" /> узла <see cref="T:System.Xml.Linq.XContainer" />, содержащий исходную коллекцию.</param>
+      <typeparam name="T">Тип объектов в <paramref name="source" />, ограниченный узлом <see cref="T:System.Xml.Linq.XContainer" />.</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Descendants``1(System.Collections.Generic.IEnumerable{``0},System.Xml.Linq.XName)">
+      <summary>Возвращает отфильтрованную коллекцию элементов, содержащую подчиненные элементы каждого элемента и документа в исходной коллекции.В коллекцию включаются только элементы, соответствующие <see cref="T:System.Xml.Linq.XName" />.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> для <see cref="T:System.Xml.Linq.XElement" />, содержащий подчиненные элементы каждого элемента и документа в исходной коллекции.В коллекцию включаются только элементы, соответствующие <see cref="T:System.Xml.Linq.XName" />.</returns>
+      <param name="source">Интерфейс <see cref="T:System.Collections.Generic.IEnumerable`1" /> узла <see cref="T:System.Xml.Linq.XContainer" />, содержащий исходную коллекцию.</param>
+      <param name="name">
+        <see cref="T:System.Xml.Linq.XName" /> для соответствия.</param>
+      <typeparam name="T">Тип объектов в <paramref name="source" />, ограниченный узлом <see cref="T:System.Xml.Linq.XContainer" />.</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.DescendantsAndSelf(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement})">
+      <summary>Возвращает коллекцию элементов, содержащую каждый элемент в исходной коллекции и подчиненные элементы каждого элемента в исходной коллекции.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> для <see cref="T:System.Xml.Linq.XElement" />, содержащий каждый элемент в исходной коллекции и подчиненные элементы каждого элемента в исходной коллекции.</returns>
+      <param name="source">Интерфейс <see cref="T:System.Collections.Generic.IEnumerable`1" /> узла <see cref="T:System.Xml.Linq.XElement" />, содержащий исходную коллекцию.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.DescendantsAndSelf(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement},System.Xml.Linq.XName)">
+      <summary>Возвращает отфильтрованную коллекцию элементов, содержащую каждый элемент в исходной коллекции и подчиненные элементы каждого элемента в исходной коллекции.В коллекцию включаются только элементы, соответствующие <see cref="T:System.Xml.Linq.XName" />.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> для <see cref="T:System.Xml.Linq.XElement" />, содержащий каждый элемент в исходной коллекции и подчиненные элементы каждого элемента в исходной коллекции.В коллекцию включаются только элементы, соответствующие <see cref="T:System.Xml.Linq.XName" />.</returns>
+      <param name="source">Интерфейс <see cref="T:System.Collections.Generic.IEnumerable`1" /> узла <see cref="T:System.Xml.Linq.XElement" />, содержащий исходную коллекцию.</param>
+      <param name="name">
+        <see cref="T:System.Xml.Linq.XName" /> для соответствия.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Elements``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>Возвращает коллекцию дочерних элементов каждого элемента и документа в исходной коллекции.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> для <see cref="T:System.Xml.Linq.XElement" /> дочерних элементов каждого элемента или документа в исходной коллекции.</returns>
+      <param name="source">Интерфейс <see cref="T:System.Collections.Generic.IEnumerable`1" /> узла <see cref="T:System.Xml.Linq.XElement" />, содержащий исходную коллекцию.</param>
+      <typeparam name="T">Тип объектов в <paramref name="source" />, ограниченный узлом <see cref="T:System.Xml.Linq.XContainer" />.</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Elements``1(System.Collections.Generic.IEnumerable{``0},System.Xml.Linq.XName)">
+      <summary>Возвращает отфильтрованную коллекцию дочерних элементов каждого элемента и документа в исходной коллекции.В коллекцию включаются только элементы, соответствующие <see cref="T:System.Xml.Linq.XName" />.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> для <see cref="T:System.Xml.Linq.XElement" /> дочерних элементов каждого элемента и документа в исходной коллекции.В коллекцию включаются только элементы, соответствующие <see cref="T:System.Xml.Linq.XName" />.</returns>
+      <param name="source">Интерфейс <see cref="T:System.Collections.Generic.IEnumerable`1" /> узла <see cref="T:System.Xml.Linq.XElement" />, содержащий исходную коллекцию.</param>
+      <param name="name">
+        <see cref="T:System.Xml.Linq.XName" /> для соответствия.</param>
+      <typeparam name="T">Тип объектов в <paramref name="source" />, ограниченный узлом <see cref="T:System.Xml.Linq.XContainer" />.</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.InDocumentOrder``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>Возвращает коллекцию узлов, содержащую все узлы в исходной коллекции, отсортированные в порядке следования документов.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> для <see cref="T:System.Xml.Linq.XNode" />, содержащий все узлы в исходной коллекции, отсортированные в порядке следования документов.</returns>
+      <param name="source">Интерфейс <see cref="T:System.Collections.Generic.IEnumerable`1" /> узла <see cref="T:System.Xml.Linq.XNode" />, содержащий исходную коллекцию.</param>
+      <typeparam name="T">Тип объектов в <paramref name="source" />, ограниченный узлом <see cref="T:System.Xml.Linq.XNode" />.</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Nodes``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>Возвращает коллекцию дочерних узлов каждого документа и элемента в исходной коллекции.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> для <see cref="T:System.Xml.Linq.XNode" /> дочерних узлов каждого документа и элемента в исходной коллекции.</returns>
+      <param name="source">Интерфейс <see cref="T:System.Collections.Generic.IEnumerable`1" /> узла <see cref="T:System.Xml.Linq.XNode" />, содержащий исходную коллекцию.</param>
+      <typeparam name="T">Тип объектов в <paramref name="source" />, ограниченный узлом <see cref="T:System.Xml.Linq.XContainer" />.</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Remove(System.Collections.Generic.IEnumerable{System.Xml.Linq.XAttribute})">
+      <summary>Удаление каждого атрибута в исходной коллекции из родительского элемента.</summary>
+      <param name="source">Интерфейс <see cref="T:System.Collections.Generic.IEnumerable`1" /> атрибута <see cref="T:System.Xml.Linq.XAttribute" />, содержащий исходную коллекцию.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Remove``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>Удаление каждого узла в исходной коллекции из родительского узла.</summary>
+      <param name="source">Интерфейс <see cref="T:System.Collections.Generic.IEnumerable`1" /> узла <see cref="T:System.Xml.Linq.XNode" />, содержащий исходную коллекцию.</param>
+      <typeparam name="T">Тип объектов в <paramref name="source" />, ограниченный узлом <see cref="T:System.Xml.Linq.XNode" />.</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.LoadOptions">
+      <summary>Указывает возможности загрузки, анализируя XML. </summary>
+    </member>
+    <member name="F:System.Xml.Linq.LoadOptions.None">
+      <summary>Не сохраняет незначительные пробелы или загружает базовый URI и информацию строки.</summary>
+    </member>
+    <member name="F:System.Xml.Linq.LoadOptions.PreserveWhitespace">
+      <summary>Сохраняет незначительные пробелы при анализе.</summary>
+    </member>
+    <member name="F:System.Xml.Linq.LoadOptions.SetBaseUri">
+      <summary>Запрашивает информацию о базовом URI из <see cref="T:System.Xml.XmlReader" /> и делает ее доступной через свойство <see cref="P:System.Xml.Linq.XObject.BaseUri" />.</summary>
+    </member>
+    <member name="F:System.Xml.Linq.LoadOptions.SetLineInfo">
+      <summary>Запрашивает информацию о строке из <see cref="T:System.Xml.XmlReader" /> и делает ее доступной через свойства на <see cref="T:System.Xml.Linq.XObject" />.</summary>
+    </member>
+    <member name="T:System.Xml.Linq.ReaderOptions">
+      <summary>Определяет, нужно ли пропускать дубликаты пространств имен при загрузке объекта <see cref="T:System.Xml.Linq.XDocument" /> с помощью <see cref="T:System.Xml.XmlReader" />.</summary>
+    </member>
+    <member name="F:System.Xml.Linq.ReaderOptions.None">
+      <summary>Не указаны параметры объекта чтения.</summary>
+    </member>
+    <member name="F:System.Xml.Linq.ReaderOptions.OmitDuplicateNamespaces">
+      <summary>Пропускать дубликаты пространств имен при загрузке <see cref="T:System.Xml.Linq.XDocument" />.</summary>
+    </member>
+    <member name="T:System.Xml.Linq.SaveOptions">
+      <summary>Указывает возможности сериализации.</summary>
+    </member>
+    <member name="F:System.Xml.Linq.SaveOptions.DisableFormatting">
+      <summary>Сохранение всех незначительных пробелов при сериализации.</summary>
+    </member>
+    <member name="F:System.Xml.Linq.SaveOptions.None">
+      <summary>Форматирование (отступ) XML при сериализации.</summary>
+    </member>
+    <member name="F:System.Xml.Linq.SaveOptions.OmitDuplicateNamespaces">
+      <summary>Удаление дубликатов объявлений пространств имен при сериализации.</summary>
+    </member>
+    <member name="T:System.Xml.Linq.XAttribute">
+      <summary>Представляет атрибут XML.</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.#ctor(System.Xml.Linq.XAttribute)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Xml.Linq.XAttribute" /> из другого объекта <see cref="T:System.Xml.Linq.XAttribute" />. </summary>
+      <param name="other">Объект <see cref="T:System.Xml.Linq.XAttribute" /> для копирования.</param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="other" /> — null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.#ctor(System.Xml.Linq.XName,System.Object)">
+      <summary>Инициализация нового экземпляра класса <see cref="T:System.Xml.Linq.XAttribute" /> из указанного имени и значения. </summary>
+      <param name="name">
+        <see cref="T:System.Xml.Linq.XName" /> атрибута.</param>
+      <param name="value">
+        <see cref="T:System.Object" />, содержащий значение атрибута.</param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="name" /> или <paramref name="value" /> — null.</exception>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.EmptySequence">
+      <summary>Получение пустой коллекции атрибутов.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> для <see cref="T:System.Xml.Linq.XAttribute" />, содержащий пустую коллекцию.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.IsNamespaceDeclaration">
+      <summary>Определяет, является ли этот атрибут объявлением пространства имен.</summary>
+      <returns>Значение true, если этот атрибут является объявлением пространства имен, иначе значение false.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.Name">
+      <summary>Получение развернутого имени этого атрибута.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XName" />, содержащий имя атрибута.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.NextAttribute">
+      <summary>Получение следующего атрибута родительского элемента.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XAttribute" />, содержащий следующий атрибут родительского элемента.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.NodeType">
+      <summary>Получает тип узла для этого узла.</summary>
+      <returns>Тип узла.Для объектов <see cref="T:System.Xml.Linq.XAttribute" /> этим значением является <see cref="F:System.Xml.XmlNodeType.Attribute" />.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.UInt32}">
+      <summary>Приводит значение данного атрибута <see cref="T:System.Xml.Linq.XAttribute" /> к значению <see cref="T:System.Nullable`1" /> объекта <see cref="T:System.UInt32" />.</summary>
+      <returns>Значение <see cref="T:System.Nullable`1" /> объекта <see cref="T:System.UInt32" />, включающего содержимое данного атрибута <see cref="T:System.Xml.Linq.XAttribute" />.</returns>
+      <param name="attribute">Атрибут <see cref="T:System.Xml.Linq.XAttribute" /> для приведения к <see cref="T:System.Nullable`1" /> для <see cref="T:System.UInt32" />.</param>
+      <exception cref="T:System.FormatException">Атрибут не содержит допустимое значение типа <see cref="T:System.UInt32" />.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.UInt64}">
+      <summary>Приводит значение данного атрибута <see cref="T:System.Xml.Linq.XAttribute" /> к значению <see cref="T:System.Nullable`1" /> объекта <see cref="T:System.UInt64" />.</summary>
+      <returns>Значение <see cref="T:System.Nullable`1" /> объекта <see cref="T:System.UInt64" />, включающего содержимое данного атрибута <see cref="T:System.Xml.Linq.XAttribute" />.</returns>
+      <param name="attribute">Атрибут <see cref="T:System.Xml.Linq.XAttribute" /> для приведения к <see cref="T:System.Nullable`1" /> для <see cref="T:System.UInt64" />.</param>
+      <exception cref="T:System.FormatException">Атрибут не содержит допустимое значение типа <see cref="T:System.UInt64" />.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.TimeSpan}">
+      <summary>Приводит значение данного атрибута <see cref="T:System.Xml.Linq.XAttribute" /> к значению <see cref="T:System.Nullable`1" /> объекта <see cref="T:System.TimeSpan" />.</summary>
+      <returns>
+        <see cref="T:System.Nullable`1" /> для <see cref="T:System.TimeSpan" />, включающего содержимое этого <see cref="T:System.Xml.Linq.XAttribute" />.</returns>
+      <param name="attribute">Атрибут <see cref="T:System.Xml.Linq.XAttribute" /> для приведения к <see cref="T:System.Nullable`1" /> для <see cref="T:System.TimeSpan" />.</param>
+      <exception cref="T:System.FormatException">Атрибут не содержит допустимое значение <see cref="T:System.TimeSpan" />.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Int64}">
+      <summary>Приводит значение данного атрибута <see cref="T:System.Xml.Linq.XAttribute" /> к значению <see cref="T:System.Nullable`1" /> объекта <see cref="T:System.Int64" />.</summary>
+      <returns>Значение <see cref="T:System.Nullable`1" /> объекта <see cref="T:System.Int64" />, включающего содержимое данного атрибута <see cref="T:System.Xml.Linq.XAttribute" />.</returns>
+      <param name="attribute">Атрибут <see cref="T:System.Xml.Linq.XAttribute" /> для приведения к <see cref="T:System.Nullable`1" /> для <see cref="T:System.Int64" />.</param>
+      <exception cref="T:System.FormatException">Атрибут не содержит допустимое значение типа <see cref="T:System.Int64" />.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Single}">
+      <summary>Приводит значение данного атрибута <see cref="T:System.Xml.Linq.XAttribute" /> к значению <see cref="T:System.Nullable`1" /> объекта <see cref="T:System.Single" />.</summary>
+      <returns>Значение <see cref="T:System.Nullable`1" /> объекта <see cref="T:System.Single" />, включающего содержимое данного атрибута <see cref="T:System.Xml.Linq.XAttribute" />.</returns>
+      <param name="attribute">Атрибут <see cref="T:System.Xml.Linq.XAttribute" /> для приведения к <see cref="T:System.Nullable`1" /> для <see cref="T:System.Single" />.</param>
+      <exception cref="T:System.FormatException">Атрибут не содержит допустимое значение типа <see cref="T:System.Single" />.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.UInt32">
+      <summary>Приводит значение данного атрибута <see cref="T:System.Xml.Linq.XAttribute" /> к значению <see cref="T:System.UInt32" />.</summary>
+      <returns>Объект типа <see cref="T:System.UInt32" />, включающий содержимое данного атрибута <see cref="T:System.Xml.Linq.XAttribute" />.</returns>
+      <param name="attribute">Атрибут <see cref="T:System.Xml.Linq.XAttribute" /> для приведения к значению <see cref="T:System.UInt32" />.</param>
+      <exception cref="T:System.FormatException">Атрибут не содержит допустимое значение типа <see cref="T:System.UInt32" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="attribute" /> — null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.UInt64">
+      <summary>Приведение значения этого атрибута <see cref="T:System.Xml.Linq.XAttribute" /> к <see cref="T:System.UInt64" />.</summary>
+      <returns>
+        <see cref="T:System.UInt64" />, содержащий данные <see cref="T:System.Xml.Linq.XAttribute" />.</returns>
+      <param name="attribute">
+        <see cref="T:System.Xml.Linq.XAttribute" /> для приведения к <see cref="T:System.UInt64" />.</param>
+      <exception cref="T:System.FormatException">Атрибут не содержит допустимое значение типа <see cref="T:System.UInt64" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="attribute" /> — null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.TimeSpan">
+      <summary>Приводит значение данного атрибута <see cref="T:System.Xml.Linq.XAttribute" /> к значению <see cref="T:System.TimeSpan" />.</summary>
+      <returns>
+        <see cref="T:System.TimeSpan" />, содержащий данные <see cref="T:System.Xml.Linq.XAttribute" />.</returns>
+      <param name="attribute">
+        <see cref="T:System.Xml.Linq.XAttribute" /> для приведения к <see cref="T:System.TimeSpan" />.</param>
+      <exception cref="T:System.FormatException">Атрибут не содержит допустимое значение <see cref="T:System.TimeSpan" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="attribute" /> — null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Single">
+      <summary>Приведение значения этого атрибута <see cref="T:System.Xml.Linq.XAttribute" /> к <see cref="T:System.Single" />.</summary>
+      <returns>
+        <see cref="T:System.Single" />, содержащий данные <see cref="T:System.Xml.Linq.XAttribute" />.</returns>
+      <param name="attribute">
+        <see cref="T:System.Xml.Linq.XAttribute" /> для приведения к <see cref="T:System.Single" />.</param>
+      <exception cref="T:System.FormatException">Атрибут не содержит допустимое значение типа <see cref="T:System.Single" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="attribute" /> — null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.String">
+      <summary>Приводит значение данного атрибута <see cref="T:System.Xml.Linq.XAttribute" /> к значению <see cref="T:System.String" />.</summary>
+      <returns>Значение <see cref="T:System.String" />, включающее содержимое данного атрибута <see cref="T:System.Xml.Linq.XAttribute" />.</returns>
+      <param name="attribute">Атрибут <see cref="T:System.Xml.Linq.XAttribute" /> для приведения к значению <see cref="T:System.String" />.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Int32}">
+      <summary>Приводит значение данного атрибута <see cref="T:System.Xml.Linq.XAttribute" /> к значению <see cref="T:System.Nullable`1" /> объекта <see cref="T:System.Int32" />.</summary>
+      <returns>Значение <see cref="T:System.Nullable`1" /> объекта <see cref="T:System.Int32" />, включающего содержимое данного атрибута <see cref="T:System.Xml.Linq.XAttribute" />.</returns>
+      <param name="attribute">Атрибут <see cref="T:System.Xml.Linq.XAttribute" /> для приведения к значению <see cref="T:System.Nullable`1" /> объекта <see cref="T:System.Int32" />.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Double">
+      <summary>Приведение значения этого атрибута <see cref="T:System.Xml.Linq.XAttribute" /> к <see cref="T:System.Double" />.</summary>
+      <returns>
+        <see cref="T:System.Double" />, содержащий данные <see cref="T:System.Xml.Linq.XAttribute" />.</returns>
+      <param name="attribute">
+        <see cref="T:System.Xml.Linq.XAttribute" /> для приведения к <see cref="T:System.Double" />.</param>
+      <exception cref="T:System.FormatException">Атрибут не содержит допустимое значение типа <see cref="T:System.Double" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="attribute" /> — null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Guid">
+      <summary>Приведение значения этого атрибута <see cref="T:System.Xml.Linq.XAttribute" /> к <see cref="T:System.Guid" />.</summary>
+      <returns>
+        <see cref="T:System.Guid" />, содержащий данные <see cref="T:System.Xml.Linq.XAttribute" />.</returns>
+      <param name="attribute">
+        <see cref="T:System.Xml.Linq.XAttribute" /> для приведения к <see cref="T:System.Guid" />.</param>
+      <exception cref="T:System.FormatException">Атрибут не содержит допустимое значение <see cref="T:System.Guid" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="attribute" /> — null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Int32">
+      <summary>Приводит значение данного атрибута <see cref="T:System.Xml.Linq.XAttribute" /> к значению <see cref="T:System.Int32" />.</summary>
+      <returns>Объект <see cref="T:System.Int32" />, содержащий данные <see cref="T:System.Xml.Linq.XAttribute" />.</returns>
+      <param name="attribute">Атрибут <see cref="T:System.Xml.Linq.XAttribute" /> для приведения к <see cref="T:System.Int32" />.</param>
+      <exception cref="T:System.FormatException">Атрибут не содержит допустимое значение типа <see cref="T:System.Int32" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="attribute" /> — null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Decimal">
+      <summary>Приводит значение данного атрибута <see cref="T:System.Xml.Linq.XAttribute" /> к значению <see cref="T:System.Decimal" />.</summary>
+      <returns>Объект типа <see cref="T:System.Decimal" />, включающий содержимое данного атрибута <see cref="T:System.Xml.Linq.XAttribute" />.</returns>
+      <param name="attribute">Атрибут <see cref="T:System.Xml.Linq.XAttribute" /> для приведения к значению <see cref="T:System.Decimal" />.</param>
+      <exception cref="T:System.FormatException">Атрибут не содержит допустимое значение типа <see cref="T:System.Decimal" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="attribute" /> — null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Boolean">
+      <summary>Приводит значение данного атрибута <see cref="T:System.Xml.Linq.XAttribute" /> к значению <see cref="T:System.Boolean" />.</summary>
+      <returns>Объект типа <see cref="T:System.Boolean" />, включающий содержимое данного атрибута <see cref="T:System.Xml.Linq.XAttribute" />.</returns>
+      <param name="attribute">Атрибут <see cref="T:System.Xml.Linq.XAttribute" /> для приведения к значению <see cref="T:System.Boolean" />.</param>
+      <exception cref="T:System.FormatException">Атрибут не содержит допустимое значение типа <see cref="T:System.Boolean" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="attribute" /> — null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.DateTime">
+      <summary>Приводит значение данного атрибута <see cref="T:System.Xml.Linq.XAttribute" /> к значению <see cref="T:System.DateTime" />.</summary>
+      <returns>Объект <see cref="T:System.DateTime" />, включающий содержимое данного атрибута <see cref="T:System.Xml.Linq.XAttribute" />.</returns>
+      <param name="attribute">Атрибут <see cref="T:System.Xml.Linq.XAttribute" /> для приведения к значению <see cref="T:System.DateTime" />.</param>
+      <exception cref="T:System.FormatException">Атрибут не содержит допустимое значение <see cref="T:System.DateTime" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="attribute" /> — null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.DateTimeOffset">
+      <summary>Приводит значение данного атрибута <see cref="T:System.Xml.Linq.XAttribute" /> к значению <see cref="T:System.DateTimeOffset" />.</summary>
+      <returns>Объект <see cref="T:System.DateTimeOffset" />, включающий содержимое данного атрибута <see cref="T:System.Xml.Linq.XAttribute" />.</returns>
+      <param name="attribute">Атрибут <see cref="T:System.Xml.Linq.XAttribute" /> для приведения к значению <see cref="T:System.DateTimeOffset" />.</param>
+      <exception cref="T:System.FormatException">Атрибут не содержит допустимое значение <see cref="T:System.DateTimeOffset" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="attribute" /> — null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Decimal}">
+      <summary>Приводит значение данного атрибута <see cref="T:System.Xml.Linq.XAttribute" /> к значению <see cref="T:System.Nullable`1" /> объекта <see cref="T:System.Decimal" />.</summary>
+      <returns>Значение <see cref="T:System.Nullable`1" /> объекта <see cref="T:System.Decimal" />, включающего содержимое данного атрибута <see cref="T:System.Xml.Linq.XAttribute" />.</returns>
+      <param name="attribute">Атрибут <see cref="T:System.Xml.Linq.XAttribute" /> для приведения к <see cref="T:System.Nullable`1" /> для <see cref="T:System.Decimal" />.</param>
+      <exception cref="T:System.FormatException">Атрибут не содержит допустимое значение типа <see cref="T:System.Decimal" />.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.DateTimeOffset}">
+      <summary>Приводит значение данного атрибута <see cref="T:System.Xml.Linq.XAttribute" /> к значению <see cref="T:System.Nullable`1" /> объекта <see cref="T:System.DateTimeOffset" />.</summary>
+      <returns>Значение <see cref="T:System.Nullable`1" /> объекта <see cref="T:System.DateTimeOffset" />, включающего содержимое данного атрибута <see cref="T:System.Xml.Linq.XAttribute" />.</returns>
+      <param name="attribute">Атрибут <see cref="T:System.Xml.Linq.XAttribute" /> для приведения к значению <see cref="T:System.Nullable`1" /> объекта <see cref="T:System.DateTimeOffset" />.</param>
+      <exception cref="T:System.FormatException">Атрибут не содержит допустимое значение <see cref="T:System.DateTimeOffset" />.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Guid}">
+      <summary>Приводит значение данного атрибута <see cref="T:System.Xml.Linq.XAttribute" /> к значению <see cref="T:System.Nullable`1" /> объекта <see cref="T:System.Guid" />.</summary>
+      <returns>Значение <see cref="T:System.Nullable`1" /> объекта <see cref="T:System.Guid" />, включающего содержимое данного атрибута <see cref="T:System.Xml.Linq.XAttribute" />.</returns>
+      <param name="attribute">Атрибут <see cref="T:System.Xml.Linq.XAttribute" /> для приведения к <see cref="T:System.Nullable`1" /> для <see cref="T:System.Guid" />.</param>
+      <exception cref="T:System.FormatException">Атрибут не содержит допустимое значение <see cref="T:System.Guid" />.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Double}">
+      <summary>Приводит значение данного атрибута <see cref="T:System.Xml.Linq.XAttribute" /> к значению <see cref="T:System.Nullable`1" /> объекта <see cref="T:System.Double" />.</summary>
+      <returns>Значение <see cref="T:System.Nullable`1" /> объекта типа <see cref="T:System.Double" />, включающего содержимое данного атрибута <see cref="T:System.Xml.Linq.XAttribute" />.</returns>
+      <param name="attribute">Атрибут <see cref="T:System.Xml.Linq.XAttribute" /> для приведения к значению <see cref="T:System.Nullable`1" /> объекта <see cref="T:System.Double" />.</param>
+      <exception cref="T:System.FormatException">Атрибут не содержит допустимое значение типа <see cref="T:System.Double" />.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Int64">
+      <summary>Приводит значение данного атрибута <see cref="T:System.Xml.Linq.XAttribute" /> к значению <see cref="T:System.Int64" />.</summary>
+      <returns>Объект <see cref="T:System.Int64" />, содержащий данные <see cref="T:System.Xml.Linq.XAttribute" />.</returns>
+      <param name="attribute">Атрибут <see cref="T:System.Xml.Linq.XAttribute" /> для приведения к <see cref="T:System.Int64" />.</param>
+      <exception cref="T:System.FormatException">Атрибут не содержит допустимое значение типа <see cref="T:System.Int64" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="attribute" /> — null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.DateTime}">
+      <summary>Приводит значение данного атрибута <see cref="T:System.Xml.Linq.XAttribute" /> к значению <see cref="T:System.Nullable`1" /> объекта <see cref="T:System.DateTime" />.</summary>
+      <returns>
+        <see cref="T:System.Nullable`1" /> для <see cref="T:System.DateTime" />, включающего содержимое этого <see cref="T:System.Xml.Linq.XAttribute" />.</returns>
+      <param name="attribute">Атрибут <see cref="T:System.Xml.Linq.XAttribute" /> для приведения к <see cref="T:System.Nullable`1" /> для <see cref="T:System.DateTime" />.</param>
+      <exception cref="T:System.FormatException">Атрибут не содержит допустимое значение <see cref="T:System.DateTime" />.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Boolean}">
+      <summary>Приводит значение данного атрибута <see cref="T:System.Xml.Linq.XAttribute" /> к значению <see cref="T:System.Nullable`1" /> объекта <see cref="T:System.Boolean" />.</summary>
+      <returns>
+        <see cref="T:System.Nullable`1" /> для объекта <see cref="T:System.Boolean" />, включающего содержимое этого атрибута <see cref="T:System.Xml.Linq.XAttribute" />.</returns>
+      <param name="attribute">Атрибут <see cref="T:System.Xml.Linq.XAttribute" /> для приведения к <see cref="T:System.Nullable`1" /> для <see cref="T:System.Boolean" />.</param>
+      <exception cref="T:System.FormatException">Атрибут не содержит допустимое значение типа <see cref="T:System.Boolean" />.</exception>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.PreviousAttribute">
+      <summary>Получение предыдущего атрибута родительского элемента.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XAttribute" />, содержащий предыдущий атрибут родительского элемента.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.Remove">
+      <summary>Удаление атрибута из родительского элемента.</summary>
+      <exception cref="T:System.InvalidOperationException">Родительский элемент имеет значение null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.SetValue(System.Object)">
+      <summary>Задание значения этого атрибута.</summary>
+      <param name="value">Значение, которое следует назначить этому атрибуту.</param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="value" /> — null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="value" /> является <see cref="T:System.Xml.Linq.XObject" />.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.ToString">
+      <summary>Преобразование текущего объекта <see cref="T:System.Xml.Linq.XAttribute" /> к строковому представлению.</summary>
+      <returns>
+        <see cref="T:System.String" />, содержащий представление атрибута в тексте XML и его значение.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.Value">
+      <summary>Возвращает или задает значение этого атрибута.</summary>
+      <returns>
+        <see cref="T:System.String" />, содержащий значение атрибута.</returns>
+      <exception cref="T:System.ArgumentNullException">При установке <paramref name="value" /> имеет значение null.</exception>
+    </member>
+    <member name="T:System.Xml.Linq.XCData">
+      <summary>Представляет текстовый узел, содержащий CDATA. </summary>
+    </member>
+    <member name="M:System.Xml.Linq.XCData.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Xml.Linq.XCData" />. </summary>
+      <param name="value">Строка, содержащая значение узла <see cref="T:System.Xml.Linq.XCData" />.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XCData.#ctor(System.Xml.Linq.XCData)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Xml.Linq.XCData" />. </summary>
+      <param name="other">узел <see cref="T:System.Xml.Linq.XCData" />, из которого требуется выполнять копирование.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XCData.NodeType">
+      <summary>Получает тип узла для этого узла.</summary>
+      <returns>Тип узла.Для объектов <see cref="T:System.Xml.Linq.XCData" /> это значение — <see cref="F:System.Xml.XmlNodeType.CDATA" />.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XCData.WriteTo(System.Xml.XmlWriter)">
+      <summary>Записывает этот объект CDATA в <see cref="T:System.Xml.XmlWriter" />.</summary>
+      <param name="writer">
+        <see cref="T:System.Xml.XmlWriter" />, в который данный метод выполняет запись.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XComment">
+      <summary>Представляет комментарий XML. </summary>
+    </member>
+    <member name="M:System.Xml.Linq.XComment.#ctor(System.String)">
+      <summary>Инициализация нового экземпляра  класса <see cref="T:System.Xml.Linq.XComment" /> с указанным содержимым строки. </summary>
+      <param name="value">Строка, содержащая значение нового объекта <see cref="T:System.Xml.Linq.XComment" />.</param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="value" /> — null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XComment.#ctor(System.Xml.Linq.XComment)">
+      <summary>Инициализация нового экземпляра  класса <see cref="T:System.Xml.Linq.XComment" /> из существующего узла комментария. </summary>
+      <param name="other">узел <see cref="T:System.Xml.Linq.XComment" />, из которого нужно копировать.</param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="other" /> — null.</exception>
+    </member>
+    <member name="P:System.Xml.Linq.XComment.NodeType">
+      <summary>Получает тип узла для этого узла.</summary>
+      <returns>Тип узла.Для объектов <see cref="T:System.Xml.Linq.XComment" />, этим значением является <see cref="F:System.Xml.XmlNodeType.Comment" />.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XComment.Value">
+      <summary>Получает или задает значение строки этого комментария.</summary>
+      <returns>
+        <see cref="T:System.String" /> содержит значение строки этого комментария.</returns>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="value" /> имеет значение null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XComment.WriteTo(System.Xml.XmlWriter)">
+      <summary>Запишите этот комментарий на <see cref="T:System.Xml.XmlWriter" />.</summary>
+      <param name="writer">
+        <see cref="T:System.Xml.XmlWriter" />, в который данный метод выполняет запись.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XContainer">
+      <summary>Представляет узел, который может содержать другие узлы.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Add(System.Object)">
+      <summary>Добавляет указанное содержимое в качестве дочерних элементов данного объекта <see cref="T:System.Xml.Linq.XContainer" />.</summary>
+      <param name="content">Объект содержимого, включающий простое содержимое или коллекцию объектов содержимого, подлежащих добавлению.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Add(System.Object[])">
+      <summary>Добавляет указанное содержимое в качестве дочерних элементов данного объекта <see cref="T:System.Xml.Linq.XContainer" />.</summary>
+      <param name="content">Список параметров объектов содержимого.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.AddFirst(System.Object)">
+      <summary>Добавляет заданное содержимое как первые дочерние элементы данного документа или элемента.</summary>
+      <param name="content">Объект содержимого, включающий простое содержимое или коллекцию объектов содержимого, подлежащих добавлению.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.AddFirst(System.Object[])">
+      <summary>Добавляет заданное содержимое как первые дочерние элементы данного документа или элемента.</summary>
+      <param name="content">Список параметров объектов содержимого.</param>
+      <exception cref="T:System.InvalidOperationException">Родительский элемент — null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.CreateWriter">
+      <summary>Создает <see cref="T:System.Xml.XmlWriter" />, который можно использовать для добавления узлов в <see cref="T:System.Xml.Linq.XContainer" />.</summary>
+      <returns>
+        <see cref="T:System.Xml.XmlWriter" /> который готов принять содержимое для записи.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.DescendantNodes">
+      <summary>Возвращает коллекцию подчиненных узлов для документа или элемента в порядке следования документов.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" />
+        <see cref="T:System.Xml.Linq.XNode" /> содержащий подчиненные узлы <see cref="T:System.Xml.Linq.XContainer" /> в порядке следования документов.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Descendants">
+      <summary>Возвращает коллекцию подчиненных узлов для данного документа или элемента в порядке следования документов.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" />
+        <see cref="T:System.Xml.Linq.XElement" /> содержащий подчиненные элементы <see cref="T:System.Xml.Linq.XContainer" />.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Descendants(System.Xml.Linq.XName)">
+      <summary>Возвращает фильтрованную коллекцию подчиненных узлов для данного документа или элемента в порядке следования документов.В коллекцию включаются только элементы, соответствующие <see cref="T:System.Xml.Linq.XName" />.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" />
+        <see cref="T:System.Xml.Linq.XElement" />, содержащий подчиненные элементы <see cref="T:System.Xml.Linq.XContainer" />, которые соответствуют заданному <see cref="T:System.Xml.Linq.XName" />.</returns>
+      <param name="name">
+        <see cref="T:System.Xml.Linq.XName" /> для соответствия.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Element(System.Xml.Linq.XName)">
+      <summary>Получает первый (в порядке следования документа) дочерний элемент с заданным <see cref="T:System.Xml.Linq.XName" />.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XElement" />, который соответствует заданному <see cref="T:System.Xml.Linq.XName" /> или null.</returns>
+      <param name="name">
+        <see cref="T:System.Xml.Linq.XName" /> для соответствия.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Elements">
+      <summary>Возвращает коллекцию дочерних элементов для данного документа или элемента в порядке следования документа.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" />
+        <see cref="T:System.Xml.Linq.XElement" />, содержащий дочерние элементы данного <see cref="T:System.Xml.Linq.XContainer" /> в порядке следования документа.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Elements(System.Xml.Linq.XName)">
+      <summary>Возвращает фильтрованную коллекцию дочерних элементов для данного документа или элемента в порядке следования документа.В коллекцию включаются только элементы, соответствующие <see cref="T:System.Xml.Linq.XName" />.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" />
+        <see cref="T:System.Xml.Linq.XElement" />, содержащий дочерние элементы данного <see cref="T:System.Xml.Linq.XContainer" />, который имеет совпадающий <see cref="T:System.Xml.Linq.XName" /> в порядке следования документа.</returns>
+      <param name="name">
+        <see cref="T:System.Xml.Linq.XName" /> для соответствия.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XContainer.FirstNode">
+      <summary>Получает первый дочерний узел от данного узла.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XNode" />, содержащий первый дочерний узел <see cref="T:System.Xml.Linq.XContainer" />.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Xml.Linq.XContainer.LastNode">
+      <summary>Получает последний дочерний узел от данного узла.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XNode" />, содержащий последний дочерний узел <see cref="T:System.Xml.Linq.XContainer" />.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Nodes">
+      <summary>Возвращает коллекцию дочерних узлов для данного документа или элемента в порядке следования документа.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" />
+        <see cref="T:System.Xml.Linq.XNode" />, содержащий содержимое данного <see cref="T:System.Xml.Linq.XContainer" /> в порядке следования документа.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.RemoveNodes">
+      <summary>Удаляет дочерние элементы из данного документа или элемента.</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.ReplaceNodes(System.Object)">
+      <summary>Заменяет дочерние узлы данного документа или элемента заданным содержимым.</summary>
+      <param name="content">Объект содержимого, включающий простое содержимое или коллекцию объектов содержимого, которые заменяют дочерние узлы.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.ReplaceNodes(System.Object[])">
+      <summary>Заменяет дочерние узлы данного документа или элемента заданным содержимым.</summary>
+      <param name="content">Список параметров объектов содержимого.</param>
+    </member>
+    <member name="T:System.Xml.Linq.XDeclaration">
+      <summary>Представляет объявление XML.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XDeclaration.#ctor(System.String,System.String,System.String)">
+      <summary>Инициализация нового экземпляра  класса <see cref="T:System.Xml.Linq.XDeclaration" /> с указанной версией, кодированием и автономным статусом.</summary>
+      <param name="version">Версия XML, обычно "1.0".</param>
+      <param name="encoding">Кодирование для документа XML.</param>
+      <param name="standalone">Строка, содержащая "да" или "нет", которая указывает, является ли XML автономным или требует решения внешней сущности.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDeclaration.#ctor(System.Xml.Linq.XDeclaration)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Xml.Linq.XDeclaration" /> из другого объекта <see cref="T:System.Xml.Linq.XDeclaration" />. </summary>
+      <param name="other">
+        <see cref="T:System.Xml.Linq.XDeclaration" /> используется для инициализации этого объекта <see cref="T:System.Xml.Linq.XDeclaration" />.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XDeclaration.Encoding">
+      <summary>Возвращает или задает кодирование для этого документа.</summary>
+      <returns>
+        <see cref="T:System.String" />, содержащий имя страницы кода для этого документа.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDeclaration.Standalone">
+      <summary>Возвращает или задает отдельное свойство для этого документа.</summary>
+      <returns>
+        <see cref="T:System.String" /> содержит отдельное свойство для этого документа.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XDeclaration.ToString">
+      <summary>Представляет объявление как отформатированную строку.</summary>
+      <returns>
+        <see cref="T:System.String" /> содержит отформатированную строку XML.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDeclaration.Version">
+      <summary>Возвращает или задает версию свойства для этого документа.</summary>
+      <returns>
+        <see cref="T:System.String" /> содержит версию свойства для этого документа.</returns>
+    </member>
+    <member name="T:System.Xml.Linq.XDocument">
+      <summary>Представляет XML-документ.Информацию о компонентах и использовании объекта <see cref="T:System.Xml.Linq.XDocument" /> см. в разделе Общие сведения о классе XDocument.Просмотреть исходный код .NET Framework для этого типа можно на портале Reference Source.</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Xml.Linq.XDocument" />. </summary>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.#ctor(System.Object[])">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Xml.Linq.XDocument" /> с указанным содержимым.</summary>
+      <param name="content">Список параметров объектов содержимого для добавления в этот документ.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.#ctor(System.Xml.Linq.XDeclaration,System.Object[])">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Xml.Linq.XDocument" /> с указанным <see cref="T:System.Xml.Linq.XDeclaration" /> и содержимым.</summary>
+      <param name="declaration">
+        <see cref="T:System.Xml.Linq.XDeclaration" /> для документа.</param>
+      <param name="content">Содержимое документа.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.#ctor(System.Xml.Linq.XDocument)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Xml.Linq.XDocument" /> из существующего объекта <see cref="T:System.Xml.Linq.XDocument" />.</summary>
+      <param name="other">Объект <see cref="T:System.Xml.Linq.XDocument" />, который будет копироваться.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XDocument.Declaration">
+      <summary>Возвращает или задает объявление XML для этого документа.</summary>
+      <returns>Объект <see cref="T:System.Xml.Linq.XDeclaration" />, который содержит объявление XML для этого документа.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDocument.DocumentType">
+      <summary>Возвращает определение типа документа (DTD) для этого документа.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XDocumentType" />, который содержит DTD для этого документа.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.IO.Stream)">
+      <summary>Создает новый экземпляр <see cref="T:System.Xml.Linq.XDocument" /> с помощью указанного потока.</summary>
+      <returns>Объект <see cref="T:System.Xml.Linq.XDocument" />, который считывает содержащиеся в потоке данные. </returns>
+      <param name="stream">Поток, содержащий XML-данные.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.IO.Stream,System.Xml.Linq.LoadOptions)">
+      <summary>Создает новый экземпляр<see cref="T:System.Xml.Linq.XDocument" />, используя указанный поток и при необходимости оставляя пустое пространство, задавая базовый URI и сохраняя сведения о строках.</summary>
+      <returns>Объект <see cref="T:System.Xml.Linq.XDocument" />, который считывает содержащиеся в потоке данные.</returns>
+      <param name="stream">Поток, содержащий данные XML.</param>
+      <param name="options">Объект <see cref="T:System.Xml.Linq.LoadOptions" />, указывающий, следует ли загружать базовый URI и сведения о строках.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.IO.TextReader)">
+      <summary>Создает новый <see cref="T:System.Xml.Linq.XDocument" /> из <see cref="T:System.IO.TextReader" />. </summary>
+      <returns>Документ <see cref="T:System.Xml.Linq.XDocument" />, включающий содержимое указанного объекта <see cref="T:System.IO.TextReader" />.</returns>
+      <param name="textReader">Объект <see cref="T:System.IO.TextReader" />, включающий содержимое для документа <see cref="T:System.Xml.Linq.XDocument" />.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.IO.TextReader,System.Xml.Linq.LoadOptions)">
+      <summary>Создает новый <see cref="T:System.Xml.Linq.XDocument" /> из <see cref="T:System.IO.TextReader" />, при необходимости оставляя пробел, задавая базовый URI и сохраняя сведения о строках.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XDocument" />, содержащий XML, считанный из указанного <see cref="T:System.IO.TextReader" />.</returns>
+      <param name="textReader">Объект <see cref="T:System.IO.TextReader" />, включающий содержимое для документа <see cref="T:System.Xml.Linq.XDocument" />.</param>
+      <param name="options">
+        <see cref="T:System.Xml.Linq.LoadOptions" />, указывающий поведение пустого пространства и необходимость загрузки базового URI и сведений о строке.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.String)">
+      <summary>Создает новый <see cref="T:System.Xml.Linq.XDocument" /> из файла. </summary>
+      <returns>Элемент <see cref="T:System.Xml.Linq.XDocument" /> с содержимым указанного файла.</returns>
+      <param name="uri">Строка URI, ссылающаяся на файл для загрузки в новый <see cref="T:System.Xml.Linq.XDocument" />.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.String,System.Xml.Linq.LoadOptions)">
+      <summary>Создает новый <see cref="T:System.Xml.Linq.XDocument" /> из файла, при необходимости оставляя пробел, задавая базовый URI и сохраняя сведения о строках.</summary>
+      <returns>Элемент <see cref="T:System.Xml.Linq.XDocument" /> с содержимым указанного файла.</returns>
+      <param name="uri">Строка URI, ссылающаяся на файл для загрузки в новый <see cref="T:System.Xml.Linq.XDocument" />.</param>
+      <param name="options">
+        <see cref="T:System.Xml.Linq.LoadOptions" />, указывающий поведение пустого пространства и необходимость загрузки базового URI и сведений о строке.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.Xml.XmlReader)">
+      <summary>Создает новый <see cref="T:System.Xml.Linq.XDocument" /> из <see cref="T:System.Xml.XmlReader" />. </summary>
+      <returns>Документ <see cref="T:System.Xml.Linq.XDocument" />, включающий содержимое указанного объекта <see cref="T:System.Xml.XmlReader" />.</returns>
+      <param name="reader">Объект <see cref="T:System.Xml.XmlReader" />, включающий содержимое для документа <see cref="T:System.Xml.Linq.XDocument" />.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.Xml.XmlReader,System.Xml.Linq.LoadOptions)">
+      <summary>Загружает <see cref="T:System.Xml.Linq.XDocument" /> из <see cref="T:System.Xml.XmlReader" />, при необходимости задавая базовый URI и сохраняя сведения о строках.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XDocument" />, который содержит XML, считанный из указанного <see cref="T:System.Xml.XmlReader" />.</returns>
+      <param name="reader">
+        <see cref="T:System.Xml.XmlReader" /> будет прочтен для содержимого <see cref="T:System.Xml.Linq.XDocument" />.</param>
+      <param name="options">Объект <see cref="T:System.Xml.Linq.LoadOptions" />, указывающий, следует ли загружать базовый URI и сведения о строках.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XDocument.NodeType">
+      <summary>Возвращает тип узла для этого узла.</summary>
+      <returns>Тип узла.Для объектов <see cref="T:System.Xml.Linq.XDocument" /> это значение равно <see cref="F:System.Xml.XmlNodeType.Document" />.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Parse(System.String)">
+      <summary>Создает новый документ <see cref="T:System.Xml.Linq.XDocument" /> из строки.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XDocument" /> заполнен из строки, содержащей XML.</returns>
+      <param name="text">Строка, содержащая XML.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Parse(System.String,System.Xml.Linq.LoadOptions)">
+      <summary>Создает новый документ <see cref="T:System.Xml.Linq.XDocument" /> из строки, при необходимости оставляя пустое пространство, задавая базовый URI и сохраняя сведения о строках.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XDocument" /> заполнен из строки, содержащей XML.</returns>
+      <param name="text">Строка, содержащая XML.</param>
+      <param name="options">
+        <see cref="T:System.Xml.Linq.LoadOptions" />, указывающий поведение пустого пространства и необходимость загрузки базового URI и сведений о строке.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XDocument.Root">
+      <summary>Возвращает корневой элемент дерева XML для этого документа.</summary>
+      <returns>Корень <see cref="T:System.Xml.Linq.XElement" /> дерева XML.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Save(System.IO.Stream)">
+      <summary>Выводит этот документ <see cref="T:System.Xml.Linq.XDocument" /> в указанный поток <see cref="T:System.IO.Stream" />.</summary>
+      <param name="stream">Поток для вывода данного элемента <see cref="T:System.Xml.Linq.XDocument" />.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Save(System.IO.Stream,System.Xml.Linq.SaveOptions)">
+      <summary>Выводит данный элемент <see cref="T:System.Xml.Linq.XDocument" /> в указанный поток <see cref="T:System.IO.Stream" />, при необходимости задавая поведение форматирования.</summary>
+      <param name="stream">Поток для вывода данного элемента <see cref="T:System.Xml.Linq.XDocument" />.</param>
+      <param name="options">Объект <see cref="T:System.Xml.Linq.SaveOptions" />, задающий поведение форматирования.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Save(System.IO.TextWriter)">
+      <summary>Сериализация этого элемента <see cref="T:System.Xml.Linq.XDocument" /> в <see cref="T:System.IO.TextWriter" />.</summary>
+      <param name="textWriter">Объект <see cref="T:System.IO.TextWriter" />, в который будет записан элемент <see cref="T:System.Xml.Linq.XDocument" />.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Save(System.IO.TextWriter,System.Xml.Linq.SaveOptions)">
+      <summary>Сериализация этого <see cref="T:System.Xml.Linq.XDocument" /> в <see cref="T:System.IO.TextWriter" /> с возможным выключением форматирования.</summary>
+      <param name="textWriter">
+        <see cref="T:System.IO.TextWriter" />, в который выводится XML.</param>
+      <param name="options">Объект <see cref="T:System.Xml.Linq.SaveOptions" />, задающий поведение форматирования.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Save(System.Xml.XmlWriter)">
+      <summary>Сериализация этого элемента <see cref="T:System.Xml.Linq.XDocument" /> в <see cref="T:System.Xml.XmlWriter" />.</summary>
+      <param name="writer">Объект <see cref="T:System.Xml.XmlWriter" />, в который будет записан элемент <see cref="T:System.Xml.Linq.XDocument" />.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.WriteTo(System.Xml.XmlWriter)">
+      <summary>Запись этого документа в <see cref="T:System.Xml.XmlWriter" />.</summary>
+      <param name="writer">
+        <see cref="T:System.Xml.XmlWriter" />, в который данный метод выполняет запись.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XDocumentType">
+      <summary>Представляет определение типа документов XML (DTD). </summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XDocumentType.#ctor(System.String,System.String,System.String,System.String)">
+      <summary>Инициализирует экземпляр класса <see cref="T:System.Xml.Linq.XDocumentType" />. </summary>
+      <param name="name">
+        <see cref="T:System.String" />, содержащий определенное имя DTD, совпадающее с определенным именем корневого элемента документа XML.</param>
+      <param name="publicId">
+        <see cref="T:System.String" />, в котором содержится открытый идентификатор внешнего открытого DTD.</param>
+      <param name="systemId">
+        <see cref="T:System.String" />, в котором содержится системный идентификатор внешнего частного DTD.</param>
+      <param name="internalSubset">
+        <see cref="T:System.String" /> содержит внутреннее подмножество для внутреннего DTD.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocumentType.#ctor(System.Xml.Linq.XDocumentType)">
+      <summary>Инициализирует экземпляр класса <see cref="T:System.Xml.Linq.XDocumentType" /> из другого объекта <see cref="T:System.Xml.Linq.XDocumentType" />.</summary>
+      <param name="other">Объект <see cref="T:System.Xml.Linq.XDocumentType" />, из которого нужно копировать.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XDocumentType.InternalSubset">
+      <summary>Получает или задает внутреннее подмножество для этого Определения типа документа (DTD).</summary>
+      <returns>
+        <see cref="T:System.String" /> содержит внутреннее подмножество для этого Определения типа документа (DTD).</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDocumentType.Name">
+      <summary>Получает или задает имя для этого Определения типа документа (DTD).</summary>
+      <returns>
+        <see cref="T:System.String" /> содержит имя для этого Определения типа документа (DTD).</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDocumentType.NodeType">
+      <summary>Получает тип узла для этого узла.</summary>
+      <returns>Тип узла.Для объектов <see cref="T:System.Xml.Linq.XDocumentType" /> этим значением является <see cref="F:System.Xml.XmlNodeType.DocumentType" />.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDocumentType.PublicId">
+      <summary>Получает или задает открытый идентификатор для этого Определения типа документа (DTD).</summary>
+      <returns>
+        <see cref="T:System.String" /> содержит открытый идентификатор для этого Определения типа документа (DTD).</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDocumentType.SystemId">
+      <summary>Получает или задает системный идентификатор для этого Определения типа документа (DTD).</summary>
+      <returns>
+        <see cref="T:System.String" /> содержит системный идентификатор для этого Определения типа документа (DTD).</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XDocumentType.WriteTo(System.Xml.XmlWriter)">
+      <summary>Запишите этот <see cref="T:System.Xml.Linq.XDocumentType" /> на <see cref="T:System.Xml.XmlWriter" />.</summary>
+      <param name="writer">
+        <see cref="T:System.Xml.XmlWriter" />, в который данный метод выполняет запись.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XElement">
+      <summary>Представляет элемент XML.В разделе Общие сведения о классе XElement и «примечания» на этой странице сведения об использовании и примеры.Чтобы просмотреть исходный код .NET Framework для этого типа, см. ссылки на источник.</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.#ctor(System.Xml.Linq.XElement)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Xml.Linq.XElement" /> из другого объекта <see cref="T:System.Xml.Linq.XElement" />.</summary>
+      <param name="other">Объект <see cref="T:System.Xml.Linq.XElement" /> для копирования.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.#ctor(System.Xml.Linq.XName)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Xml.Linq.XElement" /> с указанным именем. </summary>
+      <param name="name">
+        <see cref="T:System.Xml.Linq.XName" />, содержащий имя элемента.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.#ctor(System.Xml.Linq.XName,System.Object)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Xml.Linq.XElement" /> с указанными именем и содержимым.</summary>
+      <param name="name">
+        <see cref="T:System.Xml.Linq.XName" />, содержащий имя элемента.</param>
+      <param name="content">Содержимое элемента.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.#ctor(System.Xml.Linq.XName,System.Object[])">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Xml.Linq.XElement" /> с указанными именем и содержимым.</summary>
+      <param name="name">
+        <see cref="T:System.Xml.Linq.XName" />, содержащий имя элемента.</param>
+      <param name="content">Начальное содержимое элемента.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.#ctor(System.Xml.Linq.XStreamingElement)">
+      <summary>Инициализируется новый экземпляр класса <see cref="T:System.Xml.Linq.XElement" /> из объекта <see cref="T:System.Xml.Linq.XStreamingElement" />.</summary>
+      <param name="other">Элемент <see cref="T:System.Xml.Linq.XStreamingElement" />, содержащий невычисленные запросы, итерации которых будут выполнены для содержимого <see cref="T:System.Xml.Linq.XElement" />.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.AncestorsAndSelf">
+      <summary>Возвращает коллекцию элементов, содержащих данный элемент или являющихся его предшественниками. </summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> для <see cref="T:System.Xml.Linq.XElement" /> элементов, содержащих этот элемент и предшественников этого элемента. </returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.AncestorsAndSelf(System.Xml.Linq.XName)">
+      <summary>Возвращает фильтрованную коллекцию элементов, содержащих данный элемент или являющихся его предшественниками.В коллекцию включаются только элементы, соответствующие <see cref="T:System.Xml.Linq.XName" />.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> для <see cref="T:System.Xml.Linq.XElement" />, содержащий этот элемент и предшественников этого элемента.В коллекцию включаются только элементы, соответствующие <see cref="T:System.Xml.Linq.XName" />.</returns>
+      <param name="name">
+        <see cref="T:System.Xml.Linq.XName" /> для соответствия.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Attribute(System.Xml.Linq.XName)">
+      <summary>Возвращает атрибут <see cref="T:System.Xml.Linq.XAttribute" /> данного элемента <see cref="T:System.Xml.Linq.XElement" />, имеющий указанное имя <see cref="T:System.Xml.Linq.XName" />.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XAttribute" />, имеющий указанное <see cref="T:System.Xml.Linq.XName" />; null, если не существует атрибута с указанным именем.</returns>
+      <param name="name">Имя <see cref="T:System.Xml.Linq.XName" /> атрибута <see cref="T:System.Xml.Linq.XAttribute" /> для получения.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Attributes">
+      <summary>Возвращает коллекцию атрибутов этого элемента.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> для <see cref="T:System.Xml.Linq.XAttribute" /> атрибутов этого элемента.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Attributes(System.Xml.Linq.XName)">
+      <summary>Возвращает фильтрованную коллекцию атрибутов этого элемента.В коллекцию включаются только элементы, соответствующие <see cref="T:System.Xml.Linq.XName" />.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> для <see cref="T:System.Xml.Linq.XAttribute" />, содержащий атрибуты этого элемента.В коллекцию включаются только элементы, соответствующие <see cref="T:System.Xml.Linq.XName" />.</returns>
+      <param name="name">
+        <see cref="T:System.Xml.Linq.XName" /> для соответствия.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.DescendantNodesAndSelf">
+      <summary>Возвращает коллекцию узлов, содержащих данный элемент или являющихся его потомками, в порядке их следования в документе.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> для <see cref="T:System.Xml.Linq.XNode" />, содержащий этот элемент и все узлы-потомки этого элемента в порядке следования документов.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.DescendantsAndSelf">
+      <summary>Возвращает коллекцию элементов, содержащих данный элемент или являющихся его потомками, в порядке их следования в документе.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> для <see cref="T:System.Xml.Linq.XElement" />, содержащий этот элемент и все элементы-потомки этого элемента в порядке следования документов.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.DescendantsAndSelf(System.Xml.Linq.XName)">
+      <summary>Возвращает фильтрованную коллекцию элементов, содержащих данный элемент или являющихся его потомками, в порядке их следования в документе.В коллекцию включаются только элементы, соответствующие <see cref="T:System.Xml.Linq.XName" />.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> для <see cref="T:System.Xml.Linq.XElement" />, содержащий этот элемент и все элементы-потомки этого элемента в порядке следования документов.В коллекцию включаются только элементы, соответствующие <see cref="T:System.Xml.Linq.XName" />.</returns>
+      <param name="name">
+        <see cref="T:System.Xml.Linq.XName" /> для соответствия.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.EmptySequence">
+      <summary>Возвращает пустую коллекцию элементов.</summary>
+      <returns>Интерфейс <see cref="T:System.Collections.Generic.IEnumerable`1" /> объекта <see cref="T:System.Xml.Linq.XElement" />, содержащий пустую коллекцию.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.FirstAttribute">
+      <summary>Возвращает первый атрибут этого элемента.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XAttribute" />, содержащий первый атрибут этого элемента.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.GetDefaultNamespace">
+      <summary>Получает пространство имен <see cref="T:System.Xml.Linq.XNamespace" /> по умолчанию данного объекта <see cref="T:System.Xml.Linq.XElement" />.</summary>
+      <returns>Пространство имен <see cref="T:System.Xml.Linq.XNamespace" />, содержащее используемое по умолчанию пространство имен объекта <see cref="T:System.Xml.Linq.XElement" />.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.GetNamespaceOfPrefix(System.String)">
+      <summary>Получает пространство имен, связанное с определенным префиксом для данного элемента <see cref="T:System.Xml.Linq.XElement" />.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XNamespace" /> для пространства имен, связанного с префиксом для <see cref="T:System.Xml.Linq.XElement" />.</returns>
+      <param name="prefix">Строка, содержащая префикс пространства имен для поиска.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.GetPrefixOfNamespace(System.Xml.Linq.XNamespace)">
+      <summary>Получает префикс, связанный с пространством имен для данного элемента <see cref="T:System.Xml.Linq.XElement" />.</summary>
+      <returns>Строка <see cref="T:System.String" />, содержащая префикс пространства имен.</returns>
+      <param name="ns">Пространство <see cref="T:System.Xml.Linq.XNamespace" /> для поиска.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.HasAttributes">
+      <summary>Возвращает значение, указывающее, есть ли у этого элемента хотя бы один атрибут.</summary>
+      <returns>Значение true, если этот элемент имеет как минимум один атрибут; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.HasElements">
+      <summary>Возвращает значение, указывающее, есть ли у этого элемента хотя бы один дочерний элемент.</summary>
+      <returns>Значение true, если этот элемент имеет как минимум один дочерний атрибут; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.IsEmpty">
+      <summary>Возвращает значение, указывающее, имеет ли данный элемент содержимое.</summary>
+      <returns>true, если данный элемент не имеет содержимого; в противном случае false.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.LastAttribute">
+      <summary>Возвращает последний атрибут этого элемента.</summary>
+      <returns>Объект <see cref="T:System.Xml.Linq.XAttribute" />, содержащий последний атрибут этого элемента.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.IO.Stream)">
+      <summary>Создает новый экземпляр <see cref="T:System.Xml.Linq.XElement" /> с помощью указанного потока.</summary>
+      <returns>Объект <see cref="T:System.Xml.Linq.XElement" />, который используется для чтения содержащихся в потоке данных.</returns>
+      <param name="stream">Поток, содержащий XML-данные.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.IO.Stream,System.Xml.Linq.LoadOptions)">
+      <summary>Создает новый экземпляр<see cref="T:System.Xml.Linq.XElement" />, используя указанный поток и при необходимости оставляя пустое пространство, задавая базовый URI и сохраняя сведения о строках.</summary>
+      <returns>Объект <see cref="T:System.Xml.Linq.XElement" />, который используется для чтения содержащихся в потоке данных.</returns>
+      <param name="stream">Поток, содержащий данные XML.</param>
+      <param name="options">Объект <see cref="T:System.Xml.Linq.LoadOptions" />, указывающий, следует ли загружать базовый URI и сведения о строках.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.IO.TextReader)">
+      <summary>Загружает <see cref="T:System.Xml.Linq.XElement" /> из <see cref="T:System.IO.TextReader" />. </summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XElement" />, содержащий XML, считанный из указанного <see cref="T:System.IO.TextReader" />.</returns>
+      <param name="textReader">
+        <see cref="T:System.IO.TextReader" /> будет прочтен для содержимого <see cref="T:System.Xml.Linq.XElement" />.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.IO.TextReader,System.Xml.Linq.LoadOptions)">
+      <summary>Загружает элемент <see cref="T:System.Xml.Linq.XElement" /> из объекта <see cref="T:System.IO.TextReader" />, при необходимости сохраняя пробелы и сведения о строке. </summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XElement" />, содержащий XML, считанный из указанного <see cref="T:System.IO.TextReader" />.</returns>
+      <param name="textReader">
+        <see cref="T:System.IO.TextReader" /> будет прочтен для содержимого <see cref="T:System.Xml.Linq.XElement" />.</param>
+      <param name="options">
+        <see cref="T:System.Xml.Linq.LoadOptions" />, указывающий поведение пустого пространства и необходимость загрузки базового URI и сведений о строке.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.String)">
+      <summary>Загружает <see cref="T:System.Xml.Linq.XElement" /> из файла.</summary>
+      <returns>Элемент <see cref="T:System.Xml.Linq.XElement" /> с содержимым указанного файла.</returns>
+      <param name="uri">Строка URI ссылается на файл для загрузки в новый <see cref="T:System.Xml.Linq.XElement" />.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.String,System.Xml.Linq.LoadOptions)">
+      <summary>Загружает <see cref="T:System.Xml.Linq.XElement" /> из файла, по требованию сохраняет пустое пространство, задает базовый URI и сведения о строке.</summary>
+      <returns>Элемент <see cref="T:System.Xml.Linq.XElement" /> с содержимым указанного файла.</returns>
+      <param name="uri">Строка URI ссылается на файл для загрузки в <see cref="T:System.Xml.Linq.XElement" />.</param>
+      <param name="options">
+        <see cref="T:System.Xml.Linq.LoadOptions" />, указывающий поведение пустого пространства и необходимость загрузки базового URI и сведений о строке.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.Xml.XmlReader)">
+      <summary>Загружает элемент <see cref="T:System.Xml.Linq.XElement" /> из объекта <see cref="T:System.Xml.XmlReader" />. </summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XElement" />, содержащий XML, считанный из указанного <see cref="T:System.Xml.XmlReader" />.</returns>
+      <param name="reader">
+        <see cref="T:System.Xml.XmlReader" /> будет прочтен для содержимого <see cref="T:System.Xml.Linq.XElement" />.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.Xml.XmlReader,System.Xml.Linq.LoadOptions)">
+      <summary>Загружает элемент <see cref="T:System.Xml.Linq.XElement" /> из объекта <see cref="T:System.Xml.XmlReader" />, при необходимости оставляя пустое пространство, задавая базовый URI и сохраняя сведения о строке.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XElement" />, содержащий XML, считанный из указанного <see cref="T:System.Xml.XmlReader" />.</returns>
+      <param name="reader">
+        <see cref="T:System.Xml.XmlReader" /> будет прочтен для содержимого <see cref="T:System.Xml.Linq.XElement" />.</param>
+      <param name="options">
+        <see cref="T:System.Xml.Linq.LoadOptions" />, указывающий поведение пустого пространства и необходимость загрузки базового URI и сведений о строке.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.Name">
+      <summary>Возвращает или задает имя этого элемента.</summary>
+      <returns>Объект <see cref="T:System.Xml.Linq.XName" />, содержащий имя данного элемента.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.NodeType">
+      <summary>Возвращает тип узла для этого узла.</summary>
+      <returns>Тип узла.Для объектов <see cref="T:System.Xml.Linq.XElement" /> это значение равно <see cref="F:System.Xml.XmlNodeType.Element" />.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.UInt32}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.UInt32" />.</summary>
+      <returns>
+        <see cref="T:System.Nullable`1" /> для <see cref="T:System.UInt32" />, содержащий данные этого элемента <see cref="T:System.Xml.Linq.XElement" />.</returns>
+      <param name="element">Элемент <see cref="T:System.Xml.Linq.XElement" /> для приведения к <see cref="T:System.Nullable`1" /> для <see cref="T:System.UInt32" />.</param>
+      <exception cref="T:System.FormatException">Элемент не содержит допустимое значение типа <see cref="T:System.UInt32" />.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.UInt64}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.UInt64" />.</summary>
+      <returns>
+        <see cref="T:System.Nullable`1" /> для <see cref="T:System.UInt64" />, содержащий данные этого элемента <see cref="T:System.Xml.Linq.XElement" />.</returns>
+      <param name="element">Элемент <see cref="T:System.Xml.Linq.XElement" /> для приведения к <see cref="T:System.Nullable`1" /> для <see cref="T:System.UInt64" />.</param>
+      <exception cref="T:System.FormatException">Элемент не содержит допустимое значение типа <see cref="T:System.UInt64" />.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Single}">
+      <summary>Приведение значения данного элемента <see cref="T:System.Xml.Linq.XElement" /> к <see cref="T:System.Nullable`1" /><see cref="T:System.Single" />.</summary>
+      <returns>
+        <see cref="T:System.Nullable`1" /> для <see cref="T:System.Single" />, содержащий данные этого элемента <see cref="T:System.Xml.Linq.XElement" />.</returns>
+      <param name="element">Элемент <see cref="T:System.Xml.Linq.XElement" /> для приведения к <see cref="T:System.Nullable`1" /> для <see cref="T:System.Single" />.</param>
+      <exception cref="T:System.FormatException">Элемент не содержит допустимое значение типа <see cref="T:System.Single" />.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.TimeSpan}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.TimeSpan" />.</summary>
+      <returns>
+        <see cref="T:System.Nullable`1" /> для <see cref="T:System.TimeSpan" />, содержащий данные этого элемента <see cref="T:System.Xml.Linq.XElement" />.</returns>
+      <param name="element">Элемент <see cref="T:System.Xml.Linq.XElement" /> для приведения к <see cref="T:System.Nullable`1" /> для <see cref="T:System.TimeSpan" />.</param>
+      <exception cref="T:System.FormatException">Элемент не содержит допустимое значение типа <see cref="T:System.TimeSpan" />.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Single">
+      <summary>Приведение значение данного элемента <see cref="T:System.Xml.Linq.XElement" /> к <see cref="T:System.Single" />.</summary>
+      <returns>Объект <see cref="T:System.Single" /> с содержимым данного элемента <see cref="T:System.Xml.Linq.XElement" />.</returns>
+      <param name="element">Элемент <see cref="T:System.Xml.Linq.XElement" /> для приведения к <see cref="T:System.Single" />.</param>
+      <exception cref="T:System.FormatException">Элемент не содержит допустимое значение типа <see cref="T:System.Single" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> — null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.UInt32">
+      <summary>Приведение значение данного элемента <see cref="T:System.Xml.Linq.XElement" /> к <see cref="T:System.UInt32" />.</summary>
+      <returns>Объект <see cref="T:System.UInt32" /> с содержимым данного элемента <see cref="T:System.Xml.Linq.XElement" />.</returns>
+      <param name="element">Элемент <see cref="T:System.Xml.Linq.XElement" /> для приведения к <see cref="T:System.UInt32" />.</param>
+      <exception cref="T:System.FormatException">Элемент не содержит допустимое значение типа <see cref="T:System.UInt32" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> — null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.UInt64">
+      <summary>Приведение значение данного элемента <see cref="T:System.Xml.Linq.XElement" /> к <see cref="T:System.UInt64" />.</summary>
+      <returns>Объект <see cref="T:System.UInt64" /> с содержимым данного элемента <see cref="T:System.Xml.Linq.XElement" />.</returns>
+      <param name="element">Элемент <see cref="T:System.Xml.Linq.XElement" /> для приведения к <see cref="T:System.UInt64" />.</param>
+      <exception cref="T:System.FormatException">Элемент не содержит допустимое значение типа <see cref="T:System.UInt64" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> — null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.String">
+      <summary>Приведение значение данного элемента <see cref="T:System.Xml.Linq.XElement" /> к <see cref="T:System.String" />.</summary>
+      <returns>Объект <see cref="T:System.String" /> с содержимым данного элемента <see cref="T:System.Xml.Linq.XElement" />.</returns>
+      <param name="element">Элемент <see cref="T:System.Xml.Linq.XElement" /> для приведения к <see cref="T:System.String" />.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.TimeSpan">
+      <summary>Приведение значение данного элемента <see cref="T:System.Xml.Linq.XElement" /> к <see cref="T:System.TimeSpan" />.</summary>
+      <returns>Объект <see cref="T:System.TimeSpan" /> с содержимым данного элемента <see cref="T:System.Xml.Linq.XElement" />.</returns>
+      <param name="element">Элемент <see cref="T:System.Xml.Linq.XElement" /> для приведения к <see cref="T:System.TimeSpan" />.</param>
+      <exception cref="T:System.FormatException">Элемент не содержит допустимое значение типа <see cref="T:System.TimeSpan" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> — null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Boolean">
+      <summary>Приведение значение данного элемента <see cref="T:System.Xml.Linq.XElement" /> к <see cref="T:System.Boolean" />.</summary>
+      <returns>Объект <see cref="T:System.Boolean" /> с содержимым данного элемента <see cref="T:System.Xml.Linq.XElement" />.</returns>
+      <param name="element">Элемент <see cref="T:System.Xml.Linq.XElement" /> для приведения к <see cref="T:System.Boolean" />.</param>
+      <exception cref="T:System.FormatException">Элемент не содержит допустимое значение типа <see cref="T:System.Boolean" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> — null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.DateTime">
+      <summary>Приведение значение данного элемента <see cref="T:System.Xml.Linq.XElement" /> к <see cref="T:System.DateTime" />.</summary>
+      <returns>Объект <see cref="T:System.DateTime" /> с содержимым данного элемента <see cref="T:System.Xml.Linq.XElement" />.</returns>
+      <param name="element">Элемент <see cref="T:System.Xml.Linq.XElement" /> для приведения к <see cref="T:System.DateTime" />.</param>
+      <exception cref="T:System.FormatException">Элемент не содержит допустимое значение типа <see cref="T:System.DateTime" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> — null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Int64">
+      <summary>Приведение значения данного элемента <see cref="T:System.Xml.Linq.XElement" /> к <see cref="T:System.Int64" />.</summary>
+      <returns>Объект <see cref="T:System.Int64" /> с содержимым данного элемента <see cref="T:System.Xml.Linq.XElement" />.</returns>
+      <param name="element">Элемент <see cref="T:System.Xml.Linq.XElement" /> для приведения к <see cref="T:System.Int64" />.</param>
+      <exception cref="T:System.FormatException">Элемент не содержит допустимое значение типа <see cref="T:System.Int64" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> — null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Int32">
+      <summary>Приведение значения данного элемента <see cref="T:System.Xml.Linq.XElement" /> к <see cref="T:System.Int32" />.</summary>
+      <returns>Объект <see cref="T:System.Int32" /> с содержимым данного элемента <see cref="T:System.Xml.Linq.XElement" />.</returns>
+      <param name="element">Элемент <see cref="T:System.Xml.Linq.XElement" /> для приведения к <see cref="T:System.Int32" />.</param>
+      <exception cref="T:System.FormatException">Элемент не содержит допустимое значение типа <see cref="T:System.Int32" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> — null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Double">
+      <summary>Приведение значение данного элемента <see cref="T:System.Xml.Linq.XElement" /> к <see cref="T:System.Double" />.</summary>
+      <returns>Объект <see cref="T:System.Double" /> с содержимым данного элемента <see cref="T:System.Xml.Linq.XElement" />.</returns>
+      <param name="element">Элемент <see cref="T:System.Xml.Linq.XElement" /> для приведения к <see cref="T:System.Double" />.</param>
+      <exception cref="T:System.FormatException">Элемент не содержит допустимое значение типа <see cref="T:System.Double" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> — null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Guid">
+      <summary>Приведение значение данного элемента <see cref="T:System.Xml.Linq.XElement" /> к <see cref="T:System.Guid" />.</summary>
+      <returns>Объект <see cref="T:System.Guid" /> с содержимым данного элемента <see cref="T:System.Xml.Linq.XElement" />.</returns>
+      <param name="element">Элемент <see cref="T:System.Xml.Linq.XElement" /> для приведения к <see cref="T:System.Guid" />.</param>
+      <exception cref="T:System.FormatException">Элемент не содержит допустимое значение типа <see cref="T:System.Guid" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> — null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.DateTimeOffset">
+      <summary>Приведение значение данного элемента <see cref="T:System.Xml.Linq.XAttribute" /> к <see cref="T:System.DateTimeOffset" />.</summary>
+      <returns>Объект <see cref="T:System.DateTimeOffset" /> с содержимым данного элемента <see cref="T:System.Xml.Linq.XElement" />.</returns>
+      <param name="element">Элемент <see cref="T:System.Xml.Linq.XElement" /> для приведения к <see cref="T:System.DateTimeOffset" />.</param>
+      <exception cref="T:System.FormatException">Элемент не содержит допустимое значение типа <see cref="T:System.DateTimeOffset" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> — null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Decimal">
+      <summary>Приведение значение данного элемента <see cref="T:System.Xml.Linq.XElement" /> к <see cref="T:System.Decimal" />.</summary>
+      <returns>Объект <see cref="T:System.Decimal" /> с содержимым данного элемента <see cref="T:System.Xml.Linq.XElement" />.</returns>
+      <param name="element">Элемент <see cref="T:System.Xml.Linq.XElement" /> для приведения к <see cref="T:System.Decimal" />.</param>
+      <exception cref="T:System.FormatException">Элемент не содержит допустимое значение типа <see cref="T:System.Decimal" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> — null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Guid}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.Guid" />.</summary>
+      <returns>
+        <see cref="T:System.Nullable`1" /> для <see cref="T:System.Guid" />, содержащий данные этого элемента <see cref="T:System.Xml.Linq.XElement" />.</returns>
+      <param name="element">Элемент <see cref="T:System.Xml.Linq.XElement" /> для приведения к <see cref="T:System.Nullable`1" /> для <see cref="T:System.Guid" />.</param>
+      <exception cref="T:System.FormatException">Элемент не содержит допустимое значение типа <see cref="T:System.Guid" />.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Int32}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.Int32" />.</summary>
+      <returns>
+        <see cref="T:System.Nullable`1" /> для <see cref="T:System.Int32" />, содержащий данные этого элемента <see cref="T:System.Xml.Linq.XElement" />.</returns>
+      <param name="element">Элемент <see cref="T:System.Xml.Linq.XElement" /> для приведения к <see cref="T:System.Nullable`1" /> для <see cref="T:System.Int32" />.</param>
+      <exception cref="T:System.FormatException">Элемент не содержит допустимое значение типа <see cref="T:System.Int32" />.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Double}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.Double" />.</summary>
+      <returns>
+        <see cref="T:System.Nullable`1" /> для <see cref="T:System.Double" />, содержащий данные этого элемента <see cref="T:System.Xml.Linq.XElement" />.</returns>
+      <param name="element">Элемент <see cref="T:System.Xml.Linq.XElement" /> для приведения к <see cref="T:System.Nullable`1" /> для <see cref="T:System.Double" />.</param>
+      <exception cref="T:System.FormatException">Элемент не содержит допустимое значение типа <see cref="T:System.Double" />.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.DateTimeOffset}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.DateTimeOffset" />.</summary>
+      <returns>
+        <see cref="T:System.Nullable`1" /> для <see cref="T:System.DateTimeOffset" />, содержащий данные этого элемента <see cref="T:System.Xml.Linq.XElement" />.</returns>
+      <param name="element">Элемент <see cref="T:System.Xml.Linq.XElement" /> для приведения к значению <see cref="T:System.Nullable`1" /><see cref="T:System.DateTimeOffset" />.</param>
+      <exception cref="T:System.FormatException">Элемент не содержит допустимое значение типа <see cref="T:System.DateTimeOffset" />.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Decimal}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.Decimal" />.</summary>
+      <returns>
+        <see cref="T:System.Nullable`1" /> для <see cref="T:System.Decimal" />, содержащий данные этого элемента <see cref="T:System.Xml.Linq.XElement" />.</returns>
+      <param name="element">Элемент <see cref="T:System.Xml.Linq.XElement" /> для приведения к <see cref="T:System.Nullable`1" /> для <see cref="T:System.Decimal" />.</param>
+      <exception cref="T:System.FormatException">Элемент не содержит допустимое значение типа <see cref="T:System.Decimal" />.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Int64}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.Int64" />.</summary>
+      <returns>
+        <see cref="T:System.Nullable`1" /> для <see cref="T:System.Int64" />, содержащий данные этого элемента <see cref="T:System.Xml.Linq.XElement" />.</returns>
+      <param name="element">Элемент <see cref="T:System.Xml.Linq.XElement" /> для приведения к <see cref="T:System.Nullable`1" /> для <see cref="T:System.Int64" />.</param>
+      <exception cref="T:System.FormatException">Элемент не содержит допустимое значение типа <see cref="T:System.Int64" />.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Boolean}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.Boolean" />.</summary>
+      <returns>
+        <see cref="T:System.Nullable`1" /> для <see cref="T:System.Boolean" />, содержащий данные этого элемента <see cref="T:System.Xml.Linq.XElement" />.</returns>
+      <param name="element">Элемент <see cref="T:System.Xml.Linq.XElement" /> для приведения к <see cref="T:System.Nullable`1" /> для <see cref="T:System.Boolean" />.</param>
+      <exception cref="T:System.FormatException">Элемент не содержит допустимое значение типа <see cref="T:System.Boolean" />.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.DateTime}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.DateTime" />.</summary>
+      <returns>
+        <see cref="T:System.Nullable`1" /> для <see cref="T:System.DateTime" />, содержащий данные этого элемента <see cref="T:System.Xml.Linq.XElement" />.</returns>
+      <param name="element">Элемент <see cref="T:System.Xml.Linq.XElement" /> для приведения к <see cref="T:System.Nullable`1" /> для <see cref="T:System.DateTime" />.</param>
+      <exception cref="T:System.FormatException">Элемент не содержит допустимое значение типа <see cref="T:System.DateTime" />.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Parse(System.String)">
+      <summary>Загрузка <see cref="T:System.Xml.Linq.XElement" /> из строки, содержащей XML.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XElement" /> заполнен из строки, содержащей XML.</returns>
+      <param name="text">
+        <see cref="T:System.String" />, содержащая XML.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Parse(System.String,System.Xml.Linq.LoadOptions)">
+      <summary>Загрузка элемента <see cref="T:System.Xml.Linq.XElement" /> из строки, содержащей XML, при необходимости с сохранением пробелов и сведений о строке.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XElement" /> заполнен из строки, содержащей XML.</returns>
+      <param name="text">
+        <see cref="T:System.String" />, содержащая XML.</param>
+      <param name="options">
+        <see cref="T:System.Xml.Linq.LoadOptions" />, указывающий поведение пустого пространства и необходимость загрузки базового URI и сведений о строке.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.RemoveAll">
+      <summary>Удаление узлов и атрибутов из <see cref="T:System.Xml.Linq.XElement" />.</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.RemoveAttributes">
+      <summary>Удаляет атрибуты данного элемента <see cref="T:System.Xml.Linq.XElement" />.</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.ReplaceAll(System.Object)">
+      <summary>Заменяет дочерние узлы и атрибуты этого элемента указанным содержимым.</summary>
+      <param name="content">Содержимое, которое заменит дочерние узлы и атрибуты этого элемента.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.ReplaceAll(System.Object[])">
+      <summary>Заменяет дочерние узлы и атрибуты этого элемента указанным содержимым.</summary>
+      <param name="content">Список параметров объектов содержимого.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.ReplaceAttributes(System.Object)">
+      <summary>Заменяет атрибуты этого элемента указанным содержимым.</summary>
+      <param name="content">Содержимое, которое заменит атрибуты этого элемента.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.ReplaceAttributes(System.Object[])">
+      <summary>Заменяет атрибуты этого элемента указанным содержимым.</summary>
+      <param name="content">Список параметров объектов содержимого.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Save(System.IO.Stream)">
+      <summary>Выводит этот документ <see cref="T:System.Xml.Linq.XElement" /> в указанный поток <see cref="T:System.IO.Stream" />.</summary>
+      <param name="stream">Поток для вывода данного элемента <see cref="T:System.Xml.Linq.XElement" />.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Save(System.IO.Stream,System.Xml.Linq.SaveOptions)">
+      <summary>Выводит данный элемент <see cref="T:System.Xml.Linq.XElement" /> в указанный поток <see cref="T:System.IO.Stream" />, при необходимости задавая поведение форматирования.</summary>
+      <param name="stream">Поток для вывода данного элемента <see cref="T:System.Xml.Linq.XElement" />.</param>
+      <param name="options">Объект <see cref="T:System.Xml.Linq.SaveOptions" />, определяющий форматирование.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Save(System.IO.TextWriter)">
+      <summary>Сериализация этого элемента в <see cref="T:System.IO.TextWriter" />.</summary>
+      <param name="textWriter">Объект <see cref="T:System.IO.TextWriter" />, в который будет записан элемент <see cref="T:System.Xml.Linq.XElement" />.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Save(System.IO.TextWriter,System.Xml.Linq.SaveOptions)">
+      <summary>Сериализация этого элемента в <see cref="T:System.IO.TextWriter" /> с отключением форматирования (при необходимости).</summary>
+      <param name="textWriter">
+        <see cref="T:System.IO.TextWriter" />, в который выводится XML.</param>
+      <param name="options">Объект <see cref="T:System.Xml.Linq.SaveOptions" />, задающий поведение форматирования.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Save(System.Xml.XmlWriter)">
+      <summary>Сериализация этого элемента в <see cref="T:System.Xml.XmlWriter" />.</summary>
+      <param name="writer">Объект <see cref="T:System.Xml.XmlWriter" />, в который будет записан элемент <see cref="T:System.Xml.Linq.XElement" />.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.SetAttributeValue(System.Xml.Linq.XName,System.Object)">
+      <summary>Устанавливает значение атрибута, добавляет или удаляет атрибут. </summary>
+      <param name="name">
+        <see cref="T:System.Xml.Linq.XName" />, содержащий имя изменяемого атрибута.</param>
+      <param name="value">Значение, присваиваемое атрибуту.Атрибут удален, если значение null.В противном случае, значение преобразовано в строковое представление и назначено свойству <see cref="P:System.Xml.Linq.XAttribute.Value" /> атрибута.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="value" /> является экземпляром <see cref="T:System.Xml.Linq.XObject" />.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.SetElementValue(System.Xml.Linq.XName,System.Object)">
+      <summary>Задает значение дочернего элемента, добавляет или удаляет дочерний элемент.</summary>
+      <param name="name">
+        <see cref="T:System.Xml.Linq.XName" />, содержащий имя изменяемого дочернего элемента.</param>
+      <param name="value">Значение, присваиваемое дочернему элементу.Дочерний элемент удален, если значение null.В противном случае, значение преобразовано в строковое представление и назначено свойству <see cref="P:System.Xml.Linq.XElement.Value" /> дочернего элемента.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="value" /> является экземпляром <see cref="T:System.Xml.Linq.XObject" />.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.SetValue(System.Object)">
+      <summary>Задает значение этого элемента.</summary>
+      <param name="value">Значение, присваиваемое этому элементу.Значение преобразовано в строковое представление и назначено свойству <see cref="P:System.Xml.Linq.XElement.Value" />.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="value" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="value" /> является <see cref="T:System.Xml.Linq.XObject" />.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.System#Xml#Serialization#IXmlSerializable#GetSchema">
+      <summary>Возвращает определение схемы XML, которое описывает представление XML этого объекта.</summary>
+      <returns>
+        <see cref="T:System.Xml.Schema.XmlSchema" />, описывающая представление XML объекта, полученного из метода <see cref="M:System.Xml.Serialization.IXmlSerializable.WriteXml(System.Xml.XmlWriter)" /> и включенного в метод <see cref="M:System.Xml.Serialization.IXmlSerializable.ReadXml(System.Xml.XmlReader)" />.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.System#Xml#Serialization#IXmlSerializable#ReadXml(System.Xml.XmlReader)">
+      <summary>Создает объект из представления XML.</summary>
+      <param name="reader">Объект <see cref="T:System.Xml.XmlReader" />, из которого десериализуется объект.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.System#Xml#Serialization#IXmlSerializable#WriteXml(System.Xml.XmlWriter)">
+      <summary>Преобразует объект в представление XML.</summary>
+      <param name="writer">Объект <see cref="T:System.Xml.XmlWriter" />, в который сериализуется этот объект.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.Value">
+      <summary>Возвращает или задает сцепленное текстовое содержимое этого элемента.</summary>
+      <returns>Объект <see cref="T:System.String" />, содержащий все текстовое содержимое этого элемента.Если существует несколько текстовых узлов, они будут связаны.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.WriteTo(System.Xml.XmlWriter)">
+      <summary>Запись этого элемента в объект <see cref="T:System.Xml.XmlWriter" />.</summary>
+      <param name="writer">
+        <see cref="T:System.Xml.XmlWriter" />, в который данный метод выполняет запись.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XName">
+      <summary>Представляет имя элемента или атрибута XML. </summary>
+    </member>
+    <member name="M:System.Xml.Linq.XName.Equals(System.Object)">
+      <summary>Определяет, является ли указанное <see cref="T:System.Xml.Linq.XName" /> равным данному <see cref="T:System.Xml.Linq.XName" />.</summary>
+      <returns>true, если указанный <see cref="T:System.Xml.Linq.XName" /> равен текущему <see cref="T:System.Xml.Linq.XName" />; в ином случае — false.</returns>
+      <param name="obj">Объект <see cref="T:System.Xml.Linq.XName" /> для сравнения с текущим объектом <see cref="T:System.Xml.Linq.XName" />.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.Get(System.String)">
+      <summary>Вызывает объект <see cref="T:System.Xml.Linq.XName" /> из развернутого имени.</summary>
+      <returns>Объект <see cref="T:System.Xml.Linq.XName" /> сконструирован из развернутого имени.</returns>
+      <param name="expandedName">
+        <see cref="T:System.String" /> содержит развернутое имя XML в формате {namespace}localname.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.Get(System.String,System.String)">
+      <summary>Вызывает объект <see cref="T:System.Xml.Linq.XName" /> из локального имени и пространства имен.</summary>
+      <returns>Объект <see cref="T:System.Xml.Linq.XName" />, созданный из указанного локального имени и пространства имен.</returns>
+      <param name="localName">Локальное (неопределенное) имя.</param>
+      <param name="namespaceName">Пространство имен XML.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.GetHashCode">
+      <summary>Получает хэш-код для данного объекта <see cref="T:System.Xml.Linq.XName" />.</summary>
+      <returns>Объект <see cref="T:System.Int32" />, содержащий хэш-код для объекта <see cref="T:System.Xml.Linq.XName" />.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XName.LocalName">
+      <summary>Вызывает локальную (неопределенную) часть имени.</summary>
+      <returns>
+        <see cref="T:System.String" />, содержащий локальную (неопределенную) часть имени.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XName.Namespace">
+      <summary>Вызывает часть пространства имен полностью определенного имени.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XNamespace" />, содержит часть имени пространства имен.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XName.NamespaceName">
+      <summary>Возвращает URI <see cref="T:System.Xml.Linq.XNamespace" /> для этого <see cref="T:System.Xml.Linq.XName" />.</summary>
+      <returns>Возвращает URI <see cref="T:System.Xml.Linq.XNamespace" /> для этого <see cref="T:System.Xml.Linq.XName" />.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XName.op_Equality(System.Xml.Linq.XName,System.Xml.Linq.XName)">
+      <summary>Возвращает значение, показывающее, равны ли два экземпляра <see cref="T:System.Xml.Linq.XName" />.</summary>
+      <returns>true, если <paramref name="left" /> и <paramref name="right" /> равны; в ином случае — false.</returns>
+      <param name="left">Первый <see cref="T:System.Xml.Linq.XName" /> для сравнения.</param>
+      <param name="right">Второй объект <see cref="T:System.Xml.Linq.XName" /> для сравнения.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.op_Implicit(System.String)~System.Xml.Linq.XName">
+      <summary>Преобразует строку, отформатированную как развернутое имя XML (то есть {namespace}localname), в объект <see cref="T:System.Xml.Linq.XName" />.</summary>
+      <returns>Объект <see cref="T:System.Xml.Linq.XName" /> сконструирован из развернутого имени.</returns>
+      <param name="expandedName">Строка, содержащая развернутое имя XML в формате {namespace}localname.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.op_Inequality(System.Xml.Linq.XName,System.Xml.Linq.XName)">
+      <summary>Возвращает значение, указывающее, являются ли два экземпляра <see cref="T:System.Xml.Linq.XName" /> неравными.</summary>
+      <returns>true, если <paramref name="left" /> и <paramref name="right" /> не равны; в ином случае — false.</returns>
+      <param name="left">Первый <see cref="T:System.Xml.Linq.XName" /> для сравнения.</param>
+      <param name="right">Второй объект <see cref="T:System.Xml.Linq.XName" /> для сравнения.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.System#IEquatable{T}#Equals(System.Xml.Linq.XName)">
+      <summary>Показывает, является ли текущий <see cref="T:System.Xml.Linq.XName" /> равным указанному <see cref="T:System.Xml.Linq.XName" />.</summary>
+      <returns>true, если этот <see cref="T:System.Xml.Linq.XName" /> равен указанному <see cref="T:System.Xml.Linq.XName" />, в ином случае — false.</returns>
+      <param name="other">Объект <see cref="T:System.Xml.Linq.XName" /> для сравнения с данным объектом <see cref="T:System.Xml.Linq.XName" />.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.ToString">
+      <summary>Возвращает развернутое имя XML в формате {namespace}localname.</summary>
+      <returns>
+        <see cref="T:System.String" /> содержит развернутое имя XML в формате {namespace}localname.</returns>
+    </member>
+    <member name="T:System.Xml.Linq.XNamespace">
+      <summary>Представляет пространство имен XML.Этот класс не наследуется.</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.Equals(System.Object)">
+      <summary>Определяет, является ли указанный объект <see cref="T:System.Xml.Linq.XNamespace" /> эквивалентным текущему объекту <see cref="T:System.Xml.Linq.XNamespace" />.</summary>
+      <returns>
+        <see cref="T:System.Boolean" /> показывает, является ли указанное <see cref="T:System.Xml.Linq.XNamespace" /> эквивалентным текущему <see cref="T:System.Xml.Linq.XNamespace" />.</returns>
+      <param name="obj">Объект <see cref="T:System.Xml.Linq.XNamespace" /> для сравнения с текущим объектом <see cref="T:System.Xml.Linq.XNamespace" />.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.Get(System.String)">
+      <summary>Вызывает <see cref="T:System.Xml.Linq.XNamespace" /> для указанного Uniform Resource Identifier (URI).</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XNamespace" /> создан из указанного URI.</returns>
+      <param name="namespaceName">
+        <see cref="T:System.String" /> содержит пространство имен URI.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.GetHashCode">
+      <summary>Получает хэш-код для данного объекта <see cref="T:System.Xml.Linq.XNamespace" />.</summary>
+      <returns>
+        <see cref="T:System.Int32" /> содержит хэш-код для <see cref="T:System.Xml.Linq.XNamespace" />.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.GetName(System.String)">
+      <summary>Возвращает объект <see cref="T:System.Xml.Linq.XName" />, созданный из этого<see cref="T:System.Xml.Linq.XNamespace" />, и указанное локальное имя.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XName" />, созданный из этого  <see cref="T:System.Xml.Linq.XNamespace" />, и указанное локальное имя.</returns>
+      <param name="localName">
+        <see cref="T:System.String" /> содержит локальное имя.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XNamespace.NamespaceName">
+      <summary>Вызывает Uniform Resource Identifier (URI) этого пространства имен.</summary>
+      <returns>
+        <see cref="T:System.String" /> содержит URI пространства имен.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XNamespace.None">
+      <summary>Вызывает объект <see cref="T:System.Xml.Linq.XNamespace" />, не соответствующий какому-либо пространству имен.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XNamespace" /> не соответствует пространству имен.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.op_Addition(System.Xml.Linq.XNamespace,System.String)">
+      <summary>Объединяет объект <see cref="T:System.Xml.Linq.XNamespace" /> с локальным именем для создания <see cref="T:System.Xml.Linq.XName" />.</summary>
+      <returns>Новое <see cref="T:System.Xml.Linq.XName" /> сконструировано из пространства имен и локального имени.</returns>
+      <param name="ns">
+        <see cref="T:System.Xml.Linq.XNamespace" /> содержит пространство имен.</param>
+      <param name="localName">
+        <see cref="T:System.String" /> содержит локальное имя.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.op_Equality(System.Xml.Linq.XNamespace,System.Xml.Linq.XNamespace)">
+      <summary>Возвращает значение, указывающее, равны ли два экземпляра <see cref="T:System.Xml.Linq.XNamespace" />.</summary>
+      <returns>
+        <see cref="T:System.Boolean" /> показывает, являются ли <paramref name="left" /> и <paramref name="right" /> эквивалентными.</returns>
+      <param name="left">Первый <see cref="T:System.Xml.Linq.XNamespace" /> для сравнения.</param>
+      <param name="right">Второй <see cref="T:System.Xml.Linq.XNamespace" /> для сравнения.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.op_Implicit(System.String)~System.Xml.Linq.XNamespace">
+      <summary>Преобразует строку, содержащую Uniform Resource Identifier (URI), в <see cref="T:System.Xml.Linq.XNamespace" />.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XNamespace" /> создан из строки URI.</returns>
+      <param name="namespaceName">
+        <see cref="T:System.String" /> содержит пространство имен URI.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.op_Inequality(System.Xml.Linq.XNamespace,System.Xml.Linq.XNamespace)">
+      <summary>Возвращает значение, указывающее, являются ли два экземпляра <see cref="T:System.Xml.Linq.XNamespace" /> неравными.</summary>
+      <returns>
+        <see cref="T:System.Boolean" /> показывает, являются ли <paramref name="left" /> и <paramref name="right" /> неэквивалентными.</returns>
+      <param name="left">Первый <see cref="T:System.Xml.Linq.XNamespace" /> для сравнения.</param>
+      <param name="right">Второй <see cref="T:System.Xml.Linq.XNamespace" /> для сравнения.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.ToString">
+      <summary>Возвращает URI этого <see cref="T:System.Xml.Linq.XNamespace" />.</summary>
+      <returns>URI этого <see cref="T:System.Xml.Linq.XNamespace" />.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XNamespace.Xml">
+      <summary>Вызывает объект <see cref="T:System.Xml.Linq.XNamespace" />, соответствующий XML URI (http://www.w3.org/XML/1998/namespace).</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XNamespace" />, соответствующий XML URI (http://www.w3.org/XML/1998/namespace).</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XNamespace.Xmlns">
+      <summary>Вызывает объект <see cref="T:System.Xml.Linq.XNamespace" />, соответствующий xmlns URI (http://www.w3.org/2000/xmlns/).</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XNamespace" /> соответствует xmlns URI (http://www.w3.org/2000/xmlns/).</returns>
+    </member>
+    <member name="T:System.Xml.Linq.XNode">
+      <summary>Представляет абстрактное понятие узла (элемент, примечание, тип документа, инструкция по обработке или текстовый узел) в дереве XML.  </summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.AddAfterSelf(System.Object)">
+      <summary>Добавляет указанное содержимое непосредственно после данного узла.</summary>
+      <param name="content">Добавляемый после данного узла объект содержимого, содержащий простое содержимое или коллекцию объектов содержимого.</param>
+      <exception cref="T:System.InvalidOperationException">The parent is null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.AddAfterSelf(System.Object[])">
+      <summary>Добавляет указанное содержимое непосредственно после данного узла.</summary>
+      <param name="content">Список параметров объектов содержимого.</param>
+      <exception cref="T:System.InvalidOperationException">The parent is null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.AddBeforeSelf(System.Object)">
+      <summary>Добавляет указанное содержимое непосредственно перед данным узлом.</summary>
+      <param name="content">Объект содержимого, включающий простое содержимое или коллекцию объектов содержимого для добавления перед данным узлом.</param>
+      <exception cref="T:System.InvalidOperationException">The parent is null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.AddBeforeSelf(System.Object[])">
+      <summary>Добавляет указанное содержимое непосредственно перед данным узлом.</summary>
+      <param name="content">Список параметров объектов содержимого.</param>
+      <exception cref="T:System.InvalidOperationException">The parent is null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.Ancestors">
+      <summary>Возвращает коллекцию элементов-предков данного узла.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" />, принадлежащий <see cref="T:System.Xml.Linq.XElement" /> элементов предков данного узла.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.Ancestors(System.Xml.Linq.XName)">
+      <summary>Возвращает отфильтрованную коллекцию элементов-предков данного узла.В коллекцию включаются только элементы, соответствующие <see cref="T:System.Xml.Linq.XName" />.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" />, принадлежащий <see cref="T:System.Xml.Linq.XElement" /> предков данного узла.В коллекцию включаются только элементы, соответствующие <see cref="T:System.Xml.Linq.XName" />.Узлы в возвращаемой коллекции идут в порядке, обратном их следованию в документе.Этот метод использует отложенное выполнение.</returns>
+      <param name="name">
+        <see cref="T:System.Xml.Linq.XName" /> для соответствия.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.CompareDocumentOrder(System.Xml.Linq.XNode,System.Xml.Linq.XNode)">
+      <summary>Сравнивает два узла с целью определения относительного порядка их следования в документе XML.</summary>
+      <returns>int, содержащий значение 0, если узлы равны; значение -1, если <paramref name="n1" /> находится перед <paramref name="n2" />, значение 1, если <paramref name="n1" /> находится после <paramref name="n2" />.</returns>
+      <param name="n1">Первый объект <see cref="T:System.Xml.Linq.XNode" /> для сравнения.</param>
+      <param name="n2">Второй объект <see cref="T:System.Xml.Linq.XNode" /> для сравнения.</param>
+      <exception cref="T:System.InvalidOperationException">The two nodes do not share a common ancestor.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.CreateReader">
+      <summary>Создает объект <see cref="T:System.Xml.XmlReader" /> для данного узла.</summary>
+      <returns>Объект <see cref="T:System.Xml.XmlReader" />, который может использоваться для считывания данного узла и его потомков.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.CreateReader(System.Xml.Linq.ReaderOptions)">
+      <summary>Создает объект <see cref="T:System.Xml.XmlReader" /> с характеристиками, заданными параметром <paramref name="readerOptions" />.</summary>
+      <returns>Объект <see cref="T:System.Xml.XmlReader" />.</returns>
+      <param name="readerOptions">Объект <see cref="T:System.Xml.Linq.ReaderOptions" />, определяющий, нужно ли пропускать дубликаты пространств имен.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.DeepEquals(System.Xml.Linq.XNode,System.Xml.Linq.XNode)">
+      <summary>Сравнивает значения двух узлов, включая значения всех узлов-потомков.</summary>
+      <returns>true, если узлы равны, в противном случае false.</returns>
+      <param name="n1">Первый объект <see cref="T:System.Xml.Linq.XNode" /> для сравнения.</param>
+      <param name="n2">Второй объект <see cref="T:System.Xml.Linq.XNode" /> для сравнения.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XNode.DocumentOrderComparer">
+      <summary>Возвращает компаратор, который может сравнить относительную позицию двух узлов.</summary>
+      <returns>Объект <see cref="T:System.Xml.Linq.XNodeDocumentOrderComparer" />, который может сравнить относительное положение двух узлов.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ElementsAfterSelf">
+      <summary>Возвращает после данного узла коллекцию элементов того же уровня в порядке их следования в документе.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" />, принадлежащий <see cref="T:System.Xml.Linq.XElement" />, родственных элементов после данного узла в документном порядке.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ElementsAfterSelf(System.Xml.Linq.XName)">
+      <summary>Возвращает после данного узла отфильтрованную коллекцию элементов того же уровня в порядке их следования в документе.В коллекцию включаются только элементы, соответствующие <see cref="T:System.Xml.Linq.XName" />.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" />, принадлежащий <see cref="T:System.Xml.Linq.XElement" /> элементов того же уровня после данного узла в порядке документов.В коллекцию включаются только элементы, соответствующие <see cref="T:System.Xml.Linq.XName" />.</returns>
+      <param name="name">
+        <see cref="T:System.Xml.Linq.XName" /> для проверки соответствия.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ElementsBeforeSelf">
+      <summary>Возвращает перед данным узлом коллекцию элементов того же уровня в порядке их следования в документе.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" />, принадлежащий <see cref="T:System.Xml.Linq.XElement" />, родственных элементов перед данным узлом в документном порядке.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ElementsBeforeSelf(System.Xml.Linq.XName)">
+      <summary>Возвращает перед данным узлом отфильтрованную коллекцию элементов того же уровня в порядке их следования в документе.В коллекцию включаются только элементы, соответствующие <see cref="T:System.Xml.Linq.XName" />.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" />, принадлежащий <see cref="T:System.Xml.Linq.XElement" /> элементов того же уровня перед данным узлом в документном порядке.В коллекцию включаются только элементы, соответствующие <see cref="T:System.Xml.Linq.XName" />.</returns>
+      <param name="name">
+        <see cref="T:System.Xml.Linq.XName" /> для проверки соответствия.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XNode.EqualityComparer">
+      <summary>Возвращает компаратор, который сравнивает эквивалентность значений двух узлов.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XNodeEqualityComparer" />, который сравнивает два узла для проверки равенства значений.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.IsAfter(System.Xml.Linq.XNode)">
+      <summary>Определяет, следует ли текущий узел за указанным в последовательности их расположения в документе.</summary>
+      <returns>Значение true, если данный узел появляется после указанного узла; в противном случае — значение false.</returns>
+      <param name="node">
+        <see cref="T:System.Xml.Linq.XNode" /> для сравнения для документного порядка.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.IsBefore(System.Xml.Linq.XNode)">
+      <summary>Определяет, предшествует ли текущий узел указанному в последовательности их расположения в документе.</summary>
+      <returns>Значение true, если данный узел появляется перед указанным узлом; в противном случае — значение false.</returns>
+      <param name="node">
+        <see cref="T:System.Xml.Linq.XNode" /> для сравнения для порядка документов.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XNode.NextNode">
+      <summary>Возвращает для данного узла следующий узел того же уровня.</summary>
+      <returns>Объект <see cref="T:System.Xml.Linq.XNode" />, содержащий следующий узел того же уровня.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.NodesAfterSelf">
+      <summary>Возвращает после данного узла коллекцию узлов того же уровня в порядке их следования в документе.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" />, принадлежащий <see cref="T:System.Xml.Linq.XNode" /> узлов того же уровня после данного узла в документном порядке.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.NodesBeforeSelf">
+      <summary>Возвращает перед данным узлом коллекцию узлов того же уровня в порядке их следования в документе.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" />, принадлежащий <see cref="T:System.Xml.Linq.XNode" /> узлов того же уровня перед данным узлом в документном порядке.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XNode.PreviousNode">
+      <summary>Возвращает предыдущий узел того же уровня для данного узла.</summary>
+      <returns>Объект <see cref="T:System.Xml.Linq.XNode" />, содержащий предыдущий узел того же уровня.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ReadFrom(System.Xml.XmlReader)">
+      <summary>Создает объект <see cref="T:System.Xml.Linq.XNode" /> из объекта <see cref="T:System.Xml.XmlReader" />.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XNode" />, содержащий узел и его потомков, которые были считаны из считывателя.Тип среды выполнения узла определяется типом узла (<see cref="P:System.Xml.Linq.XObject.NodeType" />) первого узла в считывателе.</returns>
+      <param name="reader">Объект <see cref="T:System.Xml.XmlReader" /> размещается в узле для считывания в данный <see cref="T:System.Xml.Linq.XNode" />.</param>
+      <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Xml.XmlReader" /> is not positioned on a recognized node type.</exception>
+      <exception cref="T:System.Xml.XmlException">The underlying <see cref="T:System.Xml.XmlReader" /> throws an exception.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.Remove">
+      <summary>Удаляет данный узел из родительского объекта.</summary>
+      <exception cref="T:System.InvalidOperationException">The parent is null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ReplaceWith(System.Object)">
+      <summary>Заменяет данный узел на указанное содержимое.</summary>
+      <param name="content">Содержимое для замены в узле.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ReplaceWith(System.Object[])">
+      <summary>Заменяет данный узел на указанное содержимое.</summary>
+      <param name="content">Список параметров нового содержимого.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ToString">
+      <summary>Возвращает предназначенный для данного узла XML.</summary>
+      <returns>
+        <see cref="T:System.String" />, содержащий предназначенный XML.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ToString(System.Xml.Linq.SaveOptions)">
+      <summary>Возвращает XML для данного узла (с возможным отключением форматирования).</summary>
+      <returns>
+        <see cref="T:System.String" />, содержащий XML.</returns>
+      <param name="options">Объект <see cref="T:System.Xml.Linq.SaveOptions" />, задающий поведение форматирования.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.WriteTo(System.Xml.XmlWriter)">
+      <summary>Записывает данный узел в объект <see cref="T:System.Xml.XmlWriter" />.</summary>
+      <param name="writer">
+        <see cref="T:System.Xml.XmlWriter" />, в который данный метод выполняет запись.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XNodeDocumentOrderComparer">
+      <summary>Содержит функциональные возможности для сравнения узлов по порядку их документов.Этот класс не наследуется.</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeDocumentOrderComparer.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Xml.Linq.XNodeDocumentOrderComparer" />. </summary>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeDocumentOrderComparer.Compare(System.Xml.Linq.XNode,System.Xml.Linq.XNode)">
+      <summary>Сравнивает два узла для определения их относительного порядка документов.</summary>
+      <returns>
+        <see cref="T:System.Int32" /> содержит 0, если узлы эквивалентны; -1, если <paramref name="x" /> предшествует <paramref name="y" />; и 1, если <paramref name="x" /> находится после <paramref name="y" />.</returns>
+      <param name="x">Первый <see cref="T:System.Xml.Linq.XNode" /> для сравнения.</param>
+      <param name="y">Второй <see cref="T:System.Xml.Linq.XNode" /> для сравнения.</param>
+      <exception cref="T:System.InvalidOperationException">У этих двух узлов нет общего предка.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeDocumentOrderComparer.System#Collections#IComparer#Compare(System.Object,System.Object)">
+      <summary>Сравнивает два узла для определения их относительного порядка документов.</summary>
+      <returns>
+        <see cref="T:System.Int32" /> содержит 0, если узлы эквивалентны; -1, если <paramref name="x" /> предшествует <paramref name="y" />; и 1, если <paramref name="x" /> находится после <paramref name="y" />.</returns>
+      <param name="x">Первый <see cref="T:System.Xml.Linq.XNode" /> для сравнения.</param>
+      <param name="y">Второй <see cref="T:System.Xml.Linq.XNode" /> для сравнения.</param>
+      <exception cref="T:System.InvalidOperationException">У этих двух узлов нет общего предка.</exception>
+      <exception cref="T:System.ArgumentException">Два узла не извлечены из <see cref="T:System.Xml.Linq.XNode" />.</exception>
+    </member>
+    <member name="T:System.Xml.Linq.XNodeEqualityComparer">
+      <summary>Сравнивает узлы, чтобы определить, эквивалентны ли они.Этот класс не наследуется.</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeEqualityComparer.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Xml.Linq.XNodeEqualityComparer" />. </summary>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeEqualityComparer.Equals(System.Xml.Linq.XNode,System.Xml.Linq.XNode)">
+      <summary>Сравнивает значения двух узлов.</summary>
+      <returns>
+        <see cref="T:System.Boolean" />, показывающий, эквивалентны ли узлы.</returns>
+      <param name="x">Первый объект <see cref="T:System.Xml.Linq.XNode" /> для сравнения.</param>
+      <param name="y">Второй объект <see cref="T:System.Xml.Linq.XNode" /> для сравнения.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeEqualityComparer.GetHashCode(System.Xml.Linq.XNode)">
+      <summary>Возвращает хэш-код, основанный на <see cref="T:System.Xml.Linq.XNode" />.</summary>
+      <returns>
+        <see cref="T:System.Int32" /> содержит основанный на некотором значении хэш-код для узла.</returns>
+      <param name="obj">
+        <see cref="T:System.Xml.Linq.XNode" /> для хэширования.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeEqualityComparer.System#Collections#IEqualityComparer#Equals(System.Object,System.Object)">
+      <summary>Сравнивает значения двух узлов.</summary>
+      <returns>true, если узлы равны, в противном случае false.</returns>
+      <param name="x">Первый объект <see cref="T:System.Xml.Linq.XNode" /> для сравнения.</param>
+      <param name="y">Второй объект <see cref="T:System.Xml.Linq.XNode" /> для сравнения.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeEqualityComparer.System#Collections#IEqualityComparer#GetHashCode(System.Object)">
+      <summary>Возвращает хэш-код, основанный на значении узла.</summary>
+      <returns>
+        <see cref="T:System.Int32" /> содержит основанный на некотором значении хэш-код для узла.</returns>
+      <param name="obj">Узел для хэширования.</param>
+    </member>
+    <member name="T:System.Xml.Linq.XObject">
+      <summary>Представление узла или атрибута в XML-дереве. </summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.AddAnnotation(System.Object)">
+      <summary>Добавление объекта в список примечаний данного <see cref="T:System.Xml.Linq.XObject" />.</summary>
+      <param name="annotation">
+        <see cref="T:System.Object" />, содержащий добавляемое примечание.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.Annotation``1">
+      <summary>Получение первого объекта примечаний заданного типа из данного <see cref="T:System.Xml.Linq.XObject" />. </summary>
+      <returns>Первый объект примечаний, который соответствует заданному типу, или null, если примечаний заданного типа нет.</returns>
+      <typeparam name="T">Тип извлекаемого примечания.</typeparam>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.Annotation(System.Type)">
+      <summary>Получение первого объекта примечаний заданного типа из данного <see cref="T:System.Xml.Linq.XObject" />.</summary>
+      <returns>
+        <see cref="T:System.Object" />, который содержит первый объект примечаний, который соответствует заданному типу, или null, если примечаний заданного типа нет.</returns>
+      <param name="type">
+        <see cref="T:System.Type" /> извлекаемого примечания.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.Annotations``1">
+      <summary>Получение коллекции примечаний заданного типа для данного <see cref="T:System.Xml.Linq.XObject" />.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" />, содержащий добавляемые примечания <see cref="T:System.Xml.Linq.XObject" />.</returns>
+      <typeparam name="T">Тип извлекаемого примечания.</typeparam>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.Annotations(System.Type)">
+      <summary>Получение коллекции примечаний заданного типа для данного <see cref="T:System.Xml.Linq.XObject" />.</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" />
+        <see cref="T:System.Object" />, содержащий примечания, которые соответствуют заданному типу для данного <see cref="T:System.Xml.Linq.XObject" />.</returns>
+      <param name="type">
+        <see cref="T:System.Type" /> извлекаемого примечания.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XObject.BaseUri">
+      <summary>Получение базового URI для данного <see cref="T:System.Xml.Linq.XObject" />.</summary>
+      <returns>
+        <see cref="T:System.String" />, содержащий базовый URI для данного <see cref="T:System.Xml.Linq.XObject" />.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="E:System.Xml.Linq.XObject.Changed">
+      <summary>Возникновение в случае изменения данного <see cref="T:System.Xml.Linq.XObject" /> или одного из его подчиненных элементов.</summary>
+    </member>
+    <member name="E:System.Xml.Linq.XObject.Changing">
+      <summary>Возникновение в случае возможного изменения данного <see cref="T:System.Xml.Linq.XObject" /> или одного из его подчиненных элементов.</summary>
+    </member>
+    <member name="P:System.Xml.Linq.XObject.Document">
+      <summary>Получает документ <see cref="T:System.Xml.Linq.XDocument" /> для данного объекта <see cref="T:System.Xml.Linq.XObject" />.</summary>
+      <returns>Документ <see cref="T:System.Xml.Linq.XDocument" /> для данного объекта <see cref="T:System.Xml.Linq.XObject" />. </returns>
+    </member>
+    <member name="P:System.Xml.Linq.XObject.NodeType">
+      <summary>Получение типа узла для данного <see cref="T:System.Xml.Linq.XObject" />.</summary>
+      <returns>Тип узла для данного <see cref="T:System.Xml.Linq.XObject" />. </returns>
+    </member>
+    <member name="P:System.Xml.Linq.XObject.Parent">
+      <summary>Получает родительский элемент <see cref="T:System.Xml.Linq.XElement" /> данного объекта <see cref="T:System.Xml.Linq.XObject" />.</summary>
+      <returns>Родительский элемент <see cref="T:System.Xml.Linq.XElement" /> данного объекта <see cref="T:System.Xml.Linq.XObject" />.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.RemoveAnnotations``1">
+      <summary>Удаление примечаний заданного типа из данного <see cref="T:System.Xml.Linq.XObject" />.</summary>
+      <typeparam name="T">Тип удаляемых примечаний.</typeparam>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.RemoveAnnotations(System.Type)">
+      <summary>Удаление примечаний заданного типа из данного <see cref="T:System.Xml.Linq.XObject" />.</summary>
+      <param name="type">
+        <see cref="T:System.Type" /> удаляемых примечаний.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.System#Xml#IXmlLineInfo#HasLineInfo">
+      <summary>Получение значения, указывающего, есть ли у данного <see cref="T:System.Xml.Linq.XObject" /> сведения строки.</summary>
+      <returns>true, если <see cref="T:System.Xml.Linq.XObject" /> имеет сведения строки, в противном случае false.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XObject.System#Xml#IXmlLineInfo#LineNumber">
+      <summary>Получения номера строки, которую базовый <see cref="T:System.Xml.XmlReader" /> сообщил для данного <see cref="T:System.Xml.Linq.XObject" />.</summary>
+      <returns>
+        <see cref="T:System.Int32" />, содержащий номер строки, сообщенный <see cref="T:System.Xml.XmlReader" /> для данного <see cref="T:System.Xml.Linq.XObject" />.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XObject.System#Xml#IXmlLineInfo#LinePosition">
+      <summary>Получения номера позиции, которую базовый <see cref="T:System.Xml.XmlReader" /> сообщил для данного <see cref="T:System.Xml.Linq.XObject" />.</summary>
+      <returns>
+        <see cref="T:System.Int32" />, содержащий номер позиции, сообщенный <see cref="T:System.Xml.XmlReader" /> для данного <see cref="T:System.Xml.Linq.XObject" />.</returns>
+    </member>
+    <member name="T:System.Xml.Linq.XObjectChange">
+      <summary>Указывает тип события, когда событие происходит для <see cref="T:System.Xml.Linq.XObject" />.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChange.Add">
+      <summary>
+        <see cref="T:System.Xml.Linq.XObject" /> был или будет добавлен к <see cref="T:System.Xml.Linq.XContainer" />.</summary>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChange.Name">
+      <summary>
+        <see cref="T:System.Xml.Linq.XObject" /> был или будет переименован.</summary>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChange.Remove">
+      <summary>
+        <see cref="T:System.Xml.Linq.XObject" /> был или будет удален из <see cref="T:System.Xml.Linq.XContainer" />.</summary>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChange.Value">
+      <summary>Значение <see cref="T:System.Xml.Linq.XObject" /> было или будет изменено.Дополнительно это событие вызывается сериализацией пустого элемента (или из пустого тега в пару тегов "начало/окончание" или наоборот).</summary>
+    </member>
+    <member name="T:System.Xml.Linq.XObjectChangeEventArgs">
+      <summary>Предоставление данных для <see cref="E:System.Xml.Linq.XObject.Changing" /> и событий <see cref="E:System.Xml.Linq.XObject.Changed" />.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XObjectChangeEventArgs.#ctor(System.Xml.Linq.XObjectChange)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Xml.Linq.XObjectChangeEventArgs" />. </summary>
+      <param name="objectChange">
+        <see cref="T:System.Xml.Linq.XObjectChange" />, который содержит аргументы событий для событий LINQ to XML.</param>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChangeEventArgs.Add">
+      <summary>Аргумент события для события изменения <see cref="F:System.Xml.Linq.XObjectChange.Add" />.</summary>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChangeEventArgs.Name">
+      <summary>Аргумент события для события изменения <see cref="F:System.Xml.Linq.XObjectChange.Name" />.</summary>
+    </member>
+    <member name="P:System.Xml.Linq.XObjectChangeEventArgs.ObjectChange">
+      <summary>Получение типа изменения.</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XObjectChange" />, который содержит тип изменения.</returns>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChangeEventArgs.Remove">
+      <summary>Аргумент события для события изменения <see cref="F:System.Xml.Linq.XObjectChange.Remove" />.</summary>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChangeEventArgs.Value">
+      <summary>Аргумент события для события изменения <see cref="F:System.Xml.Linq.XObjectChange.Value" />.</summary>
+    </member>
+    <member name="T:System.Xml.Linq.XProcessingInstruction">
+      <summary>Представляет инструкцию по обработке XML. </summary>
+    </member>
+    <member name="M:System.Xml.Linq.XProcessingInstruction.#ctor(System.String,System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Xml.Linq.XProcessingInstruction" />. </summary>
+      <param name="target">
+        <see cref="T:System.String" />, содержащий конечное приложение для <see cref="T:System.Xml.Linq.XProcessingInstruction" />.</param>
+      <param name="data">Строковые данные для этого <see cref="T:System.Xml.Linq.XProcessingInstruction" />.</param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="target" /> или <paramref name="data" /> — null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="target" /> не соответствует ограничениям имени XML.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XProcessingInstruction.#ctor(System.Xml.Linq.XProcessingInstruction)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Xml.Linq.XProcessingInstruction" />. </summary>
+      <param name="other">узел <see cref="T:System.Xml.Linq.XProcessingInstruction" /> для копирования.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XProcessingInstruction.Data">
+      <summary>Получает или задает строковое значение инструкции по обработке.</summary>
+      <returns>
+        <see cref="T:System.String" /> содержит строковое значение инструкции по обработке.</returns>
+      <exception cref="T:System.ArgumentNullException">Строка <paramref name="value" /> имеет значение null.</exception>
+    </member>
+    <member name="P:System.Xml.Linq.XProcessingInstruction.NodeType">
+      <summary>Получает тип узла для этого узла.</summary>
+      <returns>Тип узла.Для объектов <see cref="T:System.Xml.Linq.XProcessingInstruction" /> значением является <see cref="F:System.Xml.XmlNodeType.ProcessingInstruction" />.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XProcessingInstruction.Target">
+      <summary>Получает или задает строку, содержащую конечное приложение для инструкции по обработке.</summary>
+      <returns>
+        <see cref="T:System.String" />, содержащий конечное приложение для инструкции по обработке.</returns>
+      <exception cref="T:System.ArgumentNullException">Строка <paramref name="value" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="target" /> не соответствует ограничениям имени XML.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XProcessingInstruction.WriteTo(System.Xml.XmlWriter)">
+      <summary>Запись инструкции по обработке в <see cref="T:System.Xml.XmlWriter" />.</summary>
+      <param name="writer">
+        <see cref="T:System.Xml.XmlWriter" /> для записи этой инструкции по обработке.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XStreamingElement">
+      <summary>Представляет элементы в дереве XML, поддерживающем отложенный потоковый выход.</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.#ctor(System.Xml.Linq.XName)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Xml.Linq.XElement" /> из указанного объекта <see cref="T:System.Xml.Linq.XName" />.</summary>
+      <param name="name">
+        <see cref="T:System.Xml.Linq.XName" />, содержащий имя элемента.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.#ctor(System.Xml.Linq.XName,System.Object)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Xml.Linq.XStreamingElement" /> с указанными именем и содержимым.</summary>
+      <param name="name">
+        <see cref="T:System.Xml.Linq.XName" />, содержащий имя элемента.</param>
+      <param name="content">Содержимое элемента.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.#ctor(System.Xml.Linq.XName,System.Object[])">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Xml.Linq.XStreamingElement" /> с указанными именем и содержимым.</summary>
+      <param name="name">
+        <see cref="T:System.Xml.Linq.XName" />, содержащий имя элемента.</param>
+      <param name="content">Содержимое элемента.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Add(System.Object)">
+      <summary>Добавляет указанное содержимое в качестве дочерних элементов в данный объект <see cref="T:System.Xml.Linq.XStreamingElement" />.</summary>
+      <param name="content">Содержимое для добавления к потоковому элементу.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Add(System.Object[])">
+      <summary>Добавляет указанное содержимое в качестве дочерних элементов в данный объект <see cref="T:System.Xml.Linq.XStreamingElement" />.</summary>
+      <param name="content">Содержимое для добавления к потоковому элементу.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XStreamingElement.Name">
+      <summary>Получает или задает имя данного потокового элемента.</summary>
+      <returns>Объект <see cref="T:System.Xml.Linq.XName" />, содержащий имя данного потокового элемента.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Save(System.IO.Stream)">
+      <summary>Выводит данный элемент <see cref="T:System.Xml.Linq.XStreamingElement" /> в указанный поток <see cref="T:System.IO.Stream" />.</summary>
+      <param name="stream">Поток для вывода данного объекта <see cref="T:System.Xml.Linq.XDocument" />.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Save(System.IO.Stream,System.Xml.Linq.SaveOptions)">
+      <summary>Выводит данный элемент <see cref="T:System.Xml.Linq.XStreamingElement" /> в указанный поток <see cref="T:System.IO.Stream" />, при необходимости задавая форматирование.</summary>
+      <param name="stream">Поток для вывода данного объекта <see cref="T:System.Xml.Linq.XDocument" />.</param>
+      <param name="options">Объект <see cref="T:System.Xml.Linq.SaveOptions" />, определяющий форматирование.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Save(System.IO.TextWriter)">
+      <summary>Сериализует данный потоковый элемент в <see cref="T:System.IO.TextWriter" />.</summary>
+      <param name="textWriter">
+        <see cref="T:System.IO.TextWriter" />, в который будет записан <see cref="T:System.Xml.Linq.XStreamingElement" />.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Save(System.IO.TextWriter,System.Xml.Linq.SaveOptions)">
+      <summary>Сериализует данный потоковый элемент в объект <see cref="T:System.IO.TextWriter" />, дополнительно отключая форматирование.</summary>
+      <param name="textWriter">
+        <see cref="T:System.IO.TextWriter" />, в который выводится XML.</param>
+      <param name="options">Объект <see cref="T:System.Xml.Linq.SaveOptions" />, задающий поведение форматирования.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Save(System.Xml.XmlWriter)">
+      <summary>Сериализует данный потоковый элемент в объект <see cref="T:System.Xml.XmlWriter" />.</summary>
+      <param name="writer">Объект <see cref="T:System.Xml.XmlWriter" />, в который будет записан элемент <see cref="T:System.Xml.Linq.XElement" />.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.ToString">
+      <summary>Возвращает форматированный (с отступом) XML для данного потокового элемента.</summary>
+      <returns>
+        <see cref="T:System.String" />, содержащий предназначенный XML.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.ToString(System.Xml.Linq.SaveOptions)">
+      <summary>Возвращает XML для данного потокового элемента, дополнительно отключая форматирование.</summary>
+      <returns>
+        <see cref="T:System.String" />, содержащая XML.</returns>
+      <param name="options">Объект <see cref="T:System.Xml.Linq.SaveOptions" />, задающий поведение форматирования.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.WriteTo(System.Xml.XmlWriter)">
+      <summary>Записывает данный потоковый элемент в объект <see cref="T:System.Xml.XmlWriter" />.</summary>
+      <param name="writer">
+        <see cref="T:System.Xml.XmlWriter" />, в который данный метод выполняет запись.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XText">
+      <summary>Представляет текстовый узел. </summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XText.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Xml.Linq.XText" />. </summary>
+      <param name="value">
+        <see cref="T:System.String" />, содержащий значение узла <see cref="T:System.Xml.Linq.XText" />.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XText.#ctor(System.Xml.Linq.XText)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Xml.Linq.XText" /> из другого объекта <see cref="T:System.Xml.Linq.XText" />.</summary>
+      <param name="other">узел <see cref="T:System.Xml.Linq.XText" /> для выполнения копирования из него.</param>
+    </member>
+    <member name="P:System.Xml.Linq.XText.NodeType">
+      <summary>Получает тип узла для этого узла.</summary>
+      <returns>Тип узла.Для объектов <see cref="T:System.Xml.Linq.XText" /> данное значение является <see cref="F:System.Xml.XmlNodeType.Text" />.</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XText.Value">
+      <summary>Получает или задает значение данного узла.</summary>
+      <returns>
+        <see cref="T:System.String" />, содержащий значение данного узла.</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XText.WriteTo(System.Xml.XmlWriter)">
+      <summary>Записывает данный узел в объект <see cref="T:System.Xml.XmlWriter" />.</summary>
+      <param name="writer">
+        <see cref="T:System.Xml.XmlWriter" />, в который данный метод выполняет запись.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+  </members>
+</doc>

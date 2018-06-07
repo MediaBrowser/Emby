@@ -407,7 +407,7 @@ namespace Emby.Server.Implementations.Library
             return providers;
         }
 
-        private async ValueTask<bool> AuthenticateWithProvider(IAuthenticationProvider provider, string username, string password, User resolvedUser)
+        private async Task<bool> AuthenticateWithProvider(IAuthenticationProvider provider, string username, string password, User resolvedUser)
         {
             try
             {

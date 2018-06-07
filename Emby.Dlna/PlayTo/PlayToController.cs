@@ -595,7 +595,7 @@ namespace Emby.Dlna.PlayTo
         /// </summary>
         /// <param name="items">The items.</param>
         /// <returns></returns>
-        private async ValueTask<bool> PlayItems(IEnumerable<PlaylistItem> items)
+        private async Task<bool> PlayItems(IEnumerable<PlaylistItem> items)
         {
             Playlist.Clear();
             Playlist.AddRange(items);

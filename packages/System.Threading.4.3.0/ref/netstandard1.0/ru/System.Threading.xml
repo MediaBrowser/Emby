@@ -1,0 +1,1761 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Threading</name>
+  </assembly>
+  <members>
+    <member name="T:System.Threading.AbandonedMutexException">
+      <summary>Исключение вызывается, когда некоторый поток получает объект <see cref="T:System.Threading.Mutex" />, брошенный другим потоком путем выхода без высвобождения.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.AbandonedMutexException" /> значениями по умолчанию.</summary>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.Int32,System.Threading.WaitHandle)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.AbandonedMutexException" />, используя конкретиый индекс брошенного мьютекса, (если применимо), а также объект <see cref="T:System.Threading.Mutex" />, представляющий мьютекс.</summary>
+      <param name="location">Индекс брошенного мьютекса в массиве дескрипторов ожидания, если выдается исключение для метода <see cref="Overload:System.Threading.WaitHandle.WaitAny" />, или –1, если исключение выдается для методов <see cref="Overload:System.Threading.WaitHandle.WaitOne" /> или <see cref="Overload:System.Threading.WaitHandle.WaitAll" />.</param>
+      <param name="handle">Объект <see cref="T:System.Threading.Mutex" />, представляющий брошенный мьютекс.</param>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.AbandonedMutexException" /> с указанным сообщением об ошибке.</summary>
+      <param name="message">Сообщение об ошибке с объяснением причины исключения.</param>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.String,System.Exception)">
+      <summary>Выполняет инициализацию нового экземпляра класса <see cref="T:System.Threading.AbandonedMutexException" /> с указанным сообщением об ошибке и внутренним исключением. </summary>
+      <param name="message">Сообщение об ошибке с объяснением причины исключения.</param>
+      <param name="inner">Исключение, которое вызвало текущее исключение.Если значение параметра <paramref name="inner" /> не равно null, текущее исключение вызывается в блоке catch, обрабатывающем внутреннее исключение.</param>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.String,System.Exception,System.Int32,System.Threading.WaitHandle)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.AbandonedMutexException" />, используя указанное сообщения об ошибке, внутреннее исключение, индекс брошенного мьютекса (если применимо), а также объект <see cref="T:System.Threading.Mutex" />, представляющего мьютекс.</summary>
+      <param name="message">Сообщение об ошибке с объяснением причины исключения.</param>
+      <param name="inner">Исключение, которое вызвало текущее исключение.Если значение параметра <paramref name="inner" /> не равно null, текущее исключение вызывается в блоке catch, обрабатывающем внутреннее исключение.</param>
+      <param name="location">Индекс брошенного мьютекса в массиве дескрипторов ожидания, если выдается исключение для метода <see cref="Overload:System.Threading.WaitHandle.WaitAny" />, или –1, если исключение выдается для методов <see cref="Overload:System.Threading.WaitHandle.WaitOne" /> или <see cref="Overload:System.Threading.WaitHandle.WaitAll" />.</param>
+      <param name="handle">Объект <see cref="T:System.Threading.Mutex" />, представляющий брошенный мьютекс.</param>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.String,System.Int32,System.Threading.WaitHandle)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.AbandonedMutexException" /> указанным сообщением об ошибке, индексом брошенного мьютекса (если применимо), а также брошенным мьютексом. </summary>
+      <param name="message">Сообщение об ошибке с объяснением причины исключения.</param>
+      <param name="location">Индекс брошенного мьютекса в массиве дескрипторов ожидания, если выдается исключение для метода <see cref="Overload:System.Threading.WaitHandle.WaitAny" />, или –1, если исключение выдается для методов <see cref="Overload:System.Threading.WaitHandle.WaitOne" /> или <see cref="Overload:System.Threading.WaitHandle.WaitAll" />.</param>
+      <param name="handle">Объект <see cref="T:System.Threading.Mutex" />, представляющий брошенный мьютекс.</param>
+    </member>
+    <member name="P:System.Threading.AbandonedMutexException.Mutex">
+      <summary>Получает брошенный мьютекс, вызвавший исключение (если он известен).</summary>
+      <returns>Объект <see cref="T:System.Threading.Mutex" />, представляющий брошенный мьютекс, или null, если брошенный мьютекс не может быть идентифицирован.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Threading.AbandonedMutexException.MutexIndex">
+      <summary>Получает индекс брошенного мьютекса, вызвавшего исключение (если он известен).</summary>
+      <returns>Индекс в массиве дескрипторов ожидания, передаваемый в метод <see cref="Overload:System.Threading.WaitHandle.WaitAny" />, объекта <see cref="T:System.Threading.Mutex" />, представляющего брошенный мьютекс, или же -1, если индекс брошенного мьютекса невозможно определить.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.AsyncLocal`1">
+      <summary>Представляет внешние данные, локальные для данного асинхронного потока управления, такие как асинхронный метод. </summary>
+      <typeparam name="T">Тип внешних данных. </typeparam>
+    </member>
+    <member name="M:System.Threading.AsyncLocal`1.#ctor">
+      <summary>Создает экземпляр экземпляра <see cref="T:System.Threading.AsyncLocal`1" />, который не получает уведомления об изменениях. </summary>
+    </member>
+    <member name="M:System.Threading.AsyncLocal`1.#ctor(System.Action{System.Threading.AsyncLocalValueChangedArgs{`0}})">
+      <summary>Создает экземпляр локального экземпляра <see cref="T:System.Threading.AsyncLocal`1" />, который получает уведомления об изменениях. </summary>
+      <param name="valueChangedHandler">Делегат, который вызывается при каждом изменении текущего значения в любом потоке. </param>
+    </member>
+    <member name="P:System.Threading.AsyncLocal`1.Value">
+      <summary>Получает или задает значение внешних данных. </summary>
+      <returns>Значение внешних данных. </returns>
+    </member>
+    <member name="T:System.Threading.AsyncLocalValueChangedArgs`1">
+      <summary>Класс, предоставляющий сведения об изменениях данных экземплярам <see cref="T:System.Threading.AsyncLocal`1" />, которые зарегистрированы для получения уведомлений об изменениях. </summary>
+      <typeparam name="T">Тип данных. </typeparam>
+    </member>
+    <member name="P:System.Threading.AsyncLocalValueChangedArgs`1.CurrentValue">
+      <summary>Получает текущее значение данных. </summary>
+      <returns>Текущее значение данных. </returns>
+    </member>
+    <member name="P:System.Threading.AsyncLocalValueChangedArgs`1.PreviousValue">
+      <summary>Получает предыдущее значение данных.</summary>
+      <returns>Предыдущее значение данных. </returns>
+    </member>
+    <member name="P:System.Threading.AsyncLocalValueChangedArgs`1.ThreadContextChanged">
+      <summary>Возвращает значение, указывающее, изменяется ли значение из-за изменения контекста выполнения. </summary>
+      <returns>Значение true, если значение изменено из-за изменения контекста выполнения; в противном случае — значение false. </returns>
+    </member>
+    <member name="T:System.Threading.AutoResetEvent">
+      <summary>Уведомляет ожидающий поток о том, что произошло событие.Этот класс не наследуется.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.AutoResetEvent.#ctor(System.Boolean)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.AutoResetEvent" /> логическим значением, указывающим, нужно ли для начального состояния задать сигнальное значение.</summary>
+      <param name="initialState">
+              Значение true для задания начального состояния сигнальным; false для задания несигнального начального состояния. </param>
+    </member>
+    <member name="T:System.Threading.Barrier">
+      <summary>Позволяет нескольким задачам параллельно работать с алгоритмом, используя несколько фаз.</summary>
+    </member>
+    <member name="M:System.Threading.Barrier.#ctor(System.Int32)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.Barrier" />.</summary>
+      <param name="participantCount">Количество участвующих потоков.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="participantCount" /> меньше 0 или больше 32,767.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.#ctor(System.Int32,System.Action{System.Threading.Barrier})">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.Barrier" />.</summary>
+      <param name="participantCount">Количество участвующих потоков.</param>
+      <param name="postPhaseAction">
+        <see cref="T:System.Action`1" /> для исполнения после каждой фазы. Значение null (Nothing in Visual Basic) может быть передано, чтобы указать, что действия не предпринимаются.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="participantCount" /> меньше 0 или больше 32,767.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.AddParticipant">
+      <summary>Уведомляет <see cref="T:System.Threading.Barrier" /> о добавлении дополнительного участника.</summary>
+      <returns>Номер фазы барьера, в которой сначала участвуют новые участники.</returns>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+      <exception cref="T:System.InvalidOperationException">Добавление участника приведет к превышению 32 767 счетчиком участников барьера.– или –Метод был вызван из действия после этапа.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.AddParticipants(System.Int32)">
+      <summary>Уведомляет барьер <see cref="T:System.Threading.Barrier" /> о добавлении дополнительных участников.</summary>
+      <returns>Номер фазы барьера, в которой сначала участвуют новые участники.</returns>
+      <param name="participantCount">Число дополнительных участников, которых необходимо добавить в барьер.</param>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="participantCount" /> меньше 0.– или –Добавление участников <paramref name="participantCount" /> приведет к превышению 32 767 счетчиком участников барьера.</exception>
+      <exception cref="T:System.InvalidOperationException">Метод был вызван из действия после этапа.</exception>
+    </member>
+    <member name="P:System.Threading.Barrier.CurrentPhaseNumber">
+      <summary>Получает номер текущей фазы барьера.</summary>
+      <returns>Возвращает номер текущего этапа барьера.</returns>
+    </member>
+    <member name="M:System.Threading.Barrier.Dispose">
+      <summary>Освобождает все ресурсы, используемые текущим экземпляром класса <see cref="T:System.Threading.Barrier" />.</summary>
+      <exception cref="T:System.InvalidOperationException">Метод был вызван из действия после этапа.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.Dispose(System.Boolean)">
+      <summary>Освобождает неуправляемые (а при необходимости и управляемые) ресурсы, используемые объектом <see cref="T:System.Threading.Barrier" />.</summary>
+      <param name="disposing">Значение true, чтобы освободить управляемые и неуправляемые ресурсы; значение false, чтобы освободить только неуправляемые ресурсы.</param>
+    </member>
+    <member name="P:System.Threading.Barrier.ParticipantCount">
+      <summary>Получает общее количество участников в барьере.</summary>
+      <returns>Возвращает общее количество участников в барьере.</returns>
+    </member>
+    <member name="P:System.Threading.Barrier.ParticipantsRemaining">
+      <summary>Получает количество участников в барьере, которые еще не создали сигнал в текущей фазе.</summary>
+      <returns>Возвращает количество участников в барьере, которые еще не создали сигнал на текущем этапе.</returns>
+    </member>
+    <member name="M:System.Threading.Barrier.RemoveParticipant">
+      <summary>Уведомляет <see cref="T:System.Threading.Barrier" /> о удалении одного участника.</summary>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+      <exception cref="T:System.InvalidOperationException">Барьер уже содержит 0 участников.– или –Метод был вызван из действия после этапа.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.RemoveParticipants(System.Int32)">
+      <summary>Уведомляет барьер <see cref="T:System.Threading.Barrier" /> об удалении нескольких участников.</summary>
+      <param name="participantCount">Число дополнительных участников, которых необходимо удалить из барьера.</param>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="participantCount" /> меньше 0.</exception>
+      <exception cref="T:System.InvalidOperationException">Барьер уже содержит 0 участников.– или –Метод был вызван из действия после этапа. – или –текущее количество участников меньше указанного participantCount</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Общее число участников меньше указанного<paramref name=" participantCount" /></exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait">
+      <summary>Сообщает, что участник достиг барьера  и ожидает достижения барьера другими участниками.</summary>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+      <exception cref="T:System.InvalidOperationException">Метод был вызван из действия после этапа, барьер в настоящий момент имеет 0 участников или барьер получает сигналы от большего числа потоков, чем зарегистрировано участников.</exception>
+      <exception cref="T:System.Threading.BarrierPostPhaseException">Если создается исключение из действия следующего этапа барьера после того, как все участвующие потоки вызвали SignalAndWait, исключение будет вставлено в BarrierPostPhaseException и создано для всех участвующих потоков.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.Int32)">
+      <summary>Сообщает, что участник достиг барьера  и ожидает достижения барьера всеми другими участниками, используя 32-разрядное знаковое целое число для измерения времени ожидания.</summary>
+      <returns>Значение true, если все участники достигли барьера за указанное время; в противном случае — значение false.</returns>
+      <param name="millisecondsTimeout">Время ожидания в миллисекундах или значение <see cref="F:System.Threading.Timeout.Infinite" /> (-1) для неограниченного времени ожидания.</param>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="millisecondsTimeout" /> является отрицательным числом, отличным от -1, которое представляет неограниченное время ожидания.</exception>
+      <exception cref="T:System.InvalidOperationException">Метод был вызван из действия после этапа, барьер в настоящий момент имеет 0 участников или барьер получает сигналы от большего числа потоков, чем зарегистрировано участников.</exception>
+      <exception cref="T:System.Threading.BarrierPostPhaseException">Если создается исключение из действия следующего этапа барьера после того, как все участвующие потоки вызвали SignalAndWait, исключение будет вставлено в BarrierPostPhaseException и создано для всех участвующих потоков.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.Int32,System.Threading.CancellationToken)">
+      <summary>Сообщает, что участник достиг барьера и ожидает достижения барьера всеми другими участниками, используя 32-разрядное знаковое целое число для измерения времени ожидания. Кроме того, метод контролирует токен отмены.</summary>
+      <returns>Значение true, если все участники достигли барьера за указанное время; в противном случае — значение false</returns>
+      <param name="millisecondsTimeout">Время ожидания в миллисекундах или значение <see cref="F:System.Threading.Timeout.Infinite" /> (-1) для неограниченного времени ожидания.</param>
+      <param name="cancellationToken">Токен отмены <see cref="T:System.Threading.CancellationToken" />, который следует контролировать.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> был отменен.</exception>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="millisecondsTimeout" /> является отрицательным числом, отличным от -1, которое представляет неограниченное время ожидания.</exception>
+      <exception cref="T:System.InvalidOperationException">Метод был вызван из действия после этапа, барьер в настоящий момент имеет 0 участников или барьер получает сигналы от большего числа потоков, чем зарегистрировано участников.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.Threading.CancellationToken)">
+      <summary>Сообщает, что участник достиг барьера  и ожидает достижения барьера всеми другими участниками. Кроме того, метод контролирует токен отмены.</summary>
+      <param name="cancellationToken">Токен отмены <see cref="T:System.Threading.CancellationToken" />, который следует контролировать.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> был отменен.</exception>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+      <exception cref="T:System.InvalidOperationException">Метод был вызван из действия после этапа, барьер в настоящий момент имеет 0 участников или барьер получает сигналы от большего числа потоков, чем зарегистрировано участников.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.TimeSpan)">
+      <summary>Сообщает, что участник достиг барьера и ожидает достижения барьера всеми другими участниками, используя объект <see cref="T:System.TimeSpan" /> для измерения интервала времени.</summary>
+      <returns>Значение true, если все остальные участники достигли барьера; в противном случае — значение false.</returns>
+      <param name="timeout">Объект <see cref="T:System.TimeSpan" />, представляющий время ожидания в миллисекундах, или объект <see cref="T:System.TimeSpan" />, представляющий -1 миллисекунду для неограниченного ожидания.</param>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> является отрицательным числом, отличным от значения -1 миллисекунды, которое представляет неограниченное время ожидания, или превышает 32767.</exception>
+      <exception cref="T:System.InvalidOperationException">Метод был вызван из действия после этапа, барьер в настоящий момент имеет 0 участников или барьер получает сигналы от большего числа потоков, чем зарегистрировано участников.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>Сообщает, что участник достиг барьера и ожидает достижения барьера всеми другими участниками, используя объект <see cref="T:System.TimeSpan" /> для измерения интервала времени. Кроме того, метод контролирует токен отмены.</summary>
+      <returns>Значение true, если все остальные участники достигли барьера; в противном случае — значение false.</returns>
+      <param name="timeout">Объект <see cref="T:System.TimeSpan" />, представляющий время ожидания в миллисекундах, или объект <see cref="T:System.TimeSpan" />, представляющий -1 миллисекунду для неограниченного ожидания.</param>
+      <param name="cancellationToken">Токен отмены <see cref="T:System.Threading.CancellationToken" />, который следует контролировать.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> был отменен.</exception>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> является отрицательным числом, отличным от значения -1, которое представляет неограниченное время ожидания.</exception>
+      <exception cref="T:System.InvalidOperationException">Метод был вызван из действия после этапа, барьер в настоящий момент имеет 0 участников или барьер получает сигналы от большего числа потоков, чем зарегистрировано участников.</exception>
+    </member>
+    <member name="T:System.Threading.BarrierPostPhaseException">
+      <summary>Исключение, которое возникает при сбое действия барьера <see cref="T:System.Threading.Barrier" />, выполняемого в конце фазы</summary>
+    </member>
+    <member name="M:System.Threading.BarrierPostPhaseException.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.BarrierPostPhaseException" /> системным сообщением, содержащим описание ошибки.</summary>
+    </member>
+    <member name="M:System.Threading.BarrierPostPhaseException.#ctor(System.Exception)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.BarrierPostPhaseException" /> с указанным внутренним исключением.</summary>
+      <param name="innerException">Исключение, которое вызвало текущее исключение.</param>
+    </member>
+    <member name="M:System.Threading.BarrierPostPhaseException.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.BarrierPostPhaseException" /> с использованием заданного сообщения, содержащего описание ошибки.</summary>
+      <param name="message">Сообщение с описанием исключения.Вызывающий оператор этого конструктора необходим, чтобы убедиться, локализована ли данная строка для текущего языка и региональных параметров системы.</param>
+    </member>
+    <member name="M:System.Threading.BarrierPostPhaseException.#ctor(System.String,System.Exception)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.BarrierPostPhaseException" /> с указанным сообщением об ошибке и ссылкой на внутреннее исключение, вызвавшее это исключение.</summary>
+      <param name="message">Сообщение с описанием исключения.Вызывающий оператор этого конструктора необходим, чтобы убедиться, локализована ли данная строка для текущего языка и региональных параметров системы.</param>
+      <param name="innerException">Исключение, которое вызвало текущее исключение.Если значение параметра <paramref name="innerException" /> не равно null, текущее исключение сгенерировано в блоке catch, обрабатывающем внутреннее исключение.</param>
+    </member>
+    <member name="T:System.Threading.ContextCallback">
+      <summary>Представляет метод, вызываемый в новом контексте.  </summary>
+      <param name="state">Объект, содержащий информацию, используемую всякий раз методом обратного вызова при каждом выполнении.</param>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.CountdownEvent">
+      <summary>Представляет примитив синхронизации, на который отправляется сигнал при достижении его подсчетом нуля.</summary>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.#ctor(System.Int32)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.CountdownEvent" /> указанным количеством.</summary>
+      <param name="initialCount">Количество сигналов, первоначально необходимое для задания объекта <see cref="T:System.Threading.CountdownEvent" />.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="initialCount" /> меньше 0.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.AddCount">
+      <summary>Увеличивает текущий подсчет <see cref="T:System.Threading.CountdownEvent" /> на один.</summary>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+      <exception cref="T:System.InvalidOperationException">Текущий экземпляр уже задан.– или –Значение параметра <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> больше или равно значению свойства <see cref="F:System.Int32.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.AddCount(System.Int32)">
+      <summary>Увеличивает текущее количество в объекте <see cref="T:System.Threading.CountdownEvent" /> на указанное значение.</summary>
+      <param name="signalCount">Значение, на которое нужно увеличить <see cref="P:System.Threading.CountdownEvent.CurrentCount" />.</param>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение <paramref name="signalCount" /> меньше или равно 0.</exception>
+      <exception cref="T:System.InvalidOperationException">Текущий экземпляр уже задан.– или –<see cref="P:System.Threading.CountdownEvent.CurrentCount" /> равно или больше <see cref="F:System.Int32.MaxValue" /> после увеличения счета параметром <paramref name="signalCount." /></exception>
+    </member>
+    <member name="P:System.Threading.CountdownEvent.CurrentCount">
+      <summary>Получает количество сигналов, оставшееся до установки события.</summary>
+      <returns> Количество сигналов, оставшееся до установки события.</returns>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Dispose">
+      <summary>Освобождает все ресурсы, используемые текущим экземпляром класса <see cref="T:System.Threading.CountdownEvent" />.</summary>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Dispose(System.Boolean)">
+      <summary>Освобождает неуправляемые (а при необходимости и управляемые) ресурсы, используемые объектом <see cref="T:System.Threading.CountdownEvent" />.</summary>
+      <param name="disposing">Значение true, чтобы освободить управляемые и неуправляемые ресурсы; значение false, чтобы освободить только неуправляемые ресурсы.</param>
+    </member>
+    <member name="P:System.Threading.CountdownEvent.InitialCount">
+      <summary>Получает количество сигналов, изначально нужное для установки события.</summary>
+      <returns> Количество сигналов, изначально нужное для установки события.</returns>
+    </member>
+    <member name="P:System.Threading.CountdownEvent.IsSet">
+      <summary>Определяет, установлено ли событие.</summary>
+      <returns>Значение true, если событие установлено; в противном случае — значение false.</returns>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Reset">
+      <summary>Сбрасывает свойство <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> на значение свойства <see cref="P:System.Threading.CountdownEvent.InitialCount" />.</summary>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Reset(System.Int32)">
+      <summary>Присваивает свойству <see cref="P:System.Threading.CountdownEvent.InitialCount" /> заданное значение.</summary>
+      <param name="count">Количество сигналов, необходимое для установки объекта <see cref="T:System.Threading.CountdownEvent" />.</param>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="count" /> меньше 0.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Signal">
+      <summary>Регистрирует сигнал с событием <see cref="T:System.Threading.CountdownEvent" />, уменьшая значение свойства <see cref="P:System.Threading.CountdownEvent.CurrentCount" />.</summary>
+      <returns>Значение true, если после сигнала подсчет стал равен нулю и было создано событие; в противном случае — значение false.</returns>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+      <exception cref="T:System.InvalidOperationException">Текущий экземпляр уже задан.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Signal(System.Int32)">
+      <summary>Регистрирует несколько сигналов с объектом <see cref="T:System.Threading.CountdownEvent" />, уменьшая значение свойства <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> на указанное число.</summary>
+      <returns>Значение true, если после сигналов подсчет стал равен нулю и было создано событие; в противном случае — значение false.</returns>
+      <param name="signalCount">Количество сигналов, которое необходимо зарегистрировать.</param>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="signalCount" /> меньше 1.</exception>
+      <exception cref="T:System.InvalidOperationException">Текущий экземпляр уже задан. - или- Или значение <paramref name="signalCount" /> больше <see cref="P:System.Threading.CountdownEvent.CurrentCount" />.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.TryAddCount">
+      <summary>Попытка увеличить <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> на единицу.</summary>
+      <returns>Значение true, если увеличение выполнено успешно; в противном случае — значение false.Если значение свойства <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> уже равно нулю, метод возвращает значение false.</returns>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> равно <see cref="F:System.Int32.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.TryAddCount(System.Int32)">
+      <summary>Пытается увеличить <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> на указанное значение.</summary>
+      <returns>Значение true, если увеличение выполнено успешно; в противном случае — значение false.Если значение свойства <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> уже равно нулю, возвращается значение false.</returns>
+      <param name="signalCount">Значение, на которое нужно увеличить <see cref="P:System.Threading.CountdownEvent.CurrentCount" />.</param>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение <paramref name="signalCount" /> меньше или равно 0.</exception>
+      <exception cref="T:System.InvalidOperationException">Текущий экземпляр уже задан.– или –Значение свойства<see cref="P:System.Threading.CountdownEvent.CurrentCount" /> + <paramref name="signalCount" /> больше или равно значению свойства <see cref="F:System.Int32.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait">
+      <summary>Блокирует текущий поток до установки <see cref="T:System.Threading.CountdownEvent" />.</summary>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.Int32)">
+      <summary>Блокирует текущий поток до тех пор, пока не установлен объект <see cref="T:System.Threading.CountdownEvent" />, используя 32-разрядное знаковое целое число для измерения времени ожидания.</summary>
+      <returns>Значение true, если установлено событие <see cref="T:System.Threading.CountdownEvent" />; в противном случае — значение false.</returns>
+      <param name="millisecondsTimeout">Время ожидания в миллисекундах или значение <see cref="F:System.Threading.Timeout.Infinite" /> (-1) для неограниченного времени ожидания.</param>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="millisecondsTimeout" /> является отрицательным числом, отличным от -1, которое представляет неограниченное время ожидания.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.Int32,System.Threading.CancellationToken)">
+      <summary>Блокирует текущий поток до тех пор, пока не будет установлен объект <see cref="T:System.Threading.CountdownEvent" />, используя 32-разрядное знаковое целое число для измерения времени ожидания. Кроме того, метод контролирует токен <see cref="T:System.Threading.CancellationToken" />.</summary>
+      <returns>Значение true, если установлено событие <see cref="T:System.Threading.CountdownEvent" />; в противном случае — значение false.</returns>
+      <param name="millisecondsTimeout">Время ожидания в миллисекундах или значение <see cref="F:System.Threading.Timeout.Infinite" /> (-1) для неограниченного времени ожидания.</param>
+      <param name="cancellationToken">Токен отмены <see cref="T:System.Threading.CancellationToken" />, который следует контролировать.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> был отменен.</exception>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален. — или — <see cref="T:System.Threading.CancellationTokenSource" />, создавший <paramref name="cancellationToken" />, был удален.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="millisecondsTimeout" /> является отрицательным числом, отличным от -1, которое представляет неограниченное время ожидания.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.Threading.CancellationToken)">
+      <summary>Блокирует текущий поток, пока не будет установлено <see cref="T:System.Threading.CountdownEvent" />, в то же время контролируя <see cref="T:System.Threading.CancellationToken" />.</summary>
+      <param name="cancellationToken">Токен отмены <see cref="T:System.Threading.CancellationToken" />, который следует контролировать.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> был отменен.</exception>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален. — или — <see cref="T:System.Threading.CancellationTokenSource" />, создавший <paramref name="cancellationToken" />, был удален.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.TimeSpan)">
+      <summary>Блокирует текущий поток до тех пор, пока не будет установлен объект <see cref="T:System.Threading.CountdownEvent" />, используя значение <see cref="T:System.TimeSpan" /> для измерения времени ожидания.</summary>
+      <returns>Значение true, если установлено событие <see cref="T:System.Threading.CountdownEvent" />; в противном случае — значение false.</returns>
+      <param name="timeout">Объект <see cref="T:System.TimeSpan" />, представляющий время ожидания в миллисекундах, или объект <see cref="T:System.TimeSpan" />, представляющий -1 миллисекунду для неограниченного ожидания.</param>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> является отрицательным числом отличный значение -1 миллисекунд, которое представляет неограниченное время ожидания - или - время ожидания больше <see cref="F:System.Int32.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>Блокирует текущий поток, пока не будет установлен объект <see cref="T:System.Threading.CountdownEvent" />, используя значение <see cref="T:System.TimeSpan" /> для измерения времени ожидания. Кроме того, метод контролирует токен <see cref="T:System.Threading.CancellationToken" />.</summary>
+      <returns>Значение true, если установлено событие <see cref="T:System.Threading.CountdownEvent" />; в противном случае — значение false.</returns>
+      <param name="timeout">Объект <see cref="T:System.TimeSpan" />, представляющий время ожидания в миллисекундах, или объект <see cref="T:System.TimeSpan" />, представляющий -1 миллисекунду для неограниченного ожидания.</param>
+      <param name="cancellationToken">Токен отмены <see cref="T:System.Threading.CancellationToken" />, который следует контролировать.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> был отменен.</exception>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален. — или — <see cref="T:System.Threading.CancellationTokenSource" />, создавший <paramref name="cancellationToken" />, был удален.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> является отрицательным числом отличный значение -1 миллисекунд, которое представляет неограниченное время ожидания - или - время ожидания больше <see cref="F:System.Int32.MaxValue" />.</exception>
+    </member>
+    <member name="P:System.Threading.CountdownEvent.WaitHandle">
+      <summary>Получает дескриптор <see cref="T:System.Threading.WaitHandle" />, используемый для ожидания установки события.</summary>
+      <returns>Дескриптор <see cref="T:System.Threading.WaitHandle" />, используемый для ожидания установки события.</returns>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+    </member>
+    <member name="T:System.Threading.EventResetMode">
+      <summary>Указывает, сбрасывается ли <see cref="T:System.Threading.EventWaitHandle" /> автоматически или вручную после получения сигнала.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Threading.EventResetMode.AutoReset">
+      <summary>При получении сигнала <see cref="T:System.Threading.EventWaitHandle" /> сбрасывается автоматически после освобождения одиночного потока.При отсутствии ожидающих потоков <see cref="T:System.Threading.EventWaitHandle" /> остается сигнальным до тех пор, пока поток не блокируется и не сбрасывается после освобождения потока.</summary>
+    </member>
+    <member name="F:System.Threading.EventResetMode.ManualReset">
+      <summary>При получении сигнала, <see cref="T:System.Threading.EventWaitHandle" /> высвобождает все ожидающие потоки и остается сигнальным до тех пор, пока не сбрасывается вручную.</summary>
+    </member>
+    <member name="T:System.Threading.EventWaitHandle">
+      <summary>Представляет синхронизированное событие потока.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.#ctor(System.Boolean,System.Threading.EventResetMode)">
+      <summary>Выполняет инициализацию нового экземпляра класса <see cref="T:System.Threading.EventWaitHandle" />, определяя, получает ли сигнал, ожидающий дескриптор, и производится ли сброс автоматически или вручную.</summary>
+      <param name="initialState">Значение true для задания начального состояния сигнальным; false для задания несигнального начального состояния.</param>
+      <param name="mode">Одно из значений <see cref="T:System.Threading.EventResetMode" /> определяет, сбрасывается ли событие автоматически или вручную.</param>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.#ctor(System.Boolean,System.Threading.EventResetMode,System.String)">
+      <summary>Выполняет инициализацию нового экземпляра класса <see cref="T:System.Threading.EventWaitHandle" />, определяющего получает ли сигнал дескриптор ожидания, если он был создан в результате данного вызова, сбрасывается ли он автоматически или вручную, а также имя системного события синхронизации.</summary>
+      <param name="initialState">true, чтобы задать сигнальное начальное состояние, если создано названное событие в результате этого вызова; false, чтобы задать несигнальное начальное состояние.</param>
+      <param name="mode">Одно из значений <see cref="T:System.Threading.EventResetMode" /> определяет, сбрасывается ли событие автоматически или вручную.</param>
+      <param name="name">Имя общесистемного события синхронизации.</param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка Win32.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Именованное событие существует, имеет настройки управления доступом, а пользователь не имеет прав <see cref="F:System.Security.AccessControl.EventWaitHandleRights.FullControl" />.</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">Именованное событие не может быть создано, видимо потому что дескриптор ожидания другого типа имеет то же имя.</exception>
+      <exception cref="T:System.ArgumentException">Длина параметра <paramref name="name" /> превышает 260 символов.</exception>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.#ctor(System.Boolean,System.Threading.EventResetMode,System.String,System.Boolean@)">
+      <summary>Выполняет инициализацию нового экземпляра класса <see cref="T:System.Threading.EventWaitHandle" />, определяющего, является ли дескриптор ожидания изначально сигнальным, если он был создан в результате данного вызова, происходит ли сброс автоматически или вручную, имя системного события синхронизации и логическую переменную, значение которой показывает, было ли создано системное именованное событие.</summary>
+      <param name="initialState">true, чтобы задать сигнальное начальное состояние, если создано названное событие в результате этого вызова; false, чтобы задать несигнальное начальное состояние.</param>
+      <param name="mode">Одно из значений <see cref="T:System.Threading.EventResetMode" /> определяет, сбрасывается ли событие автоматически или вручную.</param>
+      <param name="name">Имя общесистемного события синхронизации.</param>
+      <param name="createdNew">Когда данный метод возвращает значение, он содержит true, если было создано локальное событие (то есть, если <paramref name="name" /> имеет значение null или пустую строку) или было создано системное событие с заданным именем; либо значение false, если указанное именованное событие уже существовало.Этот параметр передается без инициализации.</param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка Win32.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Именованное событие существует, имеет настройки управления доступом, а пользователь не имеет прав <see cref="F:System.Security.AccessControl.EventWaitHandleRights.FullControl" />.</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">Именованное событие не может быть создано, видимо потому что дескриптор ожидания другого типа имеет то же имя.</exception>
+      <exception cref="T:System.ArgumentException">Длина параметра <paramref name="name" /> превышает 260 символов.</exception>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.OpenExisting(System.String)">
+      <summary>Открывает указанное именованное событие синхронизации, если оно уже существует.</summary>
+      <returns>Объект, представляющий именованное системное событие.</returns>
+      <param name="name">Имя системного события синхронизации для открытия.</param>
+      <exception cref="T:System.ArgumentException">Параметр <paramref name="name" /> содержит пустую строку. -или-Длина параметра <paramref name="name" /> превышает 260 символов.</exception>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="name" /> имеет значение null.</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">Именованное системное событие не существует.</exception>
+      <exception cref="T:System.IO.IOException">Произошла ошибка Win32.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Именованное событие существует, но у пользователя нет необходимых для его использования прав доступа.</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.Reset">
+      <summary>Задает несигнальное состояние события, вызывая блокирование потоков.</summary>
+      <returns>true, если операция прошла успешно; в противном случае — false.</returns>
+      <exception cref="T:System.ObjectDisposedException">Для данного объекта <see cref="T:System.Threading.EventWaitHandle" /> ранее вызывался метод <see cref="M:System.Threading.EventWaitHandle.Close" />.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.Set">
+      <summary>Задает сигнальное состояние события, позволяя одному или нескольким ожидающим потокам продолжить.</summary>
+      <returns>true, если операция прошла успешно; в противном случае — false.</returns>
+      <exception cref="T:System.ObjectDisposedException">Для данного объекта <see cref="T:System.Threading.EventWaitHandle" /> ранее вызывался метод <see cref="M:System.Threading.EventWaitHandle.Close" />.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.TryOpenExisting(System.String,System.Threading.EventWaitHandle@)">
+      <summary>Открывает указанное именованное событие синхронизации, если оно уже существует, и возвращает значение, указывающее, успешно ли выполнена операция.</summary>
+      <returns>Значение true, если именованное событие синхронизации было успешно открыто; в противном случае — значение false.</returns>
+      <param name="name">Имя системного события синхронизации для открытия.</param>
+      <param name="result">Когда выполнение этого метода завершается, содержит объект <see cref="T:System.Threading.EventWaitHandle" />, представляющий именованное событие синхронизации, если вызов завершился успешно, или значение null, если вызов завершился ошибкой.Этот параметр обрабатывается как неинициализированный.</param>
+      <exception cref="T:System.ArgumentException">Параметр <paramref name="name" /> содержит пустую строку.-или-Длина параметра <paramref name="name" /> превышает 260 символов.</exception>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="name" /> имеет значение null.</exception>
+      <exception cref="T:System.IO.IOException">Произошла ошибка Win32.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Именованное событие существует, но у пользователя нет требуемых прав доступа.</exception>
+    </member>
+    <member name="T:System.Threading.ExecutionContext">
+      <summary>Управляет контекстом выполнения текущего потока.Этот класс не наследуется.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.ExecutionContext.Capture">
+      <summary>Перехватывает контекст выполнения из текущего потока.</summary>
+      <returns>Объект <see cref="T:System.Threading.ExecutionContext" />, представляющий контекст выполнения хоста для текущего потока.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.ExecutionContext.Run(System.Threading.ExecutionContext,System.Threading.ContextCallback,System.Object)">
+      <summary>Выполняет метод в указанном контексте выполнения в текущем потоке.</summary>
+      <param name="executionContext">Задаваемый <see cref="T:System.Threading.ExecutionContext" />.</param>
+      <param name="callback">Делегат <see cref="T:System.Threading.ContextCallback" />, представляющий выполняемый метод в предоставленном контексте выполнения.</param>
+      <param name="state">Данный объект передается в метод обратного вызова.</param>
+      <exception cref="T:System.InvalidOperationException">Параметр <paramref name="executionContext" /> имеет значение null.– или –<paramref name="executionContext" /> не был получен во время операции отслеживания. – или –<paramref name="executionContext" /> уже использовался в качестве аргумента в вызове <see cref="M:System.Threading.ExecutionContext.Run(System.Threading.ExecutionContext,System.Threading.ContextCallback,System.Object)" />.</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="Infrastructure" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Threading.Interlocked">
+      <summary>Предоставляет атомарные операции для переменных, используемых совместно несколькими потоками. </summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Add(System.Int32@,System.Int32)">
+      <summary>Добавляет два 32-разрядных целых числа и заменяет первое число на сумму в виде атомарной операции.</summary>
+      <returns>Новое значение сохраняется в <paramref name="location1" />.</returns>
+      <param name="location1">Переменная, содержащая первое добавляемое значение.Сумма двух значений сохраняется в <paramref name="location1" />.</param>
+      <param name="value">Значение, добавляемое к целому в <paramref name="location1" />.</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Add(System.Int64@,System.Int64)">
+      <summary>Добавляет два 64-разрядных целых числа и заменяет первое число на сумму в виде атомарной операции.</summary>
+      <returns>Новое значение сохраняется в <paramref name="location1" />.</returns>
+      <param name="location1">Переменная, содержащая первое добавляемое значение.Сумма двух значений сохраняется в <paramref name="location1" />.</param>
+      <param name="value">Значение, добавляемое к целому в <paramref name="location1" />.</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Double@,System.Double,System.Double)">
+      <summary>Сравнивает два числа с плавающей запятой двойной точности на равенство и, если они равны, заменяет первое значение.</summary>
+      <returns>Исходное значение в <paramref name="location1" />.</returns>
+      <param name="location1">Целевое значение, которое будет сравниваться со значением параметра <paramref name="comparand" /> и, возможно, будет заменено. </param>
+      <param name="value">Значение, которое заменит целевое значение, если результатом сравнения будет равенство. </param>
+      <param name="comparand">Значение сравнивается со значением <paramref name="location1" />. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Int32@,System.Int32,System.Int32)">
+      <summary>Сравнивает два 32-разрядных целых числа со знаком на равенство и, если они равны, заменяет первое.</summary>
+      <returns>Исходное значение в <paramref name="location1" />.</returns>
+      <param name="location1">Целевое значение, которое будет сравниваться со значением параметра <paramref name="comparand" /> и, возможно, будет заменено. </param>
+      <param name="value">Значение, которое заменит целевое значение, если результатом сравнения будет равенство. </param>
+      <param name="comparand">Значение сравнивается со значением <paramref name="location1" />. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Int64@,System.Int64,System.Int64)">
+      <summary>Сравнивает два 64-разрядных целых числа со знаком на равенство и, если они равны, заменяет первое.</summary>
+      <returns>Исходное значение в <paramref name="location1" />.</returns>
+      <param name="location1">Целевое значение, которое будет сравниваться со значением параметра <paramref name="comparand" /> и, возможно, будет заменено. </param>
+      <param name="value">Значение, которое заменит целевое значение, если результатом сравнения будет равенство. </param>
+      <param name="comparand">Значение сравнивается со значением <paramref name="location1" />. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.IntPtr@,System.IntPtr,System.IntPtr)">
+      <summary>Сравнивает два зависящих от платформы обработчика или указателя на равенство и, если они равны, заменяет первое из значений.</summary>
+      <returns>Исходное значение в <paramref name="location1" />.</returns>
+      <param name="location1">Целевое значение <see cref="T:System.IntPtr" />, которое будет сравниваться со значением параметра <paramref name="comparand" /> и, возможно, будет заменено <paramref name="value" />. </param>
+      <param name="value">Значение <see cref="T:System.IntPtr" />, которое заменит целевое значение, если результатом сравнения будет равенство. </param>
+      <param name="comparand">Значение <see cref="T:System.IntPtr" />, которое сравнивается со значением <paramref name="location1" />. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Object@,System.Object,System.Object)">
+      <summary>Сравнивает два объекта на равенство ссылок и, если они равны, заменяет первый объект.</summary>
+      <returns>Исходное значение в <paramref name="location1" />.</returns>
+      <param name="location1">Целевой объект, который будет сравниваться со значением параметра <paramref name="comparand" /> и, возможно, будет заменен. </param>
+      <param name="value">Объект, который заменит целевой объект, если результатом сравнения будет равенство. </param>
+      <param name="comparand">Объект, который сравнивается с объектом в <paramref name="location1" />. </param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Single@,System.Single,System.Single)">
+      <summary>Сравнивает два числа с плавающей запятой с обычной точностью на равенство и, если они равны, заменяет первое значение.</summary>
+      <returns>Исходное значение в <paramref name="location1" />.</returns>
+      <param name="location1">Целевое значение, которое будет сравниваться со значением параметра <paramref name="comparand" /> и, возможно, будет заменено. </param>
+      <param name="value">Значение, которое заменит целевое значение, если результатом сравнения будет равенство. </param>
+      <param name="comparand">Значение сравнивается со значением <paramref name="location1" />. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange``1(``0@,``0,``0)">
+      <summary>Сравнивает два экземпляра указанного ссылочного типа <paramref name="T" /> на равенство и, если это так, заменяет первый из них.</summary>
+      <returns>Исходное значение в <paramref name="location1" />.</returns>
+      <param name="location1">Целевое значение, которое будет сравниваться со значением параметра <paramref name="comparand" /> и, возможно, будет заменено.Это ссылочный параметр (ref в C#, ByRef в Visual Basic).</param>
+      <param name="value">Значение, которое заменит целевое значение, если результатом сравнения будет равенство. </param>
+      <param name="comparand">Значение сравнивается со значением <paramref name="location1" />. </param>
+      <typeparam name="T">Тип, используемый для <paramref name="location1" />, <paramref name="value" /> и <paramref name="comparand" />.Этот тип должен быть ссылочным типом.</typeparam>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+    </member>
+    <member name="M:System.Threading.Interlocked.Decrement(System.Int32@)">
+      <summary>Уменьшает значение заданной переменной и сохраняет результат в виде атомарной операции.</summary>
+      <returns>Уменьшаемое значение.</returns>
+      <param name="location">Переменная, у которой уменьшается значение. </param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Decrement(System.Int64@)">
+      <summary>Уменьшает значение заданной переменной и сохраняет результат в виде атомарной операции.</summary>
+      <returns>Уменьшаемое значение.</returns>
+      <param name="location">Переменная, у которой уменьшается значение. </param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Double@,System.Double)">
+      <summary>Задает число с плавающей запятой с двойной точностью указанным значением в виде атомарной операции и возвращает исходное значение.</summary>
+      <returns>Исходное значение параметра <paramref name="location1" />.</returns>
+      <param name="location1">Переменная, которая задается указанным значением. </param>
+      <param name="value">Значение, в которое задан параметр <paramref name="location1" />. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Int32@,System.Int32)">
+      <summary>Присваивает 32-разрядному целому числу со знаком заданное значение и возвращает исходное значение в виде атомарной операции.</summary>
+      <returns>Исходное значение параметра <paramref name="location1" />.</returns>
+      <param name="location1">Переменная, которая задается указанным значением. </param>
+      <param name="value">Значение, в которое задан параметр <paramref name="location1" />. </param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Int64@,System.Int64)">
+      <summary>Присваивает 64-разрядному целому числу со знаком заданное значение и возвращает исходное значение в виде атомарной операции.</summary>
+      <returns>Исходное значение параметра <paramref name="location1" />.</returns>
+      <param name="location1">Переменная, которая задается указанным значением. </param>
+      <param name="value">Значение, в которое задан параметр <paramref name="location1" />. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.IntPtr@,System.IntPtr)">
+      <summary>Задает указатель или обработчик, зависящий от платформы в виде атомарной операции, и возвращает ссылку на исходное значение.</summary>
+      <returns>Исходное значение параметра <paramref name="location1" />.</returns>
+      <param name="location1">Переменная, которая задается указанным значением. </param>
+      <param name="value">Значение, в которое задан параметр <paramref name="location1" />. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Object@,System.Object)">
+      <summary>Задает объект указанным значением в виде атомарной операции и возвращает ссылку на исходный объект.</summary>
+      <returns>Исходное значение параметра <paramref name="location1" />.</returns>
+      <param name="location1">Переменная, которая задается указанным значением. </param>
+      <param name="value">Значение, в которое задан параметр <paramref name="location1" />. </param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Single@,System.Single)">
+      <summary>Задает число с плавающей запятой с одинарной точностью указанным значением в виде атомарной операции и возвращает исходное значение.</summary>
+      <returns>Исходное значение параметра <paramref name="location1" />.</returns>
+      <param name="location1">Переменная, которая задается указанным значением. </param>
+      <param name="value">Значение, в которое задан параметр <paramref name="location1" />. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange``1(``0@,``0)">
+      <summary>Задает определенное значение для переменной указанного типа <paramref name="T" /> и возвращает исходное значение (атомарная операция).</summary>
+      <returns>Исходное значение параметра <paramref name="location1" />.</returns>
+      <param name="location1">Переменная, которая задается указанным значением.Это ссылочный параметр (ref в C#, ByRef в Visual Basic).</param>
+      <param name="value">Значение, в которое задан параметр <paramref name="location1" />. </param>
+      <typeparam name="T">Тип, используемый для <paramref name="location1" /> и <paramref name="value" />.Этот тип должен быть ссылочным типом.</typeparam>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+    </member>
+    <member name="M:System.Threading.Interlocked.Increment(System.Int32@)">
+      <summary>Увеличивает значение заданной переменной и сохраняет результат в виде атомарной операции.</summary>
+      <returns>Увеличиваемое значение.</returns>
+      <param name="location">Переменная, у которой увеличивается значение. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Increment(System.Int64@)">
+      <summary>Увеличивает значение заданной переменной и сохраняет результат в виде атомарной операции.</summary>
+      <returns>Увеличиваемое значение.</returns>
+      <param name="location">Переменная, у которой увеличивается значение. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.MemoryBarrier">
+      <summary>Синхронизирует доступ к памяти следующим образом: процессор, выполняющий текущий поток, не способен упорядочить инструкции так, чтобы обращения к памяти до вызова метода <see cref="M:System.Threading.Interlocked.MemoryBarrier" /> выполнялись после обращений к памяти, следующих за вызовом метода <see cref="M:System.Threading.Interlocked.MemoryBarrier" />.</summary>
+    </member>
+    <member name="M:System.Threading.Interlocked.Read(System.Int64@)">
+      <summary>Возвращает 64-разрядное значение, загруженное в виде атомарной операции.</summary>
+      <returns>Загруженное значение.</returns>
+      <param name="location">Загружаемое 64-разрядное значение.</param>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.LazyInitializer">
+      <summary>Обеспечивает процедуры неактивной инициализации.</summary>
+    </member>
+    <member name="M:System.Threading.LazyInitializer.EnsureInitialized``1(``0@)">
+      <summary>Инициализирует целевой ссылочный тип его конструктором типа по умолчанию, если он еще не инициализирован.</summary>
+      <returns>Инициализируемая ссылка типа <paramref name="T" />.</returns>
+      <param name="target">Ссылка типа <paramref name="T" />, которую необходимо инициализировать, если она еще не инициализирована.</param>
+      <typeparam name="T">Тип инициализируемой ссылки.</typeparam>
+      <exception cref="T:System.MemberAccessException">Разрешения на доступ к конструктору типа <paramref name="T" /> отсутствовали.</exception>
+      <exception cref="T:System.MissingMemberException">Тип <paramref name="T" /> не имеет конструктора по умолчанию.</exception>
+    </member>
+    <member name="M:System.Threading.LazyInitializer.EnsureInitialized``1(``0@,System.Boolean@,System.Object@)">
+      <summary>Инициализирует целевой ссылочный тип или тип значения его конструктором по умолчанию, если он еще не инициализирован.</summary>
+      <returns>Инициализированное значение типа <paramref name="T" />.</returns>
+      <param name="target">Ссылка или значение типа <paramref name="T" />, которое необходимо инициализировать, если оно еще не инициализировано.</param>
+      <param name="initialized">Ссылка на логическое значение, определяющее, инициализирована ли цель.</param>
+      <param name="syncLock">Ссылка на объект, используемый как взаимоисключающая блокировка для инициализации параметра <paramref name="target" />.Если <paramref name="syncLock" /> равно null, то нового объект будет создан экземпляр.</param>
+      <typeparam name="T">Тип инициализируемой ссылки.</typeparam>
+      <exception cref="T:System.MemberAccessException">Разрешения на доступ к конструктору типа <paramref name="T" /> отсутствовали.</exception>
+      <exception cref="T:System.MissingMemberException">Тип <paramref name="T" /> не имеет конструктора по умолчанию.</exception>
+    </member>
+    <member name="M:System.Threading.LazyInitializer.EnsureInitialized``1(``0@,System.Boolean@,System.Object@,System.Func{``0})">
+      <summary>Инициализирует целевой ссылочный тип или тип значения с использованием указанной функцией, если он еще не инициализирован.</summary>
+      <returns>Инициализированное значение типа <paramref name="T" />.</returns>
+      <param name="target">Ссылка или значение типа <paramref name="T" />, которое необходимо инициализировать, если оно еще не инициализировано.</param>
+      <param name="initialized">Ссылка на логическое значение, определяющее, инициализирована ли цель.</param>
+      <param name="syncLock">Ссылка на объект, используемый как взаимоисключающая блокировка для инициализации параметра <paramref name="target" />.Если <paramref name="syncLock" /> равно null, то нового объект будет создан экземпляр.</param>
+      <param name="valueFactory">Функция, которая вызывается для инициализации ссылки или значения.</param>
+      <typeparam name="T">Тип инициализируемой ссылки.</typeparam>
+      <exception cref="T:System.MemberAccessException">Разрешения на доступ к конструктору типа <paramref name="T" /> отсутствовали.</exception>
+      <exception cref="T:System.MissingMemberException">Тип <paramref name="T" /> не имеет конструктора по умолчанию.</exception>
+    </member>
+    <member name="M:System.Threading.LazyInitializer.EnsureInitialized``1(``0@,System.Func{``0})">
+      <summary>Инициализирует целевой ссылочный тип с использованием указанной функцией, если он еще не инициализирован.</summary>
+      <returns>Инициализированное значение типа <paramref name="T" />.</returns>
+      <param name="target">Ссылка типа <paramref name="T" />, которую необходимо инициализировать, если она еще не инициализирована.</param>
+      <param name="valueFactory">Функция, которая вызывается для инициализации ссылки.</param>
+      <typeparam name="T">Ссылочный тип инициализируемой ссылки.</typeparam>
+      <exception cref="T:System.MissingMemberException">Тип <paramref name="T" /> не имеет конструктора по умолчанию.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="valueFactory" /> вернул значение NULL (Nothing в Visual Basic).</exception>
+    </member>
+    <member name="T:System.Threading.LockRecursionException">
+      <summary>Исключение генерируется, когда рекурсивная запись блокировки не совпадает с рекурсивной политикой блокировки.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.LockRecursionException.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.LockRecursionException" /> системным сообщением, содержащим описание ошибки.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.LockRecursionException.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.LockRecursionException" /> с использованием заданного сообщения, содержащего описание ошибки.</summary>
+      <param name="message">Сообщение с описанием исключения.Вызывающему объекту этого конструктора необходимо убедиться, что эта строка локализована для текущего языка и региональных параметров системы.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.LockRecursionException.#ctor(System.String,System.Exception)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.LockRecursionException" /> с указанным сообщением об ошибке и ссылкой на внутреннее исключение, вызвавшее это исключение.</summary>
+      <param name="message">Сообщение с описанием исключения.Вызывающему объекту этого конструктора необходимо убедиться, что эта строка локализована для текущего языка и региональных параметров системы.</param>
+      <param name="innerException">Исключение, которое вызвало текущее исключение.Если значение параметра <paramref name="innerException" /> не равно null, текущее исключение сгенерировано в блоке catch, обрабатывающем внутреннее исключение.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.LockRecursionPolicy">
+      <summary>Указывает, можно ли несколько раз войти в блокировку из одного и того же потока.</summary>
+    </member>
+    <member name="F:System.Threading.LockRecursionPolicy.NoRecursion">
+      <summary>Если поток пытается войти в блокировку рекурсивно, выдается ошибка.Некоторые классы могут допускать определенные виды рекурсий при активированном параметре.</summary>
+    </member>
+    <member name="F:System.Threading.LockRecursionPolicy.SupportsRecursion">
+      <summary>Допускается рекурсивный вход потока в блокировку.Некоторые классы могут игнорировать эту возможность.</summary>
+    </member>
+    <member name="T:System.Threading.ManualResetEvent">
+      <summary>Уведомляет один или более ожидающих потоков о том, что произошло событие.Этот класс не наследуется.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.ManualResetEvent.#ctor(System.Boolean)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.ManualResetEvent" /> логическим значением, показывающим наличие сигнального состояния.</summary>
+      <param name="initialState">Значение true для задания начального состояния сигнальным; false для задания несигнального начального состояния. </param>
+    </member>
+    <member name="T:System.Threading.ManualResetEventSlim">
+      <summary>Предоставляет уменьшенную версию <see cref="T:System.Threading.ManualResetEvent" />.</summary>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.ManualResetEventSlim" /> начальным состоянием nonsignaled.</summary>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.#ctor(System.Boolean)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.ManualResetEventSlim" /> логическим значением, указывающим, нужно ли для начального состояния задать сигнальное значение.</summary>
+      <param name="initialState">значение true для задания начального сигнального состояния; значение false для задания начального несигнального состояния.</param>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.#ctor(System.Boolean,System.Int32)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.ManualResetEventSlim" /> логическим значением, указывающим, нужно ли для начального состояния задать сигнальное значение, а также указанным числом прокруток.</summary>
+      <param name="initialState">Значение true для задания начального сигнального состояния; значение false для задания начального несигнального состояния.</param>
+      <param name="spinCount">Число ожиданий прокруток до возврата к операции ожидания на основе ядра.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="spinCount" /> is less than 0 or greater than the maximum allowed value.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Dispose">
+      <summary>Освобождает все ресурсы, используемые текущим экземпляром класса <see cref="T:System.Threading.ManualResetEventSlim" />.</summary>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Dispose(System.Boolean)">
+      <summary>Освобождает неуправляемые (а при необходимости и управляемые) ресурсы, используемые объектом <see cref="T:System.Threading.ManualResetEventSlim" />.</summary>
+      <param name="disposing">Значение true, чтобы освободить управляемые и неуправляемые ресурсы; значение false, чтобы освободить только неуправляемые ресурсы.</param>
+    </member>
+    <member name="P:System.Threading.ManualResetEventSlim.IsSet">
+      <summary>Получает значение, указывающее, установлено ли событие.</summary>
+      <returns>Значение true, если событие установлено; в противном случае — значение false.</returns>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Reset">
+      <summary>Задает несигнальное состояние события, вызывая блокирование потоков.</summary>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Set">
+      <summary>Устанавливает несигнальное состояние события, позволяя продолжить выполнение одному или нескольким потокам, ожидающим событие.</summary>
+    </member>
+    <member name="P:System.Threading.ManualResetEventSlim.SpinCount">
+      <summary>Получает число ожиданий прокруток, которые произойдут до возврата к операции ожидания на основе ядра.</summary>
+      <returns>Возвращает число ожиданий прокруток, которые произойдут до возврата к операции ожидания на основе ядра.</returns>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait">
+      <summary>Блокирует текущий поток до установки текущего объекта <see cref="T:System.Threading.ManualResetEventSlim" />.</summary>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.Int32)">
+      <summary>Блокирует текущий поток до тех пор, пока не установлен текущий объект <see cref="T:System.Threading.ManualResetEventSlim" />, используя 32-разрядное знаковое целое число для измерения интервала времени.</summary>
+      <returns>Значение true, если выполнялась установка <see cref="T:System.Threading.ManualResetEventSlim" />; в противном случае — false.</returns>
+      <param name="millisecondsTimeout">Время ожидания в миллисекундах или функция <see cref="F:System.Threading.Timeout.Infinite" /> (-1) в случае неограниченного времени ожидания.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> is a negative number other than -1, which represents an infinite time-out.</exception>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.Int32,System.Threading.CancellationToken)">
+      <summary>Блокирует текущий поток до тех пор, пока не будет установлен текущий объект <see cref="T:System.Threading.ManualResetEventSlim" />, используя 32-разрядное знаковое целое число для измерения интервала времени. Кроме того, метод контролирует токен <see cref="T:System.Threading.CancellationToken" />.</summary>
+      <returns>Значение true, если выполнялась установка <see cref="T:System.Threading.ManualResetEventSlim" />; в противном случае — значение false.</returns>
+      <param name="millisecondsTimeout">Время ожидания в миллисекундах или функция <see cref="F:System.Threading.Timeout.Infinite" /> (-1) в случае неограниченного времени ожидания.</param>
+      <param name="cancellationToken">Токен отмены <see cref="T:System.Threading.CancellationToken" />, который следует контролировать.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> was canceled.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> is a negative number other than -1, which represents an infinite time-out.</exception>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed or the <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.Threading.CancellationToken)">
+      <summary>Блокирует текущий поток до получения сигнала текущим объектом <see cref="T:System.Threading.ManualResetEventSlim" />. Кроме того, метод контролирует токен <see cref="T:System.Threading.CancellationToken" />.</summary>
+      <param name="cancellationToken">Токен отмены <see cref="T:System.Threading.CancellationToken" />, который следует контролировать.</param>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> was canceled.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed or the <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.TimeSpan)">
+      <summary>Блокирует текущий поток, пока не будет установлен текущий объект <see cref="T:System.Threading.ManualResetEventSlim" />, используя объект <see cref="T:System.TimeSpan" /> для измерения интервала времени.</summary>
+      <returns>Значение true, если выполнялась установка <see cref="T:System.Threading.ManualResetEventSlim" />; в противном случае — значение false.</returns>
+      <param name="timeout">Объект <see cref="T:System.TimeSpan" />, представляющий время ожидания в миллисекундах, или объект <see cref="T:System.TimeSpan" />, представляющий -1 миллисекунду для неограниченного ожидания.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> is a negative number other than -1 milliseconds, which represents an infinite time-out. -or-The number of milliseconds in <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" />. </exception>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>Блокирует текущий поток до тех пор, пока не будет установлен текущий объект <see cref="T:System.Threading.ManualResetEventSlim" />, используя значение <see cref="T:System.TimeSpan" /> для измерения интервала времени. Кроме того, метод контролирует токен <see cref="T:System.Threading.CancellationToken" />.</summary>
+      <returns>Значение true, если <see cref="T:System.Threading.ManualResetEventSlim" /> был задан; в противном случае — значение false.</returns>
+      <param name="timeout">Объект <see cref="T:System.TimeSpan" />, представляющий время ожидания в миллисекундах, или объект <see cref="T:System.TimeSpan" />, представляющий -1 миллисекунду для неограниченного ожидания.</param>
+      <param name="cancellationToken">Токен отмены <see cref="T:System.Threading.CancellationToken" />, который следует контролировать.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> was canceled.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> is a negative number other than -1 milliseconds, which represents an infinite time-out. -or-The number of milliseconds in <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" />. </exception>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded. </exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed or the <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has been disposed.</exception>
+    </member>
+    <member name="P:System.Threading.ManualResetEventSlim.WaitHandle">
+      <summary>Возвращает базовый объект <see cref="T:System.Threading.WaitHandle" /> для данного <see cref="T:System.Threading.ManualResetEventSlim" />.</summary>
+      <returns>Базовый объект события <see cref="T:System.Threading.WaitHandle" /> для данного объекта <see cref="T:System.Threading.ManualResetEventSlim" />.</returns>
+    </member>
+    <member name="T:System.Threading.Monitor">
+      <summary>Предоставляет механизм для синхронизации доступа к объектам.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.Enter(System.Object)">
+      <summary>Получает эксклюзивную блокировку указанного объекта.</summary>
+      <param name="obj">Объект, для которого получается блокировка монитора. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="obj" /> имеет значение null. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.Enter(System.Object,System.Boolean@)">
+      <summary>Получает монопольную блокировку указанного объекта и единым блоком задает значение, указывающее, была ли выполнена блокировка.</summary>
+      <param name="obj">Объект, в котором следует ожидать. </param>
+      <param name="lockTaken">Результат попытки получить блокировку, переданную по ссылке.Входное значение должно равняться false.Выходное значение true, если блокировка получена; в противном случае — выходное значение false.Выходное значение задается, даже если при попытке получить блокировку возникает исключение.Примечание. Если исключение не возникает, выходное значение этого метода всегда true.</param>
+      <exception cref="T:System.ArgumentException">Входное значение параметра <paramref name="lockTaken" /> — true.</exception>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="obj" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.Threading.Monitor.Exit(System.Object)">
+      <summary>Освобождает эксклюзивную блокировку указанного объекта.</summary>
+      <param name="obj">Объект, блокировка которого освобождается. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="obj" /> имеет значение null. </exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">Данный поток не владеет блокировкой для указанного объекта. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.IsEntered(System.Object)">
+      <summary>Определяет, содержит ли текущий поток блокировку указанного объекта. </summary>
+      <returns>Значение true, если текущий поток владеет блокировкой в <paramref name="obj" />; в противном случае — значение false.</returns>
+      <param name="obj">Объект для тестирования. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="obj" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.Threading.Monitor.Pulse(System.Object)">
+      <summary>Уведомляет поток в очереди готовности об изменении состояния объекта с блокировкой.</summary>
+      <param name="obj">Объект, ожидаемый потоком. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="obj" /> имеет значение null. </exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">Вызывающий поток не владеет блокировкой для указанного объекта. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.PulseAll(System.Object)">
+      <summary>Уведомляет все ожидающие потоки об изменении состояния объекта.</summary>
+      <param name="obj">Объект, посылающий импульс. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="obj" /> имеет значение null. </exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">Вызывающий поток не владеет блокировкой для указанного объекта. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object)">
+      <summary>Пытается получить эксклюзивную блокировку указанного объекта.</summary>
+      <returns>Значение true, если текущий поток получает блокировку; в противном случае — значение false.</returns>
+      <param name="obj">Объект, блокировка которого получается. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="obj" /> имеет значение null. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.Boolean@)">
+      <summary>Пытается получить монопольную блокировку указанного объекта и единым блоком задает значение, указывающее, была ли выполнена блокировка.</summary>
+      <param name="obj">Объект, блокировка которого получается. </param>
+      <param name="lockTaken">Результат попытки получить блокировку, переданную по ссылке.Входное значение должно равняться false.Выходное значение true, если блокировка получена; в противном случае — выходное значение false.Выходное значение задается, даже если при попытке получить блокировку возникает исключение.</param>
+      <exception cref="T:System.ArgumentException">Входное значение параметра <paramref name="lockTaken" /> — true.</exception>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="obj" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.Int32)">
+      <summary>Пытается получить эксклюзивную блокировку указанного объекта на заданное количество миллисекунд.</summary>
+      <returns>Значение true, если текущий поток получает блокировку; в противном случае — значение false.</returns>
+      <param name="obj">Объект, блокировка которого получается. </param>
+      <param name="millisecondsTimeout">Количество миллисекунд, в течение которых ожидать блокировку. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="obj" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="millisecondsTimeout" /> отрицательно и не равно <see cref="F:System.Threading.Timeout.Infinite" />. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.Int32,System.Boolean@)">
+      <summary>В течение заданного количества миллисекунд пытается получить монопольную блокировку указанного объекта и единым блоком задает значение, указывающее, была ли выполнена блокировка.</summary>
+      <param name="obj">Объект, блокировка которого получается. </param>
+      <param name="millisecondsTimeout">Количество миллисекунд, в течение которых ожидать блокировку. </param>
+      <param name="lockTaken">Результат попытки получить блокировку, переданную по ссылке.Входное значение должно равняться false.Выходное значение true, если блокировка получена; в противном случае — выходное значение false.Выходное значение задается, даже если при попытке получить блокировку возникает исключение.</param>
+      <exception cref="T:System.ArgumentException">Входное значение параметра <paramref name="lockTaken" /> — true.</exception>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="obj" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="millisecondsTimeout" /> отрицательно и не равно <see cref="F:System.Threading.Timeout.Infinite" />. </exception>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.TimeSpan)">
+      <summary>Пытается получить эксклюзивную блокировку указанного объекта в течение заданного количества времени.</summary>
+      <returns>Значение true, если текущий поток получает блокировку; в противном случае — значение false.</returns>
+      <param name="obj">Объект, блокировка которого получается. </param>
+      <param name="timeout">Класс <see cref="T:System.TimeSpan" />, представляющий количество времени, в течение которого ожидается блокировка.Значение –1 миллисекунды обозначает бесконечное ожидание.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="obj" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение <paramref name="timeout" /> в миллисекундах отрицательно и не равно <see cref="F:System.Threading.Timeout.Infinite" /> (–1 миллисекунда), или больше чем <see cref="F:System.Int32.MaxValue" />. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.TimeSpan,System.Boolean@)">
+      <summary>В течение заданного периода времени пытается получить монопольную блокировку указанного объекта и единым блоком задает значение, указывающее, была ли выполнена блокировка.</summary>
+      <param name="obj">Объект, блокировка которого получается. </param>
+      <param name="timeout">Период времени, в течение которого ожидается блокировка.Значение -1 обозначает бесконечное ожидание.</param>
+      <param name="lockTaken">Результат попытки получить блокировку, переданную по ссылке.Входное значение должно равняться false.Выходное значение true, если блокировка получена; в противном случае — выходное значение false.Выходное значение задается, даже если при попытке получить блокировку возникает исключение.</param>
+      <exception cref="T:System.ArgumentException">Входное значение параметра <paramref name="lockTaken" /> — true.</exception>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="obj" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение <paramref name="timeout" /> в миллисекундах отрицательно и не равно <see cref="F:System.Threading.Timeout.Infinite" /> (–1 миллисекунда), или больше чем <see cref="F:System.Int32.MaxValue" />. </exception>
+    </member>
+    <member name="M:System.Threading.Monitor.Wait(System.Object)">
+      <summary>Освобождает блокировку объекта и блокирует текущий поток до тех пор, пока тот не получит блокировку снова.</summary>
+      <returns>true, если вызов осуществил возврат из-за того, что вызывающий поток заново получил блокировку заданного объекта.Этот метод не осуществляет возврат, если блокировка вновь не получена.</returns>
+      <param name="obj">Объект, в котором следует ожидать. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="obj" /> имеет значение null. </exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">Вызывающий поток не владеет блокировкой для указанного объекта. </exception>
+      <exception cref="T:System.Threading.ThreadInterruptedException">Поток, который вызывает Wait, позже прерывается из состояния ожидания.Это происходит, когда другой поток вызывает метод <see cref="M:System.Threading.Thread.Interrupt" /> данного потока.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.Wait(System.Object,System.Int32)">
+      <summary>Освобождает блокировку объекта и блокирует текущий поток до тех пор, пока тот не получит блокировку снова.Если указанные временные интервалы истекают, поток встает в очередь готовности.</summary>
+      <returns>Значение true, если блокировка была получена заново до истечения заданного времени; значение false, если блокировка была получена заново по истечении заданного времени.Этот метод не осуществляет возврат, если блокировка не была получена.</returns>
+      <param name="obj">Объект, в котором следует ожидать. </param>
+      <param name="millisecondsTimeout">Количество миллисекунд для ожидания постановки в очередь готовности. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="obj" /> имеет значение null. </exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">Вызывающий поток не владеет блокировкой для указанного объекта. </exception>
+      <exception cref="T:System.Threading.ThreadInterruptedException">Поток, который вызывает Wait, позже прерывается из состояния ожидания.Это происходит, когда другой поток вызывает метод <see cref="M:System.Threading.Thread.Interrupt" /> данного потока.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="millisecondsTimeout" /> отрицательно и не равно <see cref="F:System.Threading.Timeout.Infinite" />. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.Wait(System.Object,System.TimeSpan)">
+      <summary>Освобождает блокировку объекта и блокирует текущий поток до тех пор, пока тот не получит блокировку снова.Если указанные временные интервалы истекают, поток встает в очередь готовности.</summary>
+      <returns>Значение true, если блокировка была получена заново до истечения заданного времени; значение false, если блокировка была получена заново по истечении заданного времени.Этот метод не осуществляет возврат, если блокировка не была получена.</returns>
+      <param name="obj">Объект, в котором следует ожидать. </param>
+      <param name="timeout">Класс <see cref="T:System.TimeSpan" />, представляющий количество времени, до истечения которого поток поступает в очередь ожидания. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="obj" /> имеет значение null. </exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">Вызывающий поток не владеет блокировкой для указанного объекта. </exception>
+      <exception cref="T:System.Threading.ThreadInterruptedException">Поток, который вызывает Wait, позже прерывается из состояния ожидания.Это происходит, когда другой поток вызывает метод <see cref="M:System.Threading.Thread.Interrupt" /> данного потока.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="timeout" /> в миллисекундах отрицательно и не равно <see cref="F:System.Threading.Timeout.Infinite" /> (–1 миллисекунда), или больше чем <see cref="F:System.Int32.MaxValue" />. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.Mutex">
+      <summary>Примитив синхронизации, который также может использоваться в межпроцессной синхронизации. </summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Mutex.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.Mutex" /> стандартными свойствами.</summary>
+    </member>
+    <member name="M:System.Threading.Mutex.#ctor(System.Boolean)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.Mutex" /> логическим значением, указывающим, должен ли вызывающий поток быть изначальным владельцем мьютекса.</summary>
+      <param name="initiallyOwned">Значение true для предоставления вызывающему потоку изначального владения мьютексом; в противном случае — false. </param>
+    </member>
+    <member name="M:System.Threading.Mutex.#ctor(System.Boolean,System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.Mutex" /> логическим значением, указывающим, должен ли вызывающий поток быть изначальным владельцем мьютекса, а также иметь строку, являющуюся именем мьютекса.</summary>
+      <param name="initiallyOwned">Значение true для предоставления вызывающему потоку изначального владения именованным системным мьютексом, если этот мьютекс создан данным вызовом; в противном случае — значение false. </param>
+      <param name="name">Имя <see cref="T:System.Threading.Mutex" />.Если значение равно null, у объекта <see cref="T:System.Threading.Mutex" /> нет имени.</param>
+      <exception cref="T:System.UnauthorizedAccessException">Именованный мьютекс существует, имеет безопасность управления доступом, а пользователь не имеет прав <see cref="F:System.Security.AccessControl.MutexRights.FullControl" />.</exception>
+      <exception cref="T:System.IO.IOException">Произошла ошибка Win32.</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">Именованный мьютекс не может быть создан; вероятно, дескриптор ожидания другого типа имеет то же имя.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> длиннее 260 символов.</exception>
+    </member>
+    <member name="M:System.Threading.Mutex.#ctor(System.Boolean,System.String,System.Boolean@)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.Mutex" /> логическим значением, указывающим, должен ли вызывающий поток быть изначальным владельцем мьютекса, иметь строку, являющуюся именем мьютекса, и логическое значение, которое при возврате метода показывает, предоставлено ли вызывающему потоку изначальное владение мьютексом.</summary>
+      <param name="initiallyOwned">Значение true для предоставления вызывающему потоку изначального владения именованным системным мьютексом, если этот мьютекс создан данным вызовом; в противном случае — значение false. </param>
+      <param name="name">Имя <see cref="T:System.Threading.Mutex" />.Если значение равно null, у объекта <see cref="T:System.Threading.Mutex" /> нет имени.</param>
+      <param name="createdNew">При возврате из метода содержит логическое значение true, если был создан локальный мьютекс (то есть, если параметр <paramref name="name" /> имеет значение null или содержит пустую строку) или был создан именованный системный мьютекс; значение false, если указанный именованный системный мьютекс уже существует.Этот параметр передается неинициализированным.</param>
+      <exception cref="T:System.UnauthorizedAccessException">Именованный мьютекс существует, имеет безопасность управления доступом, а пользователь не имеет прав <see cref="F:System.Security.AccessControl.MutexRights.FullControl" />.</exception>
+      <exception cref="T:System.IO.IOException">Произошла ошибка Win32.</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">Именованный мьютекс не может быть создан; вероятно, дескриптор ожидания другого типа имеет то же имя.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> длиннее 260 символов.</exception>
+    </member>
+    <member name="M:System.Threading.Mutex.OpenExisting(System.String)">
+      <summary>Открывает указанный именованный мьютекс, если он уже существует.</summary>
+      <returns>Объект, представляющий именованный системный мьютекс.</returns>
+      <param name="name">Имя системного мьютекса для открытия.</param>
+      <exception cref="T:System.ArgumentException">Параметр <paramref name="name" /> равен пустой строке.-или-<paramref name="name" /> длиннее 260 символов.</exception>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="name" /> имеет значение null.</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">Именованный мьютекс не существует.</exception>
+      <exception cref="T:System.IO.IOException">Произошла ошибка Win32.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Именованный мьютекс существует, но у пользователя нет необходимой для его использования безопасности доступа.</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Threading.Mutex.ReleaseMutex">
+      <summary>Освобождает объект <see cref="T:System.Threading.Mutex" /> один раз.</summary>
+      <exception cref="T:System.ApplicationException">Вызывающий поток не является владельцем мьютекса. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Mutex.TryOpenExisting(System.String,System.Threading.Mutex@)">
+      <summary>Открывает указанный именованный мьютекс, если он уже существует, и возвращает значение, указывающее, успешно ли выполнена операция.</summary>
+      <returns>Значение true, если именованный мьютекс был успешно открыт; в противном случае — значение false.</returns>
+      <param name="name">Имя системного мьютекса для открытия.</param>
+      <param name="result">Когда выполнение этого метода завершается, содержит объект <see cref="T:System.Threading.Mutex" />, представляющий именованный мьютекс, если вызов завершился успешно, или значение null, если произошел сбой вызова.Этот параметр обрабатывается как неинициализированный.</param>
+      <exception cref="T:System.ArgumentException">Параметр <paramref name="name" /> равен пустой строке.-или-<paramref name="name" /> длиннее 260 символов.</exception>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="name" /> имеет значение null.</exception>
+      <exception cref="T:System.IO.IOException">Произошла ошибка Win32.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Именованный мьютекс существует, но у пользователя нет необходимой для его использования безопасности доступа.</exception>
+    </member>
+    <member name="T:System.Threading.ReaderWriterLockSlim">
+      <summary>Представляет блокировку, используемую для управления доступом к ресурсу, которая позволяет нескольким потокам производить считывание или получать монопольный доступ на запись.</summary>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.ReaderWriterLockSlim" /> значениями свойств по умолчанию.</summary>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.#ctor(System.Threading.LockRecursionPolicy)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.ReaderWriterLockSlim" /> с указанием политики рекурсии блокировок.</summary>
+      <param name="recursionPolicy">Одно из значений перечисления, определяющее политику рекурсии блокировки. </param>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.CurrentReadCount">
+      <summary>Получает общее количество уникальных потоков, вошедших в блокировку в режиме чтения.</summary>
+      <returns>Количество уникальных потоков, вошедших в блокировку в режиме чтения.</returns>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.Dispose">
+      <summary>Освобождает все ресурсы, используемые текущим экземпляром класса <see cref="T:System.Threading.ReaderWriterLockSlim" />.</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">
+        <see cref="P:System.Threading.ReaderWriterLockSlim.WaitingReadCount" /> is greater than zero. -or-<see cref="P:System.Threading.ReaderWriterLockSlim.WaitingUpgradeCount" /> is greater than zero. -or-<see cref="P:System.Threading.ReaderWriterLockSlim.WaitingWriteCount" /> is greater than zero. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.EnterReadLock">
+      <summary>Пытается выполнить вход в блокировку в режиме чтения.</summary>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered read mode. -or-The current thread may not acquire the read lock when it already holds the write lock. -or-The recursion number would exceed the capacity of the counter.This limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.EnterUpgradeableReadLock">
+      <summary>Пытается выполнить вход в блокировку в обновляемом режиме.</summary>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock in any mode. -or-The current thread has entered read mode, so trying to enter upgradeable mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.EnterWriteLock">
+      <summary>Пытается выполнить вход в блокировку в режиме записи.</summary>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock in any mode. -or-The current thread has entered read mode, so trying to enter the lock in write mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.ExitReadLock">
+      <summary>Уменьшает счетчик глубины рекурсии для режима чтения и выходит из режима чтения, если счетчик принял значение 0 (нуль).</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">The current thread has not entered the lock in read mode. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.ExitUpgradeableReadLock">
+      <summary>Уменьшает счетчик глубины рекурсии для обновляемого режима и выходит из обновляемого режима, если счетчик принял значение 0 (нуль).</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">The current thread has not entered the lock in upgradeable mode.</exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.ExitWriteLock">
+      <summary>Уменьшает счетчик глубины рекурсии для режима записи и выходит из режима записи, если счетчик принял значение 0 (нуль).</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">The current thread has not entered the lock in write mode.</exception>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.IsReadLockHeld">
+      <summary>Получает значение, указывающее, вошел ли текущий поток в блокировку в режиме чтения.</summary>
+      <returns>Значение true, если текущий поток вошел в режим чтения; в противном случае false.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.IsUpgradeableReadLockHeld">
+      <summary>Возвращает значение, указывающее, вошел ли текущий поток в блокировку в обновляемом режиме. </summary>
+      <returns>Значение true, если текущий поток вошел в обновляемый режим; в противном случае false.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.IsWriteLockHeld">
+      <summary>Получает значение, указывающее, вошел ли текущий поток в блокировку в режиме записи.</summary>
+      <returns>Значение true, если текущий поток вошел в режим записи; в противном случае false.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy">
+      <summary>Возвращает значение, указывающее политику рекурсии для текущего объекта <see cref="T:System.Threading.ReaderWriterLockSlim" />.</summary>
+      <returns>Одно из значений перечисления, определяющее политику рекурсии блокировки.</returns>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.RecursiveReadCount">
+      <summary>Получает количество раз, которые текущий поток входил в блокировку в режиме чтения, как показатель рекурсии.</summary>
+      <returns>0 (нуль), если текущий поток не вошел в режим чтения, 1, если поток вошел в режим чтения, но не рекурсивно, или n, если поток вошел в блокировку рекурсивно n - 1 раз.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.RecursiveUpgradeCount">
+      <summary>Получает количество раз, которые текущий поток входил в блокировку в обновляемом режиме, как показатель рекурсии.</summary>
+      <returns>0 (нуль), если текущий поток не вошел в обновляемый режим, 1, если поток вошел в обновляемый режим, но не рекурсивно, или n, если поток вошел в обновляемый режим рекурсивно n - 1 раз.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.RecursiveWriteCount">
+      <summary>Получает количество раз, которые текущий поток входил в блокировку в режиме записи, как показатель рекурсии.</summary>
+      <returns>0 (нуль), если текущий поток, не вошел в режим записи, 1, если поток вошел в режим записи, но не рекурсивно, или n, если поток вошел в режим записи рекурсивно n - 1 раз.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterReadLock(System.Int32)">
+      <summary>Пытается войти в блокировку в режиме чтения с необязательным указанием времени ожидания целым числом.</summary>
+      <returns>Значение true, если вызывающий поток вошел в режим чтения; в противном случае false.</returns>
+      <param name="millisecondsTimeout">Время ожидания в миллисекундах или -1 (<see cref="F:System.Threading.Timeout.Infinite" />) в случае неограниченного времени ожидания.</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="millisecondsTimeout" /> is negative, but it is not equal to <see cref="F:System.Threading.Timeout.Infinite" /> (-1), which is the only negative value allowed. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterReadLock(System.TimeSpan)">
+      <summary>Пытается войти в блокировку в режиме чтения с необязательным указанием времени ожидания.</summary>
+      <returns>Значение true, если вызывающий поток вошел в режим чтения; в противном случае false.</returns>
+      <param name="timeout">Период ожидания или значение -1 миллисекунда для ожидания в течение неограниченного времени. </param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="timeout" /> is negative, but it is not equal to -1 milliseconds, which is the only negative value allowed.-or-The value of <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" /> milliseconds. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterUpgradeableReadLock(System.Int32)">
+      <summary>Пытается войти в блокировку в обновляемом режиме с необязательным указанием времени ожидания.</summary>
+      <returns>Значение true, если вызывающий поток вошел в обновляемый режим; в противном случае false.</returns>
+      <param name="millisecondsTimeout">Время ожидания в миллисекундах или -1 (<see cref="F:System.Threading.Timeout.Infinite" />) в случае неограниченного времени ожидания.</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The current thread initially entered the lock in read mode, and therefore trying to enter upgradeable mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="millisecondsTimeout" /> is negative, but it is not equal to <see cref="F:System.Threading.Timeout.Infinite" /> (-1), which is the only negative value allowed. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterUpgradeableReadLock(System.TimeSpan)">
+      <summary>Пытается войти в блокировку в обновляемом режиме с необязательным указанием времени ожидания.</summary>
+      <returns>Значение true, если вызывающий поток вошел в обновляемый режим; в противном случае false.</returns>
+      <param name="timeout">Период ожидания или значение -1 миллисекунда для ожидания в течение неограниченного времени.</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The current thread initially entered the lock in read mode, and therefore trying to enter upgradeable mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="timeout" /> is negative, but it is not equal to -1 milliseconds, which is the only negative value allowed.-or-The value of <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" /> milliseconds. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterWriteLock(System.Int32)">
+      <summary>Пытается войти в блокировку в режиме записи с необязательным указанием времени ожидания.</summary>
+      <returns>Значение true, если вызывающий поток вошел в режим записи; в противном случае false.</returns>
+      <param name="millisecondsTimeout">Время ожидания в миллисекундах или -1 (<see cref="F:System.Threading.Timeout.Infinite" />) в случае неограниченного времени ожидания.</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The current thread initially entered the lock in read mode, and therefore trying to enter write mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="millisecondsTimeout" /> is negative, but it is not equal to <see cref="F:System.Threading.Timeout.Infinite" /> (-1), which is the only negative value allowed. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterWriteLock(System.TimeSpan)">
+      <summary>Пытается войти в блокировку в режиме записи с необязательным указанием времени ожидания.</summary>
+      <returns>Значение true, если вызывающий поток вошел в режим записи; в противном случае false.</returns>
+      <param name="timeout">Период ожидания или значение -1 миллисекунда для ожидания в течение неограниченного времени.</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The current thread initially entered the lock in read mode, and therefore trying to enter write mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="timeout" /> is negative, but it is not equal to -1 milliseconds, which is the only negative value allowed.-or-The value of <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" /> milliseconds. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.WaitingReadCount">
+      <summary>Получает общее количество потоков, ожидающих вхождения в блокировку в режиме чтения.</summary>
+      <returns>Общее количество потоков, ожидающих вхождения в режим чтения.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.WaitingUpgradeCount">
+      <summary>Получает общее количество потоков, ожидающих входа в блокировку в обновляемом режиме.</summary>
+      <returns>Общее количество потоков, ожидающих входа в обновляемый режим.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.WaitingWriteCount">
+      <summary>Получает общее количество потоков, ожидающих входа в блокировку в режиме записи.</summary>
+      <returns>Общее количество потоков, ожидающих входа в режим записи.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.Semaphore">
+      <summary>Ограничивает число потоков, которые могут одновременно получать доступ к ресурсу или пулу ресурсов. </summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Semaphore.#ctor(System.Int32,System.Int32)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.Semaphore" />, задающий начальное количество входов и максимальное количество одновременных входов. </summary>
+      <param name="initialCount">Начальное количество запросов для семафора, которое может быть обеспечено одновременно. </param>
+      <param name="maximumCount">Максимальное количество запросов семафора, которое может быть обеспеченно одновременно. </param>
+      <exception cref="T:System.ArgumentException">Значение <paramref name="initialCount" /> больше значения <paramref name="maximumCount" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="maximumCount" /> имеет значение меньше 1.-или-Значение параметра <paramref name="initialCount" /> меньше 0.</exception>
+    </member>
+    <member name="M:System.Threading.Semaphore.#ctor(System.Int32,System.Int32,System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.Semaphore" />, задающий начальное количество входов и максимальное количество одновременных входов, а также при необходимости имя объекта системного семафора. </summary>
+      <param name="initialCount">Начальное количество запросов для семафора, которое может быть обеспечено одновременно. </param>
+      <param name="maximumCount">Максимальное количество запросов семафора, которое может быть обеспеченно одновременно.</param>
+      <param name="name">Имя объекта именованного системного семафора.</param>
+      <exception cref="T:System.ArgumentException">Значение <paramref name="initialCount" /> больше значения <paramref name="maximumCount" />.-или-<paramref name="name" /> длиннее 260 символов.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="maximumCount" /> имеет значение меньше 1.-или-Значение параметра <paramref name="initialCount" /> меньше 0.</exception>
+      <exception cref="T:System.IO.IOException">Произошла ошибка Win32.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Именованный семафор существует, имеет параметры безопасности управления доступом, а пользователь не имеет прав <see cref="F:System.Security.AccessControl.SemaphoreRights.FullControl" />.</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">Именованный семафор не может быть создан, видимо потому что дескриптор ожидания другого типа имеет то же имя.</exception>
+    </member>
+    <member name="M:System.Threading.Semaphore.#ctor(System.Int32,System.Int32,System.String,System.Boolean@)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.Semaphore" />, задающий начальное количество входов и максимальное количество одновременных входов, а также при необходимости задающий имя объекта системного семафора и переменную, получающую значение, которое указывает, был ли создан новый системный семафор.</summary>
+      <param name="initialCount">Начальное количество запросов семафора, которое может быть удовлетворено одновременно. </param>
+      <param name="maximumCount">Максимальное количество запросов семафора, которое может быть удовлетворено одновременно.</param>
+      <param name="name">Имя объекта именованного системного семафора.</param>
+      <param name="createdNew">При возврате этот метод содержит значение true, если был создан локальный семафор (то есть если параметр <paramref name="name" /> имеет значение null или содержит пустую строку) или был создан заданный именованный системный семафор; значение false, если указанный именованный семафор уже существовал.Этот параметр передается неинициализированным.</param>
+      <exception cref="T:System.ArgumentException">Значение <paramref name="initialCount" /> больше значения <paramref name="maximumCount" />. -или-<paramref name="name" /> длиннее 260 символов.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="maximumCount" /> имеет значение меньше 1.-или-Значение параметра <paramref name="initialCount" /> меньше 0.</exception>
+      <exception cref="T:System.IO.IOException">Произошла ошибка Win32.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Именованный семафор существует, имеет параметры безопасности управления доступом, а пользователь не имеет прав <see cref="F:System.Security.AccessControl.SemaphoreRights.FullControl" />.</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">Именованный семафор не может быть создан, видимо потому что дескриптор ожидания другого типа имеет то же имя.</exception>
+    </member>
+    <member name="M:System.Threading.Semaphore.OpenExisting(System.String)">
+      <summary>Открывает указанный именованный семафор, если он уже существует.</summary>
+      <returns>Объект, представляющий именованный системный семафор.</returns>
+      <param name="name">Имя системного семафора для открытия.</param>
+      <exception cref="T:System.ArgumentException">Параметр <paramref name="name" /> равен пустой строке.-или-<paramref name="name" /> длиннее 260 символов.</exception>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="name" /> имеет значение null.</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">Именованный семафор не существует.</exception>
+      <exception cref="T:System.IO.IOException">Произошла ошибка Win32.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Именованный семафор существует, но у пользователя нет необходимых для его использования прав доступа. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Threading.Semaphore.Release">
+      <summary>Выходит из семафора и возвращает последнее значение счетчика.</summary>
+      <returns>Счетчик семафора перед вызовом метода <see cref="Overload:System.Threading.Semaphore.Release" />. </returns>
+      <exception cref="T:System.Threading.SemaphoreFullException">Счетчик семафора уже имеет максимальное значение.</exception>
+      <exception cref="T:System.IO.IOException">Произошла ошибка Win32, связанная с именованным семафором.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Текущий семафор представляет именованный системный семафор, но пользователь не имеет прав <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" />.-или-Текущий семафор представляет именованный системный семафор, но он не был открыт с правами доступа <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Semaphore.Release(System.Int32)">
+      <summary>Выходит из семафора указанное число раз и возвращает последнее значение счетчика.</summary>
+      <returns>Счетчик семафора перед вызовом метода <see cref="Overload:System.Threading.Semaphore.Release" />. </returns>
+      <param name="releaseCount">Количество требуемых выходов из семафора.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="releaseCount" /> имеет значение меньше 1.</exception>
+      <exception cref="T:System.Threading.SemaphoreFullException">Счетчик семафора уже имеет максимальное значение.</exception>
+      <exception cref="T:System.IO.IOException">Произошла ошибка Win32, связанная с именованным семафором.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Текущий семафор представляет именованный системный семафор, но пользователь не имеет прав <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" />.-или-Текущий семафор представляет именованный системный семафор, но он не был открыт с правами <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Semaphore.TryOpenExisting(System.String,System.Threading.Semaphore@)">
+      <summary>Открывает указанный именованный семафор, если он уже существует, и возвращает значение, указывающее, успешно ли выполнена операция.</summary>
+      <returns>Значение true, если именованный семафор был успешно открыт; в противном случае — значение false.</returns>
+      <param name="name">Имя системного семафора для открытия.</param>
+      <param name="result">При возврате этот метод содержит объект <see cref="T:System.Threading.Semaphore" />, представляющий именованный семафор, если вызов завершился успешно, или значение null, если вызов завершился неудачно.Этот параметр обрабатывается как неинициализированный.</param>
+      <exception cref="T:System.ArgumentException">Параметр <paramref name="name" /> равен пустой строке.-или-<paramref name="name" /> длиннее 260 символов.</exception>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="name" /> имеет значение null.</exception>
+      <exception cref="T:System.IO.IOException">Произошла ошибка Win32.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Именованный семафор существует, но у пользователя нет необходимых для его использования прав доступа. </exception>
+    </member>
+    <member name="T:System.Threading.SemaphoreFullException">
+      <summary>Исключение, выдаваемое при вызове метода <see cref="Overload:System.Threading.Semaphore.Release" /> для семафора, значение счетчика которого уже равно максимальному. </summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SemaphoreFullException.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.SemaphoreFullException" /> значениями по умолчанию.</summary>
+    </member>
+    <member name="M:System.Threading.SemaphoreFullException.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.SemaphoreFullException" /> с указанным сообщением об ошибке.</summary>
+      <param name="message">Сообщение об ошибке с объяснением причин исключения.</param>
+    </member>
+    <member name="M:System.Threading.SemaphoreFullException.#ctor(System.String,System.Exception)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.SemaphoreFullException" /> с указанным сообщением об ошибке и ссылкой на внутреннее исключение, вызвавшее это исключение.</summary>
+      <param name="message">Сообщение об ошибке с объяснением причин исключения.</param>
+      <param name="innerException">Исключение, которое вызвало текущее исключение.Если значение параметра <paramref name="innerException" /> не равно null, текущее исключение сгенерировано в блоке catch, обрабатывающем внутреннее исключение.</param>
+    </member>
+    <member name="T:System.Threading.SemaphoreSlim">
+      <summary>Представляет упрощенную альтернативу семафору <see cref="T:System.Threading.Semaphore" />, ограничивающему количество потоков, которые могут параллельно обращаться к ресурсу или пулу ресурсов.</summary>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.#ctor(System.Int32)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.SemaphoreSlim" />, указывая первоначальное число запросов, которые могут выполняться одновременно.</summary>
+      <param name="initialCount">Начальное количество запросов для семафора, которое может быть обеспечено одновременно.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="initialCount" /> меньше 0.</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.#ctor(System.Int32,System.Int32)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.SemaphoreSlim" />, указывая изначальное и максимальное число запросов, которые могут выполняться одновременно.</summary>
+      <param name="initialCount">Начальное количество запросов для семафора, которое может быть обеспечено одновременно.</param>
+      <param name="maxCount">Максимальное количество запросов семафора, которое может быть обеспеченно одновременно.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="initialCount" /> меньше 0 или <paramref name="initialCount" /> больше, чем <paramref name="maxCount" />, или <paramref name="maxCount" /> меньше или равен 0.</exception>
+    </member>
+    <member name="P:System.Threading.SemaphoreSlim.AvailableWaitHandle">
+      <summary>Возвращает дескриптор <see cref="T:System.Threading.WaitHandle" />, который можно использовать для ожидания семафора.</summary>
+      <returns>Дескриптор <see cref="T:System.Threading.WaitHandle" />, который можно использовать для ожидания семафора.</returns>
+      <exception cref="T:System.ObjectDisposedException">Объект <see cref="T:System.Threading.SemaphoreSlim" /> удален.</exception>
+    </member>
+    <member name="P:System.Threading.SemaphoreSlim.CurrentCount">
+      <summary>Возвращает количество оставшихся потоков, которым разрешено входить в объект <see cref="T:System.Threading.SemaphoreSlim" />. </summary>
+      <returns>Количество оставшихся потоков, которым разрешено входить в семафор.</returns>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Dispose">
+      <summary>Освобождает все ресурсы, используемые текущим экземпляром класса <see cref="T:System.Threading.SemaphoreSlim" />.</summary>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Dispose(System.Boolean)">
+      <summary>Освобождает неуправляемые ресурсы, используемые журналом <see cref="T:System.Threading.SemaphoreSlim" />, и при необходимости освобождает также управляемые ресурсы.</summary>
+      <param name="disposing">Значение true позволяет освободить как управляемые, так и неуправляемые ресурсы; значение false освобождает только неуправляемые ресурсы.</param>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Release">
+      <summary>Освобождает объект <see cref="T:System.Threading.SemaphoreSlim" /> один раз.</summary>
+      <returns>Предыдущее количество в семафоре <see cref="T:System.Threading.SemaphoreSlim" />.</returns>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+      <exception cref="T:System.Threading.SemaphoreFullException">
+        <see cref="T:System.Threading.SemaphoreSlim" /> уже достиг максимального размера.</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Release(System.Int32)">
+      <summary>Освобождает объект <see cref="T:System.Threading.SemaphoreSlim" /> указанное число раз.</summary>
+      <returns>Предыдущее количество в семафоре <see cref="T:System.Threading.SemaphoreSlim" />.</returns>
+      <param name="releaseCount">Количество требуемых выходов из семафора.</param>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="releaseCount" /> имеет значение меньше 1.</exception>
+      <exception cref="T:System.Threading.SemaphoreFullException">
+        <see cref="T:System.Threading.SemaphoreSlim" /> уже достиг максимального размера.</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait">
+      <summary>Блокирует текущий поток, пока он не сможет войти в <see cref="T:System.Threading.SemaphoreSlim" />.</summary>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.Int32)">
+      <summary>Блокирует текущий поток до тех пор, пока он не сможет войти в <see cref="T:System.Threading.SemaphoreSlim" />, используя 32-разрядное целое число со знаком, которое определяет время ожидания.</summary>
+      <returns>Значение true, если текущий поток успешно вошел в <see cref="T:System.Threading.SemaphoreSlim" />; в противном случае — значение false.</returns>
+      <param name="millisecondsTimeout">Время ожидания в миллисекундах или <see cref="F:System.Threading.Timeout.Infinite" /> (-1) для неограниченного времени ожидания.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="millisecondsTimeout" /> является отрицательным числом, отличным от -1, которое представляет неограниченное время ожидания.</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.Int32,System.Threading.CancellationToken)">
+      <summary>Блокирует текущий поток до тех пор, пока он не сможет войти в <see cref="T:System.Threading.SemaphoreSlim" />, используя 32-разрядное целое число со знаком, которое определяет время ожидания, и контролирует токен <see cref="T:System.Threading.CancellationToken" />.</summary>
+      <returns>Значение true, если текущий поток успешно вошел в <see cref="T:System.Threading.SemaphoreSlim" />; в противном случае — значение false.</returns>
+      <param name="millisecondsTimeout">Время ожидания в миллисекундах или <see cref="F:System.Threading.Timeout.Infinite" /> (-1) для неограниченного времени ожидания.</param>
+      <param name="cancellationToken">Токен отмены <see cref="T:System.Threading.CancellationToken" />, который следует контролировать.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> был отменен.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="millisecondsTimeout" /> является отрицательным числом, отличным от -1, которое представляет неограниченное время ожидания.</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Threading.SemaphoreSlim" /> Экземпляр был удален, или <see cref="T:System.Threading.CancellationTokenSource" /> создания <paramref name="cancellationToken" /> был удален.</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.Threading.CancellationToken)">
+      <summary>Блокирует текущий поток до тех пор, пока он не сможет войти в <see cref="T:System.Threading.SemaphoreSlim" />, и контролирует токен <see cref="T:System.Threading.CancellationToken" />.</summary>
+      <param name="cancellationToken">Токен <see cref="T:System.Threading.CancellationToken" />, который следует контролировать.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> был отменен.</exception>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.-или-<see cref="T:System.Threading.CancellationTokenSource" /> Создания<paramref name=" cancellationToken" /> уже был удален.</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.TimeSpan)">
+      <summary>Блокирует текущий поток до тех пор, пока он не сможет войти в <see cref="T:System.Threading.SemaphoreSlim" />, используя значение <see cref="T:System.TimeSpan" /> для определения времени ожидания.</summary>
+      <returns>Значение true, если текущий поток успешно вошел в <see cref="T:System.Threading.SemaphoreSlim" />; в противном случае — значение false.</returns>
+      <param name="timeout">Период <see cref="T:System.TimeSpan" />, представляющий время ожидания в миллисекундах, или период <see cref="T:System.TimeSpan" />, представляющий -1 миллисекунду для неограниченного ожидания.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> является отрицательным числом отличный значение -1 миллисекунд, которое представляет неограниченное время ожидания - или - время ожидания больше <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">Экземпляр semaphoreSlim был уничтожен<paramref name="." /></exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>Блокирует текущий поток до тех пор, пока он не сможет войти в <see cref="T:System.Threading.SemaphoreSlim" />, используя значение <see cref="T:System.TimeSpan" />, которое определяет время ожидания, и контролирует токен <see cref="T:System.Threading.CancellationToken" />.</summary>
+      <returns>Значение true, если текущий поток успешно вошел в <see cref="T:System.Threading.SemaphoreSlim" />; в противном случае — значение false.</returns>
+      <param name="timeout">Период <see cref="T:System.TimeSpan" />, представляющий время ожидания в миллисекундах, или период <see cref="T:System.TimeSpan" />, представляющий -1 миллисекунду для неограниченного ожидания.</param>
+      <param name="cancellationToken">Токен отмены <see cref="T:System.Threading.CancellationToken" />, который следует контролировать.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> был отменен.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> является отрицательным числом отличный значение -1 миллисекунд, которое представляет неограниченное время ожидания - или - время ожидания больше <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">Экземпляр semaphoreSlim был уничтожен<paramref name="." /><paramref name="-or-" />Класс <see cref="T:System.Threading.CancellationTokenSource" />, создавший <paramref name="cancellationToken" />, уже удален.</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync">
+      <summary>Асинхронно ожидает входа в <see cref="T:System.Threading.SemaphoreSlim" />. </summary>
+      <returns>Задача, которая завершается при входе в семафор.</returns>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.Int32)">
+      <summary>Асинхронно ожидает входа в <see cref="T:System.Threading.SemaphoreSlim" />, используя 32-разрядное целое число со знаком для измерения интервала времени. </summary>
+      <returns>Задача, которая будет завершаться с результатом true, если текущий поток успешно вошел в <see cref="T:System.Threading.SemaphoreSlim" />, и с результатом false в противном случае.</returns>
+      <param name="millisecondsTimeout">Время ожидания в миллисекундах или <see cref="F:System.Threading.Timeout.Infinite" /> (-1) для неограниченного времени ожидания.</param>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="millisecondsTimeout" /> является отрицательным числом, отличным от -1, которое представляет неограниченное время ожидания.</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.Int32,System.Threading.CancellationToken)">
+      <summary>Асинхронно ожидает входа в <see cref="T:System.Threading.SemaphoreSlim" />, используя 32-разрядное целое число со знаком для измерения интервала времени, контролируя <see cref="T:System.Threading.CancellationToken" />. </summary>
+      <returns>Задача, которая будет завершаться с результатом true, если текущий поток успешно вошел в <see cref="T:System.Threading.SemaphoreSlim" />, и с результатом false в противном случае. </returns>
+      <param name="millisecondsTimeout">Время ожидания в миллисекундах или <see cref="F:System.Threading.Timeout.Infinite" /> (-1) для неограниченного времени ожидания.</param>
+      <param name="cancellationToken">Токен отмены <see cref="T:System.Threading.CancellationToken" />, который следует контролировать.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="millisecondsTimeout" /> является отрицательным числом, отличным от -1, которое представляет неограниченное время ожидания. </exception>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален. </exception>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> был отменен. </exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.Threading.CancellationToken)">
+      <summary>Асинхронно ожидает входа в <see cref="T:System.Threading.SemaphoreSlim" />, контролируя <see cref="T:System.Threading.CancellationToken" />. </summary>
+      <returns>Задача, которая завершается при входе в семафор. </returns>
+      <param name="cancellationToken">Токен <see cref="T:System.Threading.CancellationToken" />, который следует контролировать.</param>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> был отменен. </exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.TimeSpan)">
+      <summary>Асинхронно ожидает входа в <see cref="T:System.Threading.SemaphoreSlim" />, используя <see cref="T:System.TimeSpan" /> для измерения интервала времени.</summary>
+      <returns>Задача, которая будет завершаться с результатом true, если текущий поток успешно вошел в <see cref="T:System.Threading.SemaphoreSlim" />, и с результатом false в противном случае.</returns>
+      <param name="timeout">Период <see cref="T:System.TimeSpan" />, представляющий время ожидания в миллисекундах, или период <see cref="T:System.TimeSpan" />, представляющий -1 миллисекунду для неограниченного ожидания.</param>
+      <exception cref="T:System.ObjectDisposedException">Текущий экземпляр уже был удален.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="millisecondsTimeout" /> является отрицательным числом, отличным от -1, которое представляет неограниченное время ожидания. -или- Время ожидания больше <see cref="F:System.Int32.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>Асинхронно ожидает входа в <see cref="T:System.Threading.SemaphoreSlim" />, используя <see cref="T:System.TimeSpan" /> для измерения интервала времени и контролируя <see cref="T:System.Threading.CancellationToken" />.</summary>
+      <returns>Задача, которая будет завершаться с результатом true, если текущий поток успешно вошел в <see cref="T:System.Threading.SemaphoreSlim" />, и с результатом false в противном случае.</returns>
+      <param name="timeout">Период <see cref="T:System.TimeSpan" />, представляющий время ожидания в миллисекундах, или период <see cref="T:System.TimeSpan" />, представляющий -1 миллисекунду для неограниченного ожидания.</param>
+      <param name="cancellationToken">Токен <see cref="T:System.Threading.CancellationToken" />, который следует контролировать.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="millisecondsTimeout" /> является отрицательным числом, отличным от -1, которое представляет неограниченное время ожидания.-или-Время ожидания больше <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> был отменен. </exception>
+    </member>
+    <member name="T:System.Threading.SendOrPostCallback">
+      <summary>Указывает метод, вызываемый при отправке сообщения в контекст синхронизации.  </summary>
+      <param name="state">Передаваемый делегату объект.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.SpinLock">
+      <summary>Предоставляет примитив взаимно исключающей блокировки, в котором поток, пытающийся получить блокировку, ожидает в состоянии цикла, проверяя доступность блокировки.</summary>
+    </member>
+    <member name="M:System.Threading.SpinLock.#ctor(System.Boolean)">
+      <summary>Инициализирует новый экземпляр структуры <see cref="T:System.Threading.SpinLock" /> параметром для отслеживания идентификаторов потоков для повышения качества отладки.</summary>
+      <param name="enableThreadOwnerTracking">Следует ли перенаправлять и использовать идентификаторы потоков для отладки.</param>
+    </member>
+    <member name="M:System.Threading.SpinLock.Enter(System.Boolean@)">
+      <summary>Получает блокировку надежным способом, то есть даже если в вызове метода возникает исключение, <paramref name="lockTaken" /> можно надежно изучить и определить, была ли получена блокировка.</summary>
+      <param name="lockTaken">Значение true, если блокировка получена; в противном случае — значение false.Перед вызовом этого метода необходимо инициализировать параметр <paramref name="lockTaken" />.</param>
+      <exception cref="T:System.ArgumentException">Аргумент <paramref name="lockTaken" /> должен быть инициализирован в false до вызова Enter.</exception>
+      <exception cref="T:System.Threading.LockRecursionException">Включено отслеживание владения потоками, и текущий поток уже получил эту блокировку.</exception>
+    </member>
+    <member name="M:System.Threading.SpinLock.Exit">
+      <summary>Снимает блокировку.</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">Включено отслеживание владения потоков и текущий поток не является владельцем этой блокировки.</exception>
+    </member>
+    <member name="M:System.Threading.SpinLock.Exit(System.Boolean)">
+      <summary>Снимает блокировку.</summary>
+      <param name="useMemoryBarrier">Логическое значение, указывающее, следует ли выпустить барьер памяти, чтобы немедленно опубликовать операцию выхода для других потоков.</param>
+      <exception cref="T:System.Threading.SynchronizationLockException">Включено отслеживание владения потоков и текущий поток не является владельцем этой блокировки.</exception>
+    </member>
+    <member name="P:System.Threading.SpinLock.IsHeld">
+      <summary>Получает значение, определяющее, имеет ли какой-либо поток блокировку в настоящий момент.</summary>
+      <returns>Значение true, если в настоящее время блокировка удерживается каким-либо потоком; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Threading.SpinLock.IsHeldByCurrentThread">
+      <summary>Получает значение, определяющее, имеет ли текущий поток блокировку.</summary>
+      <returns>Значение true, если блокировка удерживается текущим потоком; в противном случае — значение false.</returns>
+      <exception cref="T:System.InvalidOperationException">Отслеживание владения потоков отключено.</exception>
+    </member>
+    <member name="P:System.Threading.SpinLock.IsThreadOwnerTrackingEnabled">
+      <summary>Получает значение, указывающее, включено ли отслеживание владельца потока для данного экземпляра.</summary>
+      <returns>Значение true, если для данного экземпляра включено отслеживание владельца потока; в противном случае — значение false.</returns>
+    </member>
+    <member name="M:System.Threading.SpinLock.TryEnter(System.Boolean@)">
+      <summary>Пытается получить блокировку надежным способом, то есть даже если в вызове метода возникает исключение, <paramref name="lockTaken" /> можно надежно изучить и определить, была ли получена блокировка.</summary>
+      <param name="lockTaken">Значение true, если блокировка получена; в противном случае — значение false.Перед вызовом этого метода необходимо инициализировать параметр <paramref name="lockTaken" />.</param>
+      <exception cref="T:System.ArgumentException">Аргумент <paramref name="lockTaken" /> должен быть инициализирован в false до вызова TryEnter.</exception>
+      <exception cref="T:System.Threading.LockRecursionException">Включено отслеживание владения потоками, и текущий поток уже получил эту блокировку.</exception>
+    </member>
+    <member name="M:System.Threading.SpinLock.TryEnter(System.Int32,System.Boolean@)">
+      <summary>Пытается получить блокировку надежным способом, то есть даже если в вызове метода возникает исключение, <paramref name="lockTaken" /> можно надежно изучить и определить, была ли получена блокировка.</summary>
+      <param name="millisecondsTimeout">Время ожидания в миллисекундах или функция <see cref="F:System.Threading.Timeout.Infinite" /> (-1) в случае неограниченного времени ожидания.</param>
+      <param name="lockTaken">Значение true, если блокировка получена; в противном случае — значение false.Перед вызовом этого метода необходимо инициализировать параметр <paramref name="lockTaken" />.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="millisecondsTimeout" /> является отрицательным числом, отличным от -1, которое представляет неограниченное время ожидания.</exception>
+      <exception cref="T:System.ArgumentException">Аргумент <paramref name="lockTaken" /> должен быть инициализирован в false до вызова TryEnter.</exception>
+      <exception cref="T:System.Threading.LockRecursionException">Включено отслеживание владения потоками, и текущий поток уже получил эту блокировку.</exception>
+    </member>
+    <member name="M:System.Threading.SpinLock.TryEnter(System.TimeSpan,System.Boolean@)">
+      <summary>Пытается получить блокировку надежным способом, то есть даже если в вызове метода возникает исключение, <paramref name="lockTaken" /> можно надежно изучить и определить, была ли получена блокировка.</summary>
+      <param name="timeout">Объект <see cref="T:System.TimeSpan" />, представляющий время ожидания в миллисекундах, или объект <see cref="T:System.TimeSpan" />, представляющий -1 миллисекунду для неограниченного ожидания.</param>
+      <param name="lockTaken">Значение true, если блокировка получена; в противном случае — значение false.Перед вызовом этого метода необходимо инициализировать параметр <paramref name="lockTaken" />.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> является отрицательным числом, отличным от значения -1 миллисекунды, которое представляет неограниченное время ожидания - или - время ожидания больше <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.ArgumentException">Аргумент <paramref name="lockTaken" /> должен быть инициализирован в false до вызова TryEnter.</exception>
+      <exception cref="T:System.Threading.LockRecursionException">Включено отслеживание владения потоками, и текущий поток уже получил эту блокировку.</exception>
+    </member>
+    <member name="T:System.Threading.SpinWait">
+      <summary>Предоставляет поддержку ожидания на основе прокруток.</summary>
+    </member>
+    <member name="P:System.Threading.SpinWait.Count">
+      <summary>Получает число раз, которое <see cref="M:System.Threading.SpinWait.SpinOnce" /> был вызван для этого экземпляра.</summary>
+      <returns>Возвращает целое число, представляющее количество вызовов метода <see cref="M:System.Threading.SpinWait.SpinOnce" /> для данного экземпляра.</returns>
+    </member>
+    <member name="P:System.Threading.SpinWait.NextSpinWillYield">
+      <summary>Получает значение, показывающее, даст ли следующий вызов к <see cref="M:System.Threading.SpinWait.SpinOnce" /> доступ к процессору, запуская обязательное переключение контекста.</summary>
+      <returns>Даст ли следующий вызов к <see cref="M:System.Threading.SpinWait.SpinOnce" /> доступ к процессору, запуская обязательное переключение контекста.</returns>
+    </member>
+    <member name="M:System.Threading.SpinWait.Reset">
+      <summary>Сбрасывает подсчет прокруток.</summary>
+    </member>
+    <member name="M:System.Threading.SpinWait.SpinOnce">
+      <summary>Выполняет одну прокрутку.</summary>
+    </member>
+    <member name="M:System.Threading.SpinWait.SpinUntil(System.Func{System.Boolean})">
+      <summary>Выполняет прокрутки до удовлетворения заданного условия.</summary>
+      <param name="condition">Делегат для циклического выполнения до возврата этим делегатом значения true.</param>
+      <exception cref="T:System.ArgumentNullException">Аргументом параметра <paramref name="condition" /> является null.</exception>
+    </member>
+    <member name="M:System.Threading.SpinWait.SpinUntil(System.Func{System.Boolean},System.Int32)">
+      <summary>Выполняет прокрутки до удовлетворения заданного условия или истечения заданного времени ожидания.</summary>
+      <returns>Значение true, если условие удовлетворено до истечения времени ожидания; в противном случае — значение false.</returns>
+      <param name="condition">Делегат для циклического выполнения до возврата этим делегатом значения true.</param>
+      <param name="millisecondsTimeout">Время ожидания в миллисекундах или функция <see cref="F:System.Threading.Timeout.Infinite" /> (-1) в случае неограниченного времени ожидания.</param>
+      <exception cref="T:System.ArgumentNullException">Аргументом параметра <paramref name="condition" /> является null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Параметр <paramref name="millisecondsTimeout" /> является отрицательным числом, отличным от -1, которое представляет неограниченное время ожидания.</exception>
+    </member>
+    <member name="M:System.Threading.SpinWait.SpinUntil(System.Func{System.Boolean},System.TimeSpan)">
+      <summary>Выполняет прокрутки до удовлетворения заданного условия или истечения заданного времени ожидания.</summary>
+      <returns>Значение true, если условие удовлетворено до истечения времени ожидания; в противном случае — значение false.</returns>
+      <param name="condition">Делегат для циклического выполнения до возврата этим делегатом значения true.</param>
+      <param name="timeout">Объект <see cref="T:System.TimeSpan" />, указывающий время ожидания в миллисекундах, или TimeSpan, представляющий значение -1 миллисекунда, в случае неограниченного ожидания.</param>
+      <exception cref="T:System.ArgumentNullException">Аргументом параметра <paramref name="condition" /> является null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> является отрицательным числом отличный значение -1 миллисекунд, которое представляет неограниченное время ожидания - или - время ожидания больше <see cref="F:System.Int32.MaxValue" />.</exception>
+    </member>
+    <member name="T:System.Threading.SynchronizationContext">
+      <summary>Обеспечивает базовую функциональность для распространения контекста синхронизации в различных моделях синхронизации. </summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.#ctor">
+      <summary>Создает новый экземпляр класса <see cref="T:System.Threading.SynchronizationContext" />.</summary>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.CreateCopy">
+      <summary>При переопределении в производном классе создает копию контекста синхронизации.  </summary>
+      <returns>Новый объект <see cref="T:System.Threading.SynchronizationContext" />.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.SynchronizationContext.Current">
+      <summary>Получает контекст синхронизации для текущего потока </summary>
+      <returns>Объект <see cref="T:System.Threading.SynchronizationContext" />, представляющий текущий контекст синхронизации.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.OperationCompleted">
+      <summary>При переопределении в производном классе отвечает на уведомление о завершении операции.</summary>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.OperationStarted">
+      <summary>При переопределении в производном классе отвечает на уведомление о запуске операции.</summary>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.Post(System.Threading.SendOrPostCallback,System.Object)">
+      <summary>При переопределении в производном классе отправляет асинхронное сообщение в контекст синхронизации.</summary>
+      <param name="d">Вызываемый делегат <see cref="T:System.Threading.SendOrPostCallback" />.</param>
+      <param name="state">Передаваемый делегату объект.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.Send(System.Threading.SendOrPostCallback,System.Object)">
+      <summary>При переопределении в производном классе отправляет синхронное сообщение в контекст синхронизации.</summary>
+      <param name="d">Вызываемый делегат <see cref="T:System.Threading.SendOrPostCallback" />.</param>
+      <param name="state">Передаваемый делегату объект. </param>
+      <exception cref="T:System.NotSupportedException">The method was called in a Windows Store app.The implementation of <see cref="T:System.Threading.SynchronizationContext" /> for Windows Store apps does not support the <see cref="M:System.Threading.SynchronizationContext.Send(System.Threading.SendOrPostCallback,System.Object)" /> method.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.SetSynchronizationContext(System.Threading.SynchronizationContext)">
+      <summary>Задает текущий контекст синхронизации.</summary>
+      <param name="syncContext">Задаваемый объект <see cref="T:System.Threading.SynchronizationContext" />.</param>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence, ControlPolicy" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Threading.SynchronizationLockException">
+      <summary>Исключение, которое выдается в то время, когда методу требуется вызвавший его объект для получения блокировки данного Monitor, а метод вызван объектом, не являющимся владельцем блокировки.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationLockException.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.SynchronizationLockException" /> со стандартными свойствами.</summary>
+    </member>
+    <member name="M:System.Threading.SynchronizationLockException.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.SynchronizationLockException" /> с указанным сообщением об ошибке.</summary>
+      <param name="message">Сообщение об ошибке с объяснением причин исключения. </param>
+    </member>
+    <member name="M:System.Threading.SynchronizationLockException.#ctor(System.String,System.Exception)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.SynchronizationLockException" /> с указанным сообщением об ошибке и ссылкой на внутреннее исключение, вызвавшее это исключение.</summary>
+      <param name="message">Сообщение об ошибке с объяснением причин исключения. </param>
+      <param name="innerException">Исключение, которое вызвало текущее исключение.Если значение параметра <paramref name="innerException" /> не равно null, текущее исключение сгенерировано в блоке catch, обрабатывающем внутреннее исключение.</param>
+    </member>
+    <member name="T:System.Threading.ThreadLocal`1">
+      <summary>Предоставляет хранилище для данных, локальных для потока.</summary>
+      <typeparam name="T">Задает тип данных, хранимых для каждого потока.</typeparam>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.#ctor">
+      <summary>Инициализирует экземпляр <see cref="T:System.Threading.ThreadLocal`1" />.</summary>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.#ctor(System.Boolean)">
+      <summary>Инициализирует экземпляр <see cref="T:System.Threading.ThreadLocal`1" />.</summary>
+      <param name="trackAllValues">Следует ли отслеживать все значения, заданные в экземпляре, и представлять их с помощью свойства <see cref="P:System.Threading.ThreadLocal`1.Values" />.</param>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.#ctor(System.Func{`0})">
+      <summary>Инициализирует экземпляр <see cref="T:System.Threading.ThreadLocal`1" /> с заданной функцией <paramref name="valueFactory" />.</summary>
+      <param name="valueFactory">Объект <see cref="T:System.Func`1" />, вызываемый для получения неактивно инициализированного значения при совершении попытки получить <see cref="P:System.Threading.ThreadLocal`1.Value" /> без предварительной инициализации.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="valueFactory" /> является пустой ссылкой (Nothing в Visual Basic).</exception>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.#ctor(System.Func{`0},System.Boolean)">
+      <summary>Инициализирует экземпляр <see cref="T:System.Threading.ThreadLocal`1" /> с заданной функцией <paramref name="valueFactory" />.</summary>
+      <param name="valueFactory">Объект <see cref="T:System.Func`1" />, вызываемый для получения неактивно инициализированного значения при совершении попытки получить <see cref="P:System.Threading.ThreadLocal`1.Value" /> без предварительной инициализации.</param>
+      <param name="trackAllValues">Следует ли отслеживать все значения, заданные в экземпляре, и представлять их с помощью свойства <see cref="P:System.Threading.ThreadLocal`1.Values" />.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="valueFactory" /> является пустой (null) ссылкой (Nothing в Visual Basic).</exception>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.Dispose">
+      <summary>Освобождает все ресурсы, используемые текущим экземпляром класса <see cref="T:System.Threading.ThreadLocal`1" />.</summary>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.Dispose(System.Boolean)">
+      <summary>Освобождает ресурсы, используемые данным экземпляром <see cref="T:System.Threading.ThreadLocal`1" />.</summary>
+      <param name="disposing">Логическое значение, указывающее, вызывается ли данный метод из-за вызова метода <see cref="M:System.Threading.ThreadLocal`1.Dispose" />.</param>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.Finalize">
+      <summary>Освобождает ресурсы, используемые данным экземпляром <see cref="T:System.Threading.ThreadLocal`1" />.</summary>
+    </member>
+    <member name="P:System.Threading.ThreadLocal`1.IsValueCreated">
+      <summary>Получает значение, указывающее, инициализирован ли объект <see cref="P:System.Threading.ThreadLocal`1.Value" /> в текущем потоке.</summary>
+      <returns>Значение true, если <see cref="P:System.Threading.ThreadLocal`1.Value" /> инициализируется в текущем потоке; в противном случае — значение false.</returns>
+      <exception cref="T:System.ObjectDisposedException">Экземпляр класса <see cref="T:System.Threading.ThreadLocal`1" /> был удален.</exception>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.ToString">
+      <summary>Создает и возвращает строковое представление данного экземпляра для текущего потока.</summary>
+      <returns>Результат вызова метода <see cref="M:System.Object.ToString" /> для свойства <see cref="P:System.Threading.ThreadLocal`1.Value" />.</returns>
+      <exception cref="T:System.ObjectDisposedException">Экземпляр класса <see cref="T:System.Threading.ThreadLocal`1" /> был удален.</exception>
+      <exception cref="T:System.NullReferenceException">
+        <see cref="P:System.Threading.ThreadLocal`1.Value" /> для текущего потока представляет пустую ссылку (Nothing в Visual Basic).</exception>
+      <exception cref="T:System.InvalidOperationException">Инициализация попыталась создать рекурсивную ссылку <see cref="P:System.Threading.ThreadLocal`1.Value" />.</exception>
+      <exception cref="T:System.MissingMemberException">Не предоставляются конструктор по умолчанию и значение фабрики.</exception>
+    </member>
+    <member name="P:System.Threading.ThreadLocal`1.Value">
+      <summary>Получает или задает значение данного экземпляра для текущего потока.</summary>
+      <returns>Возвращает экземпляр объекта, за инициализацию которого ответственен данный ThreadLocal.</returns>
+      <exception cref="T:System.ObjectDisposedException">Экземпляр класса <see cref="T:System.Threading.ThreadLocal`1" /> был удален.</exception>
+      <exception cref="T:System.InvalidOperationException">Инициализация попыталась создать рекурсивную ссылку <see cref="P:System.Threading.ThreadLocal`1.Value" />.</exception>
+      <exception cref="T:System.MissingMemberException">Не предоставляются конструктор по умолчанию и значение фабрики.</exception>
+    </member>
+    <member name="P:System.Threading.ThreadLocal`1.Values">
+      <summary>Получает список всех значений, хранящихся в настоящий момент всеми потоками, которые получили доступа к данному экземпляру.</summary>
+      <returns>Список всех значений, хранящихся в настоящий момент всеми потоками, которые получили доступа к данному экземпляру.</returns>
+      <exception cref="T:System.ObjectDisposedException">Экземпляр класса <see cref="T:System.Threading.ThreadLocal`1" /> был удален.</exception>
+    </member>
+    <member name="T:System.Threading.Volatile">
+      <summary>Содержит методы для выполнения операций энергозависимой памяти.</summary>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Boolean@)">
+      <summary>Считывает значение указанного поля.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция чтения или записи появляется после данного метода в коде, процессор не сможет переместить ее перед этим методом.</summary>
+      <returns>Прочитанное значение.Это значение является последним, записанным любым процессором компьютера, независимо от количества процессоров и от состояния кэша процессоров.</returns>
+      <param name="location">Считываемое поле.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Byte@)">
+      <summary>Считывает значение указанного поля.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция чтения или записи появляется после данного метода в коде, процессор не сможет переместить ее перед этим методом.</summary>
+      <returns>Прочитанное значение.Это значение является последним, записанным любым процессором компьютера, независимо от количества процессоров и от состояния кэша процессоров.</returns>
+      <param name="location">Считываемое поле.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Double@)">
+      <summary>Считывает значение указанного поля.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция чтения или записи появляется после данного метода в коде, процессор не сможет переместить ее перед этим методом.</summary>
+      <returns>Прочитанное значение.Это значение является последним, записанным любым процессором компьютера, независимо от количества процессоров и от состояния кэша процессоров.</returns>
+      <param name="location">Считываемое поле.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Int16@)">
+      <summary>Считывает значение указанного поля.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция чтения или записи появляется после данного метода в коде, процессор не сможет переместить ее перед этим методом.</summary>
+      <returns>Прочитанное значение.Это значение является последним, записанным любым процессором компьютера, независимо от количества процессоров и от состояния кэша процессоров.</returns>
+      <param name="location">Считываемое поле.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Int32@)">
+      <summary>Считывает значение указанного поля.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция чтения или записи появляется после данного метода в коде, процессор не сможет переместить ее перед этим методом.</summary>
+      <returns>Прочитанное значение.Это значение является последним, записанным любым процессором компьютера, независимо от количества процессоров и от состояния кэша процессоров.</returns>
+      <param name="location">Считываемое поле.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Int64@)">
+      <summary>Считывает значение указанного поля.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция чтения или записи появляется после данного метода в коде, процессор не сможет переместить ее перед этим методом.</summary>
+      <returns>Прочитанное значение.Это значение является последним, записанным любым процессором компьютера, независимо от количества процессоров и от состояния кэша процессоров.</returns>
+      <param name="location">Считываемое поле.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.IntPtr@)">
+      <summary>Считывает значение указанного поля.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция чтения или записи появляется после данного метода в коде, процессор не сможет переместить ее перед этим методом.</summary>
+      <returns>Прочитанное значение.Это значение является последним, записанным любым процессором компьютера, независимо от количества процессоров и от состояния кэша процессоров.</returns>
+      <param name="location">Считываемое поле.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.SByte@)">
+      <summary>Считывает значение указанного поля.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция чтения или записи появляется после данного метода в коде, процессор не сможет переместить ее перед этим методом.</summary>
+      <returns>Прочитанное значение.Это значение является последним, записанным любым процессором компьютера, независимо от количества процессоров и от состояния кэша процессоров.</returns>
+      <param name="location">Считываемое поле.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Single@)">
+      <summary>Считывает значение указанного поля.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция чтения или записи появляется после данного метода в коде, процессор не сможет переместить ее перед этим методом.</summary>
+      <returns>Прочитанное значение.Это значение является последним, записанным любым процессором компьютера, независимо от количества процессоров и от состояния кэша процессоров.</returns>
+      <param name="location">Считываемое поле.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.UInt16@)">
+      <summary>Считывает значение указанного поля.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция чтения или записи появляется после данного метода в коде, процессор не сможет переместить ее перед этим методом.</summary>
+      <returns>Прочитанное значение.Это значение является последним, записанным любым процессором компьютера, независимо от количества процессоров и от состояния кэша процессоров.</returns>
+      <param name="location">Считываемое поле.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.UInt32@)">
+      <summary>Считывает значение указанного поля.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция чтения или записи появляется после данного метода в коде, процессор не сможет переместить ее перед этим методом.</summary>
+      <returns>Прочитанное значение.Это значение является последним, записанным любым процессором компьютера, независимо от количества процессоров и от состояния кэша процессоров.</returns>
+      <param name="location">Считываемое поле.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.UInt64@)">
+      <summary>Считывает значение указанного поля.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция чтения или записи появляется после данного метода в коде, процессор не сможет переместить ее перед этим методом.</summary>
+      <returns>Прочитанное значение.Это значение является последним, записанным любым процессором компьютера, независимо от количества процессоров и от состояния кэша процессоров.</returns>
+      <param name="location">Считываемое поле.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.UIntPtr@)">
+      <summary>Считывает значение указанного поля.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция чтения или записи появляется после данного метода в коде, процессор не сможет переместить ее перед этим методом.</summary>
+      <returns>Прочитанное значение.Это значение является последним, записанным любым процессором компьютера, независимо от количества процессоров и от состояния кэша процессоров.</returns>
+      <param name="location">Считываемое поле.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read``1(``0@)">
+      <summary>Считывает ссылку на объект из указанного поля.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция чтения или записи появляется после данного метода в коде, процессор не сможет переместить ее перед этим методом.</summary>
+      <returns>Прочитанная ссылка на объект <paramref name="T" />.Эта ссылка является последней, записанной любым процессором компьютера, независимо от количества процессоров и от состояния кэша процессоров.</returns>
+      <param name="location">Считываемое поле.</param>
+      <typeparam name="T">Тип считываемого поля.Должен быть ссылочным типом или типом значения.</typeparam>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Boolean@,System.Boolean)">
+      <summary>Записывает заданное значение в указанное поле.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция чтения или записи появляется перед данным методом в коде, процессор не сможет поместить ее после этого метода.</summary>
+      <param name="location">Поле, в которое записывается значение.</param>
+      <param name="value">Записываемое значение.Значение записывается немедленно, так что оно становится видимым для всех процессоров компьютера.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Byte@,System.Byte)">
+      <summary>Записывает заданное значение в указанное поле.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция чтения или записи появляется перед данным методом в коде, процессор не сможет поместить ее после этого метода.</summary>
+      <param name="location">Поле, в которое записывается значение.</param>
+      <param name="value">Записываемое значение.Значение записывается немедленно, так что оно становится видимым для всех процессоров компьютера.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Double@,System.Double)">
+      <summary>Записывает заданное значение в указанное поле.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция чтения или записи появляется перед данным методом в коде, процессор не сможет поместить ее после этого метода.</summary>
+      <param name="location">Поле, в которое записывается значение.</param>
+      <param name="value">Записываемое значение.Значение записывается немедленно, так что оно становится видимым для всех процессоров компьютера.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Int16@,System.Int16)">
+      <summary>Записывает заданное значение в указанное поле.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция чтения или записи появляется перед данным методом в коде, процессор не сможет поместить ее после этого метода.</summary>
+      <param name="location">Поле, в которое записывается значение.</param>
+      <param name="value">Записываемое значение.Значение записывается немедленно, так что оно становится видимым для всех процессоров компьютера.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Int32@,System.Int32)">
+      <summary>Записывает заданное значение в указанное поле.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция чтения или записи появляется перед данным методом в коде, процессор не сможет поместить ее после этого метода.</summary>
+      <param name="location">Поле, в которое записывается значение.</param>
+      <param name="value">Записываемое значение.Значение записывается немедленно, так что оно становится видимым для всех процессоров компьютера.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Int64@,System.Int64)">
+      <summary>Записывает заданное значение в указанное поле.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция памяти появляется перед данным методом в коде, процессор не сможет поместить ее после этого метода.</summary>
+      <param name="location">Поле, в которое записывается значение.</param>
+      <param name="value">Записываемое значение.Значение записывается немедленно, так что оно становится видимым для всех процессоров компьютера.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.IntPtr@,System.IntPtr)">
+      <summary>Записывает заданное значение в указанное поле.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция чтения или записи появляется перед данным методом в коде, процессор не сможет поместить ее после этого метода.</summary>
+      <param name="location">Поле, в которое записывается значение.</param>
+      <param name="value">Записываемое значение.Значение записывается немедленно, так что оно становится видимым для всех процессоров компьютера.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.SByte@,System.SByte)">
+      <summary>Записывает заданное значение в указанное поле.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция чтения или записи появляется перед данным методом в коде, процессор не сможет поместить ее после этого метода.</summary>
+      <param name="location">Поле, в которое записывается значение.</param>
+      <param name="value">Записываемое значение.Значение записывается немедленно, так что оно становится видимым для всех процессоров компьютера.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Single@,System.Single)">
+      <summary>Записывает заданное значение в указанное поле.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция чтения или записи появляется перед данным методом в коде, процессор не сможет поместить ее после этого метода.</summary>
+      <param name="location">Поле, в которое записывается значение.</param>
+      <param name="value">Записываемое значение.Значение записывается немедленно, так что оно становится видимым для всех процессоров компьютера.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.UInt16@,System.UInt16)">
+      <summary>Записывает заданное значение в указанное поле.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция чтения или записи появляется перед данным методом в коде, процессор не сможет поместить ее после этого метода.</summary>
+      <param name="location">Поле, в которое записывается значение.</param>
+      <param name="value">Записываемое значение.Значение записывается немедленно, так что оно становится видимым для всех процессоров компьютера.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.UInt32@,System.UInt32)">
+      <summary>Записывает заданное значение в указанное поле.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция чтения или записи появляется перед данным методом в коде, процессор не сможет поместить ее после этого метода.</summary>
+      <param name="location">Поле, в которое записывается значение.</param>
+      <param name="value">Записываемое значение.Значение записывается немедленно, так что оно становится видимым для всех процессоров компьютера.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.UInt64@,System.UInt64)">
+      <summary>Записывает заданное значение в указанное поле.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция чтения или записи появляется перед данным методом в коде, процессор не сможет поместить ее после этого метода.</summary>
+      <param name="location">Поле, в которое записывается значение.</param>
+      <param name="value">Записываемое значение.Значение записывается немедленно, так что оно становится видимым для всех процессоров компьютера.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.UIntPtr@,System.UIntPtr)">
+      <summary>Записывает заданное значение в указанное поле.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция чтения или записи появляется перед данным методом в коде, процессор не сможет поместить ее после этого метода.</summary>
+      <param name="location">Поле, в которое записывается значение.</param>
+      <param name="value">Записываемое значение.Значение записывается немедленно, так что оно становится видимым для всех процессоров компьютера.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write``1(``0@,``0)">
+      <summary>Записывает заданную ссылку на объект в указанное поле.В системах, которым это необходимо, вставляет барьер памяти, не позволяющий процессору изменять порядок операций памяти следующим образом: если операция чтения или записи появляется перед данным методом в коде, процессор не сможет поместить ее после этого метода.</summary>
+      <param name="location">Поле, в которое записывается ссылка на объект.</param>
+      <param name="value">Записываемая ссылка на объект.Ссылка записывается немедленно, так что она становится видимой для всех процессоров компьютера.</param>
+      <typeparam name="T">Тип поля, в которое выполняется запись.Должен быть ссылочным типом или типом значения.</typeparam>
+    </member>
+    <member name="T:System.Threading.WaitHandleCannotBeOpenedException">
+      <summary>Исключение, которое выдается при попытке открыть не существующий в системе семафор или мьютекс.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.WaitHandleCannotBeOpenedException.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.WaitHandleCannotBeOpenedException" /> значениями по умолчанию.</summary>
+    </member>
+    <member name="M:System.Threading.WaitHandleCannotBeOpenedException.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.WaitHandleCannotBeOpenedException" /> с указанным сообщением об ошибке.</summary>
+      <param name="message">Сообщение об ошибке с объяснением причин исключения.</param>
+    </member>
+    <member name="M:System.Threading.WaitHandleCannotBeOpenedException.#ctor(System.String,System.Exception)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Threading.WaitHandleCannotBeOpenedException" /> с указанным сообщением об ошибке и ссылкой на внутреннее исключение, вызвавшее это исключение.</summary>
+      <param name="message">Сообщение об ошибке с объяснением причин исключения.</param>
+      <param name="innerException">Исключение, которое вызвало текущее исключение.Если значение параметра <paramref name="innerException" /> не равно null, текущее исключение сгенерировано в блоке catch, обрабатывающем внутреннее исключение.</param>
+    </member>
+  </members>
+</doc>

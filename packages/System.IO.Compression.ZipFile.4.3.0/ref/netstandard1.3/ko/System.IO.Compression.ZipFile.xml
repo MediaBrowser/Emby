@@ -1,0 +1,286 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.IO.Compression.ZipFile</name>
+  </assembly>
+  <members>
+    <member name="T:System.IO.Compression.ZipFile">
+      <summary>Zip 보관 파일 만들기, 추출 및 열기를 위한 정적 메서드를 제공합니다. </summary>
+    </member>
+    <member name="M:System.IO.Compression.ZipFile.CreateFromDirectory(System.String,System.String)">
+      <summary>지정된 디렉터리에서 파일 및 디렉터리를 포함하는 Zip 보관 파일을 만듭니다.</summary>
+      <param name="sourceDirectoryName">보관되는 디렉터리의 경로(상대 또는 절대 경로로 지정)입니다.상대 경로는 현재 작업 디렉터리에 상대적으로 해석됩니다.</param>
+      <param name="destinationArchiveFileName">만들 보관 파일의 경로(상대 또는 절대 경로로 지정)입니다.상대 경로는 현재 작업 디렉터리에 상대적으로 해석됩니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" /> is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" /> is null.</exception>
+      <exception cref="T:System.IO.PathTooLongException">In <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" />, the specified path, file name, or both exceed the system-defined maximum length.For example, on Windows-based platforms, paths must not exceed 248 characters, and file names must not exceed 260 characters.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">
+        <paramref name="sourceDirectoryName" /> is invalid or does not exist (for example, it is on an unmapped drive).</exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="destinationArchiveFileName" /> already exists.-or-A file in the specified directory could not be opened.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">
+        <paramref name="destinationArchiveFileName" /> specifies a directory.-or-The caller does not have the required permission to access the directory specified in <paramref name="sourceDirectoryName" /> or the file specified in <paramref name="destinationArchiveFileName" />.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" /> contains an invalid format.-or-The zip archive does not support writing.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFile.CreateFromDirectory(System.String,System.String,System.IO.Compression.CompressionLevel,System.Boolean)">
+      <summary>지정된 디렉터리의 파일 및 디렉터리를 포함하고 지정된 압축 수준을 사용하며 기본 디렉터리를 선택적으로 포함하는 Zip 보관 파일을 듭니다.</summary>
+      <param name="sourceDirectoryName">보관되는 디렉터리의 경로(상대 또는 절대 경로로 지정)입니다.상대 경로는 현재 작업 디렉터리에 상대적으로 해석됩니다.</param>
+      <param name="destinationArchiveFileName">만들 보관 파일의 경로(상대 또는 절대 경로로 지정)입니다.상대 경로는 현재 작업 디렉터리에 상대적으로 해석됩니다.</param>
+      <param name="compressionLevel">항목을 만들 때 속도 또는 압축 효율을 강조할지를 나타내는 열거형 값 중 하나입니다.</param>
+      <param name="includeBaseDirectory">보관 파일 루트에 있는 <paramref name="sourceDirectoryName" />의 디렉터리 이름을 포함하려면 true이고, 디렉터리의 내용만 포함하려면 false입니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" /> is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" /> is null.</exception>
+      <exception cref="T:System.IO.PathTooLongException">In <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" />, the specified path, file name, or both exceed the system-defined maximum length.For example, on Windows-based platforms, paths must not exceed 248 characters, and file names must not exceed 260 characters.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">
+        <paramref name="sourceDirectoryName" /> is invalid or does not exist (for example, it is on an unmapped drive).</exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="destinationArchiveFileName" /> already exists.-or-A file in the specified directory could not be opened.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">
+        <paramref name="destinationArchiveFileName" /> specifies a directory.-or-The caller does not have the required permission to access the directory specified in <paramref name="sourceDirectoryName" /> or the file specified in <paramref name="destinationArchiveFileName" />.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" /> contains an invalid format.-or-The zip archive does not support writing.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFile.CreateFromDirectory(System.String,System.String,System.IO.Compression.CompressionLevel,System.Boolean,System.Text.Encoding)">
+      <summary>지정된 디렉터리의 파일 및 디렉터리를 포함하고 항목 이름에 대해 지정된 압축 수준 및 문자 인코딩을 사용하며 기본 디렉터리를 선택적으로 포함하는 Zip 보관 파일을 만듭니다.</summary>
+      <param name="sourceDirectoryName">보관되는 디렉터리의 경로(상대 또는 절대 경로로 지정)입니다.상대 경로는 현재 작업 디렉터리에 상대적으로 해석됩니다.</param>
+      <param name="destinationArchiveFileName">만들 보관 파일의 경로(상대 또는 절대 경로로 지정)입니다.상대 경로는 현재 작업 디렉터리에 상대적으로 해석됩니다.</param>
+      <param name="compressionLevel">항목을 만들 때 속도 또는 압축 효율을 강조할지를 나타내는 열거형 값 중 하나입니다.</param>
+      <param name="includeBaseDirectory">보관 파일 루트에 있는 <paramref name="sourceDirectoryName" />의 디렉터리 이름을 포함하려면 true이고, 디렉터리의 내용만 포함하려면 false입니다.</param>
+      <param name="entryNameEncoding">이 보관 파일에서 이름을 읽거나 쓰는 동안 사용할 인코딩입니다.인코딩이 항목 이름에 대해 UTF-8 인코딩을 지원하지 않는 Zip 보관 도구와 라이브러리를 사용하여 상호 운용성에 인코딩이 필요할 때만 이 매개 변수에 대한 값을 지정합니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" /> is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.-or-<paramref name="entryNameEncoding" /> is set to a Unicode encoding other than UTF-8.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" /> is null.</exception>
+      <exception cref="T:System.IO.PathTooLongException">In <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" />, the specified path, file name, or both exceed the system-defined maximum length.For example, on Windows-based platforms, paths must not exceed 248 characters, and file names must not exceed 260 characters.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">
+        <paramref name="sourceDirectoryName" /> is invalid or does not exist (for example, it is on an unmapped drive).</exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="destinationArchiveFileName" /> already exists.-or-A file in the specified directory could not be opened.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">
+        <paramref name="destinationArchiveFileName" /> specifies a directory.-or-The caller does not have the required permission to access the directory specified in <paramref name="sourceDirectoryName" /> or the file specified in <paramref name="destinationArchiveFileName" />.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="sourceDirectoryName" /> or <paramref name="destinationArchiveFileName" /> contains an invalid format.-or-The zip archive does not support writing.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFile.ExtractToDirectory(System.String,System.String)">
+      <summary>지정된 Zip 보관 파일의 모든 파일을 파일 시스템의 디렉터리에 추출합니다.</summary>
+      <param name="sourceArchiveFileName">추출되는 보관 파일의 경로입니다.</param>
+      <param name="destinationDirectoryName">추출된 파일을 배치할 디렉터리의 경로이며 상대 경로 또는 절대 경로로 지정됩니다.상대 경로는 현재 작업 디렉터리에 상대적으로 해석됩니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="destinationDirectoryName" /> or <paramref name="sourceArchiveFileName" /> is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destinationDirectoryName" /> or <paramref name="sourceArchiveFileName" /> is null.</exception>
+      <exception cref="T:System.IO.PathTooLongException">The specified path in <paramref name="destinationDirectoryName" /> or <paramref name="sourceArchiveFileName" /> exceeds the system-defined maximum length.For example, on Windows-based platforms, paths must not exceed 248 characters, and file names must not exceed 260 characters.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid (for example, it is on an unmapped drive).</exception>
+      <exception cref="T:System.IO.IOException">The directory specified by <paramref name="destinationDirectoryName" /> already exists.-or-The name of an entry in the archive is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.-or-Extracting an archive entry would create a file that is outside the directory specified by <paramref name="destinationDirectoryName" />.(For example, this might happen if the entry name contains parent directory accessors.)-or-An archive entry to extract has the same name as an entry that has already been extracted from the same archive.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission to access the archive or the destination directory.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="destinationDirectoryName" /> or <paramref name="sourceArchiveFileName" /> contains an invalid format.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="sourceArchiveFileName" /> was not found.</exception>
+      <exception cref="T:System.IO.InvalidDataException">The archive specified by <paramref name="sourceArchiveFileName" /> is not a valid zip archive.-or-An archive entry was not found or was corrupt.-or-An archive entry was compressed by using a compression method that is not supported.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFile.ExtractToDirectory(System.String,System.String,System.Text.Encoding)">
+      <summary>지정된 Zip 보관 파일의 모든 파일을 파일 시스템의 디렉터리에 추출하고 항목 이름에 대한 지정된 문자 인코딩을 사용합니다.</summary>
+      <param name="sourceArchiveFileName">추출되는 보관 파일의 경로입니다.</param>
+      <param name="destinationDirectoryName">추출된 파일을 배치할 디렉터리의 경로이며 상대 경로 또는 절대 경로로 지정됩니다.상대 경로는 현재 작업 디렉터리에 상대적으로 해석됩니다.</param>
+      <param name="entryNameEncoding">이 보관 파일에서 이름을 읽거나 쓰는 동안 사용할 인코딩입니다.인코딩이 항목 이름에 대해 UTF-8 인코딩을 지원하지 않는 Zip 보관 도구와 라이브러리를 사용하여 상호 운용성에 인코딩이 필요할 때만 이 매개 변수에 대한 값을 지정합니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="destinationDirectoryName" /> or <paramref name="sourceArchiveFileName" /> is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.-or-<paramref name="entryNameEncoding" /> is set to a Unicode encoding other than UTF-8.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destinationDirectoryName" /> or <paramref name="sourceArchiveFileName" /> is null.</exception>
+      <exception cref="T:System.IO.PathTooLongException">The specified path in <paramref name="destinationDirectoryName" /> or <paramref name="sourceArchiveFileName" /> exceeds the system-defined maximum length.For example, on Windows-based platforms, paths must not exceed 248 characters, and file names must not exceed 260 characters.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid (for example, it is on an unmapped drive).</exception>
+      <exception cref="T:System.IO.IOException">The directory specified by <paramref name="destinationDirectoryName" /> already exists.-or-The name of an entry in the archive is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.-or-Extracting an archive entry would create a file that is outside the directory specified by <paramref name="destinationDirectoryName" />.(For example, this might happen if the entry name contains parent directory accessors.)-or-An archive entry to extract has the same name as an entry that has already been extracted from the same archive.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission to access the archive or the destination directory.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="destinationDirectoryName" /> or <paramref name="sourceArchiveFileName" /> contains an invalid format.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="sourceArchiveFileName" /> was not found.</exception>
+      <exception cref="T:System.IO.InvalidDataException">The archive specified by <paramref name="sourceArchiveFileName" /> is not a valid zip archive.-or-An archive entry was not found or was corrupt.-or-An archive entry was compressed by using a compression method that is not supported.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFile.Open(System.String,System.IO.Compression.ZipArchiveMode)">
+      <summary>지정된 경로와 지정된 모드에서 Zip 보관 파일을 엽니다.</summary>
+      <returns>열린 Zip 보관 파일입니다.</returns>
+      <param name="archiveFileName">열 보관 파일의 경로(상대 또는 절대 경로로 지정)입니다.상대 경로는 현재 작업 디렉터리에 상대적으로 해석됩니다.</param>
+      <param name="mode">열린 보관 파일의 항목에서 사용되는 동작을 지정하는 열거형 값 중 하나입니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="archiveFileName" /> is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="archiveFileName" /> is null.</exception>
+      <exception cref="T:System.IO.PathTooLongException">In <paramref name="archiveFileName" />, the specified path, file name, or both exceed the system-defined maximum length.For example, on Windows-based platforms, paths must not exceed 248 characters, and file names must not exceed 260 characters.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">
+        <paramref name="archiveFileName" /> is invalid or does not exist (for example, it is on an unmapped drive).</exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="archiveFileName" /> could not be opened.-or-<paramref name="mode" /> is set to <see cref="F:System.IO.Compression.ZipArchiveMode.Create" />, but the file specified in <paramref name="archiveFileName" /> already exists.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">
+        <paramref name="archiveFileName" /> specifies a directory.-or-The caller does not have the required permission to access the file specified in <paramref name="archiveFileName" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="mode" /> specifies an invalid value.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="mode" /> is set to <see cref="F:System.IO.Compression.ZipArchiveMode.Read" />, but the file specified in <paramref name="archiveFileName" /> is not found.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="archiveFileName" /> contains an invalid format.</exception>
+      <exception cref="T:System.IO.InvalidDataException">
+        <paramref name="archiveFileName" /> could not be interpreted as a zip archive.-or-<paramref name="mode" /> is <see cref="F:System.IO.Compression.ZipArchiveMode.Update" />, but an entry is missing or corrupt and cannot be read.-or-<paramref name="mode" /> is <see cref="F:System.IO.Compression.ZipArchiveMode.Update" />, but an entry is too large to fit into memory.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFile.Open(System.String,System.IO.Compression.ZipArchiveMode,System.Text.Encoding)">
+      <summary>지정된 모드의 지정된 경로에서 항목 이름에 대해 지정된 문자 인코딩을 사용하며 Zip 보관 파일을 엽니다.</summary>
+      <returns>열린 Zip 보관 파일입니다.</returns>
+      <param name="archiveFileName">열 보관 파일의 경로(상대 또는 절대 경로로 지정)입니다.상대 경로는 현재 작업 디렉터리에 상대적으로 해석됩니다.</param>
+      <param name="mode">열린 보관 파일의 엔트리에서 사용되는 동작을 지정하는 열거형 값 중 하나입니다.</param>
+      <param name="entryNameEncoding">이 보관 파일에서 이름을 읽거나 쓰는 동안 사용할 인코딩입니다.인코딩이 항목 이름에 대해 UTF-8 인코딩을 지원하지 않는 Zip 보관 도구와 라이브러리를 사용하여 상호 운용성에 인코딩이 필요할 때만 이 매개 변수에 대한 값을 지정합니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="archiveFileName" /> is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.-or-<paramref name="entryNameEncoding" /> is set to a Unicode encoding other than UTF-8.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="archiveFileName" /> is null.</exception>
+      <exception cref="T:System.IO.PathTooLongException">In <paramref name="archiveFileName" />, the specified path, file name, or both exceed the system-defined maximum length.For example, on Windows-based platforms, paths must not exceed 248 characters, and file names must not exceed 260 characters.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">
+        <paramref name="archiveFileName" /> is invalid or does not exist (for example, it is on an unmapped drive).</exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="archiveFileName" /> could not be opened.-or-<paramref name="mode" /> is set to <see cref="F:System.IO.Compression.ZipArchiveMode.Create" />, but the file specified in <paramref name="archiveFileName" /> already exists.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">
+        <paramref name="archiveFileName" /> specifies a directory.-or-The caller does not have the required permission to access the file specified in <paramref name="archiveFileName" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="mode" /> specifies an invalid value.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="mode" /> is set to <see cref="F:System.IO.Compression.ZipArchiveMode.Read" />, but the file specified in <paramref name="archiveFileName" /> is not found.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="archiveFileName" /> contains an invalid format.</exception>
+      <exception cref="T:System.IO.InvalidDataException">
+        <paramref name="archiveFileName" /> could not be interpreted as a zip archive.-or-<paramref name="mode" /> is <see cref="F:System.IO.Compression.ZipArchiveMode.Update" />, but an entry is missing or corrupt and cannot be read.-or-<paramref name="mode" /> is <see cref="F:System.IO.Compression.ZipArchiveMode.Update" />, but an entry is too large to fit into memory.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFile.OpenRead(System.String)">
+      <summary>지정된 경로에서 읽기 위해 Zip 보관 파일을 엽니다.</summary>
+      <returns>열린 Zip 보관 파일입니다.</returns>
+      <param name="archiveFileName">열 보관 파일의 경로(상대 또는 절대 경로로 지정)입니다.상대 경로는 현재 작업 디렉터리에 상대적으로 해석됩니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="archiveFileName" /> is <see cref="F:System.String.Empty" />, contains only white space, or contains at least one invalid character.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="archiveFileName" /> is null.</exception>
+      <exception cref="T:System.IO.PathTooLongException">In <paramref name="archiveFileName" />, the specified path, file name, or both exceed the system-defined maximum length.For example, on Windows-based platforms, paths must not exceed 248 characters, and file names must not exceed 260 characters.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">
+        <paramref name="archiveFileName" /> is invalid or does not exist (for example, it is on an unmapped drive).</exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="archiveFileName" /> could not be opened.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">
+        <paramref name="archiveFileName" /> specifies a directory.-or-The caller does not have the required permission to access the file specified in <paramref name="archiveFileName" />.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">The file specified in <paramref name="archiveFileName" /> is not found.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="archiveFileName" /> contains an invalid format.</exception>
+      <exception cref="T:System.IO.InvalidDataException">
+        <paramref name="archiveFileName" /> could not be interpreted as a zip archive.</exception>
+    </member>
+    <member name="T:System.IO.Compression.ZipFileExtensions">
+      <summary>
+        <see cref="T:System.IO.Compression.ZipArchive" /> 및 <see cref="T:System.IO.Compression.ZipArchiveEntry" /> 클래스에 대한 확장 메서드를 제공합니다.</summary>
+    </member>
+    <member name="M:System.IO.Compression.ZipFileExtensions.CreateEntryFromFile(System.IO.Compression.ZipArchive,System.String,System.String)">
+      <summary>파일을 압축하고 ZIP 보관 위치에 추가하여 보관합니다.</summary>
+      <returns>ZIP 보관 위치에 있는 새 항목에 대한 래퍼입니다.</returns>
+      <param name="destination">파일을 추가할 zip 보관 위치입니다.</param>
+      <param name="sourceFileName">보관할 파일의 경로입니다.상대 또는 절대 경로를 지정할 수 있습니다.상대 경로는 현재 작업 디렉터리에 상대적으로 해석됩니다.</param>
+      <param name="entryName">zip 보관 위치에 만들 항목의 이름입니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="sourceFileName" />이 <see cref="F:System.String.Empty" />이거나, 공백만 포함하거나 또는 잘못된 문자를 하나 이상 포함하는 경우또는<paramref name="entryName" />가 <see cref="F:System.String.Empty" />입니다.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="sourceFileName" /> 또는 <paramref name="entryName" />가 null인 경우</exception>
+      <exception cref="T:System.IO.PathTooLongException">
+        <paramref name="sourceFileName" />에서 지정된 경로, 파일 이름 또는 둘 다가 시스템에 정의된 최대 길이를 초과하는 경우예를 들어, Windows 기반 플랫폼에서는 경로에 248자 미만의 문자를 사용해야 하며 파일 이름에는 260자 미만의 문자를 사용해야 합니다.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">
+        <paramref name="sourceFileName" />가 잘못된 경우(예: 매핑되지 않은 드라이브의 경로를 지정한 경우)</exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="sourceFileName" />으로 지정된 파일을 열 수 없는 경우</exception>
+      <exception cref="T:System.UnauthorizedAccessException">
+        <paramref name="sourceFileName" />은 디렉터리를 지정합니다.또는<paramref name="sourceFileName" />에서 지정한 파일에 액세스하는 데 필요한 권한이 호출자에게 없는 경우</exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="sourceFileName" />에서 지정한 파일을 찾을 수 없는 경우</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="sourceFileName" /> 매개 변수가 잘못된 형식인 경우또는zip 보관 위치가 쓰기를 지원하지 않는 경우</exception>
+      <exception cref="T:System.ObjectDisposedException">zip 보관 위치가 삭제되었습니다.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFileExtensions.CreateEntryFromFile(System.IO.Compression.ZipArchive,System.String,System.String,System.IO.Compression.CompressionLevel)">
+      <summary>지정된 압축 수준을 사용하여 압축하고 zip 보관 저장소에 추가하여 파일을 보관합니다.</summary>
+      <returns>ZIP 보관 위치에 있는 새 항목에 대한 래퍼입니다.</returns>
+      <param name="destination">파일을 추가할 zip 보관 위치입니다.</param>
+      <param name="sourceFileName">보관할 파일의 경로입니다.상대 또는 절대 경로를 지정할 수 있습니다.상대 경로는 현재 작업 디렉터리에 상대적으로 해석됩니다.</param>
+      <param name="entryName">zip 보관 위치에 만들 항목의 이름입니다.</param>
+      <param name="compressionLevel">항목을 만들 때 속도 또는 압축 효율을 강조할지 여부를 나타내는 열거형 값 중 하나입니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="sourceFileName" />이 <see cref="F:System.String.Empty" />이거나, 공백만 포함하거나 또는 잘못된 문자를 하나 이상 포함하는 경우또는<paramref name="entryName" />가 <see cref="F:System.String.Empty" />입니다.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="sourceFileName" /> 또는 <paramref name="entryName" />가 null인 경우</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">
+        <paramref name="sourceFileName" />가 잘못된 경우(예: 매핑되지 않은 드라이브의 경로를 지정한 경우)</exception>
+      <exception cref="T:System.IO.PathTooLongException">
+        <paramref name="sourceFileName" />에서 지정된 경로, 파일 이름 또는 둘 다가 시스템에 정의된 최대 길이를 초과하는 경우예를 들어, Windows 기반 플랫폼에서는 경로에 248자 미만의 문자를 사용해야 하며 파일 이름에는 260자 미만의 문자를 사용해야 합니다.</exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="sourceFileName" />으로 지정된 파일을 열 수 없는 경우</exception>
+      <exception cref="T:System.UnauthorizedAccessException">
+        <paramref name="sourceFileName" />은 디렉터리를 지정합니다.또는<paramref name="sourceFileName" />에서 지정한 파일에 액세스하는 데 필요한 권한이 호출자에게 없는 경우</exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="sourceFileName" />에서 지정한 파일을 찾을 수 없는 경우</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="sourceFileName" /> 매개 변수가 잘못된 형식인 경우또는zip 보관 위치가 쓰기를 지원하지 않는 경우</exception>
+      <exception cref="T:System.ObjectDisposedException">zip 보관 위치가 삭제되었습니다.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFileExtensions.ExtractToDirectory(System.IO.Compression.ZipArchive,System.String)">
+      <summary>ZIP 보관 파일의 모든 파일을 파일 시스템의 디렉터리에 추출합니다.</summary>
+      <param name="source">파일의 압축을 풀 zip 보관 위치입니다.</param>
+      <param name="destinationDirectoryName">추출된 파일을 넣을 디렉터리의 경로입니다.상대 또는 절대 경로를 지정할 수 있습니다.상대 경로는 현재 작업 디렉터리에 상대적으로 해석됩니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="destinationDirectoryName" />이 <see cref="F:System.String.Empty" />이거나, 공백만 포함하거나 또는 잘못된 문자를 하나 이상 포함하는 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destinationDirectoryName" />가 null입니다.</exception>
+      <exception cref="T:System.IO.PathTooLongException">지정된 경로가 시스템 정의 최대 길이를 초과합니다.예를 들어, Windows 기반 플랫폼에서는 경로에 248자 미만의 문자를 사용해야 하며 파일 이름에는 260자 미만의 문자를 사용해야 합니다.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">지정된 경로가 잘못된 경우(예: 매핑되지 않은 드라이브의 경로를 지정한 경우)</exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="destinationDirectoryName" />에서 지정한 디렉터리가 이미 있는 경우또는보관 파일에 있는 항목의 이름이 <see cref="F:System.String.Empty" /> 상태이며, 이 이름에 공백만 있거나 잘못된 문자가 하나 이상 포함되어 있습니다.또는보관 저장소에서 항목을 추출하면 <paramref name="destinationDirectoryName" />으로 지정된 디렉터리 외부에 파일이 만들어집니다. (예를 들어 항목 이름에 부모 디렉터리 접근자가 포함된 경우 발생할 수 있습니다.) 또는보관 저장소에 있는 둘 이상의 항목이 같은 이름을 갖고 있습니다.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">호출자에게 대상 디렉터리에 쓸 수 있는 권한이 없는 경우</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="destinationDirectoryName" />에 잘못된 형식이 포함되어 있는 경우</exception>
+      <exception cref="T:System.IO.InvalidDataException">보관 항목 찾을 수 없거나 손상되었습니다.또는보관 항목이 지원되지 않는 압축 방법으로 압축되었습니다.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFileExtensions.ExtractToFile(System.IO.Compression.ZipArchiveEntry,System.String)">
+      <summary>ZIP 보관 파일의 항목을 파일에 추출합니다.</summary>
+      <param name="source">파일의 압축을 풀 zip 보관 위치 항목입니다.</param>
+      <param name="destinationFileName">항목의 내용에서 만들 파일의 경로입니다.상대 또는 절대 경로를 지정할 수 있습니다.상대 경로는 현재 작업 디렉터리에 상대적으로 해석됩니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="destinationFileName" />가 길이가 0인 문자열이거나, 공백만 포함하거나, <see cref="F:System.IO.Path.InvalidPathChars" />로 정의된 하나 이상의 잘못된 문자를 포함하는 경우또는<paramref name="destinationFileName" />은 디렉터리를 지정합니다.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destinationFileName" />가 null입니다. </exception>
+      <exception cref="T:System.IO.PathTooLongException">지정된 경로 또는 파일 이름이 시스템에 정의된 최대 길이를 초과하는 경우.예를 들어, Windows 기반 플랫폼에서는 경로에 248자 미만의 문자를 사용해야 하며 파일 이름에는 260자 미만의 문자를 사용해야 합니다.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">지정된 경로가 잘못된 경우(예: 매핑되지 않은 드라이브의 경로를 지정한 경우) </exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="destinationFileName" />이(가) 이미 있습니다.또는 I/O 오류가 발생하는 경우또는엔트리가 현재 쓰기용으로 열려 있습니다.또는엔트리가 보관 저장소에서 삭제되었습니다.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">새 파일을 만드는 데 필요한 권한이 호출자에게 없는 경우</exception>
+      <exception cref="T:System.IO.InvalidDataException">항목이 보관 위치에 없거나 손상되어 열 수 없습니다.또는항목이 지원되지 않는 압축 방법으로 압축되었습니다.</exception>
+      <exception cref="T:System.ObjectDisposedException">이 항목이 속하는 zip 보관 위치가 삭제되었습니다.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="destinationFileName" />의 형식이 잘못된 경우 또는이 항목에 대한 zip 압축 파일이 항목을 검색할 수 없는 <see cref="F:System.IO.Compression.ZipArchiveMode.Create" /> 모드로 열렸습니다.</exception>
+    </member>
+    <member name="M:System.IO.Compression.ZipFileExtensions.ExtractToFile(System.IO.Compression.ZipArchiveEntry,System.String,System.Boolean)">
+      <summary>zip 보관 저장소의 항목을 파일에 추출하고 이름이 같은 기존 파일을 선택적으로 덮어씁니다.</summary>
+      <param name="source">파일의 압축을 풀 zip 보관 위치 항목입니다.</param>
+      <param name="destinationFileName">항목의 내용에서 만들 파일의 경로입니다.상대 또는 절대 경로를 지정할 수 있습니다.상대 경로는 현재 작업 디렉터리에 상대적으로 해석됩니다.</param>
+      <param name="overwrite">대상 파일과 이름이 같은 기존 파일을 덮어쓰려면 true이고, 그렇지 않으면 false입니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="destinationFileName" />가 길이가 0인 문자열이거나, 공백만 포함하거나, <see cref="F:System.IO.Path.InvalidPathChars" />로 정의된 하나 이상의 잘못된 문자를 포함하는 경우또는<paramref name="destinationFileName" />은 디렉터리를 지정합니다.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destinationFileName" />가 null입니다. </exception>
+      <exception cref="T:System.IO.PathTooLongException">지정된 경로 또는 파일 이름이 시스템에 정의된 최대 길이를 초과하는 경우.예를 들어, Windows 기반 플랫폼에서는 경로에 248자 미만의 문자를 사용해야 하며 파일 이름에는 260자 미만의 문자를 사용해야 합니다.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">지정된 경로가 잘못된 경우(예: 매핑되지 않은 드라이브의 경로를 지정한 경우) </exception>
+      <exception cref="T:System.IO.IOException">
+        <paramref name="destinationFileName" />이 이미 있고 <paramref name="overwrite" />가 false인 경우또는 I/O 오류가 발생하는 경우또는엔트리가 현재 쓰기용으로 열려 있습니다.또는엔트리가 보관 저장소에서 삭제되었습니다.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">새 파일을 만드는 데 필요한 권한이 호출자에게 없는 경우</exception>
+      <exception cref="T:System.IO.InvalidDataException">항목이 보관 위치에 없거나 손상되어 열 수 없습니다.또는항목이 지원되지 않는 압축 방법으로 압축되었습니다.</exception>
+      <exception cref="T:System.ObjectDisposedException">이 항목이 속하는 zip 보관 위치가 삭제되었습니다.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="destinationFileName" />의 형식이 잘못된 경우 또는이 항목에 대한 zip 압축 파일이 항목을 검색할 수 없는 <see cref="F:System.IO.Compression.ZipArchiveMode.Create" /> 모드로 열렸습니다.</exception>
+    </member>
+  </members>
+</doc>

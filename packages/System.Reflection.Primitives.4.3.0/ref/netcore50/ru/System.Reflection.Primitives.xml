@@ -1,0 +1,1351 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Reflection.Primitives</name>
+  </assembly>
+  <members>
+    <member name="T:System.Reflection.CallingConventions">
+      <summary>Определяет допустимые соглашения вызова для метода.</summary>
+    </member>
+    <member name="F:System.Reflection.CallingConventions.Any">
+      <summary>Определяет используемые соглашения вызова: Standard или VarArgs.</summary>
+    </member>
+    <member name="F:System.Reflection.CallingConventions.ExplicitThis">
+      <summary>Указывает, что данная сигнатура является сигнатурой указателя функции, представляя собой экземпляр или виртуальный (не статический) метод.Если установлен параметр ExplicitThis, должен быть задан и параметр HasThis.Первый аргумент, передаваемый вызываемому методу, все же является указателем this, но тип первого аргумента в этот момент неизвестен.Следовательно, в сигнатуре метаданных указателя this явно хранится маркер, описывающий тип (или класс) этого указателя.</summary>
+    </member>
+    <member name="F:System.Reflection.CallingConventions.HasThis">
+      <summary>Определяет экземпляр или виртуальный (не статический) метод.Во время выполнения вызываемому методу в качестве первого аргумента передается указатель на конечный объект (указатель this).Сигнатура, хранящаяся в метаданных, не содержит тип этого первого аргумента, так как этот метод известен и класс его владельца может быть извлечен из метаданных.</summary>
+    </member>
+    <member name="F:System.Reflection.CallingConventions.Standard">
+      <summary>Определяет соглашение вызова по умолчанию, определяемое общеязыковой средой выполнения.Это соглашение о вызове используется для статических методов.Для экземпляра или виртуальных методов используется метод HasThis.</summary>
+    </member>
+    <member name="F:System.Reflection.CallingConventions.VarArgs">
+      <summary>Определяет соглашение вызова для методов с переменными аргументами.</summary>
+    </member>
+    <member name="T:System.Reflection.EventAttributes">
+      <summary>Определяет атрибуты события.</summary>
+    </member>
+    <member name="F:System.Reflection.EventAttributes.None">
+      <summary>Указывает, что у события отсутствуют атрибуты.</summary>
+    </member>
+    <member name="F:System.Reflection.EventAttributes.RTSpecialName">
+      <summary>Определяет, что общеязыковая среда выполнения должна проверять кодировку имени.</summary>
+    </member>
+    <member name="F:System.Reflection.EventAttributes.SpecialName">
+      <summary>Определяет, что событие является специальным, что описано его именем.</summary>
+    </member>
+    <member name="T:System.Reflection.FieldAttributes">
+      <summary>Определяет флаги, описывающие атрибуты поля.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Assembly">
+      <summary>Определяет, что поле доступно во всей сборке.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.FamANDAssem">
+      <summary>Определяет, что поле доступно только для подтипов в данной сборке.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Family">
+      <summary>Определяет, что поле доступно только для типа и подтипов.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.FamORAssem">
+      <summary>Определяет, что поле доступно для подтипов, находящихся где угодно, а также во всей сборке.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.FieldAccessMask">
+      <summary>Определяет уровень доступа для заданного поля.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.HasDefault">
+      <summary>Определяет, что для поля задано значение по умолчанию.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.HasFieldMarshal">
+      <summary>Определяет, что для поля заданы сведения о маршалинге.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.HasFieldRVA">
+      <summary>Определяет, что для поля задан RVA (Relative Virtual Address, относительный виртуальный адрес).RVA определяет местонахождение текста сообщения метода в текущем образе — адрес относительно начала файла образа, в котором оно находится.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.InitOnly">
+      <summary>Указывает, что поле инициализируется и задается только в теле конструктора. </summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Literal">
+      <summary>Определяет, что значение поля является константой (статической или с ранним связыванием), определяемой во время компиляции.Любая попытка задать создает <see cref="T:System.FieldAccessException" />.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.NotSerialized">
+      <summary>Определяет, что если тип является удаленным, поле не должно быть сериализовано.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.PinvokeImpl">
+      <summary>Зарезервировано для использования в будущем.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Private">
+      <summary>Определяет, что поле доступно только для родительского типа.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.PrivateScope">
+      <summary>Определяет, что на поле нельзя ссылаться.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Public">
+      <summary>Определяет, что поле доступно любому члену, для которого эта ограниченная область действия является видимой.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.RTSpecialName">
+      <summary>Определяет, что общеязыковая среда выполнения (внутренние API метаданных) должна проверить кодировку имени.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.SpecialName">
+      <summary>Определяет специальный метод с именем, которое описывает, насколько этот метод является специальным.</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Static">
+      <summary>Определяет, что поле представляет указанный тип или является полем для экземпляра.</summary>
+    </member>
+    <member name="T:System.Reflection.GenericParameterAttributes">
+      <summary>Описывает ограничения параметра универсального типа для универсального типа или метода.</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.Contravariant">
+      <summary>Параметр универсального типа является контрвариантным.Параметр контрвариантного типа может отображаться в сигнатурах методов как параметр типа.</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.Covariant">
+      <summary>Параметр универсального типа является ковариантным.Параметр ковариантного типа может отображаться как результирующий тип метода, тип поля, доступного только для чтения, объявленный базовый тип или реализованный интерфейс.</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.DefaultConstructorConstraint">
+      <summary>Тип может заменить параметр универсального типа только при наличии конструктора, не принимающего параметры.</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.None">
+      <summary>Особые флаги отсутствуют.</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.NotNullableValueTypeConstraint">
+      <summary>Тип может заменить параметр универсального типа только в том случае, если это тип значения и он не может иметь значение null.</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.ReferenceTypeConstraint">
+      <summary>Тип может заменить параметр универсального типа только в том случае, если это ссылочный тип.</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.SpecialConstraintMask">
+      <summary>Выбирает сочетание всех особых флагов ограничений.Это значение является результатом использования логического ИЛИ либо объединения флагов <see cref="F:System.Reflection.GenericParameterAttributes.DefaultConstructorConstraint" />, <see cref="F:System.Reflection.GenericParameterAttributes.ReferenceTypeConstraint" /> и <see cref="F:System.Reflection.GenericParameterAttributes.NotNullableValueTypeConstraint" />.</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.VarianceMask">
+      <summary>Выбирает сочетание всех флагов расхождения.Это значение является результатом использования логического ИЛИ либо объединения флагов <see cref="F:System.Reflection.GenericParameterAttributes.Contravariant" /> и <see cref="F:System.Reflection.GenericParameterAttributes.Covariant" />.</summary>
+    </member>
+    <member name="T:System.Reflection.MethodAttributes">
+      <summary>Задает флаги для атрибутов метода.Эти флаги определены в файле CorHdr.h.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Abstract">
+      <summary>Указывает, что данный класс не обеспечивает реализацию этого метода.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Assembly">
+      <summary>Указывает, что метод доступен для любого класса этой сборки.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.CheckAccessOnOverride">
+      <summary>Указывает, что метод может быть переопределен только в том случае, если он доступен.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.FamANDAssem">
+      <summary>Указывает, что метод доступен для членов этого типа и производных типов, которые находятся только в данной сборке.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Family">
+      <summary>Указывает, что метод доступен только для членов этого класса и его производных классов.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.FamORAssem">
+      <summary>Указывает, что метод доступен для производных классов любой сборки и любого класса этой сборки.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Final">
+      <summary>Указывает, что метод не может быть переопределен.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.HasSecurity">
+      <summary>Показывает, что с данным методом связаны параметры безопасности.Флаг зарезервирован для использования только во время выполнения.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.HideBySig">
+      <summary>Указывает, что метод скрывается на основе оценки имени и сигнатуры; в обратном случае метод скрывается только по имени.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.MemberAccessMask">
+      <summary>Извлекает сведения о доступности.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.NewSlot">
+      <summary>Указывает, что метод всегда получает новую ячейку в таблице vtable.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.PinvokeImpl">
+      <summary>Указывает, что реализация метода перенаправляется через PInvoke (Platform Invocation Services; службы платформенных вызовов).</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Private">
+      <summary>Указывает, что метод доступен только для текущего класса.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.PrivateScope">
+      <summary>Указывает, что невозможно создать ссылку на этот член.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Public">
+      <summary>Указывает, что метод доступен для любого объекта, для которого данный объект находится в ограниченной области действия.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.RequireSecObject">
+      <summary>Указывает, что метод вызывает другой метод, содержащий код защиты.Флаг зарезервирован для использования только во время выполнения.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.ReuseSlot">
+      <summary>Указывает, что метод использует существующую ячейку в таблице vtable.Это поведение установлено по умолчанию.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.RTSpecialName">
+      <summary>Указывает, что кодировка имен проверяется общеязыковой средой выполнения.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.SpecialName">
+      <summary>Указывает, что данный метод является специальным.Особенность метода описывается в его имени.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Static">
+      <summary>Указывает, что метод определяется для типа; в противном случае метод определяется для каждого экземпляра.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.UnmanagedExport">
+      <summary>Указывает, что данный управляемый метод экспортируется преобразователем в неуправляемый программный код.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Virtual">
+      <summary>Указывает, что данный метод является виртуальным.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.VtableLayoutMask">
+      <summary>Извлекает атрибуты vtable.</summary>
+    </member>
+    <member name="T:System.Reflection.MethodImplAttributes">
+      <summary>Задает флаги для атрибутов реализации метода.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.AggressiveInlining">
+      <summary>Указывает, что метод должен быть встроенным, если это возможно.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.CodeTypeMask">
+      <summary>Задает флаги типа кода.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.ForwardRef">
+      <summary>Указывает, что метод не определен.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.IL">
+      <summary>Указывает, что метод реализуется на промежуточном языке MSIL.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.InternalCall">
+      <summary>Указывает внутренний вызов.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.Managed">
+      <summary>Указывает на реализацию данного метода в управляемом коде. </summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.ManagedMask">
+      <summary>Указывает, реализован ли данный метод в управляемом или неуправляемом коде.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.Native">
+      <summary>Задает машинную реализацию метода, присущую данному объекту.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.NoInlining">
+      <summary>Указывает, что метод не может быть встроенным.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.NoOptimization">
+      <summary>Указывает, что метод не оптимизирован JIT-компилятором или службой генерирования машинного кода (см. Ngen.exe), при отладке возможных проблем с генерированием кода.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.OPTIL">
+      <summary>Указывает, что метод реализуется на оптимизированном языке OPTIL.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.PreserveSig">
+      <summary>Указывает, что сигнатура метода должна экспортироваться в том виде, в каком она объявлена.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.Runtime">
+      <summary>Указывает, что реализация метода обеспечивается средой выполнения.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.Synchronized">
+      <summary>Указывает, что должно осуществляться однопотоковое выполнение тела метода.Статические методы (в Visual Basic — Shared) выполняют блокировку по типу, а методы экземпляра — по экземпляру.Для этой цели также можно использовать оператор lock в C# или оператор SyncLock в Visual Basic.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.Unmanaged">
+      <summary>Указывает на реализацию данного метода в неуправляемом коде.</summary>
+    </member>
+    <member name="T:System.Reflection.ParameterAttributes">
+      <summary>Определяет атрибуты, которые могут быть сопоставлены с параметром.Эти атрибуты определены в файле CorHdr.h.</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.HasDefault">
+      <summary>Указывает, что параметр имеет стандартное значение.</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.HasFieldMarshal">
+      <summary>Указывает, что параметр содержит сведения о маршалинге поля.</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.In">
+      <summary>Указывает, что данный параметр является входным параметром.</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.Lcid">
+      <summary>Указывает, что данный параметр является идентификатором языка локализации (lcid).</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.None">
+      <summary>Указывает, что параметр не имеет атрибутов.</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.Optional">
+      <summary>Указывает, что данный параметр не обязателен.</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.Out">
+      <summary>Указывает, что данный параметр является выходным параметром.</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.Retval">
+      <summary>Указывает, что данный параметр является возвращаемым значением.</summary>
+    </member>
+    <member name="T:System.Reflection.PropertyAttributes">
+      <summary>Определяет атрибуты, которые могут быть сопоставлены свойству.Значения этих атрибутов определены в файле CorHdr.h.</summary>
+    </member>
+    <member name="F:System.Reflection.PropertyAttributes.HasDefault">
+      <summary>Указывает, что свойство имеет значение по умолчанию.</summary>
+    </member>
+    <member name="F:System.Reflection.PropertyAttributes.None">
+      <summary>Указывает, что со свойству не сопоставлены атрибуты.</summary>
+    </member>
+    <member name="F:System.Reflection.PropertyAttributes.RTSpecialName">
+      <summary>Указывает, что кодировка имен проверяется внутренними интерфейсами API метаданных.</summary>
+    </member>
+    <member name="F:System.Reflection.PropertyAttributes.SpecialName">
+      <summary>Указывает, что это специальное свойство. Особенности свойства отражены в его имени.</summary>
+    </member>
+    <member name="T:System.Reflection.TypeAttributes">
+      <summary>Задает атрибуты типа.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Abstract">
+      <summary>Указывает, что данный тип является абстрактным.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.AnsiClass">
+      <summary>LPTSTR обрабатывается как ANSI.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.AutoClass">
+      <summary>LPTSTR обрабатывается автоматически.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.AutoLayout">
+      <summary>Указывает, что поля класса автоматически распределяются общеязыковой средой выполнения.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.BeforeFieldInit">
+      <summary>Указывает, что вызов статических методов типа не принуждает систему инициализировать тип.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Class">
+      <summary>Указывает, что данный тип является классом.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.ClassSemanticsMask">
+      <summary>Определяет сведения о семантике класса; текущий класс зависит от контекста (в обратном случае он является гибким).</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.CustomFormatClass">
+      <summary>Тип LPSTR интерпретируется некоторыми средствами, включенными в конкретные реализации, что предоставляет возможность выдать исключение <see cref="T:System.NotSupportedException" />.Не используется в реализации .NET Framework от Microsoft.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.CustomFormatMask">
+      <summary>Используется для извлечения сведений о нестандартном шифровании встроенного взаимодействия.Использование значений этих 2 бит не определено.Не используется в реализации .NET Framework от Microsoft.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.ExplicitLayout">
+      <summary>Указывает, что поля класса распределяются с заданными смещениями.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.HasSecurity">
+      <summary>С данным типом связаны параметры безопасности.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Import">
+      <summary>Указывает, что класс или интерфейс импортирован из другого модуля.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Interface">
+      <summary>Указывает, что данный тип является интерфейсом.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.LayoutMask">
+      <summary>Задает сведения о структуре класса.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedAssembly">
+      <summary>Указывает, что данный класс является вложенным с областью видимости на уровне сборки и доступен только методам в пределах сборки.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedFamANDAssem">
+      <summary>Указывает, что данный класс является вложенным с областью видимости на уровне сборки и семейства и доступен только для методов, область определения которых находится на пересечении семейства класса и сборки.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedFamily">
+      <summary>Указывает, что данный класс является вложенным с областью видимости на уровне семейства и поэтому доступен только методам в пределах его собственного типа и производных типов.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedFamORAssem">
+      <summary>Указывает, что данный класс является вложенным с областью видимости на уровне сборки или семейства и доступен только для методов, область определения которых находится в объединении семейства класса и сборки.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedPrivate">
+      <summary>Указывает, что данный класс является вложенным с закрытой областью видимости.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedPublic">
+      <summary>Указывает, что класс является вложенным с открытой областью видимости.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NotPublic">
+      <summary>Указывает, что данный класс не является открытым.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Public">
+      <summary>Указывает, что данный класс является открытым.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.RTSpecialName">
+      <summary>Кодировка имен должна контролироваться средой выполнения.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Sealed">
+      <summary>Указывает, что класс конкретизирован и не может быть расширен.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.SequentialLayout">
+      <summary>Указывает, что поля класса распределены последовательно в порядке их передачи в метаданные.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Serializable">
+      <summary>Указывает, что класс может быть сериализован.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.SpecialName">
+      <summary>Указывает, что класс является специальным. Особенности класса отражены в его имени.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.StringFormatMask">
+      <summary>Используется для извлечения строковых данных для присущей данному объекту организации встроенного взаимодействия.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.UnicodeClass">
+      <summary>LPTSTR обрабатывается как UNICODE.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.VisibilityMask">
+      <summary>Задает сведения о видимости типа.</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.WindowsRuntime">
+      <summary>Задает тип Среда выполнения Windows.</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.FlowControl">
+      <summary>Описывает, каким образом инструкция меняет поток команд управления.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Branch">
+      <summary>Инструкция перехода.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Break">
+      <summary>Инструкция приостановки.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Call">
+      <summary>Инструкция вызова.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Cond_Branch">
+      <summary>Инструкция условного перехода.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Meta">
+      <summary>Предоставляет сведения о последующих инструкциях.Например, относящаяся к Reflection.Emit.Opcodes инструкция Unaligned имеет FlowControl.Meta и указывает, что следующая инструкция, использующая указатель, может быть не выровненной.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Next">
+      <summary>Обычное следование команд управления.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Return">
+      <summary>Инструкция возврата.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Throw">
+      <summary>Инструкция создания исключения.</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.OpCode">
+      <summary>Описывает инструкцию промежуточного языка (IL).</summary>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.Equals(System.Object)">
+      <summary>Проверяет, идентичен ли указанный объект объекту Opcode.</summary>
+      <returns>true, если <paramref name="obj" /> является экземпляром Opcode и равен этому объекту, в противном случае — false.</returns>
+      <param name="obj">Объект, который требуется сравнить с данным объектом. </param>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.Equals(System.Reflection.Emit.OpCode)">
+      <summary>Определяет равенство текущего экземпляра и указанного объекта <see cref="T:System.Reflection.Emit.OpCode" />.</summary>
+      <returns>Значение true, если значение параметра <paramref name="obj" /> равно значению текущего экземпляра; в противном случае — false.</returns>
+      <param name="obj">
+        <see cref="T:System.Reflection.Emit.OpCode" /> для сравнения с текущим экземпляром.</param>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.FlowControl">
+      <summary>Производительность управления потоком для инструкции промежуточного языка (IL).</summary>
+      <returns>Только для чтения.Тип управления потоком.</returns>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.GetHashCode">
+      <summary>Возвращает созданный для данного Opcode хэш-код.</summary>
+      <returns>Возвращает хэш-код данного экземпляра.</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.Name">
+      <summary>Имя инструкции промежуточного языка (IL).</summary>
+      <returns>Только для чтения.Имя инструкции IL.</returns>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.op_Equality(System.Reflection.Emit.OpCode,System.Reflection.Emit.OpCode)">
+      <summary>Определяет равенство двух структур <see cref="T:System.Reflection.Emit.OpCode" />.</summary>
+      <returns>true, если значения параметров <paramref name="a" /> и <paramref name="b" /> равны; в противном случае — false.</returns>
+      <param name="a">Объект <see cref="T:System.Reflection.Emit.OpCode" />, используемый для сравнения с <paramref name="b" />.</param>
+      <param name="b">Объект <see cref="T:System.Reflection.Emit.OpCode" />, используемый для сравнения с <paramref name="a" />.</param>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.op_Inequality(System.Reflection.Emit.OpCode,System.Reflection.Emit.OpCode)">
+      <summary>Указывает, действительно ли не равны две структуры <see cref="T:System.Reflection.Emit.OpCode" />.</summary>
+      <returns>true, если значения <paramref name="a" /> и <paramref name="b" /> не равны; в противном случае — false.</returns>
+      <param name="a">Объект <see cref="T:System.Reflection.Emit.OpCode" />, используемый для сравнения с <paramref name="b" />.</param>
+      <param name="b">Объект <see cref="T:System.Reflection.Emit.OpCode" />, используемый для сравнения с <paramref name="a" />.</param>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.OpCodeType">
+      <summary>Тип инструкции промежуточного языка (IL).</summary>
+      <returns>Только для чтения.Тип инструкции промежуточного языка (IL).</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.OperandType">
+      <summary>Тип операнда инструкции промежуточного языка (IL).</summary>
+      <returns>Только для чтения.Тип операнда инструкции промежуточного языка.</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.Size">
+      <summary>Размер инструкции промежуточного языка (IL).</summary>
+      <returns>Только для чтения.Размер инструкции IL.</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.StackBehaviourPop">
+      <summary>Как инструкции промежуточного языка (IL) извлекает данные из стека.</summary>
+      <returns>Только для чтения.Способ инструкции IL извлекает данные из стека.</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.StackBehaviourPush">
+      <summary>Как инструкции промежуточного языка (IL) помещает операнд в стек.</summary>
+      <returns>Только для чтения.Способ инструкции IL помещает операнд в стек.</returns>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.ToString">
+      <summary>Возвращает данный Opcode в виде объекта <see cref="T:System.String" />.</summary>
+      <returns>Возвращает объект <see cref="T:System.String" />, содержащий имя данного Opcode.</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.Value">
+      <summary>Возвращает числовое значение инструкции промежуточного языка (IL).</summary>
+      <returns>Только для чтения.Числовое значение инструкции IL.</returns>
+    </member>
+    <member name="T:System.Reflection.Emit.OpCodes">
+      <summary>Содержит поля, предоставляющие инструкции MSIL для выпуска элементами класса <see cref="T:System.Reflection.Emit.ILGenerator" /> (например, <see cref="M:System.Reflection.Emit.ILGenerator.Emit(System.Reflection.Emit.OpCode)" />).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Add">
+      <summary>Складывает два значения и помещает результат в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Add_Ovf">
+      <summary>Складывает два целых числа, выполняет проверку переполнения и помещает результат в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Add_Ovf_Un">
+      <summary>Складывает два целочисленных значения без знака, выполняет проверку переполнения и помещает результат в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.And">
+      <summary>Вычисляет побитовое И двух значений и помещает результат в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Arglist">
+      <summary>Возвращает неуправляемый указатель на список аргументов текущего метода.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Beq">
+      <summary>Передает управление конечной инструкции, если два значения равны.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Beq_S">
+      <summary>Передает управление конечной инструкции (короткая форма), если два значения равны.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bge">
+      <summary>Передает управление конечной инструкции, если первое значение больше второго или равно ему.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bge_S">
+      <summary>Передает управление конечной инструкции (короткая форма), если первое значение больше второго или равно ему.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bge_Un">
+      <summary>Передает управление конечной инструкции, если первое значение больше второго (при сравнении целочисленных значений без знака или неупорядоченных значений с плавающей запятой).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bge_Un_S">
+      <summary>Передает управление конечной инструкции (короткая форма), если первое значение больше второго (при сравнении целочисленных значений без знака или неупорядоченных значений с плавающей запятой).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bgt">
+      <summary>Передает управление конечной инструкции, если первое значение больше второго.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bgt_S">
+      <summary>Передает управление конечной инструкции (короткая форма), если первое значение больше второго.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bgt_Un">
+      <summary>Передает управление конечной инструкции, если первое значение больше второго (при сравнении целочисленных значений без знака или неупорядоченных значений с плавающей запятой).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bgt_Un_S">
+      <summary>Передает управление конечной инструкции (короткая форма), если первое значение больше второго (при сравнении целочисленных значений без знака или неупорядоченных значений с плавающей запятой).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ble">
+      <summary>Передает управление конечной инструкции, если первое значение меньше второго значения или равно ему.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ble_S">
+      <summary>Передает управление конечной инструкции (короткая форма), если первое значение меньше второго или равно ему.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ble_Un">
+      <summary>Передает управление конечной инструкции, если первое значение меньше второго или равно ему (при сравнении целочисленных значений без знака или неупорядоченных значений с плавающей запятой).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ble_Un_S">
+      <summary>Передает управление конечной инструкции (короткая форма), если первое значение меньше второго или равно ему (при сравнении целочисленных значений без знака или неупорядоченных значений с плавающей запятой).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Blt">
+      <summary>Передает управление конечной инструкции, если первое значение меньше второго.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Blt_S">
+      <summary>Передает управление конечной инструкции (короткая форма), если первое значение меньше второго значения.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Blt_Un">
+      <summary>Передает управление конечной инструкции, если первое значение меньше второго (при сравнении целочисленных значений без знака или неупорядоченных значений с плавающей запятой).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Blt_Un_S">
+      <summary>Передает управление конечной инструкции (короткая форма), если первое значение меньше второго (при сравнении целочисленных значений без знака или неупорядоченных значений с плавающей запятой).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bne_Un">
+      <summary>Передает управление конечной инструкции в случае неравенства двух целочисленных значений без знака или двух неупорядоченных значений с плавающей запятой.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bne_Un_S">
+      <summary>Передает управление конечной инструкции (короткая форма) в случае неравенства двух целочисленных значений без знака или двух неупорядоченных значений с плавающей запятой.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Box">
+      <summary>Преобразует тип значения в ссылку на объект (тип O).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Br">
+      <summary>Обеспечивает безусловную передачу управления конечной инструкции.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Br_S">
+      <summary>Обеспечивает безусловную передачу управления конечной инструкции (короткая форма).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Break">
+      <summary>Сообщает инфраструктуре CLI, что необходимо оповестить отладчик о достижении точки останова.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Brfalse">
+      <summary>Передает управление конечной инструкции, если значением <paramref name="value" /> является false, пустая ссылка (Nothing в Visual Basic) или ноль.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Brfalse_S">
+      <summary>Передает управление конечной инструкции, если значением <paramref name="value" /> является false, пустая ссылка или ноль.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Brtrue">
+      <summary>Передает управление конечной инструкции, если значение <paramref name="value" /> равно true, либо отличается от null и от нуля.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Brtrue_S">
+      <summary>Передает управление конечной инструкции (короткая форма), если значение <paramref name="value" /> равно true, либо отличается от null и от нуля.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Call">
+      <summary>Вызывает метод, на который ссылается переданный дескриптор метода.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Calli">
+      <summary>Вызывает метод, заданный в стеке вычислений (как указатель на точку входа), с аргументами, описанными в соглашении о вызовах.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Callvirt">
+      <summary>Вызывает метод объекта с поздней привязкой и помещает возвращаемое значение в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Castclass">
+      <summary>Предпринимает попытку привести объект, передаваемый по ссылке, к указанному классу.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ceq">
+      <summary>Сравнивает два значения.Если они равны, целочисленное значение 1 (int32) помещается в стек вычислений; в противном случае в стек вычислений помещается 0 (int32).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Cgt">
+      <summary>Сравнивает два значения.Если первое значение больше второго, целочисленное значение 1 ((int32) помещается в стек вычислений; в противном случае в стек вычислений помещается 0 (int32).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Cgt_Un">
+      <summary>Сравнивает два значения без знака или два неупорядоченных значения.Если первое значение больше второго, целочисленное значение 1 ((int32) помещается в стек вычислений; в противном случае в стек вычислений помещается 0 (int32).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ckfinite">
+      <summary>Создает исключение <see cref="T:System.ArithmeticException" />, если значение не является конечным числом.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Clt">
+      <summary>Сравнивает два значения.Если первое значение меньше второго, целочисленное значение 1 (int32) помещается в стек вычислений; в противном случае в стек вычислений помещается 0 (int32).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Clt_Un">
+      <summary>Сравнивает два значения без знака или два неупорядоченных значения <paramref name="value1" /> и <paramref name="value2" />.Если значение <paramref name="value1" /> меньше значения <paramref name="value2" />, целочисленное значение 1 (int32) помещается в стек вычислений; в противном случае в стек вычислений помещается 0 (int32).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Constrained">
+      <summary>Ограничивает тип, для которого был вызван виртуальный метод.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_I">
+      <summary>Преобразует верхнее значение в стеке вычислений в тип native int.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_I1">
+      <summary>Преобразует верхнее значение в стеке вычислений в int8, а затем расширяет его до int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_I2">
+      <summary>Преобразует верхнее значение в стеке вычислений в int16, а затем расширяет его до int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_I4">
+      <summary>Преобразует верхнее значение в стеке вычислений в тип int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_I8">
+      <summary>Преобразует верхнее значение в стеке вычислений в тип int64.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I">
+      <summary>Преобразует значение со знаком на вершине стека вычислений в значение native int со знаком и создает исключение <see cref="T:System.OverflowException" /> в случае переполнения.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I_Un">
+      <summary>Преобразует значение без знака на вершине стека вычислений в значение native int со знаком и создает исключение <see cref="T:System.OverflowException" /> в случае переполнения.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I1">
+      <summary>Преобразует значение со знаком на вершине стека вычислений в значение int8 со знаком, расширяет его до int32 и создает исключение <see cref="T:System.OverflowException" /> в случае переполнения.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I1_Un">
+      <summary>Преобразует значение без знака на вершине стека вычислений в значение int8 со знаком, расширяет его до int32 и создает исключение <see cref="T:System.OverflowException" /> в случае переполнения.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I2">
+      <summary>Преобразует значение со знаком на вершине стека вычислений в значение int16 со знаком, расширяет его до int32 и создает исключение <see cref="T:System.OverflowException" /> в случае переполнения.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I2_Un">
+      <summary>Преобразует значение без знака на вершине стека вычислений в значение int16 со знаком, расширяет его до int32 и создает исключение <see cref="T:System.OverflowException" /> в случае переполнения.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I4">
+      <summary>Преобразует значение со знаком на вершине стека вычислений в значение int32 со знаком и создает исключение <see cref="T:System.OverflowException" /> в случае переполнения.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I4_Un">
+      <summary>Преобразует значение без знака на вершине стека вычислений в значение int32 со знаком и создает исключение <see cref="T:System.OverflowException" /> в случае переполнения.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I8">
+      <summary>Преобразует значение со знаком на вершине стека вычислений в значение int64 со знаком и создает исключение <see cref="T:System.OverflowException" /> в случае переполнения.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I8_Un">
+      <summary>Преобразует значение без знака на вершине стека вычислений в значение int64 со знаком и создает исключение <see cref="T:System.OverflowException" /> в случае переполнения.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U">
+      <summary>Преобразует значение со знаком на вершине стека вычислений в unsigned native int и создает исключение <see cref="T:System.OverflowException" /> в случае переполнения.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U_Un">
+      <summary>Преобразует значение без знака на вершине стека вычислений в значение unsigned native int и создает исключение <see cref="T:System.OverflowException" /> в случае переполнения.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U1">
+      <summary>Преобразует значение со знаком на вершине стека вычислений в значение unsigned int8, расширяет его до int32 и создает исключение <see cref="T:System.OverflowException" /> в случае переполнения.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U1_Un">
+      <summary>Преобразует значение без знака на вершине стека вычислений в значение unsigned int8, расширяет его до int32 и создает исключение <see cref="T:System.OverflowException" /> в случае переполнения.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U2">
+      <summary>Преобразует значение со знаком на вершине стека вычислений в значение unsigned int16, расширяет его до int32 и создает исключение <see cref="T:System.OverflowException" /> в случае переполнения.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U2_Un">
+      <summary>Преобразует значение без знака на вершине стека вычислений в значение unsigned int16, расширяет его до int32 и создает исключение <see cref="T:System.OverflowException" /> в случае переполнения.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U4">
+      <summary>Преобразует значение со знаком на вершине стека вычислений в unsigned int32 и создает исключение <see cref="T:System.OverflowException" /> в случае переполнения.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U4_Un">
+      <summary>Преобразует значение без знака на вершине стека вычислений в значение unsigned int32 и создает исключение <see cref="T:System.OverflowException" /> в случае переполнения.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U8">
+      <summary>Преобразует значение со знаком на вершине стека вычислений в unsigned int64 и создает исключение <see cref="T:System.OverflowException" /> в случае переполнения.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U8_Un">
+      <summary>Преобразует значение без знака на вершине стека вычислений в значение unsigned int64 и создает исключение <see cref="T:System.OverflowException" /> в случае переполнения.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_R_Un">
+      <summary>Преобразует целочисленное значение без знака на вершине стека вычислений в float32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_R4">
+      <summary>Преобразует верхнее значение в стеке вычислений в тип float32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_R8">
+      <summary>Преобразует верхнее значение в стеке вычислений в тип float64.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_U">
+      <summary>Преобразует верхнее значение в стеке вычислений в unsigned native int, а затем расширяет его до native int.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_U1">
+      <summary>Преобразует верхнее значение в стеке вычислений в unsigned int8, а затем расширяет его до int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_U2">
+      <summary>Преобразует верхнее значение в стеке вычислений в unsigned int16, а затем расширяет его до int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_U4">
+      <summary>Преобразует верхнее значение в стеке вычислений в unsigned int32, а затем расширяет его до int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_U8">
+      <summary>Преобразует верхнее значение в стеке вычислений в unsigned int64, а затем расширяет его до int64.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Cpblk">
+      <summary>Копирует заданное число байт из исходного адреса в конечный.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Cpobj">
+      <summary>Копирует тип значения по адресу объекта (с типом &amp;, * или native int) и помещает его по адресу конечного объекта (с типом &amp;, * или native int).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Div">
+      <summary>Делит одно значение на другое и помещает результат в стек вычислений как число с плавающей запятой (с типом F) или как частное (с типом int32).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Div_Un">
+      <summary>Делит одно целочисленное значение без знака на другое и помещает результат (int32) в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Dup">
+      <summary>Копирует текущее верхнее значение в стеке вычислений и помещает копию в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Endfilter">
+      <summary>Передает управление из предложения filter исключения обратно в обработчик исключений CLI.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Endfinally">
+      <summary>Передает управление из предложения fault илиfinally блока исключения обратно обработчику исключений CLI.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Initblk">
+      <summary>Инициализирует блок памяти с определенным адресом, присваивая его начальному значению с заданным размером.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Initobj">
+      <summary>Инициализирует каждое поле типа значения с определенным адресом пустой ссылкой или значением 0 соответствующего простого типа.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Isinst">
+      <summary>Проверяет, является ли ссылка на объект (с типом O) экземпляром определенного класса.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Jmp">
+      <summary>Прекращает выполнение текущего метода и переходит к заданному методу.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg">
+      <summary>Загружает аргумент (на который ссылается указанное значение индекса) в стек.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg_0">
+      <summary>Загружает аргумент с индексом 0 в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg_1">
+      <summary>Загружает аргумент с индексом 1 в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg_2">
+      <summary>Загружает аргумент с индексом 2 в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg_3">
+      <summary>Загружает аргумент с индексом 3 в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg_S">
+      <summary>Загружает аргумент (на который ссылается указанное короткое значение индекса) в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarga">
+      <summary>Загружает адрес аргумента в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarga_S">
+      <summary>Загружает адрес аргумента (короткая форма) в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4">
+      <summary>Помещает переданное значение с типом int32 в стек вычислений как int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_0">
+      <summary>Помещает целочисленное значение 0 в стек вычислений как int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_1">
+      <summary>Помещает целочисленное значение 1 в стек вычислений как int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_2">
+      <summary>Помещает целочисленное значение 2 в стек вычислений как int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_3">
+      <summary>Помещает целочисленное значение 3 в стек вычислений как int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_4">
+      <summary>Помещает целочисленное значение 4 в стек вычислений как int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_5">
+      <summary>Помещает целочисленное значение 5 в стек вычислений как int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_6">
+      <summary>Помещает целочисленное значение 6 в стек вычислений как int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_7">
+      <summary>Помещает целочисленное значение 7 в стек вычислений как int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_8">
+      <summary>Помещает целочисленное значение 8 в стек вычислений как int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_M1">
+      <summary>Помещает целочисленное значение -1 в стек вычислений как int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_S">
+      <summary>Помещает переданное значение с типом int8 в стек вычислений как int32 (короткая форма).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I8">
+      <summary>Помещает переданное значение с типом int64 в стек вычислений как int64.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_R4">
+      <summary>Помещает переданное значение с типом float32 в стек вычислений как F (число с плавающей запятой).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_R8">
+      <summary>Помещает переданное значение с типом float64 в стек вычислений как F (число с плавающей запятой).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem">
+      <summary>Загружает элемент с заданным индексом массива на вершину стека вычислений в качестве типа, указанного в инструкции. </summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_I">
+      <summary>Загружает элемент типа native int с заданным индексом массива на вершину стека вычислений как native int.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_I1">
+      <summary>Загружает элемент типа int8 с заданным индексом массива на вершину стека вычислений как int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_I2">
+      <summary>Загружает элемент типа int16 с заданным индексом массива на вершину стека вычислений как int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_I4">
+      <summary>Загружает элемент типа int32 с заданным индексом массива на вершину стека вычислений как int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_I8">
+      <summary>Загружает элемент типа int64 с заданным индексом массива на вершину стека вычислений как int64.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_R4">
+      <summary>Загружает элемент массива с заданным индексом, имеющий тип float32, на вершину стека вычислений как F (число с плавающей запятой).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_R8">
+      <summary>Загружает элемент массива с заданным индексом, имеющий тип float64, на вершину стека вычислений как F (число с плавающей запятой).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_Ref">
+      <summary>Загружает элемент массива с заданным индексом, содержащий ссылку на объект, на вершину стека вычислений как O (ссылка на объект).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_U1">
+      <summary>Загружает элемент типа unsigned int8 с заданным индексом массива на вершину стека вычислений как int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_U2">
+      <summary>Загружает элемент типа unsigned int16 с заданным индексом массива на вершину стека вычислений как int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_U4">
+      <summary>Загружает элемент типа unsigned int32 с заданным индексом массива на вершину стека вычислений как int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelema">
+      <summary>Загружает адрес элемента массива с заданным индексом на вершину стека вычислений как &amp; (управляемый указатель).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldfld">
+      <summary>Выполняет поиск значения поля в объекте, ссылка на который находится в стеке вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldflda">
+      <summary>Ищет адрес поля в объекте, ссылка на который находится в стеке вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldftn">
+      <summary>Помещает в стек вычислений неуправляемый указатель (с типом native int) на машинный код, реализующий заданный метод.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_I">
+      <summary>Выполняет косвенную загрузку значения с типом native int в стек вычислений как native int.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_I1">
+      <summary>Выполняет косвенную загрузку значения с типом int8 в стек вычислений как int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_I2">
+      <summary>Выполняет косвенную загрузку значения с типом int16 в стек вычислений как int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_I4">
+      <summary>Выполняет косвенную загрузку значения с типом int32 в стек вычислений как int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_I8">
+      <summary>Выполняет косвенную загрузку значения с типом int64 в стек вычислений как int64.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_R4">
+      <summary>Выполняет косвенную загрузку значения с типом float32 в стек вычислений как F (число с плавающей запятой).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_R8">
+      <summary>Выполняет косвенную загрузку значения с типом float64 в стек вычислений как F (число с плавающей запятой).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_Ref">
+      <summary>Выполняет косвенную загрузку в стек вычислений ссылки на объект как O (ссылка на объект).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_U1">
+      <summary>Выполняет косвенную загрузку значения с типом unsigned int8 в стек вычислений как int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_U2">
+      <summary>Выполняет косвенную загрузку значения с типом unsigned int16 в стек вычислений как int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_U4">
+      <summary>Выполняет косвенную загрузку значения с типом unsigned int32 в стек вычислений как int32.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldlen">
+      <summary>Помещает в стек вычислений сведения о числе элементов одномерного массива с индексацией от нуля.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc">
+      <summary>Загружает в стек вычислений локальную переменную с указанным индексом.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc_0">
+      <summary>Загружает в стек вычислений локальную переменную с индексом 0.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc_1">
+      <summary>Загружает в стек вычислений локальную переменную с индексом 1.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc_2">
+      <summary>Загружает в стек вычислений локальную переменную с индексом 2.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc_3">
+      <summary>Загружает в стек вычислений локальную переменную с индексом 3.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc_S">
+      <summary>Загружает в стек вычислений локальную переменную с указанным индексом (короткая форма).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloca">
+      <summary>Загружает в стек вычислений адрес локальной переменной с указанным индексом.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloca_S">
+      <summary>Загружает в стек вычислений адрес локальной переменной с указанным индексом (короткая форма).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldnull">
+      <summary>Помещает в стек вычислений пустую ссылку (тип O).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldobj">
+      <summary>Копирует объект с типом значения, размещенный по указанному адресу, на вершину стека вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldsfld">
+      <summary>Помещает в стек вычислений значение статического поля.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldsflda">
+      <summary>Помещает в стек вычислений адрес статического поля.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldstr">
+      <summary>Помещает в стек ссылку на новый объект, представляющий строковой литерал, хранящийся в метаданных.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldtoken">
+      <summary>Преобразует токен метаданных в его представление времени выполнения, а затем помещает в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldvirtftn">
+      <summary>Помещает в стек вычислений неуправляемый указатель (с типом native int) на машинный код, реализующий виртуальный метод, который связан с заданным объектом.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Leave">
+      <summary>Выполняет выход из защищенной области кода с безусловной передачей управления указанной конечной инструкции.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Leave_S">
+      <summary>Выполняет выход из защищенной области кода с безусловной передачей управления указанной конечной инструкции (короткая форма).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Localloc">
+      <summary>Выделяет определенное количество байтов из пула локальной динамической памяти и помещает в стек вычислений адрес (временный указатель с типом *) первого выделенного байта.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Mkrefany">
+      <summary>Помещает в стек вычислений ссылку на экземпляр определенного типа.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Mul">
+      <summary>Умножает два значения и помещает результат в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Mul_Ovf">
+      <summary>Умножает два целочисленных значения, выполняет проверку переполнения и помещает результат в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Mul_Ovf_Un">
+      <summary>Умножает два целочисленных значения без знака, выполняет проверку переполнения и помещает результат в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Neg">
+      <summary>Отвергает значение и помещает результат в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Newarr">
+      <summary>Помещает в стек вычислений ссылку на объект — новый одномерный массив с индексацией от нуля, состоящий из элементов заданного типа.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Newobj">
+      <summary>Создает новый объект или новый экземпляр типа значения и помещает ссылку на объект (с типом O) в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Nop">
+      <summary>Заполняет пространство, если коды операции содержат исправления.Никаких значимых операций не выполняется, хотя может быть пройден цикл обработки.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Not">
+      <summary>Вычисляет побитовое дополнение целочисленного значения, находящегося на вершине стека, и помещает результат в стек с тем же типом.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Or">
+      <summary>Вычисляет побитовое дополнение двух целочисленных значений, находящихся на вершине стека, и помещает результат в стек.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Pop">
+      <summary>Удаляет значение, находящееся на вершине стека.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix1">
+      <summary>Эта инструкция зарезервирована.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix2">
+      <summary>Эта инструкция зарезервирована.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix3">
+      <summary>Эта инструкция зарезервирована.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix4">
+      <summary>Эта инструкция зарезервирована.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix5">
+      <summary>Эта инструкция зарезервирована.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix6">
+      <summary>Эта инструкция зарезервирована.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix7">
+      <summary>Эта инструкция зарезервирована.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefixref">
+      <summary>Эта инструкция зарезервирована.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Readonly">
+      <summary>Указывает, что последующая операция, связанная с адресом массива, не выполняет никаких проверок во время выполнения и возвращает управляемый указатель, изменение которого запрещено.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Refanytype">
+      <summary>Извлекает токен типа, внедренный в ссылку с определенным типом.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Refanyval">
+      <summary>Извлекает адрес (тип &amp;), внедренный в типизированную ссылку.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Rem">
+      <summary>Делит одно значение на другое и помещает остаток в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Rem_Un">
+      <summary>Делит одно значение без знака на другое значение без знака и помещает остаток в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ret">
+      <summary>Выполняет возврат из текущего метода, помещая возвращаемое значение (если имеется) из стека вычислений вызываемого метода в стек вычислений вызывающего метода.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Rethrow">
+      <summary>Возвращает текущее исключение.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Shl">
+      <summary>Смещает целочисленное значение влево (с заполнением нулями) на заданное число бит и помещает результат в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Shr">
+      <summary>Смещает целочисленное значение вправо (с знаковым битом) на заданное число бит и помещает результат в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Shr_Un">
+      <summary>Смещает целочисленное значение без знака вправо (с заполнением нулями) на заданное число бит и помещает результат в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Sizeof">
+      <summary>Помещает в стек вычислений сведения о размере (в байтах) заданного типа значения.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Starg">
+      <summary>Сохраняет значение, находящееся на вершине стека вычислений, в ячейке аргумента с заданным индексом.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Starg_S">
+      <summary>Сохраняет значение, находящееся на вершине стека вычислений, в ячейке аргумента с заданным индексом (короткая форма).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem">
+      <summary>Заменяет элемент массива с заданным индексом на значение в стеке вычислений, тип которого указан в инструкции.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_I">
+      <summary>Заменяет элемент массива с заданным индексом на значение native int, находящееся в стеке вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_I1">
+      <summary>Заменяет элемент массива с заданным индексом на значение int8, находящееся в стеке вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_I2">
+      <summary>Заменяет элемент массива с заданным индексом на значение int16, находящееся в стеке вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_I4">
+      <summary>Заменяет элемент массива с заданным индексом на значение int32, находящееся в стеке вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_I8">
+      <summary>Заменяет элемент массива с заданным индексом на значение int64, находящееся в стеке вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_R4">
+      <summary>Заменяет элемент массива с заданным индексом на значение float32, находящееся в стеке вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_R8">
+      <summary>Заменяет элемент массива с заданным индексом на значение float64, находящееся в стеке вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_Ref">
+      <summary>Заменяет элемент массива с заданным индексом на значение ссылки на объект (тип O), находящееся в стеке вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stfld">
+      <summary>Заменяет значение в поле объекта, по ссылке на объект или указателю, на новое значение.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_I">
+      <summary>Сохраняет значение с типом native int по указанному адресу.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_I1">
+      <summary>Сохраняет значение с типом int8 по указанному адресу.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_I2">
+      <summary>Сохраняет значение с типом int16 по указанному адресу.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_I4">
+      <summary>Сохраняет значение с типом int32 по указанному адресу.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_I8">
+      <summary>Сохраняет значение с типом int64 по указанному адресу.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_R4">
+      <summary>Сохраняет значение с типом float32 по указанному адресу.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_R8">
+      <summary>Сохраняет значение с типом float64 по указанному адресу.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_Ref">
+      <summary>Сохраняет значение ссылки на объект по указанному адресу.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc">
+      <summary>Извлекает верхнее значение в стеке вычислений и сохраняет его в списке локальных переменных с заданным индексом.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc_0">
+      <summary>Извлекает верхнее значение в стеке вычислений и сохраняет его в списке локальных переменных с индексом 0.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc_1">
+      <summary>Извлекает верхнее значение в стеке вычислений и сохраняет его в списке локальных переменных с индексом 1.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc_2">
+      <summary>Извлекает верхнее значение в стеке вычислений и сохраняет его в списке локальных переменных с индексом 2.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc_3">
+      <summary>Извлекает верхнее значение в стеке вычислений и сохраняет его в списке локальных переменных с индексом 3.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc_S">
+      <summary>Извлекает верхнее значение в стеке вычислений и сохраняет его в списке локальных переменных с индексом <paramref name="index" /> (короткая форма).</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stobj">
+      <summary>Копирует значение с заданным типом из стека вычислений в указанный адрес памяти.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stsfld">
+      <summary>Заменяет значение статического поля на значение из стека вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Sub">
+      <summary>Вычитает одно значение из другого и помещает результат в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Sub_Ovf">
+      <summary>Вычитает одно целочисленное значение из другого, выполняет проверку переполнения и помещает результат в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Sub_Ovf_Un">
+      <summary>Вычитает одно целочисленное значение без знака из другого, выполняет проверку переполнения и помещает результат в стек вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Switch">
+      <summary>Реализует таблицу переходов.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Tailcall">
+      <summary>Выполняет инструкцию вызова метода (префиксом которой является), предварительно удаляя кадр стека текущего метода.</summary>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCodes.TakesSingleByteArgument(System.Reflection.Emit.OpCode)">
+      <summary>Возвращает true или false, в зависимости от того, принимает ли заданный код операции однобайтовый аргумент.</summary>
+      <returns>True или false.</returns>
+      <param name="inst">Экземпляр объекта Opcode. </param>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Throw">
+      <summary>Создает объект исключения, находящийся в стеке вычислений.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Unaligned">
+      <summary>Указывает, что адрес на вершине стека, возможно, не выровнен по естественному размеру следующей непосредственно за ним инструкции ldind, stind, ldfld, stfld, ldobj, stobj, initblk или cpblk.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Unbox">
+      <summary>Преобразует тип значения из упакованной формы в распакованную.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Unbox_Any">
+      <summary>Преобразует тип, указанный в инструкции, из упакованной формы в распакованную. </summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Volatile">
+      <summary>Указывает, что адрес на вершине стека вычислений, возможно, является изменяемым и результаты чтения данной области невозможно кэшировать либо невозможно запретить множественные сохранения в эту область.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Xor">
+      <summary>Вычисляет побитовое исключающее ИЛИ двух верхних значений в стеке вычислений и помещает результат обратно в стек.</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.OpCodeType">
+      <summary>Описывает типы инструкций MSIL.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodeType.Macro">
+      <summary>Инструкции MSIL, используемые как синонимы других инструкций MSIL.Например, ldarg.0 представляет инструкцию ldarg с аргументом, равным 0.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodeType.Nternal">
+      <summary>Описывает зарезервированную инструкцию MSIL.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodeType.Objmodel">
+      <summary>Описывает инструкцию MSIL, которая применяется к объектам.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodeType.Prefix">
+      <summary>Описывает префиксную инструкцию, которая меняет следующую инструкцию.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodeType.Primitive">
+      <summary>Описывает встроенную инструкцию.</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.OperandType">
+      <summary>Описывает тип операнда инструкции MSIL.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineBrTarget">
+      <summary>Операнд является 32-битовым целочисленным значением, задающим конечный адрес ветвления.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineField">
+      <summary>Операнд является 32-битовым маркером метаданных.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineI">
+      <summary>Операнд является 32-битовым целочисленным значением.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineI8">
+      <summary>Операнд является 64-битовым целочисленным значением.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineMethod">
+      <summary>Операнд является 32-битовым маркером метаданных.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineNone">
+      <summary>Операнд отсутствует.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineR">
+      <summary>Операнд является 64-битовым числом с плавающей запятой стандарта IEEE.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineSig">
+      <summary>Операнд является 32-битовым маркером сигнатуры метаданных.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineString">
+      <summary>Операнд является 32-битовым маркером строки метаданных.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineSwitch">
+      <summary>Операнд является 32-битовым целочисленным аргументом инструкции выбора вариантов.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineTok">
+      <summary>Операнд является маркером элементов FieldRef, MethodRef или TypeRef.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineType">
+      <summary>Операнд является 32-битовым маркером метаданных.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineVar">
+      <summary>Операнд является 16-битовым целочисленным значением, содержащим порядковый номер локальной переменной или аргумента.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.ShortInlineBrTarget">
+      <summary>Операнд является 8-битовым целочисленным значением, задающим конечный адрес ветвления.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.ShortInlineI">
+      <summary>Операнд является 8-битовым целочисленным значением.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.ShortInlineR">
+      <summary>Операнд является 32-битовым числом с плавающей запятой стандарта IEEE.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.ShortInlineVar">
+      <summary>Операнд является 8-битовым целочисленным значением, содержащим порядковый номер локальной переменной или аргумента.</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.PackingSize">
+      <summary>Задает один или два факторы, определяющие выравнивание полей в памяти при маршалинга типа.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size1">
+      <summary>Упаковочный размер равен 1 байту.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size128">
+      <summary>Упаковочный размер равен 128 байтам.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size16">
+      <summary>Упаковочный размер равен 16 байтам.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size2">
+      <summary>Упаковочный размер равен 2 байтам.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size32">
+      <summary>Упаковочный размер равен 32 байтам.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size4">
+      <summary>Упаковочный размер равен 4 байтам.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size64">
+      <summary>Упаковочный размер равен 64 байтам.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size8">
+      <summary>Упаковочный размер равен 8 байтам.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Unspecified">
+      <summary>Упаковочный размер не задан.</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.StackBehaviour">
+      <summary>Описывает, как значения помещаются в стек или выводятся из стека.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pop0">
+      <summary>Значения из стека не выводятся.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pop1">
+      <summary>Выводит из стека одно значение.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pop1_pop1">
+      <summary>Выводит 1 значение из стека для первого операнда и 1 значение из стека для второго операнда.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi">
+      <summary>Выводит из стека 32-битовое целое число.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_pop1">
+      <summary>Выводит 32-битовое целое число из стека для первого операнда и значение из стека для второго операнда.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_popi">
+      <summary>Выводит 32-битовое целое число из стека для первого операнда и 32-битовое целое число из стека для второго операнда.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_popi_popi">
+      <summary>Выводит 32-битовое целое число из стека для первого операнда, 32-битовое целое число из стека для второго операнда и 32-битовое целое число из стека для третьего операнда.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_popi8">
+      <summary>Выводит 32-битовое целое число из стека для первого операнда и 64-битовое целое число из стека для второго операнда.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_popr4">
+      <summary>Выводит 32-битовое целое число из стека для первого операнда и 32-битовое число с плавающей запятой для второго операнда.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_popr8">
+      <summary>Выводит 32-битовое целое число из стека для первого операнда и 64-битовое число с плавающей запятой для второго операнда.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref">
+      <summary>Выводит из стека ссылку.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_pop1">
+      <summary>Выводит ссылку из стека для первого операнда и значение из стека для второго операнда.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi">
+      <summary>Выводит ссылку из стека для первого операнда и 32-битовое целое число из стека для второго операнда.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_pop1">
+      <summary>Выводит ссылку из стека для первого операнда, значение из стека для второго операнда и 32-битовое целое число из стека для третьего операнда.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_popi">
+      <summary>Выводит ссылку из стека для первого операнда, значение из стека для второго операнда и значение из стека для третьего операнда.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_popi8">
+      <summary>Выводит ссылку из стека для первого операнда, значение из стека для второго операнда и 64-битовое целое число из стека для третьего операнда.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_popr4">
+      <summary>Выводит ссылку из стека для первого операнда, значение из стека для второго операнда и 32-битовое целое число из стека для третьего операнда.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_popr8">
+      <summary>Выводит ссылку из стека для первого операнда, значение из стека для второго операнда и 64-битовое число с плавающей запятой из стека для третьего операнда.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_popref">
+      <summary>Выводит ссылку из стека для первого операнда, значение из стека для второго операнда и ссылку из стека для третьего операнда.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Push0">
+      <summary>Значения в стек не помещаются.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Push1">
+      <summary>Помещает в стек одно значение.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Push1_push1">
+      <summary>Помещает 1 значение в стек для первого операнда и 1 значение в стек для второго операнда.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pushi">
+      <summary>Помещает в стек 32-битовое целое число.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pushi8">
+      <summary>Помещает в стек 64-битовое целое число.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pushr4">
+      <summary>Помещает в стек 32-битовое число с плавающей запятой.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pushr8">
+      <summary>Помещает в стек 64-битовое число с плавающей запятой.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pushref">
+      <summary>Помещает в стек ссылку.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Varpop">
+      <summary>Выводит из стека переменную.</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Varpush">
+      <summary>Помещает в стек переменную.</summary>
+    </member>
+  </members>
+</doc>

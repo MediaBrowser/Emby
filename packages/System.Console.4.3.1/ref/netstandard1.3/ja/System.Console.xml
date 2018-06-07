@@ -1,0 +1,499 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Console</name>
+  </assembly>
+  <members>
+    <member name="T:System.Console">
+      <summary>コンソール アプリケーションの標準入力ストリーム、標準出力ストリーム、および標準エラー ストリームを表します。このクラスは継承できません。この種類の .NET Framework ソース コードを参照して、次を参照してください。、 Reference Sourceです。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Console.BackgroundColor">
+      <summary>コンソールの背景色を取得または設定します。</summary>
+      <returns>コンソールの背景色、つまり、各文字の背後に表示される色を指定する値。既定値は黒です。</returns>
+      <exception cref="T:System.ArgumentException">設定操作で指定された色は、<see cref="T:System.ConsoleColor" /> の有効なメンバーではありません。</exception>
+      <exception cref="T:System.Security.SecurityException">ユーザーに、この操作を実行するためのアクセス許可がありません。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Window="SafeTopLevelWindows" />
+      </PermissionSet>
+    </member>
+    <member name="E:System.Console.CancelKeyPress">
+      <summary>
+        <see cref="F:System.ConsoleModifiers.Control" /> の修飾子キー (Ctrl) と <see cref="F:System.ConsoleKey.C" /> コンソール キー (c) または中断キーが同時にプッシュされた場合 (Ctrl + C または Ctrl + Break) に発生します。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Console.Error">
+      <summary>標準エラー出力ストリームを取得します。</summary>
+      <returns>標準エラー出力ストリームを表す <see cref="T:System.IO.TextWriter" /> オブジェクト。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Console.ForegroundColor">
+      <summary>コンソールの前景色を取得または設定します。</summary>
+      <returns>コンソールの前景色、つまり、表示される各文字の色を指定する <see cref="T:System.ConsoleColor" />。既定値は灰色です。</returns>
+      <exception cref="T:System.ArgumentException">設定操作で指定された色は、<see cref="T:System.ConsoleColor" /> の有効なメンバーではありません。</exception>
+      <exception cref="T:System.Security.SecurityException">ユーザーに、この操作を実行するためのアクセス許可がありません。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Window="SafeTopLevelWindows" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Console.In">
+      <summary>標準入力ストリームを取得します。</summary>
+      <returns>標準入力ストリームを表す <see cref="T:System.IO.TextReader" /> オブジェクト。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.OpenStandardError">
+      <summary>標準エラー ストリームを取得します。</summary>
+      <returns>標準エラー ストリーム。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.OpenStandardInput">
+      <summary>標準入力ストリームを取得します。</summary>
+      <returns>標準入力ストリーム。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.OpenStandardOutput">
+      <summary>標準出力ストリームを取得します。</summary>
+      <returns>標準出力ストリーム。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Console.Out">
+      <summary>標準出力ストリームを取得します。</summary>
+      <returns>標準出力ストリームを表す <see cref="T:System.IO.TextWriter" /> オブジェクト。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Read">
+      <summary>標準入力ストリームから次の文字を読み取ります。</summary>
+      <returns>入力ストリームの次の文字。または次の文字がない場合は -1。</returns>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.ReadLine">
+      <summary>標準入力ストリームから次の 1 行分の文字を読み取ります。</summary>
+      <returns>入力ストリームの次の行。または次の行がない場合は null。</returns>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.OutOfMemoryException">返される文字列用のバッファーを割り当てるためにはメモリが不足しています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">次の行の文字数が、<see cref="F:System.Int32.MaxValue" /> を超えています。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.ResetColor">
+      <summary>コンソールの前景色および背景色を既定値に設定します。</summary>
+      <exception cref="T:System.Security.SecurityException">ユーザーに、この操作を実行するためのアクセス許可がありません。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Window="SafeTopLevelWindows" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Console.SetError(System.IO.TextWriter)">
+      <summary>指定した <see cref="T:System.IO.TextWriter" /> オブジェクトに <see cref="P:System.Console.Error" /> プロパティを設定します。</summary>
+      <param name="newError">新しい標準エラー出力であるストリーム。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="newError" /> は null です。</exception>
+      <exception cref="T:System.Security.SecurityException">呼び出し元に、必要なアクセス許可がありません。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Console.SetIn(System.IO.TextReader)">
+      <summary>指定した <see cref="T:System.IO.TextReader" /> オブジェクトに <see cref="P:System.Console.In" /> プロパティを設定します。</summary>
+      <param name="newIn">新しい標準入力であるストリーム。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="newIn" /> は null です。</exception>
+      <exception cref="T:System.Security.SecurityException">呼び出し元に、必要なアクセス許可がありません。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Console.SetOut(System.IO.TextWriter)">
+      <summary>指定した <see cref="T:System.IO.TextWriter" /> オブジェクトに <see cref="P:System.Console.Out" /> プロパティを設定します。</summary>
+      <param name="newOut">新しい標準出力であるストリーム。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="newOut" /> は null です。</exception>
+      <exception cref="T:System.Security.SecurityException">呼び出し元に、必要なアクセス許可がありません。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Console.Write(System.Boolean)">
+      <summary>指定した Boolean 値のテキスト形式を標準出力ストリームに書き込みます。</summary>
+      <param name="value">書き込む値。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Char)">
+      <summary>指定した Unicode 文字値を標準出力ストリームに書き込みます。</summary>
+      <param name="value">書き込む値。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Char[])">
+      <summary>指定した Unicode 文字配列を標準出力ストリームに書き込みます。</summary>
+      <param name="buffer">Unicode 文字配列。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Char[],System.Int32,System.Int32)">
+      <summary>指定した Unicode 文字の部分配列を標準出力ストリームに書き込みます。</summary>
+      <param name="buffer">Unicode 文字の配列。</param>
+      <param name="index">
+        <paramref name="buffer" /> 内の開始位置。</param>
+      <param name="count">書き込む文字数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が 0 未満です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> に <paramref name="count" /> を足した数が、この <paramref name="buffer" /> 内にない位置を示しています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Decimal)">
+      <summary>指定した <see cref="T:System.Decimal" /> 値のテキスト形式を標準出力ストリームに書き込みます。</summary>
+      <param name="value">書き込む値。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Double)">
+      <summary>指定した倍精度浮動小数点値のテキスト形式を標準出力ストリームに書き込みます。</summary>
+      <param name="value">書き込む値。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Int32)">
+      <summary>指定した 32 ビット符号付き整数値のテキスト形式を標準出力ストリームに書き込みます。</summary>
+      <param name="value">書き込む値。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Int64)">
+      <summary>指定した 64 ビット符号付き整数値のテキスト形式を標準出力ストリームに書き込みます。</summary>
+      <param name="value">書き込む値。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Object)">
+      <summary>指定したオブジェクトのテキスト形式を標準出力ストリームに書き込みます。</summary>
+      <param name="value">書き込む値または null。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Single)">
+      <summary>指定した単精度浮動小数点値のテキスト形式を標準出力ストリームに書き込みます。</summary>
+      <param name="value">書き込む値。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String)">
+      <summary>指定した文字列値を標準出力ストリームに書き込みます。</summary>
+      <param name="value">書き込む値。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String,System.Object)">
+      <summary>指定した書式情報を使用して、指定したオブジェクトのテキスト表現を標準出力ストリームに書き込みます。</summary>
+      <param name="format">複合書式指定文字列 (「解説」を参照)。</param>
+      <param name="arg0">
+        <paramref name="format" /> を使用して書き込むオブジェクト。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> は null です。</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> の書式指定が無効です。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String,System.Object,System.Object)">
+      <summary>指定した書式情報を使用して、指定したオブジェクトのテキスト表現を標準出力ストリームに書き込みます。</summary>
+      <param name="format">複合書式指定文字列 (「解説」を参照)。</param>
+      <param name="arg0">
+        <paramref name="format" /> を使用して書き込む最初のオブジェクト。</param>
+      <param name="arg1">
+        <paramref name="format" /> を使用して書き込む 2 番目のオブジェクト。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> は null です。</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> の書式指定が無効です。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String,System.Object,System.Object,System.Object)">
+      <summary>指定した書式情報を使用して、指定したオブジェクトのテキスト表現を標準出力ストリームに書き込みます。</summary>
+      <param name="format">複合書式指定文字列 (「解説」を参照)。</param>
+      <param name="arg0">
+        <paramref name="format" /> を使用して書き込む最初のオブジェクト。</param>
+      <param name="arg1">
+        <paramref name="format" /> を使用して書き込む 2 番目のオブジェクト。</param>
+      <param name="arg2">
+        <paramref name="format" /> を使用して書き込む 3 番目のオブジェクト。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> は null です。</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> の書式指定が無効です。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String,System.Object[])">
+      <summary>指定した書式情報を使用して、指定したオブジェクト配列のテキスト表現を標準出力ストリームに書き込みます。</summary>
+      <param name="format">複合書式指定文字列 (「解説」を参照)。</param>
+      <param name="arg">
+        <paramref name="format" /> を使用して書き込むオブジェクトの配列。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> または <paramref name="arg" /> が null です。</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> の書式指定が無効です。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.UInt32)">
+      <summary>指定した 32 ビット符号なし整数値のテキスト形式を標準出力ストリームに書き込みます。</summary>
+      <param name="value">書き込む値。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.UInt64)">
+      <summary>指定した 64 ビット符号なし整数値のテキスト形式を標準出力ストリームに書き込みます。</summary>
+      <param name="value">書き込む値。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine">
+      <summary>現在の行終端記号を標準出力ストリームに書き込みます。</summary>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Boolean)">
+      <summary>指定した Boolean 値のテキスト形式を標準出力ストリームに書き込み、続けて現在の行終端記号を書き込みます。</summary>
+      <param name="value">書き込む値。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Char)">
+      <summary>指定した Unicode 文字を標準出力ストリームに書き込み、続けて現在の行終端記号を書き込みます。</summary>
+      <param name="value">書き込む値。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Char[])">
+      <summary>指定した Unicode 文字配列を標準出力ストリームに書き込み、続けて現在の行終端記号を書き込みます。</summary>
+      <param name="buffer">Unicode 文字配列。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Char[],System.Int32,System.Int32)">
+      <summary>指定した Unicode 文字の部分配列を標準出力ストリームに書き込み、続けて現在の行終端記号を書き込みます。</summary>
+      <param name="buffer">Unicode 文字の配列。</param>
+      <param name="index">
+        <paramref name="buffer" /> 内の開始位置。</param>
+      <param name="count">書き込む文字数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が 0 未満です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> に <paramref name="count" /> を足した数が、この <paramref name="buffer" /> 内にない位置を示しています。</exception>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Decimal)">
+      <summary>指定した <see cref="T:System.Decimal" /> 値のテキスト形式を標準出力ストリームに書き込み、続けて現在の行終端記号を書き込みます。</summary>
+      <param name="value">書き込む値。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Double)">
+      <summary>指定した倍精度浮動小数点値のテキスト形式を標準出力ストリームに書き込み、続けて現在の行終端記号を書き込みます。</summary>
+      <param name="value">書き込む値。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Int32)">
+      <summary>指定した 32 ビット符号付き整数値のテキスト形式を標準出力ストリームに書き込み、続けて現在の行終端記号を書き込みます。</summary>
+      <param name="value">書き込む値。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Int64)">
+      <summary>指定した 64 ビット符号付き整数値のテキスト形式を標準出力ストリームに書き込み、続けて現在の行終端記号を書き込みます。</summary>
+      <param name="value">書き込む値。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Object)">
+      <summary>指定したオブジェクトのテキスト形式を標準出力ストリームに書き込み、続けて現在の行終端記号を書き込みます。</summary>
+      <param name="value">書き込む値。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Single)">
+      <summary>指定した単精度浮動小数点値のテキスト形式を標準出力ストリームに書き込み、続けて現在の行終端記号を書き込みます。</summary>
+      <param name="value">書き込む値。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String)">
+      <summary>指定した文字列値を標準出力ストリームに書き込み、続けて現在の行終端記号を書き込みます。</summary>
+      <param name="value">書き込む値。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String,System.Object)">
+      <summary>指定した書式情報を使用して、指定したオブジェクトのテキスト表現を標準出力ストリームに書き込み、続けて現在の行終端記号を書き込みます。</summary>
+      <param name="format">複合書式指定文字列 (「解説」を参照)。</param>
+      <param name="arg0">
+        <paramref name="format" /> を使用して書き込むオブジェクト。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> は null です。</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> の書式指定が無効です。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String,System.Object,System.Object)">
+      <summary>指定した書式情報を使用して、指定したオブジェクトのテキスト表現を標準出力ストリームに書き込み、続けて現在の行終端記号を書き込みます。</summary>
+      <param name="format">複合書式指定文字列 (「解説」を参照)。</param>
+      <param name="arg0">
+        <paramref name="format" /> を使用して書き込む最初のオブジェクト。</param>
+      <param name="arg1">
+        <paramref name="format" /> を使用して書き込む 2 番目のオブジェクト。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> は null です。</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> の書式指定が無効です。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String,System.Object,System.Object,System.Object)">
+      <summary>指定した書式情報を使用して、指定したオブジェクトのテキスト表現を標準出力ストリームに書き込み、続けて現在の行終端記号を書き込みます。</summary>
+      <param name="format">複合書式指定文字列 (「解説」を参照)。</param>
+      <param name="arg0">
+        <paramref name="format" /> を使用して書き込む最初のオブジェクト。</param>
+      <param name="arg1">
+        <paramref name="format" /> を使用して書き込む 2 番目のオブジェクト。</param>
+      <param name="arg2">
+        <paramref name="format" /> を使用して書き込む 3 番目のオブジェクト。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> は null です。</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> の書式指定が無効です。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String,System.Object[])">
+      <summary>指定した書式情報を使用して、指定したオブジェクト配列のテキスト表現を標準出力ストリームに書き込み、続けて現在の行終端記号を書き込みます。</summary>
+      <param name="format">複合書式指定文字列 (「解説」を参照)。</param>
+      <param name="arg">
+        <paramref name="format" /> を使用して書き込むオブジェクトの配列。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> または <paramref name="arg" /> が null です。</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> の書式指定が無効です。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.UInt32)">
+      <summary>指定した 32 ビット符号なし整数値のテキスト形式を標準出力ストリームに書き込み、続けて現在の行終端記号を書き込みます。</summary>
+      <param name="value">書き込む値。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.UInt64)">
+      <summary>指定した 64 ビット符号なし整数値のテキスト形式を標準出力ストリームに書き込み、続けて現在の行終端記号を書き込みます。</summary>
+      <param name="value">書き込む値。</param>
+      <exception cref="T:System.IO.IOException">I/O エラーが発生しました。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.ConsoleCancelEventArgs">
+      <summary>
+        <see cref="E:System.Console.CancelKeyPress" /> イベントにデータを提供します。このクラスは継承できません。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.ConsoleCancelEventArgs.Cancel">
+      <summary>
+        <see cref="F:System.ConsoleModifiers.Control" /> 修飾子キーと <see cref="F:System.ConsoleKey.C" /> コンソール キー (Ctrl + C) または Ctrl + Break キーを押した場合に現在のプロセスが終了するかどうかを示す値を取得または設定します。現在のプロセスを終了する既定値は false です。</summary>
+      <returns>イベント ハンドラーの終了時に現在のプロセスを再開する場合は、true。現在のプロセスを終了する場合は、false。既定値は false です。現在のプロセスは、イベント ハンドラーが返されると終了します。true の場合、現在のプロセスが継続されます。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.ConsoleCancelEventArgs.SpecialKey">
+      <summary>現在のプロセスを中断した修飾子キーとコンソール キーの組み合わせを取得します。</summary>
+      <returns>現在のプロセスを中断するキーの組み合わせを指定する列挙値の 1 つ。既定値はありません。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.ConsoleCancelEventHandler">
+      <summary>
+        <see cref="T:System.Console" /> の <see cref="E:System.Console.CancelKeyPress" /> イベントを処理するメソッドを表します。</summary>
+      <param name="sender">イベントのソース。</param>
+      <param name="e">イベント データを格納している <see cref="T:System.ConsoleCancelEventArgs" /> オブジェクト。 </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.ConsoleColor">
+      <summary>コンソールの前景色と背景色を定義する定数を指定します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.ConsoleColor.Black">
+      <summary>黒。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Blue">
+      <summary>青。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Cyan">
+      <summary>シアン (青緑)。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkBlue">
+      <summary>濃い青。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkCyan">
+      <summary>濃いシアン (濃い青緑)。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkGray">
+      <summary>濃い灰色。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkGreen">
+      <summary>濃い緑。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkMagenta">
+      <summary>濃いマゼンタ (濃い赤紫)。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkRed">
+      <summary>濃い赤。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkYellow">
+      <summary>濃い黄色 (黄土色)。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Gray">
+      <summary>灰色。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Green">
+      <summary>緑。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Magenta">
+      <summary>マゼンタ (赤紫)。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Red">
+      <summary>赤。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.White">
+      <summary>白。</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Yellow">
+      <summary>黄色。</summary>
+    </member>
+    <member name="T:System.ConsoleSpecialKey">
+      <summary>現在のプロセスを中断できる修飾子キーとコンソール キーの組み合わせを指定します。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.ConsoleSpecialKey.ControlBreak">
+      <summary>
+        <see cref="F:System.ConsoleModifiers.Control" /> 修飾子キーと Break コンソール キー。</summary>
+    </member>
+    <member name="F:System.ConsoleSpecialKey.ControlC">
+      <summary>
+        <see cref="F:System.ConsoleModifiers.Control" /> 修飾子キーと <see cref="F:System.ConsoleKey.C" /> コンソール キー。</summary>
+    </member>
+  </members>
+</doc>

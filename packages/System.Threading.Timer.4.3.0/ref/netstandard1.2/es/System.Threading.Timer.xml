@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Threading.Timer</name>
+  </assembly>
+  <members>
+    <member name="T:System.Threading.Timer">
+      <summary>Proporciona un mecanismo para ejecutar métodos en intervalos especificados.Esta clase no puede heredarse.Para examinar el código fuente de .NET Framework para este tipo, visite la página de Reference Source.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Timer.#ctor(System.Threading.TimerCallback,System.Object,System.Int32,System.Int32)">
+      <summary>Inicializa una nueva instancia de la clase Timer utilizando un entero de 32 bits con signo para especificar los intervalos de tiempo.</summary>
+      <param name="callback">Delegado de <see cref="T:System.Threading.TimerCallback" /> que representa un método que se debe ejecutar. </param>
+      <param name="state">Objeto que contiene información que debe usar el método de devolución de llamada, o null. </param>
+      <param name="dueTime">Período de tiempo de retraso, en milisegundos, antes de que se invoque a <paramref name="callback" />.Especifique <see cref="F:System.Threading.Timeout.Infinite" /> para evitar que se inicie el temporizador.Especifique cero (0) para iniciar inmediatamente el temporizador.</param>
+      <param name="period">Intervalo de tiempo, en milisegundos, entre las distintas invocaciones de <paramref name="callback" />.Especifique <see cref="F:System.Threading.Timeout.Infinite" /> para deshabilitar la señalización periódica.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter is negative and is not equal to <see cref="F:System.Threading.Timeout.Infinite" />. </exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="callback" /> parameter is null. </exception>
+    </member>
+    <member name="M:System.Threading.Timer.#ctor(System.Threading.TimerCallback,System.Object,System.TimeSpan,System.TimeSpan)">
+      <summary>Inicializa una nueva instancia de la clase Timer, utilizando valores de <see cref="T:System.TimeSpan" /> para medir los intervalos de tiempo.</summary>
+      <param name="callback">Delegado que representa un método que debe ejecutarse. </param>
+      <param name="state">Objeto que contiene información que debe usar el método de devolución de llamada, o null. </param>
+      <param name="dueTime">Cantidad de tiempo de espera antes de que el parámetro <paramref name="callback" /> invoque a sus métodos.Especifique menos un (-1) milisegundo para evitar que se inicie el temporizador.Especifique cero (0) para iniciar inmediatamente el temporizador.</param>
+      <param name="period">Intervalo de tiempo entre las distintas invocaciones de los métodos a los que hace referencia <paramref name="callback" />.Especifique menos un (-1) milisegundo para deshabilitar la señalización periódica.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The number of milliseconds in the value of <paramref name="dueTime" /> or <paramref name="period" /> is negative and not equal to <see cref="F:System.Threading.Timeout.Infinite" />, or is greater than <see cref="F:System.Int32.MaxValue" />. </exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="callback" /> parameter is null. </exception>
+    </member>
+    <member name="M:System.Threading.Timer.Change(System.Int32,System.Int32)">
+      <summary>Cambia el tiempo de inicio y el intervalo entre las distintas invocaciones de método para un temporizador, utilizando enteros de 32 bits con signo para medir los intervalos de tiempo.</summary>
+      <returns>true si el temporizador se actualizó correctamente; en caso contrario, false.</returns>
+      <param name="dueTime">Período de tiempo de espera, en milisegundos, antes de que se invoque al método de devolución de llamada que se especificó en el momento de la construcción de <see cref="T:System.Threading.Timer" />.Especifique <see cref="F:System.Threading.Timeout.Infinite" /> para evitar que el temporizador se reinicie.Especifique cero (0) para reiniciar inmediatamente el temporizador.</param>
+      <param name="period">Período de tiempo entre invocaciones del método de llamada especificado en el momento de la construcción de <see cref="T:System.Threading.Timer" />, en milisegundos.Especifique <see cref="F:System.Threading.Timeout.Infinite" /> para deshabilitar la señalización periódica.</param>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.Timer" /> has already been disposed. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter is negative and is not equal to <see cref="F:System.Threading.Timeout.Infinite" />. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.Timer.Change(System.TimeSpan,System.TimeSpan)">
+      <summary>Cambia el tiempo de inicio y el intervalo entre las distintas invocaciones de método para un temporizador, utilizando los valores de <see cref="T:System.TimeSpan" /> para medir los intervalos de tiempo.</summary>
+      <returns>true si el temporizador se actualizó correctamente; en caso contrario, false.</returns>
+      <param name="dueTime">
+        <see cref="T:System.TimeSpan" /> que representa la cantidad de tiempo de retraso antes de que se invoque al método de devolución de llamada que se especificó cuando se creó <see cref="T:System.Threading.Timer" />.Especifique menos un (-1) milisegundo para evitar que se reinicie el temporizador.Especifique cero (0) para reiniciar inmediatamente el temporizador.</param>
+      <param name="period">Período de tiempo entre invocaciones del método de devolución de llamada que se especificó al crear <see cref="T:System.Threading.Timer" />.Especifique menos un (-1) milisegundo para deshabilitar la señalización periódica.</param>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.Timer" /> has already been disposed. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter, in milliseconds, is less than -1. </exception>
+      <exception cref="T:System.NotSupportedException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter, in milliseconds, is greater than 4294967294. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.Timer.Dispose">
+      <summary>Libera todos los recursos que usa la instancia de <see cref="T:System.Threading.Timer" /> actual.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.TimerCallback">
+      <summary>Representa el método que controla las llamadas de un <see cref="T:System.Threading.Timer" />.</summary>
+      <param name="state">Objeto que contiene información específica de la aplicación relativa al método invocado por este delegado, o null. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+  </members>
+</doc>

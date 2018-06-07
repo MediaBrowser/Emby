@@ -1,0 +1,1833 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Threading</name>
+  </assembly>
+  <members>
+    <member name="T:System.Threading.AbandonedMutexException">
+      <summary>Exception levée lorsqu'un thread acquiert un objet <see cref="T:System.Threading.Mutex" /> qu'un autre thread a abandonné en se terminant sans le libérer.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.AbandonedMutexException" /> avec les valeurs par défaut.</summary>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.Int32,System.Threading.WaitHandle)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.AbandonedMutexException" /> avec un index spécifié pour le mutex abandonné, le cas échéant, et un objet <see cref="T:System.Threading.Mutex" /> qui représente le mutex.</summary>
+      <param name="location">Index du mutex abandonné dans le tableau des handles d'attente si l'exception est levée pour la méthode <see cref="Overload:System.Threading.WaitHandle.WaitAny" />, ou -1 si l'exception est levée pour les méthodes <see cref="Overload:System.Threading.WaitHandle.WaitOne" /> ou <see cref="Overload:System.Threading.WaitHandle.WaitAll" />.</param>
+      <param name="handle">Objet <see cref="T:System.Threading.Mutex" /> qui représente le mutex abandonné.</param>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.String)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.AbandonedMutexException" /> avec un message d'erreur spécifié.</summary>
+      <param name="message">Message d'erreur qui indique la raison de l'exception.</param>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.String,System.Exception)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.AbandonedMutexException" /> avec un message d'erreur et une exception interne spécifiés. </summary>
+      <param name="message">Message d'erreur qui indique la raison de l'exception.</param>
+      <param name="inner">Exception qui constitue la cause de l'exception actuelle.Si le paramètre <paramref name="inner" /> n'est pas null, l'exception en cours est levée dans un bloc catch qui gère l'exception interne.</param>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.String,System.Exception,System.Int32,System.Threading.WaitHandle)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.AbandonedMutexException" /> avec un message d'erreur spécifié, l'exception interne, l'index pour le mutex abandonné, le cas échéant, et un objet <see cref="T:System.Threading.Mutex" /> qui représente le mutex.</summary>
+      <param name="message">Message d'erreur qui indique la raison de l'exception.</param>
+      <param name="inner">Exception qui constitue la cause de l'exception actuelle.Si le paramètre <paramref name="inner" /> n'est pas null, l'exception en cours est levée dans un bloc catch qui gère l'exception interne.</param>
+      <param name="location">Index du mutex abandonné dans le tableau des handles d'attente si l'exception est levée pour la méthode <see cref="Overload:System.Threading.WaitHandle.WaitAny" />, ou -1 si l'exception est levée pour les méthodes <see cref="Overload:System.Threading.WaitHandle.WaitOne" /> ou <see cref="Overload:System.Threading.WaitHandle.WaitAll" />.</param>
+      <param name="handle">Objet <see cref="T:System.Threading.Mutex" /> qui représente le mutex abandonné.</param>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.String,System.Int32,System.Threading.WaitHandle)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.AbandonedMutexException" /> avec un message d'erreur spécifié, l'index du mutex abandonné, le cas échéant, et le mutex abandonné. </summary>
+      <param name="message">Message d'erreur qui indique la raison de l'exception.</param>
+      <param name="location">Index du mutex abandonné dans le tableau des handles d'attente si l'exception est levée pour la méthode <see cref="Overload:System.Threading.WaitHandle.WaitAny" />, ou -1 si l'exception est levée pour les méthodes <see cref="Overload:System.Threading.WaitHandle.WaitOne" /> ou <see cref="Overload:System.Threading.WaitHandle.WaitAll" />.</param>
+      <param name="handle">Objet <see cref="T:System.Threading.Mutex" /> qui représente le mutex abandonné.</param>
+    </member>
+    <member name="P:System.Threading.AbandonedMutexException.Mutex">
+      <summary>Obtient le mutex abandonné qui a provoqué l'exception, s'il est connu.</summary>
+      <returns>Objet <see cref="T:System.Threading.Mutex" /> qui représente le mutex abandonné ou null si les mutex abandonnés n'ont pas pu être identifiés.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Threading.AbandonedMutexException.MutexIndex">
+      <summary>Obtient l'index du mutex abandonné qui a provoqué l'exception, s'il est connu.</summary>
+      <returns>Index, dans le tableau de handles d'attente passés à la méthode <see cref="Overload:System.Threading.WaitHandle.WaitAny" />, de l'objet <see cref="T:System.Threading.Mutex" /> qui représente le mutex abandonné ou -1 si l'index du mutex abandonné n'a pas pu être déterminé.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.AsyncLocal`1">
+      <summary>Représente les données ambiantes qui sont locales à un flux de contrôle asynchrone donné, par exemple une méthode asynchrone. </summary>
+      <typeparam name="T">Type des données ambiantes. </typeparam>
+    </member>
+    <member name="M:System.Threading.AsyncLocal`1.#ctor">
+      <summary>Instancie une instance de <see cref="T:System.Threading.AsyncLocal`1" /> qui ne reçoit pas de notifications de modification. </summary>
+    </member>
+    <member name="M:System.Threading.AsyncLocal`1.#ctor(System.Action{System.Threading.AsyncLocalValueChangedArgs{`0}})">
+      <summary>Instancie une instance locale de <see cref="T:System.Threading.AsyncLocal`1" /> qui ne reçoit pas de notifications de modification. </summary>
+      <param name="valueChangedHandler">Le délégué est appelé à chaque modification de la valeur actuelle sur n'importe quel thread. </param>
+    </member>
+    <member name="P:System.Threading.AsyncLocal`1.Value">
+      <summary>Obtient ou définit la valeur des données ambiantes. </summary>
+      <returns>Valeur des données ambiantes. </returns>
+    </member>
+    <member name="T:System.Threading.AsyncLocalValueChangedArgs`1">
+      <summary>Classe qui fournit les informations de modification des données aux instances de <see cref="T:System.Threading.AsyncLocal`1" /> qui s'inscrivent pour les notifications de modification. </summary>
+      <typeparam name="T">Type des données. </typeparam>
+    </member>
+    <member name="P:System.Threading.AsyncLocalValueChangedArgs`1.CurrentValue">
+      <summary>Obtient la valeur actuelle des données. </summary>
+      <returns>Valeur actuelle des données. </returns>
+    </member>
+    <member name="P:System.Threading.AsyncLocalValueChangedArgs`1.PreviousValue">
+      <summary>Obtient la valeur précédente des données.</summary>
+      <returns>Valeur précédente des données. </returns>
+    </member>
+    <member name="P:System.Threading.AsyncLocalValueChangedArgs`1.ThreadContextChanged">
+      <summary>Retourne une valeur qui indique si la valeur est modifiée en raison d'un changement du contexte d'exécution. </summary>
+      <returns>true si la valeur est modifiée en raison d'un changement du contexte d'exécution ; sinon, false. </returns>
+    </member>
+    <member name="T:System.Threading.AutoResetEvent">
+      <summary>Avertit un thread en attente qu'un événement s'est produit.Cette classe ne peut pas être héritée.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.AutoResetEvent.#ctor(System.Boolean)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.AutoResetEvent" /> avec une valeur booléenne indiquant si l'état initial doit être défini à "signalé".</summary>
+      <param name="initialState">true pour définir l'état initial à "signalé" ; false pour le définir à "non signalé". </param>
+    </member>
+    <member name="T:System.Threading.Barrier">
+      <summary>Permet à plusieurs tâches de travailler en parallèle de manière coopérative sur un algorithme via plusieurs phases.</summary>
+    </member>
+    <member name="M:System.Threading.Barrier.#ctor(System.Int32)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.Barrier" />.</summary>
+      <param name="participantCount">Nombre de threads participants.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="participantCount" /> est inférieur à 0 ou supérieur à 32,767.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.#ctor(System.Int32,System.Action{System.Threading.Barrier})">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.Barrier" />.</summary>
+      <param name="participantCount">Nombre de threads participants.</param>
+      <param name="postPhaseAction">
+        <see cref="T:System.Action`1" /> à exécuter après chaque phase. null (nothing en Visual Basic) peut être passé pour indiquer qu'aucune action n'est effectuée.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="participantCount" /> est inférieur à 0 ou supérieur à 32,767.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.AddParticipant">
+      <summary>Signale à <see cref="T:System.Threading.Barrier" /> qu'il y aura un participant supplémentaire.</summary>
+      <returns>Numéro de la phase du cloisonnement à laquelle les nouveaux participants participeront en premier.</returns>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+      <exception cref="T:System.InvalidOperationException">L'ajout d'un participant provoquerait l'augmentation du nombre de participants du cloisonnement au-delà de 32 767.ouLa méthode a été appelée à partir d'une action post-phase.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.AddParticipants(System.Int32)">
+      <summary>Signale à <see cref="T:System.Threading.Barrier" /> qu'il y aura des participants supplémentaires.</summary>
+      <returns>Numéro de la phase du cloisonnement à laquelle les nouveaux participants participeront en premier.</returns>
+      <param name="participantCount">Nombre de participants supplémentaires à ajouter au cloisonnement.</param>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="participantCount" /> est inférieur à 0.ouL'ajout de participants (<paramref name="participantCount" />) provoquerait l'augmentation du nombre de participants du cloisonnement au-delà de 32 767.</exception>
+      <exception cref="T:System.InvalidOperationException">La méthode a été appelée à partir d'une action post-phase.</exception>
+    </member>
+    <member name="P:System.Threading.Barrier.CurrentPhaseNumber">
+      <summary>Obtient le numéro de la phase actuelle du cloisonnement.</summary>
+      <returns>Retourne le numéro de la phase actuelle du cloisonnement.</returns>
+    </member>
+    <member name="M:System.Threading.Barrier.Dispose">
+      <summary>Libère toutes les ressources utilisées par l'instance actuelle de la classe <see cref="T:System.Threading.Barrier" />.</summary>
+      <exception cref="T:System.InvalidOperationException">La méthode a été appelée à partir d'une action post-phase.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.Dispose(System.Boolean)">
+      <summary>Libère les ressources non managées utilisées par <see cref="T:System.Threading.Barrier" /> et éventuellement les ressources managées.</summary>
+      <param name="disposing">true pour libérer les ressources managées et non managées ; false pour libérer uniquement les ressources non managées.</param>
+    </member>
+    <member name="P:System.Threading.Barrier.ParticipantCount">
+      <summary>Obtient le nombre total de participants au cloisonnement.</summary>
+      <returns>Retourne le nombre total de participants au cloisonnement.</returns>
+    </member>
+    <member name="P:System.Threading.Barrier.ParticipantsRemaining">
+      <summary>Obtient le nombre de participants au cloisonnement qui n'ont pas encore été signalés dans la phase actuelle.</summary>
+      <returns>Retourne le nombre de participants au cloisonnement qui n'ont pas encore été signalés dans la phase actuelle.</returns>
+    </member>
+    <member name="M:System.Threading.Barrier.RemoveParticipant">
+      <summary>Signale à <see cref="T:System.Threading.Barrier" /> qu'il y aura un participant en moins.</summary>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+      <exception cref="T:System.InvalidOperationException">La barrière a déjà 0 participant.ouLa méthode a été appelée à partir d'une action post-phase.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.RemoveParticipants(System.Int32)">
+      <summary>Signale à <see cref="T:System.Threading.Barrier" /> qu'il y aura moins de participants.</summary>
+      <param name="participantCount">Nombre de participants supplémentaires à supprimer du cloisonnement.</param>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="participantCount" /> est inférieur à 0.</exception>
+      <exception cref="T:System.InvalidOperationException">La barrière a déjà 0 participant.ouLa méthode a été appelée à partir d'une action post-phase. oule nombre de participant actuel est inférieur au participantCount spécifié</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Le nombre total de participants est inférieur au<paramref name=" participantCount" /> spécifié</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait">
+      <summary>Signale qu'un participant a atteint le cloisonnement et qu'il attend que tous les autres participants atteignent également le cloisonnement.</summary>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+      <exception cref="T:System.InvalidOperationException">La méthode a été appelée à partir d'une action post-phase, le cloisonnement comporte actuellement 0 participants, ou il est signalé par un nombre de threads plus important que celui enregistré en tant que participants.</exception>
+      <exception cref="T:System.Threading.BarrierPostPhaseException">Si une exception est levée par l'action de post-phase d'un cloisonnement après que tous les threads participants aient appelé SignalAndWait, l'exception sera incluse dans un wrapper dans une BarrierPostPhaseException et levée pour tous les threads participants.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.Int32)">
+      <summary>Signale qu'un participant a atteint le cloisonnement et qu'il attend que tous les autres participants atteignent également le cloisonnement, à l'aide d'un entier signé 32 bits pour mesurer le délai d'attente.</summary>
+      <returns>si tous les participants ont atteint le cloisonnement dans le délai spécifié ; sinon false.</returns>
+      <param name="millisecondsTimeout">Nombre de millisecondes à attendre, ou <see cref="F:System.Threading.Timeout.Infinite" />(-1) pour un délai d'attente infini.</param>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> est un nombre négatif autre que -1, qui représente un délai d'attente infini.</exception>
+      <exception cref="T:System.InvalidOperationException">La méthode a été appelée à partir d'une action post-phase, le cloisonnement comporte actuellement 0 participants, ou il est signalé par un nombre de threads plus important que celui enregistré en tant que participants.</exception>
+      <exception cref="T:System.Threading.BarrierPostPhaseException">Si une exception est levée par l'action de post-phase d'un cloisonnement après que tous les threads participants aient appelé SignalAndWait, l'exception sera incluse dans un wrapper dans une BarrierPostPhaseException et levée pour tous les threads participants.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.Int32,System.Threading.CancellationToken)">
+      <summary>Signale qu'un participant a atteint le cloisonnement et qu'il attend que tous les autres participants atteignent également le cloisonnement, à l'aide d'un entier signé 32 bits pour mesurer le délai d'attente, tout en observant un jeton d'annulation.</summary>
+      <returns>si tous les participants ont atteint le cloisonnement dans le délai spécifié ; sinon false.</returns>
+      <param name="millisecondsTimeout">Nombre de millisecondes à attendre, ou <see cref="F:System.Threading.Timeout.Infinite" />(-1) pour un délai d'attente infini.</param>
+      <param name="cancellationToken">
+        <see cref="T:System.Threading.CancellationToken" /> à observer.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> a été annulé.</exception>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> est un nombre négatif autre que -1, qui représente un délai d'attente infini.</exception>
+      <exception cref="T:System.InvalidOperationException">La méthode a été appelée à partir d'une action post-phase, le cloisonnement comporte actuellement 0 participants, ou il est signalé par un nombre de threads plus important que celui enregistré en tant que participants.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.Threading.CancellationToken)">
+      <summary>Signale qu'un participant a atteint le cloisonnement et qu'il attend que tous les autres participants atteignent également le cloisonnement, tout en observant un jeton d'annulation.</summary>
+      <param name="cancellationToken">
+        <see cref="T:System.Threading.CancellationToken" /> à observer.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> a été annulé.</exception>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+      <exception cref="T:System.InvalidOperationException">La méthode a été appelée à partir d'une action post-phase, le cloisonnement comporte actuellement 0 participants, ou il est signalé par un nombre de threads plus important que celui enregistré en tant que participants.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.TimeSpan)">
+      <summary>Signale qu'un participant a atteint le cloisonnement et qu'il attend que tous les autres participants atteignent également le cloisonnement, à l'aide d'un objet <see cref="T:System.TimeSpan" /> qui mesure l'intervalle de temps.</summary>
+      <returns>true si tous les autres participants ont atteint le cloisonnement ; sinon, false.</returns>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" /> qui représente le nombre de millièmes de secondes à attendre ou <see cref="T:System.TimeSpan" /> qui représente - 1 millième de seconde, pour attendre indéfiniment.</param>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> est un nombre négatif autre que -1 milliseconde, qui représente un délai d'attente infini, ou sa valeur est supérieure à 32 767.</exception>
+      <exception cref="T:System.InvalidOperationException">La méthode a été appelée à partir d'une action post-phase, le cloisonnement comporte actuellement 0 participants, ou il est signalé par un nombre de threads plus important que celui enregistré en tant que participants.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>Signale qu'un participant a atteint le cloisonnement et qu'il attend que tous les autres participants atteignent également le cloisonnement, à l'aide d'un objet <see cref="T:System.TimeSpan" /> qui mesure l'intervalle de temps, tout en observant un jeton d'annulation.</summary>
+      <returns>true si tous les autres participants ont atteint le cloisonnement ; sinon, false.</returns>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" /> qui représente le nombre de millièmes de secondes à attendre ou <see cref="T:System.TimeSpan" /> qui représente - 1 millième de seconde, pour attendre indéfiniment.</param>
+      <param name="cancellationToken">
+        <see cref="T:System.Threading.CancellationToken" /> à observer.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> a été annulé.</exception>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> est un nombre négatif autre que -1 milliseconde, qui représente un délai d'attente infini.</exception>
+      <exception cref="T:System.InvalidOperationException">La méthode a été appelée à partir d'une action post-phase, le cloisonnement comporte actuellement 0 participants, ou il est signalé par un nombre de threads plus important que celui enregistré en tant que participants.</exception>
+    </member>
+    <member name="T:System.Threading.BarrierPostPhaseException">
+      <summary>L'exception levée lorsque l'action post-phase d'un <see cref="T:System.Threading.Barrier" /> échoue.</summary>
+    </member>
+    <member name="M:System.Threading.BarrierPostPhaseException.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.BarrierPostPhaseException" /> avec un message système qui décrit l'erreur.</summary>
+    </member>
+    <member name="M:System.Threading.BarrierPostPhaseException.#ctor(System.Exception)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.BarrierPostPhaseException" /> avec l'exception interne spécifiée.</summary>
+      <param name="innerException">Exception qui constitue la cause de l'exception actuelle.</param>
+    </member>
+    <member name="M:System.Threading.BarrierPostPhaseException.#ctor(System.String)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.BarrierPostPhaseException" /> avec un message spécifié décrivant l'erreur.</summary>
+      <param name="message">Message qui décrit l'exception.L'appelant de ce constructeur doit vérifier que cette chaîne a été localisée pour la culture du système en cours.</param>
+    </member>
+    <member name="M:System.Threading.BarrierPostPhaseException.#ctor(System.String,System.Exception)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.BarrierPostPhaseException" /> avec un message d'erreur spécifié et une référence à l'exception interne ayant provoqué cette exception.</summary>
+      <param name="message">Message qui décrit l'exception.L'appelant de ce constructeur doit vérifier que cette chaîne a été localisée pour la culture du système en cours.</param>
+      <param name="innerException">Exception qui constitue la cause de l'exception actuelle.Si le paramètre <paramref name="innerException" /> n'est pas null, l'exception en cours est levée dans un bloc catch qui gère l'exception interne.</param>
+    </member>
+    <member name="T:System.Threading.ContextCallback">
+      <summary>Représente une méthode à appeler dans un nouveau contexte.  </summary>
+      <param name="state">Objet contenant les informations que la méthode de rappel doit utiliser à chacune de ses exécutions.</param>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.CountdownEvent">
+      <summary>Représente une primitive de synchronisation qui est signalée lorsque son décompte atteint zéro.</summary>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.#ctor(System.Int32)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.CountdownEvent" /> à l'aide du décompte spécifié.</summary>
+      <param name="initialCount">Nombre de signaux initialement requis pour définir <see cref="T:System.Threading.CountdownEvent" />.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="initialCount" /> est inférieur à 0.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.AddCount">
+      <summary>Incrémente de un le décompte actuel de <see cref="T:System.Threading.CountdownEvent" />.</summary>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+      <exception cref="T:System.InvalidOperationException">L'instance actuelle est déjà définie.ou<see cref="P:System.Threading.CountdownEvent.CurrentCount" /> est supérieur ou égal à <see cref="F:System.Int32.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.AddCount(System.Int32)">
+      <summary>Incrémente d'une valeur spécifiée le décompte actuel de <see cref="T:System.Threading.CountdownEvent" />.</summary>
+      <param name="signalCount">Valeur d'incrément de <see cref="P:System.Threading.CountdownEvent.CurrentCount" />.</param>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="signalCount" /> est inférieur ou égal à 0.</exception>
+      <exception cref="T:System.InvalidOperationException">L'instance actuelle est déjà définie.ou<see cref="P:System.Threading.CountdownEvent.CurrentCount" /> est égal à ou supérieur à <see cref="F:System.Int32.MaxValue" /> une fois le nombre été incrémenté par <paramref name="signalCount." /></exception>
+    </member>
+    <member name="P:System.Threading.CountdownEvent.CurrentCount">
+      <summary>Obtient le nombre de signaux restants requis pour définir l'événement.</summary>
+      <returns> Nombre de signaux restants requis pour définir l'événement.</returns>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Dispose">
+      <summary>Libère toutes les ressources utilisées par l'instance actuelle de la classe <see cref="T:System.Threading.CountdownEvent" />.</summary>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Dispose(System.Boolean)">
+      <summary>Libère les ressources non managées utilisées par <see cref="T:System.Threading.CountdownEvent" /> et éventuellement les ressources managées.</summary>
+      <param name="disposing">true pour libérer les ressources managées et non managées ; false pour libérer uniquement les ressources non managées.</param>
+    </member>
+    <member name="P:System.Threading.CountdownEvent.InitialCount">
+      <summary>Obtient le nombre de signaux initialement requis pour définir l'événement.</summary>
+      <returns> Nombre de signaux initialement requis pour définir l'événement.</returns>
+    </member>
+    <member name="P:System.Threading.CountdownEvent.IsSet">
+      <summary>Détermine si l'événement est défini.</summary>
+      <returns>true si l'événement est défini ; sinon, false.</returns>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Reset">
+      <summary>Réinitialise <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> avec la valeur <see cref="P:System.Threading.CountdownEvent.InitialCount" />.</summary>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Reset(System.Int32)">
+      <summary>Définit la propriété <see cref="P:System.Threading.CountdownEvent.InitialCount" /> spécifiée sur la valeur indiquée.</summary>
+      <param name="count">Nombre de signaux requis pour définir <see cref="T:System.Threading.CountdownEvent" />.</param>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> est inférieur à 0.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Signal">
+      <summary>Enregistre un signal avec le <see cref="T:System.Threading.CountdownEvent" />, en décrémentant la valeur de <see cref="P:System.Threading.CountdownEvent.CurrentCount" />.</summary>
+      <returns>true si le décompte a atteint zéro en raison du signal et que l'événement a été défini ; sinon, false.</returns>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+      <exception cref="T:System.InvalidOperationException">L'instance actuelle est déjà définie.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Signal(System.Int32)">
+      <summary>Inscrit plusieurs signaux avec <see cref="T:System.Threading.CountdownEvent" />, en décrémentant la valeur de <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> selon la valeur spécifiée.</summary>
+      <returns>true si le décompte a atteint zéro en raison des signaux et que l'événement a été défini ; sinon, false.</returns>
+      <param name="signalCount">Nombre de signaux à inscrire.</param>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="signalCount" /> est inférieur à 1.</exception>
+      <exception cref="T:System.InvalidOperationException">L'instance actuelle est déjà définie. - ou - Ou <paramref name="signalCount" /> est supérieur à <see cref="P:System.Threading.CountdownEvent.CurrentCount" />.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.TryAddCount">
+      <summary>Essaie d'incrémenter <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> par un.</summary>
+      <returns>true si l'incrémentation a réussi ; sinon, false.Si <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> est déjà à zéro, cette méthode retourne la valeur false.</returns>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> est égal à <see cref="F:System.Int32.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.TryAddCount(System.Int32)">
+      <summary>Essaie d'incrémenter <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> par une valeur spécifiée.</summary>
+      <returns>true si l'incrémentation a réussi ; sinon, false.Si <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> est déjà à zéro, la valeur false est retournée.</returns>
+      <param name="signalCount">Valeur d'incrément de <see cref="P:System.Threading.CountdownEvent.CurrentCount" />.</param>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="signalCount" /> est inférieur ou égal à 0.</exception>
+      <exception cref="T:System.InvalidOperationException">L'instance actuelle est déjà définie.ou<see cref="P:System.Threading.CountdownEvent.CurrentCount" /> + <paramref name="signalCount" /> est supérieur ou égal à  <see cref="F:System.Int32.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait">
+      <summary>Bloque le thread actuel jusqu'à ce que <see cref="T:System.Threading.CountdownEvent" /> soit défini.</summary>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.Int32)">
+      <summary>Bloque le thread actuel jusqu'à ce que le <see cref="T:System.Threading.CountdownEvent" /> soit défini, à l'aide d'un entier signé 32 bits permettant de mesurer le délai d'attente.</summary>
+      <returns>true si <see cref="T:System.Threading.CountdownEvent" /> a été défini ; sinon, false.</returns>
+      <param name="millisecondsTimeout">Nombre de millisecondes à attendre, ou <see cref="F:System.Threading.Timeout.Infinite" />(-1) pour un délai d'attente infini.</param>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> est un nombre négatif autre que -1, qui représente un délai d'attente infini.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.Int32,System.Threading.CancellationToken)">
+      <summary>Bloque le thread actuel jusqu'à ce que <see cref="T:System.Threading.CountdownEvent" /> soit défini, à l'aide d'un entier signé 32 bits permettant de mesurer le délai d'attente, tout en observant un <see cref="T:System.Threading.CancellationToken" />.</summary>
+      <returns>true si <see cref="T:System.Threading.CountdownEvent" /> a été défini ; sinon, false.</returns>
+      <param name="millisecondsTimeout">Nombre de millisecondes à attendre, ou <see cref="F:System.Threading.Timeout.Infinite" />(-1) pour un délai d'attente infini.</param>
+      <param name="cancellationToken">
+        <see cref="T:System.Threading.CancellationToken" /> à observer.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> a été annulé.</exception>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée. - ou - le <see cref="T:System.Threading.CancellationTokenSource" /> qui a créé <paramref name="cancellationToken" /> a déjà été supprimé.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> est un nombre négatif autre que -1, qui représente un délai d'attente infini.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.Threading.CancellationToken)">
+      <summary>Bloque le thread actuel jusqu'à ce que <see cref="T:System.Threading.CountdownEvent" /> soit défini, tout en observant un <see cref="T:System.Threading.CancellationToken" />.</summary>
+      <param name="cancellationToken">
+        <see cref="T:System.Threading.CancellationToken" /> à observer.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> a été annulé.</exception>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée. - ou - le <see cref="T:System.Threading.CancellationTokenSource" /> qui a créé <paramref name="cancellationToken" /> a déjà été supprimé.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.TimeSpan)">
+      <summary>Bloque le thread actuel jusqu'à ce que le <see cref="T:System.Threading.CountdownEvent" /> soit défini, à l'aide d'un <see cref="T:System.TimeSpan" /> permettant de mesurer le délai d'attente.</summary>
+      <returns>true si <see cref="T:System.Threading.CountdownEvent" /> a été défini ; sinon, false.</returns>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" /> qui représente le nombre de millièmes de secondes à attendre ou <see cref="T:System.TimeSpan" /> qui représente - 1 millième de seconde, pour attendre indéfiniment.</param>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> est un nombre négatif autre que -1 millisecondes, qui représente un délai d'expiration infini - ou - le délai d'attente est supérieur à <see cref="F:System.Int32.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>Bloque le thread actuel jusqu'à ce que le <see cref="T:System.Threading.CountdownEvent" /> soit défini, à l'aide d'un <see cref="T:System.TimeSpan" /> permettant de mesurer le délai d'attente, tout en observant un <see cref="T:System.Threading.CancellationToken" />.</summary>
+      <returns>true si <see cref="T:System.Threading.CountdownEvent" /> a été défini ; sinon, false.</returns>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" /> qui représente le nombre de millièmes de secondes à attendre ou <see cref="T:System.TimeSpan" /> qui représente - 1 millième de seconde, pour attendre indéfiniment.</param>
+      <param name="cancellationToken">
+        <see cref="T:System.Threading.CancellationToken" /> à observer.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> a été annulé.</exception>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée. - ou - le <see cref="T:System.Threading.CancellationTokenSource" /> qui a créé <paramref name="cancellationToken" /> a déjà été supprimé.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> est un nombre négatif autre que -1 millisecondes, qui représente un délai d'expiration infini - ou - le délai d'attente est supérieur à <see cref="F:System.Int32.MaxValue" />.</exception>
+    </member>
+    <member name="P:System.Threading.CountdownEvent.WaitHandle">
+      <summary>Obtient un <see cref="T:System.Threading.WaitHandle" /> qui est utilisé pour attendre l'événement à définir.</summary>
+      <returns>
+        <see cref="T:System.Threading.WaitHandle" /> qui est utilisé pour attendre l'événement à définir.</returns>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+    </member>
+    <member name="T:System.Threading.EventResetMode">
+      <summary>Indique si un <see cref="T:System.Threading.EventWaitHandle" /> est réinitialisé automatiquement ou manuellement après la réception d'un signal.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Threading.EventResetMode.AutoReset">
+      <summary>Une fois signalé, le <see cref="T:System.Threading.EventWaitHandle" /> se réinitialise automatiquement après avoir libéré un seul thread.Si aucun thread n'attend, le <see cref="T:System.Threading.EventWaitHandle" /> conserve l'état signalé jusqu'à ce qu'un thread se bloque et se réinitialise après l'avoir libéré.</summary>
+    </member>
+    <member name="F:System.Threading.EventResetMode.ManualReset">
+      <summary>Lorsqu'il est signalé, le <see cref="T:System.Threading.EventWaitHandle" /> libère tous les threads en attente et conserve l'état signalé jusqu'à sa réinitialisation manuelle.</summary>
+    </member>
+    <member name="T:System.Threading.EventWaitHandle">
+      <summary>Représente un événement de synchronisation de threads.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.#ctor(System.Boolean,System.Threading.EventResetMode)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.EventWaitHandle" />, en spécifiant si le handle d'attente est signalé initialement et s'il se réinitialise automatiquement ou manuellement.</summary>
+      <param name="initialState">true pour définir l'état initial comme étant signalé ; false pour le définir comme étant non signalé.</param>
+      <param name="mode">L'une des valeurs <see cref="T:System.Threading.EventResetMode" /> qui déterminent si l'événement se réinitialise automatiquement ou manuellement.</param>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.#ctor(System.Boolean,System.Threading.EventResetMode,System.String)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.EventWaitHandle" />, en spécifiant si le handle d'attente est signalé initialement s'il a été créé à la suite de cet appel, s'il se réinitialise automatiquement ou manuellement, ainsi que le nom d'un événement de synchronisation du système.</summary>
+      <param name="initialState">true pour définir l'état initial comme signalé si l'événement nommé est créé en conséquence de cet appel ; false pour le définir comme non signalé.</param>
+      <param name="mode">L'une des valeurs <see cref="T:System.Threading.EventResetMode" /> qui déterminent si l'événement se réinitialise automatiquement ou manuellement.</param>
+      <param name="name">Nom d'un événement de synchronisation à l'échelle du système.</param>
+      <exception cref="T:System.IO.IOException">Une erreur Win32 s'est produite.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">L'événement nommé existe et possède la sécurité du contrôle d'accès, mais l'utilisateur ne possède pas <see cref="F:System.Security.AccessControl.EventWaitHandleRights.FullControl" />.</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">L'événement nommé ne peut pas être créé, peut-être parce qu'un handle d'attente d'un type différent possède le même nom.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> dépasse 260 caractères.</exception>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.#ctor(System.Boolean,System.Threading.EventResetMode,System.String,System.Boolean@)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.EventWaitHandle" />, en spécifiant si le handle d'attente est signalé initialement s'il a été créé à la suite de cet appel, s'il se réinitialise automatiquement ou manuellement, ainsi que le nom d'un événement de synchronisation du système et une variable booléenne dont la valeur après l'appel indique si l'événement système nommé a été créé.</summary>
+      <param name="initialState">true pour définir l'état initial comme signalé si l'événement nommé est créé en conséquence de cet appel ; false pour le définir comme non signalé.</param>
+      <param name="mode">L'une des valeurs <see cref="T:System.Threading.EventResetMode" /> qui déterminent si l'événement se réinitialise automatiquement ou manuellement.</param>
+      <param name="name">Nom d'un événement de synchronisation à l'échelle du système.</param>
+      <param name="createdNew">Cette méthode retourne true si un événement local a été créé (en d'autres termes, si <paramref name="name" /> est null ou une chaîne vide) ou si l'événement système nommé spécifié a été créé ; false si l'événement système nommé spécifié existait déjà.Ce paramètre est passé sans être initialisé.</param>
+      <exception cref="T:System.IO.IOException">Une erreur Win32 s'est produite.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">L'événement nommé existe et possède la sécurité du contrôle d'accès, mais l'utilisateur ne possède pas <see cref="F:System.Security.AccessControl.EventWaitHandleRights.FullControl" />.</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">L'événement nommé ne peut pas être créé, peut-être parce qu'un handle d'attente d'un type différent possède le même nom.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> dépasse 260 caractères.</exception>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.OpenExisting(System.String)">
+      <summary>Ouvre l'événement de synchronisation nommé spécifié s'il existe déjà.</summary>
+      <returns>Objet qui représente l'événement système nommé.</returns>
+      <param name="name">Nom de l'événement de synchronisation système à ouvrir.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> est une chaîne vide. ou<paramref name="name" /> dépasse 260 caractères.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> a la valeur null.</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">L'événement de système nommé n'existe pas.</exception>
+      <exception cref="T:System.IO.IOException">Une erreur Win32 s'est produite.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">L'événement nommé existe, mais l'utilisateur ne possède pas l'accès de sécurité requis pour l'utiliser.</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.Reset">
+      <summary>Définit l'état de l'événement comme étant non signalé, entraînant le blocage des threads.</summary>
+      <returns>true si l'opération aboutit ; sinon, false.</returns>
+      <exception cref="T:System.ObjectDisposedException">La méthode <see cref="M:System.Threading.EventWaitHandle.Close" /> a été précédemment appelée sur ce <see cref="T:System.Threading.EventWaitHandle" />.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.Set">
+      <summary>Définit l'état de l'événement comme étant signalé, ce qui permet à un ou plusieurs threads en attente de continuer.</summary>
+      <returns>true si l'opération aboutit ; sinon, false.</returns>
+      <exception cref="T:System.ObjectDisposedException">La méthode <see cref="M:System.Threading.EventWaitHandle.Close" /> a été précédemment appelée sur ce <see cref="T:System.Threading.EventWaitHandle" />.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.TryOpenExisting(System.String,System.Threading.EventWaitHandle@)">
+      <summary>Ouvre l'événement de synchronisation nommé spécifié, s'il existe déjà, et retourne une valeur indiquant si l'opération a réussi.</summary>
+      <returns>true si l'événement de synchronisation nommé a été ouvert ; sinon, false.</returns>
+      <param name="name">Nom de l'événement de synchronisation système à ouvrir.</param>
+      <param name="result">Lorsque cette méthode est retournée, contient un objet <see cref="T:System.Threading.EventWaitHandle" /> qui représente l'événement de synchronisation nommé si l'appel a réussi, ou null si l'appel a échoué.Ce paramètre est traité comme non initialisé.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> est une chaîne vide.ou<paramref name="name" /> dépasse 260 caractères.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> a la valeur null.</exception>
+      <exception cref="T:System.IO.IOException">Une erreur Win32 s'est produite.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">L'événement nommé existe, mais l'utilisateur n'a pas l'accès de sécurité voulu.</exception>
+    </member>
+    <member name="T:System.Threading.ExecutionContext">
+      <summary>Gère le contexte d'exécution du thread actuel.Cette classe ne peut pas être héritée.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.ExecutionContext.Capture">
+      <summary>Capture le contexte d'exécution du thread actuel.</summary>
+      <returns>Objet <see cref="T:System.Threading.ExecutionContext" /> capturant le contexte d'exécution du thread actuel.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.ExecutionContext.Run(System.Threading.ExecutionContext,System.Threading.ContextCallback,System.Object)">
+      <summary>Exécute une méthode dans un contexte d'exécution spécifié sur le thread actuel.</summary>
+      <param name="executionContext">
+        <see cref="T:System.Threading.ExecutionContext" /> à définir.</param>
+      <param name="callback">Délégué <see cref="T:System.Threading.ContextCallback" /> représentant la méthode à exécuter dans le contexte d'exécution fourni.</param>
+      <param name="state">Objet à passer à la méthode de rappel.</param>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="executionContext" /> a la valeur null.ouLe <paramref name="executionContext" /> n'a pas été acquis à l'aide d'une opération de capture. ouLe <paramref name="executionContext" /> a déjà été utilisé comme argument pour un appel <see cref="M:System.Threading.ExecutionContext.Run(System.Threading.ExecutionContext,System.Threading.ContextCallback,System.Object)" />.</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="Infrastructure" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Threading.Interlocked">
+      <summary>Fournit des opérations atomiques pour des variables partagées par plusieurs threads. </summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Add(System.Int32@,System.Int32)">
+      <summary>Ajoute deux entiers 32 bits et remplace le premier entier par la somme, sous la forme d'une opération atomique.</summary>
+      <returns>La nouvelle valeur stockée à <paramref name="location1" />.</returns>
+      <param name="location1">Variable qui contient la première valeur à ajouter.La somme des deux valeurs est stockée dans <paramref name="location1" />.</param>
+      <param name="value">Valeur à ajouter à l'entier à <paramref name="location1" />.</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Add(System.Int64@,System.Int64)">
+      <summary>Ajoute deux entiers 64 bits et remplace le premier entier par la somme, sous la forme d'une opération atomique.</summary>
+      <returns>La nouvelle valeur stockée à <paramref name="location1" />.</returns>
+      <param name="location1">Variable qui contient la première valeur à ajouter.La somme des deux valeurs est stockée dans <paramref name="location1" />.</param>
+      <param name="value">Valeur à ajouter à l'entier à <paramref name="location1" />.</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Double@,System.Double,System.Double)">
+      <summary>Compare deux nombres à virgule flottante double précision et remplace le premier en cas d'égalité.</summary>
+      <returns>Valeur d'origine dans <paramref name="location1" />.</returns>
+      <param name="location1">Destination, dont la valeur est comparée à <paramref name="comparand" /> et qui peut être remplacée. </param>
+      <param name="value">Valeur qui remplace la valeur de destination si la comparaison conclut à une égalité. </param>
+      <param name="comparand">Valeur comparée à celle de <paramref name="location1" />. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Int32@,System.Int32,System.Int32)">
+      <summary>Compare deux entiers signés de 32 bits et remplace la première valeur en cas d'égalité.</summary>
+      <returns>Valeur d'origine dans <paramref name="location1" />.</returns>
+      <param name="location1">Destination, dont la valeur est comparée à <paramref name="comparand" /> et qui peut être remplacée. </param>
+      <param name="value">Valeur qui remplace la valeur de destination si la comparaison conclut à une égalité. </param>
+      <param name="comparand">Valeur comparée à celle de <paramref name="location1" />. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Int64@,System.Int64,System.Int64)">
+      <summary>Compare deux entiers signés de 64 bits et remplace la première valeur en cas d'égalité.</summary>
+      <returns>Valeur d'origine dans <paramref name="location1" />.</returns>
+      <param name="location1">Destination, dont la valeur est comparée à <paramref name="comparand" /> et qui peut être remplacée. </param>
+      <param name="value">Valeur qui remplace la valeur de destination si la comparaison conclut à une égalité. </param>
+      <param name="comparand">Valeur comparée à celle de <paramref name="location1" />. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.IntPtr@,System.IntPtr,System.IntPtr)">
+      <summary>Compare deux handles ou pointeurs spécifiques à la plateforme et remplace le premier en cas d'égalité.</summary>
+      <returns>Valeur d'origine dans <paramref name="location1" />.</returns>
+      <param name="location1">
+        <see cref="T:System.IntPtr" /> de destination, dont la valeur est comparée à celle de <paramref name="comparand" /> et qui peut être remplacée par <paramref name="value" />. </param>
+      <param name="value">
+        <see cref="T:System.IntPtr" /> qui remplace la valeur de destination si la comparaison conclut à une égalité. </param>
+      <param name="comparand">
+        <see cref="T:System.IntPtr" /> comparée à la valeur de <paramref name="location1" />. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Object@,System.Object,System.Object)">
+      <summary>Compare deux objets et remplace le premier en cas d'égalité des références.</summary>
+      <returns>Valeur d'origine dans <paramref name="location1" />.</returns>
+      <param name="location1">Objet de destination comparé à <paramref name="comparand" /> et qui peut être remplacé. </param>
+      <param name="value">Objet qui remplace l'objet de destination si la comparaison conclut à une égalité. </param>
+      <param name="comparand">Objet qui est comparé à l'objet se trouvant à <paramref name="location1" />. </param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Single@,System.Single,System.Single)">
+      <summary>Compare deux nombres à virgule flottante simple précision et remplace le premier en cas d'égalité.</summary>
+      <returns>Valeur d'origine dans <paramref name="location1" />.</returns>
+      <param name="location1">Destination, dont la valeur est comparée à <paramref name="comparand" /> et qui peut être remplacée. </param>
+      <param name="value">Valeur qui remplace la valeur de destination si la comparaison conclut à une égalité. </param>
+      <param name="comparand">Valeur comparée à celle de <paramref name="location1" />. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange``1(``0@,``0,``0)">
+      <summary>Compare deux instances du type référence spécifié <paramref name="T" /> et remplace la première en cas d'égalité.</summary>
+      <returns>Valeur d'origine dans <paramref name="location1" />.</returns>
+      <param name="location1">Destination, dont la valeur est comparée avec <paramref name="comparand" /> et qui peut être remplacée.C'est un paramètre référence (ref en C#, ByRef en Visual Basic).</param>
+      <param name="value">Valeur qui remplace la valeur de destination si la comparaison conclut à une égalité. </param>
+      <param name="comparand">Valeur comparée à celle de <paramref name="location1" />. </param>
+      <typeparam name="T">Type à utiliser pour <paramref name="location1" />, <paramref name="value" /> et <paramref name="comparand" />.Ce type doit être un type référence.</typeparam>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+    </member>
+    <member name="M:System.Threading.Interlocked.Decrement(System.Int32@)">
+      <summary>Décrémente une variable spécifiée et stocke le résultat, sous la forme d'une opération atomique.</summary>
+      <returns>Valeur décrémentée.</returns>
+      <param name="location">Variable dont la valeur doit être décrémentée. </param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Decrement(System.Int64@)">
+      <summary>Décrémente la variable spécifiée et stocke le résultat sous la forme d'une opération atomique.</summary>
+      <returns>Valeur décrémentée.</returns>
+      <param name="location">Variable dont la valeur doit être décrémentée. </param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Double@,System.Double)">
+      <summary>Affecte une valeur spécifiée à un nombre à virgule flottante double précision, puis retourne la valeur d'origine, sous la forme d'une opération atomique.</summary>
+      <returns>Valeur d'origine de <paramref name="location1" />.</returns>
+      <param name="location1">Variable à laquelle affecter la valeur spécifiée. </param>
+      <param name="value">Valeur affectée au paramètre <paramref name="location1" />. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Int32@,System.Int32)">
+      <summary>Affecte un entier signé 32 bits à une valeur spécifiée, puis retourne la valeur d'origine, sous la forme d'une opération atomique.</summary>
+      <returns>Valeur d'origine de <paramref name="location1" />.</returns>
+      <param name="location1">Variable à laquelle affecter la valeur spécifiée. </param>
+      <param name="value">Valeur affectée au paramètre <paramref name="location1" />. </param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Int64@,System.Int64)">
+      <summary>Affecte une valeur spécifiée à un entier signé 64 bits, puis retourne la valeur d'origine, sous la forme d'une opération atomique.</summary>
+      <returns>Valeur d'origine de <paramref name="location1" />.</returns>
+      <param name="location1">Variable à laquelle affecter la valeur spécifiée. </param>
+      <param name="value">Valeur affectée au paramètre <paramref name="location1" />. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.IntPtr@,System.IntPtr)">
+      <summary>Affecte une valeur spécifiée à un handle ou un pointeur spécifique à la plateforme, puis retourne la valeur d'origine, sous la forme d'une opération atomique.</summary>
+      <returns>Valeur d'origine de <paramref name="location1" />.</returns>
+      <param name="location1">Variable à laquelle affecter la valeur spécifiée. </param>
+      <param name="value">Valeur affectée au paramètre <paramref name="location1" />. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Object@,System.Object)">
+      <summary>Affecte une valeur spécifiée à un objet, puis retourne une référence à l'objet d'origine sous la forme d'une opération atomique.</summary>
+      <returns>Valeur d'origine de <paramref name="location1" />.</returns>
+      <param name="location1">Variable à laquelle affecter la valeur spécifiée. </param>
+      <param name="value">Valeur affectée au paramètre <paramref name="location1" />. </param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Single@,System.Single)">
+      <summary>Affecte une valeur spécifiée à un nombre à virgule flottante simple précision, puis retourne la valeur d'origine, sous la forme d'une opération atomique.</summary>
+      <returns>Valeur d'origine de <paramref name="location1" />.</returns>
+      <param name="location1">Variable à laquelle affecter la valeur spécifiée. </param>
+      <param name="value">Valeur affectée au paramètre <paramref name="location1" />. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange``1(``0@,``0)">
+      <summary>Affecte une valeur spécifiée à une variable du type <paramref name="T" /> spécifié et retourne la valeur d'origine, sous la forme d'une opération atomique.</summary>
+      <returns>Valeur d'origine de <paramref name="location1" />.</returns>
+      <param name="location1">Variable à laquelle affecter la valeur spécifiée.C'est un paramètre référence (ref en C#, ByRef en Visual Basic).</param>
+      <param name="value">Valeur affectée au paramètre <paramref name="location1" />. </param>
+      <typeparam name="T">Type à utiliser pour <paramref name="location1" /> et <paramref name="value" />.Ce type doit être un type référence.</typeparam>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+    </member>
+    <member name="M:System.Threading.Interlocked.Increment(System.Int32@)">
+      <summary>Incrémente une variable spécifiée et stocke le résultat sous la forme d'une opération atomique.</summary>
+      <returns>Valeur incrémentée.</returns>
+      <param name="location">Variable dont la valeur doit être incrémentée. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Increment(System.Int64@)">
+      <summary>Incrémente une variable spécifiée et stocke le résultat sous la forme d'une opération atomique.</summary>
+      <returns>Valeur incrémentée.</returns>
+      <param name="location">Variable dont la valeur doit être incrémentée. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.MemoryBarrier">
+      <summary>Synchronise l'accès à la mémoire comme suit : le processeur qui exécute le thread actuel ne peut pas réorganiser les instructions de sorte que les accès à la mémoire avant l'appel de <see cref="M:System.Threading.Interlocked.MemoryBarrier" /> s'exécutent après les accès à la mémoire postérieurs à l'appel de <see cref="M:System.Threading.Interlocked.MemoryBarrier" />.</summary>
+    </member>
+    <member name="M:System.Threading.Interlocked.Read(System.Int64@)">
+      <summary>Retourne une valeur 64 bits chargée sous la forme d'une opération atomique.</summary>
+      <returns>Valeur chargée.</returns>
+      <param name="location">Valeur 64 bits à charger.</param>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.LazyInitializer">
+      <summary>Fournit des routines d'initialisation tardives.</summary>
+    </member>
+    <member name="M:System.Threading.LazyInitializer.EnsureInitialized``1(``0@)">
+      <summary>Initialise un type référence cible avec le constructeur par défaut du type s'il n'a pas déjà été initialisé.</summary>
+      <returns>Référence initialisée de type <paramref name="T" />.</returns>
+      <param name="target">Référence de type <paramref name="T" /> à initialiser si elle ne l'a pas déjà été.</param>
+      <typeparam name="T">Type de la référence à initialiser.</typeparam>
+      <exception cref="T:System.MemberAccessException">Autorisations pour accéder au constructeur de type <paramref name="T" /> manquant.</exception>
+      <exception cref="T:System.MissingMemberException">Le type <paramref name="T" /> n'a pas de constructeur par défaut.</exception>
+    </member>
+    <member name="M:System.Threading.LazyInitializer.EnsureInitialized``1(``0@,System.Boolean@,System.Object@)">
+      <summary>Initialise un type référence cible ou un type valeur avec son constructeur par défaut s'il n'a pas déjà été initialisé.</summary>
+      <returns>Valeur initialisée de type <paramref name="T" />.</returns>
+      <param name="target">Référence ou valeur de type <paramref name="T" /> à initialiser si elle ne l'a pas déjà été.</param>
+      <param name="initialized">Référence à une valeur booléenne qui détermine si la cible a déjà été initialisée.</param>
+      <param name="syncLock">Référence à un objet utilisé comme verrou mutuellement exclusif pour l'initialisation de <paramref name="target" />.Si <paramref name="syncLock" /> est null null, un nouvel objet est instancié.</param>
+      <typeparam name="T">Type de la référence à initialiser.</typeparam>
+      <exception cref="T:System.MemberAccessException">Autorisations pour accéder au constructeur de type <paramref name="T" /> manquant.</exception>
+      <exception cref="T:System.MissingMemberException">Le type <paramref name="T" /> n'a pas de constructeur par défaut.</exception>
+    </member>
+    <member name="M:System.Threading.LazyInitializer.EnsureInitialized``1(``0@,System.Boolean@,System.Object@,System.Func{``0})">
+      <summary>Initialise un type référence cible ou un type valeur à l'aide d'une fonction spécifiée s'il n'a pas déjà été initialisé.</summary>
+      <returns>Valeur initialisée de type <paramref name="T" />.</returns>
+      <param name="target">Référence ou valeur de type <paramref name="T" /> à initialiser si elle ne l'a pas déjà été.</param>
+      <param name="initialized">Référence à une valeur booléenne qui détermine si la cible a déjà été initialisée.</param>
+      <param name="syncLock">Référence à un objet utilisé comme verrou mutuellement exclusif pour l'initialisation de <paramref name="target" />.Si <paramref name="syncLock" /> est null null, un nouvel objet est instancié.</param>
+      <param name="valueFactory">Fonction appelée pour initialiser la référence ou la valeur.</param>
+      <typeparam name="T">Type de la référence à initialiser.</typeparam>
+      <exception cref="T:System.MemberAccessException">Autorisations pour accéder au constructeur de type <paramref name="T" /> manquant.</exception>
+      <exception cref="T:System.MissingMemberException">Le type <paramref name="T" /> n'a pas de constructeur par défaut.</exception>
+    </member>
+    <member name="M:System.Threading.LazyInitializer.EnsureInitialized``1(``0@,System.Func{``0})">
+      <summary>Initialise un type référence cible à l'aide d'une fonction spécifiée s'il n'a pas déjà été initialisé.</summary>
+      <returns>Valeur initialisée de type <paramref name="T" />.</returns>
+      <param name="target">Référence de type <paramref name="T" /> à initialiser si elle ne l'a pas déjà été.</param>
+      <param name="valueFactory">Fonction appelée pour initialiser la référence.</param>
+      <typeparam name="T">Type référence de la référence à initialiser.</typeparam>
+      <exception cref="T:System.MissingMemberException">Le type <paramref name="T" /> n'a pas de constructeur par défaut.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="valueFactory" /> a retourné null (Nothing en Visual Basic).</exception>
+    </member>
+    <member name="T:System.Threading.LockRecursionException">
+      <summary>L'exception levée lorsque l'entrée récursive dans un verrou n'est pas compatible avec la stratégie de récurrence pour le verrou.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.LockRecursionException.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.LockRecursionException" /> avec un message système qui décrit l'erreur.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.LockRecursionException.#ctor(System.String)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.LockRecursionException" /> avec un message spécifié décrivant l'erreur.</summary>
+      <param name="message">Message qui décrit l'exception.L'appelant de ce constructeur doit vérifier que cette chaîne a été localisée pour la culture système en cours.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.LockRecursionException.#ctor(System.String,System.Exception)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.LockRecursionException" /> avec un message d'erreur spécifié et une référence à l'exception interne ayant provoqué cette exception.</summary>
+      <param name="message">Message qui décrit l'exception.L'appelant de ce constructeur doit vérifier que cette chaîne a été localisée pour la culture système en cours.</param>
+      <param name="innerException">Exception qui a provoqué l'exception actuelle.Si le paramètre <paramref name="innerException" /> n'est pas null, l'exception en cours est levée dans un bloc catch qui gère l'exception interne.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.LockRecursionPolicy">
+      <summary>Spécifie si un verrou peut être entré plusieurs fois par le même thread.</summary>
+    </member>
+    <member name="F:System.Threading.LockRecursionPolicy.NoRecursion">
+      <summary>Si un thread essaie d'entrer un verrou de manière récursive, une exception est levée.Certaines classes peuvent autoriser certaines récurrences lorsque ce paramètre est appliqué.</summary>
+    </member>
+    <member name="F:System.Threading.LockRecursionPolicy.SupportsRecursion">
+      <summary>Un thread peut entrer un verrou de manière récursive.Certaines classes peuvent restreindre cette fonction.</summary>
+    </member>
+    <member name="T:System.Threading.ManualResetEvent">
+      <summary>Avertit un ou plusieurs threads en attente qu'un événement s'est produit.Cette classe ne peut pas être héritée.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.ManualResetEvent.#ctor(System.Boolean)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.ManualResetEvent" /> avec une valeur booléenne indiquant si l'état initial doit être défini comme signalé.</summary>
+      <param name="initialState">true pour définir un état initial signalé ; false pour définir un état initial non signalé. </param>
+    </member>
+    <member name="T:System.Threading.ManualResetEventSlim">
+      <summary>Fournit une version allégée de <see cref="T:System.Threading.ManualResetEvent" />.</summary>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.ManualResetEventSlim" /> avec l'état initial "non signalé".</summary>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.#ctor(System.Boolean)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.ManualResetEventSlim" /> avec une valeur booléenne indiquant si l'état initial doit être défini à "signalé".</summary>
+      <param name="initialState">true pour définir l'état initial à "signalé" ; false pour le définir à "non signalé".</param>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.#ctor(System.Boolean,System.Int32)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.ManualResetEventSlim" /> avec une valeur booléenne indiquant si l'état initial doit être défini à "signalé" et un nombre de spins spécifié.</summary>
+      <param name="initialState">true pour définir l'état initial à "signalé" ; false pour le définir à "non signalé".</param>
+      <param name="spinCount">Nombre d'attentes de spins qui se produiront avant de revenir à une opération d'attente basée sur le noyau.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="spinCount" /> is less than 0 or greater than the maximum allowed value.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Dispose">
+      <summary>Libère toutes les ressources utilisées par l'instance actuelle de la classe <see cref="T:System.Threading.ManualResetEventSlim" />.</summary>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Dispose(System.Boolean)">
+      <summary>Libère les ressources non managées utilisées par <see cref="T:System.Threading.ManualResetEventSlim" /> et éventuellement les ressources managées.</summary>
+      <param name="disposing">true pour libérer les ressources managées et non managées ; false pour libérer uniquement les ressources non managées.</param>
+    </member>
+    <member name="P:System.Threading.ManualResetEventSlim.IsSet">
+      <summary>Obtient une valeur qui indique si l'événement est défini.</summary>
+      <returns>true si l'événement a été défini ; sinon, false.</returns>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Reset">
+      <summary>Définit l'état de l'événement à "non signalé", ce qui entraîne le blocage des threads.</summary>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Set">
+      <summary>Définit l'état de l'événement à "signalé", ce qui permet à un ou plusieurs threads en attente sur l'événement de continuer à s'exécuter.</summary>
+    </member>
+    <member name="P:System.Threading.ManualResetEventSlim.SpinCount">
+      <summary>Obtient le nombre d'attentes de spins qui se produiront avant de revenir à une opération d'attente basée sur le noyau.</summary>
+      <returns>Retourne le nombre d'attentes de spins qui se produiront avant de revenir à une opération d'attente basée sur le noyau.</returns>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait">
+      <summary>Bloque le thread actuel jusqu'à ce que le <see cref="T:System.Threading.ManualResetEventSlim" /> actuel soit défini.</summary>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.Int32)">
+      <summary>Bloque le thread actuel jusqu'à ce que le<see cref="T:System.Threading.ManualResetEventSlim" /> actuel soit défini, à l'aide d'un entier signé 32 bits pour mesurer l'intervalle de temps.</summary>
+      <returns>true si <see cref="T:System.Threading.ManualResetEventSlim" /> a été défini ; sinon, false.</returns>
+      <param name="millisecondsTimeout">Nombre de millisecondes à attendre, ou <see cref="F:System.Threading.Timeout.Infinite" /> (-1) pour un délai d'attente infini.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> is a negative number other than -1, which represents an infinite time-out.</exception>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.Int32,System.Threading.CancellationToken)">
+      <summary>Bloque le thread actuel jusqu'à ce que le <see cref="T:System.Threading.ManualResetEventSlim" /> actuel soit défini, à l'aide d'un entier signé 32 bits pour mesurer l'intervalle de temps, tout en observant un <see cref="T:System.Threading.CancellationToken" />.</summary>
+      <returns>true si <see cref="T:System.Threading.ManualResetEventSlim" /> a été défini ; sinon, false.</returns>
+      <param name="millisecondsTimeout">Nombre de millisecondes à attendre, ou <see cref="F:System.Threading.Timeout.Infinite" /> (-1) pour un délai d'attente infini.</param>
+      <param name="cancellationToken">
+        <see cref="T:System.Threading.CancellationToken" /> à observer.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> was canceled.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> is a negative number other than -1, which represents an infinite time-out.</exception>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed or the <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.Threading.CancellationToken)">
+      <summary>Bloque le thread actuel jusqu'à ce que le <see cref="T:System.Threading.ManualResetEventSlim" /> actuel reçoive un signal, tout en observant un <see cref="T:System.Threading.CancellationToken" />.</summary>
+      <param name="cancellationToken">
+        <see cref="T:System.Threading.CancellationToken" /> à observer.</param>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> was canceled.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed or the <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.TimeSpan)">
+      <summary>Bloque le thread actuel jusqu'à ce que le <see cref="T:System.Threading.ManualResetEventSlim" /> actuel soit défini, à l'aide d'un <see cref="T:System.TimeSpan" /> pour mesurer l'intervalle de temps.</summary>
+      <returns>true si <see cref="T:System.Threading.ManualResetEventSlim" /> a été défini ; sinon, false.</returns>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" /> qui représente le nombre de millisecondes à attendre ou <see cref="T:System.TimeSpan" /> qui représente -1 milliseconde pour un délai d'attente infini.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> is a negative number other than -1 milliseconds, which represents an infinite time-out. -or-The number of milliseconds in <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" />. </exception>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>Bloque le thread actuel jusqu'à ce que le <see cref="T:System.Threading.ManualResetEventSlim" /> actuel soit défini, à l'aide d'un <see cref="T:System.TimeSpan" /> pour mesurer l'intervalle de temps, tout en observant un <see cref="T:System.Threading.CancellationToken" />.</summary>
+      <returns>true si <see cref="T:System.Threading.ManualResetEventSlim" /> a été défini ; sinon, false.</returns>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" /> qui représente le nombre de millisecondes à attendre ou <see cref="T:System.TimeSpan" /> qui représente -1 milliseconde pour un délai d'attente infini.</param>
+      <param name="cancellationToken">
+        <see cref="T:System.Threading.CancellationToken" /> à observer.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> was canceled.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> is a negative number other than -1 milliseconds, which represents an infinite time-out. -or-The number of milliseconds in <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" />. </exception>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded. </exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed or the <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has been disposed.</exception>
+    </member>
+    <member name="P:System.Threading.ManualResetEventSlim.WaitHandle">
+      <summary>Obtient l'objet <see cref="T:System.Threading.WaitHandle" /> sous-jacent pour ce <see cref="T:System.Threading.ManualResetEventSlim" />.</summary>
+      <returns>Objet d'événement <see cref="T:System.Threading.WaitHandle" /> sous-jacent pour ce <see cref="T:System.Threading.ManualResetEventSlim" />.</returns>
+    </member>
+    <member name="T:System.Threading.Monitor">
+      <summary>Fournit un mécanisme qui synchronise l'accès aux objets.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.Enter(System.Object)">
+      <summary>Acquiert un verrou exclusif sur l'objet spécifié.</summary>
+      <param name="obj">Objet sur lequel acquérir le verrou du moniteur. </param>
+      <exception cref="T:System.ArgumentNullException">Le paramètre <paramref name="obj" /> a la valeur null. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.Enter(System.Object,System.Boolean@)">
+      <summary>Acquiert un verrou exclusif sur l'objet spécifié et définit de manière atomique une valeur qui indique si le verrou a été pris.</summary>
+      <param name="obj">Objet sur lequel attendre. </param>
+      <param name="lockTaken">Résultat de la tentative d'acquisition du verrou, passé par la référence.L'entrée doit avoir la valeur false.La sortie a la valeur true si un verrou est acquis ; sinon, elle a la valeur false.La sortie est définie même si une exception se produit lors de la tentative d'acquisition du verrou.Remarque   Si aucune exception ne se produit, la sortie de cette méthode est toujours true.</param>
+      <exception cref="T:System.ArgumentException">L'entrée du paramètre <paramref name="lockTaken" /> a la valeur true.</exception>
+      <exception cref="T:System.ArgumentNullException">Le paramètre <paramref name="obj" /> a la valeur null. </exception>
+    </member>
+    <member name="M:System.Threading.Monitor.Exit(System.Object)">
+      <summary>Libère un verrou exclusif sur l'objet spécifié.</summary>
+      <param name="obj">Objet sur lequel libérer le verrou. </param>
+      <exception cref="T:System.ArgumentNullException">Le paramètre <paramref name="obj" /> a la valeur null. </exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">Le thread en cours ne possède pas le verrou pour l'objet spécifié. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.IsEntered(System.Object)">
+      <summary>Détermine si le thread actuel détient le verrou sur l'objet spécifié. </summary>
+      <returns>true si le thread actuel détient le verrou sur <paramref name="obj" /> ; sinon, false.</returns>
+      <param name="obj">Objet à tester. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> a la valeur null. </exception>
+    </member>
+    <member name="M:System.Threading.Monitor.Pulse(System.Object)">
+      <summary>Avertit un thread situé dans la file d'attente en suspens d'un changement d'état de l'objet verrouillé.</summary>
+      <param name="obj">Objet attendu par un thread. </param>
+      <exception cref="T:System.ArgumentNullException">Le paramètre <paramref name="obj" /> a la valeur null. </exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">Le thread appelant ne possède pas le verrou pour l'objet spécifié. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.PulseAll(System.Object)">
+      <summary>Avertit tous les threads en attente d'un changement d'état de l'objet.</summary>
+      <param name="obj">Objet qui envoie l'impulsion. </param>
+      <exception cref="T:System.ArgumentNullException">Le paramètre <paramref name="obj" /> a la valeur null. </exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">Le thread appelant ne possède pas le verrou pour l'objet spécifié. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object)">
+      <summary>Essaie d'acquérir un verrou exclusif sur l'objet spécifié.</summary>
+      <returns>true si le thread actuel acquiert le verrou ; sinon, false.</returns>
+      <param name="obj">Objet sur lequel acquérir le verrou. </param>
+      <exception cref="T:System.ArgumentNullException">Le paramètre <paramref name="obj" /> a la valeur null. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.Boolean@)">
+      <summary>Tente d'acquérir un verrou exclusif sur l'objet spécifié et définit de manière atomique une valeur qui indique si le verrou a été pris.</summary>
+      <param name="obj">Objet sur lequel acquérir le verrou. </param>
+      <param name="lockTaken">Résultat de la tentative d'acquisition du verrou, passé par la référence.L'entrée doit avoir la valeur false.La sortie a la valeur true si un verrou est acquis ; sinon, elle a la valeur false.La sortie est définie même si une exception se produit lors de la tentative d'acquisition du verrou.</param>
+      <exception cref="T:System.ArgumentException">L'entrée du paramètre <paramref name="lockTaken" /> a la valeur true.</exception>
+      <exception cref="T:System.ArgumentNullException">Le paramètre <paramref name="obj" /> a la valeur null. </exception>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.Int32)">
+      <summary>Tentatives d'acquisition d'un verrou exclusif sur l'objet spécifié au cours du nombre spécifié de millisecondes.</summary>
+      <returns>true si le thread actuel acquiert le verrou ; sinon, false.</returns>
+      <param name="obj">Objet sur lequel acquérir le verrou. </param>
+      <param name="millisecondsTimeout">Délai d'attente du verrou en millisecondes. </param>
+      <exception cref="T:System.ArgumentNullException">Le paramètre <paramref name="obj" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> est négatif et différent de <see cref="F:System.Threading.Timeout.Infinite" />. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.Int32,System.Boolean@)">
+      <summary>Tente, pendant le nombre spécifié de millisecondes, d'acquérir un verrou exclusif sur l'objet spécifié et définit de manière atomique une valeur qui indique si le verrou a été pris.</summary>
+      <param name="obj">Objet sur lequel acquérir le verrou. </param>
+      <param name="millisecondsTimeout">Délai d'attente du verrou en millisecondes. </param>
+      <param name="lockTaken">Résultat de la tentative d'acquisition du verrou, passé par la référence.L'entrée doit avoir la valeur false.La sortie a la valeur true si un verrou est acquis ; sinon, elle a la valeur false.La sortie est définie même si une exception se produit lors de la tentative d'acquisition du verrou.</param>
+      <exception cref="T:System.ArgumentException">L'entrée du paramètre <paramref name="lockTaken" /> a la valeur true.</exception>
+      <exception cref="T:System.ArgumentNullException">Le paramètre <paramref name="obj" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> est négatif et différent de <see cref="F:System.Threading.Timeout.Infinite" />. </exception>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.TimeSpan)">
+      <summary>Tentatives d'acquisition d'un verrou exclusif sur l'objet spécifié au cours de la période spécifiée.</summary>
+      <returns>true si le thread actuel acquiert le verrou ; sinon, false.</returns>
+      <param name="obj">Objet sur lequel acquérir le verrou. </param>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" /> représentant le délai d'attente du verrou.Une valeur de –1 milliseconde spécifie une attente infinie.</param>
+      <exception cref="T:System.ArgumentNullException">Le paramètre <paramref name="obj" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">La valeur en millisecondes de <paramref name="timeout" /> est négative et différente de <see cref="F:System.Threading.Timeout.Infinite" /> (–1 milliseconde), ou elle est supérieure à <see cref="F:System.Int32.MaxValue" />. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.TimeSpan,System.Boolean@)">
+      <summary>Tente, pendant le délai spécifié, d'acquérir un verrou exclusif sur l'objet spécifié et définit de manière atomique une valeur qui indique si le verrou a été pris.</summary>
+      <param name="obj">Objet sur lequel acquérir le verrou. </param>
+      <param name="timeout">Délai d'attente du verrou.Une valeur de –1 milliseconde spécifie une attente infinie.</param>
+      <param name="lockTaken">Résultat de la tentative d'acquisition du verrou, passé par la référence.L'entrée doit avoir la valeur false.La sortie a la valeur true si un verrou est acquis ; sinon, elle a la valeur false.La sortie est définie même si une exception se produit lors de la tentative d'acquisition du verrou.</param>
+      <exception cref="T:System.ArgumentException">L'entrée du paramètre <paramref name="lockTaken" /> a la valeur true.</exception>
+      <exception cref="T:System.ArgumentNullException">Le paramètre <paramref name="obj" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">La valeur en millisecondes de <paramref name="timeout" /> est négative et différente de <see cref="F:System.Threading.Timeout.Infinite" /> (–1 milliseconde), ou elle est supérieure à <see cref="F:System.Int32.MaxValue" />. </exception>
+    </member>
+    <member name="M:System.Threading.Monitor.Wait(System.Object)">
+      <summary>Libère le verrou d'un objet et bloque le thread actuel jusqu'à ce qu'il acquière à nouveau le verrou.</summary>
+      <returns>true si l'appel est retourné car l'appelant a de nouveau acquis le verrou pour l'objet spécifié.Cette méthode ne retourne rien si le verrou n'est pas acquis à nouveau.</returns>
+      <param name="obj">Objet sur lequel attendre. </param>
+      <exception cref="T:System.ArgumentNullException">Le paramètre <paramref name="obj" /> a la valeur null. </exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">Le thread appelant ne possède pas le verrou pour l'objet spécifié. </exception>
+      <exception cref="T:System.Threading.ThreadInterruptedException">Le thread qui appelle Wait quitte ensuite l'état d'attente.Cela se produit lorsqu'un autre thread appelle la méthode <see cref="M:System.Threading.Thread.Interrupt" /> de ce thread.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.Wait(System.Object,System.Int32)">
+      <summary>Libère le verrou d'un objet et bloque le thread actuel jusqu'à ce qu'il acquière à nouveau le verrou.Si le délai d'attente spécifié est écoulé, le thread intègre la file d'attente opérationnelle.</summary>
+      <returns>true si le verrou a fait l'objet d'une nouvelle acquisition avant l'expiration du délai spécifié ; false si le verrou a fait l'objet d'une nouvelle acquisition après l'expiration du délai spécifié.La méthode ne retourne pas de valeur tant que le verrou n'est pas acquis à nouveau.</returns>
+      <param name="obj">Objet sur lequel attendre. </param>
+      <param name="millisecondsTimeout">Nombre de millisecondes à attendre avant que le thread intègre la file d'attente opérationnelle. </param>
+      <exception cref="T:System.ArgumentNullException">Le paramètre <paramref name="obj" /> a la valeur null. </exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">Le thread appelant ne possède pas le verrou pour l'objet spécifié. </exception>
+      <exception cref="T:System.Threading.ThreadInterruptedException">Le thread qui appelle Wait quitte ensuite l'état d'attente.Cela se produit lorsqu'un autre thread appelle la méthode <see cref="M:System.Threading.Thread.Interrupt" /> de ce thread.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">La valeur du paramètre <paramref name="millisecondsTimeout" /> est négative et différente de <see cref="F:System.Threading.Timeout.Infinite" />. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.Wait(System.Object,System.TimeSpan)">
+      <summary>Libère le verrou d'un objet et bloque le thread actuel jusqu'à ce qu'il acquière à nouveau le verrou.Si le délai d'attente spécifié est écoulé, le thread intègre la file d'attente opérationnelle.</summary>
+      <returns>true si le verrou a fait l'objet d'une nouvelle acquisition avant l'expiration du délai spécifié ; false si le verrou a fait l'objet d'une nouvelle acquisition après l'expiration du délai spécifié.La méthode ne retourne pas de valeur tant que le verrou n'est pas acquis à nouveau.</returns>
+      <param name="obj">Objet sur lequel attendre. </param>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" /> qui représente le temps à attendre avant que le thread n'intègre la file d'attente opérationnelle. </param>
+      <exception cref="T:System.ArgumentNullException">Le paramètre <paramref name="obj" /> a la valeur null. </exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">Le thread appelant ne possède pas le verrou pour l'objet spécifié. </exception>
+      <exception cref="T:System.Threading.ThreadInterruptedException">Le thread qui appelle Wait quitte ensuite l'état d'attente.Cela se produit lorsqu'un autre thread appelle la méthode <see cref="M:System.Threading.Thread.Interrupt" /> de ce thread.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">La valeur en millisecondes du paramètre <paramref name="timeout" /> est négative et ne représente pas <see cref="F:System.Threading.Timeout.Infinite" /> (–1 milliseconde) ou est supérieure à <see cref="F:System.Int32.MaxValue" />. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.Mutex">
+      <summary>Primitive de synchronisation qui peut également être utilisée pour la synchronisation entre processus. </summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Mutex.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.Mutex" /> avec des propriétés par défaut.</summary>
+    </member>
+    <member name="M:System.Threading.Mutex.#ctor(System.Boolean)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.Mutex" /> avec une valeur booléenne qui indique si le thread appelant doit avoir la propriété initiale du mutex.</summary>
+      <param name="initiallyOwned">true pour accorder au thread appelant la propriété initiale du mutex ; sinon, false. </param>
+    </member>
+    <member name="M:System.Threading.Mutex.#ctor(System.Boolean,System.String)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.Mutex" /> avec une valeur booléenne qui indique si le thread appelant doit avoir la propriété initiale du mutex, et une chaîne représentant le nom du mutex.</summary>
+      <param name="initiallyOwned">true pour donner au thread appelant la propriété initiale du mutex système nommé si celui-ci est créé en réponse à cet appel ; sinon, false. </param>
+      <param name="name">Nom du <see cref="T:System.Threading.Mutex" />.Si cette valeur est null, <see cref="T:System.Threading.Mutex" /> est sans nom.</param>
+      <exception cref="T:System.UnauthorizedAccessException">Le mutex nommé existe et possède la sécurité du contrôle d'accès, mais l'utilisateur ne possède pas <see cref="F:System.Security.AccessControl.MutexRights.FullControl" />.</exception>
+      <exception cref="T:System.IO.IOException">Une erreur Win32 s'est produite.</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">Le mutex nommé ne peut pas être créé, peut-être parce qu'un handle d'attente d'un type différent possède le même nom.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> est plus de 260 caractères.</exception>
+    </member>
+    <member name="M:System.Threading.Mutex.#ctor(System.Boolean,System.String,System.Boolean@)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.Mutex" /> avec une valeur booléenne qui indique si le thread appelant doit avoir la propriété initiale du mutex, une chaîne qui représente le nom du mutex et une valeur booléenne qui, quand la méthode retourne son résultat, indique si la propriété initiale du mutex a été accordée au thread appelant.</summary>
+      <param name="initiallyOwned">true pour donner au thread appelant la propriété initiale du mutex système nommé si celui-ci est créé en réponse à cet appel ; sinon, false. </param>
+      <param name="name">Nom du <see cref="T:System.Threading.Mutex" />.Si cette valeur est null, <see cref="T:System.Threading.Mutex" /> est sans nom.</param>
+      <param name="createdNew">Cette méthode retourne une valeur booléenne qui est true si un mutex local a été créé (en d'autres termes, si <paramref name="name" /> est null ou une chaîne vide) ou si le mutex système nommé spécifié a été créé ; false si le mutex système nommé spécifié existait déjà.Ce paramètre est passé sans être initialisé.</param>
+      <exception cref="T:System.UnauthorizedAccessException">Le mutex nommé existe et possède la sécurité du contrôle d'accès, mais l'utilisateur ne possède pas <see cref="F:System.Security.AccessControl.MutexRights.FullControl" />.</exception>
+      <exception cref="T:System.IO.IOException">Une erreur Win32 s'est produite.</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">Le mutex nommé ne peut pas être créé, peut-être parce qu'un handle d'attente d'un type différent possède le même nom.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> est plus de 260 caractères.</exception>
+    </member>
+    <member name="M:System.Threading.Mutex.OpenExisting(System.String)">
+      <summary>Ouvre le mutex nommé spécifié, s'il existe déjà.</summary>
+      <returns>Objet qui représente le mutex système nommé.</returns>
+      <param name="name">Nom du mutex système à ouvrir.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> est une chaîne vide.ou<paramref name="name" /> est plus de 260 caractères.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> a la valeur null.</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">Le mutex nommé n'existe pas.</exception>
+      <exception cref="T:System.IO.IOException">Une erreur Win32 s'est produite.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Le mutex nommé existe, mais l'utilisateur ne possède pas l'accès de sécurité requis pour l'utiliser.</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Threading.Mutex.ReleaseMutex">
+      <summary>Libère l'objet <see cref="T:System.Threading.Mutex" /> une seule fois.</summary>
+      <exception cref="T:System.ApplicationException">Le thread appelant ne possède pas le mutex. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Mutex.TryOpenExisting(System.String,System.Threading.Mutex@)">
+      <summary>Ouvre le mutex nommé spécifié, s'il existe déjà, et retourne une valeur indiquant si l'opération a réussi.</summary>
+      <returns>true si le mutex nommé a été ouvert ; sinon, false.</returns>
+      <param name="name">Nom du mutex système à ouvrir.</param>
+      <param name="result">Quand cette méthode est retournée, contient un objet <see cref="T:System.Threading.Mutex" /> qui représente la structure mutex nommée si l'appel a réussi, ou null si l'appel a échoué.Ce paramètre est traité comme étant non initialisé.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> est une chaîne vide.ou<paramref name="name" /> est plus de 260 caractères.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> a la valeur null.</exception>
+      <exception cref="T:System.IO.IOException">Une erreur Win32 s'est produite.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Le mutex nommé existe, mais l'utilisateur ne possède pas l'accès de sécurité requis pour l'utiliser.</exception>
+    </member>
+    <member name="T:System.Threading.ReaderWriterLockSlim">
+      <summary>Représente un verrou utilisé pour gérer l'accès à une ressource, en autorisant plusieurs threads pour la lecture ou un accès exclusif en écriture.</summary>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.ReaderWriterLockSlim" /> avec des valeurs de propriété par défaut.</summary>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.#ctor(System.Threading.LockRecursionPolicy)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.ReaderWriterLockSlim" />, en spécifiant la stratégie de récurrence du verrou.</summary>
+      <param name="recursionPolicy">Une des valeurs d'énumération qui spécifie la stratégie de récurrence du verrou. </param>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.CurrentReadCount">
+      <summary>Obtient le nombre total de threads uniques qui ont entré le verrou en mode lecture.</summary>
+      <returns>Nombre de threads uniques qui ont entré le verrou en mode lecture.</returns>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.Dispose">
+      <summary>Libère toutes les ressources utilisées par l'instance actuelle de la classe <see cref="T:System.Threading.ReaderWriterLockSlim" />.</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">
+        <see cref="P:System.Threading.ReaderWriterLockSlim.WaitingReadCount" /> is greater than zero. -or-<see cref="P:System.Threading.ReaderWriterLockSlim.WaitingUpgradeCount" /> is greater than zero. -or-<see cref="P:System.Threading.ReaderWriterLockSlim.WaitingWriteCount" /> is greater than zero. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.EnterReadLock">
+      <summary>Essaie d'entrer le verrou en mode lecture.</summary>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered read mode. -or-The current thread may not acquire the read lock when it already holds the write lock. -or-The recursion number would exceed the capacity of the counter.This limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.EnterUpgradeableReadLock">
+      <summary>Essaie d'entrer le verrou en mode pouvant être mis à niveau.</summary>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock in any mode. -or-The current thread has entered read mode, so trying to enter upgradeable mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.EnterWriteLock">
+      <summary>Essaie d'entrer le verrou en mode écriture.</summary>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock in any mode. -or-The current thread has entered read mode, so trying to enter the lock in write mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.ExitReadLock">
+      <summary>Réduit le nombre de récurrences pour le mode lecture, et quitte le mode lecture si le nombre résultant est 0 (zéro).</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">The current thread has not entered the lock in read mode. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.ExitUpgradeableReadLock">
+      <summary>Réduit le nombre de récurrences pour le mode pouvant être mis à niveau, et quitte le mode pouvant être mis à niveau si le nombre résultant est 0 (zéro).</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">The current thread has not entered the lock in upgradeable mode.</exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.ExitWriteLock">
+      <summary>Réduit le nombre de récurrences pour le mode écriture, et quitte le mode écriture si le nombre résultant est 0 (zéro).</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">The current thread has not entered the lock in write mode.</exception>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.IsReadLockHeld">
+      <summary>Obtient une valeur qui indique si le thread actuel a entré le verrou en mode lecture.</summary>
+      <returns>true si le thread actuel a entré le verrou en mode lecture ; sinon, false.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.IsUpgradeableReadLockHeld">
+      <summary>Obtient une valeur qui indique si le thread actuel a entré le verrou en mode pouvant être mis à niveau. </summary>
+      <returns>true si le thread actuel a entré le verrou en mode pouvant être mis à niveau ; sinon, false.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.IsWriteLockHeld">
+      <summary>Obtient une valeur qui indique si le thread actuel a entré le verrou en mode écriture.</summary>
+      <returns>true si le thread actuel a entré le verrou en mode écriture ; sinon, false.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy">
+      <summary>Obtient une valeur qui indique la stratégie de récurrence pour l'objet <see cref="T:System.Threading.ReaderWriterLockSlim" /> actuel.</summary>
+      <returns>Une des valeurs d'énumération qui spécifie la stratégie de récurrence du verrou.</returns>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.RecursiveReadCount">
+      <summary>Obtient le nombre de fois où le thread actuel a entré le verrou en mode lecture, comme une indication de récurrence.</summary>
+      <returns>0 (zéro) si le thread actuel n'a pas entré le verrou en mode lecture, 1 si le thread a entré le verrou en mode lecture mais pas de façon récursive, ou n si le thread a entré le verrou de façon récursive n - 1 fois.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.RecursiveUpgradeCount">
+      <summary>Obtient le nombre de fois où le thread actuel a entré le verrou en mode pouvant être mis à niveau, comme une indication de récurrence.</summary>
+      <returns>0 si le thread actuel n'a pas entré le verrou en mode pouvant être mis à niveau, 1 si le thread a entré le verrou en mode pouvant être mis à niveau mais pas de façon récursive, ou n si le thread a entré le verrou en mode pouvant être mis à niveau de façon récursive n - 1 fois.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.RecursiveWriteCount">
+      <summary>Obtient le nombre de fois où le thread actuel a entré le verrou en mode écriture, comme une indication de récurrence.</summary>
+      <returns>0 si le n si le thread a entré le verrou en mode écriture de façon récursive n - 1 fois.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterReadLock(System.Int32)">
+      <summary>Essaie d'entrer le verrou en mode lecture, avec un délai d'attente entier facultatif.</summary>
+      <returns>true si le thread appelant est entré en mode lecture, sinon, false.</returns>
+      <param name="millisecondsTimeout">Nombre de millisecondes à attendre, ou <see cref="F:System.Threading.Timeout.Infinite" /> (-1) pour un délai d'attente infini.</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="millisecondsTimeout" /> is negative, but it is not equal to <see cref="F:System.Threading.Timeout.Infinite" /> (-1), which is the only negative value allowed. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterReadLock(System.TimeSpan)">
+      <summary>Essaie d'entrer le verrou en mode lecture, avec un délai d'attente facultatif.</summary>
+      <returns>true si le thread appelant est entré en mode lecture, sinon, false.</returns>
+      <param name="timeout">Intervalle d'attente, ou -1 milliseconde pour un délai d'attente infini. </param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="timeout" /> is negative, but it is not equal to -1 milliseconds, which is the only negative value allowed.-or-The value of <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" /> milliseconds. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterUpgradeableReadLock(System.Int32)">
+      <summary>Essaie d'entrer le verrou en mode pouvant être mis à niveau, avec un délai d'attente facultatif.</summary>
+      <returns>true si le thread appelant est entré en mode de mise à niveau, sinon, false.</returns>
+      <param name="millisecondsTimeout">Nombre de millisecondes à attendre, ou <see cref="F:System.Threading.Timeout.Infinite" /> (-1) pour un délai d'attente infini.</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The current thread initially entered the lock in read mode, and therefore trying to enter upgradeable mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="millisecondsTimeout" /> is negative, but it is not equal to <see cref="F:System.Threading.Timeout.Infinite" /> (-1), which is the only negative value allowed. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterUpgradeableReadLock(System.TimeSpan)">
+      <summary>Essaie d'entrer le verrou en mode pouvant être mis à niveau, avec un délai d'attente facultatif.</summary>
+      <returns>true si le thread appelant est entré en mode de mise à niveau, sinon, false.</returns>
+      <param name="timeout">Intervalle d'attente, ou -1 milliseconde pour un délai d'attente infini.</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The current thread initially entered the lock in read mode, and therefore trying to enter upgradeable mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="timeout" /> is negative, but it is not equal to -1 milliseconds, which is the only negative value allowed.-or-The value of <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" /> milliseconds. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterWriteLock(System.Int32)">
+      <summary>Essaie d'entrer le verrou en mode écriture, avec un délai d'attente facultatif.</summary>
+      <returns>true si le thread appelant est entré en mode écriture, sinon, false.</returns>
+      <param name="millisecondsTimeout">Nombre de millisecondes à attendre, ou <see cref="F:System.Threading.Timeout.Infinite" /> (-1) pour un délai d'attente infini.</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The current thread initially entered the lock in read mode, and therefore trying to enter write mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="millisecondsTimeout" /> is negative, but it is not equal to <see cref="F:System.Threading.Timeout.Infinite" /> (-1), which is the only negative value allowed. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterWriteLock(System.TimeSpan)">
+      <summary>Essaie d'entrer le verrou en mode écriture, avec un délai d'attente facultatif.</summary>
+      <returns>true si le thread appelant est entré en mode écriture, sinon, false.</returns>
+      <param name="timeout">Intervalle d'attente, ou -1 milliseconde pour un délai d'attente infini.</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The current thread initially entered the lock in read mode, and therefore trying to enter write mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="timeout" /> is negative, but it is not equal to -1 milliseconds, which is the only negative value allowed.-or-The value of <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" /> milliseconds. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.WaitingReadCount">
+      <summary>Obtient le nombre total de threads qui attendent pour entrer le verrou en mode lecture.</summary>
+      <returns>Nombre total de threads qui attendent pour entrer en mode lecture.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.WaitingUpgradeCount">
+      <summary>Obtient le nombre total de threads qui attendent pour entrer le verrou en mode pouvant être mis à niveau.</summary>
+      <returns>Nombre total de threads qui attendent pour entrer en mode pouvant être mis à niveau.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.WaitingWriteCount">
+      <summary>Obtient le nombre total de threads qui attendent pour entrer le verrou en mode écriture.</summary>
+      <returns>Nombre total de threads qui attendent pour entrer en mode écriture.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.Semaphore">
+      <summary>Limite le nombre des threads qui peuvent accéder simultanément à une ressource ou un pool de ressources. </summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Semaphore.#ctor(System.Int32,System.Int32)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.Semaphore" /> en spécifiant le nombre initial d'entrées et le nombre maximal d'entrées simultanées. </summary>
+      <param name="initialCount">Nombre initial de demandes pour le sémaphore qui peuvent être accordées simultanément. </param>
+      <param name="maximumCount">Nombre maximal de demandes pour le sémaphore qui peuvent être accordées simultanément. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="initialCount" /> est supérieur à <paramref name="maximumCount" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="maximumCount" /> est inférieur à 1.ou<paramref name="initialCount" /> est inférieur à 0.</exception>
+    </member>
+    <member name="M:System.Threading.Semaphore.#ctor(System.Int32,System.Int32,System.String)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.Semaphore" /> en spécifiant le nombre initial d'entrées et le nombre maximal d'entrées simultanées, et en spécifiant en option le nom d'un objet sémaphore système. </summary>
+      <param name="initialCount">Nombre initial de demandes pour le sémaphore qui peuvent être accordées simultanément. </param>
+      <param name="maximumCount">Nombre maximal de demandes pour le sémaphore qui peuvent être accordées simultanément.</param>
+      <param name="name">Nom d'un objet de sémaphore système nommé.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="initialCount" /> est supérieur à <paramref name="maximumCount" />.ou<paramref name="name" /> est plus de 260 caractères.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="maximumCount" /> est inférieur à 1.ou<paramref name="initialCount" /> est inférieur à 0.</exception>
+      <exception cref="T:System.IO.IOException">Une erreur Win32 s'est produite.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Le sémaphore nommé existe et possède la sécurité du contrôle d'accès, et l'utilisateur n'a pas <see cref="F:System.Security.AccessControl.SemaphoreRights.FullControl" />.</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">Le sémaphore nommé ne peut pas être créé, peut-être parce qu'un handle d'attente d'un type différent possède le même nom.</exception>
+    </member>
+    <member name="M:System.Threading.Semaphore.#ctor(System.Int32,System.Int32,System.String,System.Boolean@)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.Semaphore" /> en spécifiant le nombre initial d'entrées et le nombre maximal d'entrées simultanées, en spécifiant en option le nom d'un objet sémaphore système et en spécifiant une variable qui reçoit une valeur indiquant si un sémaphore système a été créé.</summary>
+      <param name="initialCount">Nombre initial de demandes pour le sémaphore qui peut être satisfait simultanément. </param>
+      <param name="maximumCount">Nombre maximal de demandes pour le sémaphore qui peut être satisfait simultanément.</param>
+      <param name="name">Nom d'un objet de sémaphore système nommé.</param>
+      <param name="createdNew">Cette méthode retourne true si un sémaphore local a été créé (en d'autres termes, si <paramref name="name" /> est null ou une chaîne vide) ou si le sémaphore système nommé spécifié a été créé ; false si le sémaphore système nommé spécifié existait déjà.Ce paramètre est passé sans être initialisé.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="initialCount" /> est supérieur à <paramref name="maximumCount" />. ou<paramref name="name" /> est plus de 260 caractères.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="maximumCount" /> est inférieur à 1.ou<paramref name="initialCount" /> est inférieur à 0.</exception>
+      <exception cref="T:System.IO.IOException">Une erreur Win32 s'est produite.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Le sémaphore nommé existe et possède la sécurité du contrôle d'accès, et l'utilisateur n'a pas <see cref="F:System.Security.AccessControl.SemaphoreRights.FullControl" />.</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">Le sémaphore nommé ne peut pas être créé, peut-être parce qu'un handle d'attente d'un type différent possède le même nom.</exception>
+    </member>
+    <member name="M:System.Threading.Semaphore.OpenExisting(System.String)">
+      <summary>Ouvre le sémaphore nommé spécifié s'il existe déjà.</summary>
+      <returns>Objet qui représente le sémaphore système nommé.</returns>
+      <param name="name">Nom du sémaphore système à ouvrir.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> est une chaîne vide.ou<paramref name="name" /> est plus de 260 caractères.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> a la valeur null.</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">Le sémaphore nommé n'existe pas.</exception>
+      <exception cref="T:System.IO.IOException">Une erreur Win32 s'est produite.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Le sémaphore nommé existe, mais l'utilisateur ne possède pas l'accès de sécurité requis pour l'utiliser. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Threading.Semaphore.Release">
+      <summary>Quitte le sémaphore et retourne le compteur antérieur.</summary>
+      <returns>Compteur du sémaphore avant appel de la méthode <see cref="Overload:System.Threading.Semaphore.Release" />. </returns>
+      <exception cref="T:System.Threading.SemaphoreFullException">Le compteur du sémaphore est déjà à la valeur maximale.</exception>
+      <exception cref="T:System.IO.IOException">Une erreur Win32 s'est produite avec un sémaphore nommé.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Le sémaphore actuel représente un sémaphore système nommé, mais l'utilisateur ne détient pas de droits <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" />.ouLe sémaphore actuel représente un sémaphore système nommé, mais il n'a pas été ouvert avec des droits <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Semaphore.Release(System.Int32)">
+      <summary>Quitte le sémaphore un nombre spécifié de fois et retourne le compteur précédent.</summary>
+      <returns>Compteur du sémaphore avant appel de la méthode <see cref="Overload:System.Threading.Semaphore.Release" />. </returns>
+      <param name="releaseCount">Nombre de fois où quitter le sémaphore.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="releaseCount" /> est inférieur à 1.</exception>
+      <exception cref="T:System.Threading.SemaphoreFullException">Le compteur du sémaphore est déjà à la valeur maximale.</exception>
+      <exception cref="T:System.IO.IOException">Une erreur Win32 s'est produite avec un sémaphore nommé.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Le sémaphore actuel représente un sémaphore système nommé, mais l'utilisateur ne détient pas de droits <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" />.ouLe sémaphore actuel représente un sémaphore système nommé, mais il n'a pas été ouvert avec des droits <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Semaphore.TryOpenExisting(System.String,System.Threading.Semaphore@)">
+      <summary>Ouvre le sémaphore nommé spécifié, s'il existe déjà, et retourne une valeur indiquant si l'opération a réussi.</summary>
+      <returns>true si le sémaphore nommé a été ouvert ; sinon, false.</returns>
+      <param name="name">Nom du sémaphore système à ouvrir.</param>
+      <param name="result">Quand cette méthode est retournée, contient un objet <see cref="T:System.Threading.Semaphore" /> qui représente le sémaphore nommé si l'appel a réussi, ou null si l'appel a échoué.Ce paramètre est traité comme étant non initialisé.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> est une chaîne vide.ou<paramref name="name" /> est plus de 260 caractères.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> a la valeur null.</exception>
+      <exception cref="T:System.IO.IOException">Une erreur Win32 s'est produite.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Le sémaphore nommé existe, mais l'utilisateur ne possède pas l'accès de sécurité requis pour l'utiliser. </exception>
+    </member>
+    <member name="T:System.Threading.SemaphoreFullException">
+      <summary>Exception levée lorsque la méthode <see cref="Overload:System.Threading.Semaphore.Release" /> est appelée sur un sémaphore dont le compteur est déjà au maximum. </summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SemaphoreFullException.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.SemaphoreFullException" /> avec les valeurs par défaut.</summary>
+    </member>
+    <member name="M:System.Threading.SemaphoreFullException.#ctor(System.String)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.SemaphoreFullException" /> avec un message d'erreur spécifié.</summary>
+      <param name="message">Message d'erreur indiquant la raison de l'exception.</param>
+    </member>
+    <member name="M:System.Threading.SemaphoreFullException.#ctor(System.String,System.Exception)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.SemaphoreFullException" /> avec un message d'erreur spécifié et une référence à l'exception interne ayant provoqué cette exception.</summary>
+      <param name="message">Message d'erreur indiquant la raison de l'exception.</param>
+      <param name="innerException">Exception qui constitue la cause de l'exception actuelle.Si le paramètre <paramref name="innerException" /> n'est pas null, l'exception en cours est levée dans un bloc catch qui gère l'exception interne.</param>
+    </member>
+    <member name="T:System.Threading.SemaphoreSlim">
+      <summary>Représente une alternative légère à <see cref="T:System.Threading.Semaphore" /> qui limite le nombre de threads pouvant accéder simultanément à une ressource ou à un pool de ressources.</summary>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.#ctor(System.Int32)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.SemaphoreSlim" />, en spécifiant le nombre initial de demandes qui peuvent être accordées simultanément.</summary>
+      <param name="initialCount">Nombre initial de demandes pour le sémaphore qui peuvent être accordées simultanément.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="initialCount" /> est inférieur à 0.</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.#ctor(System.Int32,System.Int32)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.SemaphoreSlim" />, en spécifiant le nombre initial et le nombre maximal de demandes qui peuvent être accordées simultanément.</summary>
+      <param name="initialCount">Nombre initial de demandes pour le sémaphore qui peuvent être accordées simultanément.</param>
+      <param name="maxCount">Nombre maximal de demandes pour le sémaphore qui peuvent être accordées simultanément.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="initialCount" /> est inférieur à 0 ou <paramref name="initialCount" /> est supérieur à <paramref name="maxCount" /> ou <paramref name="maxCount" /> est inférieur ou égal à 0.</exception>
+    </member>
+    <member name="P:System.Threading.SemaphoreSlim.AvailableWaitHandle">
+      <summary>Retourne un <see cref="T:System.Threading.WaitHandle" /> qui peut être utilisé pour l'attente sur le sémaphore.</summary>
+      <returns>
+        <see cref="T:System.Threading.WaitHandle" /> qui peut être utilisé pour l'attente sur le sémaphore.</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Threading.SemaphoreSlim" /> a été supprimé.</exception>
+    </member>
+    <member name="P:System.Threading.SemaphoreSlim.CurrentCount">
+      <summary>Obtient le nombre de threads restants qui peuvent accéder à l'objet <see cref="T:System.Threading.SemaphoreSlim" />. </summary>
+      <returns>Nombre de threads restants qui peuvent accéder au sémaphore.</returns>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Dispose">
+      <summary>Libère toutes les ressources utilisées par l'instance actuelle de la classe <see cref="T:System.Threading.SemaphoreSlim" />.</summary>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Dispose(System.Boolean)">
+      <summary>Libère les ressources non managées utilisées par le <see cref="T:System.Threading.SemaphoreSlim" />, et libère éventuellement les ressources managées.</summary>
+      <param name="disposing">true pour libérer les ressources managées et non managées ; false pour ne libérer que les ressources non managées.</param>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Release">
+      <summary>Libère l'objet <see cref="T:System.Threading.SemaphoreSlim" /> une seule fois.</summary>
+      <returns>Décompte précédent de <see cref="T:System.Threading.SemaphoreSlim" />.</returns>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+      <exception cref="T:System.Threading.SemaphoreFullException">Le <see cref="T:System.Threading.SemaphoreSlim" /> a déjà atteint sa taille maximale.</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Release(System.Int32)">
+      <summary>Libère l'objet <see cref="T:System.Threading.SemaphoreSlim" /> un nombre de fois déterminé.</summary>
+      <returns>Décompte précédent de <see cref="T:System.Threading.SemaphoreSlim" />.</returns>
+      <param name="releaseCount">Nombre de fois où quitter le sémaphore.</param>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="releaseCount" /> est inférieur à 1.</exception>
+      <exception cref="T:System.Threading.SemaphoreFullException">Le <see cref="T:System.Threading.SemaphoreSlim" /> a déjà atteint sa taille maximale.</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait">
+      <summary>Bloque le thread actuel jusqu'à ce qu'il puisse accéder à <see cref="T:System.Threading.SemaphoreSlim" />.</summary>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.Int32)">
+      <summary>Bloque le thread actuel jusqu'à ce qu'il puisse accéder à <see cref="T:System.Threading.SemaphoreSlim" />, à l'aide d'un entier signé 32 bits qui spécifie le délai d'attente.</summary>
+      <returns>true si le thread actuel a accédé avec succès à <see cref="T:System.Threading.SemaphoreSlim" /> ; sinon, false.</returns>
+      <param name="millisecondsTimeout">Nombre de millisecondes à attendre, ou <see cref="F:System.Threading.Timeout.Infinite" /> (-1) pour un délai d'attente infini.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> est un nombre négatif autre que -1, qui représente un délai d'attente infini.</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.Int32,System.Threading.CancellationToken)">
+      <summary>Bloque le thread actuel jusqu'à ce qu'il puisse accéder à <see cref="T:System.Threading.SemaphoreSlim" />, à l'aide d'un entier signé 32 bits qui spécifie le délai d'attente, tout en observant un <see cref="T:System.Threading.CancellationToken" />.</summary>
+      <returns>true si le thread actuel a accédé avec succès à <see cref="T:System.Threading.SemaphoreSlim" /> ; sinon, false.</returns>
+      <param name="millisecondsTimeout">Nombre de millisecondes à attendre, ou <see cref="F:System.Threading.Timeout.Infinite" /> (-1) pour un délai d'attente infini.</param>
+      <param name="cancellationToken">
+        <see cref="T:System.Threading.CancellationToken" /> à observer.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> a été annulé.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> est un nombre négatif autre que -1, qui représente un délai d'attente infini.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le <see cref="T:System.Threading.SemaphoreSlim" /> instance a été supprimée, ou <see cref="T:System.Threading.CancellationTokenSource" /> qui créé <paramref name="cancellationToken" /> a été supprimé.</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.Threading.CancellationToken)">
+      <summary>Bloque le thread actuel jusqu'à ce qu'il puisse accéder à <see cref="T:System.Threading.SemaphoreSlim" />, tout en observant un <see cref="T:System.Threading.CancellationToken" />.</summary>
+      <param name="cancellationToken">Jeton <see cref="T:System.Threading.CancellationToken" /> à observer.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> a été annulé.</exception>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.ouLes <see cref="T:System.Threading.CancellationTokenSource" /> créés<paramref name=" cancellationToken" /> a déjà été supprimé.</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.TimeSpan)">
+      <summary>Bloque le thread actuel jusqu'à ce qu'il puisse accéder à <see cref="T:System.Threading.SemaphoreSlim" />, à l'aide d'un <see cref="T:System.TimeSpan" /> pour spécifier le délai d'attente.</summary>
+      <returns>true si le thread actuel a accédé avec succès à <see cref="T:System.Threading.SemaphoreSlim" /> ; sinon, false.</returns>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" /> qui représente le nombre de millisecondes à attendre ou <see cref="T:System.TimeSpan" /> qui représente -1 milliseconde de seconde, pour attendre indéfiniment.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> est un nombre négatif autre que -1 millisecondes, qui représente un délai d'expiration infini - ou - le délai d'attente est supérieur à <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">L'instance de semaphoreSlim a été supprimée<paramref name="." /></exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>Bloque le thread actuel jusqu'à ce qu'il puisse accéder à <see cref="T:System.Threading.SemaphoreSlim" />, à l'aide d'un <see cref="T:System.TimeSpan" /> qui spécifie le délai d'attente, tout en observant un <see cref="T:System.Threading.CancellationToken" />.</summary>
+      <returns>true si le thread actuel a accédé avec succès à <see cref="T:System.Threading.SemaphoreSlim" /> ; sinon, false.</returns>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" /> qui représente le nombre de millièmes de secondes à attendre ou <see cref="T:System.TimeSpan" /> qui représente -1 millième de seconde, pour attendre indéfiniment.</param>
+      <param name="cancellationToken">
+        <see cref="T:System.Threading.CancellationToken" /> à observer.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> a été annulé.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> est un nombre négatif autre que -1 millisecondes, qui représente un délai d'expiration infini - ou - le délai d'attente est supérieur à <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">L'instance de semaphoreSlim a été supprimée<paramref name="." /><paramref name="-or-" />Le <see cref="T:System.Threading.CancellationTokenSource" /> qui a créé <paramref name="cancellationToken" /> a déjà été supprimé.</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync">
+      <summary>Attend de façon asynchrone avant d'accéder à <see cref="T:System.Threading.SemaphoreSlim" />. </summary>
+      <returns>Tâche qui se termine après l'accès au sémaphore.</returns>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.Int32)">
+      <summary>Attend de façon asynchrone d'accéder à <see cref="T:System.Threading.SemaphoreSlim" />, à l'aide d'un entier signé 32 bits pour mesurer l'intervalle de temps. </summary>
+      <returns>Tâche qui se termine avec une valeur true si le thread actuel accède correctement à <see cref="T:System.Threading.SemaphoreSlim" />, sinon la valeur false est retournée.</returns>
+      <param name="millisecondsTimeout">Nombre de millisecondes à attendre, ou <see cref="F:System.Threading.Timeout.Infinite" /> (-1) pour un délai d'attente infini.</param>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> est un nombre négatif autre que -1, qui représente un délai d'attente infini.</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.Int32,System.Threading.CancellationToken)">
+      <summary>Attend de façon asynchrone d'accéder à <see cref="T:System.Threading.SemaphoreSlim" />, à l'aide d'un entier signé 32 bits pour mesurer l'intervalle de temps, tout en observant un <see cref="T:System.Threading.CancellationToken" />. </summary>
+      <returns>Tâche qui se termine avec une valeur true si le thread actuel accède correctement à <see cref="T:System.Threading.SemaphoreSlim" />, sinon la valeur false est retournée. </returns>
+      <param name="millisecondsTimeout">Nombre de millisecondes à attendre, ou <see cref="F:System.Threading.Timeout.Infinite" /> (-1) pour un délai d'attente infini.</param>
+      <param name="cancellationToken">
+        <see cref="T:System.Threading.CancellationToken" /> à observer.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> est un nombre négatif autre que -1, qui représente un délai d'attente infini. </exception>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée. </exception>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> a été annulé. </exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.Threading.CancellationToken)">
+      <summary>Attend de façon asynchrone d'accéder à <see cref="T:System.Threading.SemaphoreSlim" />, tout en observant un <see cref="T:System.Threading.CancellationToken" />. </summary>
+      <returns>Tâche qui se termine après l'accès au sémaphore. </returns>
+      <param name="cancellationToken">Jeton <see cref="T:System.Threading.CancellationToken" /> à observer.</param>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> a été annulé. </exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.TimeSpan)">
+      <summary>Attend de façon asynchrone d'accéder à <see cref="T:System.Threading.SemaphoreSlim" />, à l'aide d'un <see cref="T:System.TimeSpan" /> pour mesurer l'intervalle de temps.</summary>
+      <returns>Tâche qui se termine avec une valeur true si le thread actuel accède correctement à <see cref="T:System.Threading.SemaphoreSlim" />, sinon la valeur false est retournée.</returns>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" /> qui représente le nombre de millisecondes à attendre ou <see cref="T:System.TimeSpan" /> qui représente -1 milliseconde de seconde, pour attendre indéfiniment.</param>
+      <exception cref="T:System.ObjectDisposedException">L'instance actuelle a déjà été supprimée.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> est un nombre négatif autre que -1, qui représente un délai d'attente infini. ou délai d'attente supérieur à <see cref="F:System.Int32.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>Attend de façon asynchrone d'accéder à <see cref="T:System.Threading.SemaphoreSlim" />, à l'aide d'un <see cref="T:System.TimeSpan" /> pour mesurer l'intervalle de temps, tout en observant un <see cref="T:System.Threading.CancellationToken" />.</summary>
+      <returns>Tâche qui se termine avec une valeur true si le thread actuel accède correctement à <see cref="T:System.Threading.SemaphoreSlim" />, sinon la valeur false est retournée.</returns>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" /> qui représente le nombre de millièmes de secondes à attendre ou <see cref="T:System.TimeSpan" /> qui représente -1 millième de seconde, pour attendre indéfiniment.</param>
+      <param name="cancellationToken">Jeton <see cref="T:System.Threading.CancellationToken" /> à observer.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> est un nombre négatif autre que -1, qui représente un délai d'attente infini.oudélai d'attente supérieur à <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> a été annulé. </exception>
+    </member>
+    <member name="T:System.Threading.SendOrPostCallback">
+      <summary>Représente une méthode à appeler lorsqu'un message doit être distribué à un contexte de synchronisation.  </summary>
+      <param name="state">Objet passé au délégué.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.SpinLock">
+      <summary>Fournit une primitive de verrou d'exclusion mutuelle où un thread qui tente d'acquérir le verrou attend dans une boucle en vérifiant de manière répétée jusqu'à ce que le verrou devienne disponible.</summary>
+    </member>
+    <member name="M:System.Threading.SpinLock.#ctor(System.Boolean)">
+      <summary>Initialise une nouvelle instance de la structure de <see cref="T:System.Threading.SpinLock" /> avec l'option permettant de suivre les ID de thread afin d'améliorer le débogage.</summary>
+      <param name="enableThreadOwnerTracking">Indique s'il faut capturer et utiliser des ID de thread à des fins de débogage.</param>
+    </member>
+    <member name="M:System.Threading.SpinLock.Enter(System.Boolean@)">
+      <summary>Acquiert le verrou de façon fiable, de sorte que même si une exception se produit dans l'appel de méthode, <paramref name="lockTaken" /> peut être examiné de façon fiable pour déterminer si le verrou a été acquis.</summary>
+      <param name="lockTaken">True si le verrou est acquis ; sinon, false.<paramref name="lockTaken" /> doit être initialisé avec la valeur false avant l'appel à cette méthode.</param>
+      <exception cref="T:System.ArgumentException">L'argument <paramref name="lockTaken" /> doit être initialisé sur false avant d'appeler ENTRÉE.</exception>
+      <exception cref="T:System.Threading.LockRecursionException">Le suivi de la propriété du thread est activé et le thread actuel a déjà acquis ce verrou.</exception>
+    </member>
+    <member name="M:System.Threading.SpinLock.Exit">
+      <summary>Libère le verrou.</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">Le suivi de la propriété du thread est autorisé, et le thread actuel n'est pas le propriétaire de ce verrou.</exception>
+    </member>
+    <member name="M:System.Threading.SpinLock.Exit(System.Boolean)">
+      <summary>Libère le verrou.</summary>
+      <param name="useMemoryBarrier">Valeur booléenne qui indique si une barrière mémoire doit être émise pour publier immédiatement l'opération de sortie sur d'autres threads.</param>
+      <exception cref="T:System.Threading.SynchronizationLockException">Le suivi de la propriété du thread est autorisé, et le thread actuel n'est pas le propriétaire de ce verrou.</exception>
+    </member>
+    <member name="P:System.Threading.SpinLock.IsHeld">
+      <summary>Obtient une valeur qui indique si le verrou est actuellement détenu par un thread.</summary>
+      <returns>True si le verrou est actuellement détenu par un thread ; sinon, false.</returns>
+    </member>
+    <member name="P:System.Threading.SpinLock.IsHeldByCurrentThread">
+      <summary>Obtient une valeur qui indique si le verrou est détenu par le thread actuel.</summary>
+      <returns>True si le verrou est détenu par le thread actuel ; sinon, false.</returns>
+      <exception cref="T:System.InvalidOperationException">Le suivi de la propriété du thread est désactivé.</exception>
+    </member>
+    <member name="P:System.Threading.SpinLock.IsThreadOwnerTrackingEnabled">
+      <summary>Obtient une valeur qui indique si le suivi de la propriété des threads est activé pour cette instance.</summary>
+      <returns>True si le suivi de la propriété du thread est autorisé pour cette instance ; sinon, false.</returns>
+    </member>
+    <member name="M:System.Threading.SpinLock.TryEnter(System.Boolean@)">
+      <summary>Tente d'acquérir le verrou de façon fiable, de sorte que même si une exception se produit dans l'appel de méthode, <paramref name="lockTaken" /> peut être examiné de façon fiable pour déterminer si le verrou a été acquis.</summary>
+      <param name="lockTaken">True si le verrou est acquis ; sinon, false.<paramref name="lockTaken" /> doit être initialisé avec la valeur false avant l'appel à cette méthode.</param>
+      <exception cref="T:System.ArgumentException">L'argument <paramref name="lockTaken" /> doit être initialisé sur false avant d'appeler TryEnter.</exception>
+      <exception cref="T:System.Threading.LockRecursionException">Le suivi de la propriété du thread est activé et le thread actuel a déjà acquis ce verrou.</exception>
+    </member>
+    <member name="M:System.Threading.SpinLock.TryEnter(System.Int32,System.Boolean@)">
+      <summary>Tente d'acquérir le verrou de façon fiable, de sorte que même si une exception se produit dans l'appel de méthode, <paramref name="lockTaken" /> peut être examiné de façon fiable pour déterminer si le verrou a été acquis.</summary>
+      <param name="millisecondsTimeout">Nombre de millisecondes à attendre, ou <see cref="F:System.Threading.Timeout.Infinite" /> (-1) pour un délai d'attente infini.</param>
+      <param name="lockTaken">True si le verrou est acquis ; sinon, false.<paramref name="lockTaken" /> doit être initialisé avec la valeur false avant l'appel à cette méthode.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> est un nombre négatif autre que -1, qui représente un délai d'attente infini.</exception>
+      <exception cref="T:System.ArgumentException">L'argument <paramref name="lockTaken" /> doit être initialisé sur false avant d'appeler TryEnter.</exception>
+      <exception cref="T:System.Threading.LockRecursionException">Le suivi de la propriété du thread est activé et le thread actuel a déjà acquis ce verrou.</exception>
+    </member>
+    <member name="M:System.Threading.SpinLock.TryEnter(System.TimeSpan,System.Boolean@)">
+      <summary>Tente d'acquérir le verrou de façon fiable, de sorte que même si une exception se produit dans l'appel de méthode, <paramref name="lockTaken" /> peut être examiné de façon fiable pour déterminer si le verrou a été acquis.</summary>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" /> qui représente le nombre de millièmes de secondes à attendre ou <see cref="T:System.TimeSpan" /> qui représente - 1 millième de seconde, pour attendre indéfiniment.</param>
+      <param name="lockTaken">True si le verrou est acquis ; sinon, false.<paramref name="lockTaken" /> doit être initialisé avec la valeur false avant l'appel à cette méthode.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> est un nombre négatif autre que -1 milliseconde, qui représente un délai d'attente infini - ou - le délai d'attente est supérieur à <see cref="F:System.Int32.MaxValue" /> millisecondes.</exception>
+      <exception cref="T:System.ArgumentException">L'argument <paramref name="lockTaken" /> doit être initialisé sur false avant d'appeler TryEnter.</exception>
+      <exception cref="T:System.Threading.LockRecursionException">Le suivi de la propriété du thread est activé et le thread actuel a déjà acquis ce verrou.</exception>
+    </member>
+    <member name="T:System.Threading.SpinWait">
+      <summary>Fournit une prise en charge de l'attente basée sur les spins.</summary>
+    </member>
+    <member name="P:System.Threading.SpinWait.Count">
+      <summary>Obtient le nombre de fois où <see cref="M:System.Threading.SpinWait.SpinOnce" /> a été appelé sur cette instance.</summary>
+      <returns>Retourne un entier qui représente le nombre d'appels de <see cref="M:System.Threading.SpinWait.SpinOnce" /> sur cette instance.</returns>
+    </member>
+    <member name="P:System.Threading.SpinWait.NextSpinWillYield">
+      <summary>Obtient une valeur qui indique si l'appel suivant à <see cref="M:System.Threading.SpinWait.SpinOnce" /> générera le processeur, en déclenchant un changement de contexte forcé.</summary>
+      <returns>Indique si l'appel suivant à <see cref="M:System.Threading.SpinWait.SpinOnce" /> générera le processeur, en déclenchant un changement de contexte forcé.</returns>
+    </member>
+    <member name="M:System.Threading.SpinWait.Reset">
+      <summary>Réinitialise le compteur de spins.</summary>
+    </member>
+    <member name="M:System.Threading.SpinWait.SpinOnce">
+      <summary>Exécute un seul spin.</summary>
+    </member>
+    <member name="M:System.Threading.SpinWait.SpinUntil(System.Func{System.Boolean})">
+      <summary>Effectue des spins jusqu'à ce que la condition spécifiée soit satisfaite.</summary>
+      <param name="condition">Délégué à exécuter de façon répétée jusqu'à ce qu'il retourne la valeur true.</param>
+      <exception cref="T:System.ArgumentNullException">L'argument <paramref name="condition" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Threading.SpinWait.SpinUntil(System.Func{System.Boolean},System.Int32)">
+      <summary>Effectue des spins jusqu'à ce que la condition spécifiée soit satisfaite ou jusqu'à ce que le délai d'attente expire.</summary>
+      <returns>True si la condition est satisfaite dans le délai d'attente ; sinon, false.</returns>
+      <param name="condition">Délégué à exécuter de façon répétée jusqu'à ce qu'il retourne la valeur true.</param>
+      <param name="millisecondsTimeout">Nombre de millisecondes à attendre, ou <see cref="F:System.Threading.Timeout.Infinite" /> (-1) pour un délai d'attente infini.</param>
+      <exception cref="T:System.ArgumentNullException">L'argument <paramref name="condition" /> a la valeur null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> est un nombre négatif autre que -1, qui représente un délai d'attente infini.</exception>
+    </member>
+    <member name="M:System.Threading.SpinWait.SpinUntil(System.Func{System.Boolean},System.TimeSpan)">
+      <summary>Effectue des spins jusqu'à ce que la condition spécifiée soit satisfaite ou jusqu'à ce que le délai d'attente expire.</summary>
+      <returns>True si la condition est satisfaite dans le délai d'attente ; sinon, false.</returns>
+      <param name="condition">Délégué à exécuter de façon répétée jusqu'à ce qu'il retourne la valeur true.</param>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" /> qui représente le nombre de millièmes de secondes à attendre, ou TimeSpan qui représente -1 millième de seconde pour attendre indéfiniment.</param>
+      <exception cref="T:System.ArgumentNullException">L'argument <paramref name="condition" /> a la valeur null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> est un nombre négatif autre que -1 millisecondes, qui représente un délai d'expiration infini - ou - le délai d'attente est supérieur à <see cref="F:System.Int32.MaxValue" />.</exception>
+    </member>
+    <member name="T:System.Threading.SynchronizationContext">
+      <summary>Fournit les fonctionnalités de base pour propager un contexte de synchronisation dans plusieurs modèles de synchronisation. </summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.#ctor">
+      <summary>Crée une instance de la classe <see cref="T:System.Threading.SynchronizationContext" />.</summary>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.CreateCopy">
+      <summary>En cas de substitution dans une classe dérivée, crée une copie du contexte de synchronisation.  </summary>
+      <returns>Nouvel objet <see cref="T:System.Threading.SynchronizationContext" />.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.SynchronizationContext.Current">
+      <summary>Obtient le contexte de synchronisation du thread actuel.</summary>
+      <returns>Objet <see cref="T:System.Threading.SynchronizationContext" /> représentant le contexte de synchronisation actuel.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.OperationCompleted">
+      <summary>Lors d'une substitution dans une classe dérivée, répond à la notification selon laquelle une opération est terminée.</summary>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.OperationStarted">
+      <summary>Lors d'une substitution dans une classe dérivée, répond à la notification selon laquelle une opération est lancée.</summary>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.Post(System.Threading.SendOrPostCallback,System.Object)">
+      <summary>Lors d'une substitution dans une classe dérivée, distribue un message asynchrone à un contexte de synchronisation.</summary>
+      <param name="d">Délégué <see cref="T:System.Threading.SendOrPostCallback" /> à appeler.</param>
+      <param name="state">Objet passé au délégué.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.Send(System.Threading.SendOrPostCallback,System.Object)">
+      <summary>Lors d'une substitution dans une classe dérivée, distribue un message synchrone à un contexte de synchronisation.</summary>
+      <param name="d">Délégué <see cref="T:System.Threading.SendOrPostCallback" /> à appeler.</param>
+      <param name="state">Objet passé au délégué. </param>
+      <exception cref="T:System.NotSupportedException">The method was called in a Windows Store app.The implementation of <see cref="T:System.Threading.SynchronizationContext" /> for Windows Store apps does not support the <see cref="M:System.Threading.SynchronizationContext.Send(System.Threading.SendOrPostCallback,System.Object)" /> method.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.SetSynchronizationContext(System.Threading.SynchronizationContext)">
+      <summary>Définit le contexte de synchronisation actuel.</summary>
+      <param name="syncContext">Objet <see cref="T:System.Threading.SynchronizationContext" /> à définir.</param>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence, ControlPolicy" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Threading.SynchronizationLockException">
+      <summary>Exception levée lorsqu'une méthode exige de l'appelant qu'il possède un verrou sur un objet Monitor donné et que la méthode est appelée par un appelant qui ne possède pas ce verrou.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationLockException.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.SynchronizationLockException" /> avec des propriétés par défaut.</summary>
+    </member>
+    <member name="M:System.Threading.SynchronizationLockException.#ctor(System.String)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.SynchronizationLockException" /> avec un message d'erreur spécifié.</summary>
+      <param name="message">Message d'erreur indiquant la raison de l'exception. </param>
+    </member>
+    <member name="M:System.Threading.SynchronizationLockException.#ctor(System.String,System.Exception)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.SynchronizationLockException" /> avec un message d'erreur spécifié et une référence à l'exception interne ayant provoqué cette exception.</summary>
+      <param name="message">Message d'erreur indiquant la raison de l'exception. </param>
+      <param name="innerException">Exception qui constitue la cause de l'exception actuelle.Si le paramètre <paramref name="innerException" /> n'est pas null, l'exception en cours est levée dans un bloc catch qui gère l'exception interne.</param>
+    </member>
+    <member name="T:System.Threading.ThreadLocal`1">
+      <summary>Fournit le stockage local des données de thread.</summary>
+      <typeparam name="T">Spécifie le type de données stockées par thread.</typeparam>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.#ctor">
+      <summary>Initialise l'instance de <see cref="T:System.Threading.ThreadLocal`1" />.</summary>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.#ctor(System.Boolean)">
+      <summary>Initialise l'instance de <see cref="T:System.Threading.ThreadLocal`1" />.</summary>
+      <param name="trackAllValues">Indique s'il faut suivre toutes les valeurs définies dans l'instance et les exposer via la propriété <see cref="P:System.Threading.ThreadLocal`1.Values" />.</param>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.#ctor(System.Func{`0})">
+      <summary>Initialise l'instance de <see cref="T:System.Threading.ThreadLocal`1" /> avec la fonction <paramref name="valueFactory" /> spécifiée.</summary>
+      <param name="valueFactory">
+        <see cref="T:System.Func`1" /> appelé pour produire une valeur initialisée tardivement lorsqu'une tentative est effectuée pour récupérer <see cref="P:System.Threading.ThreadLocal`1.Value" /> sans qu'il ait été précédemment initialisé.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="valueFactory" /> est une référence null (Nothing en Visual Basic).</exception>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.#ctor(System.Func{`0},System.Boolean)">
+      <summary>Initialise l'instance de <see cref="T:System.Threading.ThreadLocal`1" /> avec la fonction <paramref name="valueFactory" /> spécifiée.</summary>
+      <param name="valueFactory">
+        <see cref="T:System.Func`1" /> appelé pour produire une valeur initialisée tardivement lorsqu'une tentative est effectuée pour récupérer <see cref="P:System.Threading.ThreadLocal`1.Value" /> sans qu'il ait été précédemment initialisé.</param>
+      <param name="trackAllValues">Indique s'il faut suivre toutes les valeurs définies dans l'instance et les exposer via la propriété <see cref="P:System.Threading.ThreadLocal`1.Values" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="valueFactory" /> est une référence null (Nothing en Visual Basic).</exception>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.Dispose">
+      <summary>Libère toutes les ressources utilisées par l'instance actuelle de la classe <see cref="T:System.Threading.ThreadLocal`1" />.</summary>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.Dispose(System.Boolean)">
+      <summary>Libère les ressources utilisées par cette instance de <see cref="T:System.Threading.ThreadLocal`1" />.</summary>
+      <param name="disposing">Valeur booléenne qui indique si cette méthode est appelée en raison d'un appel à <see cref="M:System.Threading.ThreadLocal`1.Dispose" />.</param>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.Finalize">
+      <summary>Libère les ressources utilisées par cette instance de <see cref="T:System.Threading.ThreadLocal`1" />.</summary>
+    </member>
+    <member name="P:System.Threading.ThreadLocal`1.IsValueCreated">
+      <summary>Obtient une valeur qui indique si <see cref="P:System.Threading.ThreadLocal`1.Value" /> est initialisé sur le thread actuel.</summary>
+      <returns>True si <see cref="P:System.Threading.ThreadLocal`1.Value" /> est initialisé sur le thread actuel ; sinon, false.</returns>
+      <exception cref="T:System.ObjectDisposedException">L'instance de <see cref="T:System.Threading.ThreadLocal`1" /> a été supprimée.</exception>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.ToString">
+      <summary>Crée et retourne une représentation sous forme de chaîne de cette instance pour le thread actuel.</summary>
+      <returns>Résultat de l'appel à <see cref="M:System.Object.ToString" /> sur <see cref="P:System.Threading.ThreadLocal`1.Value" />.</returns>
+      <exception cref="T:System.ObjectDisposedException">L'instance de <see cref="T:System.Threading.ThreadLocal`1" /> a été supprimée.</exception>
+      <exception cref="T:System.NullReferenceException">Le <see cref="P:System.Threading.ThreadLocal`1.Value" /> du thread actuel est une référence null (Nothing en Visual Basic).</exception>
+      <exception cref="T:System.InvalidOperationException">La fonction d'initialisation a tenté de référencer <see cref="P:System.Threading.ThreadLocal`1.Value" /> de manière récursive.</exception>
+      <exception cref="T:System.MissingMemberException">Aucun constructeur par défaut n'est fourni et aucune fabrique de valeurs n'est fournie.</exception>
+    </member>
+    <member name="P:System.Threading.ThreadLocal`1.Value">
+      <summary>Obtient ou définit la valeur de cette instance pour le thread actuel.</summary>
+      <returns>Retourne une instance de l'objet dont ce ThreadLocal est chargé de l'initialisation.</returns>
+      <exception cref="T:System.ObjectDisposedException">L'instance de <see cref="T:System.Threading.ThreadLocal`1" /> a été supprimée.</exception>
+      <exception cref="T:System.InvalidOperationException">La fonction d'initialisation a tenté de référencer <see cref="P:System.Threading.ThreadLocal`1.Value" /> de manière récursive.</exception>
+      <exception cref="T:System.MissingMemberException">Aucun constructeur par défaut n'est fourni et aucune fabrique de valeurs n'est fournie.</exception>
+    </member>
+    <member name="P:System.Threading.ThreadLocal`1.Values">
+      <summary>Obtient une liste de toutes les valeurs actuellement stockées par tous les threads qui ont accès à cette instance.</summary>
+      <returns>Liste de toutes les valeurs actuellement stockées par tous les threads qui ont accès à cette instance.</returns>
+      <exception cref="T:System.ObjectDisposedException">L'instance de <see cref="T:System.Threading.ThreadLocal`1" /> a été supprimée.</exception>
+    </member>
+    <member name="T:System.Threading.Volatile">
+      <summary>Contient des méthodes permettant d'effectuer des opérations de mémoire volatile.</summary>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Boolean@)">
+      <summary>Lit la valeur du champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de lecture ou d'écriture apparaît après cette méthode dans le code, le processeur ne peut pas la déplacer avant cette méthode.</summary>
+      <returns>Valeur qui a été lue.Il s'agit de la dernière valeur écrite par un processeur de l'ordinateur, quel que soit le nombre de processeurs ou l'état du cache de processeur.</returns>
+      <param name="location">Champ à lire.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Byte@)">
+      <summary>Lit la valeur du champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de lecture ou d'écriture apparaît après cette méthode dans le code, le processeur ne peut pas la déplacer avant cette méthode.</summary>
+      <returns>Valeur qui a été lue.Il s'agit de la dernière valeur écrite par un processeur de l'ordinateur, quel que soit le nombre de processeurs ou l'état du cache de processeur.</returns>
+      <param name="location">Champ à lire.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Double@)">
+      <summary>Lit la valeur du champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de lecture ou d'écriture apparaît après cette méthode dans le code, le processeur ne peut pas la déplacer avant cette méthode.</summary>
+      <returns>Valeur qui a été lue.Il s'agit de la dernière valeur écrite par un processeur de l'ordinateur, quel que soit le nombre de processeurs ou l'état du cache de processeur.</returns>
+      <param name="location">Champ à lire.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Int16@)">
+      <summary>Lit la valeur du champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de lecture ou d'écriture apparaît après cette méthode dans le code, le processeur ne peut pas la déplacer avant cette méthode.</summary>
+      <returns>Valeur qui a été lue.Il s'agit de la dernière valeur écrite par un processeur de l'ordinateur, quel que soit le nombre de processeurs ou l'état du cache de processeur.</returns>
+      <param name="location">Champ à lire.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Int32@)">
+      <summary>Lit la valeur du champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de lecture ou d'écriture apparaît après cette méthode dans le code, le processeur ne peut pas la déplacer avant cette méthode.</summary>
+      <returns>Valeur qui a été lue.Il s'agit de la dernière valeur écrite par un processeur de l'ordinateur, quel que soit le nombre de processeurs ou l'état du cache de processeur.</returns>
+      <param name="location">Champ à lire.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Int64@)">
+      <summary>Lit la valeur du champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de lecture ou d'écriture apparaît après cette méthode dans le code, le processeur ne peut pas la déplacer avant cette méthode.</summary>
+      <returns>Valeur qui a été lue.Il s'agit de la dernière valeur écrite par un processeur de l'ordinateur, quel que soit le nombre de processeurs ou l'état du cache de processeur.</returns>
+      <param name="location">Champ à lire.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.IntPtr@)">
+      <summary>Lit la valeur du champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de lecture ou d'écriture apparaît après cette méthode dans le code, le processeur ne peut pas la déplacer avant cette méthode.</summary>
+      <returns>Valeur qui a été lue.Il s'agit de la dernière valeur écrite par un processeur de l'ordinateur, quel que soit le nombre de processeurs ou l'état du cache de processeur.</returns>
+      <param name="location">Champ à lire.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.SByte@)">
+      <summary>Lit la valeur du champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de lecture ou d'écriture apparaît après cette méthode dans le code, le processeur ne peut pas la déplacer avant cette méthode.</summary>
+      <returns>Valeur qui a été lue.Il s'agit de la dernière valeur écrite par un processeur de l'ordinateur, quel que soit le nombre de processeurs ou l'état du cache de processeur.</returns>
+      <param name="location">Champ à lire.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Single@)">
+      <summary>Lit la valeur du champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de lecture ou d'écriture apparaît après cette méthode dans le code, le processeur ne peut pas la déplacer avant cette méthode.</summary>
+      <returns>Valeur qui a été lue.Il s'agit de la dernière valeur écrite par un processeur de l'ordinateur, quel que soit le nombre de processeurs ou l'état du cache de processeur.</returns>
+      <param name="location">Champ à lire.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.UInt16@)">
+      <summary>Lit la valeur du champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de lecture ou d'écriture apparaît après cette méthode dans le code, le processeur ne peut pas la déplacer avant cette méthode.</summary>
+      <returns>Valeur qui a été lue.Il s'agit de la dernière valeur écrite par un processeur de l'ordinateur, quel que soit le nombre de processeurs ou l'état du cache de processeur.</returns>
+      <param name="location">Champ à lire.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.UInt32@)">
+      <summary>Lit la valeur du champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de lecture ou d'écriture apparaît après cette méthode dans le code, le processeur ne peut pas la déplacer avant cette méthode.</summary>
+      <returns>Valeur qui a été lue.Il s'agit de la dernière valeur écrite par un processeur de l'ordinateur, quel que soit le nombre de processeurs ou l'état du cache de processeur.</returns>
+      <param name="location">Champ à lire.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.UInt64@)">
+      <summary>Lit la valeur du champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de lecture ou d'écriture apparaît après cette méthode dans le code, le processeur ne peut pas la déplacer avant cette méthode.</summary>
+      <returns>Valeur qui a été lue.Il s'agit de la dernière valeur écrite par un processeur de l'ordinateur, quel que soit le nombre de processeurs ou l'état du cache de processeur.</returns>
+      <param name="location">Champ à lire.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.UIntPtr@)">
+      <summary>Lit la valeur du champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de lecture ou d'écriture apparaît après cette méthode dans le code, le processeur ne peut pas la déplacer avant cette méthode.</summary>
+      <returns>Valeur qui a été lue.Il s'agit de la dernière valeur écrite par un processeur de l'ordinateur, quel que soit le nombre de processeurs ou l'état du cache de processeur.</returns>
+      <param name="location">Champ à lire.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read``1(``0@)">
+      <summary>Lit la référence d'objet à partir du champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de lecture ou d'écriture apparaît après cette méthode dans le code, le processeur ne peut pas la déplacer avant cette méthode.</summary>
+      <returns>Référence à <paramref name="T" /> qui a été lue.Il s'agit de la dernière référence écrite par un processeur de l'ordinateur, quel que soit le nombre de processeurs ou l'état du cache de processeur.</returns>
+      <param name="location">Champ à lire.</param>
+      <typeparam name="T">Type du champ à lire.Il doit s'agir d'un type référence, et non d'un type valeur.</typeparam>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Boolean@,System.Boolean)">
+      <summary>Écrit la valeur spécifiée dans le champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de lecture ou d'écriture apparaît avant cette méthode dans le code, le processeur ne peut pas la déplacer après cette méthode.</summary>
+      <param name="location">Champ dans lequel la valeur est écrite.</param>
+      <param name="value">Valeur à écrire.La valeur est écrite immédiatement, de sorte qu'elle est visible pour tous les processeurs de l'ordinateur.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Byte@,System.Byte)">
+      <summary>Écrit la valeur spécifiée dans le champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de lecture ou d'écriture apparaît avant cette méthode dans le code, le processeur ne peut pas la déplacer après cette méthode.</summary>
+      <param name="location">Champ dans lequel la valeur est écrite.</param>
+      <param name="value">Valeur à écrire.La valeur est écrite immédiatement, de sorte qu'elle est visible pour tous les processeurs de l'ordinateur.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Double@,System.Double)">
+      <summary>Écrit la valeur spécifiée dans le champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de lecture ou d'écriture apparaît avant cette méthode dans le code, le processeur ne peut pas la déplacer après cette méthode.</summary>
+      <param name="location">Champ dans lequel la valeur est écrite.</param>
+      <param name="value">Valeur à écrire.La valeur est écrite immédiatement, de sorte qu'elle est visible pour tous les processeurs de l'ordinateur.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Int16@,System.Int16)">
+      <summary>Écrit la valeur spécifiée dans le champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de lecture ou d'écriture apparaît avant cette méthode dans le code, le processeur ne peut pas la déplacer après cette méthode.</summary>
+      <param name="location">Champ dans lequel la valeur est écrite.</param>
+      <param name="value">Valeur à écrire.La valeur est écrite immédiatement, de sorte qu'elle est visible pour tous les processeurs de l'ordinateur.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Int32@,System.Int32)">
+      <summary>Écrit la valeur spécifiée dans le champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de lecture ou d'écriture apparaît avant cette méthode dans le code, le processeur ne peut pas la déplacer après cette méthode.</summary>
+      <param name="location">Champ dans lequel la valeur est écrite.</param>
+      <param name="value">Valeur à écrire.La valeur est écrite immédiatement, de sorte qu'elle est visible pour tous les processeurs de l'ordinateur.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Int64@,System.Int64)">
+      <summary>Écrit la valeur spécifiée dans le champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de mémoire apparaît avant cette méthode dans le code, le processeur ne peut pas la déplacer après cette méthode.</summary>
+      <param name="location">Champ dans lequel la valeur est écrite.</param>
+      <param name="value">Valeur à écrire.La valeur est écrite immédiatement, de sorte qu'elle est visible pour tous les processeurs de l'ordinateur.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.IntPtr@,System.IntPtr)">
+      <summary>Écrit la valeur spécifiée dans le champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de lecture ou d'écriture apparaît avant cette méthode dans le code, le processeur ne peut pas la déplacer après cette méthode.</summary>
+      <param name="location">Champ dans lequel la valeur est écrite.</param>
+      <param name="value">Valeur à écrire.La valeur est écrite immédiatement, de sorte qu'elle est visible pour tous les processeurs de l'ordinateur.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.SByte@,System.SByte)">
+      <summary>Écrit la valeur spécifiée dans le champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de lecture ou d'écriture apparaît avant cette méthode dans le code, le processeur ne peut pas la déplacer après cette méthode.</summary>
+      <param name="location">Champ dans lequel la valeur est écrite.</param>
+      <param name="value">Valeur à écrire.La valeur est écrite immédiatement, de sorte qu'elle est visible pour tous les processeurs de l'ordinateur.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Single@,System.Single)">
+      <summary>Écrit la valeur spécifiée dans le champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de lecture ou d'écriture apparaît avant cette méthode dans le code, le processeur ne peut pas la déplacer après cette méthode.</summary>
+      <param name="location">Champ dans lequel la valeur est écrite.</param>
+      <param name="value">Valeur à écrire.La valeur est écrite immédiatement, de sorte qu'elle est visible pour tous les processeurs de l'ordinateur.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.UInt16@,System.UInt16)">
+      <summary>Écrit la valeur spécifiée dans le champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de lecture ou d'écriture apparaît avant cette méthode dans le code, le processeur ne peut pas la déplacer après cette méthode.</summary>
+      <param name="location">Champ dans lequel la valeur est écrite.</param>
+      <param name="value">Valeur à écrire.La valeur est écrite immédiatement, de sorte qu'elle est visible pour tous les processeurs de l'ordinateur.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.UInt32@,System.UInt32)">
+      <summary>Écrit la valeur spécifiée dans le champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de lecture ou d'écriture apparaît avant cette méthode dans le code, le processeur ne peut pas la déplacer après cette méthode.</summary>
+      <param name="location">Champ dans lequel la valeur est écrite.</param>
+      <param name="value">Valeur à écrire.La valeur est écrite immédiatement, de sorte qu'elle est visible pour tous les processeurs de l'ordinateur.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.UInt64@,System.UInt64)">
+      <summary>Écrit la valeur spécifiée dans le champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de lecture ou d'écriture apparaît avant cette méthode dans le code, le processeur ne peut pas la déplacer après cette méthode.</summary>
+      <param name="location">Champ dans lequel la valeur est écrite.</param>
+      <param name="value">Valeur à écrire.La valeur est écrite immédiatement, de sorte qu'elle est visible pour tous les processeurs de l'ordinateur.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.UIntPtr@,System.UIntPtr)">
+      <summary>Écrit la valeur spécifiée dans le champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de lecture ou d'écriture apparaît avant cette méthode dans le code, le processeur ne peut pas la déplacer après cette méthode.</summary>
+      <param name="location">Champ dans lequel la valeur est écrite.</param>
+      <param name="value">Valeur à écrire.La valeur est écrite immédiatement, de sorte qu'elle est visible pour tous les processeurs de l'ordinateur.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write``1(``0@,``0)">
+      <summary>Écrit la référence d'objet spécifiée dans le champ spécifié.Sur les systèmes le nécessitant, insère une barrière de mémoire qui empêche le processeur de réorganiser les opérations de mémoire comme suit : si une opération de lecture ou d'écriture apparaît avant cette méthode dans le code, le processeur ne peut pas la déplacer après cette méthode.</summary>
+      <param name="location">Champ dans lequel la référence d'objet est écrite.</param>
+      <param name="value">Référence d'objet à écrire.La référence est écrite immédiatement, de sorte qu'elle est visible pour tous les processeurs de l'ordinateur.</param>
+      <typeparam name="T">Type du champ dans lequel écrire.Il doit s'agir d'un type référence, et non d'un type valeur.</typeparam>
+    </member>
+    <member name="T:System.Threading.WaitHandleCannotBeOpenedException">
+      <summary>Exception levée lors d'une tentative d'ouverture d'un mutex système ou d'un sémaphore qui n'existe pas.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.WaitHandleCannotBeOpenedException.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.WaitHandleCannotBeOpenedException" /> avec les valeurs par défaut.</summary>
+    </member>
+    <member name="M:System.Threading.WaitHandleCannotBeOpenedException.#ctor(System.String)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.WaitHandleCannotBeOpenedException" /> avec un message d'erreur spécifié.</summary>
+      <param name="message">Message d'erreur indiquant la raison de l'exception.</param>
+    </member>
+    <member name="M:System.Threading.WaitHandleCannotBeOpenedException.#ctor(System.String,System.Exception)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Threading.WaitHandleCannotBeOpenedException" /> avec un message d'erreur spécifié et une référence à l'exception interne ayant provoqué cette exception.</summary>
+      <param name="message">Message d'erreur indiquant la raison de l'exception.</param>
+      <param name="innerException">Exception qui constitue la cause de l'exception actuelle.Si le paramètre <paramref name="innerException" /> n'est pas null, l'exception en cours est levée dans un bloc catch qui gère l'exception interne.</param>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,1569 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Net.Primitives</name>
+  </assembly>
+  <members>
+    <member name="T:System.Net.AuthenticationSchemes">
+      <summary>認証用のプロトコルを指定します。</summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.Anonymous">
+      <summary>匿名認証を指定します。</summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.Basic">
+      <summary>基本認証を指定します。</summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.Digest">
+      <summary>ダイジェスト認証を指定します。</summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.IntegratedWindowsAuthentication">
+      <summary>Windows 認証を指定します。</summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.Negotiate">
+      <summary>クライアントとネゴシエートし、認証方式を決定します。クライアントとサーバーの両方が Kerberos をサポートする場合は、この方式が使用されます。それ以外の場合は NTLM が使用されます。</summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.None">
+      <summary>認証は使用できません。このフラグが設定された <see cref="T:System.Net.HttpListener" /> オブジェクトを要求するクライアントは、常に "403 アクセス不可" のステータスを受け取ります。リソースをクライアントに提供できない場合にこのフラグを使用します。</summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.Ntlm">
+      <summary>NTLM 認証を指定します。</summary>
+    </member>
+    <member name="T:System.Net.Cookie">
+      <summary>クッキーを管理するために使用するプロパティとメソッドのセットを提供します。このクラスは継承できません。</summary>
+    </member>
+    <member name="M:System.Net.Cookie.#ctor">
+      <summary>
+        <see cref="T:System.Net.Cookie" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Net.Cookie.#ctor(System.String,System.String)">
+      <summary>指定した <see cref="P:System.Net.Cookie.Name" /> と <see cref="P:System.Net.Cookie.Value" /> を使用して、<see cref="T:System.Net.Cookie" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="name">
+        <see cref="T:System.Net.Cookie" /> の名前。等号 (=)、セミコロン (;)、コンマ (,)、改行 (\n)、リターン (\r)、タブ (\t)、および空白文字は、<paramref name="name" /> 内で使用しないでください。ドル記号文字 ("$") を最初の文字にすることはできません。</param>
+      <param name="value">
+        <see cref="T:System.Net.Cookie" /> の値。セミコロン (;) とコンマ (,) は、<paramref name="value" /> 内で使用しないでください。</param>
+      <exception cref="T:System.Net.CookieException">
+        <paramref name="name" /> パラメーターが null です。または<paramref name="name" /> パラメーターの長さが 0 です。または<paramref name="name" /> パラメーターに無効な文字が含まれています。または<paramref name="value" /> パラメーターが null です。または<paramref name="value" /> パラメーターには、無効な文字を含む、引用符で囲まれていない文字列が含まれています。</exception>
+    </member>
+    <member name="M:System.Net.Cookie.#ctor(System.String,System.String,System.String)">
+      <summary>指定した <see cref="P:System.Net.Cookie.Name" />、<see cref="P:System.Net.Cookie.Value" />、および <see cref="P:System.Net.Cookie.Path" /> を使用して、<see cref="T:System.Net.Cookie" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="name">
+        <see cref="T:System.Net.Cookie" /> の名前。等号 (=)、セミコロン (;)、コンマ (,)、改行 (\n)、リターン (\r)、タブ (\t)、および空白文字は、<paramref name="name" /> 内で使用しないでください。ドル記号文字 ("$") を最初の文字にすることはできません。</param>
+      <param name="value">
+        <see cref="T:System.Net.Cookie" /> の値。セミコロン (;) とコンマ (,) は、<paramref name="value" /> 内で使用しないでください。</param>
+      <param name="path">この <see cref="T:System.Net.Cookie" /> が適用される送信元サーバーの URI のサブセット。既定値は "/" です。</param>
+      <exception cref="T:System.Net.CookieException">
+        <paramref name="name" /> パラメーターが null です。または<paramref name="name" /> パラメーターの長さが 0 です。または<paramref name="name" /> パラメーターに無効な文字が含まれています。または<paramref name="value" /> パラメーターが null です。または<paramref name="value" /> パラメーターには、無効な文字を含む、引用符で囲まれていない文字列が含まれています。</exception>
+    </member>
+    <member name="M:System.Net.Cookie.#ctor(System.String,System.String,System.String,System.String)">
+      <summary>指定した <see cref="P:System.Net.Cookie.Name" />、<see cref="P:System.Net.Cookie.Value" />、<see cref="P:System.Net.Cookie.Path" />、および <see cref="P:System.Net.Cookie.Domain" /> を使用して、<see cref="T:System.Net.Cookie" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="name">
+        <see cref="T:System.Net.Cookie" /> の名前。等号 (=)、セミコロン (;)、コンマ (,)、改行 (\n)、リターン (\r)、タブ (\t)、および空白文字は、<paramref name="name" /> 内で使用しないでください。ドル記号文字 ("$") を最初の文字にすることはできません。</param>
+      <param name="value">
+        <see cref="T:System.Net.Cookie" /> オブジェクトの値。セミコロン (;) とコンマ (,) は、<paramref name="value" /> 内で使用しないでください。</param>
+      <param name="path">この <see cref="T:System.Net.Cookie" /> が適用される送信元サーバーの URI のサブセット。既定値は "/" です。</param>
+      <param name="domain">この <see cref="T:System.Net.Cookie" /> が有効なオプションのインターネット ドメイン。既定値は、この <see cref="T:System.Net.Cookie" /> の送信元のホストです。</param>
+      <exception cref="T:System.Net.CookieException">
+        <paramref name="name" /> パラメーターが null です。または<paramref name="name" /> パラメーターの長さが 0 です。または<paramref name="name" /> パラメーターに無効な文字が含まれています。または<paramref name="value" /> パラメーターが null です。または<paramref name="value" /> パラメーターには、無効な文字を含む、引用符で囲まれていない文字列が含まれています。</exception>
+    </member>
+    <member name="P:System.Net.Cookie.Comment">
+      <summary>サーバーが <see cref="T:System.Net.Cookie" /> に追加できるコメントを取得または設定します。</summary>
+      <returns>この <see cref="T:System.Net.Cookie" /> で使用法をドキュメント化するオプションのコメント。</returns>
+    </member>
+    <member name="P:System.Net.Cookie.CommentUri">
+      <summary>サーバーが <see cref="T:System.Net.Cookie" /> で提供できる URI コメントを取得または設定します。</summary>
+      <returns>この <see cref="T:System.Net.Cookie" /> の URI 参照の想定している用途を表すオプションのコメント。この値は、URI 書式に準拠している必要があります。</returns>
+    </member>
+    <member name="P:System.Net.Cookie.Discard">
+      <summary>サーバーが設定した破棄フラグを取得または設定します。</summary>
+      <returns>現在のセッションの最後にクライアントが <see cref="T:System.Net.Cookie" /> を破棄する場合は true。それ以外の場合は false。既定値は、false です。</returns>
+    </member>
+    <member name="P:System.Net.Cookie.Domain">
+      <summary>
+        <see cref="T:System.Net.Cookie" /> が有効な URI を取得または設定します。</summary>
+      <returns>
+        <see cref="T:System.Net.Cookie" /> が有効な URI。</returns>
+    </member>
+    <member name="M:System.Net.Cookie.Equals(System.Object)">
+      <summary>
+        <see cref="M:System.Object.Equals(System.Object)" /> メソッドをオーバーライドします。</summary>
+      <returns>
+        <see cref="T:System.Net.Cookie" /> が <paramref name="comparand" /> に等しい場合は、true を返します。2 つの <see cref="T:System.Net.Cookie" /> インスタンスは、<see cref="P:System.Net.Cookie.Name" />、<see cref="P:System.Net.Cookie.Value" />、<see cref="P:System.Net.Cookie.Path" />、<see cref="P:System.Net.Cookie.Domain" />、および <see cref="P:System.Net.Cookie.Version" /> の各プロパティが等しい場合に等しくなります。<see cref="P:System.Net.Cookie.Name" /> の文字列比較と <see cref="P:System.Net.Cookie.Domain" /> の文字列比較は、大文字と小文字を区別しません。</returns>
+      <param name="comparand">
+        <see cref="T:System.Net.Cookie" /> への参照。</param>
+    </member>
+    <member name="P:System.Net.Cookie.Expired">
+      <summary>
+        <see cref="T:System.Net.Cookie" /> の現在の状態を取得または設定します。</summary>
+      <returns>
+        <see cref="T:System.Net.Cookie" /> の有効期限が切れた場合は true。それ以外の場合は false。既定値は、false です。</returns>
+    </member>
+    <member name="P:System.Net.Cookie.Expires">
+      <summary>
+        <see cref="T:System.Net.Cookie" /> の有効期限の日時を <see cref="T:System.DateTime" /> として取得または設定します。</summary>
+      <returns>
+        <see cref="T:System.DateTime" /> インスタンスとしての <see cref="T:System.Net.Cookie" /> の有効期限の日時。</returns>
+    </member>
+    <member name="M:System.Net.Cookie.GetHashCode">
+      <summary>
+        <see cref="M:System.Object.GetHashCode" /> メソッドをオーバーライドします。</summary>
+      <returns>このインスタンスの 32 ビット符号付き整数ハッシュ コード。</returns>
+    </member>
+    <member name="P:System.Net.Cookie.HttpOnly">
+      <summary>ページ スクリプトまたは他のアクティブ コンテンツがこのクッキーにアクセスできるかどうかを決定します。</summary>
+      <returns>ページ スクリプトまたは他のアクティブ コンテンツがこのクッキーにアクセスできるかどうかを決定するブール値。</returns>
+    </member>
+    <member name="P:System.Net.Cookie.Name">
+      <summary>
+        <see cref="T:System.Net.Cookie" /> の名前を取得または設定します。</summary>
+      <returns>
+        <see cref="T:System.Net.Cookie" /> の名前。</returns>
+      <exception cref="T:System.Net.CookieException">設定操作として指定した値が、null または空の文字列です。または設定操作として指定した値に無効な文字が含まれていました。等号 (=)、セミコロン (;)、コンマ (,)、改行 (\n)、リターン (\r)、タブ (\t)、および空白文字は、<see cref="P:System.Net.Cookie.Name" /> プロパティ内で使用しないでください。ドル記号文字 ("$") を最初の文字にすることはできません。</exception>
+    </member>
+    <member name="P:System.Net.Cookie.Path">
+      <summary>
+        <see cref="T:System.Net.Cookie" /> が適用される URI を取得または設定します。</summary>
+      <returns>
+        <see cref="T:System.Net.Cookie" /> が適用される URI。</returns>
+    </member>
+    <member name="P:System.Net.Cookie.Port">
+      <summary>
+        <see cref="T:System.Net.Cookie" /> が適用される TCP ポートのリストを取得または設定します。</summary>
+      <returns>
+        <see cref="T:System.Net.Cookie" /> が適用される TCP ポートのリスト。</returns>
+      <exception cref="T:System.Net.CookieException">設定操作に指定した値が解析できなかったか、二重引用符で囲まれていません。</exception>
+    </member>
+    <member name="P:System.Net.Cookie.Secure">
+      <summary>
+        <see cref="T:System.Net.Cookie" /> のセキュリティ レベルを取得または設定します。</summary>
+      <returns>要求に HTTPS (Secure Hypertext Transfer Protocol) が使用されるときにだけクライアントが後続の要求でクッキーを返すようにする場合は true。それ以外の場合は false。既定値は、false です。</returns>
+    </member>
+    <member name="P:System.Net.Cookie.TimeStamp">
+      <summary>クッキーが <see cref="T:System.DateTime" /> として発行された時刻を取得します。</summary>
+      <returns>クッキーが <see cref="T:System.DateTime" /> として発行された時刻。</returns>
+    </member>
+    <member name="M:System.Net.Cookie.ToString">
+      <summary>
+        <see cref="M:System.Object.ToString" /> メソッドをオーバーライドします。</summary>
+      <returns>この <see cref="T:System.Net.Cookie" /> オブジェクトの、HTTP クッキー: 要求ヘッダーに含めることができる文字列形式を返します。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Net.Cookie.Value">
+      <summary>
+        <see cref="T:System.Net.Cookie" /> の <see cref="P:System.Net.Cookie.Value" /> を取得または設定します。</summary>
+      <returns>
+        <see cref="T:System.Net.Cookie" /> の <see cref="P:System.Net.Cookie.Value" />。</returns>
+    </member>
+    <member name="P:System.Net.Cookie.Version">
+      <summary>クッキーが準拠する HTTP 状態保守のバージョンを取得または設定します。</summary>
+      <returns>クッキーが準拠する HTTP 状態保守のバージョン。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">バージョンに指定した値は使用できません。</exception>
+    </member>
+    <member name="T:System.Net.CookieCollection">
+      <summary>
+        <see cref="T:System.Net.Cookie" /> クラスのインスタンスのコレクション コンテナーを提供します。</summary>
+    </member>
+    <member name="M:System.Net.CookieCollection.#ctor">
+      <summary>
+        <see cref="T:System.Net.CookieCollection" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Net.CookieCollection.Add(System.Net.Cookie)">
+      <summary>
+        <see cref="T:System.Net.Cookie" /> を <see cref="T:System.Net.CookieCollection" /> に追加します。</summary>
+      <param name="cookie">
+        <see cref="T:System.Net.CookieCollection" /> に追加される <see cref="T:System.Net.Cookie" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="cookie" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Net.CookieCollection.Add(System.Net.CookieCollection)">
+      <summary>現在のインスタンスに <see cref="T:System.Net.CookieCollection" /> の内容を追加します。</summary>
+      <param name="cookies">追加される <see cref="T:System.Net.CookieCollection" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="cookies" /> は null なので、</exception>
+    </member>
+    <member name="P:System.Net.CookieCollection.Count">
+      <summary>
+        <see cref="T:System.Net.CookieCollection" /> に格納されているクッキーの数を取得します。</summary>
+      <returns>
+        <see cref="T:System.Net.CookieCollection" /> に格納されているクッキーの数。</returns>
+    </member>
+    <member name="M:System.Net.CookieCollection.GetEnumerator">
+      <summary>
+        <see cref="T:System.Net.CookieCollection" /> を反復処理できる列挙子を取得します。</summary>
+      <returns>
+        <see cref="T:System.Net.CookieCollection" /> を反復処理できる <see cref="T:System.Collections.IEnumerator" /> インターフェイスを実装するインスタンス。</returns>
+    </member>
+    <member name="P:System.Net.CookieCollection.Item(System.String)">
+      <summary>
+        <see cref="T:System.Net.CookieCollection" /> から特定の名前の <see cref="T:System.Net.Cookie" /> を取得します。</summary>
+      <returns>
+        <see cref="T:System.Net.CookieCollection" /> の特定の名前の <see cref="T:System.Net.Cookie" />。</returns>
+      <param name="name">検索される <see cref="T:System.Net.Cookie" /> の名前。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Net.CookieCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>[.NET Framework 4.5.1 以降のバージョンでサポートされる]このメンバーの説明については、<see cref="M:System.Collections.ICollection.CopyTo(System.Array,System.Int32)" /> のトピックを参照してください。</summary>
+      <param name="array">コレクション要素のコピー先となる 1 次元配列。配列では 0 から始まるインデックスを使用する必要があります。</param>
+      <param name="index">コピーの開始位置となる、<paramref name="array" /> 内の 0 から始まるインデックス。</param>
+    </member>
+    <member name="P:System.Net.CookieCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>[.NET Framework 4.5.1 以降のバージョンでサポートされる]このメンバーの説明については、<see cref="P:System.Collections.ICollection.IsSynchronized" /> のトピックを参照してください。</summary>
+      <returns>コレクションへのアクセスが同期されている (スレッド セーフである) 場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Net.CookieCollection.System#Collections#ICollection#SyncRoot">
+      <summary>[.NET Framework 4.5.1 以降のバージョンでサポートされる]このメンバーの説明については、<see cref="P:System.Collections.ICollection.SyncRoot" /> のトピックを参照してください。</summary>
+      <returns>コレクションへのアクセスを同期するために使用できるオブジェクト。</returns>
+    </member>
+    <member name="T:System.Net.CookieContainer">
+      <summary>
+        <see cref="T:System.Net.CookieCollection" /> オブジェクトのコレクション用のコンテナーを提供します。</summary>
+    </member>
+    <member name="M:System.Net.CookieContainer.#ctor">
+      <summary>
+        <see cref="T:System.Net.CookieContainer" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Net.CookieContainer.Add(System.Uri,System.Net.Cookie)">
+      <summary>
+        <see cref="T:System.Net.Cookie" /> を特定の URI の <see cref="T:System.Net.CookieContainer" /> に追加します。</summary>
+      <param name="uri">
+        <see cref="T:System.Net.CookieContainer" /> に追加される <see cref="T:System.Net.Cookie" /> の URI。</param>
+      <param name="cookie">
+        <see cref="T:System.Net.CookieContainer" /> に追加される <see cref="T:System.Net.Cookie" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="uri" /> が null または <paramref name="cookie" /> が null です。</exception>
+      <exception cref="T:System.Net.CookieException">
+        <paramref name="cookie" /> が <paramref name="maxCookieSize" /> を超えています。または<paramref name="cookie" /> のドメインが有効な URI ではありません。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.CookieContainer.Add(System.Uri,System.Net.CookieCollection)">
+      <summary>
+        <see cref="T:System.Net.CookieCollection" /> の内容を特定の URI の <see cref="T:System.Net.CookieContainer" /> に追加します。</summary>
+      <param name="uri">
+        <see cref="T:System.Net.CookieContainer" /> に追加される <see cref="T:System.Net.CookieCollection" /> の URI。</param>
+      <param name="cookies">
+        <see cref="T:System.Net.CookieContainer" /> に追加される <see cref="T:System.Net.CookieCollection" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="cookies" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="cookies" /> 内のいずれかのクッキーのドメインが null です。</exception>
+      <exception cref="T:System.Net.CookieException">
+        <paramref name="cookies" /> 内のいずれかのクッキーが、無効なドメインを含んでいます。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Net.CookieContainer.Capacity">
+      <summary>
+        <see cref="T:System.Net.CookieContainer" /> が保持できる <see cref="T:System.Net.Cookie" /> インスタンス数を取得または設定します。</summary>
+      <returns>
+        <see cref="T:System.Net.CookieContainer" /> が保持できる <see cref="T:System.Net.Cookie" /> インスタンス数。これは、ハード リミットであり、<see cref="T:System.Net.Cookie" /> を追加して超過させることはできません。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="Capacity" /> が 0 以下または値が <see cref="P:System.Net.CookieContainer.PerDomainCapacity" /> 未満で、<see cref="P:System.Net.CookieContainer.PerDomainCapacity" /> が <see cref="F:System.Int32.MaxValue" /> に等しくない場合です。</exception>
+    </member>
+    <member name="P:System.Net.CookieContainer.Count">
+      <summary>
+        <see cref="T:System.Net.CookieContainer" /> が現在保持している <see cref="T:System.Net.Cookie" /> インスタンス数を取得します。</summary>
+      <returns>
+        <see cref="T:System.Net.CookieContainer" /> が現在保持している<see cref="T:System.Net.Cookie" /> インスタンス数。これは、すべてのドメイン内の <see cref="T:System.Net.Cookie" /> インスタンスの合計数を示します。</returns>
+    </member>
+    <member name="F:System.Net.CookieContainer.DefaultCookieLengthLimit">
+      <summary>
+        <see cref="T:System.Net.CookieContainer" /> が保持できる <see cref="T:System.Net.Cookie" /> インスタンスの既定の最大サイズをバイト単位で表します。このフィールドは定数です。</summary>
+    </member>
+    <member name="F:System.Net.CookieContainer.DefaultCookieLimit">
+      <summary>
+        <see cref="T:System.Net.CookieContainer" /> が保持できる <see cref="T:System.Net.Cookie" /> インスタンスの既定の最大数を表します。このフィールドは定数です。</summary>
+    </member>
+    <member name="F:System.Net.CookieContainer.DefaultPerDomainCookieLimit">
+      <summary>
+        <see cref="T:System.Net.CookieContainer" /> がドメインごとに参照できる <see cref="T:System.Net.Cookie" /> インスタンスの既定の最大数を表します。このフィールドは定数です。</summary>
+    </member>
+    <member name="M:System.Net.CookieContainer.GetCookieHeader(System.Uri)">
+      <summary>特定の URI に関連付けられている <see cref="T:System.Net.Cookie" /> インスタンスを表す HTTP クッキーを格納する HTTP クッキー ヘッダーを取得します。</summary>
+      <returns>セミコロンで区切られた <see cref="T:System.Net.Cookie" /> インスタンスを表す文字列を含む HTTP クッキー ヘッダー。</returns>
+      <param name="uri">必要な <see cref="T:System.Net.Cookie" /> インスタンスの URI。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="uri" /> は null なので、</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.CookieContainer.GetCookies(System.Uri)">
+      <summary>特定の URI に関連付けられている <see cref="T:System.Net.Cookie" /> インスタンスを格納する <see cref="T:System.Net.CookieCollection" /> を取得します。</summary>
+      <returns>特定の URI に関連付けられている <see cref="T:System.Net.Cookie" /> インスタンスを格納する <see cref="T:System.Net.CookieCollection" />。</returns>
+      <param name="uri">必要な <see cref="T:System.Net.Cookie" /> インスタンスの URI。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="uri" /> は null なので、</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Net.CookieContainer.MaxCookieSize">
+      <summary>
+        <see cref="T:System.Net.Cookie" /> の許容最大長を表します。</summary>
+      <returns>
+        <see cref="T:System.Net.Cookie" /> の許容最大長 (バイト単位)。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="MaxCookieSize" /> が 0 以下です。</exception>
+    </member>
+    <member name="P:System.Net.CookieContainer.PerDomainCapacity">
+      <summary>
+        <see cref="T:System.Net.CookieContainer" /> でドメインごとに格納できる <see cref="T:System.Net.Cookie" /> インスタンスの数を取得および設定します。</summary>
+      <returns>ドメインごとに許可されている <see cref="T:System.Net.Cookie" /> インスタンス数。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="PerDomainCapacity" /> が 0 以下です。または(<paramref name="PerDomainCapacity" /> が、最大許容クッキー インスタンス数の 300 を超えており、<see cref="F:System.Int32.MaxValue" /> に等しくありません。)</exception>
+    </member>
+    <member name="M:System.Net.CookieContainer.SetCookies(System.Uri,System.String)">
+      <summary>HTTP クッキー ヘッダーの 1 つ以上のクッキーの <see cref="T:System.Net.Cookie" /> インスタンスを特定の URI の <see cref="T:System.Net.CookieContainer" /> に追加します。</summary>
+      <param name="uri">
+        <see cref="T:System.Net.CookieCollection" /> の URI。</param>
+      <param name="cookieHeader">コンマで区切られた <see cref="T:System.Net.Cookie" /> インスタンスを含む、HTTP サーバーで返された HTTP set-cookie ヘッダーの内容。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="uri" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="cookieHeader" /> は null なので、</exception>
+      <exception cref="T:System.Net.CookieException">いずれかのクッキーが無効です。またはコンテナーにいずれかのクッキーを追加するときにエラーが発生しました。</exception>
+    </member>
+    <member name="T:System.Net.CookieException">
+      <summary>
+        <see cref="T:System.Net.Cookie" /> を <see cref="T:System.Net.CookieContainer" /> に追加するときにエラーが発生した場合にスローされる例外。</summary>
+    </member>
+    <member name="M:System.Net.CookieException.#ctor">
+      <summary>
+        <see cref="T:System.Net.CookieException" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="T:System.Net.CredentialCache">
+      <summary>複数の資格情報にストレージを提供します。</summary>
+    </member>
+    <member name="M:System.Net.CredentialCache.#ctor">
+      <summary>
+        <see cref="T:System.Net.CredentialCache" /> クラスの新しいインスタンスを作成します。</summary>
+    </member>
+    <member name="M:System.Net.CredentialCache.Add(System.String,System.Int32,System.String,System.Net.NetworkCredential)">
+      <summary>SMTP で使用する <see cref="T:System.Net.NetworkCredential" /> インスタンスを資格情報キャッシュに追加し、ホスト コンピューター、ポート、および認証プロトコルに関連付けます。このメソッドを使用して追加される資格情報は、SMTP でのみ有効です。このメソッドは、HTTP 要求および FTP 要求では動作しません。</summary>
+      <param name="host">ホスト コンピューターを示す <see cref="T:System.String" />。</param>
+      <param name="port">
+        <paramref name="host" /> 上の接続先のポートを指定する <see cref="T:System.Int32" />。</param>
+      <param name="authenticationType">
+        <paramref name="cred" /> を使用して <paramref name="host" /> に接続する場合に使用する認証方式を指定する <see cref="T:System.String" />。「解説」を参照してください。</param>
+      <param name="credential">資格情報キャッシュに追加する <see cref="T:System.Net.NetworkCredential" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="host" /> は null なので、または<paramref name="authType" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="authType" /> が使用できる値ではありません。「解説」を参照してください。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="port" /> が 0 未満です。</exception>
+    </member>
+    <member name="M:System.Net.CredentialCache.Add(System.Uri,System.String,System.Net.NetworkCredential)">
+      <summary>
+        <see cref="T:System.Net.NetworkCredential" /> インスタンスを SMTP 以外のプロトコルで使用する資格情報キャッシュに追加し、URI (Uniform Resource Identifier) プリフィックスおよび認証プロトコルに関連付けます。</summary>
+      <param name="uriPrefix">資格情報によってアクセスが許可されるリソースの URI プリフィックスを指定する <see cref="T:System.Uri" />。</param>
+      <param name="authType">
+        <paramref name="uriPrefix" /> で指定されたリソースが使用する認証方式。</param>
+      <param name="cred">資格情報キャッシュに追加する <see cref="T:System.Net.NetworkCredential" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="uriPrefix" /> は null なので、または<paramref name="authType" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentException">同じ資格情報が 2 回以上追加されました。</exception>
+    </member>
+    <member name="P:System.Net.CredentialCache.DefaultCredentials">
+      <summary>アプリケーションのシステム資格情報を取得します。</summary>
+      <returns>アプリケーションのシステム資格情報を表す <see cref="T:System.Net.ICredentials" />。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="USERNAME" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Net.CredentialCache.DefaultNetworkCredentials">
+      <summary>現在のセキュリティ コンテキストのネットワーク資格情報を取得します。</summary>
+      <returns>現在のユーザーまたはアプリケーションのネットワーク資格情報を表す <see cref="T:System.Net.NetworkCredential" />。</returns>
+    </member>
+    <member name="M:System.Net.CredentialCache.GetCredential(System.String,System.Int32,System.String)">
+      <summary>指定したホスト、ポート、および認証プロトコルに関連付けられている <see cref="T:System.Net.NetworkCredential" /> インスタンスを返します。</summary>
+      <returns>
+        <see cref="T:System.Net.NetworkCredential" />。または、キャッシュに一致する資格情報がない場合はnull。</returns>
+      <param name="host">ホスト コンピューターを示す <see cref="T:System.String" />。</param>
+      <param name="port">
+        <paramref name="host" /> 上の接続先のポートを指定する <see cref="T:System.Int32" />。</param>
+      <param name="authenticationType">
+        <paramref name="host" /> に接続する場合に使用する認証方式を指定する <see cref="T:System.String" />。「解説」を参照してください。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="host" /> は null なので、または<paramref name="authType" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="authType" /> が使用できる値ではありません。「解説」を参照してください。または<paramref name="host" /> が空の文字列 ("") です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="port" /> が 0 未満です。</exception>
+    </member>
+    <member name="M:System.Net.CredentialCache.GetCredential(System.Uri,System.String)">
+      <summary>指定した URI (Uniform Resource Identifier) と認証の種類に関連付けられた <see cref="T:System.Net.NetworkCredential" /> インスタンスを返します。</summary>
+      <returns>
+        <see cref="T:System.Net.NetworkCredential" />。または、キャッシュに一致する資格情報がない場合はnull。</returns>
+      <param name="uriPrefix">資格情報によってアクセスが許可されるリソースの URI プリフィックスを指定する <see cref="T:System.Uri" />。</param>
+      <param name="authType">
+        <paramref name="uriPrefix" /> で指定されたリソースが使用する認証方式。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="uriPrefix" /> または <paramref name="authType" /> が null です。</exception>
+    </member>
+    <member name="M:System.Net.CredentialCache.GetEnumerator">
+      <summary>
+        <see cref="T:System.Net.CredentialCache" /> インスタンスを反復処理できる列挙子を返します。</summary>
+      <returns>
+        <see cref="T:System.Net.CredentialCache" /> の <see cref="T:System.Collections.IEnumerator" />。</returns>
+    </member>
+    <member name="M:System.Net.CredentialCache.Remove(System.String,System.Int32,System.String)">
+      <summary>
+        <see cref="T:System.Net.NetworkCredential" /> インスタンスが指定したホスト、ポート、および認証プロトコルに関連付けられている場合に、このインスタンスをキャッシュから削除します。</summary>
+      <param name="host">ホスト コンピューターを示す <see cref="T:System.String" />。</param>
+      <param name="port">
+        <paramref name="host" /> 上の接続先のポートを指定する <see cref="T:System.Int32" />。</param>
+      <param name="authenticationType">
+        <paramref name="host" /> に接続する場合に使用する認証方式を指定する <see cref="T:System.String" />。「解説」を参照してください。</param>
+    </member>
+    <member name="M:System.Net.CredentialCache.Remove(System.Uri,System.String)">
+      <summary>
+        <see cref="T:System.Net.NetworkCredential" /> インスタンスが指定した URI (Uniform Resource Identifier) プレフィックスと認証プロトコルに関連付けられている場合に、このインスタンスをキャッシュから削除します。</summary>
+      <param name="uriPrefix">資格情報が使用されるリソースの URI プリフィックスを指定する <see cref="T:System.Uri" />。</param>
+      <param name="authType">
+        <paramref name="uriPrefix" /> で指定されたホストが使用する認証方式。</param>
+    </member>
+    <member name="T:System.Net.DecompressionMethods">
+      <summary>
+        <see cref="T:System.Net.HttpWebRequest" /> への応答として受信したデータを圧縮するために使用される、ファイルの圧縮と圧縮解除のエンコーディング形式を表します。</summary>
+    </member>
+    <member name="F:System.Net.DecompressionMethods.Deflate">
+      <summary>デフレート圧縮/圧縮解除アルゴリズムを使用します。</summary>
+    </member>
+    <member name="F:System.Net.DecompressionMethods.GZip">
+      <summary>gZip 圧縮/圧縮解除アルゴリズムを使用します。</summary>
+    </member>
+    <member name="F:System.Net.DecompressionMethods.None">
+      <summary>圧縮は使用しないでください。</summary>
+    </member>
+    <member name="T:System.Net.DnsEndPoint">
+      <summary>ネットワーク エンドポイントをホスト名か、IP アドレスおよびポート番号の文字列表現で表します。</summary>
+    </member>
+    <member name="M:System.Net.DnsEndPoint.#ctor(System.String,System.Int32)">
+      <summary>
+        <see cref="T:System.Net.DnsEndPoint" /> クラスの新しいインスタンスを、ホスト名か IP アドレスおよびポート番号の文字列表現で初期化します。</summary>
+      <param name="host">ホスト名、または IP アドレスの文字列表現。</param>
+      <param name="port">アドレスに関連付けられているポート番号。または、使用できる任意のポートを指定する場合は 0。<paramref name="port" /> は、ホスト順です。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="host" /> パラメーターに空の文字列が含まれています。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="host" /> パラメーターは null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="port" /> が <see cref="F:System.Net.IPEndPoint.MinPort" /> より小さい。または<paramref name="port" /> が <see cref="F:System.Net.IPEndPoint.MaxPort" /> より大きくなっています。</exception>
+    </member>
+    <member name="M:System.Net.DnsEndPoint.#ctor(System.String,System.Int32,System.Net.Sockets.AddressFamily)">
+      <summary>
+        <see cref="T:System.Net.DnsEndPoint" /> クラスの新しいインスタンスをホスト名で、または IP アドレス、ポート番号、およびアドレス ファミリの文字列表現で初期化します。</summary>
+      <param name="host">ホスト名、または IP アドレスの文字列表現。</param>
+      <param name="port">アドレスに関連付けられているポート番号。または、使用できる任意のポートを指定する場合は 0。<paramref name="port" /> は、ホスト順です。</param>
+      <param name="addressFamily">
+        <see cref="T:System.Net.Sockets.AddressFamily" /> 値の 1 つ。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="host" /> パラメーターに空の文字列が含まれています。または<paramref name="addressFamily" /> は <see cref="F:System.Net.Sockets.AddressFamily.Unknown" /> なので、</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="host" /> パラメーターは null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="port" /> が <see cref="F:System.Net.IPEndPoint.MinPort" /> より小さい。または<paramref name="port" /> が <see cref="F:System.Net.IPEndPoint.MaxPort" /> より大きくなっています。</exception>
+    </member>
+    <member name="P:System.Net.DnsEndPoint.AddressFamily">
+      <summary>インターネット プロトコル (IP: Internet Protocol) アドレス ファミリを取得します。</summary>
+      <returns>
+        <see cref="T:System.Net.Sockets.AddressFamily" /> 値の 1 つ。</returns>
+    </member>
+    <member name="M:System.Net.DnsEndPoint.Equals(System.Object)">
+      <summary>2 つの <see cref="T:System.Net.DnsEndPoint" /> オブジェクトを比較します。</summary>
+      <returns>2 つの <see cref="T:System.Net.DnsEndPoint" /> インスタンスが等しい場合は true。それ以外の場合は false。</returns>
+      <param name="comparand">現在のインスタンスと比較する <see cref="T:System.Net.DnsEndPoint" /> インスタンス。</param>
+    </member>
+    <member name="M:System.Net.DnsEndPoint.GetHashCode">
+      <summary>
+        <see cref="T:System.Net.DnsEndPoint" /> のハッシュ値を返します。</summary>
+      <returns>
+        <see cref="T:System.Net.DnsEndPoint" /> の整数ハッシュ値。</returns>
+    </member>
+    <member name="P:System.Net.DnsEndPoint.Host">
+      <summary>ホスト名、またはホストのインターネット プロトコル (IP) アドレスの文字列表現を取得します。</summary>
+      <returns>ホスト名、または IP アドレスの文字列表現。</returns>
+    </member>
+    <member name="P:System.Net.DnsEndPoint.Port">
+      <summary>
+        <see cref="T:System.Net.DnsEndPoint" /> のポート番号を取得します。</summary>
+      <returns>
+        <see cref="T:System.Net.DnsEndPoint" /> のポート番号を示す 0 ～ 0xffff の範囲の整数値。</returns>
+    </member>
+    <member name="M:System.Net.DnsEndPoint.ToString">
+      <summary>
+        <see cref="T:System.Net.DnsEndPoint" /> のホスト名、または IP アドレスおよびポート番号の文字列表現を返します。</summary>
+      <returns>指定した <see cref="T:System.Net.DnsEndPoint" /> のアドレス ファミリ、ホスト名、または IP アドレス文字列と、ポート番号を含む文字列。</returns>
+    </member>
+    <member name="T:System.Net.EndPoint">
+      <summary>ネットワーク アドレスを識別します。これは abstract クラスです。</summary>
+    </member>
+    <member name="M:System.Net.EndPoint.#ctor">
+      <summary>
+        <see cref="T:System.Net.EndPoint" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="P:System.Net.EndPoint.AddressFamily">
+      <summary>エンドポイントが属するアドレス ファミリを取得します。</summary>
+      <returns>
+        <see cref="T:System.Net.Sockets.AddressFamily" /> 値の 1 つ。</returns>
+      <exception cref="T:System.NotImplementedException">プロパティが派生クラスでオーバーライドされない場合は、そのプロパティの取得または設定が行われます。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.EndPoint.Create(System.Net.SocketAddress)">
+      <summary>
+        <see cref="T:System.Net.SocketAddress" /> インスタンスから <see cref="T:System.Net.EndPoint" /> インスタンスを作成します。</summary>
+      <returns>指定した <see cref="T:System.Net.SocketAddress" /> インスタンスから初期化された新しい <see cref="T:System.Net.EndPoint" /> インスタンス。</returns>
+      <param name="socketAddress">接続のエンド ポイントとして機能するソケット アドレス。</param>
+      <exception cref="T:System.NotImplementedException">メソッドが派生クラスでオーバーライドされない場合は、そのメソッドへのアクセスが行われます。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.EndPoint.Serialize">
+      <summary>
+        <see cref="T:System.Net.SocketAddress" /> インスタンスに対してエンドポイント情報をシリアル化します。</summary>
+      <returns>エンド ポイント情報を格納している <see cref="T:System.Net.SocketAddress" /> インスタンス。</returns>
+      <exception cref="T:System.NotImplementedException">メソッドが派生クラスでオーバーライドされない場合は、そのメソッドへのアクセスが行われます。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Net.HttpStatusCode">
+      <summary>HTTP で定義されたステータス コードの値を格納します。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Accepted">
+      <summary>HTTP ステータス 202 と等価です。<see cref="F:System.Net.HttpStatusCode.Accepted" /> は、要求が追加の処理のために受け入れられたことを示します。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Ambiguous">
+      <summary>HTTP ステータス 300 と等価です。<see cref="F:System.Net.HttpStatusCode.Ambiguous" /> は、要求された情報に複数の表現があることを示します。既定のアクションは、このステータスをリダイレクトとして扱い、この応答に関連付けられている Location ヘッダーの内容に従うことです。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.BadGateway">
+      <summary>HTTP ステータス 502 と等価です。<see cref="F:System.Net.HttpStatusCode.BadGateway" /> は、中間プロキシ サーバーが別のプロキシまたは元のサーバーから無効な応答を受け取ったことを示します。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.BadRequest">
+      <summary>HTTP ステータス 400 と等価です。<see cref="F:System.Net.HttpStatusCode.BadRequest" /> は、サーバーが要求を理解できないことを示します。<see cref="F:System.Net.HttpStatusCode.BadRequest" /> は、他のエラーが適用されない場合や、正確なエラーを確認できないか、独自のエラー コードがない場合に送信されます。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Conflict">
+      <summary>HTTP ステータス 409 と等価です。<see cref="F:System.Net.HttpStatusCode.Conflict" /> は、サーバー上の競合のために要求を実行できないことを示します。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Continue">
+      <summary>HTTP ステータス 100 と等価です。<see cref="F:System.Net.HttpStatusCode.Continue" /> は、クライアントが要求を継続できることを示します。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Created">
+      <summary>HTTP ステータス 201 と等価です。<see cref="F:System.Net.HttpStatusCode.Created" /> は、応答が送信される前に、要求によって新しいリソースが作成されたことを示します。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.ExpectationFailed">
+      <summary>HTTP ステータス 417 と等価です。<see cref="F:System.Net.HttpStatusCode.ExpectationFailed" /> は、サーバーが Expect ヘッダーで指定された要求を満たすことができないことを示します。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Forbidden">
+      <summary>HTTP ステータス 403 と等価です。<see cref="F:System.Net.HttpStatusCode.Forbidden" /> は、サーバーが要求の実行を拒否していることを示します。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Found">
+      <summary>HTTP ステータス 302 と等価です。<see cref="F:System.Net.HttpStatusCode.Found" /> は、要求された情報が Location ヘッダーで指定される URI にあることを示します。このステータスが受信されたときの既定のアクションは、この応答に関連付けられている Location ヘッダーに従うことです。元の要求メソッドが POST だった場合、リダイレクトされた要求では GET メソッドが使用されます。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.GatewayTimeout">
+      <summary>HTTP ステータス 504 と等価です。<see cref="F:System.Net.HttpStatusCode.GatewayTimeout" /> は、中間プロキシ サーバーが別のプロキシまたは元のサーバーからの応答を待機している間にタイムアウトしたことを示します。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Gone">
+      <summary>HTTP ステータス 410 と等価です。<see cref="F:System.Net.HttpStatusCode.Gone" /> は、要求されたリソースが利用できないことを示します。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.HttpVersionNotSupported">
+      <summary>HTTP ステータス 505 と等価です。<see cref="F:System.Net.HttpStatusCode.HttpVersionNotSupported" /> は、要求された HTTP バージョンがサーバーでサポートされていないことを示します。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.InternalServerError">
+      <summary>HTTP ステータス 500 と等価です。<see cref="F:System.Net.HttpStatusCode.InternalServerError" /> は、サーバーで汎用エラーが発生したことを示します。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.LengthRequired">
+      <summary>HTTP ステータス 411 と等価です。<see cref="F:System.Net.HttpStatusCode.LengthRequired" /> は、必要な Content-length ヘッダーがないことを示します。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.MethodNotAllowed">
+      <summary>HTTP ステータス 405 と等価です。<see cref="F:System.Net.HttpStatusCode.MethodNotAllowed" /> は、要求メソッド (POST または GET) が要求リソースで許可されていないことを示します。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Moved">
+      <summary>HTTP ステータス 301 と等価です。<see cref="F:System.Net.HttpStatusCode.Moved" /> は、要求された情報が Location ヘッダーで指定される URI に移動したことを示します。このステータスが受信されたときの既定のアクションは、この応答に関連付けられている Location ヘッダーに従うことです。元の要求メソッドが POST だった場合、リダイレクトされた要求では GET メソッドが使用されます。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.MovedPermanently">
+      <summary>HTTP ステータス 301 と等価です。<see cref="F:System.Net.HttpStatusCode.MovedPermanently" /> は、要求された情報が Location ヘッダーで指定される URI に移動したことを示します。このステータスが受信されたときの既定のアクションは、この応答に関連付けられている Location ヘッダーに従うことです。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.MultipleChoices">
+      <summary>HTTP ステータス 300 と等価です。<see cref="F:System.Net.HttpStatusCode.MultipleChoices" /> は、要求された情報に複数の表現があることを示します。既定のアクションは、このステータスをリダイレクトとして扱い、この応答に関連付けられている Location ヘッダーの内容に従うことです。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.NoContent">
+      <summary>HTTP ステータス 204 と等価です。<see cref="F:System.Net.HttpStatusCode.NoContent" /> は、要求が正常に処理され、応答が意図的に空白になっていることを示します。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.NonAuthoritativeInformation">
+      <summary>HTTP ステータス 203 と等価です。<see cref="F:System.Net.HttpStatusCode.NonAuthoritativeInformation" /> は、返されたメタ情報が、元のサーバーではなくキャッシュされたコピーから取得されたもので、正しくない可能性があることを示します。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.NotAcceptable">
+      <summary>HTTP ステータス 406 と等価です。<see cref="F:System.Net.HttpStatusCode.NotAcceptable" /> は、クライアントが Accept ヘッダーでリソースの利用可能な任意の表現を受け入れないことを指定していることを示します。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.NotFound">
+      <summary>HTTP ステータス 404 と等価です。<see cref="F:System.Net.HttpStatusCode.NotFound" /> は、要求されたリソースがサーバーに存在していないことを示します。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.NotImplemented">
+      <summary>HTTP ステータス 501 と等価です。<see cref="F:System.Net.HttpStatusCode.NotImplemented" /> は、サーバーが要求された機能をサポートしていないことを示します。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.NotModified">
+      <summary>HTTP ステータス 304 と等価です。<see cref="F:System.Net.HttpStatusCode.NotModified" /> は、クライアントのキャッシュされたコピーが最新のものであることを示します。リソースの内容は転送されません。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.OK">
+      <summary>HTTP ステータス 200 と等価です。<see cref="F:System.Net.HttpStatusCode.OK" /> は、要求が成功し、要求された情報が応答で返されたことを示します。これは受信される最も一般的なステータス コードです。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.PartialContent">
+      <summary>HTTP ステータス 206 と等価です。<see cref="F:System.Net.HttpStatusCode.PartialContent" /> は、応答が GET 要求によって要求された応答の一部であることを示します。これにはバイト範囲が含まれます。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.PaymentRequired">
+      <summary>HTTP ステータス 402 と等価です。<see cref="F:System.Net.HttpStatusCode.PaymentRequired" /> は将来使用するために予約されています。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.PreconditionFailed">
+      <summary>HTTP ステータス 412 と等価です。<see cref="F:System.Net.HttpStatusCode.PreconditionFailed" /> は、この要求で設定された条件が満たされず、要求を実行できないことを示します。条件は、If-Match、If-None-Match、If-Unmodified-Since などの条件要求ヘッダーを使用して設定されます。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.ProxyAuthenticationRequired">
+      <summary>HTTP ステータス 407 と等価です。<see cref="F:System.Net.HttpStatusCode.ProxyAuthenticationRequired" /> は、要求されたプロキシが認証を要求することを示します。Proxy-authenticate ヘッダーには、認証の実行方法の詳細が含まれます。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Redirect">
+      <summary>HTTP ステータス 302 と等価です。<see cref="F:System.Net.HttpStatusCode.Redirect" /> は、要求された情報が Location ヘッダーで指定される URI にあることを示します。このステータスが受信されたときの既定のアクションは、この応答に関連付けられている Location ヘッダーに従うことです。元の要求メソッドが POST だった場合、リダイレクトされた要求では GET メソッドが使用されます。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.RedirectKeepVerb">
+      <summary>HTTP ステータス 307 と等価です。<see cref="F:System.Net.HttpStatusCode.RedirectKeepVerb" /> は、要求された情報が Location ヘッダーで指定される URI にあることを示します。このステータスが受信されたときの既定のアクションは、この応答に関連付けられている Location ヘッダーに従うことです。元の要求メソッドが POST だった場合、リダイレクトされた要求でも POST メソッドが使用されます。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.RedirectMethod">
+      <summary>HTTP ステータス 303 と等価です。<see cref="F:System.Net.HttpStatusCode.RedirectMethod" /> は、POST の結果として、Location ヘッダーで指定された URI にクライアントを自動的にリダイレクトします。Location ヘッダーで指定されたリソースへの要求は、GET によって実行されます。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.RequestedRangeNotSatisfiable">
+      <summary>HTTP ステータス 416 と等価です。<see cref="F:System.Net.HttpStatusCode.RequestedRangeNotSatisfiable" /> は、リソースから要求されたデータの範囲を返すことができないことを示します。その原因は、範囲の先頭がリソースの先頭より前であるか、範囲の末尾がリソースの末尾より後ろであるかのいずれかです。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.RequestEntityTooLarge">
+      <summary>HTTP ステータス 413 と等価です。<see cref="F:System.Net.HttpStatusCode.RequestEntityTooLarge" /> は、要求が大きすぎて、サーバーで処理できないことを示します。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.RequestTimeout">
+      <summary>HTTP ステータス 408 と等価です。<see cref="F:System.Net.HttpStatusCode.RequestTimeout" /> は、サーバーが要求を予期している時間内にクライアントが要求を送信しなかったことを示します。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.RequestUriTooLong">
+      <summary>HTTP ステータス 414 と等価です。<see cref="F:System.Net.HttpStatusCode.RequestUriTooLong" /> は、URI が長すぎることを示します。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.ResetContent">
+      <summary>HTTP ステータス 205 と等価です。<see cref="F:System.Net.HttpStatusCode.ResetContent" /> は、クライアントが現在のリソースを再び読み込むのではなく、リセットする必要があることを示します。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.SeeOther">
+      <summary>HTTP ステータス 303 と等価です。<see cref="F:System.Net.HttpStatusCode.SeeOther" /> は、POST の結果として、Location ヘッダーで指定された URI にクライアントを自動的にリダイレクトします。Location ヘッダーで指定されたリソースへの要求は、GET によって実行されます。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.ServiceUnavailable">
+      <summary>HTTP ステータス 503 と等価です。通常、<see cref="F:System.Net.HttpStatusCode.ServiceUnavailable" /> は、高い負荷または保守のため、サーバーを一時的に利用できないことを示します。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.SwitchingProtocols">
+      <summary>HTTP ステータス 101 と等価です。<see cref="F:System.Net.HttpStatusCode.SwitchingProtocols" /> は、プロトコル バージョンまたはプロトコルが変更されていることを示します。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.TemporaryRedirect">
+      <summary>HTTP ステータス 307 と等価です。<see cref="F:System.Net.HttpStatusCode.TemporaryRedirect" /> は、要求された情報が Location ヘッダーで指定される URI にあることを示します。このステータスが受信されたときの既定のアクションは、この応答に関連付けられている Location ヘッダーに従うことです。元の要求メソッドが POST だった場合、リダイレクトされた要求でも POST メソッドが使用されます。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Unauthorized">
+      <summary>HTTP ステータス 401 と等価です。<see cref="F:System.Net.HttpStatusCode.Unauthorized" /> は、要求されたリソースが認証を要求することを示します。WWW-Authenticate ヘッダーには、認証の実行方法の詳細が含まれます。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.UnsupportedMediaType">
+      <summary>HTTP ステータス 415 と等価です。<see cref="F:System.Net.HttpStatusCode.UnsupportedMediaType" /> は、その要求の種類がサポートされていないことを示します。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Unused">
+      <summary>HTTP ステータス 306 と等価です。<see cref="F:System.Net.HttpStatusCode.Unused" /> は、作成中の HTTP/1.1 仕様の拡張案です。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.UpgradeRequired">
+      <summary>HTTP ステータス 426 と等価です。<see cref="F:System.Net.HttpStatusCode.UpgradeRequired" /> は、クライアントが TLS/1.0 など別のプロトコルに切り替える必要があることを示します。</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.UseProxy">
+      <summary>HTTP ステータス 305 と等価です。<see cref="F:System.Net.HttpStatusCode.UseProxy" /> は、要求が Location ヘッダーで指定される URI でプロキシ サーバーを使用する必要があることを示します。</summary>
+    </member>
+    <member name="T:System.Net.ICredentials">
+      <summary>Web クライアント認証用の資格情報を取得するための、基本認証インターフェイスを提供します。</summary>
+    </member>
+    <member name="M:System.Net.ICredentials.GetCredential(System.Uri,System.String)">
+      <summary>指定された URI に関連付けられている <see cref="T:System.Net.NetworkCredential" /> オブジェクトと、認証の種類を返します。</summary>
+      <returns>指定された URI に関連付けられている <see cref="T:System.Net.NetworkCredential" /> と、認証の種類。使用できる認証がない場合には、null が返されます。</returns>
+      <param name="uri">クライアントが認証を提供している <see cref="T:System.Uri" />。</param>
+      <param name="authType">
+        <see cref="P:System.Net.IAuthenticationModule.AuthenticationType" /> プロパティで定義される認証の種類。</param>
+    </member>
+    <member name="T:System.Net.ICredentialsByHost">
+      <summary>ホスト、ポート、および認証の種類用の資格情報を取得するためのインターフェイスを提供します。</summary>
+    </member>
+    <member name="M:System.Net.ICredentialsByHost.GetCredential(System.String,System.Int32,System.String)">
+      <summary>指定したホスト、ポート、および認証プロトコル用の資格情報を返します。</summary>
+      <returns>指定したホスト、ポート、および認証プロトコル用の <see cref="T:System.Net.NetworkCredential" />。指定したホスト、ポート、および認証プロトコル用に使用できる資格情報がない場合は null。</returns>
+      <param name="host">クライアントを認証しているホスト コンピューター。</param>
+      <param name="port">クライアントが通信を行う <paramref name="host " /> 上のポート。</param>
+      <param name="authenticationType">認証プロトコル。</param>
+    </member>
+    <member name="T:System.Net.IPAddress">
+      <summary>インターネット プロトコル (IP: Internet Protocol) アドレスを提供します。</summary>
+    </member>
+    <member name="M:System.Net.IPAddress.#ctor(System.Byte[])">
+      <summary>
+        <see cref="T:System.Byte" /> 配列として指定されたアドレスを使用して、<see cref="T:System.Net.IPAddress" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="address">IP アドレスのバイト配列値。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="address" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="address" /> には、不適切な IP アドレスが含まれています。</exception>
+    </member>
+    <member name="M:System.Net.IPAddress.#ctor(System.Byte[],System.Int64)">
+      <summary>
+        <see cref="T:System.Byte" /> 配列として指定されたアドレスおよび指定したスコープ ID を使用して、<see cref="T:System.Net.IPAddress" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="address">IP アドレスのバイト配列値。</param>
+      <param name="scopeid">スコープ識別子の long 値。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="address" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="address" /> には、不適切な IP アドレスが含まれています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="scopeid" /> &lt; 0 または<paramref name="scopeid" /> &gt; 0x00000000FFFFFFFF</exception>
+    </member>
+    <member name="M:System.Net.IPAddress.#ctor(System.Int64)">
+      <summary>
+        <see cref="T:System.Int64" /> として指定されたアドレスを使用して、<see cref="T:System.Net.IPAddress" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="newAddress">IP アドレスの long 値。たとえば、ビッグ エンディアン形式の値 0x2414188f は、IP アドレス "143.24.20.36" になります。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="newAddress" /> &lt; 0 または<paramref name="newAddress" /> &gt; 0x00000000FFFFFFFF</exception>
+    </member>
+    <member name="P:System.Net.IPAddress.AddressFamily">
+      <summary>IP アドレスのアドレス ファミリを取得します。</summary>
+      <returns>IPv4 の場合は <see cref="F:System.Net.Sockets.AddressFamily.InterNetwork" />、IPv6 の場合は <see cref="F:System.Net.Sockets.AddressFamily.InterNetworkV6" /> を返します。</returns>
+    </member>
+    <member name="F:System.Net.IPAddress.Any">
+      <summary>IP アドレスを提供し、そのサーバーがすべてのネットワーク インターフェイスでクライアントによるネットワーク利用を待機する必要があることを示します。このフィールドは読み取り専用です。</summary>
+    </member>
+    <member name="F:System.Net.IPAddress.Broadcast">
+      <summary>IP ブロードキャスト アドレスを提供します。このフィールドは読み取り専用です。</summary>
+    </member>
+    <member name="M:System.Net.IPAddress.Equals(System.Object)">
+      <summary>2 つの IP アドレスを比較します。</summary>
+      <returns>2 つのアドレスが等しい場合は true。それ以外の場合は false。</returns>
+      <param name="comparand">現在のインスタンスと比較する <see cref="T:System.Net.IPAddress" /> インスタンス。</param>
+    </member>
+    <member name="M:System.Net.IPAddress.GetAddressBytes">
+      <summary>
+        <see cref="T:System.Net.IPAddress" /> のコピーをバイト配列として提供します。</summary>
+      <returns>
+        <see cref="T:System.Byte" /> 配列。</returns>
+    </member>
+    <member name="M:System.Net.IPAddress.GetHashCode">
+      <summary>IP アドレスのハッシュ値を返します。</summary>
+      <returns>整数ハッシュ値。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.IPAddress.HostToNetworkOrder(System.Int16)">
+      <summary>short 値をホストのバイト順からネットワークのバイト順に変換します。</summary>
+      <returns>ネットワークのバイト順で表現される short 値。</returns>
+      <param name="host">ホストのバイト順で表現される、変換する数値。</param>
+    </member>
+    <member name="M:System.Net.IPAddress.HostToNetworkOrder(System.Int32)">
+      <summary>整数値をホストのバイト順からネットワークのバイト順に変換します。</summary>
+      <returns>ネットワークのバイト順で表現される整数値。</returns>
+      <param name="host">ホストのバイト順で表現される、変換する数値。</param>
+    </member>
+    <member name="M:System.Net.IPAddress.HostToNetworkOrder(System.Int64)">
+      <summary>long 値をホストのバイト順からネットワークのバイト順に変換します。</summary>
+      <returns>ネットワークのバイト順で表現される long 値。</returns>
+      <param name="host">ホストのバイト順で表現される、変換する数値。</param>
+    </member>
+    <member name="F:System.Net.IPAddress.IPv6Any">
+      <summary>
+        <see cref="M:System.Net.Sockets.Socket.Bind(System.Net.EndPoint)" /> メソッドは、<see cref="F:System.Net.IPAddress.IPv6Any" /> フィールドを使用して、<see cref="T:System.Net.Sockets.Socket" /> が、すべてのネットワーク インターフェイスでクライアントによるネットワーク利用を待機する必要があることを示します。</summary>
+    </member>
+    <member name="F:System.Net.IPAddress.IPv6Loopback">
+      <summary>IP ループバック アドレスを提供します。このプロパティは読み取り専用です。</summary>
+    </member>
+    <member name="F:System.Net.IPAddress.IPv6None">
+      <summary>IP アドレスを提供し、ネットワーク インターフェイスを使用しないことを示します。このプロパティは読み取り専用です。</summary>
+    </member>
+    <member name="P:System.Net.IPAddress.IsIPv4MappedToIPv6">
+      <summary>IP アドレスが IPv4 でマップされた IPv6 アドレスであるかどうかを取得します。</summary>
+      <returns>
+        <see cref="T:System.Boolean" /> を返します。IP アドレスが IPv4 でマップされた IPv6 アドレスである場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Net.IPAddress.IsIPv6LinkLocal">
+      <summary>アドレスが IPv6 リンクローカル アドレスであるかどうかを示す値を取得します。</summary>
+      <returns>IP アドレスが IPv6 リンクローカル アドレスである場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Net.IPAddress.IsIPv6Multicast">
+      <summary>アドレスが IPv6 マルチキャスト グローバル アドレスであるかどうかを示す値を取得します。</summary>
+      <returns>IP アドレスが IPv6 マルチキャスト グローバル アドレスである場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Net.IPAddress.IsIPv6SiteLocal">
+      <summary>アドレスが IPv6 サイトローカル アドレスであるかどうかを示す値を取得します。</summary>
+      <returns>IP アドレスが IPv6 サイトローカル アドレスである場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Net.IPAddress.IsIPv6Teredo">
+      <summary>アドレスが IPv6 Teredo アドレスであるかどうかを示す値を取得します。</summary>
+      <returns>IP アドレスが IPv6 Teredo アドレスである場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="M:System.Net.IPAddress.IsLoopback(System.Net.IPAddress)">
+      <summary>指定した IP アドレスがループバック アドレスかどうかを示します。</summary>
+      <returns>
+        <paramref name="address" /> がループバック アドレスの場合は true。それ以外の場合は false。</returns>
+      <param name="address">IP アドレス。</param>
+    </member>
+    <member name="F:System.Net.IPAddress.Loopback">
+      <summary>IP ループバック アドレスを提供します。このフィールドは読み取り専用です。</summary>
+    </member>
+    <member name="M:System.Net.IPAddress.MapToIPv4">
+      <summary>
+        <see cref="T:System.Net.IPAddress" /> オブジェクトを IPv4 アドレスにマップします。</summary>
+      <returns>
+        <see cref="T:System.Net.IPAddress" /> を返します。IPv4 アドレス。</returns>
+    </member>
+    <member name="M:System.Net.IPAddress.MapToIPv6">
+      <summary>
+        <see cref="T:System.Net.IPAddress" /> オブジェクトを IPv6 アドレスにマップします。</summary>
+      <returns>
+        <see cref="T:System.Net.IPAddress" /> を返します。IPv6 アドレス。</returns>
+    </member>
+    <member name="M:System.Net.IPAddress.NetworkToHostOrder(System.Int16)">
+      <summary>short 値をネットワークのバイト順からホストのバイト順に変換します。</summary>
+      <returns>ホストのバイト順で表現される short 値。</returns>
+      <param name="network">ネットワークのバイト順で表現される、変換する数値。</param>
+    </member>
+    <member name="M:System.Net.IPAddress.NetworkToHostOrder(System.Int32)">
+      <summary>整数値をネットワークのバイト順からホストのバイト順に変換します。</summary>
+      <returns>ホストのバイト順で表現される整数値。</returns>
+      <param name="network">ネットワークのバイト順で表現される、変換する数値。</param>
+    </member>
+    <member name="M:System.Net.IPAddress.NetworkToHostOrder(System.Int64)">
+      <summary>long 値をネットワークのバイト順からホストのバイト順に変換します。</summary>
+      <returns>ホストのバイト順で表現される long 値。</returns>
+      <param name="network">ネットワークのバイト順で表現される、変換する数値。</param>
+    </member>
+    <member name="F:System.Net.IPAddress.None">
+      <summary>IP アドレスを提供し、ネットワーク インターフェイスを使用しないことを示します。このフィールドは読み取り専用です。</summary>
+    </member>
+    <member name="M:System.Net.IPAddress.Parse(System.String)">
+      <summary>IP アドレス文字列を <see cref="T:System.Net.IPAddress" /> インスタンスに変換します。</summary>
+      <returns>
+        <see cref="T:System.Net.IPAddress" /> のインスタンス。</returns>
+      <param name="ipString">ピリオド区切りの 10 進表記 (IPv4 の場合) またはコロン区切りの 16 進表記 (IPv6 の場合) で表された IP アドレスを格納している文字列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="ipString" /> は null なので、</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="ipString" /> が有効な IP アドレスではありません。</exception>
+    </member>
+    <member name="P:System.Net.IPAddress.ScopeId">
+      <summary>IPv6 アドレスのスコープ識別子を取得または設定します。</summary>
+      <returns>アドレスのスコープを指定する長整数。</returns>
+      <exception cref="T:System.Net.Sockets.SocketException">AddressFamily = InterNetwork.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="scopeId" /> &lt; 0または<paramref name="scopeId" /> &gt; 0x00000000FFFFFFFF</exception>
+    </member>
+    <member name="M:System.Net.IPAddress.ToString">
+      <summary>インターネット アドレスを標準表記に変換します。</summary>
+      <returns>ピリオド区切りの 10 進表記 (IPv4 の場合) またはコロン区切りの 16 進表記 (IPv6 の場合) の IP アドレスを格納している文字列。</returns>
+      <exception cref="T:System.Net.Sockets.SocketException">アドレス ファミリが <see cref="F:System.Net.Sockets.AddressFamily.InterNetworkV6" /> であり、アドレスが正しくありません。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.IPAddress.TryParse(System.String,System.Net.IPAddress@)">
+      <summary>文字列が有効な IP アドレスであるかどうかを判断します。</summary>
+      <returns>
+        <paramref name="ipString" /> が有効な IP アドレスである場合は true。それ以外の場合は false。</returns>
+      <param name="ipString">検証対象の文字列。</param>
+      <param name="address">文字列の <see cref="T:System.Net.IPAddress" /> バージョン。</param>
+    </member>
+    <member name="T:System.Net.IPEndPoint">
+      <summary>IP アドレスとポート番号でネットワーク エンドポイントを表します。</summary>
+    </member>
+    <member name="M:System.Net.IPEndPoint.#ctor(System.Int64,System.Int32)">
+      <summary>指定したアドレスとポート番号を使用して、<see cref="T:System.Net.IPEndPoint" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="address">インターネット ホストの IP アドレス。</param>
+      <param name="port">
+        <paramref name="address" /> に関連付けられているポート番号。または、使用できる任意のポートを指定する場合は 0。<paramref name="port" /> は、ホスト順です。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="port" /> が <see cref="F:System.Net.IPEndPoint.MinPort" /> より小さい。または<paramref name="port" /> が <see cref="F:System.Net.IPEndPoint.MaxPort" /> より大きくなっています。または<paramref name="address" /> が 0 未満か、0x00000000FFFFFFFF よりも大きい値です。</exception>
+    </member>
+    <member name="M:System.Net.IPEndPoint.#ctor(System.Net.IPAddress,System.Int32)">
+      <summary>指定したアドレスとポート番号を使用して、<see cref="T:System.Net.IPEndPoint" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="address">
+        <see cref="T:System.Net.IPAddress" />。</param>
+      <param name="port">
+        <paramref name="address" /> に関連付けられているポート番号。または、使用できる任意のポートを指定する場合は 0。<paramref name="port" /> は、ホスト順です。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="address" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="port" /> が <see cref="F:System.Net.IPEndPoint.MinPort" /> より小さい。または<paramref name="port" /> が <see cref="F:System.Net.IPEndPoint.MaxPort" /> より大きくなっています。または<paramref name="address" /> が 0 未満か、0x00000000FFFFFFFF よりも大きい値です。</exception>
+    </member>
+    <member name="P:System.Net.IPEndPoint.Address">
+      <summary>エンドポイントの IP アドレスを取得または設定します。</summary>
+      <returns>エンドポイントの IP アドレスを格納する <see cref="T:System.Net.IPAddress" /> インスタンス。</returns>
+    </member>
+    <member name="P:System.Net.IPEndPoint.AddressFamily">
+      <summary>インターネット プロトコル (IP: Internet Protocol) アドレス ファミリを取得します。</summary>
+      <returns>
+        <see cref="F:System.Net.Sockets.AddressFamily.InterNetwork" /> を返します。</returns>
+    </member>
+    <member name="M:System.Net.IPEndPoint.Create(System.Net.SocketAddress)">
+      <summary>ソケット アドレスからエンドポイントを作成します。</summary>
+      <returns>指定したソケット アドレスを使用する <see cref="T:System.Net.EndPoint" /> インスタンス。</returns>
+      <param name="socketAddress">エンドポイントで使用する <see cref="T:System.Net.SocketAddress" />。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="socketAddress" /> の AddressFamily は、現在のインスタンスの AddressFamily と同じではありません。または<paramref name="socketAddress" />.Size &amp;lt; 8。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.IPEndPoint.Equals(System.Object)">
+      <summary>指定した <see cref="T:System.Object" /> が、現在の <see cref="T:System.Net.IPEndPoint" /> インスタンスと等しいかどうかを判断します。</summary>
+      <returns>指定したオブジェクトが現在のオブジェクトと等しい場合は true。それ以外の場合は false。</returns>
+      <param name="comparand">現在の <see cref="T:System.Net.IPEndPoint" /> インスタンスと比較するために指定した <see cref="T:System.Object" />。</param>
+    </member>
+    <member name="M:System.Net.IPEndPoint.GetHashCode">
+      <summary>
+        <see cref="T:System.Net.IPEndPoint" /> インスタンスのハッシュ値を返します。</summary>
+      <returns>整数ハッシュ値。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="F:System.Net.IPEndPoint.MaxPort">
+      <summary>
+        <see cref="P:System.Net.IPEndPoint.Port" /> プロパティに割り当てることができる最大値を指定します。MaxPort 値は、0x0000FFFF に設定されます。このフィールドは読み取り専用です。</summary>
+    </member>
+    <member name="F:System.Net.IPEndPoint.MinPort">
+      <summary>
+        <see cref="P:System.Net.IPEndPoint.Port" /> プロパティに割り当てることができる最小値を指定します。このフィールドは読み取り専用です。</summary>
+    </member>
+    <member name="P:System.Net.IPEndPoint.Port">
+      <summary>エンドポイントのポート番号を取得または設定します。</summary>
+      <returns>エンドポイントのポート番号を示す <see cref="F:System.Net.IPEndPoint.MinPort" /> ～ <see cref="F:System.Net.IPEndPoint.MaxPort" /> の範囲の整数値。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">set 操作に指定された値が <see cref="F:System.Net.IPEndPoint.MinPort" /> より小さいか、<see cref="F:System.Net.IPEndPoint.MaxPort" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Net.IPEndPoint.Serialize">
+      <summary>
+        <see cref="T:System.Net.SocketAddress" /> インスタンスに対してエンドポイント情報をシリアル化します。</summary>
+      <returns>エンドポイントのソケット アドレスを格納する <see cref="T:System.Net.SocketAddress" /> インスタンス。</returns>
+    </member>
+    <member name="M:System.Net.IPEndPoint.ToString">
+      <summary>指定したエンドポイントの IP アドレスとポート番号を返します。</summary>
+      <returns>192.168.1.2:80 などの指定したエンドポイントの IP アドレスとポート番号を格納する文字列。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Net.IWebProxy">
+      <summary>
+        <see cref="T:System.Net.WebRequest" /> クラスのプロキシ アクセスの実装用に基本インターフェイスを提供します。</summary>
+    </member>
+    <member name="P:System.Net.IWebProxy.Credentials">
+      <summary>認証用にプロキシ サーバーに送信する資格情報。</summary>
+      <returns>プロキシ サーバーへの要求を認証するために必要な資格情報を格納している <see cref="T:System.Net.ICredentials" /> インスタンス。</returns>
+    </member>
+    <member name="M:System.Net.IWebProxy.GetProxy(System.Uri)">
+      <summary>プロキシの URI を返します。</summary>
+      <returns>
+        <paramref name="destination" /> と通信するために使用するプロキシの URI を格納している <see cref="T:System.Uri" /> インスタンス。</returns>
+      <param name="destination">要求されたインターネット リソースを指定する <see cref="T:System.Uri" />。</param>
+    </member>
+    <member name="M:System.Net.IWebProxy.IsBypassed(System.Uri)">
+      <summary>指定したホストでプロキシを使用しないことを示します。</summary>
+      <returns>
+        <paramref name="host" /> でプロキシ サーバーを使用しない場合は true。それ以外の場合は false。</returns>
+      <param name="host">プロキシの使用を確認するホストの <see cref="T:System.Uri" />。</param>
+    </member>
+    <member name="T:System.Net.NetworkCredential">
+      <summary>基本認証、ダイジェスト認証、NTLM 認証、Kerberos 認証など、パスワード ベースの認証方式に使用する資格情報を提供します。</summary>
+    </member>
+    <member name="M:System.Net.NetworkCredential.#ctor">
+      <summary>
+        <see cref="T:System.Net.NetworkCredential" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Net.NetworkCredential.#ctor(System.String,System.String)">
+      <summary>指定したユーザー名とパスワードを使用して、<see cref="T:System.Net.NetworkCredential" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="userName">資格情報に関連付けられているユーザー名。</param>
+      <param name="password">資格情報に関連付けられているユーザー名に対応するパスワード。</param>
+    </member>
+    <member name="M:System.Net.NetworkCredential.#ctor(System.String,System.String,System.String)">
+      <summary>指定したユーザー名、パスワード、ドメインを使用して、<see cref="T:System.Net.NetworkCredential" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="userName">資格情報に関連付けられているユーザー名。</param>
+      <param name="password">資格情報に関連付けられているユーザー名に対応するパスワード。</param>
+      <param name="domain">これらの資格情報に関連付けられているドメイン。</param>
+    </member>
+    <member name="P:System.Net.NetworkCredential.Domain">
+      <summary>資格情報を検証するドメインまたはコンピューター名を取得または設定します。</summary>
+      <returns>資格情報に関連付けられているドメインの名前。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.NetworkCredential.GetCredential(System.String,System.Int32,System.String)">
+      <summary>指定したホスト、ポート、および認証の種類用に <see cref="T:System.Net.NetworkCredential" /> クラスのインスタンスを返します。</summary>
+      <returns>指定したホスト、ポート、および認証プロトコル用の <see cref="T:System.Net.NetworkCredential" />。指定したホスト、ポート、および認証プロトコル用に使用できる資格情報がない場合は null。</returns>
+      <param name="host">クライアントを認証するホスト コンピューター。</param>
+      <param name="port">クライアントが通信する <paramref name="host" /> 上のポート。</param>
+      <param name="authenticationType">
+        <see cref="P:System.Net.IAuthenticationModule.AuthenticationType" /> プロパティの定義に従って要求された認証の種類。</param>
+    </member>
+    <member name="M:System.Net.NetworkCredential.GetCredential(System.Uri,System.String)">
+      <summary>指定された URI (Uniform Resource Identifier) と認証の種類について、<see cref="T:System.Net.NetworkCredential" /> クラスのインスタンスを返します。</summary>
+      <returns>
+        <see cref="T:System.Net.NetworkCredential" /> オブジェクト。</returns>
+      <param name="uri">クライアントが認証を提供する URI。</param>
+      <param name="authType">
+        <see cref="P:System.Net.IAuthenticationModule.AuthenticationType" /> プロパティの定義に従って要求された認証の種類。</param>
+    </member>
+    <member name="P:System.Net.NetworkCredential.Password">
+      <summary>資格情報に関連付けられているユーザー名に対応するパスワードを取得または設定します。</summary>
+      <returns>資格情報に関連付けられているパスワード。この <see cref="T:System.Net.NetworkCredential" /> インスタンスが、null に設定された <paramref name="password" /> パラメーターを使用して初期化された場合、<see cref="P:System.Net.NetworkCredential.Password" /> プロパティは空の文字列を返します。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Net.NetworkCredential.UserName">
+      <summary>資格情報に関連付けられているユーザー名を取得または設定します。</summary>
+      <returns>資格情報に関連付けられているユーザー名。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Net.SocketAddress">
+      <summary>
+        <see cref="T:System.Net.EndPoint" /> 派生クラスからシリアル化された情報を格納します。</summary>
+    </member>
+    <member name="M:System.Net.SocketAddress.#ctor(System.Net.Sockets.AddressFamily)">
+      <summary>指定したアドレス ファミリの <see cref="T:System.Net.SocketAddress" /> クラスの新しいインスタンスを作成します。</summary>
+      <param name="family">
+        <see cref="T:System.Net.Sockets.AddressFamily" /> 列挙値。</param>
+    </member>
+    <member name="M:System.Net.SocketAddress.#ctor(System.Net.Sockets.AddressFamily,System.Int32)">
+      <summary>指定したアドレス ファミリとバッファー サイズを使用して、<see cref="T:System.Net.SocketAddress" /> クラスの新しいインスタンスを作成します。</summary>
+      <param name="family">
+        <see cref="T:System.Net.Sockets.AddressFamily" /> 列挙値。</param>
+      <param name="size">基になるバッファーに割り当てるバイト数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="size" /> が 2 未満です。この 2 バイトは、<paramref name="family" /> を格納するために必要です。</exception>
+    </member>
+    <member name="M:System.Net.SocketAddress.Equals(System.Object)">
+      <summary>指定した <see cref="T:System.Object" /> が現在の <see cref="T:System.Net.SocketAddress" /> インスタンスと等しいかどうかを判断します。</summary>
+      <returns>指定したオブジェクトが現在のオブジェクトと等しい場合は true。それ以外の場合は false。</returns>
+      <param name="comparand">現在の <see cref="T:System.Net.SocketAddress" /> インスタンスと比較するために指定した <see cref="T:System.Object" />。</param>
+    </member>
+    <member name="P:System.Net.SocketAddress.Family">
+      <summary>現在の <see cref="T:System.Net.SocketAddress" /> の <see cref="T:System.Net.Sockets.AddressFamily" /> 列挙値を取得します。</summary>
+      <returns>
+        <see cref="T:System.Net.Sockets.AddressFamily" /> 列挙値の 1 つ。</returns>
+    </member>
+    <member name="M:System.Net.SocketAddress.GetHashCode">
+      <summary>特定の型のハッシュ関数として機能します。ハッシュ アルゴリズムや、ハッシュ テーブルのようなデータ構造での使用に適しています。</summary>
+      <returns>現在のオブジェクトのハッシュ コード。</returns>
+    </member>
+    <member name="P:System.Net.SocketAddress.Item(System.Int32)">
+      <summary>基になるバッファーの指定したインデックス要素を取得または設定します。</summary>
+      <returns>基になるバッファーの指定したインデックス要素の値。</returns>
+      <param name="offset">要求されている情報の配列インデックス要素。</param>
+      <exception cref="T:System.IndexOutOfRangeException">指定したインデックスがバッファー内に存在しません。</exception>
+    </member>
+    <member name="P:System.Net.SocketAddress.Size">
+      <summary>
+        <see cref="T:System.Net.SocketAddress" /> の基になるバッファー サイズを取得します。</summary>
+      <returns>
+        <see cref="T:System.Net.SocketAddress" /> の基になるバッファー サイズ。</returns>
+    </member>
+    <member name="M:System.Net.SocketAddress.ToString">
+      <summary>ソケット アドレスに関する情報を返します。</summary>
+      <returns>
+        <see cref="T:System.Net.SocketAddress" /> に関する情報を格納する文字列。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Net.TransportContext">
+      <summary>
+        <see cref="T:System.Net.TransportContext" /> クラスは、基になるトランスポート層に関する追加のコンテキストを提供します。</summary>
+    </member>
+    <member name="M:System.Net.TransportContext.#ctor">
+      <summary>
+        <see cref="T:System.Net.TransportContext" /> クラスの新しいインスタンスを作成します。</summary>
+    </member>
+    <member name="M:System.Net.TransportContext.GetChannelBinding(System.Security.Authentication.ExtendedProtection.ChannelBindingKind)">
+      <summary>要求されたチャネル バインディングを取得します。</summary>
+      <returns>要求された <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding" />。または、チャネル バインディングが現在のトランスポートまたはオペレーティング システムによってサポートされていない場合は null。</returns>
+      <param name="kind">取得するチャネル バインディングの種類。</param>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="kind" /> は、<see cref="F:System.Security.Authentication.ExtendedProtection.ChannelBindingKind.Endpoint" /> プロパティから取得した <see cref="T:System.Net.TransportContext" /> と使用する場合は、<see cref="P:System.Net.HttpListenerRequest.TransportContext" /> である必要があります。</exception>
+    </member>
+    <member name="T:System.Net.NetworkInformation.IPAddressCollection">
+      <summary>
+        <see cref="T:System.Net.IPAddress" /> 型のセットを格納します。</summary>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.#ctor">
+      <summary>
+        <see cref="T:System.Net.NetworkInformation.IPAddressCollection" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.Add(System.Net.IPAddress)">
+      <summary>この操作は、このコレクションではサポートされていないため、<see cref="T:System.NotSupportedException" /> がスローされます。</summary>
+      <param name="address">コレクションに追加するオブジェクト。</param>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.Clear">
+      <summary>この操作は、このコレクションではサポートされていないため、<see cref="T:System.NotSupportedException" /> がスローされます。</summary>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.Contains(System.Net.IPAddress)">
+      <summary>指定した <see cref="T:System.Net.IPAddress" /> オブジェクトがコレクションに格納されているかどうかを確認します。</summary>
+      <returns>
+        <see cref="T:System.Net.IPAddress" /> オブジェクトがコレクション内に存在する場合は true。それ以外の場合は false。</returns>
+      <param name="address">このコレクション内で検索される <see cref="T:System.Net.IPAddress" /> オブジェクト。</param>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.CopyTo(System.Net.IPAddress[],System.Int32)">
+      <summary>このコレクション内の要素を <see cref="T:System.Net.IPAddress" /> 型の 1 次元配列にコピーします。</summary>
+      <param name="array">コレクションのコピーを受け取る 1 次元配列。</param>
+      <param name="offset">コピーを開始する <paramref name="array" /> の、0 から始まるインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> が 0 未満です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> が多次元です。またはこの <see cref="T:System.Net.NetworkInformation.IPAddressCollection" /> の要素数が、<paramref name="offset" /> から対象の <paramref name="array" /> の末尾までに格納できる数を超えています。</exception>
+      <exception cref="T:System.InvalidCastException">この <see cref="T:System.Net.NetworkInformation.IPAddressCollection" /> 内の要素を、対象の <paramref name="array" /> の型に自動的にキャストすることはできません。</exception>
+    </member>
+    <member name="P:System.Net.NetworkInformation.IPAddressCollection.Count">
+      <summary>このコレクション内の <see cref="T:System.Net.IPAddress" /> 型の数を取得します。</summary>
+      <returns>このコレクション内の <see cref="T:System.Net.IPAddress" /> 型の数を格納している <see cref="T:System.Int32" /> 値。</returns>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.GetEnumerator">
+      <summary>このコレクションを反復処理するために使用できるオブジェクトを返します。</summary>
+      <returns>
+        <see cref="T:System.Collections.IEnumerator" /> インターフェイスを実装し、このコレクション内の <see cref="T:System.Net.NetworkInformation.IPAddressCollection" /> 型へのアクセスを提供するオブジェクト。</returns>
+    </member>
+    <member name="P:System.Net.NetworkInformation.IPAddressCollection.IsReadOnly">
+      <summary>このコレクションへのアクセスが読み取り専用かどうかを示す値を取得します。</summary>
+      <returns>常に true。</returns>
+    </member>
+    <member name="P:System.Net.NetworkInformation.IPAddressCollection.Item(System.Int32)">
+      <summary>コレクションの特定のインデックス位置にある <see cref="T:System.Net.IPAddress" /> を取得します。</summary>
+      <returns>コレクション内の特定のインデックス位置にある <see cref="T:System.Net.IPAddress" />。</returns>
+      <param name="index">関連するインデックス。</param>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.Remove(System.Net.IPAddress)">
+      <summary>この操作は、このコレクションではサポートされていないため、<see cref="T:System.NotSupportedException" /> がスローされます。</summary>
+      <returns>常に <see cref="T:System.NotSupportedException" /> をスローします。</returns>
+      <param name="address">削除するオブジェクト。</param>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.System#Collections#IEnumerable#GetEnumerator">
+      <summary>このコレクションを反復処理するために使用できるオブジェクトを返します。</summary>
+      <returns>
+        <see cref="T:System.Collections.IEnumerator" /> インターフェイスを実装し、このコレクション内の <see cref="T:System.Net.NetworkInformation.IPAddressCollection" /> 型へのアクセスを提供するオブジェクト。</returns>
+    </member>
+    <member name="T:System.Net.Security.AuthenticationLevel">
+      <summary>
+        <see cref="T:System.Net.WebRequest" /> クラスおよびその派生クラスを使用してリソースを要求する場合の、認証と偽装に関するクライアント要件を指定します。</summary>
+    </member>
+    <member name="F:System.Net.Security.AuthenticationLevel.MutualAuthRequested">
+      <summary>クライアントとサーバーを認証する必要があります。サーバーが認証されていない場合でも、要求は失敗しません。相互認証が行われたかどうかを確認するには、<see cref="P:System.Net.WebResponse.IsMutuallyAuthenticated" /> プロパティの値をチェックします。</summary>
+    </member>
+    <member name="F:System.Net.Security.AuthenticationLevel.MutualAuthRequired">
+      <summary>クライアントとサーバーを認証する必要があります。サーバーが認証されていない場合、相互認証が失敗したことを示す <see cref="T:System.Net.ProtocolViolationException" /> 内部例外と共に、<see cref="T:System.IO.IOException" /> がアプリケーションで発生します。</summary>
+    </member>
+    <member name="F:System.Net.Security.AuthenticationLevel.None">
+      <summary>クライアントとサーバーの認証は必要ありません。</summary>
+    </member>
+    <member name="T:System.Net.Security.SslPolicyErrors">
+      <summary>SSL (Secure Socket Layer) のポリシー エラーを列挙します。</summary>
+    </member>
+    <member name="F:System.Net.Security.SslPolicyErrors.None">
+      <summary>SSL のポリシー エラーはありません。</summary>
+    </member>
+    <member name="F:System.Net.Security.SslPolicyErrors.RemoteCertificateChainErrors">
+      <summary>
+        <see cref="P:System.Security.Cryptography.X509Certificates.X509Chain.ChainStatus" /> が、空でない配列を返しました。</summary>
+    </member>
+    <member name="F:System.Net.Security.SslPolicyErrors.RemoteCertificateNameMismatch">
+      <summary>証明書の名前が一致していません。</summary>
+    </member>
+    <member name="F:System.Net.Security.SslPolicyErrors.RemoteCertificateNotAvailable">
+      <summary>証明書が利用できません。</summary>
+    </member>
+    <member name="T:System.Net.Sockets.AddressFamily">
+      <summary>
+        <see cref="T:System.Net.Sockets.Socket" /> クラスのインスタンスが使用できるアドレッシング スキームを指定します。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.AppleTalk">
+      <summary>AppleTalk アドレス。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Atm">
+      <summary>ネイティブ ATM サービス アドレス。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Banyan">
+      <summary>Banyan アドレス。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Ccitt">
+      <summary>X.25 などの CCITT プロトコルのアドレス。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Chaos">
+      <summary>MIT CHAOS プロトコルのアドレス。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Cluster">
+      <summary>Microsoft クラスター製品のアドレス。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.DataKit">
+      <summary>Datakit プロトコルのアドレス。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.DataLink">
+      <summary>ダイレクト データリンク インターフェイス アドレス。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.DecNet">
+      <summary>DECnet アドレス。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Ecma">
+      <summary>ECMA (European Computer Manufacturers Association) アドレス。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.FireFox">
+      <summary>FireFox アドレス。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.HyperChannel">
+      <summary>NSC Hyperchannel アドレス。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Ieee12844">
+      <summary>IEEE 1284.4 ワークグループ アドレス。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.ImpLink">
+      <summary>ARPANET IMP アドレス。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.InterNetwork">
+      <summary>IP version 4 のアドレス。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.InterNetworkV6">
+      <summary>IP version 6 のアドレス。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Ipx">
+      <summary>IPX アドレスまたは SPX アドレス。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Irda">
+      <summary>IrDA アドレス。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Iso">
+      <summary>ISO プロトコルのアドレス。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Lat">
+      <summary>LAT アドレス。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.NetBios">
+      <summary>NetBios アドレス。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.NetworkDesigners">
+      <summary>Network Designers OSI ゲートウェイ対応プロトコルのアドレス。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.NS">
+      <summary>Xerox NS プロトコルのアドレス。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Osi">
+      <summary>OSI プロトコルのアドレス。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Pup">
+      <summary>PUP プロトコルのアドレス。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Sna">
+      <summary>IBM SNA アドレス。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Unix">
+      <summary>Unix local to host アドレス。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Unknown">
+      <summary>未確認のアドレス ファミリ。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Unspecified">
+      <summary>指定のないアドレス ファミリ。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.VoiceView">
+      <summary>VoiceView アドレス。</summary>
+    </member>
+    <member name="T:System.Net.Sockets.SocketError">
+      <summary>
+        <see cref="T:System.Net.Sockets.Socket" /> クラスのエラー コードを定義します。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.AccessDenied">
+      <summary>アクセス許可で禁止されている方法で <see cref="T:System.Net.Sockets.Socket" /> にアクセスしようとしました。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.AddressAlreadyInUse">
+      <summary>通常、アドレスは 1 つしか使用できません。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.AddressFamilyNotSupported">
+      <summary>指定したアドレス ファミリはサポートされていません。このエラーは、IPv6 スタックがローカル コンピューターにインストールされていない状態で、IPv6 アドレス ファミリを指定した場合に返されます。このエラーは、IPv4 スタックがローカル コンピューターにインストールされていない状態で、IPv4 アドレス ファミリを指定した場合に返されます。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.AddressNotAvailable">
+      <summary>選択された IP アドレスは、このコンテキストでは有効ではありません。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.AlreadyInProgress">
+      <summary>非ブロッキング <see cref="T:System.Net.Sockets.Socket" /> で操作を実行中です。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ConnectionAborted">
+      <summary>.NET Framework または基になるソケット プロバイダーによって接続が中止されました。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ConnectionRefused">
+      <summary>リモート ホストがアクティブに接続を拒否しています。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ConnectionReset">
+      <summary>リモート ピアによって接続がリセットされました。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.DestinationAddressRequired">
+      <summary>必要なアドレスが <see cref="T:System.Net.Sockets.Socket" /> の操作から省略されています。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.Disconnecting">
+      <summary>正常なシャットダウンを実行中です。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.Fault">
+      <summary>基になるソケット プロバイダーによって、無効なポインター アドレスが検出されました。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.HostDown">
+      <summary>リモート ホストのダウンが原因で操作が失敗しました。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.HostNotFound">
+      <summary>そのようなホストは不明です。名前が正式なホスト名またはエイリアスではありません。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.HostUnreachable">
+      <summary>指定したホストへのネットワーク ルートがありません。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.InProgress">
+      <summary>ブロッキング操作を実行中です。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.Interrupted">
+      <summary>ブロッキング <see cref="T:System.Net.Sockets.Socket" /> の呼び出しが取り消されました。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.InvalidArgument">
+      <summary>
+        <see cref="T:System.Net.Sockets.Socket" /> メンバーに無効な引数が提供されました。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.IOPending">
+      <summary>アプリケーションが、すぐには完了できない重複操作を開始しました。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.IsConnected">
+      <summary>
+        <see cref="T:System.Net.Sockets.Socket" /> は既に接続されています。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.MessageSize">
+      <summary>データグラムが長すぎます。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NetworkDown">
+      <summary>ネットワークが使用できない。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NetworkReset">
+      <summary>アプリケーションが、既にタイムアウトしている接続で <see cref="F:System.Net.Sockets.SocketOptionName.KeepAlive" /> を設定しようとしました。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NetworkUnreachable">
+      <summary>リモート ホストへのルートが存在しません。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NoBufferSpaceAvailable">
+      <summary>
+        <see cref="T:System.Net.Sockets.Socket" /> 操作用のバッファーの空き領域がありません。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NoData">
+      <summary>要求された名前または IP アドレスが、ネーム サーバーで見つかりませんでした。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NoRecovery">
+      <summary>エラーが回復できないか、または要求されたデータベースが見つかりません。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NotConnected">
+      <summary>アプリケーションがデータを送信または受信しようとしましたが、<see cref="T:System.Net.Sockets.Socket" /> が接続されていません。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NotInitialized">
+      <summary>基になるソケット プロバイダーが初期化されていません。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NotSocket">
+      <summary>ソケット以外で <see cref="T:System.Net.Sockets.Socket" /> 操作を実行しようとしました。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.OperationAborted">
+      <summary>
+        <see cref="T:System.Net.Sockets.Socket" /> が閉じられたため、重複操作が中止されました。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.OperationNotSupported">
+      <summary>アドレス ファミリがプロトコル ファミリによってサポートされていません。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ProcessLimit">
+      <summary>基になるソケット プロバイダーを使用しているプロセスが多すぎます。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ProtocolFamilyNotSupported">
+      <summary>プロトコル ファミリが実装されていないか、または構成されていません。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ProtocolNotSupported">
+      <summary>プロトコルが実装されていないか、または構成されていません。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ProtocolOption">
+      <summary>
+        <see cref="T:System.Net.Sockets.Socket" /> で使用されたオプションまたはレベルは、不明か、無効か、またはサポートされていません。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ProtocolType">
+      <summary>この <see cref="T:System.Net.Sockets.Socket" /> に対するプロトコル型が正しくありません。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.Shutdown">
+      <summary>
+        <see cref="T:System.Net.Sockets.Socket" /> が既に閉じられているため、データを送信または受信する要求が許可されませんでした。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.SocketError">
+      <summary>特定されない <see cref="T:System.Net.Sockets.Socket" /> エラーが発生しました。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.SocketNotSupported">
+      <summary>このアドレス ファミリでは、指定したソケット タイプはサポートされていません。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.Success">
+      <summary>
+        <see cref="T:System.Net.Sockets.Socket" /> 操作が正常に行われました。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.SystemNotReady">
+      <summary>ネットワーク サブシステムが使用できません。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.TimedOut">
+      <summary>接続の試行がタイムアウトしたか、または接続されているホストが応答に失敗しました。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.TooManyOpenSockets">
+      <summary>基になるソケット プロバイダーで開いているソケットが多すぎます。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.TryAgain">
+      <summary>ホストの名前を解決できませんでした。後で再試行してください。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.TypeNotFound">
+      <summary>指定したクラスが見つかりませんでした。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.VersionNotSupported">
+      <summary>基になるソケット プロバイダーのバージョンが範囲外です。</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.WouldBlock">
+      <summary>非ブロッキング ソケットでの操作は、すぐに完了できません。</summary>
+    </member>
+    <member name="T:System.Net.Sockets.SocketException">
+      <summary>ソケット エラーが発生したときにスローされる例外。</summary>
+    </member>
+    <member name="M:System.Net.Sockets.SocketException.#ctor">
+      <summary>直前のオペレーティング システム エラー コードを指定して、<see cref="T:System.Net.Sockets.SocketException" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Net.Sockets.SocketException.#ctor(System.Int32)">
+      <summary>エラー コードを指定して、<see cref="T:System.Net.Sockets.SocketException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="errorCode">発生したエラーを示すエラー コード。</param>
+    </member>
+    <member name="P:System.Net.Sockets.SocketException.Message">
+      <summary>この例外に関連付けられているエラー メッセージを取得します。</summary>
+      <returns>エラー メッセージを含む文字列。</returns>
+    </member>
+    <member name="P:System.Net.Sockets.SocketException.SocketErrorCode">
+      <summary>この例外に関連付けられているエラー コードを取得します。</summary>
+      <returns>この例外に関連付けられている整数エラー コード。</returns>
+    </member>
+    <member name="T:System.Security.Authentication.CipherAlgorithmType">
+      <summary>
+        <see cref="T:System.Net.Security.SslStream" /> クラスに適用可能な暗号アルゴリズムを定義します。</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Aes">
+      <summary>AES (Advanced Encryption Standard) アルゴリズム。</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Aes128">
+      <summary>128 ビット キーを使用した AES (Advanced Encryption Standard) アルゴリズム。</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Aes192">
+      <summary>192 ビット キーを使用した AES (Advanced Encryption Standard) アルゴリズム。</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Aes256">
+      <summary>256 ビット キーを使用した AES (Advanced Encryption Standard) アルゴリズム。</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Des">
+      <summary>DES (Data Encryption Standard) アルゴリズム。</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.None">
+      <summary>暗号化アルゴリズムは使用されません。</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Null">
+      <summary>暗号化は Null 暗号アルゴリズムで使用されません。</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Rc2">
+      <summary>RC2 (Rivest's Code 2) アルゴリズム。</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Rc4">
+      <summary>RC4 (Rivest's Code 4) アルゴリズム。</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.TripleDes">
+      <summary>3DES (Triple Data Encryption Standard) アルゴリズム。</summary>
+    </member>
+    <member name="T:System.Security.Authentication.ExchangeAlgorithmType">
+      <summary>クライアントとサーバーで共有するキーを作成するために使用するアルゴリズムを指定します。</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExchangeAlgorithmType.DiffieHellman">
+      <summary>Diffie Hellman 短期キー交換アルゴリズム。</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExchangeAlgorithmType.None">
+      <summary>キー交換アルゴリズムは使用されません。</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExchangeAlgorithmType.RsaKeyX">
+      <summary>RSA 公開キー交換アルゴリズム。</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExchangeAlgorithmType.RsaSign">
+      <summary>RSA 公開キー署名アルゴリズム。</summary>
+    </member>
+    <member name="T:System.Security.Authentication.HashAlgorithmType">
+      <summary>メッセージ認証コード (MAC: Message Authentication Code) の生成に使用するアルゴリズムを指定します。</summary>
+    </member>
+    <member name="F:System.Security.Authentication.HashAlgorithmType.Md5">
+      <summary>メッセージ ダイジェスト 5 (MD5: Message Digest 5) ハッシュ アルゴリズム。</summary>
+    </member>
+    <member name="F:System.Security.Authentication.HashAlgorithmType.None">
+      <summary>ハッシュ アルゴリズムは使用されません。</summary>
+    </member>
+    <member name="F:System.Security.Authentication.HashAlgorithmType.Sha1">
+      <summary>SHA1 (Secure Hashing Algorithm)。</summary>
+    </member>
+    <member name="T:System.Security.Authentication.SslProtocols">
+      <summary>
+        <see cref="T:System.Security.Authentication.SslProtocols" /> の想定されるバージョンを定義します。</summary>
+    </member>
+    <member name="F:System.Security.Authentication.SslProtocols.None">
+      <summary>SSL プロトコルを指定しません。</summary>
+    </member>
+    <member name="F:System.Security.Authentication.SslProtocols.Ssl2">
+      <summary>SSL 2.0 プロトコルを指定します。SSL 2.0 は TLS プロトコルに取って代わられました。これは、下位互換性の目的だけに用意されています。</summary>
+    </member>
+    <member name="F:System.Security.Authentication.SslProtocols.Ssl3">
+      <summary>SSL 3.0 プロトコルを指定します。SSL 3.0 は TLS プロトコルに取って代わられました。これは、下位互換性の目的だけに用意されています。</summary>
+    </member>
+    <member name="F:System.Security.Authentication.SslProtocols.Tls">
+      <summary>TLS 1.0 セキュリティ プロトコルを指定します。TLS プロトコルは、IETF RFC 2246 で定義されています。</summary>
+    </member>
+    <member name="F:System.Security.Authentication.SslProtocols.Tls11">
+      <summary>TLS 1.1 セキュリティ プロトコルを指定します。TLS プロトコルは IETF RFC 4346 で定義されています。</summary>
+    </member>
+    <member name="F:System.Security.Authentication.SslProtocols.Tls12">
+      <summary>TLS 1.2 セキュリティ プロトコルを指定します。TLS プロトコルは IETF RFC 5246 で定義されています。</summary>
+    </member>
+    <member name="T:System.Security.Authentication.ExtendedProtection.ChannelBinding">
+      <summary>
+        <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding" /> クラスは、セキュリティで保護されたチャネルに認証されたトランザクションをバインドするために使用される非透過データへのポインターをカプセル化します。</summary>
+    </member>
+    <member name="M:System.Security.Authentication.ExtendedProtection.ChannelBinding.#ctor">
+      <summary>
+        <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Security.Authentication.ExtendedProtection.ChannelBinding.#ctor(System.Boolean)">
+      <summary>
+        <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="ownsHandle">統合 Windows 認証に拡張保護を提供するネイティブ呼び出しに渡されるバイト データを格納しているネイティブ メモリ領域へのセーフ ハンドルをアプリケーションが所有するかどうかを示すブール値。</param>
+    </member>
+    <member name="P:System.Security.Authentication.ExtendedProtection.ChannelBinding.Size">
+      <summary>
+        <see cref="P:System.Security.Authentication.ExtendedProtection.ChannelBinding.Size" /> プロパティは、<see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding" /> インスタンスに関連付けられているチャネル バインディング トークンのサイズをバイト単位で取得します。</summary>
+      <returns>
+        <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding" /> インスタンスのチャネル バインディング トークンのサイズ (バイト単位)。</returns>
+    </member>
+    <member name="T:System.Security.Authentication.ExtendedProtection.ChannelBindingKind">
+      <summary>
+        <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBindingKind" /> 列挙体は、セキュリティで保護されたチャネルから問い合わせができるチャネル バインディングの種類を表します。</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExtendedProtection.ChannelBindingKind.Endpoint">
+      <summary>特定のエンドポイントに固有のチャネル バインディング (TLS サーバー証明書など)。</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExtendedProtection.ChannelBindingKind.Unique">
+      <summary>特定のチャネルに完全に固有のチャネル バインディング (TLS セッション キーなど)。</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExtendedProtection.ChannelBindingKind.Unknown">
+      <summary>不明なチャネル バインディングの種類。</summary>
+    </member>
+  </members>
+</doc>

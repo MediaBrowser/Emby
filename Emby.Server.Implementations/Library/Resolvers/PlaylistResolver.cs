@@ -54,7 +54,8 @@ namespace Emby.Server.Implementations.Library.Resolvers
                         return new Playlist
                         {
                             Path = args.Path,
-                            Name = Path.GetFileNameWithoutExtension(args.Path)
+                            Name = Path.GetFileNameWithoutExtension(args.Path),
+                            IsInMixedFolder = true
                         };
                     }
                 }

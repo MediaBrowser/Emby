@@ -1,0 +1,2002 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Globalization.Calendars</name>
+  </assembly>
+  <members>
+    <member name="T:System.Globalization.ChineseLunisolarCalendar">
+      <summary>表示劃分的時間，例如月、日和年。年份是使用中國曆法計算，而日期和月份則是使用陰陽曆計算。</summary>
+    </member>
+    <member name="M:System.Globalization.ChineseLunisolarCalendar.#ctor">
+      <summary>初始化 <see cref="T:System.Globalization.ChineseLunisolarCalendar" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="P:System.Globalization.ChineseLunisolarCalendar.Eras">
+      <summary>取得對應至目前 <see cref="T:System.Globalization.ChineseLunisolarCalendar" /> 物件所支援之日期與時間範圍的紀元。</summary>
+      <returns>32 位元帶正負號整數的陣列，指定相關的紀元。<see cref="T:System.Globalization.ChineseLunisolarCalendar" /> 物件的傳回值永遠是包含一個與 <see cref="F:System.Globalization.ChineseLunisolarCalendar.ChineseEra" /> 值相等項目的陣列。</returns>
+    </member>
+    <member name="M:System.Globalization.ChineseLunisolarCalendar.GetEra(System.DateTime)">
+      <summary>擷取對應於所指定 <see cref="T:System.DateTime" /> 型別的紀元。</summary>
+      <returns>整數，表示 <paramref name="time" /> 參數中的紀元。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" /> 型別。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 小於 <see cref="P:System.Globalization.ChineseLunisolarCalendar.MinSupportedDateTime" /> 或大於 <see cref="P:System.Globalization.ChineseLunisolarCalendar.MaxSupportedDateTime" />。</exception>
+    </member>
+    <member name="P:System.Globalization.ChineseLunisolarCalendar.MaxSupportedDateTime">
+      <summary>取得受 <see cref="T:System.Globalization.ChineseLunisolarCalendar" /> 類別所支援的日期和時間的最大值。</summary>
+      <returns>
+        <see cref="T:System.DateTime" /> 型別，表示西曆中的 2101 年 1 月 28 日的最後一刻，大約相當於建構函式 (Constructor) DateTime(2101, 1, 28, 23, 59, 59, 999)。</returns>
+    </member>
+    <member name="P:System.Globalization.ChineseLunisolarCalendar.MinSupportedDateTime">
+      <summary>取得受 <see cref="T:System.Globalization.ChineseLunisolarCalendar" /> 類別所支援的日期和時間的最小值。</summary>
+      <returns>
+        <see cref="T:System.DateTime" /> 型別，表示西曆中的 1901 年 2 月 19 日，相當於建構函式 DateTime(1901, 2, 19)。</returns>
+    </member>
+    <member name="T:System.Globalization.EastAsianLunisolarCalendar">
+      <summary>表示曆法，這個曆法會將時間分割成月、日、年和紀元，並根據太陽和月亮的循環週期來產生日期。</summary>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>計算與指定日期相差指定月數的日期。</summary>
+      <returns>新 <see cref="T:System.DateTime" />，將所指定月數加入至 <paramref name="time" /> 參數所產生。</returns>
+      <param name="time">要將 <paramref name="months" /> 加入的 <see cref="T:System.DateTime" />。</param>
+      <param name="months">要加入的月數。</param>
+      <exception cref="T:System.ArgumentException">結果不在 <see cref="T:System.DateTime" /> 支援的範圍內。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> 小於 -120,000 或大於 120,000。-或-<paramref name="time" /> 小於 <see cref="P:System.Globalization.Calendar.MinSupportedDateTime" /> 或大於 <see cref="P:System.Globalization.Calendar.MaxSupportedDateTime" />。</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>計算與指定日期相差指定年份的日期。</summary>
+      <returns>新 <see cref="T:System.DateTime" />，將所指定年份加入至 <paramref name="time" /> 參數所產生。</returns>
+      <param name="time">要將 <paramref name="years" /> 加入的 <see cref="T:System.DateTime" />。</param>
+      <param name="years">要加入的年數。</param>
+      <exception cref="T:System.ArgumentException">結果不在 <see cref="T:System.DateTime" /> 支援的範圍內。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 小於 <see cref="P:System.Globalization.Calendar.MinSupportedDateTime" /> 或大於 <see cref="P:System.Globalization.Calendar.MaxSupportedDateTime" />。</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetCelestialStem(System.Int32)">
+      <summary>計算以六十年 (60 年) 為週期中指定年份的天干。</summary>
+      <returns>從 1 到 10 的數目。</returns>
+      <param name="sexagenaryYear">1 到 60 的整數，表示以六十年為週期的年份。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="sexagenaryYear" /> 小於 1 或大於 60。</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>計算指定日期中月份的日期。</summary>
+      <returns>1 到 31 的整數，表示 <paramref name="time" /> 參數中所指定之月份的日期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>計算指定日期中一週的日期。</summary>
+      <returns>其中一個 <see cref="T:System.DayOfWeek" /> 值，表示在 <paramref name="time" /> 參數中所指定之一週的日期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 小於 <see cref="P:System.Globalization.Calendar.MinSupportedDateTime" /> 或大於 <see cref="P:System.Globalization.Calendar.MaxSupportedDateTime" />。</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetDayOfYear(System.DateTime)">
+      <summary>計算指定日期中年份的日期。</summary>
+      <returns>1 到 354 的整數 (一般年份中)，或是 1 到 384 的整數 (閏年中)，表示 <paramref name="time" /> 參數中所指定之年份的日期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>計算指定年份和紀元的指定月份中的天數。</summary>
+      <returns>指定的年份與紀元中指定月份的天數。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">1 到 12 的整數 (一般年份中 )，或 1 到 13 的整數 (閏年中)，表示月份。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" /> 或 <paramref name="era" /> 在這個日曆支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>計算指定年份和紀元中的天數。</summary>
+      <returns>指定年份和紀元中的天數。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 或 <paramref name="era" /> 在這個日曆所支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>計算指定年份和紀元的閏月。</summary>
+      <returns>1 到 13 的正整數，表示在指定的年份及紀元中的閏月。 -或-如果這個曆法不支援閏月，或是 <paramref name="year" /> 和 <paramref name="era" /> 參數沒有指定閏年，便為零。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。</param>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetMonth(System.DateTime)">
+      <summary>傳回指定日期中的月份。</summary>
+      <returns>1 到 13 的整數，表示 <paramref name="time" /> 參數中所指定的月份。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>計算指定年份和紀元中的月數。</summary>
+      <returns>在指定紀元的指定年份中的月數。傳回值為 12 個月 (一般年份中)，或是 13 個月 (閏年中)。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 或 <paramref name="era" /> 在這個日曆所支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetSexagenaryYear(System.DateTime)">
+      <summary>計算以六十年 (60 年) 為週期中對應至指定日期的年份。</summary>
+      <returns>六十年為週期中對應至 <paramref name="date" /> 參數之 1 到 60 的數目。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetTerrestrialBranch(System.Int32)">
+      <summary>計算以六十年 (60 年) 為週期中指定年份的地支。</summary>
+      <returns>1 到 12 的整數。</returns>
+      <param name="sexagenaryYear">1 到 60 的整數，表示以六十年為週期的年份。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="sexagenaryYear" /> 小於 1 或大於 60。</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetYear(System.DateTime)">
+      <summary>傳回指定日期中的年份。</summary>
+      <returns>整數，表示指定 <see cref="T:System.DateTime" /> 中的年份。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>判斷指定紀元中指定的日期是否為閏日。</summary>
+      <returns>如果指定的日期為閏日，則為 true，否則為 false。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 13 的整數，表示月份。</param>
+      <param name="day">1 到 31 的整數，表示日期。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" />、<paramref name="day" /> 或 <paramref name="era" /> 在這個曆法所支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>判斷指定年份和紀元中的指定月份是否為閏月。</summary>
+      <returns>如果 <paramref name="month" /> 參數是閏月，則為 true，否則為 false。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 13 的整數，表示月份。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" /> 或 <paramref name="era" /> 在這個日曆支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>判斷指定紀元中指定的年份是否為閏年。</summary>
+      <returns>如果指定的年份為閏年，則為 true，否則為 false。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 或 <paramref name="era" /> 在這個日曆所支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>傳回 <see cref="T:System.DateTime" /> 物件，其設定為指定日期、時間和紀元。</summary>
+      <returns>設定為所指定日期、時間和紀元的 <see cref="T:System.DateTime" />。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 13 的整數，表示月份。</param>
+      <param name="day">1 到 31 的整數，表示日期。</param>
+      <param name="hour">0 到 23 的整數，表示小時。</param>
+      <param name="minute">0 到 59 的整數，表示分鐘。</param>
+      <param name="second">0 到 59 的整數，表示秒鐘。</param>
+      <param name="millisecond">0 到 999 的整數，表示毫秒。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" />、<paramref name="day" />、<paramref name="hour" />、<paramref name="minute" />、<paramref name="second" />、<paramref name="millisecond" /> 或 <paramref name="era" /> 在這個曆法所支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.ToFourDigitYear(System.Int32)">
+      <summary>將指定的年份轉換成 4 位數年份。</summary>
+      <returns>整數，包含 <paramref name="year" /> 參數的四位數表示。</returns>
+      <param name="year">兩位數或四位數整數，代表要轉換的年份。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 在這個日曆所支援的範圍之外。</exception>
+    </member>
+    <member name="P:System.Globalization.EastAsianLunisolarCalendar.TwoDigitYearMax">
+      <summary>取得或設定以二位數年份表示時，該 100 年範圍的最後一年。</summary>
+      <returns>以二位數年份表示時，該 100 年範圍的最後一年。</returns>
+      <exception cref="T:System.InvalidOperationException">目前的 <see cref="T:System.Globalization.EastAsianLunisolarCalendar" /> 是唯讀的。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">設定作業中的值小於 99 或大於目前曆法中可支援的最大年份。</exception>
+    </member>
+    <member name="T:System.Globalization.GregorianCalendar">
+      <summary>表示西曆。</summary>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.#ctor">
+      <summary>使用預設的 <see cref="T:System.Globalization.GregorianCalendarTypes" /> 值來初始化 <see cref="T:System.Globalization.GregorianCalendar" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.#ctor(System.Globalization.GregorianCalendarTypes)">
+      <summary>使用指定的 <see cref="T:System.Globalization.GregorianCalendarTypes" /> 值來初始化 <see cref="T:System.Globalization.GregorianCalendar" /> 類別的新執行個體。</summary>
+      <param name="type">
+        <see cref="T:System.Globalization.GregorianCalendarTypes" /> 值，代表要建立曆法的哪個語言版本。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="type" /> 不是 <see cref="T:System.Globalization.GregorianCalendarTypes" /> 列舉型別的成員。</exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>傳回與指定 <see cref="T:System.DateTime" /> 相差指定月數的 <see cref="T:System.DateTime" />。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，由將指定的月數加入指定的 <see cref="T:System.DateTime" /> 所產生。</returns>
+      <param name="time">要將月份加入的 <see cref="T:System.DateTime" />。</param>
+      <param name="months">要加入的月數。</param>
+      <exception cref="T:System.ArgumentException">產生的 <see cref="T:System.DateTime" /> 在支援的範圍之外。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> 小於 -120000。-或-<paramref name="months" /> 大於 120000。</exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>傳回與指定 <see cref="T:System.DateTime" /> 相差指定年數的 <see cref="T:System.DateTime" />。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，由將指定的年數加入指定的 <see cref="T:System.DateTime" /> 所產生。</returns>
+      <param name="time">要將年份加入的 <see cref="T:System.DateTime" />。</param>
+      <param name="years">要加入的年數。</param>
+      <exception cref="T:System.ArgumentException">產生的 <see cref="T:System.DateTime" /> 在支援的範圍之外。</exception>
+    </member>
+    <member name="P:System.Globalization.GregorianCalendar.CalendarType">
+      <summary>取得或設定 <see cref="T:System.Globalization.GregorianCalendarTypes" /> 值，代表目前 <see cref="T:System.Globalization.GregorianCalendar" /> 的語言版本。</summary>
+      <returns>
+        <see cref="T:System.Globalization.GregorianCalendarTypes" /> 值，代表目前 <see cref="T:System.Globalization.GregorianCalendar" /> 的語言版本。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">在設定作業中指定的值並非 <see cref="T:System.Globalization.GregorianCalendarTypes" /> 列舉的成員。</exception>
+      <exception cref="T:System.InvalidOperationException">在設定作業中，目前執行個體是唯讀的。</exception>
+    </member>
+    <member name="P:System.Globalization.GregorianCalendar.Eras">
+      <summary>取得 <see cref="T:System.Globalization.GregorianCalendar" /> 中的紀元清單。</summary>
+      <returns>整數陣列，表示 <see cref="T:System.Globalization.GregorianCalendar" /> 中的紀元。</returns>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中月份的日期。</summary>
+      <returns>從 1 到 31 的整數，表示 <paramref name="time" /> 中月份的日期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的星期。</summary>
+      <returns>
+        <see cref="T:System.DayOfWeek" /> 值，表示 <paramref name="time" /> 中的星期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetDayOfYear(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的年份日期。</summary>
+      <returns>從 1 到 366 的整數，表示 <paramref name="time" /> 中年份的日期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>傳回在指定紀元的指定年份的指定月份中的日數。</summary>
+      <returns>在指定紀元的指定年份的指定月份中的日數。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> 不在曆法支援的範圍內。-或-<paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="month" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>傳回在指定紀元的指定年份中的日數。</summary>
+      <returns>在指定紀元的指定年份中的日數。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> 不在曆法支援的範圍內。-或-<paramref name="year" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetEra(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的紀元。</summary>
+      <returns>表示 <paramref name="time" /> 中紀元的整數。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>計算指定年份和紀元的閏月。</summary>
+      <returns>一定是 0，因為西曆無法辨識閏月。</returns>
+      <param name="year">一年。</param>
+      <param name="era">一紀元。指定 <see cref="F:System.Globalization.GregorianCalendar.ADEra" /> 或 GregorianCalendar.Eras[Calendar.CurrentEra]。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 小於西曆年度 1 年或大於西曆 9999 年。-或-<paramref name="era" /> 不是 <see cref="F:System.Globalization.GregorianCalendar.ADEra" /> 或 GregorianCalendar.Eras[Calendar.CurrentEra]。</exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetMonth(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的月份。</summary>
+      <returns>從 1 到 12 的整數，表示 <paramref name="time" /> 中的月份。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>傳回在指定紀元的指定年份中的月數。</summary>
+      <returns>在指定紀元的指定年份中的月數。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> 不在曆法支援的範圍內。-或-<paramref name="year" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetYear(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的年份。</summary>
+      <returns>表示 <paramref name="time" /> 中年份的整數。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>判斷指定紀元中指定的日期是否為閏日。</summary>
+      <returns>如果指定的日期為閏日，則為 true，否則為 false。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="day">從 1 到 31 的整數，表示日期。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> 不在曆法支援的範圍內。-或-<paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="month" /> 不在曆法支援的範圍內。-或-<paramref name="day" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>判斷指定紀元的指定年份中指定的月份是否為閏月。</summary>
+      <returns>這個方法永遠傳回 false，除非被衍生類別 (Derived Class) 所覆寫。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> 不在曆法支援的範圍內。-或-<paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="month" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>判斷指定紀元中指定的年份是否為閏年。</summary>
+      <returns>如果指定的年份為閏年，則為 true，否則為 false。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> 不在曆法支援的範圍內。-或-<paramref name="year" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="P:System.Globalization.GregorianCalendar.MaxSupportedDateTime">
+      <summary>取得受 <see cref="T:System.Globalization.GregorianCalendar" /> 型別所支援的最晚日期和時間。</summary>
+      <returns>
+        <see cref="T:System.Globalization.GregorianCalendar" /> 型別所支援的最晚日期和時間，即為西元 9999 年 12 月 31 日的最後一刻，相當於 <see cref="F:System.DateTime.MaxValue" />。</returns>
+    </member>
+    <member name="P:System.Globalization.GregorianCalendar.MinSupportedDateTime">
+      <summary>取得 <see cref="T:System.Globalization.GregorianCalendar" /> 型別所支援的最早日期和時間。</summary>
+      <returns>
+        <see cref="T:System.Globalization.GregorianCalendar" /> 型別所支援的最早日期和時間，即為西元 0001 年 1 月 1 日的第一時間，相當於 <see cref="F:System.DateTime.MinValue" />。</returns>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>傳回在指定紀元中設定為指定日期和時間的 <see cref="T:System.DateTime" />。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，設定為目前紀元中指定的日期和時間。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="day">從 1 到 31 的整數，表示日期。</param>
+      <param name="hour">從 0 到 23 的整數，表示小時。</param>
+      <param name="minute">從 0 到 59 的整數，表示分鐘。</param>
+      <param name="second">從 0 到 59 的整數，表示秒鐘。</param>
+      <param name="millisecond">從 0 到 999 的整數，表示毫秒。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> 不在曆法支援的範圍內。-或-<paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="month" /> 不在曆法支援的範圍內。-或-<paramref name="day" /> 不在曆法支援的範圍內。-或-<paramref name="hour" /> 小於零或大於 23。-或-<paramref name="minute" /> 小於零或大於 59。-或-<paramref name="second" /> 小於零或大於 59。-或-<paramref name="millisecond" /> 小於零或大於 999。</exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.ToFourDigitYear(System.Int32)">
+      <summary>將指定的年份轉換為 4 位數年份，方法是使用 <see cref="P:System.Globalization.GregorianCalendar.TwoDigitYearMax" /> 屬性以判斷適當的世紀。</summary>
+      <returns>整數，包含 <paramref name="year" /> 的四位數表示。</returns>
+      <param name="year">兩位數或四位數整數，代表要轉換的年份。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="P:System.Globalization.GregorianCalendar.TwoDigitYearMax">
+      <summary>取得或設定以二位數年份表示時，該 100 年範圍的最後一年。</summary>
+      <returns>以二位數年份表示時，該 100 年範圍的最後一年。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">在設定作業中指定的值小於 99。-或-在設定作業中指定的值大於 MaxSupportedDateTime.Year。</exception>
+      <exception cref="T:System.InvalidOperationException">在設定作業中，目前執行個體是唯讀的。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.GregorianCalendarTypes">
+      <summary>定義西曆的各種語言版本。</summary>
+    </member>
+    <member name="F:System.Globalization.GregorianCalendarTypes.Arabic">
+      <summary>參考西曆的阿拉伯版本。</summary>
+    </member>
+    <member name="F:System.Globalization.GregorianCalendarTypes.Localized">
+      <summary>參考西曆的當地語系化版本，並根據使用 <see cref="T:System.Globalization.DateTimeFormatInfo" /> 的 <see cref="T:System.Globalization.CultureInfo" /> 的語言。</summary>
+    </member>
+    <member name="F:System.Globalization.GregorianCalendarTypes.MiddleEastFrench">
+      <summary>參考西曆的中東法文版本。</summary>
+    </member>
+    <member name="F:System.Globalization.GregorianCalendarTypes.TransliteratedEnglish">
+      <summary>參考西曆的音譯英文版本。</summary>
+    </member>
+    <member name="F:System.Globalization.GregorianCalendarTypes.TransliteratedFrench">
+      <summary>參考西曆的音譯法文版本。</summary>
+    </member>
+    <member name="F:System.Globalization.GregorianCalendarTypes.USEnglish">
+      <summary>參考西曆的美國英文版本。</summary>
+    </member>
+    <member name="T:System.Globalization.HebrewCalendar">
+      <summary>表示希伯來曆法。</summary>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.#ctor">
+      <summary>初始化 <see cref="T:System.Globalization.HebrewCalendar" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>傳回與指定 <see cref="T:System.DateTime" /> 相差指定月數的 <see cref="T:System.DateTime" />。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，由將指定的月數加入指定的 <see cref="T:System.DateTime" /> 所產生。</returns>
+      <param name="time">要將 <paramref name="months" /> 加入的 <see cref="T:System.DateTime" />。</param>
+      <param name="months">要加入的月數。</param>
+      <exception cref="T:System.ArgumentException">產生的 <see cref="T:System.DateTime" /> 在支援的範圍之外。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> 小於 -120,000 或大於 120,000。</exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>傳回與指定 <see cref="T:System.DateTime" /> 相差指定年數的 <see cref="T:System.DateTime" />。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，由將指定的年數加入指定的 <see cref="T:System.DateTime" /> 所產生。</returns>
+      <param name="time">要將 <paramref name="years" /> 加入的 <see cref="T:System.DateTime" />。</param>
+      <param name="years">要加入的年數。</param>
+      <exception cref="T:System.ArgumentException">產生的 <see cref="T:System.DateTime" /> 在支援的範圍之外。</exception>
+    </member>
+    <member name="P:System.Globalization.HebrewCalendar.Eras">
+      <summary>取得 <see cref="T:System.Globalization.HebrewCalendar" /> 中的紀元清單。</summary>
+      <returns>整數陣列，表示 <see cref="T:System.Globalization.HebrewCalendar" /> 型別中的紀元。傳回值永遠為包含一個與 <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> 相等元素的陣列。</returns>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中月份的日期。</summary>
+      <returns>從 1 到 30 的整數，表示指定之 <see cref="T:System.DateTime" /> 中月份的日期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的星期。</summary>
+      <returns>
+        <see cref="T:System.DayOfWeek" /> 值，表示指定 <see cref="T:System.DateTime" /> 中的星期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetDayOfYear(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的年份日期。</summary>
+      <returns>從 1 到 385 的整數，表示指定之 <see cref="T:System.DateTime" /> 中的年份日期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 早於西曆的 1583 年 9 月 17 日，或是大於 <see cref="P:System.Globalization.HebrewCalendar.MaxSupportedDateTime" />。</exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>傳回在指定紀元的指定年份的指定月份中的日數。</summary>
+      <returns>在指定紀元的指定年份的指定月份中的日數。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 13 的整數，表示月份。</param>
+      <param name="era">表示紀元的整數。指定 <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> 或 Calendar.Eras[Calendar.CurrentEra]。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" /> 或 <paramref name="era" /> 在目前 <see cref="T:System.Globalization.HebrewCalendar" /> 物件支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>傳回在指定紀元的指定年份中的日數。</summary>
+      <returns>在指定紀元的指定年份中的日數。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。指定 <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> 或 HebrewCalendar.Eras[Calendar.CurrentEra]。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 或 <paramref name="era" /> 在目前 <see cref="T:System.Globalization.HebrewCalendar" /> 物件支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetEra(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的紀元。</summary>
+      <returns>整數，表示指定 <see cref="T:System.DateTime" /> 中的紀元。傳回值永遠都會是 <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" />。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>計算指定年份和紀元的閏月。</summary>
+      <returns>正整數，指出在指定的年份及紀元中的閏月。如果 <paramref name="year" /> 和 <paramref name="era" /> 參數指定閏年，則傳回值是 7，但如果不是閏年，則傳回 0。</returns>
+      <param name="year">一年。</param>
+      <param name="era">一紀元。指定 <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> 或 HebrewCalendar.Eras[Calendar.CurrentEra]。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> 不是 <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> 或 HebrewCalendar.Eras[Calendar.CurrentEra]。-或-<paramref name="year" /> 小於希伯來曆法 5343 年或大於希伯來曆法 5999 年。</exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetMonth(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的月份。</summary>
+      <returns>1 到 13 的整數，表示指定之 <see cref="T:System.DateTime" /> 中的月份。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 小於 <see cref="P:System.Globalization.HebrewCalendar.MinSupportedDateTime" /> 或大於 <see cref="P:System.Globalization.HebrewCalendar.MaxSupportedDateTime" />。</exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>傳回在指定紀元的指定年份中的月數。</summary>
+      <returns>在指定紀元的指定年份中的月數。一般年份的傳回值為 12，閏年則為 13。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。指定 <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> 或 HebrewCalendar.Eras[Calendar.CurrentEra]。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 或 <paramref name="era" /> 在目前 <see cref="T:System.Globalization.HebrewCalendar" /> 物件支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetYear(System.DateTime)">
+      <summary>傳回指定之 <see cref="T:System.DateTime" /> 值中的年份。</summary>
+      <returns>整數，表示指定之 <see cref="T:System.DateTime" /> 值中的年份。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 在目前 <see cref="T:System.Globalization.HebrewCalendar" /> 物件所支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>判斷指定紀元中指定的日期是否為閏日。</summary>
+      <returns>如果指定的日期為閏日，則為 true，否則為 false。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 13 的整數，表示月份。</param>
+      <param name="day">從 1 到 30 的整數，表示日期。</param>
+      <param name="era">表示紀元的整數。指定 <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> 或 HebrewCalendar.Eras[Calendar.CurrentEra]。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" />、<paramref name="day" /> 或 <paramref name="era" /> 在這個曆法所支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>判斷指定紀元的指定年份中指定的月份是否為閏月。</summary>
+      <returns>如果指定的月份是閏月，則為 true，否則為 false。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 13 的整數，表示月份。</param>
+      <param name="era">表示紀元的整數。指定 <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> 或 HebrewCalendar.Eras[Calendar.CurrentEra]。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" /> 或 <paramref name="era" /> 在這個日曆支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>判斷指定紀元中指定的年份是否為閏年。</summary>
+      <returns>如果指定的年份為閏年，則為 true，否則為 false。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。指定 <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> 或 HebrewCalendar.Eras[Calendar.CurrentEra]。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 或 <paramref name="era" /> 在這個日曆所支援的範圍之外。</exception>
+    </member>
+    <member name="P:System.Globalization.HebrewCalendar.MaxSupportedDateTime">
+      <summary>取得受 <see cref="T:System.Globalization.HebrewCalendar" /> 型別所支援的最晚日期和時間。</summary>
+      <returns>
+        <see cref="T:System.Globalization.HebrewCalendar" /> 型別所支援的最晚日期和時間，相當於西曆中之西元 2239 年 29 月 9 日的最後一刻。</returns>
+    </member>
+    <member name="P:System.Globalization.HebrewCalendar.MinSupportedDateTime">
+      <summary>取得 <see cref="T:System.Globalization.HebrewCalendar" /> 型別所支援的最早日期和時間。</summary>
+      <returns>
+        <see cref="T:System.Globalization.HebrewCalendar" /> 型別所支援的最早日期和時間，相當於西曆中之西元 1583 年 1 月 1 日的第一時間。</returns>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>傳回在指定紀元中設定為指定日期和時間的 <see cref="T:System.DateTime" />。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，設定為目前紀元中指定的日期和時間。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 13 的整數，表示月份。</param>
+      <param name="day">從 1 到 30 的整數，表示日期。</param>
+      <param name="hour">從 0 到 23 的整數，表示小時。</param>
+      <param name="minute">從 0 到 59 的整數，表示分鐘。</param>
+      <param name="second">從 0 到 59 的整數，表示秒鐘。</param>
+      <param name="millisecond">從 0 到 999 的整數，表示毫秒。</param>
+      <param name="era">表示紀元的整數。指定 <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> 或 HebrewCalendar.Eras[Calendar.CurrentEra]。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" />、<paramref name="day" /> 或 <paramref name="era" /> 在目前 <see cref="T:System.Globalization.HebrewCalendar" /> 物件所支援的範圍之外。-或-<paramref name="hour" /> 小於 0 或大於 23。-或-<paramref name="minute" /> 小於 0 或大於 59。-或-<paramref name="second" /> 小於 0 或大於 59。-或-<paramref name="millisecond" /> 小於 0 或大於 999。</exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.ToFourDigitYear(System.Int32)">
+      <summary>將指定的年份轉換為 4 位數年份，方法是使用 <see cref="P:System.Globalization.HebrewCalendar.TwoDigitYearMax" /> 屬性以判斷適當的世紀。</summary>
+      <returns>如果 <paramref name="year" /> 參數是 2 位數年份，則傳回值為對應的 4 位數年份。如果 <paramref name="year" /> 參數是 4 位數年份，則傳回值會是未變更的 <paramref name="year" /> 參數。</returns>
+      <param name="year">2 位數年份從 0 到 99，或 4 位數希伯來曆法年份從 5343 到 5999。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 小於 0。-或-<paramref name="year" /> 小於 <see cref="P:System.Globalization.HebrewCalendar.MinSupportedDateTime" /> 或大於 <see cref="P:System.Globalization.HebrewCalendar.MaxSupportedDateTime" />。</exception>
+    </member>
+    <member name="P:System.Globalization.HebrewCalendar.TwoDigitYearMax">
+      <summary>取得或設定以二位數年份表示時，該 100 年範圍的最後一年。</summary>
+      <returns>以二位數年份表示時，該 100 年範圍的最後一年。</returns>
+      <exception cref="T:System.InvalidOperationException">目前的 <see cref="T:System.Globalization.HebrewCalendar" /> 物件是唯讀。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">設定作業時，希伯來曆法的年份值小於 5343 但不是 90，或是年份值大於 5999。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.HijriCalendar">
+      <summary>表示回曆。</summary>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.#ctor">
+      <summary>初始化 <see cref="T:System.Globalization.HijriCalendar" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>傳回與指定 <see cref="T:System.DateTime" /> 相差指定月數的 <see cref="T:System.DateTime" />。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，由將指定的月數加入指定的 <see cref="T:System.DateTime" /> 所產生。</returns>
+      <param name="time">要加入月份的 <see cref="T:System.DateTime" />。</param>
+      <param name="months">要加入的月數。</param>
+      <exception cref="T:System.ArgumentException">結果為 <see cref="T:System.DateTime" />。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> 小於 -120000。-或-<paramref name="months" /> 大於 120000。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>傳回與指定 <see cref="T:System.DateTime" /> 相差指定年數的 <see cref="T:System.DateTime" />。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，由將指定的年數加入指定的 <see cref="T:System.DateTime" /> 所產生。</returns>
+      <param name="time">要加入年份的 <see cref="T:System.DateTime" />。</param>
+      <param name="years">要加入的年數。</param>
+      <exception cref="T:System.ArgumentException">產生的 <see cref="T:System.DateTime" /> 在支援的範圍之外。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Globalization.HijriCalendar.Eras">
+      <summary>取得 <see cref="T:System.Globalization.HijriCalendar" /> 中的紀元清單。</summary>
+      <returns>整數陣列，表示 <see cref="T:System.Globalization.HijriCalendar" /> 中的紀元。</returns>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中月份的日期。</summary>
+      <returns>從 1 到 30 的整數，表示指定之 <see cref="T:System.DateTime" /> 中月份的日期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的星期。</summary>
+      <returns>
+        <see cref="T:System.DayOfWeek" /> 值，表示指定 <see cref="T:System.DateTime" /> 中的星期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetDayOfYear(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的年份日期。</summary>
+      <returns>從 1 到 355 的整數，表示指定之 <see cref="T:System.DateTime" /> 中的年份日期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>傳回指定年份和紀元之指定月份中的天數。</summary>
+      <returns>在指定紀元的指定年份的指定月份中的日數。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> 在這個日曆所支援的範圍之外。-或-<paramref name="year" /> 在這個日曆所支援的範圍之外。-或-<paramref name="month" /> 在這個日曆所支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>傳回指定年份和紀元中的天數。</summary>
+      <returns>指定年份和紀元中的天數。一般年份有 354 天，閏年有 355 天。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 或 <paramref name="era" /> 在這個日曆所支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetEra(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的紀元。</summary>
+      <returns>整數，表示指定 <see cref="T:System.DateTime" /> 中的紀元。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>計算指定年份和紀元的閏月。</summary>
+      <returns>一定是 0，因為 <see cref="T:System.Globalization.HijriCalendar" /> 型別不支援閏月的概念。</returns>
+      <param name="year">一年。</param>
+      <param name="era">一紀元。指定 <see cref="F:System.Globalization.Calendar.CurrentEra" /> 或 <see cref="F:System.Globalization.HijriCalendar.HijriEra" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 小於回曆年度 1 年，或大於 9666 年。-或-<paramref name="era" /> 不是 <see cref="F:System.Globalization.Calendar.CurrentEra" /> 或 <see cref="F:System.Globalization.HijriCalendar.HijriEra" />。</exception>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetMonth(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的月份。</summary>
+      <returns>從 1 到 12 的整數，表示指定 <see cref="T:System.DateTime" /> 中的月份。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>傳回指定年份和紀元中的月數。</summary>
+      <returns>指定年份和紀元中的月數。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> 在這個日曆所支援的範圍之外。-或-<paramref name="year" /> 在這個日曆所支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetYear(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的年份。</summary>
+      <returns>整數，表示指定 <see cref="T:System.DateTime" /> 中的年份。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Globalization.HijriCalendar.HijriAdjustment">
+      <summary>取得或設定要在曆法中加減的日數，因應 Ramadan 始末之間的變動和各國家/區域之間的日期差距。</summary>
+      <returns>從 -2 至 2 的整數，表示要在曆法中加減的日數。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">屬性正要設定為無效的值。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>判斷指定的日期是否為閏日。</summary>
+      <returns>如果指定的日期為閏日，則為 true，否則為 false。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="day">從 1 到 30 的整數，表示日期。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> 在這個日曆所支援的範圍之外。-或-<paramref name="year" /> 在這個日曆所支援的範圍之外。-或-<paramref name="month" /> 在這個日曆所支援的範圍之外。-或-<paramref name="day" /> 在這個日曆所支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>判斷指定年份和紀元中的指定月份是否為閏月。</summary>
+      <returns>這個方法永遠傳回 false。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> 在這個日曆所支援的範圍之外。-或-<paramref name="year" /> 在這個日曆所支援的範圍之外。-或-<paramref name="month" /> 在這個日曆所支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>判斷指定紀元中指定的年份是否為閏年。</summary>
+      <returns>如果指定的年份為閏年，則為 true，否則為 false。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> 在這個日曆所支援的範圍之外。-或-<paramref name="year" /> 在這個日曆所支援的範圍之外。</exception>
+    </member>
+    <member name="P:System.Globalization.HijriCalendar.MaxSupportedDateTime">
+      <summary>取得受此曆法所支援的最晚日期和時間。</summary>
+      <returns>
+        <see cref="T:System.Globalization.HijriCalendar" /> 型別所支援的最晚日期和時間，相當於西曆中的 9999 C.E. 12 月 31 日的最後一刻。</returns>
+    </member>
+    <member name="P:System.Globalization.HijriCalendar.MinSupportedDateTime">
+      <summary>取得受此曆法所支援的最早日期和時間。</summary>
+      <returns>
+        <see cref="T:System.Globalization.HijriCalendar" /> 型別支援的最早日期和時間，相當於西曆中的 622 年 6 月 18 日的第一時間。</returns>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>傳回 <see cref="T:System.DateTime" /> 物件，其設定為指定日期、時間和紀元。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，設定為目前紀元中指定的日期和時間。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="day">從 1 到 30 的整數，表示日期。</param>
+      <param name="hour">從 0 到 23 的整數，表示小時。</param>
+      <param name="minute">從 0 到 59 的整數，表示分鐘。</param>
+      <param name="second">從 0 到 59 的整數，表示秒鐘。</param>
+      <param name="millisecond">從 0 到 999 的整數，表示毫秒。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> 在這個日曆所支援的範圍之外。-或-<paramref name="year" /> 在這個日曆所支援的範圍之外。-或-<paramref name="month" /> 在這個日曆所支援的範圍之外。-或-<paramref name="day" /> 在這個日曆所支援的範圍之外。-或-<paramref name="hour" /> 小於零或大於 23。-或-<paramref name="minute" /> 小於零或大於 59。-或-<paramref name="second" /> 小於零或大於 59。-或-<paramref name="millisecond" /> 小於零或大於 999。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.ToFourDigitYear(System.Int32)">
+      <summary>將指定的年份轉換為 4 位數年份，方法是使用 <see cref="P:System.Globalization.HijriCalendar.TwoDigitYearMax" /> 屬性以判斷適當的世紀。</summary>
+      <returns>整數，包含 <paramref name="year" /> 的四位數表示。</returns>
+      <param name="year">兩位數或四位數整數，代表要轉換的年份。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 在這個日曆所支援的範圍之外。</exception>
+    </member>
+    <member name="P:System.Globalization.HijriCalendar.TwoDigitYearMax">
+      <summary>取得或設定以二位數年份表示時，該 100 年範圍的最後一年。</summary>
+      <returns>以二位數年份表示時，該 100 年範圍的最後一年。</returns>
+      <exception cref="T:System.InvalidOperationException">這個曆法是唯讀的。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">設定作業中的值小於 100 或大於 9666。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.JapaneseCalendar">
+      <summary>表示日本曆法。</summary>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.#ctor">
+      <summary>初始化 <see cref="T:System.Globalization.JapaneseCalendar" /> 類別的新執行個體。</summary>
+      <exception cref="T:System.TypeInitializationException">由於缺少文化特性資訊，無法初始化 <see cref="T:System.Globalization.JapaneseCalendar" /> 物件。</exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>傳回與指定 <see cref="T:System.DateTime" /> 相差指定月數的 <see cref="T:System.DateTime" />。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，由將指定的月數加入指定的 <see cref="T:System.DateTime" /> 所產生。</returns>
+      <param name="time">要將月份加入的 <see cref="T:System.DateTime" />。</param>
+      <param name="months">要加入的月數。</param>
+      <exception cref="T:System.ArgumentException">產生的 <see cref="T:System.DateTime" /> 在支援的範圍之外。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> 小於 -120000。-或-<paramref name="months" /> 大於 120000。</exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>傳回與指定 <see cref="T:System.DateTime" /> 相差指定年數的 <see cref="T:System.DateTime" />。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，由將指定的年數加入指定的 <see cref="T:System.DateTime" /> 所產生。</returns>
+      <param name="time">要將年份加入的 <see cref="T:System.DateTime" />。</param>
+      <param name="years">要加入的年數。</param>
+      <exception cref="T:System.ArgumentException">產生的 <see cref="T:System.DateTime" /> 在支援的範圍之外。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 在 <see cref="T:System.Globalization.JapaneseCalendar" /> 型別支援的範圍之外。-或-<paramref name="years" /> 小於 -10,000 或大於 10,000。</exception>
+    </member>
+    <member name="P:System.Globalization.JapaneseCalendar.Eras">
+      <summary>取得 <see cref="T:System.Globalization.JapaneseCalendar" /> 中的紀元清單。</summary>
+      <returns>整數陣列，表示 <see cref="T:System.Globalization.JapaneseCalendar" /> 中的紀元。</returns>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中月份的日期。</summary>
+      <returns>從 1 到 31 的整數，表示指定 <see cref="T:System.DateTime" /> 中月份的日期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的星期。</summary>
+      <returns>
+        <see cref="T:System.DayOfWeek" /> 值，表示指定 <see cref="T:System.DateTime" /> 中的星期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetDayOfYear(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的年份日期。</summary>
+      <returns>從 1 到 366 的整數，表示指定之 <see cref="T:System.DateTime" /> 中的年份日期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>傳回在指定紀元的指定年份的指定月份中的日數。</summary>
+      <returns>在指定紀元的指定年份的指定月份中的日數。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="month" /> 不在曆法支援的範圍內。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>傳回在指定紀元的指定年份中的日數。</summary>
+      <returns>在指定紀元的指定年份中的日數。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetEra(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的紀元。</summary>
+      <returns>整數，表示指定 <see cref="T:System.DateTime" /> 中的紀元。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">產生的 <see cref="T:System.DateTime" /> 在支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>計算指定年份和紀元的閏月。</summary>
+      <returns>傳回值永遠都會是 0，因為 <see cref="T:System.Globalization.JapaneseCalendar" /> 型別不支援閏月的概念。</returns>
+      <param name="year">一年。</param>
+      <param name="era">一紀元。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 或 <paramref name="era" /> 在 <see cref="T:System.Globalization.JapaneseCalendar" /> 型別支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetMonth(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的月份。</summary>
+      <returns>從 1 到 12 的整數，表示指定 <see cref="T:System.DateTime" /> 中的月份。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>傳回在指定紀元的指定年份中的月數。</summary>
+      <returns>傳回值一定是 12。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetWeekOfYear(System.DateTime,System.Globalization.CalendarWeekRule,System.DayOfWeek)">
+      <summary>傳回年份中的週，包含指定 <see cref="T:System.DateTime" /> 中的日期。</summary>
+      <returns>從 1 起始的整數，表示 <paramref name="time" /> 參數中日期所屬年份中的某週。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+      <param name="rule">其中一個 <see cref="T:System.Globalization.CalendarWeekRule" /> 值，可定義行事曆週。</param>
+      <param name="firstDayOfWeek">其中一個 <see cref="T:System.DayOfWeek" /> 值，表示一週的第一天。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 或 <paramref name="firstDayOfWeek" /> 在日曆支援的範圍之外。-或-<paramref name="rule" /> 不是有效的 <see cref="T:System.Globalization.CalendarWeekRule" /> 值。</exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetYear(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的年份。</summary>
+      <returns>整數，表示指定 <see cref="T:System.DateTime" /> 中的年份。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>判斷指定紀元中指定的日期是否為閏日。</summary>
+      <returns>如果指定的日子是閏日，則為 true，否則為 false。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="day">從 1 到 31 的整數，表示日期。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="month" /> 不在曆法支援的範圍內。-或-<paramref name="day" /> 不在曆法支援的範圍內。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>判斷指定紀元的指定年份中指定的月份是否為閏月。</summary>
+      <returns>這個方法永遠傳回 false，除非被衍生類別 (Derived Class) 所覆寫。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="month" /> 不在曆法支援的範圍內。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>判斷指定紀元中指定的年份是否為閏年。</summary>
+      <returns>如果指定的年份是閏年，則為 true，否則為 false。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="P:System.Globalization.JapaneseCalendar.MaxSupportedDateTime">
+      <summary>取得受目前 <see cref="T:System.Globalization.JapaneseCalendar" /> 物件所支援的最晚日期和時間。</summary>
+      <returns>
+        <see cref="T:System.Globalization.JapaneseCalendar" /> 型別所支援的最晚日期和時間，相當於西曆中的 9999 C.E. 12 月 31 日的最後一刻。</returns>
+    </member>
+    <member name="P:System.Globalization.JapaneseCalendar.MinSupportedDateTime">
+      <summary>取得受目前 <see cref="T:System.Globalization.JapaneseCalendar" /> 物件所支援的最早日期和時間。</summary>
+      <returns>
+        <see cref="T:System.Globalization.JapaneseCalendar" /> 類型支援的最早日期和時間，等於西曆中之西元 1868 年 9 月 8 日的第一時間。</returns>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>傳回在指定紀元中設定為指定日期和時間的 <see cref="T:System.DateTime" />。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，設定為目前紀元中指定的日期和時間。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="day">從 1 到 31 的整數，表示日期。</param>
+      <param name="hour">從 0 到 23 的整數，表示小時。</param>
+      <param name="minute">從 0 到 59 的整數，表示分鐘。</param>
+      <param name="second">從 0 到 59 的整數，表示秒鐘。</param>
+      <param name="millisecond">從 0 到 999 的整數，表示毫秒。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="month" /> 不在曆法支援的範圍內。-或-<paramref name="day" /> 不在曆法支援的範圍內。-或-<paramref name="hour" /> 小於零或大於 23。-或-<paramref name="minute" /> 小於零或大於 59。-或-<paramref name="second" /> 小於零或大於 59。-或-<paramref name="millisecond" /> 小於零或大於 999。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.ToFourDigitYear(System.Int32)">
+      <summary>將指定的年份轉換為 4 位數年份，方法是使用 <see cref="P:System.Globalization.JapaneseCalendar.TwoDigitYearMax" /> 屬性以判斷適當的世紀。</summary>
+      <returns>整數，包含 <paramref name="year" /> 的四位數表示。</returns>
+      <param name="year">表示要轉換年份的整數 (通常是兩位數)。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="P:System.Globalization.JapaneseCalendar.TwoDigitYearMax">
+      <summary>取得或設定以二位數年份表示時，該 100 年範圍的最後一年。</summary>
+      <returns>以二位數年份表示時，該 100 年範圍的最後一年。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">在設定作業中指定的值小於 99。-或-在設定作業中指定的值大於 8011 (或 MaxSupportedDateTime.Year)。</exception>
+      <exception cref="T:System.InvalidOperationException">在設定作業中，目前執行個體是唯讀的。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.JapaneseLunisolarCalendar">
+      <summary>表示劃分的時間，例如月、日和年。年份的計算方式與日本曆法相同，而日期與月份則是使用陰陽曆計算。</summary>
+    </member>
+    <member name="M:System.Globalization.JapaneseLunisolarCalendar.#ctor">
+      <summary>初始化 <see cref="T:System.Globalization.JapaneseLunisolarCalendar" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="P:System.Globalization.JapaneseLunisolarCalendar.Eras">
+      <summary>取得與 <see cref="T:System.Globalization.JapaneseLunisolarCalendar" /> 物件相關的紀元。</summary>
+      <returns>32 位元帶正負號整數的陣列，指定相關的紀元。</returns>
+    </member>
+    <member name="M:System.Globalization.JapaneseLunisolarCalendar.GetEra(System.DateTime)">
+      <summary>擷取對應於指定的 <see cref="T:System.DateTime" /> 之紀元。</summary>
+      <returns>整數，表示 <paramref name="time" /> 參數中指定的紀元。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="P:System.Globalization.JapaneseLunisolarCalendar.MaxSupportedDateTime">
+      <summary>取得受 <see cref="T:System.Globalization.JapaneseLunisolarCalendar" /> 類別所支援的日期和時間的最大值。</summary>
+      <returns>
+        <see cref="T:System.Globalization.JapaneseLunisolarCalendar" /> 類別支援的最晚日期和時間，相當於西曆中西元 2050 年 1 月 22 日的最後一刻。</returns>
+    </member>
+    <member name="P:System.Globalization.JapaneseLunisolarCalendar.MinSupportedDateTime">
+      <summary>取得受 <see cref="T:System.Globalization.JapaneseLunisolarCalendar" /> 類別所支援的日期和時間的最小值。</summary>
+      <returns>
+        <see cref="T:System.Globalization.JapaneseLunisolarCalendar" /> 類別支援的最早日期和時間，等於西曆中之西元 1960 年 1 月 28 日的第一時間。</returns>
+    </member>
+    <member name="T:System.Globalization.JulianCalendar">
+      <summary>表示凱撒曆法。</summary>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.#ctor">
+      <summary>初始化 <see cref="T:System.Globalization.JulianCalendar" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>傳回與指定 <see cref="T:System.DateTime" /> 相差指定月數的 <see cref="T:System.DateTime" />。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，由將指定的月數加入指定的 <see cref="T:System.DateTime" /> 所產生。</returns>
+      <param name="time">要將月份加入的 <see cref="T:System.DateTime" />。</param>
+      <param name="months">要加入的月數。</param>
+      <exception cref="T:System.ArgumentException">產生的 <see cref="T:System.DateTime" /> 在支援的範圍之外。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> 小於 -120000。-或-<paramref name="months" /> 大於 120000。</exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>傳回與指定 <see cref="T:System.DateTime" /> 相差指定年數的 <see cref="T:System.DateTime" />。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，由將指定的年數加入指定的 <see cref="T:System.DateTime" /> 所產生。</returns>
+      <param name="time">要將年份加入的 <see cref="T:System.DateTime" />。</param>
+      <param name="years">要加入的年數。</param>
+      <exception cref="T:System.ArgumentException">產生的 <see cref="T:System.DateTime" /> 在支援的範圍之外。</exception>
+    </member>
+    <member name="P:System.Globalization.JulianCalendar.Eras">
+      <summary>取得 <see cref="T:System.Globalization.JulianCalendar" /> 中的紀元清單。</summary>
+      <returns>整數陣列，表示 <see cref="T:System.Globalization.JulianCalendar" /> 中的紀元。</returns>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中月份的日期。</summary>
+      <returns>從 1 到 31 的整數，表示 <paramref name="time" /> 中月份的日期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的星期。</summary>
+      <returns>
+        <see cref="T:System.DayOfWeek" /> 值，表示 <paramref name="time" /> 中的星期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetDayOfYear(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的年份日期。</summary>
+      <returns>從 1 到 366 的整數，表示 <paramref name="time" /> 中年份的日期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>傳回在指定紀元的指定年份的指定月份中的日數。</summary>
+      <returns>在指定紀元的指定年份的指定月份中的日數。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> 不在曆法支援的範圍內。-或-<paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="month" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>傳回在指定紀元的指定年份中的日數。</summary>
+      <returns>在指定紀元的指定年份中的日數。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> 不在曆法支援的範圍內。-或-<paramref name="year" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetEra(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的紀元。</summary>
+      <returns>表示 <paramref name="time" /> 中紀元的整數。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>計算指定年份和紀元的閏月。</summary>
+      <returns>正整數，指出在指定的年份及紀元中的閏月。如果曆法不支援閏月，或 <paramref name="year" /> 和 <paramref name="era" /> 未指定閏年，則這個方法也會傳回零。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。</param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetMonth(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的月份。</summary>
+      <returns>從 1 到 12 的整數，表示 <paramref name="time" /> 中的月份。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>傳回在指定紀元的指定年份中的月數。</summary>
+      <returns>在指定紀元的指定年份中的月數。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> 不在曆法支援的範圍內。-或-<paramref name="year" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetYear(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的年份。</summary>
+      <returns>表示 <paramref name="time" /> 中年份的整數。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>判斷指定紀元中指定的日期是否為閏日。</summary>
+      <returns>如果指定的日期為閏日，則為 true，否則為 false。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="day">從 1 到 31 的整數，表示日期。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="month" /> 不在曆法支援的範圍內。-或-<paramref name="day" /> 不在曆法支援的範圍內。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>判斷指定紀元的指定年份中指定的月份是否為閏月。</summary>
+      <returns>這個方法永遠傳回 false，除非被衍生類別 (Derived Class) 所覆寫。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="month" /> 不在曆法支援的範圍內。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>判斷指定紀元中指定的年份是否為閏年。</summary>
+      <returns>如果指定的年份為閏年，則為 true，否則為 false。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="P:System.Globalization.JulianCalendar.MaxSupportedDateTime">
+      <summary>取得 <see cref="T:System.Globalization.JulianCalendar" /> 類別所支援的最晚日期和時間。</summary>
+      <returns>
+        <see cref="T:System.Globalization.JulianCalendar" /> 類別支援的最新日期和時間，相當於西曆中的西元 9999 年 12 月 31 日的最後一刻。</returns>
+    </member>
+    <member name="P:System.Globalization.JulianCalendar.MinSupportedDateTime">
+      <summary>取得 <see cref="T:System.Globalization.JulianCalendar" /> 類別所支援的最早日期和時間。</summary>
+      <returns>
+        <see cref="T:System.Globalization.JulianCalendar" /> 類別支援的最早日期和時間，等於西曆中之西元 0001 年 1 月 1 日的第一時間。</returns>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>傳回在指定紀元中設定為指定日期和時間的 <see cref="T:System.DateTime" />。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，設定為目前紀元中指定的日期和時間。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="day">從 1 到 31 的整數，表示日期。</param>
+      <param name="hour">從 0 到 23 的整數，表示小時。</param>
+      <param name="minute">從 0 到 59 的整數，表示分鐘。</param>
+      <param name="second">從 0 到 59 的整數，表示秒鐘。</param>
+      <param name="millisecond">從 0 到 999 的整數，表示毫秒。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="month" /> 不在曆法支援的範圍內。-或-<paramref name="day" /> 不在曆法支援的範圍內。-或-<paramref name="hour" /> 小於零或大於 23。-或-<paramref name="minute" /> 小於零或大於 59。-或-<paramref name="second" /> 小於零或大於 59。-或-<paramref name="millisecond" /> 小於零或大於 999。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.ToFourDigitYear(System.Int32)">
+      <summary>將指定的年份轉換為 4 位數年份，方法是使用 <see cref="P:System.Globalization.JulianCalendar.TwoDigitYearMax" /> 屬性以判斷適當的世紀。</summary>
+      <returns>整數，包含 <paramref name="year" /> 的四位數表示。</returns>
+      <param name="year">兩位數或四位數整數，代表要轉換的年份。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="P:System.Globalization.JulianCalendar.TwoDigitYearMax">
+      <summary>取得或設定以二位數年份表示時，該 100 年範圍的最後一年。</summary>
+      <returns>以二位數年份表示時，該 100 年範圍的最後一年。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">在設定作業中指定的值小於 99。-或-在設定作業中指定的值大於 MaxSupportedDateTime.Year。</exception>
+      <exception cref="T:System.InvalidOperationException">在設定作業中，目前執行個體是唯讀的。</exception>
+    </member>
+    <member name="T:System.Globalization.KoreanCalendar">
+      <summary>表示韓國曆法。</summary>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.#ctor">
+      <summary>初始化 <see cref="T:System.Globalization.KoreanCalendar" /> 類別的新執行個體。</summary>
+      <exception cref="T:System.TypeInitializationException">由於缺少文化特性資訊，無法初始化 <see cref="T:System.Globalization.KoreanCalendar" /> 物件。</exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>傳回與指定 <see cref="T:System.DateTime" /> 相差指定月數的 <see cref="T:System.DateTime" />。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，由將指定的月數加入指定的 <see cref="T:System.DateTime" /> 所產生。</returns>
+      <param name="time">要將月份加入的 <see cref="T:System.DateTime" />。</param>
+      <param name="months">要加入的月數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> 小於 -120000。-或-<paramref name="months" /> 大於 120000。</exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>傳回與指定 <see cref="T:System.DateTime" /> 相差指定年數的 <see cref="T:System.DateTime" />。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，由將指定的年數加入指定的 <see cref="T:System.DateTime" /> 所產生。</returns>
+      <param name="time">要將年份加入的 <see cref="T:System.DateTime" />。</param>
+      <param name="years">要加入的年數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="years" /> 或 <paramref name="time" /> 超出範圍。</exception>
+    </member>
+    <member name="P:System.Globalization.KoreanCalendar.Eras">
+      <summary>取得 <see cref="T:System.Globalization.KoreanCalendar" /> 中的紀元清單。</summary>
+      <returns>整數陣列，表示 <see cref="T:System.Globalization.KoreanCalendar" /> 中的紀元。</returns>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中月份的日期。</summary>
+      <returns>從 1 到 31 的整數，表示指定 <see cref="T:System.DateTime" /> 中月份的日期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的星期。</summary>
+      <returns>
+        <see cref="T:System.DayOfWeek" /> 值，表示指定 <see cref="T:System.DateTime" /> 中的星期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetDayOfYear(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的年份日期。</summary>
+      <returns>從 1 到 366 的整數，表示指定之 <see cref="T:System.DateTime" /> 中的年份日期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>傳回在指定紀元的指定年份的指定月份中的日數。</summary>
+      <returns>在指定紀元的指定年份的指定月份中的日數。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="month" /> 不在曆法支援的範圍內。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>傳回在指定紀元的指定年份中的日數。</summary>
+      <returns>在指定紀元的指定年份中的日數。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetEra(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的紀元。</summary>
+      <returns>整數，表示指定 <see cref="T:System.DateTime" /> 中的紀元。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>計算指定年份和紀元的閏月。</summary>
+      <returns>傳回值永遠都會是 0，因為 <see cref="T:System.Globalization.KoreanCalendar" /> 類別不支援閏月的概念。</returns>
+      <param name="year">一年。</param>
+      <param name="era">一紀元。</param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetMonth(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的月份。</summary>
+      <returns>從 1 到 12 的整數，表示指定 <see cref="T:System.DateTime" /> 中的月份。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>傳回在指定紀元的指定年份中的月數。</summary>
+      <returns>在指定紀元的指定年份中的月數。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetWeekOfYear(System.DateTime,System.Globalization.CalendarWeekRule,System.DayOfWeek)">
+      <summary>傳回年份中的週，包含指定 <see cref="T:System.DateTime" /> 中的日期。</summary>
+      <returns>從 1 起始的整數，表示 <paramref name="time" /> 參數中日期所屬年份中的某週。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+      <param name="rule">其中一個 <see cref="T:System.Globalization.CalendarWeekRule" /> 值，可定義行事曆週。</param>
+      <param name="firstDayOfWeek">其中一個 <see cref="T:System.DayOfWeek" /> 值，表示一週的第一天。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 或 <paramref name="firstDayOfWeek" /> 在日曆支援的範圍之外。-或-<paramref name="rule" /> 不是有效的 <see cref="T:System.Globalization.CalendarWeekRule" /> 值。</exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetYear(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的年份。</summary>
+      <returns>整數，表示指定 <see cref="T:System.DateTime" /> 中的年份。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>判斷指定紀元中指定的日期是否為閏日。</summary>
+      <returns>如果指定的日期為閏日，則為 true，否則為 false。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="day">從 1 到 31 的整數，表示日期。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="month" /> 不在曆法支援的範圍內。-或-<paramref name="day" /> 不在曆法支援的範圍內。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>判斷指定紀元的指定年份中指定的月份是否為閏月。</summary>
+      <returns>這個方法永遠傳回 false，除非被衍生類別 (Derived Class) 所覆寫。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="month" /> 不在曆法支援的範圍內。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>判斷指定紀元中指定的年份是否為閏年。</summary>
+      <returns>如果指定的年份為閏年，則為 true，否則為 false。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="P:System.Globalization.KoreanCalendar.MaxSupportedDateTime">
+      <summary>取得 <see cref="T:System.Globalization.KoreanCalendar" /> 類別所支援的最晚日期和時間。</summary>
+      <returns>
+        <see cref="T:System.Globalization.KoreanCalendar" /> 類別支援的最新日期和時間，相當於西曆中的西元 9999 年 12 月 31 日的最後一刻。</returns>
+    </member>
+    <member name="P:System.Globalization.KoreanCalendar.MinSupportedDateTime">
+      <summary>取得 <see cref="T:System.Globalization.KoreanCalendar" /> 類別所支援的最早日期和時間。</summary>
+      <returns>
+        <see cref="T:System.Globalization.KoreanCalendar" /> 類別支援的最早日期和時間，等於西曆中之西元 0001 年 1 月 1 日的第一時間。</returns>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>傳回在指定紀元中設定為指定日期和時間的 <see cref="T:System.DateTime" />。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，設定為目前紀元中指定的日期和時間。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="day">從 1 到 31 的整數，表示日期。</param>
+      <param name="hour">從 0 到 23 的整數，表示小時。</param>
+      <param name="minute">從 0 到 59 的整數，表示分鐘。</param>
+      <param name="second">從 0 到 59 的整數，表示秒鐘。</param>
+      <param name="millisecond">從 0 到 999 的整數，表示毫秒。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="month" /> 不在曆法支援的範圍內。-或-<paramref name="day" /> 不在曆法支援的範圍內。-或-<paramref name="hour" /> 小於零或大於 23。-或-<paramref name="minute" /> 小於零或大於 59。-或-<paramref name="second" /> 小於零或大於 59。-或-<paramref name="millisecond" /> 小於零或大於 999。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.ToFourDigitYear(System.Int32)">
+      <summary>將指定的年份轉換為 4 位數年份，方法是使用 <see cref="P:System.Globalization.KoreanCalendar.TwoDigitYearMax" /> 屬性以判斷適當的世紀。</summary>
+      <returns>整數，包含 <paramref name="year" /> 的四位數表示。</returns>
+      <param name="year">兩位數或四位數整數，代表要轉換的年份。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Globalization.KoreanCalendar.TwoDigitYearMax">
+      <summary>取得或設定以二位數年份表示時，該 100 年範圍的最後一年。</summary>
+      <returns>以二位數年份表示時，該 100 年範圍的最後一年。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">在設定作業中指定的值小於 99。-或-在設定作業中指定的值大於 MaxSupportedDateTime.Year。</exception>
+      <exception cref="T:System.InvalidOperationException">在設定作業中，目前執行個體是唯讀的。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.KoreanLunisolarCalendar">
+      <summary>表示劃分的時間，例如月、日和年。年份是使用西曆計算，而日期和月份則是使用陰陽曆計算。</summary>
+    </member>
+    <member name="M:System.Globalization.KoreanLunisolarCalendar.#ctor">
+      <summary>初始化 <see cref="T:System.Globalization.KoreanLunisolarCalendar" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="P:System.Globalization.KoreanLunisolarCalendar.Eras">
+      <summary>取得對應至目前 <see cref="T:System.Globalization.KoreanLunisolarCalendar" /> 物件所支援之日期與時間範圍的紀元。</summary>
+      <returns>32 位元帶正負號整數的陣列，指定相關的紀元。<see cref="T:System.Globalization.KoreanLunisolarCalendar" /> 物件的傳回值永遠是包含一個與 <see cref="F:System.Globalization.KoreanLunisolarCalendar.GregorianEra" /> 值相等元素的陣列。</returns>
+    </member>
+    <member name="M:System.Globalization.KoreanLunisolarCalendar.GetEra(System.DateTime)">
+      <summary>擷取對應於指定的 <see cref="T:System.DateTime" /> 之紀元。</summary>
+      <returns>整數，表示 <paramref name="time" /> 參數指定的紀元。<see cref="T:System.Globalization.KoreanLunisolarCalendar" /> 物件的傳回值一定是 <see cref="F:System.Globalization.KoreanLunisolarCalendar.GregorianEra" /> 值。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 表示日期和時間小於 <see cref="P:System.Globalization.KoreanLunisolarCalendar.MinSupportedDateTime" /> 或大於 <see cref="P:System.Globalization.KoreanLunisolarCalendar.MaxSupportedDateTime" />。</exception>
+    </member>
+    <member name="P:System.Globalization.KoreanLunisolarCalendar.MaxSupportedDateTime">
+      <summary>取得受 <see cref="T:System.Globalization.KoreanLunisolarCalendar" /> 類別所支援之日期和時間的最大值。</summary>
+      <returns>
+        <see cref="T:System.Globalization.KoreanLunisolarCalendar" /> 類別支援的最晚日期和時間，相當於西曆中的西元 2051 年 2 月 10 日的最後一刻。</returns>
+    </member>
+    <member name="P:System.Globalization.KoreanLunisolarCalendar.MinSupportedDateTime">
+      <summary>取得受 <see cref="T:System.Globalization.KoreanLunisolarCalendar" /> 類別所支援的日期和時間的最小值。</summary>
+      <returns>
+        <see cref="T:System.Globalization.KoreanLunisolarCalendar" /> 類別支援的最早日期和時間，等於西曆中之西元 918 年 2 月 14 日的第一時間。</returns>
+    </member>
+    <member name="T:System.Globalization.PersianCalendar">
+      <summary>表示波斯曆。</summary>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.#ctor">
+      <summary>初始化 <see cref="T:System.Globalization.PersianCalendar" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>傳回 <see cref="T:System.DateTime" /> 物件，這個物件與指定之 <see cref="T:System.DateTime" /> 物件相差指定月數。</summary>
+      <returns>
+        <see cref="T:System.DateTime" /> 物件，表示將由 <paramref name="months" /> 參數指定的月數加入至由 <paramref name="time" /> 參數指定的日期所產生的日期。</returns>
+      <param name="time">要將月份加入的 <see cref="T:System.DateTime" />。</param>
+      <param name="months">要加入的正或負月數。</param>
+      <exception cref="T:System.ArgumentException">產生的 <see cref="T:System.DateTime" /> 在支援的範圍之外。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> 小於 -120,000 或大於 120,000。</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>傳回 <see cref="T:System.DateTime" /> 物件，這個物件與所指定 <see cref="T:System.DateTime" /> 物件相差指定的年數。</summary>
+      <returns>
+        <see cref="T:System.DateTime" /> 物件，由將指定的年份加入指定的 <see cref="T:System.DateTime" /> 物件所產生。</returns>
+      <param name="time">要將年份加入的 <see cref="T:System.DateTime" />。</param>
+      <param name="years">要加入的正或負年份。</param>
+      <exception cref="T:System.ArgumentException">產生的 <see cref="T:System.DateTime" /> 在支援的範圍之外。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="years" /> 小於 -10,000 或大於 10,000。</exception>
+    </member>
+    <member name="P:System.Globalization.PersianCalendar.Eras">
+      <summary>取得 <see cref="T:System.Globalization.PersianCalendar" /> 物件中的紀元清單。</summary>
+      <returns>整數陣列，表示 <see cref="T:System.Globalization.PersianCalendar" /> 物件中的紀元。陣列是由值為 <see cref="F:System.Globalization.PersianCalendar.PersianEra" /> 的單一項目組成。</returns>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>傳回指定之 <see cref="T:System.DateTime" /> 物件中月份的日期。</summary>
+      <returns>1 到 31 的整數，表示指定之 <see cref="T:System.DateTime" /> 物件中月份的日期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 參數表示小於 <see cref="P:System.Globalization.PersianCalendar.MinSupportedDateTime" /> 或大於 <see cref="P:System.Globalization.PersianCalendar.MaxSupportedDateTime" /> 的日期。</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>傳回指定之 <see cref="T:System.DateTime" /> 物件中一週的日期。</summary>
+      <returns>
+        <see cref="T:System.DayOfWeek" /> 值，表示指定之 <see cref="T:System.DateTime" /> 物件中一週的日期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetDayOfYear(System.DateTime)">
+      <summary>傳回指定之 <see cref="T:System.DateTime" /> 物件中年份的日期。</summary>
+      <returns>1 到 366 的整數，表示指定之 <see cref="T:System.DateTime" /> 物件中年份的日期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 參數表示小於 <see cref="P:System.Globalization.PersianCalendar.MinSupportedDateTime" /> 或大於 <see cref="P:System.Globalization.PersianCalendar.MaxSupportedDateTime" /> 的日期。</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>傳回指定年份和紀元之指定月份中的天數。</summary>
+      <returns>指定的年份與紀元中指定月份的天數。</returns>
+      <param name="year">從 1 到 9378 的整數，表示年份。</param>
+      <param name="month">整數，表示月份，如果 <paramref name="year" /> 不是 9378，則範圍為 1 到 12，如果 <paramref name="year" /> 是 9378，則範圍為 1 到 10。</param>
+      <param name="era">從 0 到 1 的整數，表示紀元。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" /> 或 <paramref name="era" /> 在這個日曆支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>傳回在指定紀元的指定年份中的日數。</summary>
+      <returns>指定年份和紀元中的天數。一般年份有 365 天，閏年有 366 天。</returns>
+      <param name="year">從 1 到 9378 的整數，表示年份。</param>
+      <param name="era">從 0 到 1 的整數，表示紀元。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 或 <paramref name="era" /> 在這個日曆所支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetEra(System.DateTime)">
+      <summary>傳回指定之 <see cref="T:System.DateTime" /> 物件中的紀元。</summary>
+      <returns>永遠傳回 <see cref="F:System.Globalization.PersianCalendar.PersianEra" />。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 參數表示小於 <see cref="P:System.Globalization.PersianCalendar.MinSupportedDateTime" /> 或大於 <see cref="P:System.Globalization.PersianCalendar.MaxSupportedDateTime" /> 的日期。</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>傳回指定之年份和紀元的閏月。</summary>
+      <returns>傳回值一定是 0。</returns>
+      <param name="year">1 到 9378 的整數，表示要轉換的年份。</param>
+      <param name="era">從 0 到 1 的整數，表示紀元。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 或 <paramref name="era" /> 在這個日曆所支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetMonth(System.DateTime)">
+      <summary>傳回指定之 <see cref="T:System.DateTime" /> 物件中的月份。</summary>
+      <returns>1 到 12 的整數，表示指定之 <see cref="T:System.DateTime" /> 物件中的月份。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 參數表示小於 <see cref="P:System.Globalization.PersianCalendar.MinSupportedDateTime" /> 或大於 <see cref="P:System.Globalization.PersianCalendar.MaxSupportedDateTime" /> 的日期。</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>傳回在指定紀元的指定年份中的月數。</summary>
+      <returns>如果 <paramref name="year" /> 參數是 9378，則傳回 10，否則永遠傳回 12。</returns>
+      <param name="year">從 1 到 9378 的整數，表示年份。</param>
+      <param name="era">從 0 到 1 的整數，表示紀元。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 或 <paramref name="era" /> 在這個日曆所支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetYear(System.DateTime)">
+      <summary>傳回指定之 <see cref="T:System.DateTime" /> 物件中的年份。</summary>
+      <returns>從 1 到 9378 的整數，表示所指定 <see cref="T:System.DateTime" /> 中的年份。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 參數表示小於 <see cref="P:System.Globalization.PersianCalendar.MinSupportedDateTime" /> 或大於 <see cref="P:System.Globalization.PersianCalendar.MaxSupportedDateTime" /> 的日期。</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>判斷指定的日期是否為閏日。</summary>
+      <returns>如果指定的日期為閏日，則為 true，否則為 false。</returns>
+      <param name="year">從 1 到 9378 的整數，表示年份。</param>
+      <param name="month">整數，表示月份，如果 <paramref name="year" /> 不是 9378，則範圍為 1 到 12，如果 <paramref name="year" /> 是 9378，則範圍為 1 到 10。</param>
+      <param name="day">1 到 31 的整數，表示日期。</param>
+      <param name="era">從 0 到 1 的整數，表示紀元。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" />、<paramref name="day" /> 或 <paramref name="era" /> 在這個曆法所支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>判斷指定年份和紀元中的指定月份是否為閏月。</summary>
+      <returns>因為 <see cref="T:System.Globalization.PersianCalendar" /> 類別不支援閏月的概念，所以一律會傳回 false。</returns>
+      <param name="year">從 1 到 9378 的整數，表示年份。</param>
+      <param name="month">整數，表示月份，如果 <paramref name="year" /> 不是 9378，則範圍為 1 到 12，如果 <paramref name="year" /> 是 9378，則範圍為 1 到 10。</param>
+      <param name="era">從 0 到 1 的整數，表示紀元。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" /> 或 <paramref name="era" /> 在這個日曆支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>判斷指定紀元中指定的年份是否為閏年。</summary>
+      <returns>如果指定的年份為閏年，則為 true，否則為 false。</returns>
+      <param name="year">從 1 到 9378 的整數，表示年份。</param>
+      <param name="era">從 0 到 1 的整數，表示紀元。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 或 <paramref name="era" /> 在這個日曆所支援的範圍之外。</exception>
+    </member>
+    <member name="P:System.Globalization.PersianCalendar.MaxSupportedDateTime">
+      <summary>取得 <see cref="T:System.Globalization.PersianCalendar" /> 類別所支援的最晚日期和時間。</summary>
+      <returns>
+        <see cref="T:System.Globalization.PersianCalendar" /> 類別支援的最晚日期和時間，相當於西曆中西元 9999 年 12 月 31 日的最後一刻。</returns>
+    </member>
+    <member name="P:System.Globalization.PersianCalendar.MinSupportedDateTime">
+      <summary>取得 <see cref="T:System.Globalization.PersianCalendar" /> 類別所支援的最早日期和時間。</summary>
+      <returns>
+        <see cref="T:System.Globalization.PersianCalendar" /> 類別支援的最早日期和時間，相當於西曆中西元 622 年 3 月 21 日的最早時刻。</returns>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>傳回設定為指定日期、時間和紀元的 <see cref="T:System.DateTime" /> 物件。</summary>
+      <returns>設定為目前紀元中所指定日期和時間的 <see cref="T:System.DateTime" /> 物件。</returns>
+      <param name="year">從 1 到 9378 的整數，表示年份。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="day">1 到 31 的整數，表示日期。</param>
+      <param name="hour">0 到 23 的整數，表示小時。</param>
+      <param name="minute">0 到 59 的整數，表示分鐘。</param>
+      <param name="second">0 到 59 的整數，表示秒鐘。</param>
+      <param name="millisecond">0 到 999 的整數，表示毫秒。</param>
+      <param name="era">從 0 到 1 的整數，表示紀元。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" />、<paramref name="day" />、<paramref name="hour" />、<paramref name="minute" />、<paramref name="second" />、<paramref name="millisecond" /> 或 <paramref name="era" /> 在這個曆法所支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.ToFourDigitYear(System.Int32)">
+      <summary>將指定的年份轉換為四位數年份表示。</summary>
+      <returns>整數，包含 <paramref name="year" /> 的四位數表示。</returns>
+      <param name="year">1 到 9378 的整數，表示要轉換的年份。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 小於 0 或大於 9378。</exception>
+    </member>
+    <member name="P:System.Globalization.PersianCalendar.TwoDigitYearMax">
+      <summary>取得或設定以二位數年份表示時，該 100 年範圍的最後一年。</summary>
+      <returns>以二位數年份表示時，該 100 年範圍的最後一年。</returns>
+      <exception cref="T:System.InvalidOperationException">這個曆法是唯讀的。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">設定作業中的值小於 100 或大於 9378。</exception>
+    </member>
+    <member name="T:System.Globalization.TaiwanCalendar">
+      <summary>台灣曆法。</summary>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.#ctor">
+      <summary>初始化 <see cref="T:System.Globalization.TaiwanCalendar" /> 類別的新執行個體。</summary>
+      <exception cref="T:System.TypeInitializationException">由於缺少文化特性資訊，無法初始化 <see cref="T:System.Globalization.TaiwanCalendar" /> 物件。</exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>傳回與指定 <see cref="T:System.DateTime" /> 相差指定月數的 <see cref="T:System.DateTime" />。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，由將指定的月數加入指定的 <see cref="T:System.DateTime" /> 所產生。</returns>
+      <param name="time">要將月份加入的 <see cref="T:System.DateTime" />。</param>
+      <param name="months">要加入的月數。</param>
+      <exception cref="T:System.ArgumentException">產生的 <see cref="T:System.DateTime" /> 在支援的範圍之外。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> 小於 -120000。-或-<paramref name="months" /> 大於 120000。</exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>傳回與指定 <see cref="T:System.DateTime" /> 相差指定年數的 <see cref="T:System.DateTime" />。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，由將指定的年數加入指定的 <see cref="T:System.DateTime" /> 所產生。</returns>
+      <param name="time">要將年份加入的 <see cref="T:System.DateTime" />。</param>
+      <param name="years">要加入的年數。</param>
+      <exception cref="T:System.ArgumentException">產生的 <see cref="T:System.DateTime" /> 在支援的範圍之外。</exception>
+    </member>
+    <member name="P:System.Globalization.TaiwanCalendar.Eras">
+      <summary>取得 <see cref="T:System.Globalization.TaiwanCalendar" /> 中的紀元清單。</summary>
+      <returns>陣列，由值永遠為目前紀元的單一元素組成。</returns>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中月份的日期。</summary>
+      <returns>從 1 到 31 的整數，表示指定 <see cref="T:System.DateTime" /> 中月份的日期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的星期。</summary>
+      <returns>
+        <see cref="T:System.DayOfWeek" /> 值，表示指定 <see cref="T:System.DateTime" /> 中的星期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetDayOfYear(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的年份日期。</summary>
+      <returns>從 1 到 366 的整數，表示指定之 <see cref="T:System.DateTime" /> 中的年份日期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>傳回在指定紀元的指定年份的指定月份中的日數。</summary>
+      <returns>在指定紀元的指定年份的指定月份中的日數。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="month" /> 不在曆法支援的範圍內。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>傳回在指定紀元的指定年份中的日數。</summary>
+      <returns>在指定紀元的指定年份中的日數。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetEra(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的紀元。</summary>
+      <returns>整數，表示指定 <see cref="T:System.DateTime" /> 中的紀元。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>計算指定年份和紀元的閏月。</summary>
+      <returns>傳回值永遠都會是 0，因為 <see cref="T:System.Globalization.TaiwanCalendar" /> 類別不支援閏月的概念。</returns>
+      <param name="year">一年。</param>
+      <param name="era">一紀元。</param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetMonth(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的月份。</summary>
+      <returns>從 1 到 12 的整數，表示指定 <see cref="T:System.DateTime" /> 中的月份。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>傳回在指定紀元的指定年份中的月數。</summary>
+      <returns>在指定紀元的指定年份中的月數。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetWeekOfYear(System.DateTime,System.Globalization.CalendarWeekRule,System.DayOfWeek)">
+      <summary>傳回年份中的週，包含指定 <see cref="T:System.DateTime" /> 中的日期。</summary>
+      <returns>正整數，表示 <paramref name="time" /> 參數中日期所屬年份中的某週。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+      <param name="rule">其中一個 <see cref="T:System.Globalization.CalendarWeekRule" /> 值，可定義行事曆週。</param>
+      <param name="firstDayOfWeek">其中一個 <see cref="T:System.DayOfWeek" /> 值，表示一週的第一天。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 或 <paramref name="firstDayOfWeek" /> 在日曆支援的範圍之外。-或-<paramref name="rule" /> 不是有效的 <see cref="T:System.Globalization.CalendarWeekRule" /> 值。</exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetYear(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的年份。</summary>
+      <returns>整數，表示指定 <see cref="T:System.DateTime" /> 中的年份。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>判斷指定紀元中指定的日期是否為閏日。</summary>
+      <returns>如果指定的日期為閏日，則為 true，否則為 false。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="day">從 1 到 31 的整數，表示日期。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="month" /> 不在曆法支援的範圍內。-或-<paramref name="day" /> 不在曆法支援的範圍內。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>判斷指定紀元的指定年份中指定的月份是否為閏月。</summary>
+      <returns>這個方法永遠傳回 false，除非被衍生類別 (Derived Class) 所覆寫。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="month" /> 不在曆法支援的範圍內。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>判斷指定紀元中指定的年份是否為閏年。</summary>
+      <returns>如果指定的年份為閏年，則為 true，否則為 false。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="P:System.Globalization.TaiwanCalendar.MaxSupportedDateTime">
+      <summary>取得受 <see cref="T:System.Globalization.TaiwanCalendar" /> 類別所支援的最晚日期和時間。</summary>
+      <returns>
+        <see cref="T:System.Globalization.TaiwanCalendar" /> 類別支援的最新日期和時間，相當於西曆中的西元 9999 年 12 月 31 日的最後一刻。</returns>
+    </member>
+    <member name="P:System.Globalization.TaiwanCalendar.MinSupportedDateTime">
+      <summary>取得 <see cref="T:System.Globalization.TaiwanCalendar" /> 類別所支援的最早日期和時間。</summary>
+      <returns>
+        <see cref="T:System.Globalization.TaiwanCalendar" /> 類別支援的最早日期和時間，等於西曆中之西元 1912 年 1 月 1 日的第一時間。</returns>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>傳回在指定紀元中設定為指定日期和時間的 <see cref="T:System.DateTime" />。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，設定為目前紀元中指定的日期和時間。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="day">從 1 到 31 的整數，表示日期。</param>
+      <param name="hour">從 0 到 23 的整數，表示小時。</param>
+      <param name="minute">從 0 到 59 的整數，表示分鐘。</param>
+      <param name="second">從 0 到 59 的整數，表示秒鐘。</param>
+      <param name="millisecond">從 0 到 999 的整數，表示毫秒。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="month" /> 不在曆法支援的範圍內。-或-<paramref name="day" /> 不在曆法支援的範圍內。-或-<paramref name="hour" /> 小於零或大於 23。-或-<paramref name="minute" /> 小於零或大於 59。-或-<paramref name="second" /> 小於零或大於 59。-或-<paramref name="millisecond" /> 小於零或大於 999。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.ToFourDigitYear(System.Int32)">
+      <summary>將指定的年份轉換為 4 位數年份，方法是使用 <see cref="P:System.Globalization.TaiwanCalendar.TwoDigitYearMax" /> 屬性以判斷適當的世紀。</summary>
+      <returns>整數，包含 <paramref name="year" /> 的四位數表示。</returns>
+      <param name="year">兩位數或四位數整數，代表要轉換的年份。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="P:System.Globalization.TaiwanCalendar.TwoDigitYearMax">
+      <summary>取得或設定以二位數年份表示時，該 100 年範圍的最後一年。</summary>
+      <returns>以二位數年份表示時，該 100 年範圍的最後一年。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">在設定作業中指定的值小於 99。-或-在設定作業中指定的值大於 MaxSupportedDateTime.Year。</exception>
+      <exception cref="T:System.InvalidOperationException">在設定作業中，目前執行個體是唯讀的。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.TaiwanLunisolarCalendar">
+      <summary>表示台灣使用的陰陽曆。和台灣使用的曆法相同，使用西曆計算年份，而日期和月份則使用陰陽曆計算。</summary>
+    </member>
+    <member name="M:System.Globalization.TaiwanLunisolarCalendar.#ctor">
+      <summary>初始化 <see cref="T:System.Globalization.TaiwanLunisolarCalendar" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="P:System.Globalization.TaiwanLunisolarCalendar.Eras">
+      <summary>取得與目前 <see cref="T:System.Globalization.TaiwanLunisolarCalendar" /> 物件相關的紀元。</summary>
+      <returns>陣列，由值永遠為目前紀元的單一元素組成。</returns>
+    </member>
+    <member name="M:System.Globalization.TaiwanLunisolarCalendar.GetEra(System.DateTime)">
+      <summary>擷取對應於指定的 <see cref="T:System.DateTime" /> 之紀元。</summary>
+      <returns>整數，表示 <paramref name="time" /> 參數中指定的紀元。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="P:System.Globalization.TaiwanLunisolarCalendar.MaxSupportedDateTime">
+      <summary>取得受 <see cref="T:System.Globalization.TaiwanLunisolarCalendar" /> 類別所支援的日期和時間的最大值。</summary>
+      <returns>
+        <see cref="T:System.Globalization.TaiwanLunisolarCalendar" /> 類別支援的最晚日期和時間，相當於西曆中的西元 2051 年 2 月 10 日的最後一刻。</returns>
+    </member>
+    <member name="P:System.Globalization.TaiwanLunisolarCalendar.MinSupportedDateTime">
+      <summary>取得受 <see cref="T:System.Globalization.TaiwanLunisolarCalendar" /> 類別所支援之日期和時間的最小值。</summary>
+      <returns>
+        <see cref="T:System.Globalization.TaiwanLunisolarCalendar" /> 類別支援的最早日期和時間，等於西曆中之西元 1912 年 2 月 18 日的第一時間。</returns>
+    </member>
+    <member name="T:System.Globalization.ThaiBuddhistCalendar">
+      <summary>表示泰國佛教曆法。</summary>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.#ctor">
+      <summary>初始化 <see cref="T:System.Globalization.ThaiBuddhistCalendar" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>傳回與指定 <see cref="T:System.DateTime" /> 相差指定月數的 <see cref="T:System.DateTime" />。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，由將指定的月數加入指定的 <see cref="T:System.DateTime" /> 所產生。</returns>
+      <param name="time">要將月份加入的 <see cref="T:System.DateTime" />。</param>
+      <param name="months">要加入的月數。</param>
+      <exception cref="T:System.ArgumentException">產生的 <see cref="T:System.DateTime" /> 在支援的範圍之外。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> 小於 -120000。-或-<paramref name="months" /> 大於 120000。</exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>傳回與指定 <see cref="T:System.DateTime" /> 相差指定年數的 <see cref="T:System.DateTime" />。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，由將指定的年數加入指定的 <see cref="T:System.DateTime" /> 所產生。</returns>
+      <param name="time">要將年份加入的 <see cref="T:System.DateTime" />。</param>
+      <param name="years">要加入的年數。</param>
+      <exception cref="T:System.ArgumentException">產生的 <see cref="T:System.DateTime" /> 在支援的範圍之外。</exception>
+    </member>
+    <member name="P:System.Globalization.ThaiBuddhistCalendar.Eras">
+      <summary>取得 <see cref="T:System.Globalization.ThaiBuddhistCalendar" /> 類別中的紀元清單。</summary>
+      <returns>陣列，由值永遠為目前紀元的單一元素組成。</returns>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中月份的日期。</summary>
+      <returns>從 1 到 31 的整數，表示指定 <see cref="T:System.DateTime" /> 中月份的日期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的星期。</summary>
+      <returns>
+        <see cref="T:System.DayOfWeek" /> 值，表示指定 <see cref="T:System.DateTime" /> 中的星期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetDayOfYear(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的年份日期。</summary>
+      <returns>從 1 到 366 的整數，表示指定之 <see cref="T:System.DateTime" /> 中的年份日期。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>傳回在指定紀元的指定年份的指定月份中的日數。</summary>
+      <returns>在指定紀元的指定年份的指定月份中的日數。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="month" /> 不在曆法支援的範圍內。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>傳回在指定紀元的指定年份中的日數。</summary>
+      <returns>在指定紀元的指定年份中的日數。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetEra(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的紀元。</summary>
+      <returns>整數，表示指定 <see cref="T:System.DateTime" /> 中的紀元。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>計算指定年份和紀元的閏月。</summary>
+      <returns>傳回值永遠都會是 0，因為 <see cref="T:System.Globalization.ThaiBuddhistCalendar" /> 類別不支援閏月的概念。</returns>
+      <param name="year">一年。</param>
+      <param name="era">一紀元。</param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetMonth(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的月份。</summary>
+      <returns>從 1 到 12 的整數，表示指定 <see cref="T:System.DateTime" /> 中的月份。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>傳回在指定紀元的指定年份中的月數。</summary>
+      <returns>在指定紀元的指定年份中的月數。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetWeekOfYear(System.DateTime,System.Globalization.CalendarWeekRule,System.DayOfWeek)">
+      <summary>傳回年份中的週，包含指定 <see cref="T:System.DateTime" /> 中的日期。</summary>
+      <returns>從 1 起始的正整數，表示 <paramref name="time" /> 參數中日期所屬年份中的某週。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+      <param name="rule">其中一個 <see cref="T:System.Globalization.CalendarWeekRule" /> 值，可定義行事曆週。</param>
+      <param name="firstDayOfWeek">其中一個 <see cref="T:System.DayOfWeek" /> 值，表示一週的第一天。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 或 <paramref name="firstDayOfWeek" /> 在日曆支援的範圍之外。-或-<paramref name="rule" /> 不是有效的 <see cref="T:System.Globalization.CalendarWeekRule" /> 值。</exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetYear(System.DateTime)">
+      <summary>傳回指定 <see cref="T:System.DateTime" /> 中的年份。</summary>
+      <returns>整數，表示指定 <see cref="T:System.DateTime" /> 中的年份。</returns>
+      <param name="time">要讀取的 <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>判斷指定紀元中指定的日期是否為閏日。</summary>
+      <returns>如果指定的日期為閏日，則為 true，否則為 false。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="day">從 1 到 31 的整數，表示日期。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="month" /> 不在曆法支援的範圍內。-或-<paramref name="day" /> 不在曆法支援的範圍內。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>判斷指定紀元的指定年份中指定的月份是否為閏月。</summary>
+      <returns>這個方法永遠傳回 false，除非被衍生類別 (Derived Class) 所覆寫。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="month" /> 不在曆法支援的範圍內。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>判斷指定紀元中指定的年份是否為閏年。</summary>
+      <returns>如果指定的年份為閏年，則為 true，否則為 false。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="P:System.Globalization.ThaiBuddhistCalendar.MaxSupportedDateTime">
+      <summary>取得受 <see cref="T:System.Globalization.ThaiBuddhistCalendar" /> 類別所支援的最晚日期和時間。</summary>
+      <returns>
+        <see cref="T:System.Globalization.ThaiBuddhistCalendar" /> 類別支援的最新日期和時間，相當於西曆中的西元 9999 年 12 月 31 日的最後一刻。</returns>
+    </member>
+    <member name="P:System.Globalization.ThaiBuddhistCalendar.MinSupportedDateTime">
+      <summary>取得 <see cref="T:System.Globalization.ThaiBuddhistCalendar" /> 類別所支援的最早日期和時間。</summary>
+      <returns>
+        <see cref="T:System.Globalization.ThaiBuddhistCalendar" /> 類別支援的最早日期和時間，等於西曆中之西元 0001 年 1 月 1 日的第一時間。</returns>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>傳回在指定紀元中設定為指定日期和時間的 <see cref="T:System.DateTime" />。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，設定為目前紀元中指定的日期和時間。</returns>
+      <param name="year">表示年份的整數。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="day">從 1 到 31 的整數，表示日期。</param>
+      <param name="hour">從 0 到 23 的整數，表示小時。</param>
+      <param name="minute">從 0 到 59 的整數，表示分鐘。</param>
+      <param name="second">從 0 到 59 的整數，表示秒鐘。</param>
+      <param name="millisecond">從 0 到 999 的整數，表示毫秒。</param>
+      <param name="era">表示紀元的整數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。-或-<paramref name="month" /> 不在曆法支援的範圍內。-或-<paramref name="day" /> 不在曆法支援的範圍內。-或-<paramref name="hour" /> 小於零或大於 23。-或-<paramref name="minute" /> 小於零或大於 59。-或-<paramref name="second" /> 小於零或大於 59。-或-<paramref name="millisecond" /> 小於零或大於 999。-或-<paramref name="era" /> 不在曆法支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.ToFourDigitYear(System.Int32)">
+      <summary>將指定的年份轉換為 4 位數年份，方法是使用 <see cref="P:System.Globalization.ThaiBuddhistCalendar.TwoDigitYearMax" /> 屬性以判斷適當的世紀。</summary>
+      <returns>整數，包含 <paramref name="year" /> 的四位數表示。</returns>
+      <param name="year">兩位數或四位數整數，代表要轉換的年份。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 不在曆法支援的範圍內。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Globalization.ThaiBuddhistCalendar.TwoDigitYearMax">
+      <summary>取得或設定以二位數年份表示時，該 100 年範圍的最後一年。</summary>
+      <returns>以二位數年份表示時，該 100 年範圍的最後一年。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">在設定作業中指定的值小於 99。-或-在設定作業中指定的值大於 MaxSupportedDateTime.Year。</exception>
+      <exception cref="T:System.InvalidOperationException">在設定作業中，目前執行個體是唯讀的。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.UmAlQuraCalendar">
+      <summary>表示沙烏地阿拉伯回教 (Um Al Qura) 曆法。</summary>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.#ctor">
+      <summary>初始化 <see cref="T:System.Globalization.UmAlQuraCalendar" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>計算與指定初始日期相差指定月數的日期。</summary>
+      <returns>由 <paramref name="months" /> 參數指定的月數加入至由 <paramref name="time" /> 參數指定的日期所產生的日期。</returns>
+      <param name="time">要在其中加入月份的日期。<see cref="T:System.Globalization.UmAlQuraCalendar" /> 類別只支援從 04/30/1900 00.00.00 (西曆日期) 到 11/16/2077 23:59:59 (西曆日期) 之間的日期。</param>
+      <param name="months">要加入的正或負月數。</param>
+      <exception cref="T:System.ArgumentException">產生的日期不在 <see cref="T:System.Globalization.UmAlQuraCalendar" /> 類別支援的範圍內。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> 小於 -120,000 或大於 120,000。-或-<paramref name="time" /> 在這個日曆所支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>計算與指定初始日期相差指定年份的日期。</summary>
+      <returns>由 <paramref name="years" /> 參數指定的年數加入至由 <paramref name="time" /> 參數指定的日期所產生的日期。</returns>
+      <param name="time">要在其中加入年份的日期。<see cref="T:System.Globalization.UmAlQuraCalendar" /> 類別只支援從 04/30/1900 00.00.00 (西曆日期) 到 11/16/2077 23:59:59 (西曆日期) 之間的日期。</param>
+      <param name="years">要加入的正或負年份。</param>
+      <exception cref="T:System.ArgumentException">產生的日期不在 <see cref="T:System.Globalization.UmAlQuraCalendar" /> 類別支援的範圍內。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="years" /> 小於 -10,000 或大於 10,000。-或-<paramref name="time" /> 在這個日曆所支援的範圍之外。</exception>
+    </member>
+    <member name="P:System.Globalization.UmAlQuraCalendar.Eras">
+      <summary>取得目前 <see cref="T:System.Globalization.UmAlQuraCalendar" /> 支援的紀元清單。</summary>
+      <returns>陣列，由值為 <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" /> 的單一元素組成。</returns>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>計算指定的日期發生在月份中的哪一天。</summary>
+      <returns>1 到 30 的整數，表示 <paramref name="time" /> 參數所指定月份的日期。</returns>
+      <param name="time">要讀取的日期值。<see cref="T:System.Globalization.UmAlQuraCalendar" /> 類別只支援從 04/30/1900 00.00.00 (西曆日期) 到 11/16/2077 23:59:59 (西曆日期) 之間的日期。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 在這個日曆所支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>計算指定的日期發生在一週中的哪一天。</summary>
+      <returns>
+        <see cref="T:System.DayOfWeek" /> 值，表示 <paramref name="time" /> 參數所指定之一週的日期。</returns>
+      <param name="time">要讀取的日期值。<see cref="T:System.Globalization.UmAlQuraCalendar" /> 類別只支援從 04/30/1900 00.00.00 (西曆日期) 到 11/16/2077 23:59:59 (西曆日期) 之間的日期。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 在這個日曆所支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetDayOfYear(System.DateTime)">
+      <summary>計算指定的日期發生在一年中的哪一天。</summary>
+      <returns>1 到 355 的整數，表示 <paramref name="time" /> 參數所指定之年份的日期。</returns>
+      <param name="time">要讀取的日期值。<see cref="T:System.Globalization.UmAlQuraCalendar" /> 類別只支援從 04/30/1900 00.00.00 (西曆日期) 到 11/16/2077 23:59:59 (西曆日期) 之間的日期。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 在這個日曆所支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>計算指定年份和紀元的指定月份中的天數。</summary>
+      <returns>指定的年份與紀元中指定月份的天數。一般年份的傳回值為 29，閏年則為 30。</returns>
+      <param name="year">一年。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="era">一紀元。指定 UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] 或 <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" /> 或 <paramref name="era" /> 不在 <see cref="T:System.Globalization.UmAlQuraCalendar" /> 類別支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>計算指定紀元的指定年份中的天數。</summary>
+      <returns>指定年份和紀元中的天數。一般年份有 354 天，閏年有 355 天。</returns>
+      <param name="year">一年。</param>
+      <param name="era">一紀元。指定 UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] 或 <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 或 <paramref name="era" /> 不在 <see cref="T:System.Globalization.UmAlQuraCalendar" /> 類別支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetEra(System.DateTime)">
+      <summary>計算指定日期發生的年份。</summary>
+      <returns>永遠都傳回 <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" /> 值。</returns>
+      <param name="time">要讀取的日期值。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 在這個日曆所支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>計算指定年份和紀元的閏月。</summary>
+      <returns>一定是 0，因為 <see cref="T:System.Globalization.UmAlQuraCalendar" /> 類別不支援閏月。</returns>
+      <param name="year">一年。</param>
+      <param name="era">一紀元。指定 UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] 或 <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 小於 1318 或大於 1450。-或-<paramref name="era" /> 不是 UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] 或 <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetMonth(System.DateTime)">
+      <summary>計算指定日期發生的月份。</summary>
+      <returns>1 到 12 的整數，表示 <paramref name="time" /> 參數所指定日期的月份。</returns>
+      <param name="time">要讀取的日期值。<see cref="T:System.Globalization.UmAlQuraCalendar" /> 類別只支援從 04/30/1900 00.00.00 (西曆日期) 到 11/16/2077 23:59:59 (西曆日期) 之間的日期。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 在這個日曆所支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>計算指定紀元的指定年份中的月數。</summary>
+      <returns>永遠為 12。</returns>
+      <param name="year">一年。</param>
+      <param name="era">一紀元。指定 UmAlQuaraCalendar.Eras[UmAlQuraCalendar.CurrentEra] 或 <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 在這個日曆所支援的範圍之外。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="era" /> 在這個日曆所支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetYear(System.DateTime)">
+      <summary>計算由所指定 <see cref="T:System.DateTime" /> 表示的日期年份。</summary>
+      <returns>整數，表示 <paramref name="time" /> 參數所指定的年份。</returns>
+      <param name="time">要讀取的日期值。<see cref="T:System.Globalization.UmAlQuraCalendar" /> 類別只支援從 04/30/1900 00.00.00 (西曆日期) 到 11/16/2077 23:59:59 (西曆日期) 之間的日期。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> 在這個日曆所支援的範圍之外。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>判斷指定的日期是否為閏日。</summary>
+      <returns>如果指定的日期為閏日，則為 true，否則為 false。傳回值永遠都會是 false，因為 <see cref="T:System.Globalization.UmAlQuraCalendar" /> 類別不支援閏月。</returns>
+      <param name="year">一年。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="day">1 到 30 的整數，表示日期。</param>
+      <param name="era">一紀元。指定 UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] 或 <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" />、<paramref name="day" /> 或 <paramref name="era" /> 不在 <see cref="T:System.Globalization.UmAlQuraCalendar" /> 類別支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>判斷指定年份和紀元中的指定月份是否為閏月。</summary>
+      <returns>一定是 false，因為 <see cref="T:System.Globalization.UmAlQuraCalendar" /> 類別不支援閏月。</returns>
+      <param name="year">一年。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="era">一紀元。指定 UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] 或 <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" /> 或 <paramref name="era" /> 不在 <see cref="T:System.Globalization.UmAlQuraCalendar" /> 類別支援的範圍內。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>判斷指定紀元中指定的年份是否為閏年。</summary>
+      <returns>如果指定的年份為閏年，則為 true，否則為 false。</returns>
+      <param name="year">一年。</param>
+      <param name="era">一紀元。指定 UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] 或 <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 或 <paramref name="era" /> 不在 <see cref="T:System.Globalization.UmAlQuraCalendar" /> 類別支援的範圍內。</exception>
+    </member>
+    <member name="P:System.Globalization.UmAlQuraCalendar.MaxSupportedDateTime">
+      <summary>取得受此曆法所支援的最晚日期和時間。</summary>
+      <returns>
+        <see cref="T:System.Globalization.UmAlQuraCalendar" /> 類別支援的最晚日期和時間，相當於西曆中西元 2077 年 11 月 16 日的最後一刻。</returns>
+    </member>
+    <member name="P:System.Globalization.UmAlQuraCalendar.MinSupportedDateTime">
+      <summary>取得受此曆法所支援的最早日期和時間。</summary>
+      <returns>
+        <see cref="T:System.Globalization.UmAlQuraCalendar" /> 類別支援的最早日期和時間，相當於西曆中的西元 1900 年 4 月 30 日的第一時間。</returns>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>傳回 <see cref="T:System.DateTime" /> 物件，其設定為指定日期、時間和紀元。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，設定為目前紀元中指定的日期和時間。</returns>
+      <param name="year">一年。</param>
+      <param name="month">從 1 到 12 的整數，表示月份。</param>
+      <param name="day">1 到 29 的整數，表示日期。</param>
+      <param name="hour">0 到 23 的整數，表示小時。</param>
+      <param name="minute">0 到 59 的整數，表示分鐘。</param>
+      <param name="second">0 到 59 的整數，表示秒鐘。</param>
+      <param name="millisecond">0 到 999 的整數，表示毫秒。</param>
+      <param name="era">一紀元。指定 UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] 或 <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" />、<paramref name="day" /> 或 <paramref name="era" /> 不在 <see cref="T:System.Globalization.UmAlQuraCalendar" /> 類別支援的範圍內。-或-<paramref name="hour" /> 小於零或大於 23。-或-<paramref name="minute" /> 小於零或大於 59。-或-<paramref name="second" /> 小於零或大於 59。-或-<paramref name="millisecond" /> 小於零或大於 999。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.ToFourDigitYear(System.Int32)">
+      <summary>將指定的年份轉換為 4 位數年份，方法是使用 <see cref="P:System.Globalization.UmAlQuraCalendar.TwoDigitYearMax" /> 屬性以判斷適當的世紀。</summary>
+      <returns>如果 <paramref name="year" /> 參數是 2 位數年份，則傳回值為對應的 4 位數年份。如果 <paramref name="year" /> 參數是 4 位數年份，則傳回值會是未變更的 <paramref name="year" /> 參數。</returns>
+      <param name="year">從 0 到 99 的 2 位數年份，或是從 1318 到 1450 的 4 位數 Um Al Qura 曆法年份。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> 在這個日曆所支援的範圍之外。</exception>
+    </member>
+    <member name="P:System.Globalization.UmAlQuraCalendar.TwoDigitYearMax">
+      <summary>取得或設定以二位數年份表示時，該 100 年範圍的最後一年。</summary>
+      <returns>以二位數年份表示時，該 100 年範圍的最後一年。</returns>
+      <exception cref="T:System.InvalidOperationException">這個曆法是唯讀的。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">在設定作業中，Um Al Qura 曆法的年份值小於 1318 但不是 99，或大於 1450。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+  </members>
+</doc>

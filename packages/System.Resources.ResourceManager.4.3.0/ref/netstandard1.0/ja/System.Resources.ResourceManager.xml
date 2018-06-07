@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Resources.ResourceManager</name>
+  </assembly>
+  <members>
+    <member name="T:System.Resources.MissingManifestResourceException">
+      <summary>メイン アセンブリにニュートラル カルチャ リソースが含まれておらず、適切なサテライト アセンブリがない場合にスローされる例外。</summary>
+    </member>
+    <member name="M:System.Resources.MissingManifestResourceException.#ctor">
+      <summary>
+        <see cref="T:System.Resources.MissingManifestResourceException" /> クラスの新しいインスタンスを既定のプロパティを使用して初期化します。</summary>
+    </member>
+    <member name="M:System.Resources.MissingManifestResourceException.#ctor(System.String)">
+      <summary>
+        <see cref="T:System.Resources.MissingManifestResourceException" /> クラスの新しいインスタンスを、指定したエラー メッセージを使用して初期化します。</summary>
+      <param name="message">例外の原因を説明するエラー メッセージ。</param>
+    </member>
+    <member name="M:System.Resources.MissingManifestResourceException.#ctor(System.String,System.Exception)">
+      <summary>指定したエラー メッセージと、この例外の原因である内部例外への参照を使用して、<see cref="T:System.Resources.MissingManifestResourceException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">例外の原因を説明するエラー メッセージ。</param>
+      <param name="inner">現在の例外の原因である例外。<paramref name="inner" /> パラメーターが null ではない場合、現在の例外は内部例外を処理する catch ブロックで発生します。</param>
+    </member>
+    <member name="T:System.Resources.NeutralResourcesLanguageAttribute">
+      <summary>アプリケーションの既定のカルチャをリソース マネージャーに通知します。このクラスは継承できません。</summary>
+    </member>
+    <member name="M:System.Resources.NeutralResourcesLanguageAttribute.#ctor(System.String)">
+      <summary>
+        <see cref="T:System.Resources.NeutralResourcesLanguageAttribute" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="cultureName">現在のアセンブリのニュートラル リソースが書き込まれたカルチャの名前。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="cultureName" /> パラメーターが null です。</exception>
+    </member>
+    <member name="P:System.Resources.NeutralResourcesLanguageAttribute.CultureName">
+      <summary>カルチャ名を取得します。</summary>
+      <returns>メイン アセンブリの既定のカルチャの名前。</returns>
+    </member>
+    <member name="T:System.Resources.ResourceManager">
+      <summary>実行時にカルチャ固有のリソースにアクセスする便利な手段を提供するリソース マネージャーを表します。セキュリティに関するメモ: このクラスのメソッドを信頼できないデータを指定して呼び出すことには、セキュリティ上のリスクが伴います。このクラスのメソッドの呼び出しは、信頼されたデータだけを指定して行ってください。詳細については、次を参照してください。 Untrusted Data Security Risksです。</summary>
+    </member>
+    <member name="M:System.Resources.ResourceManager.#ctor(System.String,System.Reflection.Assembly)">
+      <summary>指定したアセンブリ内で指定したルート名を持つファイルに含まれているリソースを検索する <see cref="T:System.Resources.ResourceManager" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="baseName">拡張子はないが、完全修飾名前空間名を含んだ、リソース ファイルのルート名。たとえば、"MyApplication.MyResource.en-US.resources" というリソース ファイルのルート名は "MyApplication.MyResource" です。</param>
+      <param name="assembly">リソースのメイン アセンブリ。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="baseName" /> パラメーターまたは <paramref name="assembly" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.#ctor(System.Type)">
+      <summary>指定した型オブジェクトの情報に基づいて、サテライト アセンブリでリソースを検索する <see cref="T:System.Resources.ResourceManager" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="resourceSource">リソース マネージャーが .resources ファイルを検索するために必要なすべての情報を取得する元となる種類。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="resourceSource" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.GetString(System.String)">
+      <summary>指定されている文字列リソースの値を返します。</summary>
+      <returns>呼び出し元の現在の UI カルチャのためにローカライズされたリソースの値、または、リソース セットで <paramref name="name" /> が見つからない場合は null。</returns>
+      <param name="name">取得するリソースの名前。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> パラメーターが null です。</exception>
+      <exception cref="T:System.InvalidOperationException">指定されたリソースの値が文字列ではありません。</exception>
+      <exception cref="T:System.Resources.MissingManifestResourceException">使用できるリソースのセットが見つからず、既定のカルチャ用のリソースもありません。この例外の処理方法の詳細については、<see cref="T:System.Resources.ResourceManager" /> クラスのトピックの MissingManifestResourceException 例外と MissingSatelliteAssemblyException 例外の処理に関するセクションを参照してください。</exception>
+      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">既定のカルチャのリソースがサテライト アセンブリに存在し、そのサテライト アセンブリが見つかりませんでした。この例外の処理方法の詳細については、<see cref="T:System.Resources.ResourceManager" /> クラスのトピックの MissingManifestResourceException 例外と MissingSatelliteAssemblyException 例外の処理に関するセクションを参照してください。</exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.GetString(System.String,System.Globalization.CultureInfo)">
+      <summary>指定したカルチャにローカライズされている文字列リソースの値を返します。</summary>
+      <returns>指定されたカルチャのためにローカライズされたリソースの値、または、リソース セットで <paramref name="name" /> が見つからない場合は null。</returns>
+      <param name="name">取得するリソースの名前。</param>
+      <param name="culture">リソースのローカライズ先のカルチャを表すオブジェクト。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> パラメーターが null です。</exception>
+      <exception cref="T:System.InvalidOperationException">指定されたリソースの値が文字列ではありません。</exception>
+      <exception cref="T:System.Resources.MissingManifestResourceException">使用できるリソースのセットが見つからず、既定のカルチャ用のリソースもありません。この例外の処理方法の詳細については、<see cref="T:System.Resources.ResourceManager" /> クラスのトピックの MissingManifestResourceException 例外と MissingSatelliteAssemblyException 例外の処理に関するセクションを参照してください。</exception>
+      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">既定のカルチャのリソースがサテライト アセンブリに存在し、そのサテライト アセンブリが見つかりませんでした。この例外の処理方法の詳細については、<see cref="T:System.Resources.ResourceManager" /> クラスのトピックの MissingManifestResourceException 例外と MissingSatelliteAssemblyException 例外の処理に関するセクションを参照してください。</exception>
+    </member>
+    <member name="T:System.Resources.SatelliteContractVersionAttribute">
+      <summary>
+        <see cref="T:System.Resources.ResourceManager" /> オブジェクトに対し、サテライト アセンブリの特定のバージョンを要求するように指示します。</summary>
+    </member>
+    <member name="M:System.Resources.SatelliteContractVersionAttribute.#ctor(System.String)">
+      <summary>
+        <see cref="T:System.Resources.SatelliteContractVersionAttribute" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="version">読み込むサテライト アセンブリのバージョンを指定する文字列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="version" /> パラメーターが null です。</exception>
+    </member>
+    <member name="P:System.Resources.SatelliteContractVersionAttribute.Version">
+      <summary>必要なリソースを保持するサテライト アセンブリのバージョンを取得します。</summary>
+      <returns>必要なリソースを保持するサテライト アセンブリのバージョンを含む文字列。</returns>
+    </member>
+  </members>
+</doc>

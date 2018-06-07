@@ -1,0 +1,1227 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Runtime.Numerics</name>
+  </assembly>
+  <members>
+    <member name="T:System.Numerics.BigInteger">
+      <summary>任意の大きさを持つ符号付き整数を表します。</summary>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.Byte[])">
+      <summary>バイト配列の値を使用して、<see cref="T:System.Numerics.BigInteger" /> 構造体の新しいインスタンスを初期化します。</summary>
+      <param name="value">リトル エンディアン順に格納されたバイト値の配列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is null.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.Decimal)">
+      <summary>
+        <see cref="T:System.Decimal" /> 値を使用して、<see cref="T:System.Numerics.BigInteger" /> 構造体の新しいインスタンスを初期化します。</summary>
+      <param name="value">10 進数。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.Double)">
+      <summary>倍精度浮動小数点値を使用して、<see cref="T:System.Numerics.BigInteger" /> 構造体の新しいインスタンスを初期化します。</summary>
+      <param name="value">倍精度浮動小数点数値。</param>
+      <exception cref="T:System.OverflowException">The value of <paramref name="value" /> is <see cref="F:System.Double.NaN" />.-or-The value of <paramref name="value" /> is <see cref="F:System.Double.NegativeInfinity" />.-or-The value of <paramref name="value" /> is <see cref="F:System.Double.PositiveInfinity" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.Int32)">
+      <summary>32 ビット符号付き整数値を使用して、<see cref="T:System.Numerics.BigInteger" /> 構造体の新しいインスタンスを初期化します。</summary>
+      <param name="value">32 ビット符号付き整数。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.Int64)">
+      <summary>64 ビット符号付き整数値を使用して、<see cref="T:System.Numerics.BigInteger" /> 構造体の新しいインスタンスを初期化します。</summary>
+      <param name="value">64 ビット符号付き整数。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.Single)">
+      <summary>単精度浮動小数点値を使用して、<see cref="T:System.Numerics.BigInteger" /> 構造体の新しいインスタンスを初期化します。</summary>
+      <param name="value">単精度浮動小数点数値。</param>
+      <exception cref="T:System.OverflowException">The value of <paramref name="value" /> is <see cref="F:System.Single.NaN" />.-or-The value of <paramref name="value" /> is <see cref="F:System.Single.NegativeInfinity" />.-or-The value of <paramref name="value" /> is <see cref="F:System.Single.PositiveInfinity" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.UInt32)">
+      <summary>32 ビット符号なし整数値を使用して、<see cref="T:System.Numerics.BigInteger" /> 構造体の新しいインスタンスを初期化します。</summary>
+      <param name="value">32 ビットの符号なし整数値。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.UInt64)">
+      <summary>64 ビット符号なし整数値を使用して、<see cref="T:System.Numerics.BigInteger" /> 構造体の新しいインスタンスを初期化します。</summary>
+      <param name="value">符号なし 64 ビット整数。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Abs(System.Numerics.BigInteger)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> オブジェクトの絶対値を取得します。</summary>
+      <returns>
+        <paramref name="value" /> の絶対値。</returns>
+      <param name="value">数値。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Add(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>2 つの <see cref="T:System.Numerics.BigInteger" /> 値を加算し、その結果を返します。</summary>
+      <returns>
+        <paramref name="left" /> と <paramref name="right" /> の合計。</returns>
+      <param name="left">加算する 1 番目の値。</param>
+      <param name="right">加算する 2 番目の値。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Compare(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>2 つの <see cref="T:System.Numerics.BigInteger" /> 値を比較し、1 番目の値が 2 番目の値よりも小さいか、同じか、または大きいかを示す整数を返します。</summary>
+      <returns>
+        <paramref name="left" /> と <paramref name="right" /> の相対値を示す符号付き整数。次の表を参照してください。値状態0 より小さい値<paramref name="left" /> が <paramref name="right" /> より小さい。0<paramref name="left" /> と <paramref name="right" /> が等しい。0 より大きい値<paramref name="left" /> が <paramref name="right" /> より大きくなっています。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.CompareTo(System.Int64)">
+      <summary>このインスタンスと符号付き 64 ビット整数を比較し、このインスタンスの値が符号付き 64 ビット整数の値よりも小さいか、同じか、または大きいかを示す整数を返します。</summary>
+      <returns>このインスタンスと <paramref name="other" /> の関係を示す符号付き整数値 (次の表を参照)。戻り値説明0 より小さい値現在のインスタンスは <paramref name="other" /> より小さい。0現在のインスタンスと <paramref name="other" /> は等しい。0 より大きい値現在のインスタンスは <paramref name="other" /> より大きい。</returns>
+      <param name="other">比較する符号付き 64 ビット整数。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.CompareTo(System.Numerics.BigInteger)">
+      <summary>このインスタンスともう 1 つの <see cref="T:System.Numerics.BigInteger" /> を比較し、このインスタンスの値が指定されたオブジェクトの値よりも小さいか、同じか、または大きいかを示す整数を返します。</summary>
+      <returns>このインスタンスと <paramref name="other" /> の関係を示す符号付き整数値 (次の表を参照)。戻り値説明0 より小さい値現在のインスタンスは <paramref name="other" /> より小さい。0現在のインスタンスと <paramref name="other" /> は等しい。0 より大きい値現在のインスタンスは <paramref name="other" /> より大きい。</returns>
+      <param name="other">比較対象のオブジェクト。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.CompareTo(System.UInt64)">
+      <summary>このインスタンスと符号なし 64 ビット整数を比較し、このインスタンスの値が符号なし 64 ビット整数の値よりも小さいか、同じか、または大きいかを示す整数を返します。</summary>
+      <returns>このインスタンスと <paramref name="other" /> の相対的な値を示す符号付き整数値 (次の表を参照)。戻り値説明0 より小さい値現在のインスタンスは <paramref name="other" /> より小さい。0現在のインスタンスと <paramref name="other" /> は等しい。0 より大きい値現在のインスタンスは <paramref name="other" /> より大きい。</returns>
+      <param name="other">比較する符号なし 64 ビット整数。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Divide(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>一方の <see cref="T:System.Numerics.BigInteger" /> 値をもう一方の値で除算し、その結果を返します。</summary>
+      <returns>除算の商。</returns>
+      <param name="dividend">被除数。</param>
+      <param name="divisor">除数。</param>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="divisor" /> is 0 (zero).</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.DivRem(System.Numerics.BigInteger,System.Numerics.BigInteger,System.Numerics.BigInteger@)">
+      <summary>ある <see cref="T:System.Numerics.BigInteger" /> 値を別の値で除算し、その結果を返します。剰余は出力パラメーターとして返されます。</summary>
+      <returns>除算の商。</returns>
+      <param name="dividend">被除数。</param>
+      <param name="divisor">除数。</param>
+      <param name="remainder">このメソッドから制御が戻るときに、除算の剰余を表す <see cref="T:System.Numerics.BigInteger" /> 値が格納されます。このパラメーターは初期化せずに渡されます。</param>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="divisor" /> is 0 (zero).</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Equals(System.Int64)">
+      <summary>現在のインスタンスの値と符号付き 64 ビット整数の値が等しいかどうかを示す値を返します。</summary>
+      <returns>符号付き 64 ビット整数の値と現在のインスタンスの値が等しい場合は true。それ以外の場合は false。</returns>
+      <param name="other">比較する符号付き 64 ビット整数値。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Equals(System.Numerics.BigInteger)">
+      <summary>現在のインスタンスの値と指定された <see cref="T:System.Numerics.BigInteger" /> オブジェクトの値が等しいかどうかを示す値を返します。</summary>
+      <returns>この <see cref="T:System.Numerics.BigInteger" /> オブジェクトの値と <paramref name="other" /> の値が等しい場合は true。それ以外の場合は false。</returns>
+      <param name="other">比較対象のオブジェクト。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Equals(System.Object)">
+      <summary>現在のインスタンスの値と指定されたオブジェクトの値が等しいかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="obj" /> パラメーターが <see cref="T:System.Numerics.BigInteger" /> オブジェクト (または <see cref="T:System.Numerics.BigInteger" /> 値へと暗黙的に変換できる型) であり、その値が現在の <see cref="T:System.Numerics.BigInteger" /> オブジェクトの値と等しい場合は true。それ以外の場合は false。</returns>
+      <param name="obj">比較対象のオブジェクト。 </param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Equals(System.UInt64)">
+      <summary>現在のインスタンスの値と符号なし 64 ビット整数の値が等しいかどうかを示す値を返します。</summary>
+      <returns>現在のインスタンスの値と符号なし 64 ビット整数の値が等しい場合は true。それ以外の場合は false。</returns>
+      <param name="other">比較する符号なし 64 ビット整数。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.GetHashCode">
+      <summary>現在の <see cref="T:System.Numerics.BigInteger" /> オブジェクトのハッシュ コードを返します。</summary>
+      <returns>32 ビット符号付き整数ハッシュ コード。</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.GreatestCommonDivisor(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>2 つの <see cref="T:System.Numerics.BigInteger" /> 値の最大公約数を求めます。</summary>
+      <returns>
+        <paramref name="left" /> と <paramref name="right" /> の最大公約数。</returns>
+      <param name="left">最初の値。</param>
+      <param name="right">2 番目の値。</param>
+    </member>
+    <member name="P:System.Numerics.BigInteger.IsEven">
+      <summary>現在の <see cref="T:System.Numerics.BigInteger" /> オブジェクトの値が偶数かどうかを示します。</summary>
+      <returns>
+        <see cref="T:System.Numerics.BigInteger" /> オブジェクトの値が偶数の場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Numerics.BigInteger.IsOne">
+      <summary>現在の <see cref="T:System.Numerics.BigInteger" /> オブジェクトの値が <see cref="P:System.Numerics.BigInteger.One" /> かどうかを示します。</summary>
+      <returns>
+        <see cref="T:System.Numerics.BigInteger" /> オブジェクトの値が <see cref="P:System.Numerics.BigInteger.One" /> の場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Numerics.BigInteger.IsPowerOfTwo">
+      <summary>現在の <see cref="T:System.Numerics.BigInteger" /> オブジェクトの値が 2 の累乗かどうかを示します。</summary>
+      <returns>
+        <see cref="T:System.Numerics.BigInteger" /> オブジェクトの値が 2 の累乗の場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Numerics.BigInteger.IsZero">
+      <summary>現在の <see cref="T:System.Numerics.BigInteger" /> オブジェクトの値が <see cref="P:System.Numerics.BigInteger.Zero" /> かどうかを示します。</summary>
+      <returns>
+        <see cref="T:System.Numerics.BigInteger" /> オブジェクトの値が <see cref="P:System.Numerics.BigInteger.Zero" /> の場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Log(System.Numerics.BigInteger)">
+      <summary>指定した数の自然 (底 e) 対数を返します。</summary>
+      <returns>
+        <paramref name="value" /> の自然対数 (e を底とする対数)。「解説」の表を参照してください。</returns>
+      <param name="value">対数を求める対象の数値。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The natural log of <paramref name="value" /> is out of range of the <see cref="T:System.Double" /> data type.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Log(System.Numerics.BigInteger,System.Double)">
+      <summary>指定した数値の指定した底での対数を返します。</summary>
+      <returns>
+        <paramref name="baseValue" /> を底とする <paramref name="value" /> の対数。「解説」の表を参照してください。</returns>
+      <param name="value">対数を検索する対象の数値。</param>
+      <param name="baseValue">対数の底。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The log of <paramref name="value" /> is out of range of the <see cref="T:System.Double" /> data type.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Log10(System.Numerics.BigInteger)">
+      <summary>指定した数の底 10 の対数を返します。</summary>
+      <returns>10 を底とする <paramref name="value" /> の対数。「解説」の表を参照してください。</returns>
+      <param name="value">対数を検索する対象の数値。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The base 10 log of <paramref name="value" /> is out of range of the <see cref="T:System.Double" /> data type.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Max(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>2 つの <see cref="T:System.Numerics.BigInteger" /> 値のうち、大きい方の値を返します。</summary>
+      <returns>
+        <paramref name="left" /> パラメーターと <paramref name="right" /> パラメーターのいずれか大きい方。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Min(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>2 つの <see cref="T:System.Numerics.BigInteger" /> 値のうち、小さい方の値を返します。</summary>
+      <returns>
+        <paramref name="left" /> パラメーターと <paramref name="right" /> パラメーターのいずれか小さい方。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="P:System.Numerics.BigInteger.MinusOne">
+      <summary>負の 1 (-1) を表す値を取得します。</summary>
+      <returns>値が負の 1 (-1) である整数。</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.ModPow(System.Numerics.BigInteger,System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>ある数値を別の数値で累乗し、それをさらに別の数値で割った結果生じた剰余を求めます。</summary>
+      <returns>
+        <paramref name="value" />exponentを <paramref name="modulus" /> で割った結果生じた剰余。</returns>
+      <param name="value">指数 <paramref name="exponent" /> で累乗する数値。</param>
+      <param name="exponent">
+        <paramref name="value" /> の指数。</param>
+      <param name="modulus">
+        <paramref name="exponent" /> で累乗した <paramref name="value" /> の除算に使用する除数。</param>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="modulus" /> is zero.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="exponent" /> is negative.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Multiply(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>2 つの <see cref="T:System.Numerics.BigInteger" /> 値の積を返します。</summary>
+      <returns>
+        <paramref name="left" /> パラメーターと <paramref name="right" /> パラメーターの積。</returns>
+      <param name="left">乗算対象の最初の数。</param>
+      <param name="right">乗算対象の 2 番目の数。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Negate(System.Numerics.BigInteger)">
+      <summary>指定された <see cref="T:System.Numerics.BigInteger" /> 値を否定 (負数化) します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターに -1 を乗算した結果。</returns>
+      <param name="value">否定する値。</param>
+    </member>
+    <member name="P:System.Numerics.BigInteger.One">
+      <summary>正の 1 (1) を表す値を取得します。</summary>
+      <returns>値が正の 1 (1) であるオブジェクト。</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Addition(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>指定された 2 つの <see cref="T:System.Numerics.BigInteger" /> オブジェクトの値を加算します。</summary>
+      <returns>
+        <paramref name="left" /> と <paramref name="right" /> の合計。</returns>
+      <param name="left">加算する 1 番目の値。</param>
+      <param name="right">加算する 2 番目の値。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_BitwiseAnd(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>2 つの <see cref="T:System.Numerics.BigInteger" /> 値に対し、ビットごとの And 演算を実行します。</summary>
+      <returns>ビットごとの And 演算の結果。</returns>
+      <param name="left">最初の値。</param>
+      <param name="right">2 番目の値。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_BitwiseOr(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>2 つの <see cref="T:System.Numerics.BigInteger" /> 値に対し、ビットごとの Or 演算を実行します。</summary>
+      <returns>ビットごとの Or 演算の結果。</returns>
+      <param name="left">最初の値。</param>
+      <param name="right">2 番目の値。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Decrement(System.Numerics.BigInteger)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 値を 1 だけデクリメントします。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を 1 だけデクリメントした値。</returns>
+      <param name="value">デクリメントする値。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Division(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>整数除算を使用して、指定された <see cref="T:System.Numerics.BigInteger" /> 値をもう 1 つの指定された <see cref="T:System.Numerics.BigInteger" /> 値で除算します。</summary>
+      <returns>除算の結果 (整数)。</returns>
+      <param name="dividend">被除数。</param>
+      <param name="divisor">除数。</param>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="divisor" /> is 0 (zero).</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Equality(System.Int64,System.Numerics.BigInteger)">
+      <summary>符号付き長整数値と <see cref="T:System.Numerics.BigInteger" /> 値が等しいかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> パラメーターと <paramref name="right" /> パラメーターが同じ値の場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Equality(System.Numerics.BigInteger,System.Int64)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 値と符号付き長整数値が等しいかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> パラメーターと <paramref name="right" /> パラメーターが同じ値の場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Equality(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>2 つの <see cref="T:System.Numerics.BigInteger" /> オブジェクトの値が等しいかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> パラメーターと <paramref name="right" /> パラメーターが同じ値の場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Equality(System.Numerics.BigInteger,System.UInt64)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 値と符号なし長整数値が等しいかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> パラメーターと <paramref name="right" /> パラメーターが同じ値の場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Equality(System.UInt64,System.Numerics.BigInteger)">
+      <summary>符号なし長整数値と <see cref="T:System.Numerics.BigInteger" /> 値が等しいかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> パラメーターと <paramref name="right" /> パラメーターが同じ値の場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_ExclusiveOr(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>2 つの <see cref="T:System.Numerics.BigInteger" /> 値に対し、ビットごとの排他的 Or (XOr) 演算を実行します。</summary>
+      <returns>ビットごとの Or 演算の結果。</returns>
+      <param name="left">最初の値。</param>
+      <param name="right">2 番目の値。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Decimal)~System.Numerics.BigInteger">
+      <summary>
+        <see cref="T:System.Decimal" /> オブジェクトから <see cref="T:System.Numerics.BigInteger" /> 値への明示的な変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を格納しているオブジェクト。</returns>
+      <param name="value">
+        <see cref="T:System.Numerics.BigInteger" /> へと変換する値。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Double)~System.Numerics.BigInteger">
+      <summary>
+        <see cref="T:System.Double" /> 値から <see cref="T:System.Numerics.BigInteger" /> 値への明示的な変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を格納しているオブジェクト。</returns>
+      <param name="value">
+        <see cref="T:System.Numerics.BigInteger" /> へと変換する値。</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is <see cref="F:System.Double.NaN" />.-or-<paramref name="value" /> is <see cref="F:System.Double.PositiveInfinity" />.-or-<paramref name="value" /> is <see cref="F:System.Double.NegativeInfinity" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Int16">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> オブジェクトから 16 ビット符号付き整数値への明示的な変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を格納しているオブジェクト。</returns>
+      <param name="value">16 ビット符号付き整数へと変換する値。</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.Int16.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.Int16.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Decimal">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> オブジェクトから <see cref="T:System.Decimal" /> 値への明示的な変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を格納しているオブジェクト。</returns>
+      <param name="value">
+        <see cref="T:System.Decimal" /> へと変換する値。</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.Decimal.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.Decimal.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Double">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> オブジェクトから <see cref="T:System.Double" /> 値への明示的な変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を格納しているオブジェクト。</returns>
+      <param name="value">
+        <see cref="T:System.Double" /> へと変換する値。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Byte">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> オブジェクトから符号なしバイト値への明示的な変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を格納しているオブジェクト。</returns>
+      <param name="value">
+        <see cref="T:System.Byte" /> へと変換する値。</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.Byte.MinValue" />. -or-<paramref name="value" /> is greater than <see cref="F:System.Byte.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.UInt64">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> オブジェクトから符号なし 64 ビット整数値への明示的な変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を格納しているオブジェクト。</returns>
+      <param name="value">符号なし 64 ビット整数へと変換する値。</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.UInt64.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.UInt64.MaxValue" />. </exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Int32">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> オブジェクトから 32 ビット符号付き整数値への明示的な変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を格納しているオブジェクト。</returns>
+      <param name="value">32 ビット符号付き整数へと変換する値。</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.Int32.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.Int32.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.SByte">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> オブジェクトから符号付き 8 ビット値への明示的な変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を格納しているオブジェクト。</returns>
+      <param name="value">符号付き 8 ビット値へと変換する値。</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.SByte.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.SByte.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Int64">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> オブジェクトから 64 ビット符号付き整数値への明示的な変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を格納しているオブジェクト。</returns>
+      <param name="value">64 ビット符号付き整数へと変換する値。</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.Int64.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.Int64.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Single">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> オブジェクトから単精度浮動小数点値への明示的な変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値にできるだけ近い値となるように変換したオブジェクト。</returns>
+      <param name="value">単精度浮動小数点値へと変換する値。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.UInt32">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> オブジェクトから符号なし 32 ビット整数値への明示的な変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を格納しているオブジェクト。</returns>
+      <param name="value">符号なし 32 ビット整数へと変換する値。</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.UInt32.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.UInt32.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.UInt16">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> オブジェクトから符号なし 16 ビット整数値への明示的な変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を格納しているオブジェクト</returns>
+      <param name="value">符号なし 16 ビット整数へと変換する値。</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.UInt16.MinValue" />.-or-<paramref name="value" /> is greater than <see cref="F:System.UInt16.MaxValue" />. </exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Explicit(System.Single)~System.Numerics.BigInteger">
+      <summary>
+        <see cref="T:System.Single" /> オブジェクトから <see cref="T:System.Numerics.BigInteger" /> 値への明示的な変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を格納しているオブジェクト。</returns>
+      <param name="value">
+        <see cref="T:System.Numerics.BigInteger" /> へと変換する値。</param>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is <see cref="F:System.Single.NaN" />.-or-<paramref name="value" /> is <see cref="F:System.Single.PositiveInfinity" />.-or-<paramref name="value" /> is <see cref="F:System.Single.NegativeInfinity" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThan(System.Int64,System.Numerics.BigInteger)">
+      <summary>64 ビット符号付き整数が <see cref="T:System.Numerics.BigInteger" /> 値より大きいかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> が <paramref name="right" /> より大きい場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThan(System.Numerics.BigInteger,System.Int64)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> が 64 ビット符号付き整数値より大きいかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> が <paramref name="right" /> より大きい場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThan(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 値がもう 1 つの <see cref="T:System.Numerics.BigInteger" /> 値より大きいかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> が <paramref name="right" /> より大きい場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThan(System.Numerics.BigInteger,System.UInt64)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 値が 64 ビット符号なし整数より大きいかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> が <paramref name="right" /> より大きい場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThan(System.UInt64,System.Numerics.BigInteger)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 値が 64 ビット符号なし整数より大きいかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> が <paramref name="right" /> より大きい場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThanOrEqual(System.Int64,System.Numerics.BigInteger)">
+      <summary>64 ビット符号付き整数が <see cref="T:System.Numerics.BigInteger" /> 値以上かどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> が <paramref name="right" /> より大きい場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThanOrEqual(System.Numerics.BigInteger,System.Int64)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 値が 64 ビット符号付き整数値以上かどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> が <paramref name="right" /> より大きい場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThanOrEqual(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 値がもう 1 つの<see cref="T:System.Numerics.BigInteger" /> 値以上かどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> が <paramref name="right" /> より大きい場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThanOrEqual(System.Numerics.BigInteger,System.UInt64)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 値が 64 ビット符号なし整数値以上かどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> が <paramref name="right" /> より大きい場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThanOrEqual(System.UInt64,System.Numerics.BigInteger)">
+      <summary>64 ビット符号なし整数が <see cref="T:System.Numerics.BigInteger" /> 値以上かどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> が <paramref name="right" /> より大きい場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.Byte)~System.Numerics.BigInteger">
+      <summary>符号なしバイト値から <see cref="T:System.Numerics.BigInteger" /> 値への暗黙の型変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を格納しているオブジェクト。</returns>
+      <param name="value">
+        <see cref="T:System.Numerics.BigInteger" /> へと変換する値。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.Int16)~System.Numerics.BigInteger">
+      <summary>符号付き 16 ビット整数値から <see cref="T:System.Numerics.BigInteger" /> 値への暗黙の型変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を格納しているオブジェクト。</returns>
+      <param name="value">
+        <see cref="T:System.Numerics.BigInteger" /> へと変換する値。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.Int32)~System.Numerics.BigInteger">
+      <summary>符号付き 32 ビット整数値から <see cref="T:System.Numerics.BigInteger" /> 値への暗黙の型変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を格納しているオブジェクト。</returns>
+      <param name="value">
+        <see cref="T:System.Numerics.BigInteger" /> へと変換する値。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.Int64)~System.Numerics.BigInteger">
+      <summary>符号付き 64 ビット整数値から <see cref="T:System.Numerics.BigInteger" /> 値への暗黙の型変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を格納しているオブジェクト。</returns>
+      <param name="value">
+        <see cref="T:System.Numerics.BigInteger" /> へと変換する値。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.SByte)~System.Numerics.BigInteger">
+      <summary>8 ビット符号付き整数値から <see cref="T:System.Numerics.BigInteger" /> 値への暗黙の型変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を格納しているオブジェクト。</returns>
+      <param name="value">
+        <see cref="T:System.Numerics.BigInteger" /> へと変換する値。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.UInt16)~System.Numerics.BigInteger">
+      <summary>16 ビット符号なし整数値から <see cref="T:System.Numerics.BigInteger" /> 値への暗黙の型変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を格納しているオブジェクト。</returns>
+      <param name="value">
+        <see cref="T:System.Numerics.BigInteger" /> へと変換する値。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.UInt32)~System.Numerics.BigInteger">
+      <summary>32 ビット符号なし整数値から <see cref="T:System.Numerics.BigInteger" /> 値への暗黙の型変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を格納しているオブジェクト。</returns>
+      <param name="value">
+        <see cref="T:System.Numerics.BigInteger" /> へと変換する値。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.UInt64)~System.Numerics.BigInteger">
+      <summary>64 ビット符号なし整数値から <see cref="T:System.Numerics.BigInteger" /> 値への暗黙の型変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を格納しているオブジェクト。</returns>
+      <param name="value">
+        <see cref="T:System.Numerics.BigInteger" /> へと変換する値。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Increment(System.Numerics.BigInteger)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 値を 1 だけインクリメントします。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を 1 だけインクリメントした値。</returns>
+      <param name="value">インクリメントする値。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Inequality(System.Int64,System.Numerics.BigInteger)">
+      <summary>64 ビット符号付き整数値と <see cref="T:System.Numerics.BigInteger" /> 値が等しくないかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> と <paramref name="right" /> が等しくない場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Inequality(System.Numerics.BigInteger,System.Int64)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 値と 64 ビット符号付き整数値が等しくないかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> と <paramref name="right" /> が等しくない場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Inequality(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>2 つの <see cref="T:System.Numerics.BigInteger" /> オブジェクトの値が異なるかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> と <paramref name="right" /> が等しくない場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Inequality(System.Numerics.BigInteger,System.UInt64)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 値と 64 ビット符号なし整数値が等しくないかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> と <paramref name="right" /> が等しくない場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Inequality(System.UInt64,System.Numerics.BigInteger)">
+      <summary>64 ビット符号なし整数値と <see cref="T:System.Numerics.BigInteger" /> 値が等しくないかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> と <paramref name="right" /> が等しくない場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LeftShift(System.Numerics.BigInteger,System.Int32)">
+      <summary>指定されたビット数だけ <see cref="T:System.Numerics.BigInteger" /> 値を左にシフトします。</summary>
+      <returns>指定されたビット数だけ左にシフトされた値。</returns>
+      <param name="value">ビットをシフトする対象の値。</param>
+      <param name="shift">
+        <paramref name="value" /> を左にシフトするビット数です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThan(System.Int64,System.Numerics.BigInteger)">
+      <summary>64 ビット符号付き整数が <see cref="T:System.Numerics.BigInteger" /> 値より小さいかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> が <paramref name="right" /> より小さい場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThan(System.Numerics.BigInteger,System.Int64)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 値が 64 ビット符号付き整数より小さいかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> が <paramref name="right" /> より小さい場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThan(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 値がもう 1 つの <see cref="T:System.Numerics.BigInteger" /> 値より小さいかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> が <paramref name="right" /> より小さい場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThan(System.Numerics.BigInteger,System.UInt64)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 値が 64 ビット符号なし整数より小さいかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> が <paramref name="right" /> より小さい場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThan(System.UInt64,System.Numerics.BigInteger)">
+      <summary>64 ビット符号なし整数が <see cref="T:System.Numerics.BigInteger" /> 値より小さいかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> が <paramref name="right" /> より小さい場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.Int64,System.Numerics.BigInteger)">
+      <summary>64 ビット符号付き整数が <see cref="T:System.Numerics.BigInteger" /> 値以下かどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> が <paramref name="right" /> 以下の場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.Numerics.BigInteger,System.Int64)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 値が 64 ビット符号付き整数以下かどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> が <paramref name="right" /> 以下の場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 値がもう 1 つの <see cref="T:System.Numerics.BigInteger" /> 値以下かどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> が <paramref name="right" /> 以下の場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.Numerics.BigInteger,System.UInt64)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 値が 64 ビット符号なし整数以下かどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> が <paramref name="right" /> 以下の場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.UInt64,System.Numerics.BigInteger)">
+      <summary>64 ビット符号なし整数が <see cref="T:System.Numerics.BigInteger" /> 値以下かどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> が <paramref name="right" /> 以下の場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Modulus(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>指定された 2 つの <see cref="T:System.Numerics.BigInteger" /> 値の除算の結果生じた剰余を返します。</summary>
+      <returns>除算の結果生じた剰余。</returns>
+      <param name="dividend">被除数。</param>
+      <param name="divisor">除数。</param>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="divisor" /> is 0 (zero).</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Multiply(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>指定された 2 つの <see cref="T:System.Numerics.BigInteger" /> 値を乗算します。</summary>
+      <returns>
+        <paramref name="left" /> と <paramref name="right" /> の積。</returns>
+      <param name="left">乗算する 1 番目の値。</param>
+      <param name="right">乗算する 2 番目の値。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_OnesComplement(System.Numerics.BigInteger)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 値のビットごとの 1 の補数を返します。</summary>
+      <returns>
+        <paramref name="value" /> のビットごとの 1 の補数。</returns>
+      <param name="value">整数値。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_RightShift(System.Numerics.BigInteger,System.Int32)">
+      <summary>指定されたビット数だけ <see cref="T:System.Numerics.BigInteger" /> 値を右にシフトします。</summary>
+      <returns>指定されたビット数だけ右にシフトされた値。</returns>
+      <param name="value">ビットをシフトする対象の値。</param>
+      <param name="shift">
+        <paramref name="value" /> を右にシフトするビット数です。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Subtraction(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 値をもう 1 つの <see cref="T:System.Numerics.BigInteger" /> 値から減算します。</summary>
+      <returns>
+        <paramref name="left" /> から <paramref name="right" /> を減算した結果。</returns>
+      <param name="left">減算される値 (被減数)。</param>
+      <param name="right">減算する値 (減数)。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_UnaryNegation(System.Numerics.BigInteger)">
+      <summary>指定された BigInteger 値を否定 (負数化) します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターに -1 を乗算した結果。</returns>
+      <param name="value">否定する値。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_UnaryPlus(System.Numerics.BigInteger)">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> オペランドの値を返します。オペランドの符号は変更されません。</summary>
+      <returns>
+        <paramref name="value" /> オペランドの値。</returns>
+      <param name="value">整数値。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Parse(System.String)">
+      <summary>数値の文字列形式を、それと等価の <see cref="T:System.Numerics.BigInteger" /> に変換します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターで指定されている数値と等価の値。</returns>
+      <param name="value">変換する数値を含んだ文字列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is null.</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="value" /> is not in the correct format.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Parse(System.String,System.Globalization.NumberStyles)">
+      <summary>指定のスタイルで表現された数値の文字列形式を、それと等価な <see cref="T:System.Numerics.BigInteger" /> に変換します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターで指定されている数値と等価の値。</returns>
+      <param name="value">変換する数値を含んだ文字列。</param>
+      <param name="style">
+        <paramref name="value" /> に許可されている書式を指定する列挙値のビットごとの組み合わせ。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="style" /> is not a <see cref="T:System.Globalization.NumberStyles" /> value.-or-<paramref name="style" /> includes the <see cref="F:System.Globalization.NumberStyles.AllowHexSpecifier" /> or <see cref="F:System.Globalization.NumberStyles.HexNumber" /> flag along with another value.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is null.</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="value" /> does not comply with the input pattern specified by <see cref="T:System.Globalization.NumberStyles" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Parse(System.String,System.Globalization.NumberStyles,System.IFormatProvider)">
+      <summary>指定したスタイルおよびカルチャ固有の書式の数値の文字列形式を、それと等価の <see cref="T:System.Numerics.BigInteger" /> に変換します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターで指定されている数値と等価の値。</returns>
+      <param name="value">変換する数値を含んだ文字列。</param>
+      <param name="style">
+        <paramref name="value" /> に許可されている書式を指定する列挙値のビットごとの組み合わせ。</param>
+      <param name="provider">
+        <paramref name="value" /> に関するカルチャ固有の書式情報を提供するオブジェクト。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="style" /> is not a <see cref="T:System.Globalization.NumberStyles" /> value.-or-<paramref name="style" /> includes the <see cref="F:System.Globalization.NumberStyles.AllowHexSpecifier" /> or <see cref="F:System.Globalization.NumberStyles.HexNumber" /> flag along with another value.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is null.</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="value" /> does not comply with the input pattern specified by <paramref name="style" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Parse(System.String,System.IFormatProvider)">
+      <summary>指定されたカルチャ固有の書式で表現された文字列形式の数値を、それと等価の <see cref="T:System.Numerics.BigInteger" /> に変換します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターで指定されている数値と等価の値。</returns>
+      <param name="value">変換する数値を含んだ文字列。</param>
+      <param name="provider">
+        <paramref name="value" /> に関するカルチャ固有の書式情報を提供するオブジェクト。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is null.</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="value" /> is not in the correct format.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Pow(System.Numerics.BigInteger,System.Int32)">
+      <summary>指定された値を指数として <see cref="T:System.Numerics.BigInteger" /> 値を累乗します。</summary>
+      <returns>
+        <paramref name="value" /> を <paramref name="exponent" /> で累乗した結果。</returns>
+      <param name="value">指数 <paramref name="exponent" /> で累乗する数値。</param>
+      <param name="exponent">
+        <paramref name="value" /> の指数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of the <paramref name="exponent" /> parameter is negative.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Remainder(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>2 つの <see cref="T:System.Numerics.BigInteger" /> 値に対する整数除算を実行し、その剰余を返します。</summary>
+      <returns>
+        <paramref name="dividend" /> を <paramref name="divisor" /> で割った結果生じた剰余。</returns>
+      <param name="dividend">被除数。</param>
+      <param name="divisor">除数。</param>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="divisor" /> is 0 (zero).</exception>
+    </member>
+    <member name="P:System.Numerics.BigInteger.Sign">
+      <summary>現在の <see cref="T:System.Numerics.BigInteger" /> オブジェクトの符号 (負、正、または 0) を示す数値を取得します。</summary>
+      <returns>
+        <see cref="T:System.Numerics.BigInteger" /> オブジェクトの符号を示す数値 (次の表を参照)。Number説明-1このオブジェクトの値は負です。0このオブジェクトの値は 0 (ゼロ) です。1このオブジェクトの値は正です。</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Subtract(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>ある <see cref="T:System.Numerics.BigInteger" /> 値を別の値から減算し、その結果を返します。</summary>
+      <returns>
+        <paramref name="left" /> から <paramref name="right" /> を減算した結果。</returns>
+      <param name="left">減算される値 (被減数)。</param>
+      <param name="right">減算する値 (減数)。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.System#IComparable#CompareTo(System.Object)">
+      <summary>現在のインスタンスを同じ型の別のオブジェクトと比較し、現在のインスタンスの並べ替え順序での位置が、比較対象のオブジェクトと比べて前か、後か、または同じかを示す整数を返します。</summary>
+      <returns>このインスタンスと <paramref name="obj" /> の相対順序を示す符号付き整数。戻り値説明0 より小さい値このインスタンスの位置が、並べ替え順序において <paramref name="obj" /> よりも前です。0このインスタンスは、並べ替え順序で、<paramref name="obj" /> と同じ位置に出現します。0 より大きい値このインスタンスの位置が、並べ替え順序において <paramref name="obj" /> よりも後ろです。または <paramref name="value" /> は null です。 </returns>
+      <param name="obj">対象のインスタンスと比較する対象のオブジェクト、または null。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="obj" /> is not a <see cref="T:System.Numerics.BigInteger" />. </exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.ToByteArray">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 値をバイト配列に変換します。</summary>
+      <returns>現在の<see cref="T:System.Numerics.BigInteger" /> オブジェクトをバイトの配列に変換した値。</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.ToString">
+      <summary>現在の <see cref="T:System.Numerics.BigInteger" /> オブジェクトの数値を等価の文字列形式に変換します。</summary>
+      <returns>現在の <see cref="T:System.Numerics.BigInteger" /> 値の文字列形式。</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.ToString(System.IFormatProvider)">
+      <summary>指定されたカルチャ固有の書式情報を使用して、現在の <see cref="T:System.Numerics.BigInteger" /> オブジェクトの数値をそれと等価の文字列形式に変換します。</summary>
+      <returns>現在の <see cref="T:System.Numerics.BigInteger" /> 値の文字列形式を、<paramref name="provider" /> パラメーターで指定されている形式で表現した値。</returns>
+      <param name="provider">カルチャ固有の書式情報を提供するオブジェクト。</param>
+    </member>
+    <member name="M:System.Numerics.BigInteger.ToString(System.String)">
+      <summary>指定された書式を使用して、現在の <see cref="T:System.Numerics.BigInteger" /> オブジェクトの数値をそれと等価な文字列形式に変換します。</summary>
+      <returns>現在の <see cref="T:System.Numerics.BigInteger" /> 値の文字列形式を、<paramref name="format" /> パラメーターで指定されている形式で表現した値。</returns>
+      <param name="format">標準またはカスタムの数値書式指定文字列。</param>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> is not a valid format string.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.ToString(System.String,System.IFormatProvider)">
+      <summary>指定された書式とカルチャ固有の書式情報を使用して、現在の <see cref="T:System.Numerics.BigInteger" /> オブジェクトの数値をそれと等価の文字列形式に変換します。</summary>
+      <returns>
+        <paramref name="format" /> パラメーターと <paramref name="provider" /> パラメーターで指定されている現在の <see cref="T:System.Numerics.BigInteger" /> 値の文字列表現。</returns>
+      <param name="format">標準またはカスタムの数値書式指定文字列。</param>
+      <param name="provider">カルチャ固有の書式情報を提供するオブジェクト。</param>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> is not a valid format string.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.TryParse(System.String,System.Globalization.NumberStyles,System.IFormatProvider,System.Numerics.BigInteger@)">
+      <summary>指定されたスタイルおよびカルチャ固有の書式の数値の文字列形式を等価の <see cref="T:System.Numerics.BigInteger" /> に変換できるかどうかを試行し、変換に成功したかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターが正常に変換された場合は true。それ以外の場合は false。</returns>
+      <param name="value">数値の文字列形式。文字列は、<paramref name="style" /> で指定されたスタイルを使用して解釈されます。</param>
+      <param name="style">
+        <paramref name="value" /> で使用可能なスタイル要素を示す、列挙値のビットごとの組み合わせ。通常指定する値は、<see cref="F:System.Globalization.NumberStyles.Integer" /> です。</param>
+      <param name="provider">
+        <paramref name="value" /> に関するカルチャ固有の書式情報を提供するオブジェクト。</param>
+      <param name="result">このメソッドから制御が戻るときに、<paramref name="value" /> に含まれる数値と等価の <see cref="T:System.Numerics.BigInteger" /> が格納されます。変換に失敗した場合は <see cref="P:System.Numerics.BigInteger.Zero" /> が格納されます。<paramref name="value" /> パラメーターが null の場合、または <paramref name="style" /> に従った形式ではない場合、変換は失敗します。このパラメーターは初期化せずに渡されます。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="style" /> is not a <see cref="T:System.Globalization.NumberStyles" /> value.-or-<paramref name="style" /> includes the <see cref="F:System.Globalization.NumberStyles.AllowHexSpecifier" /> or <see cref="F:System.Globalization.NumberStyles.HexNumber" /> flag along with another value. </exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.TryParse(System.String,System.Numerics.BigInteger@)">
+      <summary>数値の文字列形式を対応する <see cref="T:System.Numerics.BigInteger" /> 表現に変換できるかどうかを試行し、変換に成功したかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="value" /> が正常に変換された場合は true。それ以外の場合は false。</returns>
+      <param name="value">数値の文字列形式。</param>
+      <param name="result">このメソッドから制御が戻るときに、<paramref name="value" /> に含まれる数値と等価の <see cref="T:System.Numerics.BigInteger" /> が格納されます。変換に失敗した場合はゼロ (0) が格納されます。<paramref name="value" /> パラメーターが null の場合、または正しい形式ではない場合、変換は失敗します。このパラメーターは初期化せずに渡されます。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is null.</exception>
+    </member>
+    <member name="P:System.Numerics.BigInteger.Zero">
+      <summary>0 (ゼロ) を表す値を取得します。</summary>
+      <returns>値が 0 (ゼロ) である整数。</returns>
+    </member>
+    <member name="T:System.Numerics.Complex">
+      <summary>複素数を表します。</summary>
+    </member>
+    <member name="M:System.Numerics.Complex.#ctor(System.Double,System.Double)">
+      <summary>指定した実数値と虚数値を使用して <see cref="T:System.Numerics.Complex" /> 構造体の新しいインスタンスを初期化します。</summary>
+      <param name="real">複素数の実数部。</param>
+      <param name="imaginary">複素数の虚数部。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Abs(System.Numerics.Complex)">
+      <summary>複素数の絶対値 (または大きさ) を取得します。</summary>
+      <returns>
+        <paramref name="value" /> の絶対値。</returns>
+      <param name="value">複素数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Acos(System.Numerics.Complex)">
+      <summary>指定した複素数のアーク コサインである角度を返します。</summary>
+      <returns>
+        <paramref name="value" /> のアーク コサインであるラジアン単位の角度。</returns>
+      <param name="value">コサインを表す複素数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Add(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>2 つの複素数を加算し、その結果を返します。</summary>
+      <returns>
+        <paramref name="left" /> と <paramref name="right" /> の合計。</returns>
+      <param name="left">加算する 1 番目の複素数。</param>
+      <param name="right">加算する 2 番目の複素数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Asin(System.Numerics.Complex)">
+      <summary>指定した複素数のアーク サインである角度を返します。</summary>
+      <returns>
+        <paramref name="value" /> のアーク サインである角度。</returns>
+      <param name="value">複素数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Atan(System.Numerics.Complex)">
+      <summary>指定した複素数のアーク タンジェントである角度を返します。</summary>
+      <returns>
+        <paramref name="value" /> のアーク タンジェントである角度。</returns>
+      <param name="value">複素数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Conjugate(System.Numerics.Complex)">
+      <summary>複素数の共役を計算し、結果を返します。</summary>
+      <returns>
+        <paramref name="value" /> の共役。</returns>
+      <param name="value">複素数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Cos(System.Numerics.Complex)">
+      <summary>指定した複素数のコサインを返します。</summary>
+      <returns>
+        <paramref name="value" /> のコサイン。</returns>
+      <param name="value">複素数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Cosh(System.Numerics.Complex)">
+      <summary>指定した複素数のハイパーボリック コサインを返します。</summary>
+      <returns>
+        <paramref name="value" /> のハイパーボリック コサイン。</returns>
+      <param name="value">複素数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Divide(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>複素数を別の複素数で除算し、その結果を返します。</summary>
+      <returns>除算の商。</returns>
+      <param name="dividend">被除数の複素数。</param>
+      <param name="divisor">除数の複素数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Equals(System.Numerics.Complex)">
+      <summary>現在のインスタンスの値と指定した複素数の値が等しいかどうかを示す値を返します。</summary>
+      <returns>この複素数の値と <paramref name="value" /> の値が等しい場合は true。それ以外の場合は false。</returns>
+      <param name="value">比較対象の複素数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Equals(System.Object)">
+      <summary>現在のインスタンスの値と指定されたオブジェクトの値が等しいかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="obj" /> パラメーターが <see cref="T:System.Numerics.Complex" /> オブジェクトであるか <see cref="T:System.Numerics.Complex" /> オブジェクトに暗黙的に変換できる型であり、その値が現在の <see cref="T:System.Numerics.Complex" /> オブジェクトの値と等しい場合は true。それ以外の場合は false。</returns>
+      <param name="obj">比較対象のオブジェクト。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Exp(System.Numerics.Complex)">
+      <summary>e を指定した複素数で累乗した値を返します。</summary>
+      <returns>数値 e を <paramref name="value" /> で累乗した値。</returns>
+      <param name="value">累乗に使用する値を指定する複素数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.FromPolarCoordinates(System.Double,System.Double)">
+      <summary>ポイントの極座標から複素数を作成します。</summary>
+      <returns>複素数。</returns>
+      <param name="magnitude">原点 (X 軸と Y 軸の交点) から値までの距離である大きさ。</param>
+      <param name="phase">線から水平軸までの角度であるフェーズ (ラジアン単位)。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.GetHashCode">
+      <summary>現在の <see cref="T:System.Numerics.Complex" /> オブジェクトのハッシュ コードを返します。</summary>
+      <returns>32 ビット符号付き整数ハッシュ コード。</returns>
+    </member>
+    <member name="P:System.Numerics.Complex.Imaginary">
+      <summary>現在の <see cref="T:System.Numerics.Complex" /> オブジェクトの虚数部を取得します。</summary>
+      <returns>複素数の虚数部。</returns>
+    </member>
+    <member name="F:System.Numerics.Complex.ImaginaryOne">
+      <summary>実数が 0 で虚数が 1 の新しい <see cref="T:System.Numerics.Complex" /> インスタンスを返します。</summary>
+    </member>
+    <member name="M:System.Numerics.Complex.Log(System.Numerics.Complex)">
+      <summary>指定した複素数の自然 (底 e) 対数を返します。</summary>
+      <returns>
+        <paramref name="value" /> の自然 (底 e) 対数。</returns>
+      <param name="value">複素数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Log(System.Numerics.Complex,System.Double)">
+      <summary>指定した複素数の指定した底での対数を返します。</summary>
+      <returns>
+        <paramref name="value" /> の底 <paramref name="baseValue" /> での対数。</returns>
+      <param name="value">複素数。</param>
+      <param name="baseValue">対数の底。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Log10(System.Numerics.Complex)">
+      <summary>指定した複素数の底 10 の対数を返します。</summary>
+      <returns>
+        <paramref name="value" /> の底 10 の対数。</returns>
+      <param name="value">複素数。</param>
+    </member>
+    <member name="P:System.Numerics.Complex.Magnitude">
+      <summary>複素数の大きさ (または絶対値) を取得します。</summary>
+      <returns>現在のインスタンスの大きさ。</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Multiply(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>2 つの複素数の積を返します。</summary>
+      <returns>
+        <paramref name="left" /> と <paramref name="right" /> の 2 つのパラメーターの積。</returns>
+      <param name="left">乗算する 1 番目の複素数。</param>
+      <param name="right">乗算する 2 番目の複素数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Negate(System.Numerics.Complex)">
+      <summary>指定した複素数の加法に関する逆元を返します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの <see cref="P:System.Numerics.Complex.Real" /> 部および <see cref="P:System.Numerics.Complex.Imaginary" /> 部に -1 を乗算した結果。</returns>
+      <param name="value">複素数。</param>
+    </member>
+    <member name="F:System.Numerics.Complex.One">
+      <summary>実数が 1 で虚数が 0 の新しい <see cref="T:System.Numerics.Complex" /> インスタンスを返します。</summary>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Addition(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>2 つの複素数を加算します。</summary>
+      <returns>
+        <paramref name="left" /> と <paramref name="right" /> の合計。</returns>
+      <param name="left">加算する 1 番目の値。</param>
+      <param name="right">加算する 2 番目の値。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Division(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>指定した複素数を別の指定した複素数で除算します。</summary>
+      <returns>
+        <paramref name="left" /> を <paramref name="right" /> で除算した結果。</returns>
+      <param name="left">被除数。</param>
+      <param name="right">除数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Equality(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>2 つの複素数が等しいかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> パラメーターと <paramref name="right" /> パラメーターが同じ値の場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較対象の 1 番目の複素数。</param>
+      <param name="right">比較対象の 2 番目の複素数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Explicit(System.Decimal)~System.Numerics.Complex">
+      <summary>
+        <see cref="T:System.Decimal" /> 値から複素数への明示的な型変換を定義します。</summary>
+      <returns>実数部が <paramref name="value" /> で、虚数部が 0 である複素数。</returns>
+      <param name="value">複素数に変換する値。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Explicit(System.Numerics.BigInteger)~System.Numerics.Complex">
+      <summary>
+        <see cref="T:System.Numerics.BigInteger" /> 値から複素数への明示的な型変換を定義します。</summary>
+      <returns>実数部が <paramref name="value" /> で、虚数部が 0 である複素数。</returns>
+      <param name="value">複素数に変換する値。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Byte)~System.Numerics.Complex">
+      <summary>符号なしバイト値から複素数への暗黙の型変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を実数部として格納し、0 を虚数部として格納しているオブジェクト。</returns>
+      <param name="value">複素数に変換する値。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Double)~System.Numerics.Complex">
+      <summary>倍精度浮動小数点数から複素数への暗黙の型変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を実数部として格納し、0 を虚数部として格納しているオブジェクト。</returns>
+      <param name="value">複素数に変換する値。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Int16)~System.Numerics.Complex">
+      <summary>16 ビット符号付き整数値から複素数への暗黙の型変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を実数部として格納し、0 を虚数部として格納しているオブジェクト。</returns>
+      <param name="value">複素数に変換する値。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Int32)~System.Numerics.Complex">
+      <summary>32 ビット符号付き整数値から複素数への暗黙の型変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を実数部として格納し、0 を虚数部として格納しているオブジェクト。</returns>
+      <param name="value">複素数に変換する値。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Int64)~System.Numerics.Complex">
+      <summary>64 ビット符号付き整数値から複素数への暗黙の型変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を実数部として格納し、0 を虚数部として格納しているオブジェクト。</returns>
+      <param name="value">複素数に変換する値。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.SByte)~System.Numerics.Complex">
+      <summary>符号付きバイト値から複素数への暗黙の型変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を実数部として格納し、0 を虚数部として格納しているオブジェクト。</returns>
+      <param name="value">複素数に変換する値。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Single)~System.Numerics.Complex">
+      <summary>単精度浮動小数点数から複素数への暗黙の型変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を実数部として格納し、0 を虚数部として格納しているオブジェクト。</returns>
+      <param name="value">複素数に変換する値。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.UInt16)~System.Numerics.Complex">
+      <summary>16 ビット符号なし整数値から複素数への暗黙の型変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を実数部として格納し、0 を虚数部として格納しているオブジェクト。</returns>
+      <param name="value">複素数に変換する値。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.UInt32)~System.Numerics.Complex">
+      <summary>32 ビット符号なし整数値から複素数への暗黙の型変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を実数部として格納し、0 を虚数部として格納しているオブジェクト。</returns>
+      <param name="value">複素数に変換する値。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.UInt64)~System.Numerics.Complex">
+      <summary>64 ビット符号なし整数値から複素数への暗黙の型変換を定義します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの値を実数部として格納し、0 を虚数部として格納しているオブジェクト。</returns>
+      <param name="value">複素数に変換する値。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Inequality(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>2 つの複素数が等しくないかどうかを示す値を返します。</summary>
+      <returns>true if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
+      <param name="left">比較する最初の値です。</param>
+      <param name="right">比較する 2 番目の値です。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Multiply(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>指定した 2 つの複素数を乗算します。</summary>
+      <returns>
+        <paramref name="left" /> と <paramref name="right" /> の積。</returns>
+      <param name="left">乗算する 1 番目の値。</param>
+      <param name="right">乗算する 2 番目の値。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Subtraction(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>複素数を別の複素数から減算します。</summary>
+      <returns>
+        <paramref name="left" /> から <paramref name="right" /> を減算した結果。</returns>
+      <param name="left">減算される値 (被減数)。</param>
+      <param name="right">減算する値 (減数)。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.op_UnaryNegation(System.Numerics.Complex)">
+      <summary>指定した複素数の加法に関する逆元を返します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターの <see cref="P:System.Numerics.Complex.Real" /> 部および <see cref="P:System.Numerics.Complex.Imaginary" /> 部に -1 を乗算した結果。</returns>
+      <param name="value">否定する値。</param>
+    </member>
+    <member name="P:System.Numerics.Complex.Phase">
+      <summary>複素数のフェーズを取得します。</summary>
+      <returns>複素数のフェーズ (ラジアン単位)。</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Pow(System.Numerics.Complex,System.Double)">
+      <summary>倍精度浮動小数点数で指定した値で複素数を累乗した値を返します。</summary>
+      <returns>複素数 <paramref name="value" /> を <paramref name="power" /> で累乗した値。</returns>
+      <param name="value">累乗する複素数。</param>
+      <param name="power">累乗を指定する倍精度浮動小数点数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Pow(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>別の複素数で指定した値で複素数を累乗した値を返します。</summary>
+      <returns>複素数 <paramref name="value" /> を <paramref name="power" /> で累乗した値。</returns>
+      <param name="value">累乗する複素数。</param>
+      <param name="power">累乗に使用する値を指定する複素数。</param>
+    </member>
+    <member name="P:System.Numerics.Complex.Real">
+      <summary>現在の <see cref="T:System.Numerics.Complex" /> オブジェクトの実数部を取得します。</summary>
+      <returns>複素数の実数部。</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Reciprocal(System.Numerics.Complex)">
+      <summary>複素数の逆数を返します。</summary>
+      <returns>
+        <paramref name="value" /> の逆数。</returns>
+      <param name="value">複素数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Sin(System.Numerics.Complex)">
+      <summary>指定した複素数のサインを返します。</summary>
+      <returns>
+        <paramref name="value" /> のサイン。</returns>
+      <param name="value">複素数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Sinh(System.Numerics.Complex)">
+      <summary>指定した複素数のハイパーボリック サインを返します。</summary>
+      <returns>
+        <paramref name="value" /> のハイパーボリック サイン。</returns>
+      <param name="value">複素数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Sqrt(System.Numerics.Complex)">
+      <summary>指定した複素数の平方根を返します。</summary>
+      <returns>
+        <paramref name="value" /> の平方根。</returns>
+      <param name="value">複素数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Subtract(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>複素数を別の複素数から減算し、その結果を返します。</summary>
+      <returns>
+        <paramref name="left" /> から <paramref name="right" /> を減算した結果。</returns>
+      <param name="left">減算される値 (被減数)。</param>
+      <param name="right">減算する値 (減数)。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Tan(System.Numerics.Complex)">
+      <summary>指定した複素数のタンジェントを返します。</summary>
+      <returns>
+        <paramref name="value" /> のタンジェント。</returns>
+      <param name="value">複素数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Tanh(System.Numerics.Complex)">
+      <summary>指定した複素数のハイパーボリック タンジェントを返します。</summary>
+      <returns>
+        <paramref name="value" /> のハイパーボリック タンジェント。</returns>
+      <param name="value">複素数。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.ToString">
+      <summary>現在の複素数の値を等価のデカルト形式の文字列形式に変換します。</summary>
+      <returns>現在のインスタンスを表すデカルト形式の文字列形式。</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.ToString(System.IFormatProvider)">
+      <summary>指定したカルチャ固有の書式情報を使用して、現在の複素数を等価のデカルト形式の文字列形式に変換します。</summary>
+      <returns>
+        <paramref name="provider" /> が指定する現在のインスタンスのデカルト形式の文字列形式。</returns>
+      <param name="provider">カルチャ固有の書式情報を提供するオブジェクト。</param>
+    </member>
+    <member name="M:System.Numerics.Complex.ToString(System.String)">
+      <summary>実数部と虚数部で構成される指定した書式を使用して、現在の複素数を等価のデカルト形式の文字列形式に変換します。</summary>
+      <returns>現在のインスタンスを表すデカルト形式の文字列形式。</returns>
+      <param name="format">標準またはカスタムの数値書式指定文字列。</param>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> は有効な書式指定文字列ではありません。</exception>
+    </member>
+    <member name="M:System.Numerics.Complex.ToString(System.String,System.IFormatProvider)">
+      <summary>実数部と虚数部で構成される指定した書式およびカルチャ固有の書式情報を使用して、現在の複素数を等価のデカルト形式の文字列形式に変換します。</summary>
+      <returns>
+        <paramref name="format" /> および <paramref name="provider" /> が指定する現在のインスタンスのデカルト形式の文字列形式。</returns>
+      <param name="format">標準またはカスタムの数値書式指定文字列。</param>
+      <param name="provider">カルチャ固有の書式情報を提供するオブジェクト。</param>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> は有効な書式指定文字列ではありません。</exception>
+    </member>
+    <member name="F:System.Numerics.Complex.Zero">
+      <summary>実数が 0 で虚数が 0 の新しい <see cref="T:System.Numerics.Complex" /> インスタンスを返します。</summary>
+    </member>
+  </members>
+</doc>

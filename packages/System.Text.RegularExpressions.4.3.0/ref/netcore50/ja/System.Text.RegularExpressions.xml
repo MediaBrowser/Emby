@@ -1,0 +1,864 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Text.RegularExpressions</name>
+  </assembly>
+  <members>
+    <member name="T:System.Text.RegularExpressions.Capture">
+      <summary>正常に終了した単一の部分式キャプチャの結果を表します。</summary>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Capture.Index">
+      <summary>キャプチャした部分文字列の最初の文字が見つかる元の文字列内の位置。</summary>
+      <returns>キャプチャした部分文字列が見つかった元の文字列内の開始位置を示す 0 から始まる数値。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Capture.Length">
+      <summary>キャプチャした部分文字列の長さを取得します。</summary>
+      <returns>キャプチャした部分文字列の長さ。</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Capture.ToString">
+      <summary>
+        <see cref="P:System.Text.RegularExpressions.Capture.Value" /> プロパティを呼び出して、入力文字列からキャプチャされた部分文字列を取得します。</summary>
+      <returns>検索によってキャプチャされた部分文字列。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Capture.Value">
+      <summary>入力文字列からキャプチャした部分文字列を取得します。</summary>
+      <returns>検索によってキャプチャされた部分文字列。</returns>
+    </member>
+    <member name="T:System.Text.RegularExpressions.CaptureCollection">
+      <summary>1 つのキャプチャ グループによって作成されたキャプチャのセットを表します。</summary>
+    </member>
+    <member name="P:System.Text.RegularExpressions.CaptureCollection.Count">
+      <summary>グループによってキャプチャされた部分文字列の数を取得します。</summary>
+      <returns>
+        <see cref="T:System.Text.RegularExpressions.CaptureCollection" /> 内の項目数。</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.CaptureCollection.GetEnumerator">
+      <summary>コレクションを反復処理する列挙子を提供します。</summary>
+      <returns>
+        <see cref="T:System.Text.RegularExpressions.CaptureCollection" /> 内にあるすべての <see cref="T:System.Text.RegularExpressions.Capture" /> オブジェクトを格納しているオブジェクト。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.CaptureCollection.Item(System.Int32)">
+      <summary>コレクションの個別のメンバーを取得します。</summary>
+      <returns>コレクション内の <paramref name="i" /> の位置にあるキャプチャされた部分文字列。</returns>
+      <param name="i">キャプチャ コレクション内のインデックス。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="i" /> が 0 未満か、または <see cref="P:System.Text.RegularExpressions.CaptureCollection.Count" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.CaptureCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>指定したインデックスを開始位置として、指定した配列にコレクションのすべての要素をコピーします。</summary>
+      <param name="array">コレクションのコピー先の 1 次元配列。</param>
+      <param name="arrayIndex">コピーの開始位置となる、コピー先配列内の 0 から始まるインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="arrayIndex" /> が <paramref name="array" /> の境界の外側にあります。または<paramref name="arrayIndex" /> に <see cref="P:System.Text.RegularExpressions.CaptureCollection.Count" /> を加えた値が <paramref name="array" /> の境界の外側にあります。</exception>
+    </member>
+    <member name="P:System.Text.RegularExpressions.CaptureCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>コレクションへのアクセスが同期されている (スレッド セーフである) かどうかを示す値を取得します。</summary>
+      <returns>常に false。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.CaptureCollection.System#Collections#ICollection#SyncRoot">
+      <summary>コレクションへのアクセスを同期するために使用できるオブジェクトを取得します。</summary>
+      <returns>コレクションへのアクセスを同期するために使用できるオブジェクト。</returns>
+    </member>
+    <member name="T:System.Text.RegularExpressions.Group">
+      <summary>単一のキャプチャ グループからの結果を表します。</summary>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Group.Captures">
+      <summary>内側と左側が先の順序で、キャプチャ グループに一致したすべてのキャプチャ結果のコレクションを取得します。または、正規表現が <see cref="F:System.Text.RegularExpressions.RegexOptions.RightToLeft" /> オプションを使用して変更されている場合は、内側と右端が先の順序で取得します。このコレクションには 0 個以上の項目が格納されています。</summary>
+      <returns>グループに一致した部分文字列のコレクション。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Group.Success">
+      <summary>一致した対象が見つかったかどうかを示す値を取得します。</summary>
+      <returns>一致した対象が見つかった場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="T:System.Text.RegularExpressions.GroupCollection">
+      <summary>1 回の検索一致でキャプチャされたグループのセットを返します。</summary>
+    </member>
+    <member name="P:System.Text.RegularExpressions.GroupCollection.Count">
+      <summary>コレクション内のグループの数を返します。</summary>
+      <returns>コレクション内のグループの数。</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.GroupCollection.GetEnumerator">
+      <summary>コレクションを反復処理する列挙子を提供します。</summary>
+      <returns>
+        <see cref="T:System.Text.RegularExpressions.GroupCollection" /> 内のすべての <see cref="T:System.Text.RegularExpressions.Group" /> オブジェクトを含む列挙子。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.GroupCollection.Item(System.Int32)">
+      <summary>整数インデックスによってコレクションのメンバーにアクセスできるようにします。</summary>
+      <returns>
+        <paramref name="groupnum" /> で指定されたコレクションのメンバー。</returns>
+      <param name="groupnum">取得するコレクション メンバーの 0 から始まるインデックス。</param>
+    </member>
+    <member name="P:System.Text.RegularExpressions.GroupCollection.Item(System.String)">
+      <summary>文字列インデックスによってコレクションのメンバーにアクセスできるようにします。</summary>
+      <returns>
+        <paramref name="groupname" /> で指定されたコレクションのメンバー。</returns>
+      <param name="groupname">キャプチャ グループの名前。</param>
+    </member>
+    <member name="M:System.Text.RegularExpressions.GroupCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>指定したインデックスを開始位置として、指定した配列にコレクションのすべての要素をコピーします。</summary>
+      <param name="array">コレクションのコピー先の 1 次元配列。</param>
+      <param name="arrayIndex">コピーの開始位置となる、コピー先配列内の 0 から始まるインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> は null です。</exception>
+      <exception cref="T:System.IndexOutOfRangeException">
+        <paramref name="arrayIndex" /> が <paramref name="array" /> の境界の外側にあります。または<paramref name="arrayIndex" /> に <see cref="P:System.Text.RegularExpressions.GroupCollection.Count" /> を加えた値が <paramref name="array" /> の境界の外側にあります。</exception>
+    </member>
+    <member name="P:System.Text.RegularExpressions.GroupCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>コレクションへのアクセスが同期されている (スレッド セーフである) かどうかを示す値を取得します。</summary>
+      <returns>常に false。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.GroupCollection.System#Collections#ICollection#SyncRoot">
+      <summary>コレクションへのアクセスを同期するために使用できるオブジェクトを取得します。</summary>
+      <returns>コレクションへのアクセスを同期するために使用できるオブジェクト。</returns>
+    </member>
+    <member name="T:System.Text.RegularExpressions.Match">
+      <summary>1 回の正規表現検索に一致した結果を表します。</summary>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Match.Empty">
+      <summary>空のグループを取得します。一致する対象が見つからなかった検索は、この空一致を返します。</summary>
+      <returns>空一致。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Match.Groups">
+      <summary>正規表現に一致したグループのコレクションを取得します。</summary>
+      <returns>パターンに一致した文字グループ。</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Match.NextMatch">
+      <summary>一致する対象が最後に見つかった位置 (最後に一致した文字の後ろの文字) から開始して、次に一致する対象を検索した結果の <see cref="T:System.Text.RegularExpressions.Match" /> オブジェクトを返します。</summary>
+      <returns>次の正規表現一致。</returns>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Match.Result(System.String)">
+      <summary>指定された置換パターンを展開して返します。</summary>
+      <returns>
+        <paramref name="replacement" /> パラメーターの展開形式。</returns>
+      <param name="replacement">使用する置換パターン。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="replacement" /> は null です。</exception>
+      <exception cref="T:System.NotSupportedException">このパターンは展開できません。</exception>
+    </member>
+    <member name="T:System.Text.RegularExpressions.MatchCollection">
+      <summary>正規表現パターンを入力文字列に繰り返し適用したときに、パターンに一致した一連の対象を表します。</summary>
+    </member>
+    <member name="P:System.Text.RegularExpressions.MatchCollection.Count">
+      <summary>一致の数を取得します。</summary>
+      <returns>一致の数。</returns>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.MatchCollection.GetEnumerator">
+      <summary>コレクションを反復処理する列挙子を提供します。</summary>
+      <returns>
+        <see cref="T:System.Text.RegularExpressions.MatchCollection" /> 内にあるすべての <see cref="T:System.Text.RegularExpressions.Match" /> オブジェクトを格納しているオブジェクト。</returns>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。</exception>
+    </member>
+    <member name="P:System.Text.RegularExpressions.MatchCollection.Item(System.Int32)">
+      <summary>コレクションの個別のメンバーを取得します。</summary>
+      <returns>コレクション内の <paramref name="i" /> の位置にあるキャプチャされた部分文字列。</returns>
+      <param name="i">
+        <see cref="T:System.Text.RegularExpressions.Match" /> コレクション内のインデックス。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="i" /> が 0 未満、または <see cref="P:System.Text.RegularExpressions.MatchCollection.Count" /> 以上です。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.MatchCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>指定したインデックスを開始位置として、指定した配列にコレクションのすべての要素をコピーします。</summary>
+      <param name="array">コレクションのコピー先の 1 次元配列。</param>
+      <param name="arrayIndex">コピーの開始位置となる、配列内の 0 から始まるインデックス。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> は、多次元配列です。</exception>
+      <exception cref="T:System.IndexOutOfRangeException">
+        <paramref name="arrayIndex" /> が配列の境界の外側にあります。または<paramref name="arrayIndex" /> に <see cref="P:System.Text.RegularExpressions.MatchCollection.Count" /> を加えた値が <paramref name="array" /> の境界の外側にあります。</exception>
+    </member>
+    <member name="P:System.Text.RegularExpressions.MatchCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>コレクションへのアクセスが同期されている (スレッド セーフである) かどうかを示す値を取得します。</summary>
+      <returns>常に false。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.MatchCollection.System#Collections#ICollection#SyncRoot">
+      <summary>コレクションへのアクセスを同期するために使用できるオブジェクトを取得します。</summary>
+      <returns>コレクションへのアクセスを同期するために使用できるオブジェクト。このプロパティは常にオブジェクト自体を返します。</returns>
+    </member>
+    <member name="T:System.Text.RegularExpressions.MatchEvaluator">
+      <summary>
+        <see cref="Overload:System.Text.RegularExpressions.Regex.Replace" /> メソッドの操作中に、正規表現との一致が見つかるたびに呼び出されるメソッドを表します。</summary>
+      <returns>
+        <see cref="T:System.Text.RegularExpressions.MatchEvaluator" /> デリゲートが表すメソッドによって返された文字列。</returns>
+      <param name="match">
+        <see cref="Overload:System.Text.RegularExpressions.Regex.Replace" /> メソッドの操作中に、1 つの正規表現で見つかった一致を表す <see cref="T:System.Text.RegularExpressions.Match" /> オブジェクト。</param>
+    </member>
+    <member name="T:System.Text.RegularExpressions.Regex">
+      <summary>変更不可の正規表現を表します。この種類の .NET Framework ソース コードを参照して、次を参照してください。、参照ソースです。</summary>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.#ctor">
+      <summary>
+        <see cref="T:System.Text.RegularExpressions.Regex" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.#ctor(System.String)">
+      <summary>正規表現を指定して <see cref="T:System.Text.RegularExpressions.Regex" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="pattern">一致させる正規表現パターン。</param>
+      <exception cref="T:System.ArgumentException">正規表現の解析エラーが発生しました。 </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="pattern" /> は null です。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.#ctor(System.String,System.Text.RegularExpressions.RegexOptions)">
+      <summary>パターンを変更するオプションを使用して、指定した正規表現の <see cref="T:System.Text.RegularExpressions.Regex" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="pattern">一致させる正規表現パターン。</param>
+      <param name="options">正規表現を変更する列挙値のビットごとの組み合わせ。</param>
+      <exception cref="T:System.ArgumentException">正規表現の解析エラーが発生しました。 </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="pattern" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> に無効なフラグが含まれています。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.#ctor(System.String,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>パターンを変更するオプションと、パターン マッチ メソッドでタイムアウトする前に一致を試みる期間を指定する値を使用して、指定された正規表現の <see cref="T:System.Text.RegularExpressions.Regex" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="pattern">一致させる正規表現パターン。</param>
+      <param name="options">正規表現を変更する列挙値のビットごとの組み合わせ。</param>
+      <param name="matchTimeout">タイムアウト期間、またはメソッドがタイムアウトしないことを示す <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" />。</param>
+      <exception cref="T:System.ArgumentException">正規表現の解析エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="pattern" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> が有効な <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 値ではありません。または<paramref name="matchTimeout" /> が負か、0 か、または約 24 日を超えています。</exception>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Regex.CacheSize">
+      <summary>コンパイルされた正規表現の現在の静的キャッシュ内の最大エントリ数を取得または設定します。</summary>
+      <returns>静的キャッシュの最大エントリ数。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">set 操作内の値が 0 未満です。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Escape(System.String)">
+      <summary>文字 (\、*、+、?、|、{、[、(、)、^、$、.、#、および空白) をエスケープ コードに置き換えることにより、このような文字をエスケープします。これにより、正規表現エンジンではこのような文字がメタ文字ではなくリテラルとして解釈されます。</summary>
+      <returns>メタ文字がエスケープされた形式に変換された文字列。</returns>
+      <param name="str">変換対象のテキストを含んでいる入力文字列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> は null です。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.GetGroupNames">
+      <summary>正規表現で使用されるキャプチャ グループ名の配列を返します。</summary>
+      <returns>グループ名の文字列配列。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.GetGroupNumbers">
+      <summary>配列内のグループ名に対応したキャプチャ グループ番号の配列を返します。</summary>
+      <returns>グループ番号の整数配列。</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.GroupNameFromNumber(System.Int32)">
+      <summary>指定したグループ番号に対応するグループ名を取得します。</summary>
+      <returns>指定したグループ番号に関連付けられたグループ名を含んでいる文字列。<paramref name="i" /> に対応するグループ名がない場合、このメソッドは <see cref="F:System.String.Empty" /> を返します。</returns>
+      <param name="i">対応するグループ名に変換するグループ番号。</param>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.GroupNumberFromName(System.String)">
+      <summary>指定したグループ名に対応するグループ番号を返します。</summary>
+      <returns>指定したグループ名に対応するグループ番号。<paramref name="name" /> が有効なグループ名でない場合は -1。</returns>
+      <param name="name">対応するグループ番号に変換するグループ名。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> は null です。</exception>
+    </member>
+    <member name="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout">
+      <summary>パターン一致の操作がタイムアウトしないことを指定します。</summary>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.IsMatch(System.String)">
+      <summary>
+        <see cref="T:System.Text.RegularExpressions.Regex" /> コンストラクターで指定された正規表現に一致する箇所が、指定した入力文字列内に見つかるかどうかを示します。</summary>
+      <returns>正規表現と一致する対象が見つかった場合は true。それ以外の場合は false。</returns>
+      <param name="input">一致する対象を検索する文字列。 </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> は null です。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.Int32)">
+      <summary>入力文字列内の指定した位置から検索を開始して、<see cref="T:System.Text.RegularExpressions.Regex" /> コンストラクターで指定された正規表現に一致する箇所が、指定した入力文字列内に見つかるかどうかを示します。</summary>
+      <returns>正規表現と一致する対象が見つかった場合は true。それ以外の場合は false。</returns>
+      <param name="input">一致する対象を検索する文字列。</param>
+      <param name="startat">検索を開始する文字の位置。 </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startat" /> が 0 未満か、<paramref name="input" /> の長さよりも大きい値です。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.String)">
+      <summary>指定した正規表現に一致する箇所が、指定した入力文字列内に見つかるかどうかを示します。</summary>
+      <returns>正規表現と一致する対象が見つかった場合は true。それ以外の場合は false。</returns>
+      <param name="input">一致する対象を検索する文字列。</param>
+      <param name="pattern">一致させる正規表現パターン。 </param>
+      <exception cref="T:System.ArgumentException">正規表現の解析エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> または <paramref name="pattern" /> が null です。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.String,System.Text.RegularExpressions.RegexOptions)">
+      <summary>指定した一致オプションを使用して、指定した正規表現に一致する箇所が、指定した入力文字列内に見つかるかどうかを示します。</summary>
+      <returns>正規表現と一致する対象が見つかった場合は true。それ以外の場合は false。</returns>
+      <param name="input">一致する対象を検索する文字列。</param>
+      <param name="pattern">一致させる正規表現パターン。</param>
+      <param name="options">一致オプションを指定する列挙値のビットごとの組み合わせ。 </param>
+      <exception cref="T:System.ArgumentException">正規表現の解析エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> または <paramref name="pattern" /> が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> が有効な <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 値ではありません。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.String,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>指定した一致オプションとタイムアウト間隔を使用して、指定した正規表現に一致する箇所が、指定した入力文字列内に見つかるかどうかを示します。</summary>
+      <returns>正規表現と一致する対象が見つかった場合は true。それ以外の場合は false。</returns>
+      <param name="input">一致する対象を検索する文字列。</param>
+      <param name="pattern">一致させる正規表現パターン。</param>
+      <param name="options">一致オプションを指定する列挙値のビットごとの組み合わせ。</param>
+      <param name="matchTimeout">タイムアウト期間、またはメソッドがタイムアウトしないことを示す <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" />。</param>
+      <exception cref="T:System.ArgumentException">正規表現の解析エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> または <paramref name="pattern" /> が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> が有効な <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 値ではありません。または<paramref name="matchTimeout" /> が負か、0 か、または約 24 日を超えています。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Match(System.String)">
+      <summary>指定した入力文字列内で、<see cref="T:System.Text.RegularExpressions.Regex" /> コンストラクターで指定された正規表現と最初に一致する対象を 1 つ検索します。</summary>
+      <returns>一致に関する情報を格納しているオブジェクト。</returns>
+      <param name="input">一致する対象を検索する文字列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> は null です。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32)">
+      <summary>入力文字列内の指定した開始位置から開始して、その入力文字列内で正規表現に最初に一致する箇所を検索します。</summary>
+      <returns>一致に関する情報を格納しているオブジェクト。</returns>
+      <param name="input">一致する対象を検索する文字列。</param>
+      <param name="startat">検索を開始する 0 から始まる文字位置。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startat" /> が 0 未満か、<paramref name="input" /> の長さよりも大きい値です。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32,System.Int32)">
+      <summary>入力文字列内の指定した開始位置から開始し、指定した文字数だけを検索対象として、その入力文字列内で正規表現に最初に一致する箇所を検索します。</summary>
+      <returns>一致に関する情報を格納しているオブジェクト。</returns>
+      <param name="input">一致する対象を検索する文字列。</param>
+      <param name="beginning">検索する左端の位置を定義する、入力文字列内の 0 から始まる文字位置。</param>
+      <param name="length">検索に含める部分文字列の文字数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="beginning" /> が 0 未満か、<paramref name="input" /> の長さよりも大きい値です。または<paramref name="length" /> が 0 未満か、<paramref name="input" /> の長さよりも大きい値です。または<paramref name="beginning" />+<paramref name="length" />– 1 identifies a position that is outside the range of <paramref name="input" />.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Match(System.String,System.String)">
+      <summary>指定した入力文字列内で、指定した正規表現に最初に一致する箇所を検索します。</summary>
+      <returns>一致に関する情報を格納しているオブジェクト。</returns>
+      <param name="input">一致する対象を検索する文字列。</param>
+      <param name="pattern">一致させる正規表現パターン。</param>
+      <exception cref="T:System.ArgumentException">正規表現の解析エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> または <paramref name="pattern" /> が null です。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Match(System.String,System.String,System.Text.RegularExpressions.RegexOptions)">
+      <summary>指定した一致オプションを使用して、入力文字列内で、指定した正規表現に最初に一致する箇所を検索します。</summary>
+      <returns>一致に関する情報を格納しているオブジェクト。</returns>
+      <param name="input">一致する対象を検索する文字列。</param>
+      <param name="pattern">一致させる正規表現パターン。</param>
+      <param name="options">一致オプションを指定する列挙値のビットごとの組み合わせ。</param>
+      <exception cref="T:System.ArgumentException">正規表現の解析エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> または <paramref name="pattern" /> が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> が、<see cref="T:System.Text.RegularExpressions.RegexOptions" /> 値の有効なビットごとの組み合わせではありません。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Match(System.String,System.String,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>指定した一致オプションとタイムアウト間隔を使用して、入力文字列内で、指定した正規表現に最初に一致する箇所を検索します。</summary>
+      <returns>一致に関する情報を格納しているオブジェクト。</returns>
+      <param name="input">一致する対象を検索する文字列。</param>
+      <param name="pattern">一致させる正規表現パターン。</param>
+      <param name="options">一致オプションを指定する列挙値のビットごとの組み合わせ。</param>
+      <param name="matchTimeout">タイムアウト期間、またはメソッドがタイムアウトしないことを示す <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" />。</param>
+      <exception cref="T:System.ArgumentException">正規表現の解析エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> または <paramref name="pattern" /> が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> が、<see cref="T:System.Text.RegularExpressions.RegexOptions" /> 値の有効なビットごとの組み合わせではありません。または<paramref name="matchTimeout" /> が負か、0 か、または約 24 日を超えています。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Matches(System.String)">
+      <summary>指定した入力文字列内で、正規表現と一致する対象をすべて検索します。</summary>
+      <returns>検索によって見つかった <see cref="T:System.Text.RegularExpressions.Match" /> オブジェクトのコレクション。一致が見つからない場合は、空のコレクション オブジェクトが返されます。</returns>
+      <param name="input">一致する対象を検索する文字列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> は null です。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.Int32)">
+      <summary>入力文字列内の指定した開始位置から検索を開始した場合に、その指定入力文字列内で正規表現と一致する対象をすべて検索します。</summary>
+      <returns>検索によって見つかった <see cref="T:System.Text.RegularExpressions.Match" /> オブジェクトのコレクション。一致が見つからない場合は、空のコレクション オブジェクトが返されます。</returns>
+      <param name="input">一致する対象を検索する文字列。</param>
+      <param name="startat">入力文字列内の検索を開始する文字位置。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startat" /> が 0 未満か、<paramref name="input" /> の長さよりも大きい値です。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.String)">
+      <summary>指定した入力文字列内で、指定した正規表現に一致する箇所をすべて検索します。</summary>
+      <returns>検索によって見つかった <see cref="T:System.Text.RegularExpressions.Match" /> オブジェクトのコレクション。一致が見つからない場合は、空のコレクション オブジェクトが返されます。</returns>
+      <param name="input">一致する対象を検索する文字列。</param>
+      <param name="pattern">一致させる正規表現パターン。</param>
+      <exception cref="T:System.ArgumentException">正規表現の解析エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> または <paramref name="pattern" /> が null です。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.String,System.Text.RegularExpressions.RegexOptions)">
+      <summary>指定した一致オプションを使用して、指定した入力文字列内で、指定した正規表現に一致する箇所をすべて検索します。</summary>
+      <returns>検索によって見つかった <see cref="T:System.Text.RegularExpressions.Match" /> オブジェクトのコレクション。一致が見つからない場合は、空のコレクション オブジェクトが返されます。</returns>
+      <param name="input">一致する対象を検索する文字列。</param>
+      <param name="pattern">一致させる正規表現パターン。</param>
+      <param name="options">一致オプションを指定する列挙値のビットごとの組み合わせ。</param>
+      <exception cref="T:System.ArgumentException">正規表現の解析エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> または <paramref name="pattern" /> が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> が、<see cref="T:System.Text.RegularExpressions.RegexOptions" /> 値の有効なビットごとの組み合わせではありません。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.String,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>指定した一致オプションとタイムアウト間隔を使用して、指定した入力文字列内で、指定した正規表現に一致するすべての箇所を検索します。</summary>
+      <returns>検索によって見つかった <see cref="T:System.Text.RegularExpressions.Match" /> オブジェクトのコレクション。一致が見つからない場合は、空のコレクション オブジェクトが返されます。</returns>
+      <param name="input">一致する対象を検索する文字列。</param>
+      <param name="pattern">一致させる正規表現パターン。</param>
+      <param name="options">一致オプションを指定する列挙値のビットごとの組み合わせ。</param>
+      <param name="matchTimeout">タイムアウト期間、またはメソッドがタイムアウトしないことを示す <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" />。</param>
+      <exception cref="T:System.ArgumentException">正規表現の解析エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> または <paramref name="pattern" /> が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> が、<see cref="T:System.Text.RegularExpressions.RegexOptions" /> 値の有効なビットごとの組み合わせではありません。または<paramref name="matchTimeout" /> が負か、0 か、または約 24 日を超えています。</exception>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Regex.MatchTimeout">
+      <summary>現在のインスタンスのタイムアウト間隔を取得します。</summary>
+      <returns>
+        <see cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException" /> がスローされる前に、パターン一致操作で経過できる最大時間間隔。タイムアウトが無効な場合は <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" />。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Regex.Options">
+      <summary>
+        <see cref="T:System.Text.RegularExpressions.Regex" /> コンストラクターに渡されたオプションを取得します。</summary>
+      <returns>
+        <see cref="T:System.Text.RegularExpressions.Regex" /> のコンストラクターに渡されたオプションを表す <see cref="T:System.Text.RegularExpressions.RegexOptions" /> の列挙体の 1 つ以上のメンバー</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String)">
+      <summary>指定した入力文字列内で正規表現パターンに一致するすべての文字列を、指定した置換文字列に置換します。</summary>
+      <returns>一致する各文字列が置換文字列に置き換えられる以外は入力文字列と同じである新しい文字列。正規表現パターンが現在のインスタンスで一致しない場合、このメソッドは現在のインスタンスをそのまま返します。</returns>
+      <param name="input">一致する対象を検索する文字列。</param>
+      <param name="replacement">置換文字列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> または <paramref name="replacement" /> が null です。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32)">
+      <summary>指定した入力文字列内で正規表現パターンに一致する文字列を、指定した最大回数だけ、指定した置換文字列に置換します。</summary>
+      <returns>一致する各文字列が置換文字列に置き換えられる以外は入力文字列と同じである新しい文字列。正規表現パターンが現在のインスタンスで一致しない場合、このメソッドは現在のインスタンスをそのまま返します。</returns>
+      <param name="input">一致する対象を検索する文字列。</param>
+      <param name="replacement">置換文字列。</param>
+      <param name="count">置換を行う最大回数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> または <paramref name="replacement" /> が null です。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32,System.Int32)">
+      <summary>指定した入力部分文字列内で正規表現パターンに一致する文字列を、指定した最大回数だけ、指定した置換文字列に置換します。</summary>
+      <returns>一致する各文字列が置換文字列に置き換えられる以外は入力文字列と同じである新しい文字列。正規表現パターンが現在のインスタンスで一致しない場合、このメソッドは現在のインスタンスをそのまま返します。</returns>
+      <param name="input">一致する対象を検索する文字列。</param>
+      <param name="replacement">置換文字列。</param>
+      <param name="count">置換を行う最大回数。</param>
+      <param name="startat">入力文字列中で検索を開始する文字位置。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> または <paramref name="replacement" /> が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startat" /> が 0 未満か、<paramref name="input" /> の長さよりも大きい値です。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.String)">
+      <summary>指定した入力文字列内で指定した正規表現に一致するすべての文字列を、指定した置換文字列に置換します。</summary>
+      <returns>一致する各文字列が置換文字列に置き換えられる以外は入力文字列と同じである新しい文字列。<paramref name="pattern" /> が現在のインスタンス内で一致しない場合、メソッドは変更なしで現在のインスタンスを返します。</returns>
+      <param name="input">一致する対象を検索する文字列。</param>
+      <param name="pattern">一致させる正規表現パターン。</param>
+      <param name="replacement">置換文字列。</param>
+      <exception cref="T:System.ArgumentException">正規表現の解析エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" />、<paramref name="pattern" />、または <paramref name="replacement" /> が null です。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.String,System.Text.RegularExpressions.RegexOptions)">
+      <summary>指定した入力文字列内で指定した正規表現に一致するすべての文字列を、指定した置換文字列に置換します。指定したオプションで、一致操作を変更します。</summary>
+      <returns>一致する各文字列が置換文字列に置き換えられる以外は入力文字列と同じである新しい文字列。<paramref name="pattern" /> が現在のインスタンス内で一致しない場合、メソッドは変更なしで現在のインスタンスを返します。</returns>
+      <param name="input">一致する対象を検索する文字列。</param>
+      <param name="pattern">一致させる正規表現パターン。</param>
+      <param name="replacement">置換文字列。</param>
+      <param name="options">一致オプションを指定する列挙値のビットごとの組み合わせ。</param>
+      <exception cref="T:System.ArgumentException">正規表現の解析エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" />、<paramref name="pattern" />、または <paramref name="replacement" /> が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> が、<see cref="T:System.Text.RegularExpressions.RegexOptions" /> 値の有効なビットごとの組み合わせではありません。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.String,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>指定した入力文字列内で指定した正規表現に一致するすべての文字列を、指定した置換文字列に置換します。追加のパラメーターでは、一致が見つからない場合に一致操作とタイムアウト間隔を変更するオプションを指定します。</summary>
+      <returns>一致する各文字列が置換文字列に置き換えられる以外は入力文字列と同じである新しい文字列。<paramref name="pattern" /> が現在のインスタンス内で一致しない場合、メソッドは変更なしで現在のインスタンスを返します。</returns>
+      <param name="input">一致する対象を検索する文字列。</param>
+      <param name="pattern">一致させる正規表現パターン。</param>
+      <param name="replacement">置換文字列。</param>
+      <param name="options">一致オプションを指定する列挙値のビットごとの組み合わせ。</param>
+      <param name="matchTimeout">タイムアウト期間、またはメソッドがタイムアウトしないことを示す <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" />。</param>
+      <exception cref="T:System.ArgumentException">正規表現の解析エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" />、<paramref name="pattern" />、または <paramref name="replacement" /> が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> が、<see cref="T:System.Text.RegularExpressions.RegexOptions" /> 値の有効なビットごとの組み合わせではありません。または<paramref name="matchTimeout" /> が負か、0 か、または約 24 日を超えています。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Text.RegularExpressions.MatchEvaluator)">
+      <summary>指定した入力文字列内で指定した正規表現に一致するすべての文字列を、<see cref="T:System.Text.RegularExpressions.MatchEvaluator" /> デリゲートによって返される文字列に置換します。</summary>
+      <returns>一致する各文字列が置換文字列に置き換えられる以外は入力文字列と同じである新しい文字列。<paramref name="pattern" /> が現在のインスタンス内で一致しない場合、メソッドは変更なしで現在のインスタンスを返します。</returns>
+      <param name="input">一致する対象を検索する文字列。</param>
+      <param name="pattern">一致させる正規表現パターン。</param>
+      <param name="evaluator">各一致文字列を調べ、元の一致文字列または置換文字列のどちらかを返すカスタム メソッド。</param>
+      <exception cref="T:System.ArgumentException">正規表現の解析エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" />、<paramref name="pattern" />、または <paramref name="evaluator" /> が null です。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Text.RegularExpressions.MatchEvaluator,System.Text.RegularExpressions.RegexOptions)">
+      <summary>指定した入力文字列内で指定した正規表現に一致するすべての文字列を、<see cref="T:System.Text.RegularExpressions.MatchEvaluator" /> デリゲートによって返される文字列に置換します。指定したオプションで、一致操作を変更します。</summary>
+      <returns>一致する各文字列が置換文字列に置き換えられる以外は入力文字列と同じである新しい文字列。<paramref name="pattern" /> が現在のインスタンス内で一致しない場合、メソッドは変更なしで現在のインスタンスを返します。</returns>
+      <param name="input">一致する対象を検索する文字列。</param>
+      <param name="pattern">一致させる正規表現パターン。</param>
+      <param name="evaluator">各一致文字列を調べ、元の一致文字列または置換文字列のどちらかを返すカスタム メソッド。</param>
+      <param name="options">一致オプションを指定する列挙値のビットごとの組み合わせ。</param>
+      <exception cref="T:System.ArgumentException">正規表現の解析エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" />、<paramref name="pattern" />、または <paramref name="evaluator" /> が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> が、<see cref="T:System.Text.RegularExpressions.RegexOptions" /> 値の有効なビットごとの組み合わせではありません。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Text.RegularExpressions.MatchEvaluator,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>指定した入力文字列内で指定した正規表現に一致するすべての部分文字列を、<see cref="T:System.Text.RegularExpressions.MatchEvaluator" /> デリゲートによって返される文字列に置換します。追加のパラメーターでは、一致が見つからない場合に一致操作とタイムアウト間隔を変更するオプションを指定します。</summary>
+      <returns>一致する各文字列が置換文字列に置き換えられる以外は入力文字列と同じである新しい文字列。<paramref name="pattern" /> が現在のインスタンス内で一致しない場合、メソッドは変更なしで現在のインスタンスを返します。</returns>
+      <param name="input">一致する対象を検索する文字列。</param>
+      <param name="pattern">一致させる正規表現パターン。</param>
+      <param name="evaluator">各一致文字列を調べ、元の一致文字列または置換文字列のどちらかを返すカスタム メソッド。</param>
+      <param name="options">一致オプションを指定する列挙値のビットごとの組み合わせ。</param>
+      <param name="matchTimeout">タイムアウト期間、またはメソッドがタイムアウトしないことを示す <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" />。</param>
+      <exception cref="T:System.ArgumentException">正規表現の解析エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" />、<paramref name="pattern" />、または <paramref name="evaluator" /> が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> が、<see cref="T:System.Text.RegularExpressions.RegexOptions" /> 値の有効なビットごとの組み合わせではありません。または<paramref name="matchTimeout" /> が負か、0 か、または約 24 日を超えています。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator)">
+      <summary>指定した入力文字列内で指定した正規表現に一致するすべての文字列を、<see cref="T:System.Text.RegularExpressions.MatchEvaluator" /> デリゲートによって返される文字列に置換します。</summary>
+      <returns>一致する各文字列が置換文字列に置き換えられる以外は入力文字列と同じである新しい文字列。正規表現パターンが現在のインスタンスで一致しない場合、このメソッドは現在のインスタンスをそのまま返します。</returns>
+      <param name="input">一致する対象を検索する文字列。</param>
+      <param name="evaluator">各一致文字列を調べ、元の一致文字列または置換文字列のどちらかを返すカスタム メソッド。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> または <paramref name="evaluator" /> が null です。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32)">
+      <summary>指定した入力文字列内で正規表現パターンに一致する文字列を、指定した最大回数だけ、<see cref="T:System.Text.RegularExpressions.MatchEvaluator" /> デリゲートによって返される文字列に置換します。</summary>
+      <returns>一致する各文字列が置換文字列に置き換えられる以外は入力文字列と同じである新しい文字列。正規表現パターンが現在のインスタンスで一致しない場合、このメソッドは現在のインスタンスをそのまま返します。</returns>
+      <param name="input">一致する対象を検索する文字列。</param>
+      <param name="evaluator">各一致文字列を調べ、元の一致文字列または置換文字列のどちらかを返すカスタム メソッド。</param>
+      <param name="count">置換を実行する最大回数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> または <paramref name="evaluator" /> が null です。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32,System.Int32)">
+      <summary>指定した入力部分文字列内で正規表現パターンに一致する文字列を、指定した最大回数だけ、<see cref="T:System.Text.RegularExpressions.MatchEvaluator" /> デリゲートによって返される文字列に置換します。</summary>
+      <returns>一致する各文字列が置換文字列に置き換えられる以外は入力文字列と同じである新しい文字列。正規表現パターンが現在のインスタンスで一致しない場合、このメソッドは現在のインスタンスをそのまま返します。</returns>
+      <param name="input">一致する対象を検索する文字列。</param>
+      <param name="evaluator">各一致文字列を調べ、元の一致文字列または置換文字列のどちらかを返すカスタム メソッド。</param>
+      <param name="count">置換を実行する最大回数。</param>
+      <param name="startat">入力文字列中で検索を開始する文字位置。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> または <paramref name="evaluator" /> が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startat" /> が 0 未満か、<paramref name="input" /> の長さよりも大きい値です。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Regex.RightToLeft">
+      <summary>正規表現が右から左の方向に検索するかどうかを示す値を取得します。</summary>
+      <returns>正規表現が右から左の方向に検索する場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Split(System.String)">
+      <summary>
+        <see cref="T:System.Text.RegularExpressions.Regex" /> コンストラクターで指定された正規表現パターンに定義されている位置で、指定した入力文字列を分割し、部分文字列の配列に格納します。</summary>
+      <returns>文字列の配列。</returns>
+      <param name="input">分割対象の文字列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> は null です。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32)">
+      <summary>
+        <see cref="T:System.Text.RegularExpressions.Regex" /> コンストラクターで指定された正規表現パターンに定義されている位置で、入力文字列を指定されている最大回数だけ分割し、部分文字列の配列に格納します。</summary>
+      <returns>文字列の配列。</returns>
+      <param name="input">分割対象の文字列。</param>
+      <param name="count">分割を実行する最大回数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> は null です。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32,System.Int32)">
+      <summary>
+        <see cref="T:System.Text.RegularExpressions.Regex" /> コンストラクターで指定された正規表現パターンに定義されている位置で、入力文字列を指定されている最大回数だけ分割し、部分文字列の配列に格納します。正規表現パターンの検索は、入力文字列の指定した文字位置から開始します。</summary>
+      <returns>文字列の配列。</returns>
+      <param name="input">分割対象の文字列。</param>
+      <param name="count">分割を実行する最大回数。</param>
+      <param name="startat">入力文字列中で検索を開始する文字位置。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startat" /> が 0 未満か、<paramref name="input" /> の長さよりも大きい値です。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Split(System.String,System.String)">
+      <summary>正規表現パターンによって定義されている位置で、入力文字列を部分文字列の配列に分割します。</summary>
+      <returns>文字列の配列。</returns>
+      <param name="input">分割対象の文字列。</param>
+      <param name="pattern">一致させる正規表現パターン。</param>
+      <exception cref="T:System.ArgumentException">正規表現の解析エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> または <paramref name="pattern" /> が null です。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Split(System.String,System.String,System.Text.RegularExpressions.RegexOptions)">
+      <summary>指定された正規表現パターンによって定義されている位置で、入力文字列を部分文字列の配列に分割します。指定したオプションで、一致操作を変更します。</summary>
+      <returns>文字列の配列。</returns>
+      <param name="input">分割対象の文字列。</param>
+      <param name="pattern">一致させる正規表現パターン。</param>
+      <param name="options">一致オプションを指定する列挙値のビットごとの組み合わせ。</param>
+      <exception cref="T:System.ArgumentException">正規表現の解析エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> または <paramref name="pattern" /> が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> が、<see cref="T:System.Text.RegularExpressions.RegexOptions" /> 値の有効なビットごとの組み合わせではありません。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Split(System.String,System.String,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>指定された正規表現パターンによって定義されている位置で、入力文字列を部分文字列の配列に分割します。追加のパラメーターでは、一致が見つからない場合に一致操作とタイムアウト間隔を変更するオプションを指定します。</summary>
+      <returns>文字列配列。</returns>
+      <param name="input">分割対象の文字列。</param>
+      <param name="pattern">一致させる正規表現パターン。</param>
+      <param name="options">一致オプションを指定する列挙値のビットごとの組み合わせ。</param>
+      <param name="matchTimeout">タイムアウト期間、またはメソッドがタイムアウトしないことを示す <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" />。</param>
+      <exception cref="T:System.ArgumentException">正規表現の解析エラーが発生しました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> または <paramref name="pattern" /> が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> が、<see cref="T:System.Text.RegularExpressions.RegexOptions" /> 値の有効なビットごとの組み合わせではありません。または<paramref name="matchTimeout" /> が負か、0 か、または約 24 日を超えています。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">タイムアウトが発生しました。タイムアウトの詳細については、「解説」セクションを参照してください。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.ToString">
+      <summary>Regex コンストラクターに渡された正規表現パターンを返します。</summary>
+      <returns>Regex コンストラクターに渡された <paramref name="pattern" /> パラメーター。</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Unescape(System.String)">
+      <summary>入力文字列内に含まれるエスケープされた文字を変換します。</summary>
+      <returns>エスケープされた文字を含む文字列を、エスケープされていない形式に変換したもの。</returns>
+      <param name="str">変換対象のテキストを含んでいる入力文字列。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="str" /> には、認識されないエスケープ シーケンスが含まれています。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> は null です。</exception>
+    </member>
+    <member name="T:System.Text.RegularExpressions.RegexMatchTimeoutException">
+      <summary>正規表現パターン一致メソッドの実行時間がそのタイムアウト間隔を超えるとスローされる例外。</summary>
+    </member>
+    <member name="M:System.Text.RegularExpressions.RegexMatchTimeoutException.#ctor">
+      <summary>システム提供のメッセージを使用して、<see cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Text.RegularExpressions.RegexMatchTimeoutException.#ctor(System.String)">
+      <summary>指定したメッセージ文字列を使用して、<see cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">例外を説明する文字列。</param>
+    </member>
+    <member name="M:System.Text.RegularExpressions.RegexMatchTimeoutException.#ctor(System.String,System.Exception)">
+      <summary>指定したエラー メッセージと、この例外の原因である内部例外への参照を使用して、<see cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">例外を説明する文字列。</param>
+      <param name="inner">現在の例外の原因である例外。</param>
+    </member>
+    <member name="M:System.Text.RegularExpressions.RegexMatchTimeoutException.#ctor(System.String,System.String,System.TimeSpan)">
+      <summary>正規表現パターン、入力テキスト、およびタイムアウト間隔に関する情報を使用して、<see cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="regexInput">タイムアウトが発生したときに正規表現エンジンが処理していた入力テキスト。</param>
+      <param name="regexPattern">タイムアウトが発生したときに正規表現エンジンによって使用されるパターン。</param>
+      <param name="matchTimeout">タイムアウト間隔。</param>
+    </member>
+    <member name="P:System.Text.RegularExpressions.RegexMatchTimeoutException.Input">
+      <summary>タイムアウトが発生したときに正規表現エンジンが処理していた入力テキストを取得します。</summary>
+      <returns>正規表現入力テキスト。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.RegexMatchTimeoutException.MatchTimeout">
+      <summary>正規表現検索のタイムアウト間隔を取得します。</summary>
+      <returns>タイムアウト間隔。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.RegexMatchTimeoutException.Pattern">
+      <summary>タイムアウトが発生したときに一致操作で使用されていた正規表現パターンを取得します。</summary>
+      <returns>正規表現パターン。</returns>
+    </member>
+    <member name="T:System.Text.RegularExpressions.RegexOptions">
+      <summary>正規表現オプションを設定するために使用する列挙値を提供します。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.Compiled">
+      <summary>正規表現をコンパイルしてアセンブリを作成することを指定します。これにより実行速度は速くなりますが、起動にかかる時間は長くなります。この値は、<see cref="M:System.Text.RegularExpressions.Regex.CompileToAssembly(System.Text.RegularExpressions.RegexCompilationInfo[],System.Reflection.AssemblyName)" /> メソッドを呼び出すときには <see cref="P:System.Text.RegularExpressions.RegexCompilationInfo.Options" /> プロパティに割り当てないでください。詳細については、正規表現のオプション のトピックの「Compiled Regular Expressions (コンパイルされた正規表現)」を参照してください。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.CultureInvariant">
+      <summary>言語の違いが無視されるように指定します。詳細については、正規表現のオプション のトピックの「Comparison Using the Invariant Culture (インバリアント カルチャを使用した比較)」を参照してください。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.ECMAScript">
+      <summary>式の ECMAScript 準拠の動作を有効にします。この値は、必ず <see cref="F:System.Text.RegularExpressions.RegexOptions.IgnoreCase" />、<see cref="F:System.Text.RegularExpressions.RegexOptions.Multiline" />、<see cref="F:System.Text.RegularExpressions.RegexOptions.Compiled" /> の各値と組み合わせて使用します。この値を他の値と組み合わせて使用すると、例外が発生します。<see cref="F:System.Text.RegularExpressions.RegexOptions.ECMAScript" /> オプションについての詳細は、正規表現のオプション のトピックの「ECMAScript Matching Behavior (ECMAScript の照合の動作)」を参照してください。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.ExplicitCapture">
+      <summary>明示的に名前または番号を指定された (?&lt;name&gt;...) の形式のグループだけが有効なキャプチャであることを指定します。これにより、不恰好な表現 (?:...) を使用しなくても、名前のないかっこが非キャプチャ グループとして機能するようになります。詳細については、正規表現のオプション のトピックの「Explicit Captures Only (明示的なキャプチャのみ)」を参照してください。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.IgnoreCase">
+      <summary>検索時に大文字と小文字を区別しないことを指定します。詳細については、正規表現のオプション のトピックの「Case-Insensitive Matching (大文字と小文字を区別しない検索)」を参照してください。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.IgnorePatternWhitespace">
+      <summary>パターンからエスケープが解除された空白を削除し、# でマークされたコメントを有効にします。ただしこの値は、個々の正規表現の言語要素の開始を示す文字クラス、数値の量指定子、またはトークンに影響を与えることも、これらの中の空白を削除することもありません。詳細については、正規表現のオプション のトピックの「Ignore White Space (空白を無視する)」を参照してください。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.Multiline">
+      <summary>複数行モードを指定します。^ と $ の意味を変更して、文字列全体の先頭と末尾だけでなく、任意の行の先頭と末尾にもそれぞれが一致するようにします。詳細については、正規表現のオプション のトピックの「Multiline Mode (複数行モード)」を参照してください。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.None">
+      <summary>オプションが何も設定されないことを指定します。正規表現エンジンの既定の動作についての詳細は、正規表現のオプション のトピックの「Default Options (既定のオプション)」を参照してください。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.RightToLeft">
+      <summary>検索が左から右ではなく右から左になされるように指定します。詳細については、正規表現のオプション のトピックの「Right-to-Left Mode (右から左モード)」を参照してください。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.Singleline">
+      <summary>単一行モードを指定します。\n 以外の任意の文字ではなく、すべての文字と一致するようにピリオド (.) の意味を変更します。詳細については、正規表現のオプション のトピックの「Single-line Mode (単一行モード)」を参照してください。</summary>
+    </member>
+  </members>
+</doc>

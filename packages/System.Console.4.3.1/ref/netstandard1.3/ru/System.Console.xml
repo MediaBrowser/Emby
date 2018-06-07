@@ -1,0 +1,452 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Console</name>
+  </assembly>
+  <members>
+    <member name="T:System.Console">
+      <summary>Предоставляет стандартные потоки для консольных приложений: входной, выходной и поток сообщений об ошибках.Этот класс не наследуется.Чтобы просмотреть исходный код .NET Framework для этого типа, см. Reference Source.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Console.BackgroundColor">
+      <summary>Возвращает или задает цвет фона консоли.</summary>
+      <returns>Значение из перечисления , задающее фоновый цвет консоли, то есть цвет, на фоне которого выводятся символы.Значением по умолчанию является Black.</returns>
+      <exception cref="T:System.ArgumentException">Цвет, заданный в операции set, не является допустимым членом перечисления <see cref="T:System.ConsoleColor" />. </exception>
+      <exception cref="T:System.Security.SecurityException">Данный пользователь не имеет разрешения на выполнение этого действия. </exception>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Window="SafeTopLevelWindows" />
+      </PermissionSet>
+    </member>
+    <member name="E:System.Console.CancelKeyPress">
+      <summary>Возникает при одновременном нажатии клавиши-модификатора <see cref="F:System.ConsoleModifiers.Control" /> (Ctrl) и либо клавиши консоли <see cref="F:System.ConsoleKey.C" /> (C), либо клавиши Break (Ctrl+C или Ctrl+Break).</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Console.Error">
+      <summary>Возвращает стандартный выходной поток сообщений об ошибках.</summary>
+      <returns>Объект <see cref="T:System.IO.TextWriter" />, предоставляющий стандартный поток вывода ошибок.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Console.ForegroundColor">
+      <summary>Возвращает или задает цвет фона консоли.</summary>
+      <returns>Значение из перечисления <see cref="T:System.ConsoleColor" />, задающее цвет переднего плана консоли, то есть цвет, которым выводятся символы.По умолчанию задано значение Gray.</returns>
+      <exception cref="T:System.ArgumentException">Цвет, заданный в операции set, не является допустимым членом перечисления <see cref="T:System.ConsoleColor" />. </exception>
+      <exception cref="T:System.Security.SecurityException">Данный пользователь не имеет разрешения на выполнение этого действия. </exception>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Window="SafeTopLevelWindows" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Console.In">
+      <summary>Возвращает стандартный входной поток.</summary>
+      <returns>Объект <see cref="T:System.IO.TextReader" />, представляющий стандартный входной поток.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.OpenStandardError">
+      <summary>Получает стандартный поток сообщений об ошибках.</summary>
+      <returns>Стандартный поток сообщений об ошибках.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.OpenStandardInput">
+      <summary>Получает стандартный входной поток.</summary>
+      <returns>Стандартный входной поток.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.OpenStandardOutput">
+      <summary>Получает стандартный выходной поток.</summary>
+      <returns>Стандартный выходной поток.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Console.Out">
+      <summary>Возвращает стандартный выходной поток.</summary>
+      <returns>Объект <see cref="T:System.IO.TextWriter" />, представляющий стандартный выходной поток.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Read">
+      <summary>Читает следующий символ из стандартного входного потока.</summary>
+      <returns>Следующий символ из входного потока или значение минус единица (-1), если доступных для чтения символов не осталось.</returns>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.ReadLine">
+      <summary>Считывает следующую строку символов из стандартного входного потока.</summary>
+      <returns>Следующая строка символов из входного потока или значение null, если больше нет доступных строк.</returns>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <exception cref="T:System.OutOfMemoryException">Недостаточно памяти для размещения буфера возвращаемых строк. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Количество символов в следующей строке больше <see cref="F:System.Int32.MaxValue" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.ResetColor">
+      <summary>Устанавливает для цветов фона и текста консоли их значения по умолчанию.</summary>
+      <exception cref="T:System.Security.SecurityException">Данный пользователь не имеет разрешения на выполнение этого действия. </exception>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Window="SafeTopLevelWindows" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Console.SetError(System.IO.TextWriter)">
+      <summary>Присваивает свойству <see cref="P:System.Console.Error" /> указанный объект <see cref="T:System.IO.TextWriter" />.</summary>
+      <param name="newError">Поток, являющийся новым стандартным потоком сообщений об ошибках. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="newError" /> имеет значение null. </exception>
+      <exception cref="T:System.Security.SecurityException">У вызывающего объекта отсутствует необходимое разрешение. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Console.SetIn(System.IO.TextReader)">
+      <summary>Присваивает свойству <see cref="P:System.Console.In" /> указанный объект <see cref="T:System.IO.TextReader" />.</summary>
+      <param name="newIn">Поток, являющийся новым стандартным входным потоком. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="newIn" /> имеет значение null. </exception>
+      <exception cref="T:System.Security.SecurityException">У вызывающего объекта отсутствует необходимое разрешение. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Console.SetOut(System.IO.TextWriter)">
+      <summary>Присваивает свойству <see cref="P:System.Console.Out" /> указанный объект <see cref="T:System.IO.TextWriter" />.</summary>
+      <param name="newOut">Поток, являющийся новым стандартным выходным потоком. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="newOut" /> имеет значение null. </exception>
+      <exception cref="T:System.Security.SecurityException">У вызывающего объекта отсутствует необходимое разрешение. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Console.Write(System.Boolean)">
+      <summary>Записывает текстовое представление заданного логического значения в стандартный выходной поток.</summary>
+      <param name="value">Значение для записи. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Char)">
+      <summary>Записывает значение заданного знака Юникода в стандартный выходной поток.</summary>
+      <param name="value">Значение для записи. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Char[])">
+      <summary>Записывает заданный массив знаков Юникода в стандартный выходной поток.</summary>
+      <param name="buffer">Массив знаков Юникода. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Char[],System.Int32,System.Int32)">
+      <summary>Записывает заданный дочерний массив знаков Юникода в стандартный выходной поток.</summary>
+      <param name="buffer">Массив знаков Юникода. </param>
+      <param name="index">Начальная позиция в массиве <paramref name="buffer" />. </param>
+      <param name="count">Количество символов для записи. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> меньше нуля. </exception>
+      <exception cref="T:System.ArgumentException">Сумма значений параметров <paramref name="index" /> и <paramref name="count" /> указывает на позицию вне массива <paramref name="buffer" />. </exception>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Decimal)">
+      <summary>Записывает текстовое представление заданного значения <see cref="T:System.Decimal" /> в стандартный выходной поток.</summary>
+      <param name="value">Значение для записи. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Double)">
+      <summary>Записывает текстовое представление заданного значения двойной точности с плавающей запятой в стандартный выходной поток.</summary>
+      <param name="value">Значение для записи. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Int32)">
+      <summary>Записывает текстовое представление заданного 32-битового целого числа со знаком в стандартный поток вывода.</summary>
+      <param name="value">Значение для записи. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Int64)">
+      <summary>Записывает текстовое представление заданного 64-битового целого числа со знаком в стандартный поток вывода.</summary>
+      <param name="value">Значение для записи. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Object)">
+      <summary>Записывает текстовое представление заданного объекта в стандартный выходной поток.</summary>
+      <param name="value">Записываемое значение или null. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Single)">
+      <summary>Записывает текстовое представление заданного значения одинарной точности с плавающей запятой в стандартный выходной поток.</summary>
+      <param name="value">Значение для записи. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String)">
+      <summary>Записывает заданное строковое значение в стандартный выходной поток.</summary>
+      <param name="value">Значение для записи. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String,System.Object)">
+      <summary>Записывает текстовое представление заданного объекта в стандартный выходной поток, используя заданные сведения о форматировании.</summary>
+      <param name="format">Строка составного формата (см. примечания). </param>
+      <param name="arg0">Объект для записи с использованием <paramref name="format" />. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="format" /> имеет значение null. </exception>
+      <exception cref="T:System.FormatException">Заданная в параметре <paramref name="format" /> спецификация формата недопустима. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String,System.Object,System.Object)">
+      <summary>Записывает текстовые представления заданных объектов в стандартный выходной поток, используя заданные сведения о форматировании.</summary>
+      <param name="format">Строка составного формата (см. примечания).</param>
+      <param name="arg0">Первый объект для записи с использованием <paramref name="format" />. </param>
+      <param name="arg1">Второй объект для записи с использованием <paramref name="format" />. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="format" /> имеет значение null. </exception>
+      <exception cref="T:System.FormatException">Заданная в параметре <paramref name="format" /> спецификация формата недопустима. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String,System.Object,System.Object,System.Object)">
+      <summary>Записывает текстовые представления заданных объектов в стандартный выходной поток, используя заданные сведения о форматировании.</summary>
+      <param name="format">Строка составного формата (см. примечания).</param>
+      <param name="arg0">Первый объект для записи с использованием <paramref name="format" />. </param>
+      <param name="arg1">Второй объект для записи с использованием <paramref name="format" />. </param>
+      <param name="arg2">Третий объект для записи с использованием <paramref name="format" />. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="format" /> имеет значение null. </exception>
+      <exception cref="T:System.FormatException">Заданная в параметре <paramref name="format" /> спецификация формата недопустима. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String,System.Object[])">
+      <summary>Записывает текстовое представление заданного массива объектов в стандартный выходной поток, используя заданные сведения о форматировании.</summary>
+      <param name="format">Строка составного формата (см. примечания).</param>
+      <param name="arg">Массив объектов для записи с использованием <paramref name="format" />. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="format" /> или <paramref name="arg" /> имеет значение null. </exception>
+      <exception cref="T:System.FormatException">Заданная в параметре <paramref name="format" /> спецификация формата недопустима. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.UInt32)">
+      <summary>Записывает текстовое представление заданного 32-битового целого числа без знака в стандартный выходной поток.</summary>
+      <param name="value">Значение для записи. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.UInt64)">
+      <summary>Записывает текстовое представление заданного 64-битового целого числа без знака в стандартный выходной поток.</summary>
+      <param name="value">Значение для записи. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine">
+      <summary>Записывает текущий признак конца строки в стандартный выходной поток.</summary>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Boolean)">
+      <summary>Записывает текстовое представление заданного логического значения с текущим признаком конца строки в стандартный выходной поток.</summary>
+      <param name="value">Значение для записи. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Char)">
+      <summary>Записывает заданный знак Юникода, за которым следует текущий признак конца строки, в стандартный выходной поток.</summary>
+      <param name="value">Значение для записи. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Char[])">
+      <summary>Записывает заданный массив знаков Юникода, за которым следует текущий признак конца строки, в стандартный выходной поток.</summary>
+      <param name="buffer">Массив знаков Юникода. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Char[],System.Int32,System.Int32)">
+      <summary>Записывает заданный подмассив знаков Юникода, за которым следует текущий признак конца строки, в стандартный выходной поток.</summary>
+      <param name="buffer">Массив знаков Юникода. </param>
+      <param name="index">Начальная позиция в массиве <paramref name="buffer" />. </param>
+      <param name="count">Количество символов для записи. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="buffer" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> или <paramref name="count" /> меньше нуля. </exception>
+      <exception cref="T:System.ArgumentException">Сумма значений параметров <paramref name="index" /> и <paramref name="count" /> указывает на позицию вне массива <paramref name="buffer" />. </exception>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Decimal)">
+      <summary>Записывает текстовое представление указанного значения <see cref="T:System.Decimal" />, за которым следует текущий знак завершения строки, в стандартный выходной поток.</summary>
+      <param name="value">Значение для записи. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Double)">
+      <summary>Записывает текстовое представление заданного значения двойной точности с плавающей запятой, за которым следует признак конца строки, в стандартный выходной поток.</summary>
+      <param name="value">Значение для записи. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Int32)">
+      <summary>Записывает текстовое представление заданного 32-битового целого числа со знаком, за которым следует текущий знак завершения строки, в стандартный поток вывода.</summary>
+      <param name="value">Значение для записи. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Int64)">
+      <summary>Записывает текстовое представление заданного 64-битового целого числа со знаком, за которым следует текущий знак завершения строки, в стандартный поток вывода.</summary>
+      <param name="value">Значение для записи. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Object)">
+      <summary>Записывает текстовое представление заданного объекта, за которым следует текущий признак конца строки, в стандартный выходной поток.</summary>
+      <param name="value">Значение для записи. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Single)">
+      <summary>Записывает текстовое представление заданного значения одинарной точности с плавающей запятой, за которым следует признак конца строки, в стандартный выходной поток.</summary>
+      <param name="value">Значение для записи. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String)">
+      <summary>Записывает заданное строковое значение, за которым следует текущий признак конца строки, в стандартный выходной поток.</summary>
+      <param name="value">Значение для записи. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String,System.Object)">
+      <summary>Записывает текстовое представление заданного объекта, за которым следует текущий признак конца строки, в стандартный выходной поток с использованием заданных сведений о форматировании.</summary>
+      <param name="format">Строка составного формата (см. примечания).</param>
+      <param name="arg0">Объект для записи с использованием <paramref name="format" />. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="format" /> имеет значение null. </exception>
+      <exception cref="T:System.FormatException">Заданная в параметре <paramref name="format" /> спецификация формата недопустима. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String,System.Object,System.Object)">
+      <summary>Записывает текстовые представления заданных объектов, за которыми следует текущий признак конца строки, в стандартный выходной поток с использованием заданных сведений о форматировании.</summary>
+      <param name="format">Строка составного формата (см. примечания).</param>
+      <param name="arg0">Первый объект для записи с использованием <paramref name="format" />. </param>
+      <param name="arg1">Второй объект для записи с использованием <paramref name="format" />. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="format" /> имеет значение null. </exception>
+      <exception cref="T:System.FormatException">Заданная в параметре <paramref name="format" /> спецификация формата недопустима. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String,System.Object,System.Object,System.Object)">
+      <summary>Записывает текстовые представления заданных объектов, за которыми следует текущий признак конца строки, в стандартный выходной поток с использованием заданных сведений о форматировании.</summary>
+      <param name="format">Строка составного формата (см. примечания).</param>
+      <param name="arg0">Первый объект для записи с использованием <paramref name="format" />. </param>
+      <param name="arg1">Второй объект для записи с использованием <paramref name="format" />. </param>
+      <param name="arg2">Третий объект для записи с использованием <paramref name="format" />. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="format" /> имеет значение null. </exception>
+      <exception cref="T:System.FormatException">Заданная в параметре <paramref name="format" /> спецификация формата недопустима. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String,System.Object[])">
+      <summary>Записывает текстовые представления заданного массива объектов, за которым следует текущий признак конца строки, в стандартный выходной поток с использованием заданных сведений о форматировании.</summary>
+      <param name="format">Строка составного формата (см. примечания).</param>
+      <param name="arg">Массив объектов для записи с использованием <paramref name="format" />. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="format" /> или <paramref name="arg" /> имеет значение null. </exception>
+      <exception cref="T:System.FormatException">Заданная в параметре <paramref name="format" /> спецификация формата недопустима. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.UInt32)">
+      <summary>Записывает текстовое представление заданного 32-битового целого числа без знака, за которым следует текущий признак конца строки, в стандартный выходной поток.</summary>
+      <param name="value">Значение для записи. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.UInt64)">
+      <summary>Записывает текстовое представление заданного 64-битового целого числа без знака, за которым следует текущий признак конца строки, в стандартный выходной поток.</summary>
+      <param name="value">Значение для записи. </param>
+      <exception cref="T:System.IO.IOException">Произошла ошибка ввода-вывода. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.ConsoleCancelEventArgs">
+      <summary>Предоставляет данные для события <see cref="E:System.Console.CancelKeyPress" />.Этот класс не наследуется.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.ConsoleCancelEventArgs.Cancel">
+      <summary>Получает или задает значение, указывающее, останавливается ли текущий процесс при одновременном нажатии клавиши-модификатора <see cref="F:System.ConsoleModifiers.Control" /> и клавиши консоли <see cref="F:System.ConsoleKey.C" /> (CTRL+C) либо клавиш CTRL+BREAK.Значение по умолчанию false, которое используется для завершения текущего процесса.</summary>
+      <returns>true, если по завершении работы обработчика событий текущий процесс следует возобновлять; false, если текущий процесс следует останавливать.Значение по умолчанию — false; текущий процесс заканчивается, когда обработчик событий возвращает.true, если текущий процесс продолжается.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.ConsoleCancelEventArgs.SpecialKey">
+      <summary>Возвращает сочетание клавиш, с помощью которого была прервана работа текущего процесса.</summary>
+      <returns>Одно из значений перечисления, указывающее сочетание клавиш, которое прервало текущий процесс.Значение по умолчанию отсутствует.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.ConsoleCancelEventHandler">
+      <summary>Представляет метод, обрабатывающий событие <see cref="E:System.Console.CancelKeyPress" /> класса <see cref="T:System.Console" />.</summary>
+      <param name="sender">Источник события. </param>
+      <param name="e">Объект <see cref="T:System.ConsoleCancelEventArgs" />, содержащий данные события. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.ConsoleColor">
+      <summary>Задает константы, которые определяют основной цвет и цвет фона консоли.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.ConsoleColor.Black">
+      <summary>Черный цвет.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Blue">
+      <summary>Синий цвет.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Cyan">
+      <summary>Голубой цвет (сине-зеленый).</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkBlue">
+      <summary>Темно-синий цвет.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkCyan">
+      <summary>Темно-голубой цвет (темный сине-зеленый).</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkGray">
+      <summary>Темно-серый цвет.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkGreen">
+      <summary>Темно-зеленый цвет.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkMagenta">
+      <summary>Темно-пурпурный цвет (темный фиолетово-красный).</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkRed">
+      <summary>Темно-красный цвет.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkYellow">
+      <summary>Темно-желтый цвет (коричнево-желтый).</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Gray">
+      <summary>Серый цвет.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Green">
+      <summary>Зеленый цвет.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Magenta">
+      <summary>Пурпурный цвет (фиолетово-красный).</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Red">
+      <summary>Красный цвет.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.White">
+      <summary>Белый цвет.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Yellow">
+      <summary>Желтый цвет.</summary>
+    </member>
+    <member name="T:System.ConsoleSpecialKey">
+      <summary>Задает сочетание управляющих клавиш и клавиш консоли, с помощью которого можно прервать работу текущего процесса.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.ConsoleSpecialKey.ControlBreak">
+      <summary>Управляющая клавиша <see cref="F:System.ConsoleModifiers.Control" /> плюс клавиша консоли BREAK.</summary>
+    </member>
+    <member name="F:System.ConsoleSpecialKey.ControlC">
+      <summary>Управляющая клавиша <see cref="F:System.ConsoleModifiers.Control" /> плюс клавиша консоли <see cref="F:System.ConsoleKey.C" />.</summary>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>Microsoft.Win32.Primitives</name>
+  </assembly>
+  <members>
+    <member name="T:System.ComponentModel.Win32Exception">
+      <summary>Löst eine Ausnahme für einen Win32-Fehlercode aus.</summary>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.ComponentModel.Win32Exception" />-Klasse mit dem zuletzt aufgetretenen Win32-Fehler.</summary>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor(System.Int32)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.ComponentModel.Win32Exception" />-Klasse mit dem angegebenen Fehler.</summary>
+      <param name="error">Der dieser Ausnahme zugeordnete Win32-Fehlercode. </param>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor(System.Int32,System.String)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.ComponentModel.Win32Exception" />-Klasse mit dem angegebenen Fehler und der angegebenen detaillierten Beschreibung.</summary>
+      <param name="error">Der dieser Ausnahme zugeordnete Win32-Fehlercode. </param>
+      <param name="message">Eine detaillierte Beschreibung des Fehlers. </param>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor(System.String)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.ComponentModel.Win32Exception" />-Klasse unter Verwendung der angegebenen detaillierten Beschreibung. </summary>
+      <param name="message">Eine detaillierte Beschreibung des Fehlers.</param>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor(System.String,System.Exception)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.ComponentModel.Win32Exception" />-Klasse mit der angegebenen detaillierten Beschreibung und der angegebenen Ausnahme.</summary>
+      <param name="message">Eine detaillierte Beschreibung des Fehlers.</param>
+      <param name="innerException">Ein Verweis auf die innere Ausnahme, die dieser Ausnahme zugrunde liegt.</param>
+    </member>
+    <member name="P:System.ComponentModel.Win32Exception.NativeErrorCode">
+      <summary>Ruft den dieser Ausnahme zugeordneten Win32-Fehlercode ab.</summary>
+      <returns>Der dieser Ausnahme zugeordnete Win32-Fehlercode.</returns>
+    </member>
+  </members>
+</doc>

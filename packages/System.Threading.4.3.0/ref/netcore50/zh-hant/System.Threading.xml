@@ -1,0 +1,1885 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Threading</name>
+  </assembly>
+  <members>
+    <member name="T:System.Threading.AbandonedMutexException">
+      <summary>當一個執行緒取得另一個執行緒已放棄，但是結束時並未釋放的 <see cref="T:System.Threading.Mutex" /> 物件時，所擲回的例外狀況。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor">
+      <summary>使用預設值，初始化 <see cref="T:System.Threading.AbandonedMutexException" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.Int32,System.Threading.WaitHandle)">
+      <summary>使用已放棄 Mutex 的指定索引 (若適用的話) 以及表示此 Mutex 的 <see cref="T:System.Threading.Mutex" /> 物件，初始化 <see cref="T:System.Threading.AbandonedMutexException" /> 類別的新執行個體 。</summary>
+      <param name="location">如果針對 <see cref="Overload:System.Threading.WaitHandle.WaitAny" /> 方法擲回例外狀況，則為等候控制代碼陣列中已放棄 Mutex 的索引；如果針對 <see cref="Overload:System.Threading.WaitHandle.WaitOne" /> 或 <see cref="Overload:System.Threading.WaitHandle.WaitAll" /> 方法擲回例外狀況，則為 -1。</param>
+      <param name="handle">
+        <see cref="T:System.Threading.Mutex" /> 物件，表示放棄的 Mutex。</param>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.String)">
+      <summary>使用指定的錯誤訊息，初始化 <see cref="T:System.Threading.AbandonedMutexException" /> 類別的新執行個體。</summary>
+      <param name="message">解釋發生例外狀況原因的錯誤訊息。</param>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.String,System.Exception)">
+      <summary>使用指定的錯誤訊息和內部例外狀況初始化 <see cref="T:System.Threading.AbandonedMutexException" /> 類別的新執行個體。</summary>
+      <param name="message">解釋發生例外狀況原因的錯誤訊息。</param>
+      <param name="inner">導致目前例外狀況的例外。如果 <paramref name="inner" /> 參數不是 null，則目前的例外狀況會在處理內部例外的 catch 區塊中引發。</param>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.String,System.Exception,System.Int32,System.Threading.WaitHandle)">
+      <summary>使用指定的錯誤訊息、內部例外狀況、已放棄 Mutex 的索引 (若適用的話)，以及表示此 Mutex 的 <see cref="T:System.Threading.Mutex" /> 物件，初始化 <see cref="T:System.Threading.AbandonedMutexException" /> 類別的新執行個體。</summary>
+      <param name="message">解釋發生例外狀況原因的錯誤訊息。</param>
+      <param name="inner">導致目前例外狀況的例外。如果 <paramref name="inner" /> 參數不是 null，則目前的例外狀況會在處理內部例外的 catch 區塊中引發。</param>
+      <param name="location">如果針對 <see cref="Overload:System.Threading.WaitHandle.WaitAny" /> 方法擲回例外狀況，則為等候控制代碼陣列中已放棄 Mutex 的索引；如果針對 <see cref="Overload:System.Threading.WaitHandle.WaitOne" /> 或 <see cref="Overload:System.Threading.WaitHandle.WaitAll" /> 方法擲回例外狀況，則為 -1。</param>
+      <param name="handle">
+        <see cref="T:System.Threading.Mutex" /> 物件，表示放棄的 Mutex。</param>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.String,System.Int32,System.Threading.WaitHandle)">
+      <summary>以指定的錯誤訊息、已放棄 Mutex 的索引 (若適用的話) 以及放棄的 Mutex 初始化 <see cref="T:System.Threading.AbandonedMutexException" /> 類別的新執行個體。</summary>
+      <param name="message">解釋發生例外狀況原因的錯誤訊息。</param>
+      <param name="location">如果針對 <see cref="Overload:System.Threading.WaitHandle.WaitAny" /> 方法擲回例外狀況，則為等候控制代碼陣列中已放棄 Mutex 的索引；如果針對 <see cref="Overload:System.Threading.WaitHandle.WaitOne" /> 或 <see cref="Overload:System.Threading.WaitHandle.WaitAll" /> 方法擲回例外狀況，則為 -1。</param>
+      <param name="handle">
+        <see cref="T:System.Threading.Mutex" /> 物件，表示放棄的 Mutex。</param>
+    </member>
+    <member name="P:System.Threading.AbandonedMutexException.Mutex">
+      <summary>取得造成例外狀況的已放棄 Mutex (若為已知)。</summary>
+      <returns>
+        <see cref="T:System.Threading.Mutex" /> 物件，表示已放棄的 Mutex；若無法識別已放棄的 Mutex，則為 null。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Threading.AbandonedMutexException.MutexIndex">
+      <summary>取得造成例外狀況之已放棄 Mutex 的索引 (若為已知)。</summary>
+      <returns>等候控制代碼陣列中的索引 (已傳遞給 <see cref="T:System.Threading.Mutex" /> 物件的 <see cref="Overload:System.Threading.WaitHandle.WaitAny" /> 方法)，表示已放棄的 Mutex；如果無法判斷已放棄 Mutex 的索引，則為 -1。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.AsyncLocal`1">
+      <summary>表示對於指定的非同步控制流程為本機的環境資料，例如非同步方法。</summary>
+      <typeparam name="T">環境資料的類型。</typeparam>
+    </member>
+    <member name="M:System.Threading.AsyncLocal`1.#ctor">
+      <summary>具現化不會接收變更告知的 <see cref="T:System.Threading.AsyncLocal`1" /> 執行個體。</summary>
+    </member>
+    <member name="M:System.Threading.AsyncLocal`1.#ctor(System.Action{System.Threading.AsyncLocalValueChangedArgs{`0}})">
+      <summary>具現化會接收變更告知的 <see cref="T:System.Threading.AsyncLocal`1" /> 本機執行個體。</summary>
+      <param name="valueChangedHandler">每當在任何執行緒上變更目前的值就會呼叫委派。</param>
+    </member>
+    <member name="P:System.Threading.AsyncLocal`1.Value">
+      <summary>取得或設定環境資料的值。</summary>
+      <returns>環境資料的值。</returns>
+    </member>
+    <member name="T:System.Threading.AsyncLocalValueChangedArgs`1">
+      <summary>會提供資料變更資訊給 <see cref="T:System.Threading.AsyncLocal`1" /> 執行個體的的類別，該執行個體會註冊變更告知。</summary>
+      <typeparam name="T">資料的類型。</typeparam>
+    </member>
+    <member name="P:System.Threading.AsyncLocalValueChangedArgs`1.CurrentValue">
+      <summary>取得資料目前的值。</summary>
+      <returns>資料目前的值。</returns>
+    </member>
+    <member name="P:System.Threading.AsyncLocalValueChangedArgs`1.PreviousValue">
+      <summary>取得資料先前的值。</summary>
+      <returns>資料先前的值。</returns>
+    </member>
+    <member name="P:System.Threading.AsyncLocalValueChangedArgs`1.ThreadContextChanged">
+      <summary>傳回值，指出值是否會因為執行內容的變更而變更。</summary>
+      <returns>如果值會因為執行內容的變更而變更，則為 true；否則為 false。</returns>
+    </member>
+    <member name="T:System.Threading.AutoResetEvent">
+      <summary>向等候的執行緒通知發生事件。此類別無法被繼承。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.AutoResetEvent.#ctor(System.Boolean)">
+      <summary>使用表示是否要將初始狀態設定為已收到訊號的布林值，初始化 <see cref="T:System.Threading.AutoResetEvent" /> 類別的新執行個體。</summary>
+      <param name="initialState">true 表示初始狀態設定為已收到信號，false 表示初始狀態設定為未收到信號。</param>
+    </member>
+    <member name="T:System.Threading.Barrier">
+      <summary>允許多項工作在多個階段中以平行方式來合作處理某個演算法。</summary>
+    </member>
+    <member name="M:System.Threading.Barrier.#ctor(System.Int32)">
+      <summary>初始化 <see cref="T:System.Threading.Barrier" /> 類別的新執行個體。</summary>
+      <param name="participantCount">參與執行緒的數目。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="participantCount" /> 小於 0 或大於 32,767。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.#ctor(System.Int32,System.Action{System.Threading.Barrier})">
+      <summary>初始化 <see cref="T:System.Threading.Barrier" /> 類別的新執行個體。</summary>
+      <param name="participantCount">參與執行緒的數目。</param>
+      <param name="postPhaseAction">要在每個階段之後執行的 <see cref="T:System.Action`1" />。可以傳遞 null (在 Visual Basic 中為 Nothing) 表示不執行任何動作。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="participantCount" /> 小於 0 或大於 32,767。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.AddParticipant">
+      <summary>通知 <see cref="T:System.Threading.Barrier" />，表示還會有一個其他參與者。</summary>
+      <returns>新參與者將第一次參與其中的屏障階段編號。</returns>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+      <exception cref="T:System.InvalidOperationException">加入參與者會造成屏障的參與者計數超過 32,767。-或-此方法是從 post-phase 動作中叫用。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.AddParticipants(System.Int32)">
+      <summary>通知 <see cref="T:System.Threading.Barrier" />，表示還會有多個其他參與者。</summary>
+      <returns>新參與者將第一次參與其中的屏障階段編號。</returns>
+      <param name="participantCount">要加入至屏障的其他參與者數目。</param>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="participantCount" /> 小於 0。-或-加入 <paramref name="participantCount" /> 參與者會造成屏障的參與者計數超過 32,767。</exception>
+      <exception cref="T:System.InvalidOperationException">此方法是從 post-phase 動作中叫用。</exception>
+    </member>
+    <member name="P:System.Threading.Barrier.CurrentPhaseNumber">
+      <summary>取得屏障目前階段的編號。</summary>
+      <returns>傳回屏障目前階段的編號。</returns>
+    </member>
+    <member name="M:System.Threading.Barrier.Dispose">
+      <summary>將 <see cref="T:System.Threading.Barrier" /> 類別目前的執行個體所使用的資源全部釋出。</summary>
+      <exception cref="T:System.InvalidOperationException">此方法是從 post-phase 動作中叫用。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.Dispose(System.Boolean)">
+      <summary>釋放 <see cref="T:System.Threading.Barrier" /> 所使用的 Unmanaged 資源，並選擇性釋放 Managed 資源。</summary>
+      <param name="disposing">true 表示同時釋放 Managed 和 Unmanaged 資源，false 表示只釋放 Unmanaged 資源。</param>
+    </member>
+    <member name="P:System.Threading.Barrier.ParticipantCount">
+      <summary>取得在屏障中的參與者總數。</summary>
+      <returns>傳回在屏障中的參與者總數。</returns>
+    </member>
+    <member name="P:System.Threading.Barrier.ParticipantsRemaining">
+      <summary>取得在目前階段中尚未發出訊號的屏障中參與者數目。</summary>
+      <returns>傳回在目前階段中尚未發出訊號的屏障中參與者數目。</returns>
+    </member>
+    <member name="M:System.Threading.Barrier.RemoveParticipant">
+      <summary>通知 <see cref="T:System.Threading.Barrier" />，表示會減少一個參與者。</summary>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+      <exception cref="T:System.InvalidOperationException">屏障已經有 0 個參與者。-或-此方法是從 post-phase 動作中叫用。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.RemoveParticipants(System.Int32)">
+      <summary>通知 <see cref="T:System.Threading.Barrier" />，表示會減少一些參與者。</summary>
+      <param name="participantCount">要從屏障中移除的其他參與者數目。</param>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="participantCount" /> 小於 0。</exception>
+      <exception cref="T:System.InvalidOperationException">屏障已經有 0 個參與者。-或-此方法是從 post-phase 動作中叫用。 -或-目前的參與者計數少於指定的 participantCount</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">參與者總計數小於指定的 <paramref name=" participantCount" /></exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait">
+      <summary>發出訊號，表示參與者已到達屏障，並且在等候所有其他參與者到達屏障。</summary>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+      <exception cref="T:System.InvalidOperationException">此方法是從 post-phase 動作中叫用，屏障目前有 0 個參與者，或者使用該屏障的執行緒數量多於註冊為參與者的數量。</exception>
+      <exception cref="T:System.Threading.BarrierPostPhaseException">所有參與執行緒皆已呼叫 SignalAndWait 後，如果從 Barrier 的階段後動作擲回例外，會將例外狀況包裝在 BarrierPostPhaseException 中，並擲回所有參與執行緒。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.Int32)">
+      <summary>發出訊號，表示參與者已到達屏障，並且在等候所有其他參與者到達屏障 (使用 32 位元帶正負號的整數以測量逾時)。</summary>
+      <returns>如果所有參與者已在指定時間內達到屏障則為 true，否則為 false。</returns>
+      <param name="millisecondsTimeout">要等候的毫秒數，如果要無限期等候，則為 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一個不等於 -1 的負數，-1 表示等候逾時為無限。</exception>
+      <exception cref="T:System.InvalidOperationException">此方法是從 post-phase 動作中叫用，屏障目前有 0 個參與者，或者使用該屏障的執行緒數量多於註冊為參與者的數量。</exception>
+      <exception cref="T:System.Threading.BarrierPostPhaseException">所有參與執行緒皆已呼叫 SignalAndWait 後，如果從 Barrier 的階段後動作擲回例外，會將例外狀況包裝在 BarrierPostPhaseException 中，並擲回所有參與執行緒。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.Int32,System.Threading.CancellationToken)">
+      <summary>發出訊號，表示參與者已到達屏障，並且在等候所有其他參與者到達 (使用 32 位元帶正負號的整數以測量逾時)，同時觀察取消語彙基元。</summary>
+      <returns>如果所有參與者已在指定時間內達到屏障則為 true，否則為 false。</returns>
+      <param name="millisecondsTimeout">要等候的毫秒數，如果要無限期等候，則為 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <param name="cancellationToken">要觀察的 <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> 已取消。</exception>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一個不等於 -1 的負數，-1 表示等候逾時為無限。</exception>
+      <exception cref="T:System.InvalidOperationException">此方法是從 post-phase 動作中叫用，屏障目前有 0 個參與者，或者使用該屏障的執行緒數量多於註冊為參與者的數量。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.Threading.CancellationToken)">
+      <summary>發出訊號，表示參與者已到達屏障，並且在等候所有其他參與者到達，同時觀察取消語彙基元。</summary>
+      <param name="cancellationToken">要觀察的 <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> 已取消。</exception>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+      <exception cref="T:System.InvalidOperationException">此方法是從 post-phase 動作中叫用，屏障目前有 0 個參與者，或者使用該屏障的執行緒數量多於註冊為參與者的數量。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.TimeSpan)">
+      <summary>發出訊號，表示參與者已到達屏障，並且在等候所有其他參與者到達屏障 (使用 <see cref="T:System.TimeSpan" /> 物件以測量時間間隔)。</summary>
+      <returns>如果所有其他參與者已達到屏障則為 true，否則為 false。</returns>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" />，表示要等候的毫秒數，或是 <see cref="T:System.TimeSpan" />，表示無限期等候的 -1 毫秒。</param>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 是除了 -1 毫秒以外的負數，表示無限逾時，或是大於 32,767 的逾時。</exception>
+      <exception cref="T:System.InvalidOperationException">此方法是從 post-phase 動作中叫用，屏障目前有 0 個參與者，或者使用該屏障的執行緒數量多於註冊為參與者的數量。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>發出訊號，表示參與者已到達屏障，並且在等候所有其他參與者到達 (使用 <see cref="T:System.TimeSpan" /> 物件以測量時間間隔)，同時觀察取消語彙基元。</summary>
+      <returns>如果所有其他參與者已達到屏障則為 true，否則為 false。</returns>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" />，表示要等候的毫秒數，或是 <see cref="T:System.TimeSpan" />，表示無限期等候的 -1 毫秒。</param>
+      <param name="cancellationToken">要觀察的 <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> 已取消。</exception>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 是除了 -1 毫秒以外的負數，表示無限逾時。</exception>
+      <exception cref="T:System.InvalidOperationException">此方法是從 post-phase 動作中叫用，屏障目前有 0 個參與者，或者使用該屏障的執行緒數量多於註冊為參與者的數量。</exception>
+    </member>
+    <member name="T:System.Threading.BarrierPostPhaseException">
+      <summary>在 <see cref="T:System.Threading.Barrier" /> 的後續階段動作失敗時所擲回的例外狀況。</summary>
+    </member>
+    <member name="M:System.Threading.BarrierPostPhaseException.#ctor">
+      <summary>以系統提供的錯誤說明訊息，初始化 <see cref="T:System.Threading.BarrierPostPhaseException" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="M:System.Threading.BarrierPostPhaseException.#ctor(System.Exception)">
+      <summary>使用指定的內部例外狀況，初始化 <see cref="T:System.Threading.BarrierPostPhaseException" /> 類別的新執行個體。</summary>
+      <param name="innerException">導致目前例外狀況的例外。</param>
+    </member>
+    <member name="M:System.Threading.BarrierPostPhaseException.#ctor(System.String)">
+      <summary>使用指定的錯誤說明訊息，初始化 <see cref="T:System.Threading.BarrierPostPhaseException" /> 類別的新執行個體。</summary>
+      <param name="message">說明例外狀況的訊息。這個建構函式的呼叫端必須確保這個字串已經為目前系統的文化特性當地語系化。</param>
+    </member>
+    <member name="M:System.Threading.BarrierPostPhaseException.#ctor(System.String,System.Exception)">
+      <summary>使用指定的錯誤訊息和造成這個例外狀況原因的內部例外狀況參考，初始化 <see cref="T:System.Threading.BarrierPostPhaseException" /> 類別的新執行個體。</summary>
+      <param name="message">說明例外狀況的訊息。這個建構函式的呼叫端必須確保這個字串已經為目前系統的文化特性當地語系化。</param>
+      <param name="innerException">導致目前例外狀況的例外。如果 <paramref name="innerException" /> 參數不是 null，則目前的例外狀況會在處理內部例外的 catch 區塊中引發。</param>
+    </member>
+    <member name="T:System.Threading.ContextCallback">
+      <summary>表示要在新內容裡面呼叫的方法。</summary>
+      <param name="state">物件，它包含回呼方法所使用的資訊。</param>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.CountdownEvent">
+      <summary>代表當計數到達零時收到訊號的同步處理原始物件。</summary>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.#ctor(System.Int32)">
+      <summary>使用指定的計數，初始化 <see cref="T:System.Threading.CountdownEvent" /> 類別的新執行個體。</summary>
+      <param name="initialCount">設定 <see cref="T:System.Threading.CountdownEvent" /> 時最初所需的訊號次數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="initialCount" /> 小於 0。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.AddCount">
+      <summary>將 <see cref="T:System.Threading.CountdownEvent" /> 目前的計數遞增一。</summary>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+      <exception cref="T:System.InvalidOperationException">目前的執行個體已經設定。-或-<see cref="P:System.Threading.CountdownEvent.CurrentCount" /> 等於或大於 <see cref="F:System.Int32.MaxValue" />。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.AddCount(System.Int32)">
+      <summary>將 <see cref="T:System.Threading.CountdownEvent" /> 目前的計數遞增所指定的值。</summary>
+      <param name="signalCount">
+        <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> 所要增加的值。</param>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="signalCount" /> 小於或等於 0。</exception>
+      <exception cref="T:System.InvalidOperationException">目前的執行個體已經設定。-或-計數遞增 <paramref name="signalCount." /> 後，<see cref="P:System.Threading.CountdownEvent.CurrentCount" /> 會等於或大於 <see cref="F:System.Int32.MaxValue" /></exception>
+    </member>
+    <member name="P:System.Threading.CountdownEvent.CurrentCount">
+      <summary>取得設定事件時需要的剩餘訊號次數。</summary>
+      <returns> 設定事件時需要的剩餘訊號次數。</returns>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Dispose">
+      <summary>將 <see cref="T:System.Threading.CountdownEvent" /> 類別目前的執行個體所使用的資源全部釋出。</summary>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Dispose(System.Boolean)">
+      <summary>釋放 <see cref="T:System.Threading.CountdownEvent" /> 所使用的 Unmanaged 資源，並選擇性釋放 Managed 資源。</summary>
+      <param name="disposing">true 表示同時釋放 Managed 和 Unmanaged 資源，false 表示只釋放 Unmanaged 資源。</param>
+    </member>
+    <member name="P:System.Threading.CountdownEvent.InitialCount">
+      <summary>取得設定事件一開始時所需要的訊號次數。</summary>
+      <returns> 設定事件一開始時所需要的訊號次數。</returns>
+    </member>
+    <member name="P:System.Threading.CountdownEvent.IsSet">
+      <summary>判斷事件是否已設定。</summary>
+      <returns>如果已設定事件則為 true，否則為 false。</returns>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Reset">
+      <summary>將 <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> 重設為 <see cref="P:System.Threading.CountdownEvent.InitialCount" /> 的值。</summary>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Reset(System.Int32)">
+      <summary>將 <see cref="P:System.Threading.CountdownEvent.InitialCount" /> 屬性重設為指定的值。</summary>
+      <param name="count">設定 <see cref="T:System.Threading.CountdownEvent" /> 時所需的訊號次數。</param>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> 小於 0。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Signal">
+      <summary>向 <see cref="T:System.Threading.CountdownEvent" /> 註冊訊號，並遞減 <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> 的值。</summary>
+      <returns>如果訊號使計數到達零且設定事件則為 true，否則為 false。</returns>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+      <exception cref="T:System.InvalidOperationException">目前的執行個體已經設定。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Signal(System.Int32)">
+      <summary>向 <see cref="T:System.Threading.CountdownEvent" /> 註冊多個訊號，並將 <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> 的值遞減指定的數量。</summary>
+      <returns>如果信號使計數到達零且設定事件則為 true，否則為 false。</returns>
+      <param name="signalCount">要註冊的訊號數。</param>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="signalCount" /> 小於 1。</exception>
+      <exception cref="T:System.InvalidOperationException">目前的執行個體已經設定。或 <paramref name="signalCount" /> 大於 <see cref="P:System.Threading.CountdownEvent.CurrentCount" />。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.TryAddCount">
+      <summary>嘗試將 <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> 遞增一。</summary>
+      <returns>如果遞增成功則為 true，否則為 false。如果 <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> 已經位於零，這個方法將傳回 false。</returns>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> 等於 <see cref="F:System.Int32.MaxValue" />。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.TryAddCount(System.Int32)">
+      <summary>嘗試以指定的值遞增 <see cref="P:System.Threading.CountdownEvent.CurrentCount" />。</summary>
+      <returns>如果遞增成功則為 true，否則為 false。如果 <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> 已經為零，這將傳回 false。</returns>
+      <param name="signalCount">
+        <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> 所要增加的值。</param>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="signalCount" /> 小於或等於 0。</exception>
+      <exception cref="T:System.InvalidOperationException">目前的執行個體已經設定。-或-<see cref="P:System.Threading.CountdownEvent.CurrentCount" /> + <paramref name="signalCount" />等於或大於 <see cref="F:System.Int32.MaxValue" />。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait">
+      <summary>封鎖目前的執行緒，直到設定了 <see cref="T:System.Threading.CountdownEvent" /> 為止。</summary>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.Int32)">
+      <summary>封鎖目前的執行緒，直到設定了 <see cref="T:System.Threading.CountdownEvent" /> 為止 (使用 32 位元帶正負號的整數以測量逾時)。</summary>
+      <returns>如果已設定 <see cref="T:System.Threading.CountdownEvent" /> 則為 true，否則為 false。</returns>
+      <param name="millisecondsTimeout">要等候的毫秒數，如果要無限期等候，則為 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一個不等於 -1 的負數，-1 表示等候逾時為無限。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.Int32,System.Threading.CancellationToken)">
+      <summary>封鎖目前的執行緒，直到設定了 <see cref="T:System.Threading.CountdownEvent" /> 為止 (使用 32 位元帶正負號的整數以測量逾時)，同時觀察 <see cref="T:System.Threading.CancellationToken" />。</summary>
+      <returns>如果已設定 <see cref="T:System.Threading.CountdownEvent" /> 則為 true，否則為 false。</returns>
+      <param name="millisecondsTimeout">要等候的毫秒數，如果要無限期等候，則為 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <param name="cancellationToken">要觀察的 <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> 已取消。</exception>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。-或者-已處置建立 <paramref name="cancellationToken" /> 的 <see cref="T:System.Threading.CancellationTokenSource" />。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一個不等於 -1 的負數，-1 表示等候逾時為無限。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.Threading.CancellationToken)">
+      <summary>封鎖目前的執行緒，直到設定了 <see cref="T:System.Threading.CountdownEvent" /> 為止，同時觀察 <see cref="T:System.Threading.CancellationToken" />。</summary>
+      <param name="cancellationToken">要觀察的 <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> 已取消。</exception>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。-或者-已處置建立 <paramref name="cancellationToken" /> 的 <see cref="T:System.Threading.CancellationTokenSource" />。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.TimeSpan)">
+      <summary>封鎖目前的執行緒，直到設定了 <see cref="T:System.Threading.CountdownEvent" /> 為止 (使用 <see cref="T:System.TimeSpan" /> 以測量逾時)。</summary>
+      <returns>如果已設定 <see cref="T:System.Threading.CountdownEvent" /> 則為 true，否則為 false。</returns>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" />，表示要等候的毫秒數，或是 <see cref="T:System.TimeSpan" />，表示無限期等候的 -1 毫秒。</param>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 是除了 -1 毫秒以外的負數，表示無限逾時，或是大於 <see cref="F:System.Int32.MaxValue" /> 的逾時。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>封鎖目前的執行緒，直到設定了 <see cref="T:System.Threading.CountdownEvent" /> 為止 (使用 <see cref="T:System.TimeSpan" /> 以測量逾時)，同時觀察 <see cref="T:System.Threading.CancellationToken" />。</summary>
+      <returns>如果已設定 <see cref="T:System.Threading.CountdownEvent" /> 則為 true，否則為 false。</returns>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" />，表示要等候的毫秒數，或是 <see cref="T:System.TimeSpan" />，表示無限期等候的 -1 毫秒。</param>
+      <param name="cancellationToken">要觀察的 <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> 已取消。</exception>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。-或者-已處置建立 <paramref name="cancellationToken" /> 的 <see cref="T:System.Threading.CancellationTokenSource" />。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 是除了 -1 毫秒以外的負數，表示無限逾時，或是大於 <see cref="F:System.Int32.MaxValue" /> 的逾時。</exception>
+    </member>
+    <member name="P:System.Threading.CountdownEvent.WaitHandle">
+      <summary>取得用來等候事件獲得設定的 <see cref="T:System.Threading.WaitHandle" />。</summary>
+      <returns>
+        <see cref="T:System.Threading.WaitHandle" />，其會用於等候事件獲得設定。</returns>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+    </member>
+    <member name="T:System.Threading.EventResetMode">
+      <summary>表示收到信號之後，是否會自動或手動重設 <see cref="T:System.Threading.EventWaitHandle" />。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Threading.EventResetMode.AutoReset">
+      <summary>收到信號通知時，<see cref="T:System.Threading.EventWaitHandle" /> 在釋放單一執行緒後會自動重設。如果沒有任何執行緒在等待，則 <see cref="T:System.Threading.EventWaitHandle" /> 會保持收到信號的狀態，直到有執行緒被封鎖為止，接著就釋放這個執行緒並將自己重設。</summary>
+    </member>
+    <member name="F:System.Threading.EventResetMode.ManualReset">
+      <summary>收到信號通知時，<see cref="T:System.Threading.EventWaitHandle" /> 會釋放所有正在等待的執行緒，並保持收到信號的狀態，直到被手動重設為止。</summary>
+    </member>
+    <member name="T:System.Threading.EventWaitHandle">
+      <summary>表示執行緒同步處理事件。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.#ctor(System.Boolean,System.Threading.EventResetMode)">
+      <summary>初始化 <see cref="T:System.Threading.EventWaitHandle" /> 類別的新執行個體、指定等候控制代碼是否一開始就會收到信號，以及是以自動還是手動方式來重設。</summary>
+      <param name="initialState">true 表示初始狀態設定為已收到信號，false 表示初始狀態設定為未收到信號。</param>
+      <param name="mode">其中一個 <see cref="T:System.Threading.EventResetMode" /> 值，判斷是以自動還是手動方式重設事件。</param>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.#ctor(System.Boolean,System.Threading.EventResetMode,System.String)">
+      <summary>初始化 <see cref="T:System.Threading.EventWaitHandle" /> 類別的新執行個體、指定等候控制代碼是否一開始就會收到信號 (如果它是因這個呼叫而建立)、是以自動還是手動方式進行重設，以及系統同步處理事件的名稱。</summary>
+      <param name="initialState">true 表示初始狀態設定為已收到信號 (如果具名事件是因這個呼叫而建立)，false 表示初始狀態設定為未收到信號。</param>
+      <param name="mode">其中一個 <see cref="T:System.Threading.EventResetMode" /> 值，判斷是以自動還是手動方式重設事件。</param>
+      <param name="name">整個系統的同步處理事件名稱。</param>
+      <exception cref="T:System.IO.IOException">發生 Win32 錯誤。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">具名的事件已存在，而且具有存取控制安全性，但是使用者沒有 <see cref="F:System.Security.AccessControl.EventWaitHandleRights.FullControl" />。</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">無法建立具名的事件，可能是因為不同類型的等候控制代碼擁有相同名稱。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 長度超過 260 個字元。</exception>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.#ctor(System.Boolean,System.Threading.EventResetMode,System.String,System.Boolean@)">
+      <summary>初始化 <see cref="T:System.Threading.EventWaitHandle" /> 類別的新執行個體、指定等候控制代碼是否一開始就會收到信號 (如果它是因這個呼叫而建立)、是以自動還是手動方式進行重設、系統同步處理事件的名稱，以及呼叫之後的布林變數值 (此值可指示是否已建立具名系統事件)。</summary>
+      <param name="initialState">true 表示初始狀態設定為已收到信號 (如果具名事件是因這個呼叫而建立)，false 表示初始狀態設定為未收到信號。</param>
+      <param name="mode">其中一個 <see cref="T:System.Threading.EventResetMode" /> 值，判斷是以自動還是手動方式重設事件。</param>
+      <param name="name">整個系統的同步處理事件名稱。</param>
+      <param name="createdNew">這個方法傳回時，如果已建立本機事件 (也就是說，如果 <paramref name="name" /> 為 null 或空字串)，或是已建立指定的已命名系統事件，則會包含 true；如果指定的已命名系統事件已存在則為 false。這個參數會以未初始化的狀態傳遞。</param>
+      <exception cref="T:System.IO.IOException">發生 Win32 錯誤。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">具名的事件已存在，而且具有存取控制安全性，但是使用者沒有 <see cref="F:System.Security.AccessControl.EventWaitHandleRights.FullControl" />。</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">無法建立具名的事件，可能是因為不同類型的等候控制代碼擁有相同名稱。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 長度超過 260 個字元。</exception>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.OpenExisting(System.String)">
+      <summary>開啟指定的具名同步處理事件 (如果已經存在)。</summary>
+      <returns>表示具名系統事件的物件。</returns>
+      <param name="name">要開啟的系統同步處理事件的名稱。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 為空字串。-或-<paramref name="name" /> 長度超過 260 個字元。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 為 null。</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">具名系統事件不存在。</exception>
+      <exception cref="T:System.IO.IOException">發生 Win32 錯誤。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">具名事件存在，但是使用者並沒有使用它所需的安全性存取權。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.Reset">
+      <summary>將事件的狀態設定為未收到信號，會造成執行緒封鎖。</summary>
+      <returns>如果作業成功，則為 true，否則為 false .</returns>
+      <exception cref="T:System.ObjectDisposedException">之前在這個 <see cref="T:System.Threading.EventWaitHandle" /> 上呼叫 <see cref="M:System.Threading.EventWaitHandle.Close" /> 方法。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.Set">
+      <summary>將事件的狀態設定為未收到信號，讓一個或多個等候執行緒繼續執行。</summary>
+      <returns>如果作業成功，則為 true，否則為 false .</returns>
+      <exception cref="T:System.ObjectDisposedException">之前在這個 <see cref="T:System.Threading.EventWaitHandle" /> 上呼叫 <see cref="M:System.Threading.EventWaitHandle.Close" /> 方法。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.TryOpenExisting(System.String,System.Threading.EventWaitHandle@)">
+      <summary>開啟指定的具名同步處理事件 (如果已經存在)，並傳回值，指出作業是否成功。</summary>
+      <returns>如果已成功開啟具名同步處理事件，則為 true，否則為 false。</returns>
+      <param name="name">要開啟的系統同步處理事件的名稱。</param>
+      <param name="result">這個方法傳回時，如果呼叫成功，則包含<see cref="T:System.Threading.EventWaitHandle" />物件，此物件代表具名同步處理事件，如果呼叫失敗，則為null。這個參數會被視為未初始化。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 為空字串。-或-<paramref name="name" /> 長度超過 260 個字元。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 為 null。</exception>
+      <exception cref="T:System.IO.IOException">發生 Win32 錯誤。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">具名事件已存在，但是使用者沒有所需的安全性存取權。</exception>
+    </member>
+    <member name="T:System.Threading.ExecutionContext">
+      <summary>管理目前執行緒的執行內容。此類別無法被繼承。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.ExecutionContext.Capture">
+      <summary>從目前的執行緒擷取執行內容。</summary>
+      <returns>
+        <see cref="T:System.Threading.ExecutionContext" /> 物件，表示目前執行緒的執行內容。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.ExecutionContext.Run(System.Threading.ExecutionContext,System.Threading.ContextCallback,System.Object)">
+      <summary>在目前執行緒上的指定執行內容中執行方法。</summary>
+      <param name="executionContext">要設定的 <see cref="T:System.Threading.ExecutionContext" />。</param>
+      <param name="callback">
+        <see cref="T:System.Threading.ContextCallback" /> 委派，表示要在所提供執行內容中執行的方法。</param>
+      <param name="state">要傳遞至回呼 (Callback) 方法的物件。</param>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="executionContext" /> 為 null。-或-<paramref name="executionContext" /> 不是透過擷取作業取得。-或-已經將 <paramref name="executionContext" /> 當做 <see cref="M:System.Threading.ExecutionContext.Run(System.Threading.ExecutionContext,System.Threading.ContextCallback,System.Object)" /> 呼叫的引數使用。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="Infrastructure" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Threading.Interlocked">
+      <summary>為多重執行緒共用的變數提供不可部分完成的作業 (Atomic Operation)。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Add(System.Int32@,System.Int32)">
+      <summary>將兩個 32 位元整數加相，並以總和取代第一個整數，成為不可部分完成的作業。</summary>
+      <returns>新值儲存於 <paramref name="location1" />。</returns>
+      <param name="location1">包含要加入的第一個值的變數。這兩個值的總和會存放在 <paramref name="location1" /> 中。</param>
+      <param name="value">要加入 <paramref name="location1" /> 的整數的值。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Add(System.Int64@,System.Int64)">
+      <summary>將兩個 64 位元整數加相，並以總和取代第一個整數，成為不可部分完成的作業。</summary>
+      <returns>新值儲存於 <paramref name="location1" />。</returns>
+      <param name="location1">包含要加入的第一個值的變數。這兩個值的總和會存放在 <paramref name="location1" /> 中。</param>
+      <param name="value">要加入 <paramref name="location1" /> 的整數的值。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Double@,System.Double,System.Double)">
+      <summary>比較兩個雙精確度浮點數是否相等；如果相等，則取代第一個值。</summary>
+      <returns>
+        <paramref name="location1" /> 中的原始值。</returns>
+      <param name="location1">目的端，其值會與 <paramref name="comparand" /> 進行比較且可能已被取代。</param>
+      <param name="value">當比較的結果相等時，會取代目的端值的值。</param>
+      <param name="comparand">與 <paramref name="location1" /> 的值比較的值。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Int32@,System.Int32,System.Int32)">
+      <summary>比較兩個 32 位元帶正負號的整數是否相等，如果相等，則取代第一個值。</summary>
+      <returns>
+        <paramref name="location1" /> 中的原始值。</returns>
+      <param name="location1">目的端，其值會與 <paramref name="comparand" /> 進行比較且可能已被取代。</param>
+      <param name="value">當比較的結果相等時，會取代目的端值的值。</param>
+      <param name="comparand">與 <paramref name="location1" /> 的值比較的值。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Int64@,System.Int64,System.Int64)">
+      <summary>比較兩個 64 位元帶正負號的整數是否相等，如果相等，則取代第一個值。</summary>
+      <returns>
+        <paramref name="location1" /> 中的原始值。</returns>
+      <param name="location1">目的端，其值會與 <paramref name="comparand" /> 進行比較且可能已被取代。</param>
+      <param name="value">當比較的結果相等時，會取代目的端值的值。</param>
+      <param name="comparand">與 <paramref name="location1" /> 的值比較的值。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.IntPtr@,System.IntPtr,System.IntPtr)">
+      <summary>比較兩個平台特定的控制代碼或指標是否相等；如果相等，則取代第一個。</summary>
+      <returns>
+        <paramref name="location1" /> 中的原始值。</returns>
+      <param name="location1">目的端 <see cref="T:System.IntPtr" />，其值會與 <paramref name="comparand" /> 的值進行比較，且可能被 <paramref name="value" /> 所取代。</param>
+      <param name="value">
+        <see cref="T:System.IntPtr" />，當比較的結果相等時會取代目的端值。</param>
+      <param name="comparand">
+        <see cref="T:System.IntPtr" />，會與 <paramref name="location1" /> 的值相比較。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Object@,System.Object,System.Object)">
+      <summary>比較兩個物件的參考是否相等；如果相等，則取代第一個物件。</summary>
+      <returns>
+        <paramref name="location1" /> 中的原始值。</returns>
+      <param name="location1">目的端物件，此物件會與 <paramref name="comparand" /> 進行比較且可能被取代。</param>
+      <param name="value">當比較的結果相等時，會取代目的端物件的物件。</param>
+      <param name="comparand">與 <paramref name="location1" /> 的物件相比較的物件。</param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Single@,System.Single,System.Single)">
+      <summary>比較兩個單精確度浮點數是否相等；如果相等，則取代第一個值。</summary>
+      <returns>
+        <paramref name="location1" /> 中的原始值。</returns>
+      <param name="location1">目的端，其值會與 <paramref name="comparand" /> 進行比較且可能已被取代。</param>
+      <param name="value">當比較的結果相等時，會取代目的端值的值。</param>
+      <param name="comparand">與 <paramref name="location1" /> 的值比較的值。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange``1(``0@,``0,``0)">
+      <summary>比較指定參考類型 <paramref name="T" /> 的兩個執行個體是否相等；如果相等，則取代第一個。</summary>
+      <returns>
+        <paramref name="location1" /> 中的原始值。</returns>
+      <param name="location1">目的端，其值會與 <paramref name="comparand" /> 進行比較且可能已被取代。此為參考參數 (在 C# 中為 ref，在 Visual Basic 中為 ByRef)。</param>
+      <param name="value">當比較的結果相等時，會取代目的端值的值。</param>
+      <param name="comparand">與 <paramref name="location1" /> 的值比較的值。</param>
+      <typeparam name="T">要用於 <paramref name="location1" />、<paramref name="value" /> 和 <paramref name="comparand" /> 的類型。此類型必須是參考類型。</typeparam>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+    </member>
+    <member name="M:System.Threading.Interlocked.Decrement(System.Int32@)">
+      <summary>遞減特定變數並將結果儲存起來，成為不可部分完成的作業。</summary>
+      <returns>遞減後的值。</returns>
+      <param name="location">值會被遞減的變數。</param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Decrement(System.Int64@)">
+      <summary>遞減特定變數並將結果儲存起來，成為不可部分完成的作業。</summary>
+      <returns>遞減後的值。</returns>
+      <param name="location">值會被遞減的變數。</param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Double@,System.Double)">
+      <summary>將雙精確度浮點數設定為指定值，然後傳回原始值，成為不可部分完成的作業。</summary>
+      <returns>
+        <paramref name="location1" /> 的原始值。</returns>
+      <param name="location1">要設定為特定值的變數。</param>
+      <param name="value">
+        <paramref name="location1" /> 參數要設定成的值。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Int32@,System.Int32)">
+      <summary>將 32 位元帶正負號的整數設定為指定值，然後傳回原始值，成為不可部分完成的作業。</summary>
+      <returns>
+        <paramref name="location1" /> 的原始值。</returns>
+      <param name="location1">要設定為特定值的變數。</param>
+      <param name="value">
+        <paramref name="location1" /> 參數要設定成的值。</param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Int64@,System.Int64)">
+      <summary>將 64 位元帶正負號的整數設定為指定值，然後傳回原始值，成為不可部分完成的作業。</summary>
+      <returns>
+        <paramref name="location1" /> 的原始值。</returns>
+      <param name="location1">要設定為特定值的變數。</param>
+      <param name="value">
+        <paramref name="location1" /> 參數要設定成的值。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.IntPtr@,System.IntPtr)">
+      <summary>將平台特定的控制代碼或指標設定為指定值，然後傳回原始值，成為不可部分完成的作業。</summary>
+      <returns>
+        <paramref name="location1" /> 的原始值。</returns>
+      <param name="location1">要設定為特定值的變數。</param>
+      <param name="value">
+        <paramref name="location1" /> 參數要設定成的值。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Object@,System.Object)">
+      <summary>將物件設定為指定值，然後傳回原始物件的參考，成為不可部分完成的作業。</summary>
+      <returns>
+        <paramref name="location1" /> 的原始值。</returns>
+      <param name="location1">要設定為特定值的變數。</param>
+      <param name="value">
+        <paramref name="location1" /> 參數要設定成的值。</param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Single@,System.Single)">
+      <summary>將單精確度浮點數設定為指定值，然後傳回原始值，成為不可部分完成的作業。</summary>
+      <returns>
+        <paramref name="location1" /> 的原始值。</returns>
+      <param name="location1">要設定為特定值的變數。</param>
+      <param name="value">
+        <paramref name="location1" /> 參數要設定成的值。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange``1(``0@,``0)">
+      <summary>將指定類型 <paramref name="T" /> 的變數設定為指定值，然後傳回原始值，成為不可部分完成的作業。</summary>
+      <returns>
+        <paramref name="location1" /> 的原始值。</returns>
+      <param name="location1">要設定為特定值的變數。此為參考參數 (在 C# 中為 ref，在 Visual Basic 中為 ByRef)。</param>
+      <param name="value">
+        <paramref name="location1" /> 參數要設定成的值。</param>
+      <typeparam name="T">要用於 <paramref name="location1" /> 和 <paramref name="value" /> 的類型。此類型必須是參考類型。</typeparam>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+    </member>
+    <member name="M:System.Threading.Interlocked.Increment(System.Int32@)">
+      <summary>遞增特定變數並將結果儲存起來，成為不可部分完成的作業。</summary>
+      <returns>遞增後的值。</returns>
+      <param name="location">值會被遞增的變數。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Increment(System.Int64@)">
+      <summary>遞增特定變數並將結果儲存起來，成為不可部分完成的作業。</summary>
+      <returns>遞增後的值。</returns>
+      <param name="location">值會被遞增的變數。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.MemoryBarrier">
+      <summary>同步處理記憶體存取，如下所示：執行目前執行緒的處理器無法以下列方式重新排列指示：呼叫 <see cref="M:System.Threading.Interlocked.MemoryBarrier" /> 之前的記憶體存取在呼叫 <see cref="M:System.Threading.Interlocked.MemoryBarrier" /> 後的記憶體存取之後執行。</summary>
+    </member>
+    <member name="M:System.Threading.Interlocked.Read(System.Int64@)">
+      <summary>傳回 64 位元的值 (載入為不可部分完成的作業)。</summary>
+      <returns>載入的值。</returns>
+      <param name="location">要載入的 64 位元值。</param>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.LazyInitializer">
+      <summary>提供延遲初始化常式。</summary>
+    </member>
+    <member name="M:System.Threading.LazyInitializer.EnsureInitialized``1(``0@)">
+      <summary>如果目標參考型別尚未初始化，則使用該型別的預設建構函式來進行初始化。</summary>
+      <returns>型別 <paramref name="T" /> 的已初始化參考。</returns>
+      <param name="target">要初始化 (如果尚未初始化) 的型別 <paramref name="T" /> 的參考。</param>
+      <typeparam name="T">要初始化之參考的型別。</typeparam>
+      <exception cref="T:System.MemberAccessException">缺少存取型別 <paramref name="T" />之建構函式的使用權限。</exception>
+      <exception cref="T:System.MissingMemberException">
+        <paramref name="T" /> 型別沒有預設的建構函式。</exception>
+    </member>
+    <member name="M:System.Threading.LazyInitializer.EnsureInitialized``1(``0@,System.Boolean@,System.Object@)">
+      <summary>如果目標型別尚未初始化，則使用其預設建構函式來初始化目標的參考型別或實值型別。</summary>
+      <returns>型別 <paramref name="T" /> 的已初始化實值。</returns>
+      <param name="target">要初始化 (如果尚未初始化) 的型別 <paramref name="T" /> 的參考或實值。</param>
+      <param name="initialized">布林值的參考，這個值可判斷目標是否已初始化。</param>
+      <param name="syncLock">物件的參考，這個物件用來當做初始化 <paramref name="target" /> 時的互斥鎖定。如果 <paramref name="syncLock" /> 為 null，則具現化新的物件。</param>
+      <typeparam name="T">要初始化之參考的型別。</typeparam>
+      <exception cref="T:System.MemberAccessException">缺少存取型別 <paramref name="T" />之建構函式的使用權限。</exception>
+      <exception cref="T:System.MissingMemberException">
+        <paramref name="T" /> 型別沒有預設的建構函式。</exception>
+    </member>
+    <member name="M:System.Threading.LazyInitializer.EnsureInitialized``1(``0@,System.Boolean@,System.Object@,System.Func{``0})">
+      <summary>如果目標型別尚未初始化，則使用指定的函式來初始化目標的參考或實值型別。</summary>
+      <returns>型別 <paramref name="T" /> 的已初始化實值。</returns>
+      <param name="target">要初始化 (如果尚未初始化) 的型別 <paramref name="T" /> 的參考或實值。</param>
+      <param name="initialized">布林值的參考，這個值可判斷目標是否已初始化。</param>
+      <param name="syncLock">物件的參考，這個物件用來當做初始化 <paramref name="target" /> 時的互斥鎖定。如果 <paramref name="syncLock" /> 為 null，則具現化新的物件。</param>
+      <param name="valueFactory">呼叫來初始化參考或值的函式。</param>
+      <typeparam name="T">要初始化之參考的型別。</typeparam>
+      <exception cref="T:System.MemberAccessException">缺少存取型別 <paramref name="T" />之建構函式的使用權限。</exception>
+      <exception cref="T:System.MissingMemberException">
+        <paramref name="T" /> 型別沒有預設的建構函式。</exception>
+    </member>
+    <member name="M:System.Threading.LazyInitializer.EnsureInitialized``1(``0@,System.Func{``0})">
+      <summary>如果目標型別尚未初始化，則使用指定的函式來初始化目標的參考型別。</summary>
+      <returns>型別 <paramref name="T" /> 的已初始化實值。</returns>
+      <param name="target">要初始化 (如果尚未初始化) 的型別 <paramref name="T" /> 的參考。</param>
+      <param name="valueFactory">呼叫來初始化參考的函式。</param>
+      <typeparam name="T">要初始化之參考的參考型別。</typeparam>
+      <exception cref="T:System.MissingMemberException">
+        <paramref name="T" /> 型別沒有預設的建構函式。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="valueFactory" />傳回 null (在 Visual Basic 中為 Nothing)。</exception>
+    </member>
+    <member name="T:System.Threading.LockRecursionException">
+      <summary>當遞迴進入鎖定與鎖定的遞迴原則不相符時，擲回的例外狀況。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.LockRecursionException.#ctor">
+      <summary>以系統提供的錯誤說明訊息，初始化 <see cref="T:System.Threading.LockRecursionException" /> 類別的新執行個體。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.LockRecursionException.#ctor(System.String)">
+      <summary>使用指定的錯誤說明訊息，初始化 <see cref="T:System.Threading.LockRecursionException" /> 類別的新執行個體。</summary>
+      <param name="message">說明例外狀況的訊息。這個建構函式的呼叫端必須確保這個字串已針對目前系統的文化特性，執行過當地語系化。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.LockRecursionException.#ctor(System.String,System.Exception)">
+      <summary>使用指定的錯誤訊息和造成這個例外狀況原因的內部例外狀況參考，初始化 <see cref="T:System.Threading.LockRecursionException" /> 類別的新執行個體。</summary>
+      <param name="message">說明例外狀況的訊息。這個建構函式的呼叫端必須確保這個字串已針對目前系統的文化特性，執行過當地語系化。</param>
+      <param name="innerException">造成目前例外狀況的例外狀況。如果 <paramref name="innerException" /> 參數不是 null，則目前的例外狀況會在處理內部例外的 catch 區塊中引發。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.LockRecursionPolicy">
+      <summary>指定相同的執行緒是否可以多次進入鎖定。</summary>
+    </member>
+    <member name="F:System.Threading.LockRecursionPolicy.NoRecursion">
+      <summary>如果執行緒嘗試遞迴地進入鎖定，則會擲回例外狀況。某些類別可能會在此設定有效時允許特定的遞迴。</summary>
+    </member>
+    <member name="F:System.Threading.LockRecursionPolicy.SupportsRecursion">
+      <summary>執行緒可以遞迴地進入鎖定。某些類別可能會限制此功能。</summary>
+    </member>
+    <member name="T:System.Threading.ManualResetEvent">
+      <summary>告知一個以上的等候中執行緒已發生事件。此類別無法被繼承。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.ManualResetEvent.#ctor(System.Boolean)">
+      <summary>使用布林值 (Boolean) 來初始化 <see cref="T:System.Threading.ManualResetEvent" /> 類別的新執行個體，指出初始狀態是否設定為信號狀態。</summary>
+      <param name="initialState">如果初始狀態設定為信號狀態，為 true；初始狀態設定為非信號狀態則為 false。</param>
+    </member>
+    <member name="T:System.Threading.ManualResetEventSlim">
+      <summary>提供 <see cref="T:System.Threading.ManualResetEvent" /> 的精簡版本。</summary>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.#ctor">
+      <summary>使用未收到訊號的初始狀態來初始化 <see cref="T:System.Threading.ManualResetEventSlim" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.#ctor(System.Boolean)">
+      <summary>使用表示是否要將初始狀態設定為已收到訊號的布林值，初始化 <see cref="T:System.Threading.ManualResetEventSlim" /> 類別的新執行個體。</summary>
+      <param name="initialState">true 表示會將初始狀態設定為已收到訊號，false 表示會將初始狀態設定為未收到訊號。</param>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.#ctor(System.Boolean,System.Int32)">
+      <summary>使用表示是否要將初始狀態設定為已收到訊號的布林值以及指定的微調計數，初始化 <see cref="T:System.Threading.ManualResetEventSlim" /> 類別的新執行個體。</summary>
+      <param name="initialState">true 表示會將初始狀態設定為已收到訊號，false 表示會將初始狀態設定為未收到訊號。</param>
+      <param name="spinCount">在回到以核心為基礎的等候作業之前進行微調等候的次數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="spinCount" /> is less than 0 or greater than the maximum allowed value.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Dispose">
+      <summary>將 <see cref="T:System.Threading.ManualResetEventSlim" /> 類別目前的執行個體所使用的資源全部釋出。</summary>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Dispose(System.Boolean)">
+      <summary>釋放 <see cref="T:System.Threading.ManualResetEventSlim" /> 所使用的 Unmanaged 資源，並選擇性釋放 Managed 資源。</summary>
+      <param name="disposing">true 表示釋放 Managed 與 Unmanaged 資源，false 表示只釋放 Unmanaged 資源。</param>
+    </member>
+    <member name="P:System.Threading.ManualResetEventSlim.IsSet">
+      <summary>取得值，表示事件是否已設定。</summary>
+      <returns>如果已設定事件則為 true，否則為 false。</returns>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Reset">
+      <summary>將事件的狀態設定為未收到信號，會造成執行緒封鎖。</summary>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Set">
+      <summary>將事件的狀態設定為已收到訊號，讓正在等候該事件的一或多個執行緒繼續執行。</summary>
+    </member>
+    <member name="P:System.Threading.ManualResetEventSlim.SpinCount">
+      <summary>取得在回到以核心為基礎的等候作業之前進行微調等候的次數。</summary>
+      <returns>傳回在回到以核心為基礎的等候作業之前進行微調等候的次數。</returns>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait">
+      <summary>封鎖目前的執行緒，直到設定了目前的 <see cref="T:System.Threading.ManualResetEventSlim" /> 為止。</summary>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.Int32)">
+      <summary>封鎖目前的執行緒，直到設定了目前的 <see cref="T:System.Threading.ManualResetEventSlim" /> 為止 (使用 32 位元帶正負號的整數以測量時間間隔)。</summary>
+      <returns>如果設定了 <see cref="T:System.Threading.ManualResetEventSlim" />，則為 true，否則為 false。</returns>
+      <param name="millisecondsTimeout">要等候的毫秒數，如果要無限期等候，則為 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> is a negative number other than -1, which represents an infinite time-out.</exception>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.Int32,System.Threading.CancellationToken)">
+      <summary>封鎖目前的執行緒，直到設定了目前的 <see cref="T:System.Threading.ManualResetEventSlim" /> 為止，並使用 32 位元帶正負號的整數以測量時間間隔，同時觀察 <see cref="T:System.Threading.CancellationToken" />。</summary>
+      <returns>如果設定了 <see cref="T:System.Threading.ManualResetEventSlim" />，則為 true，否則為 false。</returns>
+      <param name="millisecondsTimeout">要等候的毫秒數，如果要無限期等候，則為 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <param name="cancellationToken">要觀察的 <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> was canceled.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> is a negative number other than -1, which represents an infinite time-out.</exception>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed or the <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.Threading.CancellationToken)">
+      <summary>封鎖目前的執行緒，直到目前的 <see cref="T:System.Threading.ManualResetEventSlim" /> 收到訊號為止，同時觀察 <see cref="T:System.Threading.CancellationToken" />。</summary>
+      <param name="cancellationToken">要觀察的 <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> was canceled.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed or the <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.TimeSpan)">
+      <summary>封鎖目前的執行緒，直到設定了目前的 <see cref="T:System.Threading.ManualResetEventSlim" /> 為止，並使用 <see cref="T:System.TimeSpan" /> 以測量時間間隔。</summary>
+      <returns>如果設定了 <see cref="T:System.Threading.ManualResetEventSlim" />，則為 true，否則為 false。</returns>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" />，表示要等候的毫秒數，或是 <see cref="T:System.TimeSpan" />，表示無限期等候的 -1 毫秒。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> is a negative number other than -1 milliseconds, which represents an infinite time-out. -or-The number of milliseconds in <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" />. </exception>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>封鎖目前的執行緒，直到設定了目前的 <see cref="T:System.Threading.ManualResetEventSlim" /> 為止，並使用 <see cref="T:System.TimeSpan" /> 以量測時間間隔，同時觀察 <see cref="T:System.Threading.CancellationToken" />。</summary>
+      <returns>如果設定了 <see cref="T:System.Threading.ManualResetEventSlim" />，則為 true，否則為 false。</returns>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" />，表示要等候的毫秒數，或是 <see cref="T:System.TimeSpan" />，表示無限期等候的 -1 毫秒。</param>
+      <param name="cancellationToken">要觀察的 <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> was canceled.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> is a negative number other than -1 milliseconds, which represents an infinite time-out. -or-The number of milliseconds in <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" />. </exception>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded. </exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed or the <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has been disposed.</exception>
+    </member>
+    <member name="P:System.Threading.ManualResetEventSlim.WaitHandle">
+      <summary>取得這個 <see cref="T:System.Threading.ManualResetEventSlim" /> 的基礎 <see cref="T:System.Threading.WaitHandle" /> 物件。</summary>
+      <returns>這個 <see cref="T:System.Threading.ManualResetEventSlim" /> 的基礎 <see cref="T:System.Threading.WaitHandle" /> 事件物件。</returns>
+    </member>
+    <member name="T:System.Threading.Monitor">
+      <summary>提供一套機制，同步處理物件的存取。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.Enter(System.Object)">
+      <summary>取得指定物件的獨佔鎖定。</summary>
+      <param name="obj">要從其上取得監視器鎖定的物件。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 參數為 null。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.Enter(System.Object,System.Boolean@)">
+      <summary>取得指定之物件的獨佔鎖定，並且完整設定值，指出是否採用鎖定。</summary>
+      <param name="obj">要等候的物件。</param>
+      <param name="lockTaken">嘗試取得鎖定的結果 (以傳址方式傳遞)。輸入必須是 false。如果已取得鎖定，輸出就是 true；否則輸出為 false。嘗試取得鎖定期間，即使發生例外狀況，仍然會設定輸出。注意：如果沒有發生例外狀況，這個方法的輸出一律為 true。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="lockTaken" /> 的輸入為 true。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 參數為 null。</exception>
+    </member>
+    <member name="M:System.Threading.Monitor.Exit(System.Object)">
+      <summary>釋出指定物件的獨佔鎖定。</summary>
+      <param name="obj">要從其上釋出鎖定的物件。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 參數為 null。</exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">目前執行緒沒有指定物件的鎖定。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.IsEntered(System.Object)">
+      <summary>判斷目前執行緒是否保持鎖定指定的物件。</summary>
+      <returns>如果目前的執行緒持有 <paramref name="obj" /> 的鎖定，則為 true；否則為 false。</returns>
+      <param name="obj">要測試的物件。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 為 null。</exception>
+    </member>
+    <member name="M:System.Threading.Monitor.Pulse(System.Object)">
+      <summary>通知等候佇列中的執行緒，鎖定物件的狀態有所變更。</summary>
+      <param name="obj">執行緒正等候的物件。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 參數為 null。</exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">呼叫執行緒沒有指定物件的鎖定。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.PulseAll(System.Object)">
+      <summary>通知所有等候中的執行緒，物件的狀態有所變更。</summary>
+      <param name="obj">送出 Pulse 的物件。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 參數為 null。</exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">呼叫執行緒沒有指定物件的鎖定。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object)">
+      <summary>嘗試取得指定物件的獨佔鎖定。</summary>
+      <returns>如果目前執行緒取得鎖定，則為 true；否則為 false。</returns>
+      <param name="obj">要取得鎖定的物件。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 參數為 null。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.Boolean@)">
+      <summary>嘗試取得指定之物件的獨佔鎖定，並且完整設定值，指出是否採用鎖定。</summary>
+      <param name="obj">要取得鎖定的物件。</param>
+      <param name="lockTaken">嘗試取得鎖定的結果 (以傳址方式傳遞)。輸入必須是 false。如果已取得鎖定，輸出就是 true；否則輸出為 false。嘗試取得鎖定期間，即使發生例外狀況，仍然會設定輸出。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="lockTaken" /> 的輸入為 true。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 參數為 null。</exception>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.Int32)">
+      <summary>嘗試取得指定物件的獨佔鎖定 (在指定的毫秒數時間內)。</summary>
+      <returns>如果目前執行緒取得鎖定，則為 true；否則為 false。</returns>
+      <param name="obj">要取得鎖定的物件。</param>
+      <param name="millisecondsTimeout">等候鎖定的毫秒數。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 參數為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 為負，且不等於 <see cref="F:System.Threading.Timeout.Infinite" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.Int32,System.Boolean@)">
+      <summary>嘗試在指定的毫秒數內取得指定之物件的獨佔鎖定，並且完整設定值，指出是否採用鎖定。</summary>
+      <param name="obj">要取得鎖定的物件。</param>
+      <param name="millisecondsTimeout">等候鎖定的毫秒數。</param>
+      <param name="lockTaken">嘗試取得鎖定的結果 (以傳址方式傳遞)。輸入必須是 false。如果已取得鎖定，輸出就是 true；否則輸出為 false。嘗試取得鎖定期間，即使發生例外狀況，仍然會設定輸出。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="lockTaken" /> 的輸入為 true。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 參數為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 為負，且不等於 <see cref="F:System.Threading.Timeout.Infinite" />。</exception>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.TimeSpan)">
+      <summary>嘗試取得指定物件的獨佔鎖定 (在指定的時間內)。</summary>
+      <returns>如果目前執行緒取得鎖定，則為 true；否則為 false。</returns>
+      <param name="obj">要取得鎖定的物件。</param>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" />，代表等候鎖定的時間量。-1 毫秒的值會指定無限期等候。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 參數為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 的毫秒值為負且不等於 <see cref="F:System.Threading.Timeout.Infinite" /> (-1 毫秒) 或大於 <see cref="F:System.Int32.MaxValue" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.TimeSpan,System.Boolean@)">
+      <summary>嘗試在指定的時間內取得指定之物件的獨佔鎖定，並且完整設定值，指出是否採用鎖定。</summary>
+      <param name="obj">要取得鎖定的物件。</param>
+      <param name="timeout">等候鎖定的時間長度。-1 毫秒的值會指定無限期等候。</param>
+      <param name="lockTaken">嘗試取得鎖定的結果 (以傳址方式傳遞)。輸入必須是 false。如果已取得鎖定，輸出就是 true；否則輸出為 false。嘗試取得鎖定期間，即使發生例外狀況，仍然會設定輸出。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="lockTaken" /> 的輸入為 true。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 參數為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 的毫秒值為負且不等於 <see cref="F:System.Threading.Timeout.Infinite" /> (-1 毫秒) 或大於 <see cref="F:System.Int32.MaxValue" />。</exception>
+    </member>
+    <member name="M:System.Threading.Monitor.Wait(System.Object)">
+      <summary>釋出物件的鎖並且封鎖目前的執行緒，直到這個執行緒重新取得鎖定為止。</summary>
+      <returns>如果由於呼叫端重新取得指定物件的鎖定而傳回呼叫，則為 true。如果鎖定不被重新取得，則這個方法不會傳回。</returns>
+      <param name="obj">要等候的物件。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 參數為 null。</exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">呼叫執行緒沒有指定物件的鎖定。</exception>
+      <exception cref="T:System.Threading.ThreadInterruptedException">叫用 Wait 的執行緒稍後會從等候狀態被插斷。這會當另一個執行緒呼叫這個執行緒的 <see cref="M:System.Threading.Thread.Interrupt" /> 方法時發生。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.Wait(System.Object,System.Int32)">
+      <summary>釋出物件的鎖並且封鎖目前的執行緒，直到這個執行緒重新取得鎖定為止。如果超過指定的逾時間隔時間，執行緒會進入就緒序列。</summary>
+      <returns>如果在經過指定的時間之前重新取得鎖定，則為 true；如果在經過指定的時間之後重新取得鎖定，則為 false。要等到重新取得鎖定之後，此方法才會傳回。</returns>
+      <param name="obj">要等候的物件。</param>
+      <param name="millisecondsTimeout">在執行緒進入就緒佇列之前要等候的毫秒數。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 參數為 null。</exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">呼叫執行緒沒有指定物件的鎖定。</exception>
+      <exception cref="T:System.Threading.ThreadInterruptedException">叫用 Wait 的執行緒稍後會從等候狀態被插斷。這會當另一個執行緒呼叫這個執行緒的 <see cref="M:System.Threading.Thread.Interrupt" /> 方法時發生。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 參數的值為負，且不等於 <see cref="F:System.Threading.Timeout.Infinite" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.Wait(System.Object,System.TimeSpan)">
+      <summary>釋出物件的鎖並且封鎖目前的執行緒，直到這個執行緒重新取得鎖定為止。如果超過指定的逾時間隔時間，執行緒會進入就緒序列。</summary>
+      <returns>如果在經過指定的時間之前重新取得鎖定，則為 true；如果在經過指定的時間之後重新取得鎖定，則為 false。要等到重新取得鎖定之後，此方法才會傳回。</returns>
+      <param name="obj">要等候的物件。</param>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" />，代表在執行緒進入就緒佇列之前要等候的時間量。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 參數為 null。</exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">呼叫執行緒沒有指定物件的鎖定。</exception>
+      <exception cref="T:System.Threading.ThreadInterruptedException">叫用 Wait 的執行緒稍後會從等候狀態被插斷。這會當另一個執行緒呼叫這個執行緒的 <see cref="M:System.Threading.Thread.Interrupt" /> 方法時發生。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 參數的毫秒值為負，且不表示 <see cref="F:System.Threading.Timeout.Infinite" /> (-1 毫秒)，或大於 <see cref="F:System.Int32.MaxValue" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.Mutex">
+      <summary>同步處理原始物件，該物件也可用於進行處理序之間的同步處理。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Mutex.#ctor">
+      <summary>使用預設屬性，初始化 <see cref="T:System.Threading.Mutex" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="M:System.Threading.Mutex.#ctor(System.Boolean)">
+      <summary>使用表示呼叫執行緒是否應該具有 Mutex 的初始擁有權的布林值，初始化 <see cref="T:System.Threading.Mutex" /> 類別的新執行個體。</summary>
+      <param name="initiallyOwned">true 表示將 Mutex 的初始擁有權授與呼叫執行緒，否則為 false。</param>
+    </member>
+    <member name="M:System.Threading.Mutex.#ctor(System.Boolean,System.String)">
+      <summary>使用表示呼叫執行緒是否應該具有 Mutex 的初始擁有權的布林值，以及代表 Mutex 名稱的字串，初始化 <see cref="T:System.Threading.Mutex" /> 類別的新執行個體。</summary>
+      <param name="initiallyOwned">true 表示如果這個呼叫的結果建立了具名系統 Mutex，則將具名系統 Mutex 的初始擁有權授與呼叫執行緒，否則為 false。</param>
+      <param name="name">
+        <see cref="T:System.Threading.Mutex" /> 的名稱。如果值是 null，則 <see cref="T:System.Threading.Mutex" /> 未命名。</param>
+      <exception cref="T:System.UnauthorizedAccessException">具名的 Mutex 存在，而且具有存取控制安全性，但是使用者沒有 <see cref="F:System.Security.AccessControl.MutexRights.FullControl" />。</exception>
+      <exception cref="T:System.IO.IOException">發生 Win32 錯誤。</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">無法建立具名的 Mutex，可能是因為不同類型的等候控制代碼擁有相同名稱。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 长度超过 260 个字符。</exception>
+    </member>
+    <member name="M:System.Threading.Mutex.#ctor(System.Boolean,System.String,System.Boolean@)">
+      <summary>使用表示呼叫執行緒是否應該具有 Mutex 的初始擁有權的布林值、代表 Mutex 名稱的字串，以及當方法傳回時表示是否將 Mutex 的初始擁有權授與呼叫執行緒的布林值，初始化 <see cref="T:System.Threading.Mutex" /> 類別的新執行個體。</summary>
+      <param name="initiallyOwned">true 表示如果這個呼叫的結果建立了具名系統 Mutex，則將具名系統 Mutex 的初始擁有權授與呼叫執行緒，否則為 false。</param>
+      <param name="name">
+        <see cref="T:System.Threading.Mutex" /> 的名稱。如果值是 null，則 <see cref="T:System.Threading.Mutex" /> 未命名。</param>
+      <param name="createdNew">當這個方法傳回時，如果已建立本機 Mutex (也就是說，如果 <paramref name="name" /> 為 null 或空字串)，或是已建立指定的具名系統 Mutex，則會包含 true 的布林值；如果指定的具名系統 Mutex 已存在，則為 false。這個參數會以未初始化的狀態傳遞。</param>
+      <exception cref="T:System.UnauthorizedAccessException">具名的 Mutex 存在，而且具有存取控制安全性，但是使用者沒有 <see cref="F:System.Security.AccessControl.MutexRights.FullControl" />。</exception>
+      <exception cref="T:System.IO.IOException">發生 Win32 錯誤。</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">無法建立具名的 Mutex，可能是因為不同類型的等候控制代碼擁有相同名稱。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 长度超过 260 个字符。</exception>
+    </member>
+    <member name="M:System.Threading.Mutex.OpenExisting(System.String)">
+      <summary>開啟指定的具名 mutex (如果已經存在)。</summary>
+      <returns>表示具名系統 Mutex 的物件。</returns>
+      <param name="name">要開啟的系統 Mutex 的名稱。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 為空字串。-或-<paramref name="name" /> 长度超过 260 个字符。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 為 null。</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">具名 Mutex 不存在。</exception>
+      <exception cref="T:System.IO.IOException">發生 Win32 錯誤。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">具名 Mutex 存在，但是使用者並沒有使用它所需的安全性存取權。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Threading.Mutex.ReleaseMutex">
+      <summary>釋出 <see cref="T:System.Threading.Mutex" /> 一次。</summary>
+      <exception cref="T:System.ApplicationException">呼叫執行緒並不擁有 Mutex。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Mutex.TryOpenExisting(System.String,System.Threading.Mutex@)">
+      <summary>開啟指定的具名 mutex (如果已經存在)，並傳回值，指出作業是否成功。</summary>
+      <returns>如果已成功開啟具名 Mutex，則為 true，否則為 false。</returns>
+      <param name="name">要開啟的系統 Mutex 的名稱。</param>
+      <param name="result">當這個方法傳回時，如果呼叫成功，則包含代表具名 Mutex 的 <see cref="T:System.Threading.Mutex" /> 物件；如果呼叫失敗，則為 null。這個參數會被視為未初始化。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 為空字串。-或-<paramref name="name" /> 长度超过 260 个字符。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 為 null。</exception>
+      <exception cref="T:System.IO.IOException">發生 Win32 錯誤。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">具名 Mutex 存在，但是使用者並沒有使用它所需的安全性存取權。</exception>
+    </member>
+    <member name="T:System.Threading.ReaderWriterLockSlim">
+      <summary>代表鎖定，用來管理資源存取，允許多個執行緒的讀取權限或獨佔寫入權限。</summary>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.#ctor">
+      <summary>使用預設屬性值，初始化 <see cref="T:System.Threading.ReaderWriterLockSlim" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.#ctor(System.Threading.LockRecursionPolicy)">
+      <summary>指定鎖定遞迴原則，初始化 <see cref="T:System.Threading.ReaderWriterLockSlim" /> 類別的新執行個體。</summary>
+      <param name="recursionPolicy">一個列舉值，指定鎖定遞迴原則。</param>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.CurrentReadCount">
+      <summary>取得已進入讀取模式鎖定狀態的唯一執行緒總數。</summary>
+      <returns>已進入讀取模式鎖定狀態的唯一執行緒數目。</returns>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.Dispose">
+      <summary>釋放 <see cref="T:System.Threading.ReaderWriterLockSlim" /> 類別目前的執行個體所使用的全部資源。</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">
+        <see cref="P:System.Threading.ReaderWriterLockSlim.WaitingReadCount" /> is greater than zero. -or-<see cref="P:System.Threading.ReaderWriterLockSlim.WaitingUpgradeCount" /> is greater than zero. -or-<see cref="P:System.Threading.ReaderWriterLockSlim.WaitingWriteCount" /> is greater than zero. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.EnterReadLock">
+      <summary>嘗試進入讀取模式的鎖定。</summary>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered read mode. -or-The current thread may not acquire the read lock when it already holds the write lock. -or-The recursion number would exceed the capacity of the counter.This limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.EnterUpgradeableReadLock">
+      <summary>嘗試進入可升級模式的鎖定狀態。</summary>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock in any mode. -or-The current thread has entered read mode, so trying to enter upgradeable mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.EnterWriteLock">
+      <summary>嘗試進入寫入模式的鎖定。</summary>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock in any mode. -or-The current thread has entered read mode, so trying to enter the lock in write mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.ExitReadLock">
+      <summary>減少讀取模式遞迴的計數，如果得出的計數為 0 (零)，則結束讀取模式。</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">The current thread has not entered the lock in read mode. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.ExitUpgradeableReadLock">
+      <summary>減少可升級模式遞迴的計數，如果得出的計數為 0 (零)，則結束可升級模式。</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">The current thread has not entered the lock in upgradeable mode.</exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.ExitWriteLock">
+      <summary>減少寫入模式遞迴的計數，如果得出的計數為 0 (零)，則結束寫入模式。</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">The current thread has not entered the lock in write mode.</exception>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.IsReadLockHeld">
+      <summary>取得值，表示目前執行緒是否已進入讀取模式的鎖定。</summary>
+      <returns>如果目前執行緒已進入讀取模式，則為 true；否則為 false。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.IsUpgradeableReadLockHeld">
+      <summary>取得值，表示目前執行緒是否已進入可升級模式的鎖定。</summary>
+      <returns>如果目前執行緒已進入可升級模式，則為 true；否則為 false。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.IsWriteLockHeld">
+      <summary>取得值，表示目前執行緒是否已進入寫入模式的鎖定。</summary>
+      <returns>如果目前執行緒已進入寫入模式，則為 true；否則為 false。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy">
+      <summary>取得值，表示目前 <see cref="T:System.Threading.ReaderWriterLockSlim" /> 物件的遞迴原則。</summary>
+      <returns>一個列舉值，指定鎖定遞迴原則。</returns>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.RecursiveReadCount">
+      <summary>取得目前執行緒已進入讀取模式鎖定的次數，做為遞迴的表示。</summary>
+      <returns>如果目前執行緒尚未進入讀取模式，則為 0 (零)；如果執行緒已進入讀取模式，但是尚未遞迴進入該模式，則為 1；如果執行緒已遞迴進入鎖定 n - 1 次，則為 n。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.RecursiveUpgradeCount">
+      <summary>取得目前執行緒已進入可升級模式鎖定的次數，做為遞迴的表示。</summary>
+      <returns>如果目前執行緒尚未進入可升級模式，則為 0；如果執行緒已進入可升級模式，但是尚未遞迴進入該模式，則為 1；如果執行緒已遞迴進入可升級模式 n - 1 次，則為 n。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.RecursiveWriteCount">
+      <summary>取得目前執行緒已進入寫入模式鎖定的次數，做為遞迴的表示。</summary>
+      <returns>如果目前執行緒尚未進入寫入模式，則為 0；如果執行緒已進入寫入模式，但是尚未遞迴進入該模式，則為 1；如果執行緒已遞迴進入寫入模式 n - 1 次，則為 n。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterReadLock(System.Int32)">
+      <summary>嘗試以選用的整數逾時，進入讀取模式的鎖定狀態。</summary>
+      <returns>如果呼叫執行緒已進入讀取模式，則為 true；否則為 false。</returns>
+      <param name="millisecondsTimeout">要等候的毫秒數；若要永遠等候，則為 -1 (<see cref="F:System.Threading.Timeout.Infinite" />)。</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="millisecondsTimeout" /> is negative, but it is not equal to <see cref="F:System.Threading.Timeout.Infinite" /> (-1), which is the only negative value allowed. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterReadLock(System.TimeSpan)">
+      <summary>嘗試以選用的逾時，在讀取模式下進入鎖定狀態。</summary>
+      <returns>如果呼叫執行緒已進入讀取模式，則為 true；否則為 false。</returns>
+      <param name="timeout">等待的間隔，或 -1 毫秒無限期等待。</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="timeout" /> is negative, but it is not equal to -1 milliseconds, which is the only negative value allowed.-or-The value of <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" /> milliseconds. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterUpgradeableReadLock(System.Int32)">
+      <summary>嘗試以選用的逾時，在可升級模式下進入鎖定狀態。</summary>
+      <returns>如果呼叫執行緒已進入可升級模式，則為 true；否則為 false。</returns>
+      <param name="millisecondsTimeout">要等候的毫秒數；若要永遠等候，則為 -1 (<see cref="F:System.Threading.Timeout.Infinite" />)。</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The current thread initially entered the lock in read mode, and therefore trying to enter upgradeable mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="millisecondsTimeout" /> is negative, but it is not equal to <see cref="F:System.Threading.Timeout.Infinite" /> (-1), which is the only negative value allowed. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterUpgradeableReadLock(System.TimeSpan)">
+      <summary>嘗試以選用的逾時，在可升級模式下進入鎖定狀態。</summary>
+      <returns>如果呼叫執行緒已進入可升級模式，則為 true；否則為 false。</returns>
+      <param name="timeout">等待的間隔，或 -1 毫秒無限期等待。</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The current thread initially entered the lock in read mode, and therefore trying to enter upgradeable mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="timeout" /> is negative, but it is not equal to -1 milliseconds, which is the only negative value allowed.-or-The value of <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" /> milliseconds. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterWriteLock(System.Int32)">
+      <summary>嘗試以選用的逾時，在寫入模式下進入鎖定狀態。</summary>
+      <returns>如果呼叫執行緒已進入寫入模式，則為 true；否則為 false。</returns>
+      <param name="millisecondsTimeout">要等候的毫秒數；若要永遠等候，則為 -1 (<see cref="F:System.Threading.Timeout.Infinite" />)。</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The current thread initially entered the lock in read mode, and therefore trying to enter write mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="millisecondsTimeout" /> is negative, but it is not equal to <see cref="F:System.Threading.Timeout.Infinite" /> (-1), which is the only negative value allowed. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterWriteLock(System.TimeSpan)">
+      <summary>嘗試以選用的逾時，在寫入模式下進入鎖定狀態。</summary>
+      <returns>如果呼叫執行緒已進入寫入模式，則為 true；否則為 false。</returns>
+      <param name="timeout">等待的間隔，或 -1 毫秒無限期等待。</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The current thread initially entered the lock in read mode, and therefore trying to enter write mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="timeout" /> is negative, but it is not equal to -1 milliseconds, which is the only negative value allowed.-or-The value of <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" /> milliseconds. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.WaitingReadCount">
+      <summary>取得等待進入讀取模式鎖定狀態的執行緒總數。</summary>
+      <returns>等待進入讀取模式的執行緒總數。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.WaitingUpgradeCount">
+      <summary>取得等待進入可升級模式鎖定狀態的執行緒總數。</summary>
+      <returns>等待進入可升級模式的執行緒總數。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.WaitingWriteCount">
+      <summary>取得等待進入寫入模式鎖定狀態的執行緒總數。</summary>
+      <returns>等待進入寫入模式的執行緒總數。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.Semaphore">
+      <summary>限制可以同時存取資源或資源集區的執行緒數目。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Semaphore.#ctor(System.Int32,System.Int32)">
+      <summary>初始化 <see cref="T:System.Threading.Semaphore" /> 類別的新執行個體，以及指定並行項目的最大數目及選擇性地保留某些項目。</summary>
+      <param name="initialCount">可同時授與給號誌的初始要求數目。</param>
+      <param name="maximumCount">可以同時授與之號誌要求的最大數目。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="initialCount" /> 大於 <paramref name="maximumCount" />。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="maximumCount" /> 为小于 1。-或-<paramref name="initialCount" /> 小於 0。</exception>
+    </member>
+    <member name="M:System.Threading.Semaphore.#ctor(System.Int32,System.Int32,System.String)">
+      <summary>初始化 <see cref="T:System.Threading.Semaphore" /> 類別的新執行個體，然後指定初始項目數目與並行項目的最大數目，以及選擇性地指定系統號誌物件的名稱。</summary>
+      <param name="initialCount">可同時授與給號誌的初始要求數目。</param>
+      <param name="maximumCount">可以同時授與之號誌要求的最大數目。</param>
+      <param name="name">具名系統號誌物件的名稱。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="initialCount" /> 大於 <paramref name="maximumCount" />。-或-<paramref name="name" /> 长度超过 260 个字符。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="maximumCount" /> 为小于 1。-或-<paramref name="initialCount" /> 小於 0。</exception>
+      <exception cref="T:System.IO.IOException">發生 Win32 錯誤。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">具名的號誌存在，而且具有存取控制安全性，但是使用者沒有 <see cref="F:System.Security.AccessControl.SemaphoreRights.FullControl" />。</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">無法建立具名的號誌，可能是因為不同類型的等候控制代碼擁有相同名稱。</exception>
+    </member>
+    <member name="M:System.Threading.Semaphore.#ctor(System.Int32,System.Int32,System.String,System.Boolean@)">
+      <summary>初始化 <see cref="T:System.Threading.Semaphore" /> 類別的新執行個體，然後指定初始項目物件數目與並行項目的最大數目，選擇性地指定系統號誌物件的名稱，以及指定接收值的變數，指出是否已建立新的系統號誌。</summary>
+      <param name="initialCount">可以同時滿足之號誌要求的初始數目。</param>
+      <param name="maximumCount">可以同時滿足之號誌要求的最大數目。</param>
+      <param name="name">具名系統號誌物件的名稱。</param>
+      <param name="createdNew">這個方法傳回時，如果已建立本機號誌 (也就是說，如果 <paramref name="name" /> 為 null 或空字串)，或是已建立指定的已命名系統號誌，則會包含 true；如果指定的已命名系統號誌已存在則為 false。這個參數會以未初始化的狀態傳遞。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="initialCount" /> 大於 <paramref name="maximumCount" />。-或-<paramref name="name" /> 长度超过 260 个字符。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="maximumCount" /> 为小于 1。-或-<paramref name="initialCount" /> 小於 0。</exception>
+      <exception cref="T:System.IO.IOException">發生 Win32 錯誤。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">具名的號誌存在，而且具有存取控制安全性，但是使用者沒有 <see cref="F:System.Security.AccessControl.SemaphoreRights.FullControl" />。</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">無法建立具名的號誌，可能是因為不同類型的等候控制代碼擁有相同名稱。</exception>
+    </member>
+    <member name="M:System.Threading.Semaphore.OpenExisting(System.String)">
+      <summary>開啟指定的具名號誌 (如果已經存在)。</summary>
+      <returns>表示具名系統號誌的物件。</returns>
+      <param name="name">要開啟之系統號誌的名稱。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 為空字串。-或-<paramref name="name" /> 长度超过 260 个字符。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 為 null。</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">具名號誌不存在。</exception>
+      <exception cref="T:System.IO.IOException">發生 Win32 錯誤。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">具名號誌存在，但是使用者並沒有使用它所需的安全性存取權。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Threading.Semaphore.Release">
+      <summary>結束號誌，並傳回上一個計數。</summary>
+      <returns>呼叫 <see cref="Overload:System.Threading.Semaphore.Release" /> 方法之前，號誌上的計數。</returns>
+      <exception cref="T:System.Threading.SemaphoreFullException">號誌計數已達到最大值。</exception>
+      <exception cref="T:System.IO.IOException">具名號誌中發生 Win32 錯誤。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">目前的號誌代表具名系統號誌，但是使用者沒有 <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" />。-或-目前的號誌代表具名系統號誌，但是並未以 <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" /> 開啟。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Semaphore.Release(System.Int32)">
+      <summary>以指定的次數結束號誌，並回到上一個計數。</summary>
+      <returns>呼叫 <see cref="Overload:System.Threading.Semaphore.Release" /> 方法之前，號誌上的計數。</returns>
+      <param name="releaseCount">結束號誌的次數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="releaseCount" /> 为小于 1。</exception>
+      <exception cref="T:System.Threading.SemaphoreFullException">號誌計數已達到最大值。</exception>
+      <exception cref="T:System.IO.IOException">具名號誌中發生 Win32 錯誤。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">目前的號誌代表具名系統號誌，但是使用者沒有 <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" /> 權限。-或-目前的號誌代表具名系統號誌，但是並未以 <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" /> 權限開啟。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Semaphore.TryOpenExisting(System.String,System.Threading.Semaphore@)">
+      <summary>開啟指定的具名號誌 (如果已經存在)，並傳回值，指出作業是否成功。</summary>
+      <returns>如果已成功開啟具名號誌，則為 true；否則為 false。</returns>
+      <param name="name">要開啟之系統號誌的名稱。</param>
+      <param name="result">這個方法傳回時，如果呼叫成功，則包含 <see cref="T:System.Threading.Semaphore" /> 物件，此物件代表具名信號，如果呼叫失敗，則為null。這個參數會被視為未初始化。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 為空字串。-或-<paramref name="name" /> 长度超过 260 个字符。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 為 null。</exception>
+      <exception cref="T:System.IO.IOException">發生 Win32 錯誤。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">具名號誌存在，但是使用者並沒有使用它所需的安全性存取權。</exception>
+    </member>
+    <member name="T:System.Threading.SemaphoreFullException">
+      <summary>在已經達到最大計數的號誌上呼叫 <see cref="Overload:System.Threading.Semaphore.Release" /> 方法時，所擲回的例外狀況。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SemaphoreFullException.#ctor">
+      <summary>使用預設值，初始化 <see cref="T:System.Threading.SemaphoreFullException" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="M:System.Threading.SemaphoreFullException.#ctor(System.String)">
+      <summary>使用指定的錯誤訊息，初始化 <see cref="T:System.Threading.SemaphoreFullException" /> 類別的新執行個體。</summary>
+      <param name="message">解釋例外狀況原因的錯誤訊息。</param>
+    </member>
+    <member name="M:System.Threading.SemaphoreFullException.#ctor(System.String,System.Exception)">
+      <summary>使用指定的錯誤訊息和造成這個例外狀況原因的內部例外狀況參考，初始化 <see cref="T:System.Threading.SemaphoreFullException" /> 類別的新執行個體。</summary>
+      <param name="message">解釋例外狀況原因的錯誤訊息。</param>
+      <param name="innerException">導致目前例外狀況的例外。如果 <paramref name="innerException" /> 參數不是 null，則目前的例外狀況會在處理內部例外的 catch 區塊中引發。</param>
+    </member>
+    <member name="T:System.Threading.SemaphoreSlim">
+      <summary>代表 <see cref="T:System.Threading.Semaphore" /> 的輕量型替代品，限制可同時存取一項資源或資源集區的執行緒數目。</summary>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.#ctor(System.Int32)">
+      <summary>指定可同時授與的初始要求數目，初始化 <see cref="T:System.Threading.SemaphoreSlim" /> 類別的新執行個體。</summary>
+      <param name="initialCount">可同時授與給號誌的初始要求數目。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="initialCount" /> 小於 0。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.#ctor(System.Int32,System.Int32)">
+      <summary>指定可同時授與的初始要求數目及最大數目，初始化 <see cref="T:System.Threading.SemaphoreSlim" /> 類別的新執行個體。</summary>
+      <param name="initialCount">可同時授與給號誌的初始要求數目。</param>
+      <param name="maxCount">可以同時授與之號誌要求的最大數目。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="initialCount" /> 小於 0，或者 <paramref name="initialCount" /> 大於 <paramref name="maxCount" />，或者 <paramref name="maxCount" /> 等於或小於 0。</exception>
+    </member>
+    <member name="P:System.Threading.SemaphoreSlim.AvailableWaitHandle">
+      <summary>傳回可用來等候號誌的 <see cref="T:System.Threading.WaitHandle" />。</summary>
+      <returns>可用來等候號誌的 <see cref="T:System.Threading.WaitHandle" />。</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Threading.SemaphoreSlim" /> 已經處置。</exception>
+    </member>
+    <member name="P:System.Threading.SemaphoreSlim.CurrentCount">
+      <summary>取得可以進入 <see cref="T:System.Threading.SemaphoreSlim" /> 物件的剩餘執行緒數目。</summary>
+      <returns>可以進入號誌的剩餘執行緒數目。</returns>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Dispose">
+      <summary>釋放 <see cref="T:System.Threading.SemaphoreSlim" /> 類別目前的執行個體所使用的全部資源。</summary>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Dispose(System.Boolean)">
+      <summary>釋放 <see cref="T:System.Threading.SemaphoreSlim" /> 所使用的 Unmanaged 資源，並選擇性釋放 Managed 資源。</summary>
+      <param name="disposing">true 表示釋放 Managed 和 Unmanaged 資源，false 則表示只釋放 Unmanaged 資源。</param>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Release">
+      <summary>釋出 <see cref="T:System.Threading.SemaphoreSlim" /> 物件一次。</summary>
+      <returns>
+        <see cref="T:System.Threading.SemaphoreSlim" /> 的先前計數。</returns>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+      <exception cref="T:System.Threading.SemaphoreFullException">
+        <see cref="T:System.Threading.SemaphoreSlim" /> 已經達到其大小上限。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Release(System.Int32)">
+      <summary>釋出 <see cref="T:System.Threading.SemaphoreSlim" /> 物件指定的次數。</summary>
+      <returns>
+        <see cref="T:System.Threading.SemaphoreSlim" /> 的先前計數。</returns>
+      <param name="releaseCount">結束號誌的次數。</param>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="releaseCount" /> 为小于 1。</exception>
+      <exception cref="T:System.Threading.SemaphoreFullException">
+        <see cref="T:System.Threading.SemaphoreSlim" /> 已經達到其大小上限。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait">
+      <summary>封鎖目前的執行緒，直到這個執行緒可以進入 <see cref="T:System.Threading.SemaphoreSlim" /> 為止。</summary>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.Int32)">
+      <summary>封鎖目前的執行緒，直到這個執行緒可以進入 <see cref="T:System.Threading.SemaphoreSlim" /> 為止，並使用 32 位元帶正負號的整數來指定逾時。</summary>
+      <returns>如果目前的執行緒成功進入 <see cref="T:System.Threading.SemaphoreSlim" />，則為 true，否則為 false。</returns>
+      <param name="millisecondsTimeout">要等候的毫秒數；若要無限期等候，則為 <see cref="F:System.Threading.Timeout.Infinite" />(-1)。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一個不等於 -1 的負數，-1 表示等候逾時為無限。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.Int32,System.Threading.CancellationToken)">
+      <summary>封鎖目前的執行緒，直到這個執行緒可以進入 <see cref="T:System.Threading.SemaphoreSlim" /> 為止，並使用 32 位元帶正負號的整數來指定逾時，同時觀察 <see cref="T:System.Threading.CancellationToken" />。</summary>
+      <returns>如果目前的執行緒成功進入 <see cref="T:System.Threading.SemaphoreSlim" />，則為 true，否則為 false。</returns>
+      <param name="millisecondsTimeout">要等候的毫秒數；若要無限期等候，則為 <see cref="F:System.Threading.Timeout.Infinite" />(-1)。</param>
+      <param name="cancellationToken">要觀察的 <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> 已取消。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一個不等於 -1 的負數，-1 表示等候逾時為無限。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Threading.SemaphoreSlim" /> 实例已被释放，或 <see cref="T:System.Threading.CancellationTokenSource" /> 创建 <paramref name="cancellationToken" /> 已被释放。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.Threading.CancellationToken)">
+      <summary>封鎖目前的執行緒，直到這個執行緒可以進入 <see cref="T:System.Threading.SemaphoreSlim" /> 為止，同時觀察 <see cref="T:System.Threading.CancellationToken" />。</summary>
+      <param name="cancellationToken">要觀察的 <see cref="T:System.Threading.CancellationToken" /> 語彙基元。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> 已取消。</exception>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。-或-<see cref="T:System.Threading.CancellationTokenSource" /> 创建<paramref name=" cancellationToken" /> 已释放。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.TimeSpan)">
+      <summary>封鎖目前的執行緒，直到這個執行緒可以進入 <see cref="T:System.Threading.SemaphoreSlim" /> 為止，並使用 <see cref="T:System.TimeSpan" /> 來指定逾時。</summary>
+      <returns>如果目前的執行緒成功進入 <see cref="T:System.Threading.SemaphoreSlim" />，則為 true，否則為 false。</returns>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" />，代表等候毫秒數；或是 <see cref="T:System.TimeSpan" />，代表無限期等候的 -1 毫秒。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 是除了 -1 毫秒以外的負數，表示無限逾時，或是大於 <see cref="F:System.Int32.MaxValue" /> 的逾時。</exception>
+      <exception cref="T:System.ObjectDisposedException">semaphoreSlim 執行個體已經處置 <paramref name="." /></exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>封鎖目前的執行緒，直到這個執行緒可以進入 <see cref="T:System.Threading.SemaphoreSlim" /> 為止，並使用 <see cref="T:System.TimeSpan" /> 來指定逾時，同時觀察 <see cref="T:System.Threading.CancellationToken" />。</summary>
+      <returns>如果目前的執行緒成功進入 <see cref="T:System.Threading.SemaphoreSlim" />，則為 true，否則為 false。</returns>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" />，代表等候毫秒數；或是 <see cref="T:System.TimeSpan" />，代表無限期等候的 -1 毫秒。</param>
+      <param name="cancellationToken">要觀察的 <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> 已取消。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 是除了 -1 毫秒以外的負數，表示無限逾時，或是大於 <see cref="F:System.Int32.MaxValue" /> 的逾時。</exception>
+      <exception cref="T:System.ObjectDisposedException">semaphoreSlim 執行個體已經處置 <paramref name="." /><paramref name="-or-" />已處置建立 <see cref="T:System.Threading.CancellationTokenSource" /> 的 <paramref name="cancellationToken" />。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync">
+      <summary>以非同步方式等候進入 <see cref="T:System.Threading.SemaphoreSlim" />。</summary>
+      <returns>將會在號誌 (Semaphore) 輸入後完成的工作。</returns>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.Int32)">
+      <summary>以非同步方式等候進入 <see cref="T:System.Threading.SemaphoreSlim" />，並使用 32 位元帶正負號的整數來測量時間間隔。</summary>
+      <returns>如果目前的執行緒成功進入 <see cref="T:System.Threading.SemaphoreSlim" />，則工作會完成且結果為 true，否則結果為 false。</returns>
+      <param name="millisecondsTimeout">要等候的毫秒數，如果要無限期等候，則為 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一個不等於 -1 的負數，-1 表示等候逾時為無限。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.Int32,System.Threading.CancellationToken)">
+      <summary>以非同步方式等候進入 <see cref="T:System.Threading.SemaphoreSlim" />，並使用 32 位元帶正負號的整數來測量時間間隔，同時觀察 <see cref="T:System.Threading.CancellationToken" />。</summary>
+      <returns>如果目前的執行緒成功進入 <see cref="T:System.Threading.SemaphoreSlim" />，則工作會完成且結果為 true，否則結果為 false。</returns>
+      <param name="millisecondsTimeout">要等候的毫秒數，如果要無限期等候，則為 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <param name="cancellationToken">要觀察的 <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一個不等於 -1 的負數，-1 表示等候逾時為無限。</exception>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> 已取消。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.Threading.CancellationToken)">
+      <summary>以非同步方式等候進入 <see cref="T:System.Threading.SemaphoreSlim" />，同時觀察 <see cref="T:System.Threading.CancellationToken" />。</summary>
+      <returns>將會在號誌 (Semaphore) 輸入後完成的工作。</returns>
+      <param name="cancellationToken">要觀察的 <see cref="T:System.Threading.CancellationToken" /> 語彙基元。</param>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> 已取消。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.TimeSpan)">
+      <summary>以非同步方式等候進入 <see cref="T:System.Threading.SemaphoreSlim" />，並使用 <see cref="T:System.TimeSpan" /> 來測量時間間隔。</summary>
+      <returns>如果目前的執行緒成功進入 <see cref="T:System.Threading.SemaphoreSlim" />，則工作會完成且結果為 true，否則結果為 false。</returns>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" />，代表等候毫秒數；或是 <see cref="T:System.TimeSpan" />，代表無限期等候的 -1 毫秒。</param>
+      <exception cref="T:System.ObjectDisposedException">目前的執行個體已經處置。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是不等於 -1 的負數，-1 表示等候逾時為無限 -或- 逾時大於 <see cref="F:System.Int32.MaxValue" />。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>以非同步方式等候進入 <see cref="T:System.Threading.SemaphoreSlim" />，並使用 <see cref="T:System.TimeSpan" /> 來測量時間間隔，同時觀察 <see cref="T:System.Threading.CancellationToken" />。</summary>
+      <returns>如果目前的執行緒成功進入 <see cref="T:System.Threading.SemaphoreSlim" />，則工作會完成且結果為 true，否則結果為 false。</returns>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" />，代表等候毫秒數；或是 <see cref="T:System.TimeSpan" />，代表無限期等候的 -1 毫秒。</param>
+      <param name="cancellationToken">要觀察的 <see cref="T:System.Threading.CancellationToken" /> 語彙基元。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是不等於 -1 的負數，-1 表示等候逾時為無限-或-逾時大於 <see cref="F:System.Int32.MaxValue" />。</exception>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> 已取消。</exception>
+    </member>
+    <member name="T:System.Threading.SendOrPostCallback">
+      <summary>表示要將訊息分派至同步處理內容時，所要呼叫的方法。</summary>
+      <param name="state">傳送至委派的物件。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.SpinLock">
+      <summary>提供互斥鎖定基本作業，在這個作業中，嘗試取得鎖定的執行緒會用迴圈方式等候，並重複檢查，直到鎖定可用為止。</summary>
+    </member>
+    <member name="M:System.Threading.SpinLock.#ctor(System.Boolean)">
+      <summary>使用可追蹤執行緒 ID 以改善偵錯的選項，初始化 <see cref="T:System.Threading.SpinLock" /> 結構的新執行個體。</summary>
+      <param name="enableThreadOwnerTracking">是否要擷取並使用執行緒 ID 以進行偵錯。</param>
+    </member>
+    <member name="M:System.Threading.SpinLock.Enter(System.Boolean@)">
+      <summary>以可靠的方式取得鎖定，例如即使方法呼叫中發生例外狀況，還是能可靠地檢查 <paramref name="lockTaken" /> 以判斷是否已取得鎖定。</summary>
+      <param name="lockTaken">如果取得鎖定則為 true，否則為 false。<paramref name="lockTaken" /> 必須在呼叫這個方法之前初始化為 false。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="lockTaken" /> 引數必須在呼叫 Enter 之前初始化為 False。</exception>
+      <exception cref="T:System.Threading.LockRecursionException">已啟用執行緒擁有權追蹤，且目前的執行緒已經取得這個鎖定。</exception>
+    </member>
+    <member name="M:System.Threading.SpinLock.Exit">
+      <summary>釋放鎖定。</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">已啟用執行緒擁有權追蹤，且目前的執行緒不是這個鎖定的擁有者。</exception>
+    </member>
+    <member name="M:System.Threading.SpinLock.Exit(System.Boolean)">
+      <summary>釋放鎖定。</summary>
+      <param name="useMemoryBarrier">布林值，表示是否應該發出記憶體柵欄，以便立即將結束作業發行至其他執行緒。</param>
+      <exception cref="T:System.Threading.SynchronizationLockException">已啟用執行緒擁有權追蹤，且目前的執行緒不是這個鎖定的擁有者。</exception>
+    </member>
+    <member name="P:System.Threading.SpinLock.IsHeld">
+      <summary>取得值，這個值表示此鎖定目前是否由任何執行緒持有。</summary>
+      <returns>如果此鎖定目前由任何執行緒持有則為 true，否則為 false。</returns>
+    </member>
+    <member name="P:System.Threading.SpinLock.IsHeldByCurrentThread">
+      <summary>取得值，表示此鎖定是否由目前執行緒持有。</summary>
+      <returns>如果此鎖定由目前執行緒持有則為 true，否則為 false。</returns>
+      <exception cref="T:System.InvalidOperationException">已停用執行緒擁有權追蹤。</exception>
+    </member>
+    <member name="P:System.Threading.SpinLock.IsThreadOwnerTrackingEnabled">
+      <summary>取得值，表示這個執行個體是否已啟用執行緒擁有權追蹤。</summary>
+      <returns>如果這個執行個體已啟用執行緒擁有權追蹤則為 true，否則為 false。</returns>
+    </member>
+    <member name="M:System.Threading.SpinLock.TryEnter(System.Boolean@)">
+      <summary>嘗試以可靠的方式取得鎖定，例如即使方法呼叫中發生例外狀況，還是能可靠地檢查 <paramref name="lockTaken" /> 以判斷是否已取得鎖定。</summary>
+      <param name="lockTaken">如果取得鎖定則為 true，否則為 false。<paramref name="lockTaken" /> 必須在呼叫這個方法之前初始化為 false。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="lockTaken" /> 引數必須在呼叫 TryEnter 之前初始化為 False。</exception>
+      <exception cref="T:System.Threading.LockRecursionException">已啟用執行緒擁有權追蹤，且目前的執行緒已經取得這個鎖定。</exception>
+    </member>
+    <member name="M:System.Threading.SpinLock.TryEnter(System.Int32,System.Boolean@)">
+      <summary>嘗試以可靠的方式取得鎖定，例如即使方法呼叫中發生例外狀況，還是能可靠地檢查 <paramref name="lockTaken" /> 以判斷是否已取得鎖定。</summary>
+      <param name="millisecondsTimeout">要等候的毫秒數，如果要無限期等候，則為 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <param name="lockTaken">如果取得鎖定則為 true，否則為 false。<paramref name="lockTaken" /> 必須在呼叫這個方法之前初始化為 false。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一個不等於 -1 的負數，-1 表示等候逾時為無限。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="lockTaken" /> 引數必須在呼叫 TryEnter 之前初始化為 False。</exception>
+      <exception cref="T:System.Threading.LockRecursionException">已啟用執行緒擁有權追蹤，且目前的執行緒已經取得這個鎖定。</exception>
+    </member>
+    <member name="M:System.Threading.SpinLock.TryEnter(System.TimeSpan,System.Boolean@)">
+      <summary>嘗試以可靠的方式取得鎖定，例如即使方法呼叫中發生例外狀況，還是能可靠地檢查 <paramref name="lockTaken" /> 以判斷是否已取得鎖定。</summary>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" />，表示要等候的毫秒數，或是 <see cref="T:System.TimeSpan" />，表示無限期等候的 -1 毫秒。</param>
+      <param name="lockTaken">如果取得鎖定則為 true，否則為 false。<paramref name="lockTaken" /> 必須在呼叫這個方法之前初始化為 false。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 是除了 -1 毫秒以外的負數，表示無限逾時，或是大於 <see cref="F:System.Int32.MaxValue" /> 毫秒的逾時。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="lockTaken" /> 引數必須在呼叫 TryEnter 之前初始化為 False。</exception>
+      <exception cref="T:System.Threading.LockRecursionException">已啟用執行緒擁有權追蹤，且目前的執行緒已經取得這個鎖定。</exception>
+    </member>
+    <member name="T:System.Threading.SpinWait">
+      <summary>提供微調式等候支援。</summary>
+    </member>
+    <member name="P:System.Threading.SpinWait.Count">
+      <summary>取得已在這個執行個體上呼叫 <see cref="M:System.Threading.SpinWait.SpinOnce" /> 的次數。</summary>
+      <returns>傳回整數，表示已在這個執行個體上呼叫 <see cref="M:System.Threading.SpinWait.SpinOnce" /> 的次數。</returns>
+    </member>
+    <member name="P:System.Threading.SpinWait.NextSpinWillYield">
+      <summary>取得值，這個值表示下一次呼叫 <see cref="M:System.Threading.SpinWait.SpinOnce" /> 時是否讓出處理器，並觸發強制的環境切換。</summary>
+      <returns>下一次呼叫 <see cref="M:System.Threading.SpinWait.SpinOnce" /> 時是否讓出處理器，並觸發強制的環境切換。</returns>
+    </member>
+    <member name="M:System.Threading.SpinWait.Reset">
+      <summary>重設微調計數器。</summary>
+    </member>
+    <member name="M:System.Threading.SpinWait.SpinOnce">
+      <summary>執行單一微調。</summary>
+    </member>
+    <member name="M:System.Threading.SpinWait.SpinUntil(System.Func{System.Boolean})">
+      <summary>執行微調，直到滿足指定的條件為止。</summary>
+      <param name="condition">會重複執行直到傳回 true 為止的委派。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="condition" /> 引數為 null。</exception>
+    </member>
+    <member name="M:System.Threading.SpinWait.SpinUntil(System.Func{System.Boolean},System.Int32)">
+      <summary>執行微調，直到滿足指定的條件或是指定的逾時過期為止。</summary>
+      <returns>如果滿足條件則為 true，否則為 false。</returns>
+      <param name="condition">會重複執行直到傳回 true 為止的委派。</param>
+      <param name="millisecondsTimeout">要等候的毫秒數，如果要無限期等候，則為 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="condition" /> 引數為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一個不等於 -1 的負數，-1 表示等候逾時為無限。</exception>
+    </member>
+    <member name="M:System.Threading.SpinWait.SpinUntil(System.Func{System.Boolean},System.TimeSpan)">
+      <summary>執行微調，直到滿足指定的條件或是指定的逾時過期為止。</summary>
+      <returns>如果滿足條件則為 true，否則為 false。</returns>
+      <param name="condition">會重複執行直到傳回 true 為止的委派。</param>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" />，表示要等候的毫秒數，或是 TimeSpan，表示無限期等候的 -1 毫秒。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="condition" /> 引數為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 是除了 -1 毫秒以外的負數，表示無限逾時，或是大於 <see cref="F:System.Int32.MaxValue" /> 的逾時。</exception>
+    </member>
+    <member name="T:System.Threading.SynchronizationContext">
+      <summary>提供在各種同步處理模式中傳播同步處理內容的基本功能。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.#ctor">
+      <summary>建立 <see cref="T:System.Threading.SynchronizationContext" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.CreateCopy">
+      <summary>在衍生類別中覆寫時，會建立同步處理內容的複本。 </summary>
+      <returns>新的 <see cref="T:System.Threading.SynchronizationContext" /> 物件。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.SynchronizationContext.Current">
+      <summary>取得目前執行緒的同步處理內容。</summary>
+      <returns>
+        <see cref="T:System.Threading.SynchronizationContext" /> 物件，代表目前的同步處理內容。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.OperationCompleted">
+      <summary>在衍生類別中覆寫時，會回應作業已經完成的通知。</summary>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.OperationStarted">
+      <summary>在衍生類別中覆寫時，會回應作業已經啟動的通知。</summary>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.Post(System.Threading.SendOrPostCallback,System.Object)">
+      <summary>在衍生類別中覆寫時，會將非同步訊息分派至同步處理內容。</summary>
+      <param name="d">要呼叫的 <see cref="T:System.Threading.SendOrPostCallback" /> 委派。</param>
+      <param name="state">傳送至委派的物件。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.Send(System.Threading.SendOrPostCallback,System.Object)">
+      <summary>在衍生類別中覆寫時，會將同步訊息分派至同步處理內容。</summary>
+      <param name="d">要呼叫的 <see cref="T:System.Threading.SendOrPostCallback" /> 委派。</param>
+      <param name="state">傳送至委派的物件。</param>
+      <exception cref="T:System.NotSupportedException">The method was called in a Windows Store app.The implementation of <see cref="T:System.Threading.SynchronizationContext" /> for Windows Store apps does not support the <see cref="M:System.Threading.SynchronizationContext.Send(System.Threading.SendOrPostCallback,System.Object)" /> method.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.SetSynchronizationContext(System.Threading.SynchronizationContext)">
+      <summary>設定目前的同步處理內容。</summary>
+      <param name="syncContext">要設定的 <see cref="T:System.Threading.SynchronizationContext" /> 物件。</param>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence, ControlPolicy" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Threading.SynchronizationLockException">
+      <summary>方法要求呼叫端擁有指定 Monitor 的鎖定，但是不擁有鎖定的呼叫端叫用方法時所擲回的例外狀況。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationLockException.#ctor">
+      <summary>使用預設屬性來初始化 <see cref="T:System.Threading.SynchronizationLockException" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="M:System.Threading.SynchronizationLockException.#ctor(System.String)">
+      <summary>使用指定的錯誤訊息，初始化 <see cref="T:System.Threading.SynchronizationLockException" /> 類別的新執行個體。</summary>
+      <param name="message">解釋例外狀況原因的錯誤訊息。</param>
+    </member>
+    <member name="M:System.Threading.SynchronizationLockException.#ctor(System.String,System.Exception)">
+      <summary>使用指定的錯誤訊息和造成這個例外狀況原因的內部例外狀況參考，初始化 <see cref="T:System.Threading.SynchronizationLockException" /> 類別的新執行個體。</summary>
+      <param name="message">解釋例外狀況原因的錯誤訊息。</param>
+      <param name="innerException">導致目前例外狀況的例外。如果 <paramref name="innerException" /> 參數不是 null，則目前的例外狀況會在處理內部例外的 catch 區塊中引發。</param>
+    </member>
+    <member name="T:System.Threading.ThreadLocal`1">
+      <summary>提供資料的執行緒區域儲存區。</summary>
+      <typeparam name="T">指定依個別執行緒儲存的資料型別。</typeparam>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.#ctor">
+      <summary>初始化 <see cref="T:System.Threading.ThreadLocal`1" /> 執行個體。</summary>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.#ctor(System.Boolean)">
+      <summary>初始化 <see cref="T:System.Threading.ThreadLocal`1" /> 執行個體。</summary>
+      <param name="trackAllValues">是否要追蹤所有在執行個體上設定的值，並透過<see cref="P:System.Threading.ThreadLocal`1.Values" />屬性將它們公開。</param>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.#ctor(System.Func{`0})">
+      <summary>使用指定的 <paramref name="valueFactory" /> 函式來初始化 <see cref="T:System.Threading.ThreadLocal`1" /> 的執行個體。</summary>
+      <param name="valueFactory">當嘗試擷取未事先初始化的 <see cref="P:System.Threading.ThreadLocal`1.Value" /> 時，系統會叫用 <see cref="T:System.Func`1" /> 來產生延遲初始化的值。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="valueFactory" /> 是 Null 參考 (在 Visual Basic 中為 Nothing)。</exception>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.#ctor(System.Func{`0},System.Boolean)">
+      <summary>使用指定的 <paramref name="valueFactory" /> 函式來初始化 <see cref="T:System.Threading.ThreadLocal`1" /> 的執行個體。</summary>
+      <param name="valueFactory">當嘗試擷取未事先初始化的 <see cref="P:System.Threading.ThreadLocal`1.Value" /> 時，系統會叫用 <see cref="T:System.Func`1" /> 來產生延遲初始化的值。</param>
+      <param name="trackAllValues">是否要追蹤所有在執行個體上設定的值，並透過<see cref="P:System.Threading.ThreadLocal`1.Values" />屬性將它們公開。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="valueFactory" /> 為 null 參考 (在 Visual Basic 中為 Nothing)。</exception>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.Dispose">
+      <summary>將 <see cref="T:System.Threading.ThreadLocal`1" /> 類別目前的執行個體所使用的資源全部釋出。</summary>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.Dispose(System.Boolean)">
+      <summary>釋放這個 <see cref="T:System.Threading.ThreadLocal`1" /> 執行個體所使用的資源。</summary>
+      <param name="disposing">布林值，表示是否會因為呼叫 <see cref="M:System.Threading.ThreadLocal`1.Dispose" /> 而呼叫這個方法。</param>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.Finalize">
+      <summary>釋放這個 <see cref="T:System.Threading.ThreadLocal`1" /> 執行個體所使用的資源。</summary>
+    </member>
+    <member name="P:System.Threading.ThreadLocal`1.IsValueCreated">
+      <summary>取得值，這個值表示 <see cref="P:System.Threading.ThreadLocal`1.Value" /> 是否已在目前執行緒中完成初始化。</summary>
+      <returns>如果已在目前執行緒上初始化 <see cref="P:System.Threading.ThreadLocal`1.Value" /> 則為 true，否則為 false。</returns>
+      <exception cref="T:System.ObjectDisposedException">已處置 <see cref="T:System.Threading.ThreadLocal`1" /> 執行個體。</exception>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.ToString">
+      <summary>建立並傳回目前執行緒的這個執行個體的字串表示。</summary>
+      <returns>在 <see cref="P:System.Threading.ThreadLocal`1.Value" /> 上呼叫 <see cref="M:System.Object.ToString" /> 的結果。</returns>
+      <exception cref="T:System.ObjectDisposedException">已處置 <see cref="T:System.Threading.ThreadLocal`1" /> 執行個體。</exception>
+      <exception cref="T:System.NullReferenceException">目前執行緒的 <see cref="P:System.Threading.ThreadLocal`1.Value" /> 是 Null 參考 (在 Visual Basic 中為 Nothing)。</exception>
+      <exception cref="T:System.InvalidOperationException">初始化函式會嘗試遞迴參考 <see cref="P:System.Threading.ThreadLocal`1.Value" /> 。</exception>
+      <exception cref="T:System.MissingMemberException">沒有提供任何預設的建構函式，也沒有提供任何値 Factory。</exception>
+    </member>
+    <member name="P:System.Threading.ThreadLocal`1.Value">
+      <summary>取得或設定目前執行緒的這個執行個體的值。</summary>
+      <returns>傳回這個 ThreadLocal 負責初始化之物件的執行個體。</returns>
+      <exception cref="T:System.ObjectDisposedException">已處置 <see cref="T:System.Threading.ThreadLocal`1" /> 執行個體。</exception>
+      <exception cref="T:System.InvalidOperationException">初始化函式會嘗試遞迴參考 <see cref="P:System.Threading.ThreadLocal`1.Value" /> 。</exception>
+      <exception cref="T:System.MissingMemberException">沒有提供任何預設的建構函式，也沒有提供任何値 Factory。</exception>
+    </member>
+    <member name="P:System.Threading.ThreadLocal`1.Values">
+      <summary>取得清單，其中包含已存取這個執行個體的所有執行緒目前所儲存的所有值。</summary>
+      <returns>已存取這個執行個體的所有執行緒目前所儲存之所有值的清單。</returns>
+      <exception cref="T:System.ObjectDisposedException">已處置 <see cref="T:System.Threading.ThreadLocal`1" /> 執行個體。</exception>
+    </member>
+    <member name="T:System.Threading.Volatile">
+      <summary>包含用來執行動態記憶體作業的方法。</summary>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Boolean@)">
+      <summary>讀取指定之欄位的值。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之後出現讀取或寫入，處理器便無法在這個方法之前移動它。</summary>
+      <returns>已讀取的值。這個值是由電腦中的任何處理器最新寫入的，與處理器的數目或處理器快取的狀態無關。</returns>
+      <param name="location">要讀取的欄位。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Byte@)">
+      <summary>讀取指定之欄位的值。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之後出現讀取或寫入，處理器便無法在這個方法之前移動它。</summary>
+      <returns>已讀取的值。這個值是由電腦中的任何處理器最新寫入的，與處理器的數目或處理器快取的狀態無關。</returns>
+      <param name="location">要讀取的欄位。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Double@)">
+      <summary>讀取指定之欄位的值。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之後出現讀取或寫入，處理器便無法在這個方法之前移動它。</summary>
+      <returns>已讀取的值。這個值是由電腦中的任何處理器最新寫入的，與處理器的數目或處理器快取的狀態無關。</returns>
+      <param name="location">要讀取的欄位。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Int16@)">
+      <summary>讀取指定之欄位的值。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之後出現讀取或寫入，處理器便無法在這個方法之前移動它。</summary>
+      <returns>已讀取的值。這個值是由電腦中的任何處理器最新寫入的，與處理器的數目或處理器快取的狀態無關。</returns>
+      <param name="location">要讀取的欄位。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Int32@)">
+      <summary>讀取指定之欄位的值。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之後出現讀取或寫入，處理器便無法在這個方法之前移動它。</summary>
+      <returns>已讀取的值。這個值是由電腦中的任何處理器最新寫入的，與處理器的數目或處理器快取的狀態無關。</returns>
+      <param name="location">要讀取的欄位。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Int64@)">
+      <summary>讀取指定之欄位的值。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之後出現讀取或寫入，處理器便無法在這個方法之前移動它。</summary>
+      <returns>已讀取的值。這個值是由電腦中的任何處理器最新寫入的，與處理器的數目或處理器快取的狀態無關。</returns>
+      <param name="location">要讀取的欄位。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.IntPtr@)">
+      <summary>讀取指定之欄位的值。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之後出現讀取或寫入，處理器便無法在這個方法之前移動它。</summary>
+      <returns>已讀取的值。這個值是由電腦中的任何處理器最新寫入的，與處理器的數目或處理器快取的狀態無關。</returns>
+      <param name="location">要讀取的欄位。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.SByte@)">
+      <summary>讀取指定之欄位的值。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之後出現讀取或寫入，處理器便無法在這個方法之前移動它。</summary>
+      <returns>已讀取的值。這個值是由電腦中的任何處理器最新寫入的，與處理器的數目或處理器快取的狀態無關。</returns>
+      <param name="location">要讀取的欄位。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Single@)">
+      <summary>讀取指定之欄位的值。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之後出現讀取或寫入，處理器便無法在這個方法之前移動它。</summary>
+      <returns>已讀取的值。這個值是由電腦中的任何處理器最新寫入的，與處理器的數目或處理器快取的狀態無關。</returns>
+      <param name="location">要讀取的欄位。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.UInt16@)">
+      <summary>讀取指定之欄位的值。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之後出現讀取或寫入，處理器便無法在這個方法之前移動它。</summary>
+      <returns>已讀取的值。這個值是由電腦中的任何處理器最新寫入的，與處理器的數目或處理器快取的狀態無關。</returns>
+      <param name="location">要讀取的欄位。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.UInt32@)">
+      <summary>讀取指定之欄位的值。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之後出現讀取或寫入，處理器便無法在這個方法之前移動它。</summary>
+      <returns>已讀取的值。這個值是由電腦中的任何處理器最新寫入的，與處理器的數目或處理器快取的狀態無關。</returns>
+      <param name="location">要讀取的欄位。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.UInt64@)">
+      <summary>讀取指定之欄位的值。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之後出現讀取或寫入，處理器便無法在這個方法之前移動它。</summary>
+      <returns>已讀取的值。這個值是由電腦中的任何處理器最新寫入的，與處理器的數目或處理器快取的狀態無關。</returns>
+      <param name="location">要讀取的欄位。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.UIntPtr@)">
+      <summary>讀取指定之欄位的值。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之後出現讀取或寫入，處理器便無法在這個方法之前移動它。</summary>
+      <returns>已讀取的值。這個值是由電腦中的任何處理器最新寫入的，與處理器的數目或處理器快取的狀態無關。</returns>
+      <param name="location">要讀取的欄位。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read``1(``0@)">
+      <summary>從指定的欄位讀取物件參考。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之後出現讀取或寫入，處理器便無法在這個方法之前移動它。</summary>
+      <returns>已讀取之 <paramref name="T" /> 的參考。這個參考是由電腦中的任何處理器最新寫入的，與處理器的數目或處理器快取的狀態無關。</returns>
+      <param name="location">要讀取的欄位。</param>
+      <typeparam name="T">要讀取之欄位的型別。此型別必須是參考型別，不得為實值型別。</typeparam>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Boolean@,System.Boolean)">
+      <summary>將指定的值寫入指定的欄位。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之前出現讀取或寫入，處理器便無法在這個方法之後移動它。</summary>
+      <param name="location">寫入此值的欄位。</param>
+      <param name="value">要寫入的值。立即寫入此值，好讓電腦中的所有處理器都可以看到此值。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Byte@,System.Byte)">
+      <summary>將指定的值寫入指定的欄位。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之前出現讀取或寫入，處理器便無法在這個方法之後移動它。</summary>
+      <param name="location">寫入此值的欄位。</param>
+      <param name="value">要寫入的值。立即寫入此值，好讓電腦中的所有處理器都可以看到此值。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Double@,System.Double)">
+      <summary>將指定的值寫入指定的欄位。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之前出現讀取或寫入，處理器便無法在這個方法之後移動它。</summary>
+      <param name="location">寫入此值的欄位。</param>
+      <param name="value">要寫入的值。立即寫入此值，好讓電腦中的所有處理器都可以看到此值。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Int16@,System.Int16)">
+      <summary>將指定的值寫入指定的欄位。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之前出現讀取或寫入，處理器便無法在這個方法之後移動它。</summary>
+      <param name="location">寫入此值的欄位。</param>
+      <param name="value">要寫入的值。立即寫入此值，好讓電腦中的所有處理器都可以看到此值。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Int32@,System.Int32)">
+      <summary>將指定的值寫入指定的欄位。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之前出現讀取或寫入，處理器便無法在這個方法之後移動它。</summary>
+      <param name="location">寫入此值的欄位。</param>
+      <param name="value">要寫入的值。立即寫入此值，好讓電腦中的所有處理器都可以看到此值。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Int64@,System.Int64)">
+      <summary>將指定的值寫入指定的欄位。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之前出現記憶體作業，處理器便無法在這個方法之後移動它。</summary>
+      <param name="location">寫入此值的欄位。</param>
+      <param name="value">要寫入的值。立即寫入此值，好讓電腦中的所有處理器都可以看到此值。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.IntPtr@,System.IntPtr)">
+      <summary>將指定的值寫入指定的欄位。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之前出現讀取或寫入，處理器便無法在這個方法之後移動它。</summary>
+      <param name="location">寫入此值的欄位。</param>
+      <param name="value">要寫入的值。立即寫入此值，好讓電腦中的所有處理器都可以看到此值。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.SByte@,System.SByte)">
+      <summary>將指定的值寫入指定的欄位。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之前出現讀取或寫入，處理器便無法在這個方法之後移動它。</summary>
+      <param name="location">寫入此值的欄位。</param>
+      <param name="value">要寫入的值。立即寫入此值，好讓電腦中的所有處理器都可以看到此值。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Single@,System.Single)">
+      <summary>將指定的值寫入指定的欄位。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之前出現讀取或寫入，處理器便無法在這個方法之後移動它。</summary>
+      <param name="location">寫入此值的欄位。</param>
+      <param name="value">要寫入的值。立即寫入此值，好讓電腦中的所有處理器都可以看到此值。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.UInt16@,System.UInt16)">
+      <summary>將指定的值寫入指定的欄位。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之前出現讀取或寫入，處理器便無法在這個方法之後移動它。</summary>
+      <param name="location">寫入此值的欄位。</param>
+      <param name="value">要寫入的值。立即寫入此值，好讓電腦中的所有處理器都可以看到此值。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.UInt32@,System.UInt32)">
+      <summary>將指定的值寫入指定的欄位。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之前出現讀取或寫入，處理器便無法在這個方法之後移動它。</summary>
+      <param name="location">寫入此值的欄位。</param>
+      <param name="value">要寫入的值。立即寫入此值，好讓電腦中的所有處理器都可以看到此值。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.UInt64@,System.UInt64)">
+      <summary>將指定的值寫入指定的欄位。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之前出現讀取或寫入，處理器便無法在這個方法之後移動它。</summary>
+      <param name="location">寫入此值的欄位。</param>
+      <param name="value">要寫入的值。立即寫入此值，好讓電腦中的所有處理器都可以看到此值。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.UIntPtr@,System.UIntPtr)">
+      <summary>將指定的值寫入指定的欄位。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之前出現讀取或寫入，處理器便無法在這個方法之後移動它。</summary>
+      <param name="location">寫入此值的欄位。</param>
+      <param name="value">要寫入的值。立即寫入此值，好讓電腦中的所有處理器都可以看到此值。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write``1(``0@,``0)">
+      <summary>將指定的物件參考寫入指定的欄位。在需要它的系統上，以如下方式插入可防止處理器重新排序記憶體作業的記憶體屏障：如果程式碼中這個方法之前出現讀取或寫入，處理器便無法在這個方法之後移動它。</summary>
+      <param name="location">寫入物件參考的欄位。</param>
+      <param name="value">要寫入的物件參考。立即寫入此參考，好讓電腦中的所有處理器都可以看到此參考。</param>
+      <typeparam name="T">要寫入之欄位的型別。此型別必須是參考型別，不得為實值型別。</typeparam>
+    </member>
+    <member name="T:System.Threading.WaitHandleCannotBeOpenedException">
+      <summary>當嘗試開啟不存在的系統 Mutex 或號誌時，所擲回的例外狀況。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.WaitHandleCannotBeOpenedException.#ctor">
+      <summary>使用預設值，初始化 <see cref="T:System.Threading.WaitHandleCannotBeOpenedException" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="M:System.Threading.WaitHandleCannotBeOpenedException.#ctor(System.String)">
+      <summary>使用指定的錯誤訊息，初始化 <see cref="T:System.Threading.WaitHandleCannotBeOpenedException" /> 類別的新執行個體。</summary>
+      <param name="message">解釋例外狀況原因的錯誤訊息。</param>
+    </member>
+    <member name="M:System.Threading.WaitHandleCannotBeOpenedException.#ctor(System.String,System.Exception)">
+      <summary>使用指定的錯誤訊息和造成這個例外狀況原因的內部例外狀況參考，初始化 <see cref="T:System.Threading.WaitHandleCannotBeOpenedException" /> 類別的新執行個體。</summary>
+      <param name="message">解釋例外狀況原因的錯誤訊息。</param>
+      <param name="innerException">導致目前例外狀況的例外。如果 <paramref name="innerException" /> 參數不是 null，則目前的例外狀況會在處理內部例外的 catch 區塊中引發。</param>
+    </member>
+  </members>
+</doc>

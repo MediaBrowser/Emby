@@ -1,0 +1,2076 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Globalization.Calendars</name>
+  </assembly>
+  <members>
+    <member name="T:System.Globalization.ChineseLunisolarCalendar">
+      <summary>月、日、年などの区分で時間を表します。年は中国暦を使用して計算され、日付と月は太陰太陽暦を使用して計算されます。</summary>
+    </member>
+    <member name="M:System.Globalization.ChineseLunisolarCalendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.ChineseLunisolarCalendar" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="P:System.Globalization.ChineseLunisolarCalendar.Eras">
+      <summary>現在の <see cref="T:System.Globalization.ChineseLunisolarCalendar" /> オブジェクトでサポートされている日付と時刻の範囲に対応する時代 (年号) を取得します。</summary>
+      <returns>関連する時代 (年号) を指定する 32 ビット符号付き整数の配列。<see cref="T:System.Globalization.ChineseLunisolarCalendar" /> オブジェクトの戻り値は、常に <see cref="F:System.Globalization.ChineseLunisolarCalendar.ChineseEra" /> 値に等しい 1 つの要素を含む配列です。</returns>
+    </member>
+    <member name="M:System.Globalization.ChineseLunisolarCalendar.GetEra(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> 型に対応する時代 (年号) を取得します。</summary>
+      <returns>
+        <paramref name="time" /> パラメーターの時代 (年号) を表す整数。</returns>
+      <param name="time">読み込む <see cref="T:System.DateTime" /> 型。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> が <see cref="P:System.Globalization.ChineseLunisolarCalendar.MinSupportedDateTime" /> より小さい値か、<see cref="P:System.Globalization.ChineseLunisolarCalendar.MaxSupportedDateTime" /> より大きい値です。</exception>
+    </member>
+    <member name="P:System.Globalization.ChineseLunisolarCalendar.MaxSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.ChineseLunisolarCalendar" /> クラスでサポートされている最大の日付と時刻を取得します。</summary>
+      <returns>グレゴリオ暦の 2101 年 1 月 28 日の最後の瞬間を表す <see cref="T:System.DateTime" /> 型。コンストラクター DateTime(2101, 1, 28, 23, 59, 59, 999) とほぼ等価です。</returns>
+    </member>
+    <member name="P:System.Globalization.ChineseLunisolarCalendar.MinSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.ChineseLunisolarCalendar" /> クラスでサポートされている最小の日付と時刻を取得します。</summary>
+      <returns>グレゴリオ暦の 1901 年 2 月 19 日を表す <see cref="T:System.DateTime" /> 型。コンストラクター DateTime(1901, 2, 19) と等価です。</returns>
+    </member>
+    <member name="T:System.Globalization.EastAsianLunisolarCalendar">
+      <summary>時間が月、日、年、および時代 (年号) に分割され、日付が太陽と月の周期に基づいている暦を表します。</summary>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>指定した日付から指定した月数が経過した後の日付を計算します。</summary>
+      <returns>
+        <paramref name="time" /> パラメーターに指定した月数を加算した結果の、新しい <see cref="T:System.DateTime" />。</returns>
+      <param name="time">
+        <paramref name="months" /> を加算する対象の <see cref="T:System.DateTime" />。</param>
+      <param name="months">加算する月の数。</param>
+      <exception cref="T:System.ArgumentException">結果が <see cref="T:System.DateTime" /> のサポート範囲外です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> が -120,000 未満か、120,000 よりも大きい値です。または<paramref name="time" /> が <see cref="P:System.Globalization.Calendar.MinSupportedDateTime" /> より小さい値か、<see cref="P:System.Globalization.Calendar.MaxSupportedDateTime" /> より大きい値です。</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>指定した日付から指定した年数が経過した後の日付を計算します。</summary>
+      <returns>
+        <paramref name="time" /> パラメーターに指定した年数を加算した結果の、新しい <see cref="T:System.DateTime" />。</returns>
+      <param name="time">
+        <paramref name="years" /> を加算する対象の <see cref="T:System.DateTime" />。</param>
+      <param name="years">追加する年数。</param>
+      <exception cref="T:System.ArgumentException">結果が <see cref="T:System.DateTime" /> のサポート範囲外です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> が <see cref="P:System.Globalization.Calendar.MinSupportedDateTime" /> より小さい値か、<see cref="P:System.Globalization.Calendar.MaxSupportedDateTime" /> より大きい値です。</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetCelestialStem(System.Int32)">
+      <summary>干支 (60 年周期) における指定した年の天干を計算します。</summary>
+      <returns>1 ～ 10 の数値。</returns>
+      <param name="sexagenaryYear">干支における年を表す 1 ～ 60 の整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="sexagenaryYear" /> が 1 より小さいか、または 60 を超えています。</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>指定した日付の日を計算します。</summary>
+      <returns>
+        <paramref name="time" /> パラメーターに指定された日付を表す 1 ～ 31 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>指定した日付の曜日を計算します。</summary>
+      <returns>
+        <paramref name="time" /> パラメーターに指定された曜日を表すいずれかの <see cref="T:System.DayOfWeek" /> 値。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> が <see cref="P:System.Globalization.Calendar.MinSupportedDateTime" /> より小さい値か、<see cref="P:System.Globalization.Calendar.MaxSupportedDateTime" /> より大きい値です。</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetDayOfYear(System.DateTime)">
+      <summary>指定した日付の年の年間積算日を計算します。</summary>
+      <returns>
+        <paramref name="time" /> パラメーターに指定された年間積算日を表す 1 ～ 354 の整数 (平年の場合) または 1 ～ 384 (閏年の場合)。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>指定した年と時代 (年号) の指定した月の日数を計算します。</summary>
+      <returns>指定した年と時代 (年号) の指定した月の日数。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数 (平年の場合) または 1 ～ 13 の整数 (閏年の場合)。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" />、 または <paramref name="era" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>指定した年と時代 (年号) の日数を計算します。</summary>
+      <returns>指定した年と時代 (年号) の日数。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> または <paramref name="era" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>指定された年と時代 (年号) の閏月を計算します。</summary>
+      <returns>指定した年と時代 (年号) における閏月を示す 1 ～ 13 の正の整数。 またはカレンダーが閏月をサポートしていない場合や、<paramref name="year" /> パラメーターおよび <paramref name="era" /> パラメーターが閏年を指定しない場合は 0。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetMonth(System.DateTime)">
+      <summary>指定した日付の月を返します。</summary>
+      <returns>
+        <paramref name="time" /> パラメーターに指定された月を表す 1 ～ 13 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>指定した年と時代 (年号) の月数を計算します。</summary>
+      <returns>指定した時代 (年号) の指定した年の月数。戻り値は、12 の月 (平年の場合) または 13 の月 (閏年の場合) です。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> または <paramref name="era" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetSexagenaryYear(System.DateTime)">
+      <summary>指定した日付に対応する、干支 (60 年周期) における年を計算します。</summary>
+      <returns>
+        <paramref name="date" /> パラメーターに対応する、干支における年を表す 1 ～ 60 の数値。</returns>
+      <param name="time">読み込む <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetTerrestrialBranch(System.Int32)">
+      <summary>干支 (60 年周期) における指定した年の地支を計算します。</summary>
+      <returns>1 ～ 12 の整数。</returns>
+      <param name="sexagenaryYear">干支における年を表す 1 ～ 60 の整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="sexagenaryYear" /> が 1 より小さいか、または 60 を超えています。</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.GetYear(System.DateTime)">
+      <summary>指定した日付の年を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> の年を表す整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した日付が閏日かどうかを確認します。</summary>
+      <returns>指定した日が閏日である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 13 の整数。</param>
+      <param name="day">日を表す 1 ～ 31 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" />、<paramref name="day" />、または <paramref name="era" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>指定した年と時代 (年号) の指定した月が閏月かどうかを確認します。</summary>
+      <returns>
+        <paramref name="month" /> パラメーターが閏月の場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 13 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" />、 または <paramref name="era" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年が閏年かどうかを確認します。</summary>
+      <returns>指定した年が閏年である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> または <paramref name="era" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>指定した日付、時刻、および時代 (年号) に設定された <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>指定した日付、時刻、および時代 (年号) に設定された <see cref="T:System.DateTime" />。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 13 の整数。</param>
+      <param name="day">日を表す 1 ～ 31 の整数。</param>
+      <param name="hour">時間を表す 0 ～ 23 の整数。</param>
+      <param name="minute">分を表す 0 ～ 59 の整数。</param>
+      <param name="second">秒を表す 0 ～ 59 の整数。</param>
+      <param name="millisecond">ミリ秒を表す 0 ～ 999 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" />、<paramref name="day" />、<paramref name="hour" />、<paramref name="minute" />、<paramref name="second" />、<paramref name="millisecond" />、または <paramref name="era" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.EastAsianLunisolarCalendar.ToFourDigitYear(System.Int32)">
+      <summary>指定した年を 4 桁表記の年に変換します。</summary>
+      <returns>
+        <paramref name="year" /> パラメーターの 4 桁表記を保持する整数。</returns>
+      <param name="year">変換する年を表す 2 桁または 4 桁の整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="P:System.Globalization.EastAsianLunisolarCalendar.TwoDigitYearMax">
+      <summary>年の 2 桁表記で表すことができる 100 年間の範囲内で最後に当たる年を取得または設定します。</summary>
+      <returns>年の 2 桁表記で表すことができる 100 年間の範囲内で最後に当たる年。</returns>
+      <exception cref="T:System.InvalidOperationException">現在の <see cref="T:System.Globalization.EastAsianLunisolarCalendar" /> が読み取り専用です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">set 操作に指定された値が 99 より小さいか、現在の暦でサポートされている最大の年を超えています。</exception>
+    </member>
+    <member name="T:System.Globalization.GregorianCalendar">
+      <summary>グレゴリオ暦を表します。</summary>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.#ctor">
+      <summary>既定の <see cref="T:System.Globalization.GregorianCalendarTypes" /> 値を使用して、<see cref="T:System.Globalization.GregorianCalendar" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.#ctor(System.Globalization.GregorianCalendarTypes)">
+      <summary>
+        <see cref="T:System.Globalization.GregorianCalendarTypes" /> 値を指定して、<see cref="T:System.Globalization.GregorianCalendar" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="type">作成する暦の言語バージョンを示す <see cref="T:System.Globalization.GregorianCalendarTypes" /> 値。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="type" /> が <see cref="T:System.Globalization.GregorianCalendarTypes" /> 列挙体のメンバーではありません。</exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>指定した <see cref="T:System.DateTime" /> から指定した月数が経過した後の <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> に指定した月数を加算した結果の <see cref="T:System.DateTime" />。</returns>
+      <param name="time">月数を加算する対象の <see cref="T:System.DateTime" />。</param>
+      <param name="months">加算する月の数。</param>
+      <exception cref="T:System.ArgumentException">結果として得られる <see cref="T:System.DateTime" /> がサポートされている範囲外の値です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> が -120000 未満です。または<paramref name="months" /> が 120000 より大きい値です。</exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>指定した <see cref="T:System.DateTime" /> から指定した年数が経過した後の <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> に指定した年数を加算した結果の <see cref="T:System.DateTime" />。</returns>
+      <param name="time">年数を加算する対象の <see cref="T:System.DateTime" />。</param>
+      <param name="years">追加する年数。</param>
+      <exception cref="T:System.ArgumentException">結果として得られる <see cref="T:System.DateTime" /> がサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="P:System.Globalization.GregorianCalendar.CalendarType">
+      <summary>現在の <see cref="T:System.Globalization.GregorianCalendar" /> の言語バージョンを示す <see cref="T:System.Globalization.GregorianCalendarTypes" /> 値を取得または設定します。</summary>
+      <returns>現在の <see cref="T:System.Globalization.GregorianCalendar" /> の言語バージョンを示す <see cref="T:System.Globalization.GregorianCalendarTypes" /> 値。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">set 操作で指定された値が <see cref="T:System.Globalization.GregorianCalendarTypes" /> 列挙体のメンバーではありません。</exception>
+      <exception cref="T:System.InvalidOperationException">set 操作において、現在のインスタンスが読み取り専用です。</exception>
+    </member>
+    <member name="P:System.Globalization.GregorianCalendar.Eras">
+      <summary>
+        <see cref="T:System.Globalization.GregorianCalendar" /> における時代 (年号) のリストを取得します。</summary>
+      <returns>時代 (年号) を <see cref="T:System.Globalization.GregorianCalendar" /> で表す整数の配列。</returns>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の日付を返します。</summary>
+      <returns>
+        <paramref name="time" /> の月の日付を表す 1 ～ 31 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の曜日を返します。</summary>
+      <returns>
+        <paramref name="time" /> の曜日を表す <see cref="T:System.DayOfWeek" /> 値。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetDayOfYear(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の年間積算日を返します。</summary>
+      <returns>
+        <paramref name="time" /> の年の日付を表す 1 ～ 366 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の指定した月の日数を返します。</summary>
+      <returns>指定した時代 (年号) の指定した年の指定した月の日数。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> が暦でサポートされている範囲外の値です。または<paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の日数を返します。</summary>
+      <returns>指定した時代 (年号) の指定した年の日数。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> が暦でサポートされている範囲外の値です。または<paramref name="year" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetEra(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の時代 (年号) を返します。</summary>
+      <returns>
+        <paramref name="time" /> の時代 (年号) を表す整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>指定された年と時代 (年号) の閏月を計算します。</summary>
+      <returns>常に 0 (グレゴリオ暦では閏月が認識されないため)。</returns>
+      <param name="year">年。</param>
+      <param name="era">時代 (年号)。<see cref="F:System.Globalization.GregorianCalendar.ADEra" /> または GregorianCalendar.Eras[Calendar.CurrentEra] を指定します。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> がグレゴリオ暦の 1 年未満か、グレゴリオ暦の 9999 年よりも大きい値です。または<paramref name="era" /> が <see cref="F:System.Globalization.GregorianCalendar.ADEra" /> または GregorianCalendar.Eras[Calendar.CurrentEra] ではありません。</exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetMonth(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の月を返します。</summary>
+      <returns>
+        <paramref name="time" /> の月を表す 1 ～ 12 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の月数を返します。</summary>
+      <returns>指定した時代 (年号) の指定した年の月数。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> が暦でサポートされている範囲外の値です。または<paramref name="year" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.GetYear(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の年を返します。</summary>
+      <returns>
+        <paramref name="time" /> の年を表す整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した日付が閏日かどうかを確認します。</summary>
+      <returns>指定した日が閏日である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="day">日を表す 1 ～ 31 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> が暦でサポートされている範囲外の値です。または<paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。または<paramref name="day" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の指定した月が閏月かどうかを確認します。</summary>
+      <returns>このメソッドは、派生クラスでオーバーライドされない限り、常に false を返します。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> が暦でサポートされている範囲外の値です。または<paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年が閏年かどうかを確認します。</summary>
+      <returns>指定した年が閏年である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> が暦でサポートされている範囲外の値です。または<paramref name="year" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="P:System.Globalization.GregorianCalendar.MaxSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.GregorianCalendar" /> 型でサポートされている最も新しい日付と時刻を取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.GregorianCalendar" /> 型でサポートされている最も新しい日付と時刻。これは、紀元 9999 年 12 月 31 日の最後の瞬間であり、<see cref="F:System.DateTime.MaxValue" /> と等価です。</returns>
+    </member>
+    <member name="P:System.Globalization.GregorianCalendar.MinSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.GregorianCalendar" /> 型でサポートされている最も古い日付と時刻を取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.GregorianCalendar" /> 型でサポートされている最も古い日付と時刻。これは、紀元 0001 年 1 月 1 日の最初の瞬間であり、<see cref="F:System.DateTime.MinValue" /> と等価です。</returns>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した日付と時刻に設定された <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>現在の時代 (年号) の指定した日付と時刻に設定された <see cref="T:System.DateTime" />。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="day">日を表す 1 ～ 31 の整数。</param>
+      <param name="hour">時間を表す 0 ～ 23 の整数。</param>
+      <param name="minute">分を表す 0 ～ 59 の整数。</param>
+      <param name="second">秒を表す 0 ～ 59 の整数。</param>
+      <param name="millisecond">ミリ秒を表す 0 ～ 999 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> が暦でサポートされている範囲外の値です。または<paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。または<paramref name="day" /> が暦でサポートされている範囲外の値です。または<paramref name="hour" /> が 0 未満、または 23 を超えます。または<paramref name="minute" /> が 0 未満、または 59 を超えます。または<paramref name="second" /> が 0 未満、または 59 を超えます。または<paramref name="millisecond" /> が 0 未満、または 999 を超えます。</exception>
+    </member>
+    <member name="M:System.Globalization.GregorianCalendar.ToFourDigitYear(System.Int32)">
+      <summary>
+        <see cref="P:System.Globalization.GregorianCalendar.TwoDigitYearMax" /> プロパティを使用して、指定した年を 4 桁表記に変換し、適切な世紀を判断します。</summary>
+      <returns>
+        <paramref name="year" /> の 4 桁表記を保持する整数。</returns>
+      <param name="year">変換する年を表す 2 桁または 4 桁の整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="P:System.Globalization.GregorianCalendar.TwoDigitYearMax">
+      <summary>年の 2 桁表記で表すことができる 100 年間の範囲内で最後に当たる年を取得または設定します。</summary>
+      <returns>年の 2 桁表記で表すことができる 100 年間の範囲内で最後に当たる年。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">設定操作で指定された値が 99 未満です。または設定操作で指定した値が MaxSupportedDateTime.Year を超えています。</exception>
+      <exception cref="T:System.InvalidOperationException">set 操作において、現在のインスタンスが読み取り専用です。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.GregorianCalendarTypes">
+      <summary>グレゴリオ暦の異なる言語バージョンを定義します。</summary>
+    </member>
+    <member name="F:System.Globalization.GregorianCalendarTypes.Arabic">
+      <summary>グレゴリオ暦のアラビア語バージョンを参照します。</summary>
+    </member>
+    <member name="F:System.Globalization.GregorianCalendarTypes.Localized">
+      <summary>
+        <see cref="T:System.Globalization.DateTimeFormatInfo" /> を使用する <see cref="T:System.Globalization.CultureInfo" /> の言語に基づいて、グレゴリオ暦のローカライズされたバージョンを参照します。</summary>
+    </member>
+    <member name="F:System.Globalization.GregorianCalendarTypes.MiddleEastFrench">
+      <summary>グレゴリオ暦の中東フランス語バージョンを参照します。</summary>
+    </member>
+    <member name="F:System.Globalization.GregorianCalendarTypes.TransliteratedEnglish">
+      <summary>グレゴリオ暦の英語音訳バージョンを参照します。</summary>
+    </member>
+    <member name="F:System.Globalization.GregorianCalendarTypes.TransliteratedFrench">
+      <summary>グレゴリオ暦のフランス語音訳バージョンを参照します。</summary>
+    </member>
+    <member name="F:System.Globalization.GregorianCalendarTypes.USEnglish">
+      <summary>グレゴリオ暦の米国英語バージョンを参照します。</summary>
+    </member>
+    <member name="T:System.Globalization.HebrewCalendar">
+      <summary>ヘブライ暦を表します。</summary>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.HebrewCalendar" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>指定した <see cref="T:System.DateTime" /> から指定した月数が経過した後の <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> に指定した月数を加算した結果の <see cref="T:System.DateTime" />。</returns>
+      <param name="time">
+        <paramref name="months" /> を加算する対象の <see cref="T:System.DateTime" />。</param>
+      <param name="months">加算する月の数。</param>
+      <exception cref="T:System.ArgumentException">結果として得られる <see cref="T:System.DateTime" /> がサポートされている範囲外の値です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> が -120,000 未満か、120,000 よりも大きい値です。</exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>指定した <see cref="T:System.DateTime" /> から指定した年数が経過した後の <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> に指定した年数を加算した結果の <see cref="T:System.DateTime" />。</returns>
+      <param name="time">
+        <paramref name="years" /> を加算する対象の <see cref="T:System.DateTime" />。</param>
+      <param name="years">追加する年数。</param>
+      <exception cref="T:System.ArgumentException">結果として得られる <see cref="T:System.DateTime" /> がサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="P:System.Globalization.HebrewCalendar.Eras">
+      <summary>
+        <see cref="T:System.Globalization.HebrewCalendar" /> における時代 (年号) のリストを取得します。</summary>
+      <returns>時代 (年号) を <see cref="T:System.Globalization.HebrewCalendar" /> 型で表す整数の配列。戻り値は、常に <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> に等しい 1 つの要素を含む配列です。</returns>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の日付を返します。</summary>
+      <returns>指定された <see cref="T:System.DateTime" /> の日付を表す 1 ～ 30 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の曜日を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> の曜日を表す <see cref="T:System.DayOfWeek" /> 値。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetDayOfYear(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の年間積算日を返します。</summary>
+      <returns>指定された <see cref="T:System.DateTime" /> の年間積算日を表す 1 ～ 385 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> がグレゴリオ暦の 1983 年 9 月 17 日より前か、<see cref="P:System.Globalization.HebrewCalendar.MaxSupportedDateTime" /> よりも大きい値です。</exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の指定した月の日数を返します。</summary>
+      <returns>指定した時代 (年号) の指定した年の指定した月の日数。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 13 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。<see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> または Calendar.Eras[Calendar.CurrentEra] を指定します。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" />、または <paramref name="era" /> が現在の <see cref="T:System.Globalization.HebrewCalendar" /> オブジェクトでサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の日数を返します。</summary>
+      <returns>指定した時代 (年号) の指定した年の日数。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。<see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> または HebrewCalendar.Eras[Calendar.CurrentEra] を指定します。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> または <paramref name="era" /> が現在の <see cref="T:System.Globalization.HebrewCalendar" /> オブジェクトでサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetEra(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の時代 (年号) を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> の時代 (年号) を表す整数。戻り値は常に <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> です。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>指定された年と時代 (年号) の閏月を計算します。</summary>
+      <returns>指定された年と時代 (年号) における閏月を示す正の整数。戻り値は、<paramref name="year" /> パラメーターと <paramref name="era" /> パラメーターが閏年を指定している場合は 7、年が閏年でない場合は 0 です。</returns>
+      <param name="year">年。</param>
+      <param name="era">時代 (年号)。<see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> または HebrewCalendar.Eras[Calendar.CurrentEra] を指定します。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> が <see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> または HebrewCalendar.Eras[Calendar.CurrentEra] ではありません。または<paramref name="year" /> がヘブライ暦の 5343 年未満か、ヘブライ暦の 5999 年よりも大きい値です。</exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetMonth(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の月を返します。</summary>
+      <returns>指定された <see cref="T:System.DateTime" /> の月を表す 1 ～ 13 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> が <see cref="P:System.Globalization.HebrewCalendar.MinSupportedDateTime" /> より小さい値か、<see cref="P:System.Globalization.HebrewCalendar.MaxSupportedDateTime" /> より大きい値です。</exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の月数を返します。</summary>
+      <returns>指定した時代 (年号) の指定した年の月数。戻り値は、平年の場合は 12、閏年の場合は 13 です。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。<see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> または HebrewCalendar.Eras[Calendar.CurrentEra] を指定します。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> または <paramref name="era" /> が現在の <see cref="T:System.Globalization.HebrewCalendar" /> オブジェクトでサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.GetYear(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> 値の年を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> 値の年を表す整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> が現在の <see cref="T:System.Globalization.HebrewCalendar" /> オブジェクトでサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した日付が閏日かどうかを確認します。</summary>
+      <returns>指定した日が閏日である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 13 の整数。</param>
+      <param name="day">日を表す 1 ～ 30 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。<see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> または HebrewCalendar.Eras[Calendar.CurrentEra] を指定します。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" />、<paramref name="day" />、または <paramref name="era" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の指定した月が閏月かどうかを確認します。</summary>
+      <returns>指定した月が閏月である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 13 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。<see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> または HebrewCalendar.Eras[Calendar.CurrentEra] を指定します。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" />、 または <paramref name="era" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年が閏年かどうかを確認します。</summary>
+      <returns>指定した年が閏年である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。<see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> または HebrewCalendar.Eras[Calendar.CurrentEra] を指定します。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> または <paramref name="era" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="P:System.Globalization.HebrewCalendar.MaxSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.HebrewCalendar" /> 型でサポートされている最も新しい日付と時刻を取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.HebrewCalendar" /> 型でサポートされている最も新しい日付と時刻。これは、グレゴリオ暦での紀元 2239 年 29 月 9 日の最後の瞬間に相当します。</returns>
+    </member>
+    <member name="P:System.Globalization.HebrewCalendar.MinSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.HebrewCalendar" /> 型でサポートされている最も古い日付と時刻を取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.HebrewCalendar" /> 型でサポートされている最も古い日付と時刻。これは、グレゴリオ暦での紀元 1583 年 1 月 1 日の最初の瞬間に相当します。</returns>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した日付と時刻に設定された <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>現在の時代 (年号) の指定した日付と時刻に設定された <see cref="T:System.DateTime" />。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 13 の整数。</param>
+      <param name="day">日を表す 1 ～ 30 の整数。</param>
+      <param name="hour">時間を表す 0 ～ 23 の整数。</param>
+      <param name="minute">分を表す 0 ～ 59 の整数。</param>
+      <param name="second">秒を表す 0 ～ 59 の整数。</param>
+      <param name="millisecond">ミリ秒を表す 0 ～ 999 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。<see cref="F:System.Globalization.HebrewCalendar.HebrewEra" /> または HebrewCalendar.Eras[Calendar.CurrentEra] を指定します。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" />、<paramref name="day" />、または <paramref name="era" /> が現在の <see cref="T:System.Globalization.HebrewCalendar" /> オブジェクトでサポートされている範囲外の値です。または<paramref name="hour" /> が 0 未満か、23 よりも大きい値です。または<paramref name="minute" /> が 0 未満か、59 よりも大きい値です。または<paramref name="second" /> が 0 未満か、59 よりも大きい値です。または<paramref name="millisecond" /> が 0 未満か、999 よりも大きい値です。</exception>
+    </member>
+    <member name="M:System.Globalization.HebrewCalendar.ToFourDigitYear(System.Int32)">
+      <summary>
+        <see cref="P:System.Globalization.HebrewCalendar.TwoDigitYearMax" /> プロパティを使用して、指定した年を 4 桁表記に変換し、適切な世紀を判断します。</summary>
+      <returns>
+        <paramref name="year" /> パラメーターが 2 桁表記の年の場合、戻り値は、対応する 4 桁表記の年です。<paramref name="year" /> パラメーターが 4 桁表記の年の場合、戻り値は、<paramref name="year" /> パラメーターの値そのものです。</returns>
+      <param name="year">0 ～ 99 の 2 桁表記の年、または 5343 ～ 5999 の 4 桁表記のヘブライ暦の年。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が 0 未満です。または<paramref name="year" /> が <see cref="P:System.Globalization.HebrewCalendar.MinSupportedDateTime" /> より小さい値か、<see cref="P:System.Globalization.HebrewCalendar.MaxSupportedDateTime" /> より大きい値です。</exception>
+    </member>
+    <member name="P:System.Globalization.HebrewCalendar.TwoDigitYearMax">
+      <summary>年の 2 桁表記で表すことができる 100 年間の範囲内で最後に当たる年を取得または設定します。</summary>
+      <returns>年の 2 桁表記で表すことができる 100 年間の範囲内で最後に当たる年。</returns>
+      <exception cref="T:System.InvalidOperationException">現在の <see cref="T:System.Globalization.HebrewCalendar" /> オブジェクトが読み取り専用です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">set 操作に指定されたヘブライ暦の年の値が 99 でもなく 5343 より小さいか、5999 を超えています。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.HijriCalendar">
+      <summary>回教暦を表します。</summary>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.HijriCalendar" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>指定した <see cref="T:System.DateTime" /> から指定した月数が経過した後の <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> に指定した月数を加算した結果の <see cref="T:System.DateTime" />。</returns>
+      <param name="time">月数を加算する対象の <see cref="T:System.DateTime" />。</param>
+      <param name="months">加算する月の数。</param>
+      <exception cref="T:System.ArgumentException">結果として得られる <see cref="T:System.DateTime" />。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> が -120000 未満です。または<paramref name="months" /> が 120000 より大きい値です。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>指定した <see cref="T:System.DateTime" /> から指定した年数が経過した後の <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> に指定した年数を加算した結果の <see cref="T:System.DateTime" />。</returns>
+      <param name="time">年数を加算する対象の <see cref="T:System.DateTime" />。</param>
+      <param name="years">追加する年数。</param>
+      <exception cref="T:System.ArgumentException">結果として得られる <see cref="T:System.DateTime" /> がサポートされている範囲外の値です。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Globalization.HijriCalendar.Eras">
+      <summary>
+        <see cref="T:System.Globalization.HijriCalendar" /> における時代 (年号) のリストを取得します。</summary>
+      <returns>時代 (年号) を <see cref="T:System.Globalization.HijriCalendar" /> で表す整数の配列。</returns>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の日付を返します。</summary>
+      <returns>指定された <see cref="T:System.DateTime" /> の日付を表す 1 ～ 30 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の曜日を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> の曜日を表す <see cref="T:System.DayOfWeek" /> 値。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetDayOfYear(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の年間積算日を返します。</summary>
+      <returns>指定された <see cref="T:System.DateTime" /> の年間積算日を表す 1 ～ 355 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>指定した年と時代 (年号) の指定した月の日数を返します。</summary>
+      <returns>指定した時代 (年号) の指定した年の指定した月の日数。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> がこの暦でサポートされている範囲外の値です。または<paramref name="year" /> がこの暦でサポートされている範囲外の値です。または<paramref name="month" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>指定した年と時代 (年号) の日数を返します。</summary>
+      <returns>指定した年と時代 (年号) の日数。日数は、平年の場合は 354、閏年の場合は 355 です。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> または <paramref name="era" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetEra(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の時代 (年号) を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> の時代 (年号) を表す整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>指定された年と時代 (年号) の閏月を計算します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.HijriCalendar" /> 型では閏月の概念がサポートされないので、常に 0 を返します。</returns>
+      <param name="year">年。</param>
+      <param name="era">時代 (年号)。<see cref="F:System.Globalization.Calendar.CurrentEra" /> または <see cref="F:System.Globalization.HijriCalendar.HijriEra" /> を指定します。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が回教暦の 1 年未満か、9666 年を超えています。または<paramref name="era" /> が <see cref="F:System.Globalization.Calendar.CurrentEra" /> または <see cref="F:System.Globalization.HijriCalendar.HijriEra" /> ではありません。</exception>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetMonth(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の月を返します。</summary>
+      <returns>指定された <see cref="T:System.DateTime" /> の月を表す 1 ～ 12 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>指定した年と時代 (年号) の月数を返します。</summary>
+      <returns>指定した年と時代 (年号) の月数。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> がこの暦でサポートされている範囲外の値です。または<paramref name="year" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.GetYear(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の年を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> の年を表す整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Globalization.HijriCalendar.HijriAdjustment">
+      <summary>Ramadan の開始および終了の変動や、国/地域ごとの日付の差に対応するように暦に加算または減算する日数を取得または設定します。</summary>
+      <returns>暦に加算または減算する日数を表す -2 ～ 2 の整数。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">プロパティが無効な値に設定されています。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>指定した日付が閏日かどうかを確認します。</summary>
+      <returns>指定した日が閏日である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="day">日を表す 1 ～ 30 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> がこの暦でサポートされている範囲外の値です。または<paramref name="year" /> がこの暦でサポートされている範囲外の値です。または<paramref name="month" /> がこの暦でサポートされている範囲外の値です。または<paramref name="day" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>指定した年と時代 (年号) の指定した月が閏月かどうかを確認します。</summary>
+      <returns>このメソッドは、常に false を返します。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> がこの暦でサポートされている範囲外の値です。または<paramref name="year" /> がこの暦でサポートされている範囲外の値です。または<paramref name="month" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年が閏年かどうかを確認します。</summary>
+      <returns>指定した年が閏年である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> がこの暦でサポートされている範囲外の値です。または<paramref name="year" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="P:System.Globalization.HijriCalendar.MaxSupportedDateTime">
+      <summary>この暦でサポートされている最も新しい日付と時刻を取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.HijriCalendar" /> 型でサポートされている最も新しい日付と時刻。これは、グレゴリオ暦での紀元 9999 年 12 月 31 日の最後の瞬間に相当します。</returns>
+    </member>
+    <member name="P:System.Globalization.HijriCalendar.MinSupportedDateTime">
+      <summary>この暦でサポートされている最も古い日付と時刻を取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.HijriCalendar" /> 型でサポートされている最も古い日付と時刻。これは、グレゴリオ暦での紀元 622 年 7 月 18 日の最初の瞬間に相当します。</returns>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>指定した日付、時刻、および時代 (年号) に設定された <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>現在の時代 (年号) の指定した日付と時刻に設定された <see cref="T:System.DateTime" />。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="day">日を表す 1 ～ 30 の整数。</param>
+      <param name="hour">時間を表す 0 ～ 23 の整数。</param>
+      <param name="minute">分を表す 0 ～ 59 の整数。</param>
+      <param name="second">秒を表す 0 ～ 59 の整数。</param>
+      <param name="millisecond">ミリ秒を表す 0 ～ 999 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> がこの暦でサポートされている範囲外の値です。または<paramref name="year" /> がこの暦でサポートされている範囲外の値です。または<paramref name="month" /> がこの暦でサポートされている範囲外の値です。または<paramref name="day" /> がこの暦でサポートされている範囲外の値です。または<paramref name="hour" /> が 0 未満、または 23 を超えます。または<paramref name="minute" /> が 0 未満、または 59 を超えます。または<paramref name="second" /> が 0 未満、または 59 を超えます。または<paramref name="millisecond" /> が 0 未満、または 999 を超えます。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.HijriCalendar.ToFourDigitYear(System.Int32)">
+      <summary>
+        <see cref="P:System.Globalization.HijriCalendar.TwoDigitYearMax" /> プロパティを使用して、指定した年を 4 桁表記に変換し、適切な世紀を判断します。</summary>
+      <returns>
+        <paramref name="year" /> の 4 桁表記を保持する整数。</returns>
+      <param name="year">変換する年を表す 2 桁または 4 桁の整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="P:System.Globalization.HijriCalendar.TwoDigitYearMax">
+      <summary>年の 2 桁表記で表すことができる 100 年間の範囲内で最後に当たる年を取得または設定します。</summary>
+      <returns>年の 2 桁表記で表すことができる 100 年間の範囲内で最後に当たる年。</returns>
+      <exception cref="T:System.InvalidOperationException">この暦は読み取り専用です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">設定操作の値が 100 より小さいか、9666 を超えています。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.JapaneseCalendar">
+      <summary>和暦を表します。</summary>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.JapaneseCalendar" /> クラスの新しいインスタンスを初期化します。</summary>
+      <exception cref="T:System.TypeInitializationException">カルチャ情報がないため <see cref="T:System.Globalization.JapaneseCalendar" /> オブジェクトを初期化できません。</exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>指定した <see cref="T:System.DateTime" /> から指定した月数が経過した後の <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> に指定した月数を加算した結果の <see cref="T:System.DateTime" />。</returns>
+      <param name="time">月数を加算する対象の <see cref="T:System.DateTime" />。</param>
+      <param name="months">加算する月の数。</param>
+      <exception cref="T:System.ArgumentException">結果として得られる <see cref="T:System.DateTime" /> がサポートされている範囲外の値です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> が -120000 未満です。または<paramref name="months" /> が 120000 より大きい値です。</exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>指定した <see cref="T:System.DateTime" /> から指定した年数が経過した後の <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> に指定した年数を加算した結果の <see cref="T:System.DateTime" />。</returns>
+      <param name="time">年数を加算する対象の <see cref="T:System.DateTime" />。</param>
+      <param name="years">追加する年数。</param>
+      <exception cref="T:System.ArgumentException">結果として得られる <see cref="T:System.DateTime" /> がサポートされている範囲外の値です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> が <see cref="T:System.Globalization.JapaneseCalendar" /> 型でサポートされている範囲外の値です。または<paramref name="years" /> が -10,000 未満か、10,000 よりも大きい値です。</exception>
+    </member>
+    <member name="P:System.Globalization.JapaneseCalendar.Eras">
+      <summary>
+        <see cref="T:System.Globalization.JapaneseCalendar" /> における時代 (年号) のリストを取得します。</summary>
+      <returns>時代 (年号) を <see cref="T:System.Globalization.JapaneseCalendar" /> で表す整数の配列。</returns>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の日付を返します。</summary>
+      <returns>指定された <see cref="T:System.DateTime" /> の日付を表す 1 ～ 31 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の曜日を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> の曜日を表す <see cref="T:System.DayOfWeek" /> 値。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetDayOfYear(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の年間積算日を返します。</summary>
+      <returns>指定された <see cref="T:System.DateTime" /> の年間積算日を表す 1 ～ 366 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の指定した月の日数を返します。</summary>
+      <returns>指定した時代 (年号) の指定した年の指定した月の日数。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の日数を返します。</summary>
+      <returns>指定した時代 (年号) の指定した年の日数。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetEra(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の時代 (年号) を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> の時代 (年号) を表す整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">結果として得られる <see cref="T:System.DateTime" /> がサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>指定された年と時代 (年号) の閏月を計算します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.JapaneseCalendar" /> 型では閏月の概念がサポートされないので、戻り値は常に 0 です。</returns>
+      <param name="year">年。</param>
+      <param name="era">時代 (年号)。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> または <paramref name="era" /> が <see cref="T:System.Globalization.JapaneseCalendar" /> 型でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetMonth(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の月を返します。</summary>
+      <returns>指定された <see cref="T:System.DateTime" /> の月を表す 1 ～ 12 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の月数を返します。</summary>
+      <returns>戻り値は、常に 12 です。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetWeekOfYear(System.DateTime,System.Globalization.CalendarWeekRule,System.DayOfWeek)">
+      <summary>指定した <see cref="T:System.DateTime" /> の日付を含むその年の週を返します。</summary>
+      <returns>
+        <paramref name="time" /> パラメーターの日付を含む年の週を表す 1 から始まる整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+      <param name="rule">暦の週を定義するいずれかの <see cref="T:System.Globalization.CalendarWeekRule" /> 値。</param>
+      <param name="firstDayOfWeek">週の最初の曜日を表すいずれかの <see cref="T:System.DayOfWeek" /> 値。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> または <paramref name="firstDayOfWeek" /> が暦でサポートされている範囲外の値です。または<paramref name="rule" /> が有効な <see cref="T:System.Globalization.CalendarWeekRule" /> 値ではありません。</exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.GetYear(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の年を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> の年を表す整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した日付が閏日かどうかを確認します。</summary>
+      <returns>指定した日が閏日である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="day">日を表す 1 ～ 31 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。または<paramref name="day" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の指定した月が閏月かどうかを確認します。</summary>
+      <returns>このメソッドは、派生クラスでオーバーライドされない限り、常に false を返します。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年が閏年かどうかを確認します。</summary>
+      <returns>指定した年が閏年である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="P:System.Globalization.JapaneseCalendar.MaxSupportedDateTime">
+      <summary>現在の <see cref="T:System.Globalization.JapaneseCalendar" /> オブジェクトでサポートされている最も新しい日付と時刻を取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.JapaneseCalendar" /> 型でサポートされている最も新しい日付と時刻。これは、グレゴリオ暦での紀元 9999 年 12 月 31 日の最後の瞬間に相当します。</returns>
+    </member>
+    <member name="P:System.Globalization.JapaneseCalendar.MinSupportedDateTime">
+      <summary>現在の <see cref="T:System.Globalization.JapaneseCalendar" /> オブジェクトでサポートされている最も古い日付と時刻を取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.JapaneseCalendar" /> 型でサポートされている最も古い日付と時刻。これは、グレゴリオ暦での紀元 1868 年 9 月 8 日の最初の瞬間に相当します。</returns>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した日付と時刻に設定された <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>現在の時代 (年号) の指定した日付と時刻に設定された <see cref="T:System.DateTime" />。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="day">日を表す 1 ～ 31 の整数。</param>
+      <param name="hour">時間を表す 0 ～ 23 の整数。</param>
+      <param name="minute">分を表す 0 ～ 59 の整数。</param>
+      <param name="second">秒を表す 0 ～ 59 の整数。</param>
+      <param name="millisecond">ミリ秒を表す 0 ～ 999 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。または<paramref name="day" /> が暦でサポートされている範囲外の値です。または<paramref name="hour" /> が 0 未満、または 23 を超えます。または<paramref name="minute" /> が 0 未満、または 59 を超えます。または<paramref name="second" /> が 0 未満、または 59 を超えます。または<paramref name="millisecond" /> が 0 未満、または 999 を超えます。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.JapaneseCalendar.ToFourDigitYear(System.Int32)">
+      <summary>
+        <see cref="P:System.Globalization.JapaneseCalendar.TwoDigitYearMax" /> プロパティを使用して、指定した年を 4 桁表記に変換し、適切な世紀を判断します。</summary>
+      <returns>
+        <paramref name="year" /> の 4 桁表記を保持する整数。</returns>
+      <param name="year">変換する年を表す整数 (通常は 2 桁)。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="P:System.Globalization.JapaneseCalendar.TwoDigitYearMax">
+      <summary>年の 2 桁表記で表すことができる 100 年間の範囲内で最後に当たる年を取得または設定します。</summary>
+      <returns>年の 2 桁表記で表すことができる 100 年間の範囲内で最後に当たる年。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">設定操作で指定された値が 99 未満です。または設定操作で指定した値が 8011 (または MaxSupportedDateTime.Year) を超えています。</exception>
+      <exception cref="T:System.InvalidOperationException">set 操作において、現在のインスタンスが読み取り専用です。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.JapaneseLunisolarCalendar">
+      <summary>月、日、年などの区分で時間を表します。年は和暦として計算され、日付と月は太陰太陽暦を使用して計算されます。</summary>
+    </member>
+    <member name="M:System.Globalization.JapaneseLunisolarCalendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.JapaneseLunisolarCalendar" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="P:System.Globalization.JapaneseLunisolarCalendar.Eras">
+      <summary>
+        <see cref="T:System.Globalization.JapaneseLunisolarCalendar" /> オブジェクトに関連する時代 (年号) を取得します。</summary>
+      <returns>関連する時代 (年号) を指定する 32 ビット符号付き整数の配列。</returns>
+    </member>
+    <member name="M:System.Globalization.JapaneseLunisolarCalendar.GetEra(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> に対応する時代 (年号) を取得します。</summary>
+      <returns>
+        <paramref name="time" /> パラメーターに指定された時代 (年号) を表す整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="P:System.Globalization.JapaneseLunisolarCalendar.MaxSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.JapaneseLunisolarCalendar" /> クラスでサポートされている最大の日付と時刻を取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.JapaneseLunisolarCalendar" /> クラスでサポートされている最も新しい日付と時刻。これは、グレゴリオ暦での紀元 2050 年 1 月 22 日の最後の瞬間に相当します。</returns>
+    </member>
+    <member name="P:System.Globalization.JapaneseLunisolarCalendar.MinSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.JapaneseLunisolarCalendar" /> クラスでサポートされている最小の日付と時刻を取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.JapaneseLunisolarCalendar" /> クラスでサポートされている最も古い日付と時刻。これは、グレゴリオ暦での紀元 1960 年 1 月 28 日の最初の瞬間に相当します。</returns>
+    </member>
+    <member name="T:System.Globalization.JulianCalendar">
+      <summary>ユリウス暦を表します。</summary>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.JulianCalendar" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>指定した <see cref="T:System.DateTime" /> から指定した月数が経過した後の <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> に指定した月数を加算した結果の <see cref="T:System.DateTime" />。</returns>
+      <param name="time">月数を加算する対象の <see cref="T:System.DateTime" />。</param>
+      <param name="months">加算する月の数。</param>
+      <exception cref="T:System.ArgumentException">結果として得られる <see cref="T:System.DateTime" /> がサポートされている範囲外の値です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> が -120000 未満です。または<paramref name="months" /> が 120000 より大きい値です。</exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>指定した <see cref="T:System.DateTime" /> から指定した年数が経過した後の <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> に指定した年数を加算した結果の <see cref="T:System.DateTime" />。</returns>
+      <param name="time">年数を加算する対象の <see cref="T:System.DateTime" />。</param>
+      <param name="years">追加する年数。</param>
+      <exception cref="T:System.ArgumentException">結果として得られる <see cref="T:System.DateTime" /> がサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="P:System.Globalization.JulianCalendar.Eras">
+      <summary>
+        <see cref="T:System.Globalization.JulianCalendar" /> における時代 (年号) のリストを取得します。</summary>
+      <returns>時代 (年号) を <see cref="T:System.Globalization.JulianCalendar" /> で表す整数の配列。</returns>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の日付を返します。</summary>
+      <returns>
+        <paramref name="time" /> の月の日付を表す 1 ～ 31 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の曜日を返します。</summary>
+      <returns>
+        <paramref name="time" /> の曜日を表す <see cref="T:System.DayOfWeek" /> 値。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetDayOfYear(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の年間積算日を返します。</summary>
+      <returns>
+        <paramref name="time" /> の年の日付を表す 1 ～ 366 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の指定した月の日数を返します。</summary>
+      <returns>指定した時代 (年号) の指定した年の指定した月の日数。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> が暦でサポートされている範囲外の値です。または<paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の日数を返します。</summary>
+      <returns>指定した時代 (年号) の指定した年の日数。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> が暦でサポートされている範囲外の値です。または<paramref name="year" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetEra(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の時代 (年号) を返します。</summary>
+      <returns>
+        <paramref name="time" /> の時代 (年号) を表す整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>指定された年と時代 (年号) の閏月を計算します。</summary>
+      <returns>指定された年と時代 (年号) における閏月を示す正の整数。または、カレンダーが閏月をサポートしていない場合や、<paramref name="year" /> および <paramref name="era" /> が閏年を指定しない場合は 0 を返します。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetMonth(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の月を返します。</summary>
+      <returns>
+        <paramref name="time" /> の月を表す 1 ～ 12 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の月数を返します。</summary>
+      <returns>指定した時代 (年号) の指定した年の月数。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> が暦でサポートされている範囲外の値です。または<paramref name="year" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.GetYear(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の年を返します。</summary>
+      <returns>
+        <paramref name="time" /> の年を表す整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した日付が閏日かどうかを確認します。</summary>
+      <returns>指定した日が閏日である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="day">日を表す 1 ～ 31 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。または<paramref name="day" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の指定した月が閏月かどうかを確認します。</summary>
+      <returns>このメソッドは、派生クラスでオーバーライドされない限り、常に false を返します。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年が閏年かどうかを確認します。</summary>
+      <returns>指定した年が閏年である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="P:System.Globalization.JulianCalendar.MaxSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.JulianCalendar" /> クラスでサポートされている最も新しい日付と時刻を取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.JulianCalendar" /> クラスでサポートされている最も新しい日付と時刻。これは、グレゴリオ暦での紀元 9999 年 12 月 31 日の最後の瞬間に相当します。</returns>
+    </member>
+    <member name="P:System.Globalization.JulianCalendar.MinSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.JulianCalendar" /> クラスでサポートされている最も古い日付と時刻を取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.JulianCalendar" /> クラスでサポートされている最も古い日付と時刻。これは、グレゴリオ暦での紀元 0001 年 1 月 1 日の最初の瞬間に相当します。</returns>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した日付と時刻に設定された <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>現在の時代 (年号) の指定した日付と時刻に設定された <see cref="T:System.DateTime" />。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="day">日を表す 1 ～ 31 の整数。</param>
+      <param name="hour">時間を表す 0 ～ 23 の整数。</param>
+      <param name="minute">分を表す 0 ～ 59 の整数。</param>
+      <param name="second">秒を表す 0 ～ 59 の整数。</param>
+      <param name="millisecond">ミリ秒を表す 0 ～ 999 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。または<paramref name="day" /> が暦でサポートされている範囲外の値です。または<paramref name="hour" /> が 0 未満、または 23 を超えます。または<paramref name="minute" /> が 0 未満、または 59 を超えます。または<paramref name="second" /> が 0 未満、または 59 を超えます。または<paramref name="millisecond" /> が 0 未満、または 999 を超えます。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.JulianCalendar.ToFourDigitYear(System.Int32)">
+      <summary>指定した年を <see cref="P:System.Globalization.JulianCalendar.TwoDigitYearMax" /> プロパティを使用して 4 桁表記に変換し、適切な世紀を判断します。</summary>
+      <returns>
+        <paramref name="year" /> の 4 桁表記を保持する整数。</returns>
+      <param name="year">変換する年を表す 2 桁または 4 桁の整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="P:System.Globalization.JulianCalendar.TwoDigitYearMax">
+      <summary>年の 2 桁表記で表すことができる 100 年間の範囲内で最後に当たる年を取得または設定します。</summary>
+      <returns>年の 2 桁表記で表すことができる 100 年間の範囲内で最後に当たる年。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">設定操作で指定された値が 99 未満です。または設定操作で指定した値が MaxSupportedDateTime.Year を超えています。</exception>
+      <exception cref="T:System.InvalidOperationException">set 操作において、現在のインスタンスが読み取り専用です。</exception>
+    </member>
+    <member name="T:System.Globalization.KoreanCalendar">
+      <summary>韓国暦を表します。</summary>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.KoreanCalendar" /> クラスの新しいインスタンスを初期化します。</summary>
+      <exception cref="T:System.TypeInitializationException">カルチャ情報がないため <see cref="T:System.Globalization.KoreanCalendar" /> オブジェクトを初期化できません。</exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>指定した <see cref="T:System.DateTime" /> から指定した月数が経過した後の <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> に指定した月数を加算した結果の <see cref="T:System.DateTime" />。</returns>
+      <param name="time">月数を加算する対象の <see cref="T:System.DateTime" />。</param>
+      <param name="months">加算する月の数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> が -120000 未満です。または<paramref name="months" /> が 120000 より大きい値です。</exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>指定した <see cref="T:System.DateTime" /> から指定した年数が経過した後の <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> に指定した年数を加算した結果の <see cref="T:System.DateTime" />。</returns>
+      <param name="time">年数を加算する対象の <see cref="T:System.DateTime" />。</param>
+      <param name="years">追加する年数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="years" /> または <paramref name="time" /> が範囲外です。</exception>
+    </member>
+    <member name="P:System.Globalization.KoreanCalendar.Eras">
+      <summary>
+        <see cref="T:System.Globalization.KoreanCalendar" /> における時代 (年号) のリストを取得します。</summary>
+      <returns>時代 (年号) を <see cref="T:System.Globalization.KoreanCalendar" /> で表す整数の配列。</returns>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の日付を返します。</summary>
+      <returns>指定された <see cref="T:System.DateTime" /> の日付を表す 1 ～ 31 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の曜日を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> の曜日を表す <see cref="T:System.DayOfWeek" /> 値。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetDayOfYear(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の年間積算日を返します。</summary>
+      <returns>指定された <see cref="T:System.DateTime" /> の年間積算日を表す 1 ～ 366 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の指定した月の日数を返します。</summary>
+      <returns>指定した時代 (年号) の指定した年の指定した月の日数。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の日数を返します。</summary>
+      <returns>指定した時代 (年号) の指定した年の日数。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetEra(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の時代 (年号) を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> の時代 (年号) を表す整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>指定された年と時代 (年号) の閏月を計算します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.KoreanCalendar" /> クラスでは閏月の概念がサポートされないため、戻り値は常に 0 です。</returns>
+      <param name="year">年。</param>
+      <param name="era">時代 (年号)。</param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetMonth(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の月を返します。</summary>
+      <returns>指定された <see cref="T:System.DateTime" /> の月を表す 1 ～ 12 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の月数を返します。</summary>
+      <returns>指定した時代 (年号) の指定した年の月数。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetWeekOfYear(System.DateTime,System.Globalization.CalendarWeekRule,System.DayOfWeek)">
+      <summary>指定した <see cref="T:System.DateTime" /> の日付を含むその年の週を返します。</summary>
+      <returns>
+        <paramref name="time" /> パラメーターの日付を含む年の週を表す 1 から始まる整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+      <param name="rule">暦の週を定義するいずれかの <see cref="T:System.Globalization.CalendarWeekRule" /> 値。</param>
+      <param name="firstDayOfWeek">週の最初の曜日を表すいずれかの <see cref="T:System.DayOfWeek" /> 値。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> または <paramref name="firstDayOfWeek" /> が暦でサポートされている範囲外の値です。または<paramref name="rule" /> が有効な <see cref="T:System.Globalization.CalendarWeekRule" /> 値ではありません。</exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.GetYear(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の年を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> の年を表す整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した日付が閏日かどうかを確認します。</summary>
+      <returns>指定した日が閏日である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="day">日を表す 1 ～ 31 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。または<paramref name="day" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の指定した月が閏月かどうかを確認します。</summary>
+      <returns>このメソッドは、派生クラスでオーバーライドされない限り、常に false を返します。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年が閏年かどうかを確認します。</summary>
+      <returns>指定した年が閏年である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="P:System.Globalization.KoreanCalendar.MaxSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.KoreanCalendar" /> クラスでサポートされている最も新しい日付と時刻を取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.KoreanCalendar" /> クラスでサポートされている最も新しい日付と時刻。これは、グレゴリオ暦での紀元 9999 年 12 月 31 日の最後の瞬間に相当します。</returns>
+    </member>
+    <member name="P:System.Globalization.KoreanCalendar.MinSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.KoreanCalendar" /> クラスでサポートされている最も古い日付と時刻を取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.KoreanCalendar" /> クラスでサポートされている最も古い日付と時刻。これは、グレゴリオ暦での紀元 0001 年 1 月 1 日の最初の瞬間に相当します。</returns>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した日付と時刻に設定された <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>現在の時代 (年号) の指定した日付と時刻に設定された <see cref="T:System.DateTime" />。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="day">日を表す 1 ～ 31 の整数。</param>
+      <param name="hour">時間を表す 0 ～ 23 の整数。</param>
+      <param name="minute">分を表す 0 ～ 59 の整数。</param>
+      <param name="second">秒を表す 0 ～ 59 の整数。</param>
+      <param name="millisecond">ミリ秒を表す 0 ～ 999 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。または<paramref name="day" /> が暦でサポートされている範囲外の値です。または<paramref name="hour" /> が 0 未満、または 23 を超えます。または<paramref name="minute" /> が 0 未満、または 59 を超えます。または<paramref name="second" /> が 0 未満、または 59 を超えます。または<paramref name="millisecond" /> が 0 未満、または 999 を超えます。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.KoreanCalendar.ToFourDigitYear(System.Int32)">
+      <summary>指定した年を <see cref="P:System.Globalization.KoreanCalendar.TwoDigitYearMax" /> プロパティを使用して 4 桁表記に変換し、適切な世紀を判断します。</summary>
+      <returns>
+        <paramref name="year" /> の 4 桁表記を保持する整数。</returns>
+      <param name="year">変換する年を表す 2 桁または 4 桁の整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Globalization.KoreanCalendar.TwoDigitYearMax">
+      <summary>年の 2 桁表記で表すことができる 100 年間の範囲内で最後に当たる年を取得または設定します。</summary>
+      <returns>年の 2 桁表記で表すことができる 100 年間の範囲内で最後に当たる年。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">設定操作で指定された値が 99 未満です。または設定操作で指定した値が MaxSupportedDateTime.Year を超えています。</exception>
+      <exception cref="T:System.InvalidOperationException">set 操作において、現在のインスタンスが読み取り専用です。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.KoreanLunisolarCalendar">
+      <summary>月、日、年などの区分で時間を表します。年はグレゴリオ暦を使用して計算され、日付と月は太陰太陽暦を使用して計算されます。</summary>
+    </member>
+    <member name="M:System.Globalization.KoreanLunisolarCalendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.KoreanLunisolarCalendar" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="P:System.Globalization.KoreanLunisolarCalendar.Eras">
+      <summary>現在の <see cref="T:System.Globalization.KoreanLunisolarCalendar" /> オブジェクトでサポートされている日付と時刻の範囲に対応する時代 (年号) を取得します。</summary>
+      <returns>関連する時代 (年号) を指定する 32 ビット符号付き整数の配列。<see cref="T:System.Globalization.KoreanLunisolarCalendar" /> オブジェクトの戻り値は、常に <see cref="F:System.Globalization.KoreanLunisolarCalendar.GregorianEra" /> 値に等しい 1 つの要素を含む配列です。</returns>
+    </member>
+    <member name="M:System.Globalization.KoreanLunisolarCalendar.GetEra(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> に対応する時代 (年号) を取得します。</summary>
+      <returns>
+        <paramref name="time" /> パラメーターに指定された時代 (年号) を表す整数。<see cref="T:System.Globalization.KoreanLunisolarCalendar" /> オブジェクトの戻り値は常に <see cref="F:System.Globalization.KoreanLunisolarCalendar.GregorianEra" /> 値です。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> が <see cref="P:System.Globalization.KoreanLunisolarCalendar.MinSupportedDateTime" /> 未満の日付と時刻か、<see cref="P:System.Globalization.KoreanLunisolarCalendar.MaxSupportedDateTime" /> より大きい日付と時刻を表しています。</exception>
+    </member>
+    <member name="P:System.Globalization.KoreanLunisolarCalendar.MaxSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.KoreanLunisolarCalendar" /> クラスでサポートされている最大の日付と時刻を取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.KoreanLunisolarCalendar" /> クラスでサポートされている最も新しい日付と時刻。これは、グレゴリオ暦での紀元 2051 年 2 月 10 日の最後の瞬間に相当します。</returns>
+    </member>
+    <member name="P:System.Globalization.KoreanLunisolarCalendar.MinSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.KoreanLunisolarCalendar" /> クラスでサポートされている最小の日付と時刻を取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.KoreanLunisolarCalendar" /> クラスでサポートされている最も古い日付と時刻。これは、グレゴリオ暦での紀元 918 年 2 月 14 日の最初の瞬間に相当します。</returns>
+    </member>
+    <member name="T:System.Globalization.PersianCalendar">
+      <summary>ペルシャ暦を表します。</summary>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.PersianCalendar" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>指定した <see cref="T:System.DateTime" /> オブジェクトから指定した月数がオフセットされた <see cref="T:System.DateTime" /> オブジェクトを返します。</summary>
+      <returns>
+        <paramref name="months" /> パラメーターで指定した月数を <paramref name="time" /> パラメーターで指定した日付に加算することで得られる日付を表す <see cref="T:System.DateTime" /> オブジェクト。</returns>
+      <param name="time">月数を加算する対象の <see cref="T:System.DateTime" />。</param>
+      <param name="months">正または負の、加算する月数。</param>
+      <exception cref="T:System.ArgumentException">結果として得られる <see cref="T:System.DateTime" /> がサポートされている範囲外の値です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> が -120,000 未満か、120,000 よりも大きい値です。</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>指定した <see cref="T:System.DateTime" /> オブジェクトから指定した年数がオフセットされた <see cref="T:System.DateTime" /> オブジェクトを返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> オブジェクトに指定した年数を加算した結果の <see cref="T:System.DateTime" /> オブジェクト。</returns>
+      <param name="time">年数を加算する対象の <see cref="T:System.DateTime" />。</param>
+      <param name="years">正または負の、加算する年数。</param>
+      <exception cref="T:System.ArgumentException">結果として得られる <see cref="T:System.DateTime" /> がサポートされている範囲外の値です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="years" /> が -10,000 未満か、10,000 よりも大きい値です。</exception>
+    </member>
+    <member name="P:System.Globalization.PersianCalendar.Eras">
+      <summary>
+        <see cref="T:System.Globalization.PersianCalendar" /> オブジェクト内の時代 (年号) のリストを取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.PersianCalendar" /> オブジェクト内の時代 (年号) を表す整数の配列。配列は、値が <see cref="F:System.Globalization.PersianCalendar.PersianEra" /> である単独の要素から構成されます。</returns>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> オブジェクトの日付を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> オブジェクトの日付を表す 1 ～ 31 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> パラメーターが <see cref="P:System.Globalization.PersianCalendar.MinSupportedDateTime" /> 未満の日付か、<see cref="P:System.Globalization.PersianCalendar.MaxSupportedDateTime" /> より大きい日付を表しています。</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> オブジェクトの曜日を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> オブジェクトの曜日を表す <see cref="T:System.DayOfWeek" /> 値。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetDayOfYear(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> オブジェクトの年間積算日を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> オブジェクトの年間積算日を表す 1 ～ 366 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> パラメーターが <see cref="P:System.Globalization.PersianCalendar.MinSupportedDateTime" /> 未満の日付か、<see cref="P:System.Globalization.PersianCalendar.MaxSupportedDateTime" /> より大きい日付を表しています。</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>指定した年と時代 (年号) の指定した月の日数を返します。</summary>
+      <returns>指定した年と時代 (年号) の指定した月の日数。</returns>
+      <param name="year">年を表す 1 ～ 9378 の整数。</param>
+      <param name="month">
+        <paramref name="year" /> が 9378 ではない場合は、1 ～ 12 の月を表す整数。<paramref name="year" /> が 9378 の場合は、1 ～ 10 の月を表す整数。</param>
+      <param name="era">時代 (年号) を表す 0 ～ 1 の整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" />、 または <paramref name="era" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の日数を返します。</summary>
+      <returns>指定した年と時代 (年号) の日数。日数は、平年の場合は 365、閏年の場合は 366 です。</returns>
+      <param name="year">年を表す 1 ～ 9378 の整数。</param>
+      <param name="era">時代 (年号) を表す 0 ～ 1 の整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> または <paramref name="era" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetEra(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> オブジェクトの時代 (年号) を返します。</summary>
+      <returns>常に <see cref="F:System.Globalization.PersianCalendar.PersianEra" /> を返します。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> パラメーターが <see cref="P:System.Globalization.PersianCalendar.MinSupportedDateTime" /> 未満の日付か、<see cref="P:System.Globalization.PersianCalendar.MaxSupportedDateTime" /> より大きい日付を表しています。</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>指定された年と時代 (年号) の閏月を返します。</summary>
+      <returns>戻り値は、常に 0 です。</returns>
+      <param name="year">変換する年を表す 1 ～ 9378 の整数。</param>
+      <param name="era">時代 (年号) を表す 0 ～ 1 の整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> または <paramref name="era" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetMonth(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> オブジェクトの月を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> オブジェクトの月を表す 1 ～ 12 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> パラメーターが <see cref="P:System.Globalization.PersianCalendar.MinSupportedDateTime" /> 未満の日付か、<see cref="P:System.Globalization.PersianCalendar.MaxSupportedDateTime" /> より大きい日付を表しています。</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の月数を返します。</summary>
+      <returns>
+        <paramref name="year" /> パラメーターが 9378 の場合は 10 を返します。それ以外の場合は、常に 12 を返します。</returns>
+      <param name="year">年を表す 1 ～ 9378 の整数。</param>
+      <param name="era">時代 (年号) を表す 0 ～ 1 の整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> または <paramref name="era" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.GetYear(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> オブジェクトの年を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> の年を表す 1 ～ 9378 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> パラメーターが <see cref="P:System.Globalization.PersianCalendar.MinSupportedDateTime" /> 未満の日付か、<see cref="P:System.Globalization.PersianCalendar.MaxSupportedDateTime" /> より大きい日付を表しています。</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>指定した日付が閏日かどうかを確認します。</summary>
+      <returns>指定した日が閏日である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す 1 ～ 9378 の整数。</param>
+      <param name="month">
+        <paramref name="year" /> が 9378 ではない場合は、1 ～ 12 の月を表す整数。<paramref name="year" /> が 9378 の場合は、1 ～ 10 の月を表す整数。</param>
+      <param name="day">日を表す 1 ～ 31 の整数。</param>
+      <param name="era">時代 (年号) を表す 0 ～ 1 の整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" />、<paramref name="day" />、または <paramref name="era" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>指定した年と時代 (年号) の指定した月が閏月かどうかを確認します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.PersianCalendar" /> クラスは閏月の概念をサポートしないため、常に false を返します。</returns>
+      <param name="year">年を表す 1 ～ 9378 の整数。</param>
+      <param name="month">
+        <paramref name="year" /> が 9378 ではない場合は、1 ～ 12 の月を表す整数。<paramref name="year" /> が 9378 の場合は、1 ～ 10 の月を表す整数。</param>
+      <param name="era">時代 (年号) を表す 0 ～ 1 の整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" />、 または <paramref name="era" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年が閏年かどうかを確認します。</summary>
+      <returns>指定した年が閏年である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す 1 ～ 9378 の整数。</param>
+      <param name="era">時代 (年号) を表す 0 ～ 1 の整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> または <paramref name="era" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="P:System.Globalization.PersianCalendar.MaxSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.PersianCalendar" /> クラスでサポートされている最も新しい日付と時刻を取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.PersianCalendar" /> クラスでサポートされている最も新しい日付と時刻。これは、グレゴリオ暦での紀元 9999 年 12 月 31 日の最後の瞬間に相当します。</returns>
+    </member>
+    <member name="P:System.Globalization.PersianCalendar.MinSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.PersianCalendar" /> クラスでサポートされている最も古い日付と時刻を取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.PersianCalendar" /> クラスでサポートされている最も古い日付と時刻。これは、グレゴリオ暦での紀元 622 年 3 月 21 日の最初の瞬間に相当します。</returns>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>指定した日付、時刻、および時代 (年号) に設定された <see cref="T:System.DateTime" /> オブジェクトを返します。</summary>
+      <returns>現在の時代 (年号) の指定した日付と時刻に設定された <see cref="T:System.DateTime" /> オブジェクト。</returns>
+      <param name="year">年を表す 1 ～ 9378 の整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="day">日を表す 1 ～ 31 の整数。</param>
+      <param name="hour">時間を表す 0 ～ 23 の整数。</param>
+      <param name="minute">分を表す 0 ～ 59 の整数。</param>
+      <param name="second">秒を表す 0 ～ 59 の整数。</param>
+      <param name="millisecond">ミリ秒を表す 0 ～ 999 の整数。</param>
+      <param name="era">時代 (年号) を表す 0 ～ 1 の整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" />、<paramref name="day" />、<paramref name="hour" />、<paramref name="minute" />、<paramref name="second" />、<paramref name="millisecond" />、または <paramref name="era" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.PersianCalendar.ToFourDigitYear(System.Int32)">
+      <summary>指定した年を 4 桁表記の年に変換します。</summary>
+      <returns>
+        <paramref name="year" /> の 4 桁表記を保持する整数。</returns>
+      <param name="year">変換する年を表す 1 ～ 9378 の整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が 0 より小さいか、または 9378 を超えています。</exception>
+    </member>
+    <member name="P:System.Globalization.PersianCalendar.TwoDigitYearMax">
+      <summary>年の 2 桁表記で表すことができる 100 年間の範囲内で最後に当たる年を取得または設定します。</summary>
+      <returns>年の 2 桁表記で表すことができる 100 年間の範囲内で最後に当たる年。</returns>
+      <exception cref="T:System.InvalidOperationException">この暦は読み取り専用です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">設定操作の値が 100 より小さいか、9378 を超えています。</exception>
+    </member>
+    <member name="T:System.Globalization.TaiwanCalendar">
+      <summary>台湾暦です。</summary>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.TaiwanCalendar" /> クラスの新しいインスタンスを初期化します。</summary>
+      <exception cref="T:System.TypeInitializationException">カルチャ情報がないため <see cref="T:System.Globalization.TaiwanCalendar" /> オブジェクトを初期化できません。</exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>指定した <see cref="T:System.DateTime" /> から指定した月数が経過した後の <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> に指定した月数を加算した結果の <see cref="T:System.DateTime" />。</returns>
+      <param name="time">月数を加算する対象の <see cref="T:System.DateTime" />。</param>
+      <param name="months">加算する月の数。</param>
+      <exception cref="T:System.ArgumentException">結果として得られる <see cref="T:System.DateTime" /> がサポートされている範囲外の値です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> が -120000 未満です。または<paramref name="months" /> が 120000 より大きい値です。</exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>指定した <see cref="T:System.DateTime" /> から指定した年数が経過した後の <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> に指定した年数を加算した結果の <see cref="T:System.DateTime" />。</returns>
+      <param name="time">年数を加算する対象の <see cref="T:System.DateTime" />。</param>
+      <param name="years">追加する年数。</param>
+      <exception cref="T:System.ArgumentException">結果として得られる <see cref="T:System.DateTime" /> がサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="P:System.Globalization.TaiwanCalendar.Eras">
+      <summary>
+        <see cref="T:System.Globalization.TaiwanCalendar" /> における時代 (年号) のリストを取得します。</summary>
+      <returns>値が常に現在の時代 (年号) である、単独の要素から構成される配列。</returns>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の日付を返します。</summary>
+      <returns>指定された <see cref="T:System.DateTime" /> の日付を表す 1 ～ 31 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の曜日を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> の曜日を表す <see cref="T:System.DayOfWeek" /> 値。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetDayOfYear(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の年間積算日を返します。</summary>
+      <returns>指定された <see cref="T:System.DateTime" /> の年間積算日を表す 1 ～ 366 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の指定した月の日数を返します。</summary>
+      <returns>指定した時代 (年号) の指定した年の指定した月の日数。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の日数を返します。</summary>
+      <returns>指定した時代 (年号) の指定した年の日数。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetEra(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の時代 (年号) を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> の時代 (年号) を表す整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>指定された年と時代 (年号) の閏月を計算します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.TaiwanCalendar" /> クラスでは閏月の概念がサポートされないため、戻り値は常に 0 です。</returns>
+      <param name="year">年。</param>
+      <param name="era">時代 (年号)。</param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetMonth(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の月を返します。</summary>
+      <returns>指定された <see cref="T:System.DateTime" /> の月を表す 1 ～ 12 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の月数を返します。</summary>
+      <returns>指定した時代 (年号) の指定した年の月数。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetWeekOfYear(System.DateTime,System.Globalization.CalendarWeekRule,System.DayOfWeek)">
+      <summary>指定した <see cref="T:System.DateTime" /> の日付を含むその年の週を返します。</summary>
+      <returns>
+        <paramref name="time" /> パラメーターの日付を含む年の週を表す正の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+      <param name="rule">暦の週を定義するいずれかの <see cref="T:System.Globalization.CalendarWeekRule" /> 値。</param>
+      <param name="firstDayOfWeek">週の最初の曜日を表すいずれかの <see cref="T:System.DayOfWeek" /> 値。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> または <paramref name="firstDayOfWeek" /> が暦でサポートされている範囲外の値です。または<paramref name="rule" /> が有効な <see cref="T:System.Globalization.CalendarWeekRule" /> 値ではありません。</exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.GetYear(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の年を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> の年を表す整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した日付が閏日かどうかを確認します。</summary>
+      <returns>指定した日が閏日である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="day">日を表す 1 ～ 31 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。または<paramref name="day" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の指定した月が閏月かどうかを確認します。</summary>
+      <returns>このメソッドは、派生クラスでオーバーライドされない限り、常に false を返します。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年が閏年かどうかを確認します。</summary>
+      <returns>指定した年が閏年である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="P:System.Globalization.TaiwanCalendar.MaxSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.TaiwanCalendar" /> クラスでサポートされている最も新しい日付と時刻を取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.TaiwanCalendar" /> クラスでサポートされている最も新しい日付と時刻。これは、グレゴリオ暦での紀元 9999 年 12 月 31 日の最後の瞬間に相当します。</returns>
+    </member>
+    <member name="P:System.Globalization.TaiwanCalendar.MinSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.TaiwanCalendar" /> クラスでサポートされている最も古い日付と時刻を取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.TaiwanCalendar" /> クラスでサポートされている最も古い日付と時刻。これは、グレゴリオ暦での紀元 1912 年 1 月 1 日の最初の瞬間に相当します。</returns>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した日付と時刻に設定された <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>現在の時代 (年号) の指定した日付と時刻に設定された <see cref="T:System.DateTime" />。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="day">日を表す 1 ～ 31 の整数。</param>
+      <param name="hour">時間を表す 0 ～ 23 の整数。</param>
+      <param name="minute">分を表す 0 ～ 59 の整数。</param>
+      <param name="second">秒を表す 0 ～ 59 の整数。</param>
+      <param name="millisecond">ミリ秒を表す 0 ～ 999 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。または<paramref name="day" /> が暦でサポートされている範囲外の値です。または<paramref name="hour" /> が 0 未満、または 23 を超えます。または<paramref name="minute" /> が 0 未満、または 59 を超えます。または<paramref name="second" /> が 0 未満、または 59 を超えます。または<paramref name="millisecond" /> が 0 未満、または 999 を超えます。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.TaiwanCalendar.ToFourDigitYear(System.Int32)">
+      <summary>指定した年を <see cref="P:System.Globalization.TaiwanCalendar.TwoDigitYearMax" /> プロパティを使用して 4 桁表記に変換し、適切な世紀を判断します。</summary>
+      <returns>
+        <paramref name="year" /> の 4 桁表記を保持する整数。</returns>
+      <param name="year">変換する年を表す 2 桁または 4 桁の整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="P:System.Globalization.TaiwanCalendar.TwoDigitYearMax">
+      <summary>年の 2 桁表記で表すことができる 100 年間の範囲内で最後に当たる年を取得または設定します。</summary>
+      <returns>年の 2 桁表記で表すことができる 100 年間の範囲内で最後に当たる年。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">設定操作で指定された値が 99 未満です。または設定操作で指定した値が MaxSupportedDateTime.Year を超えています。</exception>
+      <exception cref="T:System.InvalidOperationException">set 操作において、現在のインスタンスが読み取り専用です。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.TaiwanLunisolarCalendar">
+      <summary>台湾太陰太陽暦を表します。台湾暦の場合、年はグレゴリオ暦を使用して計算され、日付と月は太陰太陽暦を使用して計算されます。</summary>
+    </member>
+    <member name="M:System.Globalization.TaiwanLunisolarCalendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.TaiwanLunisolarCalendar" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="P:System.Globalization.TaiwanLunisolarCalendar.Eras">
+      <summary>現在の <see cref="T:System.Globalization.TaiwanLunisolarCalendar" /> オブジェクトに関連する時代 (年号) を取得します。</summary>
+      <returns>値が常に現在の時代 (年号) である、単独の要素から構成される配列。</returns>
+    </member>
+    <member name="M:System.Globalization.TaiwanLunisolarCalendar.GetEra(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> に対応する時代 (年号) を取得します。</summary>
+      <returns>
+        <paramref name="time" /> パラメーターに指定された時代 (年号) を表す整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="P:System.Globalization.TaiwanLunisolarCalendar.MaxSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.TaiwanLunisolarCalendar" /> クラスでサポートされている最大の日付と時刻を取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.TaiwanLunisolarCalendar" /> クラスでサポートされている最も新しい日付と時刻。これは、グレゴリオ暦での紀元 2051 年 2 月 10 日の最後の瞬間に相当します。</returns>
+    </member>
+    <member name="P:System.Globalization.TaiwanLunisolarCalendar.MinSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.TaiwanLunisolarCalendar" /> クラスでサポートされている最小の日付と時刻を取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.TaiwanLunisolarCalendar" /> クラスでサポートされている最も古い日付と時刻。これは、グレゴリオ暦での紀元 1912 年 2 月 18 日の最初の瞬間に相当します。</returns>
+    </member>
+    <member name="T:System.Globalization.ThaiBuddhistCalendar">
+      <summary>タイ仏暦を表します。</summary>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.ThaiBuddhistCalendar" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>指定した <see cref="T:System.DateTime" /> から指定した月数が経過した後の <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> に指定した月数を加算した結果の <see cref="T:System.DateTime" />。</returns>
+      <param name="time">月数を加算する対象の <see cref="T:System.DateTime" />。</param>
+      <param name="months">加算する月の数。</param>
+      <exception cref="T:System.ArgumentException">結果として得られる <see cref="T:System.DateTime" /> がサポートされている範囲外の値です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> が -120000 未満です。または<paramref name="months" /> が 120000 より大きい値です。</exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>指定した <see cref="T:System.DateTime" /> から指定した年数が経過した後の <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> に指定した年数を加算した結果の <see cref="T:System.DateTime" />。</returns>
+      <param name="time">年数を加算する対象の <see cref="T:System.DateTime" />。</param>
+      <param name="years">追加する年数。</param>
+      <exception cref="T:System.ArgumentException">結果として得られる <see cref="T:System.DateTime" /> がサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="P:System.Globalization.ThaiBuddhistCalendar.Eras">
+      <summary>
+        <see cref="T:System.Globalization.ThaiBuddhistCalendar" /> クラス内の時代 (年号) のリストを取得します。</summary>
+      <returns>値が常に現在の時代 (年号) である、単独の要素から構成される配列。</returns>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の日付を返します。</summary>
+      <returns>指定された <see cref="T:System.DateTime" /> の日付を表す 1 ～ 31 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の曜日を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> の曜日を表す <see cref="T:System.DayOfWeek" /> 値。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetDayOfYear(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の年間積算日を返します。</summary>
+      <returns>指定された <see cref="T:System.DateTime" /> の年間積算日を表す 1 ～ 366 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の指定した月の日数を返します。</summary>
+      <returns>指定した時代 (年号) の指定した年の指定した月の日数。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の日数を返します。</summary>
+      <returns>指定した時代 (年号) の指定した年の日数。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetEra(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の時代 (年号) を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> の時代 (年号) を表す整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>指定された年と時代 (年号) の閏月を計算します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.ThaiBuddhistCalendar" /> クラスでは閏月の概念がサポートされないため、戻り値は常に 0 です。</returns>
+      <param name="year">年。</param>
+      <param name="era">時代 (年号)。</param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetMonth(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の月を返します。</summary>
+      <returns>指定された <see cref="T:System.DateTime" /> の月を表す 1 ～ 12 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の月数を返します。</summary>
+      <returns>指定した時代 (年号) の指定した年の月数。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetWeekOfYear(System.DateTime,System.Globalization.CalendarWeekRule,System.DayOfWeek)">
+      <summary>指定した <see cref="T:System.DateTime" /> の日付を含むその年の週を返します。</summary>
+      <returns>
+        <paramref name="time" /> パラメーターの日付を含む年の週を表す 1 から始まる正の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+      <param name="rule">暦の週を定義するいずれかの <see cref="T:System.Globalization.CalendarWeekRule" /> 値。</param>
+      <param name="firstDayOfWeek">週の最初の曜日を表すいずれかの <see cref="T:System.DayOfWeek" /> 値。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> または <paramref name="firstDayOfWeek" /> が暦でサポートされている範囲外の値です。または<paramref name="rule" /> が有効な <see cref="T:System.Globalization.CalendarWeekRule" /> 値ではありません。</exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.GetYear(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の年を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> の年を表す整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した日付が閏日かどうかを確認します。</summary>
+      <returns>指定した日が閏日である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="day">日を表す 1 ～ 31 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。または<paramref name="day" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の指定した月が閏月かどうかを確認します。</summary>
+      <returns>このメソッドは、派生クラスでオーバーライドされない限り、常に false を返します。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年が閏年かどうかを確認します。</summary>
+      <returns>指定した年が閏年である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="P:System.Globalization.ThaiBuddhistCalendar.MaxSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.ThaiBuddhistCalendar" /> クラスでサポートされている最も新しい日付と時刻を取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.ThaiBuddhistCalendar" /> クラスでサポートされている最も新しい日付と時刻。これは、グレゴリオ暦での紀元 9999 年 12 月 31 日の最後の瞬間に相当します。</returns>
+    </member>
+    <member name="P:System.Globalization.ThaiBuddhistCalendar.MinSupportedDateTime">
+      <summary>
+        <see cref="T:System.Globalization.ThaiBuddhistCalendar" /> クラスでサポートされている最も古い日付と時刻を取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.ThaiBuddhistCalendar" /> クラスでサポートされている最も古い日付と時刻。これは、グレゴリオ暦での紀元 0001 年 1 月 1 日の最初の瞬間に相当します。</returns>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した日付と時刻に設定された <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>現在の時代 (年号) の指定した日付と時刻に設定された <see cref="T:System.DateTime" />。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="day">日を表す 1 ～ 31 の整数。</param>
+      <param name="hour">時間を表す 0 ～ 23 の整数。</param>
+      <param name="minute">分を表す 0 ～ 59 の整数。</param>
+      <param name="second">秒を表す 0 ～ 59 の整数。</param>
+      <param name="millisecond">ミリ秒を表す 0 ～ 999 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。または<paramref name="day" /> が暦でサポートされている範囲外の値です。または<paramref name="hour" /> が 0 未満、または 23 を超えます。または<paramref name="minute" /> が 0 未満、または 59 を超えます。または<paramref name="second" /> が 0 未満、または 59 を超えます。または<paramref name="millisecond" /> が 0 未満、または 999 を超えます。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.ThaiBuddhistCalendar.ToFourDigitYear(System.Int32)">
+      <summary>
+        <see cref="P:System.Globalization.ThaiBuddhistCalendar.TwoDigitYearMax" /> プロパティを使用して、指定した年を 4 桁表記に変換し、適切な世紀を判断します。</summary>
+      <returns>
+        <paramref name="year" /> の 4 桁表記を保持する整数。</returns>
+      <param name="year">変換する年を表す 2 桁または 4 桁の整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="\" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Globalization.ThaiBuddhistCalendar.TwoDigitYearMax">
+      <summary>年の 2 桁表記で表すことができる 100 年間の範囲内で最後に当たる年を取得または設定します。</summary>
+      <returns>年の 2 桁表記で表すことができる 100 年間の範囲内で最後に当たる年。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">設定操作で指定された値が 99 未満です。または設定操作で指定した値が MaxSupportedDateTime.Year を超えています。</exception>
+      <exception cref="T:System.InvalidOperationException">set 操作において、現在のインスタンスが読み取り専用です。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Globalization.UmAlQuraCalendar">
+      <summary>サウジ回教暦 (ウムアルクラ暦) を表します。</summary>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.UmAlQuraCalendar" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>指定した初期日付から指定した月数が経過した後の日付を計算します。</summary>
+      <returns>
+        <paramref name="months" /> パラメーターで指定した月数を <paramref name="time" /> パラメーターで指定した日付に加算することで得られる日付。</returns>
+      <param name="time">月数を加算する対象の日付。<see cref="T:System.Globalization.UmAlQuraCalendar" /> クラスは、1900/04/30 00.00.00 (グレゴリオ暦の日付) から 2077/11/16 23:59:59 (グレゴリオ暦の日付) までの日付しかサポートしません。</param>
+      <param name="months">正または負の、加算する月数。</param>
+      <exception cref="T:System.ArgumentException">結果として得られる日付が <see cref="T:System.Globalization.UmAlQuraCalendar" /> クラスでサポートされている範囲外の値です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> が -120,000 未満か、120,000 よりも大きい値です。または<paramref name="time" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.AddYears(System.DateTime,System.Int32)">
+      <summary>指定した初期日付から指定した年数が経過した後の日付を計算します。</summary>
+      <returns>
+        <paramref name="years" /> パラメーターで指定した年数を <paramref name="time" /> パラメーターで指定した日付に加算することで得られる日付。</returns>
+      <param name="time">年数を加算する対象の日付。<see cref="T:System.Globalization.UmAlQuraCalendar" /> クラスは、1900/04/30 00.00.00 (グレゴリオ暦の日付) から 2077/11/16 23:59:59 (グレゴリオ暦の日付) までの日付しかサポートしません。</param>
+      <param name="years">正または負の、加算する年数。</param>
+      <exception cref="T:System.ArgumentException">結果として得られる日付が <see cref="T:System.Globalization.UmAlQuraCalendar" /> クラスでサポートされている範囲外の値です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="years" /> が -10,000 未満か、10,000 よりも大きい値です。または<paramref name="time" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="P:System.Globalization.UmAlQuraCalendar.Eras">
+      <summary>現在の <see cref="T:System.Globalization.UmAlQuraCalendar" /> でサポートされている時代 (年号) のリストを取得します。</summary>
+      <returns>値が <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" /> である単独の要素から構成される配列。</returns>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetDayOfMonth(System.DateTime)">
+      <summary>指定した日付が月のどの日に発生するかを計算します。</summary>
+      <returns>
+        <paramref name="time" /> パラメーターで指定された日付を表す 1 ～ 30 の整数。</returns>
+      <param name="time">読み取る日付値。<see cref="T:System.Globalization.UmAlQuraCalendar" /> クラスは、1900/04/30 00.00.00 (グレゴリオ暦の日付) から 2077/11/16 23:59:59 (グレゴリオ暦の日付) までの日付しかサポートしません。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetDayOfWeek(System.DateTime)">
+      <summary>指定した日付が発生する曜日を計算します。</summary>
+      <returns>
+        <paramref name="time" /> パラメーターで指定された曜日を表す <see cref="T:System.DayOfWeek" /> 値。</returns>
+      <param name="time">読み取る日付値。<see cref="T:System.Globalization.UmAlQuraCalendar" /> クラスは、1900/04/30 00.00.00 (グレゴリオ暦の日付) から 2077/11/16 23:59:59 (グレゴリオ暦の日付) までの日付しかサポートしません。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetDayOfYear(System.DateTime)">
+      <summary>指定した日付が発生する年間積算日を計算します。</summary>
+      <returns>
+        <paramref name="time" /> パラメーターに指定された年間積算日を表す 1 ～ 355 の整数。</returns>
+      <param name="time">読み取る日付値。<see cref="T:System.Globalization.UmAlQuraCalendar" /> クラスは、1900/04/30 00.00.00 (グレゴリオ暦の日付) から 2077/11/16 23:59:59 (グレゴリオ暦の日付) までの日付しかサポートしません。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>指定した年と時代 (年号) の指定した月の日数を計算します。</summary>
+      <returns>指定した年と時代 (年号) の指定した月の日数。戻り値は、平年の場合は 29、閏年の場合は 30 です。</returns>
+      <param name="year">年。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="era">時代 (年号)。UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] または <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" /> を指定します。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" />、または <paramref name="era" /> がこの <see cref="T:System.Globalization.UmAlQuraCalendar" /> クラスでサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の日数を計算します。</summary>
+      <returns>指定した年と時代 (年号) の日数。日数は、平年の場合は 354、閏年の場合は 355 です。</returns>
+      <param name="year">年。</param>
+      <param name="era">時代 (年号)。UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] または <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" /> を指定します。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> または <paramref name="era" /> がこの <see cref="T:System.Globalization.UmAlQuraCalendar" /> クラスでサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetEra(System.DateTime)">
+      <summary>指定した日付が発生する時代 (年号) を計算します。</summary>
+      <returns>常に <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" /> 値を返します。</returns>
+      <param name="time">読み取る日付値。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>指定された年と時代 (年号) の閏月を計算します。</summary>
+      <returns>常に 0 (<see cref="T:System.Globalization.UmAlQuraCalendar" /> クラスでは閏月がサポートされないため)。</returns>
+      <param name="year">年。</param>
+      <param name="era">時代 (年号)。UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] または <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" /> を指定します。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が 1318 未満か、1450 を超える値です。または<paramref name="era" /> が UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] または <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" /> ではありません。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetMonth(System.DateTime)">
+      <summary>指定した日付が発生する月を計算します。</summary>
+      <returns>
+        <paramref name="time" /> パラメーターに指定された日付の月を表す 1 ～ 12 の整数。</returns>
+      <param name="time">読み取る日付値。<see cref="T:System.Globalization.UmAlQuraCalendar" /> クラスは、1900/04/30 00.00.00 (グレゴリオ暦の日付) から 2077/11/16 23:59:59 (グレゴリオ暦の日付) までの日付しかサポートしません。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年の月数を計算します。</summary>
+      <returns>常に 12。</returns>
+      <param name="year">年。</param>
+      <param name="era">時代 (年号)。UmAlQuaraCalendar.Eras[UmAlQuraCalendar.CurrentEra] または <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" /> を指定します。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> がこの暦でサポートされている範囲外の値です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="era" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.GetYear(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> によって表される日付の年を計算します。</summary>
+      <returns>
+        <paramref name="time" /> パラメーターに指定された年を表す整数。</returns>
+      <param name="time">読み取る日付値。<see cref="T:System.Globalization.UmAlQuraCalendar" /> クラスは、1900/04/30 00.00.00 (グレゴリオ暦の日付) から 2077/11/16 23:59:59 (グレゴリオ暦の日付) までの日付しかサポートしません。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>指定した日付が閏日かどうかを確認します。</summary>
+      <returns>指定した日が閏日である場合は true。それ以外の場合は false。<see cref="T:System.Globalization.UmAlQuraCalendar" /> クラスでは閏日がサポートされないため、戻り値は常に false です。</returns>
+      <param name="year">年。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="day">日を表す 1 ～ 30 の整数。</param>
+      <param name="era">時代 (年号)。UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] または <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" /> を指定します。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" />、<paramref name="day" />、または <paramref name="era" /> がこの <see cref="T:System.Globalization.UmAlQuraCalendar" /> クラスでサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>指定した年と時代 (年号) の指定した月が閏月かどうかを確認します。</summary>
+      <returns>常に false (<see cref="T:System.Globalization.UmAlQuraCalendar" /> クラスでは閏月がサポートされないため)。</returns>
+      <param name="year">年。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="era">時代 (年号)。UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] または <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" /> を指定します。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" />、または <paramref name="era" /> がこの <see cref="T:System.Globalization.UmAlQuraCalendar" /> クラスでサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>指定した時代 (年号) の指定した年が閏年かどうかを確認します。</summary>
+      <returns>指定した年が閏年である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年。</param>
+      <param name="era">時代 (年号)。UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] または <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" /> を指定します。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> または <paramref name="era" /> がこの <see cref="T:System.Globalization.UmAlQuraCalendar" /> クラスでサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="P:System.Globalization.UmAlQuraCalendar.MaxSupportedDateTime">
+      <summary>この暦でサポートされている最も新しい日付と時刻を取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.UmAlQuraCalendar" /> クラスでサポートされている最も新しい日付と時刻。これは、グレゴリオ暦での紀元 2077 年 11 月 16 日の最後の瞬間に相当します。</returns>
+    </member>
+    <member name="P:System.Globalization.UmAlQuraCalendar.MinSupportedDateTime">
+      <summary>この暦でサポートされている最も古い日付と時刻を取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.UmAlQuraCalendar" /> クラスでサポートされている最も古い日付と時刻。これは、グレゴリオ暦での紀元 1900 年 4 月 30 日の最初の瞬間に相当します。</returns>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>指定した日付、時刻、および時代 (年号) に設定された <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>現在の時代 (年号) の指定した日付と時刻に設定された <see cref="T:System.DateTime" />。</returns>
+      <param name="year">年。</param>
+      <param name="month">月を表す 1 ～ 12 の整数。</param>
+      <param name="day">日を表す 1 ～ 29 の整数。</param>
+      <param name="hour">時間を表す 0 ～ 23 の整数。</param>
+      <param name="minute">分を表す 0 ～ 59 の整数。</param>
+      <param name="second">秒を表す 0 ～ 59 の整数。</param>
+      <param name="millisecond">ミリ秒を表す 0 ～ 999 の整数。</param>
+      <param name="era">時代 (年号)。UmAlQuraCalendar.Eras[UmAlQuraCalendar.CurrentEra] または <see cref="F:System.Globalization.UmAlQuraCalendar.UmAlQuraEra" /> を指定します。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" />、<paramref name="month" />、<paramref name="day" />、または <paramref name="era" /> がこの <see cref="T:System.Globalization.UmAlQuraCalendar" /> クラスでサポートされている範囲外の値です。または<paramref name="hour" /> が 0 未満、または 23 を超えます。または<paramref name="minute" /> が 0 未満、または 59 を超えます。または<paramref name="second" /> が 0 未満、または 59 を超えます。または<paramref name="millisecond" /> が 0 未満、または 999 を超えます。</exception>
+    </member>
+    <member name="M:System.Globalization.UmAlQuraCalendar.ToFourDigitYear(System.Int32)">
+      <summary>
+        <see cref="P:System.Globalization.UmAlQuraCalendar.TwoDigitYearMax" /> プロパティを使用して、指定した年を 4 桁表記に変換し、適切な世紀を判断します。</summary>
+      <returns>
+        <paramref name="year" /> パラメーターが 2 桁表記の年の場合、戻り値は、対応する 4 桁表記の年です。<paramref name="year" /> パラメーターが 4 桁表記の年の場合、戻り値は、<paramref name="year" /> パラメーターの値そのものです。</returns>
+      <param name="year">0 ～ 99 の 2 桁表記の年、または 1318 ～ 1450 の 4 桁表記のウムアルクラ暦の年。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> がこの暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="P:System.Globalization.UmAlQuraCalendar.TwoDigitYearMax">
+      <summary>年の 2 桁表記で表すことができる 100 年間の範囲内で最後に当たる年を取得または設定します。</summary>
+      <returns>年の 2 桁表記で表すことができる 100 年間の範囲内で最後に当たる年。</returns>
+      <exception cref="T:System.InvalidOperationException">この暦は読み取り専用です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">set 操作に指定されたウムアルクラ暦の年の値が、1318 より小さく 99 でないか、1450 を超えています。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.RegistryPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+  </members>
+</doc>

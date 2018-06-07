@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Resources.ResourceManager</name>
+  </assembly>
+  <members>
+    <member name="T:System.Resources.MissingManifestResourceException">
+      <summary>Die Ausnahme, die ausgelöst wird, wenn die Hauptassembly keine Ressourcen für die neutrale Kultur enthält, und eine entsprechende Satellitenassembly fehlt.</summary>
+    </member>
+    <member name="M:System.Resources.MissingManifestResourceException.#ctor">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Resources.MissingManifestResourceException" />-Klasse mit Standardeigenschaften.</summary>
+    </member>
+    <member name="M:System.Resources.MissingManifestResourceException.#ctor(System.String)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Resources.MissingManifestResourceException" />-Klasse mit der angegebenen Fehlermeldung.</summary>
+      <param name="message">Die Fehlermeldung, in der die Ursache der Ausnahme erklärt wird. </param>
+    </member>
+    <member name="M:System.Resources.MissingManifestResourceException.#ctor(System.String,System.Exception)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Resources.MissingManifestResourceException" />-Klasse mit einer angegebenen Fehlermeldung und einem Verweis auf die innere Ausnahme, die diese Ausnahme ausgelöst hat.</summary>
+      <param name="message">Die Fehlermeldung, in der die Ursache der Ausnahme erklärt wird. </param>
+      <param name="inner">Die Ausnahme, die die Ursache der aktuellen Ausnahme ist.Wenn der <paramref name="inner" />-Parameter nicht null ist, wird die aktuelle Ausnahme in einem catch-Block ausgelöst, der die innere Ausnahme behandelt.</param>
+    </member>
+    <member name="T:System.Resources.NeutralResourcesLanguageAttribute">
+      <summary>Informiert den Ressourcen-Manager über die Standardkultur einer App.Diese Klasse kann nicht vererbt werden.</summary>
+    </member>
+    <member name="M:System.Resources.NeutralResourcesLanguageAttribute.#ctor(System.String)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Resources.NeutralResourcesLanguageAttribute" />-Klasse.</summary>
+      <param name="cultureName">Der Name der Kultur, in der die neutralen Ressourcen der aktuellen Assembly geschrieben wurden. </param>
+      <exception cref="T:System.ArgumentNullException">Der <paramref name="cultureName" />-Parameter ist null. </exception>
+    </member>
+    <member name="P:System.Resources.NeutralResourcesLanguageAttribute.CultureName">
+      <summary>Ruft den Kulturnamen ab.</summary>
+      <returns>Der Name der Standardkultur für die Hauptassembly.</returns>
+    </member>
+    <member name="T:System.Resources.ResourceManager">
+      <summary>Stellt einen Ressourcen-Manager dar, der einfachen Zugriff auf kulturabhängige Ressourcen zur Laufzeit ermöglicht.Sicherheitshinweis: Aufrufen von Methoden in dieser Klasse mit nicht vertrauenswürdigen Daten stellt ein Sicherheitsrisiko dar.Rufen Sie die Methoden in der Klasse nur mit vertrauenswürdigen Daten auf.Weitere Informationen finden Sie unter Untrusted Data Security Risks.</summary>
+    </member>
+    <member name="M:System.Resources.ResourceManager.#ctor(System.String,System.Reflection.Assembly)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Resources.ResourceManager" />-Klasse zum Suchen von Ressourcen in Dateien mit dem angegebenen Stammnamen in der angegebenen Assembly.</summary>
+      <param name="baseName">Der Stammname der Ressourcendatei ohne Erweiterung, aber einschließlich eines beliebigen vollqualifizierten Namespacenamens.Der Stammname der Ressourcendatei "MyApplication.MyResource.en-US.resources" lautet beispielsweise "MyApplication.MyResource".</param>
+      <param name="assembly">Die Hauptassembly für die Ressourcen. </param>
+      <exception cref="T:System.ArgumentNullException">Der <paramref name="baseName" />-Parameter oder der <paramref name="assembly" />-Parameter ist null. </exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.#ctor(System.Type)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Resources.ResourceManager" />-Klasse, die Ressourcen in Satellitenassemblys auf der Grundlage der Informationen aus dem angegebenen Typobjekt sucht.</summary>
+      <param name="resourceSource">Ein Typ, aus dem der Ressourcen-Manager alle Informationen zum Suchen von RESOURCES-Dateien ableitet. </param>
+      <exception cref="T:System.ArgumentNullException">Der <paramref name="resourceSource" />-Parameter ist null. </exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.GetString(System.String)">
+      <summary>Gibt den Wert der angegebenen Zeichenfolgenressource zurück.</summary>
+      <returns>Der Wert der Ressource, die für die aktuelle Benutzeroberflächenkultur des Aufrufers lokalisiert wurde, oder null, wenn <paramref name="name" /> nicht in einem Ressourcensatz gefunden werden kann.</returns>
+      <param name="name">Der Name der abzurufenden Ressource. </param>
+      <exception cref="T:System.ArgumentNullException">Der <paramref name="name" />-Parameter ist null. </exception>
+      <exception cref="T:System.InvalidOperationException">Der Wert der angegebenen Ressource ist keine Zeichenfolge. </exception>
+      <exception cref="T:System.Resources.MissingManifestResourceException">Es wurde kein passender Satz von Ressourcen gefunden, und es sind keine neutralen Ressourcen für eine neutrale Kultur vorhanden.Informationen zur Behandlung dieser Ausnahme finden Sie im Abschnitt über die Behandlung von MissingManifestResourceException- und MissingSatelliteAssemblyException-Ausnahmen im Thema zur <see cref="T:System.Resources.ResourceManager" />-Klasse.</exception>
+      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">Die Ressourcen der Standardkultur befinden sich in einer Satellitenassembly, die nicht gefunden werden konnte.Informationen zur Behandlung dieser Ausnahme finden Sie im Abschnitt über die Behandlung von MissingManifestResourceException- und MissingSatelliteAssemblyException-Ausnahmen im Thema zur <see cref="T:System.Resources.ResourceManager" />-Klasse.</exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.GetString(System.String,System.Globalization.CultureInfo)">
+      <summary>Gibt den Wert der Zeichenfolgenressource zurück, die für die angegebene Kultur lokalisiert wurde.</summary>
+      <returns>Der Wert der Ressource, die für die angegebene Kultur lokalisiert wurde, oder null, wenn <paramref name="name" /> nicht in einem Ressourcensatz gefunden werden kann.</returns>
+      <param name="name">Der Name der abzurufenden Ressource. </param>
+      <param name="culture">Das Objekt, das die Kultur darstellt, für die die Ressource lokalisiert wird. </param>
+      <exception cref="T:System.ArgumentNullException">Der <paramref name="name" />-Parameter ist null. </exception>
+      <exception cref="T:System.InvalidOperationException">Der Wert der angegebenen Ressource ist keine Zeichenfolge. </exception>
+      <exception cref="T:System.Resources.MissingManifestResourceException">Es wurde kein passender Satz von Ressourcen gefunden, und es sind keine Ressourcen für eine Standardkultur vorhanden.Informationen zur Behandlung dieser Ausnahme finden Sie im Abschnitt über die Behandlung von MissingManifestResourceException- und MissingSatelliteAssemblyException-Ausnahmen im Thema zur <see cref="T:System.Resources.ResourceManager" />-Klasse.</exception>
+      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">Die Ressourcen der Standardkultur befinden sich in einer Satellitenassembly, die nicht gefunden werden konnte.Informationen zur Behandlung dieser Ausnahme finden Sie im Abschnitt über die Behandlung von MissingManifestResourceException- und MissingSatelliteAssemblyException-Ausnahmen im Thema zur <see cref="T:System.Resources.ResourceManager" />-Klasse.</exception>
+    </member>
+    <member name="T:System.Resources.SatelliteContractVersionAttribute">
+      <summary>Weist ein <see cref="T:System.Resources.ResourceManager" />-Objekt an, eine bestimmte Version einer Satellitenassembly anzufordern.</summary>
+    </member>
+    <member name="M:System.Resources.SatelliteContractVersionAttribute.#ctor(System.String)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Resources.SatelliteContractVersionAttribute" />-Klasse.</summary>
+      <param name="version">Eine Zeichenfolge, die die Version der zu ladenden Satellitenassemblys angibt. </param>
+      <exception cref="T:System.ArgumentNullException">Der <paramref name="version" />-Parameter ist null. </exception>
+    </member>
+    <member name="P:System.Resources.SatelliteContractVersionAttribute.Version">
+      <summary>Ruft die Version der Satellitenassemblys mit den erforderlichen Ressourcen ab.</summary>
+      <returns>Eine Zeichenfolge, die die Version der Satellitenassemblys mit den erforderlichen Ressourcen enthält.</returns>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Resources.ResourceManager</name>
+  </assembly>
+  <members>
+    <member name="T:System.Resources.MissingManifestResourceException">
+      <summary>如果主要組件沒有包含中性文化特性 (Culture) 的資源，且遺漏適當的附屬組件，所擲回的例外狀況。</summary>
+    </member>
+    <member name="M:System.Resources.MissingManifestResourceException.#ctor">
+      <summary>使用預設屬性來初始化 <see cref="T:System.Resources.MissingManifestResourceException" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="M:System.Resources.MissingManifestResourceException.#ctor(System.String)">
+      <summary>使用指定的錯誤訊息來初始化 <see cref="T:System.Resources.MissingManifestResourceException" /> 類別的新執行個體。</summary>
+      <param name="message">解釋例外狀況原因的錯誤訊息。</param>
+    </member>
+    <member name="M:System.Resources.MissingManifestResourceException.#ctor(System.String,System.Exception)">
+      <summary>使用指定的錯誤訊息和造成這個例外狀況原因的內部例外參考，初始化 <see cref="T:System.Resources.MissingManifestResourceException" /> 類別的新執行個體。</summary>
+      <param name="message">解釋例外狀況原因的錯誤訊息。</param>
+      <param name="inner">導致目前例外狀況的例外。如果 <paramref name="inner" /> 參數不是 null，則目前的例外狀況會在處理內部例外的 catch 區塊中引發。</param>
+    </member>
+    <member name="T:System.Resources.NeutralResourcesLanguageAttribute">
+      <summary>通知資源管理員有關應用程式的預設文化特性。此類別無法被繼承。</summary>
+    </member>
+    <member name="M:System.Resources.NeutralResourcesLanguageAttribute.#ctor(System.String)">
+      <summary>初始化 <see cref="T:System.Resources.NeutralResourcesLanguageAttribute" /> 類別的新執行個體。</summary>
+      <param name="cultureName">寫入目前組件的中性資源所用文化特性的名稱。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="cultureName" /> 參數為 null。</exception>
+    </member>
+    <member name="P:System.Resources.NeutralResourcesLanguageAttribute.CultureName">
+      <summary>取得文化特性名稱。</summary>
+      <returns>主要組件的預設文化特性的名稱。</returns>
+    </member>
+    <member name="T:System.Resources.ResourceManager">
+      <summary>表示在執行階段提供特定文化特性資源存取權限的資源管理員。安全性提示：使用不受信任的資料呼叫這個類別中的方法會造成安全性風險。只能使用信任的資料呼叫類別中的方法。有关详细信息，请参阅 Untrusted Data Security Risks。</summary>
+    </member>
+    <member name="M:System.Resources.ResourceManager.#ctor(System.String,System.Reflection.Assembly)">
+      <summary>初始化 <see cref="T:System.Resources.ResourceManager" /> 類別的新執行個體，這個執行個體會在所指的組件中查閱具有指定根名稱之檔案中的資源。</summary>
+      <param name="baseName">資源檔的根名稱，不含副檔名但包括任何完整的命名空間。例如，名為 MyApplication.MyResource.en-US.resources 的資源檔根目錄名稱是 MyApplication.MyResource。</param>
+      <param name="assembly">資源的主要組件。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="baseName" /> 或 <paramref name="assembly" /> 參數為 null。</exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.#ctor(System.Type)">
+      <summary>根據指定之型別物件的資訊，初始化可查閱附屬組件中資源之 <see cref="T:System.Resources.ResourceManager" /> 類別的新執行個體。</summary>
+      <param name="resourceSource">資源管理員從中衍生尋找 .resources 檔所需所有資訊的型別。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="resourceSource" /> 參數為 null。</exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.GetString(System.String)">
+      <summary>傳回指定的字串資源的值。</summary>
+      <returns>針對呼叫端的目前 UI 文化特性當地語系化的資源的值，或者為null (如果在資源集中找不到<paramref name="name" />)。</returns>
+      <param name="name">要擷取的資源名稱。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 參數為 null。</exception>
+      <exception cref="T:System.InvalidOperationException">指定資源的值不是字串。</exception>
+      <exception cref="T:System.Resources.MissingManifestResourceException">找不到任何一組可用的資源，也沒有預設文化特性資源。如需如何處理這個例外狀況的詳細資訊，請參閱 <see cref="T:System.Resources.ResourceManager" /> 類別主題中的＜處理 MissingManifestResourceException 和 MissingSatelliteAssemblyException 例外狀況＞一節。</exception>
+      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">預設文化特性的資源位於找不到的附屬組件中。如需如何處理這個例外狀況的詳細資訊，請參閱 <see cref="T:System.Resources.ResourceManager" /> 類別主題中的＜處理 MissingManifestResourceException 和 MissingSatelliteAssemblyException 例外狀況＞一節。</exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.GetString(System.String,System.Globalization.CultureInfo)">
+      <summary>傳回為指定文化特性當地語系化之字串資源的值。</summary>
+      <returns>針對指定文化特性當地語系化的資源的值，或者為null (如果在資源集中找不到<paramref name="name" />)。</returns>
+      <param name="name">要擷取的資源名稱。</param>
+      <param name="culture">物件，表示資源要當地語系化的文化特性。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 參數為 null。</exception>
+      <exception cref="T:System.InvalidOperationException">指定資源的值不是字串。</exception>
+      <exception cref="T:System.Resources.MissingManifestResourceException">找不到任何一組可用的資源，也沒有預設文化特性的資源。如需如何處理這個例外狀況的詳細資訊，請參閱 <see cref="T:System.Resources.ResourceManager" /> 類別主題中的＜處理 MissingManifestResourceException 和 MissingSatelliteAssemblyException 例外狀況＞一節。</exception>
+      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">預設文化特性的資源位於找不到的附屬組件中。如需如何處理這個例外狀況的詳細資訊，請參閱 <see cref="T:System.Resources.ResourceManager" /> 類別主題中的＜處理 MissingManifestResourceException 和 MissingSatelliteAssemblyException 例外狀況＞一節。</exception>
+    </member>
+    <member name="T:System.Resources.SatelliteContractVersionAttribute">
+      <summary>指示 <see cref="T:System.Resources.ResourceManager" /> 物件要求特定版本的附屬組件。</summary>
+    </member>
+    <member name="M:System.Resources.SatelliteContractVersionAttribute.#ctor(System.String)">
+      <summary>初始化 <see cref="T:System.Resources.SatelliteContractVersionAttribute" /> 類別的新執行個體。</summary>
+      <param name="version">字串，指定要載入之附屬組件的版本。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="version" /> 參數為 null。</exception>
+    </member>
+    <member name="P:System.Resources.SatelliteContractVersionAttribute.Version">
+      <summary>取得具有必要資源的附屬組件的版本。</summary>
+      <returns>字串，包含具有必要資源之附屬組件的版本。</returns>
+    </member>
+  </members>
+</doc>

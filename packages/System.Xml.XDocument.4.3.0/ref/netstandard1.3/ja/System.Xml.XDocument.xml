@@ -1,0 +1,1820 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Xml.XDocument</name>
+  </assembly>
+  <members>
+    <member name="T:System.Xml.Linq.Extensions">
+      <summary>LINQ to XML 拡張メソッドを含みます。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Ancestors``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>ソース コレクション内のすべてのノードの先祖が格納された、要素のコレクションを返します。</summary>
+      <returns>ソース コレクション内のすべてのノードの先祖が格納された、<see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">ソース コレクションが格納されている <see cref="T:System.Xml.Linq.XNode" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="T">
+        <see cref="T:System.Xml.Linq.XNode" /> に制限された、<paramref name="source" /> 内のオブジェクトの型。</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Ancestors``1(System.Collections.Generic.IEnumerable{``0},System.Xml.Linq.XName)">
+      <summary>ソース コレクション内のすべてのノードの先祖が格納され、フィルター処理された要素のコレクションを返します。一致する <see cref="T:System.Xml.Linq.XName" /> を持つ要素のみがコレクションに含められます。</summary>
+      <returns>ソース コレクション内のすべてのノードの先祖が格納された、<see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。一致する <see cref="T:System.Xml.Linq.XName" /> を持つ要素のみがコレクションに含められます。</returns>
+      <param name="source">ソース コレクションが格納されている <see cref="T:System.Xml.Linq.XNode" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="name">照合する対象の <see cref="T:System.Xml.Linq.XName" />。</param>
+      <typeparam name="T">
+        <see cref="T:System.Xml.Linq.XNode" /> に制限された、<paramref name="source" /> 内のオブジェクトの型。</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.AncestorsAndSelf(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement})">
+      <summary>ソース コレクション内のすべての要素、およびソース コレクション内のすべての要素の先祖が格納された要素のコレクションを返します。</summary>
+      <returns>ソース コレクション内のすべての要素、およびソース コレクション内のすべての要素の先祖が格納された、<see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">ソース コレクションが格納されている <see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.AncestorsAndSelf(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement},System.Xml.Linq.XName)">
+      <summary>ソース コレクション内のすべての要素、およびソース コレクション内のすべての要素の先祖が格納され、フィルター処理された要素のコレクションを返します。一致する <see cref="T:System.Xml.Linq.XName" /> を持つ要素のみがコレクションに含められます。</summary>
+      <returns>ソース コレクション内のすべての要素、およびソース コレクション内のすべての要素の先祖が格納された、<see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。一致する <see cref="T:System.Xml.Linq.XName" /> を持つ要素のみがコレクションに含められます。</returns>
+      <param name="source">ソース コレクションが格納されている <see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="name">照合する対象の <see cref="T:System.Xml.Linq.XName" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Attributes(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement})">
+      <summary>ソース コレクション内のすべての要素の属性のコレクションを返します。</summary>
+      <returns>ソース コレクション内のすべての要素の属性が格納された、<see cref="T:System.Xml.Linq.XAttribute" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">ソース コレクションが格納されている <see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Attributes(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement},System.Xml.Linq.XName)">
+      <summary>ソース コレクション内のすべての要素の、フィルター処理された属性のコレクションを返します。一致する <see cref="T:System.Xml.Linq.XName" /> を持つ要素のみがコレクションに含められます。</summary>
+      <returns>ソース コレクション内のすべての要素の、フィルター処理された属性のコレクションが格納された、<see cref="T:System.Xml.Linq.XAttribute" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。一致する <see cref="T:System.Xml.Linq.XName" /> を持つ要素のみがコレクションに含められます。</returns>
+      <param name="source">ソース コレクションが格納されている <see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="name">照合する対象の <see cref="T:System.Xml.Linq.XName" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.DescendantNodes``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>ソース コレクション内のすべてのドキュメントおよび要素の子孫ノードのコレクションを返します。</summary>
+      <returns>ソース コレクション内のすべてのドキュメントおよび要素の子孫ノードの、<see cref="T:System.Xml.Linq.XNode" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">ソース コレクションが格納されている <see cref="T:System.Xml.Linq.XContainer" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="T">
+        <see cref="T:System.Xml.Linq.XContainer" /> に制限された、<paramref name="source" /> 内のオブジェクトの型。</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.DescendantNodesAndSelf(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement})">
+      <summary>ソース コレクション内のすべての要素、およびソース コレクション内のすべての要素の子孫ノードが格納されたノードのコレクションを返します。</summary>
+      <returns>ソース コレクション内のすべての要素、およびソース コレクション内のすべての要素の子孫ノードが格納された、<see cref="T:System.Xml.Linq.XNode" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">ソース コレクションが格納されている <see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Descendants``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>ソース コレクション内のすべての要素とドキュメントの子孫要素が格納された要素のコレクションを返します。</summary>
+      <returns>ソース コレクション内のすべての要素とドキュメントの子孫要素が格納された、<see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">ソース コレクションが格納されている <see cref="T:System.Xml.Linq.XContainer" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="T">
+        <see cref="T:System.Xml.Linq.XContainer" /> に制限された、<paramref name="source" /> 内のオブジェクトの型。</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Descendants``1(System.Collections.Generic.IEnumerable{``0},System.Xml.Linq.XName)">
+      <summary>ソース コレクション内のすべての要素とドキュメントの子孫要素が格納され、フィルター処理された要素のコレクションを返します。一致する <see cref="T:System.Xml.Linq.XName" /> を持つ要素のみがコレクションに含められます。</summary>
+      <returns>ソース コレクション内のすべての要素とドキュメントの子孫要素が格納された、<see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。一致する <see cref="T:System.Xml.Linq.XName" /> を持つ要素のみがコレクションに含められます。</returns>
+      <param name="source">ソース コレクションが格納されている <see cref="T:System.Xml.Linq.XContainer" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="name">照合する対象の <see cref="T:System.Xml.Linq.XName" />。</param>
+      <typeparam name="T">
+        <see cref="T:System.Xml.Linq.XContainer" /> に制限された、<paramref name="source" /> 内のオブジェクトの型。</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.DescendantsAndSelf(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement})">
+      <summary>ソース コレクション内のすべての要素、およびソース コレクション内のすべての要素の子孫要素が格納された要素のコレクションを返します。</summary>
+      <returns>ソース コレクション内のすべての要素、およびソース コレクション内のすべての要素の子孫要素が格納された、<see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">ソース コレクションが格納されている <see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.DescendantsAndSelf(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement},System.Xml.Linq.XName)">
+      <summary>ソース コレクション内のすべての要素、およびソース コレクション内のすべての要素の子孫要素が格納され、フィルター処理された要素のコレクションを返します。一致する <see cref="T:System.Xml.Linq.XName" /> を持つ要素のみがコレクションに含められます。</summary>
+      <returns>ソース コレクション内のすべての要素、およびソース コレクション内のすべての要素の子孫が格納された、<see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。一致する <see cref="T:System.Xml.Linq.XName" /> を持つ要素のみがコレクションに含められます。</returns>
+      <param name="source">ソース コレクションが格納されている <see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="name">照合する対象の <see cref="T:System.Xml.Linq.XName" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Elements``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>ソース コレクション内のすべての要素およびドキュメントの子要素のコレクションを返します。</summary>
+      <returns>ソース コレクション内のすべての要素またはドキュメントの子要素の、<see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">ソース コレクションが格納されている <see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="T">
+        <see cref="T:System.Xml.Linq.XContainer" /> に制限された、<paramref name="source" /> 内のオブジェクトの型。</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Elements``1(System.Collections.Generic.IEnumerable{``0},System.Xml.Linq.XName)">
+      <summary>ソース コレクション内のすべての要素およびドキュメントの、フィルター処理された子要素のコレクションを返します。一致する <see cref="T:System.Xml.Linq.XName" /> を持つ要素のみがコレクションに含められます。</summary>
+      <returns>ソース コレクション内のすべての要素およびドキュメントの子要素の、<see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。一致する <see cref="T:System.Xml.Linq.XName" /> を持つ要素のみがコレクションに含められます。</returns>
+      <param name="source">ソース コレクションが格納されている <see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="name">照合する対象の <see cref="T:System.Xml.Linq.XName" />。</param>
+      <typeparam name="T">
+        <see cref="T:System.Xml.Linq.XContainer" /> に制限された、<paramref name="source" /> 内のオブジェクトの型。</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.InDocumentOrder``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>ソース コレクション内のすべてのノードがドキュメント順に並べ替えて格納された、ノードのコレクションを返します。</summary>
+      <returns>ソース コレクション内のすべてのノードがドキュメント順に並べ替えて格納された、<see cref="T:System.Xml.Linq.XNode" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">ソース コレクションが格納されている <see cref="T:System.Xml.Linq.XNode" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="T">
+        <see cref="T:System.Xml.Linq.XNode" /> に制限された、<paramref name="source" /> 内のオブジェクトの型。</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Nodes``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>ソース コレクション内のすべてのドキュメントおよび要素の子ノードのコレクションを返します。</summary>
+      <returns>ソース コレクション内のすべてのドキュメントおよび要素の子ノードの、<see cref="T:System.Xml.Linq.XNode" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="source">ソース コレクションが格納されている <see cref="T:System.Xml.Linq.XNode" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="T">
+        <see cref="T:System.Xml.Linq.XContainer" /> に制限された、<paramref name="source" /> 内のオブジェクトの型。</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Remove(System.Collections.Generic.IEnumerable{System.Xml.Linq.XAttribute})">
+      <summary>ソース コレクション内の親要素からすべての属性を削除します。</summary>
+      <param name="source">ソース コレクションが格納されている <see cref="T:System.Xml.Linq.XAttribute" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.Extensions.Remove``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>ソース コレクション内の親ノードからすべてのノードを削除します。</summary>
+      <param name="source">ソース コレクションが格納されている <see cref="T:System.Xml.Linq.XNode" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <typeparam name="T">
+        <see cref="T:System.Xml.Linq.XNode" /> に制限された、<paramref name="source" /> 内のオブジェクトの型。</typeparam>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.LoadOptions">
+      <summary>XML を解析するときに読み込みオプションを指定します。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.LoadOptions.None">
+      <summary>意味のない空白を保持したり、ベース URI と行情報を読み込んだりしないでください。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.LoadOptions.PreserveWhitespace">
+      <summary>解析の際に意味のない空白が保存されます。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.LoadOptions.SetBaseUri">
+      <summary>
+        <see cref="T:System.Xml.XmlReader" /> からベース URI 情報を要求し、<see cref="P:System.Xml.Linq.XObject.BaseUri" /> プロパティを介して使用できるようにします。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.LoadOptions.SetLineInfo">
+      <summary>
+        <see cref="T:System.Xml.XmlReader" /> から行情報を要求し、<see cref="T:System.Xml.Linq.XObject" /> 上のプロパティを介して使用できるようにします。</summary>
+    </member>
+    <member name="T:System.Xml.Linq.ReaderOptions">
+      <summary>
+        <see cref="T:System.Xml.XmlReader" /> で <see cref="T:System.Xml.Linq.XDocument" /> を読み込むときに、重複する名前空間を省略するかどうかを指定します。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.ReaderOptions.None">
+      <summary>リーダーのオプションが指定されていません。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.ReaderOptions.OmitDuplicateNamespaces">
+      <summary>
+        <see cref="T:System.Xml.Linq.XDocument" /> を読み込むときに、重複する名前空間を省略します。</summary>
+    </member>
+    <member name="T:System.Xml.Linq.SaveOptions">
+      <summary>シリアル化のオプションを指定します。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.SaveOptions.DisableFormatting">
+      <summary>シリアル化の際に意味のない空白がすべて保存されます。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.SaveOptions.None">
+      <summary>シリアル化の際に XML に書式 (インデント) が設定されます。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.SaveOptions.OmitDuplicateNamespaces">
+      <summary>シリアル化の際に重複する名前空間宣言が削除されます。</summary>
+    </member>
+    <member name="T:System.Xml.Linq.XAttribute">
+      <summary>XML 属性を表します。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.#ctor(System.Xml.Linq.XAttribute)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XAttribute" /> クラスの新しいインスタンスを、別の <see cref="T:System.Xml.Linq.XAttribute" /> オブジェクトから初期化します。</summary>
+      <param name="other">コピー元の <see cref="T:System.Xml.Linq.XAttribute" /> オブジェクト。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="other" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.#ctor(System.Xml.Linq.XName,System.Object)">
+      <summary>指定された名前と値から <see cref="T:System.Xml.Linq.XAttribute" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="name">属性の <see cref="T:System.Xml.Linq.XName" />。</param>
+      <param name="value">属性の値を含む <see cref="T:System.Object" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> パラメーターまたは <paramref name="value" /> パラメーターが null です。</exception>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.EmptySequence">
+      <summary>属性の空のコレクションを取得します。</summary>
+      <returns>空のコレクションを格納している <see cref="T:System.Xml.Linq.XAttribute" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.IsNamespaceDeclaration">
+      <summary>現在の属性が名前空間宣言かどうかを判定します。</summary>
+      <returns>現在の属性が名前空間宣言の場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.Name">
+      <summary>現在の属性の拡張名を取得します。</summary>
+      <returns>現在の属性の名前を格納している <see cref="T:System.Xml.Linq.XName" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.NextAttribute">
+      <summary>親要素の次の属性を取得します。</summary>
+      <returns>親要素の次の属性を格納している <see cref="T:System.Xml.Linq.XAttribute" />。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.NodeType">
+      <summary>このノードのノード型を取得します。</summary>
+      <returns>ノード型。<see cref="T:System.Xml.Linq.XAttribute" /> オブジェクトでは、この値は <see cref="F:System.Xml.XmlNodeType.Attribute" /> です。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.UInt32}">
+      <summary>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の値を <see cref="T:System.UInt32" /> の <see cref="T:System.Nullable`1" /> にキャストします。</summary>
+      <returns>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の内容を格納している <see cref="T:System.UInt32" /> の <see cref="T:System.Nullable`1" />。</returns>
+      <param name="attribute">
+        <see cref="T:System.UInt32" /> の <see cref="T:System.Nullable`1" /> にキャストする <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性に有効な <see cref="T:System.UInt32" /> 値が格納されていません。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.UInt64}">
+      <summary>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の値を <see cref="T:System.UInt64" /> の <see cref="T:System.Nullable`1" /> にキャストします。</summary>
+      <returns>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の内容を格納している <see cref="T:System.UInt64" /> の <see cref="T:System.Nullable`1" />。</returns>
+      <param name="attribute">
+        <see cref="T:System.UInt64" /> の <see cref="T:System.Nullable`1" /> にキャストする <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性に有効な <see cref="T:System.UInt64" /> 値が格納されていません。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.TimeSpan}">
+      <summary>この <see cref="T:System.Xml.Linq.XAttribute" /> の値を <see cref="T:System.TimeSpan" /> の <see cref="T:System.Nullable`1" /> にキャストします。</summary>
+      <returns>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の内容を格納している <see cref="T:System.TimeSpan" /> の <see cref="T:System.Nullable`1" />。</returns>
+      <param name="attribute">
+        <see cref="T:System.TimeSpan" /> の <see cref="T:System.Nullable`1" /> にキャストする <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性に有効な <see cref="T:System.TimeSpan" /> 値が格納されていません。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Int64}">
+      <summary>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の値を <see cref="T:System.Int64" /> の <see cref="T:System.Nullable`1" /> にキャストします。</summary>
+      <returns>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の内容を格納している <see cref="T:System.Int64" /> の <see cref="T:System.Nullable`1" />。</returns>
+      <param name="attribute">
+        <see cref="T:System.Int64" /> の <see cref="T:System.Nullable`1" /> にキャストする <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性に有効な <see cref="T:System.Int64" /> 値が格納されていません。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Single}">
+      <summary>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の値を <see cref="T:System.Single" /> の <see cref="T:System.Nullable`1" /> にキャストします。</summary>
+      <returns>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の内容を格納している <see cref="T:System.Single" /> の <see cref="T:System.Nullable`1" />。</returns>
+      <param name="attribute">
+        <see cref="T:System.Single" /> の <see cref="T:System.Nullable`1" /> にキャストする <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性に有効な <see cref="T:System.Single" /> 値が格納されていません。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.UInt32">
+      <summary>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の値を <see cref="T:System.UInt32" /> にキャストします。</summary>
+      <returns>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の内容を格納している <see cref="T:System.UInt32" />。</returns>
+      <param name="attribute">
+        <see cref="T:System.UInt32" /> にキャストする <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性に有効な <see cref="T:System.UInt32" /> 値が格納されていません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.UInt64">
+      <summary>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の値を <see cref="T:System.UInt64" /> にキャストします。</summary>
+      <returns>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の内容を格納している <see cref="T:System.UInt64" />。</returns>
+      <param name="attribute">
+        <see cref="T:System.UInt64" /> にキャストする <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性に有効な <see cref="T:System.UInt64" /> 値が格納されていません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.TimeSpan">
+      <summary>この <see cref="T:System.Xml.Linq.XAttribute" /> の値を <see cref="T:System.TimeSpan" /> にキャストします。</summary>
+      <returns>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の内容を格納している <see cref="T:System.TimeSpan" />。</returns>
+      <param name="attribute">
+        <see cref="T:System.TimeSpan" /> にキャストする <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性に有効な <see cref="T:System.TimeSpan" /> 値が格納されていません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Single">
+      <summary>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の値を <see cref="T:System.Single" /> にキャストします。</summary>
+      <returns>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の内容を格納している <see cref="T:System.Single" />。</returns>
+      <param name="attribute">
+        <see cref="T:System.Single" /> にキャストする <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性に有効な <see cref="T:System.Single" /> 値が格納されていません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.String">
+      <summary>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の値を <see cref="T:System.String" /> にキャストします。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XAttribute" /> の内容を格納している <see cref="T:System.String" />。</returns>
+      <param name="attribute">
+        <see cref="T:System.String" /> にキャストする <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Int32}">
+      <summary>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の値を <see cref="T:System.Int32" /> の <see cref="T:System.Nullable`1" /> にキャストします。</summary>
+      <returns>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の内容を格納している <see cref="T:System.Int32" /> の <see cref="T:System.Nullable`1" />。</returns>
+      <param name="attribute">
+        <see cref="T:System.Int32" /> の <see cref="T:System.Nullable`1" /> にキャストする <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Double">
+      <summary>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の値を <see cref="T:System.Double" /> にキャストします。</summary>
+      <returns>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の内容を格納している <see cref="T:System.Double" />。</returns>
+      <param name="attribute">
+        <see cref="T:System.Double" /> にキャストする <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性に有効な <see cref="T:System.Double" /> 値が格納されていません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Guid">
+      <summary>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の値を <see cref="T:System.Guid" /> にキャストします。</summary>
+      <returns>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の内容を格納している <see cref="T:System.Guid" />。</returns>
+      <param name="attribute">
+        <see cref="T:System.Guid" /> にキャストする <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性に有効な <see cref="T:System.Guid" /> 値が格納されていません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Int32">
+      <summary>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の値を <see cref="T:System.Int32" /> にキャストします。</summary>
+      <returns>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の内容を格納している <see cref="T:System.Int32" />。</returns>
+      <param name="attribute">
+        <see cref="T:System.Int32" /> にキャストする <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性に有効な <see cref="T:System.Int32" /> 値が格納されていません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Decimal">
+      <summary>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の値を <see cref="T:System.Decimal" /> にキャストします。</summary>
+      <returns>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の内容を格納している <see cref="T:System.Decimal" />。</returns>
+      <param name="attribute">
+        <see cref="T:System.Decimal" /> にキャストする <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性に有効な <see cref="T:System.Decimal" /> 値が格納されていません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Boolean">
+      <summary>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の値を <see cref="T:System.Boolean" /> にキャストします。</summary>
+      <returns>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の内容を格納している <see cref="T:System.Boolean" />。</returns>
+      <param name="attribute">
+        <see cref="T:System.Boolean" /> にキャストする <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性に有効な <see cref="T:System.Boolean" /> 値が格納されていません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.DateTime">
+      <summary>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の値を <see cref="T:System.DateTime" /> にキャストします。</summary>
+      <returns>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の内容を格納している <see cref="T:System.DateTime" />。</returns>
+      <param name="attribute">
+        <see cref="T:System.DateTime" /> にキャストする <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性に有効な <see cref="T:System.DateTime" /> 値が格納されていません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.DateTimeOffset">
+      <summary>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の値を <see cref="T:System.DateTimeOffset" /> にキャストします。</summary>
+      <returns>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の内容を格納している <see cref="T:System.DateTimeOffset" />。</returns>
+      <param name="attribute">
+        <see cref="T:System.DateTimeOffset" /> にキャストする <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性に有効な <see cref="T:System.DateTimeOffset" /> 値が格納されていません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Decimal}">
+      <summary>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の値を <see cref="T:System.Decimal" /> の <see cref="T:System.Nullable`1" /> にキャストします。</summary>
+      <returns>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の内容を格納している <see cref="T:System.Decimal" /> の <see cref="T:System.Nullable`1" />。</returns>
+      <param name="attribute">
+        <see cref="T:System.Decimal" /> の <see cref="T:System.Nullable`1" /> にキャストする <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性に有効な <see cref="T:System.Decimal" /> 値が格納されていません。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.DateTimeOffset}">
+      <summary>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の値を <see cref="T:System.DateTimeOffset" /> の <see cref="T:System.Nullable`1" /> にキャストします。</summary>
+      <returns>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の内容を格納している <see cref="T:System.DateTimeOffset" /> の <see cref="T:System.Nullable`1" />。</returns>
+      <param name="attribute">
+        <see cref="T:System.DateTimeOffset" /> の <see cref="T:System.Nullable`1" /> にキャストする <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性に有効な <see cref="T:System.DateTimeOffset" /> 値が格納されていません。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Guid}">
+      <summary>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の値を <see cref="T:System.Guid" /> の <see cref="T:System.Nullable`1" /> にキャストします。</summary>
+      <returns>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の内容を格納している <see cref="T:System.Guid" /> の <see cref="T:System.Nullable`1" />。</returns>
+      <param name="attribute">
+        <see cref="T:System.Guid" /> の <see cref="T:System.Nullable`1" /> にキャストする <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性に有効な <see cref="T:System.Guid" /> 値が格納されていません。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Double}">
+      <summary>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の値を <see cref="T:System.Double" /> の <see cref="T:System.Nullable`1" /> にキャストします。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XAttribute" /> の内容を格納している <see cref="T:System.Double" /> の <see cref="T:System.Nullable`1" />。</returns>
+      <param name="attribute">
+        <see cref="T:System.Double" /> の <see cref="T:System.Nullable`1" /> にキャストする <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性に有効な <see cref="T:System.Double" /> 値が格納されていません。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Int64">
+      <summary>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の値を <see cref="T:System.Int64" /> にキャストします。</summary>
+      <returns>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の内容を格納している <see cref="T:System.Int64" />。</returns>
+      <param name="attribute">
+        <see cref="T:System.Int64" /> にキャストする <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性に有効な <see cref="T:System.Int64" /> 値が格納されていません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="attribute" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.DateTime}">
+      <summary>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の値を <see cref="T:System.DateTime" /> の <see cref="T:System.Nullable`1" /> にキャストします。</summary>
+      <returns>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の内容を格納している <see cref="T:System.DateTime" /> の <see cref="T:System.Nullable`1" />。</returns>
+      <param name="attribute">
+        <see cref="T:System.DateTime" /> の <see cref="T:System.Nullable`1" /> にキャストする <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性に有効な <see cref="T:System.DateTime" /> 値が格納されていません。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.op_Explicit(System.Xml.Linq.XAttribute)~System.Nullable{System.Boolean}">
+      <summary>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の値を <see cref="T:System.Boolean" /> の <see cref="T:System.Nullable`1" /> にキャストします。</summary>
+      <returns>現在の <see cref="T:System.Xml.Linq.XAttribute" /> の内容を格納している <see cref="T:System.Boolean" /> の <see cref="T:System.Nullable`1" />。</returns>
+      <param name="attribute">
+        <see cref="T:System.Boolean" /> の <see cref="T:System.Nullable`1" /> にキャストする <see cref="T:System.Xml.Linq.XAttribute" />。</param>
+      <exception cref="T:System.FormatException">属性に有効な <see cref="T:System.Boolean" /> 値が格納されていません。</exception>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.PreviousAttribute">
+      <summary>親要素の前の属性を取得します。</summary>
+      <returns>親要素の前の属性を格納している <see cref="T:System.Xml.Linq.XAttribute" />。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.Remove">
+      <summary>現在の属性を親要素から削除します。</summary>
+      <exception cref="T:System.InvalidOperationException">親要素が null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.SetValue(System.Object)">
+      <summary>現在の属性の値を設定します。</summary>
+      <param name="value">現在の属性に代入する値。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> パラメーターが null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="value" /> が <see cref="T:System.Xml.Linq.XObject" /> です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XAttribute.ToString">
+      <summary>現在の <see cref="T:System.Xml.Linq.XAttribute" /> オブジェクトを文字列形式に変換します。</summary>
+      <returns>XML 文字列形式の属性とその値を格納している <see cref="T:System.String" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XAttribute.Value">
+      <summary>現在の属性の値を取得または設定します。</summary>
+      <returns>現在の属性の値を格納している <see cref="T:System.String" />。</returns>
+      <exception cref="T:System.ArgumentNullException">設定時に、<paramref name="value" /> が null です。</exception>
+    </member>
+    <member name="T:System.Xml.Linq.XCData">
+      <summary>CDATA が格納されているテキスト ノードを表します。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XCData.#ctor(System.String)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XCData" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="value">
+        <see cref="T:System.Xml.Linq.XCData" /> ノードの値を格納する文字列。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XCData.#ctor(System.Xml.Linq.XCData)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XCData" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="other">コピー元の <see cref="T:System.Xml.Linq.XCData" /> ノード。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XCData.NodeType">
+      <summary>このノードのノード型を取得します。</summary>
+      <returns>ノード型。<see cref="T:System.Xml.Linq.XCData" /> オブジェクトでは、この値は <see cref="F:System.Xml.XmlNodeType.CDATA" /> です。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XCData.WriteTo(System.Xml.XmlWriter)">
+      <summary>この CDATA オブジェクトを <see cref="T:System.Xml.XmlWriter" /> に書き込みます。</summary>
+      <param name="writer">このメソッドの書き込み対象の <see cref="T:System.Xml.XmlWriter" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XComment">
+      <summary>XML コメントを表します。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XComment.#ctor(System.String)">
+      <summary>文字列コンテンツを指定して、<see cref="T:System.Xml.Linq.XComment" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="value">新しい <see cref="T:System.Xml.Linq.XComment" /> オブジェクトの内容を格納する文字列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XComment.#ctor(System.Xml.Linq.XComment)">
+      <summary>既存のコメント ノードを使用して、<see cref="T:System.Xml.Linq.XComment" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="other">コピー元の <see cref="T:System.Xml.Linq.XComment" /> ノード。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="other" /> パラメーターが null です。</exception>
+    </member>
+    <member name="P:System.Xml.Linq.XComment.NodeType">
+      <summary>このノードのノード型を取得します。</summary>
+      <returns>ノード型。<see cref="T:System.Xml.Linq.XComment" /> オブジェクトでは、この値は <see cref="F:System.Xml.XmlNodeType.Comment" /> です。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XComment.Value">
+      <summary>このコメントの文字列値を取得または設定します。</summary>
+      <returns>このコメントの文字列値を格納している <see cref="T:System.String" />。</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> は null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XComment.WriteTo(System.Xml.XmlWriter)">
+      <summary>このコメントを <see cref="T:System.Xml.XmlWriter" /> に書き込みます。</summary>
+      <param name="writer">このメソッドの書き込み対象の <see cref="T:System.Xml.XmlWriter" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XContainer">
+      <summary>他のノードを含めることができるノードを表します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Add(System.Object)">
+      <summary>指定した内容をこの <see cref="T:System.Xml.Linq.XContainer" /> の子として追加します。</summary>
+      <param name="content">追加する単純な内容またはコンテンツ オブジェクトのコレクションを格納しているコンテンツ オブジェクト。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Add(System.Object[])">
+      <summary>指定した内容をこの <see cref="T:System.Xml.Linq.XContainer" /> の子として追加します。</summary>
+      <param name="content">コンテンツ オブジェクトのパラメーター リスト。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.AddFirst(System.Object)">
+      <summary>指定した内容をこのドキュメントまたは要素の最初の子として追加します。</summary>
+      <param name="content">追加する単純な内容またはコンテンツ オブジェクトのコレクションを格納しているコンテンツ オブジェクト。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.AddFirst(System.Object[])">
+      <summary>指定した内容をこのドキュメントまたは要素の最初の子として追加します。</summary>
+      <param name="content">コンテンツ オブジェクトのパラメーター リスト。</param>
+      <exception cref="T:System.InvalidOperationException">親は null になります。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.CreateWriter">
+      <summary>
+        <see cref="T:System.Xml.Linq.XContainer" /> にノードを追加するために使用できる <see cref="T:System.Xml.XmlWriter" /> を作成します。</summary>
+      <returns>それに内容を書き込む準備ができている <see cref="T:System.Xml.XmlWriter" />。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.DescendantNodes">
+      <summary>このドキュメントまたは要素の子孫ノードのコレクションをドキュメント順に返します。</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XContainer" /> の子孫ノードをドキュメント順に格納している <see cref="T:System.Xml.Linq.XNode" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Descendants">
+      <summary>このドキュメントまたは要素の子孫要素のコレクションをドキュメント順に返します。</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XContainer" /> の子孫要素を格納している <see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Descendants(System.Xml.Linq.XName)">
+      <summary>このドキュメントまたは要素の子孫要素のフィルター処理されたコレクションをドキュメント順に返します。一致する <see cref="T:System.Xml.Linq.XName" /> を持つ要素のみがコレクションに含められます。</summary>
+      <returns>指定した <see cref="T:System.Xml.Linq.XName" /> に一致する <see cref="T:System.Xml.Linq.XContainer" /> の子孫要素を格納している <see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="name">照合する対象の <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Element(System.Xml.Linq.XName)">
+      <summary>指定した <see cref="T:System.Xml.Linq.XName" /> の最初の子要素を (ドキュメント順に) 取得します。</summary>
+      <returns>指定した <see cref="T:System.Xml.Linq.XName" /> に一致するか、null の <see cref="T:System.Xml.Linq.XElement" />。</returns>
+      <param name="name">照合する対象の <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Elements">
+      <summary>この要素またはドキュメントの子要素のコレクションをドキュメント順に返します。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XContainer" /> の子要素をドキュメント順に格納している <see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Elements(System.Xml.Linq.XName)">
+      <summary>この要素またはドキュメントの子要素のフィルター処理されたコレクションをドキュメント順に返します。一致する <see cref="T:System.Xml.Linq.XName" /> を持つ要素のみがコレクションに含められます。</summary>
+      <returns>一致する <see cref="T:System.Xml.Linq.XName" /> がある <see cref="T:System.Xml.Linq.XContainer" /> の子をドキュメント順に格納している <see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="name">照合する対象の <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XContainer.FirstNode">
+      <summary>このノードの最初の子ノードを取得します。</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XContainer" /> の最初の子ノードを格納している <see cref="T:System.Xml.Linq.XNode" />。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Xml.Linq.XContainer.LastNode">
+      <summary>このノードの最後の子ノードを取得します。</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XContainer" /> の最後の子ノードを格納している <see cref="T:System.Xml.Linq.XNode" />。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.Nodes">
+      <summary>この要素またはドキュメントの子ノードのコレクションをドキュメント順に返します。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XContainer" /> の内容をドキュメント順に格納している <see cref="T:System.Xml.Linq.XNode" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.RemoveNodes">
+      <summary>このドキュメントまたは要素から子ノードを削除します。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.ReplaceNodes(System.Object)">
+      <summary>このドキュメントまたは要素の子ノードを指定された内容で置き換えます。</summary>
+      <param name="content">子ノードを置き換える単純な内容またはコンテンツ オブジェクトのコレクションを格納しているコンテンツ オブジェクト。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XContainer.ReplaceNodes(System.Object[])">
+      <summary>このドキュメントまたは要素の子ノードを指定された内容で置き換えます。</summary>
+      <param name="content">コンテンツ オブジェクトのパラメーター リスト。</param>
+    </member>
+    <member name="T:System.Xml.Linq.XDeclaration">
+      <summary>XML 宣言を表します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XDeclaration.#ctor(System.String,System.String,System.String)">
+      <summary>バージョン、エンコーディング、およびスタンドアロン ステータスを指定して、<see cref="T:System.Xml.Linq.XDeclaration" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="version">XML のバージョン (通常は "1.0")。</param>
+      <param name="encoding">XML ドキュメントのエンコーディング。</param>
+      <param name="standalone">XML がスタンドアロンか、または外部エンティティの解決が必要かを指定する、"yes" または "no" が含まれた文字列。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDeclaration.#ctor(System.Xml.Linq.XDeclaration)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XDeclaration" /> クラスの新しいインスタンスを、別の <see cref="T:System.Xml.Linq.XDeclaration" /> オブジェクトから初期化します。</summary>
+      <param name="other">この <see cref="T:System.Xml.Linq.XDeclaration" /> オブジェクトを初期化するために使用する <see cref="T:System.Xml.Linq.XDeclaration" />。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XDeclaration.Encoding">
+      <summary>このドキュメントのエンコーディングを取得または設定します。</summary>
+      <returns>このドキュメントのコード ページ名が格納された <see cref="T:System.String" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDeclaration.Standalone">
+      <summary>このドキュメントのスタンドアロン プロパティを取得または設定します。</summary>
+      <returns>このドキュメントのスタンドアロン プロパティが格納された <see cref="T:System.String" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XDeclaration.ToString">
+      <summary>宣言を書式設定された文字列として提供します。</summary>
+      <returns>書式設定された XML 文字列が格納された <see cref="T:System.String" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDeclaration.Version">
+      <summary>このドキュメントのバージョン プロパティを取得または設定します。</summary>
+      <returns>このドキュメントのバージョン プロパティが格納された <see cref="T:System.String" />。</returns>
+    </member>
+    <member name="T:System.Xml.Linq.XDocument">
+      <summary>XML ドキュメントを表します。<see cref="T:System.Xml.Linq.XDocument" />オブジェクトのコンポーネントと使用方法については、「XDocument クラスの概要」を参照してください。この型に対応する .NET Framework のソース コードを参照するには、「Reference Source (ソースの参照) 」を参照してください。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.#ctor">
+      <summary>
+        <see cref="T:System.Xml.Linq.XDocument" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.#ctor(System.Object[])">
+      <summary>指定した内容で、<see cref="T:System.Xml.Linq.XDocument" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="content">このドキュメントに追加するコンテンツ オブジェクトのパラメーター リスト。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.#ctor(System.Xml.Linq.XDeclaration,System.Object[])">
+      <summary>指定した <see cref="T:System.Xml.Linq.XDeclaration" /> および内容を使用して、<see cref="T:System.Xml.Linq.XDocument" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="declaration">ドキュメントの <see cref="T:System.Xml.Linq.XDeclaration" />。</param>
+      <param name="content">ドキュメントの内容。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.#ctor(System.Xml.Linq.XDocument)">
+      <summary>既存の <see cref="T:System.Xml.Linq.XDocument" /> オブジェクトから <see cref="T:System.Xml.Linq.XDocument" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="other">コピーされる <see cref="T:System.Xml.Linq.XDocument" /> オブジェクト。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XDocument.Declaration">
+      <summary>このドキュメントの XML 宣言を取得または設定します。</summary>
+      <returns>このドキュメントの XML 宣言を格納する <see cref="T:System.Xml.Linq.XDeclaration" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDocument.DocumentType">
+      <summary>このドキュメントのドキュメント型定義 (DTD: Document Type Definition) の名前を取得します。</summary>
+      <returns>このドキュメントの DTD を格納する <see cref="T:System.Xml.Linq.XDocumentType" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.IO.Stream)">
+      <summary>指定されたストリームを使用して新しい <see cref="T:System.Xml.Linq.XDocument" /> インスタンスを作成します。</summary>
+      <returns>ストリームに格納されているデータを読み取る <see cref="T:System.Xml.Linq.XDocument" /> オブジェクト。</returns>
+      <param name="stream">XML データを格納しているストリーム。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.IO.Stream,System.Xml.Linq.LoadOptions)">
+      <summary>指定されたストリームを使用して新しい <see cref="T:System.Xml.Linq.XDocument" /> インスタンスを作成し、必要に応じて、空白の維持、ベース URI の設定、および行情報の保持を行います。</summary>
+      <returns>ストリームに格納されているデータを読み取る <see cref="T:System.Xml.Linq.XDocument" /> オブジェクト。</returns>
+      <param name="stream">XML データが含まれるストリーム。</param>
+      <param name="options">ベース URI と行情報を読み込むかどうかを指定する <see cref="T:System.Xml.Linq.LoadOptions" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.IO.TextReader)">
+      <summary>
+        <see cref="T:System.IO.TextReader" /> から新しい <see cref="T:System.Xml.Linq.XDocument" /> を作成します。</summary>
+      <returns>指定した <see cref="T:System.IO.TextReader" /> の内容を格納している <see cref="T:System.Xml.Linq.XDocument" />。</returns>
+      <param name="textReader">
+        <see cref="T:System.Xml.Linq.XDocument" /> の内容を格納している <see cref="T:System.IO.TextReader" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.IO.TextReader,System.Xml.Linq.LoadOptions)">
+      <summary>
+        <see cref="T:System.IO.TextReader" /> から新しい <see cref="T:System.Xml.Linq.XDocument" /> を作成し、必要に応じて、空白の維持、ベース URI の設定、および行情報の保持を行います。</summary>
+      <returns>指定した <see cref="T:System.IO.TextReader" /> から読み込まれた XML を格納している <see cref="T:System.Xml.Linq.XDocument" />。</returns>
+      <param name="textReader">
+        <see cref="T:System.Xml.Linq.XDocument" /> の内容を格納している <see cref="T:System.IO.TextReader" />。</param>
+      <param name="options">空白に対する動作、およびベース URI と行情報を読み込むかどうかを指定する <see cref="T:System.Xml.Linq.LoadOptions" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.String)">
+      <summary>ファイルから新しい <see cref="T:System.Xml.Linq.XDocument" /> を作成します。</summary>
+      <returns>指定したファイルの内容を格納している <see cref="T:System.Xml.Linq.XDocument" />。</returns>
+      <param name="uri">新しい <see cref="T:System.Xml.Linq.XDocument" /> に読み込むファイルを参照している URI 文字列。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.String,System.Xml.Linq.LoadOptions)">
+      <summary>ファイルから新しい <see cref="T:System.Xml.Linq.XDocument" /> を作成し、必要に応じて、空白の維持、ベース URI の設定、および行情報の保持を行います。</summary>
+      <returns>指定したファイルの内容を格納している <see cref="T:System.Xml.Linq.XDocument" />。</returns>
+      <param name="uri">新しい <see cref="T:System.Xml.Linq.XDocument" /> に読み込むファイルを参照している URI 文字列。</param>
+      <param name="options">空白に対する動作、およびベース URI と行情報を読み込むかどうかを指定する <see cref="T:System.Xml.Linq.LoadOptions" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.Xml.XmlReader)">
+      <summary>
+        <see cref="T:System.Xml.XmlReader" /> から新しい<see cref="T:System.Xml.Linq.XDocument" /> を作成します。</summary>
+      <returns>指定した <see cref="T:System.Xml.XmlReader" /> の内容を格納している <see cref="T:System.Xml.Linq.XDocument" />。</returns>
+      <param name="reader">
+        <see cref="T:System.Xml.Linq.XDocument" /> の内容を格納している <see cref="T:System.Xml.XmlReader" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Load(System.Xml.XmlReader,System.Xml.Linq.LoadOptions)">
+      <summary>
+        <see cref="T:System.Xml.XmlReader" /> から <see cref="T:System.Xml.Linq.XDocument" /> を読み込み、必要に応じて、ベース URI の設定および行情報の保持を行います。</summary>
+      <returns>指定した <see cref="T:System.Xml.XmlReader" /> から読み込まれた XML を格納している <see cref="T:System.Xml.Linq.XDocument" />。</returns>
+      <param name="reader">
+        <see cref="T:System.Xml.Linq.XDocument" /> の内容として読み込む <see cref="T:System.Xml.XmlReader" />。</param>
+      <param name="options">ベース URI と行情報を読み込むかどうかを指定する <see cref="T:System.Xml.Linq.LoadOptions" />。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XDocument.NodeType">
+      <summary>このノードのノード型を取得します。</summary>
+      <returns>ノード型。<see cref="T:System.Xml.Linq.XDocument" /> オブジェクトでは、この値は <see cref="F:System.Xml.XmlNodeType.Document" /> です。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Parse(System.String)">
+      <summary>文字列から新しい <see cref="T:System.Xml.Linq.XDocument" /> を作成します。</summary>
+      <returns>XML を格納した文字列から設定された <see cref="T:System.Xml.Linq.XDocument" />。</returns>
+      <param name="text">XML を格納している文字列。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Parse(System.String,System.Xml.Linq.LoadOptions)">
+      <summary>文字列から新しい <see cref="T:System.Xml.Linq.XDocument" /> を作成し、必要に応じて、空白の維持、ベース URI の設定、および行情報の保持を行います。</summary>
+      <returns>XML を格納した文字列から設定された <see cref="T:System.Xml.Linq.XDocument" />。</returns>
+      <param name="text">XML を格納している文字列。</param>
+      <param name="options">空白に対する動作、およびベース URI と行情報を読み込むかどうかを指定する <see cref="T:System.Xml.Linq.LoadOptions" />。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XDocument.Root">
+      <summary>このドキュメントの XML ツリーのルート要素を取得します。</summary>
+      <returns>XML ツリーのルート <see cref="T:System.Xml.Linq.XElement" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Save(System.IO.Stream)">
+      <summary>この <see cref="T:System.Xml.Linq.XDocument" /> を指定した <see cref="T:System.IO.Stream" /> に出力します。</summary>
+      <param name="stream">この <see cref="T:System.Xml.Linq.XDocument" /> の出力先のストリーム。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Save(System.IO.Stream,System.Xml.Linq.SaveOptions)">
+      <summary>オプションで書式設定動作を指定して、この <see cref="T:System.Xml.Linq.XDocument" /> を指定した <see cref="T:System.IO.Stream" /> に出力します。</summary>
+      <param name="stream">この <see cref="T:System.Xml.Linq.XDocument" /> の出力先のストリーム。</param>
+      <param name="options">書式設定の動作を指定する <see cref="T:System.Xml.Linq.SaveOptions" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Save(System.IO.TextWriter)">
+      <summary>この <see cref="T:System.Xml.Linq.XDocument" /> をシリアル化して <see cref="T:System.IO.TextWriter" /> に書き込みます。</summary>
+      <param name="textWriter">
+        <see cref="T:System.Xml.Linq.XElement" /> の書き込み先の <see cref="T:System.IO.TextWriter" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Save(System.IO.TextWriter,System.Xml.Linq.SaveOptions)">
+      <summary>この <see cref="T:System.Xml.Linq.XDocument" /> をシリアル化して <see cref="T:System.IO.TextWriter" /> に書き込み、必要に応じて、書式設定を無効にします。</summary>
+      <param name="textWriter">XML を出力する <see cref="T:System.IO.TextWriter" />。</param>
+      <param name="options">書式設定の動作を指定する <see cref="T:System.Xml.Linq.SaveOptions" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.Save(System.Xml.XmlWriter)">
+      <summary>この <see cref="T:System.Xml.Linq.XDocument" /> をシリアル化して <see cref="T:System.Xml.XmlWriter" /> に書き込みます。</summary>
+      <param name="writer">
+        <see cref="T:System.Xml.Linq.XDocument" /> の書き込み先の <see cref="T:System.Xml.XmlWriter" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocument.WriteTo(System.Xml.XmlWriter)">
+      <summary>このドキュメントを <see cref="T:System.Xml.XmlWriter" /> に書き込みます。</summary>
+      <param name="writer">このメソッドの書き込み対象の <see cref="T:System.Xml.XmlWriter" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XDocumentType">
+      <summary>XML ドキュメント型定義 (DTD: Document Type Definition) を表します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XDocumentType.#ctor(System.String,System.String,System.String,System.String)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XDocumentType" /> クラスのインスタンスを初期化します。</summary>
+      <param name="name">DTD の修飾名が格納されている <see cref="T:System.String" />。XML ドキュメントのルート要素の修飾名と同じです。</param>
+      <param name="publicId">外部パブリック DTD のパブリック ID が格納されている <see cref="T:System.String" />。</param>
+      <param name="systemId">外部プライベート DTD のシステム ID が格納されている <see cref="T:System.String" />。</param>
+      <param name="internalSubset">内部 DTD の内部サブセットが格納されている <see cref="T:System.String" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XDocumentType.#ctor(System.Xml.Linq.XDocumentType)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XDocumentType" /> クラスのインスタンスを、別の <see cref="T:System.Xml.Linq.XDocumentType" /> オブジェクトから初期化します。</summary>
+      <param name="other">コピー元の <see cref="T:System.Xml.Linq.XDocumentType" /> オブジェクト。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XDocumentType.InternalSubset">
+      <summary>このドキュメント型定義 (DTD) の内部サブセットを取得または設定します。</summary>
+      <returns>このドキュメント型定義 (DTD) の内部サブセットが格納されている <see cref="T:System.String" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDocumentType.Name">
+      <summary>このドキュメント型定義 (DTD) の名前を取得または設定します。</summary>
+      <returns>このドキュメント型定義 (DTD) の名前が格納されている <see cref="T:System.String" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDocumentType.NodeType">
+      <summary>このノードのノード型を取得します。</summary>
+      <returns>ノード型。<see cref="T:System.Xml.Linq.XDocumentType" /> オブジェクトでは、この値は <see cref="F:System.Xml.XmlNodeType.DocumentType" /> です。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDocumentType.PublicId">
+      <summary>このドキュメント型定義 (DTD) のパブリック ID を取得または設定します。</summary>
+      <returns>このドキュメント型定義 (DTD) のパブリック ID が格納されている <see cref="T:System.String" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XDocumentType.SystemId">
+      <summary>このドキュメント型定義 (DTD) のシステム ID を取得または設定します。</summary>
+      <returns>このドキュメント型定義 (DTD) のシステム ID が格納されている <see cref="T:System.String" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XDocumentType.WriteTo(System.Xml.XmlWriter)">
+      <summary>この <see cref="T:System.Xml.Linq.XDocumentType" /> を <see cref="T:System.Xml.XmlWriter" /> に書き込みます。</summary>
+      <param name="writer">このメソッドの書き込み対象の <see cref="T:System.Xml.XmlWriter" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XElement">
+      <summary>XML 要素を表します。参照してくださいXElement クラスの概要と使用状況情報と例については、このページでは、「解説」。この種類の .NET Framework ソース コードを参照して、次を参照してください。、参照ソースです。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.#ctor(System.Xml.Linq.XElement)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XElement" /> クラスの新しいインスタンスを、別の <see cref="T:System.Xml.Linq.XElement" /> オブジェクトから初期化します。</summary>
+      <param name="other">コピー元の <see cref="T:System.Xml.Linq.XElement" /> オブジェクト。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.#ctor(System.Xml.Linq.XName)">
+      <summary>指定した名前を使用して、<see cref="T:System.Xml.Linq.XElement" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="name">要素の名前を格納する <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.#ctor(System.Xml.Linq.XName,System.Object)">
+      <summary>指定した名前と内容を持つ <see cref="T:System.Xml.Linq.XElement" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="name">要素名を格納する <see cref="T:System.Xml.Linq.XName" />。</param>
+      <param name="content">要素の内容。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.#ctor(System.Xml.Linq.XName,System.Object[])">
+      <summary>指定した名前と内容を持つ <see cref="T:System.Xml.Linq.XElement" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="name">要素名を格納する <see cref="T:System.Xml.Linq.XName" />。</param>
+      <param name="content">要素の初期コンテンツ。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.#ctor(System.Xml.Linq.XStreamingElement)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XStreamingElement" /> オブジェクトから <see cref="T:System.Xml.Linq.XElement" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="other">この <see cref="T:System.Xml.Linq.XElement" /> の内容に対して反復処理される、評価されていないクエリを格納する <see cref="T:System.Xml.Linq.XStreamingElement" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.AncestorsAndSelf">
+      <summary>この要素およびこの要素の先祖を格納している、要素のコレクションを返します。</summary>
+      <returns>この要素およびこの要素の先祖を格納している、要素の <see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.AncestorsAndSelf(System.Xml.Linq.XName)">
+      <summary>この要素およびこの要素の先祖を格納している、フィルター処理された要素のコレクションを返します。一致する <see cref="T:System.Xml.Linq.XName" /> を持つ要素のみがコレクションに含められます。</summary>
+      <returns>この要素およびこの要素の先祖を格納している、<see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。一致する <see cref="T:System.Xml.Linq.XName" /> を持つ要素のみがコレクションに含められます。</returns>
+      <param name="name">照合する対象の <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Attribute(System.Xml.Linq.XName)">
+      <summary>指定した <see cref="T:System.Xml.Linq.XName" /> を持つ、この <see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Xml.Linq.XAttribute" /> を返します。</summary>
+      <returns>指定した名前 <see cref="T:System.Xml.Linq.XName" /> を持つ <see cref="T:System.Xml.Linq.XAttribute" />。指定した名前を持つ属性がない場合は null。</returns>
+      <param name="name">取得する <see cref="T:System.Xml.Linq.XAttribute" /> の <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Attributes">
+      <summary>この要素の属性のコレクションを返します。</summary>
+      <returns>この要素の <see cref="T:System.Xml.Linq.XAttribute" /> 属性の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Attributes(System.Xml.Linq.XName)">
+      <summary>この要素の属性のフィルター処理されたコレクションを返します。一致する <see cref="T:System.Xml.Linq.XName" /> を持つ要素のみがコレクションに含められます。</summary>
+      <returns>この要素の属性を格納している <see cref="T:System.Xml.Linq.XAttribute" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。一致する <see cref="T:System.Xml.Linq.XName" /> を持つ要素のみがコレクションに含められます。</returns>
+      <param name="name">照合する対象の <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.DescendantNodesAndSelf">
+      <summary>この要素およびこの要素のすべての子孫ノードをドキュメント順で格納している、ノードのコレクションを返します。</summary>
+      <returns>この要素およびこの要素のすべての子孫ノードを格納している、ドキュメント順の <see cref="T:System.Xml.Linq.XNode" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.DescendantsAndSelf">
+      <summary>この要素およびこの要素のすべての子孫要素をドキュメント順で格納している、要素のコレクションを返します。</summary>
+      <returns>この要素およびこの要素のすべての子孫要素をドキュメント順で格納している、要素の <see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.DescendantsAndSelf(System.Xml.Linq.XName)">
+      <summary>この要素およびこの要素のすべての子孫要素をドキュメント順で格納している、フィルター処理された要素のコレクションを返します。一致する <see cref="T:System.Xml.Linq.XName" /> を持つ要素のみがコレクションに含められます。</summary>
+      <returns>この要素およびこの要素のすべての子孫要素をドキュメント順で格納している <see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。一致する <see cref="T:System.Xml.Linq.XName" /> を持つ要素のみがコレクションに含められます。</returns>
+      <param name="name">照合する対象の <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.EmptySequence">
+      <summary>要素の空のコレクションを取得します。</summary>
+      <returns>空のコレクションを格納している <see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.FirstAttribute">
+      <summary>この要素の最初の属性を取得します。</summary>
+      <returns>この要素の最初の属性を格納している <see cref="T:System.Xml.Linq.XAttribute" />。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.GetDefaultNamespace">
+      <summary>この <see cref="T:System.Xml.Linq.XElement" /> の既定の <see cref="T:System.Xml.Linq.XNamespace" /> を取得します。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XElement" /> の既定の名前空間を格納している <see cref="T:System.Xml.Linq.XNamespace" />。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.GetNamespaceOfPrefix(System.String)">
+      <summary>この <see cref="T:System.Xml.Linq.XElement" /> のプレフィックスに関連付けられた名前空間を取得します。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XElement" /> のプレフィックスに関連付けられた名前空間の <see cref="T:System.Xml.Linq.XNamespace" />。</returns>
+      <param name="prefix">検索対象の名前空間プレフィックスを格納している文字列。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.GetPrefixOfNamespace(System.Xml.Linq.XNamespace)">
+      <summary>この <see cref="T:System.Xml.Linq.XElement" /> の名前空間に関連付けられているプレフィックスを取得します。</summary>
+      <returns>名前空間プレフィックスを格納している <see cref="T:System.String" />。</returns>
+      <param name="ns">検索対象の <see cref="T:System.Xml.Linq.XNamespace" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.HasAttributes">
+      <summary>この要素が 1 つ以上の属性を持っているかどうかを示す値を取得します。</summary>
+      <returns>この要素が 1 つ以上の属性を持っている場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.HasElements">
+      <summary>この要素が 1 つ以上の子要素を持っているかどうかを示す値を取得します。</summary>
+      <returns>この要素が 1 つ以上の子要素を持っている場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.IsEmpty">
+      <summary>この要素に内容が格納されていないかどうかを示す値を取得します。</summary>
+      <returns>この要素に内容が格納されていない場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.LastAttribute">
+      <summary>この要素の最後の属性を取得します。</summary>
+      <returns>この要素の最後の属性を格納している <see cref="T:System.Xml.Linq.XAttribute" />。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.IO.Stream)">
+      <summary>指定されたストリームを使用して新しい <see cref="T:System.Xml.Linq.XElement" /> インスタンスを作成します。</summary>
+      <returns>ストリームに格納されているデータを読み取るために使用する <see cref="T:System.Xml.Linq.XElement" /> オブジェクト。</returns>
+      <param name="stream">XML データを格納しているストリーム。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.IO.Stream,System.Xml.Linq.LoadOptions)">
+      <summary>指定されたストリームを使用して新しい <see cref="T:System.Xml.Linq.XElement" /> インスタンスを作成し、必要に応じて、空白の維持、ベース URI の設定、および行情報の保持を行います。</summary>
+      <returns>ストリームに格納されたデータを読み取るために使用する <see cref="T:System.Xml.Linq.XElement" /> オブジェクト。</returns>
+      <param name="stream">XML データが含まれるストリーム。</param>
+      <param name="options">ベース URI と行情報を読み込むかどうかを指定する <see cref="T:System.Xml.Linq.LoadOptions" /> オブジェクト。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.IO.TextReader)">
+      <summary>
+        <see cref="T:System.IO.TextReader" /> から <see cref="T:System.Xml.Linq.XElement" /> を読み込みます。</summary>
+      <returns>指定した <see cref="T:System.IO.TextReader" /> から読み込まれた XML を格納している <see cref="T:System.Xml.Linq.XElement" />。</returns>
+      <param name="textReader">
+        <see cref="T:System.Xml.Linq.XElement" /> の内容として読み込む <see cref="T:System.IO.TextReader" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.IO.TextReader,System.Xml.Linq.LoadOptions)">
+      <summary>
+        <see cref="T:System.IO.TextReader" /> から <see cref="T:System.Xml.Linq.XElement" /> を読み込み、オプションで、空白の維持および行情報の保持を行います。</summary>
+      <returns>指定した <see cref="T:System.IO.TextReader" /> から読み込まれた XML を格納している <see cref="T:System.Xml.Linq.XElement" />。</returns>
+      <param name="textReader">
+        <see cref="T:System.Xml.Linq.XElement" /> の内容として読み込む <see cref="T:System.IO.TextReader" />。</param>
+      <param name="options">空白に対する動作、およびベース URI と行情報を読み込むかどうかを指定する <see cref="T:System.Xml.Linq.LoadOptions" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.String)">
+      <summary>ファイルから <see cref="T:System.Xml.Linq.XElement" /> を読み込みます。</summary>
+      <returns>指定したファイルの内容を格納している <see cref="T:System.Xml.Linq.XElement" />。</returns>
+      <param name="uri">新しい <see cref="T:System.Xml.Linq.XElement" /> に読み込むファイルを参照している URI 文字列。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.String,System.Xml.Linq.LoadOptions)">
+      <summary>ファイルから <see cref="T:System.Xml.Linq.XElement" /> を読み込み、必要に応じて、空白の維持、ベース URI の設定、および行情報の保持を行います。</summary>
+      <returns>指定したファイルの内容を格納している <see cref="T:System.Xml.Linq.XElement" />。</returns>
+      <param name="uri">
+        <see cref="T:System.Xml.Linq.XElement" /> に読み込むファイルを参照している URI 文字列。</param>
+      <param name="options">空白に対する動作、およびベース URI と行情報を読み込むかどうかを指定する <see cref="T:System.Xml.Linq.LoadOptions" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.Xml.XmlReader)">
+      <summary>
+        <see cref="T:System.Xml.XmlReader" /> から <see cref="T:System.Xml.Linq.XElement" /> を読み込みます。</summary>
+      <returns>An <see cref="T:System.Xml.Linq.XElement" /> that contains the XML that was read from the specified <see cref="T:System.Xml.XmlReader" />.</returns>
+      <param name="reader">
+        <see cref="T:System.Xml.Linq.XElement" /> の内容として読み込む <see cref="T:System.Xml.XmlReader" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Load(System.Xml.XmlReader,System.Xml.Linq.LoadOptions)">
+      <summary>
+        <see cref="T:System.Xml.XmlReader" /> から <see cref="T:System.Xml.Linq.XElement" /> を読み込み、必要に応じて、空白の維持、ベース URI の設定、および行情報の保持を行います。</summary>
+      <returns>An <see cref="T:System.Xml.Linq.XElement" /> that contains the XML that was read from the specified <see cref="T:System.Xml.XmlReader" />.</returns>
+      <param name="reader">
+        <see cref="T:System.Xml.Linq.XElement" /> の内容として読み込む <see cref="T:System.Xml.XmlReader" />。</param>
+      <param name="options">空白に対する動作、およびベース URI と行情報を読み込むかどうかを指定する <see cref="T:System.Xml.Linq.LoadOptions" />。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.Name">
+      <summary>この要素の名前を取得または設定します。</summary>
+      <returns>この要素の名前を格納している <see cref="T:System.Xml.Linq.XName" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.NodeType">
+      <summary>このノードのノード型を取得します。</summary>
+      <returns>ノード型。<see cref="T:System.Xml.Linq.XElement" /> オブジェクトでは、この値は <see cref="F:System.Xml.XmlNodeType.Element" /> です。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.UInt32}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.UInt32" />.</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XElement" /> の内容を格納している <see cref="T:System.UInt32" /> の <see cref="T:System.Nullable`1" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.UInt32" />.</param>
+      <exception cref="T:System.FormatException">要素が、有効な <see cref="T:System.UInt32" /> 値を格納していません。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.UInt64}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.UInt64" />.</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XElement" /> の内容を格納している <see cref="T:System.UInt64" /> の <see cref="T:System.Nullable`1" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.UInt64" />.</param>
+      <exception cref="T:System.FormatException">要素が、有効な <see cref="T:System.UInt64" /> 値を格納していません。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Single}">
+      <summary>この <see cref="T:System.Xml.Linq.XElement" /> の値を <see cref="T:System.Single" /> の <see cref="T:System.Nullable`1" /> にキャストします。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XElement" /> の内容を格納している <see cref="T:System.Single" /> の <see cref="T:System.Nullable`1" />。</returns>
+      <param name="element">
+        <see cref="T:System.Single" /> の <see cref="T:System.Nullable`1" /> にキャストする <see cref="T:System.Xml.Linq.XElement" />。</param>
+      <exception cref="T:System.FormatException">要素が、有効な <see cref="T:System.Single" /> 値を格納していません。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.TimeSpan}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.TimeSpan" />.</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XElement" /> の内容を格納している <see cref="T:System.TimeSpan" /> の <see cref="T:System.Nullable`1" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.TimeSpan" />.</param>
+      <exception cref="T:System.FormatException">要素が、有効な <see cref="T:System.TimeSpan" /> 値を格納していません。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Single">
+      <summary>この <see cref="T:System.Xml.Linq.XElement" /> の値を <see cref="T:System.Single" /> にキャストします。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XElement" /> の内容を格納している <see cref="T:System.Single" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Single" />.</param>
+      <exception cref="T:System.FormatException">要素が、有効な <see cref="T:System.Single" /> 値を格納していません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.UInt32">
+      <summary>この <see cref="T:System.Xml.Linq.XElement" /> の値を <see cref="T:System.UInt32" /> にキャストします。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XElement" /> の内容を格納している <see cref="T:System.UInt32" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.UInt32" />.</param>
+      <exception cref="T:System.FormatException">要素が、有効な <see cref="T:System.UInt32" /> 値を格納していません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.UInt64">
+      <summary>この <see cref="T:System.Xml.Linq.XElement" /> の値を <see cref="T:System.UInt64" /> にキャストします。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XElement" /> の内容を格納している <see cref="T:System.UInt64" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.UInt64" />.</param>
+      <exception cref="T:System.FormatException">要素が、有効な <see cref="T:System.UInt64" /> 値を格納していません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.String">
+      <summary>この <see cref="T:System.Xml.Linq.XElement" /> の値を <see cref="T:System.String" /> にキャストします。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XElement" /> の内容を格納している <see cref="T:System.String" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.String" />.</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.TimeSpan">
+      <summary>この <see cref="T:System.Xml.Linq.XElement" /> の値を <see cref="T:System.TimeSpan" /> にキャストします。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XElement" /> の内容を格納している <see cref="T:System.TimeSpan" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.TimeSpan" />.</param>
+      <exception cref="T:System.FormatException">要素が、有効な <see cref="T:System.TimeSpan" /> 値を格納していません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Boolean">
+      <summary>この <see cref="T:System.Xml.Linq.XElement" /> の値を <see cref="T:System.Boolean" /> にキャストします。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XElement" /> の内容を格納している <see cref="T:System.Boolean" />。</returns>
+      <param name="element">
+        <see cref="T:System.Boolean" /> にキャストする <see cref="T:System.Xml.Linq.XElement" />。</param>
+      <exception cref="T:System.FormatException">要素が、有効な <see cref="T:System.Boolean" /> 値を格納していません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.DateTime">
+      <summary>この <see cref="T:System.Xml.Linq.XElement" /> の値を <see cref="T:System.DateTime" /> にキャストします。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XElement" /> の内容を格納している <see cref="T:System.DateTime" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.DateTime" />.</param>
+      <exception cref="T:System.FormatException">要素が、有効な <see cref="T:System.DateTime" /> 値を格納していません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Int64">
+      <summary>この <see cref="T:System.Xml.Linq.XElement" /> の値を <see cref="T:System.Int64" /> にキャストします。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XElement" /> の内容を格納している <see cref="T:System.Int64" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Int64" />.</param>
+      <exception cref="T:System.FormatException">要素が、有効な <see cref="T:System.Int64" /> 値を格納していません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Int32">
+      <summary>この <see cref="T:System.Xml.Linq.XElement" /> の値を <see cref="T:System.Int32" /> にキャストします。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XElement" /> の内容を格納している <see cref="T:System.Int32" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Int32" />.</param>
+      <exception cref="T:System.FormatException">要素が、有効な <see cref="T:System.Int32" /> 値を格納していません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Double">
+      <summary>この <see cref="T:System.Xml.Linq.XElement" /> の値を <see cref="T:System.Double" /> にキャストします。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XElement" /> の内容を格納している <see cref="T:System.Double" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Double" />.</param>
+      <exception cref="T:System.FormatException">要素が、有効な <see cref="T:System.Double" /> 値を格納していません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Guid">
+      <summary>この <see cref="T:System.Xml.Linq.XElement" /> の値を <see cref="T:System.Guid" /> にキャストします。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XElement" /> の内容を格納している <see cref="T:System.Guid" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Guid" />.</param>
+      <exception cref="T:System.FormatException">要素が、有効な <see cref="T:System.Guid" /> 値を格納していません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.DateTimeOffset">
+      <summary>この <see cref="T:System.Xml.Linq.XAttribute" /> の値を <see cref="T:System.DateTimeOffset" /> にキャストします。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XElement" /> の内容を格納している <see cref="T:System.DateTimeOffset" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.DateTimeOffset" />.</param>
+      <exception cref="T:System.FormatException">要素が、有効な <see cref="T:System.DateTimeOffset" /> 値を格納していません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Decimal">
+      <summary>この <see cref="T:System.Xml.Linq.XElement" /> の値を <see cref="T:System.Decimal" /> にキャストします。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XElement" /> の内容を格納している <see cref="T:System.Decimal" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Decimal" />.</param>
+      <exception cref="T:System.FormatException">要素が、有効な <see cref="T:System.Decimal" /> 値を格納していません。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Guid}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.Guid" />.</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XElement" /> の内容を格納している <see cref="T:System.Guid" /> の <see cref="T:System.Nullable`1" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.Guid" />.</param>
+      <exception cref="T:System.FormatException">要素が、有効な <see cref="T:System.Guid" /> 値を格納していません。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Int32}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.Int32" />.</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XElement" /> の内容を格納している <see cref="T:System.Int32" /> の <see cref="T:System.Nullable`1" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.Int32" />.</param>
+      <exception cref="T:System.FormatException">要素が、有効な <see cref="T:System.Int32" /> 値を格納していません。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Double}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.Double" />.</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XElement" /> の内容を格納している <see cref="T:System.Double" /> の <see cref="T:System.Nullable`1" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.Double" />.</param>
+      <exception cref="T:System.FormatException">要素が、有効な <see cref="T:System.Double" /> 値を格納していません。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.DateTimeOffset}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.DateTimeOffset" />.</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XElement" /> の内容を格納している <see cref="T:System.DateTimeOffset" /> の <see cref="T:System.Nullable`1" />。</returns>
+      <param name="element">
+        <see cref="T:System.DateTimeOffset" /> の <see cref="T:System.Nullable`1" /> にキャストする <see cref="T:System.Xml.Linq.XElement" />。</param>
+      <exception cref="T:System.FormatException">要素が、有効な <see cref="T:System.DateTimeOffset" /> 値を格納していません。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Decimal}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.Decimal" />.</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XElement" /> の内容を格納している <see cref="T:System.Decimal" /> の <see cref="T:System.Nullable`1" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.Decimal" />.</param>
+      <exception cref="T:System.FormatException">要素が、有効な <see cref="T:System.Decimal" /> 値を格納していません。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Int64}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.Int64" />.</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XElement" /> の内容を格納している <see cref="T:System.Int64" /> の <see cref="T:System.Nullable`1" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.Int64" />.</param>
+      <exception cref="T:System.FormatException">要素が、有効な <see cref="T:System.Int64" /> 値を格納していません。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.Boolean}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.Boolean" />.</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XElement" /> の内容を格納している <see cref="T:System.Boolean" /> の <see cref="T:System.Nullable`1" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.Boolean" />.</param>
+      <exception cref="T:System.FormatException">要素が、有効な <see cref="T:System.Boolean" /> 値を格納していません。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.op_Explicit(System.Xml.Linq.XElement)~System.Nullable{System.DateTime}">
+      <summary>Cast the value of this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.Nullable`1" /> of <see cref="T:System.DateTime" />.</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XElement" /> の内容を格納している <see cref="T:System.DateTime" /> の <see cref="T:System.Nullable`1" />。</returns>
+      <param name="element">The <see cref="T:System.Xml.Linq.XElement" /> to cast to <see cref="T:System.Nullable`1" /> of <see cref="T:System.DateTime" />.</param>
+      <exception cref="T:System.FormatException">要素が、有効な <see cref="T:System.DateTime" /> 値を格納していません。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Parse(System.String)">
+      <summary>XML を格納した文字列から <see cref="T:System.Xml.Linq.XElement" /> を読み込みます。</summary>
+      <returns>XML を格納した文字列から設定された <see cref="T:System.Xml.Linq.XElement" />。</returns>
+      <param name="text">XML を格納している <see cref="T:System.String" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Parse(System.String,System.Xml.Linq.LoadOptions)">
+      <summary>XML を格納した文字列から <see cref="T:System.Xml.Linq.XElement" /> を読み込み、必要に応じて、空白および行情報を保持します。</summary>
+      <returns>XML を格納した文字列から設定された <see cref="T:System.Xml.Linq.XElement" />。</returns>
+      <param name="text">XML を格納している <see cref="T:System.String" />。</param>
+      <param name="options">空白に対する動作、およびベース URI と行情報を読み込むかどうかを指定する <see cref="T:System.Xml.Linq.LoadOptions" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.RemoveAll">
+      <summary>この <see cref="T:System.Xml.Linq.XElement" /> からノードおよび属性を削除します。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.RemoveAttributes">
+      <summary>この <see cref="T:System.Xml.Linq.XElement" /> の属性を削除します。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.ReplaceAll(System.Object)">
+      <summary>この要素の子ノードおよび属性を、指定された内容で置き換えます。</summary>
+      <param name="content">この要素の子ノードおよび属性を置き換える内容。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.ReplaceAll(System.Object[])">
+      <summary>この要素の子ノードおよび属性を、指定された内容で置き換えます。</summary>
+      <param name="content">コンテンツ オブジェクトのパラメーター リスト。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.ReplaceAttributes(System.Object)">
+      <summary>この要素の属性を、指定された内容で置き換えます。</summary>
+      <param name="content">この要素の属性を置き換える内容。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.ReplaceAttributes(System.Object[])">
+      <summary>この要素の属性を、指定された内容で置き換えます。</summary>
+      <param name="content">コンテンツ オブジェクトのパラメーター リスト。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Save(System.IO.Stream)">
+      <summary>この <see cref="T:System.Xml.Linq.XElement" /> を指定した <see cref="T:System.IO.Stream" /> に出力します。</summary>
+      <param name="stream">この <see cref="T:System.Xml.Linq.XElement" /> の出力先のストリーム。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Save(System.IO.Stream,System.Xml.Linq.SaveOptions)">
+      <summary>オプションで書式設定動作を指定して、この <see cref="T:System.Xml.Linq.XElement" /> を指定した <see cref="T:System.IO.Stream" /> に出力します。</summary>
+      <param name="stream">この <see cref="T:System.Xml.Linq.XElement" /> の出力先のストリーム。</param>
+      <param name="options">書式設定の動作を指定する <see cref="T:System.Xml.Linq.SaveOptions" /> オブジェクト。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Save(System.IO.TextWriter)">
+      <summary>この要素をシリアル化して <see cref="T:System.IO.TextWriter" /> に書き込みます。</summary>
+      <param name="textWriter">
+        <see cref="T:System.Xml.Linq.XElement" /> の書き込み先の <see cref="T:System.IO.TextWriter" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Save(System.IO.TextWriter,System.Xml.Linq.SaveOptions)">
+      <summary>この要素をシリアル化して <see cref="T:System.IO.TextWriter" /> に書き込み、必要に応じて、書式設定を無効にします。</summary>
+      <param name="textWriter">XML を出力する <see cref="T:System.IO.TextWriter" />。</param>
+      <param name="options">書式設定の動作を指定する <see cref="T:System.Xml.Linq.SaveOptions" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.Save(System.Xml.XmlWriter)">
+      <summary>この要素をシリアル化して <see cref="T:System.Xml.XmlWriter" /> に書き込みます。</summary>
+      <param name="writer">
+        <see cref="T:System.Xml.Linq.XElement" /> の書き込み先の <see cref="T:System.Xml.XmlWriter" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.SetAttributeValue(System.Xml.Linq.XName,System.Object)">
+      <summary>属性の値の設定、属性の追加、または属性の削除を行います。</summary>
+      <param name="name">変更する属性の名前を格納する <see cref="T:System.Xml.Linq.XName" />。</param>
+      <param name="value">属性に代入する値。値が null の場合は属性が削除されます。それ以外の場合は、値が文字列形式に変換され、属性の <see cref="P:System.Xml.Linq.XAttribute.Value" /> プロパティに代入されます。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="value" /> が、<see cref="T:System.Xml.Linq.XObject" /> のインスタンスです。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.SetElementValue(System.Xml.Linq.XName,System.Object)">
+      <summary>子要素の値の設定、子要素の追加、または子要素の削除を行います。</summary>
+      <param name="name">変更する子要素の名前を格納する <see cref="T:System.Xml.Linq.XName" />。</param>
+      <param name="value">子要素に代入する値。値が null の場合は、子要素が削除されます。それ以外の場合は、値が文字列形式に変換され、子要素の <see cref="P:System.Xml.Linq.XElement.Value" /> プロパティに代入されます。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="value" /> が、<see cref="T:System.Xml.Linq.XObject" /> のインスタンスです。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.SetValue(System.Object)">
+      <summary>現在の要素の値を設定します。</summary>
+      <param name="value">この要素に代入する値。値は、文字列形式に変換され、<see cref="P:System.Xml.Linq.XElement.Value" /> プロパティに代入されます。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> は null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="value" /> が <see cref="T:System.Xml.Linq.XObject" /> です。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.System#Xml#Serialization#IXmlSerializable#GetSchema">
+      <summary>このオブジェクトの XML 表現を記述する XML スキーマ定義を取得します。</summary>
+      <returns>
+        <see cref="M:System.Xml.Serialization.IXmlSerializable.WriteXml(System.Xml.XmlWriter)" /> メソッドによって生成され <see cref="M:System.Xml.Serialization.IXmlSerializable.ReadXml(System.Xml.XmlReader)" /> メソッドによって処理されるオブジェクトの XML 表現を記述する <see cref="T:System.Xml.Schema.XmlSchema" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.System#Xml#Serialization#IXmlSerializable#ReadXml(System.Xml.XmlReader)">
+      <summary>オブジェクトの XML 表現からオブジェクトを生成します。</summary>
+      <param name="reader">オブジェクトの逆シリアル化元の <see cref="T:System.Xml.XmlReader" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.System#Xml#Serialization#IXmlSerializable#WriteXml(System.Xml.XmlWriter)">
+      <summary>オブジェクトを XML 表現に変換します。</summary>
+      <param name="writer">このオブジェクトのシリアル化先となる <see cref="T:System.Xml.XmlWriter" />。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XElement.Value">
+      <summary>この要素の連結されたテキスト コンテンツを取得または設定します。</summary>
+      <returns>この要素のすべてのテキスト コンテンツを格納している <see cref="T:System.String" />。複数のテキスト ノードがある場合は、連結されます。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XElement.WriteTo(System.Xml.XmlWriter)">
+      <summary>この要素を <see cref="T:System.Xml.XmlWriter" /> に書き込みます。</summary>
+      <param name="writer">このメソッドの書き込み対象の <see cref="T:System.Xml.XmlWriter" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XName">
+      <summary>XML 要素または属性の名前を表します。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XName.Equals(System.Object)">
+      <summary>指定した <see cref="T:System.Xml.Linq.XName" /> が、この <see cref="T:System.Xml.Linq.XName" /> と等しいかどうかを判断します。</summary>
+      <returns>指定した <see cref="T:System.Xml.Linq.XName" /> が現在の <see cref="T:System.Xml.Linq.XName" /> と等しい場合は true。それ以外の場合は false。</returns>
+      <param name="obj">現在の <see cref="T:System.Xml.Linq.XName" /> と比較する <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.Get(System.String)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XName" /> オブジェクトを拡張名から取得します。</summary>
+      <returns>拡張名から作成された <see cref="T:System.Xml.Linq.XName" /> オブジェクト。</returns>
+      <param name="expandedName">"{namespace}localname" という形式の拡張 XML 名を含む <see cref="T:System.String" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.Get(System.String,System.String)">
+      <summary>ローカル名および名前空間から <see cref="T:System.Xml.Linq.XName" /> オブジェクトを取得します。</summary>
+      <returns>指定されたローカル名と名前空間から作成された <see cref="T:System.Xml.Linq.XName" /> オブジェクト。</returns>
+      <param name="localName">ローカル (非修飾) 名。</param>
+      <param name="namespaceName">XML 名前空間。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.GetHashCode">
+      <summary>この <see cref="T:System.Xml.Linq.XName" /> のハッシュ コードを取得します。</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XName" /> のハッシュ コードを格納している <see cref="T:System.Int32" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XName.LocalName">
+      <summary>名前のローカル (非修飾) 部を取得します。</summary>
+      <returns>修飾名のローカル (非修飾) 部を含む <see cref="T:System.String" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XName.Namespace">
+      <summary>完全修飾名の名前空間部分を取得します。</summary>
+      <returns>名前の名前空間部分を含む <see cref="T:System.Xml.Linq.XNamespace" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XName.NamespaceName">
+      <summary>この <see cref="T:System.Xml.Linq.XName" /> の <see cref="T:System.Xml.Linq.XNamespace" /> の URI を返します。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XName" /> の <see cref="T:System.Xml.Linq.XNamespace" /> の URI。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XName.op_Equality(System.Xml.Linq.XName,System.Xml.Linq.XName)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XName" /> の 2 つのインスタンスが等しいかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> と <paramref name="right" /> が等しい場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較対象の第 1 <see cref="T:System.Xml.Linq.XName" />。</param>
+      <param name="right">比較対象の第 2 <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.op_Implicit(System.String)~System.Xml.Linq.XName">
+      <summary>拡張 XML 名として書式設定された文字列 ({namespace}localname) を <see cref="T:System.Xml.Linq.XName" /> オブジェクトに変換します。</summary>
+      <returns>拡張名から作成された <see cref="T:System.Xml.Linq.XName" /> オブジェクト。</returns>
+      <param name="expandedName">"{namespace}localname" という形式の拡張 XML 名を含む文字列。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.op_Inequality(System.Xml.Linq.XName,System.Xml.Linq.XName)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XName" /> の 2 つのインスタンスが等しくないかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> と <paramref name="right" /> が等しくない場合は true。それ以外の場合は false。</returns>
+      <param name="left">比較対象の第 1 <see cref="T:System.Xml.Linq.XName" />。</param>
+      <param name="right">比較対象の第 2 <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.System#IEquatable{T}#Equals(System.Xml.Linq.XName)">
+      <summary>現在の <see cref="T:System.Xml.Linq.XName" /> が、指定した <see cref="T:System.Xml.Linq.XName" /> と等しいかどうかを示します。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XName" /> が、指定した <see cref="T:System.Xml.Linq.XName" /> と等しい場合は true。それ以外の場合は false。</returns>
+      <param name="other">この <see cref="T:System.Xml.Linq.XName" /> と比較する <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XName.ToString">
+      <summary>"{namespace}localname" という形式の拡張 XML 名を返します。</summary>
+      <returns>"{namespace}localname" という形式の拡張 XML 名を含む <see cref="T:System.String" />。</returns>
+    </member>
+    <member name="T:System.Xml.Linq.XNamespace">
+      <summary>XML 名前空間を表します。このクラスは継承できません。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.Equals(System.Object)">
+      <summary>指定した <see cref="T:System.Xml.Linq.XNamespace" /> が、現在の <see cref="T:System.Xml.Linq.XNamespace" /> と等しいかどうかを判断します。</summary>
+      <returns>指定した <see cref="T:System.Xml.Linq.XNamespace" /> が現在の <see cref="T:System.Xml.Linq.XNamespace" /> と等しいかどうかを示す <see cref="T:System.Boolean" />。</returns>
+      <param name="obj">現在の <see cref="T:System.Xml.Linq.XNamespace" /> と比較する <see cref="T:System.Xml.Linq.XNamespace" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.Get(System.String)">
+      <summary>指定した URI (Uniform Resource Identifier) の <see cref="T:System.Xml.Linq.XNamespace" /> を取得します。</summary>
+      <returns>指定した URI から作成された <see cref="T:System.Xml.Linq.XNamespace" />。</returns>
+      <param name="namespaceName">名前空間 URI を格納している <see cref="T:System.String" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.GetHashCode">
+      <summary>この <see cref="T:System.Xml.Linq.XNamespace" /> のハッシュ コードを取得します。</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XNamespace" /> のハッシュ コードを格納している <see cref="T:System.Int32" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.GetName(System.String)">
+      <summary>この <see cref="T:System.Xml.Linq.XNamespace" /> と指定したローカル名から作成された <see cref="T:System.Xml.Linq.XName" /> オブジェクトを返します。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XNamespace" /> と指定したローカル名から作成された <see cref="T:System.Xml.Linq.XName" />。</returns>
+      <param name="localName">ローカル名を格納している <see cref="T:System.String" />。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XNamespace.NamespaceName">
+      <summary>この名前空間の URI を取得します。</summary>
+      <returns>名前空間の URI を格納する <see cref="T:System.String" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XNamespace.None">
+      <summary>対応する名前空間がない <see cref="T:System.Xml.Linq.XNamespace" /> オブジェクトを取得します。</summary>
+      <returns>対応する名前空間がない <see cref="T:System.Xml.Linq.XNamespace" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.op_Addition(System.Xml.Linq.XNamespace,System.String)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XNamespace" /> オブジェクトとローカル名を結合して、<see cref="T:System.Xml.Linq.XName" /> を作成します。</summary>
+      <returns>名前空間とローカル名から構築された新しい <see cref="T:System.Xml.Linq.XName" />。</returns>
+      <param name="ns">名前空間を格納している <see cref="T:System.Xml.Linq.XNamespace" />。</param>
+      <param name="localName">ローカル名を格納している <see cref="T:System.String" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.op_Equality(System.Xml.Linq.XNamespace,System.Xml.Linq.XNamespace)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XNamespace" /> の 2 つのインスタンスが等しいかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> と <paramref name="right" /> が等しいかどうかを示す <see cref="T:System.Boolean" />。</returns>
+      <param name="left">比較対象の第 1 <see cref="T:System.Xml.Linq.XNamespace" />。</param>
+      <param name="right">比較対象の第 2 <see cref="T:System.Xml.Linq.XNamespace" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.op_Implicit(System.String)~System.Xml.Linq.XNamespace">
+      <summary>URI が含まれている文字列を <see cref="T:System.Xml.Linq.XNamespace" /> に変換します。</summary>
+      <returns>URI 文字列から構築された <see cref="T:System.Xml.Linq.XNamespace" />。</returns>
+      <param name="namespaceName">名前空間 URI を格納している <see cref="T:System.String" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.op_Inequality(System.Xml.Linq.XNamespace,System.Xml.Linq.XNamespace)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XNamespace" /> の 2 つのインスタンスが等しくないかどうかを示す値を返します。</summary>
+      <returns>
+        <paramref name="left" /> と <paramref name="right" /> が等しくないかどうかを示す <see cref="T:System.Boolean" />。</returns>
+      <param name="left">比較対象の第 1 <see cref="T:System.Xml.Linq.XNamespace" />。</param>
+      <param name="right">比較対象の第 2 <see cref="T:System.Xml.Linq.XNamespace" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNamespace.ToString">
+      <summary>この <see cref="T:System.Xml.Linq.XNamespace" /> の URI を返します。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XNamespace" /> の URI。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XNamespace.Xml">
+      <summary>XML URI に対応する <see cref="T:System.Xml.Linq.XNamespace" /> オブジェクトを取得します (http://www.w3.org/XML/1998/namespace)。</summary>
+      <returns>XML URI に対応する <see cref="T:System.Xml.Linq.XNamespace" /> (http://www.w3.org/XML/1998/namespace)。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XNamespace.Xmlns">
+      <summary>xmlns URI に対応する <see cref="T:System.Xml.Linq.XNamespace" /> オブジェクトを取得します (http://www.w3.org/2000/xmlns/)。</summary>
+      <returns>xmlns URI に対応する <see cref="T:System.Xml.Linq.XNamespace" /> (http://www.w3.org/2000/xmlns/)。</returns>
+    </member>
+    <member name="T:System.Xml.Linq.XNode">
+      <summary>XML ツリー内のノードの抽象的な概念 (要素、コメント、ドキュメントの種類、処理命令、またはテキスト ノード) を表します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.AddAfterSelf(System.Object)">
+      <summary>このノードの直後に指定された内容を追加します。</summary>
+      <param name="content">このノードの後に追加する単純な内容またはコンテンツ オブジェクトのコレクションを格納しているコンテンツ オブジェクト。</param>
+      <exception cref="T:System.InvalidOperationException">The parent is null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.AddAfterSelf(System.Object[])">
+      <summary>このノードの直後に指定された内容を追加します。</summary>
+      <param name="content">コンテンツ オブジェクトのパラメーター リスト。</param>
+      <exception cref="T:System.InvalidOperationException">The parent is null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.AddBeforeSelf(System.Object)">
+      <summary>指定した内容をこのノードの直前に追加します。</summary>
+      <param name="content">このノードの前に追加する単純な内容またはコンテンツ オブジェクトのコレクションを格納しているコンテンツ オブジェクト。</param>
+      <exception cref="T:System.InvalidOperationException">The parent is null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.AddBeforeSelf(System.Object[])">
+      <summary>指定した内容をこのノードの直前に追加します。</summary>
+      <param name="content">コンテンツ オブジェクトのパラメーター リスト。</param>
+      <exception cref="T:System.InvalidOperationException">The parent is null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.Ancestors">
+      <summary>このノードの先祖要素のコレクションを返します。</summary>
+      <returns>このノードの先祖要素の <see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.Ancestors(System.Xml.Linq.XName)">
+      <summary>このノードの先祖要素のフィルター処理されたコレクションを返します。一致する <see cref="T:System.Xml.Linq.XName" /> を持つ要素のみがコレクションに含められます。</summary>
+      <returns>このノードの先祖要素の <see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。一致する <see cref="T:System.Xml.Linq.XName" /> を持つ要素のみがコレクションに含められます。返されたコレクションのノードは、ドキュメントの逆順になっています。このメソッドは遅延実行を使用します。</returns>
+      <param name="name">照合する対象の <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.CompareDocumentOrder(System.Xml.Linq.XNode,System.Xml.Linq.XNode)">
+      <summary>2 つのノードを比較してそれらの相対的な XML ドキュメント順を比較します。</summary>
+      <returns>ノードが等しい場合には 0 を格納する int。<paramref name="n1" /> が <paramref name="n2" /> より前の場合には -1。<paramref name="n1" /> が <paramref name="n2" /> より後ろの場合には 1。</returns>
+      <param name="n1">比較する最初の <see cref="T:System.Xml.Linq.XNode" />。</param>
+      <param name="n2">比較する 2 番目の <see cref="T:System.Xml.Linq.XNode" />。</param>
+      <exception cref="T:System.InvalidOperationException">The two nodes do not share a common ancestor.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.CreateReader">
+      <summary>このノードの <see cref="T:System.Xml.XmlReader" /> を作成します。</summary>
+      <returns>このノードとその子孫の読み取りに使用できる <see cref="T:System.Xml.XmlReader" />。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.CreateReader(System.Xml.Linq.ReaderOptions)">
+      <summary>
+        <paramref name="readerOptions" /> パラメーターで指定されたオプションを使用して、<see cref="T:System.Xml.XmlReader" /> を作成します。</summary>
+      <returns>
+        <see cref="T:System.Xml.XmlReader" /> オブジェクト。</returns>
+      <param name="readerOptions">重複する名前空間を省略するかどうかを指定する <see cref="T:System.Xml.Linq.ReaderOptions" /> オブジェクト。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.DeepEquals(System.Xml.Linq.XNode,System.Xml.Linq.XNode)">
+      <summary>すべての子孫ノードの値を含む、2 つのノードの値を比較します。</summary>
+      <returns>ノードが等しい場合は true。それ以外の場合は false。</returns>
+      <param name="n1">比較対象となる、最初の <see cref="T:System.Xml.Linq.XNode" />。</param>
+      <param name="n2">比較対象となる 2 番目の <see cref="T:System.Xml.Linq.XNode" />。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XNode.DocumentOrderComparer">
+      <summary>2 つのノードの相対的な位置を比較できる比較子を取得します。</summary>
+      <returns>2 つのノードの相対的な位置を比較できる <see cref="T:System.Xml.Linq.XNodeDocumentOrderComparer" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ElementsAfterSelf">
+      <summary>このノードの後にある兄弟要素のコレクションをドキュメント順に返します。</summary>
+      <returns>このノードの後にある兄弟要素の <see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" /> (ドキュメント順)。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ElementsAfterSelf(System.Xml.Linq.XName)">
+      <summary>このノードの後にある兄弟要素のフィルター処理されたコレクションをドキュメント順に返します。一致する <see cref="T:System.Xml.Linq.XName" /> を持つ要素のみがコレクションに含められます。</summary>
+      <returns>このノードの後にある兄弟要素の <see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" /> (ドキュメント順)。一致する <see cref="T:System.Xml.Linq.XName" /> を持つ要素のみがコレクションに含められます。</returns>
+      <param name="name">照合する対象の <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ElementsBeforeSelf">
+      <summary>このノードの前にある兄弟要素のコレクションをドキュメント順に返します。</summary>
+      <returns>このノードの前にある兄弟要素の <see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" /> (ドキュメント順)。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ElementsBeforeSelf(System.Xml.Linq.XName)">
+      <summary>このノードの前にある兄弟要素のフィルター処理されたコレクションをドキュメント順に返します。一致する <see cref="T:System.Xml.Linq.XName" /> を持つ要素のみがコレクションに含められます。</summary>
+      <returns>このノードの前にある兄弟要素の <see cref="T:System.Xml.Linq.XElement" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" /> (ドキュメント順)。一致する <see cref="T:System.Xml.Linq.XName" /> を持つ要素のみがコレクションに含められます。</returns>
+      <param name="name">照合する対象の <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XNode.EqualityComparer">
+      <summary>2 つのノードの値が等しいかどうかを比較できる比較子を取得します。</summary>
+      <returns>2 つのノードの値が等しいかどうかを比較できる <see cref="T:System.Xml.Linq.XNodeEqualityComparer" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.IsAfter(System.Xml.Linq.XNode)">
+      <summary>ドキュメント順に基づいて、現在のノードを指定したノードの後に表示するかどうかを決定します。</summary>
+      <returns>指定したノードの後にこのノードが出現している場合は true。それ以外の場合は false。</returns>
+      <param name="node">ドキュメント順を比較する <see cref="T:System.Xml.Linq.XNode" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.IsBefore(System.Xml.Linq.XNode)">
+      <summary>ドキュメント順に基づいて、現在のノードを指定したノードの前に表示するかどうかを決定します。</summary>
+      <returns>指定したノードの前にこのノードが出現している場合は true。それ以外の場合は false。</returns>
+      <param name="node">ドキュメント順を比較する <see cref="T:System.Xml.Linq.XNode" />。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XNode.NextNode">
+      <summary>このノードの次の兄弟ノードを取得します。</summary>
+      <returns>次の兄弟ノードを含む <see cref="T:System.Xml.Linq.XNode" />。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.NodesAfterSelf">
+      <summary>このノードの後にある兄弟ノードのコレクションをドキュメント順に返します。</summary>
+      <returns>このノードの後にある兄弟ノードの <see cref="T:System.Xml.Linq.XNode" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" /> (ドキュメント順)。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.NodesBeforeSelf">
+      <summary>このノードの前にある兄弟ノードのコレクションをドキュメント順に返します。</summary>
+      <returns>このノードの前にある兄弟ノードの <see cref="T:System.Xml.Linq.XNode" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" /> (ドキュメント順)。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XNode.PreviousNode">
+      <summary>このノードの前の兄弟ノードを取得します。</summary>
+      <returns>前の兄弟ノードを含む <see cref="T:System.Xml.Linq.XNode" />。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ReadFrom(System.Xml.XmlReader)">
+      <summary>
+        <see cref="T:System.Xml.XmlReader" /> から <see cref="T:System.Xml.Linq.XNode" /> を作成します。</summary>
+      <returns>リーダーから読み込まれたノードとその子孫ノードを含む <see cref="T:System.Xml.Linq.XNode" />。ノードのランタイム型は、リーダーで検出された最初のノードのノード型 (<see cref="P:System.Xml.Linq.XObject.NodeType" />) によって決まります。</returns>
+      <param name="reader">この <see cref="T:System.Xml.Linq.XNode" /> に読み込むためにノードに配置された <see cref="T:System.Xml.XmlReader" />。</param>
+      <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Xml.XmlReader" /> is not positioned on a recognized node type.</exception>
+      <exception cref="T:System.Xml.XmlException">The underlying <see cref="T:System.Xml.XmlReader" /> throws an exception.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.Remove">
+      <summary>現在のノードを親から削除します。</summary>
+      <exception cref="T:System.InvalidOperationException">The parent is null.</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ReplaceWith(System.Object)">
+      <summary>現在のノードを指定された内容に置き換えます。</summary>
+      <param name="content">このノードを置き換える内容。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ReplaceWith(System.Object[])">
+      <summary>現在のノードを指定された内容に置き換えます。</summary>
+      <param name="content">新しい内容のパラメーター リスト。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ToString">
+      <summary>このノードに対してインデントが設定された XML を返します。</summary>
+      <returns>インデントが設定された XML を格納する <see cref="T:System.String" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.ToString(System.Xml.Linq.SaveOptions)">
+      <summary>このノードに対して XML を返し、オプションで書式設定を無効にします。</summary>
+      <returns>XML を格納する <see cref="T:System.String" />。</returns>
+      <param name="options">書式設定の動作を指定する <see cref="T:System.Xml.Linq.SaveOptions" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNode.WriteTo(System.Xml.XmlWriter)">
+      <summary>このノードを <see cref="T:System.Xml.XmlWriter" /> に書き込みます。</summary>
+      <param name="writer">このメソッドの書き込み対象の <see cref="T:System.Xml.XmlWriter" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XNodeDocumentOrderComparer">
+      <summary>ノードのドキュメント順を比較するための機能を含みます。このクラスは継承できません。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeDocumentOrderComparer.#ctor">
+      <summary>
+        <see cref="T:System.Xml.Linq.XNodeDocumentOrderComparer" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeDocumentOrderComparer.Compare(System.Xml.Linq.XNode,System.Xml.Linq.XNode)">
+      <summary>2 つのノードを比較してそれらの相対的なドキュメント順を比較します。</summary>
+      <returns>ノードが等しい場合には 0 を格納する <see cref="T:System.Int32" />。<paramref name="x" /> が <paramref name="y" /> より前の場合には -1。<paramref name="x" /> が <paramref name="y" /> より後ろの場合には 1。</returns>
+      <param name="x">比較対象の第 1 <see cref="T:System.Xml.Linq.XNode" />。</param>
+      <param name="y">比較対象の第 2 <see cref="T:System.Xml.Linq.XNode" />。</param>
+      <exception cref="T:System.InvalidOperationException">2 つのノードが共通の先祖を共有していません。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeDocumentOrderComparer.System#Collections#IComparer#Compare(System.Object,System.Object)">
+      <summary>2 つのノードを比較してそれらの相対的なドキュメント順を比較します。</summary>
+      <returns>ノードが等しい場合には 0 を格納する <see cref="T:System.Int32" />。<paramref name="x" /> が <paramref name="y" /> より前の場合には -1。<paramref name="x" /> が <paramref name="y" /> より後ろの場合には 1。</returns>
+      <param name="x">比較対象の第 1 <see cref="T:System.Xml.Linq.XNode" />。</param>
+      <param name="y">比較対象の第 2 <see cref="T:System.Xml.Linq.XNode" />。</param>
+      <exception cref="T:System.InvalidOperationException">2 つのノードが共通の先祖を共有していません。</exception>
+      <exception cref="T:System.ArgumentException">2 つのノードが <see cref="T:System.Xml.Linq.XNode" /> から派生されていません。</exception>
+    </member>
+    <member name="T:System.Xml.Linq.XNodeEqualityComparer">
+      <summary>ノードを比較して等しいかどうかを確認します。このクラスは継承できません。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeEqualityComparer.#ctor">
+      <summary>
+        <see cref="T:System.Xml.Linq.XNodeEqualityComparer" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeEqualityComparer.Equals(System.Xml.Linq.XNode,System.Xml.Linq.XNode)">
+      <summary>2 つのノードの値を比較します。</summary>
+      <returns>ノードが等しいかどうかを示す <see cref="T:System.Boolean" />。</returns>
+      <param name="x">比較対象となる、最初の <see cref="T:System.Xml.Linq.XNode" />。</param>
+      <param name="y">比較対象となる 2 番目の <see cref="T:System.Xml.Linq.XNode" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeEqualityComparer.GetHashCode(System.Xml.Linq.XNode)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XNode" /> に基づいてハッシュ コードを返します。</summary>
+      <returns>ノードの値に基づくハッシュ コードが格納された <see cref="T:System.Int32" />。</returns>
+      <param name="obj">ハッシュする <see cref="T:System.Xml.Linq.XNode" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeEqualityComparer.System#Collections#IEqualityComparer#Equals(System.Object,System.Object)">
+      <summary>2 つのノードの値を比較します。</summary>
+      <returns>ノードが等しい場合は true。それ以外の場合は false。</returns>
+      <param name="x">比較対象となる、最初の <see cref="T:System.Xml.Linq.XNode" />。</param>
+      <param name="y">比較対象となる 2 番目の <see cref="T:System.Xml.Linq.XNode" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XNodeEqualityComparer.System#Collections#IEqualityComparer#GetHashCode(System.Object)">
+      <summary>ノードの値に基づいてハッシュ コードを返します。</summary>
+      <returns>ノードの値に基づくハッシュ コードが格納された <see cref="T:System.Int32" />。</returns>
+      <param name="obj">ハッシュするノード。</param>
+    </member>
+    <member name="T:System.Xml.Linq.XObject">
+      <summary>XML ツリー内のノードまたは属性を表します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.AddAnnotation(System.Object)">
+      <summary>この <see cref="T:System.Xml.Linq.XObject" /> の注釈の一覧にオブジェクトを追加します。</summary>
+      <param name="annotation">追加する注釈を格納している <see cref="T:System.Object" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.Annotation``1">
+      <summary>この <see cref="T:System.Xml.Linq.XObject" /> から指定した型の最初の注釈オブジェクトを取得します。</summary>
+      <returns>指定した型に一致する最初の注釈オブジェクト。いずれの注釈も指定した型でない場合は null。</returns>
+      <typeparam name="T">取得する注釈の型。</typeparam>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.Annotation(System.Type)">
+      <summary>この <see cref="T:System.Xml.Linq.XObject" /> から指定した型の最初の注釈オブジェクトを取得します。</summary>
+      <returns>指定した型に一致する最初の注釈オブジェクトを格納する <see cref="T:System.Object" />。いずれの注釈も指定した型でない場合は null。</returns>
+      <param name="type">取得する注釈の <see cref="T:System.Type" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.Annotations``1">
+      <summary>この <see cref="T:System.Xml.Linq.XObject" /> の指定した型の注釈のコレクションを取得します。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XObject" /> の注釈を格納する <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <typeparam name="T">取得する注釈の型。</typeparam>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.Annotations(System.Type)">
+      <summary>この <see cref="T:System.Xml.Linq.XObject" /> の指定した型の注釈のコレクションを取得します。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XObject" /> の指定した型に一致する注釈を格納する <see cref="T:System.Object" /> の <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="type">取得する注釈の <see cref="T:System.Type" />。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XObject.BaseUri">
+      <summary>この <see cref="T:System.Xml.Linq.XObject" /> のベース URI を取得します。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XObject" /> のベース URI を格納する <see cref="T:System.String" />。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="E:System.Xml.Linq.XObject.Changed">
+      <summary>この <see cref="T:System.Xml.Linq.XObject" /> またはその子孫が変更されたときに発生します。</summary>
+    </member>
+    <member name="E:System.Xml.Linq.XObject.Changing">
+      <summary>この <see cref="T:System.Xml.Linq.XObject" /> またはその子孫が変更される直前に発生します。</summary>
+    </member>
+    <member name="P:System.Xml.Linq.XObject.Document">
+      <summary>この <see cref="T:System.Xml.Linq.XObject" /> の <see cref="T:System.Xml.Linq.XDocument" /> を取得します。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XObject" /> の <see cref="T:System.Xml.Linq.XDocument" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XObject.NodeType">
+      <summary>この <see cref="T:System.Xml.Linq.XObject" /> のノード型を取得します。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XObject" /> のノード型。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XObject.Parent">
+      <summary>この <see cref="T:System.Xml.Linq.XObject" /> の親 <see cref="T:System.Xml.Linq.XElement" /> を取得します。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XObject" /> の親 <see cref="T:System.Xml.Linq.XElement" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.RemoveAnnotations``1">
+      <summary>この <see cref="T:System.Xml.Linq.XObject" /> から指定した型の注釈を削除します。</summary>
+      <typeparam name="T">削除する注釈の型。</typeparam>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.RemoveAnnotations(System.Type)">
+      <summary>この <see cref="T:System.Xml.Linq.XObject" /> から指定した型の注釈を削除します。</summary>
+      <param name="type">削除する注釈の <see cref="T:System.Type" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XObject.System#Xml#IXmlLineInfo#HasLineInfo">
+      <summary>この <see cref="T:System.Xml.Linq.XObject" /> に行情報があるかどうかを示す値を取得します。</summary>
+      <returns>
+        <see cref="T:System.Xml.Linq.XObject" /> に行情報がある場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XObject.System#Xml#IXmlLineInfo#LineNumber">
+      <summary>基になる <see cref="T:System.Xml.XmlReader" /> がこの <see cref="T:System.Xml.Linq.XObject" /> について報告した行番号を取得します。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XObject" /> について <see cref="T:System.Xml.XmlReader" /> が報告した行番号を格納する <see cref="T:System.Int32" />。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XObject.System#Xml#IXmlLineInfo#LinePosition">
+      <summary>基になる <see cref="T:System.Xml.XmlReader" /> がこの <see cref="T:System.Xml.Linq.XObject" /> について報告した行番号を取得します。</summary>
+      <returns>この <see cref="T:System.Xml.Linq.XObject" /> について <see cref="T:System.Xml.XmlReader" /> が報告した行番号を格納する <see cref="T:System.Int32" />。</returns>
+    </member>
+    <member name="T:System.Xml.Linq.XObjectChange">
+      <summary>
+        <see cref="T:System.Xml.Linq.XObject" /> に対してイベントが発生するときのイベントの種類を指定します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChange.Add">
+      <summary>
+        <see cref="T:System.Xml.Linq.XObject" /> が <see cref="T:System.Xml.Linq.XContainer" /> に追加されたか、これから追加されます。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChange.Name">
+      <summary>
+        <see cref="T:System.Xml.Linq.XObject" /> の名前が変更されたか、これから変更されます。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChange.Remove">
+      <summary>
+        <see cref="T:System.Xml.Linq.XObject" /> が <see cref="T:System.Xml.Linq.XContainer" /> から削除されたか、これから削除されます。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChange.Value">
+      <summary>
+        <see cref="T:System.Xml.Linq.XObject" /> の値が変更されたか、これから変更されます。また、空の要素のシリアル化方法の変更 (空のタグから開始/終了タグのペアへ、またはその逆への変更) により、このイベントが発生します。</summary>
+    </member>
+    <member name="T:System.Xml.Linq.XObjectChangeEventArgs">
+      <summary>
+        <see cref="E:System.Xml.Linq.XObject.Changing" /> イベントと <see cref="E:System.Xml.Linq.XObject.Changed" /> イベントにデータを提供します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XObjectChangeEventArgs.#ctor(System.Xml.Linq.XObjectChange)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XObjectChangeEventArgs" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="objectChange">LINQ to XML イベントのイベント引数を格納する <see cref="T:System.Xml.Linq.XObjectChange" />。</param>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChangeEventArgs.Add">
+      <summary>
+        <see cref="F:System.Xml.Linq.XObjectChange.Add" /> 変更イベントのイベント引数。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChangeEventArgs.Name">
+      <summary>
+        <see cref="F:System.Xml.Linq.XObjectChange.Name" /> 変更イベントのイベント引数。</summary>
+    </member>
+    <member name="P:System.Xml.Linq.XObjectChangeEventArgs.ObjectChange">
+      <summary>変更の種類を取得します。</summary>
+      <returns>変更の種類を格納する <see cref="T:System.Xml.Linq.XObjectChange" />。</returns>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChangeEventArgs.Remove">
+      <summary>
+        <see cref="F:System.Xml.Linq.XObjectChange.Remove" /> 変更イベントのイベント引数。</summary>
+    </member>
+    <member name="F:System.Xml.Linq.XObjectChangeEventArgs.Value">
+      <summary>
+        <see cref="F:System.Xml.Linq.XObjectChange.Value" /> 変更イベントのイベント引数。</summary>
+    </member>
+    <member name="T:System.Xml.Linq.XProcessingInstruction">
+      <summary>XML 処理命令を表します。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XProcessingInstruction.#ctor(System.String,System.String)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XProcessingInstruction" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="target">この <see cref="T:System.Xml.Linq.XProcessingInstruction" /> のターゲット アプリケーションを含む <see cref="T:System.String" />。</param>
+      <param name="data">この <see cref="T:System.Xml.Linq.XProcessingInstruction" /> の文字列データ。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="target" /> パラメーターまたは <paramref name="data" /> パラメーターが null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="target" /> は、XML 名の制約に従っていません。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XProcessingInstruction.#ctor(System.Xml.Linq.XProcessingInstruction)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XProcessingInstruction" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="other">コピー元の <see cref="T:System.Xml.Linq.XProcessingInstruction" /> ノード。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XProcessingInstruction.Data">
+      <summary>この処理命令の文字列値を取得または設定します。</summary>
+      <returns>この処理命令の文字列値を含む <see cref="T:System.String" />。</returns>
+      <exception cref="T:System.ArgumentNullException">文字列 <paramref name="value" /> は null です。</exception>
+    </member>
+    <member name="P:System.Xml.Linq.XProcessingInstruction.NodeType">
+      <summary>このノードのノード型を取得します。</summary>
+      <returns>ノード型。<see cref="T:System.Xml.Linq.XProcessingInstruction" /> オブジェクトでは、この値は <see cref="F:System.Xml.XmlNodeType.ProcessingInstruction" /> です。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XProcessingInstruction.Target">
+      <summary>この処理命令のターゲット アプリケーションを含む文字列を取得または設定します。</summary>
+      <returns>この処理命令のターゲット アプリケーションを含む <see cref="T:System.String" />。</returns>
+      <exception cref="T:System.ArgumentNullException">文字列 <paramref name="value" /> は null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="target" /> は、XML 名の制約に従っていません。</exception>
+    </member>
+    <member name="M:System.Xml.Linq.XProcessingInstruction.WriteTo(System.Xml.XmlWriter)">
+      <summary>この処理命令を <see cref="T:System.Xml.XmlWriter" /> に書き込みます。</summary>
+      <param name="writer">この処理命令が書き込まれる <see cref="T:System.Xml.XmlWriter" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XStreamingElement">
+      <summary>遅延ストリーム出力をサポートする XML ツリー内の要素を表します。</summary>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.#ctor(System.Xml.Linq.XName)">
+      <summary>指定した <see cref="T:System.Xml.Linq.XName" /> から <see cref="T:System.Xml.Linq.XElement" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="name">要素の名前を格納する <see cref="T:System.Xml.Linq.XName" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.#ctor(System.Xml.Linq.XName,System.Object)">
+      <summary>指定した名前と内容を持つ <see cref="T:System.Xml.Linq.XStreamingElement" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="name">要素名を格納する <see cref="T:System.Xml.Linq.XName" />。</param>
+      <param name="content">要素の内容。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.#ctor(System.Xml.Linq.XName,System.Object[])">
+      <summary>指定した名前と内容を持つ <see cref="T:System.Xml.Linq.XStreamingElement" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="name">要素名を格納する <see cref="T:System.Xml.Linq.XName" />。</param>
+      <param name="content">要素の内容。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Add(System.Object)">
+      <summary>指定した内容をこの <see cref="T:System.Xml.Linq.XStreamingElement" /> に子として追加します。</summary>
+      <param name="content">ストリーム要素に追加されるコンテンツ。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Add(System.Object[])">
+      <summary>指定した内容をこの <see cref="T:System.Xml.Linq.XStreamingElement" /> に子として追加します。</summary>
+      <param name="content">ストリーム要素に追加されるコンテンツ。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XStreamingElement.Name">
+      <summary>このストリーム要素の名前を取得または設定します。</summary>
+      <returns>このストリーム要素の名前を格納している <see cref="T:System.Xml.Linq.XName" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Save(System.IO.Stream)">
+      <summary>この <see cref="T:System.Xml.Linq.XStreamingElement" /> を指定した <see cref="T:System.IO.Stream" /> に出力します。</summary>
+      <param name="stream">この <see cref="T:System.Xml.Linq.XDocument" /> の出力先のストリーム。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Save(System.IO.Stream,System.Xml.Linq.SaveOptions)">
+      <summary>オプションで書式設定動作を指定して、この <see cref="T:System.Xml.Linq.XStreamingElement" /> を指定した <see cref="T:System.IO.Stream" /> に出力します。</summary>
+      <param name="stream">この <see cref="T:System.Xml.Linq.XDocument" /> の出力先のストリーム。</param>
+      <param name="options">書式設定の動作を指定する <see cref="T:System.Xml.Linq.SaveOptions" /> オブジェクト。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Save(System.IO.TextWriter)">
+      <summary>このストリーム要素をシリアル化して <see cref="T:System.IO.TextWriter" /> に書き込みます。</summary>
+      <param name="textWriter">
+        <see cref="T:System.Xml.Linq.XStreamingElement" /> の書き込み先の <see cref="T:System.IO.TextWriter" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Save(System.IO.TextWriter,System.Xml.Linq.SaveOptions)">
+      <summary>このストリーム要素をシリアル化して <see cref="T:System.IO.TextWriter" /> に書き込み、必要に応じて、書式設定を無効にします。</summary>
+      <param name="textWriter">XML を出力する <see cref="T:System.IO.TextWriter" />。</param>
+      <param name="options">書式設定の動作を指定する <see cref="T:System.Xml.Linq.SaveOptions" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.Save(System.Xml.XmlWriter)">
+      <summary>このストリーム要素をシリアル化して <see cref="T:System.Xml.XmlWriter" /> に書き込みます。</summary>
+      <param name="writer">
+        <see cref="T:System.Xml.Linq.XElement" /> の書き込み先の <see cref="T:System.Xml.XmlWriter" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.ToString">
+      <summary>このストリーム要素に対して書式 (インデント) が設定された XML を返します。</summary>
+      <returns>インデントが設定された XML を格納する <see cref="T:System.String" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.ToString(System.Xml.Linq.SaveOptions)">
+      <summary>このストリーム要素に対して XML を返し、必要に応じて、書式設定を無効にします。</summary>
+      <returns>XML を格納している <see cref="T:System.String" />。</returns>
+      <param name="options">書式設定の動作を指定する <see cref="T:System.Xml.Linq.SaveOptions" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XStreamingElement.WriteTo(System.Xml.XmlWriter)">
+      <summary>このストリーム要素を <see cref="T:System.Xml.XmlWriter" /> に書き込みます。</summary>
+      <param name="writer">このメソッドの書き込み対象の <see cref="T:System.Xml.XmlWriter" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Xml.Linq.XText">
+      <summary>テキスト ノードを表します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Xml.Linq.XText.#ctor(System.String)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XText" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="value">
+        <see cref="T:System.Xml.Linq.XText" /> ノードの値を格納する <see cref="T:System.String" />。</param>
+    </member>
+    <member name="M:System.Xml.Linq.XText.#ctor(System.Xml.Linq.XText)">
+      <summary>
+        <see cref="T:System.Xml.Linq.XText" /> クラスの新しいインスタンスを、別の <see cref="T:System.Xml.Linq.XText" /> オブジェクトから初期化します。</summary>
+      <param name="other">コピー元の <see cref="T:System.Xml.Linq.XText" /> ノード。</param>
+    </member>
+    <member name="P:System.Xml.Linq.XText.NodeType">
+      <summary>このノードのノード型を取得します。</summary>
+      <returns>ノード型。<see cref="T:System.Xml.Linq.XText" /> オブジェクトでは、この値は <see cref="F:System.Xml.XmlNodeType.Text" /> です。</returns>
+    </member>
+    <member name="P:System.Xml.Linq.XText.Value">
+      <summary>このノードの値を取得または設定します。</summary>
+      <returns>このノードの値を格納している <see cref="T:System.String" />。</returns>
+    </member>
+    <member name="M:System.Xml.Linq.XText.WriteTo(System.Xml.XmlWriter)">
+      <summary>このノードを <see cref="T:System.Xml.XmlWriter" /> に書き込みます。</summary>
+      <param name="writer">このメソッドの書き込み対象の <see cref="T:System.Xml.XmlWriter" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+  </members>
+</doc>

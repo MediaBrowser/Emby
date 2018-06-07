@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.IO.FileSystem.Primitives</name>
+  </assembly>
+  <members>
+    <member name="T:System.IO.FileAccess">
+      <summary>Определяет константы чтения, записи или чтения и записи файла.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileAccess.Read">
+      <summary>Доступ для чтения файла.Данные можно прочитать из файла.Для получения доступа для чтения и записи необходимо объединить с Write.</summary>
+    </member>
+    <member name="F:System.IO.FileAccess.ReadWrite">
+      <summary>Доступ для чтения и записи файла.Данные можно записать в файл и прочитать из файла.</summary>
+    </member>
+    <member name="F:System.IO.FileAccess.Write">
+      <summary>Доступ для записи в файл.Данные можно записать в файл.Для получения доступа для чтения и записи комбинируется с Read.</summary>
+    </member>
+    <member name="T:System.IO.FileAttributes">
+      <summary>Предоставляет атрибуты для файлов и папок.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileAttributes.Archive">
+      <summary>Файл выбран для резервного копирования или удаления. </summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Compressed">
+      <summary>Файл сжат.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Device">
+      <summary>Зарезервировано для использования в будущем.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Directory">
+      <summary>Этот файл представляет собой каталог.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Encrypted">
+      <summary>Зашифрованный файл или каталог.Для файла это означает, что все данные в файле зашифрованы.Для каталога это означает, что шифрование производится по умолчанию для вновь создаваемых файлов и каталогов.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Hidden">
+      <summary>Файл скрытый и, таким образом, не включается в обычный список каталога.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.IntegrityStream">
+      <summary>Файл или каталог включает поддержку целостности данных.Когда это значение применяется к файлу, все потоки данных в этом файле имеют поддержку целостности.Когда это значение применяется к каталогу, все новые файлы и подкаталоги этого каталога по умолчанию включают поддержку целостности.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Normal">
+      <summary>Файл является стандартным файлом без специальных атрибутов.Этот атрибут действителен, только если он используется отдельно.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.NoScrubData">
+      <summary>Файл или каталог исключен из проверки целостности данных.Когда это значение применяется к каталогу, по умолчанию для всех новых файлов и подкаталогов этого каталога поддержка целостности исключается.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.NotContentIndexed">
+      <summary>Файл не будет индексироваться службой индексирования содержимого операционной системы.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Offline">
+      <summary>Файл находится в автономном режиме.Данные этого файла недоступны непосредственно.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.ReadOnly">
+      <summary>Файл доступен только для чтения.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.ReparsePoint">
+      <summary>Файл содержит точка повторной обработки, блокирующую определяемые пользователем данные, связанные с файлом или каталогом.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.SparseFile">
+      <summary>Файл представляет собой разреженный файл.Разреженными файлами обычно являются большие файлы, в которых в основном нулевые данные.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.System">
+      <summary>Файл является системным.То есть файл является частью операционной системы или используется исключительно операционной системой.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Temporary">
+      <summary>Файл является временным.Временный файл содержит данные, необходимые во время выполнения приложения, но не необходимые после завершения приложения.Файловые системы для ускорения доступа стремятся держать все данные в памяти, а не сбрасывать их обратно на запоминающее устройство.Приложение должно стереть временный файл сразу после того, как он перестанет быть нужным.</summary>
+    </member>
+    <member name="T:System.IO.FileMode">
+      <summary>Описывает, каким образом операционная система должна открывать файл.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileMode.Append">
+      <summary>Открывает файл, если он существует, и находит конец файла; либо создает новый файл.Для этого требуется разрешение <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Append" />.FileMode.Append можно использовать только вместе с FileAccess.Write.Попытка поиска положения перед концом файла вызывает исключение <see cref="T:System.IO.IOException" />, и любая попытка чтения заканчивается неудачей, и создает исключение <see cref="T:System.NotSupportedException" />.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.Create">
+      <summary>Указывает, что операционная система должна создавать новый файл.Если файл уже существует, он будет перезаписан.Для этого требуется разрешение <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" />.Значение FileMode.Create эквивалентно требованию использовать значение <see cref="F:System.IO.FileMode.CreateNew" />, если файл не существует, и значение <see cref="F:System.IO.FileMode.Truncate" /> в противном случае.Если файл уже существует, но является скрытым, создается исключение <see cref="T:System.UnauthorizedAccessException" />.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.CreateNew">
+      <summary>Указывает, что операционная система должна создавать новый файл.Для этого требуется разрешение <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" />.Если файл уже существует, создается исключение <see cref="T:System.IO.IOException" />.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.Open">
+      <summary>Указывает, что операционная система должна открыть существующий файл.Возможность открыть данный файл зависит от значения, задаваемого перечислением <see cref="T:System.IO.FileAccess" />.Исключение <see cref="T:System.IO.FileNotFoundException" /> создается, если файл не существует.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.OpenOrCreate">
+      <summary>Указывает, что операционная система должна открыть файл, если он существует, в противном случае должен быть создан новый файл.Если файл открыт с помощью FileAccess.Read, требуется разрешение <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Read" />.Если доступ к файлу является FileAccess.Write, требуется разрешение <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" />.Если файл открыт с помощью FileAccess.ReadWrite, требуются разрешения <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Read" /> и <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" />.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.Truncate">
+      <summary>Указывает, что операционная система должна открыть существующий файл.Если файл открыт, он должен быть усечен таким образом, чтобы его размер стал равен нулю байтов.Для этого требуется разрешение <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" />.Попытки выполнить чтение из файла, открытого с помощью FileMode.Truncate, вызывают исключение <see cref="T:System.ArgumentException" />.</summary>
+    </member>
+    <member name="T:System.IO.FileShare">
+      <summary>Содержит константы, позволяющие управлять типом доступа, который другие объекты <see cref="T:System.IO.FileStream" /> могут осуществлять к тому же файлу.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileShare.Delete">
+      <summary>Разрешает последующее удаление файла.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.Inheritable">
+      <summary>Разрешает наследование дескриптора файла дочерними процессами.В Win32 непосредственная поддержка этого свойства не обеспечена.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.None">
+      <summary>Отклоняет совместное использование текущего файла.Любой запрос на открытие файла (данным процессом или другим процессом) не выполняется до тех пор, пока файл не будет закрыт.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.Read">
+      <summary>Разрешает последующее открытие файла для чтения.Если этот флаг не задан, любой запрос на открытие файла для чтения (данным процессом или другим процессом) не выполняется до тех пор, пока файл не будет закрыт.Однако, даже если этот флаг задан, для доступа к данному файлу могут потребоваться дополнительные разрешения.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.ReadWrite">
+      <summary>Разрешает последующее открытие файла для чтения или записи.Если этот флаг не задан, любой запрос на открытие файла для записи или чтения (данным процессом или другим процессом) не выполняется до тех пор, пока файл не будет закрыт.Однако, даже если этот флаг задан, для доступа к данному файлу могут потребоваться дополнительные разрешения.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.Write">
+      <summary>Разрешает последующее открытие файла для записи.Если этот флаг не задан, любой запрос на открытие файла для записи (данным процессом или другим процессом) не выполняется до тех пор, пока файл не будет закрыт.Однако, даже если этот флаг задан, для доступа к данному файлу могут потребоваться дополнительные разрешения.</summary>
+    </member>
+  </members>
+</doc>

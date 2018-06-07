@@ -95,11 +95,6 @@ namespace Emby.Server.Implementations.Playlists
 
             });
         }
-
-        //protected override Task<string> CreateImage(IHasMetadata item, List<BaseItem> itemsWithImages, string outputPathWithoutExtension, ImageType imageType, int imageIndex)
-        //{
-        //    return CreateSingleImage(itemsWithImages, outputPathWithoutExtension, ImageType.Primary);
-        //}
     }
 
     public class GenreImageProvider : BaseDynamicImageProvider<Genre>

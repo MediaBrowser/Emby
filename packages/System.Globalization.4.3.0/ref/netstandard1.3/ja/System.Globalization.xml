@@ -1,0 +1,1764 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Globalization</name>
+  </assembly>
+  <members>
+    <member name="T:System.Globalization.Calendar">
+      <summary>週、月、年などの区分で時間を表します。</summary>
+    </member>
+    <member name="M:System.Globalization.Calendar.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.Calendar" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddDays(System.DateTime,System.Int32)">
+      <summary>指定した <see cref="T:System.DateTime" /> から指定した日数が経過した後の <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> に指定した日数を加算した結果の <see cref="T:System.DateTime" />。</returns>
+      <param name="time">日数を加算する対象の <see cref="T:System.DateTime" />。</param>
+      <param name="days">加算する日数。</param>
+      <exception cref="T:System.ArgumentException">結果として得られる <see cref="T:System.DateTime" /> がこの暦でサポートされている範囲外の値です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="days" /> は <see cref="T:System.DateTime" /> の戻り値でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddHours(System.DateTime,System.Int32)">
+      <summary>指定した <see cref="T:System.DateTime" /> から指定した時間が経過した後の <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> に指定した時間を加算した結果の <see cref="T:System.DateTime" />。</returns>
+      <param name="time">時間を加算する対象の <see cref="T:System.DateTime" />。</param>
+      <param name="hours">加算する時間。</param>
+      <exception cref="T:System.ArgumentException">結果として得られる <see cref="T:System.DateTime" /> がこの暦でサポートされている範囲外の値です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="hours" /> は <see cref="T:System.DateTime" /> の戻り値でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddMilliseconds(System.DateTime,System.Double)">
+      <summary>指定した <see cref="T:System.DateTime" /> から指定したミリ秒が経過した後の <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> に指定したミリ秒を加算した結果の <see cref="T:System.DateTime" />。</returns>
+      <param name="time">ミリ秒を加算する <see cref="T:System.DateTime" />。</param>
+      <param name="milliseconds">加算するミリ秒数。</param>
+      <exception cref="T:System.ArgumentException">結果として得られる <see cref="T:System.DateTime" /> がこの暦でサポートされている範囲外の値です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="milliseconds" /> は <see cref="T:System.DateTime" /> の戻り値でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddMinutes(System.DateTime,System.Int32)">
+      <summary>指定した <see cref="T:System.DateTime" /> から指定した分数が経過した後の <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> に指定した分を加算した結果の <see cref="T:System.DateTime" />。</returns>
+      <param name="time">分を加算する対象の <see cref="T:System.DateTime" />。</param>
+      <param name="minutes">加算する分数。</param>
+      <exception cref="T:System.ArgumentException">結果として得られる <see cref="T:System.DateTime" /> がこの暦でサポートされている範囲外の値です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="minutes" /> は <see cref="T:System.DateTime" /> の戻り値でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>派生クラスでオーバーライドされると、指定した <see cref="T:System.DateTime" /> から指定した月数が経過した後の <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> に指定した月数を加算した結果の <see cref="T:System.DateTime" />。</returns>
+      <param name="time">月数を加算する対象の <see cref="T:System.DateTime" />。</param>
+      <param name="months">加算する月の数。</param>
+      <exception cref="T:System.ArgumentException">結果として得られる <see cref="T:System.DateTime" /> がこの暦でサポートされている範囲外の値です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> は <see cref="T:System.DateTime" /> の戻り値でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddSeconds(System.DateTime,System.Int32)">
+      <summary>指定した <see cref="T:System.DateTime" /> から指定した秒数が経過した後の <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> に指定した秒数を加算した結果の <see cref="T:System.DateTime" />。</returns>
+      <param name="time">秒数を加算する対象の <see cref="T:System.DateTime" />。</param>
+      <param name="seconds">加算する秒数。</param>
+      <exception cref="T:System.ArgumentException">結果として得られる <see cref="T:System.DateTime" /> がこの暦でサポートされている範囲外の値です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="seconds" /> は <see cref="T:System.DateTime" /> の戻り値でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddWeeks(System.DateTime,System.Int32)">
+      <summary>指定した <see cref="T:System.DateTime" /> から指定した週数が経過した後の <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> に指定した週数を加算した結果の <see cref="T:System.DateTime" />。</returns>
+      <param name="time">週を加算する対象の <see cref="T:System.DateTime" />。</param>
+      <param name="weeks">加算する週の数。</param>
+      <exception cref="T:System.ArgumentException">結果として得られる <see cref="T:System.DateTime" /> がこの暦でサポートされている範囲外の値です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="weeks" /> は <see cref="T:System.DateTime" /> の戻り値でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddYears(System.DateTime,System.Int32)">
+      <summary>派生クラスでオーバーライドされると、指定した <see cref="T:System.DateTime" /> から指定した年数が経過した後の <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>指定した <see cref="T:System.DateTime" /> に指定した年数を加算した結果の <see cref="T:System.DateTime" />。</returns>
+      <param name="time">年数を加算する対象の <see cref="T:System.DateTime" />。</param>
+      <param name="years">追加する年数。</param>
+      <exception cref="T:System.ArgumentException">結果として得られる <see cref="T:System.DateTime" /> がこの暦でサポートされている範囲外の値です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="years" /> は <see cref="T:System.DateTime" /> の戻り値でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="F:System.Globalization.Calendar.CurrentEra">
+      <summary>現在の暦の現在の時代 (年号) を表します。</summary>
+    </member>
+    <member name="P:System.Globalization.Calendar.Eras">
+      <summary>派生クラスでオーバーライドされると、現在の暦における時代 (年号) のリストを取得します。</summary>
+      <returns>現在の暦における時代 (年号) を表す整数の配列。</returns>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDayOfMonth(System.DateTime)">
+      <summary>派生クラスでオーバーライドされると、指定した <see cref="T:System.DateTime" /> の月の日付を返します。</summary>
+      <returns>
+        <paramref name="time" /> パラメーターの月の日付を表す正の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDayOfWeek(System.DateTime)">
+      <summary>派生クラスでオーバーライドされると、指定した <see cref="T:System.DateTime" /> の曜日を返します。</summary>
+      <returns>
+        <paramref name="time" /> パラメーターの曜日を表す <see cref="T:System.DayOfWeek" /> 値。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDayOfYear(System.DateTime)">
+      <summary>派生クラスでオーバーライドされると、指定した <see cref="T:System.DateTime" /> の年の日付を返します。</summary>
+      <returns>
+        <paramref name="time" /> パラメーターの年間積算日を表す正の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDaysInMonth(System.Int32,System.Int32)">
+      <summary>現在の時代 (年号) の指定した月および年の日数を返します。</summary>
+      <returns>現在の時代 (年号) の指定した年の指定した月の日数。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す正の整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>派生クラスでオーバーライドされると、指定した月、年、および時代 (年号) の日数を返します。</summary>
+      <returns>指定した時代 (年号) の指定した年の指定した月の日数。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す正の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDaysInYear(System.Int32)">
+      <summary>現在の時代 (年号) の指定した年の日数を返します。</summary>
+      <returns>現在の時代 (年号) の指定した年の日数。</returns>
+      <param name="year">年を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>派生クラスでオーバーライドされると、指定した年および時代 (年号) の日数を返します。</summary>
+      <returns>指定した時代 (年号) の指定した年の日数。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetEra(System.DateTime)">
+      <summary>派生クラスでオーバーライドされると、指定した <see cref="T:System.DateTime" /> の時代 (年号) を返します。</summary>
+      <returns>
+        <paramref name="time" /> の時代 (年号) を表す整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetHour(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の時間の値を返します。</summary>
+      <returns>
+        <paramref name="time" /> の時間を表す 0 ～ 23 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>指定された年と時代 (年号) の閏月を計算します。</summary>
+      <returns>指定された年と時代 (年号) における閏月を示す正の整数。またはカレンダーが閏月をサポートしていない場合や、<paramref name="year" /> パラメーターおよび <paramref name="era" /> パラメーターが閏年を指定しない場合は 0。</returns>
+      <param name="year">年。</param>
+      <param name="era">時代 (年号)。</param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetMilliseconds(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> のミリ秒の値を返します。</summary>
+      <returns>
+        <paramref name="time" /> パラメーターのミリ秒を表す、0 ～ 999 の倍精度浮動小数点数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetMinute(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の分の値を返します。</summary>
+      <returns>
+        <paramref name="time" /> を分を表す 0 ～ 59 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetMonth(System.DateTime)">
+      <summary>派生クラスでオーバーライドされると、指定した <see cref="T:System.DateTime" /> の月を返します。</summary>
+      <returns>
+        <paramref name="time" /> の月を表す正の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetMonthsInYear(System.Int32)">
+      <summary>現在の時代 (年号) の指定した年の月数を返します。</summary>
+      <returns>現在の時代 (年号) の指定した年の月数。</returns>
+      <param name="year">年を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>派生クラスでオーバーライドされると、指定した時代 (年号) の指定した年の月数を返します。</summary>
+      <returns>指定した時代 (年号) の指定した年の月数。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetSecond(System.DateTime)">
+      <summary>指定した <see cref="T:System.DateTime" /> の秒の値を返します。</summary>
+      <returns>
+        <paramref name="time" /> の秒を表す 0 ～ 59 の整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetWeekOfYear(System.DateTime,System.Globalization.CalendarWeekRule,System.DayOfWeek)">
+      <summary>指定した <see cref="T:System.DateTime" /> 値の日付を含むその年の週を返します。</summary>
+      <returns>
+        <paramref name="time" /> パラメーターの日付を含む年の週を表す正の整数。</returns>
+      <param name="time">日付と時刻の値。</param>
+      <param name="rule">暦の週を定義する列挙値。</param>
+      <param name="firstDayOfWeek">週の最初の日を表す列挙値。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> が <see cref="P:System.Globalization.Calendar.MinSupportedDateTime" /> よりも前か、<see cref="P:System.Globalization.Calendar.MaxSupportedDateTime" /> よりも後です。または<paramref name="firstDayOfWeek" /> が有効な <see cref="T:System.DayOfWeek" /> 値ではありません。または<paramref name="rule" /> が有効な <see cref="T:System.Globalization.CalendarWeekRule" /> 値ではありません。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetYear(System.DateTime)">
+      <summary>派生クラスでオーバーライドされると、指定した <see cref="T:System.DateTime" /> の年を返します。</summary>
+      <returns>
+        <paramref name="time" /> の年を表す整数。</returns>
+      <param name="time">読み取る対象の <see cref="T:System.DateTime" />。</param>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapDay(System.Int32,System.Int32,System.Int32)">
+      <summary>現在の時代 (年号) の指定した日付が閏日かどうかを確認します。</summary>
+      <returns>指定した日が閏日である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す正の整数。</param>
+      <param name="day">日を表す正の整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。または<paramref name="day" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>派生クラスでオーバーライドされると、指定した時代 (年号) の指定した日付が閏日かどうかを確認します。</summary>
+      <returns>指定した日が閏日である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す正の整数。</param>
+      <param name="day">日を表す正の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。または<paramref name="day" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapMonth(System.Int32,System.Int32)">
+      <summary>現在の時代 (年号) の指定した年の指定した月が閏月かどうかを確認します。</summary>
+      <returns>指定した月が閏月である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す正の整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>派生クラスでオーバーライドされると、指定した時代 (年号) の指定した年の指定した月が閏月かどうかを確認します。</summary>
+      <returns>指定した月が閏月である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す正の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapYear(System.Int32)">
+      <summary>現在の時代 (年号) の指定した年が閏年かどうかを確認します。</summary>
+      <returns>指定した年が閏年である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>派生クラスでオーバーライドされると、指定した時代 (年号) の指定した年が閏年かどうかを確認します。</summary>
+      <returns>指定した年が閏年である場合は true。それ以外の場合は false。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="P:System.Globalization.Calendar.IsReadOnly">
+      <summary>この <see cref="T:System.Globalization.Calendar" /> オブジェクトが読み取り専用かどうかを示す値を取得します。</summary>
+      <returns>この <see cref="T:System.Globalization.Calendar" /> オブジェクトが読み取り専用の場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Globalization.Calendar.MaxSupportedDateTime">
+      <summary>この <see cref="T:System.Globalization.Calendar" /> オブジェクトでサポートされている最も新しい日付と時刻を取得します。</summary>
+      <returns>このカレンダーでサポートされている最も新しい日付と時刻。既定値は、<see cref="F:System.DateTime.MaxValue" /> です。</returns>
+    </member>
+    <member name="P:System.Globalization.Calendar.MinSupportedDateTime">
+      <summary>この <see cref="T:System.Globalization.Calendar" /> オブジェクトでサポートされている最も古い日付と時刻を取得します。</summary>
+      <returns>このカレンダーでサポートされている最も古い日付と時刻。既定値は、<see cref="F:System.DateTime.MinValue" /> です。</returns>
+    </member>
+    <member name="M:System.Globalization.Calendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>現在の時代 (年号) の指定した日付と時刻に設定された <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>現在の時代 (年号) の指定した日付と時刻に設定された <see cref="T:System.DateTime" />。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す正の整数。</param>
+      <param name="day">日を表す正の整数。</param>
+      <param name="hour">時間を表す 0 ～ 23 の整数。</param>
+      <param name="minute">分を表す 0 ～ 59 の整数。</param>
+      <param name="second">秒を表す 0 ～ 59 の整数。</param>
+      <param name="millisecond">ミリ秒を表す 0 ～ 999 の整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。または<paramref name="day" /> が暦でサポートされている範囲外の値です。または<paramref name="hour" /> が 0 未満、または 23 を超えます。または<paramref name="minute" /> が 0 未満、または 59 を超えます。または<paramref name="second" /> が 0 未満、または 59 を超えます。または<paramref name="millisecond" /> が 0 未満、または 999 を超えます。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>派生クラスでオーバーライドされると、指定した時代 (年号) の指定した日付と時刻に設定された <see cref="T:System.DateTime" /> を返します。</summary>
+      <returns>現在の時代 (年号) の指定した日付と時刻に設定された <see cref="T:System.DateTime" />。</returns>
+      <param name="year">年を表す整数。</param>
+      <param name="month">月を表す正の整数。</param>
+      <param name="day">日を表す正の整数。</param>
+      <param name="hour">時間を表す 0 ～ 23 の整数。</param>
+      <param name="minute">分を表す 0 ～ 59 の整数。</param>
+      <param name="second">秒を表す 0 ～ 59 の整数。</param>
+      <param name="millisecond">ミリ秒を表す 0 ～ 999 の整数。</param>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。または<paramref name="month" /> が暦でサポートされている範囲外の値です。または<paramref name="day" /> が暦でサポートされている範囲外の値です。または<paramref name="hour" /> が 0 未満、または 23 を超えます。または<paramref name="minute" /> が 0 未満、または 59 を超えます。または<paramref name="second" /> が 0 未満、または 59 を超えます。または<paramref name="millisecond" /> が 0 未満、または 999 を超えます。または<paramref name="era" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.ToFourDigitYear(System.Int32)">
+      <summary>
+        <see cref="P:System.Globalization.Calendar.TwoDigitYearMax" /> プロパティを使用して、指定した年を 4 桁表記に変換し、適切な世紀を判断します。</summary>
+      <returns>
+        <paramref name="year" /> の 4 桁表記を保持する整数。</returns>
+      <param name="year">変換する年を表す 2 桁または 4 桁の整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> が暦でサポートされている範囲外の値です。</exception>
+    </member>
+    <member name="P:System.Globalization.Calendar.TwoDigitYearMax">
+      <summary>年の 2 桁表記で表すことができる 100 年間の範囲内で最後に当たる年を取得または設定します。</summary>
+      <returns>年の 2 桁表記で表すことができる 100 年間の範囲内で最後に当たる年。</returns>
+      <exception cref="T:System.InvalidOperationException">現在の <see cref="T:System.Globalization.Calendar" /> オブジェクトが読み取り専用です。</exception>
+    </member>
+    <member name="T:System.Globalization.CalendarWeekRule">
+      <summary>年の最初の週を決定するためのさまざまな規則を定義します。</summary>
+    </member>
+    <member name="F:System.Globalization.CalendarWeekRule.FirstDay">
+      <summary>1 年の最初の週が、その年の第 1 日に始まり、週の最初の曜日として指定されている曜日が次に訪れるのを待たずに終了することを示します。値は 0 です。</summary>
+    </member>
+    <member name="F:System.Globalization.CalendarWeekRule.FirstFourDayWeek">
+      <summary>1 年の最初の週が、週の最初の曜日として指定されている曜日が次に訪れるまでに 4 日以上かかる週になるように指定します。値は 2 です。</summary>
+    </member>
+    <member name="F:System.Globalization.CalendarWeekRule.FirstFullWeek">
+      <summary>1 年の最初の週が、その年の第 1 日目またはその後に訪れる、週の最初の曜日として指定されている曜日に始まることを示します。値は 1 です。</summary>
+    </member>
+    <member name="T:System.Globalization.CharUnicodeInfo">
+      <summary>Unicode 文字に関する情報を取得します。このクラスは継承できません。</summary>
+    </member>
+    <member name="M:System.Globalization.CharUnicodeInfo.GetNumericValue(System.Char)">
+      <summary>指定した文字に関連付けられている数値 (numeric value) を取得します。</summary>
+      <returns>指定した文字に関連付けられている数値 (numeric value)。または指定した文字が数値 (numeric value) でない場合は -1。</returns>
+      <param name="ch">数値 (numeric value) を取得する対象の Unicode 文字。</param>
+    </member>
+    <member name="M:System.Globalization.CharUnicodeInfo.GetNumericValue(System.String,System.Int32)">
+      <summary>指定した文字列の指定したインデックス位置にある文字に関連付けられている数値 (numeric value) を取得します。</summary>
+      <returns>指定した文字列の指定したインデックス位置にある文字に関連付けられている数値 (numeric value)。または指定した文字列の指定したインデックス位置にある文字が数字でない場合は -1。</returns>
+      <param name="s">数値 (numeric value) を取得する対象の Unicode 文字を含む <see cref="T:System.String" />。</param>
+      <param name="index">数値 (numeric value) を取得する対象の Unicode 文字のインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> が <paramref name="s" /> の有効なインデックスの範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.CharUnicodeInfo.GetUnicodeCategory(System.Char)">
+      <summary>指定した文字の Unicode カテゴリを取得します。</summary>
+      <returns>指定した文字のカテゴリを示す <see cref="T:System.Globalization.UnicodeCategory" /> 値。</returns>
+      <param name="ch">Unicode カテゴリを取得する対象の Unicode 文字。</param>
+    </member>
+    <member name="M:System.Globalization.CharUnicodeInfo.GetUnicodeCategory(System.String,System.Int32)">
+      <summary>指定した文字列の指定したインデックス位置にある文字の Unicode カテゴリを取得します。</summary>
+      <returns>指定した文字列の指定したインデックス位置にある文字のカテゴリを示す <see cref="T:System.Globalization.UnicodeCategory" /> 値。</returns>
+      <param name="s">Unicode カテゴリを取得する対象の Unicode 文字を含む <see cref="T:System.String" />。</param>
+      <param name="index">Unicode カテゴリを取得する対象の Unicode 文字のインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> が <paramref name="s" /> の有効なインデックスの範囲外の値です。</exception>
+    </member>
+    <member name="T:System.Globalization.CompareInfo">
+      <summary>カルチャごとに異なる文字列比較を行うための一連のメソッドを実装します。</summary>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.Int32,System.Int32,System.String,System.Int32,System.Int32)">
+      <summary>文字列のセクションと別の文字列のセクションとを比較します。</summary>
+      <returns>2 つの比較対照値の構文上の関係を示す 32 ビット符号付き整数。値状態ゼロ2 つの文字列は等価。0 より小さい値<paramref name="string1" /> の指定部分は <paramref name="string2" /> の指定部分より小さい。0 より大きい値<paramref name="string1" /> の指定部分は <paramref name="string2" /> の指定部分より大きい。 </returns>
+      <param name="string1">比較する最初の文字列。</param>
+      <param name="offset1">
+        <paramref name="string1" /> 内の比較を開始する位置にある文字の 0 から始まるインデックス。</param>
+      <param name="length1">比較対象の <paramref name="string1" /> に含まれる連続する文字の数。</param>
+      <param name="string2">比較する 2 番目の文字列。</param>
+      <param name="offset2">
+        <paramref name="string2" /> 内の比較を開始する位置にある文字の 0 から始まるインデックス。</param>
+      <param name="length2">比較対象の <paramref name="string2" /> に含まれる連続する文字の数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset1" />、<paramref name="length1" />、<paramref name="offset2" />、または <paramref name="length2" /> が 0 未満です。または <paramref name="offset1" /> が <paramref name="string1" /> に含まれている文字数以上の値です。または <paramref name="offset2" /> が <paramref name="string2" /> に含まれている文字数以上の値です。または <paramref name="length1" /> が、<paramref name="offset1" /> から <paramref name="string1" /> の末尾までの文字数を超えています。または <paramref name="length2" /> が、<paramref name="offset2" /> から <paramref name="string2" /> の末尾までの文字数を超えています。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.Int32,System.Int32,System.String,System.Int32,System.Int32,System.Globalization.CompareOptions)">
+      <summary>指定した <see cref="T:System.Globalization.CompareOptions" /> 値を使用して、文字列のセクションと別の文字列のセクションとを比較します。</summary>
+      <returns>2 つの比較対照値の構文上の関係を示す 32 ビット符号付き整数。値状態ゼロ2 つの文字列は等価。0 より小さい値<paramref name="string1" /> の指定部分は <paramref name="string2" /> の指定部分より小さい。0 より大きい値<paramref name="string1" /> の指定部分は <paramref name="string2" /> の指定部分より大きい。 </returns>
+      <param name="string1">比較する最初の文字列。</param>
+      <param name="offset1">
+        <paramref name="string1" /> 内の比較を開始する位置にある文字の 0 から始まるインデックス。</param>
+      <param name="length1">比較対象の <paramref name="string1" /> に含まれる連続する文字の数。</param>
+      <param name="string2">比較する 2 番目の文字列。</param>
+      <param name="offset2">
+        <paramref name="string2" /> 内の比較を開始する位置にある文字の 0 から始まるインデックス。</param>
+      <param name="length2">比較対象の <paramref name="string2" /> に含まれる連続する文字の数。</param>
+      <param name="options">
+        <paramref name="string1" /> と <paramref name="string2" /> の比較方法を定義する値。<paramref name="options" /> は、それ自体で使用する列挙値 <see cref="F:System.Globalization.CompareOptions.Ordinal" /> であるか、または <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" />、<see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />、<see cref="F:System.Globalization.CompareOptions.StringSort" /> の 1 つ以上の値のビットごとの組み合わせです。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset1" />、<paramref name="length1" />、<paramref name="offset2" />、または <paramref name="length2" /> が 0 未満です。または <paramref name="offset1" /> が <paramref name="string1" /> に含まれている文字数以上の値です。または <paramref name="offset2" /> が <paramref name="string2" /> に含まれている文字数以上の値です。または <paramref name="length1" /> が、<paramref name="offset1" /> から <paramref name="string1" /> の末尾までの文字数を超えています。または <paramref name="length2" /> が、<paramref name="offset2" /> から <paramref name="string2" /> の末尾までの文字数を超えています。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> に無効な <see cref="T:System.Globalization.CompareOptions" /> 値が含まれています。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.Int32,System.String,System.Int32)">
+      <summary>文字列の末尾部分と別の文字列の末尾部分とを比較します。</summary>
+      <returns>2 つの比較対照値の構文上の関係を示す 32 ビット符号付き整数。値状態ゼロ2 つの文字列は等価。0 より小さい値<paramref name="string1" /> の指定部分は <paramref name="string2" /> の指定部分より小さい。0 より大きい値<paramref name="string1" /> の指定部分は <paramref name="string2" /> の指定部分より大きい。 </returns>
+      <param name="string1">比較する最初の文字列。</param>
+      <param name="offset1">
+        <paramref name="string1" /> 内の比較を開始する位置にある文字の 0 から始まるインデックス。</param>
+      <param name="string2">比較する 2 番目の文字列。</param>
+      <param name="offset2">
+        <paramref name="string2" /> 内の比較を開始する位置にある文字の 0 から始まるインデックス。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset1" /> または <paramref name="offset2" /> が 0 未満です。または <paramref name="offset1" /> が <paramref name="string1" /> に含まれている文字数以上の値です。または <paramref name="offset2" /> が <paramref name="string2" /> に含まれている文字数以上の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.Int32,System.String,System.Int32,System.Globalization.CompareOptions)">
+      <summary>指定した <see cref="T:System.Globalization.CompareOptions" /> 値を使用して、文字列の末尾セクションと別の文字列の末尾セクションとを比較します。</summary>
+      <returns>2 つの比較対照値の構文上の関係を示す 32 ビット符号付き整数。値状態ゼロ2 つの文字列は等価。0 より小さい値<paramref name="string1" /> の指定部分は <paramref name="string2" /> の指定部分より小さい。0 より大きい値<paramref name="string1" /> の指定部分は <paramref name="string2" /> の指定部分より大きい。 </returns>
+      <param name="string1">比較する最初の文字列。</param>
+      <param name="offset1">
+        <paramref name="string1" /> 内の比較を開始する位置にある文字の 0 から始まるインデックス。</param>
+      <param name="string2">比較する 2 番目の文字列。</param>
+      <param name="offset2">
+        <paramref name="string2" /> 内の比較を開始する位置にある文字の 0 から始まるインデックス。</param>
+      <param name="options">
+        <paramref name="string1" /> と <paramref name="string2" /> の比較方法を定義する値。<paramref name="options" /> は、それ自体で使用する列挙値 <see cref="F:System.Globalization.CompareOptions.Ordinal" /> であるか、または <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" />、<see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />、<see cref="F:System.Globalization.CompareOptions.StringSort" /> の 1 つ以上の値のビットごとの組み合わせです。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset1" /> または <paramref name="offset2" /> が 0 未満です。または <paramref name="offset1" /> が <paramref name="string1" /> に含まれている文字数以上の値です。または <paramref name="offset2" /> が <paramref name="string2" /> に含まれている文字数以上の値です。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> に無効な <see cref="T:System.Globalization.CompareOptions" /> 値が含まれています。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.String)">
+      <summary>2 つの文字列を比較します。</summary>
+      <returns>2 つの比較対照値の構文上の関係を示す 32 ビット符号付き整数。値状態ゼロ2 つの文字列は等価。0 より小さい値 <paramref name="string1" /> は <paramref name="string2" /> より小さい値です。0 より大きい値 <paramref name="string1" /> が <paramref name="string2" /> より大きくなっています。</returns>
+      <param name="string1">比較する最初の文字列。</param>
+      <param name="string2">比較する 2 番目の文字列。</param>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.String,System.Globalization.CompareOptions)">
+      <summary>指定した <see cref="T:System.Globalization.CompareOptions" /> 値を使用して、2 つの文字列を比較します。</summary>
+      <returns>2 つの比較対照値の構文上の関係を示す 32 ビット符号付き整数。値状態ゼロ2 つの文字列は等価。0 より小さい値 <paramref name="string1" /> は <paramref name="string2" /> より小さい値です。0 より大きい値 <paramref name="string1" /> が <paramref name="string2" /> より大きくなっています。 </returns>
+      <param name="string1">比較する最初の文字列。</param>
+      <param name="string2">比較する 2 番目の文字列。</param>
+      <param name="options">
+        <paramref name="string1" /> と <paramref name="string2" /> の比較方法を定義する値。<paramref name="options" /> は、それ自体で使用する列挙値 <see cref="F:System.Globalization.CompareOptions.Ordinal" /> であるか、または <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" />、<see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />、<see cref="F:System.Globalization.CompareOptions.StringSort" /> の 1 つ以上の値のビットごとの組み合わせです。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> に無効な <see cref="T:System.Globalization.CompareOptions" /> 値が含まれています。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Equals(System.Object)">
+      <summary>指定のオブジェクトが現在の <see cref="T:System.Globalization.CompareInfo" /> オブジェクトと等しいかどうかを判断します。</summary>
+      <returns>指定したオブジェクトが現在の <see cref="T:System.Globalization.CompareInfo" /> オブジェクトと等しい場合は true。それ以外の場合は false。</returns>
+      <param name="value">現在の <see cref="T:System.Globalization.CompareInfo" /> と比較するオブジェクト。 </param>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.GetCompareInfo(System.String)">
+      <summary>指定した名前のカルチャに関連付けられている新しい <see cref="T:System.Globalization.CompareInfo" /> オブジェクトを初期化します。</summary>
+      <returns>指定した識別子のカルチャに関連付けられ、現在の <see cref="T:System.Reflection.Assembly" /> 内の文字列比較メソッドを使用する新しい <see cref="T:System.Globalization.CompareInfo" /> オブジェクト。</returns>
+      <param name="name">カルチャ名を表す文字列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> が無効なカルチャ名です。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.GetHashCode">
+      <summary>現在の <see cref="T:System.Globalization.CompareInfo" /> のハッシュ関数として機能し、ハッシュ アルゴリズムや、ハッシュ テーブルのようなデータ構造に使用されます。</summary>
+      <returns>現在の <see cref="T:System.Globalization.CompareInfo" /> のハッシュ コード。</returns>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.GetHashCode(System.String,System.Globalization.CompareOptions)">
+      <summary>指定した比較オプションに基づいて、文字列のハッシュ コードを取得します。</summary>
+      <returns>32 ビット符号付き整数ハッシュ コード。 </returns>
+      <param name="source">ハッシュ コードが返される文字列を指定します。</param>
+      <param name="options">文字列の比較方法を決定する値。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null です。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.Char)">
+      <summary>指定した文字を検索し、検索対象文字列全体内で最初に出現する位置の 0 から始まるインデックス番号を返します。</summary>
+      <returns>
+        <paramref name="source" /> 全体内で <paramref name="value" /> が見つかった場合は、最初に見つかった位置の 0 から始まるインデックス番号。それ以外の場合は -1。<paramref name="value" /> が無視できる文字の場合は 0 を返します。</returns>
+      <param name="source">検索対象の文字列。</param>
+      <param name="value">
+        <paramref name="source" /> 内で検索する文字。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null です。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.Char,System.Globalization.CompareOptions)">
+      <summary>指定した <see cref="T:System.Globalization.CompareOptions" /> 値を使用して、指定した文字を検索し、検索対象文字列全体内でその文字が最初に出現する位置の 0 から始まるインデックス番号を返します。</summary>
+      <returns>指定した比較オプションを使用して、<paramref name="source" /> 全体内で <paramref name="value" /> が見つかった場合は、最初に見つかった位置の 0 から始まるインデックス番号。それ以外の場合は -1。<paramref name="value" /> が無視できる文字の場合は 0 を返します。</returns>
+      <param name="source">検索対象の文字列。</param>
+      <param name="value">
+        <paramref name="source" /> 内で検索する文字。</param>
+      <param name="options">文字列の比較方法を定義する値。<paramref name="options" /> は、列挙値 <see cref="F:System.Globalization.CompareOptions.Ordinal" /> であるか、または <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" />、<see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> の 1 つ以上の値のビットごとの組み合わせです。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> に無効な <see cref="T:System.Globalization.CompareOptions" /> 値が含まれています。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.Char,System.Int32,System.Globalization.CompareOptions)">
+      <summary>指定した <see cref="T:System.Globalization.CompareOptions" /> 値を使用して、指定した文字を検索し、検索対象文字列の指定したインデックスから文字列の末尾までの範囲内で、その文字が最初に出現する位置の 0 から始まるインデックス番号を返します。</summary>
+      <returns>指定した比較オプションを使用して、<paramref name="startIndex" /> から <paramref name="source" /> の末尾までの <paramref name="source" /> の範囲内で、<paramref name="value" /> が見つかった場合は、最初に見つかった位置の 0 から始まるインデックス番号。それ以外の場合は -1。<paramref name="value" /> が無視できる文字の場合は <paramref name="startIndex" /> を返します。</returns>
+      <param name="source">検索対象の文字列。</param>
+      <param name="value">
+        <paramref name="source" /> 内で検索する文字。</param>
+      <param name="startIndex">検索の開始位置を示す 0 から始まるインデックス。</param>
+      <param name="options">
+        <paramref name="source" /> と <paramref name="value" /> の比較方法を定義する値。<paramref name="options" /> は、列挙値 <see cref="F:System.Globalization.CompareOptions.Ordinal" /> であるか、または <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" />、<see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> の 1 つ以上の値のビットごとの組み合わせです。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> が <paramref name="source" /> の有効なインデックスの範囲外の値です。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> に無効な <see cref="T:System.Globalization.CompareOptions" /> 値が含まれています。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.Char,System.Int32,System.Int32)">
+      <summary>指定した文字を検索し、検索対象文字列の指定したインデックスから始まり、指定した数の要素を含んでいる範囲内で、その文字が最初に出現する位置の 0 から始まるインデックス番号を返します。</summary>
+      <returns>
+        <paramref name="startIndex" /> から始まり、<paramref name="count" /> で指定した数の要素を含んでいる <paramref name="source" /> の範囲内で、<paramref name="value" /> が見つかった場合は、最初に見つかった位置の 0 から始まるインデックス番号。それ以外の場合は -1。<paramref name="value" /> が無視できる文字の場合は <paramref name="startIndex" /> を返します。</returns>
+      <param name="source">検索対象の文字列。</param>
+      <param name="value">
+        <paramref name="source" /> 内で検索する文字。</param>
+      <param name="startIndex">検索の開始位置を示す 0 から始まるインデックス。</param>
+      <param name="count">検索対象の範囲内にある要素の数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> が <paramref name="source" /> の有効なインデックスの範囲外の値です。または <paramref name="count" /> が 0 未満です。または <paramref name="startIndex" /> および <paramref name="count" /> が <paramref name="source" /> 内の有効な部分を指定していません。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.Char,System.Int32,System.Int32,System.Globalization.CompareOptions)">
+      <summary>指定した <see cref="T:System.Globalization.CompareOptions" /> 値を使用して、指定した文字を検索し、検索対象文字列の指定したインデックスから始まり、指定した数の要素を含んでいる範囲内で、その文字が最初に出現する位置の 0 から始まるインデックス番号を返します。</summary>
+      <returns>指定した比較オプションを使用して、<paramref name="startIndex" /> から始まり、<paramref name="count" /> で指定した数の要素を含んでいる <paramref name="source" /> の範囲内で、その <paramref name="value" /> が見つかった場合は、最初に見つかった位置の 0 から始まるインデックス番号。それ以外の場合は -1。<paramref name="value" /> が無視できる文字の場合は <paramref name="startIndex" /> を返します。</returns>
+      <param name="source">検索対象の文字列。</param>
+      <param name="value">
+        <paramref name="source" /> 内で検索する文字。</param>
+      <param name="startIndex">検索の開始位置を示す 0 から始まるインデックス。</param>
+      <param name="count">検索対象の範囲内にある要素の数。</param>
+      <param name="options">
+        <paramref name="source" /> と <paramref name="value" /> の比較方法を定義する値。<paramref name="options" /> は、列挙値 <see cref="F:System.Globalization.CompareOptions.Ordinal" /> であるか、または <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" />、<see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> の 1 つ以上の値のビットごとの組み合わせです。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> が <paramref name="source" /> の有効なインデックスの範囲外の値です。または <paramref name="count" /> が 0 未満です。または <paramref name="startIndex" /> および <paramref name="count" /> が <paramref name="source" /> 内の有効な部分を指定していません。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> に無効な <see cref="T:System.Globalization.CompareOptions" /> 値が含まれています。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.String)">
+      <summary>指定した部分文字列を検索し、検索対象文字列全体内で、その部分文字列が最初に出現する位置の 0 から始まるインデックス番号を返します。</summary>
+      <returns>
+        <paramref name="source" /> 全体内で <paramref name="value" /> が見つかった場合は、最初に見つかった位置の 0 から始まるインデックス番号。それ以外の場合は -1。<paramref name="value" /> が無視できる文字の場合は 0 を返します。</returns>
+      <param name="source">検索対象の文字列。</param>
+      <param name="value">
+        <paramref name="source" /> 内で検索する文字列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null です。または <paramref name="value" /> は null です。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.String,System.Globalization.CompareOptions)">
+      <summary>指定した <see cref="T:System.Globalization.CompareOptions" /> 値を使用して、指定した部分文字列を検索し、検索対象文字列全体内で、その部分文字列が最初に出現する位置の 0 から始まるインデックス番号を返します。</summary>
+      <returns>指定した比較オプションを使用して、<paramref name="source" /> 全体内で <paramref name="value" /> が見つかった場合は、最初に見つかった位置の 0 から始まるインデックス番号。それ以外の場合は -1。<paramref name="value" /> が無視できる文字の場合は 0 を返します。</returns>
+      <param name="source">検索対象の文字列。</param>
+      <param name="value">
+        <paramref name="source" /> 内で検索する文字列。</param>
+      <param name="options">
+        <paramref name="source" /> と <paramref name="value" /> の比較方法を定義する値。<paramref name="options" /> は、列挙値 <see cref="F:System.Globalization.CompareOptions.Ordinal" /> であるか、または <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" />、<see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> の 1 つ以上の値のビットごとの組み合わせです。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null です。または <paramref name="value" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> に無効な <see cref="T:System.Globalization.CompareOptions" /> 値が含まれています。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.String,System.Int32,System.Globalization.CompareOptions)">
+      <summary>指定した <see cref="T:System.Globalization.CompareOptions" /> 値を使用して、指定した部分文字列を検索し、検索対象文字列の指定したインデックスから文字列の末尾までの範囲内で、その部分文字列が最初に出現する位置の 0 から始まるインデックス番号を返します。</summary>
+      <returns>指定した比較オプションを使用して、<paramref name="startIndex" /> から <paramref name="source" /> の末尾までの <paramref name="source" /> の範囲内で、<paramref name="value" /> が見つかった場合は、最初に見つかった位置の 0 から始まるインデックス番号。それ以外の場合は -1。<paramref name="value" /> が無視できる文字の場合は <paramref name="startIndex" /> を返します。</returns>
+      <param name="source">検索対象の文字列。</param>
+      <param name="value">
+        <paramref name="source" /> 内で検索する文字列。</param>
+      <param name="startIndex">検索の開始位置を示す 0 から始まるインデックス。</param>
+      <param name="options">
+        <paramref name="source" /> と <paramref name="value" /> の比較方法を定義する値。<paramref name="options" /> は、列挙値 <see cref="F:System.Globalization.CompareOptions.Ordinal" /> であるか、または <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" />、<see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> の 1 つ以上の値のビットごとの組み合わせです。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null です。または <paramref name="value" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> が <paramref name="source" /> の有効なインデックスの範囲外の値です。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> に無効な <see cref="T:System.Globalization.CompareOptions" /> 値が含まれています。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.String,System.Int32,System.Int32)">
+      <summary>指定した部分文字列を検索し、検索対象文字列の指定したインデックスから始まり、指定した数の要素を含んでいる範囲内で、その部分文字列が最初に出現する位置の 0 から始まるインデックス番号を返します。</summary>
+      <returns>
+        <paramref name="startIndex" /> から始まり、<paramref name="count" /> で指定した数の要素を含んでいる <paramref name="source" /> の範囲内で、<paramref name="value" /> が見つかった場合は、最初に見つかった位置の 0 から始まるインデックス番号。それ以外の場合は -1。<paramref name="value" /> が無視できる文字の場合は <paramref name="startIndex" /> を返します。</returns>
+      <param name="source">検索対象の文字列。</param>
+      <param name="value">
+        <paramref name="source" /> 内で検索する文字列。</param>
+      <param name="startIndex">検索の開始位置を示す 0 から始まるインデックス。</param>
+      <param name="count">検索対象の範囲内にある要素の数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null です。または <paramref name="value" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> が <paramref name="source" /> の有効なインデックスの範囲外の値です。または <paramref name="count" /> が 0 未満です。または <paramref name="startIndex" /> および <paramref name="count" /> が <paramref name="source" /> 内の有効な部分を指定していません。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.String,System.Int32,System.Int32,System.Globalization.CompareOptions)">
+      <summary>指定した <see cref="T:System.Globalization.CompareOptions" /> 値を使用して、指定した部分文字列を検索し、検索対象文字列の指定したインデックスから始まり、指定した数の要素を含んでいる範囲内で、その部分文字列が最初に出現する位置の 0 から始まるインデックス番号を返します。</summary>
+      <returns>指定した比較オプションを使用して、<paramref name="startIndex" /> から始まり、<paramref name="count" /> で指定した数の要素を含んでいる <paramref name="source" /> の範囲内で、その <paramref name="value" /> が見つかった場合は、最初に見つかった位置の 0 から始まるインデックス番号。それ以外の場合は -1。<paramref name="value" /> が無視できる文字の場合は <paramref name="startIndex" /> を返します。</returns>
+      <param name="source">検索対象の文字列。</param>
+      <param name="value">
+        <paramref name="source" /> 内で検索する文字列。</param>
+      <param name="startIndex">検索の開始位置を示す 0 から始まるインデックス。</param>
+      <param name="count">検索対象の範囲内にある要素の数。</param>
+      <param name="options">
+        <paramref name="source" /> と <paramref name="value" /> の比較方法を定義する値。<paramref name="options" /> は、列挙値 <see cref="F:System.Globalization.CompareOptions.Ordinal" /> であるか、または <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" />、<see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> の 1 つ以上の値のビットごとの組み合わせです。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null です。または <paramref name="value" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> が <paramref name="source" /> の有効なインデックスの範囲外の値です。または <paramref name="count" /> が 0 未満です。または <paramref name="startIndex" /> および <paramref name="count" /> が <paramref name="source" /> 内の有効な部分を指定していません。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> に無効な <see cref="T:System.Globalization.CompareOptions" /> 値が含まれています。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IsPrefix(System.String,System.String)">
+      <summary>指定した検索対象文字列が指定したプリフィックスで始まるかどうかを判断します。</summary>
+      <returns>
+        <paramref name="prefix" /> の長さが <paramref name="source" /> の長さ以下で、<paramref name="source" /> が <paramref name="prefix" /> で始まる場合は true。それ以外の場合は false。</returns>
+      <param name="source">検索範囲とする文字列。</param>
+      <param name="prefix">
+        <paramref name="source" /> の先頭と比較する文字列。 </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null です。または <paramref name="prefix" /> は null です。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IsPrefix(System.String,System.String,System.Globalization.CompareOptions)">
+      <summary>指定した <see cref="T:System.Globalization.CompareOptions" /> 値を使用して、指定した検索対象文字列が指定したプリフィックスで始まるかどうかを判断します。</summary>
+      <returns>
+        <paramref name="prefix" /> の長さが <paramref name="source" /> の長さ以下で、<paramref name="source" /> が <paramref name="prefix" /> で始まる場合は true。それ以外の場合は false。</returns>
+      <param name="source">検索範囲とする文字列。</param>
+      <param name="prefix">
+        <paramref name="source" /> の先頭と比較する文字列。</param>
+      <param name="options">
+        <paramref name="source" /> と <paramref name="prefix" /> の比較方法を定義する値。<paramref name="options" /> は、列挙値 <see cref="F:System.Globalization.CompareOptions.Ordinal" /> であるか、または <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" />、<see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> の 1 つ以上の値のビットごとの組み合わせです。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null です。または <paramref name="prefix" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> に無効な <see cref="T:System.Globalization.CompareOptions" /> 値が含まれています。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IsSuffix(System.String,System.String)">
+      <summary>指定した検索対象文字列が指定したサフィックスで終わるかどうかを判断します。</summary>
+      <returns>
+        <paramref name="suffix" /> の長さが <paramref name="source" /> の長さ以下であり、<paramref name="source" /> が <paramref name="suffix" /> で終わる場合は true。それ以外の場合は false。</returns>
+      <param name="source">検索範囲とする文字列。</param>
+      <param name="suffix">
+        <paramref name="source" /> の末尾と比較する文字列。 </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null です。または <paramref name="suffix" /> は null です。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IsSuffix(System.String,System.String,System.Globalization.CompareOptions)">
+      <summary>指定した <see cref="T:System.Globalization.CompareOptions" /> 値を使用して、指定した検索対象文字列が、指定したサフィックスで終わるかどうかを判断します。</summary>
+      <returns>
+        <paramref name="suffix" /> の長さが <paramref name="source" /> の長さ以下であり、<paramref name="source" /> が <paramref name="suffix" /> で終わる場合は true。それ以外の場合は false。</returns>
+      <param name="source">検索範囲とする文字列。</param>
+      <param name="suffix">
+        <paramref name="source" /> の末尾と比較する文字列。</param>
+      <param name="options">
+        <paramref name="source" /> と <paramref name="suffix" /> の比較方法を定義する値。<paramref name="options" /> は、それ自体で使用する列挙値 <see cref="F:System.Globalization.CompareOptions.Ordinal" /> であるか、または <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" />、<see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> の 1 つ以上の値のビットごとの組み合わせです。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null です。または <paramref name="suffix" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> に無効な <see cref="T:System.Globalization.CompareOptions" /> 値が含まれています。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.Char)">
+      <summary>指定した文字を検索し、検索対象文字列全体内でその文字が最後に出現する位置の 0 から始まるインデックス番号を返します。</summary>
+      <returns>
+        <paramref name="source" /> 全体内で <paramref name="value" /> が見つかった場合は、最後に見つかった位置の 0 から始まるインデックス番号。それ以外の場合は -1。</returns>
+      <param name="source">検索対象の文字列。</param>
+      <param name="value">
+        <paramref name="source" /> 内で検索する文字。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null です。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.Char,System.Globalization.CompareOptions)">
+      <summary>指定した <see cref="T:System.Globalization.CompareOptions" /> 値を使用して、指定した文字を検索し、検索対象文字列全体内でその文字が最後に出現する位置の 0 から始まるインデックス番号を返します。</summary>
+      <returns>指定した比較オプションを使用して、<paramref name="source" /> 全体内で <paramref name="value" /> が見つかった場合は、最後に見つかった位置の 0 から始まるインデックス番号。それ以外の場合は -1。</returns>
+      <param name="source">検索対象の文字列。</param>
+      <param name="value">
+        <paramref name="source" /> 内で検索する文字。</param>
+      <param name="options">
+        <paramref name="source" /> と <paramref name="value" /> の比較方法を定義する値。<paramref name="options" /> は、列挙値 <see cref="F:System.Globalization.CompareOptions.Ordinal" /> であるか、または <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" />、<see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> の 1 つ以上の値のビットごとの組み合わせです。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> に無効な <see cref="T:System.Globalization.CompareOptions" /> 値が含まれています。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.Char,System.Int32,System.Globalization.CompareOptions)">
+      <summary>指定した <see cref="T:System.Globalization.CompareOptions" /> 値を使用して、指定した文字を検索し、検索対象の文字列の先頭から指定したインデックスまでの範囲内で、その文字が最後に出現する位置の 0 から始まるインデックス番号を返します。</summary>
+      <returns>指定した比較オプションを使用して、<paramref name="source" /> の先頭から <paramref name="startIndex" /> までの <paramref name="source" /> の範囲内で <paramref name="value" /> が見つかった場合は、最後に見つかった位置の 0 から始まるインデックス番号。それ以外の場合は -1。<paramref name="value" /> が無視できる文字の場合は <paramref name="startIndex" /> を返します。</returns>
+      <param name="source">検索対象の文字列。</param>
+      <param name="value">
+        <paramref name="source" /> 内で検索する文字。</param>
+      <param name="startIndex">後方検索の開始位置を示す 0 から始まるインデックス。</param>
+      <param name="options">
+        <paramref name="source" /> と <paramref name="value" /> の比較方法を定義する値。<paramref name="options" /> は、列挙値 <see cref="F:System.Globalization.CompareOptions.Ordinal" /> であるか、または <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" />、<see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> の 1 つ以上の値のビットごとの組み合わせです。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> が <paramref name="source" /> の有効なインデックスの範囲外の値です。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> に無効な <see cref="T:System.Globalization.CompareOptions" /> 値が含まれています。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.Char,System.Int32,System.Int32)">
+      <summary>指定した文字を検索し、検索対象文字列の指定したインデックスで終了し、指定した数の要素を含んでいる範囲内で、その文字が最後に出現する位置の 0 から始まるインデックス番号を返します。</summary>
+      <returns>
+        <paramref name="startIndex" /> で終了し、<paramref name="count" /> で指定した数の要素を含んでいる <paramref name="source" /> の範囲内で <paramref name="value" /> が見つかった場合は、最後に見つかった位置の 0 から始まるインデックス番号。それ以外の場合は -1。<paramref name="value" /> が無視できる文字の場合は <paramref name="startIndex" /> を返します。</returns>
+      <param name="source">検索対象の文字列。</param>
+      <param name="value">
+        <paramref name="source" /> 内で検索する文字。</param>
+      <param name="startIndex">後方検索の開始位置を示す 0 から始まるインデックス。</param>
+      <param name="count">検索対象の範囲内にある要素の数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> が <paramref name="source" /> の有効なインデックスの範囲外の値です。または <paramref name="count" /> が 0 未満です。または <paramref name="startIndex" /> および <paramref name="count" /> が <paramref name="source" /> 内の有効な部分を指定していません。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.Char,System.Int32,System.Int32,System.Globalization.CompareOptions)">
+      <summary>指定した <see cref="T:System.Globalization.CompareOptions" /> 値を使用して、指定した文字を検索し、検索対象文字列の指定したインデックスで終了し、指定した数の要素を含んでいる範囲内で、その文字が最後に出現する位置の 0 から始まるインデックス番号を返します。</summary>
+      <returns>指定した比較オプションを使用して、<paramref name="startIndex" /> で終わり、<paramref name="count" /> で指定した数の要素を含んでいる <paramref name="source" /> の範囲内で、その <paramref name="value" /> が見つかった場合は、最後に見つかった位置の 0 から始まるインデックス番号。それ以外の場合は -1。<paramref name="value" /> が無視できる文字の場合は <paramref name="startIndex" /> を返します。</returns>
+      <param name="source">検索対象の文字列。</param>
+      <param name="value">
+        <paramref name="source" /> 内で検索する文字。</param>
+      <param name="startIndex">後方検索の開始位置を示す 0 から始まるインデックス。</param>
+      <param name="count">検索対象の範囲内にある要素の数。</param>
+      <param name="options">
+        <paramref name="source" /> と <paramref name="value" /> の比較方法を定義する値。<paramref name="options" /> は、列挙値 <see cref="F:System.Globalization.CompareOptions.Ordinal" /> であるか、または <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" />、<see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> の 1 つ以上の値のビットごとの組み合わせです。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> が <paramref name="source" /> の有効なインデックスの範囲外の値です。または <paramref name="count" /> が 0 未満です。または <paramref name="startIndex" /> および <paramref name="count" /> が <paramref name="source" /> 内の有効な部分を指定していません。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> に無効な <see cref="T:System.Globalization.CompareOptions" /> 値が含まれています。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.String)">
+      <summary>指定した部分文字列を検索し、検索対象文字列全体内で、その部分文字列が最後に出現する位置の 0 から始まるインデックス番号を返します。</summary>
+      <returns>
+        <paramref name="source" /> 全体内で <paramref name="value" /> が見つかった場合は、最後に見つかった位置の 0 から始まるインデックス番号。それ以外の場合は -1。</returns>
+      <param name="source">検索対象の文字列。</param>
+      <param name="value">
+        <paramref name="source" /> 内で検索する文字列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null です。または <paramref name="value" /> は null です。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.String,System.Globalization.CompareOptions)">
+      <summary>指定した <see cref="T:System.Globalization.CompareOptions" /> 値を使用して、指定した部分文字列を検索し、検索対象文字列全体内で、その部分文字列が最後に出現する位置の 0 から始まるインデックス番号を返します。</summary>
+      <returns>指定した比較オプションを使用して、<paramref name="source" /> 全体内で <paramref name="value" /> が見つかった場合は、最後に見つかった位置の 0 から始まるインデックス番号。それ以外の場合は -1。</returns>
+      <param name="source">検索対象の文字列。</param>
+      <param name="value">
+        <paramref name="source" /> 内で検索する文字列。</param>
+      <param name="options">
+        <paramref name="source" /> と <paramref name="value" /> の比較方法を定義する値。<paramref name="options" /> は、列挙値 <see cref="F:System.Globalization.CompareOptions.Ordinal" /> であるか、または <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" />、<see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> の 1 つ以上の値のビットごとの組み合わせです。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null です。または <paramref name="value" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> に無効な <see cref="T:System.Globalization.CompareOptions" /> 値が含まれています。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.String,System.Int32,System.Globalization.CompareOptions)">
+      <summary>指定した <see cref="T:System.Globalization.CompareOptions" /> 値を使用して、指定した部分文字列を検索し、検索対象文字列の先頭から指定したインデックスまでの範囲内で、その部分文字列が最後に出現する位置の 0 から始まるインデックス番号を返します。</summary>
+      <returns>指定した比較オプションを使用して、<paramref name="source" /> の先頭から <paramref name="startIndex" /> までの <paramref name="source" /> の範囲内で <paramref name="value" /> が見つかった場合は、最後に見つかった位置の 0 から始まるインデックス番号。それ以外の場合は -1。<paramref name="value" /> が無視できる文字の場合は <paramref name="startIndex" /> を返します。</returns>
+      <param name="source">検索対象の文字列。</param>
+      <param name="value">
+        <paramref name="source" /> 内で検索する文字列。</param>
+      <param name="startIndex">後方検索の開始位置を示す 0 から始まるインデックス。</param>
+      <param name="options">
+        <paramref name="source" /> と <paramref name="value" /> の比較方法を定義する値。<paramref name="options" /> は、列挙値 <see cref="F:System.Globalization.CompareOptions.Ordinal" /> であるか、または <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" />、<see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> の 1 つ以上の値のビットごとの組み合わせです。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null です。または <paramref name="value" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> が <paramref name="source" /> の有効なインデックスの範囲外の値です。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> に無効な <see cref="T:System.Globalization.CompareOptions" /> 値が含まれています。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.String,System.Int32,System.Int32)">
+      <summary>指定した部分文字列を検索し、検索対象文字列の指定したインデックスで終了し、指定した数の要素を含んでいる範囲内で、その部分文字列が最後に出現する位置の 0 から始まるインデックス番号を返します。</summary>
+      <returns>
+        <paramref name="startIndex" /> で終了し、<paramref name="count" /> で指定した数の要素を含んでいる <paramref name="source" /> の範囲内で <paramref name="value" /> が見つかった場合は、最後に見つかった位置の 0 から始まるインデックス番号。それ以外の場合は -1。<paramref name="value" /> が無視できる文字の場合は <paramref name="startIndex" /> を返します。</returns>
+      <param name="source">検索対象の文字列。</param>
+      <param name="value">
+        <paramref name="source" /> 内で検索する文字列。</param>
+      <param name="startIndex">後方検索の開始位置を示す 0 から始まるインデックス。</param>
+      <param name="count">検索対象の範囲内にある要素の数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null です。または <paramref name="value" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> が <paramref name="source" /> の有効なインデックスの範囲外の値です。または <paramref name="count" /> が 0 未満です。または <paramref name="startIndex" /> および <paramref name="count" /> が <paramref name="source" /> 内の有効な部分を指定していません。</exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.String,System.Int32,System.Int32,System.Globalization.CompareOptions)">
+      <summary>指定した <see cref="T:System.Globalization.CompareOptions" /> 値を使用して、指定した部分文字列を検索し、検索対象文字列の指定したインデックスで終了し、指定した数の要素を含んでいる範囲内で、その部分文字列が最後に出現する位置の 0 から始まるインデックス番号を返します。</summary>
+      <returns>指定した比較オプションを使用して、<paramref name="startIndex" /> で終わり、<paramref name="count" /> で指定した数の要素を含んでいる <paramref name="source" /> の範囲内で、その <paramref name="value" /> が見つかった場合は、最後に見つかった位置の 0 から始まるインデックス番号。それ以外の場合は -1。<paramref name="value" /> が無視できる文字の場合は <paramref name="startIndex" /> を返します。</returns>
+      <param name="source">検索対象の文字列。</param>
+      <param name="value">
+        <paramref name="source" /> 内で検索する文字列。</param>
+      <param name="startIndex">後方検索の開始位置を示す 0 から始まるインデックス。</param>
+      <param name="count">検索対象の範囲内にある要素の数。</param>
+      <param name="options">
+        <paramref name="source" /> と <paramref name="value" /> の比較方法を定義する値。<paramref name="options" /> は、列挙値 <see cref="F:System.Globalization.CompareOptions.Ordinal" /> であるか、または <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />、<see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />、<see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />、<see cref="F:System.Globalization.CompareOptions.IgnoreWidth" />、<see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> の 1 つ以上の値のビットごとの組み合わせです。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> は null です。または <paramref name="value" /> は null です。 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> が <paramref name="source" /> の有効なインデックスの範囲外の値です。または <paramref name="count" /> が 0 未満です。または <paramref name="startIndex" /> および <paramref name="count" /> が <paramref name="source" /> 内の有効な部分を指定していません。 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> に無効な <see cref="T:System.Globalization.CompareOptions" /> 値が含まれています。</exception>
+    </member>
+    <member name="P:System.Globalization.CompareInfo.Name">
+      <summary>この <see cref="T:System.Globalization.CompareInfo" /> による並べ替え操作に使用されるカルチャの名前を取得します。</summary>
+      <returns>カルチャの名前。</returns>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.ToString">
+      <summary>現在の <see cref="T:System.Globalization.CompareInfo" /> オブジェクトを表す文字列を返します。</summary>
+      <returns>現在の <see cref="T:System.Globalization.CompareInfo" /> オブジェクトを表す文字列。</returns>
+    </member>
+    <member name="T:System.Globalization.CompareOptions">
+      <summary>
+        <see cref="T:System.Globalization.CompareInfo" /> と共に使用する文字列比較オプションを定義します。</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.IgnoreCase">
+      <summary>文字列比較で大文字と小文字の区別を無視することを示します。</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.IgnoreKanaType">
+      <summary>文字列比較でカナ型を無視することを示します。カナ型とは、日本語の発音を表すひらがなとカタカナの文字を指します。ひらがなは、本来の日本語の表現と単語に使用し、カタカナは "コンピューター" または "インターネット" などの外来語に使用します。発音は、ひらがなとカタカナのどちらでも表現できます。この値が選択されている場合、ある発音を示すひらがなは、同じ発音を示すカタカナと同一であると見なされます。</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.IgnoreNonSpace">
+      <summary>文字列比較で、発音区別符など、非スペーシング組み合わせ文字を無視するように指定します。Unicode 標準は、新しい文字を生成するために基本文字と組み合わせられる文字を組み合わせ文字として定義しています。非スペーシング組み合わせ文字は、表示されるときに文字間隔用の領域は確保しません。</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.IgnoreSymbols">
+      <summary>文字列比較において、空白文字、句読点、通貨記号、パーセント記号、算術記号、アンパサンドなどの記号を無視することを示します。</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.IgnoreWidth">
+      <summary>文字列比較において、半角と全角の区別を無視することを示します。たとえば、日本語のカタカナ文字は、全角または半角で記述できます。この値を選択した場合、全角で記述されたカタカナ文字は、半角で記述されたカタカナ文字と同一であると見なされます。</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.None">
+      <summary>文字列比較の既定のオプション設定を示します。</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.Ordinal">
+      <summary>Unicode UTF-16 でエンコードされた連続する文字列の値 (コード単位比較に基づくコード単位) を使用して、文字列を比較することを示します。この比較は高速ですが、カルチャに応じた処理は行いません。XXXX16 が YYYY16 よりも小さい場合、XXXX16 というコード単位で始まる文字列は YYYY16 で始まる文字列よりも前になります。この値を他の <see cref="T:System.Globalization.CompareOptions" /> 値と組み合わせることはできません。この値は単独で使用してください。</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.OrdinalIgnoreCase">
+      <summary>文字列の比較で大文字と小文字の違いを無視し、通常の比較を実行する必要があります。この手法は、インバリアント カルチャを使用して文字列を大文字に変換し、その結果に対して序数に基づく比較を実行することと同じです。</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.StringSort">
+      <summary>文字列の比較時に、文字列での並べ替えアルゴリズムを使用することを示します。文字列での並べ替えでは、ハイフン、アポストロフィ、およびその他の英数字以外の記号が英数字よりも前に来ます。</summary>
+    </member>
+    <member name="T:System.Globalization.CultureInfo">
+      <summary>特定のカルチャ (アンマネージ コードの開発では "ロケール" と呼ばれます) に関する情報を提供します。この情報には、カルチャの名前、書記体系、使用する暦、および日付と並べ替え文字列の書式が含まれます。</summary>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.#ctor(System.String)">
+      <summary>名前で指定するカルチャに基づいて、<see cref="T:System.Globalization.CultureInfo" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="name">定義済みの <see cref="T:System.Globalization.CultureInfo" /> 名、既存の <see cref="T:System.Globalization.CultureInfo" /> の <see cref="P:System.Globalization.CultureInfo.Name" />、または Windows 専用カルチャ名。<paramref name="name" /> では、大文字と小文字は区別されません。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> is null. </exception>
+      <exception cref="T:System.Globalization.CultureNotFoundException">
+        <paramref name="name" /> is not a valid culture name.For more information, see the Notes to Callers section.</exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.Calendar">
+      <summary>カルチャで使用する既定の暦を取得します。</summary>
+      <returns>カルチャで使用する既定の暦を表す <see cref="T:System.Globalization.Calendar" />。</returns>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.Clone">
+      <summary>現在の <see cref="T:System.Globalization.CultureInfo" /> のコピーを作成します。</summary>
+      <returns>現在の <see cref="T:System.Globalization.CultureInfo" /> のコピー。</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.CompareInfo">
+      <summary>カルチャの文字列を比較する方法を定義する <see cref="T:System.Globalization.CompareInfo" /> を取得します。</summary>
+      <returns>カルチャの文字列を比較する方法を定義する <see cref="T:System.Globalization.CompareInfo" />。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.CurrentCulture">
+      <summary>現在のスレッドで使用するカルチャを表す <see cref="T:System.Globalization.CultureInfo" /> オブジェクトを取得または設定します。</summary>
+      <returns>現在のスレッドで使用するカルチャを表すオブジェクト。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is set to null.</exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.CurrentUICulture">
+      <summary>実行時にカルチャ固有のリソースを参照するためにリソース マネージャーによって使用される現在のユーザー インターフェイスのカルチャを表す <see cref="T:System.Globalization.CultureInfo" /> オブジェクトを取得または設定します。</summary>
+      <returns>実行時にカルチャ固有のリソースを検索するためにリソース マネージャーで使用されるカルチャ。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is set to null.</exception>
+      <exception cref="T:System.ArgumentException">The property is set to a culture name that cannot be used to locate a resource file.Resource filenames can include only letters, numbers, hyphens, or underscores.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.DateTimeFormat">
+      <summary>カルチャに対応する、日時の表示形式を定義する <see cref="T:System.Globalization.DateTimeFormatInfo" /> を取得または設定します。</summary>
+      <returns>カルチャに対応する、日時の表示形式を定義する <see cref="T:System.Globalization.DateTimeFormatInfo" />。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Globalization.CultureInfo.DateTimeFormat" /> property or any of the <see cref="T:System.Globalization.DateTimeFormatInfo" /> properties is set, and the <see cref="T:System.Globalization.CultureInfo" /> is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.DefaultThreadCurrentCulture">
+      <summary>現在のアプリケーション ドメインのスレッドの既定のカルチャを取得または設定します。</summary>
+      <returns>現在のアプリケーション ドメインのスレッドの既定のカルチャ、または現在のシステム カルチャがアプリケーション ドメインの既定のスレッド カルチャの場合は null。</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.DefaultThreadCurrentUICulture">
+      <summary>現在のアプリケーション ドメインのスレッドの既定の UI カルチャを取得または設定します。</summary>
+      <returns>現在のアプリケーション ドメインのスレッドの既定の UI カルチャ、または現在のシステム UI カルチャがアプリケーション ドメインの既定のスレッド UI カルチャの場合は null。</returns>
+      <exception cref="T:System.ArgumentException">In a set operation, the <see cref="P:System.Globalization.CultureInfo.Name" /> property value is invalid. </exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.DisplayName">
+      <summary>完全にローカライズされたカルチャ名を取得します。</summary>
+      <returns>完全にローカライズされた languagefull [country/regionfull] という形式のカルチャ名。languagefull は言語の完全名であり、country/regionfull は国/地域の完全名です。</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.EnglishName">
+      <summary>英語で表した languagefull [country/regionfull] という形式のカルチャ名を取得します。</summary>
+      <returns>英語で表した languagefull [country/regionfull] という形式のカルチャ名。languagefull は言語の完全名であり、country/regionfull は国/地域の完全名です。</returns>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.Equals(System.Object)">
+      <summary>指定したオブジェクトが現在の <see cref="T:System.Globalization.CultureInfo" /> と同じカルチャかどうかを判断します。</summary>
+      <returns>
+        <paramref name="value" /> が現在の <see cref="T:System.Globalization.CultureInfo" /> と同じカルチャの場合は true。それ以外の場合は false。</returns>
+      <param name="value">現在の <see cref="T:System.Globalization.CultureInfo" /> と比較するオブジェクト。</param>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.GetFormat(System.Type)">
+      <summary>指定した型に書式指定する方法を定義するオブジェクトを取得します。</summary>
+      <returns>
+        <see cref="P:System.Globalization.CultureInfo.NumberFormat" /> プロパティの値。<paramref name="formatType" /> が <see cref="T:System.Globalization.NumberFormatInfo" /> クラスの <see cref="T:System.Type" /> オブジェクトの場合は、現在の <see cref="T:System.Globalization.CultureInfo" /> の既定の数値書式情報が格納された <see cref="T:System.Globalization.NumberFormatInfo" /> です。または <see cref="P:System.Globalization.CultureInfo.DateTimeFormat" /> プロパティの値。<paramref name="formatType" /> が <see cref="T:System.Globalization.DateTimeFormatInfo" /> クラスの <see cref="T:System.Type" /> オブジェクトの場合は、現在の <see cref="T:System.Globalization.CultureInfo" /> の既定の日付および時刻の形式に関する情報が格納された <see cref="T:System.Globalization.DateTimeFormatInfo" /> です。または <paramref name="formatType" /> がその他のオブジェクトである場合は null。</returns>
+      <param name="formatType">書式指定オブジェクトを取得する <see cref="T:System.Type" />。このメソッドは、<see cref="T:System.Globalization.NumberFormatInfo" /> 型と <see cref="T:System.Globalization.DateTimeFormatInfo" /> 型だけをサポートしています。</param>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.GetHashCode">
+      <summary>現在の <see cref="T:System.Globalization.CultureInfo" /> のハッシュ関数として機能します。ハッシュ アルゴリズムや、ハッシュ テーブルのようなデータ構造での使用に適しています。</summary>
+      <returns>現在の <see cref="T:System.Globalization.CultureInfo" /> のハッシュ コード。</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.InvariantCulture">
+      <summary>カルチャに依存しない (インバリアントな) <see cref="T:System.Globalization.CultureInfo" /> オブジェクトを取得します。</summary>
+      <returns>カルチャに依存しない (インバリアントな) オブジェクト。</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.IsNeutralCulture">
+      <summary>現在の <see cref="T:System.Globalization.CultureInfo" /> がニュートラル カルチャを表しているかどうかを示す値を取得します。</summary>
+      <returns>現在の <see cref="T:System.Globalization.CultureInfo" /> がニュートラル カルチャを表している場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.IsReadOnly">
+      <summary>現在の <see cref="T:System.Globalization.CultureInfo" /> が読み取り専用かどうかを示す値を取得します。</summary>
+      <returns>現在の <see cref="T:System.Globalization.CultureInfo" /> が読み取り専用の場合は true。それ以外の場合は false。既定値は、false です。</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.Name">
+      <summary>languagecode2-country/regioncode2 という形式のカルチャ名を取得します。</summary>
+      <returns>languagecode2-country/regioncode2 という形式のカルチャ名。languagecode2 は、ISO 639-1 に基づく小文字の 2 文字コードです。country/regioncode2 は、ISO 3166 から派生したもので、通常は 2 文字の英語大文字で構成されます (BCP-47 の言語タグ)。</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.NativeName">
+      <summary>カルチャの表示設定である、言語、国/地域、およびオプションのスクリプトで構成されるカルチャ名を取得します。</summary>
+      <returns>カルチャ名。言語の完全名、国/地域の完全名、およびオプションのスクリプトで構成されます。形式については、<see cref="T:System.Globalization.CultureInfo" /> クラスの説明を参照してください。</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.NumberFormat">
+      <summary>数値、通貨、および割合を表示する、カルチャに対応する書式を定義する <see cref="T:System.Globalization.NumberFormatInfo" /> を取得または設定します。</summary>
+      <returns>数値、通貨、および割合を表示する、カルチャに対応する書式を定義する <see cref="T:System.Globalization.NumberFormatInfo" />。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Globalization.CultureInfo.NumberFormat" /> property or any of the <see cref="T:System.Globalization.NumberFormatInfo" /> properties is set, and the <see cref="T:System.Globalization.CultureInfo" /> is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.OptionalCalendars">
+      <summary>カルチャで使用できる暦の一覧を取得します。</summary>
+      <returns>現在の <see cref="T:System.Globalization.CultureInfo" /> が表すカルチャで使用できる暦を表す <see cref="T:System.Globalization.Calendar" /> 型の配列。</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.Parent">
+      <summary>現在の <see cref="T:System.Globalization.CultureInfo" /> の親カルチャを表す <see cref="T:System.Globalization.CultureInfo" /> を取得します。</summary>
+      <returns>現在の <see cref="T:System.Globalization.CultureInfo" /> の親カルチャを表す <see cref="T:System.Globalization.CultureInfo" />。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.ReadOnly(System.Globalization.CultureInfo)">
+      <summary>指定した <see cref="T:System.Globalization.CultureInfo" /> オブジェクトをラップする読み取り専用のラッパーを返します。</summary>
+      <returns>
+        <paramref name="ci" /> をラップする読み取り専用の <see cref="T:System.Globalization.CultureInfo" /> ラッパー。</returns>
+      <param name="ci">ラップする <see cref="T:System.Globalization.CultureInfo" /> オブジェクト。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="ci" /> is null. </exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.TextInfo">
+      <summary>カルチャに関連付けられている書記体系を定義する <see cref="T:System.Globalization.TextInfo" /> を取得します。</summary>
+      <returns>カルチャに関連付けられている書記体系を定義する <see cref="T:System.Globalization.TextInfo" />。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.ToString">
+      <summary>"languagecode2-country/regioncode2" という形式で、現在の <see cref="T:System.Globalization.CultureInfo" /> の名前を格納している文字列を返します。</summary>
+      <returns>現在の <see cref="T:System.Globalization.CultureInfo" /> の名前を格納している文字列。</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.TwoLetterISOLanguageName">
+      <summary>現在の <see cref="T:System.Globalization.CultureInfo" /> の言語に対する ISO 639-1 の 2 桁の文字コードを取得します。</summary>
+      <returns>現在の <see cref="T:System.Globalization.CultureInfo" /> の言語に対する ISO 639-1 の 2 桁文字コード。</returns>
+    </member>
+    <member name="T:System.Globalization.CultureNotFoundException">
+      <summary>コンピューター上で使用できないカルチャを構築しようとするメソッドが呼び出されたときに、例外がスローされます。</summary>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor">
+      <summary>メッセージ文字列をシステム提供のメッセージに設定して、<see cref="T:System.Globalization.CultureNotFoundException" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor(System.String)">
+      <summary>指定されたエラー メッセージで <see cref="T:System.Globalization.CultureNotFoundException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">この例外で表示されるエラー メッセージ。</param>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor(System.String,System.Exception)">
+      <summary>指定したエラー メッセージおよびこの例外の原因となった内部例外への参照を使用して、<see cref="T:System.Globalization.CultureNotFoundException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">この例外で表示されるエラー メッセージ。</param>
+      <param name="innerException">現在の例外の原因となった例外。<paramref name="innerException" /> パラメーターが null 参照でない場合は、内部例外を処理する catch ブロックで現在の例外が発生します。</param>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor(System.String,System.String)">
+      <summary>指定したエラー メッセージ、およびこの例外の原因であるパラメーターの名前を使用して、<see cref="T:System.Globalization.CultureNotFoundException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="paramName">現在の例外の原因であるパラメーターの名前。</param>
+      <param name="message">この例外で表示されるエラー メッセージ。</param>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor(System.String,System.String,System.Exception)">
+      <summary>指定したエラー メッセージ、無効なカルチャ名、およびこの例外の原因である内部例外への参照を使用して、<see cref="T:System.Globalization.CultureNotFoundException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">この例外で表示されるエラー メッセージ。</param>
+      <param name="invalidCultureName">見つからないカルチャ名。</param>
+      <param name="innerException">現在の例外の原因となった例外。<paramref name="innerException" /> パラメーターが null 参照でない場合は、内部例外を処理する catch ブロックで現在の例外が発生します。</param>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor(System.String,System.String,System.String)">
+      <summary>指定したエラー メッセージ、無効なカルチャ名、およびこの例外の原因であるパラメーターの名前を使用して、<see cref="T:System.Globalization.CultureNotFoundException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="paramName">現在の例外の原因であるパラメーターの名前。</param>
+      <param name="invalidCultureName">見つからないカルチャ名。</param>
+      <param name="message">この例外で表示されるエラー メッセージ。</param>
+    </member>
+    <member name="P:System.Globalization.CultureNotFoundException.InvalidCultureName">
+      <summary>見つからないカルチャ名を取得します。</summary>
+      <returns>無効なカルチャ名。</returns>
+    </member>
+    <member name="P:System.Globalization.CultureNotFoundException.Message">
+      <summary>例外の原因を説明するエラー メッセージを取得します。</summary>
+      <returns>例外の詳細を説明する文字列。</returns>
+    </member>
+    <member name="T:System.Globalization.DateTimeFormatInfo">
+      <summary>日付と時刻の値の書式に関するカルチャ固有の情報を提供します。</summary>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.#ctor">
+      <summary>カルチャに依存しない (インバリアントな) <see cref="T:System.Globalization.DateTimeFormatInfo" /> クラスの新しい書き込み可能インスタンスを初期化します。</summary>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.AbbreviatedDayNames">
+      <summary>曜日を表すカルチャ固有の省略名を格納している型 <see cref="T:System.String" /> の 1 次元配列を取得または設定します。</summary>
+      <returns>曜日を表すカルチャ固有の省略名を格納している型 <see cref="T:System.String" /> の 1 次元配列。<see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> の配列は、"Sun"、"Mon"、"Tue"、"Wed"、"Thu"、"Fri"、および "Sat" を格納します。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.ArgumentException">The property is being set to an array that is multidimensional or that has a length that is not exactly 7. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.AbbreviatedMonthGenitiveNames">
+      <summary>現在の <see cref="T:System.Globalization.DateTimeFormatInfo" /> オブジェクトに関連付けられた月の省略名の文字列配列を取得または設定します。</summary>
+      <returns>月の省略名の文字列配列。</returns>
+      <exception cref="T:System.ArgumentException">In a set operation, the array is multidimensional or has a length that is not exactly 13.</exception>
+      <exception cref="T:System.ArgumentNullException">In a set operation, the array or one of the elements of the array is null.</exception>
+      <exception cref="T:System.InvalidOperationException">In a set operation, the current <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only.</exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.AbbreviatedMonthNames">
+      <summary>月を表すカルチャ固有の省略名を格納している 1 次元配列を取得または設定します。</summary>
+      <returns>月を表すカルチャ固有の省略名を格納している、13 個の要素を持つ 1 次元配列。12 か月の暦では、配列の 13 番目の要素は空の文字列になります。<see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> の配列は、"Jan"、"Feb"、"Mar"、"Apr"、"May"、"Jun"、"Jul"、"Aug"、"Sep"、"Oct"、"Nov"、"Dec"、および "" を格納します。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.ArgumentException">The property is being set to an array that is multidimensional or that has a length that is not exactly 13. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.AMDesignator">
+      <summary>"ante meridiem" (午前) の時間の文字列指定子を取得または設定します。</summary>
+      <returns>"ante meridiem" の時間の文字列指定子。<see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> の既定値は "AM" です。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.Calendar">
+      <summary>現在のカルチャで使用する暦を取得または設定します。</summary>
+      <returns>現在のカルチャで使用する暦。<see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> の既定値は <see cref="T:System.Globalization.GregorianCalendar" /> オブジェクトです。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The property is being set to a <see cref="T:System.Globalization.Calendar" /> object that is not valid for the current culture. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.CalendarWeekRule">
+      <summary>年の最初の週を判断するために使用する規則を指定する値を取得または設定します。</summary>
+      <returns>年の最初の週を決定する値。<see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> の既定値は <see cref="F:System.Globalization.CalendarWeekRule.FirstDay" /> です。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The property is being set to a value that is not a valid <see cref="T:System.Globalization.CalendarWeekRule" /> value. </exception>
+      <exception cref="T:System.InvalidOperationException">In a set operation, the current <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only.</exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.Clone">
+      <summary>
+        <see cref="T:System.Globalization.DateTimeFormatInfo" /> の簡易コピーを作成します。</summary>
+      <returns>元の <see cref="T:System.Globalization.DateTimeFormatInfo" /> からコピーされた新しい <see cref="T:System.Globalization.DateTimeFormatInfo" /> オブジェクト。</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.CurrentInfo">
+      <summary>現在のカルチャに基づいて値を形式指定する読み取り専用 <see cref="T:System.Globalization.DateTimeFormatInfo" /> オブジェクトを取得します。</summary>
+      <returns>現在のスレッドに対する <see cref="T:System.Globalization.CultureInfo" /> オブジェクトに基づく読み取り専用の <see cref="T:System.Globalization.DateTimeFormatInfo" /> オブジェクト。</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.DayNames">
+      <summary>曜日を表すカルチャ固有の完全名を格納する 1 次元の文字列配列を取得または設定します。</summary>
+      <returns>曜日を表すカルチャ固有の完全名を格納している 1 次元の文字列配列。<see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> の配列は、"Sunday"、"Monday"、"Tuesday"、"Wednesday"、"Thursday"、"Friday"、および "Saturday" を格納します。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.ArgumentException">The property is being set to an array that is multidimensional or that has a length that is not exactly 7. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.FirstDayOfWeek">
+      <summary>週の最初の曜日を取得または設定します。</summary>
+      <returns>週の最初の日を表す列挙値。<see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> の既定値は <see cref="F:System.DayOfWeek.Sunday" /> です。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The property is being set to a value that is not a valid <see cref="T:System.DayOfWeek" /> value. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.FullDateTimePattern">
+      <summary>長い日付値と長い時刻値のカスタム書式指定文字列を取得または設定します。</summary>
+      <returns>長い日付値と長い時刻値のカスタム書式指定文字列。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetAbbreviatedDayName(System.DayOfWeek)">
+      <summary>現在の <see cref="T:System.Globalization.DateTimeFormatInfo" /> オブジェクトに関連付けられたカルチャに基づいて、指定した曜日のカルチャ固有の省略名を返します。</summary>
+      <returns>
+        <paramref name="dayofweek" /> が表す曜日のカルチャ固有の省略名。</returns>
+      <param name="dayofweek">
+        <see cref="T:System.DayOfWeek" /> 値。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="dayofweek" /> is not a valid <see cref="T:System.DayOfWeek" /> value. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetAbbreviatedEraName(System.Int32)">
+      <summary>省略形が存在する場合は、指定した時代 (年号) の省略名を格納している文字列を返します。</summary>
+      <returns>省略形が存在する場合は、指定した時代 (年号) の省略名を格納している文字列。または省略形が存在しない場合は、時代 (年号) の完全名を格納している文字列。</returns>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> does not represent a valid era in the calendar specified in the <see cref="P:System.Globalization.DateTimeFormatInfo.Calendar" /> property. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetAbbreviatedMonthName(System.Int32)">
+      <summary>現在の <see cref="T:System.Globalization.DateTimeFormatInfo" /> オブジェクトに関連付けられたカルチャに基づいて、指定した月のカルチャ固有の省略名を返します。</summary>
+      <returns>
+        <paramref name="month" /> が表す月のカルチャ固有の省略名。</returns>
+      <param name="month">取得する月の名前を表す 1 ～ 13 の整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="month" /> is less than 1 or greater than 13. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetDayName(System.DayOfWeek)">
+      <summary>現在の <see cref="T:System.Globalization.DateTimeFormatInfo" /> オブジェクトに関連付けられたカルチャに基づいて、指定した曜日のカルチャ固有の完全名を返します。</summary>
+      <returns>
+        <paramref name="dayofweek" /> が表す曜日のカルチャ固有の完全名。</returns>
+      <param name="dayofweek">
+        <see cref="T:System.DayOfWeek" /> 値。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="dayofweek" /> is not a valid <see cref="T:System.DayOfWeek" /> value. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetEra(System.String)">
+      <summary>指定した時代 (年号) を表す整数を返します。</summary>
+      <returns>
+        <paramref name="eraName" /> が有効な場合は時代 (年号) を表す整数。それ以外の場合は -1。</returns>
+      <param name="eraName">時代 (年号) の名前を格納している文字列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="eraName" /> is null. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetEraName(System.Int32)">
+      <summary>指定した時代 (年号) の名前を格納している文字列を返します。</summary>
+      <returns>時代 (年号) の名前を格納している文字列。</returns>
+      <param name="era">時代 (年号) を表す整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> does not represent a valid era in the calendar specified in the <see cref="P:System.Globalization.DateTimeFormatInfo.Calendar" /> property. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetFormat(System.Type)">
+      <summary>日付と時刻の書式指定サービスを提供する指定した型のオブジェクトを返します。</summary>
+      <returns>
+        <paramref name="formatType" /> が現在の <see cref="T:System.Globalization.DateTimeFormatInfo" /> の型と同じ場合は、現在のオブジェクト。それ以外の場合は null。</returns>
+      <param name="formatType">要求される形式指定サービスの型。</param>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetInstance(System.IFormatProvider)">
+      <summary>指定した <see cref="T:System.IFormatProvider" /> に関連付けられている <see cref="T:System.Globalization.DateTimeFormatInfo" /> オブジェクトを返します。</summary>
+      <returns>
+        <see cref="T:System.IFormatProvider" /> に関連付けられている <see cref="T:System.Globalization.DateTimeFormatInfo" /> オブジェクト。</returns>
+      <param name="provider">
+        <see cref="T:System.Globalization.DateTimeFormatInfo" /> オブジェクトを取得する <see cref="T:System.IFormatProvider" />。または <see cref="P:System.Globalization.DateTimeFormatInfo.CurrentInfo" /> を取得するには null。</param>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetMonthName(System.Int32)">
+      <summary>現在の <see cref="T:System.Globalization.DateTimeFormatInfo" /> オブジェクトに関連付けられたカルチャに基づいて、指定した月のカルチャ固有の完全名を返します。</summary>
+      <returns>
+        <paramref name="month" /> が表す月のカルチャ固有の完全名。</returns>
+      <param name="month">取得する月の名前を表す 1 ～ 13 の整数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="month" /> is less than 1 or greater than 13. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.InvariantInfo">
+      <summary>カルチャに依存しない (インバリアントな) 既定の読み取り専用 <see cref="T:System.Globalization.DateTimeFormatInfo" /> オブジェクトを取得します。</summary>
+      <returns>カルチャに依存しない (インバリアントな) 読み取り専用オブジェクト。</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.IsReadOnly">
+      <summary>
+        <see cref="T:System.Globalization.DateTimeFormatInfo" /> オブジェクトが読み取り専用かどうかを示す値を取得します。</summary>
+      <returns>
+        <see cref="T:System.Globalization.DateTimeFormatInfo" /> オブジェクトが読み取り専用の場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.LongDatePattern">
+      <summary>長い日付値のカスタム書式指定文字列を取得または設定します。</summary>
+      <returns>長い日付値のカスタム書式指定文字列。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.LongTimePattern">
+      <summary>長い時刻値のカスタム書式指定文字列を取得または設定します。</summary>
+      <returns>長い形式の時刻値の書式パターン。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.MonthDayPattern">
+      <summary>月と日の値のカスタム書式指定文字列を取得または設定します。</summary>
+      <returns>月と日の値のカスタム書式指定文字列。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.MonthGenitiveNames">
+      <summary>現在の <see cref="T:System.Globalization.DateTimeFormatInfo" /> オブジェクトに関連付けられた月の名前の文字列配列を取得または設定します。</summary>
+      <returns>月名の文字列配列。</returns>
+      <exception cref="T:System.ArgumentException">In a set operation, the array is multidimensional or has a length that is not exactly 13.</exception>
+      <exception cref="T:System.ArgumentNullException">In a set operation, the array or one of its elements is null.</exception>
+      <exception cref="T:System.InvalidOperationException">In a set operation, the current <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only.</exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.MonthNames">
+      <summary>月を表すカルチャ固有の完全名を格納している型 <see cref="T:System.String" /> の 1 次元配列を取得または設定します。</summary>
+      <returns>月を表すカルチャ固有の完全名を格納している型 <see cref="T:System.String" /> の 1 次元配列。12 か月の暦では、配列の 13 番目の要素は空の文字列になります。<see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> の配列は、"January"、"February"、"March"、"April"、"May"、"June"、"July"、"August"、"September"、"October"、"November"、"December"、および "" を格納します。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.ArgumentException">The property is being set to an array that is multidimensional or that has a length that is not exactly 13. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.PMDesignator">
+      <summary>"post meridiem" (午後) の時間の文字列指定子を取得または設定します。</summary>
+      <returns>"post meridiem" (午後) の時間の文字列指定子。<see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> の既定値は、"PM" です。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.ReadOnly(System.Globalization.DateTimeFormatInfo)">
+      <summary>読み取り専用 <see cref="T:System.Globalization.DateTimeFormatInfo" /> ラッパーを返します。</summary>
+      <returns>読み取り専用の <see cref="T:System.Globalization.DateTimeFormatInfo" /> ラッパー。</returns>
+      <param name="dtfi">ラップする <see cref="T:System.Globalization.DateTimeFormatInfo" /> オブジェクト。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="dtfi" /> is null. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.RFC1123Pattern">
+      <summary>インターネット技術標準化委員会の (IETF) の Request for Comments (RFC) 1123 仕様に基づく時刻値のカスタム書式指定文字列を取得します。</summary>
+      <returns>IETF RFC 1123 仕様に準拠した時刻値のカスタム書式指定文字列。</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.ShortDatePattern">
+      <summary>短い日付値のカスタム書式指定文字列を取得または設定します。</summary>
+      <returns>短い形式の日付値のカスタム書式指定文字列。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.ShortestDayNames">
+      <summary>現在の <see cref="T:System.Globalization.DateTimeFormatInfo" /> オブジェクトに関連付けられた曜日の最も短い一意の省略名の文字列配列を取得または設定します。</summary>
+      <returns>曜日名の文字列配列。</returns>
+      <exception cref="T:System.ArgumentException">In a set operation, the array does not have exactly seven elements.</exception>
+      <exception cref="T:System.ArgumentNullException">In a set operation, the value array or one of the elements of the value array is null.</exception>
+      <exception cref="T:System.InvalidOperationException">In a set operation, the current <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only.</exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.ShortTimePattern">
+      <summary>短い時刻値のカスタム書式指定文字列を取得または設定します。</summary>
+      <returns>短い形式の時刻値のカスタム書式指定文字列。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.SortableDateTimePattern">
+      <summary>並べ替え可能な日付と時刻の値のカスタム書式指定文字列を取得します。</summary>
+      <returns>並べ替え可能な日付と時刻の値のカスタム書式指定文字列。</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.UniversalSortableDateTimePattern">
+      <summary>ユニバーサルで並べ替え可能な日付と時刻の文字列のカスタム書式指定文字列を取得します。</summary>
+      <returns>ユニバーサルで並べ替え可能な日付と時刻の文字列のカスタム書式指定文字列。</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.YearMonthPattern">
+      <summary>年と月の値のカスタム書式指定文字列を取得または設定します。</summary>
+      <returns>年と月の値のカスタム書式指定文字列。</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="T:System.Globalization.NumberFormatInfo">
+      <summary>数値を書式設定および解析するためのカルチャ固有の情報を提供します。</summary>
+    </member>
+    <member name="M:System.Globalization.NumberFormatInfo.#ctor">
+      <summary>カルチャに依存しない (インバリアントな) <see cref="T:System.Globalization.NumberFormatInfo" /> クラスの新しい書き込み可能インスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Globalization.NumberFormatInfo.Clone">
+      <summary>
+        <see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトの簡易コピーを作成します。</summary>
+      <returns>元の <see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトからコピーされた新しいオブジェクト。</returns>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyDecimalDigits">
+      <summary>通貨の値で使用する小数点以下の桁数を取得または設定します。</summary>
+      <returns>通貨の値で使用する小数点以下の桁数。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> の既定値は 2 です。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">プロパティが 0 より小さいか、99 より大きい値に設定されています。</exception>
+      <exception cref="T:System.InvalidOperationException">プロパティが設定されていますが、<see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトが読み取り専用です。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyDecimalSeparator">
+      <summary>通貨の値で桁区切り記号として使用する文字列を取得または設定します。</summary>
+      <returns>通貨の値で桁区切り記号として使用する文字列。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> の既定値は "." です。</returns>
+      <exception cref="T:System.ArgumentNullException">プロパティが null に設定されています。</exception>
+      <exception cref="T:System.InvalidOperationException">プロパティが設定されていますが、<see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトが読み取り専用です。</exception>
+      <exception cref="T:System.ArgumentException">プロパティが空の文字列に設定されています。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyGroupSeparator">
+      <summary>通貨の値で小数点の左にある数字のグループを区切る文字列を取得または設定します。</summary>
+      <returns>通貨の値で小数点の左にある数字のグループを区切る文字列。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> の既定値は "," です。</returns>
+      <exception cref="T:System.ArgumentNullException">プロパティが null に設定されています。</exception>
+      <exception cref="T:System.InvalidOperationException">プロパティが設定されていますが、<see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトが読み取り専用です。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyGroupSizes">
+      <summary>通貨の値で小数点の左にある各グループの数字の数を取得または設定します。</summary>
+      <returns>通貨の値で小数点の左にある各グループの数字の数。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> の既定値は 1 つだけの要素を持つ 1 次元配列であり、その要素は 3 に設定されます。</returns>
+      <exception cref="T:System.ArgumentNullException">プロパティが null に設定されています。</exception>
+      <exception cref="T:System.ArgumentException">プロパティが設定されており、配列に 0 よりも小さいか、9 よりも大きいエントリが格納されています。または プロパティが設定されており、配列で最後のエントリ以外のエントリが 0 に設定されています。</exception>
+      <exception cref="T:System.InvalidOperationException">プロパティが設定されていますが、<see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトが読み取り専用です。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyNegativePattern">
+      <summary>通貨の負の値の形式パターンを取得または設定します。</summary>
+      <returns>通貨の負の値の形式パターン。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> の既定値は 0 で、"($n)" を表します。"$" は <see cref="P:System.Globalization.NumberFormatInfo.CurrencySymbol" /> で、<paramref name="n" /> は数値です。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">0 より小さいか、15 よりも大きい値に設定されているされます。</exception>
+      <exception cref="T:System.InvalidOperationException">プロパティが設定されていますが、<see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトが読み取り専用です。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyPositivePattern">
+      <summary>通貨の正の値の形式パターンを取得または設定します。</summary>
+      <returns>通貨の正の値の形式パターン。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> の既定値は 0 で、"$n" を表します。"$" は <see cref="P:System.Globalization.NumberFormatInfo.CurrencySymbol" /> で、<paramref name="n" /> は数値です。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">0 より小さいか、3 より大きい値に設定されているされます。</exception>
+      <exception cref="T:System.InvalidOperationException">プロパティが設定されていますが、<see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトが読み取り専用です。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencySymbol">
+      <summary>通貨記号として使用する文字列を取得または設定します。</summary>
+      <returns>通貨記号として使用する文字列。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> の既定値は "¤" です。</returns>
+      <exception cref="T:System.ArgumentNullException">プロパティが null に設定されています。</exception>
+      <exception cref="T:System.InvalidOperationException">プロパティが設定されていますが、<see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトが読み取り専用です。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrentInfo">
+      <summary>現在のカルチャに基づいて値を形式指定する読み取り専用 <see cref="T:System.Globalization.NumberFormatInfo" /> を取得します。</summary>
+      <returns>現在のスレッドのカルチャに基づく読み取り専用 <see cref="T:System.Globalization.NumberFormatInfo" />。</returns>
+    </member>
+    <member name="M:System.Globalization.NumberFormatInfo.GetFormat(System.Type)">
+      <summary>数値形式指定サービスを提供する指定した型のオブジェクトを取得します。</summary>
+      <returns>
+        <paramref name="formatType" /> が現在の <see cref="T:System.Globalization.NumberFormatInfo" /> の型と同じ場合は、現在の <see cref="T:System.Globalization.NumberFormatInfo" />。それ以外の場合は null。</returns>
+      <param name="formatType">要求される形式指定サービスの <see cref="T:System.Type" />。</param>
+    </member>
+    <member name="M:System.Globalization.NumberFormatInfo.GetInstance(System.IFormatProvider)">
+      <summary>指定された <see cref="T:System.Globalization.NumberFormatInfo" /> に関連付けられている <see cref="T:System.IFormatProvider" /> を取得します。</summary>
+      <returns>指定した <see cref="T:System.Globalization.NumberFormatInfo" /> に関連付けられている <see cref="T:System.IFormatProvider" />。</returns>
+      <param name="formatProvider">
+        <see cref="T:System.Globalization.NumberFormatInfo" /> を取得するために使用する <see cref="T:System.IFormatProvider" />。または <see cref="P:System.Globalization.NumberFormatInfo.CurrentInfo" /> を取得する null。</param>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.InvariantInfo">
+      <summary>カルチャに依存しない (インバリアントな) 読み取り専用 <see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトを取得します。</summary>
+      <returns>カルチャに依存しない (インバリアントな) 読み取り専用オブジェクト。</returns>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.IsReadOnly">
+      <summary>この <see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトが読み取り専用かどうかを示す値を取得します。</summary>
+      <returns>true が読み取り専用である場合は <see cref="T:System.Globalization.NumberFormatInfo" />。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NaNSymbol">
+      <summary>IEEE NaN (非数) 値を表す文字列を取得または設定します。</summary>
+      <returns>IEEE NaN (非数) 値を表す文字列。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> の既定値は "NaN" です。</returns>
+      <exception cref="T:System.ArgumentNullException">プロパティが null に設定されています。</exception>
+      <exception cref="T:System.InvalidOperationException">プロパティが設定されていますが、<see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトが読み取り専用です。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NegativeInfinitySymbol">
+      <summary>負の無限大を表す文字列を取得または設定します。</summary>
+      <returns>負の無限大を表す文字列。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> の既定値は "-Infinity" です。</returns>
+      <exception cref="T:System.ArgumentNullException">プロパティが null に設定されています。</exception>
+      <exception cref="T:System.InvalidOperationException">プロパティが設定されていますが、<see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトが読み取り専用です。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NegativeSign">
+      <summary>関連付けられた数値が負であることを示す文字列を取得または設定します。</summary>
+      <returns>関連付けられた数値が負であることを示す文字列。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> の既定値は "-" です。</returns>
+      <exception cref="T:System.ArgumentNullException">プロパティが null に設定されています。</exception>
+      <exception cref="T:System.InvalidOperationException">プロパティが設定されていますが、<see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトが読み取り専用です。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NumberDecimalDigits">
+      <summary>数値で使用する小数点以下の桁数を取得または設定します。</summary>
+      <returns>数値で使用する小数点以下の桁数。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> の既定値は 2 です。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">プロパティが 0 より小さいか、99 より大きい値に設定されています。</exception>
+      <exception cref="T:System.InvalidOperationException">プロパティが設定されていますが、<see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトが読み取り専用です。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NumberDecimalSeparator">
+      <summary>数値で桁区切り記号として使用する文字列を取得または設定します。</summary>
+      <returns>数値で桁区切り記号として使用する文字列。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> の既定値は "." です。</returns>
+      <exception cref="T:System.ArgumentNullException">プロパティが null に設定されています。</exception>
+      <exception cref="T:System.InvalidOperationException">プロパティが設定されていますが、<see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトが読み取り専用です。</exception>
+      <exception cref="T:System.ArgumentException">プロパティが空の文字列に設定されています。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NumberGroupSeparator">
+      <summary>数値で小数点の左にある数字のグループを区切る文字列を取得または設定します。</summary>
+      <returns>数値で小数点の左にある数字のグループを区切る文字列。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> の既定値は "," です。</returns>
+      <exception cref="T:System.ArgumentNullException">プロパティが null に設定されています。</exception>
+      <exception cref="T:System.InvalidOperationException">プロパティが設定されていますが、<see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトが読み取り専用です。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NumberGroupSizes">
+      <summary>数値で小数点の左にある各グループの数字の数を取得または設定します。</summary>
+      <returns>数値で小数点の左にある各グループの数字の数。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> の既定値は 1 つだけの要素を持つ 1 次元配列であり、その要素は 3 に設定されます。</returns>
+      <exception cref="T:System.ArgumentNullException">プロパティが null に設定されています。</exception>
+      <exception cref="T:System.ArgumentException">プロパティが設定されており、配列に 0 よりも小さいか、9 よりも大きいエントリが格納されています。または プロパティが設定されており、配列で最後のエントリ以外のエントリが 0 に設定されています。</exception>
+      <exception cref="T:System.InvalidOperationException">プロパティが設定されていますが、<see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトが読み取り専用です。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NumberNegativePattern">
+      <summary>負の数値の形式パターンを取得または設定します。</summary>
+      <returns>負の数値の形式パターン。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">0 より小さいか、4 より大きい値に設定されているされます。</exception>
+      <exception cref="T:System.InvalidOperationException">プロパティが設定されていますが、<see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトが読み取り専用です。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentDecimalDigits">
+      <summary>パーセント値で使用する小数点以下の桁数を取得または設定します。</summary>
+      <returns>パーセント値で使用する小数点以下の桁数。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> の既定値は 2 です。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">プロパティが 0 より小さいか、99 より大きい値に設定されています。</exception>
+      <exception cref="T:System.InvalidOperationException">プロパティが設定されていますが、<see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトが読み取り専用です。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentDecimalSeparator">
+      <summary>パーセント値で桁区切り記号として使用する文字列を取得または設定します。</summary>
+      <returns>パーセント値で桁区切り記号として使用する文字列。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> の既定値は "." です。</returns>
+      <exception cref="T:System.ArgumentNullException">プロパティが null に設定されています。</exception>
+      <exception cref="T:System.InvalidOperationException">プロパティが設定されていますが、<see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトが読み取り専用です。</exception>
+      <exception cref="T:System.ArgumentException">プロパティが空の文字列に設定されています。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentGroupSeparator">
+      <summary>パーセント値で小数点の左にある数字のグループを区切る文字列を取得または設定します。</summary>
+      <returns>パーセント値で小数点の左にある数字のグループを区切る文字列。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> の既定値は "," です。</returns>
+      <exception cref="T:System.ArgumentNullException">プロパティが null に設定されています。</exception>
+      <exception cref="T:System.InvalidOperationException">プロパティが設定されていますが、<see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトが読み取り専用です。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentGroupSizes">
+      <summary>パーセント値で小数点の左にある各グループの数字の数を取得または設定します。</summary>
+      <returns>パーセント値で小数点の左にある各グループの数字の数。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> の既定値は 1 つだけの要素を持つ 1 次元配列であり、その要素は 3 に設定されます。</returns>
+      <exception cref="T:System.ArgumentNullException">プロパティが null に設定されています。</exception>
+      <exception cref="T:System.ArgumentException">プロパティが設定されており、配列に 0 よりも小さいか、9 よりも大きいエントリが格納されています。または プロパティが設定されており、配列で最後のエントリ以外のエントリが 0 に設定されています。</exception>
+      <exception cref="T:System.InvalidOperationException">プロパティが設定されていますが、<see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトが読み取り専用です。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentNegativePattern">
+      <summary>負のパーセント値の形式パターンを取得または設定します。</summary>
+      <returns>負のパーセント値の形式パターン。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> の既定値は 0 で、"-n %" を表します。"%" は <see cref="P:System.Globalization.NumberFormatInfo.PercentSymbol" /> で、<paramref name="n" /> は数値です。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">0 より小さいか、11 より大きい値に設定されているされます。</exception>
+      <exception cref="T:System.InvalidOperationException">プロパティが設定されていますが、<see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトが読み取り専用です。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentPositivePattern">
+      <summary>正のパーセント値の形式パターンを取得または設定します。</summary>
+      <returns>正のパーセント値の形式パターン。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> の既定値は 0 で、"n %" を表します。"%" は <see cref="P:System.Globalization.NumberFormatInfo.PercentSymbol" /> で、<paramref name="n" /> は数値です。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">0 より小さいか、3 より大きい値に設定されているされます。</exception>
+      <exception cref="T:System.InvalidOperationException">プロパティが設定されていますが、<see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトが読み取り専用です。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentSymbol">
+      <summary>パーセント記号として使用する文字列を取得または設定します。</summary>
+      <returns>パーセント記号として使用する文字列。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> の既定値は "%" です。</returns>
+      <exception cref="T:System.ArgumentNullException">プロパティが null に設定されています。</exception>
+      <exception cref="T:System.InvalidOperationException">プロパティが設定されていますが、<see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトが読み取り専用です。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PerMilleSymbol">
+      <summary>パーミル記号として使用する文字列を取得または設定します。</summary>
+      <returns>パーミル記号として使用する文字列。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> の既定値は "‰" です。これは Unicode 文字の U+2030 です。</returns>
+      <exception cref="T:System.ArgumentNullException">プロパティが null に設定されています。</exception>
+      <exception cref="T:System.InvalidOperationException">プロパティが設定されていますが、<see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトが読み取り専用です。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PositiveInfinitySymbol">
+      <summary>正の無限大を表す文字列を取得または設定します。</summary>
+      <returns>正の無限大を表す文字列。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> の既定値は "Infinity" です。</returns>
+      <exception cref="T:System.ArgumentNullException">プロパティが null に設定されています。</exception>
+      <exception cref="T:System.InvalidOperationException">プロパティが設定されていますが、<see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトが読み取り専用です。</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PositiveSign">
+      <summary>関連付けられた数値が正であることを示す文字列を取得または設定します。</summary>
+      <returns>関連付けられた数値が正であることを示す文字列。<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> の既定値は "+" です。</returns>
+      <exception cref="T:System.ArgumentNullException">設定操作で、割り当てられる値は null です。</exception>
+      <exception cref="T:System.InvalidOperationException">プロパティが設定されていますが、<see cref="T:System.Globalization.NumberFormatInfo" /> オブジェクトが読み取り専用です。</exception>
+    </member>
+    <member name="M:System.Globalization.NumberFormatInfo.ReadOnly(System.Globalization.NumberFormatInfo)">
+      <summary>読み取り専用 <see cref="T:System.Globalization.NumberFormatInfo" /> ラッパーを返します。</summary>
+      <returns>
+        <paramref name="nfi" /> をラップする読み取り専用の <see cref="T:System.Globalization.NumberFormatInfo" /> ラッパー。</returns>
+      <param name="nfi">ラップする <see cref="T:System.Globalization.NumberFormatInfo" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="nfi" /> は null です。</exception>
+    </member>
+    <member name="T:System.Globalization.RegionInfo">
+      <summary>国/地域についての情報を格納します。</summary>
+    </member>
+    <member name="M:System.Globalization.RegionInfo.#ctor(System.String)">
+      <summary>名前で指定された国/地域または特定カルチャに基づいて、<see cref="T:System.Globalization.RegionInfo" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="name">ISO 3166 で定義された、国/地域の 2 文字のコードを含む文字列。または特定のカルチャ、カスタム カルチャ、または Windows 専用カルチャのカルチャ名を含む文字列。カルチャ名が RFC 4646 形式でない場合、アプリケーションでは国/地域名だけでなく完全なカルチャ名を指定する必要があります。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> is null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> is not a valid country/region name or specific culture name.</exception>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.CurrencySymbol">
+      <summary>国/地域に関連付けられた通貨記号を取得します。</summary>
+      <returns>国/地域に関連付けられた通貨記号。</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.CurrentRegion">
+      <summary>現在のスレッドで使用する国/地域を表す <see cref="T:System.Globalization.RegionInfo" /> を取得します。</summary>
+      <returns>現在のスレッドで使用する国/地域を表す <see cref="T:System.Globalization.RegionInfo" />。</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.DisplayName">
+      <summary>ローカライズされたバージョンの .NET Framework の言語で表した国/地域の完全名を取得します。</summary>
+      <returns>ローカライズされたバージョンの .NET Framework の言語で表した国/地域の完全名。</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.EnglishName">
+      <summary>英語で表した国/地域の完全名を取得します。</summary>
+      <returns>英語で表した国/地域の完全名。</returns>
+    </member>
+    <member name="M:System.Globalization.RegionInfo.Equals(System.Object)">
+      <summary>指定したオブジェクトが現在の <see cref="T:System.Globalization.RegionInfo" /> と同じインスタンスかどうかを判断します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターが <see cref="T:System.Globalization.RegionInfo" /> オブジェクトであり、<see cref="P:System.Globalization.RegionInfo.Name" /> プロパティが現在の <see cref="T:System.Globalization.RegionInfo" /> オブジェクトの <see cref="P:System.Globalization.RegionInfo.Name" /> プロパティと同じ場合は true。それ以外の場合は false。</returns>
+      <param name="value">現在の <see cref="T:System.Globalization.RegionInfo" /> と比較するオブジェクト。 </param>
+    </member>
+    <member name="M:System.Globalization.RegionInfo.GetHashCode">
+      <summary>現在の <see cref="T:System.Globalization.RegionInfo" /> のハッシュ関数として機能します。ハッシュ アルゴリズムや、ハッシュ テーブルのようなデータ構造での使用に適しています。</summary>
+      <returns>現在の <see cref="T:System.Globalization.RegionInfo" /> のハッシュ コード。</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.IsMetric">
+      <summary>国/地域で、計測のためにメートル法を使用するかどうかを示す値を取得します。</summary>
+      <returns>国/地域で、計測のためにメートル法を使用する場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.ISOCurrencySymbol">
+      <summary>国/地域に関連付けられた 3 文字の ISO 4217 通貨記号を取得します。</summary>
+      <returns>国/地域に関連付けられた 3 文字の ISO 4217 通貨記号。</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.Name">
+      <summary>現在の <see cref="T:System.Globalization.RegionInfo" /> オブジェクトの名前、または ISO 3166 で定義された 2 文字の国/地域コードを取得します。</summary>
+      <returns>
+        <see cref="M:System.Globalization.RegionInfo.#ctor(System.String)" /> コンストラクターの <paramref name="name" /> パラメーターで指定された値。戻り値は大文字です。または<see cref="M:System.Globalization.RegionInfo.#ctor(System.Int32)" /> コンストラクターの <paramref name="culture" /> パラメーターで指定された、ISO 3166 で定義された国/地域の 2 文字コード。戻り値は大文字です。</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.NativeName">
+      <summary>国/地域の名前を、その国/地域のネイティブな言語の書式で取得します。</summary>
+      <returns>ISO 3166 国/地域コードに関連付けられた言語で書式指定された、国/地域のネイティブな名前。</returns>
+    </member>
+    <member name="M:System.Globalization.RegionInfo.ToString">
+      <summary>現在の <see cref="T:System.Globalization.RegionInfo" /> に対して指定されたカルチャ名、または ISO 3166 で定義された 2 文字の国/地域コードを含む文字列を返します。</summary>
+      <returns>現在の <see cref="T:System.Globalization.RegionInfo" /> に対して指定されたカルチャ名、または ISO 3166 で定義された 2 文字の国/地域コードを含む文字列。</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.TwoLetterISORegionName">
+      <summary>ISO 3166 で定義された国/地域の 2 文字コードを取得します。</summary>
+      <returns>ISO 3166 で定義された国/地域の 2 文字コード。</returns>
+    </member>
+    <member name="T:System.Globalization.StringInfo">
+      <summary>文字列をテキスト要素に分割し、そのテキスト要素を反復処理する機能を提供します。</summary>
+    </member>
+    <member name="M:System.Globalization.StringInfo.#ctor">
+      <summary>
+        <see cref="T:System.Globalization.StringInfo" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Globalization.StringInfo.#ctor(System.String)">
+      <summary>
+        <see cref="T:System.Globalization.StringInfo" /> クラスの新しいインスタンスを指定された文字列に初期化します。</summary>
+      <param name="value">この <see cref="T:System.Globalization.StringInfo" /> オブジェクトを初期化する文字列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Globalization.StringInfo.Equals(System.Object)">
+      <summary>現在の <see cref="T:System.Globalization.StringInfo" /> オブジェクトが指定されたオブジェクトと等しいかどうかを示します。</summary>
+      <returns>
+        <paramref name="value" /> パラメーターが <see cref="T:System.Globalization.StringInfo" /> オブジェクトであり、<see cref="P:System.Globalization.StringInfo.String" /> プロパティがこの <see cref="T:System.Globalization.StringInfo" /> オブジェクトの <see cref="P:System.Globalization.StringInfo.String" /> プロパティと等しい場合は true。それ以外の場合は false。</returns>
+      <param name="value">オブジェクト。</param>
+    </member>
+    <member name="M:System.Globalization.StringInfo.GetHashCode">
+      <summary>現在の <see cref="T:System.Globalization.StringInfo" /> オブジェクトの値のハッシュ コードを計算します。</summary>
+      <returns>この <see cref="T:System.Globalization.StringInfo" /> オブジェクトの文字列値に基づく 32 ビット符号付き整数ハッシュ コード。</returns>
+    </member>
+    <member name="M:System.Globalization.StringInfo.GetNextTextElement(System.String)">
+      <summary>指定した文字列の最初のテキスト要素を取得します。</summary>
+      <returns>指定した文字列の最初のテキスト要素を格納している文字列を取得します。</returns>
+      <param name="str">テキスト要素の取得元の文字列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Globalization.StringInfo.GetNextTextElement(System.String,System.Int32)">
+      <summary>指定した文字列の指定したインデックスにあるテキスト要素を取得します。</summary>
+      <returns>指定した文字列の指定したインデックスにあるテキスト要素を格納している文字列。</returns>
+      <param name="str">テキスト要素の取得元の文字列。</param>
+      <param name="index">テキスト要素が開始する位置の、0 から始まるインデックス番号。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> が <paramref name="str" /> の有効なインデックスの範囲外の値です。</exception>
+    </member>
+    <member name="M:System.Globalization.StringInfo.GetTextElementEnumerator(System.String)">
+      <summary>文字列全体のテキスト要素を反復処理する列挙子を返します。</summary>
+      <returns>文字列全体の <see cref="T:System.Globalization.TextElementEnumerator" />。</returns>
+      <param name="str">反復処理対象の文字列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Globalization.StringInfo.GetTextElementEnumerator(System.String,System.Int32)">
+      <summary>指定したインデックスから開始する文字列のテキスト要素を反復処理する列挙子を返します。</summary>
+      <returns>
+        <paramref name="index" /> から開始する文字列の <see cref="T:System.Globalization.TextElementEnumerator" />。</returns>
+      <param name="str">反復処理対象の文字列。</param>
+      <param name="index">反復処理を開始する位置の、0 から始まるインデックス番号。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> が <paramref name="str" /> の有効なインデックスの範囲外の値です。</exception>
+    </member>
+    <member name="P:System.Globalization.StringInfo.LengthInTextElements">
+      <summary>現在の <see cref="T:System.Globalization.StringInfo" /> オブジェクト内のテキスト要素の数を取得します。</summary>
+      <returns>この <see cref="T:System.Globalization.StringInfo" /> オブジェクト内の基本文字、サロゲート ペア、および組み合わせ文字シーケンスの数。</returns>
+    </member>
+    <member name="M:System.Globalization.StringInfo.ParseCombiningCharacters(System.String)">
+      <summary>指定した文字列の各基本文字、上位サロゲート、または制御文字のインデックスを返します。</summary>
+      <returns>指定した文字列の各基本文字、上位サロゲート、または制御文字の、0 から始まるインデックス番号を格納している整数の配列。</returns>
+      <param name="str">検索対象の文字列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> は null なので、</exception>
+    </member>
+    <member name="P:System.Globalization.StringInfo.String">
+      <summary>現在の <see cref="T:System.Globalization.StringInfo" /> オブジェクトの値を取得または設定します。</summary>
+      <returns>現在の <see cref="T:System.Globalization.StringInfo" /> オブジェクトの値である文字列。</returns>
+      <exception cref="T:System.ArgumentNullException">設定操作の値が null です。</exception>
+    </member>
+    <member name="T:System.Globalization.TextElementEnumerator">
+      <summary>文字列のテキスト要素を列挙します。</summary>
+    </member>
+    <member name="P:System.Globalization.TextElementEnumerator.Current">
+      <summary>文字列内の現在のテキスト要素を取得します。</summary>
+      <returns>文字列内の現在のテキスト要素を格納しているオブジェクト。</returns>
+      <exception cref="T:System.InvalidOperationException">列挙子が、文字列の最初のテキスト要素の前、または最後のテキスト要素の後に位置しています。</exception>
+    </member>
+    <member name="P:System.Globalization.TextElementEnumerator.ElementIndex">
+      <summary>列挙子が現在位置しているテキスト要素のインデックスを取得します。</summary>
+      <returns>列挙子が現在位置しているテキスト要素のインデックス。</returns>
+      <exception cref="T:System.InvalidOperationException">列挙子が、文字列の最初のテキスト要素の前、または最後のテキスト要素の後に位置しています。</exception>
+    </member>
+    <member name="M:System.Globalization.TextElementEnumerator.GetTextElement">
+      <summary>文字列内の現在のテキスト要素を取得します。</summary>
+      <returns>読み取る文字列の現在のテキスト要素を格納している新しい文字列。</returns>
+      <exception cref="T:System.InvalidOperationException">列挙子が、文字列の最初のテキスト要素の前、または最後のテキスト要素の後に位置しています。</exception>
+    </member>
+    <member name="M:System.Globalization.TextElementEnumerator.MoveNext">
+      <summary>列挙子を文字列の次のテキスト要素に進めます。</summary>
+      <returns>列挙子が次のテキスト要素に正常に進んだ場合は true。列挙子が文字列の末尾を越えた場合は false。</returns>
+    </member>
+    <member name="M:System.Globalization.TextElementEnumerator.Reset">
+      <summary>列挙子を初期位置、つまり文字列の最初のテキスト要素の前に設定します。</summary>
+    </member>
+    <member name="T:System.Globalization.TextInfo">
+      <summary>大文字と小文字を区別するかどうかなど、書記体系に固有のテキストのプロパティと動作を定義します。</summary>
+    </member>
+    <member name="P:System.Globalization.TextInfo.CultureName">
+      <summary>現在の <see cref="T:System.Globalization.TextInfo" /> オブジェクトに関連付けられたカルチャの名前を取得します。</summary>
+      <returns>カルチャの名前。</returns>
+    </member>
+    <member name="M:System.Globalization.TextInfo.Equals(System.Object)">
+      <summary>指定したオブジェクトが現在の <see cref="T:System.Globalization.TextInfo" /> オブジェクトと同じ書記体系を表しているかどうかを確認します。</summary>
+      <returns>
+        <paramref name="obj" /> が現在の <see cref="T:System.Globalization.TextInfo" /> と同じ書記体系を表している場合は true。それ以外の場合は false。</returns>
+      <param name="obj">現在の <see cref="T:System.Globalization.TextInfo" /> と比較するオブジェクト。 </param>
+    </member>
+    <member name="M:System.Globalization.TextInfo.GetHashCode">
+      <summary>現在の <see cref="T:System.Globalization.TextInfo" /> のハッシュ関数として機能します。ハッシュ アルゴリズムや、ハッシュ テーブルのようなデータ構造での使用に適しています。</summary>
+      <returns>現在の <see cref="T:System.Globalization.TextInfo" /> のハッシュ コード。</returns>
+    </member>
+    <member name="P:System.Globalization.TextInfo.IsReadOnly">
+      <summary>現在の <see cref="T:System.Globalization.TextInfo" /> オブジェクトが読み取り専用かどうかを示す値を取得します。</summary>
+      <returns>現在の <see cref="T:System.Globalization.TextInfo" /> オブジェクトが読み取り専用の場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Globalization.TextInfo.IsRightToLeft">
+      <summary>現在の <see cref="T:System.Globalization.TextInfo" /> オブジェクトがテキストを右から左に記述する書記体系を表すかどうかを示す値を取得します。</summary>
+      <returns>テキストを右から左に記述する場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Globalization.TextInfo.ListSeparator">
+      <summary>リスト内の項目を区切る文字列を取得または設定します。</summary>
+      <returns>リスト内の項目を区切る文字列。</returns>
+      <exception cref="T:System.ArgumentNullException">The value in a set operation is null.</exception>
+      <exception cref="T:System.InvalidOperationException">In a set operation, the current <see cref="T:System.Globalization.TextInfo" /> object is read-only.</exception>
+    </member>
+    <member name="M:System.Globalization.TextInfo.ToLower(System.Char)">
+      <summary>指定した文字を小文字に変換します。</summary>
+      <returns>小文字に変換するために指定する文字。</returns>
+      <param name="c">小文字に変換する文字。</param>
+    </member>
+    <member name="M:System.Globalization.TextInfo.ToLower(System.String)">
+      <summary>指定した文字列を小文字に変換します。</summary>
+      <returns>小文字に変換するために指定する文字列。</returns>
+      <param name="str">小文字に変換する文字列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> is null. </exception>
+    </member>
+    <member name="M:System.Globalization.TextInfo.ToString">
+      <summary>現在の <see cref="T:System.Globalization.TextInfo" /> を表す文字列を返します。</summary>
+      <returns>現在の <see cref="T:System.Globalization.TextInfo" /> を表す文字列。</returns>
+    </member>
+    <member name="M:System.Globalization.TextInfo.ToUpper(System.Char)">
+      <summary>指定した文字を大文字に変換します。</summary>
+      <returns>大文字に変換するために指定する文字。</returns>
+      <param name="c">大文字に変換する文字。</param>
+    </member>
+    <member name="M:System.Globalization.TextInfo.ToUpper(System.String)">
+      <summary>指定した文字列を大文字に変換します。</summary>
+      <returns>大文字に変換するために指定する文字列。</returns>
+      <param name="str">大文字に変換する文字列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> is null. </exception>
+    </member>
+    <member name="T:System.Globalization.UnicodeCategory">
+      <summary>文字の Unicode カテゴリを定義します。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.ClosePunctuation">
+      <summary>かっこ、角かっこ、中かっこなどの区切り記号のペアの終了文字。Unicode の表記では "Pe" (punctuation, close) で表されます。値は 21 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.ConnectorPunctuation">
+      <summary>2 つの文字を接続するコネクタ区切り記号文字。Unicode の表記では "Pc" (punctuation, connector) で表されます。値は 18 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.Control">
+      <summary>Unicode 値が U+007F であるか、U+0000 から U+001F または U+0080 から U+009F の範囲に含まれる制御コード文字。Unicode の表記では "Cc" (other, control) で表されます。値は 14 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.CurrencySymbol">
+      <summary>通貨記号文字。Unicode の表記では "Sc" (symbol, currency) で表されます。値は 26 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.DashPunctuation">
+      <summary>ダッシュ文字またはハイフン文字。Unicode の表記では "Pd" (punctuation, dash) で表されます。値は 19 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.DecimalDigitNumber">
+      <summary>0 から 9 の範囲の 10 進数字。Unicode の表記 "Nd" (number, decimal digit) によって指定します。値は 8 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.EnclosingMark">
+      <summary>囲み記号文字。基本文字まで (基本文字を含む) のすべての先行文字を囲む非スペーシング組み合わせ文字です。Unicode の表記では "Me" (mark, enclosing) で表されます。値は 7 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.FinalQuotePunctuation">
+      <summary>終了引用符文字または最後の引用符文字。Unicode の表記では "Pf" (punctuation, final quote) で表されます。値は 23 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.Format">
+      <summary>形式指定文字。テキストのレイアウトまたはテキスト処理の動作に影響を与えますが、通常は表示されません。Unicode の表記では "Cf" (other, format) で表されます。値は 15 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.InitialQuotePunctuation">
+      <summary>開始引用符文字または最初の引用符文字。Unicode の表記では "Pi" (punctuation, initial quote) で表されます。値は 22 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.LetterNumber">
+      <summary>数字の 5 がローマ数字では "V" となるように、10 進数の数字ではなく文字によって表される数値。Unicode の表記では "Nl" (number, letter) で表されます。値は 9 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.LineSeparator">
+      <summary>テキストの行を区切るために使用される文字。Unicode の表記では "Zl" (separator, line) で表されます。値は 12 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.LowercaseLetter">
+      <summary>英小文字。Unicode の表記では "Ll" (letter, lowercase) で表されます。値は 1 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.MathSymbol">
+      <summary>プラス記号 ("+") や等号 ("=") などの算術記号文字。Unicode の表記では "Sm" (symbol, math) で表されます。値は 25 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.ModifierLetter">
+      <summary>修飾子文字。先行文字の修飾を示すフリースタンディング スペーシング文字です。Unicode の表記では "Lm" (letter, modifier) で表されます。値は 3 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.ModifierSymbol">
+      <summary>修飾子記号文字。囲んでいる文字の修飾を示します。たとえば、分数のスラッシュは、左側の数値が分子で、右側の数値が分母であることを示します。Unicode の表記では "Sk" (symbol, modifier) で表されます。値は 27 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.NonSpacingMark">
+      <summary>基本文字の修飾を示す非スペーシング文字。Unicode の表記では "Mn" (mark, nonspacing) で表されます。値は 5 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OpenPunctuation">
+      <summary>かっこ、角かっこ、中かっこなどの区切り記号のペアの開始文字。Unicode の表記では "Ps" (punctuation, open) で表されます。値は 20 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OtherLetter">
+      <summary>英大文字、英小文字、タイトル文字、または修飾子文字以外の文字。Unicode の表記では "Lo" (letter, other) で表されます。値は 4 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OtherNotAssigned">
+      <summary>Unicode カテゴリに割り当てられていない文字。Unicode の表記では "Cn" (other, not assigned) で表されます。値は 29 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OtherNumber">
+      <summary>分数の 1/2 のように、10 進数の数字でも文字数字でもない数値。インジケーターは、Unicode の表記 "No" (number, other) によって指定します。値は 10 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OtherPunctuation">
+      <summary>コネクタ区切り文字、ダッシュ区切り文字、開始区切り文字、終了区切り文字、最初の引用区切り文字、または最後の引用区切り文字以外の区切り文字。Unicode の表記では "Po" (punctuation, other) で表されます。値は 24 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OtherSymbol">
+      <summary>算術記号、通貨記号、または修飾子記号以外の記号文字。Unicode の表記では "So" (symbol, other) で表されます。値は 28 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.ParagraphSeparator">
+      <summary>段落を区切るために使用される文字。Unicode の表記では "Zp" (separator, paragraph) で表されます。値は 13 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.PrivateUse">
+      <summary>Unicode 値が U+E000 から U+F8FF の範囲に含まれるプライベート用文字。 Unicode の表記では "Co" (other, private use) で表されます。値は 17 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.SpaceSeparator">
+      <summary>制御文字または形式指定文字以外のグリフのない空白文字。Unicode の表記では "Zs" (separator, space) で表されます。値は 11 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.SpacingCombiningMark">
+      <summary>基本文字の修飾を示し、その基本文字のグリフの幅に影響を与えるスペーシング文字。Unicode の表記では "Mc" (mark, spacing combining) で表されます。値は 6 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.Surrogate">
+      <summary>上位サロゲート文字または下位サロゲート文字。サロゲート コード値は、U+D800 から U+DFFF の範囲です。Unicode の表記では "Cs" (other, surrogate) で表されます。値は 16 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.TitlecaseLetter">
+      <summary>タイトル文字。Unicode の表記では "Lt" (letter, titlecase) で表されます。値は 2 です。</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.UppercaseLetter">
+      <summary>英大文字。Unicode の表記では "Lu" (letter, uppercase) で表されます。値は 0 です。</summary>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Runtime.Handles</name>
+  </assembly>
+  <members>
+    <member name="T:Microsoft.Win32.SafeHandles.SafeWaitHandle">
+      <summary>Представляет класс-оболочку для дескриптора ожидания. </summary>
+    </member>
+    <member name="M:Microsoft.Win32.SafeHandles.SafeWaitHandle.#ctor(System.IntPtr,System.Boolean)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:Microsoft.Win32.SafeHandles.SafeWaitHandle" />. </summary>
+      <param name="existingHandle">Объект <see cref="T:System.IntPtr" />, представляющий ранее существующий дескриптор для использования.</param>
+      <param name="ownsHandle">Значение true, чтобы наверняка освободить дескриптор на стадии завершения; в противном случае — значение false (не рекомендуется).</param>
+    </member>
+    <member name="P:Microsoft.Win32.SafeHandles.SafeWaitHandle.IsInvalid"></member>
+    <member name="T:System.IO.HandleInheritability">
+      <summary>Указывает, является ли основной дескриптор наследуемым дочерними процессами.</summary>
+    </member>
+    <member name="F:System.IO.HandleInheritability.Inheritable">
+      <summary>Указывает, что дескриптор является наследуемым дочерними процессами.</summary>
+    </member>
+    <member name="F:System.IO.HandleInheritability.None">
+      <summary>Указывает, что дескриптор не является наследуемым дочерними процессами.</summary>
+    </member>
+    <member name="T:System.Runtime.InteropServices.CriticalHandle">
+      <summary>Представляет класс обертки для ресурсов дескриптора.</summary>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.#ctor(System.IntPtr)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Runtime.InteropServices.CriticalHandle" /> с заданным значением недопустимого дескриптора.</summary>
+      <param name="invalidHandleValue">Значение неправильного дескриптора (обычно 0 или -1).</param>
+      <exception cref="T:System.TypeLoadException">Производный класс находится в сборке без разрешения доступа для неуправляемого кода.</exception>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.Dispose">
+      <summary>Освобождает все ресурсы, используемые объектом <see cref="T:System.Runtime.InteropServices.CriticalHandle" />. </summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.Dispose(System.Boolean)">
+      <summary>Освобождает неуправляемые ресурсы, используемые классом <see cref="T:System.Runtime.InteropServices.CriticalHandle" />, определяя, нужно ли выполнять обычную операцию удаления.</summary>
+      <param name="disposing">Значение true для обычной операции удаления и значение false для завершения работы с дескриптором.</param>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.Finalize">
+      <summary>Освобождает все ресурсы, связанные с дескриптором.</summary>
+    </member>
+    <member name="F:System.Runtime.InteropServices.CriticalHandle.handle">
+      <summary>Определяет инкапсулируемый дескриптор.</summary>
+    </member>
+    <member name="P:System.Runtime.InteropServices.CriticalHandle.IsClosed">
+      <summary>Получает значение, показывающее, является ли дескриптор закрытым.</summary>
+      <returns>Значение true, если дескриптор закрыт, в противном случае — значение false.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Runtime.InteropServices.CriticalHandle.IsInvalid">
+      <summary>При переопределении в производном классе получает значение, показывающее, допустимо ли значение дескриптора.</summary>
+      <returns>Значение true, если дескриптор является допустимым, в противном случае — значение false.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.ReleaseHandle">
+      <summary>При переопределении в производном классе выполняет код, необходимый для освобождения дескриптора.</summary>
+      <returns>Значение true, если дескриптор освобождается успешно, в противном случае, в случае катастрофической ошибки — значение  false.В таком случае создается управляющий помощник по отладке releaseHandleFailed MDA.</returns>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.SetHandle(System.IntPtr)">
+      <summary>Определяет дескриптор для заданного ранее существующего дескриптора.</summary>
+      <param name="handle">Ранее существующий дескриптор для использования.</param>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.SetHandleAsInvalid">
+      <summary>Помечает дескриптор как недопустимый.</summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Runtime.InteropServices.SafeHandle">
+      <summary>Представляет класс-оболочку для дескрипторов операционной системы.Этот класс должен наследоваться.</summary>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.#ctor(System.IntPtr,System.Boolean)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Runtime.InteropServices.SafeHandle" /> с заданным значением недопустимого дескриптора.</summary>
+      <param name="invalidHandleValue">Значение недопустимого дескриптора (обычно 0 или -1).Реализация <see cref="P:System.Runtime.InteropServices.SafeHandle.IsInvalid" /> должна возвращать true для этого значения.</param>
+      <param name="ownsHandle">Значение true, если нужно надежно разрешить <see cref="T:System.Runtime.InteropServices.SafeHandle" /> освободить дескриптор на стадии завершения; в противном случае — значение false (не рекомендуется). </param>
+      <exception cref="T:System.TypeLoadException">Производный класс находится в сборке без разрешения доступа для неуправляемого кода. </exception>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.DangerousAddRef(System.Boolean@)">
+      <summary>Вручную увеличивает счетчик ссылок для экземпляров <see cref="T:System.Runtime.InteropServices.SafeHandle" />.</summary>
+      <param name="success">Значение true, если счетчик ссылок был успешно увеличен; в противном случае — значение false.</param>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.DangerousGetHandle">
+      <summary>Возвращает значение поля <see cref="F:System.Runtime.InteropServices.SafeHandle.handle" />.</summary>
+      <returns>Указатель IntPtr, представляющий значение поля <see cref="F:System.Runtime.InteropServices.SafeHandle.handle" />.Если дескриптор был помечен как недопустимый с помощью <see cref="M:System.Runtime.InteropServices.SafeHandle.SetHandleAsInvalid" />, этот метод, тем не менее, возвращает исходное значение дескриптора, которое может быть устаревшим.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.DangerousRelease">
+      <summary>Вручную уменьшает счетчик ссылок для экземпляра <see cref="T:System.Runtime.InteropServices.SafeHandle" />.</summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.Dispose">
+      <summary>Освобождает все ресурсы, используемые классом <see cref="T:System.Runtime.InteropServices.SafeHandle" />.</summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.Dispose(System.Boolean)">
+      <summary>Освобождает неуправляемые ресурсы, используемые классом <see cref="T:System.Runtime.InteropServices.SafeHandle" />, определяя, нужно ли выполнять обычную операцию удаления.</summary>
+      <param name="disposing">Значение true для обычной операции удаления и значение false для завершения работы с дескриптором.</param>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.Finalize">
+      <summary>Освобождает все ресурсы, связанные с дескриптором.</summary>
+    </member>
+    <member name="F:System.Runtime.InteropServices.SafeHandle.handle">
+      <summary>Определяет инкапсулируемый дескриптор.</summary>
+    </member>
+    <member name="P:System.Runtime.InteropServices.SafeHandle.IsClosed">
+      <summary>Возвращает значение, показывающее, является ли дескриптор закрытым.</summary>
+      <returns>Значение true, если дескриптор закрыт, в противном случае — значение false.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Runtime.InteropServices.SafeHandle.IsInvalid">
+      <summary>При переопределении в производном классе возвращает значение, показывающее, допустимо ли значение дескриптора.</summary>
+      <returns>Значение true, если значение дескриптора является неправильным; в противном случае — значение false.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.ReleaseHandle">
+      <summary>При переопределении в производном классе выполняет код, необходимый для освобождения дескриптора.</summary>
+      <returns>Значение true, если дескриптор освобождается успешно; в противном случае при катастрофическом сбое — значение  false.В таком случае создается управляемый помощник по отладке releaseHandleFailed MDA.</returns>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.SetHandle(System.IntPtr)">
+      <summary>Определяет дескриптор для заданного ранее существующего дескриптора.</summary>
+      <param name="handle">Ранее существующий дескриптор для использования. </param>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.SetHandleAsInvalid">
+      <summary>Помечает дескриптор как больше не используемый.</summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Threading.WaitHandleExtensions">
+      <summary>Предоставляет удобные методы для работы с безопасный дескриптор для ожидания обработки. </summary>
+    </member>
+    <member name="M:System.Threading.WaitHandleExtensions.GetSafeWaitHandle(System.Threading.WaitHandle)">
+      <summary>Получает безопасный дескриптор для дескриптора ожидания операционной системы. </summary>
+      <returns>Дескриптор ожидания ожидания безопасный дескриптор, который упаковывает исходной операционной системой. </returns>
+      <param name="waitHandle">Собственный дескриптор операционной системы. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="waitHandle" />is null. </exception>
+    </member>
+    <member name="M:System.Threading.WaitHandleExtensions.SetSafeWaitHandle(System.Threading.WaitHandle,Microsoft.Win32.SafeHandles.SafeWaitHandle)">
+      <summary>Задает безопасного дескриптора для дескриптора ожидания операционной системы. </summary>
+      <param name="waitHandle">Дескриптор ожидания, который инкапсулирует связанные с операционной системой объект, который ожидает монопольного доступа к общему ресурсу. </param>
+      <param name="value">Безопасный дескриптор для упаковки дескриптор операционной системы. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="waitHandle" />is null. </exception>
+    </member>
+  </members>
+</doc>

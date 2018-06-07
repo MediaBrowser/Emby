@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>Microsoft.Win32.Primitives</name>
+  </assembly>
+  <members>
+    <member name="T:System.ComponentModel.Win32Exception">
+      <summary>Вызывает исключение для кода ошибки Win32.</summary>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.ComponentModel.Win32Exception" />, используя последнюю возникшую ошибку Win32.</summary>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor(System.Int32)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.ComponentModel.Win32Exception" />, используя указанную ошибку.</summary>
+      <param name="error">Код ошибки Win32, связанной с этим исключением. </param>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor(System.Int32,System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.ComponentModel.Win32Exception" />, используя заданную ошибку и заданное подробное описание.</summary>
+      <param name="error">Код ошибки Win32, связанной с этим исключением. </param>
+      <param name="message">Подробное описание ошибки. </param>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.ComponentModel.Win32Exception" />, используя заданное подробное описание. </summary>
+      <param name="message">Подробное описание ошибки.</param>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor(System.String,System.Exception)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.ComponentModel.Win32Exception" />, используя указанное подробное описание и указанное исключение.</summary>
+      <param name="message">Подробное описание ошибки.</param>
+      <param name="innerException">Ссылка на внутреннее исключение, которое является причиной этого исключения.</param>
+    </member>
+    <member name="P:System.ComponentModel.Win32Exception.NativeErrorCode">
+      <summary>Возвращает код ошибки Win32, связанной с этим исключением.</summary>
+      <returns>Код ошибки Win32, связанной с этим исключением.</returns>
+    </member>
+  </members>
+</doc>
