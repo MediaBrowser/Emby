@@ -978,7 +978,16 @@ namespace Emby.Server.Implementations
             CertificateInfo = GetCertificateInfo(true);
             Certificate = GetCertificate(CertificateInfo);
 
-            HttpServer = CreateServer(this, LogManager, ServerConfigurationManager, NetworkManager, streamHelper, "Emby", "web/index.html", TextEncoding, SocketFactory, CryptographyProvider, JsonSerializer, XmlSerializer, EnvironmentInfo, Certificate, FileSystemManager, SupportsDualModeSockets);
+            HttpServer = new HttpListenerHost(this,
+                LogManager.GetLogger("HttpServer"),
+                ServerConfigurationManager,
+                "web/index.html",
+                NetworkManager,
+                TextEncoding,
+                JsonSerializer,
+                XmlSerializer,
+                GetParseFn);
+
             HttpServer.GlobalResponse = LocalizationManager.GetLocalizedString("StartupEmbyServerIsLoading");
             RegisterSingleInstance(HttpServer);
 
@@ -1080,44 +1089,6 @@ namespace Emby.Server.Implementations
             SetStaticProperties();
 
             ((UserManager)UserManager).Initialize();
-        }
-
-        public static IHttpServer CreateServer(IServerApplicationHost applicationHost,
-            ILogManager logManager,
-            IServerConfigurationManager config,
-            INetworkManager networkmanager,
-            IStreamHelper streamProvider,
-            string serverName,
-            string defaultRedirectpath,
-            ITextEncoding textEncoding,
-            ISocketFactory socketFactory,
-            ICryptoProvider cryptoProvider,
-            IJsonSerializer json,
-            IXmlSerializer xml,
-            IEnvironmentInfo environment,
-            X509Certificate certificate,
-            IFileSystem fileSystem,
-            bool enableDualModeSockets)
-        {
-            var logger = logManager.GetLogger("HttpServer");
-
-            return new HttpListenerHost(applicationHost,
-                logger,
-                config,
-                serverName,
-                defaultRedirectpath,
-                networkmanager,
-                streamProvider,
-                textEncoding,
-                socketFactory,
-                cryptoProvider,
-                json,
-                xml,
-                environment,
-                certificate,
-                GetParseFn,
-                enableDualModeSockets,
-                fileSystem);
         }
 
         private static Func<string, object> GetParseFn(Type propertyType)
