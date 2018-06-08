@@ -33,8 +33,8 @@ namespace MediaBrowser.Api.Session
         /// <summary>
         /// Initializes a new instance of the <see cref="SessionInfoWebSocketListener"/> class.
         /// </summary>
-        public SessionInfoWebSocketListener(ILogger logger, ISessionManager sessionManager, ITimerFactory timerFactory)
-            : base(logger, timerFactory)
+        public SessionInfoWebSocketListener(ILogger logger, ISessionManager sessionManager)
+            : base(logger)
         {
             _sessionManager = sessionManager;
 
@@ -90,14 +90,6 @@ namespace MediaBrowser.Api.Session
         protected override Task<IEnumerable<SessionInfoDto>> GetDataToSend(WebSocketListenerState state, CancellationToken cancellationToken)
         {
             return Task.FromResult(_sessionManager.Sessions.Select(_sessionManager.GetSessionInfoDto));
-        }
-
-        protected override bool SendOnTimer
-        {
-            get
-            {
-                return false;
-            }
         }
 
         protected override void Dispose(bool dispose)

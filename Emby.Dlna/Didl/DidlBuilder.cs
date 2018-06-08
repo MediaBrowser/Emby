@@ -212,6 +212,12 @@ namespace Emby.Dlna.Didl
                 });
             }
 
+            if (string.Equals(Path.GetExtension(video.Path), ".m2ts", StringComparison.OrdinalIgnoreCase))
+            {
+                var a = 1;
+                var b = a;
+            }
+
             var targetWidth = streamInfo.TargetWidth;
             var targetHeight = streamInfo.TargetHeight;
 

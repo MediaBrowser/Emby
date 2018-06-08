@@ -44,21 +44,14 @@ namespace Emby.Server.Implementations.HttpServer
 
         private readonly IServerConfigurationManager _config;
         private readonly INetworkManager _networkManager;
-        private readonly IStreamHelper _streamHelper;
 
         private readonly IServerApplicationHost _appHost;
 
         private readonly ITextEncoding _textEncoding;
-        private readonly ISocketFactory _socketFactory;
-        private readonly ICryptoProvider _cryptoProvider;
 
-        private readonly IFileSystem _fileSystem;
         private readonly IJsonSerializer _jsonSerializer;
         private readonly IXmlSerializer _xmlSerializer;
-        private readonly X509Certificate _certificate;
-        private readonly IEnvironmentInfo _environment;
         private readonly Func<Type, Func<string, object>> _funcParseFn;
-        private readonly bool _enableDualModeSockets;
 
         public Action<IRequest, IResponse, object>[] ResponseFilters { get; set; }
 
@@ -71,28 +64,20 @@ namespace Emby.Server.Implementations.HttpServer
         public HttpListenerHost(IServerApplicationHost applicationHost,
             ILogger logger,
             IServerConfigurationManager config,
-            string serviceName,
-            string defaultRedirectPath, INetworkManager networkManager, IStreamHelper streamHelper, ITextEncoding textEncoding, ISocketFactory socketFactory, ICryptoProvider cryptoProvider, IJsonSerializer jsonSerializer, IXmlSerializer xmlSerializer, IEnvironmentInfo environment, X509Certificate certificate, Func<Type, Func<string, object>> funcParseFn, bool enableDualModeSockets, IFileSystem fileSystem)
+            string defaultRedirectPath, INetworkManager networkManager, ITextEncoding textEncoding, IJsonSerializer jsonSerializer, IXmlSerializer xmlSerializer, Func<Type, Func<string, object>> funcParseFn)
         {
             Instance = this;
 
             _appHost = applicationHost;
             DefaultRedirectPath = defaultRedirectPath;
             _networkManager = networkManager;
-            _streamHelper = streamHelper;
             _textEncoding = textEncoding;
-            _socketFactory = socketFactory;
-            _cryptoProvider = cryptoProvider;
             _jsonSerializer = jsonSerializer;
             _xmlSerializer = xmlSerializer;
-            _environment = environment;
-            _certificate = certificate;
-            _funcParseFn = funcParseFn;
-            _enableDualModeSockets = enableDualModeSockets;
-            _fileSystem = fileSystem;
             _config = config;
 
             _logger = logger;
+            _funcParseFn = funcParseFn;
 
             ResponseFilters = new Action<IRequest, IResponse, object>[] { };
         }
