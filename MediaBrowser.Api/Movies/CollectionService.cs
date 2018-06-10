@@ -69,7 +69,7 @@ namespace MediaBrowser.Api.Movies
                 Name = request.Name,
                 ParentId = parentId,
                 ItemIdList = SplitValue(request.Ids, ','),
-                UserIds = new string[] { userId }
+                UserIds = new [] { userId }
 
             });
 

@@ -171,7 +171,7 @@ namespace Emby.Server.Implementations.EntryPoints
         {
             try
             {
-                await _sessionManager.SendMessageToUserSessions(new List<string> { user.Id.ToString("N") }, name, data, CancellationToken.None);
+                await _sessionManager.SendMessageToUserSessions(new List<Guid> { user.Id }, name, data, CancellationToken.None);
             }
             catch (ObjectDisposedException)
             {

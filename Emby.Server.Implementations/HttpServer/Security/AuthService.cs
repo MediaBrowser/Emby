@@ -61,11 +61,11 @@ namespace Emby.Server.Implementations.HttpServer.Security
                 }
             }
 
-            var user = string.IsNullOrEmpty(auth.UserId)
+            var user = auth.UserId.Equals(Guid.Empty)
                 ? null
                 : UserManager.GetUserById(auth.UserId);
 
-            if (user == null & !string.IsNullOrEmpty(auth.UserId))
+            if (user == null & !auth.UserId.Equals(Guid.Empty))
             {
                 throw new SecurityException("User with Id " + auth.UserId + " not found");
             }
@@ -162,7 +162,7 @@ namespace Emby.Server.Implementations.HttpServer.Security
                 return true;
             }
 
-            if (tokenInfo != null && string.IsNullOrEmpty(tokenInfo.UserId))
+            if (tokenInfo != null && tokenInfo.UserId.Equals(Guid.Empty))
             {
                 return true;
             }

@@ -84,14 +84,14 @@ namespace MediaBrowser.Api
             return ResultFactory.GetResult(Request, result);
         }
 
-        protected void AssertCanUpdateUser(IAuthorizationContext authContext, IUserManager userManager, string userId, bool restrictUserPreferences)
+        protected void AssertCanUpdateUser(IAuthorizationContext authContext, IUserManager userManager, Guid userId, bool restrictUserPreferences)
         {
             var auth = authContext.GetAuthorizationInfo(Request);
 
             var authenticatedUser = userManager.GetUserById(auth.UserId);
 
             // If they're going to update the record of another user, they must be an administrator
-            if (!string.Equals(userId, auth.UserId, StringComparison.OrdinalIgnoreCase))
+            if (!userId.Equals(auth.UserId))
             {
                 if (!authenticatedUser.Policy.IsAdministrator)
                 {

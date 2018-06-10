@@ -47,7 +47,7 @@ namespace Emby.Server.Implementations.LiveTv
                 Name = info.Name,
                 StartDate = info.StartDate,
                 ExternalId = info.Id,
-                ChannelId = GetInternalChannelId(service.Name, info.ChannelId).ToString("N"),
+                ChannelId = GetInternalChannelId(service.Name, info.ChannelId),
                 Status = info.Status,
                 SeriesTimerId = string.IsNullOrEmpty(info.SeriesTimerId) ? null : GetInternalSeriesTimerId(service.Name, info.SeriesTimerId).ToString("N"),
                 PrePaddingSeconds = info.PrePaddingSeconds,
@@ -131,7 +131,7 @@ namespace Emby.Server.Implementations.LiveTv
 
             if (!string.IsNullOrEmpty(info.ChannelId))
             {
-                dto.ChannelId = GetInternalChannelId(service.Name, info.ChannelId).ToString("N");
+                dto.ChannelId = GetInternalChannelId(service.Name, info.ChannelId);
             }
 
             if (!string.IsNullOrEmpty(info.ProgramId))
@@ -441,7 +441,7 @@ namespace Emby.Server.Implementations.LiveTv
                 info.Id = timer.ExternalId;
             }
 
-            if (!string.IsNullOrEmpty(dto.ChannelId) && string.IsNullOrEmpty(info.ChannelId))
+            if (!dto.ChannelId.Equals(Guid.Empty) && string.IsNullOrEmpty(info.ChannelId))
             {
                 var channel = _libraryManager.GetItemById(dto.ChannelId);
 
@@ -507,7 +507,7 @@ namespace Emby.Server.Implementations.LiveTv
                 info.Id = timer.ExternalId;
             }
 
-            if (!string.IsNullOrEmpty(dto.ChannelId) && string.IsNullOrEmpty(info.ChannelId))
+            if (!dto.ChannelId.Equals(Guid.Empty) && string.IsNullOrEmpty(info.ChannelId))
             {
                 var channel = _libraryManager.GetItemById(dto.ChannelId);
 

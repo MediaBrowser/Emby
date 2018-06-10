@@ -244,7 +244,7 @@ namespace MediaBrowser.Api
         /// <param name="request">The request.</param>
         public void Delete(CancelPackageInstallation request)
         {
-            var info = _installationManager.CurrentInstallations.FirstOrDefault(i => string.Equals(i.Item1.Id, request.Id));
+            var info = _installationManager.CurrentInstallations.FirstOrDefault(i => i.Item1.Id.Equals(request.Id));
 
             if (info != null)
             {

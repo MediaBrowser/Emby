@@ -1274,9 +1274,9 @@ namespace Emby.Server.Implementations.Library
 
         public List<BaseItem> GetItemList(InternalItemsQuery query, bool allowExternalContent)
         {
-            if (query.Recursive && query.ParentId.HasValue)
+            if (query.Recursive && !query.ParentId.Equals(Guid.Empty))
             {
-                var parent = GetItemById(query.ParentId.Value);
+                var parent = GetItemById(query.ParentId);
                 if (parent != null)
                 {
                     SetTopParentIdsOrAncestors(query, new List<BaseItem> { parent });
@@ -1298,9 +1298,9 @@ namespace Emby.Server.Implementations.Library
 
         public int GetCount(InternalItemsQuery query)
         {
-            if (query.Recursive && query.ParentId.HasValue)
+            if (query.Recursive && !query.ParentId.Equals(Guid.Empty))
             {
-                var parent = GetItemById(query.ParentId.Value);
+                var parent = GetItemById(query.ParentId);
                 if (parent != null)
                 {
                     SetTopParentIdsOrAncestors(query, new List<BaseItem> { parent });
@@ -1470,9 +1470,9 @@ namespace Emby.Server.Implementations.Library
 
         public QueryResult<BaseItem> GetItemsResult(InternalItemsQuery query)
         {
-            if (query.Recursive && query.ParentId.HasValue)
+            if (query.Recursive && !query.ParentId.Equals(Guid.Empty))
             {
-                var parent = GetItemById(query.ParentId.Value);
+                var parent = GetItemById(query.ParentId);
                 if (parent != null)
                 {
                     SetTopParentIdsOrAncestors(query, new List<BaseItem> { parent });
@@ -1538,7 +1538,7 @@ namespace Emby.Server.Implementations.Library
         private void AddUserToQuery(InternalItemsQuery query, User user, bool allowExternalContent = true)
         {
             if (query.AncestorIds.Length == 0 &&
-                !query.ParentId.HasValue &&
+                query.ParentId.Equals(Guid.Empty) &&
                 query.ChannelIds.Length == 0 &&
                 query.TopParentIds.Length == 0 &&
                 string.IsNullOrEmpty(query.AncestorWithPresentationUniqueKey) &&
@@ -1547,7 +1547,7 @@ namespace Emby.Server.Implementations.Library
             {
                 var userViews = _userviewManager().GetUserViews(new UserViewQuery
                 {
-                    UserId = user.Id.ToString("N"),
+                    UserId = user.Id,
                     IncludeHidden = true,
                     IncludeExternalContent = allowExternalContent
                 });

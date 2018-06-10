@@ -296,7 +296,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
         {
             var timers = await GetTimersAsync(cancellationToken).ConfigureAwait(false);
 
-            var tempChannelCache = new Dictionary<string, LiveTvChannel>();
+            var tempChannelCache = new Dictionary<Guid, LiveTvChannel>();
 
             foreach (var timer in timers)
             {
@@ -1372,7 +1372,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 {
                     var liveStreamResponse = await _mediaSourceManager.OpenLiveStreamInternal(new LiveStreamRequest
                     {
-                        ItemId = channelItem.Id.ToString("N"),
+                        ItemId = channelItem.Id,
                         OpenToken = mediaStreamInfo.OpenToken
 
                     }, CancellationToken.None).ConfigureAwait(false);
@@ -2521,16 +2521,16 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 query.ChannelIds = new[] { _liveTvManager.GetInternalChannelId(Name, seriesTimer.ChannelId) };
             }
 
-            var tempChannelCache = new Dictionary<string, LiveTvChannel>();
+            var tempChannelCache = new Dictionary<Guid, LiveTvChannel>();
 
             return _libraryManager.GetItemList(query).Cast<LiveTvProgram>().Select(i => CreateTimer(i, seriesTimer, tempChannelCache));
         }
 
-        private TimerInfo CreateTimer(LiveTvProgram parent, SeriesTimerInfo seriesTimer, Dictionary<string, LiveTvChannel> tempChannelCache)
+        private TimerInfo CreateTimer(LiveTvProgram parent, SeriesTimerInfo seriesTimer, Dictionary<Guid, LiveTvChannel> tempChannelCache)
         {
             string channelId = seriesTimer.RecordAnyChannel ? null : seriesTimer.ChannelId;
 
-            if (string.IsNullOrWhiteSpace(channelId) && !string.IsNullOrWhiteSpace(parent.ChannelId))
+            if (string.IsNullOrWhiteSpace(channelId) && !parent.ChannelId.Equals(Guid.Empty))
             {
                 LiveTvChannel channel;
 
@@ -2539,7 +2539,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     channel = _libraryManager.GetItemList(new InternalItemsQuery
                     {
                         IncludeItemTypes = new string[] { typeof(LiveTvChannel).Name },
-                        ItemIds = new[] { new Guid(parent.ChannelId) },
+                        ItemIds = new[] { parent.ChannelId },
                         DtoOptions = new DtoOptions()
 
                     }).Cast<LiveTvChannel>().FirstOrDefault();
@@ -2583,15 +2583,15 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
         private void CopyProgramInfoToTimerInfo(LiveTvProgram programInfo, TimerInfo timerInfo)
         {
-            var tempChannelCache = new Dictionary<string, LiveTvChannel>();
+            var tempChannelCache = new Dictionary<Guid, LiveTvChannel>();
             CopyProgramInfoToTimerInfo(programInfo, timerInfo, tempChannelCache);
         }
 
-        private void CopyProgramInfoToTimerInfo(LiveTvProgram programInfo, TimerInfo timerInfo, Dictionary<string, LiveTvChannel> tempChannelCache)
+        private void CopyProgramInfoToTimerInfo(LiveTvProgram programInfo, TimerInfo timerInfo, Dictionary<Guid, LiveTvChannel> tempChannelCache)
         {
             string channelId = null;
 
-            if (!string.IsNullOrWhiteSpace(programInfo.ChannelId))
+            if (!programInfo.ChannelId.Equals(Guid.Empty))
             {
                 LiveTvChannel channel;
 
@@ -2600,7 +2600,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     channel = _libraryManager.GetItemList(new InternalItemsQuery
                     {
                         IncludeItemTypes = new string[] { typeof(LiveTvChannel).Name },
-                        ItemIds = new[] { new Guid(programInfo.ChannelId) },
+                        ItemIds = new[] { programInfo.ChannelId },
                         DtoOptions = new DtoOptions()
 
                     }).Cast<LiveTvChannel>().FirstOrDefault();

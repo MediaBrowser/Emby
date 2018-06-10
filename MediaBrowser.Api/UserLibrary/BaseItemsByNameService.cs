@@ -56,7 +56,7 @@ namespace MediaBrowser.Api.UserLibrary
         {
             BaseItem parentItem;
 
-            if (!string.IsNullOrWhiteSpace(request.UserId))
+            if (!request.UserId.Equals(Guid.Empty))
             {
                 var user = UserManager.GetUserById(request.UserId);
                 parentItem = string.IsNullOrEmpty(request.ParentId) ? LibraryManager.GetUserRootFolder() : LibraryManager.GetItemById(request.ParentId);
@@ -95,7 +95,7 @@ namespace MediaBrowser.Api.UserLibrary
             User user = null;
             BaseItem parentItem;
 
-            if (!string.IsNullOrWhiteSpace(request.UserId))
+            if (!request.UserId.Equals(Guid.Empty))
             {
                 user = UserManager.GetUserById(request.UserId);
                 parentItem = string.IsNullOrEmpty(request.ParentId) ? LibraryManager.GetUserRootFolder() : LibraryManager.GetItemById(request.ParentId);
@@ -246,7 +246,7 @@ namespace MediaBrowser.Api.UserLibrary
             User user = null;
             BaseItem parentItem;
 
-            if (!string.IsNullOrWhiteSpace(request.UserId))
+            if (!request.UserId.Equals(Guid.Empty))
             {
                 user = UserManager.GetUserById(request.UserId);
                 parentItem = string.IsNullOrEmpty(request.ParentId) ? LibraryManager.GetUserRootFolder() : LibraryManager.GetItemById(request.ParentId);
@@ -276,7 +276,7 @@ namespace MediaBrowser.Api.UserLibrary
             {
                 var folder = (Folder)parentItem;
 
-                if (!string.IsNullOrWhiteSpace(request.UserId))
+                if (!request.UserId.Equals(Guid.Empty))
                 {
                     items = request.Recursive ?
                         folder.GetRecursiveChildren(user, query).ToList() :

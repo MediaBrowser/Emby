@@ -14,7 +14,7 @@ namespace MediaBrowser.Api.Session
     /// <summary>
     /// Class SessionInfoWebSocketListener
     /// </summary>
-    class SessionInfoWebSocketListener : BasePeriodicWebSocketListener<IEnumerable<SessionInfoDto>, WebSocketListenerState>
+    class SessionInfoWebSocketListener : BasePeriodicWebSocketListener<IEnumerable<SessionInfo>, WebSocketListenerState>
     {
         /// <summary>
         /// Gets the name.
@@ -87,9 +87,9 @@ namespace MediaBrowser.Api.Session
         /// </summary>
         /// <param name="state">The state.</param>
         /// <returns>Task{SystemInfo}.</returns>
-        protected override Task<IEnumerable<SessionInfoDto>> GetDataToSend(WebSocketListenerState state, CancellationToken cancellationToken)
+        protected override Task<IEnumerable<SessionInfo>> GetDataToSend(WebSocketListenerState state, CancellationToken cancellationToken)
         {
-            return Task.FromResult(_sessionManager.Sessions.Select(_sessionManager.GetSessionInfoDto));
+            return Task.FromResult(_sessionManager.Sessions);
         }
 
         protected override void Dispose(bool dispose)

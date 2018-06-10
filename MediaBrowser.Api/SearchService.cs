@@ -11,6 +11,7 @@ using MediaBrowser.Model.Search;
 using System.Threading.Tasks;
 using MediaBrowser.Controller.LiveTv;
 using MediaBrowser.Model.Services;
+using System;
 
 namespace MediaBrowser.Api
 {
@@ -39,7 +40,7 @@ namespace MediaBrowser.Api
         /// </summary>
         /// <value>The user id.</value>
         [ApiMember(Name = "UserId", Description = "Optional. Supply a user id to search within a user's library or omit to search all.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
 
         /// <summary>
         /// Search characters used to find items
@@ -194,7 +195,7 @@ namespace MediaBrowser.Api
                 Name = item.Name,
                 IndexNumber = item.IndexNumber,
                 ParentIndexNumber = item.ParentIndexNumber,
-                Id = _dtoService.GetDtoId(item),
+                Id = item.Id,
                 Type = item.GetClientTypeName(),
                 MediaType = item.MediaType,
                 MatchedTerm = hintInfo.MatchedTerm,
@@ -264,7 +265,7 @@ namespace MediaBrowser.Api
                 if (album != null)
                 {
                     result.Album = album.Name;
-                    result.AlbumId = album.Id.ToString("N");
+                    result.AlbumId = album.Id;
                 }
                 else
                 {
@@ -272,7 +273,7 @@ namespace MediaBrowser.Api
                 }
             }
 
-            if (!string.IsNullOrWhiteSpace(item.ChannelId))
+            if (!item.ChannelId.Equals(Guid.Empty))
             {
                 var channel = _libraryManager.GetItemById(item.ChannelId);
                 result.ChannelName = channel == null ? null : channel.Name;

@@ -54,7 +54,7 @@ namespace Emby.Server.Implementations.EntryPoints
 
         private async void SendMessage(string name, TimerEventInfo info)
         {
-            var users = _userManager.Users.Where(i => i.Policy.EnableLiveTvAccess).Select(i => i.Id.ToString("N")).ToList();
+            var users = _userManager.Users.Where(i => i.Policy.EnableLiveTvAccess).Select(i => i.Id).ToList();
 
             try
             {

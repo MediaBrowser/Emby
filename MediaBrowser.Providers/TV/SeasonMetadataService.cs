@@ -45,7 +45,7 @@ namespace MediaBrowser.Providers.TV
             }
 
             var seriesId = item.FindSeriesId();
-            if (item.SeriesId != seriesId)
+            if (!item.SeriesId.Equals(seriesId))
             {
                 item.SeriesId = seriesId;
                 updateType |= ItemUpdateType.MetadataImport;

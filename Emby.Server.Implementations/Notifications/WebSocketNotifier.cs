@@ -40,21 +40,21 @@ namespace Emby.Server.Implementations.Notifications
 
             var msg = string.Join("|", list.ToArray(list.Count));
 
-            SendMessageToUserSession(e.UserId, "NotificationsMarkedRead", msg);
+            SendMessageToUserSession(new Guid(e.UserId), "NotificationsMarkedRead", msg);
         }
 
         void _notificationsRepo_NotificationAdded(object sender, NotificationUpdateEventArgs e)
         {
             var msg = e.Notification.UserId + "|" + e.Notification.Id;
 
-            SendMessageToUserSession(e.Notification.UserId, "NotificationAdded", msg);
+            SendMessageToUserSession(new Guid(e.Notification.UserId), "NotificationAdded", msg);
         }
 
-        private async void SendMessageToUserSession<T>(string userId, string name, T data)
+        private async void SendMessageToUserSession<T>(Guid userId, string name, T data)
         {
             try
             {
-                await _sessionManager.SendMessageToUserSessions(new List<string> { userId }, name, data, CancellationToken.None);
+                await _sessionManager.SendMessageToUserSessions(new List<Guid> { userId }, name, data, CancellationToken.None);
             }
             catch (ObjectDisposedException)
             {

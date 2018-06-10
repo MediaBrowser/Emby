@@ -165,11 +165,11 @@ namespace MediaBrowser.Api
             if (!string.IsNullOrWhiteSpace(user.ConnectUserName) &&
                 string.IsNullOrWhiteSpace(request.ConnectUserName))
             {
-                await _connectManager.RemoveConnect(user.Id.ToString("N")).ConfigureAwait(false);
+                await _connectManager.RemoveConnect(user).ConfigureAwait(false);
             }
             else if (!string.Equals(user.ConnectUserName, request.ConnectUserName, StringComparison.OrdinalIgnoreCase))
             {
-                result.UserLinkResult = await _connectManager.LinkUser(user.Id.ToString("N"), request.ConnectUserName).ConfigureAwait(false);
+                result.UserLinkResult = await _connectManager.LinkUser(user, request.ConnectUserName).ConfigureAwait(false);
             }
 
             return result;

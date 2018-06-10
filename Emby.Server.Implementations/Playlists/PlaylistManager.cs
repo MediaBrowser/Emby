@@ -41,7 +41,7 @@ namespace Emby.Server.Implementations.Playlists
             _providerManager = providerManager;
         }
 
-        public IEnumerable<Playlist> GetPlaylists(string userId)
+        public IEnumerable<Playlist> GetPlaylists(Guid userId)
         {
             var user = _userManager.GetUserById(userId);
 
@@ -54,7 +54,7 @@ namespace Emby.Server.Implementations.Playlists
 
             var folderName = _fileSystem.GetValidFilename(name) + " [playlist]";
 
-            var parentFolder = GetPlaylistsFolder(null);
+            var parentFolder = GetPlaylistsFolder(Guid.Empty);
 
             if (parentFolder == null)
             {
@@ -126,7 +126,7 @@ namespace Emby.Server.Implementations.Playlists
                     {
                         new Share
                         {
-                            UserId = options.UserId,
+                            UserId = options.UserId.Equals(Guid.Empty) ? null : options.UserId.ToString("N"),
                             CanEdit = true
                         }
                     }
@@ -169,16 +169,16 @@ namespace Emby.Server.Implementations.Playlists
             return path;
         }
 
-        private List<BaseItem> GetPlaylistItems(IEnumerable<string> itemIds, string playlistMediaType, User user, DtoOptions options)
+        private List<BaseItem> GetPlaylistItems(IEnumerable<Guid> itemIds, string playlistMediaType, User user, DtoOptions options)
         {
             var items = itemIds.Select(i => _libraryManager.GetItemById(i)).Where(i => i != null);
 
             return Playlist.GetPlaylistItems(playlistMediaType, items, user, options);
         }
 
-        public void AddToPlaylist(string playlistId, IEnumerable<string> itemIds, string userId)
+        public void AddToPlaylist(string playlistId, IEnumerable<Guid> itemIds, Guid userId)
         {
-            var user = string.IsNullOrEmpty(userId) ? null : _userManager.GetUserById(userId);
+            var user = userId.Equals(Guid.Empty) ? null : _userManager.GetUserById(userId);
 
             AddToPlaylistInternal(playlistId, itemIds, user, new DtoOptions(false)
             {
@@ -186,7 +186,7 @@ namespace Emby.Server.Implementations.Playlists
             });
         }
 
-        private void AddToPlaylistInternal(string playlistId, IEnumerable<string> itemIds, User user, DtoOptions options)
+        private void AddToPlaylistInternal(string playlistId, IEnumerable<Guid> itemIds, User user, DtoOptions options)
         {
             var playlist = _libraryManager.GetItemById(playlistId) as Playlist;
 
@@ -493,7 +493,7 @@ namespace Emby.Server.Implementations.Playlists
             return content.Replace("&", "&amp;").Replace("'", "&apos;").Replace("\"", "&quot;").Replace(">", "&gt;").Replace("<", "&lt;");
         }
 
-        public Folder GetPlaylistsFolder(string userId)
+        public Folder GetPlaylistsFolder(Guid userId)
         {
             var typeName = "PlaylistsFolder";
 
