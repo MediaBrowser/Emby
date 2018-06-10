@@ -29,7 +29,7 @@ namespace MediaBrowser.Api.Subtitles
         /// </summary>
         /// <value>The id.</value>
         [ApiMember(Name = "Id", Description = "Item Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "DELETE")]
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         [ApiMember(Name = "Index", Description = "The subtitle stream index", IsRequired = true, DataType = "int", ParameterType = "path", Verb = "DELETE")]
         public int Index { get; set; }
@@ -40,7 +40,7 @@ namespace MediaBrowser.Api.Subtitles
     public class SearchRemoteSubtitles : IReturn<RemoteSubtitleInfo[]>
     {
         [ApiMember(Name = "Id", Description = "Item Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         [ApiMember(Name = "Language", Description = "Language", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
         public string Language { get; set; }
@@ -53,7 +53,7 @@ namespace MediaBrowser.Api.Subtitles
     public class DownloadRemoteSubtitles : IReturnVoid
     {
         [ApiMember(Name = "Id", Description = "Item Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         [ApiMember(Name = "SubtitleId", Description = "SubtitleId", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
         public string SubtitleId { get; set; }
@@ -76,7 +76,7 @@ namespace MediaBrowser.Api.Subtitles
         /// </summary>
         /// <value>The id.</value>
         [ApiMember(Name = "Id", Description = "Item Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         [ApiMember(Name = "MediaSourceId", Description = "MediaSourceId", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
         public string MediaSourceId { get; set; }
@@ -198,10 +198,11 @@ namespace MediaBrowser.Api.Subtitles
             }
             if (string.IsNullOrEmpty(request.Format))
             {
-                var item = (Video)_libraryManager.GetItemById(new Guid(request.Id));
+                var item = (Video)_libraryManager.GetItemById(request.Id);
 
+                var idString = request.Id.ToString("N");
                 var mediaSource = _mediaSourceManager.GetStaticMediaSources(item, false, null)
-                    .First(i => string.Equals(i.Id, request.MediaSourceId ?? request.Id));
+                    .First(i => string.Equals(i.Id, request.MediaSourceId ?? idString));
 
                 var subtitleStream = mediaSource.MediaStreams
                     .First(i => i.Type == MediaStreamType.Subtitle && i.Index == request.Index);

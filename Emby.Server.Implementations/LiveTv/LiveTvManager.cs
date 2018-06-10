@@ -162,7 +162,7 @@ namespace Emby.Server.Implementations.LiveTv
             {
                 Argument = new TimerEventInfo
                 {
-                    ProgramId = _tvDtoService.GetInternalProgramId(service.Name, timer.ProgramId).ToString("N"),
+                    ProgramId = _tvDtoService.GetInternalProgramId(service.Name, timer.ProgramId),
                     Id = timer.Id
                 }
             }, _logger);
@@ -203,7 +203,7 @@ namespace Emby.Server.Implementations.LiveTv
 
         public QueryResult<BaseItem> GetInternalChannels(LiveTvChannelQuery query, DtoOptions dtoOptions, CancellationToken cancellationToken)
         {
-            var user = string.IsNullOrEmpty(query.UserId) ? null : _userManager.GetUserById(query.UserId);
+            var user = query.UserId.Equals(Guid.Empty) ? null : _userManager.GetUserById(query.UserId);
 
             var topFolder = GetInternalLiveTvFolder(cancellationToken);
 
@@ -550,7 +550,7 @@ namespace Emby.Server.Implementations.LiveTv
             item.ServiceName = serviceName;
 
             item.Audio = info.Audio;
-            item.ChannelId = channel.Id.ToString("N");
+            item.ChannelId = channel.Id;
             item.CommunityRating = item.CommunityRating ?? info.CommunityRating;
             if ((item.CommunityRating ?? 0).Equals(0))
             {
@@ -756,7 +756,7 @@ namespace Emby.Server.Implementations.LiveTv
 
         public async Task<QueryResult<BaseItemDto>> GetPrograms(ProgramQuery query, DtoOptions options, CancellationToken cancellationToken)
         {
-            var user = string.IsNullOrEmpty(query.UserId) ? null : _userManager.GetUserById(query.UserId);
+            var user = query.UserId.Equals(Guid.Empty) ? null : _userManager.GetUserById(query.UserId);
 
             var topFolder = GetInternalLiveTvFolder(cancellationToken);
 
@@ -1470,7 +1470,7 @@ namespace Emby.Server.Implementations.LiveTv
 
         public QueryResult<BaseItemDto> GetRecordingSeries(RecordingQuery query, DtoOptions options, CancellationToken cancellationToken)
         {
-            var user = string.IsNullOrEmpty(query.UserId) ? null : _userManager.GetUserById(query.UserId);
+            var user = query.UserId.Equals(Guid.Empty) ? null : _userManager.GetUserById(query.UserId);
             if (user != null && !IsLiveTvEnabled(user))
             {
                 return new QueryResult<BaseItemDto>();
@@ -1668,7 +1668,7 @@ namespace Emby.Server.Implementations.LiveTv
 
         public QueryResult<BaseItemDto> GetRecordings(RecordingQuery query, DtoOptions options)
         {
-            var user = string.IsNullOrEmpty(query.UserId) ? null : _userManager.GetUserById(query.UserId);
+            var user = query.UserId.Equals(Guid.Empty) ? null : _userManager.GetUserById(query.UserId);
 
             RemoveFields(options);
 
@@ -1753,7 +1753,7 @@ namespace Emby.Server.Implementations.LiveTv
             {
                 var program = string.IsNullOrEmpty(i.Item1.ProgramId) ?
                     null :
-                    _libraryManager.GetItemById(_tvDtoService.GetInternalProgramId(i.Item2.Name, i.Item1.ProgramId).ToString("N")) as LiveTvProgram;
+                    _libraryManager.GetItemById(_tvDtoService.GetInternalProgramId(i.Item2.Name, i.Item1.ProgramId)) as LiveTvProgram;
 
                 var channel = string.IsNullOrEmpty(i.Item1.ChannelId) ? null : _libraryManager.GetItemById(_tvDtoService.GetInternalChannelId(i.Item2.Name, i.Item1.ChannelId));
 
@@ -1969,7 +1969,7 @@ namespace Emby.Server.Implementations.LiveTv
             RemoveFields(options);
 
             var currentProgramsList = new List<BaseItem>();
-            var currentChannelsDict = new Dictionary<string, BaseItemDto>();
+            var currentChannelsDict = new Dictionary<Guid, BaseItemDto>();
 
             var addCurrentProgram = options.AddCurrentProgram;
             var addServiceName = options.Fields.Contains(ItemFields.ServiceName);
@@ -1992,8 +1992,7 @@ namespace Emby.Server.Implementations.LiveTv
 
                 if (addCurrentProgram)
                 {
-                    var channelIdString = channel.Id.ToString("N");
-                    var currentProgram = programs.FirstOrDefault(i => string.Equals(i.ChannelId, channelIdString));
+                    var currentProgram = programs.FirstOrDefault(i => channel.Id.Equals(i.ChannelId));
 
                     if (currentProgram != null)
                     {
@@ -2008,13 +2007,10 @@ namespace Emby.Server.Implementations.LiveTv
 
                 foreach (var programDto in currentProgramDtos)
                 {
-                    if (!string.IsNullOrWhiteSpace(programDto.ChannelId))
+                    BaseItemDto channelDto;
+                    if (currentChannelsDict.TryGetValue(programDto.ChannelId, out channelDto))
                     {
-                        BaseItemDto channelDto;
-                        if (currentChannelsDict.TryGetValue(programDto.ChannelId, out channelDto))
-                        {
-                            channelDto.CurrentProgram = programDto;
-                        }
+                        channelDto.CurrentProgram = programDto;
                     }
                 }
             }
@@ -2105,7 +2101,7 @@ namespace Emby.Server.Implementations.LiveTv
             info.StartDate = program.StartDate;
             info.Name = program.Name;
             info.Overview = program.Overview;
-            info.ProgramId = programDto.Id;
+            info.ProgramId = programDto.Id.ToString("N");
             info.ExternalProgramId = program.ExternalId;
 
             if (program.EndDate.HasValue)
@@ -2146,7 +2142,7 @@ namespace Emby.Server.Implementations.LiveTv
                 {
                     Argument = new TimerEventInfo
                     {
-                        ProgramId = _tvDtoService.GetInternalProgramId(timer.ServiceName, info.ProgramId).ToString("N"),
+                        ProgramId = _tvDtoService.GetInternalProgramId(timer.ServiceName, info.ProgramId),
                         Id = newTimerId
                     }
                 }, _logger);
@@ -2187,7 +2183,7 @@ namespace Emby.Server.Implementations.LiveTv
             {
                 Argument = new TimerEventInfo
                 {
-                    ProgramId = _tvDtoService.GetInternalProgramId(timer.ServiceName, info.ProgramId).ToString("N"),
+                    ProgramId = _tvDtoService.GetInternalProgramId(timer.ServiceName, info.ProgramId),
                     Id = newTimerId
                 }
             }, _logger);
@@ -2306,9 +2302,9 @@ namespace Emby.Server.Implementations.LiveTv
             return service.ResetTuner(parts[1], cancellationToken);
         }
 
-        public BaseItemDto GetLiveTvFolder(string userId, CancellationToken cancellationToken)
+        public BaseItemDto GetLiveTvFolder(Guid userId, CancellationToken cancellationToken)
         {
-            var user = string.IsNullOrEmpty(userId) ? null : _userManager.GetUserById(userId);
+            var user = userId.Equals(Guid.Empty) ? null : _userManager.GetUserById(userId);
 
             var folder = GetInternalLiveTvFolder(cancellationToken);
 
@@ -2578,7 +2574,7 @@ namespace Emby.Server.Implementations.LiveTv
 
             folders.AddRange(_channelManager().GetChannelsInternal(new MediaBrowser.Model.Channels.ChannelQuery
             {
-                UserId = user.Id.ToString("N"),
+                UserId = user.Id,
                 IsRecordingsFolder = true,
                 RefreshLatestChannelItems = refreshChannels
 

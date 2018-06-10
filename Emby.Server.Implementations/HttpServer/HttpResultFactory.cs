@@ -645,7 +645,7 @@ namespace Emby.Server.Implementations.HttpServer
         /// <param name="lastDateModified">The last date modified.</param>
         /// <param name="cacheDuration">Duration of the cache.</param>
         /// <returns><c>true</c> if [is not modified] [the specified cache key]; otherwise, <c>false</c>.</returns>
-        private bool IsNotModified(IRequest requestContext, Guid? cacheKey, DateTime? lastDateModified, TimeSpan? cacheDuration)
+        private bool IsNotModified(IRequest requestContext, Guid cacheKey, DateTime? lastDateModified, TimeSpan? cacheDuration)
         {
             //var isNotModified = true;
 
@@ -666,8 +666,10 @@ namespace Emby.Server.Implementations.HttpServer
 
             var ifNoneMatchHeader = requestContext.Headers.Get("If-None-Match");
 
+            var hasCacheKey = !cacheKey.Equals(Guid.Empty);
+
             // Validate If-None-Match
-            if ((cacheKey.HasValue || !string.IsNullOrEmpty(ifNoneMatchHeader)))
+            if ((hasCacheKey || !string.IsNullOrEmpty(ifNoneMatchHeader)))
             {
                 Guid ifNoneMatch;
 
@@ -675,7 +677,7 @@ namespace Emby.Server.Implementations.HttpServer
 
                 if (Guid.TryParse(ifNoneMatchHeader, out ifNoneMatch))
                 {
-                    if (cacheKey.HasValue && cacheKey.Value == ifNoneMatch)
+                    if (hasCacheKey && cacheKey.Equals(ifNoneMatch))
                     {
                         return true;
                     }

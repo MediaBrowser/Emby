@@ -452,7 +452,7 @@ namespace Emby.Server.Implementations.Notifications
         {
             var notification = new NotificationRequest
             {
-                UserIds = new List<string> { e.Argument.Id.ToString("N") },
+                UserIds = new[] { e.Argument.Id },
                 Name = "Welcome to Emby!",
                 Description = "Check back here for more notifications."
             };

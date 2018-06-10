@@ -553,7 +553,7 @@ namespace Emby.Server.Implementations.Dto
             if (album != null)
             {
                 dto.Album = album.Name;
-                dto.AlbumId = album.Id.ToString("N");
+                dto.AlbumId = album.Id;
             }
         }
 
@@ -571,7 +571,7 @@ namespace Emby.Server.Implementations.Dto
 
                 if (parentAlbumIds.Count > 0)
                 {
-                    dto.AlbumId = parentAlbumIds[0].ToString("N");
+                    dto.AlbumId = parentAlbumIds[0];
                 }
             }
 
@@ -719,10 +719,10 @@ namespace Emby.Server.Implementations.Dto
         {
             dto.Studios = item.Studios
                 .Where(i => !string.IsNullOrEmpty(i))
-                .Select(i => new NameIdPair
+                .Select(i => new NameGuidPair
                 {
                     Name = i,
-                    Id = _libraryManager.GetStudioId(i).ToString("N")
+                    Id = _libraryManager.GetStudioId(i)
                 })
                 .ToArray();
         }
@@ -731,7 +731,7 @@ namespace Emby.Server.Implementations.Dto
         {
             dto.GenreItems = item.Genres
                 .Where(i => !string.IsNullOrEmpty(i))
-                .Select(i => new NameIdPair
+                .Select(i => new NameGuidPair
                 {
                     Name = i,
                     Id = GetGenreId(i, item)
@@ -739,19 +739,19 @@ namespace Emby.Server.Implementations.Dto
                 .ToArray();
         }
 
-        private string GetGenreId(string name, BaseItem owner)
+        private Guid GetGenreId(string name, BaseItem owner)
         {
             if (owner is IHasMusicGenres)
             {
-                return _libraryManager.GetMusicGenreId(name).ToString("N");
+                return _libraryManager.GetMusicGenreId(name);
             }
 
             if (owner is Game || owner is GameSystem)
             {
-                return _libraryManager.GetGameGenreId(name).ToString("N");
+                return _libraryManager.GetGameGenreId(name);
             }
 
-            return _libraryManager.GetGenreId(name).ToString("N");
+            return _libraryManager.GetGenreId(name);
         }
 
         /// <summary>
@@ -877,7 +877,7 @@ namespace Emby.Server.Implementations.Dto
                 }
             }
 
-            dto.Id = GetDtoId(item);
+            dto.Id = item.Id;
             dto.IndexNumber = item.IndexNumber;
             dto.ParentIndexNumber = item.ParentIndexNumber;
 
@@ -951,11 +951,7 @@ namespace Emby.Server.Implementations.Dto
 
             if (fields.Contains(ItemFields.ParentId))
             {
-                var displayParentId = item.DisplayParentId;
-                if (displayParentId.HasValue)
-                {
-                    dto.ParentId = displayParentId.Value.ToString("N");
-                }
+                dto.ParentId = item.DisplayParentId;
             }
 
             AddInheritedImages(dto, item, options, owner);
@@ -1029,7 +1025,7 @@ namespace Emby.Server.Implementations.Dto
 
                 if (albumParent != null)
                 {
-                    dto.AlbumId = GetDtoId(albumParent);
+                    dto.AlbumId = albumParent.Id;
 
                     dto.AlbumPrimaryImageTag = GetImageCacheTag(albumParent, ImageType.Primary);
                 }
@@ -1238,19 +1234,9 @@ namespace Emby.Server.Implementations.Dto
                     dto.AirsBeforeSeasonNumber = episode.AirsBeforeSeasonNumber;
                 }
 
-                var seasonId = episode.SeasonId;
-                if (seasonId.HasValue)
-                {
-                    dto.SeasonId = seasonId.Value.ToString("N");
-                }
-
                 dto.SeasonName = episode.SeasonName;
-
-                var seriesId = episode.SeriesId;
-                if (seriesId.HasValue)
-                {
-                    dto.SeriesId = seriesId.Value.ToString("N");
-                }
+                dto.SeasonId = episode.SeasonId;
+                dto.SeriesId = episode.SeriesId;
 
                 Series episodeSeries = null;
 
@@ -1287,12 +1273,7 @@ namespace Emby.Server.Implementations.Dto
             if (season != null)
             {
                 dto.SeriesName = season.SeriesName;
-
-                var seriesId = season.SeriesId;
-                if (seriesId.HasValue)
-                {
-                    dto.SeriesId = seriesId.Value.ToString("N");
-                }
+                dto.SeriesId = season.SeriesId;
 
                 series = null;
 
@@ -1357,7 +1338,7 @@ namespace Emby.Server.Implementations.Dto
 
             dto.ChannelId = item.ChannelId;
 
-            if (item.SourceType == SourceType.Channel && !string.IsNullOrEmpty(item.ChannelId))
+            if (item.SourceType == SourceType.Channel)
             {
                 var channel = _libraryManager.GetItemById(item.ChannelId);
                 if (channel != null)

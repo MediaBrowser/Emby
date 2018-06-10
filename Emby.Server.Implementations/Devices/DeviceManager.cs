@@ -157,7 +157,7 @@ namespace Emby.Server.Implementations.Devices
                 });
             }
 
-            if (!string.IsNullOrEmpty(query.UserId))
+            if (!query.UserId.Equals(Guid.Empty))
             {
                 var user = _userManager.GetUserById(query.UserId);
 

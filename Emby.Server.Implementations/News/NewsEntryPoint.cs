@@ -118,7 +118,7 @@ namespace Emby.Server.Implementations.News
                 Name = i.Title,
                 Description = i.Description,
                 Url = i.Link,
-                UserIds = _userManager.Users.Select(u => u.Id.ToString("N")).ToList()
+                UserIds = _userManager.Users.Select(u => u.Id).ToArray()
 
             }, cancellationToken));
 

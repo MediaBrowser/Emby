@@ -481,17 +481,17 @@ namespace Emby.Dlna.ContentDirectory
         {
             if (item is MusicGenre)
             {
-                return GetMusicGenreItems(item, null, user, sort, startIndex, limit);
+                return GetMusicGenreItems(item, Guid.Empty, user, sort, startIndex, limit);
             }
 
             if (item is MusicArtist)
             {
-                return GetMusicArtistItems(item, null, user, sort, startIndex, limit);
+                return GetMusicArtistItems(item, Guid.Empty, user, sort, startIndex, limit);
             }
 
             if (item is Genre)
             {
-                return GetGenreItems(item, null, user, sort, startIndex, limit);
+                return GetGenreItems(item, Guid.Empty, user, sort, startIndex, limit);
             }
 
             if (!stubType.HasValue || stubType.Value != StubType.Folder)
@@ -1124,10 +1124,10 @@ namespace Emby.Dlna.ContentDirectory
 
             var items = _userViewManager.GetLatestItems(new LatestItemsQuery
             {
-                UserId = user.Id.ToString("N"),
+                UserId = user.Id,
                 Limit = 50,
                 IncludeItemTypes = new[] { typeof(Audio).Name },
-                ParentId = parent == null ? null : parent.Id.ToString("N"),
+                ParentId = parent == null ? Guid.Empty : parent.Id,
                 GroupItems = true
 
             }, query.DtoOptions).Select(i => i.Item1 ?? i.Item2.FirstOrDefault()).Where(i => i != null).ToArray();
@@ -1143,7 +1143,7 @@ namespace Emby.Dlna.ContentDirectory
             {
                 Limit = query.Limit,
                 StartIndex = query.StartIndex,
-                UserId = query.User.Id.ToString("N")
+                UserId = query.User.Id
 
             }, new [] { parent }, query.DtoOptions);
 
@@ -1156,10 +1156,10 @@ namespace Emby.Dlna.ContentDirectory
 
             var items = _userViewManager.GetLatestItems(new LatestItemsQuery
             {
-                UserId = user.Id.ToString("N"),
+                UserId = user.Id,
                 Limit = 50,
                 IncludeItemTypes = new[] { typeof(Episode).Name },
-                ParentId = parent == null ? null : parent.Id.ToString("N"),
+                ParentId = parent == null ? Guid.Empty : parent.Id,
                 GroupItems = false
 
             }, query.DtoOptions).Select(i => i.Item1 ?? i.Item2.FirstOrDefault()).Where(i => i != null).ToArray();
@@ -1173,10 +1173,10 @@ namespace Emby.Dlna.ContentDirectory
 
             var items = _userViewManager.GetLatestItems(new LatestItemsQuery
             {
-                UserId = user.Id.ToString("N"),
+                UserId = user.Id,
                 Limit = 50,
                 IncludeItemTypes = new[] { typeof(Movie).Name },
-                ParentId = parent == null ? null : parent.Id.ToString("N"),
+                ParentId = parent == null ? Guid.Empty : parent.Id,
                 GroupItems = true
 
             }, query.DtoOptions).Select(i => i.Item1 ?? i.Item2.FirstOrDefault()).Where(i => i != null).ToArray();
@@ -1184,7 +1184,7 @@ namespace Emby.Dlna.ContentDirectory
             return ToResult(items);
         }
 
-        private QueryResult<ServerItem> GetMusicArtistItems(BaseItem item, Guid? parentId, User user, SortCriteria sort, int? startIndex, int? limit)
+        private QueryResult<ServerItem> GetMusicArtistItems(BaseItem item, Guid parentId, User user, SortCriteria sort, int? startIndex, int? limit)
         {
             var query = new InternalItemsQuery(user)
             {
@@ -1204,7 +1204,7 @@ namespace Emby.Dlna.ContentDirectory
             return ToResult(result);
         }
 
-        private QueryResult<ServerItem> GetGenreItems(BaseItem item, Guid? parentId, User user, SortCriteria sort, int? startIndex, int? limit)
+        private QueryResult<ServerItem> GetGenreItems(BaseItem item, Guid parentId, User user, SortCriteria sort, int? startIndex, int? limit)
         {
             var query = new InternalItemsQuery(user)
             {
@@ -1224,7 +1224,7 @@ namespace Emby.Dlna.ContentDirectory
             return ToResult(result);
         }
 
-        private QueryResult<ServerItem> GetMusicGenreItems(BaseItem item, Guid? parentId, User user, SortCriteria sort, int? startIndex, int? limit)
+        private QueryResult<ServerItem> GetMusicGenreItems(BaseItem item, Guid parentId, User user, SortCriteria sort, int? startIndex, int? limit)
         {
             var query = new InternalItemsQuery(user)
             {

@@ -575,7 +575,7 @@ namespace Emby.Server.Implementations.Library
 
             var dto = new UserDto
             {
-                Id = user.Id.ToString("N"),
+                Id = user.Id,
                 Name = user.Name,
                 HasPassword = hasPassword,
                 HasConfiguredPassword = hasConfiguredPassword,
@@ -779,7 +779,7 @@ namespace Emby.Server.Implementations.Library
 
             if (user.ConnectLinkType.HasValue)
             {
-                await _connectFactory().RemoveConnect(user.Id.ToString("N")).ConfigureAwait(false);
+                await _connectFactory().RemoveConnect(user).ConfigureAwait(false);
             }
 
             var allUsers = Users.ToList();
@@ -1099,7 +1099,7 @@ namespace Emby.Server.Implementations.Library
         }
 
         private readonly object _policySyncLock = new object();
-        public void UpdateUserPolicy(string userId, UserPolicy userPolicy)
+        public void UpdateUserPolicy(Guid userId, UserPolicy userPolicy)
         {
             var user = GetUserById(userId);
             UpdateUserPolicy(user, userPolicy, true);
@@ -1189,7 +1189,7 @@ namespace Emby.Server.Implementations.Library
         }
 
         private readonly object _configSyncLock = new object();
-        public void UpdateConfiguration(string userId, UserConfiguration config)
+        public void UpdateConfiguration(Guid userId, UserConfiguration config)
         {
             var user = GetUserById(userId);
             UpdateConfiguration(user, config);
@@ -1259,7 +1259,7 @@ namespace Emby.Server.Implementations.Library
         {
             var existing = _authRepo.Get(new AuthenticationInfoQuery
             {
-                UserId = user.Id.ToString("N")
+                UserId = user.Id
 
             }).Items;
 

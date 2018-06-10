@@ -78,7 +78,7 @@ namespace Emby.Server.Implementations.Notifications
             return Task.WhenAll(tasks);
         }
 
-        private IEnumerable<string> GetUserIds(NotificationRequest request, NotificationOption options)
+        private IEnumerable<Guid> GetUserIds(NotificationRequest request, NotificationOption options)
         {
             if (request.SendToUserMode.HasValue)
             {
@@ -86,9 +86,9 @@ namespace Emby.Server.Implementations.Notifications
                 {
                     case SendToUserType.Admins:
                         return _userManager.Users.Where(i => i.Policy.IsAdministrator)
-                                .Select(i => i.Id.ToString("N"));
+                                .Select(i => i.Id);
                     case SendToUserType.All:
-                        return _userManager.Users.Select(i => i.Id.ToString("N"));
+                        return _userManager.Users.Select(i => i.Id);
                     case SendToUserType.Custom:
                         return request.UserIds;
                     default:
@@ -102,7 +102,7 @@ namespace Emby.Server.Implementations.Notifications
 
                 return _userManager.Users
                     .Where(i => config.IsEnabledToSendToUser(request.NotificationType, i.Id.ToString("N"), i.Policy))
-                    .Select(i => i.Id.ToString("N"));
+                    .Select(i => i.Id);
             }
 
             return request.UserIds;

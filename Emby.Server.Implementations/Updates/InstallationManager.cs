@@ -434,7 +434,7 @@ namespace Emby.Server.Implementations.Updates
 
             var installationInfo = new InstallationInfo
             {
-                Id = Guid.NewGuid().ToString("N"),
+                Id = Guid.NewGuid(),
                 Name = package.name,
                 AssemblyGuid = package.guid,
                 UpdateClass = package.classification,

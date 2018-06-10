@@ -20,10 +20,10 @@ namespace MediaBrowser.Api.Session
     /// </summary>
     [Route("/Sessions", "GET", Summary = "Gets a list of sessions")]
     [Authenticated]
-    public class GetSessions : IReturn<SessionInfoDto[]>
+    public class GetSessions : IReturn<SessionInfo[]>
     {
         [ApiMember(Name = "ControllableByUserId", Description = "Optional. Filter by sessions that a given user is allowed to remote control.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public string ControllableByUserId { get; set; }
+        public Guid ControllableByUserId { get; set; }
 
         [ApiMember(Name = "DeviceId", Description = "Optional. Filter by device id.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
         public string DeviceId { get; set; }
@@ -351,20 +351,20 @@ namespace MediaBrowser.Api.Session
                 result = result.Where(i => string.Equals(i.DeviceId, request.DeviceId, StringComparison.OrdinalIgnoreCase));
             }
 
-            if (!string.IsNullOrWhiteSpace(request.ControllableByUserId))
+            if (!request.ControllableByUserId.Equals(Guid.Empty))
             {
-                result = result.Where(i => i.SupportsMediaControl);
+                result = result.Where(i => i.SupportsRemoteControl);
 
                 var user = _userManager.GetUserById(request.ControllableByUserId);
 
                 if (!user.Policy.EnableRemoteControlOfOtherUsers)
                 {
-                    result = result.Where(i => !i.UserId.HasValue || i.ContainsUser(request.ControllableByUserId));
+                    result = result.Where(i => i.UserId.Equals(Guid.Empty) || i.ContainsUser(request.ControllableByUserId));
                 }
 
                 if (!user.Policy.EnableSharedDeviceControl)
                 {
-                    result = result.Where(i => i.UserId.HasValue);
+                    result = result.Where(i => !i.UserId.Equals(Guid.Empty));
                 }
 
                 result = result.Where(i =>
@@ -383,7 +383,7 @@ namespace MediaBrowser.Api.Session
                 });
             }
 
-            return ToOptimizedResult(result.Select(_sessionManager.GetSessionInfoDto).ToArray());
+            return ToOptimizedResult(result.ToArray());
         }
 
         public Task Post(SendPlaystateCommand request)
@@ -426,7 +426,7 @@ namespace MediaBrowser.Api.Session
             var command = new GeneralCommand
             {
                 Name = name,
-                ControllingUserId = currentSession.UserId.HasValue ? currentSession.UserId.Value.ToString("N") : null
+                ControllingUserId = currentSession.UserId
             };
 
             return _sessionManager.SendGeneralCommand(currentSession.Id, request.Id, command, CancellationToken.None);
@@ -464,7 +464,7 @@ namespace MediaBrowser.Api.Session
             var command = new GeneralCommand
             {
                 Name = request.Command,
-                ControllingUserId = currentSession.UserId.HasValue ? currentSession.UserId.Value.ToString("N") : null
+                ControllingUserId = currentSession.UserId
             };
 
             return _sessionManager.SendGeneralCommand(currentSession.Id, request.Id, command, CancellationToken.None);
@@ -474,19 +474,19 @@ namespace MediaBrowser.Api.Session
         {
             var currentSession = GetSession(_sessionContext);
 
-            request.ControllingUserId = currentSession.UserId.HasValue ? currentSession.UserId.Value.ToString("N") : null;
+            request.ControllingUserId = currentSession.UserId;
 
             return _sessionManager.SendGeneralCommand(currentSession.Id, request.Id, request, CancellationToken.None);
         }
 
         public void Post(AddUserToSession request)
         {
-            _sessionManager.AddAdditionalUser(request.Id, request.UserId);
+            _sessionManager.AddAdditionalUser(request.Id, new Guid(request.UserId));
         }
 
         public void Delete(RemoveUserFromSession request)
         {
-            _sessionManager.RemoveAdditionalUser(request.Id, request.UserId);
+            _sessionManager.RemoveAdditionalUser(request.Id, new Guid(request.UserId));
         }
 
         public void Post(PostCapabilities request)

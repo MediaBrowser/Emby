@@ -739,7 +739,7 @@ namespace Emby.Server.Implementations.Data
                 saveItemStatement.TryBindNull("@EndDate");
             }
 
-            saveItemStatement.TryBind("@ChannelId", item.ChannelId);
+            saveItemStatement.TryBind("@ChannelId", item.ChannelId.Equals(Guid.Empty) ? null : item.ChannelId.ToString("N"));
 
             var hasProgramAttributes = item as IHasProgramAttributes;
             if (hasProgramAttributes != null)
@@ -948,7 +948,10 @@ namespace Emby.Server.Implementations.Data
             if (episode != null)
             {
                 saveItemStatement.TryBind("@SeasonName", episode.SeasonName);
-                saveItemStatement.TryBind("@SeasonId", episode.SeasonId);
+
+                var nullableSeasonId = episode.SeasonId.Equals(Guid.Empty) ? (Guid?)null : episode.SeasonId;
+
+                saveItemStatement.TryBind("@SeasonId", nullableSeasonId);
             }
             else
             {
@@ -958,7 +961,9 @@ namespace Emby.Server.Implementations.Data
 
             if (hasSeries != null)
             {
-                saveItemStatement.TryBind("@SeriesId", hasSeries.SeriesId);
+                var nullableSeriesId = hasSeries.SeriesId.Equals(Guid.Empty) ? (Guid?)null : hasSeries.SeriesId;
+
+                saveItemStatement.TryBind("@SeriesId", nullableSeriesId);
                 saveItemStatement.TryBind("@SeriesPresentationUniqueKey", hasSeries.SeriesPresentationUniqueKey);
             }
             else
@@ -1394,7 +1399,7 @@ namespace Emby.Server.Implementations.Data
 
             if (!reader.IsDBNull(index))
             {
-                item.ChannelId = reader.GetString(index);
+                item.ChannelId = new Guid(reader.GetString(index));
             }
             index++;
 
@@ -3608,12 +3613,12 @@ namespace Emby.Server.Implementations.Data
                 whereClauses.Add(string.Format("ChannelId in ({0})", inClause));
             }
 
-            if (query.ParentId.HasValue)
+            if (!query.ParentId.Equals(Guid.Empty))
             {
                 whereClauses.Add("ParentId=@ParentId");
                 if (statement != null)
                 {
-                    statement.TryBind("@ParentId", query.ParentId.Value);
+                    statement.TryBind("@ParentId", query.ParentId);
                 }
             }
 

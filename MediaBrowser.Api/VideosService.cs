@@ -22,7 +22,7 @@ namespace MediaBrowser.Api
     public class GetAdditionalParts : IReturn<QueryResult<BaseItemDto>>
     {
         [ApiMember(Name = "UserId", Description = "Optional. Filter by user id, and attach user data", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
 
         /// <summary>
         /// Gets or sets the id.
@@ -76,10 +76,10 @@ namespace MediaBrowser.Api
         /// <returns>System.Object.</returns>
         public object Get(GetAdditionalParts request)
         {
-            var user = !string.IsNullOrWhiteSpace(request.UserId) ? _userManager.GetUserById(request.UserId) : null;
+            var user = !request.UserId.Equals(Guid.Empty) ? _userManager.GetUserById(request.UserId) : null;
 
             var item = string.IsNullOrEmpty(request.Id)
-                           ? (!string.IsNullOrWhiteSpace(request.UserId)
+                           ? (!request.UserId.Equals(Guid.Empty)
                                   ? _libraryManager.GetUserRootFolder()
                                   : _libraryManager.RootFolder)
                            : _libraryManager.GetItemById(request.Id);

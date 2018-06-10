@@ -35,7 +35,7 @@ namespace Emby.Server.Implementations.Library
         {
             User user = null;
 
-            if (string.IsNullOrEmpty(query.UserId))
+            if (query.UserId.Equals(Guid.Empty))
             {
             }
             else
@@ -169,7 +169,7 @@ namespace Emby.Server.Implementations.Library
                 IncludeItemTypes = includeItemTypes.ToArray(includeItemTypes.Count),
                 Limit = query.Limit,
                 IncludeItemsByName = string.IsNullOrEmpty(query.ParentId),
-                ParentId = string.IsNullOrEmpty(query.ParentId) ? (Guid?)null : new Guid(query.ParentId),
+                ParentId = string.IsNullOrEmpty(query.ParentId) ? Guid.Empty : new Guid(query.ParentId),
                 OrderBy = new[] { new ValueTuple<string, SortOrder>(ItemSortBy.SortName, SortOrder.Ascending) },
                 Recursive = true,
 
@@ -196,11 +196,11 @@ namespace Emby.Server.Implementations.Library
 
             if (searchQuery.IncludeItemTypes.Length == 1 && string.Equals(searchQuery.IncludeItemTypes[0], "MusicArtist", StringComparison.OrdinalIgnoreCase))
             {
-                if (searchQuery.ParentId.HasValue)
+                if (!searchQuery.ParentId.Equals(Guid.Empty))
                 {
-                    searchQuery.AncestorIds = new Guid[] { searchQuery.ParentId.Value };
+                    searchQuery.AncestorIds = new[] { searchQuery.ParentId };
                 }
-                searchQuery.ParentId = null;
+                searchQuery.ParentId = Guid.Empty;
                 searchQuery.IncludeItemsByName = true;
                 searchQuery.IncludeItemTypes = Array.Empty<string>();
                 mediaItems = _libraryManager.GetAllArtists(searchQuery).Items.Select(i => i.Item1).ToList();

@@ -142,9 +142,9 @@ namespace Emby.Dlna.Didl
             else
             {
                 var parent = item.DisplayParentId;
-                if (parent.HasValue)
+                if (!parent.Equals(Guid.Empty))
                 {
-                    writer.WriteAttributeString("parentID", GetClientId(parent.Value, null));
+                    writer.WriteAttributeString("parentID", GetClientId(parent, null));
                 }
             }
 
@@ -204,7 +204,7 @@ namespace Emby.Dlna.Didl
 
                 streamInfo = new StreamBuilder(_mediaEncoder, GetStreamBuilderLogger(options)).BuildVideoItem(new VideoOptions
                 {
-                    ItemId = GetClientId(video),
+                    ItemId = video.Id,
                     MediaSources = sources.ToArray(sources.Count),
                     Profile = _profile,
                     DeviceId = deviceId,
@@ -517,7 +517,7 @@ namespace Emby.Dlna.Didl
 
                 streamInfo = new StreamBuilder(_mediaEncoder, GetStreamBuilderLogger(options)).BuildAudioItem(new AudioOptions
                 {
-                    ItemId = GetClientId(audio),
+                    ItemId = audio.Id,
                     MediaSources = sources.ToArray(sources.Count),
                     Profile = _profile,
                     DeviceId = deviceId
@@ -641,13 +641,13 @@ namespace Emby.Dlna.Didl
                 else
                 {
                     var parent = folder.DisplayParentId;
-                    if (!parent.HasValue)
+                    if (parent.Equals(Guid.Empty))
                     {
                         writer.WriteAttributeString("parentID", "0");
                     }
                     else
                     {
-                        writer.WriteAttributeString("parentID", GetClientId(parent.Value, null));
+                        writer.WriteAttributeString("parentID", GetClientId(parent, null));
                     }
                 }
             }
@@ -1138,7 +1138,7 @@ namespace Emby.Dlna.Didl
 
             return new ImageDownloadInfo
             {
-                ItemId = item.Id.ToString("N"),
+                ItemId = item.Id,
                 Type = type,
                 ImageTag = tag,
                 Width = width,
@@ -1150,7 +1150,7 @@ namespace Emby.Dlna.Didl
 
         class ImageDownloadInfo
         {
-            internal string ItemId;
+            internal Guid ItemId;
             internal string ImageTag;
             internal ImageType Type;
 
@@ -1189,18 +1189,11 @@ namespace Emby.Dlna.Didl
             return id;
         }
 
-        public static string GetClientId(BaseItem item)
-        {
-            var id = item.Id.ToString("N");
-
-            return id;
-        }
-
         private ImageUrlInfo GetImageUrl(ImageDownloadInfo info, int maxWidth, int maxHeight, string format)
         {
             var url = string.Format("{0}/Items/{1}/Images/{2}/0/{3}/{4}/{5}/{6}/0/0",
                 _serverAddress,
-                info.ItemId,
+                info.ItemId.ToString("N"),
                 info.Type,
                 info.ImageTag,
                 format,

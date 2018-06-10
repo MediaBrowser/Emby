@@ -734,7 +734,7 @@ namespace MediaBrowser.Providers.Manager
         {
             BaseItem referenceItem = null;
 
-            if (!string.IsNullOrEmpty(searchInfo.ItemId))
+            if (!searchInfo.ItemId.Equals(Guid.Empty))
             {
                 referenceItem = _libraryManagerFactory().GetItemById(searchInfo.ItemId);
             }

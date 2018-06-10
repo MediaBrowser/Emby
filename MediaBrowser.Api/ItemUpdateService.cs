@@ -37,7 +37,7 @@ namespace MediaBrowser.Api
     public class UpdateItemContentType : IReturnVoid
     {
         [ApiMember(Name = "ItemId", Description = "The id of the item", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
-        public string ItemId { get; set; }
+        public Guid ItemId { get; set; }
 
         [ApiMember(Name = "ContentType", Description = "The content type of the item", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "POST")]
         public string ContentType { get; set; }

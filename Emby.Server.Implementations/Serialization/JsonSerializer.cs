@@ -220,6 +220,18 @@ namespace Emby.Common.Implementations.Serialization
             ServiceStack.Text.JsConfig.IncludeNullValues = false;
             ServiceStack.Text.JsConfig.AlwaysUseUtc = true;
             ServiceStack.Text.JsConfig.AssumeUtc = true;
+
+            ServiceStack.Text.JsConfig<Guid>.SerializeFn = SerializeGuid;
+        }
+
+        private string SerializeGuid(Guid guid)
+        {
+            if (guid.Equals(Guid.Empty))
+            {
+                return null;
+            }
+
+            return guid.ToString("N");
         }
 
         /// <summary>

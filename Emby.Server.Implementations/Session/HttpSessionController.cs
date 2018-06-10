@@ -79,7 +79,7 @@ namespace Emby.Server.Implementations.Session
         {
             var dict = new Dictionary<string, string>();
 
-            dict["ItemIds"] = string.Join(",", command.ItemIds);
+            dict["ItemIds"] = string.Join(",", command.ItemIds.Select(i => i.ToString("N")).ToArray());
 
             if (command.StartPositionTicks.HasValue)
             {

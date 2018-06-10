@@ -200,7 +200,7 @@ namespace Emby.Server.Implementations.Activity
                 Name = name,
                 Type = "SessionEnded",
                 ShortOverview = string.Format(_localization.GetLocalizedString("LabelIpAddressValue"), session.RemoteEndPoint),
-                UserId = session.UserId.HasValue ? session.UserId.Value.ToString("N") : null
+                UserId = !session.UserId.Equals(Guid.Empty) ? session.UserId.ToString("N") : null
             });
         }
 
@@ -326,7 +326,7 @@ namespace Emby.Server.Implementations.Activity
                 Name = name,
                 Type = "SessionStarted",
                 ShortOverview = string.Format(_localization.GetLocalizedString("LabelIpAddressValue"), session.RemoteEndPoint),
-                UserId = session.UserId.HasValue ? session.UserId.Value.ToString("N") : null
+                UserId = !session.UserId.Equals(Guid.Empty) ? session.UserId.ToString("N") : null
             });
         }
 

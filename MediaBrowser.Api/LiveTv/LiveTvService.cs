@@ -45,7 +45,7 @@ namespace MediaBrowser.Api.LiveTv
         public ChannelType? Type { get; set; }
 
         [ApiMember(Name = "UserId", Description = "Optional filter by user and attach user data.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
 
         /// <summary>
         /// Skips over a given number of items within the results. Use for paging.
@@ -148,7 +148,7 @@ namespace MediaBrowser.Api.LiveTv
         public string Id { get; set; }
 
         [ApiMember(Name = "UserId", Description = "Optional attach user data.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
     }
 
     [Route("/LiveTv/Recordings", "GET", Summary = "Gets live tv recordings")]
@@ -159,7 +159,7 @@ namespace MediaBrowser.Api.LiveTv
         public string ChannelId { get; set; }
 
         [ApiMember(Name = "UserId", Description = "Optional filter by user and attach user data.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
 
         [ApiMember(Name = "StartIndex", Description = "Optional. The record index to start at. All items with a lower index will be dropped from the results.", IsRequired = false, DataType = "int", ParameterType = "query", Verb = "GET")]
         public int? StartIndex { get; set; }
@@ -278,7 +278,7 @@ namespace MediaBrowser.Api.LiveTv
     public class GetRecordingFolders : IReturn<BaseItemDto[]>
     {
         [ApiMember(Name = "UserId", Description = "Optional filter by user and attach user data.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
     }
 
     [Route("/LiveTv/Recordings/{Id}", "GET", Summary = "Gets a live tv recording")]
@@ -289,7 +289,7 @@ namespace MediaBrowser.Api.LiveTv
         public string Id { get; set; }
 
         [ApiMember(Name = "UserId", Description = "Optional attach user data.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
     }
 
     [Route("/LiveTv/Tuners/{Id}/Reset", "POST", Summary = "Resets a tv tuner")]
@@ -339,7 +339,7 @@ namespace MediaBrowser.Api.LiveTv
         public string ChannelIds { get; set; }
 
         [ApiMember(Name = "UserId", Description = "Optional filter by user id.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET,POST")]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
 
         [ApiMember(Name = "MinStartDate", Description = "Optional. The minimum premiere date. Format = ISO", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET,POST")]
         public string MinStartDate { get; set; }
@@ -404,7 +404,7 @@ namespace MediaBrowser.Api.LiveTv
         public bool? EnableUserData { get; set; }
 
         public string SeriesTimerId { get; set; }
-        public string LibrarySeriesId { get; set; }
+        public Guid LibrarySeriesId { get; set; }
 
         /// <summary>
         /// Fields to return within the items, in addition to basic information
@@ -431,7 +431,7 @@ namespace MediaBrowser.Api.LiveTv
         }
 
         [ApiMember(Name = "UserId", Description = "Optional filter by user id.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET,POST")]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
 
         [ApiMember(Name = "Limit", Description = "Optional. The maximum number of records to return", IsRequired = false, DataType = "int", ParameterType = "query", Verb = "GET")]
         public int? Limit { get; set; }
@@ -488,7 +488,7 @@ namespace MediaBrowser.Api.LiveTv
         public string Id { get; set; }
 
         [ApiMember(Name = "UserId", Description = "Optional attach user data.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
     }
 
 
@@ -497,7 +497,7 @@ namespace MediaBrowser.Api.LiveTv
     public class DeleteRecording : IReturnVoid
     {
         [ApiMember(Name = "Id", Description = "Recording Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
-        public string Id { get; set; }
+        public Guid Id { get; set; }
     }
 
     [Route("/LiveTv/Timers/{Id}", "DELETE", Summary = "Cancels a live tv timer")]
@@ -578,7 +578,7 @@ namespace MediaBrowser.Api.LiveTv
     public class GetLiveTvFolder : IReturn<BaseItemDto>
     {
         [ApiMember(Name = "UserId", Description = "Optional attach user data.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
     }
 
     [Route("/LiveTv/TunerHosts", "POST", Summary = "Adds a tuner host")]
@@ -735,7 +735,7 @@ namespace MediaBrowser.Api.LiveTv
 
         public object Get(GetRecordingFolders request)
         {
-            var user = string.IsNullOrEmpty(request.UserId) ? null : _userManager.GetUserById(request.UserId);
+            var user = request.UserId.Equals(Guid.Empty) ? null : _userManager.GetUserById(request.UserId);
             var folders = _liveTvManager.GetRecordingFolders(user);
 
             var returnArray = _dtoService.GetBaseItemDtos(folders.ToArray(), new DtoOptions(), user);
@@ -955,7 +955,7 @@ namespace MediaBrowser.Api.LiveTv
 
             }, options, CancellationToken.None);
 
-            var user = string.IsNullOrEmpty(request.UserId) ? null : _userManager.GetUserById(request.UserId);
+            var user = request.UserId.Equals(Guid.Empty) ? null : _userManager.GetUserById(request.UserId);
 
             RemoveFields(options);
 
@@ -1043,7 +1043,7 @@ namespace MediaBrowser.Api.LiveTv
             query.Genres = (request.Genres ?? String.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             query.GenreIds = GetGuids(request.GenreIds);
 
-            if (!string.IsNullOrWhiteSpace(request.LibrarySeriesId))
+            if (!request.LibrarySeriesId.Equals(Guid.Empty))
             {
                 query.IsSeries = true;
 
@@ -1230,7 +1230,7 @@ namespace MediaBrowser.Api.LiveTv
 
         public async Task<object> Get(GetProgram request)
         {
-            var user = string.IsNullOrEmpty(request.UserId) ? null : _userManager.GetUserById(request.UserId);
+            var user = request.UserId.Equals(Guid.Empty) ? null : _userManager.GetUserById(request.UserId);
 
             var result = await _liveTvManager.GetProgram(request.Id, CancellationToken.None, user).ConfigureAwait(false);
 

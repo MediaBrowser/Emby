@@ -35,14 +35,14 @@ namespace MediaBrowser.Providers.TV
             }
 
             var seriesId = item.FindSeriesId();
-            if (item.SeriesId != seriesId)
+            if (!item.SeriesId.Equals(seriesId))
             {
                 item.SeriesId = seriesId;
                 updateType |= ItemUpdateType.MetadataImport;
             }
 
             var seasonId = item.FindSeasonId();
-            if (item.SeasonId != seasonId)
+            if (!item.SeasonId.Equals(seasonId))
             {
                 item.SeasonId = seasonId;
                 updateType |= ItemUpdateType.MetadataImport;
