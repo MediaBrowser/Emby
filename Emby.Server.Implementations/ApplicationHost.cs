@@ -921,7 +921,7 @@ namespace Emby.Server.Implementations
             ZipClient = new ZipClient(FileSystemManager);
             RegisterSingleInstance(ZipClient);
 
-            HttpResultFactory = new HttpResultFactory(LogManager, FileSystemManager, JsonSerializer);
+            HttpResultFactory = new HttpResultFactory(LogManager, FileSystemManager, JsonSerializer, CreateBrotliCompressor());
             RegisterSingleInstance(HttpResultFactory);
 
             RegisterSingleInstance<IServerApplicationHost>(this);
@@ -1089,6 +1089,11 @@ namespace Emby.Server.Implementations
             SetStaticProperties();
 
             ((UserManager)UserManager).Initialize();
+        }
+
+        protected virtual IBrotliCompressor CreateBrotliCompressor()
+        {
+            return null;
         }
 
         private static Func<string, object> GetParseFn(Type propertyType)
@@ -1361,6 +1366,8 @@ namespace Emby.Server.Implementations
         /// </summary>
         private void SetStaticProperties()
         {
+            ((SqliteItemRepository)ItemRepository).ImageProcessor = ImageProcessor;
+
             // For now there's no real way to inject these properly
             BaseItem.Logger = LogManager.GetLogger("BaseItem");
             BaseItem.ConfigurationManager = ServerConfigurationManager;

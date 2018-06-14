@@ -472,7 +472,6 @@ namespace Emby.Server.Implementations.Channels
 
             item.OfficialRating = GetOfficialRating(channelInfo.ParentalRating);
             item.Overview = channelInfo.Description;
-            item.HomePageUrl = channelInfo.HomePageUrl;
 
             if (string.IsNullOrWhiteSpace(item.Name))
             {
@@ -1023,7 +1022,6 @@ namespace Emby.Server.Implementations.Channels
                 item.OfficialRating = info.OfficialRating;
                 item.DateCreated = info.DateCreated ?? DateTime.UtcNow;
                 item.Tags = info.Tags.ToArray(info.Tags.Count);
-                item.HomePageUrl = info.HomePageUrl;
                 item.OriginalTitle = info.OriginalTitle;
             }
             else if (info.Type == ChannelItemType.Folder && info.FolderType == ChannelFolderType.Container)
@@ -1066,12 +1064,13 @@ namespace Emby.Server.Implementations.Channels
                 forceUpdate = true;
             }
 
-            if (!string.Equals(item.ExternalEtag ?? string.Empty, info.Etag ?? string.Empty, StringComparison.Ordinal))
-            {
-                item.ExternalEtag = info.Etag;
-                forceUpdate = true;
-                _logger.Debug("Forcing update due to ExternalEtag {0}", item.Name);
-            }
+            // was used for status
+            //if (!string.Equals(item.ExternalEtag ?? string.Empty, info.Etag ?? string.Empty, StringComparison.Ordinal))
+            //{
+            //    item.ExternalEtag = info.Etag;
+            //    forceUpdate = true;
+            //    _logger.Debug("Forcing update due to ExternalEtag {0}", item.Name);
+            //}
 
             if (!internalChannelId.Equals(item.ChannelId))
             {
@@ -1087,7 +1086,7 @@ namespace Emby.Server.Implementations.Channels
             }
             item.ParentId = parentFolderId;
 
-            var hasSeries = item as IHasSeries;
+            var hasSeries = item as IHasSeriesName;
             if (hasSeries != null)
             {
                 if (!string.Equals(hasSeries.SeriesName, info.SeriesName, StringComparison.OrdinalIgnoreCase))

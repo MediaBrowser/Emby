@@ -41,7 +41,7 @@ namespace Emby.Server.Implementations.LiveTv
         {
             var dto = new TimerInfoDto
             {
-                Id = GetInternalTimerId(service.Name, info.Id).ToString("N"),
+                Id = GetInternalTimerId(info.Id),
                 Overview = info.Overview,
                 EndDate = info.EndDate,
                 Name = info.Name,
@@ -49,7 +49,7 @@ namespace Emby.Server.Implementations.LiveTv
                 ExternalId = info.Id,
                 ChannelId = GetInternalChannelId(service.Name, info.ChannelId),
                 Status = info.Status,
-                SeriesTimerId = string.IsNullOrEmpty(info.SeriesTimerId) ? null : GetInternalSeriesTimerId(service.Name, info.SeriesTimerId).ToString("N"),
+                SeriesTimerId = string.IsNullOrEmpty(info.SeriesTimerId) ? null : GetInternalSeriesTimerId(info.SeriesTimerId).ToString("N"),
                 PrePaddingSeconds = info.PrePaddingSeconds,
                 PostPaddingSeconds = info.PostPaddingSeconds,
                 IsPostPaddingRequired = info.IsPostPaddingRequired,
@@ -66,7 +66,7 @@ namespace Emby.Server.Implementations.LiveTv
 
             if (!string.IsNullOrEmpty(info.ProgramId))
             {
-                dto.ProgramId = GetInternalProgramId(service.Name, info.ProgramId).ToString("N");
+                dto.ProgramId = GetInternalProgramId(info.ProgramId).ToString("N");
             }
 
             if (program != null)
@@ -104,7 +104,7 @@ namespace Emby.Server.Implementations.LiveTv
         {
             var dto = new SeriesTimerInfoDto
             {
-                Id = GetInternalSeriesTimerId(service.Name, info.Id).ToString("N"),
+                Id = GetInternalSeriesTimerId(info.Id).ToString("N"),
                 Overview = info.Overview,
                 EndDate = info.EndDate,
                 Name = info.Name,
@@ -136,7 +136,7 @@ namespace Emby.Server.Implementations.LiveTv
 
             if (!string.IsNullOrEmpty(info.ProgramId))
             {
-                dto.ProgramId = GetInternalProgramId(service.Name, info.ProgramId).ToString("N");
+                dto.ProgramId = GetInternalProgramId(info.ProgramId).ToString("N");
             }
 
             dto.DayPattern = info.Days == null ? null : GetDayPattern(info.Days.ToArray(info.Days.Count));
@@ -391,23 +391,24 @@ namespace Emby.Server.Implementations.LiveTv
             return _libraryManager.GetNewItemId(name.ToLower(), typeof(LiveTvChannel));
         }
 
-        public Guid GetInternalTimerId(string serviceName, string externalId)
+        private const string ServiceName = "Emby";
+        public string GetInternalTimerId(string externalId)
         {
-            var name = serviceName + externalId + InternalVersionNumber;
+            var name = ServiceName + externalId + InternalVersionNumber;
+
+            return name.ToLower().GetMD5().ToString("N");
+        }
+
+        public Guid GetInternalSeriesTimerId(string externalId)
+        {
+            var name = ServiceName + externalId + InternalVersionNumber;
 
             return name.ToLower().GetMD5();
         }
 
-        public Guid GetInternalSeriesTimerId(string serviceName, string externalId)
+        public Guid GetInternalProgramId(string externalId)
         {
-            var name = serviceName + externalId + InternalVersionNumber;
-
-            return name.ToLower().GetMD5();
-        }
-
-        public Guid GetInternalProgramId(string serviceName, string externalId)
-        {
-            var name = serviceName + externalId + InternalVersionNumber;
+            var name = ServiceName + externalId + InternalVersionNumber;
 
             return _libraryManager.GetNewItemId(name.ToLower(), typeof(LiveTvProgram));
         }

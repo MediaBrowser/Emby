@@ -59,7 +59,7 @@ namespace Emby.Server.Implementations.Library
 
                 if (UserView.IsUserSpecific(folder))
                 {
-                    list.Add(_libraryManager.GetNamedView(user, folder.Name, folder.Id.ToString("N"), folderViewType, null));
+                    list.Add(_libraryManager.GetNamedView(user, folder.Name, folder.Id, folderViewType, null));
                     continue;
                 }
 
@@ -150,14 +150,14 @@ namespace Emby.Server.Implementations.Library
                 .ToArray();
         }
 
-        public UserView GetUserSubViewWithName(string name, string parentId, string type, string sortName)
+        public UserView GetUserSubViewWithName(string name, Guid parentId, string type, string sortName)
         {
             var uniqueId = parentId + "subview" + type;
 
             return _libraryManager.GetNamedView(name, parentId, type, sortName, uniqueId);
         }
 
-        public UserView GetUserSubView(string parentId, string type, string localizationKey, string sortName)
+        public UserView GetUserSubView(Guid parentId, string type, string localizationKey, string sortName)
         {
             var name = _localizationManager.GetLocalizedString(localizationKey);
 

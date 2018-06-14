@@ -118,9 +118,7 @@ namespace Emby.Server.Implementations.UserViews
             {
                 CollectionType.Movies,
                 CollectionType.TvShows,
-                CollectionType.Playlists,
-                CollectionType.Photos,
-                CollectionType.HomeVideos
+                CollectionType.Playlists
             };
 
             return collectionStripViewTypes.Contains(view.ViewType ?? string.Empty);

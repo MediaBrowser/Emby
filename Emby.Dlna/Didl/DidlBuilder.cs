@@ -951,19 +951,6 @@ namespace Emby.Dlna.Didl
         {
             ImageDownloadInfo imageInfo = null;
 
-            if (context is UserView)
-            {
-                var episode = item as Episode;
-                if (episode != null)
-                {
-                    var parent = episode.Series;
-                    if (parent != null)
-                    {
-                        imageInfo = GetImageInfo(parent);
-                    }
-                }
-            }
-
             // Finally, just use the image from the item
             if (imageInfo == null)
             {

@@ -73,16 +73,10 @@ namespace MediaBrowser.Api.UserLibrary
         {
             var parent = GetParentItem(request);
 
-            var collectionFolder = parent as ICollectionFolder;
+            var collectionFolder = parent as IHasCollectionType;
             if (collectionFolder != null)
             {
                 return collectionFolder.CollectionType;
-            }
-
-            var view = parent as UserView;
-            if (view != null)
-            {
-                return view.ViewType;
             }
 
             return null;

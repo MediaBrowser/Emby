@@ -330,7 +330,7 @@ namespace MediaBrowser.WebDashboard.Api
                 !contentType.StartsWith("font/", StringComparison.OrdinalIgnoreCase))
             {
                 var stream = await GetResourceStream(basePath, path, localizationCulture).ConfigureAwait(false);
-                return _resultFactory.GetResult(stream, contentType);
+                return _resultFactory.GetResult(Request, stream, contentType);
             }
 
             TimeSpan? cacheDuration = null;

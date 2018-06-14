@@ -44,7 +44,6 @@ namespace MediaBrowser.XbmcMetadata.Savers
                     "sorttitle",
                     "mpaa",
                     "aspectratio",
-                    "website",
                     "collectionnumber",
                     "tmdbid",
                     "rottentomatoesid",
@@ -568,11 +567,6 @@ namespace MediaBrowser.XbmcMetadata.Savers
                 }
             }
 
-            if (!string.IsNullOrEmpty(item.HomePageUrl))
-            {
-                writer.WriteElementString("website", item.HomePageUrl);
-            }
-
             var tmdbCollection = item.GetProviderId(MetadataProviders.TmdbCollection);
 
             if (!string.IsNullOrEmpty(tmdbCollection))
@@ -815,23 +809,6 @@ namespace MediaBrowser.XbmcMetadata.Savers
             if (folder != null)
             {
                 AddCollectionItems(folder, writer);
-            }
-        }
-
-        public static void AddChapters(Video item, XmlWriter writer, IItemRepository repository)
-        {
-            var chapters = repository.GetChapters(item.Id);
-
-            foreach (var chapter in chapters)
-            {
-                writer.WriteStartElement("chapter");
-                writer.WriteElementString("name", chapter.Name);
-
-                var time = TimeSpan.FromTicks(chapter.StartPositionTicks);
-                var ms = Convert.ToInt64(time.TotalMilliseconds);
-
-                writer.WriteElementString("startpositionms", ms.ToString(UsCulture));
-                writer.WriteEndElement();
             }
         }
 
