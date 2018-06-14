@@ -410,7 +410,7 @@ namespace Emby.Server.Implementations.Notifications
                 }
             }
 
-            var hasSeries = item as IHasSeries;
+            var hasSeries = item as IHasSeriesName;
 
             if (hasSeries != null)
             {

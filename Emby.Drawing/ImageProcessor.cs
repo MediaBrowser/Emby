@@ -518,19 +518,26 @@ namespace Emby.Drawing
         /// <exception cref="System.ArgumentNullException">item</exception>
         public string GetImageCacheTag(BaseItem item, ItemImageInfo image)
         {
-            if (item == null)
-            {
-                throw new ArgumentNullException("item");
-            }
-
-            if (image == null)
-            {
-                throw new ArgumentNullException("image");
-            }
-
             var supportedEnhancers = GetSupportedEnhancers(item, image.Type);
 
             return GetImageCacheTag(item, image, supportedEnhancers);
+        }
+
+        public string GetImageCacheTag(BaseItem item, ChapterInfo chapter)
+        {
+            try
+            {
+                return GetImageCacheTag(item, new ItemImageInfo
+                {
+                    Path = chapter.ImagePath,
+                    Type = ImageType.Chapter,
+                    DateModified = chapter.ImageDateModified
+                });
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -543,21 +550,6 @@ namespace Emby.Drawing
         /// <exception cref="System.ArgumentNullException">item</exception>
         public string GetImageCacheTag(BaseItem item, ItemImageInfo image, IImageEnhancer[] imageEnhancers)
         {
-            if (item == null)
-            {
-                throw new ArgumentNullException("item");
-            }
-
-            if (imageEnhancers == null)
-            {
-                throw new ArgumentNullException("imageEnhancers");
-            }
-
-            if (image == null)
-            {
-                throw new ArgumentNullException("image");
-            }
-
             var originalImagePath = image.Path;
             var dateModified = image.DateModified;
             var imageType = image.Type;

@@ -848,7 +848,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             existingTimer.EpisodeNumber = updatedTimer.EpisodeNumber;
             existingTimer.EpisodeTitle = updatedTimer.EpisodeTitle;
             existingTimer.Genres = updatedTimer.Genres;
-            existingTimer.HomePageUrl = updatedTimer.HomePageUrl;
             existingTimer.IsMovie = updatedTimer.IsMovie;
             existingTimer.IsSeries = updatedTimer.IsSeries;
             existingTimer.Tags = updatedTimer.Tags;
@@ -1942,7 +1941,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                     program = new LiveTvProgram
                     {
                         Name = timer.Name,
-                        HomePageUrl = timer.HomePageUrl,
                         Overview = timer.Overview,
                         Genres = timer.Genres,
                         CommunityRating = timer.CommunityRating,
@@ -2158,11 +2156,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                         writer.WriteElementString("genre", genre);
                     }
 
-                    if (!string.IsNullOrWhiteSpace(item.HomePageUrl))
-                    {
-                        writer.WriteElementString("website", item.HomePageUrl);
-                    }
-
                     var people = item.Id.Equals(Guid.Empty) ? new List<PersonInfo>() : _libraryManager.GetPeople(item);
 
                     var directors = people
@@ -2273,7 +2266,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
         {
             var query = new InternalItemsQuery
             {
-                ItemIds = new[] { _liveTvManager.GetInternalProgramId(Name, programId) },
+                ItemIds = new[] { _liveTvManager.GetInternalProgramId(programId) },
                 Limit = 1,
                 DtoOptions = new DtoOptions()
             };
@@ -2636,7 +2629,6 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
             timerInfo.IsSeries = programInfo.IsSeries;
 
-            timerInfo.HomePageUrl = programInfo.HomePageUrl;
             timerInfo.CommunityRating = programInfo.CommunityRating;
             timerInfo.Overview = programInfo.Overview;
             timerInfo.OfficialRating = programInfo.OfficialRating;

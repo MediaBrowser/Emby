@@ -299,7 +299,7 @@ namespace Emby.Server.Implementations.Library
             }
             else
             {
-                if (!(item is Video))
+                if (!(item is Video) && !(item is LiveTvChannel))
                 {
                     return;
                 }
@@ -1568,7 +1568,7 @@ namespace Emby.Server.Implementations.Library
                 }
 
                 // Translate view into folders
-                if (view.DisplayParentId != Guid.Empty)
+                if (!view.DisplayParentId.Equals(Guid.Empty))
                 {
                     var displayParent = GetItemById(view.DisplayParentId);
                     if (displayParent != null)
@@ -1577,7 +1577,7 @@ namespace Emby.Server.Implementations.Library
                     }
                     return Array.Empty<Guid>();
                 }
-                if (view.ParentId != Guid.Empty)
+                if (!view.ParentId.Equals(Guid.Empty))
                 {
                     var displayParent = GetItemById(view.ParentId);
                     if (displayParent != null)
@@ -2137,7 +2137,7 @@ namespace Emby.Server.Implementations.Library
             string viewType,
             string sortName)
         {
-            return GetNamedView(user, name, null, viewType, sortName);
+            return GetNamedView(user, name, Guid.Empty, viewType, sortName);
         }
 
         public UserView GetNamedView(string name,
@@ -2173,17 +2173,6 @@ namespace Emby.Server.Implementations.Library
                 refresh = true;
             }
 
-            if (!refresh)
-            {
-                refresh = DateTime.UtcNow - item.DateLastRefreshed >= _viewRefreshInterval;
-            }
-
-            if (!refresh && item.DisplayParentId != Guid.Empty)
-            {
-                var displayParent = GetItemById(item.DisplayParentId);
-                refresh = displayParent != null && displayParent.DateLastSaved > item.DateLastRefreshed;
-            }
-
             if (refresh)
             {
                 item.UpdateToRepository(ItemUpdateType.MetadataImport, CancellationToken.None);
@@ -2195,11 +2184,12 @@ namespace Emby.Server.Implementations.Library
 
         public UserView GetNamedView(User user,
             string name,
-            string parentId,
+            Guid parentId,
             string viewType,
             string sortName)
         {
-            var idValues = "38_namedview_" + name + user.Id.ToString("N") + (parentId ?? string.Empty) + (viewType ?? string.Empty);
+            var parentIdString = parentId.Equals(Guid.Empty) ? null : parentId.ToString("N");
+            var idValues = "38_namedview_" + name + user.Id.ToString("N") + (parentIdString ?? string.Empty) + (viewType ?? string.Empty);
 
             var id = GetNewItemId(idValues, typeof(UserView));
 
@@ -2224,10 +2214,7 @@ namespace Emby.Server.Implementations.Library
                     UserId = user.Id
                 };
 
-                if (!string.IsNullOrEmpty(parentId))
-                {
-                    item.DisplayParentId = new Guid(parentId);
-                }
+                item.DisplayParentId = parentId;
 
                 CreateItem(item, null);
 
@@ -2236,7 +2223,7 @@ namespace Emby.Server.Implementations.Library
 
             var refresh = isNew || DateTime.UtcNow - item.DateLastRefreshed >= _viewRefreshInterval;
 
-            if (!refresh && item.DisplayParentId != Guid.Empty)
+            if (!refresh && !item.DisplayParentId.Equals(Guid.Empty))
             {
                 var displayParent = GetItemById(item.DisplayParentId);
                 refresh = displayParent != null && displayParent.DateLastSaved > item.DateLastRefreshed;
@@ -2300,7 +2287,7 @@ namespace Emby.Server.Implementations.Library
 
             var refresh = isNew || DateTime.UtcNow - item.DateLastRefreshed >= _viewRefreshInterval;
 
-            if (!refresh && item.DisplayParentId != Guid.Empty)
+            if (!refresh && !item.DisplayParentId.Equals(Guid.Empty))
             {
                 var displayParent = GetItemById(item.DisplayParentId);
                 refresh = displayParent != null && displayParent.DateLastSaved > item.DateLastRefreshed;
@@ -2320,7 +2307,7 @@ namespace Emby.Server.Implementations.Library
         }
 
         public UserView GetNamedView(string name,
-            string parentId,
+            Guid parentId,
             string viewType,
             string sortName,
             string uniqueId)
@@ -2330,7 +2317,8 @@ namespace Emby.Server.Implementations.Library
                 throw new ArgumentNullException("name");
             }
 
-            var idValues = "37_namedview_" + name + (parentId ?? string.Empty) + (viewType ?? string.Empty);
+            var parentIdString = parentId.Equals(Guid.Empty) ? null : parentId.ToString("N");
+            var idValues = "37_namedview_" + name + (parentIdString ?? string.Empty) + (viewType ?? string.Empty);
             if (!string.IsNullOrEmpty(uniqueId))
             {
                 idValues += uniqueId;
@@ -2358,10 +2346,7 @@ namespace Emby.Server.Implementations.Library
                     ForcedSortName = sortName
                 };
 
-                if (!string.IsNullOrEmpty(parentId))
-                {
-                    item.DisplayParentId = new Guid(parentId);
-                }
+                item.DisplayParentId = parentId;
 
                 CreateItem(item, null);
 

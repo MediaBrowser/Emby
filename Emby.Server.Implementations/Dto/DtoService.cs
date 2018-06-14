@@ -501,31 +501,6 @@ namespace Emby.Server.Implementations.Dto
             return item.Id.ToString("N");
         }
 
-        /// <summary>
-        /// Converts a UserItemData to a DTOUserItemData
-        /// </summary>
-        /// <param name="data">The data.</param>
-        /// <returns>DtoUserItemData.</returns>
-        /// <exception cref="System.ArgumentNullException"></exception>
-        public UserItemDataDto GetUserItemDataDto(UserItemData data)
-        {
-            if (data == null)
-            {
-                throw new ArgumentNullException("data");
-            }
-
-            return new UserItemDataDto
-            {
-                IsFavorite = data.IsFavorite,
-                Likes = data.Likes,
-                PlaybackPositionTicks = data.PlaybackPositionTicks,
-                PlayCount = data.PlayCount,
-                Rating = data.Rating,
-                Played = data.Played,
-                LastPlayedDate = data.LastPlayedDate,
-                Key = data.Key
-            };
-        }
         private void SetBookProperties(BaseItemDto dto, Book item)
         {
             dto.SeriesName = item.SeriesName;
@@ -755,40 +730,6 @@ namespace Emby.Server.Implementations.Dto
         }
 
         /// <summary>
-        /// Gets the chapter info dto.
-        /// </summary>
-        /// <param name="chapterInfo">The chapter info.</param>
-        /// <param name="item">The item.</param>
-        /// <returns>ChapterInfoDto.</returns>
-        private ChapterInfoDto GetChapterInfoDto(ChapterInfo chapterInfo, BaseItem item)
-        {
-            var dto = new ChapterInfoDto
-            {
-                Name = chapterInfo.Name,
-                StartPositionTicks = chapterInfo.StartPositionTicks
-            };
-
-            if (!string.IsNullOrEmpty(chapterInfo.ImagePath))
-            {
-                dto.ImageTag = GetImageCacheTag(item, new ItemImageInfo
-                {
-                    Path = chapterInfo.ImagePath,
-                    Type = ImageType.Chapter,
-                    DateModified = chapterInfo.ImageDateModified
-                });
-            }
-
-            return dto;
-        }
-
-        public List<ChapterInfoDto> GetChapterInfoDtos(BaseItem item)
-        {
-            return _itemRepo.GetChapters(item.Id)
-                .Select(c => GetChapterInfoDto(c, item))
-                .ToList();
-        }
-
-        /// <summary>
         /// Sets simple property values on a DTOBaseItem
         /// </summary>
         /// <param name="dto">The dto.</param>
@@ -813,11 +754,6 @@ namespace Emby.Server.Implementations.Dto
             dto.Container = item.Container;
 
             dto.EndDate = item.EndDate;
-
-            if (fields.Contains(ItemFields.HomePageUrl))
-            {
-                dto.HomePageUrl = item.HomePageUrl;
-            }
 
             if (fields.Contains(ItemFields.ExternalUrls))
             {
@@ -1169,7 +1105,7 @@ namespace Emby.Server.Implementations.Dto
 
                 if (fields.Contains(ItemFields.Chapters))
                 {
-                    dto.Chapters = GetChapterInfoDtos(item);
+                    dto.Chapters = _itemRepo.GetChapters(item);
                 }
 
                 if (video.ExtraType.HasValue)
@@ -1495,15 +1431,15 @@ namespace Emby.Server.Implementations.Dto
 
             var defaultAspectRatio = item.GetDefaultPrimaryImageAspectRatio();
 
-            if (defaultAspectRatio.HasValue)
+            if (defaultAspectRatio > 0)
             {
                 if (supportedEnhancers.Length == 0)
                 {
-                    return defaultAspectRatio.Value;
+                    return defaultAspectRatio;
                 }
 
                 double dummyWidth = 200;
-                double dummyHeight = dummyWidth / defaultAspectRatio.Value;
+                double dummyHeight = dummyWidth / defaultAspectRatio;
                 size = new ImageSize(dummyWidth, dummyHeight);
             }
             else

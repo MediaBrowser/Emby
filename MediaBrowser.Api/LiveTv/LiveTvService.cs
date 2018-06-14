@@ -39,7 +39,7 @@ namespace MediaBrowser.Api.LiveTv
 
     [Route("/LiveTv/Channels", "GET", Summary = "Gets available live tv channels.")]
     [Authenticated]
-    public class GetChannels : IReturn<QueryResult<ChannelInfoDto>>, IHasDtoOptions
+    public class GetChannels : IReturn<QueryResult<BaseItemDto>>, IHasDtoOptions
     {
         [ApiMember(Name = "Type", Description = "Optional filter by channel type.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
         public ChannelType? Type { get; set; }
@@ -138,7 +138,7 @@ namespace MediaBrowser.Api.LiveTv
 
     [Route("/LiveTv/Channels/{Id}", "GET", Summary = "Gets a live tv channel")]
     [Authenticated]
-    public class GetChannel : IReturn<ChannelInfoDto>
+    public class GetChannel : IReturn<BaseItemDto>
     {
         /// <summary>
         /// Gets or sets the id.
@@ -573,14 +573,6 @@ namespace MediaBrowser.Api.LiveTv
     {
     }
 
-    [Route("/LiveTv/Folder", "GET", Summary = "Gets the users live tv folder, along with configured images")]
-    [Authenticated]
-    public class GetLiveTvFolder : IReturn<BaseItemDto>
-    {
-        [ApiMember(Name = "UserId", Description = "Optional attach user data.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public Guid UserId { get; set; }
-    }
-
     [Route("/LiveTv/TunerHosts", "POST", Summary = "Adds a tuner host")]
     [Authenticated]
     public class AddTunerHost : TunerHostInfo, IReturn<TunerHostInfo>
@@ -846,7 +838,7 @@ namespace MediaBrowser.Api.LiveTv
 
             }).ConfigureAwait(false);
 
-            return ResultFactory.GetResult(response, "application/json");
+            return ResultFactory.GetResult(Request, response, "application/json");
         }
 
         private void AssertUserCanManageLiveTv()
@@ -994,11 +986,6 @@ namespace MediaBrowser.Api.LiveTv
             var result = _dtoService.GetBaseItemDto(item, dtoOptions, user);
 
             return ToOptimizedResult(result);
-        }
-
-        public object Get(GetLiveTvFolder request)
-        {
-            return ToOptimizedResult(_liveTvManager.GetLiveTvFolder(request.UserId, CancellationToken.None));
         }
 
         public async Task<object> Get(GetPrograms request)

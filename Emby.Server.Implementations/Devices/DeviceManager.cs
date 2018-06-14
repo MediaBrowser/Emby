@@ -355,7 +355,7 @@ namespace Emby.Server.Implementations.Devices
                 return true;
             }
 
-            return ListHelper.ContainsIgnoreCase(policy.EnabledDevices, id);
+            return policy.EnabledDevices.Contains(id, StringComparer.OrdinalIgnoreCase);
         }
     }
 

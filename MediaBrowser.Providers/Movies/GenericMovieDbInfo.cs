@@ -133,7 +133,7 @@ namespace MediaBrowser.Providers.Movies
             movie.Overview = string.IsNullOrWhiteSpace(movieData.overview) ? null : WebUtility.HtmlDecode(movieData.overview);
             movie.Overview = movie.Overview != null ? movie.Overview.Replace("\n\n", "\n") : null;
 
-            movie.HomePageUrl = movieData.homepage;
+            //movie.HomePageUrl = movieData.homepage;
 
             if (!string.IsNullOrEmpty(movieData.tagline))
             {

@@ -240,7 +240,7 @@ namespace MediaBrowser.Providers.TV
                 series.Genres = seriesInfo.genres.Select(i => i.name).ToArray();
             }
 
-            series.HomePageUrl = seriesInfo.homepage;
+            //series.HomePageUrl = seriesInfo.homepage;
 
             series.RunTimeTicks = seriesInfo.episode_run_time.Select(i => TimeSpan.FromMinutes(i).Ticks).FirstOrDefault();
 

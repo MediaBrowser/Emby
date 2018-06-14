@@ -1521,11 +1521,7 @@ namespace Emby.Server.Implementations.Session
         {
             session.Capabilities = capabilities;
 
-            if ((session.Client ?? string.Empty).IndexOf("Roku", StringComparison.OrdinalIgnoreCase) != -1)
-            {
-                EnsureRokuController(session);
-            }
-            else if (!string.IsNullOrEmpty(capabilities.MessageCallbackUrl))
+            if (!string.IsNullOrEmpty(capabilities.MessageCallbackUrl))
             {
                 EnsureHttpController(session, capabilities.MessageCallbackUrl);
             }
@@ -1564,10 +1560,6 @@ namespace Emby.Server.Implementations.Session
         private void EnsureHttpController(SessionInfo session, string messageCallbackUrl)
         {
             session.EnsureController<HttpSessionController>(s => new HttpSessionController(_httpClient, _jsonSerializer, s, messageCallbackUrl, this));
-        }
-
-        private void EnsureRokuController(SessionInfo session)
-        {
         }
 
         private ClientCapabilities GetSavedCapabilities(string deviceId)
@@ -1614,7 +1606,6 @@ namespace Emby.Server.Implementations.Session
                 fields.Remove(ItemFields.DateLastSaved);
                 fields.Remove(ItemFields.DisplayPreferencesId);
                 fields.Remove(ItemFields.Etag);
-                fields.Remove(ItemFields.ExternalEtag);
                 fields.Remove(ItemFields.InheritedParentalRatingValue);
                 fields.Remove(ItemFields.ItemCounts);
                 fields.Remove(ItemFields.MediaSourceCount);

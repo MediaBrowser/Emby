@@ -90,10 +90,10 @@ namespace MediaBrowser.Providers.Omdb
                 item.CommunityRating = imdbRating;
             }
 
-            if (!string.IsNullOrEmpty(result.Website))
-            {
-                item.HomePageUrl = result.Website;
-            }
+            //if (!string.IsNullOrEmpty(result.Website))
+            //{
+            //    item.HomePageUrl = result.Website;
+            //}
 
             if (!string.IsNullOrWhiteSpace(result.imdbID))
             {
@@ -197,10 +197,10 @@ namespace MediaBrowser.Providers.Omdb
                 item.CommunityRating = imdbRating;
             }
 
-            if (!string.IsNullOrEmpty(result.Website))
-            {
-                item.HomePageUrl = result.Website;
-            }
+            //if (!string.IsNullOrEmpty(result.Website))
+            //{
+            //    item.HomePageUrl = result.Website;
+            //}
 
             if (!string.IsNullOrWhiteSpace(result.imdbID))
             {

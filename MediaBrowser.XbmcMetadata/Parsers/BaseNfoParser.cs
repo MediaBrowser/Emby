@@ -375,18 +375,6 @@ namespace MediaBrowser.XbmcMetadata.Parsers
                         break;
                     }
 
-                case "website":
-                    {
-                        var val = reader.ReadElementContentAsString();
-
-                        if (!string.IsNullOrWhiteSpace(val))
-                        {
-                            item.HomePageUrl = val;
-                        }
-
-                        break;
-                    }
-
                 case "lockedfields":
                     {
                         var val = reader.ReadElementContentAsString();

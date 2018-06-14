@@ -295,11 +295,6 @@ namespace MediaBrowser.LocalMetadata.Savers
                 writer.WriteElementString("ProductionYear", item.ProductionYear.Value.ToString(UsCulture));
             }
 
-            if (!string.IsNullOrEmpty(item.HomePageUrl))
-            {
-                writer.WriteElementString("Website", item.HomePageUrl);
-            }
-
             var hasAspectRatio = item as IHasAspectRatio;
             if (hasAspectRatio != null)
             {

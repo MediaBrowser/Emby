@@ -164,7 +164,7 @@ namespace MediaBrowser.Providers.People
                 // TODO: This should go in PersonMetadataService, not each person provider
                 item.Name = id.Name;
 
-                item.HomePageUrl = info.homepage;
+                //item.HomePageUrl = info.homepage;
 
                 if (!string.IsNullOrWhiteSpace(info.place_of_birth))
                 {

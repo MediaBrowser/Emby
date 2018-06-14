@@ -187,7 +187,7 @@ namespace MediaBrowser.Api.Subtitles
 
             builder.AppendLine("#EXT-X-ENDLIST");
 
-            return ResultFactory.GetResult(builder.ToString(), MimeTypes.GetMimeType("playlist.m3u8"), new Dictionary<string, string>());
+            return ResultFactory.GetResult(Request, builder.ToString(), MimeTypes.GetMimeType("playlist.m3u8"), new Dictionary<string, string>());
         }
 
         public async Task<object> Get(GetSubtitle request)
@@ -220,12 +220,12 @@ namespace MediaBrowser.Api.Subtitles
 
                         text = text.Replace("WEBVTT", "WEBVTT\nX-TIMESTAMP-MAP=MPEGTS:900000,LOCAL:00:00:00.000");
 
-                        return ResultFactory.GetResult(text, MimeTypes.GetMimeType("file." + request.Format));
+                        return ResultFactory.GetResult(Request, text, MimeTypes.GetMimeType("file." + request.Format));
                     }
                 }
             }
 
-            return ResultFactory.GetResult(await GetSubtitles(request).ConfigureAwait(false), MimeTypes.GetMimeType("file." + request.Format));
+            return ResultFactory.GetResult(Request, await GetSubtitles(request).ConfigureAwait(false), MimeTypes.GetMimeType("file." + request.Format));
         }
 
         private Task<Stream> GetSubtitles(GetSubtitle request)
@@ -259,7 +259,7 @@ namespace MediaBrowser.Api.Subtitles
         {
             var result = await _subtitleManager.GetRemoteSubtitles(request.Id, CancellationToken.None).ConfigureAwait(false);
 
-            return ResultFactory.GetResult(result.Stream, MimeTypes.GetMimeType("file." + result.Format));
+            return ResultFactory.GetResult(Request, result.Stream, MimeTypes.GetMimeType("file." + result.Format));
         }
 
         public void Post(DownloadRemoteSubtitles request)

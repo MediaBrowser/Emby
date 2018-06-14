@@ -167,42 +167,42 @@ namespace Emby.Dlna.Api
         {
             var xml = ContentDirectory.GetServiceXml(Request.Headers.ToDictionary());
 
-            return _resultFactory.GetResult(xml, XMLContentType);
+            return _resultFactory.GetResult(Request, xml, XMLContentType);
         }
 
         public object Get(GetMediaReceiverRegistrar request)
         {
             var xml = MediaReceiverRegistrar.GetServiceXml(Request.Headers.ToDictionary());
 
-            return _resultFactory.GetResult(xml, XMLContentType);
+            return _resultFactory.GetResult(Request, xml, XMLContentType);
         }
 
         public object Get(GetConnnectionManager request)
         {
             var xml = ConnectionManager.GetServiceXml(Request.Headers.ToDictionary());
 
-            return _resultFactory.GetResult(xml, XMLContentType);
+            return _resultFactory.GetResult(Request, xml, XMLContentType);
         }
 
         public object Post(ProcessMediaReceiverRegistrarControlRequest request)
         {
             var response = PostAsync(request.RequestStream, MediaReceiverRegistrar);
 
-            return _resultFactory.GetResult(response.Xml, XMLContentType);
+            return _resultFactory.GetResult(Request, response.Xml, XMLContentType);
         }
 
         public object Post(ProcessContentDirectoryControlRequest request)
         {
             var response = PostAsync(request.RequestStream, ContentDirectory);
 
-            return _resultFactory.GetResult(response.Xml, XMLContentType);
+            return _resultFactory.GetResult(Request, response.Xml, XMLContentType);
         }
 
         public object Post(ProcessConnectionManagerControlRequest request)
         {
             var response = PostAsync(request.RequestStream, ConnectionManager);
 
-            return _resultFactory.GetResult(response.Xml, XMLContentType);
+            return _resultFactory.GetResult(Request, response.Xml, XMLContentType);
         }
 
         private ControlResponse PostAsync(Stream requestStream, IUpnpService service)
@@ -314,7 +314,7 @@ namespace Emby.Dlna.Api
 
         private object GetSubscriptionResponse(EventSubscriptionResponse response)
         {
-            return _resultFactory.GetResult(response.Content, response.ContentType, response.Headers);
+            return _resultFactory.GetResult(Request, response.Content, response.ContentType, response.Headers);
         }
     }
 }
