@@ -179,7 +179,7 @@ namespace Emby.Photos
                 }
             }
 
-            if (!item.Width.HasValue || !item.Height.HasValue)
+            if (item.Width <= 0 || item.Height <= 0)
             {
                 var img = item.GetImageInfo(ImageType.Primary, 0);
 

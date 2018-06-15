@@ -507,8 +507,6 @@ namespace Emby.Server.Implementations.Dto
         }
         private void SetPhotoProperties(BaseItemDto dto, Photo item)
         {
-            dto.Width = item.Width;
-            dto.Height = item.Height;
             dto.CameraMake = item.CameraMake;
             dto.CameraModel = item.CameraModel;
             dto.Software = item.Software;
@@ -833,10 +831,6 @@ namespace Emby.Server.Implementations.Dto
                 dto.LocationType = item.LocationType;
             }
 
-            if (item.IsHD.HasValue && item.IsHD.Value)
-            {
-                dto.IsHD = item.IsHD;
-            }
             dto.Audio = item.Audio;
 
             if (fields.Contains(ItemFields.Settings))
@@ -1263,6 +1257,33 @@ namespace Emby.Server.Implementations.Dto
                 if (item.ProductionLocations.Length > 0 || item is Movie)
                 {
                     dto.ProductionLocations = item.ProductionLocations;
+                }
+            }
+
+            if (fields.Contains(ItemFields.Width))
+            {
+                var width = item.Width;
+                if (width > 0)
+                {
+                    dto.Width = width;
+                }
+            }
+
+            if (fields.Contains(ItemFields.Height))
+            {
+                var height = item.Height;
+                if (height > 0)
+                {
+                    dto.Height = height;
+                }
+            }
+
+            if (fields.Contains(ItemFields.IsHD))
+            {
+                // Compatibility
+                if (item.IsHD)
+                {
+                    dto.IsHD = true;
                 }
             }
 

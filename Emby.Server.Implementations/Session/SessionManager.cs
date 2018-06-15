@@ -1521,10 +1521,6 @@ namespace Emby.Server.Implementations.Session
         {
             session.Capabilities = capabilities;
 
-            if (!string.IsNullOrEmpty(capabilities.MessageCallbackUrl))
-            {
-                EnsureHttpController(session, capabilities.MessageCallbackUrl);
-            }
             if (!string.IsNullOrEmpty(capabilities.PushToken))
             {
                 if (string.Equals(capabilities.PushTokenType, "firebase", StringComparison.OrdinalIgnoreCase) && FirebaseSessionController.IsSupported(_appHost))
@@ -1555,11 +1551,6 @@ namespace Emby.Server.Implementations.Session
         private void EnsureFirebaseController(SessionInfo session, string token)
         {
             session.EnsureController<FirebaseSessionController>(s => new FirebaseSessionController(_httpClient, _appHost, _jsonSerializer, s, token, this));
-        }
-
-        private void EnsureHttpController(SessionInfo session, string messageCallbackUrl)
-        {
-            session.EnsureController<HttpSessionController>(s => new HttpSessionController(_httpClient, _jsonSerializer, s, messageCallbackUrl, this));
         }
 
         private ClientCapabilities GetSavedCapabilities(string deviceId)
@@ -1622,7 +1613,6 @@ namespace Emby.Server.Implementations.Session
                 fields.Remove(ItemFields.SortName);
                 fields.Remove(ItemFields.Tags);
                 fields.Remove(ItemFields.ThemeSongIds);
-                fields.Remove(ItemFields.ThemeVideoIds);
 
                 dtoOptions.Fields = fields.ToArray(fields.Count);
 

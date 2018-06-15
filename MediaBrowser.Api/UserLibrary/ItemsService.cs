@@ -272,7 +272,10 @@ namespace MediaBrowser.Api.UserLibrary
                 HasImdbId = request.HasImdbId,
                 IsPlaceHolder = request.IsPlaceHolder,
                 IsLocked = request.IsLocked,
-                IsHD = request.IsHD,
+                MinWidth = request.MinWidth,
+                MinHeight = request.MinHeight,
+                MaxWidth = request.MaxWidth,
+                MaxHeight = request.MaxHeight,
                 Is3D = request.Is3D,
                 HasTvdbId = request.HasTvdbId,
                 HasTmdbId = request.HasTmdbId,
@@ -309,6 +312,32 @@ namespace MediaBrowser.Api.UserLibrary
                 ExcludeItemIds = GetGuids(request.ExcludeItemIds),
                 DtoOptions = dtoOptions
             };
+
+            if (request.IsHD.HasValue)
+            {
+                var threshold = 1200;
+                if (request.IsHD.Value)
+                {
+                    query.MinWidth = threshold;
+                }
+                else
+                {
+                    query.MaxWidth = threshold - 1;
+                }
+            }
+
+            if (request.Is4K.HasValue)
+            {
+                var threshold = 3800;
+                if (request.Is4K.Value)
+                {
+                    query.MinWidth = threshold;
+                }
+                else
+                {
+                    query.MaxWidth = threshold - 1;
+                }
+            }
 
             if (!string.IsNullOrWhiteSpace(request.Ids))
             {
