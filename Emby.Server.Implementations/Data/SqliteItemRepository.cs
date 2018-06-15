@@ -190,7 +190,6 @@ namespace Emby.Server.Implementations.Data
                     AddColumn(db, "TypedBaseItems", "IsRepeat", "BIT", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "PreferredMetadataLanguage", "Text", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "PreferredMetadataCountryCode", "Text", existingColumnNames);
-                    AddColumn(db, "TypedBaseItems", "IsHD", "BIT", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "DateLastRefreshed", "DATETIME", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "DateLastSaved", "DATETIME", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "IsInMixedFolder", "BIT", existingColumnNames);
@@ -223,7 +222,6 @@ namespace Emby.Server.Implementations.Data
                     AddColumn(db, "TypedBaseItems", "Images", "Text", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "ProductionLocations", "Text", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "ThemeSongIds", "Text", existingColumnNames);
-                    AddColumn(db, "TypedBaseItems", "ThemeVideoIds", "Text", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "TotalBitrate", "INT", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "ExtraType", "Text", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "Artists", "Text", existingColumnNames);
@@ -232,6 +230,8 @@ namespace Emby.Server.Implementations.Data
                     AddColumn(db, "TypedBaseItems", "SeriesPresentationUniqueKey", "Text", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "ShowId", "Text", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "OwnerId", "Text", existingColumnNames);
+                    AddColumn(db, "TypedBaseItems", "Width", "INT", existingColumnNames);
+                    AddColumn(db, "TypedBaseItems", "Height", "INT", existingColumnNames);
 
                     existingColumnNames = GetColumnNames(db, "ItemValues");
                     AddColumn(db, "ItemValues", "CleanValue", "Text", existingColumnNames);
@@ -362,7 +362,8 @@ namespace Emby.Server.Implementations.Data
             "IsLocked",
             "PreferredMetadataLanguage",
             "PreferredMetadataCountryCode",
-            "IsHD",
+            "Width",
+            "Height",
             "DateLastRefreshed",
             "Name",
             "Path",
@@ -404,7 +405,6 @@ namespace Emby.Server.Implementations.Data
             "Images",
             "ProductionLocations",
             "ThemeSongIds",
-            "ThemeVideoIds",
             "TotalBitrate",
             "ExtraType",
             "Artists",
@@ -490,7 +490,8 @@ namespace Emby.Server.Implementations.Data
                 "DateModified",
                 "PreferredMetadataLanguage",
                 "PreferredMetadataCountryCode",
-                "IsHD",
+                "Width",
+                "Height",
                 "DateLastRefreshed",
                 "DateLastSaved",
                 "IsInMixedFolder",
@@ -522,7 +523,6 @@ namespace Emby.Server.Implementations.Data
                 "Images",
                 "ProductionLocations",
                 "ThemeSongIds",
-                "ThemeVideoIds",
                 "TotalBitrate",
                 "ExtraType",
                 "Artists",
@@ -798,7 +798,23 @@ namespace Emby.Server.Implementations.Data
 
             saveItemStatement.TryBind("@PreferredMetadataLanguage", item.PreferredMetadataLanguage);
             saveItemStatement.TryBind("@PreferredMetadataCountryCode", item.PreferredMetadataCountryCode);
-            saveItemStatement.TryBind("@IsHD", item.IsHD);
+
+            if (item.Width > 0)
+            {
+                saveItemStatement.TryBind("@Width", item.Width);
+            }
+            else
+            {
+                saveItemStatement.TryBindNull("@Width");
+            }
+            if (item.Height > 0)
+            {
+                saveItemStatement.TryBind("@Height", item.Height);
+            }
+            else
+            {
+                saveItemStatement.TryBindNull("@Height");
+            }
 
             if (item.DateLastRefreshed != default(DateTime))
             {
@@ -998,15 +1014,6 @@ namespace Emby.Server.Implementations.Data
             else
             {
                 saveItemStatement.TryBindNull("@ThemeSongIds");
-            }
-
-            if (item.ThemeVideoIds.Length > 0)
-            {
-                saveItemStatement.TryBind("@ThemeVideoIds", string.Join("|", item.ThemeVideoIds.ToArray()));
-            }
-            else
-            {
-                saveItemStatement.TryBindNull("@ThemeVideoIds");
             }
 
             saveItemStatement.TryBind("@TotalBitrate", item.TotalBitrate);
@@ -1484,11 +1491,23 @@ namespace Emby.Server.Implementations.Data
                 index++;
             }
 
-            if (!reader.IsDBNull(index))
+            if (HasField(query, ItemFields.Width))
             {
-                item.IsHD = reader.GetBoolean(index);
+                if (!reader.IsDBNull(index))
+                {
+                    item.Width = reader.GetInt32(index);
+                }
+                index++;
             }
-            index++;
+
+            if (HasField(query, ItemFields.Height))
+            {
+                if (!reader.IsDBNull(index))
+                {
+                    item.Height = reader.GetInt32(index);
+                }
+                index++;
+            }
 
             if (HasField(query, ItemFields.DateLastRefreshed))
             {
@@ -1854,15 +1873,6 @@ namespace Emby.Server.Implementations.Data
                 index++;
             }
 
-            if (HasField(query, ItemFields.ThemeVideoIds))
-            {
-                if (!reader.IsDBNull(index))
-                {
-                    item.ThemeVideoIds = SplitToGuids(reader.GetString(index));
-                }
-                index++;
-            }
-
             if (!reader.IsDBNull(index))
             {
                 item.TotalBitrate = reader.GetInt32(index);
@@ -2175,7 +2185,7 @@ namespace Emby.Server.Implementations.Data
             .Select(i => (ItemFields)Enum.Parse(typeof(ItemFields), i, true))
             .ToList();
 
-        private IEnumerable<string> GetColumnNamesFromField(ItemFields field)
+        private string[] GetColumnNamesFromField(ItemFields field)
         {
             if (field == ItemFields.Settings)
             {
@@ -2197,6 +2207,10 @@ namespace Emby.Server.Implementations.Data
             {
                 return new[] { "Tags" };
             }
+            if (field == ItemFields.IsHD)
+            {
+                return Array.Empty<string>();
+            }
 
             return new[] { field.ToString() };
         }
@@ -2217,7 +2231,6 @@ namespace Emby.Server.Implementations.Data
                 case ItemFields.SortName:
                 case ItemFields.Studios:
                 case ItemFields.ThemeSongIds:
-                case ItemFields.ThemeVideoIds:
                 case ItemFields.DateCreated:
                 case ItemFields.Overview:
                 case ItemFields.Genres:
@@ -3423,14 +3436,39 @@ namespace Emby.Server.Implementations.Data
             {
                 //whereClauses.Add("(UserId is null or UserId=@UserId)");
             }
-            if (query.IsHD.HasValue)
+            if (query.MinWidth.HasValue)
             {
-                whereClauses.Add("IsHD=@IsHD");
+                whereClauses.Add("Width>=@MinWidth");
                 if (statement != null)
                 {
-                    statement.TryBind("@IsHD", query.IsHD);
+                    statement.TryBind("@MinWidth", query.MinWidth);
                 }
             }
+            if (query.MinHeight.HasValue)
+            {
+                whereClauses.Add("Height>=@MinHeight");
+                if (statement != null)
+                {
+                    statement.TryBind("@MinHeight", query.MinHeight);
+                }
+            }
+            if (query.MaxWidth.HasValue)
+            {
+                whereClauses.Add("Width<=@MaxWidth");
+                if (statement != null)
+                {
+                    statement.TryBind("@MaxWidth", query.MaxWidth);
+                }
+            }
+            if (query.MaxHeight.HasValue)
+            {
+                whereClauses.Add("Height<=@MaxHeight");
+                if (statement != null)
+                {
+                    statement.TryBind("@MaxHeight", query.MaxHeight);
+                }
+            }
+
             if (query.IsLocked.HasValue)
             {
                 whereClauses.Add("IsLocked=@IsLocked");
@@ -4279,7 +4317,7 @@ namespace Emby.Server.Implementations.Data
             {
                 whereClauses.Add("ParentId NOT NULL AND ParentId NOT IN (select guid from TypedBaseItems)");
             }
-            
+
             if (query.IsDeadArtist.HasValue && query.IsDeadArtist.Value)
             {
                 whereClauses.Add("CleanName not in (Select CleanValue From ItemValues where Type in (0,1))");
@@ -4441,17 +4479,6 @@ namespace Emby.Server.Implementations.Data
                 else
                 {
                     whereClauses.Add("ThemeSongIds is null");
-                }
-            }
-            if (query.HasThemeVideo.HasValue)
-            {
-                if (query.HasThemeVideo.Value)
-                {
-                    whereClauses.Add("ThemeVideoIds not null");
-                }
-                else
-                {
-                    whereClauses.Add("ThemeVideoIds is null");
                 }
             }
 

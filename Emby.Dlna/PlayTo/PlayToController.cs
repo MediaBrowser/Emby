@@ -551,7 +551,7 @@ namespace Emby.Dlna.PlayTo
                     StreamInfo = new StreamBuilder(_mediaEncoder, GetStreamBuilderLogger()).BuildVideoItem(new VideoOptions
                     {
                         ItemId = item.Id,
-                        MediaSources = mediaSources.ToArray(mediaSources.Count),
+                        MediaSources = mediaSources.ToArray(),
                         Profile = profile,
                         DeviceId = deviceId,
                         MaxBitrate = profile.MaxStreamingBitrate,

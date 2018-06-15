@@ -205,17 +205,11 @@ namespace Emby.Dlna.Didl
                 streamInfo = new StreamBuilder(_mediaEncoder, GetStreamBuilderLogger(options)).BuildVideoItem(new VideoOptions
                 {
                     ItemId = video.Id,
-                    MediaSources = sources.ToArray(sources.Count),
+                    MediaSources = sources.ToArray(),
                     Profile = _profile,
                     DeviceId = deviceId,
                     MaxBitrate = _profile.MaxStreamingBitrate
                 });
-            }
-
-            if (string.Equals(Path.GetExtension(video.Path), ".m2ts", StringComparison.OrdinalIgnoreCase))
-            {
-                var a = 1;
-                var b = a;
             }
 
             var targetWidth = streamInfo.TargetWidth;

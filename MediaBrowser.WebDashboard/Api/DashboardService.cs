@@ -400,16 +400,14 @@ namespace MediaBrowser.WebDashboard.Api
                 CopyDirectory(inputPath, targetPath);
             }
 
-            string culture = null;
-
             var appVersion = _appHost.ApplicationVersion.ToString();
 
-            await DumpHtml(packageCreator, inputPath, targetPath, mode, culture, appVersion);
+            await DumpHtml(packageCreator, inputPath, targetPath, mode, appVersion);
 
             return "";
         }
 
-        private async Task DumpHtml(PackageCreator packageCreator, string source, string destination, string mode, string culture, string appVersion)
+        private async Task DumpHtml(PackageCreator packageCreator, string source, string destination, string mode, string appVersion)
         {
             foreach (var file in _fileSystem.GetFiles(source))
             {
@@ -420,13 +418,13 @@ namespace MediaBrowser.WebDashboard.Api
                     continue;
                 }
 
-                await DumpFile(packageCreator, filename, Path.Combine(destination, filename), mode, culture, appVersion).ConfigureAwait(false);
+                await DumpFile(packageCreator, filename, Path.Combine(destination, filename), mode, appVersion).ConfigureAwait(false);
             }
         }
 
-        private async Task DumpFile(PackageCreator packageCreator, string resourceVirtualPath, string destinationFilePath, string mode, string culture, string appVersion)
+        private async Task DumpFile(PackageCreator packageCreator, string resourceVirtualPath, string destinationFilePath, string mode, string appVersion)
         {
-            using (var stream = await packageCreator.GetResource(resourceVirtualPath, mode, culture, appVersion).ConfigureAwait(false))
+            using (var stream = await packageCreator.GetResource(resourceVirtualPath, mode, null, appVersion).ConfigureAwait(false))
             {
                 using (var fs = _fileSystem.GetFileStream(destinationFilePath, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.Read))
                 {

@@ -307,7 +307,7 @@ namespace Emby.Server.Implementations.LiveTv
         private ILiveTvService GetService(LiveTvChannel item)
         {
             var name = item.ServiceName;
-            return _services.FirstOrDefault(i => string.Equals(i.Name, name, StringComparison.OrdinalIgnoreCase));
+            return GetService(name);
         }
 
         private ILiveTvService GetService(LiveTvProgram item)
@@ -630,7 +630,13 @@ namespace Emby.Server.Implementations.LiveTv
             item.Tags = tags.ToArray();
 
             item.Genres = info.Genres.ToArray();
-            item.IsHD = info.IsHD;
+
+            if (info.IsHD ?? false)
+            {
+                item.Width = 1280;
+                item.Height = 720;
+            }
+
             item.IsMovie = info.IsMovie;
             item.IsRepeat = info.IsRepeat;
 
@@ -2078,7 +2084,12 @@ namespace Emby.Server.Implementations.LiveTv
         {
             var service = program != null ?
                 GetService(program) :
-                _services.FirstOrDefault();
+                null;
+
+            if (service == null)
+            {
+                service = _services.First();
+            }
 
             ProgramInfo programInfo = null;
 
