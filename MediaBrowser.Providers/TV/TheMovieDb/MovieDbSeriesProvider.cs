@@ -208,13 +208,17 @@ namespace MediaBrowser.Providers.TV
             result.Item = new Series();
             result.ResultLanguage = seriesInfo.ResultLanguage;
 
-            ProcessMainInfo(result.Item, seriesInfo, preferredCountryCode);
+            var settings = await MovieDbProvider.Current.GetTmdbSettings(cancellationToken).ConfigureAwait(false);
+
+            ProcessMainInfo(result, seriesInfo, preferredCountryCode, settings);
 
             return result;
         }
 
-        private void ProcessMainInfo(Series series, RootObject seriesInfo, string preferredCountryCode)
+        private void ProcessMainInfo(MetadataResult<Series> seriesResult, RootObject seriesInfo, string preferredCountryCode, TmdbSettingsResult settings)
         {
+            var series = seriesResult.Item;
+
             series.Name = seriesInfo.name;
             series.SetProviderId(MetadataProviders.Tmdb, seriesInfo.id.ToString(_usCulture));
 
@@ -305,6 +309,35 @@ namespace MediaBrowser.Providers.TV
                             series.AddTrailerUrl(videoUrl);
                         }
                     }
+                }
+            }
+
+            seriesResult.ResetPeople();
+            var tmdbImageUrl = settings.images.GetImageUrl("original");
+
+            if (seriesInfo.credits != null && seriesInfo.credits.cast != null)
+            {
+                foreach (var actor in seriesInfo.credits.cast.OrderBy(a => a.order))
+                {
+                    var personInfo = new PersonInfo
+                    {
+                        Name = actor.name.Trim(),
+                        Role = actor.character,
+                        Type = PersonType.Actor,
+                        SortOrder = actor.order
+                    };
+
+                    if (!string.IsNullOrWhiteSpace(actor.profile_path))
+                    {
+                        personInfo.ImageUrl = tmdbImageUrl + actor.profile_path;
+                    }
+
+                    if (actor.id > 0)
+                    {
+                        personInfo.SetProviderId(MetadataProviders.Tmdb, actor.id.ToString(CultureInfo.InvariantCulture));
+                    }
+
+                    seriesResult.AddPerson(personInfo);
                 }
             }
         }

@@ -1174,7 +1174,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
         {
             var timer = e.Argument;
 
-            _logger.Info("Recording timer fired.");
+            _logger.Info("Recording timer fired for {0}.", timer.Name);
 
             try
             {
