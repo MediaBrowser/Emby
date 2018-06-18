@@ -248,8 +248,8 @@ namespace Emby.Server.Implementations.HttpServer
 
             if (acceptEncoding != null)
             {
-                if (_brotliCompressor != null && acceptEncoding.IndexOf("br", StringComparison.OrdinalIgnoreCase) != -1)
-                    return "br";
+                //if (_brotliCompressor != null && acceptEncoding.IndexOf("br", StringComparison.OrdinalIgnoreCase) != -1)
+                //    return "br";
 
                 if (acceptEncoding.IndexOf("deflate", StringComparison.OrdinalIgnoreCase) != -1)
                     return "deflate";

@@ -142,15 +142,6 @@ namespace MediaBrowser.WebDashboard.Api
                 sb.Append("<meta http-equiv=\"Content-Security-Policy\" content=\"default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap: file: filesystem: ws: wss:;\">");
             }
 
-            if (string.Equals(mode, "cordova", StringComparison.OrdinalIgnoreCase))
-            {
-                sb.Append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no\">");
-            }
-            else
-            {
-                sb.Append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, minimum-scale=1\">");
-            }
-
             return sb.ToString();
         }
 

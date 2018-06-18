@@ -628,6 +628,16 @@ namespace Emby.Server.Implementations.HttpServer
                     return;
                 }
 
+                if (localPath.EndsWith("web/dashboard.html", StringComparison.OrdinalIgnoreCase) && httpReq.UrlReferrer == null)
+                {
+                    RedirectToUrl(httpRes, "index.html#!/dashboard.html");
+                }
+
+                if (localPath.EndsWith("web/home.html", StringComparison.OrdinalIgnoreCase) && httpReq.UrlReferrer == null)
+                {
+                    RedirectToUrl(httpRes, "index.html");
+                }
+
                 if (!string.IsNullOrEmpty(GlobalResponse))
                 {
                     // We don't want the address pings in ApplicationHost to fail
