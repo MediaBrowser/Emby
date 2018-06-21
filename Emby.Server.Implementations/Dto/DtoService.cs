@@ -841,12 +841,6 @@ namespace Emby.Server.Implementations.Dto
 
             dto.CriticRating = item.CriticRating;
 
-            var hasTrailers = item as IHasTrailers;
-            if (hasTrailers != null)
-            {
-                dto.LocalTrailerCount = hasTrailers.GetTrailerIds().Count;
-            }
-
             var hasDisplayOrder = item as IHasDisplayOrder;
             if (hasDisplayOrder != null)
             {
@@ -861,9 +855,7 @@ namespace Emby.Server.Implementations.Dto
 
             if (fields.Contains(ItemFields.RemoteTrailers))
             {
-                dto.RemoteTrailers = hasTrailers != null ?
-                    hasTrailers.RemoteTrailers :
-                    new MediaUrl[] { };
+                dto.RemoteTrailers = item.RemoteTrailers;
             }
 
             dto.Name = item.Name;
@@ -1139,15 +1131,26 @@ namespace Emby.Server.Implementations.Dto
                 }
             }
 
-            var hasSpecialFeatures = item as IHasSpecialFeatures;
-            if (hasSpecialFeatures != null)
-            {
-                var specialFeatureCount = hasSpecialFeatures.SpecialFeatureIds.Length;
+            BaseItem[] allExtras = null;
 
-                if (specialFeatureCount > 0)
+            if (fields.Contains(ItemFields.SpecialFeatureCount))
+            {
+                if (allExtras == null)
                 {
-                    dto.SpecialFeatureCount = specialFeatureCount;
+                    allExtras = item.GetExtras().ToArray();
                 }
+
+                dto.SpecialFeatureCount = allExtras.Count(i => i.ExtraType.HasValue && BaseItem.DisplayExtraTypes.Contains(i.ExtraType.Value));
+            }
+
+            if (fields.Contains(ItemFields.LocalTrailerCount))
+            {
+                if (allExtras == null)
+                {
+                    allExtras = item.GetExtras().ToArray();
+                }
+
+                dto.LocalTrailerCount = allExtras.Count(i => i.ExtraType.HasValue && i.ExtraType.Value == ExtraType.Trailer);
             }
 
             // Add EpisodeInfo

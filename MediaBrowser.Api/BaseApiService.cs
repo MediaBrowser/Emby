@@ -88,7 +88,7 @@ namespace MediaBrowser.Api
         {
             var auth = authContext.GetAuthorizationInfo(Request);
 
-            var authenticatedUser = userManager.GetUserById(auth.UserId);
+            var authenticatedUser = auth.User;
 
             // If they're going to update the record of another user, they must be an administrator
             if (!userId.Equals(auth.UserId))

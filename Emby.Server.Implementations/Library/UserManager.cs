@@ -1267,7 +1267,7 @@ namespace Emby.Server.Implementations.Library
             {
                 if (!string.IsNullOrEmpty(authInfo.DeviceId) && !_deviceManager.CanAccessDevice(user, authInfo.DeviceId))
                 {
-                    _sessionManager.Logout(authInfo.AccessToken);
+                    _sessionManager.Logout(authInfo);
                 }
             }
         }

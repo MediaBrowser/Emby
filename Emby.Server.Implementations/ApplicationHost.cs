@@ -1008,7 +1008,7 @@ namespace Emby.Server.Implementations
 
             var deviceRepo = new SqliteDeviceRepository(LogManager.GetLogger("DeviceManager"), ServerConfigurationManager, FileSystemManager, JsonSerializer);
             deviceRepo.Initialize();
-            DeviceManager = new DeviceManager(deviceRepo, LibraryManager, LocalizationManager, UserManager, FileSystemManager, LibraryMonitor, ServerConfigurationManager, LogManager.GetLogger("DeviceManager"), NetworkManager);
+            DeviceManager = new DeviceManager(AuthenticationRepository, deviceRepo, LibraryManager, LocalizationManager, UserManager, FileSystemManager, LibraryMonitor, ServerConfigurationManager, LogManager.GetLogger("DeviceManager"), NetworkManager);
             RegisterSingleInstance<IDeviceRepository>(deviceRepo);
             RegisterSingleInstance(DeviceManager);
 
@@ -1065,7 +1065,7 @@ namespace Emby.Server.Implementations
             RegisterSingleInstance(activityLogRepo);
             RegisterSingleInstance<IActivityManager>(new ActivityManager(LogManager.GetLogger("ActivityManager"), activityLogRepo, UserManager));
 
-            var authContext = new AuthorizationContext(AuthenticationRepository, ConnectManager);
+            var authContext = new AuthorizationContext(AuthenticationRepository, ConnectManager, UserManager);
             RegisterSingleInstance<IAuthorizationContext>(authContext);
             RegisterSingleInstance<ISessionContext>(new SessionContext(UserManager, authContext, SessionManager));
 
@@ -1930,6 +1930,7 @@ namespace Emby.Server.Implementations
                 "mbintros.dll",
                 "embytv.dll",
                 "Messenger.dll",
+                "Messages.dll",
                 "MediaBrowser.Plugins.TvMazeProvider.dll",
                 "MBBookshelf.dll",
                 "MediaBrowser.Channels.Adult.YouJizz.dll",

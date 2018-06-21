@@ -34,7 +34,7 @@ namespace Emby.Server.Implementations.Security
 
                 string[] queries = {
 
-                               "create table if not exists AccessTokens (Id GUID PRIMARY KEY NOT NULL, AccessToken TEXT NOT NULL, DeviceId TEXT NOT NULL, AppName TEXT NOT NULL, AppVersion TEXT NOT NULL, DeviceName TEXT NOT NULL, UserId TEXT, IsActive BIT NOT NULL, DateCreated DATETIME NOT NULL, DateRevoked DATETIME)",
+                               "create table if not exists AccessTokens (Id GUID PRIMARY KEY NOT NULL, AccessToken TEXT NOT NULL, DeviceId TEXT NOT NULL, AppName TEXT NOT NULL, AppVersion TEXT NOT NULL, DeviceName TEXT NOT NULL, UserId TEXT, UserName TEXT, IsActive BIT NOT NULL, DateCreated DATETIME NOT NULL, DateLastActivity DATETIME NOT NULL, DateRevoked DATETIME)",
                                 "create index if not exists idx_AccessTokens on AccessTokens(Id)"
                                };
 
@@ -44,6 +44,8 @@ namespace Emby.Server.Implementations.Security
                 {
                     var existingColumnNames = GetColumnNames(db, "AccessTokens");
 
+                    AddColumn(db, "AccessTokens", "UserName", "TEXT", existingColumnNames);
+                    AddColumn(db, "AccessTokens", "DateLastActivity", "DATETIME", existingColumnNames);
                     AddColumn(db, "AccessTokens", "AppVersion", "TEXT", existingColumnNames);
 
                 }, TransactionMode);
@@ -72,7 +74,7 @@ namespace Emby.Server.Implementations.Security
                 {
                     connection.RunInTransaction(db =>
                     {
-                        using (var statement = db.PrepareStatement("replace into AccessTokens (Id, AccessToken, DeviceId, AppName, AppVersion, DeviceName, UserId, IsActive, DateCreated, DateRevoked) values (@Id, @AccessToken, @DeviceId, @AppName, @AppVersion, @DeviceName, @UserId, @IsActive, @DateCreated, @DateRevoked)"))
+                        using (var statement = db.PrepareStatement("replace into AccessTokens (Id, AccessToken, DeviceId, AppName, AppVersion, DeviceName, UserId, UserName, IsActive, DateCreated, DateLastActivity, DateRevoked) values (@Id, @AccessToken, @DeviceId, @AppName, @AppVersion, @DeviceName, @UserId, @UserName, @IsActive, @DateCreated, @DateLastActivity, @DateRevoked)"))
                         {
                             statement.TryBind("@Id", info.Id.ToGuidBlob());
                             statement.TryBind("@AccessToken", info.AccessToken);
@@ -82,8 +84,10 @@ namespace Emby.Server.Implementations.Security
                             statement.TryBind("@AppVersion", info.AppVersion);
                             statement.TryBind("@DeviceName", info.DeviceName);
                             statement.TryBind("@UserId", (info.UserId.Equals(Guid.Empty) ? null : info.UserId.ToString("N")));
+                            statement.TryBind("@UserName", info.UserName);
                             statement.TryBind("@IsActive", info.IsActive);
                             statement.TryBind("@DateCreated", info.DateCreated.ToDateTimeParamValue());
+                            statement.TryBind("@DateLastActivity", info.DateLastActivity.ToDateTimeParamValue());
 
                             if (info.DateRevoked.HasValue)
                             {
@@ -102,7 +106,7 @@ namespace Emby.Server.Implementations.Security
             }
         }
 
-        private const string BaseSelectText = "select Id, AccessToken, DeviceId, AppName, AppVersion, DeviceName, UserId, IsActive, DateCreated, DateRevoked from AccessTokens";
+        private const string BaseSelectText = "select Id, AccessToken, DeviceId, AppName, AppVersion, DeviceName, UserId, UserName, IsActive, DateCreated, DateLastActivity, DateRevoked from AccessTokens";
 
         private void BindAuthenticationQueryParams(AuthenticationInfoQuery query, IStatement statement)
         {
@@ -137,8 +141,6 @@ namespace Emby.Server.Implementations.Security
             var commandText = BaseSelectText;
 
             var whereClauses = new List<string>();
-
-            var startIndex = query.StartIndex ?? 0;
 
             if (!string.IsNullOrEmpty(query.AccessToken))
             {
@@ -176,28 +178,23 @@ namespace Emby.Server.Implementations.Security
               string.Empty :
               " where " + string.Join(" AND ", whereClauses.ToArray(whereClauses.Count));
 
-            if (startIndex > 0)
+            commandText += whereTextWithoutPaging;
+
+            commandText += " ORDER BY DateLastActivity desc, DateCreated desc";
+
+            if (query.Limit.HasValue || query.StartIndex.HasValue)
             {
-                var pagingWhereText = whereClauses.Count == 0 ?
-                    string.Empty :
-                    " where " + string.Join(" AND ", whereClauses.ToArray(whereClauses.Count));
+                var offset = query.StartIndex ?? 0;
 
-                whereClauses.Add(string.Format("Id NOT IN (SELECT Id FROM AccessTokens {0} ORDER BY DateCreated LIMIT {1})",
-                    pagingWhereText,
-                    startIndex.ToString(_usCulture)));
-            }
+                if (query.Limit.HasValue || offset > 0)
+                {
+                    commandText += " LIMIT " + (query.Limit ?? int.MaxValue).ToString(CultureInfo.InvariantCulture);
+                }
 
-            var whereText = whereClauses.Count == 0 ?
-                string.Empty :
-                " where " + string.Join(" AND ", whereClauses.ToArray(whereClauses.Count));
-
-            commandText += whereText;
-
-            commandText += " ORDER BY DateCreated";
-
-            if (query.Limit.HasValue)
-            {
-                commandText += " LIMIT " + query.Limit.Value.ToString(_usCulture);
+                if (offset > 0)
+                {
+                    commandText += " OFFSET " + offset.ToString(CultureInfo.InvariantCulture);
+                }
             }
 
             var list = new List<AuthenticationInfo>();
@@ -304,12 +301,26 @@ namespace Emby.Server.Implementations.Security
                 info.UserId = new Guid(reader[6].ToString());
             }
 
-            info.IsActive = reader[7].ToBool();
-            info.DateCreated = reader[8].ReadDateTime();
-
-            if (reader[9].SQLiteType != SQLiteType.Null)
+            if (reader[7].SQLiteType != SQLiteType.Null)
             {
-                info.DateRevoked = reader[9].TryReadDateTime();
+                info.UserName = reader[7].ToString();
+            }
+
+            info.IsActive = reader[8].ToBool();
+            info.DateCreated = reader[9].ReadDateTime();
+
+            if (reader[10].SQLiteType != SQLiteType.Null)
+            {
+                info.DateLastActivity = reader[10].ReadDateTime();
+            }
+            else
+            {
+                info.DateLastActivity = info.DateCreated;
+            }
+
+            if (reader[11].SQLiteType != SQLiteType.Null)
+            {
+                info.DateRevoked = reader[11].TryReadDateTime();
             }
 
             return info;
