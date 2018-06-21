@@ -7,6 +7,8 @@ using MediaBrowser.Model.Session;
 using System.IO;
 using System.Threading.Tasks;
 using MediaBrowser.Model.Services;
+using MediaBrowser.Controller.Security;
+using MediaBrowser.Controller.Session;
 
 namespace MediaBrowser.Api.Devices
 {
@@ -50,56 +52,17 @@ namespace MediaBrowser.Api.Devices
         public Stream RequestStream { get; set; }
     }
 
-    [Route("/Devices/Info", "GET", Summary = "Gets device info")]
-    [Authenticated]
-    public class GetDeviceInfo : IReturn<DeviceInfo>
-    {
-        [ApiMember(Name = "Id", Description = "Device Id", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "DELETE")]
-        public string Id { get; set; }
-    }
-
-    [Route("/Devices/Capabilities", "GET", Summary = "Gets device capabilities")]
-    [Authenticated]
-    public class GetDeviceCapabilities : IReturn<ClientCapabilities>
-    {
-        [ApiMember(Name = "Id", Description = "Device Id", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "DELETE")]
-        public string Id { get; set; }
-    }
-
-    [Route("/Devices/Options", "POST", Summary = "Updates device options")]
-    [Authenticated(Roles = "Admin")]
-    public class PostDeviceOptions : DeviceOptions, IReturnVoid
-    {
-        [ApiMember(Name = "Id", Description = "Device Id", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "DELETE")]
-        public string Id { get; set; }
-    }
-
     public class DeviceService : BaseApiService
     {
         private readonly IDeviceManager _deviceManager;
+        private readonly IAuthenticationRepository _authRepo;
+        private readonly ISessionManager _sessionManager;
 
-        public DeviceService(IDeviceManager deviceManager)
+        public DeviceService(IDeviceManager deviceManager, IAuthenticationRepository authRepo, ISessionManager sessionManager)
         {
             _deviceManager = deviceManager;
-        }
-
-        public void Post(PostDeviceOptions request)
-        {
-            _deviceManager.UpdateDeviceInfo(request.Id, new DeviceOptions
-            {
-                CustomName = request.CustomName,
-                CameraUploadPath = request.CameraUploadPath
-            });
-        }
-
-        public object Get(GetDeviceInfo request)
-        {
-            return ToOptimizedResult(_deviceManager.GetDevice(request.Id));
-        }
-
-        public object Get(GetDeviceCapabilities request)
-        {
-            return ToOptimizedResult(_deviceManager.GetCapabilities(request.Id));
+            _authRepo = authRepo;
+            _sessionManager = sessionManager;
         }
 
         public object Get(GetDevices request)
@@ -114,7 +77,17 @@ namespace MediaBrowser.Api.Devices
 
         public void Delete(DeleteDevice request)
         {
-            _deviceManager.DeleteDevice(request.Id);
+            var sessions = _authRepo.Get(new AuthenticationInfoQuery
+            {
+                DeviceId = request.Id,
+                IsActive = true
+
+            }).Items;
+
+            foreach (var session in sessions)
+            {
+                _sessionManager.Logout(session);
+            }
         }
 
         public Task Post(PostCameraUpload request)

@@ -230,13 +230,15 @@ namespace Emby.Server.Implementations.Library
         {
             var playedToCompletion = false;
 
-            var positionTicks = reportedPositionTicks ?? item.RunTimeTicks ?? 0;
-            var hasRuntime = item.RunTimeTicks.HasValue && item.RunTimeTicks > 0;
+            var runtimeTicks = item.GetRunTimeTicksForPlayState();
+
+            var positionTicks = reportedPositionTicks ?? runtimeTicks;
+            var hasRuntime = runtimeTicks > 0;
 
             // If a position has been reported, and if we know the duration
             if (positionTicks > 0 && hasRuntime)
             {
-                var pctIn = Decimal.Divide(positionTicks, item.RunTimeTicks.Value) * 100;
+                var pctIn = Decimal.Divide(positionTicks, runtimeTicks) * 100;
 
                 // Don't track in very beginning
                 if (pctIn < _config.Configuration.MinResumePct)
@@ -245,7 +247,7 @@ namespace Emby.Server.Implementations.Library
                 }
 
                 // If we're at the end, assume completed
-                else if (pctIn > _config.Configuration.MaxResumePct || positionTicks >= item.RunTimeTicks.Value)
+                else if (pctIn > _config.Configuration.MaxResumePct || positionTicks >= runtimeTicks)
                 {
                     positionTicks = 0;
                     data.Played = playedToCompletion = true;
@@ -254,7 +256,7 @@ namespace Emby.Server.Implementations.Library
                 else
                 {
                     // Enforce MinResumeDuration
-                    var durationSeconds = TimeSpan.FromTicks(item.RunTimeTicks.Value).TotalSeconds;
+                    var durationSeconds = TimeSpan.FromTicks(runtimeTicks).TotalSeconds;
 
                     if (durationSeconds < _config.Configuration.MinResumeDurationSeconds)
                     {

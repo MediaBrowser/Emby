@@ -347,40 +347,12 @@ namespace MediaBrowser.Api.UserLibrary
                 _libraryManager.GetUserRootFolder() :
                 _libraryManager.GetItemById(request.Id);
 
-            var series = item as Series;
+            var dtoOptions = GetDtoOptions(_authContext, request);
 
-            // Get them from the child tree
-            if (series != null)
-            {
-                var dtoOptions = GetDtoOptions(_authContext, request);
+            var dtos = item.GetDisplayExtras()
+                .Select(i => _dtoService.GetBaseItemDto(i, dtoOptions, user, item));
 
-                // Avoid implicitly captured closure
-                var currentUser = user;
-
-                var dtos = series
-                    .GetEpisodes(user, dtoOptions)
-                    .Where(i => i.ParentIndexNumber.HasValue && i.ParentIndexNumber.Value == 0)
-                    .Select(i => _dtoService.GetBaseItemDto(i, dtoOptions, currentUser));
-
-                return dtos.ToArray();
-            }
-
-            var movie = item as IHasSpecialFeatures;
-
-            // Get them from the db
-            if (movie != null)
-            {
-                var dtoOptions = GetDtoOptions(_authContext, request);
-
-                var dtos = movie.SpecialFeatureIds
-                    .Select(_libraryManager.GetItemById)
-                    .OrderBy(i => i.SortName)
-                    .Select(i => _dtoService.GetBaseItemDto(i, dtoOptions, user, item));
-
-                return dtos.ToArray();
-            }
-
-            return new BaseItemDto[] { };
+            return dtos.ToArray();
         }
 
         /// <summary>
@@ -394,22 +366,9 @@ namespace MediaBrowser.Api.UserLibrary
 
             var item = string.IsNullOrEmpty(request.Id) ? _libraryManager.GetUserRootFolder() : _libraryManager.GetItemById(request.Id);
 
-            List<Guid> trailerIds = null;
-
-            var hasTrailers = item as IHasTrailers;
-            if (hasTrailers != null)
-            {
-                trailerIds = hasTrailers.GetTrailerIds();
-            }
-            else
-            {
-                trailerIds = new List<Guid>();
-            }
-
             var dtoOptions = GetDtoOptions(_authContext, request);
 
-            var dtos = trailerIds
-                .Select(_libraryManager.GetItemById)
+            var dtos = item.GetExtras(new[] { ExtraType.Trailer })
                 .Select(i => _dtoService.GetBaseItemDto(i, dtoOptions, user, item))
                 .ToArray();
 
@@ -507,7 +466,7 @@ namespace MediaBrowser.Api.UserLibrary
         /// <param name="request">The request.</param>
         public object Post(MarkFavoriteItem request)
         {
-            var dto =  MarkFavorite(request.UserId, request.Id, true);
+            var dto = MarkFavorite(request.UserId, request.Id, true);
 
             return ToOptimizedResult(dto);
         }
@@ -541,7 +500,7 @@ namespace MediaBrowser.Api.UserLibrary
             // Set favorite status
             data.IsFavorite = isFavorite;
 
-             _userDataRepository.SaveUserData(user.Id, item, data, UserDataSaveReason.UpdateUserRating, CancellationToken.None);
+            _userDataRepository.SaveUserData(user.Id, item, data, UserDataSaveReason.UpdateUserRating, CancellationToken.None);
 
             return _userDataRepository.GetUserDataDto(item, user);
         }
@@ -563,7 +522,7 @@ namespace MediaBrowser.Api.UserLibrary
         /// <param name="request">The request.</param>
         public object Post(UpdateUserItemRating request)
         {
-            var dto =  UpdateUserItemRating(request.UserId, request.Id, request.Likes);
+            var dto = UpdateUserItemRating(request.UserId, request.Id, request.Likes);
 
             return ToOptimizedResult(dto);
         }
@@ -585,7 +544,7 @@ namespace MediaBrowser.Api.UserLibrary
 
             data.Likes = likes;
 
-             _userDataRepository.SaveUserData(user.Id, item, data, UserDataSaveReason.UpdateUserRating, CancellationToken.None);
+            _userDataRepository.SaveUserData(user.Id, item, data, UserDataSaveReason.UpdateUserRating, CancellationToken.None);
 
             return _userDataRepository.GetUserDataDto(item, user);
         }

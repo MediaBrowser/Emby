@@ -287,10 +287,13 @@ namespace MediaBrowser.Api.UserLibrary
                 HasThemeSong = request.HasThemeSong,
                 HasThemeVideo = request.HasThemeVideo,
                 HasTrailer = request.HasTrailer,
+                IsHD = request.IsHD,
+                Is4K = request.Is4K,
                 Tags = request.GetTags(),
                 OfficialRatings = request.GetOfficialRatings(),
                 Genres = request.GetGenres(),
                 ArtistIds = GetGuids(request.ArtistIds),
+                AlbumArtistIds = GetGuids(request.AlbumArtistIds),
                 GenreIds = GetGuids(request.GenreIds),
                 StudioIds = GetGuids(request.StudioIds),
                 Person = request.Person,
@@ -307,37 +310,10 @@ namespace MediaBrowser.Api.UserLibrary
                 MinCriticRating = request.MinCriticRating,
                 ParentId = string.IsNullOrWhiteSpace(request.ParentId) ? Guid.Empty : new Guid(request.ParentId),
                 ParentIndexNumber = request.ParentIndexNumber,
-                AiredDuringSeason = request.AiredDuringSeason,
                 EnableTotalRecordCount = request.EnableTotalRecordCount,
                 ExcludeItemIds = GetGuids(request.ExcludeItemIds),
                 DtoOptions = dtoOptions
             };
-
-            if (request.IsHD.HasValue)
-            {
-                var threshold = 1200;
-                if (request.IsHD.Value)
-                {
-                    query.MinWidth = threshold;
-                }
-                else
-                {
-                    query.MaxWidth = threshold - 1;
-                }
-            }
-
-            if (request.Is4K.HasValue)
-            {
-                var threshold = 3800;
-                if (request.Is4K.Value)
-                {
-                    query.MinWidth = threshold;
-                }
-                else
-                {
-                    query.MaxWidth = threshold - 1;
-                }
-            }
 
             if (!string.IsNullOrWhiteSpace(request.Ids))
             {

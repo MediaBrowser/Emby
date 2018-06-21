@@ -27,6 +27,8 @@ namespace MediaBrowser.Api.Session
 
         [ApiMember(Name = "DeviceId", Description = "Optional. Filter by device id.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
         public string DeviceId { get; set; }
+
+        public int? ActiveWithinSeconds { get; set; }
     }
 
     /// <summary>
@@ -199,9 +201,6 @@ namespace MediaBrowser.Api.Session
         [ApiMember(Name = "SupportedCommands", Description = "A list of supported remote control commands, comma delimited", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "POST")]
         public string SupportedCommands { get; set; }
 
-        [ApiMember(Name = "MessageCallbackUrl", Description = "A url to post messages to, including remote control commands.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "POST")]
-        public string MessageCallbackUrl { get; set; }
-
         [ApiMember(Name = "SupportsMediaControl", Description = "Determines whether media can be played remotely.", IsRequired = false, DataType = "bool", ParameterType = "query", Verb = "POST")]
         public bool SupportsMediaControl { get; set; }
 
@@ -210,8 +209,6 @@ namespace MediaBrowser.Api.Session
 
         [ApiMember(Name = "SupportsPersistentIdentifier", Description = "Determines whether the device supports a unique identifier.", IsRequired = false, DataType = "bool", ParameterType = "query", Verb = "POST")]
         public bool SupportsPersistentIdentifier { get; set; }
-
-        public bool SupportsContentUploading { get; set; }
 
         public PostCapabilities()
         {
@@ -367,6 +364,12 @@ namespace MediaBrowser.Api.Session
                     result = result.Where(i => !i.UserId.Equals(Guid.Empty));
                 }
 
+                if (request.ActiveWithinSeconds.HasValue && request.ActiveWithinSeconds.Value > 0)
+                {
+                    var minActiveDate = DateTime.UtcNow.AddSeconds(0 - request.ActiveWithinSeconds.Value);
+                    result = result.Where(i => i.LastActivityDate >= minActiveDate);
+                }
+
                 result = result.Where(i =>
                 {
                     var deviceId = i.DeviceId;
@@ -503,11 +506,7 @@ namespace MediaBrowser.Api.Session
 
                 SupportsMediaControl = request.SupportsMediaControl,
 
-                MessageCallbackUrl = request.MessageCallbackUrl,
-
                 SupportsSync = request.SupportsSync,
-
-                SupportsContentUploading = request.SupportsContentUploading,
 
                 SupportsPersistentIdentifier = request.SupportsPersistentIdentifier
             });

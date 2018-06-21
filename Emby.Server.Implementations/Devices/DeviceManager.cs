@@ -23,6 +23,7 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Controller.Plugins;
 using MediaBrowser.Model.Globalization;
+using MediaBrowser.Controller.Security;
 
 namespace Emby.Server.Implementations.Devices
 {
@@ -38,14 +39,11 @@ namespace Emby.Server.Implementations.Devices
         private readonly ILibraryManager _libraryManager;
         private readonly ILocalizationManager _localizationManager;
 
+        private readonly IAuthenticationRepository _authRepo;
+
         public event EventHandler<GenericEventArgs<CameraImageUploadInfo>> CameraImageUploaded;
 
-        /// <summary>
-        /// Occurs when [device options updated].
-        /// </summary>
-        public event EventHandler<GenericEventArgs<DeviceInfo>> DeviceOptionsUpdated;
-
-        public DeviceManager(IDeviceRepository repo, ILibraryManager libraryManager, ILocalizationManager localizationManager, IUserManager userManager, IFileSystem fileSystem, ILibraryMonitor libraryMonitor, IServerConfigurationManager config, ILogger logger, INetworkManager network)
+        public DeviceManager(IAuthenticationRepository authRepo, IDeviceRepository repo, ILibraryManager libraryManager, ILocalizationManager localizationManager, IUserManager userManager, IFileSystem fileSystem, ILibraryMonitor libraryMonitor, IServerConfigurationManager config, ILogger logger, INetworkManager network)
         {
             _repo = repo;
             _userManager = userManager;
@@ -56,68 +54,7 @@ namespace Emby.Server.Implementations.Devices
             _network = network;
             _libraryManager = libraryManager;
             _localizationManager = localizationManager;
-        }
-
-        public DeviceInfo RegisterDevice(string reportedId, string name, string appName, string appVersion, string usedByUserId, string usedByUserName)
-        {
-            if (string.IsNullOrEmpty(reportedId))
-            {
-                throw new ArgumentNullException("reportedId");
-            }
-
-            var save = false;
-            var device = GetDevice(reportedId);
-
-            if (device == null)
-            {
-                device = new DeviceInfo
-                {
-                    Id = reportedId
-                };
-                save = true;
-            }
-
-            if (!string.Equals(device.ReportedName, name, StringComparison.Ordinal))
-            {
-                device.ReportedName = name;
-                save = true;
-            }
-            if (!string.Equals(device.AppName, appName, StringComparison.Ordinal))
-            {
-                device.AppName = appName;
-                save = true;
-            }
-            if (!string.Equals(device.AppVersion, appVersion, StringComparison.Ordinal))
-            {
-                device.AppVersion = appVersion;
-                save = true;
-            }
-
-            if (!string.IsNullOrEmpty(usedByUserId))
-            {
-                if (!string.Equals(device.LastUserId, usedByUserId, StringComparison.Ordinal) ||
-                    !string.Equals(device.LastUserName, usedByUserName, StringComparison.Ordinal))
-                {
-                    device.LastUserId = usedByUserId;
-                    device.LastUserName = usedByUserName;
-                    save = true;
-                }
-            }
-
-            var displayName = string.IsNullOrWhiteSpace(device.CustomName) ? device.ReportedName : device.CustomName;
-            if (!string.Equals(device.Name, displayName, StringComparison.Ordinal))
-            {
-                device.Name = displayName;
-                save = true;
-            }
-
-            if (save)
-            {
-                device.DateLastModified = DateTime.UtcNow;
-                _repo.SaveDevice(device);
-            }
-
-            return device;
+            _authRepo = authRepo;
         }
 
         public void SaveCapabilities(string reportedId, ClientCapabilities capabilities)
@@ -127,44 +64,53 @@ namespace Emby.Server.Implementations.Devices
 
         public ClientCapabilities GetCapabilities(string reportedId)
         {
-            return _repo.GetCapabilities(reportedId);
+            return _repo.GetCapabilities(reportedId) ?? new ClientCapabilities();
         }
 
         public DeviceInfo GetDevice(string id)
         {
-            return _repo.GetDevice(id);
+            return GetDevice(id, true);
+        }
+
+        private DeviceInfo GetDevice(string id, bool includeCapabilities)
+        {
+            var session = _authRepo.Get(new AuthenticationInfoQuery
+            {
+                DeviceId = id
+
+            }).Items.FirstOrDefault();
+
+            var device = session == null ? null : ToDeviceInfo(session);
+
+            return device;
         }
 
         public QueryResult<DeviceInfo> GetDevices(DeviceQuery query)
         {
-            IEnumerable<DeviceInfo> devices = _repo.GetDevices();
+            var sessions = _authRepo.Get(new AuthenticationInfoQuery
+            {
+                //UserId = query.UserId
+                IsActive = true,
+                HasUser = true
+
+            }).Items;
 
             if (query.SupportsSync.HasValue)
             {
                 var val = query.SupportsSync.Value;
 
-                devices = devices.Where(i => i.Capabilities.SupportsSync == val);
-            }
-
-            if (query.SupportsPersistentIdentifier.HasValue)
-            {
-                var val = query.SupportsPersistentIdentifier.Value;
-
-                devices = devices.Where(i =>
-                {
-                    var deviceVal = i.Capabilities.SupportsPersistentIdentifier;
-                    return deviceVal == val;
-                });
+                sessions = sessions.Where(i => GetCapabilities(i.DeviceId).SupportsSync == val).ToArray();
             }
 
             if (!query.UserId.Equals(Guid.Empty))
             {
                 var user = _userManager.GetUserById(query.UserId);
 
-                devices = devices.Where(i => CanAccessDevice(user, i.Id));
+                sessions = sessions.Where(i => CanAccessDevice(user, i.DeviceId)).ToArray();
             }
 
-            var array = devices.ToArray();
+            var array = sessions.Select(ToDeviceInfo).ToArray();
+
             return new QueryResult<DeviceInfo>
             {
                 Items = array,
@@ -172,9 +118,18 @@ namespace Emby.Server.Implementations.Devices
             };
         }
 
-        public void DeleteDevice(string id)
+        private DeviceInfo ToDeviceInfo(AuthenticationInfo authInfo)
         {
-            _repo.DeleteDevice(id);
+            return new DeviceInfo
+            {
+                AppName = authInfo.AppName,
+                AppVersion = authInfo.AppVersion,
+                Id = authInfo.DeviceId,
+                LastUserId = authInfo.UserId,
+                LastUserName = authInfo.UserName,
+                Name = authInfo.DeviceName,
+                DateLastActivity = authInfo.DateLastActivity
+            };
         }
 
         public ContentUploadHistory GetCameraUploadHistory(string deviceId)
@@ -184,7 +139,7 @@ namespace Emby.Server.Implementations.Devices
 
         public async Task AcceptCameraUpload(string deviceId, Stream stream, LocalFileInfo file)
         {
-            var device = GetDevice(deviceId);
+            var device = GetDevice(deviceId, false);
             var uploadPathInfo = GetUploadPath(device);
 
             var path = uploadPathInfo.Item1;
@@ -264,11 +219,6 @@ namespace Emby.Server.Implementations.Devices
 
         private Tuple<string, string, string> GetUploadPath(DeviceInfo device)
         {
-            if (!string.IsNullOrWhiteSpace(device.CameraUploadPath))
-            {
-                return new Tuple<string, string, string>(device.CameraUploadPath, device.CameraUploadPath, _fileSystem.GetDirectoryName(device.CameraUploadPath));
-            }
-
             var config = _config.GetUploadOptions();
             var path = config.CameraUploadPath;
 
@@ -303,20 +253,6 @@ namespace Emby.Server.Implementations.Devices
         private string DefaultCameraUploadsPath
         {
             get { return Path.Combine(_config.CommonApplicationPaths.DataPath, "camerauploads"); }
-        }
-
-        public void UpdateDeviceInfo(string id, DeviceOptions options)
-        {
-            var device = GetDevice(id);
-
-            device.CustomName = options.CustomName;
-            device.CameraUploadPath = options.CameraUploadPath;
-
-            device.Name = string.IsNullOrWhiteSpace(device.CustomName) ? device.ReportedName : device.CustomName;
-
-            _repo.SaveDevice(device);
-
-            EventHelper.FireEventIfNotNull(DeviceOptionsUpdated, this, new GenericEventArgs<DeviceInfo>(device), _logger);
         }
 
         public bool CanAccessDevice(User user, string deviceId)

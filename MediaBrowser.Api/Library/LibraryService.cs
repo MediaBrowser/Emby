@@ -802,7 +802,7 @@ namespace MediaBrowser.Api.Library
             var item = _libraryManager.GetItemById(request.Id);
             var auth = _authContext.GetAuthorizationInfo(Request);
 
-            var user = _userManager.GetUserById(auth.UserId);
+            var user = auth.User;
 
             if (user != null)
             {
@@ -1023,7 +1023,7 @@ namespace MediaBrowser.Api.Library
             {
                 var item = _libraryManager.GetItemById(i);
                 var auth = _authContext.GetAuthorizationInfo(Request);
-                var user = _userManager.GetUserById(auth.UserId);
+                var user = auth.User;
 
                 if (!item.CanDelete(user))
                 {

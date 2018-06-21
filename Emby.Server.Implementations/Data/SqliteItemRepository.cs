@@ -221,7 +221,7 @@ namespace Emby.Server.Implementations.Data
                     AddColumn(db, "TypedBaseItems", "ProviderIds", "Text", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "Images", "Text", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "ProductionLocations", "Text", existingColumnNames);
-                    AddColumn(db, "TypedBaseItems", "ThemeSongIds", "Text", existingColumnNames);
+                    AddColumn(db, "TypedBaseItems", "ExtraIds", "Text", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "TotalBitrate", "INT", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "ExtraType", "Text", existingColumnNames);
                     AddColumn(db, "TypedBaseItems", "Artists", "Text", existingColumnNames);
@@ -404,7 +404,7 @@ namespace Emby.Server.Implementations.Data
             "ProviderIds",
             "Images",
             "ProductionLocations",
-            "ThemeSongIds",
+            "ExtraIds",
             "TotalBitrate",
             "ExtraType",
             "Artists",
@@ -522,7 +522,7 @@ namespace Emby.Server.Implementations.Data
                 "ProviderIds",
                 "Images",
                 "ProductionLocations",
-                "ThemeSongIds",
+                "ExtraIds",
                 "TotalBitrate",
                 "ExtraType",
                 "Artists",
@@ -1007,13 +1007,13 @@ namespace Emby.Server.Implementations.Data
                 saveItemStatement.TryBindNull("@ProductionLocations");
             }
 
-            if (item.ThemeSongIds.Length > 0)
+            if (item.ExtraIds.Length > 0)
             {
-                saveItemStatement.TryBind("@ThemeSongIds", string.Join("|", item.ThemeSongIds.ToArray()));
+                saveItemStatement.TryBind("@ExtraIds", string.Join("|", item.ExtraIds.ToArray()));
             }
             else
             {
-                saveItemStatement.TryBindNull("@ThemeSongIds");
+                saveItemStatement.TryBindNull("@ExtraIds");
             }
 
             saveItemStatement.TryBind("@TotalBitrate", item.TotalBitrate);
@@ -1864,11 +1864,11 @@ namespace Emby.Server.Implementations.Data
                 index++;
             }
 
-            if (HasField(query, ItemFields.ThemeSongIds))
+            if (HasField(query, ItemFields.ExtraIds))
             {
                 if (!reader.IsDBNull(index))
                 {
-                    item.ThemeSongIds = SplitToGuids(reader.GetString(index));
+                    item.ExtraIds = SplitToGuids(reader.GetString(index));
                 }
                 index++;
             }
@@ -2230,7 +2230,7 @@ namespace Emby.Server.Implementations.Data
                 case ItemFields.Taglines:
                 case ItemFields.SortName:
                 case ItemFields.Studios:
-                case ItemFields.ThemeSongIds:
+                case ItemFields.ExtraIds:
                 case ItemFields.DateCreated:
                 case ItemFields.Overview:
                 case ItemFields.Genres:
@@ -2534,11 +2534,7 @@ namespace Emby.Server.Implementations.Data
 
                 if (query.IncludeItemTypes.Length == 0 || query.IncludeItemTypes.Contains(typeof(Trailer).Name))
                 {
-                    var hasTrailers = item as IHasTrailers;
-                    if (hasTrailers != null)
-                    {
-                        excludeIds.AddRange(hasTrailers.GetTrailerIds());
-                    }
+                    excludeIds.AddRange(item.ExtraIds);
                 }
 
                 query.ExcludeItemIds = excludeIds.ToArray(excludeIds.Count);
@@ -3436,12 +3432,42 @@ namespace Emby.Server.Implementations.Data
             {
                 //whereClauses.Add("(UserId is null or UserId=@UserId)");
             }
-            if (query.MinWidth.HasValue)
+
+            var minWidth = query.MinWidth;
+            var maxWidth = query.MaxWidth;
+
+            if (query.IsHD.HasValue)
+            {
+                var threshold = 1200;
+                if (query.IsHD.Value)
+                {
+                    minWidth = threshold;
+                }
+                else
+                {
+                    maxWidth = threshold - 1;
+                }
+            }
+
+            if (query.Is4K.HasValue)
+            {
+                var threshold = 3800;
+                if (query.Is4K.Value)
+                {
+                    minWidth = threshold;
+                }
+                else
+                {
+                    maxWidth = threshold - 1;
+                }
+            }
+
+            if (minWidth.HasValue)
             {
                 whereClauses.Add("Width>=@MinWidth");
                 if (statement != null)
                 {
-                    statement.TryBind("@MinWidth", query.MinWidth);
+                    statement.TryBind("@MinWidth", minWidth);
                 }
             }
             if (query.MinHeight.HasValue)
@@ -3452,12 +3478,12 @@ namespace Emby.Server.Implementations.Data
                     statement.TryBind("@MinHeight", query.MinHeight);
                 }
             }
-            if (query.MaxWidth.HasValue)
+            if (maxWidth.HasValue)
             {
                 whereClauses.Add("Width<=@MaxWidth");
                 if (statement != null)
                 {
-                    statement.TryBind("@MaxWidth", query.MaxWidth);
+                    statement.TryBind("@MaxWidth", maxWidth);
                 }
             }
             if (query.MaxHeight.HasValue)
@@ -4079,6 +4105,25 @@ namespace Emby.Server.Implementations.Data
                 whereClauses.Add(clause);
             }
 
+            if (query.AlbumArtistIds.Length > 0)
+            {
+                var clauses = new List<string>();
+                var index = 0;
+                foreach (var artistId in query.AlbumArtistIds)
+                {
+                    var paramName = "@ArtistIds" + index;
+
+                    clauses.Add("(select CleanName from TypedBaseItems where guid=" + paramName + ") in (select CleanValue from itemvalues where ItemId=Guid and Type=1)");
+                    if (statement != null)
+                    {
+                        statement.TryBind(paramName, artistId.ToGuidBlob());
+                    }
+                    index++;
+                }
+                var clause = "(" + string.Join(" OR ", clauses.ToArray()) + ")";
+                whereClauses.Add(clause);
+            }
+
             if (query.AlbumIds.Length > 0)
             {
                 var clauses = new List<string>();
@@ -4253,6 +4298,18 @@ namespace Emby.Server.Implementations.Data
                 }
             }
 
+            if (query.HasOfficialRating.HasValue)
+            {
+                if (query.HasOfficialRating.Value)
+                {
+                    whereClauses.Add("(OfficialRating not null AND OfficialRating<>'')");
+                }
+                else
+                {
+                    whereClauses.Add("(OfficialRating is null OR OfficialRating='')");
+                }
+            }
+
             if (query.HasOverview.HasValue)
             {
                 if (query.HasOverview.Value)
@@ -4262,6 +4319,18 @@ namespace Emby.Server.Implementations.Data
                 else
                 {
                     whereClauses.Add("(Overview is null OR Overview='')");
+                }
+            }
+
+            if (query.HasOwnerId.HasValue)
+            {
+                if (query.HasOwnerId.Value)
+                {
+                    whereClauses.Add("OwnerId not null");
+                }
+                else
+                {
+                    whereClauses.Add("OwnerId is null");
                 }
             }
 
@@ -4298,6 +4367,18 @@ namespace Emby.Server.Implementations.Data
                 if (statement != null)
                 {
                     statement.TryBind("@HasNoSubtitleTrackWithLanguage", query.HasNoSubtitleTrackWithLanguage);
+                }
+            }
+
+            if (query.HasSubtitles.HasValue)
+            {
+                if (query.HasSubtitles.Value)
+                {
+                    whereClauses.Add("((select type from MediaStreams where MediaStreams.ItemId=A.Guid and MediaStreams.StreamType='Subtitle' limit 1) not null)");
+                }
+                else
+                {
+                    whereClauses.Add("((select type from MediaStreams where MediaStreams.ItemId=A.Guid and MediaStreams.StreamType='Subtitle' limit 1) is null)");
                 }
             }
 
@@ -4453,7 +4534,40 @@ namespace Emby.Server.Implementations.Data
                     break;
                 }
 
-                whereClauses.Add(string.Join(" AND ", excludeIds.ToArray()));
+                if (excludeIds.Count > 0)
+                {
+                    whereClauses.Add(string.Join(" AND ", excludeIds.ToArray()));
+                }
+            }
+
+            if (query.HasAnyProviderId.Count > 0)
+            {
+                var hasProviderIds = new List<string>();
+
+                var index = 0;
+                foreach (var pair in query.HasAnyProviderId)
+                {
+                    if (string.Equals(pair.Key, MetadataProviders.TmdbCollection.ToString(), StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+
+                    var paramName = "@HasAnyProviderId" + index;
+                    //hasProviderIds.Add("(COALESCE((select value from ProviderIds where ItemId=Guid and Name = '" + pair.Key + "'), '') <> " + paramName + ")");
+                    hasProviderIds.Add("ProviderIds like " + paramName + "");
+                    if (statement != null)
+                    {
+                        statement.TryBind(paramName, "%" + pair.Key + "=" + pair.Value + "%");
+                    }
+                    index++;
+
+                    break;
+                }
+
+                if (hasProviderIds.Count > 0)
+                {
+                    whereClauses.Add("(" + string.Join(" OR ", hasProviderIds.ToArray()) + ")");
+                }
             }
 
             if (query.HasImdbId.HasValue)
@@ -4469,17 +4583,6 @@ namespace Emby.Server.Implementations.Data
             if (query.HasTvdbId.HasValue)
             {
                 whereClauses.Add("ProviderIds like '%tvdb=%'");
-            }
-            if (query.HasThemeSong.HasValue)
-            {
-                if (query.HasThemeSong.Value)
-                {
-                    whereClauses.Add("ThemeSongIds not null");
-                }
-                else
-                {
-                    whereClauses.Add("ThemeSongIds is null");
-                }
             }
 
             var includedItemByNameTypes = GetItemByNameTypesInQuery(query).SelectMany(MapIncludeItemTypes).ToList();
@@ -4588,6 +4691,102 @@ namespace Emby.Server.Implementations.Data
                 var tagValuesList = string.Join(",", tagValues);
 
                 whereClauses.Add("((select CleanValue from itemvalues where ItemId=Guid and Type=6 and cleanvalue in (" + tagValuesList + ")) is null)");
+            }
+
+            if (query.SeriesStatuses.Length > 0)
+            {
+                var statuses = new List<string>();
+
+                foreach (var seriesStatus in query.SeriesStatuses)
+                {
+                    statuses.Add("data like  '%" + seriesStatus + "%'");
+                }
+
+                whereClauses.Add("(" + string.Join(" OR ", statuses.ToArray()) + ")");
+            }
+
+            if (query.VideoTypes.Length > 0)
+            {
+                var videoTypes = new List<string>();
+
+                foreach (var videoType in query.VideoTypes)
+                {
+                    videoTypes.Add("data like  '%" + videoType + "%'");
+                }
+
+                whereClauses.Add("(" + string.Join(" OR ", videoTypes.ToArray()) + ")");
+            }
+
+            if (query.Is3D.HasValue)
+            {
+                if (query.Is3D.Value)
+                {
+                    whereClauses.Add("data like '%Video3DFormat%'");
+                }
+                else
+                {
+                    whereClauses.Add("data not like '%Video3DFormat%'");
+                }
+            }
+
+            if (query.IsPlaceHolder.HasValue)
+            {
+                if (query.IsPlaceHolder.Value)
+                {
+                    whereClauses.Add("data like '\"IsPlaceHolder\":true");
+                }
+                else
+                {
+                    whereClauses.Add("data not like '\"IsPlaceHolder\":true");
+                }
+            }
+
+            if (query.HasSpecialFeature.HasValue)
+            {
+                if (query.HasSpecialFeature.Value)
+                {
+                    whereClauses.Add("(data not like '%\"ExtraIds\":[]%' and data like '%ExtraIds%')");
+                }
+                else
+                {
+                    whereClauses.Add("(data like '%\"ExtraIds\":[]%' or data not like '%ExtraIds%')");
+                }
+            }
+
+            if (query.HasTrailer.HasValue)
+            {
+                if (query.HasTrailer.Value)
+                {
+                    whereClauses.Add("((data not like '%\"LocalTrailerIds\":[]%' and data like '%LocalTrailerIds%') or (data not like '%\"RemoteTrailerIds\":[]%' and data like '%RemoteTrailerIds%') or (data not like '%\"RemoteTrailers\":[]%' and data like '%RemoteTrailers%'))");
+                }
+                else
+                {
+                    whereClauses.Add("((data like '%\"LocalTrailerIds\":[]%' or data not like '%LocalTrailerIds%') and (data like '%\"RemoteTrailerIds\":[]%' or data not like '%RemoteTrailerIds%') and (data like '%\"RemoteTrailers\":[]%' or data not like '%RemoteTrailers%'))");
+                }
+            }
+
+            if (query.HasThemeSong.HasValue)
+            {
+                if (query.HasThemeSong.Value)
+                {
+                    whereClauses.Add("(data not like '%\"ExtraIds\":[]%' and data like '%ExtraIds%')");
+                }
+                else
+                {
+                    whereClauses.Add("(data like '%\"ExtraIds\":[]%' or data not like '%ExtraIds%')");
+                }
+            }
+
+            if (query.HasThemeVideo.HasValue)
+            {
+                if (query.HasThemeVideo.Value)
+                {
+                    whereClauses.Add("(data not like '%\"ExtraIds\":[]%' and data like '%ExtraIds%')");
+                }
+                else
+                {
+                    whereClauses.Add("(data like '%\"ExtraIds\":[]%' or data not like '%ExtraIds%')");
+                }
             }
 
             return whereClauses;

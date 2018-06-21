@@ -64,9 +64,7 @@ namespace Emby.Server.Implementations.HttpServer.Security
                 throw new SecurityException("Operation not found.");
             }
 
-            var user = auth.UserId.Equals(Guid.Empty)
-                ? null
-                : UserManager.GetUserById(auth.UserId);
+            var user = auth.User;
 
             if (user == null & !auth.UserId.Equals(Guid.Empty))
             {
