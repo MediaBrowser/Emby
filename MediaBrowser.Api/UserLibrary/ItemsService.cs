@@ -294,6 +294,7 @@ namespace MediaBrowser.Api.UserLibrary
                 Genres = request.GetGenres(),
                 ArtistIds = GetGuids(request.ArtistIds),
                 AlbumArtistIds = GetGuids(request.AlbumArtistIds),
+                ContributingArtistIds = GetGuids(request.ContributingArtistIds),
                 GenreIds = GetGuids(request.GenreIds),
                 StudioIds = GetGuids(request.StudioIds),
                 Person = request.Person,

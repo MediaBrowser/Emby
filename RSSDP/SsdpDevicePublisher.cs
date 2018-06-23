@@ -300,7 +300,7 @@ namespace Rssdp.Infrastructure
 
             values["EXT"] = "";
             values["DATE"] = DateTime.UtcNow.ToString("r");
-            values["CACHE-CONTROL"] = "max-age = 600";
+            values["CACHE-CONTROL"] = "max-age = " + rootDevice.CacheLifetime.TotalSeconds;
             values["ST"] = searchTarget;
             values["SERVER"] = string.Format("{0}/{1} UPnP/1.0 RSSDP/{2}", _OSName, _OSVersion, ServerVersion);
             values["USN"] = uniqueServiceName;

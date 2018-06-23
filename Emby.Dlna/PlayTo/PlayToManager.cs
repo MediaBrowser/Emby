@@ -234,10 +234,7 @@ namespace Emby.Dlna.PlayTo
                             GeneralCommandType.PlayMediaSource.ToString()
                     },
 
-                    SupportsMediaControl = true,
-
-                    // xbox one creates a new uuid everytime it restarts
-                    SupportsPersistentIdentifier = (device.Properties.ModelName ?? string.Empty).IndexOf("xbox", StringComparison.OrdinalIgnoreCase) == -1
+                    SupportsMediaControl = true
                 });
 
                 _logger.Info("DLNA Session created for {0} - {1}", device.Properties.Name, device.Properties.ModelName);
