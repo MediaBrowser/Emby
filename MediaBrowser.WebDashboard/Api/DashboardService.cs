@@ -311,12 +311,13 @@ namespace MediaBrowser.WebDashboard.Api
 
             // Bounce them to the startup wizard if it hasn't been completed yet
             if (!_serverConfigurationManager.Configuration.IsStartupWizardCompleted &&
-                path.IndexOf("wizard", StringComparison.OrdinalIgnoreCase) == -1 && GetPackageCreator(basePath).IsCoreHtml(path))
+                Request.RawUrl.IndexOf("wizard", StringComparison.OrdinalIgnoreCase) == -1 && 
+                GetPackageCreator(basePath).IsCoreHtml(path))
             {
                 // But don't redirect if an html import is being requested.
                 if (path.IndexOf("bower_components", StringComparison.OrdinalIgnoreCase) == -1)
                 {
-                    Request.Response.Redirect("index.html#!/wizardstart.html");
+                    Request.Response.Redirect("index.html?start=wizard");
                     return null;
                 }
             }
