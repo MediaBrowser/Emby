@@ -24,15 +24,6 @@ namespace Emby.Server.Implementations.Browser
         /// Opens the web client.
         /// </summary>
         /// <param name="appHost">The app host.</param>
-        public static void OpenWizard(IServerApplicationHost appHost)
-        {
-            OpenDashboardPage("index.html#!/wizardstart.html", appHost);
-        }
-
-        /// <summary>
-        /// Opens the web client.
-        /// </summary>
-        /// <param name="appHost">The app host.</param>
         public static void OpenWebApp(IServerApplicationHost appHost)
         {
             OpenDashboardPage("index.html", appHost);

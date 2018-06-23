@@ -4124,6 +4124,25 @@ namespace Emby.Server.Implementations.Data
                 whereClauses.Add(clause);
             }
 
+            if (query.ContributingArtistIds.Length > 0)
+            {
+                var clauses = new List<string>();
+                var index = 0;
+                foreach (var artistId in query.ContributingArtistIds)
+                {
+                    var paramName = "@ArtistIds" + index;
+
+                    clauses.Add("((select CleanName from TypedBaseItems where guid=" + paramName + ") in (select CleanValue from itemvalues where ItemId=Guid and Type=0) AND (select CleanName from TypedBaseItems where guid=" + paramName + ") not in (select CleanValue from itemvalues where ItemId=Guid and Type=1))");
+                    if (statement != null)
+                    {
+                        statement.TryBind(paramName, artistId.ToGuidBlob());
+                    }
+                    index++;
+                }
+                var clause = "(" + string.Join(" OR ", clauses.ToArray()) + ")";
+                whereClauses.Add(clause);
+            }
+
             if (query.AlbumIds.Length > 0)
             {
                 var clauses = new List<string>();

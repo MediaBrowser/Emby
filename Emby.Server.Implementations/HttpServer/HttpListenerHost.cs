@@ -628,14 +628,17 @@ namespace Emby.Server.Implementations.HttpServer
                     return;
                 }
 
-                if (localPath.EndsWith("web/dashboard.html", StringComparison.OrdinalIgnoreCase) && httpReq.UrlReferrer == null)
+                if (!string.Equals(httpReq.QueryString["r"], "0", StringComparison.OrdinalIgnoreCase))
                 {
-                    RedirectToUrl(httpRes, "index.html#!/dashboard.html");
-                }
+                    if (localPath.EndsWith("web/dashboard.html", StringComparison.OrdinalIgnoreCase))
+                    {
+                        RedirectToUrl(httpRes, "index.html#!/dashboard.html");
+                    }
 
-                if (localPath.EndsWith("web/home.html", StringComparison.OrdinalIgnoreCase) && httpReq.UrlReferrer == null)
-                {
-                    RedirectToUrl(httpRes, "index.html");
+                    if (localPath.EndsWith("web/home.html", StringComparison.OrdinalIgnoreCase))
+                    {
+                        RedirectToUrl(httpRes, "index.html");
+                    }
                 }
 
                 if (!string.IsNullOrEmpty(GlobalResponse))

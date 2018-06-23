@@ -1,4 +1,7 @@
 {
+    "SyncingDots": "Synchronisation...",
+    "ConvertingDots": "Conversion...",
+    "HeaderAppearsOn": "Appears On",
     "MessageUnlockAppWithPurchaseOrSupporter": "D\u00e9verrouillez cette fonctionnalit\u00e9 avec un petit achat unique, ou avec un abonnement Emby Premiere.",
     "MessageUnlockAppWithSupporter": "D\u00e9verrouillez cette fonctionnalit\u00e9 avec un abonnement Emby Premiere.",
     "MessageToValidateSupporter": "Si vous avez un abonnement Emby Premiere, veuillez vous assurer que vous avez configur\u00e9 Emby Premiere dans le tableau de bord de votre serveur Emby auquel vous pouvez acc\u00e9der en cliquant sur Emby Premiere dans le menu principal",
@@ -250,7 +253,7 @@
     "Continuing": "En cours",
     "Ended": "Termin\u00e9",
     "HeaderEnabledFields": "Activer les champs",
-    "HeaderEnabledFieldsHelp": "D\u00e9cocher un champ pour le verrouiller et emp\u00eacher ainsi ses donn\u00e9es d'\u00eatre modifi\u00e9es.",
+    "HeaderEnabledFieldsHelp": "D\u00e9cocher un champ pour le verrouiller et emp\u00eacher ses donn\u00e9es d'\u00eatre modifi\u00e9es.",
     "Backdrops": "Arri\u00e8re-plans",
     "Images": "Images",
     "Runtime": "Dur\u00e9e",

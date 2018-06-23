@@ -1,5 +1,4 @@
-﻿using System;
-using Emby.Server.Implementations.Browser;
+﻿using Emby.Server.Implementations.Browser;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Plugins;
 using MediaBrowser.Model.Logging;
@@ -40,11 +39,11 @@ namespace Emby.Server.Implementations.EntryPoints
                 return;
             }
 
-            if (_appHost.IsFirstRun)
+            if (!_config.Configuration.IsStartupWizardCompleted)
             {
-                BrowserLauncher.OpenWizard(_appHost);
+                BrowserLauncher.OpenWebApp(_appHost);
             }
-            else if (_config.Configuration.IsStartupWizardCompleted && _config.Configuration.AutoRunWebApp)
+            else if (_config.Configuration.AutoRunWebApp)
             {
                 var options = ((ApplicationHost)_appHost).StartupOptions;
 
