@@ -317,7 +317,7 @@ namespace MediaBrowser.WebDashboard.Api
                 // But don't redirect if an html import is being requested.
                 if (path.IndexOf("bower_components", StringComparison.OrdinalIgnoreCase) == -1)
                 {
-                    Request.Response.Redirect("index.html?start=wizard");
+                    Request.Response.Redirect("index.html?start=wizard#!/wizardstart.html");
                     return null;
                 }
             }

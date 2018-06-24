@@ -341,7 +341,6 @@ namespace Emby.Server.Implementations
         private IUserRepository UserRepository { get; set; }
         internal IDisplayPreferencesRepository DisplayPreferencesRepository { get; set; }
         internal IItemRepository ItemRepository { get; set; }
-        private INotificationsRepository NotificationsRepository { get; set; }
 
         private INotificationManager NotificationManager { get; set; }
         private ISubtitleManager SubtitleManager { get; set; }
@@ -1076,7 +1075,6 @@ namespace Emby.Server.Implementations
             ((UserDataManager)UserDataManager).Repository = userDataRepo;
             itemRepo.Initialize(userDataRepo);
             ((LibraryManager)LibraryManager).ItemRepository = ItemRepository;
-            ConfigureNotificationsRepository();
 
             SetStaticProperties();
 
@@ -1337,20 +1335,6 @@ namespace Emby.Server.Implementations
             repo.Initialize();
 
             return repo;
-        }
-
-        /// <summary>
-        /// Configures the repositories.
-        /// </summary>
-        private void ConfigureNotificationsRepository()
-        {
-            var repo = new SqliteNotificationsRepository(LogManager.GetLogger("SqliteNotificationsRepository"), ServerConfigurationManager.ApplicationPaths, FileSystemManager);
-
-            repo.Initialize();
-
-            NotificationsRepository = repo;
-
-            RegisterSingleInstance(NotificationsRepository);
         }
 
         /// <summary>
@@ -1948,7 +1932,8 @@ namespace Emby.Server.Implementations
                 "MediaBrowser.Channels.HockeyStreams.dll",
                 "MediaBrowser.Plugins.ITV.dll",
                 "MediaBrowser.Plugins.Lastfm.dll",
-                "ServerRestart.dll"
+                "ServerRestart.dll",
+                "MediaBrowser.Plugins.NotifyMyAndroidNotifications.dll"
             };
 
             return !exclude.Contains(filename ?? string.Empty, StringComparer.OrdinalIgnoreCase);

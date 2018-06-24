@@ -646,41 +646,38 @@ namespace Emby.Server.Implementations.Data
             var statements = PrepareAllSafe(db, new string[]
             {
                 GetSaveItemCommandText(),
-                "delete from AncestorIds where ItemId=@ItemId",
-                "insert into AncestorIds (ItemId, AncestorId, AncestorIdText) values (@ItemId, @AncestorId, @AncestorIdText)"
+                "delete from AncestorIds where ItemId=@ItemId"
+
             }).ToList();
 
             using (var saveItemStatement = statements[0])
             {
                 using (var deleteAncestorsStatement = statements[1])
                 {
-                    using (var updateAncestorsStatement = statements[2])
+                    foreach (var tuple in tuples)
                     {
-                        foreach (var tuple in tuples)
+                        if (requiresReset)
                         {
-                            if (requiresReset)
-                            {
-                                saveItemStatement.Reset();
-                            }
-
-                            var item = tuple.Item1;
-                            var topParent = tuple.Item3;
-                            var userDataKey = tuple.Item4;
-
-                            SaveItem(item, topParent, userDataKey, saveItemStatement);
-                            //Logger.Debug(_saveItemCommand.CommandText);
-
-                            var inheritedTags = tuple.Item5;
-
-                            if (item.SupportsAncestors)
-                            {
-                                UpdateAncestors(item.Id, tuple.Item2, db, deleteAncestorsStatement, updateAncestorsStatement);
-                            }
-
-                            UpdateItemValues(item.Id, GetItemValuesToSave(item, inheritedTags), db);
-
-                            requiresReset = true;
+                            saveItemStatement.Reset();
                         }
+
+                        var item = tuple.Item1;
+                        var topParent = tuple.Item3;
+                        var userDataKey = tuple.Item4;
+
+                        SaveItem(item, topParent, userDataKey, saveItemStatement);
+                        //Logger.Debug(_saveItemCommand.CommandText);
+
+                        var inheritedTags = tuple.Item5;
+
+                        if (item.SupportsAncestors)
+                        {
+                            UpdateAncestors(item.Id, tuple.Item2, db, deleteAncestorsStatement);
+                        }
+
+                        UpdateItemValues(item.Id, GetItemValuesToSave(item, inheritedTags), db);
+
+                        requiresReset = true;
                     }
                 }
             }
@@ -5204,7 +5201,7 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
             return whereClauses;
         }
 
-        private void UpdateAncestors(Guid itemId, List<Guid> ancestorIds, IDatabaseConnection db, IStatement deleteAncestorsStatement, IStatement updateAncestorsStatement)
+        private void UpdateAncestors(Guid itemId, List<Guid> ancestorIds, IDatabaseConnection db, IStatement deleteAncestorsStatement)
         {
             if (itemId.Equals(Guid.Empty))
             {
@@ -5223,13 +5220,39 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
             deleteAncestorsStatement.TryBind("@ItemId", itemId.ToGuidBlob());
             deleteAncestorsStatement.MoveNext();
 
-            foreach (var ancestorId in ancestorIds)
+            if (ancestorIds.Count == 0)
             {
-                updateAncestorsStatement.Reset();
-                updateAncestorsStatement.TryBind("@ItemId", itemId.ToGuidBlob());
-                updateAncestorsStatement.TryBind("@AncestorId", ancestorId.ToGuidBlob());
-                updateAncestorsStatement.TryBind("@AncestorIdText", ancestorId.ToString("N"));
-                updateAncestorsStatement.MoveNext();
+                return;
+            }
+
+            var insertText = new StringBuilder("insert into AncestorIds (ItemId, AncestorId, AncestorIdText) values ");
+
+            for (var i=0; i<ancestorIds.Count; i++)
+            {
+                if (i > 0)
+                {
+                    insertText.Append(",");
+                }
+
+                insertText.AppendFormat("(@ItemId, @AncestorId{0}, @AncestorIdText{0})", i.ToString(CultureInfo.InvariantCulture));
+            }
+
+            using (var statement = PrepareStatementSafe(db, insertText.ToString()))
+            {
+                statement.TryBind("@ItemId", itemId.ToGuidBlob());
+
+                for (var i = 0; i < ancestorIds.Count; i++)
+                {
+                    var index = i.ToString(CultureInfo.InvariantCulture);
+
+                    var ancestorId = ancestorIds[i];
+
+                    statement.TryBind("@AncestorId" + index, ancestorId.ToGuidBlob());
+                    statement.TryBind("@AncestorIdText" + index, ancestorId.ToString("N"));
+                }
+
+                statement.Reset();
+                statement.MoveNext();
             }
         }
 

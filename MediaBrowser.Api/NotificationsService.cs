@@ -86,13 +86,11 @@ namespace MediaBrowser.Api
     [Authenticated]
     public class NotificationsService : BaseApiService
     {
-        private readonly INotificationsRepository _notificationsRepo;
         private readonly INotificationManager _notificationManager;
         private readonly IUserManager _userManager;
 
-        public NotificationsService(INotificationsRepository notificationsRepo, INotificationManager notificationManager, IUserManager userManager)
+        public NotificationsService(INotificationManager notificationManager, IUserManager userManager)
         {
-            _notificationsRepo = notificationsRepo;
             _notificationManager = notificationManager;
             _userManager = userManager;
         }
@@ -109,7 +107,10 @@ namespace MediaBrowser.Api
 
         public object Get(GetNotificationsSummary request)
         {
-            return _notificationsRepo.GetNotificationsSummary(request.UserId);
+            return new NotificationsSummary
+            {
+
+            };
         }
 
         public Task Post(AddAdminNotification request)
@@ -135,38 +136,15 @@ namespace MediaBrowser.Api
 
         public void Post(MarkRead request)
         {
-            MarkRead(request.Ids, request.UserId, true);
         }
 
         public void Post(MarkUnread request)
         {
-            MarkRead(request.Ids, request.UserId, false);
-        }
-
-        private void MarkRead(string idList, string userId, bool read)
-        {
-            var ids = (idList ?? string.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-            if (ids.Length == 0)
-            {
-                _notificationsRepo.MarkAllRead(userId, read, CancellationToken.None);
-                return;
-            }
-
-            _notificationsRepo.MarkRead(ids, userId, read, CancellationToken.None);
         }
 
         public object Get(GetNotifications request)
         {
-            var result = _notificationsRepo.GetNotifications(new NotificationQuery
-            {
-                IsRead = request.IsRead,
-                Limit = request.Limit,
-                StartIndex = request.StartIndex,
-                UserId = request.UserId
-            });
-
-            return ToOptimizedResult(result);
+            return new NotificationResult();
         }
     }
 }

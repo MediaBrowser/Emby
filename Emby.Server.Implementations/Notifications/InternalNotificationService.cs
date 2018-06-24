@@ -4,14 +4,15 @@ using MediaBrowser.Model.Notifications;
 using System.Threading;
 using System.Threading.Tasks;
 using System;
+using MediaBrowser.Model.Activity;
 
 namespace Emby.Server.Implementations.Notifications
 {
     public class InternalNotificationService : INotificationService, IConfigurableNotificationService
     {
-        private readonly INotificationsRepository _repo;
+        private readonly IActivityRepository _repo;
 
-        public InternalNotificationService(INotificationsRepository repo)
+        public InternalNotificationService(IActivityRepository repo)
         {
             _repo = repo;
         }
@@ -23,18 +24,30 @@ namespace Emby.Server.Implementations.Notifications
 
         public Task SendNotification(UserNotification request, CancellationToken cancellationToken)
         {
-            _repo.AddNotification(new Notification
+            _repo.Create(new ActivityLogEntry
             {
-                Date = request.Date,
-                Description = request.Description,
-                Level = request.Level,
                 Name = request.Name,
-                Url = request.Url,
-                UserId = request.User.Id.ToString("N")
-
-            }, cancellationToken);
+                Type = "Custom",
+                Overview = request.Description,
+                ShortOverview = request.Description,
+                Severity = GetSeverity(request.Level),
+                UserId = request.User == null ? null : request.User.Id.ToString("N")
+            });
 
             return Task.CompletedTask;
+        }
+
+        private MediaBrowser.Model.Logging.LogSeverity GetSeverity(NotificationLevel level)
+        {
+            switch (level)
+            {
+                case NotificationLevel.Error:
+                    return MediaBrowser.Model.Logging.LogSeverity.Error;
+                case NotificationLevel.Warning:
+                    return MediaBrowser.Model.Logging.LogSeverity.Warn;
+                default:
+                    return MediaBrowser.Model.Logging.LogSeverity.Info;
+            }
         }
 
         public bool IsEnabledForUser(User user)
