@@ -6,7 +6,6 @@ using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Querying;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Emby.Server.Implementations.Activity
 {
@@ -27,7 +26,6 @@ namespace Emby.Server.Implementations.Activity
 
         public void Create(ActivityLogEntry entry)
         {
-            entry.Id = Guid.NewGuid().ToString("N");
             entry.Date = DateTime.UtcNow;
 
             _repo.Create(entry);

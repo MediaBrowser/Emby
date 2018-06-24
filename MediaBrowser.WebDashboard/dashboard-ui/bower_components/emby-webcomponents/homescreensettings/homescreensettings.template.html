@@ -6,6 +6,14 @@
             ${HeaderHomeScreen}
         </h2>
 
+        <div class="selectContainer hide selectTVHomeScreenContainer">
+            <select is="emby-select" class="selectTVHomeScreen" label="${LabelTVHomeScreen}">
+                <option value="horizontal">${Horizontal}</option>
+                <option value="vertical">${Vertical}</option>
+            </select>
+            <div class="fieldDescription">Changes take effect after signing out or restarting the app.</div>
+        </div>
+
         <div class="selectContainer">
             <select is="emby-select" id="selectHomeSection1" label="{section1label}">
                 <option value="smalllibrarytiles">${HeaderMyMedia}</option>

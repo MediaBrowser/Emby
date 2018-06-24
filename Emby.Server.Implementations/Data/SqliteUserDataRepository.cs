@@ -54,8 +54,6 @@ namespace Emby.Server.Implementations.Data
 
                                 "create table if not exists userdata (key nvarchar not null, userId GUID not null, rating float null, played bit not null, playCount int not null, isFavorite bit not null, playbackPositionTicks bigint not null, lastPlayedDate datetime null)",
 
-                                "create table if not exists DataSettings (IsUserDataImported bit)",
-
                                 "drop index if exists idx_userdata",
                                 "drop index if exists idx_userdata1",
                                 "drop index if exists idx_userdata2",
