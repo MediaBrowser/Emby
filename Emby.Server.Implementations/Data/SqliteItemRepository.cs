@@ -433,8 +433,8 @@ namespace Emby.Server.Implementations.Data
             "IsDefault",
             "IsForced",
             "IsExternal",
-            "Height",
             "Width",
+            "Height",
             "AverageFrameRate",
             "RealFrameRate",
             "Level",
@@ -2074,40 +2074,72 @@ namespace Emby.Server.Implementations.Data
                 throw new ArgumentNullException("chapters");
             }
 
-            var index = 0;
-
             using (WriteLock.Write())
             {
                 using (var connection = CreateConnection())
                 {
                     connection.RunInTransaction(db =>
                     {
+                        var idBlob = id.ToGuidBlob();
+
                         // First delete chapters
-                        db.Execute("delete from " + ChaptersTableName + " where ItemId=@ItemId", id.ToGuidBlob());
+                        db.Execute("delete from " + ChaptersTableName + " where ItemId=@ItemId", idBlob);
 
-                        using (var saveChapterStatement = PrepareStatement(db, "replace into " + ChaptersTableName + " (ItemId, ChapterIndex, StartPositionTicks, Name, ImagePath, ImageDateModified) values (@ItemId, @ChapterIndex, @StartPositionTicks, @Name, @ImagePath, @ImageDateModified)"))
-                        {
-                            foreach (var chapter in chapters)
-                            {
-                                if (index > 0)
-                                {
-                                    saveChapterStatement.Reset();
-                                }
+                        InsertChapters(idBlob, chapters, db);
 
-                                saveChapterStatement.TryBind("@ItemId", id.ToGuidBlob());
-                                saveChapterStatement.TryBind("@ChapterIndex", index);
-                                saveChapterStatement.TryBind("@StartPositionTicks", chapter.StartPositionTicks);
-                                saveChapterStatement.TryBind("@Name", chapter.Name);
-                                saveChapterStatement.TryBind("@ImagePath", chapter.ImagePath);
-                                saveChapterStatement.TryBind("@ImageDateModified", chapter.ImageDateModified);
-
-                                saveChapterStatement.MoveNext();
-
-                                index++;
-                            }
-                        }
                     }, TransactionMode);
                 }
+            }
+        }
+
+        private void InsertChapters(byte[] idBlob, List<ChapterInfo> chapters, IDatabaseConnection db)
+        {
+            var startIndex = 0;
+            var limit = 100;
+            var chapterIndex = 0;
+
+            while (startIndex < chapters.Count)
+            {
+                var insertText = new StringBuilder("insert into " + ChaptersTableName + " (ItemId, ChapterIndex, StartPositionTicks, Name, ImagePath, ImageDateModified) values ");
+
+                var endIndex = Math.Min(chapters.Count, startIndex + limit);
+                var isSubsequentRow = false;
+
+                for (var i = startIndex; i < endIndex; i++)
+                {
+                    if (isSubsequentRow)
+                    {
+                        insertText.Append(",");
+                    }
+
+                    insertText.AppendFormat("(@ItemId, @ChapterIndex{0}, @StartPositionTicks{0}, @Name{0}, @ImagePath{0}, @ImageDateModified{0})", i.ToString(CultureInfo.InvariantCulture));
+                    isSubsequentRow = true;
+                }
+
+                using (var statement = PrepareStatementSafe(db, insertText.ToString()))
+                {
+                    statement.TryBind("@ItemId", idBlob);
+
+                    for (var i = startIndex; i < endIndex; i++)
+                    {
+                        var index = i.ToString(CultureInfo.InvariantCulture);
+
+                        var chapter = chapters[i];
+
+                        statement.TryBind("@ChapterIndex" + index, chapterIndex);
+                        statement.TryBind("@StartPositionTicks" + index, chapter.StartPositionTicks);
+                        statement.TryBind("@Name" + index, chapter.Name);
+                        statement.TryBind("@ImagePath" + index, chapter.ImagePath);
+                        statement.TryBind("@ImageDateModified" + index, chapter.ImageDateModified);
+
+                        chapterIndex++;
+                    }
+
+                    statement.Reset();
+                    statement.MoveNext();
+                }
+
+                startIndex += limit;
             }
         }
 
@@ -5015,23 +5047,25 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
                 {
                     connection.RunInTransaction(db =>
                     {
+                        var idBlob = id.ToGuidBlob();
+
                         // Delete people
-                        ExecuteWithSingleParam(db, "delete from People where ItemId=@Id", id.ToGuidBlob());
+                        ExecuteWithSingleParam(db, "delete from People where ItemId=@Id", idBlob);
 
                         // Delete chapters
-                        ExecuteWithSingleParam(db, "delete from " + ChaptersTableName + " where ItemId=@Id", id.ToGuidBlob());
+                        ExecuteWithSingleParam(db, "delete from " + ChaptersTableName + " where ItemId=@Id", idBlob);
 
                         // Delete media streams
-                        ExecuteWithSingleParam(db, "delete from mediastreams where ItemId=@Id", id.ToGuidBlob());
+                        ExecuteWithSingleParam(db, "delete from mediastreams where ItemId=@Id", idBlob);
 
                         // Delete ancestors
-                        ExecuteWithSingleParam(db, "delete from AncestorIds where ItemId=@Id", id.ToGuidBlob());
+                        ExecuteWithSingleParam(db, "delete from AncestorIds where ItemId=@Id", idBlob);
 
                         // Delete item values
-                        ExecuteWithSingleParam(db, "delete from ItemValues where ItemId=@Id", id.ToGuidBlob());
+                        ExecuteWithSingleParam(db, "delete from ItemValues where ItemId=@Id", idBlob);
 
                         // Delete the item
-                        ExecuteWithSingleParam(db, "delete from TypedBaseItems where guid=@Id", id.ToGuidBlob());
+                        ExecuteWithSingleParam(db, "delete from TypedBaseItems where guid=@Id", idBlob);
                     }, TransactionMode);
                 }
             }
@@ -5215,9 +5249,11 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
 
             CheckDisposed();
 
+            var itemIdBlob = itemId.ToGuidBlob();
+
             // First delete 
             deleteAncestorsStatement.Reset();
-            deleteAncestorsStatement.TryBind("@ItemId", itemId.ToGuidBlob());
+            deleteAncestorsStatement.TryBind("@ItemId", itemIdBlob);
             deleteAncestorsStatement.MoveNext();
 
             if (ancestorIds.Count == 0)
@@ -5227,7 +5263,7 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
 
             var insertText = new StringBuilder("insert into AncestorIds (ItemId, AncestorId, AncestorIdText) values ");
 
-            for (var i=0; i<ancestorIds.Count; i++)
+            for (var i = 0; i < ancestorIds.Count; i++)
             {
                 if (i > 0)
                 {
@@ -5239,7 +5275,7 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
 
             using (var statement = PrepareStatementSafe(db, insertText.ToString()))
             {
-                statement.TryBind("@ItemId", itemId.ToGuidBlob());
+                statement.TryBind("@ItemId", itemIdBlob);
 
                 for (var i = 0; i < ancestorIds.Count; i++)
                 {
@@ -5733,35 +5769,60 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
             // First delete 
             db.Execute("delete from ItemValues where ItemId=@Id", guidBlob);
 
-            using (var statement = PrepareStatement(db, "insert into ItemValues (ItemId, Type, Value, CleanValue) values (@ItemId, @Type, @Value, @CleanValue)"))
-            {
-                foreach (var pair in values)
-                {
-                    var itemValue = pair.Item2;
+            InsertItemValues(guidBlob, values, db);
+        }
 
-                    // Don't save if invalid
-                    if (string.IsNullOrWhiteSpace(itemValue))
+        private void InsertItemValues(byte[] idBlob, List<Tuple<int, string>> values, IDatabaseConnection db)
+        {
+            var startIndex = 0;
+            var limit = 100;
+
+            while (startIndex < values.Count)
+            {
+                var insertText = new StringBuilder("insert into ItemValues (ItemId, Type, Value, CleanValue) values ");
+
+                var endIndex = Math.Min(values.Count, startIndex + limit);
+                var isSubsequentRow = false;
+
+                for (var i = startIndex; i < endIndex; i++)
+                {
+                    if (isSubsequentRow)
                     {
-                        continue;
+                        insertText.Append(",");
+                    }
+
+                    insertText.AppendFormat("(@ItemId, @Type{0}, @Value{0}, @CleanValue{0})", i.ToString(CultureInfo.InvariantCulture));
+                    isSubsequentRow = true;
+                }
+
+                using (var statement = PrepareStatementSafe(db, insertText.ToString()))
+                {
+                    statement.TryBind("@ItemId", idBlob);
+
+                    for (var i = startIndex; i < endIndex; i++)
+                    {
+                        var index = i.ToString(CultureInfo.InvariantCulture);
+
+                        var currentValueInfo = values[i];
+
+                        var itemValue = currentValueInfo.Item2;
+
+                        // Don't save if invalid
+                        if (string.IsNullOrWhiteSpace(itemValue))
+                        {
+                            continue;
+                        }
+
+                        statement.TryBind("@Type" + index, currentValueInfo.Item1);
+                        statement.TryBind("@Value" + index, itemValue);
+                        statement.TryBind("@CleanValue" + index, GetCleanValue(itemValue));
                     }
 
                     statement.Reset();
-
-                    statement.TryBind("@ItemId", guidBlob);
-                    statement.TryBind("@Type", pair.Item1);
-                    statement.TryBind("@Value", itemValue);
-
-                    if (pair.Item2 == null)
-                    {
-                        statement.TryBindNull("@CleanValue");
-                    }
-                    else
-                    {
-                        statement.TryBind("@CleanValue", GetCleanValue(pair.Item2));
-                    }
-
                     statement.MoveNext();
                 }
+
+                startIndex += limit;
             }
         }
 
@@ -5783,34 +5844,69 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
             {
                 using (var connection = CreateConnection())
                 {
-                    // First delete 
-                    // "delete from People where ItemId=?"
-                    connection.Execute("delete from People where ItemId=?", itemId.ToGuidBlob());
-
-                    var listIndex = 0;
-
-                    using (var statement = PrepareStatement(connection,
-                        "insert into People (ItemId, Name, Role, PersonType, SortOrder, ListOrder) values (@ItemId, @Name, @Role, @PersonType, @SortOrder, @ListOrder)"))
+                    connection.RunInTransaction(db =>
                     {
-                        foreach (var person in people)
-                        {
-                            if (listIndex > 0)
-                            {
-                                statement.Reset();
-                            }
+                        var itemIdBlob = itemId.ToGuidBlob();
 
-                            statement.TryBind("@ItemId", itemId.ToGuidBlob());
-                            statement.TryBind("@Name", person.Name);
-                            statement.TryBind("@Role", person.Role);
-                            statement.TryBind("@PersonType", person.Type);
-                            statement.TryBind("@SortOrder", person.SortOrder);
-                            statement.TryBind("@ListOrder", listIndex);
+                        // First delete chapters
+                        db.Execute("delete from People where ItemId=@ItemId", itemIdBlob);
 
-                            statement.MoveNext();
-                            listIndex++;
-                        }
-                    }
+                        InsertPeople(itemIdBlob, people, db);
+
+                    }, TransactionMode);
+
                 }
+            }
+        }
+
+        private void InsertPeople(byte[] idBlob, List<PersonInfo> people, IDatabaseConnection db)
+        {
+            var startIndex = 0;
+            var limit = 100;
+            var listIndex = 0;
+
+            while (startIndex < people.Count)
+            {
+                var insertText = new StringBuilder("insert into People (ItemId, Name, Role, PersonType, SortOrder, ListOrder) values ");
+
+                var endIndex = Math.Min(people.Count, startIndex + limit);
+                var isSubsequentRow = false;
+
+                for (var i = startIndex; i < endIndex; i++)
+                {
+                    if (isSubsequentRow)
+                    {
+                        insertText.Append(",");
+                    }
+
+                    insertText.AppendFormat("(@ItemId, @Name{0}, @Role{0}, @PersonType{0}, @SortOrder{0}, @ListOrder{0})", i.ToString(CultureInfo.InvariantCulture));
+                    isSubsequentRow = true;
+                }
+
+                using (var statement = PrepareStatementSafe(db, insertText.ToString()))
+                {
+                    statement.TryBind("@ItemId", idBlob);
+
+                    for (var i = startIndex; i < endIndex; i++)
+                    {
+                        var index = i.ToString(CultureInfo.InvariantCulture);
+
+                        var person = people[i];
+
+                        statement.TryBind("@Name" + index, person.Name);
+                        statement.TryBind("@Role" + index, person.Role);
+                        statement.TryBind("@PersonType" + index, person.Type);
+                        statement.TryBind("@SortOrder" + index, person.SortOrder);
+                        statement.TryBind("@ListOrder" + index, listIndex);
+
+                        listIndex++;
+                    }
+
+                    statement.Reset();
+                    statement.MoveNext();
+                }
+
+                startIndex += limit;
             }
         }
 
@@ -5915,65 +6011,108 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
             {
                 using (var connection = CreateConnection())
                 {
-                    // First delete chapters
-                    connection.Execute("delete from mediastreams where ItemId=@ItemId", id.ToGuidBlob());
-
-                    using (var statement = PrepareStatement(connection, string.Format("replace into mediastreams ({0}) values ({1})",
-                        string.Join(",", _mediaStreamSaveColumns),
-                        string.Join(",", _mediaStreamSaveColumns.Select(i => "@" + i).ToArray()))))
+                    connection.RunInTransaction(db =>
                     {
-                        foreach (var stream in streams)
-                        {
-                            var paramList = new List<object>();
+                        var itemIdBlob = id.ToGuidBlob();
 
-                            paramList.Add(id.ToGuidBlob());
-                            paramList.Add(stream.Index);
-                            paramList.Add(stream.Type.ToString());
-                            paramList.Add(stream.Codec);
-                            paramList.Add(stream.Language);
-                            paramList.Add(stream.ChannelLayout);
-                            paramList.Add(stream.Profile);
-                            paramList.Add(stream.AspectRatio);
-                            paramList.Add(GetPathToSave(stream.Path));
+                        // First delete chapters
+                        db.Execute("delete from mediastreams where ItemId=@ItemId", itemIdBlob);
 
-                            paramList.Add(stream.IsInterlaced);
-                            paramList.Add(stream.BitRate);
-                            paramList.Add(stream.Channels);
-                            paramList.Add(stream.SampleRate);
+                        InsertMediaStreams(itemIdBlob, streams, db);
 
-                            paramList.Add(stream.IsDefault);
-                            paramList.Add(stream.IsForced);
-                            paramList.Add(stream.IsExternal);
-
-                            paramList.Add(stream.Width);
-                            paramList.Add(stream.Height);
-                            paramList.Add(stream.AverageFrameRate);
-                            paramList.Add(stream.RealFrameRate);
-                            paramList.Add(stream.Level);
-                            paramList.Add(stream.PixelFormat);
-                            paramList.Add(stream.BitDepth);
-                            paramList.Add(stream.IsExternal);
-                            paramList.Add(stream.RefFrames);
-
-                            paramList.Add(stream.CodecTag);
-                            paramList.Add(stream.Comment);
-                            paramList.Add(stream.NalLengthSize);
-                            paramList.Add(stream.IsAVC);
-                            paramList.Add(stream.Title);
-
-                            paramList.Add(stream.TimeBase);
-                            paramList.Add(stream.CodecTimeBase);
-
-                            paramList.Add(stream.ColorPrimaries);
-                            paramList.Add(stream.ColorSpace);
-                            paramList.Add(stream.ColorTransfer);
-
-                            statement.Execute(paramList.ToArray());
-                        }
-                    }
+                    }, TransactionMode);
                 }
             }
         }
+
+        private void InsertMediaStreams(byte[] idBlob, List<MediaStream> streams, IDatabaseConnection db)
+        {
+            var startIndex = 0;
+            var limit = 10;
+
+            while (startIndex < streams.Count)
+            {
+                var insertText = new StringBuilder(string.Format("insert into mediastreams ({0}) values ", string.Join(",", _mediaStreamSaveColumns)));
+
+                var endIndex = Math.Min(streams.Count, startIndex + limit);
+                var isSubsequentRow = false;
+
+                for (var i = startIndex; i < endIndex; i++)
+                {
+                    if (isSubsequentRow)
+                    {
+                        insertText.Append(",");
+                    }
+
+                    var index = i.ToString(CultureInfo.InvariantCulture);
+
+                    var mediaStreamSaveColumns = string.Join(",", _mediaStreamSaveColumns.Skip(1).Select(m => "@" + m + index).ToArray());
+
+                    insertText.AppendFormat("(@ItemId, {0})", mediaStreamSaveColumns);
+                    isSubsequentRow = true;
+                }
+
+                using (var statement = PrepareStatementSafe(db, insertText.ToString()))
+                {
+                    statement.TryBind("@ItemId", idBlob);
+
+                    for (var i = startIndex; i < endIndex; i++)
+                    {
+                        var index = i.ToString(CultureInfo.InvariantCulture);
+
+                        var stream = streams[i];
+
+                        statement.TryBind("@StreamIndex" + index, stream.Index);
+                        statement.TryBind("@StreamType" + index, stream.Type.ToString());
+                        statement.TryBind("@Codec" + index, stream.Codec);
+                        statement.TryBind("@Language" + index, stream.Language);
+                        statement.TryBind("@ChannelLayout" + index, stream.ChannelLayout);
+                        statement.TryBind("@Profile" + index, stream.Profile);
+                        statement.TryBind("@AspectRatio" + index, stream.AspectRatio);
+                        statement.TryBind("@Path" + index, GetPathToSave(stream.Path));
+
+                        statement.TryBind("@IsInterlaced" + index, stream.IsInterlaced);
+                        statement.TryBind("@BitRate" + index, stream.BitRate);
+                        statement.TryBind("@Channels" + index, stream.Channels);
+                        statement.TryBind("@SampleRate" + index, stream.SampleRate);
+
+                        statement.TryBind("@IsDefault" + index, stream.IsDefault);
+                        statement.TryBind("@IsForced" + index, stream.IsForced);
+                        statement.TryBind("@IsExternal" + index, stream.IsExternal);
+
+                        statement.TryBind("@Width" + index, stream.Width);
+                        statement.TryBind("@Height" + index, stream.Height);
+                        statement.TryBind("@AverageFrameRate" + index, stream.AverageFrameRate);
+                        statement.TryBind("@RealFrameRate" + index, stream.RealFrameRate);
+                        statement.TryBind("@Level" + index, stream.Level);
+
+                        statement.TryBind("@PixelFormat" + index, stream.PixelFormat);
+                        statement.TryBind("@BitDepth" + index, stream.BitDepth);
+                        statement.TryBind("@IsExternal" + index, stream.IsExternal);
+                        statement.TryBind("@RefFrames" + index, stream.RefFrames);
+
+                        statement.TryBind("@CodecTag" + index, stream.CodecTag);
+                        statement.TryBind("@Comment" + index, stream.Comment);
+                        statement.TryBind("@NalLengthSize" + index, stream.NalLengthSize);
+                        statement.TryBind("@IsAvc" + index, stream.IsAVC);
+                        statement.TryBind("@Title" + index, stream.Title);
+
+                        statement.TryBind("@TimeBase" + index, stream.TimeBase);
+                        statement.TryBind("@CodecTimeBase" + index, stream.CodecTimeBase);
+
+                        statement.TryBind("@ColorPrimaries" + index, stream.ColorPrimaries);
+                        statement.TryBind("@ColorSpace" + index, stream.ColorSpace);
+                        statement.TryBind("@ColorTransfer" + index, stream.ColorTransfer);
+                    }
+
+                    statement.Reset();
+                    statement.MoveNext();
+                }
+
+                startIndex += limit;
+            }
+        }
+
 
         /// <summary>
         /// Gets the chapter.
