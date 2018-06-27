@@ -433,8 +433,8 @@ namespace Emby.Server.Implementations.Data
             "IsDefault",
             "IsForced",
             "IsExternal",
-            "Width",
             "Height",
+            "Width",
             "AverageFrameRate",
             "RealFrameRate",
             "Level",
@@ -3824,21 +3824,37 @@ namespace Emby.Server.Implementations.Data
                     statement.TryBind("@ParentIndexNumberNotEquals", query.ParentIndexNumberNotEquals.Value);
                 }
             }
-            if (query.MinEndDate.HasValue)
+
+            var minEndDate = query.MinEndDate;
+            var maxEndDate = query.MaxEndDate;
+
+            if (query.HasAired.HasValue)
+            {
+                if (query.HasAired.Value)
+                {
+                    maxEndDate = DateTime.UtcNow;
+                }
+                else
+                {
+                    minEndDate = DateTime.UtcNow;
+                }
+            }
+
+            if (minEndDate.HasValue)
             {
                 whereClauses.Add("EndDate>=@MinEndDate");
                 if (statement != null)
                 {
-                    statement.TryBind("@MinEndDate", query.MinEndDate.Value);
+                    statement.TryBind("@MinEndDate", minEndDate.Value);
                 }
             }
 
-            if (query.MaxEndDate.HasValue)
+            if (maxEndDate.HasValue)
             {
                 whereClauses.Add("EndDate<=@MaxEndDate");
                 if (statement != null)
                 {
-                    statement.TryBind("@MaxEndDate", query.MaxEndDate.Value);
+                    statement.TryBind("@MaxEndDate", maxEndDate.Value);
                 }
             }
 
@@ -6080,8 +6096,10 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
                         statement.TryBind("@IsForced" + index, stream.IsForced);
                         statement.TryBind("@IsExternal" + index, stream.IsExternal);
 
-                        statement.TryBind("@Width" + index, stream.Width);
-                        statement.TryBind("@Height" + index, stream.Height);
+                        // Yes these are backwards due to a mistake
+                        statement.TryBind("@Width" + index, stream.Height);
+                        statement.TryBind("@Height" + index, stream.Width);
+
                         statement.TryBind("@AverageFrameRate" + index, stream.AverageFrameRate);
                         statement.TryBind("@RealFrameRate" + index, stream.RealFrameRate);
                         statement.TryBind("@Level" + index, stream.Level);
