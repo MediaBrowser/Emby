@@ -681,5 +681,7 @@
     "ColorSpace": "Kleurbereik",
     "ColorTransfer": "Kleuroverdracht",
     "VideoRange": "Videobereik",
-    "SeriesDisplayOrderHelp": "Afleveringen sorteren op uitzenddatum, DVD-volgorde, of absolute nummering."
+    "SeriesDisplayOrderHelp": "Afleveringen sorteren op uitzenddatum, DVD-volgorde, of absolute nummering.",
+    "PlaybackSettingsIntro": "To configure default playback settings, stop video playback, then click your user icon in the top right section of the app.",
+    "SubtitleSettingsIntro": "To configure default subtitle appearance and language settings, stop video playback, then click your user icon in the top right section of the app."
 }

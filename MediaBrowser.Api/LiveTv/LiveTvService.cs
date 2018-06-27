@@ -25,6 +25,7 @@ using MediaBrowser.Model.System;
 using MediaBrowser.Model.Extensions;
 using MediaBrowser.Model.Cryptography;
 using System.Text;
+using MediaBrowser.Controller.Entities;
 
 namespace MediaBrowser.Api.LiveTv
 {
@@ -346,6 +347,7 @@ namespace MediaBrowser.Api.LiveTv
 
         [ApiMember(Name = "HasAired", Description = "Optional. Filter by programs that have completed airing, or not.", IsRequired = false, DataType = "bool", ParameterType = "query", Verb = "GET")]
         public bool? HasAired { get; set; }
+        public bool? IsAiring { get; set; }
 
         [ApiMember(Name = "MaxStartDate", Description = "Optional. The maximum premiere date. Format = ISO", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET,POST")]
         public string MaxStartDate { get; set; }
@@ -990,11 +992,13 @@ namespace MediaBrowser.Api.LiveTv
 
         public async Task<object> Get(GetPrograms request)
         {
-            var query = new ProgramQuery
+            var user = request.UserId.Equals(Guid.Empty) ? null : _userManager.GetUserById(request.UserId);
+
+            var query = new InternalItemsQuery(user)
             {
                 ChannelIds = ApiEntryPoint.Split(request.ChannelIds, ',', true).Select(i => new Guid(i)).ToArray(),
-                UserId = request.UserId,
                 HasAired = request.HasAired,
+                IsAiring = request.IsAiring,
                 EnableTotalRecordCount = request.EnableTotalRecordCount
             };
 
@@ -1048,9 +1052,10 @@ namespace MediaBrowser.Api.LiveTv
 
         public object Get(GetRecommendedPrograms request)
         {
-            var query = new RecommendedProgramQuery
+            var user = _userManager.GetUserById(request.UserId);
+
+            var query = new InternalItemsQuery(user)
             {
-                UserId = request.UserId,
                 IsAiring = request.IsAiring,
                 Limit = request.Limit,
                 HasAired = request.HasAired,

@@ -681,5 +681,7 @@
     "ColorSpace": "Fargeutvalg",
     "ColorTransfer": "Overf\u00f8ring av farger",
     "VideoRange": "Videoomr\u00e5de",
-    "SeriesDisplayOrderHelp": "Sorter episoder etter sendt dato, DVD-rekkef\u00f8lge eller nummerering."
+    "SeriesDisplayOrderHelp": "Sorter episoder etter sendt dato, DVD-rekkef\u00f8lge eller nummerering.",
+    "PlaybackSettingsIntro": "To configure default playback settings, stop video playback, then click your user icon in the top right section of the app.",
+    "SubtitleSettingsIntro": "To configure default subtitle appearance and language settings, stop video playback, then click your user icon in the top right section of the app."
 }

@@ -33,7 +33,7 @@
     "HeaderWakeServer": "Wybudzaj serwer",
     "AttemptingWakeServer": "Trwa pr\u00f3ba wybudzenia serwera. Prosz\u0119 czeka\u0107...",
     "WakeServerSuccess": "Powodzenie!",
-    "HeaderCustomizeHomeScreen": "Customize Home Screen",
+    "HeaderCustomizeHomeScreen": "Dostosuj ekran startowy",
     "WakeServerError": "Wys\u0142ano pakiery Wake On LAN do maszyny serwera, ale po\u0142\u0105czenie z serwer Emby zako\u0144czy\u0142o si\u0119 niepowodzeniem. Twoja maszyna potrzebuje wi\u0119cej czasu do wybudzenia lub serwer Emby mo\u017ce nie dzia\u0142a\u0107 aktywnie na tej maszynie.",
     "Sunday": "Niedziela",
     "Monday": "Poniedzia\u0142ek",
@@ -550,7 +550,7 @@
     "Absolute": "Bezwzgl\u0119dnie",
     "Smart": "Inteligentny",
     "Small": "Ma\u0142y",
-    "Smaller": "Smaller",
+    "Smaller": "Mniejsze",
     "Medium": "\u015aredni",
     "Large": "Du\u017cy",
     "ExtraLarge": "Wielki",
@@ -677,9 +677,11 @@
     "HeaderFavoriteSongs": "Utwory ulubione",
     "Ascending": "Rosn\u0105co",
     "Descending": "Malej\u0105co",
-    "ColorPrimaries": "Kolory podstawowe",
+    "ColorPrimaries": "Wzorce kolor\u00f3w",
     "ColorSpace": "Przestrze\u0144 kolor\u00f3w",
     "ColorTransfer": "Transfer kolor\u00f3w",
     "VideoRange": "Zakres wideo",
-    "SeriesDisplayOrderHelp": "Sortuje odcinki po dacie emisji, kolejno\u015bci na DVD lub bezwzgl\u0119dnej numeracji."
+    "SeriesDisplayOrderHelp": "Sortuje odcinki po dacie emisji, kolejno\u015bci na DVD lub bezwzgl\u0119dnej numeracji.",
+    "PlaybackSettingsIntro": "To configure default playback settings, stop video playback, then click your user icon in the top right section of the app.",
+    "SubtitleSettingsIntro": "To configure default subtitle appearance and language settings, stop video playback, then click your user icon in the top right section of the app."
 }

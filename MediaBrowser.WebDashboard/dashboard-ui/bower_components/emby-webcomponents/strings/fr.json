@@ -33,7 +33,7 @@
     "HeaderWakeServer": "R\u00e9veiller le serveur",
     "AttemptingWakeServer": "Essai de r\u00e9veil du serveur. Veuillez patienter...",
     "WakeServerSuccess": "R\u00e9ussi\u00a0!",
-    "HeaderCustomizeHomeScreen": "Customize Home Screen",
+    "HeaderCustomizeHomeScreen": "Personnaliser l'\u00e9cran d'accueil",
     "WakeServerError": "Des paquets Wake-On-LAN on \u00e9t\u00e9 envoy\u00e9 \u00e0 votre serveur, mais nous ne pouvons pas nous connecter \u00e0 votre serveur Emby. Votre machine a peut-\u00eatre besoin de plus de temps pour se r\u00e9veiller, ou le serveur Emby n'est peut-\u00eatre pas lanc\u00e9 sur la machine.",
     "Sunday": "Dimanche",
     "Monday": "Lundi",
@@ -550,7 +550,7 @@
     "Absolute": "Absolu",
     "Smart": "Intelligent",
     "Small": "Petit",
-    "Smaller": "Smaller",
+    "Smaller": "Plus petit",
     "Medium": "Moyen",
     "Large": "Grand",
     "ExtraLarge": "Tr\u00e8s grand",
@@ -681,5 +681,7 @@
     "ColorSpace": "Espace colorim\u00e9trique",
     "ColorTransfer": "Transfert de couleur",
     "VideoRange": "Gamme vid\u00e9o",
-    "SeriesDisplayOrderHelp": "Ranger les \u00e9pisodes par date de diffusion, par ordre de DVD ou par num\u00e9ro absolu."
+    "SeriesDisplayOrderHelp": "Ranger les \u00e9pisodes par date de diffusion, par ordre de DVD ou par num\u00e9ro absolu.",
+    "PlaybackSettingsIntro": "To configure default playback settings, stop video playback, then click your user icon in the top right section of the app.",
+    "SubtitleSettingsIntro": "To configure default subtitle appearance and language settings, stop video playback, then click your user icon in the top right section of the app."
 }

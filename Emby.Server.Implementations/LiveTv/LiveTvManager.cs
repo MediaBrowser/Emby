@@ -26,7 +26,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Common.Events;
-
 using MediaBrowser.Common.Security;
 using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Entities.TV;
@@ -782,16 +781,30 @@ namespace Emby.Server.Implementations.LiveTv
             return dto;
         }
 
-        public async Task<QueryResult<BaseItemDto>> GetPrograms(ProgramQuery query, DtoOptions options, CancellationToken cancellationToken)
+        public async Task<QueryResult<BaseItemDto>> GetPrograms(InternalItemsQuery query, DtoOptions options, CancellationToken cancellationToken)
         {
-            var user = query.UserId.Equals(Guid.Empty) ? null : _userManager.GetUserById(query.UserId);
+            var user = query.User;
 
             var topFolder = GetInternalLiveTvFolder(cancellationToken);
 
             if (query.OrderBy.Length == 0)
             {
-                // Unless something else was specified, order by start date to take advantage of a specialized index
-                query.OrderBy = new ValueTuple<string, SortOrder>[] { new ValueTuple<string, SortOrder>(ItemSortBy.StartDate, SortOrder.Ascending) };
+                if (query.IsAiring ?? false)
+                {
+                    // Unless something else was specified, order by start date to take advantage of a specialized index
+                    query.OrderBy = new ValueTuple<string, SortOrder>[] 
+                    {
+                        new ValueTuple<string, SortOrder>(ItemSortBy.StartDate, SortOrder.Ascending)
+                    };
+                }
+                else
+                {
+                    // Unless something else was specified, order by start date to take advantage of a specialized index
+                    query.OrderBy = new ValueTuple<string, SortOrder>[] 
+                    {
+                        new ValueTuple<string, SortOrder>(ItemSortBy.StartDate, SortOrder.Ascending)
+                    };
+                }
             }
 
             RemoveFields(options);
@@ -817,7 +830,9 @@ namespace Emby.Server.Implementations.LiveTv
                 EnableTotalRecordCount = query.EnableTotalRecordCount,
                 TopParentIds = new[] { topFolder.Id },
                 Name = query.Name,
-                DtoOptions = options
+                DtoOptions = options,
+                HasAired = query.HasAired,
+                IsAiring = query.IsAiring
             };
 
             if (!string.IsNullOrWhiteSpace(query.SeriesTimerId))
@@ -841,18 +856,6 @@ namespace Emby.Server.Implementations.LiveTv
                 }
             }
 
-            if (query.HasAired.HasValue)
-            {
-                if (query.HasAired.Value)
-                {
-                    internalQuery.MaxEndDate = DateTime.UtcNow;
-                }
-                else
-                {
-                    internalQuery.MinEndDate = DateTime.UtcNow;
-                }
-            }
-
             var queryResult = _libraryManager.QueryItems(internalQuery);
 
             var returnArray = _dtoService.GetBaseItemDtos(queryResult.Items, options, user);
@@ -866,9 +869,9 @@ namespace Emby.Server.Implementations.LiveTv
             return result;
         }
 
-        public QueryResult<BaseItem> GetRecommendedProgramsInternal(RecommendedProgramQuery query, DtoOptions options, CancellationToken cancellationToken)
+        public QueryResult<BaseItem> GetRecommendedProgramsInternal(InternalItemsQuery query, DtoOptions options, CancellationToken cancellationToken)
         {
-            var user = _userManager.GetUserById(query.UserId);
+            var user = query.User;
 
             var topFolder = GetInternalLiveTvFolder(cancellationToken);
 
@@ -876,6 +879,7 @@ namespace Emby.Server.Implementations.LiveTv
             {
                 IncludeItemTypes = new[] { typeof(LiveTvProgram).Name },
                 IsAiring = query.IsAiring,
+                HasAired = query.HasAired,
                 IsNews = query.IsNews,
                 IsMovie = query.IsMovie,
                 IsSeries = query.IsSeries,
@@ -891,18 +895,6 @@ namespace Emby.Server.Implementations.LiveTv
             if (query.Limit.HasValue)
             {
                 internalQuery.Limit = Math.Max(query.Limit.Value * 4, 200);
-            }
-
-            if (query.HasAired.HasValue)
-            {
-                if (query.HasAired.Value)
-                {
-                    internalQuery.MaxEndDate = DateTime.UtcNow;
-                }
-                else
-                {
-                    internalQuery.MinEndDate = DateTime.UtcNow;
-                }
             }
 
             var programList = _libraryManager.QueryItems(internalQuery).Items;
@@ -932,13 +924,18 @@ namespace Emby.Server.Implementations.LiveTv
             return result;
         }
 
-        public QueryResult<BaseItemDto> GetRecommendedPrograms(RecommendedProgramQuery query, DtoOptions options, CancellationToken cancellationToken)
+        public QueryResult<BaseItemDto> GetRecommendedPrograms(InternalItemsQuery query, DtoOptions options, CancellationToken cancellationToken)
         {
+            if (!(query.IsAiring ?? false))
+            {
+                return GetPrograms(query, options, cancellationToken).Result;
+            }
+
             RemoveFields(options);
 
             var internalResult = GetRecommendedProgramsInternal(query, options, cancellationToken);
 
-            var user = _userManager.GetUserById(query.UserId);
+            var user = query.User;
 
             var returnArray = _dtoService.GetBaseItemDtos(internalResult.Items, options, user);
 
@@ -1470,60 +1467,6 @@ namespace Emby.Server.Implementations.LiveTv
             }
 
             return result;
-        }
-
-        public QueryResult<BaseItemDto> GetRecordingSeries(RecordingQuery query, DtoOptions options, CancellationToken cancellationToken)
-        {
-            var user = query.UserId.Equals(Guid.Empty) ? null : _userManager.GetUserById(query.UserId);
-            if (user != null && !IsLiveTvEnabled(user))
-            {
-                return new QueryResult<BaseItemDto>();
-            }
-
-            if (user == null || (query.IsInProgress ?? false))
-            {
-                return new QueryResult<BaseItemDto>();
-            }
-
-            var folders = EmbyTV.EmbyTV.Current.GetRecordingFolders()
-                .SelectMany(i => i.Locations)
-                .Distinct(StringComparer.OrdinalIgnoreCase)
-                .Select(i => _libraryManager.FindByPath(i, true))
-                .Where(i => i != null)
-                .Where(i => i.IsVisibleStandalone(user))
-                .ToList();
-
-            if (folders.Count == 0)
-            {
-                return new QueryResult<BaseItemDto>();
-            }
-
-            var includeItemTypes = new List<string>();
-            var excludeItemTypes = new List<string>();
-
-            includeItemTypes.Add(typeof(Series).Name);
-
-            RemoveFields(options);
-
-            var internalResult = _libraryManager.GetItemsResult(new InternalItemsQuery(user)
-            {
-                Recursive = true,
-                AncestorIds = folders.Select(i => i.Id).ToArray(folders.Count),
-                Limit = query.Limit,
-                OrderBy = new[] { new ValueTuple<string, SortOrder>(ItemSortBy.DateCreated, SortOrder.Descending) },
-                EnableTotalRecordCount = query.EnableTotalRecordCount,
-                IncludeItemTypes = includeItemTypes.ToArray(includeItemTypes.Count),
-                ExcludeItemTypes = excludeItemTypes.ToArray(excludeItemTypes.Count),
-                DtoOptions = options
-            });
-
-            var returnArray = _dtoService.GetBaseItemDtos(internalResult.Items, options, user);
-
-            return new QueryResult<BaseItemDto>
-            {
-                Items = returnArray,
-                TotalRecordCount = internalResult.TotalRecordCount
-            };
         }
 
         public Task AddInfoToProgramDto(List<Tuple<BaseItem, BaseItemDto>> tuples, ItemFields[] fields, User user = null)
