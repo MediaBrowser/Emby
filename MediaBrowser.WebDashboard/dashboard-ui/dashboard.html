@@ -24,13 +24,13 @@
                             <i class="md-icon" style="background-color: #52B54B; border-radius: .25em; color: #fff; margin-right: .5em; padding: .25em; font-size: 110%;">check</i>
                             ${ServerUpToDate}
                         </p>
-                        <div id="pUpdateNow" style="display: none;">
+                        <div id="pUpdateNow" class="hide">
                             <p>
                                 <strong>${NewServerVersionAvailable}</strong>
                             </p>
                             <p id="newVersionNumber"></p>
                             <div id="btnUpdateApplicationContainer">
-                                <button id="btnUpdateApplication" is="emby-button" type="button" class="raised block" onclick="DashboardPage.updateApplication();">
+                                <button id="btnUpdateApplication" is="emby-button" type="button" class="raised block" onclick="DashboardPage.updateApplication(this);">
                                     <span>${ButtonUpdateNow}</span>
                                 </button>
                             </div>
@@ -49,10 +49,10 @@
                     </div>
 
                     <div style="margin-top:1em;">
-                        <button is="emby-button" type="button" class="raised btnRestartContainer hide" onclick="DashboardPage.restart();" style="margin-left:0;">
+                        <button is="emby-button" type="button" class="raised btnRestartContainer hide" onclick="DashboardPage.restart(this);" style="margin-left:0;">
                             <span>${ButtonRestart}</span>
                         </button>
-                        <button is="emby-button" type="button" id="btnShutdown" class="raised" onclick="DashboardPage.shutdown();">
+                        <button is="emby-button" type="button" id="btnShutdown" class="raised" onclick="DashboardPage.shutdown(this);">
                             <span>${ButtonShutdown}</span>
                         </button>
                     </div>

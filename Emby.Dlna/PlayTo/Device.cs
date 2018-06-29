@@ -175,6 +175,11 @@ namespace Emby.Dlna.PlayTo
             }
         }
 
+        public void OnPlaybackStartedExternally()
+        {
+            RestartTimer(true);
+        }
+
         #region Commanding
 
         public Task VolumeDown(CancellationToken cancellationToken)
@@ -1020,8 +1025,8 @@ namespace Emby.Dlna.PlayTo
             var depth = element.GetDescendantValue(uPnpNamespaces.ud.GetName("depth"));
             var url = element.GetDescendantValue(uPnpNamespaces.ud.GetName("url"));
 
-            var widthValue = int.Parse(width, NumberStyles.Any, UsCulture);
-            var heightValue = int.Parse(height, NumberStyles.Any, UsCulture);
+            var widthValue = int.Parse(width, NumberStyles.Integer, UsCulture);
+            var heightValue = int.Parse(height, NumberStyles.Integer, UsCulture);
 
             return new DeviceIcon
             {

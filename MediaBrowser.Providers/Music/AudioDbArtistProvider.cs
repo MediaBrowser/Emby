@@ -129,7 +129,7 @@ namespace MediaBrowser.Providers.Music
 
             if (fileInfo.Exists)
             {
-                if ((DateTime.UtcNow - _fileSystem.GetLastWriteTimeUtc(fileInfo)).TotalDays <= 7)
+                if ((DateTime.UtcNow - _fileSystem.GetLastWriteTimeUtc(fileInfo)).TotalDays <= 2)
                 {
                     return Task.CompletedTask;
                 }

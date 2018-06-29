@@ -85,7 +85,7 @@ namespace Emby.Dlna.Eventing
 
                 int val;
 
-                if (int.TryParse(header, NumberStyles.Any, _usCulture, out val))
+                if (int.TryParse(header, NumberStyles.Integer, _usCulture, out val))
                 {
                     return val;
                 }

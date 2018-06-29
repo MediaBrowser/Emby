@@ -234,7 +234,7 @@ namespace MediaBrowser.Providers.BoxSets
             if (fileInfo.Exists)
             {
                 // If it's recent or automatic updates are enabled, don't re-download
-                if ((DateTime.UtcNow - _fileSystem.GetLastWriteTimeUtc(fileInfo)).TotalDays <= 3)
+                if ((DateTime.UtcNow - _fileSystem.GetLastWriteTimeUtc(fileInfo)).TotalDays <= 2)
                 {
                     return Task.CompletedTask;
                 }

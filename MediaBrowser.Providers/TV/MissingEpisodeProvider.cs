@@ -344,10 +344,13 @@ namespace MediaBrowser.Providers.TV
                             return true;
                         }
 
-                        // If the season no longer exists in the remote lookup, delete it
+                        // If the season no longer exists in the remote lookup, delete it, but only if an existing episode doesn't require it
                         if (episodeLookup.All(e => e.Item1 != seasonNumber))
                         {
-                            return true;
+                            if (allEpisodes.All(s => s.ParentIndexNumber != seasonNumber || s.IsInSeasonFolder))
+                            {
+                                return true;
+                            }
                         }
 
                         return false;

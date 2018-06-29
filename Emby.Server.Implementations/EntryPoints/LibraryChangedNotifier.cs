@@ -52,7 +52,7 @@ namespace Emby.Server.Implementations.EntryPoints
         /// <summary>
         /// The library update duration
         /// </summary>
-        private const int LibraryUpdateDuration = 5000;
+        private const int LibraryUpdateDuration = 30000;
 
         private readonly IProviderManager _providerManager;
 

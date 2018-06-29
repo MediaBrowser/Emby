@@ -219,7 +219,7 @@ namespace MediaBrowser.Providers.People
 
             var fileInfo = _fileSystem.GetFileSystemInfo(dataFilePath);
 
-            if (fileInfo.Exists && (DateTime.UtcNow - _fileSystem.GetLastWriteTimeUtc(fileInfo)).TotalDays <= 3)
+            if (fileInfo.Exists && (DateTime.UtcNow - _fileSystem.GetLastWriteTimeUtc(fileInfo)).TotalDays <= 2)
             {
                 return;
             }

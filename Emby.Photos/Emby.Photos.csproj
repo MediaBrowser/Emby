@@ -32,13 +32,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MediaBrowser.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MediaBrowser.Common.3.3.56-beta\lib\netstandard2.0\MediaBrowser.Common.dll</HintPath>
+      <HintPath>..\packages\MediaBrowser.Common.3.3.59-beta\lib\netstandard2.0\MediaBrowser.Common.dll</HintPath>
     </Reference>
     <Reference Include="MediaBrowser.Controller, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MediaBrowser.Server.Core.3.3.56-beta\lib\netstandard2.0\MediaBrowser.Controller.dll</HintPath>
+      <HintPath>..\packages\MediaBrowser.Server.Core.3.3.59-beta\lib\netstandard2.0\MediaBrowser.Controller.dll</HintPath>
     </Reference>
     <Reference Include="MediaBrowser.Model, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MediaBrowser.Common.3.3.56-beta\lib\netstandard2.0\MediaBrowser.Model.dll</HintPath>
+      <HintPath>..\packages\MediaBrowser.Common.3.3.59-beta\lib\netstandard2.0\MediaBrowser.Model.dll</HintPath>
     </Reference>
     <Reference Include="TagLib.Portable">
       <HintPath>..\ThirdParty\taglib\TagLib.Portable.dll</HintPath>

@@ -198,9 +198,9 @@ namespace MediaBrowser.Providers.MediaInfo
                 .Trim();
         }
 
-        private void FetchShortcutInfo(Video video)
+        private void FetchShortcutInfo(BaseItem item)
         {
-            video.ShortcutPath = _fileSystem.ReadAllLines(video.Path)
+            item.ShortcutPath = _fileSystem.ReadAllLines(item.Path)
                 .Select(NormalizeStrmLine)
                 .FirstOrDefault(i => !string.IsNullOrWhiteSpace(i) && !i.StartsWith("#", StringComparison.OrdinalIgnoreCase));
         }
@@ -218,9 +218,14 @@ namespace MediaBrowser.Providers.MediaInfo
                 return _cachedTask;
             }
 
-            var prober = new FFProbeAudioInfo(_mediaEncoder, _itemRepo, _appPaths, _json, _libraryManager);
+            if (item.IsShortcut)
+            {
+                FetchShortcutInfo(item);
+            }
 
-            return prober.Probe(item, cancellationToken);
+            var prober = new FFProbeAudioInfo(_mediaSourceManager, _mediaEncoder, _itemRepo, _appPaths, _json, _libraryManager);
+
+            return prober.Probe(item, options, cancellationToken);
         }
 
         public int Order
