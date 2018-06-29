@@ -129,9 +129,18 @@ namespace MediaBrowser.Providers.MediaInfo
 
         public bool Supports(BaseItem item)
         {
+            if (item.IsShortcut)
+            {
+                return false;
+            }
+            if (!item.IsFileProtocol)
+            {
+                return false;
+            }
+
             var video = item as Video;
 
-            if (item.IsFileProtocol && video != null && !video.IsPlaceHolder && !video.IsShortcut && video.IsCompleteMedia)
+            if (video != null && !video.IsPlaceHolder && video.IsCompleteMedia)
             {
                 return true;
             }

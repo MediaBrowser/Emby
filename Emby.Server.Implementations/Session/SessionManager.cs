@@ -416,7 +416,8 @@ namespace Emby.Server.Implementations.Session
                 Client = appName,
                 DeviceId = deviceId,
                 ApplicationVersion = appVersion,
-                Id = key.GetMD5().ToString("N")
+                Id = key.GetMD5().ToString("N"),
+                ServerId = _appHost.SystemId
             };
 
             var username = user == null ? null : user.Name;

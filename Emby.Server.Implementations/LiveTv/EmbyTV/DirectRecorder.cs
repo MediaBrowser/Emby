@@ -52,7 +52,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
                 _logger.Info("Copying recording stream to file {0}", targetFile);
 
-                // The media source if infinite so we need to handle stopping ourselves
+                // The media source is infinite so we need to handle stopping ourselves
                 var durationToken = new CancellationTokenSource(duration);
                 cancellationToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, durationToken.Token).Token;
 

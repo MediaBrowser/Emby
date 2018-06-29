@@ -168,7 +168,7 @@ namespace MediaBrowser.Providers.Omdb
 
                         int parsedYear;
                         if (result.Year.Length > 0
-                            && int.TryParse(result.Year.Substring(0, Math.Min(result.Year.Length, 4)), NumberStyles.Any, CultureInfo.InvariantCulture, out parsedYear))
+                            && int.TryParse(result.Year.Substring(0, Math.Min(result.Year.Length, 4)), NumberStyles.Integer, CultureInfo.InvariantCulture, out parsedYear))
                         {
                             item.ProductionYear = parsedYear;
                         }

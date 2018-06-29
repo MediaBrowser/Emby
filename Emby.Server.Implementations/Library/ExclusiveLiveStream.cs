@@ -26,7 +26,7 @@ namespace Emby.Server.Implementations.Library
         public bool EnableStreamSharing { get; set; }
         public MediaSourceInfo MediaSource { get; set; }
 
-        public string UniqueId => throw new NotImplementedException();
+        public string UniqueId { get; private set; }
 
         private ILiveTvService _liveTvService;
         private string _openedId;
@@ -37,11 +37,20 @@ namespace Emby.Server.Implementations.Library
             EnableStreamSharing = false;
             _liveTvService = liveTvService;
             _openedId = openedId;
+            ConsumerCount = 1;
+            UniqueId = Guid.NewGuid().ToString("N");
         }
 
         public Task Close()
         {
-            return _liveTvService.CloseLiveStream(_openedId, CancellationToken.None);
+            try
+            {
+                return _liveTvService.CloseLiveStream(_openedId, CancellationToken.None);
+            }
+            catch (NotImplementedException)
+            {
+                return Task.CompletedTask;
+            }
         }
 
         public Task Open(CancellationToken openCancellationToken)

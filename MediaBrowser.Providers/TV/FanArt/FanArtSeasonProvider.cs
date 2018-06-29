@@ -175,7 +175,7 @@ namespace MediaBrowser.Providers.TV
 
                 if (!string.IsNullOrEmpty(url) &&
                     !string.IsNullOrEmpty(season) &&
-                    int.TryParse(season, NumberStyles.Any, _usCulture, out imageSeasonNumber) &&
+                    int.TryParse(season, NumberStyles.Integer, _usCulture, out imageSeasonNumber) &&
                     seasonNumber == imageSeasonNumber)
                 {
                     var likesString = i.likes;
@@ -192,7 +192,7 @@ namespace MediaBrowser.Providers.TV
                         Language = i.lang
                     };
 
-                    if (!string.IsNullOrEmpty(likesString) && int.TryParse(likesString, NumberStyles.Any, _usCulture, out likes))
+                    if (!string.IsNullOrEmpty(likesString) && int.TryParse(likesString, NumberStyles.Integer, _usCulture, out likes))
                     {
                         info.CommunityRating = likes;
                     }

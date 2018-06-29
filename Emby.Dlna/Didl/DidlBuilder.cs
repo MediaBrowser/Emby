@@ -981,7 +981,7 @@ namespace Emby.Dlna.Didl
 
             AddImageResElement(item, writer, 160, 160, "jpg", "JPEG_TN");
 
-            if (!_profile.EnableSingleAlbumArtLimit)
+            if (!_profile.EnableSingleAlbumArtLimit || string.Equals(item.MediaType, MediaType.Photo, StringComparison.OrdinalIgnoreCase))
             {
                 AddImageResElement(item, writer, 4096, 4096, "jpg", "JPEG_LRG");
                 AddImageResElement(item, writer, 1024, 768, "jpg", "JPEG_MED");
@@ -1207,6 +1207,9 @@ namespace Emby.Dlna.Didl
                     info.IsDirectStream = maxWidth >= width.Value && maxHeight >= height.Value;
                 }
             }
+
+            // just lie
+            info.IsDirectStream = true;
 
             return new ImageUrlInfo
             {
