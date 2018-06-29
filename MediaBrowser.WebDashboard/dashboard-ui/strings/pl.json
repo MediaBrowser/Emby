@@ -937,7 +937,7 @@
     "HeaderSubtitleDownloads": "Pobrane napisy",
     "HeaderCameraUploadHelp": "Aplikacje Emby mog\u0105 przekazywa\u0107 automatycznie fotografie i nagrania, z urz\u0105dze\u0144 mobilnych, do serwera Emby.",
     "LabelCameraUploadPath": "Folder zapisywania medi\u00f3w:",
-    "LabelCameraUploadPathHelp": "Okre\u015bla niestandardowy folder zapisywania medi\u00f3w. Je\u015bli pozostawisz puste, u\u017cywany b\u0119dzie domy\u015blny folder. Nadpisze to jakiekolwiek domy\u015blne ustawienia w sekcji Zapisywanie medi\u00f3w. Je\u015bli pozostawisz puste, u\u017cyty zostanie folder domy\u015blny. W przypadku u\u017cywania niestandardowego folderu, nale\u017cy dodatkowo doda\u0107 go do biblioteki.",
+    "LabelCameraUploadPathHelp": "Okre\u015bla niestandardowy folder zapisywania medi\u00f3w. Nadpisze to jakiekolwiek domy\u015blne ustawienia w sekcji Przekazywanie. Je\u015bli pozostawisz puste, u\u017cyty zostanie folder domy\u015blny. W przypadku u\u017cywania niestandardowego folderu, nale\u017cy dodatkowo doda\u0107 go do biblioteki.",
     "DefaultCameraUploadPathHelp": "Umo\u017cliwia ustawienie niestandardowej lokalizacji przekazywania. Je\u015bli pozostanie puste, zostanie u\u017cyty domy\u015blny folder. W przypadku u\u017cywania niestandardowej lokalizacji, wymagane b\u0119dzie dodanie jej jako biblioteki w konfiguracji Emby.",
     "LabelCreateCameraUploadSubfolder": "Utw\u00f3rz osobny podfolder dla ka\u017cdego urz\u0105dzenia",
     "LabelCreateCameraUploadSubfolderHelp": "Konkretne foldery mog\u0105 by\u0107 przypisane do urz\u0105dze\u0144 przez klikni\u0119cie ich na stronie urz\u0105dzenia.",

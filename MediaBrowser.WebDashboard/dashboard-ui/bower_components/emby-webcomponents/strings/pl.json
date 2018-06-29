@@ -682,6 +682,6 @@
     "ColorTransfer": "Transfer kolor\u00f3w",
     "VideoRange": "Zakres wideo",
     "SeriesDisplayOrderHelp": "Sortuje odcinki po dacie emisji, kolejno\u015bci na DVD lub bezwzgl\u0119dnej numeracji.",
-    "PlaybackSettingsIntro": "To configure default playback settings, stop video playback, then click your user icon in the top right section of the app.",
-    "SubtitleSettingsIntro": "To configure default subtitle appearance and language settings, stop video playback, then click your user icon in the top right section of the app."
+    "PlaybackSettingsIntro": "W celu skonfigurowania domy\u015blnych ustawie\u0144 odtwarzania, zatrzymaj odtwarzanie, a nast\u0119pnie naci\u015bnij ikon\u0119 u\u017cytkownika w g\u00f3rnej prawej sekcji aplikacji.",
+    "SubtitleSettingsIntro": "W celu skonfigurowania domy\u015blnych ustawie\u0144 napis\u00f3w i  j\u0119zyka, zatrzymaj odtwarzanie, a nast\u0119pnie naci\u015bnij ikon\u0119 u\u017cytkownika w g\u00f3rnej prawej sekcji aplikacji."
 }

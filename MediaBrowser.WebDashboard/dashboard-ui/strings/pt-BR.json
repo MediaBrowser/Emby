@@ -1751,7 +1751,7 @@
     "ScanLibrary": "Rastrear biblioteca",
     "EnableStreamLooping": "Fazer auto-loop de streams ao vivo",
     "EnableStreamLoopingHelp": "Ativar isto se as streams ao vivo contiverem poucos segundos de dados e precisarem ser continuamente solicitadas. Ativar esta op\u00e7\u00e3o quando o que n\u00e3o \u00e9 necess\u00e1rio pode causar problemas.",
-    "HttpsRequiresCert": "Para ativar https para conex\u00f5es externas, voc\u00ea precisa fornecer um certificado SSL confi\u00e1vel, como o Lets Encrypt.",
+    "HttpsRequiresCert": "Para ativar conex\u00f5es seguras, voc\u00ea precisa fornecer um certificado SSL confi\u00e1vel, como o Lets Encrypt. Por favor, forne\u00e7a um certificado ou desative as conex\u00f5es seguras.",
     "HeaderLatestDownloadedVideos": "\u00daltimos V\u00eddeos Baixados",
     "ServerRestartNeededAfterPluginInstall": "O Emby Server precisa ser reiniciado ap\u00f3s a instala\u00e7\u00e3o de um plugin.",
     "PluginInstalledMessage": "O plugin foi instalado com sucesso. O Emby Server precisa ser reiniciado para completar as altera\u00e7\u00f5es.",
