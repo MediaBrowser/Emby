@@ -1683,7 +1683,7 @@
     "MarkFFmpegExec": "Je\u015bli u\u017cywasz systemu Linux lub OSX musisz wskaza\u0107 lokalizacj\u0119 program\u00f3w ffmpeg oraz ffprobe oraz nada\u0107 im prawa wykonywania. Jest to wymagane \u017ceby serwer Emby m\u00f3g\u0142 ich u\u017cy\u0107.",
     "FFmpegSavePathNotFound": "Nieudana lokalizacja aplikacji FFmpeg przy u\u017cyciu wprowadzonego folderu. Aplikacja FFprobe jest r\u00f3wnie\u017c wymagana i musi znajdowa\u0107 si\u0119 w tym samym folderze. Komponenty te s\u0105 zwykle zawarte w jednym pakiecie. Sprawd\u017a folder i spr\u00f3buj ponownie.",
     "XmlTvPremiere": "Domy\u015blnie, Emby b\u0119dzie importowa\u0107 {0} godzin danych przewodnika. Import nieograniczony czasowo wymaga aktywnego subskrypcji Emby Premium.",
-    "MoreFromValue": "Wi\u0119cej z {0}",
+    "MoreFromValue": "Wi\u0119cej od {0}",
     "OptionSaveMetadataAsHiddenHelp": "Zmiana ta b\u0119dzie mia\u0142a zastosowanie do nowych metadanych zapisanych w przysz\u0142o\u015bci. Istniej\u0105ce pliki metadanych zostan\u0105 zaktualizowane przy nast\u0119pnym zapisie przez serwer Emby.",
     "EnablePhotos": "Aktywuj fotografie",
     "EnablePhotosHelp": "Fotografie b\u0119d\u0105 wykrywane i wy\u015bwietlane obok innych plik\u00f3w multimedialnych.",
