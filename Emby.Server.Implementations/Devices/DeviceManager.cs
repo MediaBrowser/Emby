@@ -120,6 +120,8 @@ namespace Emby.Server.Implementations.Devices
 
         private DeviceInfo ToDeviceInfo(AuthenticationInfo authInfo)
         {
+            var caps = GetCapabilities(authInfo.DeviceId);
+
             return new DeviceInfo
             {
                 AppName = authInfo.AppName,
@@ -128,7 +130,8 @@ namespace Emby.Server.Implementations.Devices
                 LastUserId = authInfo.UserId,
                 LastUserName = authInfo.UserName,
                 Name = authInfo.DeviceName,
-                DateLastActivity = authInfo.DateLastActivity
+                DateLastActivity = authInfo.DateLastActivity,
+                IconUrl = caps == null ? null : caps.IconUrl
             };
         }
 

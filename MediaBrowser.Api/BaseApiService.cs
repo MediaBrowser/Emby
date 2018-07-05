@@ -133,7 +133,7 @@ namespace MediaBrowser.Api
                 options.Fields = hasFields.GetItemFields();
             }
 
-            if (!options.Fields.Contains(Model.Querying.ItemFields.RecursiveItemCount) || !options.Fields.Contains(Model.Querying.ItemFields.ChildCount))
+            if (!options.ContainsField(Model.Querying.ItemFields.RecursiveItemCount) || !options.ContainsField(Model.Querying.ItemFields.ChildCount))
             {
                 var client = authContext.GetAuthorizationInfo(Request).Client ?? string.Empty;
                 if (client.IndexOf("kodi", StringComparison.OrdinalIgnoreCase) != -1 ||
@@ -282,7 +282,7 @@ namespace MediaBrowser.Api
                 IncludeItemTypes = new[] { typeof(T).Name },
                 DtoOptions = dtoOptions
 
-            }).OfType<Person>().FirstOrDefault();
+            }).OfType<T>().FirstOrDefault();
 
             if (result == null)
             {
@@ -292,7 +292,7 @@ namespace MediaBrowser.Api
                     IncludeItemTypes = new[] { typeof(T).Name },
                     DtoOptions = dtoOptions
 
-                }).OfType<Person>().FirstOrDefault();
+                }).OfType<T>().FirstOrDefault();
             }
 
             if (result == null)
@@ -303,10 +303,10 @@ namespace MediaBrowser.Api
                     IncludeItemTypes = new[] { typeof(T).Name },
                     DtoOptions = dtoOptions
 
-                }).OfType<Person>().FirstOrDefault();
+                }).OfType<T>().FirstOrDefault();
             }
 
-            return result as T;
+            return result;
         }
 
         protected string GetPathValue(int index)

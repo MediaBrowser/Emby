@@ -1,5 +1,10 @@
 {
-    "HeaderCameraUploads": "Przes\u0142ane z aparatu",
+    "HeaderCameraUploads": "Przekazane obrazy",
+    "ValueHasBeenAddedToLibrary": "{0} zosta\u0142 dodany to biblioteki medi\u00f3w",
+    "NameInstallFailed": "Instalacja {0} nieudana.",
+    "CameraImageUploadedFrom": "Nowy obraz zosta\u0142 przekazany z {0}",
+    "ServerNameNeedsToBeRestarted": "{0} wymaga ponownego uruchomienia",
+    "NewVersionIsAvailable": "Nowa wersja serwera Emby jest dost\u0119pna do pobrania.",
     "Latest": "Ostatnio dodane",
     "ValueSpecialEpisodeName": "Specjalne - {0}",
     "Inherit": "Dziedzicz",

@@ -117,7 +117,16 @@ namespace Emby.Server.Implementations.Activity
                             statement.TryBind("@ShortOverview", entry.ShortOverview);
                             statement.TryBind("@Type", entry.Type);
                             statement.TryBind("@ItemId", entry.ItemId);
-                            statement.TryBind("@UserId", entry.UserId);
+
+                            if (entry.UserId.Equals(Guid.Empty))
+                            {
+                                statement.TryBindNull("@UserId");
+                            }
+                            else
+                            {
+                                statement.TryBind("@UserId", entry.UserId.ToString("N"));
+                            }
+
                             statement.TryBind("@DateCreated", entry.Date.ToDateTimeParamValue());
                             statement.TryBind("@LogSeverity", entry.Severity.ToString());
 
@@ -150,7 +159,16 @@ namespace Emby.Server.Implementations.Activity
                             statement.TryBind("@ShortOverview", entry.ShortOverview);
                             statement.TryBind("@Type", entry.Type);
                             statement.TryBind("@ItemId", entry.ItemId);
-                            statement.TryBind("@UserId", entry.UserId);
+
+                            if (entry.UserId.Equals(Guid.Empty))
+                            {
+                                statement.TryBindNull("@UserId");
+                            }
+                            else
+                            {
+                                statement.TryBind("@UserId", entry.UserId.ToString("N"));
+                            }
+
                             statement.TryBind("@DateCreated", entry.Date.ToDateTimeParamValue());
                             statement.TryBind("@LogSeverity", entry.Severity.ToString());
 
@@ -287,7 +305,7 @@ namespace Emby.Server.Implementations.Activity
             index++;
             if (reader[index].SQLiteType != SQLiteType.Null)
             {
-                info.UserId = reader[index].ToString();
+                info.UserId = new Guid(reader[index].ToString());
             }
 
             index++;

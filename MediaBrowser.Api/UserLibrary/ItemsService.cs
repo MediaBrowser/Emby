@@ -414,22 +414,6 @@ namespace MediaBrowser.Api.UserLibrary
                 query.MaxParentalRating = _localization.GetRatingLevel(request.MaxOfficialRating);
             }
 
-            // Artists
-            if (!string.IsNullOrEmpty(request.Artists))
-            {
-                query.ArtistIds = request.Artists.Split('|').Select(i =>
-                {
-                    try
-                    {
-                        return _libraryManager.GetArtist(i, new DtoOptions(false));
-                    }
-                    catch
-                    {
-                        return null;
-                    }
-                }).Where(i => i != null).Select(i => i.Id).ToArray();
-            }
-
             // ExcludeArtistIds
             if (!string.IsNullOrWhiteSpace(request.ExcludeArtistIds))
             {

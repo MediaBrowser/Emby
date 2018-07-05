@@ -1,5 +1,10 @@
 {
     "HeaderCameraUploads": "Camera uploads",
+    "ValueHasBeenAddedToLibrary": "{0} has been added to your media library",
+    "NameInstallFailed": "{0} installation failed",
+    "CameraImageUploadedFrom": "A new camera image has been uploaded from {0}",
+    "ServerNameNeedsToBeRestarted": "{0} needs to be restarted",
+    "NewVersionIsAvailable": "A new version of Emby Server is available for download.",
     "Latest": "Nieuwste",
     "ValueSpecialEpisodeName": "Speciaal - {0}",
     "Inherit": "Overerven",

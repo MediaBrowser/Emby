@@ -23,7 +23,7 @@ using Emby.Server.Implementations.LiveTv;
 using Emby.Server.Implementations.Localization;
 using Emby.Server.Implementations.MediaEncoder;
 using Emby.Server.Implementations.Net;
-using Emby.Server.Implementations.Notifications;
+using Emby.Notifications;
 using Emby.Server.Implementations.Playlists;
 using Emby.Server.Implementations.Reflection;
 using Emby.Server.Implementations.ScheduledTasks;
@@ -720,7 +720,7 @@ namespace Emby.Server.Implementations
 
             ConfigurationManager.ConfigurationUpdated += OnConfigurationUpdated;
 
-            await MediaEncoder.Init().ConfigureAwait(false);
+            MediaEncoder.Init();
 
             //if (string.IsNullOrWhiteSpace(MediaEncoder.EncoderPath))
             //{
@@ -998,9 +998,7 @@ namespace Emby.Server.Implementations
             RegisterSingleInstance(ConnectManager);
 
             var deviceRepo = new SqliteDeviceRepository(LogManager.GetLogger("DeviceManager"), ServerConfigurationManager, FileSystemManager, JsonSerializer);
-            deviceRepo.Initialize();
             DeviceManager = new DeviceManager(AuthenticationRepository, deviceRepo, LibraryManager, LocalizationManager, UserManager, FileSystemManager, LibraryMonitor, ServerConfigurationManager, LogManager.GetLogger("DeviceManager"), NetworkManager);
-            RegisterSingleInstance<IDeviceRepository>(deviceRepo);
             RegisterSingleInstance(DeviceManager);
 
             var newsService = new Emby.Server.Implementations.News.NewsService(ApplicationPaths, JsonSerializer);
@@ -1297,7 +1295,6 @@ namespace Emby.Server.Implementations
                 ZipClient,
                 ProcessFactory,
                 (Environment.ProcessorCount > 2 ? 14000 : 40000),
-                EnvironmentInfo.OperatingSystem == MediaBrowser.Model.System.OperatingSystem.Windows,
                 EnvironmentInfo,
                 BlurayExaminer,
                 assemblyInfo);
@@ -1796,6 +1793,9 @@ namespace Emby.Server.Implementations
 
             // Local metadata 
             list.Add(GetAssembly(typeof(BoxSetXmlSaver)));
+
+            // Notifications
+            list.Add(GetAssembly(typeof(NotificationManager)));
 
             // Xbmc 
             list.Add(GetAssembly(typeof(ArtistNfoProvider)));

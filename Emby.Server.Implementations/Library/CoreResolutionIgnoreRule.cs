@@ -22,6 +22,8 @@ namespace Emby.Server.Implementations.Library
         private readonly ILibraryManager _libraryManager;
         private readonly ILogger _logger;
 
+        private bool _ignoreDotPrefix;
+
         /// <summary>
         /// Any folder named in this list will be ignored - can be added to at runtime for extensibility
         /// </summary>
@@ -57,6 +59,8 @@ namespace Emby.Server.Implementations.Library
             _fileSystem = fileSystem;
             _libraryManager = libraryManager;
             _logger = logger;
+
+            _ignoreDotPrefix = Environment.OSVersion.Platform != PlatformID.Win32NT;
         }
 
         /// <summary>
@@ -78,9 +82,12 @@ namespace Emby.Server.Implementations.Library
 
             // Handle mac .DS_Store
             // https://github.com/MediaBrowser/MediaBrowser/issues/427
-            if (filename.IndexOf("._", StringComparison.OrdinalIgnoreCase) == 0)
+            if (_ignoreDotPrefix)
             {
-                return true;
+                if (filename.IndexOf('.') == 0)
+                {
+                    return true;
+                }
             }
 
             // Ignore hidden files and folders

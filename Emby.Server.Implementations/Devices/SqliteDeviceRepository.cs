@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using Emby.Server.Implementations.Data;
 using MediaBrowser.Controller;
 using MediaBrowser.Model.Logging;
-using SQLitePCL.pretty;
 using MediaBrowser.Model.Extensions;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Common.Extensions;
@@ -18,7 +16,7 @@ using MediaBrowser.Controller.Configuration;
 
 namespace Emby.Server.Implementations.Devices
 {
-    public class SqliteDeviceRepository : BaseSqliteRepository, IDeviceRepository
+    public class SqliteDeviceRepository : IDeviceRepository
     {
         private readonly CultureInfo _usCulture = new CultureInfo("en-US");
         protected IFileSystem FileSystem { get; private set; }
@@ -26,51 +24,16 @@ namespace Emby.Server.Implementations.Devices
         private readonly object _capabilitiesSyncLock = new object();
         private readonly IJsonSerializer _json;
         private IServerApplicationPaths _appPaths;
-
-        private bool _enableDatabase;
+        private ILogger _logger;
 
         public SqliteDeviceRepository(ILogger logger, IServerConfigurationManager config, IFileSystem fileSystem, IJsonSerializer json)
-            : base(logger)
         {
             var appPaths = config.ApplicationPaths;
 
-            DbFilePath = Path.Combine(appPaths.DataPath, "devices.db");
             FileSystem = fileSystem;
             _json = json;
+            _logger = logger;
             _appPaths = appPaths;
-
-        }
-
-        public void Initialize()
-        {
-            _enableDatabase = FileSystem.FileExists(DbFilePath);
-
-            if (_enableDatabase)
-            {
-                try
-                {
-                    using (var connection = CreateConnection())
-                    {
-                        RunDefaultInitialization(connection);
-
-                        string[] queries = 
-                            {
-                                "create table if not exists Devices (Id TEXT PRIMARY KEY, Name TEXT NOT NULL, ReportedName TEXT NOT NULL, CustomName TEXT, CameraUploadPath TEXT, LastUserName TEXT, AppName TEXT NOT NULL, AppVersion TEXT NOT NULL, LastUserId TEXT, DateLastModified DATETIME NOT NULL, Capabilities TEXT NOT NULL)",
-                                "create index if not exists idx_id on Devices(Id)"
-                               };
-
-                        connection.RunQueries(queries);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Logger.ErrorException("Error loading database file. Will reset and retry.", ex);
-
-                    FileSystem.DeleteFile(DbFilePath);
-
-                    _enableDatabase = false;
-                }
-            }
         }
 
         public void SaveCapabilities(string deviceId, ClientCapabilities capabilities)
@@ -104,39 +67,6 @@ namespace Emby.Server.Implementations.Devices
                 }
                 catch
                 {
-                }
-            }
-
-            if (_enableDatabase)
-            {
-                using (WriteLock.Read())
-                {
-                    using (var connection = CreateConnection(true))
-                    {
-                        var statementTexts = new List<string>();
-                        statementTexts.Add("Select Capabilities from Devices where Id=@Id");
-
-                        return connection.RunInTransaction(db =>
-                        {
-                            var statements = PrepareAllSafe(db, statementTexts).ToList();
-
-                            using (var statement = statements[0])
-                            {
-                                statement.TryBind("@Id", id);
-
-                                foreach (var row in statement.ExecuteQuery())
-                                {
-                                    if (row[0].SQLiteType != SQLiteType.Null)
-                                    {
-                                        return _json.DeserializeFromString<ClientCapabilities>(row.GetString(0));
-                                    }
-                                }
-
-                                return new ClientCapabilities();
-                            }
-
-                        }, ReadTransactionMode);
-                    }
                 }
             }
 

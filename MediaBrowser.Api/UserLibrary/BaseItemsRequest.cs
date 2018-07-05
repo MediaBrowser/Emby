@@ -264,13 +264,6 @@ namespace MediaBrowser.Api.UserLibrary
         [ApiMember(Name = "StudioIds", Description = "Optional. If specified, results will be filtered based on studio. This allows multiple, pipe delimeted.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
         public string StudioIds { get; set; }
 
-        /// <summary>
-        /// Gets or sets the studios.
-        /// </summary>
-        /// <value>The studios.</value>
-        [ApiMember(Name = "Artists", Description = "Optional. If specified, results will be filtered based on artist. This allows multiple, pipe delimeted.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
-        public string Artists { get; set; }
-
         public string ExcludeArtistIds { get; set; }
 
         [ApiMember(Name = "ArtistIds", Description = "Optional. If specified, results will be filtered based on artist. This allows multiple, pipe delimeted.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]

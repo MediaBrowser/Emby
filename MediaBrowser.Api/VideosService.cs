@@ -115,12 +115,12 @@ namespace MediaBrowser.Api
             foreach (var link in video.GetLinkedAlternateVersions())
             {
                 link.SetPrimaryVersionId(null);
-                link.LinkedAlternateVersions = Video.EmptyLinkedChildArray;
+                link.LinkedAlternateVersions = Array.Empty<LinkedChild>();
 
                 link.UpdateToRepository(ItemUpdateType.MetadataEdit, CancellationToken.None);
             }
 
-            video.LinkedAlternateVersions = Video.EmptyLinkedChildArray;
+            video.LinkedAlternateVersions = Array.Empty<LinkedChild>();
             video.SetPrimaryVersionId(null);
             video.UpdateToRepository(ItemUpdateType.MetadataEdit, CancellationToken.None);
         }
@@ -191,7 +191,7 @@ namespace MediaBrowser.Api
 
                 if (item.LinkedAlternateVersions.Length > 0)
                 {
-                    item.LinkedAlternateVersions = BaseItem.EmptyLinkedChildArray;
+                    item.LinkedAlternateVersions = Array.Empty<LinkedChild>();
                     item.UpdateToRepository(ItemUpdateType.MetadataEdit, CancellationToken.None);
                 }
             }

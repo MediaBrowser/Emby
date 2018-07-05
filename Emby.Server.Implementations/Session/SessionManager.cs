@@ -1581,7 +1581,6 @@ namespace Emby.Server.Implementations.Session
                 var fields = dtoOptions.Fields.ToList();
 
                 fields.Remove(ItemFields.BasicSyncInfo);
-                fields.Remove(ItemFields.SyncInfo);
                 fields.Remove(ItemFields.CanDelete);
                 fields.Remove(ItemFields.CanDownload);
                 fields.Remove(ItemFields.ChildCount);

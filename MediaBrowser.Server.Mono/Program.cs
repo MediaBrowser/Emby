@@ -107,7 +107,7 @@ namespace MediaBrowser.Server.Mono
                 options,
                 fileSystem,
                 new PowerManagement(),
-                "emby.mono.zip",
+                "embyserver-mono_{version}.zip",
                 environmentInfo,
                 new NullImageEncoder(),
                 new SystemEvents(logManager.GetLogger("SystemEvents")),
