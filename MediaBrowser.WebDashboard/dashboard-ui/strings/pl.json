@@ -1,4 +1,5 @@
 {
+    "Alerts": "Alerts",
     "LabelPrevious": "Wstecz",
     "LabelFinish": "Zako\u0144cz",
     "LabelNext": "Dalej",
@@ -1733,7 +1734,7 @@
     "HeaderDetectMyDevices": "Wykryj moje urz\u0105dzenia",
     "MessagePleaseWait": "Prosz\u0119 czeka\u0107. To mo\u017ce potrwa\u0107 chwil\u0119.",
     "DetectingDevices": "Wykrywanie urz\u0105dze\u0144",
-    "LabelAutomaticallyRefreshInternetMetadataEvery": "Od\u015bwie\u017caj metadane z Internetu",
+    "LabelAutomaticallyRefreshInternetMetadataEvery": "Od\u015bwie\u017caj automatycznie metadane z Internetu:",
     "Never": "Nigdy",
     "EveryNDays": "Co {0} dni",
     "HeaderNewDevices": "Nowe urz\u0105dzenia",
