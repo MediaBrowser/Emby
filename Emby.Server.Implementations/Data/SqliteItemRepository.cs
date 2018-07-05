@@ -2246,12 +2246,10 @@ namespace Emby.Server.Implementations.Data
 
         private bool HasField(InternalItemsQuery query, ItemFields name)
         {
-            var fields = query.DtoOptions.Fields;
-
             switch (name)
             {
                 case ItemFields.Tags:
-                    return fields.Contains(name) || HasProgramAttributes(query);
+                    return query.DtoOptions.ContainsField(name) || HasProgramAttributes(query);
                 case ItemFields.CustomRating:
                 case ItemFields.ProductionLocations:
                 case ItemFields.Settings:
@@ -2270,7 +2268,7 @@ namespace Emby.Server.Implementations.Data
                 case ItemFields.SeriesPresentationUniqueKey:
                 case ItemFields.DateLastRefreshed:
                 case ItemFields.DateLastSaved:
-                    return fields.Contains(name);
+                    return query.DtoOptions.ContainsField(name);
                 case ItemFields.ServiceName:
                     return HasServiceName(query);
                 default:
@@ -2539,14 +2537,24 @@ namespace Emby.Server.Implementations.Data
                 var builder = new StringBuilder();
                 builder.Append("(");
 
-                builder.Append("((OfficialRating=@ItemOfficialRating) * 10)");
-                //builder.Append("+ ((ProductionYear=@ItemProductionYear) * 10)");
+                if (string.IsNullOrEmpty(item.OfficialRating))
+                {
+                    builder.Append("((OfficialRating is null) * 10)");
+                }
+                else
+                {
+                    builder.Append("((OfficialRating=@ItemOfficialRating) * 10)");
+                }
 
-                builder.Append("+(Select Case When Abs(COALESCE(ProductionYear, 0) - @ItemProductionYear) < 10 Then 2 Else 0 End )");
-                builder.Append("+(Select Case When Abs(COALESCE(ProductionYear, 0) - @ItemProductionYear) < 5 Then 2 Else 0 End )");
+                if (item.ProductionYear.HasValue)
+                {
+                    //builder.Append("+ ((ProductionYear=@ItemProductionYear) * 10)");
+                    builder.Append("+(Select Case When Abs(COALESCE(ProductionYear, 0) - @ItemProductionYear) < 10 Then 10 Else 0 End )");
+                    builder.Append("+(Select Case When Abs(COALESCE(ProductionYear, 0) - @ItemProductionYear) < 5 Then 5 Else 0 End )");
+                }
 
                 //// genres, tags
-                builder.Append("+ ((Select count(CleanValue) from ItemValues where ItemId=Guid and Type in (2,3,4,5) and CleanValue in (select CleanValue from itemvalues where ItemId=@SimilarItemId and Type in (2,3,4,5))) * 10)");
+                builder.Append("+ ((Select count(CleanValue) from ItemValues where ItemId=Guid and CleanValue in (select CleanValue from itemvalues where ItemId=@SimilarItemId)) * 10)");
 
                 //builder.Append("+ ((Select count(CleanValue) from ItemValues where ItemId=Guid and Type=3 and CleanValue in (select CleanValue from itemvalues where ItemId=@SimilarItemId and type=3)) * 3)");
 
@@ -2560,11 +2568,7 @@ namespace Emby.Server.Implementations.Data
 
                 var excludeIds = query.ExcludeItemIds.ToList();
                 excludeIds.Add(item.Id);
-
-                if (query.IncludeItemTypes.Length == 0 || query.IncludeItemTypes.Contains(typeof(Trailer).Name))
-                {
-                    excludeIds.AddRange(item.ExtraIds);
-                }
+                excludeIds.AddRange(item.ExtraIds);
 
                 query.ExcludeItemIds = excludeIds.ToArray(excludeIds.Count);
                 query.ExcludeProviderIds = item.ProviderIds;
@@ -2582,9 +2586,22 @@ namespace Emby.Server.Implementations.Data
                 return;
             }
 
-            statement.TryBind("@ItemOfficialRating", item.OfficialRating);
-            statement.TryBind("@ItemProductionYear", item.ProductionYear ?? 0);
-            statement.TryBind("@SimilarItemId", item.Id);
+            var commandText = statement.SQL;
+
+            if (commandText.IndexOf("@ItemOfficialRating", StringComparison.OrdinalIgnoreCase) != -1)
+            {
+                statement.TryBind("@ItemOfficialRating", item.OfficialRating);
+            }
+
+            if (commandText.IndexOf("@ItemProductionYear", StringComparison.OrdinalIgnoreCase) != -1)
+            {
+                statement.TryBind("@ItemProductionYear", item.ProductionYear ?? 0);
+            }
+
+            if (commandText.IndexOf("@SimilarItemId", StringComparison.OrdinalIgnoreCase) != -1)
+            {
+                statement.TryBind("@SimilarItemId", item.Id);
+            }
         }
 
         private string GetJoinUserDataText(InternalItemsQuery query)
@@ -4809,11 +4826,11 @@ namespace Emby.Server.Implementations.Data
             {
                 if (query.HasSpecialFeature.Value)
                 {
-                    whereClauses.Add("(data not like '%\"ExtraIds\":[]%' and data like '%ExtraIds%')");
+                    whereClauses.Add("ExtraIds not null");
                 }
                 else
                 {
-                    whereClauses.Add("(data like '%\"ExtraIds\":[]%' or data not like '%ExtraIds%')");
+                    whereClauses.Add("ExtraIds is null");
                 }
             }
 
@@ -4821,11 +4838,11 @@ namespace Emby.Server.Implementations.Data
             {
                 if (query.HasTrailer.Value)
                 {
-                    whereClauses.Add("((data not like '%\"LocalTrailerIds\":[]%' and data like '%LocalTrailerIds%') or (data not like '%\"RemoteTrailerIds\":[]%' and data like '%RemoteTrailerIds%') or (data not like '%\"RemoteTrailers\":[]%' and data like '%RemoteTrailers%'))");
+                    whereClauses.Add("ExtraIds not null");
                 }
                 else
                 {
-                    whereClauses.Add("((data like '%\"LocalTrailerIds\":[]%' or data not like '%LocalTrailerIds%') and (data like '%\"RemoteTrailerIds\":[]%' or data not like '%RemoteTrailerIds%') and (data like '%\"RemoteTrailers\":[]%' or data not like '%RemoteTrailers%'))");
+                    whereClauses.Add("ExtraIds is null");
                 }
             }
 
@@ -4833,11 +4850,11 @@ namespace Emby.Server.Implementations.Data
             {
                 if (query.HasThemeSong.Value)
                 {
-                    whereClauses.Add("(data not like '%\"ExtraIds\":[]%' and data like '%ExtraIds%')");
+                    whereClauses.Add("ExtraIds not null");
                 }
                 else
                 {
-                    whereClauses.Add("(data like '%\"ExtraIds\":[]%' or data not like '%ExtraIds%')");
+                    whereClauses.Add("ExtraIds is null");
                 }
             }
 
@@ -4845,11 +4862,11 @@ namespace Emby.Server.Implementations.Data
             {
                 if (query.HasThemeVideo.Value)
                 {
-                    whereClauses.Add("(data not like '%\"ExtraIds\":[]%' and data like '%ExtraIds%')");
+                    whereClauses.Add("ExtraIds not null");
                 }
                 else
                 {
-                    whereClauses.Add("(data like '%\"ExtraIds\":[]%' or data not like '%ExtraIds%')");
+                    whereClauses.Add("ExtraIds is null");
                 }
             }
 

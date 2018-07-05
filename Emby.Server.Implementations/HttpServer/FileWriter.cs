@@ -169,12 +169,12 @@ namespace Emby.Server.Implementations.HttpServer
 
                 if (string.IsNullOrWhiteSpace(RangeHeader) || (RangeStart <= 0 && RangeEnd >= TotalContentLength - 1))
                 {
-                    //var extension = System.IO.Path.GetExtension(path);
+                    var extension = System.IO.Path.GetExtension(path);
 
-                    //if (extension == null || !SkipLogExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase))
-                    //{
-                    //    Logger.Info("Transmit file {0}", path);
-                    //}
+                    if (extension == null || !SkipLogExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase))
+                    {
+                        Logger.Debug("Transmit file {0}", path);
+                    }
 
                     //var count = FileShare == FileShareMode.ReadWrite ? TotalContentLength : 0;
 

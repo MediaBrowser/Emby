@@ -5,15 +5,12 @@ using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Net;
 using MediaBrowser.Model.Serialization;
 using System;
-using System.Collections.Specialized;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Services;
 using MediaBrowser.Model.Text;
-using Emby.Server.Implementations.Net;
 using System.Net.WebSockets;
+using Emby.Server.Implementations.Net;
 
 namespace Emby.Server.Implementations.HttpServer
 {
@@ -33,11 +30,6 @@ namespace Emby.Server.Implementations.HttpServer
         /// The _remote end point
         /// </summary>
         public string RemoteEndPoint { get; private set; }
-
-        /// <summary>
-        /// The _cancellation token source
-        /// </summary>
-        private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
         /// <summary>
         /// The logger
@@ -111,6 +103,12 @@ namespace Emby.Server.Implementations.HttpServer
             _socket = socket;
             _socket.OnReceiveBytes = OnReceiveInternal;
 
+            var memorySocket = socket as IMemoryWebSocket;
+            if (memorySocket != null)
+            {
+                memorySocket.OnReceiveMemoryBytes = OnReceiveInternal;
+            }
+
             RemoteEndPoint = remoteEndPoint;
             _logger = logger;
             _textEncoding = textEncoding;
@@ -135,6 +133,33 @@ namespace Emby.Server.Implementations.HttpServer
             {
                 return;
             }
+
+            var charset = _textEncoding.GetDetectedEncodingName(bytes, bytes.Length, null, false);
+
+            if (string.Equals(charset, "utf-8", StringComparison.OrdinalIgnoreCase))
+            {
+                OnReceiveInternal(Encoding.UTF8.GetString(bytes, 0, bytes.Length));
+            }
+            else
+            {
+                OnReceiveInternal(_textEncoding.GetASCIIEncoding().GetString(bytes, 0, bytes.Length));
+            }
+        }
+
+        /// <summary>
+        /// Called when [receive].
+        /// </summary>
+        /// <param name="bytes">The bytes.</param>
+        private void OnReceiveInternal(Memory<byte> memory, int length)
+        {
+            LastActivityDate = DateTime.UtcNow;
+
+            if (OnReceive == null)
+            {
+                return;
+            }
+
+            var bytes = memory.Slice(0, length).ToArray();
 
             var charset = _textEncoding.GetDetectedEncodingName(bytes, bytes.Length, null, false);
 
@@ -258,7 +283,6 @@ namespace Emby.Server.Implementations.HttpServer
         {
             if (dispose)
             {
-                _cancellationTokenSource.Dispose();
                 _socket.Dispose();
             }
         }

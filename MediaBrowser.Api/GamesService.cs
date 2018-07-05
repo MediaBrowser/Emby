@@ -17,14 +17,6 @@ using MediaBrowser.Model.Extensions;
 namespace MediaBrowser.Api
 {
     /// <summary>
-    /// Class GetSimilarGames
-    /// </summary>
-    [Route("/Games/{Id}/Similar", "GET", Summary = "Finds games similar to a given game.")]
-    public class GetSimilarGames : BaseGetSimilarItemsFromItem
-    {
-    }
-
-    /// <summary>
     /// Class GetGameSystemSummaries
     /// </summary>
     [Route("/Games/SystemSummaries", "GET", Summary = "Finds games similar to a given game.")]
@@ -148,52 +140,6 @@ namespace MediaBrowser.Api
                 .ToArray();
 
             return summary;
-        }
-
-        /// <summary>
-        /// Gets the specified request.
-        /// </summary>
-        /// <param name="request">The request.</param>
-        /// <returns>System.Object.</returns>
-        public object Get(GetSimilarGames request)
-        {
-            var result = GetSimilarItemsResult(request);
-
-            return ToOptimizedResult(result);
-        }
-
-        private QueryResult<BaseItemDto> GetSimilarItemsResult(BaseGetSimilarItemsFromItem request)
-        {
-            var user = !request.UserId.Equals(Guid.Empty) ? _userManager.GetUserById(request.UserId) : null;
-
-            var item = string.IsNullOrEmpty(request.Id) ?
-                (!request.UserId.Equals(Guid.Empty) ? _libraryManager.GetUserRootFolder() :
-                _libraryManager.RootFolder) : _libraryManager.GetItemById(request.Id);
-
-            var dtoOptions = GetDtoOptions(_authContext, request);
-
-            var itemsResult = _libraryManager.GetItemList(new InternalItemsQuery(user)
-            {
-                Limit = request.Limit,
-                IncludeItemTypes = new[]
-                {
-                        typeof(Game).Name
-                },
-                SimilarTo = item,
-                DtoOptions = dtoOptions
-
-            });
-
-            var returnList = _dtoService.GetBaseItemDtos(itemsResult, dtoOptions, user);
-
-            var result = new QueryResult<BaseItemDto>
-            {
-                Items = returnList,
-
-                TotalRecordCount = itemsResult.Count
-            };
-
-            return result;
         }
     }
 }

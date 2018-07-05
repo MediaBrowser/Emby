@@ -67,7 +67,7 @@ namespace Emby.Server.Implementations.Security
                     connection.RunQueries(new[]
                     {
                         "update accesstokens set DateLastActivity=DateCreated where DateLastActivity is null",
-                        "INSERT INTO Tokens (AccessToken, DeviceId, AppName, AppVersion, DeviceName, UserId, UserName, IsActive, DateCreated, DateLastActivity, DateRevoked) SELECT AccessToken, DeviceId, AppName, AppVersion, DeviceName, UserId, UserName, IsActive, DateCreated, DateLastActivity, DateRevoked FROM AccessTokens",
+                        "INSERT INTO Tokens (AccessToken, DeviceId, AppName, AppVersion, DeviceName, UserId, UserName, IsActive, DateCreated, DateLastActivity, DateRevoked) SELECT AccessToken, DeviceId, AppName, AppVersion, DeviceName, UserId, UserName, IsActive, DateCreated, DateLastActivity, DateRevoked FROM AccessTokens where deviceid not null and devicename not null and appname not null",
                         "drop table if exists AccessTokens"
                     });
                 }

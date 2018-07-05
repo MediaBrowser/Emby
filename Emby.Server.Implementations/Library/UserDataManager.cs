@@ -12,7 +12,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using MediaBrowser.Model.Querying;
+using MediaBrowser.Controller.Dto;
 
 namespace Emby.Server.Implementations.Library
 {
@@ -187,16 +187,16 @@ namespace Emby.Server.Implementations.Library
             var userData = GetUserData(user.Id, item);
             var dto = GetUserItemDataDto(userData);
 
-            item.FillUserDataDtoValues(dto, userData, null, user, new ItemFields[] { });
+            item.FillUserDataDtoValues(dto, userData, null, user, new DtoOptions());
             return dto;
         }
 
-        public UserItemDataDto GetUserDataDto(BaseItem item, BaseItemDto itemDto, User user, ItemFields[] fields)
+        public UserItemDataDto GetUserDataDto(BaseItem item, BaseItemDto itemDto, User user, DtoOptions options)
         {
             var userData = GetUserData(user.Id, item);
             var dto = GetUserItemDataDto(userData);
 
-            item.FillUserDataDtoValues(dto, userData, itemDto, user, fields);
+            item.FillUserDataDtoValues(dto, userData, itemDto, user, options);
             return dto;
         }
 

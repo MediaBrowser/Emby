@@ -268,7 +268,10 @@ namespace MediaBrowser.Api.Library
         public string Id { get; set; }
     }
 
+    [Route("/Games/{Id}/Similar", "GET", Summary = "Finds games similar to a given game.")]
+    [Route("/Artists/{Id}/Similar", "GET", Summary = "Finds albums similar to a given album.")]
     [Route("/Items/{Id}/Similar", "GET", Summary = "Gets similar items")]
+    [Route("/Albums/{Id}/Similar", "GET", Summary = "Finds albums similar to a given album.")]
     [Authenticated]
     public class GetSimilarItems : BaseGetSimilarItemsFromItem
     {
@@ -630,53 +633,6 @@ namespace MediaBrowser.Api.Library
                 (!request.UserId.Equals(Guid.Empty) ? _libraryManager.GetUserRootFolder() :
                 _libraryManager.RootFolder) : _libraryManager.GetItemById(request.Id);
 
-            if (item is Game)
-            {
-                return new GamesService(_userManager, _userDataManager, _libraryManager, _itemRepo, _dtoService, _authContext)
-                {
-                    Request = Request,
-
-                }.Get(new GetSimilarGames
-                {
-                    Fields = request.Fields,
-                    Id = request.Id,
-                    Limit = request.Limit,
-                    UserId = request.UserId,
-                    ImageTypeLimit = request.ImageTypeLimit
-                });
-            }
-            if (item is MusicAlbum)
-            {
-                return new AlbumsService(_userManager, _userDataManager, _libraryManager, _itemRepo, _dtoService, _authContext)
-                {
-                    Request = Request,
-
-                }.Get(new GetSimilarAlbums
-                {
-                    Fields = request.Fields,
-                    Id = request.Id,
-                    Limit = request.Limit,
-                    UserId = request.UserId,
-                    ExcludeArtistIds = request.ExcludeArtistIds,
-                    ImageTypeLimit = request.ImageTypeLimit
-                });
-            }
-            if (item is MusicArtist)
-            {
-                return new AlbumsService(_userManager, _userDataManager, _libraryManager, _itemRepo, _dtoService, _authContext)
-                {
-                    Request = Request,
-
-                }.Get(new GetSimilarArtists
-                {
-                    Fields = request.Fields,
-                    Id = request.Id,
-                    Limit = request.Limit,
-                    UserId = request.UserId,
-                    ImageTypeLimit = request.ImageTypeLimit
-                });
-            }
-
             var program = item as IHasProgramAttributes;
 
             if (item is Movie || (program != null && program.IsMovie) || item is Trailer)
@@ -711,7 +667,46 @@ namespace MediaBrowser.Api.Library
                 });
             }
 
-            return new QueryResult<BaseItemDto>();
+            return GetSimilarItemsResult(request, new[] { item.GetType().Name });
+        }
+
+        private QueryResult<BaseItemDto> GetSimilarItemsResult(BaseGetSimilarItemsFromItem request, string[] includeItemTypes)
+        {
+            var user = !request.UserId.Equals(Guid.Empty) ? _userManager.GetUserById(request.UserId) : null;
+
+            var item = string.IsNullOrEmpty(request.Id) ?
+                (!request.UserId.Equals(Guid.Empty) ? _libraryManager.GetUserRootFolder() :
+                _libraryManager.RootFolder) : _libraryManager.GetItemById(request.Id);
+
+            var dtoOptions = GetDtoOptions(_authContext, request);
+
+            var query = new InternalItemsQuery(user)
+            {
+                Limit = request.Limit,
+                IncludeItemTypes = includeItemTypes,
+                SimilarTo = item,
+                DtoOptions = dtoOptions,
+                EnableTotalRecordCount = false
+            };
+
+            // ExcludeArtistIds
+            if (!string.IsNullOrEmpty(request.ExcludeArtistIds))
+            {
+                query.ExcludeArtistIds = BaseApiService.GetGuids(request.ExcludeArtistIds);
+            }
+
+            var itemsResult = _libraryManager.GetItemList(query);
+
+            var returnList = _dtoService.GetBaseItemDtos(itemsResult, dtoOptions, user);
+
+            var result = new QueryResult<BaseItemDto>
+            {
+                Items = returnList,
+
+                TotalRecordCount = itemsResult.Count
+            };
+
+            return result;
         }
 
         public object Get(GetMediaFolders request)
@@ -851,7 +846,7 @@ namespace MediaBrowser.Api.Library
                     Name = string.Format(_localization.GetLocalizedString("UserDownloadingItemWithValues"), user.Name, item.Name),
                     Type = "UserDownloadingContent",
                     ShortOverview = string.Format(_localization.GetLocalizedString("AppDeviceValues"), auth.Client, auth.Device),
-                    UserId = auth.UserId.ToString("N")
+                    UserId = auth.UserId
 
                 });
             }

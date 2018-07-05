@@ -19,6 +19,10 @@ using System.Linq;
 using System.Text;
 using MediaBrowser.Model.Globalization;
 using MediaBrowser.Model.Extensions;
+using MediaBrowser.Model.Notifications;
+using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Dto;
+using MediaBrowser.Controller.Devices;
 
 namespace Emby.Server.Implementations.Activity
 {
@@ -26,7 +30,6 @@ namespace Emby.Server.Implementations.Activity
     {
         private readonly IInstallationManager _installationManager;
 
-        //private readonly ILogManager _logManager;
         //private readonly ILogger _logger;
         private readonly ISessionManager _sessionManager;
         private readonly ITaskManager _taskManager;
@@ -38,10 +41,10 @@ namespace Emby.Server.Implementations.Activity
         private readonly IUserManager _userManager;
         private readonly IServerConfigurationManager _config;
         private readonly IServerApplicationHost _appHost;
+        private readonly IDeviceManager _deviceManager;
 
-        public ActivityLogEntryPoint(ISessionManager sessionManager, ITaskManager taskManager, IActivityManager activityManager, ILocalizationManager localization, IInstallationManager installationManager, ILibraryManager libraryManager, ISubtitleManager subManager, IUserManager userManager, IServerConfigurationManager config, IServerApplicationHost appHost)
+        public ActivityLogEntryPoint(ISessionManager sessionManager, IDeviceManager deviceManager, ITaskManager taskManager, IActivityManager activityManager, ILocalizationManager localization, IInstallationManager installationManager, ILibraryManager libraryManager, ISubtitleManager subManager, IUserManager userManager, IServerConfigurationManager config, IServerApplicationHost appHost)
         {
-            //_logger = _logManager.GetLogger("ActivityLogEntryPoint");
             _sessionManager = sessionManager;
             _taskManager = taskManager;
             _activityManager = activityManager;
@@ -51,21 +54,18 @@ namespace Emby.Server.Implementations.Activity
             _subManager = subManager;
             _userManager = userManager;
             _config = config;
-            //_logManager = logManager;
             _appHost = appHost;
+            _deviceManager = deviceManager;
         }
 
         public void Run()
         {
-            //_taskManager.TaskExecuting += _taskManager_TaskExecuting;
-            //_taskManager.TaskCompleted += _taskManager_TaskCompleted;
+            _taskManager.TaskCompleted += _taskManager_TaskCompleted;
 
-            //_installationManager.PluginInstalled += _installationManager_PluginInstalled;
-            //_installationManager.PluginUninstalled += _installationManager_PluginUninstalled;
-            //_installationManager.PluginUpdated += _installationManager_PluginUpdated;
-
-            //_libraryManager.ItemAdded += _libraryManager_ItemAdded;
-            //_libraryManager.ItemRemoved += _libraryManager_ItemRemoved;
+            _installationManager.PluginInstalled += _installationManager_PluginInstalled;
+            _installationManager.PluginUninstalled += _installationManager_PluginUninstalled;
+            _installationManager.PluginUpdated += _installationManager_PluginUpdated;
+            _installationManager.PackageInstallationFailed += _installationManager_PackageInstallationFailed;
 
             _sessionManager.SessionStarted += _sessionManager_SessionStarted;
             _sessionManager.AuthenticationFailed += _sessionManager_AuthenticationFailed;
@@ -87,9 +87,29 @@ namespace Emby.Server.Implementations.Activity
             //_config.ConfigurationUpdated += _config_ConfigurationUpdated;
             //_config.NamedConfigurationUpdated += _config_NamedConfigurationUpdated;
 
-            //_logManager.LoggerLoaded += _logManager_LoggerLoaded;
+            _deviceManager.CameraImageUploaded += _deviceManager_CameraImageUploaded;
 
             _appHost.ApplicationUpdated += _appHost_ApplicationUpdated;
+            _appHost.HasPendingRestartChanged += _appHost_HasPendingRestartChanged;
+        }
+
+        private void _appHost_HasPendingRestartChanged(object sender, EventArgs e)
+        {
+            CreateLogEntry(new ActivityLogEntry
+            {
+                Name = string.Format(_localization.GetLocalizedString("ServerNameNeedsToBeRestarted"), _appHost.Name),
+                Overview = "Please restart Emby Server to finish updating.",
+                Type = NotificationType.ServerRestartRequired.ToString()
+            });
+        }
+
+        void _deviceManager_CameraImageUploaded(object sender, GenericEventArgs<CameraImageUploadInfo> e)
+        {
+            CreateLogEntry(new ActivityLogEntry
+            {
+                Name = string.Format(_localization.GetLocalizedString("CameraImageUploadedFrom"), e.Argument.Device.Name),
+                Type = NotificationType.CameraImageUploaded.ToString()
+            });
         }
 
         void _userManager_UserLockedOut(object sender, GenericEventArgs<User> e)
@@ -97,8 +117,8 @@ namespace Emby.Server.Implementations.Activity
             CreateLogEntry(new ActivityLogEntry
             {
                 Name = string.Format(_localization.GetLocalizedString("UserLockedOutWithName"), e.Argument.Name),
-                Type = "UserLockedOut",
-                UserId = e.Argument.Id.ToString("N")
+                Type = NotificationType.UserLockedOut.ToString(),
+                UserId = e.Argument.Id
             });
         }
 
@@ -139,10 +159,9 @@ namespace Emby.Server.Implementations.Activity
 
             CreateLogEntry(new ActivityLogEntry
             {
-                Name = string.Format(_localization.GetLocalizedString("UserStoppedPlayingItemWithValues"), user.Name, Notifications.Notifications.GetItemName(item)),
-                Type = "PlaybackStopped",
-                ShortOverview = string.Format(_localization.GetLocalizedString("AppDeviceValues"), e.ClientName, e.DeviceName),
-                UserId = user.Id.ToString("N")
+                Name = string.Format(_localization.GetLocalizedString("UserStoppedPlayingItemWithValues"), user.Name, GetItemName(item), e.DeviceName),
+                Type = GetPlaybackStoppedNotificationType(item.MediaType),
+                UserId = user.Id
             });
         }
 
@@ -171,11 +190,63 @@ namespace Emby.Server.Implementations.Activity
 
             CreateLogEntry(new ActivityLogEntry
             {
-                Name = string.Format(_localization.GetLocalizedString("UserStartedPlayingItemWithValues"), user.Name, Notifications.Notifications.GetItemName(item)),
-                Type = "PlaybackStart",
-                ShortOverview = string.Format(_localization.GetLocalizedString("AppDeviceValues"), e.ClientName, e.DeviceName),
-                UserId = user.Id.ToString("N")
+                Name = string.Format(_localization.GetLocalizedString("UserStartedPlayingItemWithValues"), user.Name, GetItemName(item), e.DeviceName),
+                Type = GetPlaybackNotificationType(item.MediaType),
+                UserId = user.Id
             });
+        }
+
+        private static string GetItemName(BaseItemDto item)
+        {
+            var name = item.Name;
+
+            if (!string.IsNullOrEmpty(item.SeriesName))
+            {
+                name = item.SeriesName + " - " + name;
+            }
+
+            if (item.Artists != null && item.Artists.Length > 0)
+            {
+                name = item.Artists[0] + " - " + name;
+            }
+
+            return name;
+        }
+
+        private string GetPlaybackNotificationType(string mediaType)
+        {
+            if (string.Equals(mediaType, MediaType.Audio, StringComparison.OrdinalIgnoreCase))
+            {
+                return NotificationType.AudioPlayback.ToString();
+            }
+            if (string.Equals(mediaType, MediaType.Game, StringComparison.OrdinalIgnoreCase))
+            {
+                return NotificationType.GamePlayback.ToString();
+            }
+            if (string.Equals(mediaType, MediaType.Video, StringComparison.OrdinalIgnoreCase))
+            {
+                return NotificationType.VideoPlayback.ToString();
+            }
+
+            return null;
+        }
+
+        private string GetPlaybackStoppedNotificationType(string mediaType)
+        {
+            if (string.Equals(mediaType, MediaType.Audio, StringComparison.OrdinalIgnoreCase))
+            {
+                return NotificationType.AudioPlaybackStopped.ToString();
+            }
+            if (string.Equals(mediaType, MediaType.Game, StringComparison.OrdinalIgnoreCase))
+            {
+                return NotificationType.GamePlaybackStopped.ToString();
+            }
+            if (string.Equals(mediaType, MediaType.Video, StringComparison.OrdinalIgnoreCase))
+            {
+                return NotificationType.VideoPlaybackStopped.ToString();
+            }
+
+            return null;
         }
 
         void _sessionManager_SessionEnded(object sender, SessionEventArgs e)
@@ -200,7 +271,7 @@ namespace Emby.Server.Implementations.Activity
                 Name = name,
                 Type = "SessionEnded",
                 ShortOverview = string.Format(_localization.GetLocalizedString("LabelIpAddressValue"), session.RemoteEndPoint),
-                UserId = !session.UserId.Equals(Guid.Empty) ? session.UserId.ToString("N") : null
+                UserId = session.UserId
             });
         }
 
@@ -229,9 +300,8 @@ namespace Emby.Server.Implementations.Activity
         {
             CreateLogEntry(new ActivityLogEntry
             {
-                Name = _localization.GetLocalizedString("MessageApplicationUpdated"),
-                Type = "ApplicationUpdated",
-                ShortOverview = string.Format(_localization.GetLocalizedString("VersionNumber"), e.Argument.versionStr),
+                Name = string.Format(_localization.GetLocalizedString("MessageApplicationUpdatedTo"), e.Argument.versionStr),
+                Type = NotificationType.ApplicationUpdateInstalled.ToString(),
                 Overview = e.Argument.description
             });
         }
@@ -260,7 +330,7 @@ namespace Emby.Server.Implementations.Activity
             {
                 Name = string.Format(_localization.GetLocalizedString("UserPolicyUpdatedWithName"), e.Argument.Name),
                 Type = "UserPolicyUpdated",
-                UserId = e.Argument.Id.ToString("N")
+                UserId = e.Argument.Id
             });
         }
 
@@ -279,7 +349,7 @@ namespace Emby.Server.Implementations.Activity
             {
                 Name = string.Format(_localization.GetLocalizedString("UserPasswordChangedWithName"), e.Argument.Name),
                 Type = "UserPasswordChanged",
-                UserId = e.Argument.Id.ToString("N")
+                UserId = e.Argument.Id
             });
         }
 
@@ -289,7 +359,7 @@ namespace Emby.Server.Implementations.Activity
             {
                 Name = string.Format(_localization.GetLocalizedString("UserCreatedWithName"), e.Argument.Name),
                 Type = "UserCreated",
-                UserId = e.Argument.Id.ToString("N")
+                UserId = e.Argument.Id
             });
         }
 
@@ -326,36 +396,7 @@ namespace Emby.Server.Implementations.Activity
                 Name = name,
                 Type = "SessionStarted",
                 ShortOverview = string.Format(_localization.GetLocalizedString("LabelIpAddressValue"), session.RemoteEndPoint),
-                UserId = !session.UserId.Equals(Guid.Empty) ? session.UserId.ToString("N") : null
-            });
-        }
-
-        void _libraryManager_ItemRemoved(object sender, ItemChangeEventArgs e)
-        {
-            if (e.Item.SourceType != SourceType.Library)
-            {
-                return;
-            }
-
-            CreateLogEntry(new ActivityLogEntry
-            {
-                Name = string.Format(_localization.GetLocalizedString("ItemRemovedWithName"), Notifications.Notifications.GetItemName(e.Item)),
-                Type = "ItemRemoved"
-            });
-        }
-
-        void _libraryManager_ItemAdded(object sender, ItemChangeEventArgs e)
-        {
-            if (e.Item.SourceType != SourceType.Library)
-            {
-                return;
-            }
-
-            CreateLogEntry(new ActivityLogEntry
-            {
-                Name = string.Format(_localization.GetLocalizedString("ItemAddedWithName"), Notifications.Notifications.GetItemName(e.Item)),
-                Type = "ItemAdded",
-                ItemId = e.Item.Id.ToString("N")
+                UserId = session.UserId
             });
         }
 
@@ -364,7 +405,7 @@ namespace Emby.Server.Implementations.Activity
             CreateLogEntry(new ActivityLogEntry
             {
                 Name = string.Format(_localization.GetLocalizedString("PluginUpdatedWithName"), e.Argument.Item1.Name),
-                Type = "PluginUpdated",
+                Type = NotificationType.PluginUpdateInstalled.ToString(),
                 ShortOverview = string.Format(_localization.GetLocalizedString("VersionNumber"), e.Argument.Item2.versionStr),
                 Overview = e.Argument.Item2.description
             });
@@ -375,7 +416,7 @@ namespace Emby.Server.Implementations.Activity
             CreateLogEntry(new ActivityLogEntry
             {
                 Name = string.Format(_localization.GetLocalizedString("PluginUninstalledWithName"), e.Argument.Name),
-                Type = "PluginUninstalled"
+                Type = NotificationType.PluginUninstalled.ToString()
             });
         }
 
@@ -384,25 +425,21 @@ namespace Emby.Server.Implementations.Activity
             CreateLogEntry(new ActivityLogEntry
             {
                 Name = string.Format(_localization.GetLocalizedString("PluginInstalledWithName"), e.Argument.name),
-                Type = "PluginInstalled",
+                Type = NotificationType.PluginInstalled.ToString(),
                 ShortOverview = string.Format(_localization.GetLocalizedString("VersionNumber"), e.Argument.versionStr)
             });
         }
 
-        void _taskManager_TaskExecuting(object sender, GenericEventArgs<IScheduledTaskWorker> e)
+        void _installationManager_PackageInstallationFailed(object sender, InstallationFailedEventArgs e)
         {
-            var task = e.Argument;
-
-            var activityTask = task.ScheduledTask as IConfigurableScheduledTask;
-            if (activityTask != null && !activityTask.IsLogged)
-            {
-                return;
-            }
+            var installationInfo = e.InstallationInfo;
 
             CreateLogEntry(new ActivityLogEntry
             {
-                Name = string.Format(_localization.GetLocalizedString("ScheduledTaskStartedWithName"), task.Name),
-                Type = "ScheduledTaskStarted"
+                Name = string.Format(_localization.GetLocalizedString("NameInstallFailed"), installationInfo.Name),
+                Type = NotificationType.InstallationFailed.ToString(),
+                ShortOverview = string.Format(_localization.GetLocalizedString("VersionNumber"), installationInfo.Version),
+                Overview = e.Exception.Message
             });
         }
 
@@ -436,7 +473,7 @@ namespace Emby.Server.Implementations.Activity
                 CreateLogEntry(new ActivityLogEntry
                 {
                     Name = string.Format(_localization.GetLocalizedString("ScheduledTaskFailedWithName"), task.Name),
-                    Type = "ScheduledTaskFailed",
+                    Type = NotificationType.TaskFailed.ToString(),
                     Overview = string.Join(Environment.NewLine, vals.ToArray(vals.Count)),
                     ShortOverview = runningTime,
                     Severity = LogSeverity.Error
@@ -458,15 +495,12 @@ namespace Emby.Server.Implementations.Activity
 
         public void Dispose()
         {
-            _taskManager.TaskExecuting -= _taskManager_TaskExecuting;
             _taskManager.TaskCompleted -= _taskManager_TaskCompleted;
 
             _installationManager.PluginInstalled -= _installationManager_PluginInstalled;
             _installationManager.PluginUninstalled -= _installationManager_PluginUninstalled;
             _installationManager.PluginUpdated -= _installationManager_PluginUpdated;
-
-            _libraryManager.ItemAdded -= _libraryManager_ItemAdded;
-            _libraryManager.ItemRemoved -= _libraryManager_ItemRemoved;
+            _installationManager.PackageInstallationFailed -= _installationManager_PackageInstallationFailed;
 
             _sessionManager.SessionStarted -= _sessionManager_SessionStarted;
             _sessionManager.AuthenticationFailed -= _sessionManager_AuthenticationFailed;
@@ -488,9 +522,10 @@ namespace Emby.Server.Implementations.Activity
             _config.ConfigurationUpdated -= _config_ConfigurationUpdated;
             _config.NamedConfigurationUpdated -= _config_NamedConfigurationUpdated;
 
-            //_logManager.LoggerLoaded -= _logManager_LoggerLoaded;
+            _deviceManager.CameraImageUploaded -= _deviceManager_CameraImageUploaded;
 
             _appHost.ApplicationUpdated -= _appHost_ApplicationUpdated;
+            _appHost.HasPendingRestartChanged -= _appHost_HasPendingRestartChanged;
         }
 
         /// <summary>

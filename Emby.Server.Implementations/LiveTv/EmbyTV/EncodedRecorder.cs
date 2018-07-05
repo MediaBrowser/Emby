@@ -199,7 +199,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
             if (mediaSource.RequiresLooping)
             {
-                inputModifier += " -stream_loop -1";
+                inputModifier += " -stream_loop -1 -reconnect_at_eof 1 -reconnect_streamed 1 -reconnect_delay_max 2";
             }
 
             var analyzeDurationSeconds = 5;

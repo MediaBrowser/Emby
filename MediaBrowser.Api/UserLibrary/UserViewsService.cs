@@ -92,7 +92,6 @@ namespace MediaBrowser.Api.UserLibrary
 
             fields.Add(ItemFields.PrimaryImageAspectRatio);
             fields.Add(ItemFields.DisplayPreferencesId);
-            fields.Remove(ItemFields.SyncInfo);
             fields.Remove(ItemFields.BasicSyncInfo);
             dtoOptions.Fields = fields.ToArray(fields.Count);
 

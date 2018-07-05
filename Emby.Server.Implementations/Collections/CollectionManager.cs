@@ -56,7 +56,7 @@ namespace Emby.Server.Implementations.Collections
                 .Where(i => _fileSystem.AreEqual(path, i.Path) || _fileSystem.ContainsSubPath(i.Path, path));
         }
 
-        internal async Task<Folder> EnsureLibraryFolder(string path, string name)
+        internal async Task<Folder> EnsureLibraryFolder(string path, bool createIfNeeded)
         {
             var existingFolders = FindFolders(path)
                 .ToList();
@@ -64,6 +64,11 @@ namespace Emby.Server.Implementations.Collections
             if (existingFolders.Count > 0)
             {
                 return existingFolders[0];
+            }
+
+            if (!createIfNeeded)
+            {
+                return null;
             }
 
             _fileSystem.CreateDirectory(path);
@@ -75,10 +80,7 @@ namespace Emby.Server.Implementations.Collections
                 SaveLocalMetadata = true
             };
 
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                name = _localizationManager.GetLocalizedString("Collections");
-            }
+            var name = _localizationManager.GetLocalizedString("Collections");
 
             await _libraryManager.AddVirtualFolder(name, CollectionType.BoxSets, libraryOptions, true).ConfigureAwait(false);
 
@@ -92,7 +94,7 @@ namespace Emby.Server.Implementations.Collections
 
         private Task<Folder> GetCollectionsFolder(bool createIfNeeded)
         {
-            return EnsureLibraryFolder(GetCollectionsFolderPath(), null);
+            return EnsureLibraryFolder(GetCollectionsFolderPath(), createIfNeeded);
         }
 
         private IEnumerable<BoxSet> GetCollections(User user)
@@ -359,7 +361,7 @@ namespace Emby.Server.Implementations.Collections
                 {
                     try
                     {
-                        await _collectionManager.EnsureLibraryFolder(path, null).ConfigureAwait(false);
+                        await _collectionManager.EnsureLibraryFolder(path, true).ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {
