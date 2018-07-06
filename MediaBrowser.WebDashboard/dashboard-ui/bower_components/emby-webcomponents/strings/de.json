@@ -33,7 +33,7 @@
     "HeaderWakeServer": "Server aufwecken",
     "AttemptingWakeServer": "Versuche Server aufwecken. Bitte warten...",
     "WakeServerSuccess": "Erfolgreich!",
-    "HeaderCustomizeHomeScreen": "Customize Home Screen",
+    "HeaderCustomizeHomeScreen": "Startbildschirm konfigurieren",
     "WakeServerError": "Wake On LAN Pakete wurden an deinen Server geschickt, aber wir konnten deinen Emby Server nicht erreichen. Deine Maschine braucht vielleicht etwas l\u00e4nger um aufzuwachen oder Emby Server wird zur Zeit nicht ausgef\u00fchrt.",
     "Sunday": "Sonntag",
     "Monday": "Montag",
@@ -48,7 +48,7 @@
     "LabelSortOrder": "Sortierreihenfolge",
     "HeaderPhotoAlbums": "Fotoalben",
     "Photos": "Fotos",
-    "HeaderAppearsOn": "Appears On",
+    "HeaderAppearsOn": "Erscheint auf",
     "List": "Liste",
     "RecordSeries": "Serie aufnehmen",
     "HeaderCinemaMode": "Kinomodus",
@@ -550,7 +550,7 @@
     "Absolute": "Absolut",
     "Smart": "Smart",
     "Small": "Klein",
-    "Smaller": "Smaller",
+    "Smaller": "Kleiner",
     "Medium": "Mittel",
     "Large": "Gro\u00df",
     "ExtraLarge": "Extragro\u00df",
@@ -682,6 +682,6 @@
     "ColorTransfer": "Color transfer",
     "VideoRange": "Video range",
     "SeriesDisplayOrderHelp": "Sortiere Episoden nach Ausstrahlungsdatum, DVD Reihenfolge oder absoluter Nummerierung.",
-    "PlaybackSettingsIntro": "To configure default playback settings, stop video playback, then click your user icon in the top right section of the app.",
-    "SubtitleSettingsIntro": "To configure default subtitle appearance and language settings, stop video playback, then click your user icon in the top right section of the app."
+    "PlaybackSettingsIntro": "Um die Wiedergabeeinstellungen zu \u00e4ndern, stoppen Sie die Wiedergabe und klicken Sie auf Ihr Benutzer-Icon in der oberen rechten Ecke der App.",
+    "SubtitleSettingsIntro": "Um das Aussehen der Untertitel und die Spracheinstellungen zu \u00e4ndern, stoppen Sie die Wiedergabe und klicken Sie auf Ihr Benutzer-Icon in der oberen rechten Ecke der App."
 }

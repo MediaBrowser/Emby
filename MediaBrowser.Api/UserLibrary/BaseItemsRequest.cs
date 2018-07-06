@@ -105,6 +105,7 @@ namespace MediaBrowser.Api.UserLibrary
         [ApiMember(Name = "HasTvdbId", Description = "Optional filter by items that have a tvdb id or not.", IsRequired = false, DataType = "bool", ParameterType = "query", Verb = "GET")]
         public bool? HasTvdbId { get; set; }
 
+        [ApiMember(Name = "ExcludeItemIds", Description = "Optional. If specified, results will be filtered by exxcluding item ids. This allows multiple, comma delimeted.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
         public string ExcludeItemIds { get; set; }
 
         public bool EnableTotalRecordCount { get; set; }
@@ -296,7 +297,7 @@ namespace MediaBrowser.Api.UserLibrary
         /// Gets or sets the user id.
         /// </summary>
         /// <value>The user id.</value>
-        [ApiMember(Name = "UserId", Description = "User Id", IsRequired = false, DataType = "string", ParameterType = "path", Verb = "GET")]
+        [ApiMember(Name = "UserId", Description = "User Id", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
         public Guid UserId { get; set; }
 
         /// <summary>

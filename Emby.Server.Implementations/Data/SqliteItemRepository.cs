@@ -34,6 +34,7 @@ using MediaBrowser.Model.Threading;
 using MediaBrowser.Model.Extensions;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Drawing;
+using MediaBrowser.Controller.Library;
 
 namespace Emby.Server.Implementations.Data
 {
@@ -119,7 +120,7 @@ namespace Emby.Server.Implementations.Data
         /// <summary>
         /// Opens the connection to the database
         /// </summary>
-        public void Initialize(SqliteUserDataRepository userDataRepo)
+        public void Initialize(SqliteUserDataRepository userDataRepo, IUserManager userManager)
         {
             using (var connection = CreateConnection())
             {
@@ -342,7 +343,7 @@ namespace Emby.Server.Implementations.Data
                 //await Vacuum(_connection).ConfigureAwait(false);
             }
 
-            userDataRepo.Initialize(WriteLock, _connection);
+            userDataRepo.Initialize(WriteLock, _connection, userManager);
         }
 
         private readonly string[] _retriveItemColumns =
@@ -2521,13 +2522,13 @@ namespace Emby.Server.Implementations.Data
 
             if (EnableJoinUserData(query))
             {
-                list.Add("UserData.UserId");
-                list.Add("UserData.lastPlayedDate");
-                list.Add("UserData.playbackPositionTicks");
-                list.Add("UserData.playcount");
-                list.Add("UserData.isFavorite");
-                list.Add("UserData.played");
-                list.Add("UserData.rating");
+                list.Add("UserDatas.UserId");
+                list.Add("UserDatas.lastPlayedDate");
+                list.Add("UserDatas.playbackPositionTicks");
+                list.Add("UserDatas.playcount");
+                list.Add("UserDatas.isFavorite");
+                list.Add("UserDatas.played");
+                list.Add("UserDatas.rating");
             }
 
             if (query.SimilarTo != null)
@@ -2611,7 +2612,7 @@ namespace Emby.Server.Implementations.Data
                 return string.Empty;
             }
 
-            return " left join UserData on UserDataKey=UserData.Key And (UserId=@UserId)";
+            return " left join UserDatas on UserDataKey=UserDatas.Key And (UserId=@UserId)";
         }
 
         private string GetGroupBy(InternalItemsQuery query)
@@ -2681,7 +2682,7 @@ namespace Emby.Server.Implementations.Data
                     {
                         if (EnableJoinUserData(query))
                         {
-                            statement.TryBind("@UserId", query.User.Id);
+                            statement.TryBind("@UserId", query.User.InternalId);
                         }
 
                         BindSimilarParams(query, statement);
@@ -2757,7 +2758,7 @@ namespace Emby.Server.Implementations.Data
                     {
                         if (EnableJoinUserData(query))
                         {
-                            statement.TryBind("@UserId", query.User.Id);
+                            statement.TryBind("@UserId", query.User.InternalId);
                         }
 
                         BindSimilarParams(query, statement);
@@ -2970,7 +2971,7 @@ namespace Emby.Server.Implementations.Data
                             {
                                 if (EnableJoinUserData(query))
                                 {
-                                    statement.TryBind("@UserId", query.User.Id);
+                                    statement.TryBind("@UserId", query.User.InternalId);
                                 }
 
                                 BindSimilarParams(query, statement);
@@ -3003,7 +3004,7 @@ namespace Emby.Server.Implementations.Data
                             {
                                 if (EnableJoinUserData(query))
                                 {
-                                    statement.TryBind("@UserId", query.User.Id);
+                                    statement.TryBind("@UserId", query.User.InternalId);
                                 }
 
                                 BindSimilarParams(query, statement);
@@ -3191,7 +3192,7 @@ namespace Emby.Server.Implementations.Data
                     {
                         if (EnableJoinUserData(query))
                         {
-                            statement.TryBind("@UserId", query.User.Id);
+                            statement.TryBind("@UserId", query.User.InternalId);
                         }
 
                         BindSimilarParams(query, statement);
@@ -3262,7 +3263,7 @@ namespace Emby.Server.Implementations.Data
                     {
                         if (EnableJoinUserData(query))
                         {
-                            statement.TryBind("@UserId", query.User.Id);
+                            statement.TryBind("@UserId", query.User.InternalId);
                         }
 
                         // Running this again will bind the params
@@ -3388,7 +3389,7 @@ namespace Emby.Server.Implementations.Data
                             {
                                 if (EnableJoinUserData(query))
                                 {
-                                    statement.TryBind("@UserId", query.User.Id);
+                                    statement.TryBind("@UserId", query.User.InternalId);
                                 }
 
                                 BindSimilarParams(query, statement);
@@ -3409,7 +3410,7 @@ namespace Emby.Server.Implementations.Data
                             {
                                 if (EnableJoinUserData(query))
                                 {
-                                    statement.TryBind("@UserId", query.User.Id);
+                                    statement.TryBind("@UserId", query.User.InternalId);
                                 }
 
                                 BindSimilarParams(query, statement);
@@ -4121,17 +4122,32 @@ namespace Emby.Server.Implementations.Data
             {
                 if (query.IsPlayed.HasValue)
                 {
-                    if (query.IsPlayed.Value)
+                    // We should probably figure this out for all folders, but for right now, this is the only place where we need it
+                    if (query.IncludeItemTypes.Length == 1 && string.Equals(query.IncludeItemTypes[0], typeof(Series).Name, StringComparison.OrdinalIgnoreCase))
                     {
-                        whereClauses.Add("(played=@IsPlayed)");
+                        if (query.IsPlayed.Value)
+                        {
+                            //whereClauses.Add("PresentationUniqueKey in (select SeriesPresentationUniqueKey from TypedBaseitems S where S.SeriesPresentationUniqueKey = A.PresentationUniqueKey and UserDataKey not in (select key from userdatas where UserId=@UserId and Played=0))");
+                        }
+                        else
+                        {
+                            //whereClauses.Add("PresentationUniqueKey in (select SeriesPresentationUniqueKey from TypedBaseitems S where S.SeriesPresentationUniqueKey = A.PresentationUniqueKey and UserDataKey not in (select key from userdatas where UserId=@UserId and Played=1))");
+                        }
                     }
                     else
                     {
-                        whereClauses.Add("(played is null or played=@IsPlayed)");
-                    }
-                    if (statement != null)
-                    {
-                        statement.TryBind("@IsPlayed", query.IsPlayed.Value);
+                        if (query.IsPlayed.Value)
+                        {
+                            whereClauses.Add("(played=@IsPlayed)");
+                        }
+                        else
+                        {
+                            whereClauses.Add("(played is null or played=@IsPlayed)");
+                        }
+                        if (statement != null)
+                        {
+                            statement.TryBind("@IsPlayed", query.IsPlayed.Value);
+                        }
                     }
                 }
             }
@@ -4784,6 +4800,18 @@ namespace Emby.Server.Implementations.Data
                 }
 
                 whereClauses.Add("(" + string.Join(" OR ", statuses.ToArray()) + ")");
+            }
+
+            if (query.BoxSetLibraryFolders.Length > 0)
+            {
+                var folderIdQueries = new List<string>();
+
+                foreach (var folderId in query.BoxSetLibraryFolders)
+                {
+                    folderIdQueries.Add("data like '%" + folderId.ToString("N") + "%'");
+                }
+
+                whereClauses.Add("(" + string.Join(" OR ", folderIdQueries.ToArray()) + ")");
             }
 
             if (query.VideoTypes.Length > 0)
@@ -5618,7 +5646,7 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
                                 statement.TryBind("@SelectType", returnType);
                                 if (EnableJoinUserData(query))
                                 {
-                                    statement.TryBind("@UserId", query.User.Id);
+                                    statement.TryBind("@UserId", query.User.InternalId);
                                 }
 
                                 if (typeSubQuery != null)
@@ -5664,7 +5692,7 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
                                 statement.TryBind("@SelectType", returnType);
                                 if (EnableJoinUserData(query))
                                 {
-                                    statement.TryBind("@UserId", query.User.Id);
+                                    statement.TryBind("@UserId", query.User.InternalId);
                                 }
 
                                 if (typeSubQuery != null)

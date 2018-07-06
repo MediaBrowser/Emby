@@ -934,7 +934,7 @@ namespace Emby.Server.Implementations
 
             RegisterSingleInstance<IXmlReaderSettingsFactory>(new XmlReaderSettingsFactory());
 
-            UserDataManager = new UserDataManager(LogManager, ServerConfigurationManager);
+            UserDataManager = new UserDataManager(LogManager, ServerConfigurationManager, ()=> UserManager);
             RegisterSingleInstance(UserDataManager);
 
             UserRepository = GetUserRepository();
@@ -1070,13 +1070,13 @@ namespace Emby.Server.Implementations
 
             var userDataRepo = new SqliteUserDataRepository(LogManager.GetLogger("SqliteUserDataRepository"), ApplicationPaths, FileSystemManager);
 
-            ((UserDataManager)UserDataManager).Repository = userDataRepo;
-            itemRepo.Initialize(userDataRepo);
-            ((LibraryManager)LibraryManager).ItemRepository = ItemRepository;
-
             SetStaticProperties();
 
             ((UserManager)UserManager).Initialize();
+
+            ((UserDataManager)UserDataManager).Repository = userDataRepo;
+            itemRepo.Initialize(userDataRepo, UserManager);
+            ((LibraryManager)LibraryManager).ItemRepository = ItemRepository;
         }
 
         protected virtual IBrotliCompressor CreateBrotliCompressor()
@@ -1294,7 +1294,6 @@ namespace Emby.Server.Implementations
                 HttpClient,
                 ZipClient,
                 ProcessFactory,
-                (Environment.ProcessorCount > 2 ? 14000 : 40000),
                 EnvironmentInfo,
                 BlurayExaminer,
                 assemblyInfo);
@@ -1318,7 +1317,7 @@ namespace Emby.Server.Implementations
 
         private IAuthenticationRepository GetAuthenticationRepository()
         {
-            var repo = new AuthenticationRepository(LogManager.GetLogger("AuthenticationRepository"), ServerConfigurationManager.ApplicationPaths);
+            var repo = new AuthenticationRepository(LogManager.GetLogger("AuthenticationRepository"), ServerConfigurationManager);
 
             repo.Initialize();
 
@@ -1348,9 +1347,7 @@ namespace Emby.Server.Implementations
             BaseItem.ProviderManager = ProviderManager;
             BaseItem.LocalizationManager = LocalizationManager;
             BaseItem.ItemRepository = ItemRepository;
-            User.XmlSerializer = XmlSerializer;
             User.UserManager = UserManager;
-            Folder.UserManager = UserManager;
             BaseItem.FileSystem = FileSystemManager;
             BaseItem.UserDataManager = UserDataManager;
             BaseItem.ChannelManager = ChannelManager;

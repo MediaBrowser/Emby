@@ -62,7 +62,7 @@ namespace Emby.Server.Implementations.Activity
         {
             try
             {
-                if (LegacyTableExists(connection))
+                if (TableExists(connection, "ActivityLogEntries"))
                 {
                     connection.RunQueries(new[]
                     {
@@ -75,23 +75,6 @@ namespace Emby.Server.Implementations.Activity
             {
                 Logger.ErrorException("Error migrating activity log database", ex);
             }
-        }
-
-        private bool LegacyTableExists(ManagedConnection connection)
-        {
-            return connection.RunInTransaction(db =>
-            {
-                using (var statement = PrepareStatement(db, "select DISTINCT tbl_name from sqlite_master where tbl_name = 'ActivityLogEntries'"))
-                {
-                    foreach (var row in statement.ExecuteQuery())
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-
-            }, ReadTransactionMode);
         }
 
         private const string BaseActivitySelectText = "select Id, Name, Overview, ShortOverview, Type, ItemId, UserId, DateCreated, LogSeverity from ActivityLog";
@@ -179,7 +162,7 @@ namespace Emby.Server.Implementations.Activity
             }
         }
 
-        public QueryResult<ActivityLogEntry> GetActivityLogEntries(DateTime? minDate, int? startIndex, int? limit)
+        public QueryResult<ActivityLogEntry> GetActivityLogEntries(DateTime? minDate, bool? hasUserId, int? startIndex, int? limit)
         {
             using (WriteLock.Read())
             {
@@ -191,6 +174,17 @@ namespace Emby.Server.Implementations.Activity
                     if (minDate.HasValue)
                     {
                         whereClauses.Add("DateCreated>=@DateCreated");
+                    }
+                    if (hasUserId.HasValue)
+                    {
+                        if (hasUserId.Value)
+                        {
+                            whereClauses.Add("UserId not null");
+                        }
+                        else
+                        {
+                            whereClauses.Add("UserId is null");
+                        }
                     }
 
                     var whereTextWithoutPaging = whereClauses.Count == 0 ?

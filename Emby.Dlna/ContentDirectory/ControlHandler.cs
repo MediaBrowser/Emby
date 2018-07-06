@@ -124,7 +124,7 @@ namespace Emby.Dlna.ContentDirectory
 
             userdata.PlaybackPositionTicks = TimeSpan.FromSeconds(newbookmark).Ticks;
 
-            _userDataManager.SaveUserData(user.Id, item, userdata, UserDataSaveReason.TogglePlayed,
+            _userDataManager.SaveUserData(user, item, userdata, UserDataSaveReason.TogglePlayed,
                 CancellationToken.None);
 
             return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);

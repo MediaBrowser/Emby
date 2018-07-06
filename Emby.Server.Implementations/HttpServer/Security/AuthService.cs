@@ -240,7 +240,7 @@ namespace Emby.Server.Implementations.HttpServer.Security
 
             var info = GetTokenInfo(request);
 
-            if (info == null || !info.IsActive)
+            if (info == null)
             {
                 throw new SecurityException("Access token is invalid or expired.");
             }

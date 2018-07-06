@@ -250,7 +250,7 @@ namespace MediaBrowser.Api.Session
     [Authenticated(Roles = "Admin")]
     public class RevokeKey
     {
-        [ApiMember(Name = "Key", Description = "Auth Key", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
+        [ApiMember(Name = "Key", Description = "Auth Key", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "DELETE")]
         public string Key { get; set; }
     }
 
@@ -306,14 +306,13 @@ namespace MediaBrowser.Api.Session
             _authRepo.Create(new AuthenticationInfo
             {
                 AppName = request.App,
-                IsActive = true,
                 AccessToken = Guid.NewGuid().ToString("N"),
                 DateCreated = DateTime.UtcNow,
                 DeviceId = _appHost.SystemId,
                 DeviceName = _appHost.FriendlyName,
                 AppVersion = _appHost.ApplicationVersion.ToString()
 
-            }, CancellationToken.None);
+            });
         }
 
         public void Post(ReportSessionEnded request)
@@ -327,7 +326,6 @@ namespace MediaBrowser.Api.Session
         {
             var result = _authRepo.Get(new AuthenticationInfoQuery
             {
-                IsActive = true,
                 HasUser = false
             });
 

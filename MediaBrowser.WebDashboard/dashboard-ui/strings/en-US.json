@@ -34,6 +34,7 @@
   "AllowRemoteAccessHelp": "If unchecked, all remote connections will be blocked.",
   "HowWouldYouLikeToAddUser": "How would you like to add a user?",
   "HeaderSync": "Sync",
+  "Alerts": "Alerts",
   "LabelTypeMetadataDownloaders": "{0} metadata downloaders:",
   "HeaderTypeImageFetchers": "{0} Image Fetchers",
   "HeaderPlayAll": "Play All",

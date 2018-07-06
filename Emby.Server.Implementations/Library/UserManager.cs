@@ -546,7 +546,7 @@ namespace Emby.Server.Implementations.Library
 
                 user.DateLastSaved = DateTime.UtcNow;
 
-                UserRepository.SaveUser(user, CancellationToken.None);
+                UserRepository.CreateUser(user);
 
                 users.Add(user);
 
@@ -706,7 +706,7 @@ namespace Emby.Server.Implementations.Library
             user.DateModified = DateTime.UtcNow;
             user.DateLastSaved = DateTime.UtcNow;
 
-            UserRepository.SaveUser(user, CancellationToken.None);
+            UserRepository.UpdateUser(user);
 
             OnUserUpdated(user);
         }
@@ -751,7 +751,7 @@ namespace Emby.Server.Implementations.Library
 
                 user.DateLastSaved = DateTime.UtcNow;
 
-                UserRepository.SaveUser(user, CancellationToken.None);
+                UserRepository.CreateUser(user);
 
                 EventHelper.QueueEventIfNotNull(UserCreated, this, new GenericEventArgs<User> { Argument = user }, _logger);
 
@@ -805,7 +805,7 @@ namespace Emby.Server.Implementations.Library
             {
                 var configPath = GetConfigurationFilePath(user);
 
-                UserRepository.DeleteUser(user, CancellationToken.None);
+                UserRepository.DeleteUser(user);
 
                 try
                 {

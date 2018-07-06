@@ -74,8 +74,22 @@ namespace Emby.Notifications
         public void Run()
         {
             _libraryManager.ItemAdded += _libraryManager_ItemAdded;
+            _appHost.HasPendingRestartChanged += _appHost_HasPendingRestartChanged;
             _appHost.HasUpdateAvailableChanged += _appHost_HasUpdateAvailableChanged;
             _activityManager.EntryCreated += _activityManager_EntryCreated;
+        }
+
+        private async void _appHost_HasPendingRestartChanged(object sender, EventArgs e)
+        {
+            var type = NotificationType.ServerRestartRequired.ToString();
+
+            var notification = new NotificationRequest
+            {
+                NotificationType = type,
+                Name = string.Format(_localization.GetLocalizedString("ServerNameNeedsToBeRestarted"), _appHost.Name)
+            };
+
+            await SendNotification(notification, null).ConfigureAwait(false);
         }
 
         private async void _activityManager_EntryCreated(object sender, GenericEventArgs<ActivityLogEntry> e)
@@ -89,6 +103,13 @@ namespace Emby.Notifications
                 return;
             }
 
+            var userId = e.Argument.UserId;
+
+            if (!userId.Equals(Guid.Empty) && !GetOptions().IsEnabledToMonitorUser(type, userId))
+            {
+                return;
+            }
+
             var notification = new NotificationRequest
             {
                 NotificationType = type,
@@ -97,6 +118,11 @@ namespace Emby.Notifications
             };
 
             await SendNotification(notification, null).ConfigureAwait(false);
+        }
+
+        private NotificationOptions GetOptions()
+        {
+            return _config.GetConfiguration<NotificationOptions>("notifications");
         }
 
         async void _appHost_HasUpdateAvailableChanged(object sender, EventArgs e)
@@ -256,7 +282,9 @@ namespace Emby.Notifications
             DisposeLibraryUpdateTimer();
 
             _libraryManager.ItemAdded -= _libraryManager_ItemAdded;
+            _appHost.HasPendingRestartChanged -= _appHost_HasPendingRestartChanged;
             _appHost.HasUpdateAvailableChanged -= _appHost_HasUpdateAvailableChanged;
+            _activityManager.EntryCreated -= _activityManager_EntryCreated;
         }
 
         private void DisposeLibraryUpdateTimer()

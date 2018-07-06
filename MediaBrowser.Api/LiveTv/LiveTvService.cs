@@ -498,7 +498,7 @@ namespace MediaBrowser.Api.LiveTv
     [Authenticated]
     public class DeleteRecording : IReturnVoid
     {
-        [ApiMember(Name = "Id", Description = "Recording Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
+        [ApiMember(Name = "Id", Description = "Recording Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "DELETE")]
         public Guid Id { get; set; }
     }
 
@@ -506,7 +506,7 @@ namespace MediaBrowser.Api.LiveTv
     [Authenticated]
     public class CancelTimer : IReturnVoid
     {
-        [ApiMember(Name = "Id", Description = "Timer Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
+        [ApiMember(Name = "Id", Description = "Timer Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "DELETE")]
         public string Id { get; set; }
     }
 
@@ -545,7 +545,7 @@ namespace MediaBrowser.Api.LiveTv
     [Authenticated]
     public class CancelSeriesTimer : IReturnVoid
     {
-        [ApiMember(Name = "Id", Description = "Timer Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
+        [ApiMember(Name = "Id", Description = "Timer Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "DELETE")]
         public string Id { get; set; }
     }
 

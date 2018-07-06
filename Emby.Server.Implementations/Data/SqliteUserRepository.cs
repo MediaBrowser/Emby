@@ -49,37 +49,46 @@ namespace Emby.Server.Implementations.Data
             {
                 RunDefaultInitialization(connection);
 
-                string[] queries = {
+                var localUsersTableExists = TableExists(connection, "LocalUsersv2");
 
-                                "create table if not exists users (guid GUID primary key NOT NULL, data BLOB NOT NULL)",
-                                "create index if not exists idx_users on users(guid)",
+                connection.RunQueries(new[] {
+                    "create table if not exists LocalUsersv2 (Id INTEGER PRIMARY KEY, guid GUID NOT NULL, data BLOB NOT NULL)",
+                    "drop index if exists idx_users"
+                });
 
-                                "pragma shrink_memory"
-                               };
+                if (!localUsersTableExists && TableExists(connection, "Users"))
+                {
+                    TryMigrateToLocalUsersTable(connection);
+                }
+            }
+        }
 
-                connection.RunQueries(queries);
+        private void TryMigrateToLocalUsersTable(ManagedConnection connection)
+        {
+            try
+            {
+                connection.RunQueries(new[]
+                {
+                    "INSERT INTO LocalUsersv2 (guid, data) SELECT guid,data from users"
+                });
+            }
+            catch (Exception ex)
+            {
+                Logger.ErrorException("Error migrating users database", ex);
             }
         }
 
         /// <summary>
         /// Save a user in the repo
         /// </summary>
-        /// <param name="user">The user.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        /// <exception cref="System.ArgumentNullException">user</exception>
-        public void SaveUser(User user, CancellationToken cancellationToken)
+        public void CreateUser(User user)
         {
             if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
 
-            cancellationToken.ThrowIfCancellationRequested();
-
             var serialized = _jsonSerializer.SerializeToBytes(user);
-
-            cancellationToken.ThrowIfCancellationRequested();
 
             using (WriteLock.Write())
             {
@@ -87,14 +96,88 @@ namespace Emby.Server.Implementations.Data
                 {
                     connection.RunInTransaction(db =>
                     {
-                        using (var statement = db.PrepareStatement("replace into users (guid, data) values (@guid, @data)"))
+                        using (var statement = db.PrepareStatement("insert into LocalUsersv2 (guid, data) values (@guid, @data)"))
                         {
                             statement.TryBind("@guid", user.Id.ToGuidBlob());
                             statement.TryBind("@data", serialized);
+
                             statement.MoveNext();
                         }
+
+                        var createdUser = GetUser(user.Id, false);
+
+                        if (createdUser == null)
+                        {
+                            throw new ApplicationException("created user should never be null");
+                        }
+
+                        user.InternalId = createdUser.InternalId;
+
                     }, TransactionMode);
                 }
+            }
+        }
+
+        public void UpdateUser(User user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            var serialized = _jsonSerializer.SerializeToBytes(user);
+
+            using (WriteLock.Write())
+            {
+                using (var connection = CreateConnection())
+                {
+                    connection.RunInTransaction(db =>
+                    {
+                        using (var statement = db.PrepareStatement("update LocalUsersv2 set data=@data where Id=@InternalId"))
+                        {
+                            statement.TryBind("@InternalId", user.InternalId);
+                            statement.TryBind("@data", serialized);
+                            statement.MoveNext();
+                        }
+
+                    }, TransactionMode);
+                }
+            }
+        }
+
+        private User GetUser(Guid guid, bool openLock)
+        {
+            using (openLock ? WriteLock.Read() : null)
+            {
+                using (var connection = CreateConnection(true))
+                {
+                    using (var statement = connection.PrepareStatement("select id,guid,data from LocalUsersv2 where guid=@guid"))
+                    {
+                        statement.TryBind("@guid", guid);
+
+                        foreach (var row in statement.ExecuteQuery())
+                        {
+                            return GetUser(row);
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private User GetUser(IReadOnlyList<IResultSetValue> row)
+        {
+            var id = row[0].ToInt64();
+            var guid = row[1].ReadGuidFromBlob();
+
+            using (var stream = new MemoryStream(row[2].ToBlob()))
+            {
+                stream.Position = 0;
+                var user = _jsonSerializer.DeserializeFromStream<User>(stream);
+                user.InternalId = id;
+                user.Id = guid;
+                return user;
             }
         }
 
@@ -110,17 +193,9 @@ namespace Emby.Server.Implementations.Data
             {
                 using (var connection = CreateConnection(true))
                 {
-                    foreach (var row in connection.Query("select guid,data from users"))
+                    foreach (var row in connection.Query("select id,guid,data from LocalUsersv2"))
                     {
-                        var id = row[0].ReadGuidFromBlob();
-
-                        using (var stream = new MemoryStream(row[1].ToBlob()))
-                        {
-                            stream.Position = 0;
-                            var user = _jsonSerializer.DeserializeFromStream<User>(stream);
-                            user.Id = id;
-                            list.Add(user);
-                        }
+                        list.Add(GetUser(row));
                     }
                 }
             }
@@ -135,14 +210,12 @@ namespace Emby.Server.Implementations.Data
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
         /// <exception cref="System.ArgumentNullException">user</exception>
-        public void DeleteUser(User user, CancellationToken cancellationToken)
+        public void DeleteUser(User user)
         {
             if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
-
-            cancellationToken.ThrowIfCancellationRequested();
 
             using (WriteLock.Write())
             {
@@ -150,9 +223,9 @@ namespace Emby.Server.Implementations.Data
                 {
                     connection.RunInTransaction(db =>
                     {
-                        using (var statement = db.PrepareStatement("delete from users where guid=@id"))
+                        using (var statement = db.PrepareStatement("delete from LocalUsersv2 where Id=@id"))
                         {
-                            statement.TryBind("@id", user.Id.ToGuidBlob());
+                            statement.TryBind("@id", user.InternalId);
                             statement.MoveNext();
                         }
                     }, TransactionMode);

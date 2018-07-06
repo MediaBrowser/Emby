@@ -90,7 +90,6 @@ namespace Emby.Server.Implementations.Devices
             var sessions = _authRepo.Get(new AuthenticationInfoQuery
             {
                 //UserId = query.UserId
-                IsActive = true,
                 HasUser = true
 
             }).Items;
