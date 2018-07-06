@@ -676,7 +676,7 @@ namespace Emby.Dlna.Didl
                 return;
             }
 
-            var userdata = _userDataManager.GetUserData(user.Id, item);
+            var userdata = _userDataManager.GetUserData(user, item);
 
             if (userdata.PlaybackPositionTicks > 0)
             {

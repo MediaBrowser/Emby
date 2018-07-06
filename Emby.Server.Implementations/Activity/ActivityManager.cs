@@ -33,9 +33,9 @@ namespace Emby.Server.Implementations.Activity
             EventHelper.FireEventIfNotNull(EntryCreated, this, new GenericEventArgs<ActivityLogEntry>(entry), _logger);
         }
 
-        public QueryResult<ActivityLogEntry> GetActivityLogEntries(DateTime? minDate, int? startIndex, int? limit)
+        public QueryResult<ActivityLogEntry> GetActivityLogEntries(DateTime? minDate, bool? hasUserId, int? startIndex, int? limit)
         {
-            var result = _repo.GetActivityLogEntries(minDate, startIndex, limit);
+            var result = _repo.GetActivityLogEntries(minDate, hasUserId, startIndex, limit);
 
             foreach (var item in result.Items.Where(i => !i.UserId.Equals(Guid.Empty)))
             {
@@ -49,6 +49,11 @@ namespace Emby.Server.Implementations.Activity
             }
 
             return result;
+        }
+
+        public QueryResult<ActivityLogEntry> GetActivityLogEntries(DateTime? minDate, int? startIndex, int? limit)
+        {
+            return GetActivityLogEntries(minDate, null, startIndex, limit);
         }
     }
 }

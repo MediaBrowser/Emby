@@ -50,7 +50,7 @@ namespace MediaBrowser.Api.Images
         /// Gets or sets the id.
         /// </summary>
         /// <value>The id.</value>
-        [ApiMember(Name = "Id", Description = "Item Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
+        [ApiMember(Name = "Id", Description = "Item Id", IsRequired = true, DataType = "string", ParameterType = "path")]
         public Guid Id { get; set; }
     }
 
@@ -105,8 +105,8 @@ namespace MediaBrowser.Api.Images
     [Route("/Persons/{Name}/Images/{Type}/{Index}", "GET")]
     [Route("/Studios/{Name}/Images/{Type}", "GET")]
     [Route("/Studios/{Name}/Images/{Type}/{Index}", "GET")]
-    [Route("/Years/{Year}/Images/{Type}", "GET")]
-    [Route("/Years/{Year}/Images/{Type}/{Index}", "GET")]
+    ////[Route("/Years/{Year}/Images/{Type}", "GET")]
+    ////[Route("/Years/{Year}/Images/{Type}/{Index}", "GET")]
     [Route("/Artists/{Name}/Images/{Type}", "HEAD")]
     [Route("/Artists/{Name}/Images/{Type}/{Index}", "HEAD")]
     [Route("/Genres/{Name}/Images/{Type}", "HEAD")]
@@ -119,8 +119,8 @@ namespace MediaBrowser.Api.Images
     [Route("/Persons/{Name}/Images/{Type}/{Index}", "HEAD")]
     [Route("/Studios/{Name}/Images/{Type}", "HEAD")]
     [Route("/Studios/{Name}/Images/{Type}/{Index}", "HEAD")]
-    [Route("/Years/{Year}/Images/{Type}", "HEAD")]
-    [Route("/Years/{Year}/Images/{Type}/{Index}", "HEAD")]
+    ////[Route("/Years/{Year}/Images/{Type}", "HEAD")]
+    ////[Route("/Years/{Year}/Images/{Type}/{Index}", "HEAD")]
     public class GetItemByNameImage : ImageRequest
     {
         /// <summary>

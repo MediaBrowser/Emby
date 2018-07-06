@@ -3,7 +3,6 @@ using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Connect;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Net;
-using MediaBrowser.Model.Configuration;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,11 +15,6 @@ namespace MediaBrowser.Api
 {
     [Route("/Startup/Complete", "POST", Summary = "Reports that the startup wizard has been completed")]
     public class ReportStartupWizardComplete : IReturnVoid
-    {
-    }
-
-    [Route("/Startup/Info", "GET", Summary = "Gets initial server info")]
-    public class GetStartupInfo : IReturn<StartupInfo>
     {
     }
 
@@ -107,14 +101,6 @@ namespace MediaBrowser.Api
             }
         }
 
-        public object Get(GetStartupInfo request)
-        {
-            return new StartupInfo
-            {
-                HasMediaEncoder = !string.IsNullOrWhiteSpace(_mediaEncoder.EncoderPath)
-            };
-        }
-
         public object Get(GetStartupConfiguration request)
         {
             var result = new StartupConfiguration
@@ -181,11 +167,6 @@ namespace MediaBrowser.Api
         public string UICulture { get; set; }
         public string MetadataCountryCode { get; set; }
         public string PreferredMetadataLanguage { get; set; }
-    }
-
-    public class StartupInfo
-    {
-        public bool HasMediaEncoder { get; set; }
     }
 
     public class StartupUser

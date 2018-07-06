@@ -45,6 +45,7 @@
   "PluginUpdatedWithName": "{0} was updated",
   "PluginUninstalledWithName": "{0} was uninstalled",
   "ItemAddedWithName": "{0} was added to the library",
+  "MessageApplicationUpdatedTo": "Emby Server has been updated to {0}",
   "ItemRemovedWithName": "{0} was removed from the library",
   "LabelIpAddressValue": "Ip address: {0}",
   "DeviceOnlineWithName": "{0} is connected",

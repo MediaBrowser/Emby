@@ -12,8 +12,7 @@ using MediaBrowser.Model.Serialization;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-
-using MediaBrowser.Controller.IO;
+using MediaBrowser.Common;
 
 namespace MediaBrowser.Providers.Omdb
 {
@@ -23,13 +22,15 @@ namespace MediaBrowser.Providers.Omdb
         private readonly IJsonSerializer _jsonSerializer;
         private readonly IFileSystem _fileSystem;
         private readonly IServerConfigurationManager _configurationManager;
+        private readonly IApplicationHost _appHost;
 
-        public OmdbImageProvider(IJsonSerializer jsonSerializer, IHttpClient httpClient, IFileSystem fileSystem, IServerConfigurationManager configurationManager)
+        public OmdbImageProvider(IJsonSerializer jsonSerializer, IApplicationHost appHost, IHttpClient httpClient, IFileSystem fileSystem, IServerConfigurationManager configurationManager)
         {
             _jsonSerializer = jsonSerializer;
             _httpClient = httpClient;
             _fileSystem = fileSystem;
             _configurationManager = configurationManager;
+            _appHost = appHost;
         }
 
         public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
@@ -46,7 +47,7 @@ namespace MediaBrowser.Providers.Omdb
 
             var list = new List<RemoteImageInfo>();
 
-            var provider = new OmdbProvider(_jsonSerializer, _httpClient, _fileSystem, _configurationManager);
+            var provider = new OmdbProvider(_jsonSerializer, _httpClient, _fileSystem, _appHost, _configurationManager);
 
             if (!string.IsNullOrWhiteSpace(imdbId))
             {
@@ -56,7 +57,7 @@ namespace MediaBrowser.Providers.Omdb
                 {
                     if (item is Episode)
                     {
-                        // img.omdbapi.com returning 404's
+                        // img.omdbapi.com is returning 404's
                         list.Add(new RemoteImageInfo
                         {
                             ProviderName = Name,

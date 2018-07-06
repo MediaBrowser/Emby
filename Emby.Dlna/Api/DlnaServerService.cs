@@ -99,7 +99,7 @@ namespace Emby.Dlna.Api
     [Route("/Dlna/icons/{Filename}", "GET", Summary = "Gets a server icon")]
     public class GetIcon
     {
-        [ApiMember(Name = "UuId", Description = "Server UuId", IsRequired = false, DataType = "string", ParameterType = "path", Verb = "GET")]
+        [ApiMember(Name = "UuId", Description = "Server UuId", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
         public string UuId { get; set; }
 
         [ApiMember(Name = "Filename", Description = "The icon filename", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]

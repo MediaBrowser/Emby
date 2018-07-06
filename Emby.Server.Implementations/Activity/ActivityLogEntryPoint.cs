@@ -23,6 +23,7 @@ using MediaBrowser.Model.Notifications;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Controller.Devices;
+using MediaBrowser.Controller.Authentication;
 
 namespace Emby.Server.Implementations.Activity
 {
@@ -90,17 +91,6 @@ namespace Emby.Server.Implementations.Activity
             _deviceManager.CameraImageUploaded += _deviceManager_CameraImageUploaded;
 
             _appHost.ApplicationUpdated += _appHost_ApplicationUpdated;
-            _appHost.HasPendingRestartChanged += _appHost_HasPendingRestartChanged;
-        }
-
-        private void _appHost_HasPendingRestartChanged(object sender, EventArgs e)
-        {
-            CreateLogEntry(new ActivityLogEntry
-            {
-                Name = string.Format(_localization.GetLocalizedString("ServerNameNeedsToBeRestarted"), _appHost.Name),
-                Overview = "Please restart Emby Server to finish updating.",
-                Type = NotificationType.ServerRestartRequired.ToString()
-            });
         }
 
         void _deviceManager_CameraImageUploaded(object sender, GenericEventArgs<CameraImageUploadInfo> e)
@@ -275,13 +265,16 @@ namespace Emby.Server.Implementations.Activity
             });
         }
 
-        void _sessionManager_AuthenticationSucceeded(object sender, GenericEventArgs<AuthenticationRequest> e)
+        void _sessionManager_AuthenticationSucceeded(object sender, GenericEventArgs<AuthenticationResult> e)
         {
+            var user = e.Argument.User;
+
             CreateLogEntry(new ActivityLogEntry
             {
-                Name = string.Format(_localization.GetLocalizedString("AuthenticationSucceededWithUserName"), e.Argument.Username),
+                Name = string.Format(_localization.GetLocalizedString("AuthenticationSucceededWithUserName"), user.Name),
                 Type = "AuthenticationSucceeded",
-                ShortOverview = string.Format(_localization.GetLocalizedString("LabelIpAddressValue"), e.Argument.RemoteEndPoint)
+                ShortOverview = string.Format(_localization.GetLocalizedString("LabelIpAddressValue"), e.Argument.SessionInfo.RemoteEndPoint),
+                UserId = user.Id
             });
         }
 
@@ -525,7 +518,6 @@ namespace Emby.Server.Implementations.Activity
             _deviceManager.CameraImageUploaded -= _deviceManager_CameraImageUploaded;
 
             _appHost.ApplicationUpdated -= _appHost_ApplicationUpdated;
-            _appHost.HasPendingRestartChanged -= _appHost_HasPendingRestartChanged;
         }
 
         /// <summary>

@@ -128,7 +128,7 @@ namespace Emby.Server.Implementations.Services
             }
         }
 
-        private static bool RequireqRequestStream(Type requestType)
+        public static bool RequireqRequestStream(Type requestType)
         {
             var requiresRequestStreamTypeInfo = typeof(IRequiresRequestStream).GetTypeInfo();
 

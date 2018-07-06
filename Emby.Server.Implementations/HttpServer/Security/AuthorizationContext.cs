@@ -159,7 +159,7 @@ namespace Emby.Server.Implementations.HttpServer.Security
 
                     if (updateToken)
                     {
-                        _authRepo.Update(tokenInfo, CancellationToken.None);
+                        _authRepo.Update(tokenInfo);
                     }
                 }
                 else

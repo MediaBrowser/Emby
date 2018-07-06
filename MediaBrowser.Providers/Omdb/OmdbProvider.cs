@@ -14,6 +14,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Common;
 
 namespace MediaBrowser.Providers.Omdb
 {
@@ -24,13 +25,15 @@ namespace MediaBrowser.Providers.Omdb
         private readonly IServerConfigurationManager _configurationManager;
         private readonly IHttpClient _httpClient;
         private readonly CultureInfo _usCulture = new CultureInfo("en-US");
+        private readonly IApplicationHost _appHost;
 
-        public OmdbProvider(IJsonSerializer jsonSerializer, IHttpClient httpClient, IFileSystem fileSystem, IServerConfigurationManager configurationManager)
+        public OmdbProvider(IJsonSerializer jsonSerializer, IHttpClient httpClient, IFileSystem fileSystem, IApplicationHost appHost, IServerConfigurationManager configurationManager)
         {
             _jsonSerializer = jsonSerializer;
             _httpClient = httpClient;
             _fileSystem = fileSystem;
             _configurationManager = configurationManager;
+            _appHost = appHost;
         }
 
         public async Task Fetch<T>(MetadataResult<T> itemResult, string imdbId, string language, string country, CancellationToken cancellationToken)
@@ -265,9 +268,16 @@ namespace MediaBrowser.Providers.Omdb
             return false;
         }
 
-        public static string GetOmdbUrl(string query, CancellationToken cancellationToken)
+        public static string GetOmdbUrl(string query, IApplicationHost appHost, CancellationToken cancellationToken)
         {
-            var url = "https://www.omdbapi.com?apikey=fe53f97e";
+            var baseUrl = appHost.GetValue("omdb_baseurl");
+
+            if (string.IsNullOrEmpty(baseUrl))
+            {
+                baseUrl = "https://www.omdbapi.com";
+            }
+
+            var url = baseUrl + "?apikey=fe53f97e";
 
             if (!string.IsNullOrWhiteSpace(query))
             {
@@ -299,7 +309,7 @@ namespace MediaBrowser.Providers.Omdb
                 }
             }
 
-            var url = GetOmdbUrl(string.Format("i={0}&plot=short&tomatoes=true&r=json", imdbParam), cancellationToken);
+            var url = GetOmdbUrl(string.Format("i={0}&plot=short&tomatoes=true&r=json", imdbParam), _appHost, cancellationToken);
 
             using (var response = await GetOmdbResponse(_httpClient, url, cancellationToken).ConfigureAwait(false))
             {
@@ -336,7 +346,7 @@ namespace MediaBrowser.Providers.Omdb
                 }
             }
 
-            var url = GetOmdbUrl(string.Format("i={0}&season={1}&detail=full", imdbParam, seasonId), cancellationToken);
+            var url = GetOmdbUrl(string.Format("i={0}&season={1}&detail=full", imdbParam, seasonId), _appHost, cancellationToken);
 
             using (var response = await GetOmdbResponse(_httpClient, url, cancellationToken).ConfigureAwait(false))
             {

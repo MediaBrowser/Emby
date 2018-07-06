@@ -26,6 +26,8 @@ namespace MediaBrowser.Api.System
 
         [ApiMember(Name = "MinDate", Description = "Optional. The minimum date. Format = ISO", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "POST")]
         public string MinDate { get; set; }
+
+        public bool? HasUserId { get; set; }
     }
 
     [Authenticated(Roles = "Admin")]
@@ -44,7 +46,7 @@ namespace MediaBrowser.Api.System
                 (DateTime?)null :
                 DateTime.Parse(request.MinDate, null, DateTimeStyles.RoundtripKind).ToUniversalTime();
 
-            var result = _activityManager.GetActivityLogEntries(minDate, request.StartIndex, request.Limit);
+            var result = _activityManager.GetActivityLogEntries(minDate, request.HasUserId, request.StartIndex, request.Limit);
 
             return ToOptimizedResult(result);
         }

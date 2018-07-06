@@ -72,7 +72,7 @@ namespace Emby.Server.Implementations.Session
 
         public event EventHandler<GenericEventArgs<AuthenticationRequest>> AuthenticationFailed;
 
-        public event EventHandler<GenericEventArgs<AuthenticationRequest>> AuthenticationSucceeded;
+        public event EventHandler<GenericEventArgs<AuthenticationResult>> AuthenticationSucceeded;
 
         /// <summary>
         /// Occurs when [playback start].
@@ -572,7 +572,7 @@ namespace Emby.Server.Implementations.Session
             {
                 foreach (var user in users)
                 {
-                    OnPlaybackStart(user.Id, libraryItem);
+                    OnPlaybackStart(user, libraryItem);
                 }
             }
 
@@ -599,9 +599,9 @@ namespace Emby.Server.Implementations.Session
         /// </summary>
         /// <param name="userId">The user identifier.</param>
         /// <param name="item">The item.</param>
-        private void OnPlaybackStart(Guid userId, BaseItem item)
+        private void OnPlaybackStart(User user, BaseItem item)
         {
-            var data = _userDataManager.GetUserData(userId, item);
+            var data = _userDataManager.GetUserData(user, item);
 
             data.PlayCount++;
             data.LastPlayedDate = DateTime.UtcNow;
@@ -618,7 +618,7 @@ namespace Emby.Server.Implementations.Session
                 data.Played = false;
             }
 
-            _userDataManager.SaveUserData(userId, item, data, UserDataSaveReason.PlaybackStart, CancellationToken.None);
+            _userDataManager.SaveUserData(user, item, data, UserDataSaveReason.PlaybackStart, CancellationToken.None);
         }
 
         public Task OnPlaybackProgress(PlaybackProgressInfo info)
@@ -684,7 +684,7 @@ namespace Emby.Server.Implementations.Session
 
         private void OnPlaybackProgress(User user, BaseItem item, PlaybackProgressInfo info)
         {
-            var data = _userDataManager.GetUserData(user.Id, item);
+            var data = _userDataManager.GetUserData(user, item);
 
             var positionTicks = info.PositionTicks;
 
@@ -694,7 +694,7 @@ namespace Emby.Server.Implementations.Session
 
                 UpdatePlaybackSettings(user, info, data);
 
-                _userDataManager.SaveUserData(user.Id, item, data, UserDataSaveReason.PlaybackProgress, CancellationToken.None);
+                _userDataManager.SaveUserData(user, item, data, UserDataSaveReason.PlaybackProgress, CancellationToken.None);
             }
         }
 
@@ -803,7 +803,7 @@ namespace Emby.Server.Implementations.Session
             {
                 foreach (var user in users)
                 {
-                    playedToCompletion = OnPlaybackStopped(user.Id, libraryItem, info.PositionTicks, info.Failed);
+                    playedToCompletion = OnPlaybackStopped(user, libraryItem, info.PositionTicks, info.Failed);
                 }
             }
 
@@ -835,13 +835,13 @@ namespace Emby.Server.Implementations.Session
             }, _logger);
         }
 
-        private bool OnPlaybackStopped(Guid userId, BaseItem item, long? positionTicks, bool playbackFailed)
+        private bool OnPlaybackStopped(User user, BaseItem item, long? positionTicks, bool playbackFailed)
         {
             bool playedToCompletion = false;
 
             if (!playbackFailed)
             {
-                var data = _userDataManager.GetUserData(userId, item);
+                var data = _userDataManager.GetUserData(user, item);
 
                 if (positionTicks.HasValue)
                 {
@@ -856,7 +856,7 @@ namespace Emby.Server.Implementations.Session
                     playedToCompletion = true;
                 }
 
-                _userDataManager.SaveUserData(userId, item, data, UserDataSaveReason.PlaybackFinished, CancellationToken.None);
+                _userDataManager.SaveUserData(user, item, data, UserDataSaveReason.PlaybackFinished, CancellationToken.None);
             }
 
             return playedToCompletion;
@@ -1342,8 +1342,6 @@ namespace Emby.Server.Implementations.Session
 
             var token = GetAuthorizationToken(user, request.DeviceId, request.App, request.AppVersion, request.DeviceName);
 
-            EventHelper.FireEventIfNotNull(AuthenticationSucceeded, this, new GenericEventArgs<AuthenticationRequest>(request), _logger);
-
             var session = LogSessionActivity(request.App,
                 request.AppVersion,
                 request.DeviceId,
@@ -1351,13 +1349,17 @@ namespace Emby.Server.Implementations.Session
                 request.RemoteEndPoint,
                 user);
 
-            return new AuthenticationResult
+            var returnResult = new AuthenticationResult
             {
                 User = _userManager.GetUserDto(user, request.RemoteEndPoint),
                 SessionInfo = session,
                 AccessToken = token,
                 ServerId = _appHost.SystemId
             };
+
+            EventHelper.FireEventIfNotNull(AuthenticationSucceeded, this, new GenericEventArgs<AuthenticationResult>(returnResult), _logger);
+
+            return returnResult;
         }
 
         private string GetAuthorizationToken(User user, string deviceId, string app, string appVersion, string deviceName)
@@ -1365,36 +1367,34 @@ namespace Emby.Server.Implementations.Session
             var existing = _authRepo.Get(new AuthenticationInfoQuery
             {
                 DeviceId = deviceId,
-                IsActive = true,
                 UserId = user.Id,
                 Limit = 1
 
             }).Items.FirstOrDefault();
 
-            if (existing != null)
+            var allExistingForDevice = _authRepo.Get(new AuthenticationInfoQuery
             {
-                var allExistingForDevice = _authRepo.Get(new AuthenticationInfoQuery
-                {
-                    DeviceId = deviceId,
-                    IsActive = true
+                DeviceId = deviceId
 
-                }).Items;
+            }).Items;
 
-                foreach (var auth in allExistingForDevice)
+            foreach (var auth in allExistingForDevice)
+            {
+                if (existing == null || !string.Equals(auth.AccessToken, existing.AccessToken, StringComparison.Ordinal))
                 {
-                    if (!string.Equals(auth.AccessToken, existing.AccessToken, StringComparison.Ordinal))
+                    try
                     {
-                        try
-                        {
-                            Logout(auth);
-                        }
-                        catch
-                        {
+                        Logout(auth);
+                    }
+                    catch
+                    {
 
-                        }
                     }
                 }
+            }
 
+            if (existing != null)
+            {
                 _logger.Info("Reissuing access token: " + existing.AccessToken);
                 return existing.AccessToken;
             }
@@ -1410,13 +1410,12 @@ namespace Emby.Server.Implementations.Session
                 DeviceId = deviceId,
                 DeviceName = deviceName,
                 UserId = user.Id,
-                IsActive = true,
                 AccessToken = Guid.NewGuid().ToString("N"),
                 UserName = user.Name
             };
 
             _logger.Info("Creating new access token for user {0}", user.Id);
-            _authRepo.Create(newToken, CancellationToken.None);
+            _authRepo.Create(newToken);
 
             return newToken.AccessToken;
         }
@@ -1449,10 +1448,7 @@ namespace Emby.Server.Implementations.Session
 
             _logger.Info("Logging out access token {0}", existing.AccessToken);
 
-            existing.IsActive = false;
-            existing.DateRevoked = DateTime.UtcNow;
-
-            _authRepo.Update(existing, CancellationToken.None);
+            _authRepo.Delete(existing);
 
             var sessions = Sessions
                 .Where(i => string.Equals(i.DeviceId, existing.DeviceId, StringComparison.OrdinalIgnoreCase))
@@ -1477,7 +1473,6 @@ namespace Emby.Server.Implementations.Session
 
             var existing = _authRepo.Get(new AuthenticationInfoQuery
             {
-                IsActive = true,
                 UserId = userId
             });
 

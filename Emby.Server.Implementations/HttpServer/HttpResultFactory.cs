@@ -383,7 +383,7 @@ namespace Emby.Server.Implementations.HttpServer
             {
                 zipStream.Write(buffer, 0, buffer.Length);
                 zipStream.Dispose();
-                
+
                 return ms.ToArray();
             }
         }
@@ -569,10 +569,10 @@ namespace Emby.Server.Implementations.HttpServer
                 return hasHeaders;
             }
 
-            if (!string.IsNullOrWhiteSpace(rangeHeader))
-            {
-                var stream = await factoryFn().ConfigureAwait(false);
+            var stream = await factoryFn().ConfigureAwait(false);
 
+            if (!string.IsNullOrWhiteSpace(rangeHeader) && stream.CanSeek)
+            {
                 var hasHeaders = new RangeRequestWriter(rangeHeader, options.ContentLength, stream, contentType, isHeadRequest, _logger)
                 {
                     OnComplete = options.OnComplete
@@ -583,15 +583,21 @@ namespace Emby.Server.Implementations.HttpServer
             }
             else
             {
-                var stream = await factoryFn().ConfigureAwait(false);
+                try
+                {
+                    responseHeaders["Content-Length"] = (options.ContentLength ?? stream.Length).ToString(UsCulture);
+                }
+                catch (NotSupportedException)
+                {
 
-                responseHeaders["Content-Length"] = stream.Length.ToString(UsCulture);
+                }
 
                 if (isHeadRequest)
                 {
-                    stream.Dispose();
-
-                    return GetHttpResult(requestContext, Array.Empty<byte>(), contentType, true, responseHeaders);
+                    using (stream)
+                    {
+                        return GetHttpResult(requestContext, Array.Empty<byte>(), contentType, true, responseHeaders);
+                    }
                 }
 
                 var hasHeaders = new StreamWriter(stream, contentType, _logger)
