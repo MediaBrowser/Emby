@@ -14,7 +14,7 @@ using MediaBrowser.Model.Extensions;
 namespace MediaBrowser.Api
 {
     [Route("/Users/{UserId}/Suggestions", "GET", Summary = "Gets items based on a query.")]
-    public class GetSuggestedItems : IReturn<QueryResult<BaseItem>>
+    public class GetSuggestedItems : IReturn<QueryResult<BaseItemDto>>
     {
         public string MediaType { get; set; }
         public string Type { get; set; }

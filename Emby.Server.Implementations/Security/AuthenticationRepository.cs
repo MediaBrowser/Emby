@@ -33,6 +33,8 @@ namespace Emby.Server.Implementations.Security
             {
                 RunDefaultInitialization(connection);
 
+                var tableNewlyCreated = !TableExists(connection, "Tokens");
+
                 string[] queries = {
 
                                "create table if not exists Tokens (Id INTEGER PRIMARY KEY, AccessToken TEXT NOT NULL, DeviceId TEXT NOT NULL, AppName TEXT NOT NULL, AppVersion TEXT NOT NULL, DeviceName TEXT NOT NULL, UserId TEXT, UserName TEXT, IsActive BIT NOT NULL, DateCreated DATETIME NOT NULL, DateLastActivity DATETIME NOT NULL)",
@@ -45,15 +47,15 @@ namespace Emby.Server.Implementations.Security
 
                 connection.RunQueries(queries);
 
-                TryMigrate(connection);
+                TryMigrate(connection, tableNewlyCreated);
             }
         }
 
-        private void TryMigrate(ManagedConnection connection)
+        private void TryMigrate(ManagedConnection connection, bool tableNewlyCreated)
         {
             try
             {
-                if (TableExists(connection, "AccessTokens"))
+                if (tableNewlyCreated && TableExists(connection, "AccessTokens"))
                 {
                     connection.RunInTransaction(db =>
                     {
@@ -68,22 +70,11 @@ namespace Emby.Server.Implementations.Security
                     connection.RunQueries(new[]
                     {
                         "update accesstokens set DateLastActivity=DateCreated where DateLastActivity is null",
-                        "INSERT INTO Tokens (AccessToken, DeviceId, AppName, AppVersion, DeviceName, UserId, UserName, IsActive, DateCreated, DateLastActivity) SELECT AccessToken, DeviceId, AppName, AppVersion, DeviceName, UserId, UserName, IsActive, DateCreated, DateLastActivity FROM AccessTokens where deviceid not null and devicename not null and appname not null and isactive=1",
-                        "drop table if exists AccessTokens"
+                        "update accesstokens set DeviceName='Unknown' where DeviceName is null",
+                        "update accesstokens set AppName='Unknown' where AppName is null",
+                        "update accesstokens set AppVersion='1' where AppVersion is null",
+                        "INSERT INTO Tokens (AccessToken, DeviceId, AppName, AppVersion, DeviceName, UserId, UserName, IsActive, DateCreated, DateLastActivity) SELECT AccessToken, DeviceId, AppName, AppVersion, DeviceName, UserId, UserName, IsActive, DateCreated, DateLastActivity FROM AccessTokens where deviceid not null and devicename not null and appname not null and isactive=1"
                     });
-                }
-                else if (!_config.Configuration.AuthDbUpgraded)
-                {
-                    connection.RunQueries(new[]
-                    {
-                        "delete from tokens where isactive=0"
-                    });
-                }
-
-                if (!_config.Configuration.AuthDbUpgraded)
-                {
-                    _config.Configuration.AuthDbUpgraded = true;
-                    _config.SaveConfiguration();
                 }
             }
             catch (Exception ex)

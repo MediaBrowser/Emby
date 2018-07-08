@@ -639,7 +639,7 @@ namespace MediaBrowser.Api.LiveTv
     [Authenticated]
     public class GetChannelMappingOptions
     {
-        [ApiMember(Name = "Id", Description = "Provider id", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "GET")]
+        [ApiMember(Name = "Id", Description = "Provider id", IsRequired = true, DataType = "string", ParameterType = "query")]
         public string ProviderId { get; set; }
     }
 
@@ -647,7 +647,7 @@ namespace MediaBrowser.Api.LiveTv
     [Authenticated]
     public class SetChannelMapping
     {
-        [ApiMember(Name = "Id", Description = "Provider id", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "GET")]
+        [ApiMember(Name = "Id", Description = "Provider id", IsRequired = true, DataType = "string", ParameterType = "query")]
         public string ProviderId { get; set; }
         public string TunerChannelId { get; set; }
         public string ProviderChannelId { get; set; }

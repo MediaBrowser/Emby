@@ -201,6 +201,9 @@ namespace EmbyServer.SocketSharp
                 ctx.Response.StatusCode = 200;
                 ctx.Response.Close();
             }
+            catch (ObjectDisposedException)
+            {
+            }
             catch (Exception ex)
             {
                 _logger.ErrorException("Error closing web socket response", ex);

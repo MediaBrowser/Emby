@@ -4127,11 +4127,11 @@ namespace Emby.Server.Implementations.Data
                     {
                         if (query.IsPlayed.Value)
                         {
-                            //whereClauses.Add("PresentationUniqueKey in (select SeriesPresentationUniqueKey from TypedBaseitems S where S.SeriesPresentationUniqueKey = A.PresentationUniqueKey and UserDataKey not in (select key from userdatas where UserId=@UserId and Played=0))");
+                            whereClauses.Add("PresentationUniqueKey not in (select S.SeriesPresentationUniqueKey from TypedBaseitems S left join UserDatas UD on S.UserDataKey=UD.Key And UD.UserId=@UserId where Coalesce(UD.Played, 0)=0 and S.IsFolder=0 and S.SeriesPresentationUniqueKey not null)");
                         }
                         else
                         {
-                            //whereClauses.Add("PresentationUniqueKey in (select SeriesPresentationUniqueKey from TypedBaseitems S where S.SeriesPresentationUniqueKey = A.PresentationUniqueKey and UserDataKey not in (select key from userdatas where UserId=@UserId and Played=1))");
+                            whereClauses.Add("PresentationUniqueKey in (select S.SeriesPresentationUniqueKey from TypedBaseitems S left join UserDatas UD on S.UserDataKey=UD.Key And UD.UserId=@UserId where Coalesce(UD.Played, 0)=0 and S.IsFolder=0 and S.SeriesPresentationUniqueKey not null)");
                         }
                     }
                     else
