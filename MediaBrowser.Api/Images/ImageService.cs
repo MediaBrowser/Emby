@@ -65,7 +65,7 @@ namespace MediaBrowser.Api.Images
         /// Gets or sets the id.
         /// </summary>
         /// <value>The id.</value>
-        [ApiMember(Name = "Id", Description = "Item Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
+        [ApiMember(Name = "Id", Description = "Item Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
         public string Id { get; set; }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace MediaBrowser.Api.Images
         /// Gets or sets the new index.
         /// </summary>
         /// <value>The new index.</value>
-        [ApiMember(Name = "NewIndex", Description = "The new image index", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "GET")]
+        [ApiMember(Name = "NewIndex", Description = "The new image index", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "POST")]
         public int NewIndex { get; set; }
     }
 

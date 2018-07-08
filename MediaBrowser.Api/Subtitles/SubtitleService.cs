@@ -115,7 +115,7 @@ namespace MediaBrowser.Api.Subtitles
         [ApiMember(Name = "Index", Description = "The subtitle stream index", IsRequired = true, DataType = "int", ParameterType = "path", Verb = "GET")]
         public int Index { get; set; }
 
-        [ApiMember(Name = "SegmentLength", Description = "The subtitle srgment length", IsRequired = true, DataType = "int", ParameterType = "path", Verb = "GET")]
+        [ApiMember(Name = "SegmentLength", Description = "The subtitle srgment length", IsRequired = true, DataType = "int", ParameterType = "query", Verb = "GET")]
         public int SegmentLength { get; set; }
     }
 

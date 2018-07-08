@@ -444,6 +444,11 @@ namespace Emby.Dlna.PlayTo
 
                 var avCommands = await GetAVProtocolAsync(cancellationToken).ConfigureAwait(false);
 
+                if (avCommands == null)
+                {
+                    return;
+                }
+
                 var transportState = await GetTransportInfo(avCommands, cancellationToken).ConfigureAwait(false);
 
                 if (_disposed)

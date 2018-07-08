@@ -1,5 +1,5 @@
 {
-    "Alerts": "Alerts",
+    "Alerts": "Alertes",
     "LabelPrevious": "Pr\u00e9c\u00e9dent",
     "LabelFinish": "Terminer",
     "LabelNext": "Suivant",
@@ -1752,7 +1752,7 @@
     "ScanLibrary": "Actualiser la m\u00e9diath\u00e8que",
     "EnableStreamLooping": "Reboucler les streaming en direct",
     "EnableStreamLoopingHelp": "Activez cette option si les streaming en direct ne contiennent que quelques secondes de donn\u00e9es et doivent \u00eatre redemand\u00e9s continuellement. N'activez pas cette option sans raison car elle peut causer des probl\u00e8mes.",
-    "HttpsRequiresCert": "Pour activer HTTPS pour les connexions externes, vous devrez fournir un certificat SSL v\u00e9rifi\u00e9, comme ceux fournis par Let's Encrypt.",
+    "HttpsRequiresCert": "Pour activer les connexions s\u00e9curis\u00e9es, vous devrez fournir un certificat SSL v\u00e9rifi\u00e9, comme ceux fournis par Let's Encrypt. Veuillez fournir un certificat ou d\u00e9sactiver les connexions s\u00e9curis\u00e9es.",
     "HeaderLatestDownloadedVideos": "Derni\u00e8res vid\u00e9os t\u00e9l\u00e9charg\u00e9es",
     "ServerRestartNeededAfterPluginInstall": "Le serveur Emby devra \u00eatre red\u00e9marr\u00e9 apr\u00e8s l'installation d'une extension.",
     "PluginInstalledMessage": "Cette extension a \u00e9t\u00e9 install\u00e9e avec succ\u00e8s. Le serveur Emby doit \u00eatre red\u00e9marr\u00e9 afin que les modifications soient prises en compte.",

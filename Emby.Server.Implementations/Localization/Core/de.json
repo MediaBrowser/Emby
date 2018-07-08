@@ -5,7 +5,7 @@
     "CameraImageUploadedFrom": "Ein neues Bild wurde hochgeladen von {0}",
     "ServerNameNeedsToBeRestarted": "{0} muss neu gestartet werden",
     "NewVersionIsAvailable": "Eine neue Version von Emby Server steht zum Download bereit.",
-    "MessageApplicationUpdatedTo": "Emby Server has been updated to {0}",
+    "MessageApplicationUpdatedTo": "Emby Server wurde auf Version {0} aktualisiert",
     "Latest": "Neueste",
     "ValueSpecialEpisodeName": "Special - {0}",
     "Inherit": "\u00dcbernehmen",

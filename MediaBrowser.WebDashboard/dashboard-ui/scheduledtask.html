@@ -23,8 +23,8 @@
             </div>
         </div>
     </div>
-    <div data-role="popup" id="popupAddTrigger" class="popup" style="min-width: 300px;">
-        <form class="addTriggerForm">
+    <div data-role="popup" id="popupAddTrigger" class="dialog dialog-fixedSize dialog-small hide" style="position: fixed; top: 10%;">
+        <form class="addTriggerForm" style="padding:1em;">
             <div class="ui-bar-a" style="text-align: center; padding: 0 20px;">
                 <h3>${HeaderAddScheduledTaskTrigger}</h3>
             </div>
@@ -78,7 +78,7 @@
                     <button type="submit" data-icon="check">
                         ${ButtonAdd}
                     </button>
-                    <button type="button" data-icon="delete" onclick="$(this).parents('.popup').popup('close');">
+                    <button type="button" data-icon="delete" onclick="$(this).parents('.dialog').addClass('hide');">
                         ${ButtonCancel}
                     </button>
                 </div>
