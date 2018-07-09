@@ -1,5 +1,6 @@
 {
     "Alerts": "Alerts",
+    "ChangingMetadataImageSettingsNewContent": "Changes to metadata or artwork downloading settings will only apply to new content added to your library. To apply the changes to existing titles, you'll need to refresh their metadata manually.",
     "LabelPrevious": "\u00d6nceki",
     "LabelFinish": "Bitir",
     "LabelNext": "Sonraki",
