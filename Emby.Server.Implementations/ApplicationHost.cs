@@ -1296,7 +1296,8 @@ namespace Emby.Server.Implementations
                 ProcessFactory,
                 EnvironmentInfo,
                 BlurayExaminer,
-                assemblyInfo);
+                assemblyInfo,
+                this);
 
             MediaEncoder = mediaEncoder;
             RegisterSingleInstance(MediaEncoder);

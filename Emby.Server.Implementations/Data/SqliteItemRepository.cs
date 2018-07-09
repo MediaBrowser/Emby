@@ -4842,11 +4842,11 @@ namespace Emby.Server.Implementations.Data
             {
                 if (query.IsPlaceHolder.Value)
                 {
-                    whereClauses.Add("data like '\"IsPlaceHolder\":true");
+                    whereClauses.Add("data like '\"IsPlaceHolder\":true'");
                 }
                 else
                 {
-                    whereClauses.Add("data not like '\"IsPlaceHolder\":true");
+                    whereClauses.Add("data not like '\"IsPlaceHolder\":true'");
                 }
             }
 

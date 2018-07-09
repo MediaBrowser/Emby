@@ -1,5 +1,6 @@
 {
     "Alerts": "\u8b66\u544a",
+    "ChangingMetadataImageSettingsNewContent": "Changes to metadata or artwork downloading settings will only apply to new content added to your library. To apply the changes to existing titles, you'll need to refresh their metadata manually.",
     "LabelPrevious": "\u4e0a\u4e00\u4e2a",
     "LabelFinish": "\u5b8c\u6210",
     "LabelNext": "\u4e0b\u4e00\u4e2a",
