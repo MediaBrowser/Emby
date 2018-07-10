@@ -12,6 +12,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using MediaBrowser.Providers.Manager;
 
 namespace MediaBrowser.Providers.Movies
 {
@@ -185,7 +186,7 @@ namespace MediaBrowser.Providers.Movies
                             // These dates are always in this exact format
                             if (DateTime.TryParseExact(i.release_date, "yyyy-MM-dd", EnUs, DateTimeStyles.None, out r))
                                 {
-                                    remoteResult.PremiereDate = r.ToUniversalTime();
+                                    remoteResult.PremiereDate = TimeZoneInfo.ConvertTimeToUtc(r, ProviderUtils.GetUsEasternTimeZoneInfo());
                                     remoteResult.ProductionYear = remoteResult.PremiereDate.Value.Year;
                                 }
                             }
@@ -240,7 +241,7 @@ namespace MediaBrowser.Providers.Movies
                             // These dates are always in this exact format
                             if (DateTime.TryParseExact(i.first_air_date, "yyyy-MM-dd", EnUs, DateTimeStyles.None, out r))
                                 {
-                                    remoteResult.PremiereDate = r.ToUniversalTime();
+                                    remoteResult.PremiereDate = TimeZoneInfo.ConvertTimeToUtc(r, ProviderUtils.GetUsEasternTimeZoneInfo());
                                     remoteResult.ProductionYear = remoteResult.PremiereDate.Value.Year;
                                 }
                             }

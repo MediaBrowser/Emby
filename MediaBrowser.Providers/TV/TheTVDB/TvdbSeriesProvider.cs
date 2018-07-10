@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using MediaBrowser.Model.Globalization;
 using MediaBrowser.Model.Xml;
+using MediaBrowser.Providers.Manager;
 
 namespace MediaBrowser.Providers.TV
 {
@@ -929,7 +930,7 @@ namespace MediaBrowser.Providers.TV
                                     DateTime date;
                                     if (DateTime.TryParse(val, out date))
                                     {
-                                        airDate = date.ToUniversalTime();
+                                        airDate = TimeZoneInfo.ConvertTimeToUtc(date, ProviderUtils.GetUsEasternTimeZoneInfo());
                                     }
                                 }
 
@@ -1271,7 +1272,7 @@ namespace MediaBrowser.Providers.TV
                                     DateTime date;
                                     if (DateTime.TryParse(val, out date))
                                     {
-                                        date = date.ToUniversalTime();
+                                        date = TimeZoneInfo.ConvertTimeToUtc(date, ProviderUtils.GetUsEasternTimeZoneInfo());
 
                                         item.PremiereDate = date;
                                         item.ProductionYear = date.Year;

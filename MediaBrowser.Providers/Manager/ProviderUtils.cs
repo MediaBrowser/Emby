@@ -206,6 +206,39 @@ namespace MediaBrowser.Providers.Manager
             }
         }
 
+        public static TimeZoneInfo GetUsEasternTimeZoneInfo()
+        {
+            TimeZoneInfo easternZone = null;
+
+            try
+            {
+                // Windows
+                easternZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+            }
+            catch (TimeZoneNotFoundException)
+            {
+            }
+
+            if (easternZone == null)
+            {
+                try
+                {
+                    // Mono/Linux
+                    easternZone = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
+                }
+                catch (TimeZoneNotFoundException)
+                {
+                }
+            }
+
+            if (easternZone == null)
+            {
+                easternZone = TimeZoneInfo.CreateCustomTimeZone("Custom_EST", TimeSpan.FromHours(-5), "Custom_EST", "Custom_EST");
+            }
+
+            return easternZone;
+        }
+
         private static void MergePeople(List<PersonInfo> source, List<PersonInfo> target)
         {
             foreach (var person in target)

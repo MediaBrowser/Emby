@@ -23,6 +23,7 @@ using MediaBrowser.Controller.IO;
 using MediaBrowser.Model.Globalization;
 using MediaBrowser.Model.Net;
 using MediaBrowser.Model.Extensions;
+using MediaBrowser.Providers.Manager;
 
 namespace MediaBrowser.Providers.Movies
 {
@@ -94,7 +95,7 @@ namespace MediaBrowser.Providers.Movies
                     // These dates are always in this exact format
                     if (DateTime.TryParse(obj.release_date, _usCulture, DateTimeStyles.None, out r))
                     {
-                        remoteResult.PremiereDate = r.ToUniversalTime();
+                        remoteResult.PremiereDate = TimeZoneInfo.ConvertTimeToUtc(r, ProviderUtils.GetUsEasternTimeZoneInfo());
                         remoteResult.ProductionYear = remoteResult.PremiereDate.Value.Year;
                     }
                 }
