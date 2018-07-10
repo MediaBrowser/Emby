@@ -47,6 +47,7 @@ using MediaBrowser.Model.Tasks;
 using Emby.Server.Implementations.Playlists;
 using MediaBrowser.Providers.MediaInfo;
 using MediaBrowser.Controller;
+using MediaBrowser.Providers.Manager;
 
 namespace Emby.Server.Implementations.Library
 {
@@ -2456,7 +2457,8 @@ namespace Emby.Server.Implementations.Library
                 {
                     if (episodeInfo.Year.HasValue && episodeInfo.Month.HasValue && episodeInfo.Day.HasValue)
                     {
-                        episode.PremiereDate = new DateTime(episodeInfo.Year.Value, episodeInfo.Month.Value, episodeInfo.Day.Value).ToUniversalTime();
+                        var infoDate = new DateTime(episodeInfo.Year.Value, episodeInfo.Month.Value, episodeInfo.Day.Value);
+                        episode.PremiereDate = TimeZoneInfo.ConvertTimeToUtc(infoDate, ProviderUtils.GetUsEasternTimeZoneInfo());
                     }
 
                     if (episode.PremiereDate.HasValue)
