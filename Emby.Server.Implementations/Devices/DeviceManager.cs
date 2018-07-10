@@ -128,6 +128,7 @@ namespace Emby.Server.Implementations.Devices
                 Id = authInfo.DeviceId,
                 LastUserId = authInfo.UserId,
                 LastUserName = authInfo.UserName,
+                ReportedName = authInfo.DeviceName,
                 Name = authInfo.DeviceName,
                 DateLastActivity = authInfo.DateLastActivity,
                 IconUrl = caps == null ? null : caps.IconUrl

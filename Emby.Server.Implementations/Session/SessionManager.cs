@@ -141,7 +141,6 @@ namespace Emby.Server.Implementations.Session
 
                 if (capabilities != null)
                 {
-                    info.AppIconUrl = capabilities.IconUrl;
                     ReportCapabilities(info, capabilities, false);
                 }
             }
@@ -399,6 +398,8 @@ namespace Emby.Server.Implementations.Session
             sessionInfo.UserName = user == null ? null : user.Name;
             sessionInfo.UserPrimaryImageTag = user == null ? null : GetImageCacheTag(user, ImageType.Primary);
             sessionInfo.RemoteEndPoint = remoteEndPoint;
+            sessionInfo.Client = appName;
+            sessionInfo.DeviceName = deviceName;
             sessionInfo.ApplicationVersion = appVersion;
 
             if (user == null)

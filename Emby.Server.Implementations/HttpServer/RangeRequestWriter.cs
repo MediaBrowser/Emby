@@ -58,7 +58,7 @@ namespace Emby.Server.Implementations.HttpServer
         /// <param name="source">The source.</param>
         /// <param name="contentType">Type of the content.</param>
         /// <param name="isHeadRequest">if set to <c>true</c> [is head request].</param>
-        public RangeRequestWriter(string rangeHeader, long? contentLength, Stream source, string contentType, bool isHeadRequest, ILogger logger)
+        public RangeRequestWriter(string rangeHeader, long contentLength, Stream source, string contentType, bool isHeadRequest, ILogger logger)
         {
             if (string.IsNullOrEmpty(contentType))
             {
@@ -82,11 +82,11 @@ namespace Emby.Server.Implementations.HttpServer
         /// <summary>
         /// Sets the range values.
         /// </summary>
-        private void SetRangeValues(long? contentLength)
+        private void SetRangeValues(long contentLength)
         {
             var requestedRange = RequestedRanges[0];
 
-            TotalContentLength = contentLength ?? SourceStream.Length;
+            TotalContentLength = contentLength;
 
             // If the requested range is "0-", we can optimize by just doing a stream copy
             if (!requestedRange.Value.HasValue)
