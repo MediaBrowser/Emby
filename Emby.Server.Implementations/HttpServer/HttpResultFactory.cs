@@ -702,7 +702,7 @@ namespace Emby.Server.Implementations.HttpServer
 
                 if (DateTime.TryParse(ifModifiedSinceHeader, out ifModifiedSince))
                 {
-                    if (IsNotModified(ifModifiedSince.ToUniversalTime(), cacheDuration, lastDateModified))
+                    if (IsNotModified(ifModifiedSince, cacheDuration, lastDateModified))
                     {
                         return true;
                     }
