@@ -571,9 +571,22 @@ namespace Emby.Server.Implementations.HttpServer
 
             var stream = await factoryFn().ConfigureAwait(false);
 
-            if (!string.IsNullOrWhiteSpace(rangeHeader) && stream.CanSeek)
+            var totalContentLength = options.ContentLength;
+            if (!totalContentLength.HasValue)
             {
-                var hasHeaders = new RangeRequestWriter(rangeHeader, options.ContentLength, stream, contentType, isHeadRequest, _logger)
+                try
+                {
+                    totalContentLength = stream.Length;
+                }
+                catch (NotSupportedException)
+                {
+
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(rangeHeader) && totalContentLength.HasValue)
+            {
+                var hasHeaders = new RangeRequestWriter(rangeHeader, totalContentLength.Value, stream, contentType, isHeadRequest, _logger)
                 {
                     OnComplete = options.OnComplete
                 };
@@ -583,13 +596,9 @@ namespace Emby.Server.Implementations.HttpServer
             }
             else
             {
-                try
+                if (totalContentLength.HasValue)
                 {
-                    responseHeaders["Content-Length"] = (options.ContentLength ?? stream.Length).ToString(UsCulture);
-                }
-                catch (NotSupportedException)
-                {
-
+                    responseHeaders["Content-Length"] = totalContentLength.Value.ToString(UsCulture);
                 }
 
                 if (isHeadRequest)
