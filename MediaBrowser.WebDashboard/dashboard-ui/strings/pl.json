@@ -1,6 +1,6 @@
 {
     "Alerts": "Alarmy",
-    "ChangingMetadataImageSettingsNewContent": "Changes to metadata or artwork downloading settings will only apply to new content added to your library. To apply the changes to existing titles, you'll need to refresh their metadata manually.",
+    "ChangingMetadataImageSettingsNewContent": "Zmiany ustawie\u0144 metadanych i pobierania grafik b\u0119d\u0105 mia\u0142y zastosowanie tylko dla nowo dodanej zawarto\u015bci do biblioteki. W celu zastosowania zmian dla wcze\u015bniej dodanych pozycji, nale\u017cy od\u015bwie\u017cy\u0107 metadane manualnie.",
     "LabelPrevious": "Wstecz",
     "LabelFinish": "Zako\u0144cz",
     "LabelNext": "Dalej",
