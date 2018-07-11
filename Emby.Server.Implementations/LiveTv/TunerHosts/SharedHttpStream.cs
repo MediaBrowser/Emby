@@ -24,8 +24,8 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
         private readonly IHttpClient _httpClient;
         private readonly IServerApplicationHost _appHost;
 
-        public SharedHttpStream(MediaSourceInfo mediaSource, TunerHostInfo tunerHostInfo, string originalStreamId, IFileSystem fileSystem, IHttpClient httpClient, ILogger logger, IServerApplicationPaths appPaths, IServerApplicationHost appHost, IEnvironmentInfo environment)
-            : base(mediaSource, tunerHostInfo, environment, fileSystem, logger, appPaths)
+        public SharedHttpStream(MediaSourceInfo mediaSource, TunerHostInfo tunerHostInfo, string originalStreamId, IFileSystem fileSystem, IHttpClient httpClient, ILogger logger, IServerApplicationPaths appPaths, IServerApplicationHost appHost)
+            : base(mediaSource, tunerHostInfo, fileSystem, logger, appPaths)
         {
             _httpClient = httpClient;
             _appHost = appHost;

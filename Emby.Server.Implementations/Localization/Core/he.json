@@ -6,6 +6,7 @@
     "ServerNameNeedsToBeRestarted": "{0} needs to be restarted",
     "NewVersionIsAvailable": "A new version of Emby Server is available for download.",
     "MessageApplicationUpdatedTo": "Emby Server has been updated to {0}",
+    "SubtitleDownloadFailureFromForItem": "Subtitles failed to download from {0} for {1}",
     "Latest": "\u05d0\u05d7\u05e8\u05d5\u05df",
     "ValueSpecialEpisodeName": "\u05de\u05d9\u05d5\u05d7\u05d3- {0}",
     "Inherit": "Inherit",

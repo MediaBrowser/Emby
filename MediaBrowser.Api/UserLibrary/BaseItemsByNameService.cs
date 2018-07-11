@@ -124,7 +124,8 @@ namespace MediaBrowser.Api.UserLibrary
                 PersonTypes = request.GetPersonTypes(),
                 Years = request.GetYears(),
                 MinCommunityRating = request.MinCommunityRating,
-                DtoOptions = dtoOptions
+                DtoOptions = dtoOptions,
+                SearchTerm = request.SearchTerm
             };
 
             if (!string.IsNullOrWhiteSpace(request.ParentId))
@@ -290,9 +291,7 @@ namespace MediaBrowser.Api.UserLibrary
 
             var extractedItems = GetAllItems(request, items);
 
-            var filteredItems = FilterItems(request, extractedItems, user);
-
-            filteredItems = LibraryManager.Sort(filteredItems, user, request.GetOrderBy());
+            var filteredItems = LibraryManager.Sort(extractedItems, user, request.GetOrderBy());
 
             var ibnItemsArray = filteredItems.ToList();
 
@@ -325,121 +324,6 @@ namespace MediaBrowser.Api.UserLibrary
 
             return result;
         }
-
-        /// <summary>
-        /// Filters the items.
-        /// </summary>
-        /// <param name="request">The request.</param>
-        /// <param name="items">The items.</param>
-        /// <param name="user">The user.</param>
-        /// <returns>IEnumerable{`0}.</returns>
-        private IEnumerable<BaseItem> FilterItems(GetItemsByName request, IEnumerable<BaseItem> items, User user)
-        {
-            if (!string.IsNullOrEmpty(request.NameStartsWithOrGreater))
-            {
-                items = items.Where(i => string.Compare(request.NameStartsWithOrGreater, i.SortName, StringComparison.CurrentCultureIgnoreCase) < 1);
-            }
-
-            if (!string.IsNullOrEmpty(request.NameLessThan))
-            {
-                items = items.Where(i => string.Compare(request.NameLessThan, i.SortName, StringComparison.CurrentCultureIgnoreCase) == 1);
-            }
-
-            var imageTypes = request.GetImageTypes();
-            if (imageTypes.Length > 0)
-            {
-                items = items.Where(item => imageTypes.Any(item.HasImage));
-            }
-
-            var filters = request.GetFilters();
-
-            if (filters.Contains(ItemFilter.Dislikes))
-            {
-                items = items.Where(i =>
-                    {
-                        var userdata = UserDataRepository.GetUserData(user, i);
-
-                        return userdata != null && userdata.Likes.HasValue && !userdata.Likes.Value;
-                    });
-            }
-
-            if (filters.Contains(ItemFilter.Likes))
-            {
-                items = items.Where(i =>
-                {
-                    var userdata = UserDataRepository.GetUserData(user, i);
-
-                    return userdata != null && userdata.Likes.HasValue && userdata.Likes.Value;
-                });
-            }
-
-            if (filters.Contains(ItemFilter.IsFavoriteOrLikes))
-            {
-                items = items.Where(i =>
-                {
-                    var userdata = UserDataRepository.GetUserData(user, i);
-
-                    var likes = userdata.Likes ?? false;
-                    var favorite = userdata.IsFavorite;
-
-                    return likes || favorite;
-                });
-            }
-
-            if (filters.Contains(ItemFilter.IsFavorite))
-            {
-                items = items.Where(i =>
-                {
-                    var userdata = UserDataRepository.GetUserData(user, i);
-
-                    return userdata != null && userdata.IsFavorite;
-                });
-            }
-
-            // Avoid implicitly captured closure
-            var currentRequest = request;
-            return items.Where(i => ApplyAdditionalFilters(currentRequest, i, user, false));
-        }
-
-        private bool ApplyAdditionalFilters(BaseItemsRequest request, BaseItem i, User user, bool isPreFiltered)
-        {
-            if (!isPreFiltered)
-            {
-                // Apply tag filter
-                var tags = request.GetTags();
-                if (tags.Length > 0)
-                {
-                    if (!tags.Any(v => i.Tags.Contains(v, StringComparer.OrdinalIgnoreCase)))
-                    {
-                        return false;
-                    }
-                }
-
-                // Apply official rating filter
-                var officialRatings = request.GetOfficialRatings();
-                if (officialRatings.Length > 0 && !officialRatings.Contains(i.OfficialRating ?? string.Empty))
-                {
-                    return false;
-                }
-
-                // Apply genre filter
-                var genres = request.GetGenres();
-                if (genres.Length > 0 && !genres.Any(v => i.Genres.Contains(v, StringComparer.OrdinalIgnoreCase)))
-                {
-                    return false;
-                }
-
-                // Apply year filter
-                var years = request.GetYears();
-                if (years.Length > 0 && !(i.ProductionYear.HasValue && years.Contains(i.ProductionYear.Value)))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
 
         /// <summary>
         /// Filters the items.

@@ -37,6 +37,8 @@ using MediaBrowser.Model.Tasks;
 using Emby.Server.Implementations.LiveTv.Listings;
 using MediaBrowser.Controller.Channels;
 using Emby.Server.Implementations.Library;
+using MediaBrowser.Controller;
+using MediaBrowser.Common.Net;
 
 namespace Emby.Server.Implementations.LiveTv
 {
@@ -78,8 +80,12 @@ namespace Emby.Server.Implementations.LiveTv
             return EmbyTV.EmbyTV.Current.GetActiveRecordingPath(id);
         }
 
-        public LiveTvManager(IApplicationHost appHost, IServerConfigurationManager config, ILogger logger, IItemRepository itemRepo, IImageProcessor imageProcessor, IUserDataManager userDataManager, IDtoService dtoService, IUserManager userManager, ILibraryManager libraryManager, ITaskManager taskManager, ILocalizationManager localization, IJsonSerializer jsonSerializer, IProviderManager providerManager, IFileSystem fileSystem, ISecurityManager security, Func<IChannelManager> channelManager)
+        private IServerApplicationHost _appHost;
+        private IHttpClient _httpClient;
+
+        public LiveTvManager(IServerApplicationHost appHost, IHttpClient httpClient, IServerConfigurationManager config, ILogger logger, IItemRepository itemRepo, IImageProcessor imageProcessor, IUserDataManager userDataManager, IDtoService dtoService, IUserManager userManager, ILibraryManager libraryManager, ITaskManager taskManager, ILocalizationManager localization, IJsonSerializer jsonSerializer, IProviderManager providerManager, IFileSystem fileSystem, ISecurityManager security, Func<IChannelManager> channelManager)
         {
+            _appHost = appHost;
             _config = config;
             _logger = logger;
             _itemRepo = itemRepo;
@@ -94,6 +100,7 @@ namespace Emby.Server.Implementations.LiveTv
             _dtoService = dtoService;
             _userDataManager = userDataManager;
             _channelManager = channelManager;
+            _httpClient = httpClient;
 
             _tvDtoService = new LiveTvDtoService(dtoService, imageProcessor, logger, appHost, _libraryManager);
         }
@@ -267,8 +274,15 @@ namespace Emby.Server.Implementations.LiveTv
             else
             {
                 info = await service.GetChannelStream(channel.ExternalId, mediaSourceId, cancellationToken).ConfigureAwait(false);
+                var openedId = info.Id;
+                Func<Task> closeFn = () => service.CloseLiveStream(openedId, CancellationToken.None);
 
-                liveStream = new ExclusiveLiveStream(info, service, info.Id);
+                liveStream = new ExclusiveLiveStream(info, closeFn);
+
+                var startTime = DateTime.UtcNow;
+                await liveStream.Open(cancellationToken).ConfigureAwait(false);
+                var endTime = DateTime.UtcNow;
+                _logger.Info("Live stream opened after {0}ms", (endTime - startTime).TotalMilliseconds);
             }
             info.RequiresClosing = true;
 
@@ -323,6 +337,9 @@ namespace Emby.Server.Implementations.LiveTv
 
         private void Normalize(MediaSourceInfo mediaSource, ILiveTvService service, bool isVideo)
         {
+            // Not all of the plugins are setting this
+            mediaSource.IsInfiniteStream = true;
+
             if (mediaSource.MediaStreams.Count == 0)
             {
                 if (isVideo)
@@ -792,7 +809,7 @@ namespace Emby.Server.Implementations.LiveTv
                 if (query.IsAiring ?? false)
                 {
                     // Unless something else was specified, order by start date to take advantage of a specialized index
-                    query.OrderBy = new ValueTuple<string, SortOrder>[] 
+                    query.OrderBy = new ValueTuple<string, SortOrder>[]
                     {
                         new ValueTuple<string, SortOrder>(ItemSortBy.StartDate, SortOrder.Ascending)
                     };
@@ -800,7 +817,7 @@ namespace Emby.Server.Implementations.LiveTv
                 else
                 {
                     // Unless something else was specified, order by start date to take advantage of a specialized index
-                    query.OrderBy = new ValueTuple<string, SortOrder>[] 
+                    query.OrderBy = new ValueTuple<string, SortOrder>[]
                     {
                         new ValueTuple<string, SortOrder>(ItemSortBy.StartDate, SortOrder.Ascending)
                     };

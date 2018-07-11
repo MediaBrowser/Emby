@@ -27,7 +27,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
         public bool EnableStreamSharing { get; set; }
         public string UniqueId { get; private set; }
 
-        protected readonly IEnvironmentInfo Environment;
         protected readonly IFileSystem FileSystem;
         protected readonly IServerApplicationPaths AppPaths;
 
@@ -39,18 +38,21 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
         public DateTime DateOpened { get; protected set; }
 
-        public Action<LiveStream> OnClose { get; set; }
+        public Func<Task> OnClose { get; set; }
 
-        public LiveStream(MediaSourceInfo mediaSource, TunerHostInfo tuner, IEnvironmentInfo environment, IFileSystem fileSystem, ILogger logger, IServerApplicationPaths appPaths)
+        public LiveStream(MediaSourceInfo mediaSource, TunerHostInfo tuner, IFileSystem fileSystem, ILogger logger, IServerApplicationPaths appPaths)
         {
             OriginalMediaSource = mediaSource;
-            Environment = environment;
             FileSystem = fileSystem;
             MediaSource = mediaSource;
             Logger = logger;
             EnableStreamSharing = true;
             UniqueId = Guid.NewGuid().ToString("N");
-            TunerHostId = tuner.Id;
+
+            if (tuner != null)
+            {
+                TunerHostId = tuner.Id;
+            }
 
             AppPaths = appPaths;
 
@@ -75,18 +77,25 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
             Logger.Info("Closing " + GetType().Name);
 
-            CloseInternal();
-
-            return Task.CompletedTask;
-        }
-
-        protected virtual void CloseInternal()
-        {
             LiveStreamCancellationTokenSource.Cancel();
 
             if (OnClose != null)
             {
-                OnClose(this);
+                return CloseWithExternalFn();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        private async Task CloseWithExternalFn()
+        {
+            try
+            {
+                await OnClose().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Logger.ErrorException("Error closing live stream", ex);
             }
         }
 
@@ -151,7 +160,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
         {
             cancellationToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, LiveStreamCancellationTokenSource.Token).Token;
 
-            var allowAsync = false;//Environment.OperatingSystem != MediaBrowser.Model.System.OperatingSystem.Windows;
+            var allowAsync = false;
             // use non-async filestream along with read due to https://github.com/dotnet/corefx/issues/6039
 
             bool seekFile = (DateTime.UtcNow - DateOpened).TotalSeconds > 10;

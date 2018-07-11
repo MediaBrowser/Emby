@@ -2804,11 +2804,141 @@ namespace Emby.Server.Implementations.Data
                         list = newList;
                     }
 
+
+                    if (!string.IsNullOrEmpty(query.SearchTerm))
+                    {
+                        list = SortSearchResults(list, query.SearchTerm);
+                    }
+
                     LogQueryTime("GetItemList", commandText, now);
 
                     return list;
                 }
             }
+        }
+
+        private string FixUnicodeChars(string buffer)
+        {
+            if (buffer.IndexOf('\u2013') > -1) buffer = buffer.Replace('\u2013', '-'); // en dash
+            if (buffer.IndexOf('\u2014') > -1) buffer = buffer.Replace('\u2014', '-'); // em dash
+            if (buffer.IndexOf('\u2015') > -1) buffer = buffer.Replace('\u2015', '-'); // horizontal bar
+            if (buffer.IndexOf('\u2017') > -1) buffer = buffer.Replace('\u2017', '_'); // double low line
+            if (buffer.IndexOf('\u2018') > -1) buffer = buffer.Replace('\u2018', '\''); // left single quotation mark
+            if (buffer.IndexOf('\u2019') > -1) buffer = buffer.Replace('\u2019', '\''); // right single quotation mark
+            if (buffer.IndexOf('\u201a') > -1) buffer = buffer.Replace('\u201a', ','); // single low-9 quotation mark
+            if (buffer.IndexOf('\u201b') > -1) buffer = buffer.Replace('\u201b', '\''); // single high-reversed-9 quotation mark
+            if (buffer.IndexOf('\u201c') > -1) buffer = buffer.Replace('\u201c', '\"'); // left double quotation mark
+            if (buffer.IndexOf('\u201d') > -1) buffer = buffer.Replace('\u201d', '\"'); // right double quotation mark
+            if (buffer.IndexOf('\u201e') > -1) buffer = buffer.Replace('\u201e', '\"'); // double low-9 quotation mark
+            if (buffer.IndexOf('\u2026') > -1) buffer = buffer.Replace("\u2026", "..."); // horizontal ellipsis
+            if (buffer.IndexOf('\u2032') > -1) buffer = buffer.Replace('\u2032', '\''); // prime
+            if (buffer.IndexOf('\u2033') > -1) buffer = buffer.Replace('\u2033', '\"'); // double prime
+            if (buffer.IndexOf('\u0060') > -1) buffer = buffer.Replace('\u0060', '\''); // grave accent
+            if (buffer.IndexOf('\u00B4') > -1) buffer = buffer.Replace('\u00B4', '\''); // acute accent
+
+            return buffer;
+        }
+
+        private List<BaseItem> SortSearchResults(List<BaseItem> items, string searchTerm)
+        {
+            searchTerm = FixUnicodeChars(searchTerm);
+            var terms = GetWords(searchTerm);
+
+            // Eventually this type of search ranking should just be built right into the querying
+            return items.Select(item =>
+            {
+                var index = GetIndex(item.Name, searchTerm, terms);
+
+                return new Tuple<BaseItem, string, int>(item, index.Item1, index.Item2);
+
+            }).OrderBy(i => i.Item3).ThenBy(i => i.Item1.SortName).Select(i => i.Item1).ToList();
+        }
+
+        /// <summary>
+        /// Gets the index.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <param name="searchInput">The search input.</param>
+        /// <param name="searchWords">The search input.</param>
+        /// <returns>System.Int32.</returns>
+        private Tuple<string, int> GetIndex(string input, string searchInput, List<string> searchWords)
+        {
+            if (string.IsNullOrEmpty(input))
+            {
+                throw new ArgumentNullException("input");
+            }
+
+            input = input.RemoveDiacritics();
+
+            if (string.Equals(input, searchInput, StringComparison.OrdinalIgnoreCase))
+            {
+                return new Tuple<string, int>(searchInput, 0);
+            }
+
+            var index = input.IndexOf(searchInput, StringComparison.OrdinalIgnoreCase);
+
+            if (index == 0)
+            {
+                return new Tuple<string, int>(searchInput, 1);
+            }
+            if (index > 0)
+            {
+                return new Tuple<string, int>(searchInput, 2);
+            }
+
+            var items = GetWords(input);
+
+            for (var i = 0; i < searchWords.Count; i++)
+            {
+                var searchTerm = searchWords[i];
+
+                for (var j = 0; j < items.Count; j++)
+                {
+                    var item = items[j];
+
+                    if (string.Equals(item, searchTerm, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return new Tuple<string, int>(searchTerm, 3 + (i + 1) * (j + 1));
+                    }
+
+                    index = item.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase);
+
+                    if (index == 0)
+                    {
+                        return new Tuple<string, int>(searchTerm, 4 + (i + 1) * (j + 1));
+                    }
+                    if (index > 0)
+                    {
+                        return new Tuple<string, int>(searchTerm, 5 + (i + 1) * (j + 1));
+                    }
+                }
+            }
+            return new Tuple<string, int>(null, -1);
+        }
+
+        /// <summary>
+        /// Gets the words.
+        /// </summary>
+        /// <param name="term">The term.</param>
+        /// <returns>System.String[][].</returns>
+        private List<string> GetWords(string term)
+        {
+            var stoplist = GetStopList();
+
+            return term.Split()
+                .Where(i => !string.IsNullOrWhiteSpace(i) && !stoplist.Contains(i, StringComparer.OrdinalIgnoreCase))
+                .ToList();
+        }
+
+        private string[] GetStopList()
+        {
+            return new[]
+            {
+                "the",
+                "a",
+                "of",
+                "an"
+            };
         }
 
         private void AddItem(List<BaseItem> items, BaseItem newItem)
@@ -4023,14 +4153,18 @@ namespace Emby.Server.Implementations.Data
                 }
             }
 
-            if (!string.IsNullOrWhiteSpace(query.NameContains))
+            // These are the same, for now
+            var nameContains = query.NameContains ?? query.SearchTerm;
+            if (!string.IsNullOrWhiteSpace(nameContains))
             {
                 whereClauses.Add("CleanName like @NameContains");
                 if (statement != null)
                 {
-                    statement.TryBind("@NameContains", "%" + GetCleanValue(query.NameContains) + "%");
+                    nameContains = FixUnicodeChars(nameContains);
+                    statement.TryBind("@NameContains", "%" + GetCleanValue(nameContains) + "%");
                 }
             }
+
             if (!string.IsNullOrWhiteSpace(query.NameStartsWith))
             {
                 whereClauses.Add("SortName like @NameStartsWith");
@@ -5582,7 +5716,8 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
                 GenreIds = query.GenreIds,
                 Genres = query.Genres,
                 Years = query.Years,
-                NameContains = query.NameContains
+                NameContains = query.NameContains,
+                SearchTerm = query.SearchTerm
             };
 
             var outerWhereClauses = GetWhereClauses(outerQuery, null);
