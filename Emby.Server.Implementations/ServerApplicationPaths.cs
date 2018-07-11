@@ -173,12 +173,21 @@ namespace Emby.Server.Implementations
             }
         }
 
+        private string _defaultTranscodingTempPath;
+        public string DefaultTranscodingTempPath
+        {
+            get
+            {
+                return _defaultTranscodingTempPath ?? (_defaultTranscodingTempPath = Path.Combine(ProgramDataPath, "transcoding-temp"));
+            }
+        }
+
         private string _transcodingTempPath;
         public string TranscodingTempPath
         {
             get
             {
-                return _transcodingTempPath ?? (_transcodingTempPath = Path.Combine(ProgramDataPath, "transcoding-temp"));
+                return _transcodingTempPath ?? (_transcodingTempPath = DefaultTranscodingTempPath);
             }
             set
             {
@@ -190,17 +199,26 @@ namespace Emby.Server.Implementations
         {
             var path = TranscodingTempPath;
 
-            try
+            if (!string.Equals(path, DefaultTranscodingTempPath, StringComparison.OrdinalIgnoreCase))
             {
-                Directory.CreateDirectory(path);
-                return path;
+                try
+                {
+                    Directory.CreateDirectory(path);
+
+                    var testPath = Path.Combine(path, Guid.NewGuid().ToString());
+                    Directory.CreateDirectory(testPath);
+                    Directory.Delete(testPath);
+
+                    return path;
+                }
+                catch
+                {
+                }
             }
-            catch
-            {
-                path = Path.Combine(ProgramDataPath, "transcoding-temp");
-                Directory.CreateDirectory(path);
-                return path;
-            }
+
+            path = DefaultTranscodingTempPath;
+            Directory.CreateDirectory(path);
+            return path;
         }
 
         /// <summary>

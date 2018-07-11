@@ -116,11 +116,10 @@ namespace Emby.Server.Implementations.Activity
         {
             CreateLogEntry(new ActivityLogEntry
             {
-                Name = string.Format(_localization.GetLocalizedString("SubtitleDownloadFailureForItem"), Notifications.Notifications.GetItemName(e.Item)),
+                Name = string.Format(_localization.GetLocalizedString("SubtitleDownloadFailureFromForItem"), e.Provider, Notifications.Notifications.GetItemName(e.Item)),
                 Type = "SubtitleDownloadFailure",
                 ItemId = e.Item.Id.ToString("N"),
-                ShortOverview = string.Format(_localization.GetLocalizedString("ProviderValue"), e.Provider),
-                Overview = LogHelper.GetLogMessage(e.Exception).ToString()
+                ShortOverview = e.Exception.Message
             });
         }
 

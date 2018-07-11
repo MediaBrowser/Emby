@@ -119,7 +119,8 @@ namespace MediaBrowser.Api.UserLibrary
                 EnableTotalRecordCount = request.EnableTotalRecordCount,
                 AncestorIds = ancestorIds.ToArray(),
                 IncludeItemTypes = request.GetIncludeItemTypes(),
-                ExcludeItemTypes = request.GetExcludeItemTypes()
+                ExcludeItemTypes = request.GetExcludeItemTypes(),
+                SearchTerm = request.SearchTerm
             });
 
             var returnItems = _dtoService.GetBaseItemDtos(itemsResult.Items, options, user);
@@ -313,7 +314,8 @@ namespace MediaBrowser.Api.UserLibrary
                 ParentIndexNumber = request.ParentIndexNumber,
                 EnableTotalRecordCount = request.EnableTotalRecordCount,
                 ExcludeItemIds = GetGuids(request.ExcludeItemIds),
-                DtoOptions = dtoOptions
+                DtoOptions = dtoOptions,
+                SearchTerm = request.SearchTerm
             };
 
             if (!string.IsNullOrWhiteSpace(request.Ids))
@@ -412,6 +414,22 @@ namespace MediaBrowser.Api.UserLibrary
             if (!string.IsNullOrWhiteSpace(request.MaxOfficialRating))
             {
                 query.MaxParentalRating = _localization.GetRatingLevel(request.MaxOfficialRating);
+            }
+
+            // Artists
+            if (!string.IsNullOrEmpty(request.Artists))
+            {
+                query.ArtistIds = request.Artists.Split('|').Select(i =>
+                {
+                    try
+                    {
+                        return _libraryManager.GetArtist(i, new DtoOptions(false));
+                    }
+                    catch
+                    {
+                        return null;
+                    }
+                }).Where(i => i != null).Select(i => i.Id).ToArray();
             }
 
             // ExcludeArtistIds

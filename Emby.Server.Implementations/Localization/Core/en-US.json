@@ -85,7 +85,7 @@
   "NotificationOptionUserLockedOut": "User locked out",
   "NotificationOptionServerRestartRequired": "Server restart required",
   "UserLockedOutWithName": "User {0} has been locked out",
-  "SubtitleDownloadFailureForItem": "Subtitles failed to download for {0}",
+  "SubtitleDownloadFailureFromForItem": "Subtitles failed to download from {0} for {1}",
   "NameInstallFailed": "{0} installation failed",
   "Sync": "Sync",
   "User": "User",
