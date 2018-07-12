@@ -3834,19 +3834,23 @@ namespace Emby.Server.Implementations.Data
                 whereClauses.Add(string.Format("type in ({0})", inClause));
             }
 
-            var excludeTypes = query.ExcludeItemTypes.SelectMany(MapIncludeItemTypes).ToArray();
-            if (excludeTypes.Length == 1)
+            // Only specify excluded types if no included types are specified
+            if (includeTypes.Length == 0)
             {
-                whereClauses.Add("type<>@type");
-                if (statement != null)
+                var excludeTypes = query.ExcludeItemTypes.SelectMany(MapIncludeItemTypes).ToArray();
+                if (excludeTypes.Length == 1)
                 {
-                    statement.TryBind("@type", excludeTypes[0]);
+                    whereClauses.Add("type<>@type");
+                    if (statement != null)
+                    {
+                        statement.TryBind("@type", excludeTypes[0]);
+                    }
                 }
-            }
-            else if (excludeTypes.Length > 1)
-            {
-                var inClause = string.Join(",", excludeTypes.Select(i => "'" + i + "'").ToArray());
-                whereClauses.Add(string.Format("type not in ({0})", inClause));
+                else if (excludeTypes.Length > 1)
+                {
+                    var inClause = string.Join(",", excludeTypes.Select(i => "'" + i + "'").ToArray());
+                    whereClauses.Add(string.Format("type not in ({0})", inClause));
+                }
             }
 
             if (query.ChannelIds.Length == 1)
@@ -4157,7 +4161,7 @@ namespace Emby.Server.Implementations.Data
             var nameContains = query.NameContains ?? query.SearchTerm;
             if (!string.IsNullOrWhiteSpace(nameContains))
             {
-                whereClauses.Add("CleanName like @NameContains");
+                whereClauses.Add("(CleanName like @NameContains or OriginalTitle like @NameContains)");
                 if (statement != null)
                 {
                     nameContains = FixUnicodeChars(nameContains);
@@ -4261,11 +4265,11 @@ namespace Emby.Server.Implementations.Data
                     {
                         if (query.IsPlayed.Value)
                         {
-                            whereClauses.Add("PresentationUniqueKey not in (select S.SeriesPresentationUniqueKey from TypedBaseitems S left join UserDatas UD on S.UserDataKey=UD.Key And UD.UserId=@UserId where Coalesce(UD.Played, 0)=0 and S.IsFolder=0 and S.SeriesPresentationUniqueKey not null)");
+                            whereClauses.Add("PresentationUniqueKey not in (select S.SeriesPresentationUniqueKey from TypedBaseitems S left join UserDatas UD on S.UserDataKey=UD.Key And UD.UserId=@UserId where Coalesce(UD.Played, 0)=0 and S.IsFolder=0 and S.IsVirtualItem=0 and S.SeriesPresentationUniqueKey not null)");
                         }
                         else
                         {
-                            whereClauses.Add("PresentationUniqueKey in (select S.SeriesPresentationUniqueKey from TypedBaseitems S left join UserDatas UD on S.UserDataKey=UD.Key And UD.UserId=@UserId where Coalesce(UD.Played, 0)=0 and S.IsFolder=0 and S.SeriesPresentationUniqueKey not null)");
+                            whereClauses.Add("PresentationUniqueKey in (select S.SeriesPresentationUniqueKey from TypedBaseitems S left join UserDatas UD on S.UserDataKey=UD.Key And UD.UserId=@UserId where Coalesce(UD.Played, 0)=0 and S.IsFolder=0 and S.IsVirtualItem=0 and S.SeriesPresentationUniqueKey not null)");
                         }
                     }
                     else
@@ -4980,7 +4984,7 @@ namespace Emby.Server.Implementations.Data
                 }
                 else
                 {
-                    whereClauses.Add("data not like '\"IsPlaceHolder\":true'");
+                    whereClauses.Add("(data is null or data not like '\"IsPlaceHolder\":true')");
                 }
             }
 
