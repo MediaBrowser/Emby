@@ -6,7 +6,7 @@
     "ServerNameNeedsToBeRestarted": "{0} wymaga ponownego uruchomienia",
     "NewVersionIsAvailable": "Nowa wersja serwera Emby jest dost\u0119pna do pobrania.",
     "MessageApplicationUpdatedTo": "Serwer Emby zosta\u0142 zaktualizowany do wersji {0}",
-    "SubtitleDownloadFailureFromForItem": "Subtitles failed to download from {0} for {1}",
+    "SubtitleDownloadFailureFromForItem": "Nieudane pobieranie napis\u00f3w z {0} dla {1}",
     "Latest": "Ostatnio dodane",
     "ValueSpecialEpisodeName": "Specjalne - {0}",
     "Inherit": "Dziedzicz",

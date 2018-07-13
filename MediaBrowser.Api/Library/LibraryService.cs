@@ -272,6 +272,9 @@ namespace MediaBrowser.Api.Library
     [Route("/Artists/{Id}/Similar", "GET", Summary = "Finds albums similar to a given album.")]
     [Route("/Items/{Id}/Similar", "GET", Summary = "Gets similar items")]
     [Route("/Albums/{Id}/Similar", "GET", Summary = "Finds albums similar to a given album.")]
+    [Route("/Shows/{Id}/Similar", "GET", Summary = "Finds tv shows similar to a given one.")]
+    [Route("/Movies/{Id}/Similar", "GET", Summary = "Finds movies and trailers similar to a given movie.")]
+    [Route("/Trailers/{Id}/Similar", "GET", Summary = "Finds movies and trailers similar to a given trailer.")]
     [Authenticated]
     public class GetSimilarItems : BaseGetSimilarItemsFromItem
     {
@@ -641,30 +644,12 @@ namespace MediaBrowser.Api.Library
                 {
                     Request = Request,
 
-                }.Get(new GetSimilarMovies
-                {
-                    Fields = request.Fields,
-                    Id = request.Id,
-                    Limit = request.Limit,
-                    UserId = request.UserId,
-                    ImageTypeLimit = request.ImageTypeLimit
-                });
+                }.GetSimilarItemsResult(request);
             }
 
-            if (item is Series || (program != null && program.IsSeries))
+            if (program != null && program.IsSeries)
             {
-                return new TvShowsService(_userManager, _userDataManager, _libraryManager, _itemRepo, _dtoService, _tvManager, _authContext)
-                {
-                    Request = Request,
-
-                }.Get(new GetSimilarShows
-                {
-                    Fields = request.Fields,
-                    Id = request.Id,
-                    Limit = request.Limit,
-                    UserId = request.UserId,
-                    ImageTypeLimit = request.ImageTypeLimit
-                });
+                return GetSimilarItemsResult(request, new[] { typeof(Series).Name });
             }
 
             return GetSimilarItemsResult(request, new[] { item.GetType().Name });
@@ -695,7 +680,18 @@ namespace MediaBrowser.Api.Library
                 query.ExcludeArtistIds = BaseApiService.GetGuids(request.ExcludeArtistIds);
             }
 
-            var itemsResult = _libraryManager.GetItemList(query);
+            List<BaseItem> itemsResult;
+
+            if (item is MusicArtist)
+            {
+                query.IncludeItemTypes = Array.Empty<string>();
+
+                itemsResult = _libraryManager.GetArtists(query).Items.Select(i => i.Item1).ToList();
+            }
+            else
+            {
+                itemsResult = _libraryManager.GetItemList(query);
+            }
 
             var returnList = _dtoService.GetBaseItemDtos(itemsResult, dtoOptions, user);
 

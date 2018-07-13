@@ -16,7 +16,7 @@ namespace Emby.Server.Implementations.ScheduledTasks
     /// <summary>
     /// Plugin Update Task
     /// </summary>
-    public class PluginUpdateTask : IScheduledTask
+    public class PluginUpdateTask : IScheduledTask, IConfigurableScheduledTask
     {
         /// <summary>
         /// The _logger
@@ -132,5 +132,11 @@ namespace Emby.Server.Implementations.ScheduledTasks
         {
             get { return "Application"; }
         }
+
+        public bool IsHidden => true;
+
+        public bool IsEnabled => true;
+
+        public bool IsLogged => true;
     }
 }

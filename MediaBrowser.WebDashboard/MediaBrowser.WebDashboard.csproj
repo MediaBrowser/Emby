@@ -46,13 +46,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerEntryPoint.cs" />
     <Reference Include="MediaBrowser.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MediaBrowser.Common.3.3.67-beta\lib\netstandard2.0\MediaBrowser.Common.dll</HintPath>
+      <HintPath>..\packages\MediaBrowser.Common.3.3.68-beta\lib\netstandard2.0\MediaBrowser.Common.dll</HintPath>
     </Reference>
     <Reference Include="MediaBrowser.Controller, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MediaBrowser.Server.Core.3.3.67-beta\lib\netstandard2.0\MediaBrowser.Controller.dll</HintPath>
+      <HintPath>..\packages\MediaBrowser.Server.Core.3.3.68-beta\lib\netstandard2.0\MediaBrowser.Controller.dll</HintPath>
     </Reference>
     <Reference Include="MediaBrowser.Model, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MediaBrowser.Common.3.3.67-beta\lib\netstandard2.0\MediaBrowser.Model.dll</HintPath>
+      <HintPath>..\packages\MediaBrowser.Common.3.3.68-beta\lib\netstandard2.0\MediaBrowser.Model.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -205,6 +205,7 @@
     <Folder Include="resources\home\" />
     <Folder Include="resources\legacy\" />
     <Folder Include="resources\list\" />
+    <Folder Include="resources\offline\" />
     <Folder Include="resources\scripts\" />
     <Folder Include="resources\strings\" />
     <Folder Include="resources\thirdparty\jstree\themes\default\" />

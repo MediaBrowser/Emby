@@ -318,7 +318,7 @@ namespace MediaBrowser.Api.UserLibrary
                 SearchTerm = request.SearchTerm
             };
 
-            if (!string.IsNullOrWhiteSpace(request.Ids))
+            if (!string.IsNullOrWhiteSpace(request.Ids) || !string.IsNullOrWhiteSpace(request.SearchTerm))
             {
                 query.CollapseBoxSetItems = false;
             }
