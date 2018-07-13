@@ -2151,11 +2151,6 @@ namespace Emby.Server.Implementations.Data
                 return false;
             }
 
-            if (query.SimilarTo != null && query.User != null)
-            {
-                //return true;
-            }
-
             var sortingFields = query.OrderBy.Select(i => i.Item1).ToList();
 
             if (sortingFields.Contains(ItemSortBy.IsFavoriteOrLiked, StringComparer.OrdinalIgnoreCase))
@@ -2575,7 +2570,47 @@ namespace Emby.Server.Implementations.Data
                 query.ExcludeProviderIds = item.ProviderIds;
             }
 
+            if (!string.IsNullOrEmpty(query.SearchTerm))
+            {
+                var builder = new StringBuilder();
+                builder.Append("(");
+
+                builder.Append("((Name like @SearchTermStartsWith or OriginalTitle like @SearchTermStartsWith) * 10)");
+
+                if (query.SearchTerm.Length > 1)
+                {
+                    builder.Append("+ ((Name like @SearchTermContains) * 10 or OriginalTitle like @SearchTermContains)");
+                }
+
+                builder.Append(") as SearchScore");
+
+                list.Add(builder.ToString());
+            }
+
             return list.ToArray(list.Count);
+        }
+
+        private void BindSearchParams(InternalItemsQuery query, IStatement statement)
+        {
+            var searchTerm = query.SearchTerm;
+
+            if (string.IsNullOrEmpty(searchTerm))
+            {
+                return;
+            }
+
+            searchTerm = FixUnicodeChars(searchTerm);
+            searchTerm = GetCleanValue(searchTerm);
+
+            var commandText = statement.SQL;
+            if (commandText.IndexOf("@SearchTermStartsWith", StringComparison.OrdinalIgnoreCase) != -1)
+            {
+                statement.TryBind("@SearchTermStartsWith", searchTerm + "%");
+            }
+            if (commandText.IndexOf("@SearchTermContains", StringComparison.OrdinalIgnoreCase) != -1)
+            {
+                statement.TryBind("@SearchTermContains", "%" + searchTerm + "%");
+            }
         }
 
         private void BindSimilarParams(InternalItemsQuery query, IStatement statement)
@@ -2686,6 +2721,7 @@ namespace Emby.Server.Implementations.Data
                         }
 
                         BindSimilarParams(query, statement);
+                        BindSearchParams(query, statement);
 
                         // Running this again will bind the params
                         GetWhereClauses(query, statement);
@@ -2762,6 +2798,7 @@ namespace Emby.Server.Implementations.Data
                         }
 
                         BindSimilarParams(query, statement);
+                        BindSearchParams(query, statement);
 
                         // Running this again will bind the params
                         GetWhereClauses(query, statement);
@@ -2804,12 +2841,6 @@ namespace Emby.Server.Implementations.Data
                         list = newList;
                     }
 
-
-                    if (!string.IsNullOrEmpty(query.SearchTerm))
-                    {
-                        list = SortSearchResults(list, query.SearchTerm);
-                    }
-
                     LogQueryTime("GetItemList", commandText, now);
 
                     return list;
@@ -2837,108 +2868,6 @@ namespace Emby.Server.Implementations.Data
             if (buffer.IndexOf('\u00B4') > -1) buffer = buffer.Replace('\u00B4', '\''); // acute accent
 
             return buffer;
-        }
-
-        private List<BaseItem> SortSearchResults(List<BaseItem> items, string searchTerm)
-        {
-            searchTerm = FixUnicodeChars(searchTerm);
-            var terms = GetWords(searchTerm);
-
-            // Eventually this type of search ranking should just be built right into the querying
-            return items.Select(item =>
-            {
-                var index = GetIndex(item.Name, searchTerm, terms);
-
-                return new Tuple<BaseItem, string, int>(item, index.Item1, index.Item2);
-
-            }).OrderBy(i => i.Item3).ThenBy(i => i.Item1.SortName).Select(i => i.Item1).ToList();
-        }
-
-        /// <summary>
-        /// Gets the index.
-        /// </summary>
-        /// <param name="input">The input.</param>
-        /// <param name="searchInput">The search input.</param>
-        /// <param name="searchWords">The search input.</param>
-        /// <returns>System.Int32.</returns>
-        private Tuple<string, int> GetIndex(string input, string searchInput, List<string> searchWords)
-        {
-            if (string.IsNullOrEmpty(input))
-            {
-                throw new ArgumentNullException("input");
-            }
-
-            input = input.RemoveDiacritics();
-
-            if (string.Equals(input, searchInput, StringComparison.OrdinalIgnoreCase))
-            {
-                return new Tuple<string, int>(searchInput, 0);
-            }
-
-            var index = input.IndexOf(searchInput, StringComparison.OrdinalIgnoreCase);
-
-            if (index == 0)
-            {
-                return new Tuple<string, int>(searchInput, 1);
-            }
-            if (index > 0)
-            {
-                return new Tuple<string, int>(searchInput, 2);
-            }
-
-            var items = GetWords(input);
-
-            for (var i = 0; i < searchWords.Count; i++)
-            {
-                var searchTerm = searchWords[i];
-
-                for (var j = 0; j < items.Count; j++)
-                {
-                    var item = items[j];
-
-                    if (string.Equals(item, searchTerm, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return new Tuple<string, int>(searchTerm, 3 + (i + 1) * (j + 1));
-                    }
-
-                    index = item.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase);
-
-                    if (index == 0)
-                    {
-                        return new Tuple<string, int>(searchTerm, 4 + (i + 1) * (j + 1));
-                    }
-                    if (index > 0)
-                    {
-                        return new Tuple<string, int>(searchTerm, 5 + (i + 1) * (j + 1));
-                    }
-                }
-            }
-            return new Tuple<string, int>(null, -1);
-        }
-
-        /// <summary>
-        /// Gets the words.
-        /// </summary>
-        /// <param name="term">The term.</param>
-        /// <returns>System.String[][].</returns>
-        private List<string> GetWords(string term)
-        {
-            var stoplist = GetStopList();
-
-            return term.Split()
-                .Where(i => !string.IsNullOrWhiteSpace(i) && !stoplist.Contains(i, StringComparer.OrdinalIgnoreCase))
-                .ToList();
-        }
-
-        private string[] GetStopList()
-        {
-            return new[]
-            {
-                "the",
-                "a",
-                "of",
-                "an"
-            };
         }
 
         private void AddItem(List<BaseItem> items, BaseItem newItem)
@@ -3070,15 +2999,15 @@ namespace Emby.Server.Implementations.Data
 
                 if (EnableGroupByPresentationUniqueKey(query))
                 {
-                    commandText += " select count (distinct PresentationUniqueKey)" + GetFromText();
+                    commandText += " select " + string.Join(",", GetFinalColumnsToSelect(query, new[] { "count (distinct PresentationUniqueKey)" })) + GetFromText();
                 }
                 else if (query.GroupBySeriesPresentationUniqueKey)
                 {
-                    commandText += " select count (distinct SeriesPresentationUniqueKey)" + GetFromText();
+                    commandText += " select " + string.Join(",", GetFinalColumnsToSelect(query, new[] { "count (distinct SeriesPresentationUniqueKey)" })) + GetFromText();
                 }
                 else
                 {
-                    commandText += " select count (guid)" + GetFromText();
+                    commandText += " select " + string.Join(",", GetFinalColumnsToSelect(query, new[] { "count (guid)" })) + GetFromText();
                 }
 
                 commandText += GetJoinUserDataText(query);
@@ -3105,6 +3034,7 @@ namespace Emby.Server.Implementations.Data
                                 }
 
                                 BindSimilarParams(query, statement);
+                                BindSearchParams(query, statement);
 
                                 // Running this again will bind the params
                                 GetWhereClauses(query, statement);
@@ -3138,6 +3068,7 @@ namespace Emby.Server.Implementations.Data
                                 }
 
                                 BindSimilarParams(query, statement);
+                                BindSearchParams(query, statement);
 
                                 // Running this again will bind the params
                                 GetWhereClauses(query, statement);
@@ -3169,6 +3100,13 @@ namespace Emby.Server.Implementations.Data
                     orderBy.Add(new ValueTuple<string, SortOrder>(ItemSortBy.Random, SortOrder.Ascending));
                     //orderBy.Add(new Tuple<string, SortOrder>(ItemSortBy.Random, SortOrder.Ascending));
                 }
+            }
+
+            if (!string.IsNullOrEmpty(query.SearchTerm))
+            {
+                orderBy = new List<(string, SortOrder)>();
+                orderBy.Add(new ValueTuple<string, SortOrder>("SearchScore", SortOrder.Descending));
+                orderBy.Add(new ValueTuple<string, SortOrder>(ItemSortBy.SortName, SortOrder.Ascending));
             }
 
             query.OrderBy = orderBy.ToArray();
@@ -3326,6 +3264,7 @@ namespace Emby.Server.Implementations.Data
                         }
 
                         BindSimilarParams(query, statement);
+                        BindSearchParams(query, statement);
 
                         // Running this again will bind the params
                         GetWhereClauses(query, statement);
@@ -3487,15 +3426,15 @@ namespace Emby.Server.Implementations.Data
 
                 if (EnableGroupByPresentationUniqueKey(query))
                 {
-                    commandText += " select count (distinct PresentationUniqueKey)" + GetFromText();
+                    commandText += " select " + string.Join(",", GetFinalColumnsToSelect(query, new[] { "count (distinct PresentationUniqueKey)" })) + GetFromText();
                 }
                 else if (query.GroupBySeriesPresentationUniqueKey)
                 {
-                    commandText += " select count (distinct SeriesPresentationUniqueKey)" + GetFromText();
+                    commandText += " select " + string.Join(",", GetFinalColumnsToSelect(query, new[] { "count (distinct SeriesPresentationUniqueKey)" })) + GetFromText();
                 }
                 else
                 {
-                    commandText += " select count (guid)" + GetFromText();
+                    commandText += " select " + string.Join(",", GetFinalColumnsToSelect(query, new[] { "count (guid)" })) + GetFromText();
                 }
 
                 commandText += GetJoinUserDataText(query);
@@ -3523,6 +3462,7 @@ namespace Emby.Server.Implementations.Data
                                 }
 
                                 BindSimilarParams(query, statement);
+                                BindSearchParams(query, statement);
 
                                 // Running this again will bind the params
                                 GetWhereClauses(query, statement);
@@ -3544,6 +3484,7 @@ namespace Emby.Server.Implementations.Data
                                 }
 
                                 BindSimilarParams(query, statement);
+                                BindSearchParams(query, statement);
 
                                 // Running this again will bind the params
                                 GetWhereClauses(query, statement);
@@ -3808,6 +3749,11 @@ namespace Emby.Server.Implementations.Data
             if (query.SimilarTo != null && query.MinSimilarityScore > 0)
             {
                 whereClauses.Add("SimilarityScore > " + (query.MinSimilarityScore - 1).ToString(CultureInfo.InvariantCulture));
+            }
+
+            if (!string.IsNullOrEmpty(query.SearchTerm))
+            {
+                whereClauses.Add("SearchScore > 0");
             }
 
             if (query.IsFolder.HasValue)
@@ -4158,13 +4104,14 @@ namespace Emby.Server.Implementations.Data
             }
 
             // These are the same, for now
-            var nameContains = query.NameContains ?? query.SearchTerm;
+            var nameContains = query.NameContains;
             if (!string.IsNullOrWhiteSpace(nameContains))
             {
                 whereClauses.Add("(CleanName like @NameContains or OriginalTitle like @NameContains)");
                 if (statement != null)
                 {
                     nameContains = FixUnicodeChars(nameContains);
+
                     statement.TryBind("@NameContains", "%" + GetCleanValue(nameContains) + "%");
                 }
             }
@@ -5760,7 +5707,7 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
             }
             if (query.EnableTotalRecordCount)
             {
-                var countText = "select count (distinct PresentationUniqueKey)" + GetFromText();
+                var countText = "select " + string.Join(",", GetFinalColumnsToSelect(query, new[] { "count (distinct PresentationUniqueKey)" })) + GetFromText();
 
                 countText += GetJoinUserDataText(query);
                 countText += whereText;
@@ -5776,6 +5723,7 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
                         var list = new List<Tuple<BaseItem, ItemCounts>>();
                         var result = new QueryResult<Tuple<BaseItem, ItemCounts>>();
 
+                        //Logger.Info("GetItemValues {0}", string.Join(";", statementTexts.ToArray()));
                         var statements = PrepareAllSafe(db, statementTexts);
 
                         if (!isReturningZeroItems)
@@ -5793,6 +5741,7 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
                                     GetWhereClauses(typeSubQuery, null);
                                 }
                                 BindSimilarParams(query, statement);
+                                BindSearchParams(query, statement);
                                 GetWhereClauses(innerQuery, statement);
                                 GetWhereClauses(outerQuery, statement);
 
@@ -5821,7 +5770,7 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
 
                         if (query.EnableTotalRecordCount)
                         {
-                            commandText = "select count (distinct PresentationUniqueKey)" + GetFromText();
+                            commandText = "select " + string.Join(",", GetFinalColumnsToSelect(query, new[] { "count (distinct PresentationUniqueKey)" })) + GetFromText();
 
                             commandText += GetJoinUserDataText(query);
                             commandText += whereText;
@@ -5839,6 +5788,7 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
                                     GetWhereClauses(typeSubQuery, null);
                                 }
                                 BindSimilarParams(query, statement);
+                                BindSearchParams(query, statement);
                                 GetWhereClauses(innerQuery, statement);
                                 GetWhereClauses(outerQuery, statement);
 

@@ -682,6 +682,8 @@
   "ColorTransfer": "Color transfer",
   "VideoRange": "Video range",
   "SeriesDisplayOrderHelp": "Order episodes by air date, dvd order, or absolute numbering.",
+  "PlaybackSettings": "Playback settings",
+  "SubtitleSettings": "Subtitle settings",
   "PlaybackSettingsIntro": "To configure default playback settings, stop video playback, then click your user icon in the top right section of the app.",
   "SubtitleSettingsIntro": "To configure default subtitle appearance and language settings, stop video playback, then click your user icon in the top right section of the app."
 }

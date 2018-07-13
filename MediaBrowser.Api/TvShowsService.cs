@@ -131,11 +131,6 @@ namespace MediaBrowser.Api
         public bool? EnableUserData { get; set; }
     }
 
-    [Route("/Shows/{Id}/Similar", "GET", Summary = "Finds tv shows similar to a given one.")]
-    public class GetSimilarShows : BaseGetSimilarItemsFromItem
-    {
-    }
-
     [Route("/Shows/{Id}/Episodes", "GET", Summary = "Gets episodes for a tv season")]
     public class GetEpisodes : IReturn<QueryResult<BaseItemDto>>, IHasItemFields, IHasDtoOptions
     {
@@ -286,52 +281,6 @@ namespace MediaBrowser.Api
             _dtoService = dtoService;
             _tvSeriesManager = tvSeriesManager;
             _authContext = authContext;
-        }
-
-        /// <summary>
-        /// Gets the specified request.
-        /// </summary>
-        /// <param name="request">The request.</param>
-        /// <returns>System.Object.</returns>
-        public object Get(GetSimilarShows request)
-        {
-            var result = GetSimilarItemsResult(request);
-
-            return ToOptimizedResult(result);
-        }
-
-        private QueryResult<BaseItemDto> GetSimilarItemsResult(BaseGetSimilarItemsFromItem request)
-        {
-            var user = !request.UserId.Equals(Guid.Empty) ? _userManager.GetUserById(request.UserId) : null;
-
-            var item = string.IsNullOrEmpty(request.Id) ?
-                (!request.UserId.Equals(Guid.Empty) ? _libraryManager.GetUserRootFolder() :
-                _libraryManager.RootFolder) : _libraryManager.GetItemById(request.Id);
-
-            var dtoOptions = GetDtoOptions(_authContext, request);
-
-            var itemsResult = _libraryManager.GetItemList(new InternalItemsQuery(user)
-            {
-                Limit = request.Limit,
-                IncludeItemTypes = new[]
-                {
-                        typeof(Series).Name
-                },
-                SimilarTo = item,
-                DtoOptions = dtoOptions
-
-            });
-
-            var returnList = _dtoService.GetBaseItemDtos(itemsResult, dtoOptions, user);
-
-            var result = new QueryResult<BaseItemDto>
-            {
-                Items = returnList,
-
-                TotalRecordCount = itemsResult.Count
-            };
-
-            return result;
         }
 
         public object Get(GetUpcomingEpisodes request)

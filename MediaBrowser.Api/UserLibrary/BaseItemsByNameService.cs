@@ -125,7 +125,8 @@ namespace MediaBrowser.Api.UserLibrary
                 Years = request.GetYears(),
                 MinCommunityRating = request.MinCommunityRating,
                 DtoOptions = dtoOptions,
-                SearchTerm = request.SearchTerm
+                SearchTerm = request.SearchTerm,
+                EnableTotalRecordCount = request.EnableTotalRecordCount
             };
 
             if (!string.IsNullOrWhiteSpace(request.ParentId))
