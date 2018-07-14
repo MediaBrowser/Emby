@@ -667,8 +667,16 @@ namespace MediaBrowser.ServerApplication
 
                 if (Environment.Is64BitProcess)
                 {
+                    // Visual C++ 2015 64bit
                     key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Default)
                        .OpenSubKey("SOFTWARE\\Classes\\Installer\\Dependencies\\{d992c12e-cab2-426f-bde3-fb8c53950b0d}");
+
+                    // Visual C++ 2017 64bit
+                    if (key == null)
+                    {
+                        key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Default)
+                            .OpenSubKey("SOFTWARE\\Classes\\Installer\\Dependencies\\,,amd64,14.0,bundle");
+                    }
 
                     if (key == null)
                     {
@@ -678,8 +686,16 @@ namespace MediaBrowser.ServerApplication
                 }
                 else
                 {
+                    // Visual C++ 2015 32bit
                     key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Default)
                         .OpenSubKey("SOFTWARE\\Classes\\Installer\\Dependencies\\{e2803110-78b3-4664-a479-3611a381656a}");
+
+                    // Visual C++ 2017 32bit
+                    if (key == null)
+                    {
+                        key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Default)
+                            .OpenSubKey("SOFTWARE\\Classes\\Installer\\Dependencies\\,,x86,14.0,bundle");
+                    }
 
                     if (key == null)
                     {
