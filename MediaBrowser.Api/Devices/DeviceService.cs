@@ -18,6 +18,14 @@ namespace MediaBrowser.Api.Devices
     {
     }
 
+    [Route("/Devices/Info", "GET", Summary = "Gets info for a device")]
+    [Authenticated(Roles = "Admin")]
+    public class GetDeviceInfo : IReturn<DeviceInfo>
+    {
+        [ApiMember(Name = "Id", Description = "Device Id", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "GET")]
+        public string Id { get; set; }
+    }
+
     [Route("/Devices", "DELETE", Summary = "Deletes a device")]
     public class DeleteDevice
     {
@@ -68,6 +76,11 @@ namespace MediaBrowser.Api.Devices
         public object Get(GetDevices request)
         {
             return ToOptimizedResult(_deviceManager.GetDevices(request));
+        }
+
+        public object Get(GetDeviceInfo request)
+        {
+            return _deviceManager.GetDevice(request.Id);
         }
 
         public object Get(GetCameraUploads request)

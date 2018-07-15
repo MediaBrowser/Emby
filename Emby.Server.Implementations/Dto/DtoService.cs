@@ -42,13 +42,12 @@ namespace Emby.Server.Implementations.Dto
         private readonly IProviderManager _providerManager;
 
         private readonly Func<IChannelManager> _channelManagerFactory;
-        private readonly ISyncManager _syncManager;
         private readonly IApplicationHost _appHost;
         private readonly Func<IDeviceManager> _deviceManager;
         private readonly Func<IMediaSourceManager> _mediaSourceManager;
         private readonly Func<ILiveTvManager> _livetvManager;
 
-        public DtoService(ILogger logger, ILibraryManager libraryManager, IUserDataManager userDataRepository, IItemRepository itemRepo, IImageProcessor imageProcessor, IServerConfigurationManager config, IFileSystem fileSystem, IProviderManager providerManager, Func<IChannelManager> channelManagerFactory, ISyncManager syncManager, IApplicationHost appHost, Func<IDeviceManager> deviceManager, Func<IMediaSourceManager> mediaSourceManager, Func<ILiveTvManager> livetvManager)
+        public DtoService(ILogger logger, ILibraryManager libraryManager, IUserDataManager userDataRepository, IItemRepository itemRepo, IImageProcessor imageProcessor, IServerConfigurationManager config, IFileSystem fileSystem, IProviderManager providerManager, Func<IChannelManager> channelManagerFactory, IApplicationHost appHost, Func<IDeviceManager> deviceManager, Func<IMediaSourceManager> mediaSourceManager, Func<ILiveTvManager> livetvManager)
         {
             _logger = logger;
             _libraryManager = libraryManager;
@@ -59,7 +58,6 @@ namespace Emby.Server.Implementations.Dto
             _fileSystem = fileSystem;
             _providerManager = providerManager;
             _channelManagerFactory = channelManagerFactory;
-            _syncManager = syncManager;
             _appHost = appHost;
             _deviceManager = deviceManager;
             _mediaSourceManager = mediaSourceManager;
@@ -442,7 +440,7 @@ namespace Emby.Server.Implementations.Dto
             if (options.ContainsField(ItemFields.BasicSyncInfo))
             {
                 var userCanSync = user != null && user.Policy.EnableContentDownloading;
-                if (userCanSync && _syncManager.SupportsSync(item))
+                if (userCanSync && item.SupportsExternalTransfer)
                 {
                     dto.SupportsSync = true;
                 }
