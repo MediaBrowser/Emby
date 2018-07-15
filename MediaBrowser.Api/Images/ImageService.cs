@@ -540,6 +540,11 @@ namespace MediaBrowser.Api.Images
             if (item == null)
             {
                 item = _libraryManager.GetItemById(itemId);
+
+                if (item == null)
+                {
+                    throw new ResourceNotFoundException(string.Format("Item {0} not found.", itemId.ToString("N")));
+                }
             }
 
             var imageInfo = GetImageInfo(request, item);

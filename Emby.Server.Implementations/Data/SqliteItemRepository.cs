@@ -4905,7 +4905,7 @@ namespace Emby.Server.Implementations.Data
 
                 foreach (var videoType in query.VideoTypes)
                 {
-                    videoTypes.Add("data like  '%" + videoType + "%'");
+                    videoTypes.Add("data like '%\"VideoType\":\"" + videoType.ToString() + "\"%'");
                 }
 
                 whereClauses.Add("(" + string.Join(" OR ", videoTypes.ToArray()) + ")");
@@ -4927,11 +4927,11 @@ namespace Emby.Server.Implementations.Data
             {
                 if (query.IsPlaceHolder.Value)
                 {
-                    whereClauses.Add("data like '\"IsPlaceHolder\":true'");
+                    whereClauses.Add("data like '%\"IsPlaceHolder\":true%'");
                 }
                 else
                 {
-                    whereClauses.Add("(data is null or data not like '\"IsPlaceHolder\":true')");
+                    whereClauses.Add("(data is null or data not like '%\"IsPlaceHolder\":true%')");
                 }
             }
 

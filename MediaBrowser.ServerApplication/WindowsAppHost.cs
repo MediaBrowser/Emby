@@ -35,11 +35,6 @@ namespace MediaBrowser.ServerApplication
             return new ConnectManager();
         }
 
-        protected override ISyncManager CreateSyncManager()
-        {
-            return new SyncManager();
-        }
-
         protected override void RestartInternal()
         {
             MainStartup.Restart();
