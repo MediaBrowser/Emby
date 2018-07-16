@@ -108,12 +108,33 @@ namespace Emby.Server.Implementations.Session
             _deviceManager = deviceManager;
             _mediaSourceManager = mediaSourceManager;
             _timerFactory = timerFactory;
+            _deviceManager.DeviceOptionsUpdated += _deviceManager_DeviceOptionsUpdated;
+        }
+
+        private void _deviceManager_DeviceOptionsUpdated(object sender, GenericEventArgs<Tuple<string, DeviceOptions>> e)
+        {
+            foreach (var session in Sessions)
+            {
+                if (string.Equals(session.DeviceId, e.Argument.Item1))
+                {
+                    if (!string.IsNullOrWhiteSpace(e.Argument.Item2.CustomName))
+                    {
+                        session.HasCustomDeviceName = true;
+                        session.DeviceName = e.Argument.Item2.CustomName;
+                    }
+                    else
+                    {
+                        session.HasCustomDeviceName = false;
+                    }
+                }
+            }
         }
 
         private bool _disposed;
         public void Dispose()
         {
             _disposed = true;
+            _deviceManager.DeviceOptionsUpdated -= _deviceManager_DeviceOptionsUpdated;
         }
 
         public void CheckDisposed()
@@ -399,7 +420,12 @@ namespace Emby.Server.Implementations.Session
             sessionInfo.UserPrimaryImageTag = user == null ? null : GetImageCacheTag(user, ImageType.Primary);
             sessionInfo.RemoteEndPoint = remoteEndPoint;
             sessionInfo.Client = appName;
-            sessionInfo.DeviceName = deviceName;
+
+            if (!sessionInfo.HasCustomDeviceName || string.IsNullOrEmpty(sessionInfo.DeviceName))
+            {
+                sessionInfo.DeviceName = deviceName;
+            }
+
             sessionInfo.ApplicationVersion = appVersion;
 
             if (user == null)
@@ -433,7 +459,16 @@ namespace Emby.Server.Implementations.Session
                 deviceName = "Network Device";
             }
 
-            sessionInfo.DeviceName = deviceName;
+            var deviceOptions = _deviceManager.GetDeviceOptions(deviceId);
+            if (string.IsNullOrEmpty(deviceOptions.CustomName))
+            {
+                sessionInfo.DeviceName = deviceName;
+            }
+            else
+            {
+                sessionInfo.DeviceName = deviceOptions.CustomName;
+                sessionInfo.HasCustomDeviceName = true;
+            }
 
             OnSessionStarted(sessionInfo);
             return sessionInfo;
@@ -689,35 +724,66 @@ namespace Emby.Server.Implementations.Session
 
             var positionTicks = info.PositionTicks;
 
+            var changed = false;
+
             if (positionTicks.HasValue)
             {
                 _userDataManager.UpdatePlayState(item, data, positionTicks.Value);
+                changed = true;
+            }
 
-                UpdatePlaybackSettings(user, info, data);
+            var tracksChanged = UpdatePlaybackSettings(user, info, data);
+            if (!tracksChanged)
+            {
+                changed = true;
+            }
 
+            if (changed)
+            {
                 _userDataManager.SaveUserData(user, item, data, UserDataSaveReason.PlaybackProgress, CancellationToken.None);
             }
+
         }
 
-        private void UpdatePlaybackSettings(User user, PlaybackProgressInfo info, UserItemData data)
+        private bool UpdatePlaybackSettings(User user, PlaybackProgressInfo info, UserItemData data)
         {
+            var changed = false;
+
             if (user.Configuration.RememberAudioSelections)
             {
-                data.AudioStreamIndex = info.AudioStreamIndex;
+                if (data.AudioStreamIndex != info.AudioStreamIndex)
+                {
+                    data.AudioStreamIndex = info.AudioStreamIndex;
+                    changed = true;
+                }
             }
             else
             {
-                data.AudioStreamIndex = null;
+                if (data.AudioStreamIndex.HasValue)
+                {
+                    data.AudioStreamIndex = null;
+                    changed = true;
+                }
             }
 
             if (user.Configuration.RememberSubtitleSelections)
             {
-                data.SubtitleStreamIndex = info.SubtitleStreamIndex;
+                if (data.SubtitleStreamIndex != info.SubtitleStreamIndex)
+                {
+                    data.SubtitleStreamIndex = info.SubtitleStreamIndex;
+                    changed = true;
+                }
             }
             else
             {
-                data.SubtitleStreamIndex = null;
+                if (data.SubtitleStreamIndex.HasValue)
+                {
+                    data.SubtitleStreamIndex = null;
+                    changed = true;
+                }
             }
+
+            return changed;
         }
 
         /// <summary>

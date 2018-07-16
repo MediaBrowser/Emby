@@ -991,8 +991,7 @@ namespace Emby.Server.Implementations
             ConnectManager = CreateConnectManager();
             RegisterSingleInstance(ConnectManager);
 
-            var deviceRepo = new SqliteDeviceRepository(LogManager.GetLogger("DeviceManager"), ServerConfigurationManager, FileSystemManager, JsonSerializer);
-            DeviceManager = new DeviceManager(AuthenticationRepository, deviceRepo, LibraryManager, LocalizationManager, UserManager, FileSystemManager, LibraryMonitor, ServerConfigurationManager, LogManager.GetLogger("DeviceManager"), NetworkManager);
+            DeviceManager = new DeviceManager(AuthenticationRepository, JsonSerializer, LibraryManager, LocalizationManager, UserManager, FileSystemManager, LibraryMonitor, ServerConfigurationManager, LogManager.GetLogger("DeviceManager"), NetworkManager);
             RegisterSingleInstance(DeviceManager);
 
             var newsService = new Emby.Server.Implementations.News.NewsService(ApplicationPaths, JsonSerializer);

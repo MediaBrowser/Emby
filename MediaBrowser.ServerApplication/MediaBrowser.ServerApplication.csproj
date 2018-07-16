@@ -76,14 +76,14 @@
     <Reference Include="Emby.XmlTv, Version=1.0.6700.31789, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Emby.XmlTv.1.0.15\lib\portable-net45+netstandard2.0+win8\Emby.XmlTv.dll</HintPath>
     </Reference>
-    <Reference Include="MediaBrowser.Common, Version=3.4.1.34, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MediaBrowser.Common.3.3.70-beta\lib\netstandard2.0\MediaBrowser.Common.dll</HintPath>
+    <Reference Include="MediaBrowser.Common, Version=3.4.1.35, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaBrowser.Common.3.3.71-beta\lib\netstandard2.0\MediaBrowser.Common.dll</HintPath>
     </Reference>
-    <Reference Include="MediaBrowser.Controller, Version=3.4.1.34, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MediaBrowser.Server.Core.3.3.70-beta\lib\netstandard2.0\MediaBrowser.Controller.dll</HintPath>
+    <Reference Include="MediaBrowser.Controller, Version=3.4.1.35, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaBrowser.Server.Core.3.3.71-beta\lib\netstandard2.0\MediaBrowser.Controller.dll</HintPath>
     </Reference>
-    <Reference Include="MediaBrowser.Model, Version=3.4.1.34, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MediaBrowser.Common.3.3.70-beta\lib\netstandard2.0\MediaBrowser.Model.dll</HintPath>
+    <Reference Include="MediaBrowser.Model, Version=3.4.1.35, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaBrowser.Common.3.3.71-beta\lib\netstandard2.0\MediaBrowser.Model.dll</HintPath>
     </Reference>
     <Reference Include="ServiceStack.Text, Version=5.0.0.0, Culture=neutral, PublicKeyToken=02c12cbda47e6587, processorArchitecture=MSIL">
       <HintPath>..\packages\ServiceStack.Text.5.1.0\lib\net45\ServiceStack.Text.dll</HintPath>

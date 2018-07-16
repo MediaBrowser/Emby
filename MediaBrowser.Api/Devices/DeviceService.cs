@@ -26,6 +26,14 @@ namespace MediaBrowser.Api.Devices
         public string Id { get; set; }
     }
 
+    [Route("/Devices/Options", "GET", Summary = "Gets options for a device")]
+    [Authenticated(Roles = "Admin")]
+    public class GetDeviceOptions : IReturn<DeviceOptions>
+    {
+        [ApiMember(Name = "Id", Description = "Device Id", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "GET")]
+        public string Id { get; set; }
+    }
+
     [Route("/Devices", "DELETE", Summary = "Deletes a device")]
     public class DeleteDevice
     {
@@ -60,6 +68,14 @@ namespace MediaBrowser.Api.Devices
         public Stream RequestStream { get; set; }
     }
 
+    [Route("/Devices/Options", "POST", Summary = "Updates device options")]
+    [Authenticated(Roles = "Admin")]
+    public class PostDeviceOptions : DeviceOptions, IReturnVoid
+    {
+        [ApiMember(Name = "Id", Description = "Device Id", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "DELETE")]
+        public string Id { get; set; }
+    }
+
     public class DeviceService : BaseApiService
     {
         private readonly IDeviceManager _deviceManager;
@@ -73,6 +89,11 @@ namespace MediaBrowser.Api.Devices
             _sessionManager = sessionManager;
         }
 
+        public void Post(PostDeviceOptions request)
+        {
+            _deviceManager.UpdateDeviceOptions(request.Id, request);
+        }
+
         public object Get(GetDevices request)
         {
             return ToOptimizedResult(_deviceManager.GetDevices(request));
@@ -81,6 +102,11 @@ namespace MediaBrowser.Api.Devices
         public object Get(GetDeviceInfo request)
         {
             return _deviceManager.GetDevice(request.Id);
+        }
+
+        public object Get(GetDeviceOptions request)
+        {
+            return _deviceManager.GetDeviceOptions(request.Id);
         }
 
         public object Get(GetCameraUploads request)

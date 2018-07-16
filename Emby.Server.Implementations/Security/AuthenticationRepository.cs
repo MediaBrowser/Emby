@@ -12,6 +12,7 @@ using MediaBrowser.Model.Querying;
 using SQLitePCL.pretty;
 using MediaBrowser.Model.Extensions;
 using MediaBrowser.Controller.Configuration;
+using MediaBrowser.Model.Devices;
 
 namespace Emby.Server.Implementations.Security
 {
@@ -37,12 +38,15 @@ namespace Emby.Server.Implementations.Security
 
                 string[] queries = {
 
-                               "create table if not exists Tokens (Id INTEGER PRIMARY KEY, AccessToken TEXT NOT NULL, DeviceId TEXT NOT NULL, AppName TEXT NOT NULL, AppVersion TEXT NOT NULL, DeviceName TEXT NOT NULL, UserId TEXT, UserName TEXT, IsActive BIT NOT NULL, DateCreated DATETIME NOT NULL, DateLastActivity DATETIME NOT NULL)",
+                                "create table if not exists Tokens (Id INTEGER PRIMARY KEY, AccessToken TEXT NOT NULL, DeviceId TEXT NOT NULL, AppName TEXT NOT NULL, AppVersion TEXT NOT NULL, DeviceName TEXT NOT NULL, UserId TEXT, UserName TEXT, IsActive BIT NOT NULL, DateCreated DATETIME NOT NULL, DateLastActivity DATETIME NOT NULL)",
+                                "create table if not exists Devices (Id TEXT NOT NULL PRIMARY KEY, CustomName TEXT, Capabilities TEXT)",
+
                                 "drop index if exists idx_AccessTokens",
                                 "drop index if exists Tokens1",
                                 "drop index if exists Tokens2",
                                 "create index if not exists Tokens3 on Tokens (AccessToken, DateLastActivity)",
-                                "create index if not exists Tokens4 on Tokens (DeviceId, DateLastActivity)"
+                                "create index if not exists Tokens4 on Tokens (Id, DateLastActivity)",
+                                "create index if not exists Devices1 on Devices (Id)"
                                };
 
                 connection.RunQueries(queries);
@@ -177,7 +181,7 @@ namespace Emby.Server.Implementations.Security
             }
         }
 
-        private const string BaseSelectText = "select Id, AccessToken, DeviceId, AppName, AppVersion, DeviceName, UserId, UserName, DateCreated, DateLastActivity from Tokens";
+        private const string BaseSelectText = "select Tokens.Id, AccessToken, DeviceId, AppName, AppVersion, DeviceName, UserId, UserName, DateCreated, DateLastActivity, Devices.CustomName from Tokens left join Devices on Tokens.DeviceId=Devices.Id";
 
         private void BindAuthenticationQueryParams(AuthenticationInfoQuery query, IStatement statement)
         {
@@ -302,33 +306,6 @@ namespace Emby.Server.Implementations.Security
             }
         }
 
-        public AuthenticationInfo Get(string id)
-        {
-            if (string.IsNullOrEmpty(id))
-            {
-                throw new ArgumentNullException("id");
-            }
-
-            using (WriteLock.Read())
-            {
-                using (var connection = CreateConnection(true))
-                {
-                    var commandText = BaseSelectText + " where Id=@Id";
-
-                    using (var statement = connection.PrepareStatement(commandText))
-                    {
-                        statement.BindParameters["@Id"].Bind(id.ToGuidBlob());
-
-                        foreach (var row in statement.ExecuteQuery())
-                        {
-                            return Get(row);
-                        }
-                        return null;
-                    }
-                }
-            }
-        }
-
         private AuthenticationInfo Get(IReadOnlyList<IResultSetValue> reader)
         {
             var info = new AuthenticationInfo
@@ -378,7 +355,76 @@ namespace Emby.Server.Implementations.Security
                 info.DateLastActivity = info.DateCreated;
             }
 
+            if (reader[10].SQLiteType != SQLiteType.Null)
+            {
+                info.DeviceName = reader[10].ToString();
+            }
+
             return info;
+        }
+
+        public DeviceOptions GetDeviceOptions(string deviceId)
+        {
+            using (WriteLock.Read())
+            {
+                using (var connection = CreateConnection(true))
+                {
+                    return connection.RunInTransaction(db =>
+                    {
+                        using (var statement = PrepareStatementSafe(db, "select CustomName from Devices where Id=@DeviceId"))
+                        {
+                            statement.TryBind("@DeviceId", deviceId);
+
+                            var result = new DeviceOptions();
+
+                            foreach (var row in statement.ExecuteQuery())
+                            {
+                                if (row[0].SQLiteType != SQLiteType.Null)
+                                {
+                                    result.CustomName = row[0].ToString();
+                                }
+                            }
+
+                            return result;
+                        }
+
+                    }, ReadTransactionMode);
+                }
+            }
+        }
+
+        public void UpdateDeviceOptions(string deviceId, DeviceOptions options)
+        {
+            if (options == null)
+            {
+                throw new ArgumentNullException("options");
+            }
+
+            using (WriteLock.Write())
+            {
+                using (var connection = CreateConnection())
+                {
+                    connection.RunInTransaction(db =>
+                    {
+                        using (var statement = db.PrepareStatement("replace into devices (Id, CustomName, Capabilities) VALUES (@Id, @CustomName, (Select Capabilities from Devices where Id=@Id))"))
+                        {
+                            statement.TryBind("@Id", deviceId);
+
+                            if (string.IsNullOrWhiteSpace(options.CustomName))
+                            {
+                                statement.TryBindNull("@CustomName");
+                            }
+                            else
+                            {
+                                statement.TryBind("@CustomName", options.CustomName);
+                            }
+
+                            statement.MoveNext();
+                        }
+
+                    }, TransactionMode);
+                }
+            }
         }
     }
 }
