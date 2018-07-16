@@ -652,6 +652,11 @@ namespace MediaBrowser.Api.Library
                 return GetSimilarItemsResult(request, new[] { typeof(Series).Name });
             }
 
+            if (item is Episode || (item is IItemByName && !(item is MusicArtist)))
+            {
+                return new QueryResult<BaseItemDto>();
+            }
+
             return GetSimilarItemsResult(request, new[] { item.GetType().Name });
         }
 

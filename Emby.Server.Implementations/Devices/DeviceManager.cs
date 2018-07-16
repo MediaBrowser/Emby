@@ -24,12 +24,14 @@ using MediaBrowser.Model.Configuration;
 using MediaBrowser.Controller.Plugins;
 using MediaBrowser.Model.Globalization;
 using MediaBrowser.Controller.Security;
+using MediaBrowser.Model.Serialization;
+using MediaBrowser.Common.Extensions;
 
 namespace Emby.Server.Implementations.Devices
 {
     public class DeviceManager : IDeviceManager
     {
-        private readonly IDeviceRepository _repo;
+        private readonly IJsonSerializer _json;
         private readonly IUserManager _userManager;
         private readonly IFileSystem _fileSystem;
         private readonly ILibraryMonitor _libraryMonitor;
@@ -41,11 +43,15 @@ namespace Emby.Server.Implementations.Devices
 
         private readonly IAuthenticationRepository _authRepo;
 
+        public event EventHandler<GenericEventArgs<Tuple<string, DeviceOptions>>> DeviceOptionsUpdated;
         public event EventHandler<GenericEventArgs<CameraImageUploadInfo>> CameraImageUploaded;
 
-        public DeviceManager(IAuthenticationRepository authRepo, IDeviceRepository repo, ILibraryManager libraryManager, ILocalizationManager localizationManager, IUserManager userManager, IFileSystem fileSystem, ILibraryMonitor libraryMonitor, IServerConfigurationManager config, ILogger logger, INetworkManager network)
+        private readonly object _cameraUploadSyncLock = new object();
+        private readonly object _capabilitiesSyncLock = new object();
+
+        public DeviceManager(IAuthenticationRepository authRepo, IJsonSerializer json, ILibraryManager libraryManager, ILocalizationManager localizationManager, IUserManager userManager, IFileSystem fileSystem, ILibraryMonitor libraryMonitor, IServerConfigurationManager config, ILogger logger, INetworkManager network)
         {
-            _repo = repo;
+            _json = json;
             _userManager = userManager;
             _fileSystem = fileSystem;
             _libraryMonitor = libraryMonitor;
@@ -57,14 +63,60 @@ namespace Emby.Server.Implementations.Devices
             _authRepo = authRepo;
         }
 
-        public void SaveCapabilities(string reportedId, ClientCapabilities capabilities)
+
+        private Dictionary<string, ClientCapabilities> _capabilitiesCache = new Dictionary<string, ClientCapabilities>(StringComparer.OrdinalIgnoreCase);
+        public void SaveCapabilities(string deviceId, ClientCapabilities capabilities)
         {
-            _repo.SaveCapabilities(reportedId, capabilities);
+            var path = Path.Combine(GetDevicePath(deviceId), "capabilities.json");
+            _fileSystem.CreateDirectory(_fileSystem.GetDirectoryName(path));
+
+            lock (_capabilitiesSyncLock)
+            {
+                _capabilitiesCache[deviceId] = capabilities;
+
+                _json.SerializeToFile(capabilities, path);
+            }
         }
 
-        public ClientCapabilities GetCapabilities(string reportedId)
+        public void UpdateDeviceOptions(string deviceId, DeviceOptions options)
         {
-            return _repo.GetCapabilities(reportedId) ?? new ClientCapabilities();
+            _authRepo.UpdateDeviceOptions(deviceId, options);
+
+            if (DeviceOptionsUpdated != null)
+            {
+                DeviceOptionsUpdated(this, new GenericEventArgs<Tuple<string, DeviceOptions>>()
+                {
+                    Argument = new Tuple<string, DeviceOptions>(deviceId, options)
+                });
+            }
+        }
+
+        public DeviceOptions GetDeviceOptions(string deviceId)
+        {
+            return _authRepo.GetDeviceOptions(deviceId);
+        }
+
+        public ClientCapabilities GetCapabilities(string id)
+        {
+            lock (_capabilitiesSyncLock)
+            {
+                ClientCapabilities result;
+                if (_capabilitiesCache.TryGetValue(id, out result))
+                {
+                    return result;
+                }
+
+                var path = Path.Combine(GetDevicePath(id), "capabilities.json");
+                try
+                {
+                    return _json.DeserializeFromFile<ClientCapabilities>(path) ?? new ClientCapabilities();
+                }
+                catch
+                {
+                }
+            }
+
+            return new ClientCapabilities();
         }
 
         public DeviceInfo GetDevice(string id)
@@ -128,16 +180,40 @@ namespace Emby.Server.Implementations.Devices
                 Id = authInfo.DeviceId,
                 LastUserId = authInfo.UserId,
                 LastUserName = authInfo.UserName,
-                ReportedName = authInfo.DeviceName,
                 Name = authInfo.DeviceName,
                 DateLastActivity = authInfo.DateLastActivity,
                 IconUrl = caps == null ? null : caps.IconUrl
             };
         }
 
+        private string GetDevicesPath()
+        {
+            return Path.Combine(_config.ApplicationPaths.DataPath, "devices");
+        }
+
+        private string GetDevicePath(string id)
+        {
+            return Path.Combine(GetDevicesPath(), id.GetMD5().ToString("N"));
+        }
+
         public ContentUploadHistory GetCameraUploadHistory(string deviceId)
         {
-            return _repo.GetCameraUploadHistory(deviceId);
+            var path = Path.Combine(GetDevicePath(deviceId), "camerauploads.json");
+
+            lock (_cameraUploadSyncLock)
+            {
+                try
+                {
+                    return _json.DeserializeFromFile<ContentUploadHistory>(path);
+                }
+                catch (IOException)
+                {
+                    return new ContentUploadHistory
+                    {
+                        DeviceId = deviceId
+                    };
+                }
+            }
         }
 
         public async Task AcceptCameraUpload(string deviceId, Stream stream, LocalFileInfo file)
@@ -168,7 +244,7 @@ namespace Emby.Server.Implementations.Devices
                     await stream.CopyToAsync(fs).ConfigureAwait(false);
                 }
 
-                _repo.AddCameraUpload(deviceId, file);
+                AddCameraUpload(deviceId, file);
             }
             finally
             {
@@ -185,6 +261,37 @@ namespace Emby.Server.Implementations.Devices
                         FileInfo = file
                     }
                 }, _logger);
+            }
+        }
+
+        private void AddCameraUpload(string deviceId, LocalFileInfo file)
+        {
+            var path = Path.Combine(GetDevicePath(deviceId), "camerauploads.json");
+            _fileSystem.CreateDirectory(_fileSystem.GetDirectoryName(path));
+
+            lock (_cameraUploadSyncLock)
+            {
+                ContentUploadHistory history;
+
+                try
+                {
+                    history = _json.DeserializeFromFile<ContentUploadHistory>(path);
+                }
+                catch (IOException)
+                {
+                    history = new ContentUploadHistory
+                    {
+                        DeviceId = deviceId
+                    };
+                }
+
+                history.DeviceId = deviceId;
+
+                var list = history.FilesUploaded.ToList();
+                list.Add(file);
+                history.FilesUploaded = list.ToArray(list.Count);
+
+                _json.SerializeToFile(history, path);
             }
         }
 

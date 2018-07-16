@@ -95,52 +95,7 @@ namespace Emby.Server.Implementations.Session
         /// <returns>Task.</returns>
         public Task ProcessMessage(WebSocketMessageInfo message)
         {
-            if (string.Equals(message.MessageType, "Identity", StringComparison.OrdinalIgnoreCase))
-            {
-                ProcessIdentityMessage(message);
-            }
-
             return Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// Processes the identity message.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        private void ProcessIdentityMessage(WebSocketMessageInfo message)
-        {
-            _logger.Debug("Received Identity message: " + message.Data);
-
-            var vals = message.Data.Split('|');
-
-            if (vals.Length < 3)
-            {
-                _logger.Error("Client sent invalid identity message.");
-                return;
-            }
-
-            var client = vals[0];
-            var deviceId = vals[1];
-            var version = vals[2];
-            var deviceName = vals.Length > 3 ? vals[3] : string.Empty;
-
-            var session = _sessionManager.GetSession(deviceId, client, version);
-
-            if (session == null && !string.IsNullOrEmpty(deviceName))
-            {
-                _logger.Debug("Logging session activity");
-
-                session = _sessionManager.LogSessionActivity(client, version, deviceId, deviceName, message.Connection.RemoteEndPoint, null);
-            }
-
-            if (session != null)
-            {
-                EnsureController(session, message.Connection);
-            }
-            else
-            {
-                _logger.Warn("Unable to determine session based on identity message: {0}", message.Data);
-            }
         }
 
         private void EnsureController(SessionInfo session, IWebSocketConnection connection)
