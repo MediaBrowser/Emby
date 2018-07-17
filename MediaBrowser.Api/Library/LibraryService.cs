@@ -281,7 +281,7 @@ namespace MediaBrowser.Api.Library
     }
 
     [Route("/Libraries/AvailableOptions", "GET")]
-    [Authenticated]
+    [Authenticated(AllowBeforeStartupWizard = true)]
     public class GetLibraryOptionsInfo : IReturn<LibraryOptionsResult>
     {
         public string LibraryContentType { get; set; }
