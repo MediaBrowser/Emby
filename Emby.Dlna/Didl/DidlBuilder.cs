@@ -142,9 +142,9 @@ namespace Emby.Dlna.Didl
             else
             {
                 var parent = item.DisplayParentId;
-                if (parent.HasValue)
+                if (!parent.Equals(Guid.Empty))
                 {
-                    writer.WriteAttributeString("parentID", GetClientId(parent.Value, null));
+                    writer.WriteAttributeString("parentID", GetClientId(parent, null));
                 }
             }
 
@@ -204,8 +204,8 @@ namespace Emby.Dlna.Didl
 
                 streamInfo = new StreamBuilder(_mediaEncoder, GetStreamBuilderLogger(options)).BuildVideoItem(new VideoOptions
                 {
-                    ItemId = GetClientId(video),
-                    MediaSources = sources.ToArray(sources.Count),
+                    ItemId = video.Id,
+                    MediaSources = sources.ToArray(),
                     Profile = _profile,
                     DeviceId = deviceId,
                     MaxBitrate = _profile.MaxStreamingBitrate
@@ -224,10 +224,10 @@ namespace Emby.Dlna.Didl
                 streamInfo.TargetVideoBitrate,
                 streamInfo.TargetTimestamp,
                 streamInfo.IsDirectStream,
-                streamInfo.RunTimeTicks,
+                streamInfo.RunTimeTicks ?? 0,
                 streamInfo.TargetVideoProfile,
                 streamInfo.TargetVideoLevel,
-                streamInfo.TargetFramerate,
+                streamInfo.TargetFramerate ?? 0,
                 streamInfo.TargetPacketLength,
                 streamInfo.TranscodeSeekInfo,
                 streamInfo.IsTargetAnamorphic,
@@ -368,7 +368,7 @@ namespace Emby.Dlna.Didl
                 streamInfo.TargetVideoBitDepth,
                 streamInfo.TargetVideoProfile,
                 streamInfo.TargetVideoLevel,
-                streamInfo.TargetFramerate,
+                streamInfo.TargetFramerate ?? 0,
                 streamInfo.TargetPacketLength,
                 streamInfo.TargetTimestamp,
                 streamInfo.IsTargetAnamorphic,
@@ -511,7 +511,7 @@ namespace Emby.Dlna.Didl
 
                 streamInfo = new StreamBuilder(_mediaEncoder, GetStreamBuilderLogger(options)).BuildAudioItem(new AudioOptions
                 {
-                    ItemId = GetClientId(audio),
+                    ItemId = audio.Id,
                     MediaSources = sources.ToArray(sources.Count),
                     Profile = _profile,
                     DeviceId = deviceId
@@ -580,7 +580,7 @@ namespace Emby.Dlna.Didl
                 targetChannels,
                 targetAudioBitDepth,
                 streamInfo.IsDirectStream,
-                streamInfo.RunTimeTicks,
+                streamInfo.RunTimeTicks ?? 0,
                 streamInfo.TranscodeSeekInfo);
 
             writer.WriteAttributeString("protocolInfo", String.Format(
@@ -635,13 +635,13 @@ namespace Emby.Dlna.Didl
                 else
                 {
                     var parent = folder.DisplayParentId;
-                    if (!parent.HasValue)
+                    if (parent.Equals(Guid.Empty))
                     {
                         writer.WriteAttributeString("parentID", "0");
                     }
                     else
                     {
-                        writer.WriteAttributeString("parentID", GetClientId(parent.Value, null));
+                        writer.WriteAttributeString("parentID", GetClientId(parent, null));
                     }
                 }
             }
@@ -676,7 +676,7 @@ namespace Emby.Dlna.Didl
                 return;
             }
 
-            var userdata = _userDataManager.GetUserData(user.Id, item);
+            var userdata = _userDataManager.GetUserData(user, item);
 
             if (userdata.PlaybackPositionTicks > 0)
             {
@@ -945,19 +945,6 @@ namespace Emby.Dlna.Didl
         {
             ImageDownloadInfo imageInfo = null;
 
-            if (context is UserView)
-            {
-                var episode = item as Episode;
-                if (episode != null)
-                {
-                    var parent = episode.Series;
-                    if (parent != null)
-                    {
-                        imageInfo = GetImageInfo(parent);
-                    }
-                }
-            }
-
             // Finally, just use the image from the item
             if (imageInfo == null)
             {
@@ -994,7 +981,7 @@ namespace Emby.Dlna.Didl
 
             AddImageResElement(item, writer, 160, 160, "jpg", "JPEG_TN");
 
-            if (!_profile.EnableSingleAlbumArtLimit)
+            if (!_profile.EnableSingleAlbumArtLimit || string.Equals(item.MediaType, MediaType.Photo, StringComparison.OrdinalIgnoreCase))
             {
                 AddImageResElement(item, writer, 4096, 4096, "jpg", "JPEG_LRG");
                 AddImageResElement(item, writer, 1024, 768, "jpg", "JPEG_MED");
@@ -1132,7 +1119,7 @@ namespace Emby.Dlna.Didl
 
             return new ImageDownloadInfo
             {
-                ItemId = item.Id.ToString("N"),
+                ItemId = item.Id,
                 Type = type,
                 ImageTag = tag,
                 Width = width,
@@ -1144,7 +1131,7 @@ namespace Emby.Dlna.Didl
 
         class ImageDownloadInfo
         {
-            internal string ItemId;
+            internal Guid ItemId;
             internal string ImageTag;
             internal ImageType Type;
 
@@ -1183,18 +1170,11 @@ namespace Emby.Dlna.Didl
             return id;
         }
 
-        public static string GetClientId(BaseItem item)
-        {
-            var id = item.Id.ToString("N");
-
-            return id;
-        }
-
         private ImageUrlInfo GetImageUrl(ImageDownloadInfo info, int maxWidth, int maxHeight, string format)
         {
             var url = string.Format("{0}/Items/{1}/Images/{2}/0/{3}/{4}/{5}/{6}/0/0",
                 _serverAddress,
-                info.ItemId,
+                info.ItemId.ToString("N"),
                 info.Type,
                 info.ImageTag,
                 format,
@@ -1214,7 +1194,7 @@ namespace Emby.Dlna.Didl
                     Height = height.Value,
                     Width = width.Value
 
-                }, null, null, maxWidth, maxHeight);
+                }, 0, 0, maxWidth, maxHeight);
 
                 width = Convert.ToInt32(newSize.Width);
                 height = Convert.ToInt32(newSize.Height);
@@ -1227,6 +1207,9 @@ namespace Emby.Dlna.Didl
                     info.IsDirectStream = maxWidth >= width.Value && maxHeight >= height.Value;
                 }
             }
+
+            // just lie
+            info.IsDirectStream = true;
 
             return new ImageUrlInfo
             {

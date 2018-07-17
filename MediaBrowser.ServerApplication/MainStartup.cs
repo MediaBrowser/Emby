@@ -330,7 +330,7 @@ namespace MediaBrowser.ServerApplication
         {
             var environmentInfo = new EnvironmentInfo();
 
-            var fileSystem = new ManagedFileSystem(logManager.GetLogger("FileSystem"), environmentInfo, null, appPaths.TempDirectory);
+            var fileSystem = new ManagedFileSystem(logManager.GetLogger("FileSystem"), environmentInfo, null, appPaths.TempDirectory, false);
 
             FileSystem = fileSystem;
 

@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.IO.FileSystem.Primitives</name>
+  </assembly>
+  <members>
+    <member name="T:System.IO.FileAccess">
+      <summary>Define constantes de acceso de lectura, de escritura y de lectura/escritura para un archivo.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileAccess.Read">
+      <summary>Acceso de lectura al archivo.Se pueden leer datos de este archivo.Se combina con Write para obtener acceso de lectura y escritura.</summary>
+    </member>
+    <member name="F:System.IO.FileAccess.ReadWrite">
+      <summary>Acceso de lectura y escritura al archivo.En este archivo se pueden escribir y leer datos.</summary>
+    </member>
+    <member name="F:System.IO.FileAccess.Write">
+      <summary>Acceso de escritura al archivo.En este archivo se pueden escribir datos.Se combina con Read para obtener acceso de lectura y escritura.</summary>
+    </member>
+    <member name="T:System.IO.FileAttributes">
+      <summary>Proporciona atributos para archivos y directorios.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileAttributes.Archive">
+      <summary>El archivo es un candidato para la copia de seguridad o la eliminación. </summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Compressed">
+      <summary>El archivo está comprimido.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Device">
+      <summary>Reservado para un uso futuro.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Directory">
+      <summary>El archivo es un directorio.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Encrypted">
+      <summary>El archivo o directorio está cifrado.Para un archivo, esto significa que todos los datos del archivo están cifrados.Para un directorio, esto significa que el cifrado viene predeterminado para todos los archivos y directorios recién creados.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Hidden">
+      <summary>El archivo está oculto y, por lo tanto, no se incluye en un listado de directorios ordinario.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.IntegrityStream">
+      <summary>El archivo o directorio incluye compatibilidad con integridad de datos.Cuando este valor se aplica a un archivo, todos los flujos de datos del archivo admiten integridad.Cuando este valor se aplica a un directorio, todos los nuevos archivos y subdirectorios dentro de ese directorio, de forma predeterminada, incluirán compatibilidad con integridad.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Normal">
+      <summary>El archivo es un archivo estándar que no tiene ningún atributo especial.Este atributo sólo es válido si se usa por sí solo.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.NoScrubData">
+      <summary>El archivo o directorio se excluye del análisis de integridad de datos.Cuando este valor se aplica a un directorio, de forma predeterminada, todos los nuevos archivos y subdirectorios dentro de ese directorio se excluyen de la integridad de datos.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.NotContentIndexed">
+      <summary>El servicio de Index Server de contenido del sistema operativo no indizará el archivo.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Offline">
+      <summary>El archivo no tiene conexión.Los datos del archivo no están disponibles de forma inmediata.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.ReadOnly">
+      <summary>El archivo es de sólo lectura.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.ReparsePoint">
+      <summary>El archivo contiene un punto de reanálisis; es decir, un bloque de datos definidos por el usuario asociado a un archivo o a un directorio.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.SparseFile">
+      <summary>El archivo es un archivo disperso.Los archivos dispersos suelen ser grandes archivos en los que la mayoría de los datos son ceros.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.System">
+      <summary>El archivo es un archivo de sistema.Es decir, el archivo forma parte del sistema operativo o lo utiliza exclusivamente el sistema operativo.</summary>
+    </member>
+    <member name="F:System.IO.FileAttributes.Temporary">
+      <summary>El archivo es temporal.Un archivo temporal contiene datos que son necesarios mientras una aplicación se está ejecutando, pero que no se necesitan una vez finalizada la aplicación.Los sistemas de archivos intentan conservar en memoria todos los datos para que el acceso sea más rápido, en lugar de vaciando los datos para devolverlos al almacenamiento masivo.La aplicación debería eliminar los archivos temporales tan pronto dejan de ser necesarios.</summary>
+    </member>
+    <member name="T:System.IO.FileMode">
+      <summary>Especifica cómo debe abrir un archivo el sistema operativo.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileMode.Append">
+      <summary>Abre el archivo si existe y realiza una búsqueda hasta el final del mismo, o crea un archivo nuevo.Requiere el permiso <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Append" />.FileMode.Append solo se puede utilizar junto con FileAccess.Write.Al intentar realizar una búsqueda hasta una posición antes del final del archivo se producirá la excepción <see cref="T:System.IO.IOException" />, se produce un error de cualquier intento de lectura y una excepción <see cref="T:System.NotSupportedException" />.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.Create">
+      <summary>Especifica que el sistema operativo debe crear un archivo nuevo.Si el archivo ya existe, se sobrescribirá.Requiere el permiso <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" />.FileMode.Create es equivalente a solicitar que se utilice <see cref="F:System.IO.FileMode.CreateNew" /> si no existe el archivo y que se utilice <see cref="F:System.IO.FileMode.Truncate" /> en caso contrario.Si el archivo ya existe pero es un archivo oculto, se produce una excepción <see cref="T:System.UnauthorizedAccessException" />.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.CreateNew">
+      <summary>Especifica que el sistema operativo debe crear un archivo nuevo.Requiere el permiso <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" />.Si el archivo ya existe, se produce una excepción <see cref="T:System.IO.IOException" />.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.Open">
+      <summary>Especifica que el sistema operativo debe abrir un archivo existente.La capacidad de abrir el archivo depende del valor especificado por la enumeración <see cref="T:System.IO.FileAccess" />.Se desencadena una excepción <see cref="T:System.IO.FileNotFoundException" /> si el archivo no existe.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.OpenOrCreate">
+      <summary>Especifica que el sistema operativo debe abrir un archivo si ya existe; en caso contrario, debe crearse uno nuevo.Si se abre el archivo con FileAccess.Read, se requiere el permiso <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Read" />.Si el acceso a archivos es FileAccess.Write, se requiere el permiso <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" />.Si se abre el archivo con FileAccess.ReadWrite, se requieren los permisos <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Read" /> y <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" />.</summary>
+    </member>
+    <member name="F:System.IO.FileMode.Truncate">
+      <summary>Especifica que el sistema operativo debe abrir un archivo existente.Cuando se abre el archivo, debe truncarse el archivo para que su tamaño sea de cero bytes.Requiere el permiso <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" />.Al intentar leer un archivo abierto con FileMode.Truncate, se produce una excepción <see cref="T:System.ArgumentException" />.</summary>
+    </member>
+    <member name="T:System.IO.FileShare">
+      <summary>Contiene constantes para controlar el tipo de acceso que otros objetos <see cref="T:System.IO.FileStream" /> puedan tener al mismo archivo.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.FileShare.Delete">
+      <summary>Permite la eliminación posterior de un archivo.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.Inheritable">
+      <summary>Hace que los procesos secundarios puedan heredar el identificador de archivos.No es directamente compatible con Win32.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.None">
+      <summary>Declina compartir el archivo actual.Cualquier solicitud para abrir el archivo (mediante este u otro proceso) devolverá error hasta que se cierre el archivo.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.Read">
+      <summary>Permite una posterior apertura del archivo para leerlo.Si no se especifica esta marca, cualquier solicitud de apertura del archivo para leerlo (mediante este u otro proceso) devolverá error hasta que se cierre el archivo pertinente.Sin embargo, incluso si se especifica este marcador, se requieren permisos adicionales para obtener acceso al archivo.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.ReadWrite">
+      <summary>Permite una apertura posterior del archivo para leerlo o escribir en él.Si no se especifica esta marca, cualquier solicitud de apertura del archivo para leerlo o escribir en él (mediante este u otro proceso) devolverá un error hasta que se cierre el archivo.Sin embargo, incluso si se especifica este marcador, se requieren permisos adicionales para obtener acceso al archivo.</summary>
+    </member>
+    <member name="F:System.IO.FileShare.Write">
+      <summary>Permite una posterior apertura del archivo para escribir en él.Si no se especifica esta marca, cualquier solicitud de apertura del archivo para escribir en él (mediante este u otro proceso) devolverá error hasta que se cierre el archivo pertinente.Sin embargo, incluso si se especifica este marcador, se requieren permisos adicionales para obtener acceso al archivo.</summary>
+    </member>
+  </members>
+</doc>

@@ -13,7 +13,7 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -70,7 +70,6 @@
     <Compile Include="LocalizationService.cs" />
     <Compile Include="Movies\MoviesService.cs" />
     <Compile Include="NewsService.cs" />
-    <Compile Include="NotificationsService.cs" />
     <Compile Include="PackageService.cs" />
     <Compile Include="PluginService.cs" />
     <Compile Include="Images\RemoteImageService.cs" />
@@ -102,9 +101,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VideosService.cs" />
     <Compile Include="Session\SessionInfoWebSocketListener.cs" />
-    <Compile Include="System\SystemInfoWebSocketListener.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="MediaBrowser.Common, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaBrowser.Common.3.5.0\lib\netstandard2.0\MediaBrowser.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="MediaBrowser.Controller, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaBrowser.Server.Core.3.5.0\lib\netstandard2.0\MediaBrowser.Controller.dll</HintPath>
+    </Reference>
+    <Reference Include="MediaBrowser.Model, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaBrowser.Common.3.5.0\lib\netstandard2.0\MediaBrowser.Model.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -117,18 +124,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MediaBrowser.Common\MediaBrowser.Common.csproj">
-      <Project>{9142EEFA-7570-41E1-BFCC-468BB571AF2F}</Project>
-      <Name>MediaBrowser.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MediaBrowser.Controller\MediaBrowser.Controller.csproj">
-      <Project>{17E1F4E6-8ABD-4FE5-9ECF-43D4B6087BA2}</Project>
-      <Name>MediaBrowser.Controller</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MediaBrowser.Model\MediaBrowser.Model.csproj">
-      <Project>{7EEEB4BB-F3E8-48FC-B4C5-70F0FFF8329B}</Project>
-      <Name>MediaBrowser.Model</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

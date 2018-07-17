@@ -19,7 +19,7 @@ namespace MediaBrowser.Api
         /// </summary>
         /// <value>The user id.</value>
         [ApiMember(Name = "UserId", Description = "User Id", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
 
         [ApiMember(Name = "ParentId", Description = "Specify this to localize the search to a specific item or folder. Omit to use the root", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
         public string ParentId { get; set; }
@@ -49,7 +49,7 @@ namespace MediaBrowser.Api
         /// </summary>
         /// <value>The user id.</value>
         [ApiMember(Name = "UserId", Description = "User Id", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
 
         [ApiMember(Name = "ParentId", Description = "Specify this to localize the search to a specific item or folder. Omit to use the root", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
         public string ParentId { get; set; }
@@ -94,7 +94,7 @@ namespace MediaBrowser.Api
         public object Get(GetQueryFilters request)
         {
             var parentItem = string.IsNullOrEmpty(request.ParentId) ? null : _libraryManager.GetItemById(request.ParentId);
-            var user = !string.IsNullOrWhiteSpace(request.UserId) ? _userManager.GetUserById(request.UserId) : null;
+            var user = !request.UserId.Equals(Guid.Empty) ? _userManager.GetUserById(request.UserId) : null;
 
             if (string.Equals(request.IncludeItemTypes, "BoxSet", StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(request.IncludeItemTypes, "Playlist", StringComparison.OrdinalIgnoreCase) ||
@@ -138,29 +138,29 @@ namespace MediaBrowser.Api
                 string.Equals(request.IncludeItemTypes, "MusicArtist", StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(request.IncludeItemTypes, "Audio", StringComparison.OrdinalIgnoreCase))
             {
-                filters.Genres = _libraryManager.GetMusicGenres(genreQuery).Items.Select(i => new NameIdPair
+                filters.Genres = _libraryManager.GetMusicGenres(genreQuery).Items.Select(i => new NameGuidPair
                 {
                     Name = i.Item1.Name,
-                    Id = i.Item1.Id.ToString("N")
+                    Id = i.Item1.Id
 
                 }).ToArray();
             }
             else if (string.Equals(request.IncludeItemTypes, "Game", StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(request.IncludeItemTypes, "GameSystem", StringComparison.OrdinalIgnoreCase))
             {
-                filters.Genres = _libraryManager.GetGameGenres(genreQuery).Items.Select(i => new NameIdPair
+                filters.Genres = _libraryManager.GetGameGenres(genreQuery).Items.Select(i => new NameGuidPair
                 {
                     Name = i.Item1.Name,
-                    Id = i.Item1.Id.ToString("N")
+                    Id = i.Item1.Id
 
                 }).ToArray();
             }
             else
             {
-                filters.Genres = _libraryManager.GetGenres(genreQuery).Items.Select(i => new NameIdPair
+                filters.Genres = _libraryManager.GetGenres(genreQuery).Items.Select(i => new NameGuidPair
                 {
                     Name = i.Item1.Name,
-                    Id = i.Item1.Id.ToString("N")
+                    Id = i.Item1.Id
 
                 }).ToArray();
             }
@@ -171,7 +171,7 @@ namespace MediaBrowser.Api
         public object Get(GetQueryFiltersLegacy request)
         {
             var parentItem = string.IsNullOrEmpty(request.ParentId) ? null : _libraryManager.GetItemById(request.ParentId);
-            var user = !string.IsNullOrWhiteSpace(request.UserId) ? _userManager.GetUserById(request.UserId) : null;
+            var user = !request.UserId.Equals(Guid.Empty) ? _userManager.GetUserById(request.UserId) : null;
 
             if (string.Equals(request.IncludeItemTypes, "BoxSet", StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(request.IncludeItemTypes, "Playlist", StringComparison.OrdinalIgnoreCase) ||

@@ -24,9 +24,9 @@ namespace MediaBrowser.Api.UserLibrary
         /// </summary>
         /// <value>The user id.</value>
         [ApiMember(Name = "UserId", Description = "User Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
 
-        [ApiMember(Name = "IncludeExternalContent", Description = "Whether or not to include external views such as channels or live tv", IsRequired = true, DataType = "boolean", ParameterType = "query", Verb = "POST")]
+        [ApiMember(Name = "IncludeExternalContent", Description = "Whether or not to include external views such as channels or live tv", IsRequired = true, DataType = "boolean", ParameterType = "query", Verb = "GET")]
         public bool? IncludeExternalContent { get; set; }
         public bool IncludeHidden { get; set; }
 
@@ -41,7 +41,7 @@ namespace MediaBrowser.Api.UserLibrary
         /// </summary>
         /// <value>The user id.</value>
         [ApiMember(Name = "UserId", Description = "User Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
     }
 
     public class UserViewsService : BaseApiService
@@ -92,7 +92,6 @@ namespace MediaBrowser.Api.UserLibrary
 
             fields.Add(ItemFields.PrimaryImageAspectRatio);
             fields.Add(ItemFields.DisplayPreferencesId);
-            fields.Remove(ItemFields.SyncInfo);
             fields.Remove(ItemFields.BasicSyncInfo);
             dtoOptions.Fields = fields.ToArray(fields.Count);
 

@@ -1,0 +1,534 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Reflection.Extensions</name>
+  </assembly>
+  <members>
+    <member name="T:System.Reflection.CustomAttributeExtensions">
+      <summary>カスタム属性を取得するための静的メソッドを格納します。</summary>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.Assembly)">
+      <summary>指定したアセンブリに適用される指定した型のカスタム属性を取得します。</summary>
+      <returns>
+        <paramref name="T" /> に一致するカスタム属性。該当する属性が見つからない場合は null。</returns>
+      <param name="element">調べるアセンブリ。</param>
+      <typeparam name="T">検索する属性の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> は null なので、</exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">要求された属性が複数見つかりました。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.Assembly,System.Type)">
+      <summary>指定したアセンブリに適用される指定した型のカスタム属性を取得します。</summary>
+      <returns>
+        <paramref name="attributeType" /> に一致するカスタム属性。該当する属性が見つからない場合は null。</returns>
+      <param name="element">調べるアセンブリ。</param>
+      <param name="attributeType">検索する属性の型。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> または <paramref name="attributeType" /> が null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> が <see cref="T:System.Attribute" /> から派生していません。</exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">要求された属性が複数見つかりました。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.MemberInfo)">
+      <summary>指定したメンバーに適用される指定した型のカスタム属性を取得します。</summary>
+      <returns>
+        <paramref name="T" /> に一致するカスタム属性。該当する属性が見つからない場合は null。</returns>
+      <param name="element">調べるメンバー。</param>
+      <typeparam name="T">検索する属性の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> は null なので、</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> がコンストラクター、メソッド、プロパティ、イベント、型、またはフィールドではありません。</exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">要求された属性が複数見つかりました。</exception>
+      <exception cref="T:System.TypeLoadException">カスタム属性の型を読み込むことができません。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.MemberInfo,System.Boolean)">
+      <summary>指定されたメンバーに適用される指定した型のカスタム属性を取得し、オプションでそのメンバーの先祖を調べます。</summary>
+      <returns>
+        <paramref name="T" /> に一致するカスタム属性。該当する属性が見つからない場合は null。</returns>
+      <param name="element">調べるメンバー。</param>
+      <param name="inherit">
+        <paramref name="element" /> の先祖を調べる場合は true。それ以外の場合は false。</param>
+      <typeparam name="T">検索する属性の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> は null なので、</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> がコンストラクター、メソッド、プロパティ、イベント、型、またはフィールドではありません。</exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">要求された属性が複数見つかりました。</exception>
+      <exception cref="T:System.TypeLoadException">カスタム属性の型を読み込むことができません。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.MemberInfo,System.Type)">
+      <summary>指定したメンバーに適用される指定した型のカスタム属性を取得します。</summary>
+      <returns>
+        <paramref name="attributeType" /> に一致するカスタム属性。該当する属性が見つからない場合は null。</returns>
+      <param name="element">調べるメンバー。</param>
+      <param name="attributeType">検索する属性の型。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> または <paramref name="attributeType" /> が null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> が <see cref="T:System.Attribute" /> から派生していません。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> がコンストラクター、メソッド、プロパティ、イベント、型、またはフィールドではありません。</exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">要求された属性が複数見つかりました。</exception>
+      <exception cref="T:System.TypeLoadException">カスタム属性の型を読み込むことができません。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.MemberInfo,System.Type,System.Boolean)">
+      <summary>指定されたメンバーに適用される指定した型のカスタム属性を取得し、オプションでそのメンバーの先祖を調べます。</summary>
+      <returns>
+        <paramref name="attributeType" /> に一致するカスタム属性。該当する属性が見つからない場合は null。</returns>
+      <param name="element">調べるメンバー。</param>
+      <param name="attributeType">検索する属性の型。</param>
+      <param name="inherit">
+        <paramref name="element" /> の先祖を調べる場合は true。それ以外の場合は false。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> または <paramref name="attributeType" /> が null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> が <see cref="T:System.Attribute" /> から派生していません。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> がコンストラクター、メソッド、プロパティ、イベント、型、またはフィールドではありません。</exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">要求された属性が複数見つかりました。</exception>
+      <exception cref="T:System.TypeLoadException">カスタム属性の型を読み込むことができません。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.Module)">
+      <summary>指定したモジュールに適用される指定した型のカスタム属性を取得します。</summary>
+      <returns>
+        <paramref name="T" /> に一致するカスタム属性。該当する属性が見つからない場合は null。</returns>
+      <param name="element">調べるモジュール。</param>
+      <typeparam name="T">検索する属性の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> は null なので、</exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">要求された属性が複数見つかりました。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.Module,System.Type)">
+      <summary>指定したモジュールに適用される指定した型のカスタム属性を取得します。</summary>
+      <returns>
+        <paramref name="attributeType" /> に一致するカスタム属性。該当する属性が見つからない場合は null。</returns>
+      <param name="element">調べるモジュール。</param>
+      <param name="attributeType">検索する属性の型。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> または <paramref name="attributeType" /> が null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> が <see cref="T:System.Attribute" /> から派生していません。</exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">要求された属性が複数見つかりました。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.ParameterInfo)">
+      <summary>指定したパラメーターに適用される指定した型のカスタム属性を取得します。</summary>
+      <returns>
+        <paramref name="T" /> に一致するカスタム属性。該当する属性が見つからない場合は null。</returns>
+      <param name="element">調べるパラメーター。</param>
+      <typeparam name="T">検索する属性の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> は null なので、</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> がコンストラクター、メソッド、プロパティ、イベント、型、またはフィールドではありません。</exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">要求された属性が複数見つかりました。</exception>
+      <exception cref="T:System.TypeLoadException">カスタム属性の型を読み込むことができません。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.ParameterInfo,System.Boolean)">
+      <summary>指定されたパラメーターに適用される指定した型のカスタム属性を取得し、オプションでそのパラメーターの先祖を調べます。</summary>
+      <returns>
+        <paramref name="T" /> に一致するカスタム属性。該当する属性が見つからない場合は null。</returns>
+      <param name="element">調べるパラメーター。</param>
+      <param name="inherit">
+        <paramref name="element" /> の先祖を調べる場合は true。それ以外の場合は false。</param>
+      <typeparam name="T">検索する属性の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> は null なので、</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> がコンストラクター、メソッド、プロパティ、イベント、型、またはフィールドではありません。</exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">要求された属性が複数見つかりました。</exception>
+      <exception cref="T:System.TypeLoadException">カスタム属性の型を読み込むことができません。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.ParameterInfo,System.Type)">
+      <summary>指定したパラメーターに適用される指定した型のカスタム属性を取得します。</summary>
+      <returns>
+        <paramref name="attributeType" /> に一致するカスタム属性。該当する属性が見つからない場合は null。</returns>
+      <param name="element">調べるパラメーター。</param>
+      <param name="attributeType">検索する属性の型。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> または <paramref name="attributeType" /> が null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> が <see cref="T:System.Attribute" /> から派生していません。</exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">要求された属性が複数見つかりました。</exception>
+      <exception cref="T:System.TypeLoadException">カスタム属性の型を読み込むことができません。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.ParameterInfo,System.Type,System.Boolean)">
+      <summary>指定されたパラメーターに適用される指定した型のカスタム属性を取得し、オプションでそのパラメーターの先祖を調べます。</summary>
+      <returns>
+        <paramref name="attributeType" /> に一致するカスタム属性。該当する属性が見つからない場合は null。</returns>
+      <param name="element">調べるパラメーター。</param>
+      <param name="attributeType">検索する属性の型。</param>
+      <param name="inherit">
+        <paramref name="element" /> の先祖を調べる場合は true。それ以外の場合は false。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> または <paramref name="attributeType" /> が null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> が <see cref="T:System.Attribute" /> から派生していません。</exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">要求された属性が複数見つかりました。</exception>
+      <exception cref="T:System.TypeLoadException">カスタム属性の型を読み込むことができません。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.Assembly)">
+      <summary>指定されたアセンブリに適用される指定された型のカスタム属性のコレクションを取得します。</summary>
+      <returns>
+        <paramref name="element" /> に適用され、<paramref name="T" /> に一致するカスタム属性のコレクション。該当する属性が存在しない場合は空のコレクション。</returns>
+      <param name="element">調べるアセンブリ。</param>
+      <typeparam name="T">検索する属性の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.Assembly)">
+      <summary>指定されたアセンブリに適用されるカスタム属性のコレクションを取得します。</summary>
+      <returns>
+        <paramref name="element" /> に適用されるカスタム属性のコレクション。該当する属性が存在しない場合は空のコレクション。</returns>
+      <param name="element">調べるアセンブリ。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.Assembly,System.Type)">
+      <summary>指定されたアセンブリに適用される指定された型のカスタム属性のコレクションを取得します。</summary>
+      <returns>
+        <paramref name="element" /> に適用され、<paramref name="attributeType" /> に一致するカスタム属性のコレクション。該当する属性が存在しない場合は空のコレクション。</returns>
+      <param name="element">調べるアセンブリ。</param>
+      <param name="attributeType">検索する属性の型。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> または <paramref name="attributeType" /> が null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> が <see cref="T:System.Attribute" /> から派生していません。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.MemberInfo)">
+      <summary>指定されたメンバーに適用されるカスタム属性のコレクションを取得します。</summary>
+      <returns>
+        <paramref name="element" /> に適用されるカスタム属性のコレクション。該当する属性が存在しない場合は空のコレクション。</returns>
+      <param name="element">調べるメンバー。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> は null なので、</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> がコンストラクター、メソッド、プロパティ、イベント、型、またはフィールドではありません。</exception>
+      <exception cref="T:System.TypeLoadException">カスタム属性の型を読み込むことができません。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.MemberInfo)">
+      <summary>指定されたメンバーに適用される指定された型のカスタム属性のコレクションを取得します。</summary>
+      <returns>
+        <paramref name="element" /> に適用され、<paramref name="T" /> に一致するカスタム属性のコレクション。該当する属性が存在しない場合は空のコレクション。</returns>
+      <param name="element">調べるメンバー。</param>
+      <typeparam name="T">検索する属性の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> は null なので、</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> がコンストラクター、メソッド、プロパティ、イベント、型、またはフィールドではありません。</exception>
+      <exception cref="T:System.TypeLoadException">カスタム属性の型を読み込むことができません。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.MemberInfo,System.Boolean)">
+      <summary>指定されたメンバーに適用されている指定された型のカスタム属性のコレクションを取得し、オプションでそのメンバーの先祖を調べます。</summary>
+      <returns>
+        <paramref name="element" /> に適用され、<paramref name="T" /> に一致するカスタム属性のコレクション。該当する属性が存在しない場合は空のコレクション。</returns>
+      <param name="element">調べるメンバー。</param>
+      <param name="inherit">
+        <paramref name="element" /> の先祖を調べる場合は true。それ以外の場合は false。</param>
+      <typeparam name="T">検索する属性の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> は null なので、</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> がコンストラクター、メソッド、プロパティ、イベント、型、またはフィールドではありません。</exception>
+      <exception cref="T:System.TypeLoadException">カスタム属性の型を読み込むことができません。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.MemberInfo,System.Boolean)">
+      <summary>指定されたメンバーに適用されるカスタム属性のコレクションを取得し、オプションでそのメンバーの先祖を調べます。</summary>
+      <returns>
+        <paramref name="element" /> に適用され、指定された条件と一致するカスタム属性のコレクション。該当する属性が存在しない場合は空のコレクション。</returns>
+      <param name="element">調べるメンバー。</param>
+      <param name="inherit">
+        <paramref name="element" /> の先祖を調べる場合は true。それ以外の場合は false。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> は null なので、</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> がコンストラクター、メソッド、プロパティ、イベント、型、またはフィールドではありません。</exception>
+      <exception cref="T:System.TypeLoadException">カスタム属性の型を読み込むことができません。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.MemberInfo,System.Type)">
+      <summary>指定されたメンバーに適用される指定された型のカスタム属性のコレクションを取得します。</summary>
+      <returns>
+        <paramref name="element" /> に適用され、<paramref name="attributeType" /> に一致するカスタム属性のコレクション。該当する属性が存在しない場合は空のコレクション。</returns>
+      <param name="element">調べるメンバー。</param>
+      <param name="attributeType">検索する属性の型。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> または <paramref name="attributeType" /> が null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> が <see cref="T:System.Attribute" /> から派生していません。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> がコンストラクター、メソッド、プロパティ、イベント、型、またはフィールドではありません。</exception>
+      <exception cref="T:System.TypeLoadException">カスタム属性の型を読み込むことができません。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.MemberInfo,System.Type,System.Boolean)">
+      <summary>指定されたメンバーに適用されている指定された型のカスタム属性のコレクションを取得し、オプションでそのメンバーの先祖を調べます。</summary>
+      <returns>
+        <paramref name="element" /> に適用され、<paramref name="attributeType" /> に一致するカスタム属性のコレクション。該当する属性が存在しない場合は空のコレクション。</returns>
+      <param name="element">調べるメンバー。</param>
+      <param name="attributeType">検索する属性の型。</param>
+      <param name="inherit">
+        <paramref name="element" /> の先祖を調べる場合は true。それ以外の場合は false。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> または <paramref name="attributeType" /> が null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> が <see cref="T:System.Attribute" /> から派生していません。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> がコンストラクター、メソッド、プロパティ、イベント、型、またはフィールドではありません。</exception>
+      <exception cref="T:System.TypeLoadException">カスタム属性の型を読み込むことができません。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.Module)">
+      <summary>指定されたモジュールに適用されるカスタム属性のコレクションを取得します。</summary>
+      <returns>
+        <paramref name="element" /> に適用されるカスタム属性のコレクション。該当する属性が存在しない場合は空のコレクション。</returns>
+      <param name="element">調べるモジュール。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.Module)">
+      <summary>指定されたモジュールに適用される指定された型のカスタム属性のコレクションを取得します。</summary>
+      <returns>
+        <paramref name="element" /> に適用され、<paramref name="T" /> に一致するカスタム属性のコレクション。該当する属性が存在しない場合は空のコレクション。</returns>
+      <param name="element">調べるモジュール。</param>
+      <typeparam name="T">検索する属性の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.Module,System.Type)">
+      <summary>指定されたモジュールに適用される指定された型のカスタム属性のコレクションを取得します。</summary>
+      <returns>
+        <paramref name="element" /> に適用され、<paramref name="attributeType" /> に一致するカスタム属性のコレクション。該当する属性が存在しない場合は空のコレクション。</returns>
+      <param name="element">調べるモジュール。</param>
+      <param name="attributeType">検索する属性の型。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> または <paramref name="attributeType" /> が null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> が <see cref="T:System.Attribute" /> から派生していません。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.ParameterInfo)">
+      <summary>指定されたパラメーターに適用されるカスタム属性のコレクションを取得します。</summary>
+      <returns>
+        <paramref name="element" /> に適用されるカスタム属性のコレクション。該当する属性が存在しない場合は空のコレクション。</returns>
+      <param name="element">調べるパラメーター。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> は null なので、</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> がコンストラクター、メソッド、プロパティ、イベント、型、またはフィールドではありません。</exception>
+      <exception cref="T:System.TypeLoadException">カスタム属性の型を読み込むことができません。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.ParameterInfo)">
+      <summary>指定されたパラメーターに適用される指定された型のカスタム属性のコレクションを取得します。</summary>
+      <returns>
+        <paramref name="element" /> に適用され、<paramref name="T" /> に一致するカスタム属性のコレクション。該当する属性が存在しない場合は空のコレクション。</returns>
+      <param name="element">調べるパラメーター。</param>
+      <typeparam name="T">検索する属性の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> は null なので、</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> がコンストラクター、メソッド、プロパティ、イベント、型、またはフィールドではありません。</exception>
+      <exception cref="T:System.TypeLoadException">カスタム属性の型を読み込むことができません。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.ParameterInfo,System.Boolean)">
+      <summary>指定されたパラメーターに適用されるカスタム属性のコレクションを取得し、オプションでそのパラメーターの先祖を調べます。</summary>
+      <returns>
+        <paramref name="element" /> に適用されるカスタム属性のコレクション。該当する属性が存在しない場合は空のコレクション。</returns>
+      <param name="element">調べるパラメーター。</param>
+      <param name="inherit">
+        <paramref name="element" /> の先祖を調べる場合は true。それ以外の場合は false。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> は null なので、</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> がコンストラクター、メソッド、プロパティ、イベント、型、またはフィールドではありません。</exception>
+      <exception cref="T:System.TypeLoadException">カスタム属性の型を読み込むことができません。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.ParameterInfo,System.Boolean)">
+      <summary>指定されたパラメーターに適用される指定された型のカスタム属性のコレクションを取得し、オプションでそのパラメーターの先祖を調べます。</summary>
+      <returns>
+        <paramref name="element" /> に適用され、<paramref name="T" /> に一致するカスタム属性のコレクション。該当する属性が存在しない場合は空のコレクション。</returns>
+      <param name="element">調べるパラメーター。</param>
+      <param name="inherit">
+        <paramref name="element" /> の先祖を調べる場合は true。それ以外の場合は false。</param>
+      <typeparam name="T">検索する属性の型。</typeparam>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> は null なので、</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> がコンストラクター、メソッド、プロパティ、イベント、型、またはフィールドではありません。</exception>
+      <exception cref="T:System.TypeLoadException">カスタム属性の型を読み込むことができません。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.ParameterInfo,System.Type)">
+      <summary>指定されたパラメーターに適用される指定された型のカスタム属性のコレクションを取得します。</summary>
+      <returns>
+        <paramref name="element" /> に適用され、<paramref name="attributeType" /> に一致するカスタム属性のコレクション。該当する属性が存在しない場合は空のコレクション。</returns>
+      <param name="element">調べるパラメーター。</param>
+      <param name="attributeType">検索する属性の型。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> または <paramref name="attributeType" /> が null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> が <see cref="T:System.Attribute" /> から派生していません。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> がコンストラクター、メソッド、プロパティ、イベント、型、またはフィールドではありません。</exception>
+      <exception cref="T:System.TypeLoadException">カスタム属性の型を読み込むことができません。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.ParameterInfo,System.Type,System.Boolean)">
+      <summary>指定されたパラメーターに適用される指定された型のカスタム属性のコレクションを取得し、オプションでそのパラメーターの先祖を調べます。</summary>
+      <returns>
+        <paramref name="element" /> に適用され、<paramref name="attributeType" /> に一致するカスタム属性のコレクション。該当する属性が存在しない場合は空のコレクション。</returns>
+      <param name="element">調べるパラメーター。</param>
+      <param name="attributeType">検索する属性の型。</param>
+      <param name="inherit">
+        <paramref name="element" /> の先祖を調べる場合は true。それ以外の場合は false。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> または <paramref name="attributeType" /> が null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> が <see cref="T:System.Attribute" /> から派生していません。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> がコンストラクター、メソッド、プロパティ、イベント、型、またはフィールドではありません。</exception>
+      <exception cref="T:System.TypeLoadException">カスタム属性の型を読み込むことができません。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.Assembly,System.Type)">
+      <summary>指定した型のカスタム属性が指定したアセンブリに適用されているかどうかを示します。</summary>
+      <returns>指定された型の属性が <paramref name="element" /> に適用される場合は true。それ以外の場合は false。</returns>
+      <param name="element">調べるアセンブリ。</param>
+      <param name="attributeType">検索する属性の型。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> または <paramref name="attributeType" /> が null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> が <see cref="T:System.Attribute" /> から派生していません。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.MemberInfo,System.Type)">
+      <summary>指定した型のカスタム属性が指定したメンバーに適用されているかどうかを示します。</summary>
+      <returns>指定された型の属性が <paramref name="element" /> に適用される場合は true。それ以外の場合は false。</returns>
+      <param name="element">調べるメンバー。</param>
+      <param name="attributeType">検索する属性の型。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> または <paramref name="attributeType" /> が null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> が <see cref="T:System.Attribute" /> から派生していません。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> がコンストラクター、メソッド、プロパティ、イベント、型、またはフィールドではありません。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.MemberInfo,System.Type,System.Boolean)">
+      <summary>指定された型のカスタム属性が指定されたメンバーに適用され、オプションで先祖に適用されているかどうかを示します。</summary>
+      <returns>指定された型の属性が <paramref name="element" /> に適用される場合は true。それ以外の場合は false。</returns>
+      <param name="element">調べるメンバー。</param>
+      <param name="attributeType">検索する属性の型。</param>
+      <param name="inherit">
+        <paramref name="element" /> の先祖を調べる場合は true。それ以外の場合は false。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> または <paramref name="attributeType" /> が null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> が <see cref="T:System.Attribute" /> から派生していません。</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> がコンストラクター、メソッド、プロパティ、イベント、型、またはフィールドではありません。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.Module,System.Type)">
+      <summary>指定した型のカスタム属性が指定したモジュールに適用されているかどうかを示します。</summary>
+      <returns>指定された型の属性が <paramref name="element" /> に適用される場合は true。それ以外の場合は false。</returns>
+      <param name="element">調べるモジュール。</param>
+      <param name="attributeType">検索する属性の型。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> または <paramref name="attributeType" /> が null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> が <see cref="T:System.Attribute" /> から派生していません。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.ParameterInfo,System.Type)">
+      <summary>指定した型のカスタム属性が指定したパラメーターに適用されているかどうかを示します。</summary>
+      <returns>指定された型の属性が <paramref name="element" /> に適用される場合は true。それ以外の場合は false。</returns>
+      <param name="element">調べるパラメーター。</param>
+      <param name="attributeType">検索する属性の型。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> または <paramref name="attributeType" /> が null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> が <see cref="T:System.Attribute" /> から派生していません。</exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.ParameterInfo,System.Type,System.Boolean)">
+      <summary>指定された型のカスタム属性が指定されたパラメーターに適用され、オプションで先祖に適用されているかどうかを示します。</summary>
+      <returns>指定された型の属性が <paramref name="element" /> に適用される場合は true。それ以外の場合は false。</returns>
+      <param name="element">調べるパラメーター。</param>
+      <param name="attributeType">検索する属性の型。</param>
+      <param name="inherit">
+        <paramref name="element" /> の先祖を調べる場合は true。それ以外の場合は false。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> または <paramref name="attributeType" /> が null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="attributeType" /> が <see cref="T:System.Attribute" /> から派生していません。</exception>
+    </member>
+    <member name="T:System.Reflection.InterfaceMapping">
+      <summary>インターフェイスを実装するクラスの実際のメソッドへの、そのインターフェイスの割り当てを取得します。</summary>
+    </member>
+    <member name="F:System.Reflection.InterfaceMapping.InterfaceMethods">
+      <summary>インターフェイスで定義されているメソッドを示します。</summary>
+    </member>
+    <member name="F:System.Reflection.InterfaceMapping.InterfaceType">
+      <summary>インターフェイスを表す型を示します。</summary>
+    </member>
+    <member name="F:System.Reflection.InterfaceMapping.TargetMethods">
+      <summary>インターフェイスを実装するメソッドを示します。</summary>
+    </member>
+    <member name="F:System.Reflection.InterfaceMapping.TargetType">
+      <summary>インターフェイスの割り当てを作成する際に使用された型を表します。</summary>
+    </member>
+    <member name="T:System.Reflection.RuntimeReflectionExtensions">
+      <summary>実行時における型情報を取得するメソッドを提供します。</summary>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetMethodInfo(System.Delegate)">
+      <summary>指定したデリゲートによって表されるメソッドを表すオブジェクトを取得します。</summary>
+      <returns>メソッドを表すオブジェクト。</returns>
+      <param name="del">検査するデリゲート。</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeBaseDefinition(System.Reflection.MethodInfo)">
+      <summary>メソッドが最初に宣言された直接基本クラスまたは間接基本クラスの指定したメソッドを表すオブジェクトを取得します。</summary>
+      <returns>基本クラスにおける指定されたメソッドの最初の宣言を表すオブジェクト。</returns>
+      <param name="method">情報の取得対象のメソッド。</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeEvent(System.Type,System.String)">
+      <summary>指定したイベントを表すオブジェクトを取得します。</summary>
+      <returns>指定したイベントを表すオブジェクト。イベントが見つからない場合は null。</returns>
+      <param name="type">イベントを含む型。</param>
+      <param name="name">イベントの名前です。</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeEvents(System.Type)">
+      <summary>指定した型で定義されるすべてのイベントを表すコレクションを取得します。</summary>
+      <returns>指定した種類のイベントのコレクション。</returns>
+      <param name="type">イベントを含む型。</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeField(System.Type,System.String)">
+      <summary>指定したフィールドを表すオブジェクトを取得します。</summary>
+      <returns>指定したフィールドを表すオブジェクト。フィールドが見つからない場合は null。</returns>
+      <param name="type">フィールドを含む型。</param>
+      <param name="name">フィールドの名前。</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeFields(System.Type)">
+      <summary>指定した型で定義されるすべてのフィールドを表すコレクションを取得します。</summary>
+      <returns>指定した種類のフィールドのコレクション。</returns>
+      <param name="type">フィールドを含む型。</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeInterfaceMap(System.Reflection.TypeInfo,System.Type)">
+      <summary>指定した型とインターフェイスに対するインターフェイスの割り当てを返します。</summary>
+      <returns>指定したインターフェイスや種類のインターフェイスの割り当て表すオブジェクト。</returns>
+      <param name="typeInfo">割り当ての取得対象である型。</param>
+      <param name="interfaceType">割り当ての取得対象であるインターフェイス。</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeMethod(System.Type,System.String,System.Type[])">
+      <summary>指定したメソッドを表すオブジェクトを取得します。</summary>
+      <returns>指定したメソッドを表すオブジェクト。メソッドが見つからない場合は null。</returns>
+      <param name="type">メソッドを含む型。</param>
+      <param name="name">メソッドの名前です。</param>
+      <param name="parameters">配列には、メソッドのパラメーターを格納します。</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeMethods(System.Type)">
+      <summary>指定した型で定義されるすべてのメソッドを表すコレクションを取得します。</summary>
+      <returns>指定した種類のメソッドのコレクション。</returns>
+      <param name="type">メソッドを含む型。</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeProperties(System.Type)">
+      <summary>指定した型で定義されるすべてのプロパティを表すコレクションを取得します。</summary>
+      <returns>指定した種類のプロパティのコレクション。</returns>
+      <param name="type">プロパティを含む型。</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeProperty(System.Type,System.String)">
+      <summary>指定したプロパティを表すオブジェクトを取得します。</summary>
+      <returns>指定したプロパティを表すオブジェクト。プロパティが見つからない場合は null。</returns>
+      <param name="type">プロパティを含む型。</param>
+      <param name="name">プロパティの名前。</param>
+    </member>
+  </members>
+</doc>

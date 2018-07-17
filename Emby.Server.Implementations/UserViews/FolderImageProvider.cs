@@ -34,10 +34,10 @@ namespace Emby.Server.Implementations.Photos
                 Parent = item,
                 DtoOptions = new DtoOptions(true),
                 ImageTypes = new ImageType[] { ImageType.Primary },
-                OrderBy = new System.Tuple<string, SortOrder>[] 
+                OrderBy = new System.ValueTuple<string, SortOrder>[] 
                 {
-                    new System.Tuple<string, SortOrder>(ItemSortBy.IsFolder, SortOrder.Ascending),
-                    new System.Tuple<string, SortOrder>(ItemSortBy.SortName, SortOrder.Ascending)
+                    new System.ValueTuple<string, SortOrder>(ItemSortBy.IsFolder, SortOrder.Ascending),
+                    new System.ValueTuple<string, SortOrder>(ItemSortBy.SortName, SortOrder.Ascending)
                 },
                 Limit = 1
             });

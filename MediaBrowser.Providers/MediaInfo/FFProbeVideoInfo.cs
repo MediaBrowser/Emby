@@ -212,9 +212,10 @@ namespace MediaBrowser.Providers.MediaInfo
                 video.Video3DFormat = video.Video3DFormat ?? mediaInfo.Video3DFormat;
             }
 
-            video.IsHD = mediaStreams.Any(i => i.Type == MediaStreamType.Video && i.Width.HasValue && i.Width.Value >= 1260);
-
             var videoStream = mediaStreams.FirstOrDefault(i => i.Type == MediaStreamType.Video);
+
+            video.Height = videoStream == null ? 0 : videoStream.Height ?? 0;
+            video.Width = videoStream == null ? 0 : videoStream.Width ?? 0;
 
             video.DefaultVideoStreamIndex = videoStream == null ? (int?)null : videoStream.Index;
 
@@ -360,9 +361,9 @@ namespace MediaBrowser.Providers.MediaInfo
 
             if (!video.IsLocked && !video.LockedFields.Contains(MetadataFields.Genres))
             {
-                if (video.Genres.Count == 0 || isFullRefresh)
+                if (video.Genres.Length == 0 || isFullRefresh)
                 {
-                    video.Genres.Clear();
+                    video.Genres = Array.Empty<string>();
 
                     foreach (var genre in data.Genres)
                     {

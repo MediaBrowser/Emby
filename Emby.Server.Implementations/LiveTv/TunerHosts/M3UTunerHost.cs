@@ -87,17 +87,18 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             ".mpd"
         };
 
-        protected override async Task<ILiveStream> GetChannelStream(TunerHostInfo info, ChannelInfo channelInfo, string streamId, CancellationToken cancellationToken)
+        protected override async Task<ILiveStream> GetChannelStream(TunerHostInfo info, ChannelInfo channelInfo, string streamId, List<ILiveStream> currentLiveStreams, CancellationToken cancellationToken)
         {
             var tunerCount = info.TunerCount;
 
             if (tunerCount > 0)
             {
-                var liveStreams = await EmbyTV.EmbyTV.Current.GetLiveStreams(info, cancellationToken).ConfigureAwait(false);
+                var tunerHostId = info.Id;
+                var liveStreams = currentLiveStreams.Where(i => string.Equals(i.TunerHostId, tunerHostId, StringComparison.OrdinalIgnoreCase)).ToList();
 
-                if (liveStreams.Count >= info.TunerCount)
+                if (liveStreams.Count >= tunerCount)
                 {
-                    throw new LiveTvConflictException();
+                    throw new LiveTvConflictException("M3U simultaneous stream limit has been reached.");
                 }
             }
 
@@ -111,11 +112,11 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
 
                 if (!_disallowedSharedStreamExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase))
                 {
-                    return new SharedHttpStream(mediaSource, info, streamId, FileSystem, _httpClient, Logger, Config.ApplicationPaths, _appHost, _environment);
+                    return new SharedHttpStream(mediaSource, info, streamId, FileSystem, _httpClient, Logger, Config.ApplicationPaths, _appHost);
                 }
             }
 
-            return new LiveStream(mediaSource, info, _environment, FileSystem, Logger, Config.ApplicationPaths);
+            return new LiveStream(mediaSource, info, FileSystem, Logger, Config.ApplicationPaths);
         }
 
         public async Task Validate(TunerHostInfo info)

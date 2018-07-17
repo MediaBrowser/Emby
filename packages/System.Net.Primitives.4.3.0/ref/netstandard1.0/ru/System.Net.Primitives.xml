@@ -1,0 +1,1377 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Net.Primitives</name>
+  </assembly>
+  <members>
+    <member name="T:System.Net.AuthenticationSchemes">
+      <summary>Указывает протоколы для проверки подлинности.</summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.Anonymous">
+      <summary>Указывает анонимную проверку подлинности.</summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.Basic">
+      <summary>Определяет обычную проверку подлинности. </summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.Digest">
+      <summary>Определяет дайджест-проверку подлинности.</summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.IntegratedWindowsAuthentication">
+      <summary>Указывает проверку подлинности Windows.</summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.Negotiate">
+      <summary>Проводит согласование с клиентом для определения схемы проверки подлинности.Если и клиент, и сервер поддерживают Kerberos, используется именно этот протокол; в противном случае используется NTLM.</summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.None">
+      <summary>Проверка подлинности не разрешена.Клиент, запрашивающий объект <see cref="T:System.Net.HttpListener" /> с установленным приведенным флагом, всегда будет получать состояние 403 Запрещено.Используйте этот флаг, если ресурс не должен предоставляться клиенту.</summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.Ntlm">
+      <summary>Указывает проверку подлинности NTLM.</summary>
+    </member>
+    <member name="T:System.Net.Cookie">
+      <summary>Предоставляет набор методов и свойств, используемых для управления файлами cookie.Этот класс не наследуется.</summary>
+    </member>
+    <member name="M:System.Net.Cookie.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Net.Cookie" />.</summary>
+    </member>
+    <member name="M:System.Net.Cookie.#ctor(System.String,System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Net.Cookie" /> с заданными объектами <see cref="P:System.Net.Cookie.Name" /> и <see cref="P:System.Net.Cookie.Value" />.</summary>
+      <param name="name">Имя <see cref="T:System.Net.Cookie" />.Внутри <paramref name="name" /> не должны использоваться следующие символы: знак равенства, точка с запятой, запятая, символ перехода на новую строку (\n), символ возврата каретки (\r), символ табуляции (\t) и пробел.Знак доллара ("$") не может быть первым знаком.</param>
+      <param name="value">Значение <see cref="T:System.Net.Cookie" />.Внутри <paramref name="value" /> не должны использоваться следующие знаки: точка с запятой, запятая.</param>
+      <exception cref="T:System.Net.CookieException">Значение параметра <paramref name="name" /> — null. – или – Длина параметра <paramref name="name" /> равна нулю. – или – Параметр <paramref name="name" /> содержит недопустимый знак.– или – Параметр <paramref name="value" /> имеет значение null.–или– Параметр <paramref name="value" /> содержит строку, не заключенную в кавычки и содержащую недопустимый символ. </exception>
+    </member>
+    <member name="M:System.Net.Cookie.#ctor(System.String,System.String,System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Net.Cookie" /> с заданными объектами <see cref="P:System.Net.Cookie.Name" />, <see cref="P:System.Net.Cookie.Value" /> и <see cref="P:System.Net.Cookie.Path" />.</summary>
+      <param name="name">Имя <see cref="T:System.Net.Cookie" />.Внутри <paramref name="name" /> не должны использоваться следующие символы: знак равенства, точка с запятой, запятая, символ перехода на новую строку (\n), символ возврата каретки (\r), символ табуляции (\t) и пробел.Знак доллара ("$") не может быть первым знаком.</param>
+      <param name="value">Значение <see cref="T:System.Net.Cookie" />.Внутри <paramref name="value" /> не должны использоваться следующие знаки: точка с запятой, запятая.</param>
+      <param name="path">Подмножество URI на исходном сервере, к которому применяется <see cref="T:System.Net.Cookie" />.Значение по умолчанию — "/".</param>
+      <exception cref="T:System.Net.CookieException">Значение параметра <paramref name="name" /> — null. – или – Длина параметра <paramref name="name" /> равна нулю. – или – Параметр <paramref name="name" /> содержит недопустимый знак.– или – Параметр <paramref name="value" /> имеет значение null.–или– Параметр <paramref name="value" /> содержит строку, не заключенную в кавычки и содержащую недопустимый символ.</exception>
+    </member>
+    <member name="M:System.Net.Cookie.#ctor(System.String,System.String,System.String,System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Net.Cookie" /> с заданными объектами <see cref="P:System.Net.Cookie.Name" />, <see cref="P:System.Net.Cookie.Value" />, <see cref="P:System.Net.Cookie.Path" /> и <see cref="P:System.Net.Cookie.Domain" />.</summary>
+      <param name="name">Имя <see cref="T:System.Net.Cookie" />.Внутри <paramref name="name" /> не должны использоваться следующие символы: знак равенства, точка с запятой, запятая, символ перехода на новую строку (\n), символ возврата каретки (\r), символ табуляции (\t) и пробел.Знак доллара ("$") не может быть первым знаком.</param>
+      <param name="value">Значение объекта <see cref="T:System.Net.Cookie" />.Внутри <paramref name="value" /> не должны использоваться следующие знаки: точка с запятой, запятая.</param>
+      <param name="path">Подмножество URI на исходном сервере, к которому применяется <see cref="T:System.Net.Cookie" />.Значение по умолчанию — "/".</param>
+      <param name="domain">Дополнительный Интернет-домен, для которого действует этот класс <see cref="T:System.Net.Cookie" />.Значением по умолчанию является узел, с которого получен этот объект <see cref="T:System.Net.Cookie" />.</param>
+      <exception cref="T:System.Net.CookieException">Значение параметра <paramref name="name" /> — null. – или – Длина параметра <paramref name="name" /> равна нулю. – или – Параметр <paramref name="name" /> содержит недопустимый знак.– или – Параметр <paramref name="value" /> имеет значение null.–или– Параметр <paramref name="value" /> содержит строку, не заключенную в кавычки и содержащую недопустимый символ.</exception>
+    </member>
+    <member name="P:System.Net.Cookie.Comment">
+      <summary>Возвращает или задает комментарий, который сервер может добавлять к <see cref="T:System.Net.Cookie" />.</summary>
+      <returns>Дополнительный комментарий к предполагаемому использованию документа для этого класса <see cref="T:System.Net.Cookie" />.</returns>
+    </member>
+    <member name="P:System.Net.Cookie.CommentUri">
+      <summary>Возвращает или задает комментарий URI, который сервер может предоставлять с <see cref="T:System.Net.Cookie" />.</summary>
+      <returns>Дополнительный комментарий, описывающий использование по назначению ссылки URI для этого объекта <see cref="T:System.Net.Cookie" />.Значение должно соответствовать формату URI.</returns>
+    </member>
+    <member name="P:System.Net.Cookie.Discard">
+      <summary>Возвращает или задает флаг сброса, задаваемый сервером.</summary>
+      <returns>Значение true, если клиент должен сбросить <see cref="T:System.Net.Cookie" /> в конце текущего сеанса; в противном случае — false.Значение по умолчанию — false.</returns>
+    </member>
+    <member name="P:System.Net.Cookie.Domain">
+      <summary>Возвращает или задает URI, для которого действует <see cref="T:System.Net.Cookie" />.</summary>
+      <returns>URI, для которого действует <see cref="T:System.Net.Cookie" />.</returns>
+    </member>
+    <member name="M:System.Net.Cookie.Equals(System.Object)">
+      <summary>Переопределяет метод <see cref="M:System.Object.Equals(System.Object)" />.</summary>
+      <returns>Возвращает значение true, если класс <see cref="T:System.Net.Cookie" /> равен <paramref name="comparand" />.Два экземпляра <see cref="T:System.Net.Cookie" /> равны, если их свойства <see cref="P:System.Net.Cookie.Name" />, <see cref="P:System.Net.Cookie.Value" />, <see cref="P:System.Net.Cookie.Path" />, <see cref="P:System.Net.Cookie.Domain" /> и <see cref="P:System.Net.Cookie.Version" /> равны.При сравнении строк <see cref="P:System.Net.Cookie.Name" /> и <see cref="P:System.Net.Cookie.Domain" /> не учитывается регистр.</returns>
+      <param name="comparand">Ссылка на класс <see cref="T:System.Net.Cookie" />. </param>
+    </member>
+    <member name="P:System.Net.Cookie.Expired">
+      <summary>Возвращает или задает текущее состояние <see cref="T:System.Net.Cookie" />.</summary>
+      <returns>Значение true, если класс <see cref="T:System.Net.Cookie" /> прекратил действие, в противном случае — false.Значение по умолчанию — false.</returns>
+    </member>
+    <member name="P:System.Net.Cookie.Expires">
+      <summary>Возвращает или задает для <see cref="T:System.Net.Cookie" /> дату и время окончания действия в виде <see cref="T:System.DateTime" />.</summary>
+      <returns>Дата и время окончания действия <see cref="T:System.Net.Cookie" /> в виде экземпляра <see cref="T:System.DateTime" />.</returns>
+    </member>
+    <member name="M:System.Net.Cookie.GetHashCode">
+      <summary>Переопределяет метод <see cref="M:System.Object.GetHashCode" />.</summary>
+      <returns>Хэш-код 32-разрядного целого числа со знаком для этого экземпляра класса.</returns>
+    </member>
+    <member name="P:System.Net.Cookie.HttpOnly">
+      <summary>Определяет, может ли получить доступ к файлу cookie скрипт страницы или другое активное содержимое.</summary>
+      <returns>Логическое значение, с помощью которого определяется, может ли получить доступ к файлу cookie скрипт страницы или другое активное содержимое.</returns>
+    </member>
+    <member name="P:System.Net.Cookie.Name">
+      <summary>Возвращает или задает имя для <see cref="T:System.Net.Cookie" />.</summary>
+      <returns>Имя для <see cref="T:System.Net.Cookie" />.</returns>
+      <exception cref="T:System.Net.CookieException">Значение, указанное для операции задания, является null или пустой строкой ("").- либо -Значение, указанное для операции задания, содержит недопустимый символ.Внутри свойства <see cref="P:System.Net.Cookie.Name" /> не должны использоваться следующие символы: знак равенства, точка с запятой, запятая, символ перехода на новую строку (\n), символ возврата каретки (\r), символ табуляции (\t) и пробел.Знак доллара ("$") не может быть первым знаком.</exception>
+    </member>
+    <member name="P:System.Net.Cookie.Path">
+      <summary>Возвращает или задает идентификаторы URI, к которым применяется <see cref="T:System.Net.Cookie" />.</summary>
+      <returns>URI, к которым применяется <see cref="T:System.Net.Cookie" />.</returns>
+    </member>
+    <member name="P:System.Net.Cookie.Port">
+      <summary>Возвращает или задает список TCP-портов, к которым применяется класс <see cref="T:System.Net.Cookie" />.</summary>
+      <returns>Список TCP-портов, к которым применяется класс <see cref="T:System.Net.Cookie" />.</returns>
+      <exception cref="T:System.Net.CookieException">Значение, указанное для операции задания, может быть проанализировано или заключено в двойные кавычки. </exception>
+    </member>
+    <member name="P:System.Net.Cookie.Secure">
+      <summary>Возвращает или задает уровень защиты класса <see cref="T:System.Net.Cookie" />.</summary>
+      <returns>Значение true, если клиент должен только вернуть файл cookie в последующих запросах, при условии что запросы используют HTTPS; в противном случае — значение false.Значение по умолчанию — false.</returns>
+    </member>
+    <member name="P:System.Net.Cookie.TimeStamp">
+      <summary>Возвращает время выпуска файла cookie в виде <see cref="T:System.DateTime" />.</summary>
+      <returns>Время выпуска файла cookie в виде <see cref="T:System.DateTime" />.</returns>
+    </member>
+    <member name="M:System.Net.Cookie.ToString">
+      <summary>Переопределяет метод <see cref="M:System.Object.ToString" />.</summary>
+      <returns>Возвращает строковое представление объекта этого класса <see cref="T:System.Net.Cookie" />, пригодное для включения в заголовок запроса HTTP Cookie:.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Net.Cookie.Value">
+      <summary>Возвращает или задает свойство <see cref="P:System.Net.Cookie.Value" /> объекта <see cref="T:System.Net.Cookie" />.</summary>
+      <returns>Тип <see cref="P:System.Net.Cookie.Value" /> буфера <see cref="T:System.Net.Cookie" />.</returns>
+    </member>
+    <member name="P:System.Net.Cookie.Version">
+      <summary>Возвращает или задает версию сопровождения HTTP-состояния, которому соответствует файл cookie.</summary>
+      <returns>Версия сопровождения HTTP-состояния, которому соответствует файл cookie.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Указано неразрешенное значение версии. </exception>
+    </member>
+    <member name="T:System.Net.CookieCollection">
+      <summary>Предоставляет контейнер коллекции для экземпляров класса <see cref="T:System.Net.Cookie" />.</summary>
+    </member>
+    <member name="M:System.Net.CookieCollection.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Net.CookieCollection" />.</summary>
+    </member>
+    <member name="M:System.Net.CookieCollection.Add(System.Net.Cookie)">
+      <summary>Добавляет <see cref="T:System.Net.Cookie" /> в <see cref="T:System.Net.CookieCollection" />.</summary>
+      <param name="cookie">Класс <see cref="T:System.Net.Cookie" />, который требуется добавить в класс <see cref="T:System.Net.CookieCollection" />. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="cookie" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.Net.CookieCollection.Add(System.Net.CookieCollection)">
+      <summary>Добавляет данные <see cref="T:System.Net.CookieCollection" /> в текущий экземпляр.</summary>
+      <param name="cookies">Добавляемый объект <see cref="T:System.Net.CookieCollection" />. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="cookies" /> имеет значение null. </exception>
+    </member>
+    <member name="P:System.Net.CookieCollection.Count">
+      <summary>Возвращает число файлов cookie, содержащихся в коллекции <see cref="T:System.Net.CookieCollection" />.</summary>
+      <returns>Число файлов cookie, содержащихся в классе <see cref="T:System.Net.CookieCollection" />.</returns>
+    </member>
+    <member name="M:System.Net.CookieCollection.GetEnumerator">
+      <summary>Возвращает перечислитель, который может перебирать элементы <see cref="T:System.Net.CookieCollection" />.</summary>
+      <returns>Экземпляр реализации интерфейса <see cref="T:System.Collections.IEnumerator" />, который может перебирать элементы в коллекции <see cref="T:System.Net.CookieCollection" />.</returns>
+    </member>
+    <member name="P:System.Net.CookieCollection.Item(System.String)">
+      <summary>Возвращает класс <see cref="T:System.Net.Cookie" /> с указанным именем из класса <see cref="T:System.Net.CookieCollection" />.</summary>
+      <returns>Класс <see cref="T:System.Net.Cookie" /> с указанным именем из класса <see cref="T:System.Net.CookieCollection" />.</returns>
+      <param name="name">Имя искомого класса <see cref="T:System.Net.Cookie" />. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="name" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.Net.CookieCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>[Поддерживается в .NET Framework 4.5.1 и более поздних версиях] Описание этого члена см. в разделе <see cref="M:System.Collections.ICollection.CopyTo(System.Array,System.Int32)" />.</summary>
+      <param name="array">Одномерный массив, куда копируются элементы из данной коллекции.Индексация в массиве должна вестись с нуля.</param>
+      <param name="index">Индекс (с нуля) в массиве <paramref name="array" />, с которого начинается копирование.</param>
+    </member>
+    <member name="P:System.Net.CookieCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>[Поддерживается в .NET Framework 4.5.1 и более поздних версиях] Описание этого члена см. в разделе <see cref="P:System.Collections.ICollection.IsSynchronized" />.</summary>
+      <returns>Значение true, если доступ к коллекции синхронизирован (потокобезопасен); в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Net.CookieCollection.System#Collections#ICollection#SyncRoot">
+      <summary>[Поддерживается в .NET Framework 4.5.1 и более поздних версиях] Описание этого члена см. в разделе <see cref="P:System.Collections.ICollection.SyncRoot" />.</summary>
+      <returns>Объект, который можно использовать для синхронизации доступа к коллекции.</returns>
+    </member>
+    <member name="T:System.Net.CookieContainer">
+      <summary>Предоставляет контейнер для коллекции объектов <see cref="T:System.Net.CookieCollection" />.</summary>
+    </member>
+    <member name="M:System.Net.CookieContainer.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Net.CookieContainer" />.</summary>
+    </member>
+    <member name="M:System.Net.CookieContainer.Add(System.Uri,System.Net.Cookie)">
+      <summary>Добавляет экземпляр <see cref="T:System.Net.Cookie" /> в <see cref="T:System.Net.CookieContainer" /> для определенного URI.</summary>
+      <param name="uri">Универсальный код ресурса (URI) объекта <see cref="T:System.Net.Cookie" />, добавляемого в <see cref="T:System.Net.CookieContainer" />. </param>
+      <param name="cookie">Объект <see cref="T:System.Net.Cookie" />, добавляемый в <see cref="T:System.Net.CookieContainer" />. </param>
+      <exception cref="T:System.ArgumentNullException">Значение <paramref name="uri" /> равно null или <paramref name="cookie" /> равно null. </exception>
+      <exception cref="T:System.Net.CookieException">Значение <paramref name="cookie" /> больше, чем значение <paramref name="maxCookieSize" />– или – Домен для <paramref name="cookie" /> не является допустимым URI. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.CookieContainer.Add(System.Uri,System.Net.CookieCollection)">
+      <summary>Добавляет данные <see cref="T:System.Net.CookieCollection" /> в <see cref="T:System.Net.CookieContainer" /> для определенного URI.</summary>
+      <param name="uri">URI объекта <see cref="T:System.Net.CookieCollection" />, который должен добавляться в <see cref="T:System.Net.CookieContainer" />. </param>
+      <param name="cookies">Объект <see cref="T:System.Net.CookieCollection" />, добавляемый в <see cref="T:System.Net.CookieContainer" />. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="cookies" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentException">Домен для одного из файлов cookie в <paramref name="cookies" /> указан как null. </exception>
+      <exception cref="T:System.Net.CookieException">Один из файлов cookie в <paramref name="cookies" /> содержит недопустимый домен. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Net.CookieContainer.Capacity">
+      <summary>Возвращает и задает количество экземпляров <see cref="T:System.Net.Cookie" />, которое может храниться в <see cref="T:System.Net.CookieContainer" />.</summary>
+      <returns>Количество экземпляров <see cref="T:System.Net.Cookie" />, которое может храниться в <see cref="T:System.Net.CookieContainer" />.Это строгое ограничение и не может превышаться путем добавления <see cref="T:System.Net.Cookie" />.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="Capacity" /> меньше или равно нулю или (значение меньше <see cref="P:System.Net.CookieContainer.PerDomainCapacity" /> и <see cref="P:System.Net.CookieContainer.PerDomainCapacity" /> не равно <see cref="F:System.Int32.MaxValue" />). </exception>
+    </member>
+    <member name="P:System.Net.CookieContainer.Count">
+      <summary>Возвращает количество экземпляров <see cref="T:System.Net.Cookie" />, хранящихся в текущий момент в <see cref="T:System.Net.CookieContainer" />.</summary>
+      <returns>Количество экземпляров <see cref="T:System.Net.Cookie" />, хранящихся в текущий момент в <see cref="T:System.Net.CookieContainer" />.Это общее число экземпляров <see cref="T:System.Net.Cookie" /> во всех доменах.</returns>
+    </member>
+    <member name="F:System.Net.CookieContainer.DefaultCookieLengthLimit">
+      <summary>Представляет используемый по умолчанию максимальный размер в байтах экземпляров <see cref="T:System.Net.Cookie" />, которые могут храниться в <see cref="T:System.Net.CookieContainer" />.Это поле является константой.</summary>
+    </member>
+    <member name="F:System.Net.CookieContainer.DefaultCookieLimit">
+      <summary>Представляет используемое по умолчанию максимальное число экземпляров <see cref="T:System.Net.Cookie" />, которые могут храниться в <see cref="T:System.Net.CookieContainer" />.Это поле является константой.</summary>
+    </member>
+    <member name="F:System.Net.CookieContainer.DefaultPerDomainCookieLimit">
+      <summary>Представляет используемое по умолчанию максимальное число экземпляров <see cref="T:System.Net.Cookie" />, которые могут храниться в <see cref="T:System.Net.CookieContainer" /> для каждого домена.Это поле является константой.</summary>
+    </member>
+    <member name="M:System.Net.CookieContainer.GetCookieHeader(System.Uri)">
+      <summary>Возвращает заголовок HTTP-cookie, содержащий файлы cookie HTTP, которые представляют экземпляры <see cref="T:System.Net.Cookie" />, связанные с определенным URI.</summary>
+      <returns>Заголовок HTTP cookie со строками, представляющими экземпляры <see cref="T:System.Net.Cookie" />, разделяется точками с запятыми.</returns>
+      <param name="uri">URI требуемых экземпляров <see cref="T:System.Net.Cookie" />. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="uri" /> имеет значение null. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.CookieContainer.GetCookies(System.Uri)">
+      <summary>Возвращает коллекцию <see cref="T:System.Net.CookieCollection" />, содержащую экземпляры <see cref="T:System.Net.Cookie" />, связанные с указанным URI.</summary>
+      <returns>Коллекция <see cref="T:System.Net.CookieCollection" />, содержащая экземпляры <see cref="T:System.Net.Cookie" />, связанные с указанным URI.</returns>
+      <param name="uri">URI требуемых экземпляров <see cref="T:System.Net.Cookie" />. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="uri" /> имеет значение null. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Net.CookieContainer.MaxCookieSize">
+      <summary>Представляет наибольшую допустимую длину <see cref="T:System.Net.Cookie" />.</summary>
+      <returns>Наибольшая допустимая длина <see cref="T:System.Net.Cookie" />, выраженная в байтах.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="MaxCookieSize" /> меньше или равно нулю. </exception>
+    </member>
+    <member name="P:System.Net.CookieContainer.PerDomainCapacity">
+      <summary>Возвращает и задает количество экземпляров <see cref="T:System.Net.Cookie" />, которое может храниться в <see cref="T:System.Net.CookieContainer" /> для каждого домена.</summary>
+      <returns>Допустимое количество экземпляров <see cref="T:System.Net.Cookie" />, приходящихся на каждый домен.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="PerDomainCapacity" /> меньше или равно нулю. – или – (Параметр <paramref name="(PerDomainCapacity" /> больше максимально допустимого числа экземпляров cookie, равного 300, и не равен <see cref="F:System.Int32.MaxValue" />). </exception>
+    </member>
+    <member name="M:System.Net.CookieContainer.SetCookies(System.Uri,System.String)">
+      <summary>Добавляет экземпляры <see cref="T:System.Net.Cookie" /> для одного или нескольких файлов cookie из заголовка HTTP-cookie в класс <see cref="T:System.Net.CookieContainer" /> для определенного URI.</summary>
+      <param name="uri">URI объекта <see cref="T:System.Net.CookieCollection" />. </param>
+      <param name="cookieHeader">Данные возвращаемого HTTP-сервером заголовка HTTP set-cookie, содержащего экземпляры <see cref="T:System.Net.Cookie" />, разделенные запятыми. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="uri" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="cookieHeader" /> имеет значение null. </exception>
+      <exception cref="T:System.Net.CookieException">Один из файлов cookie является недопустимым. – или – При добавлении одного из файлов cookie в контейнер произошла ошибка. </exception>
+    </member>
+    <member name="T:System.Net.CookieException">
+      <summary>Исключение, которое создается, когда появляется ошибка при добавлении <see cref="T:System.Net.Cookie" /> в <see cref="T:System.Net.CookieContainer" />.</summary>
+    </member>
+    <member name="M:System.Net.CookieException.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Net.CookieException" />.</summary>
+    </member>
+    <member name="T:System.Net.CredentialCache">
+      <summary>Предоставляет хранилище для множества учетных данных.</summary>
+    </member>
+    <member name="M:System.Net.CredentialCache.#ctor">
+      <summary>Создание нового экземпляра класса <see cref="T:System.Net.CredentialCache" />.</summary>
+    </member>
+    <member name="M:System.Net.CredentialCache.Add(System.String,System.Int32,System.String,System.Net.NetworkCredential)">
+      <summary>Добавляет экземпляр <see cref="T:System.Net.NetworkCredential" /> для использования вместе с SMTP в кэш учетных данных и связывает этот экземпляр с узелом, портом и протоколом проверки подлинности.Учетные данные, добавленные с помощью этого метода, допустимы только для SMTP.Этот метод не работает с запросами HTTP или FTP.</summary>
+      <param name="host">Строка <see cref="T:System.String" />, которая указывает компьютер.</param>
+      <param name="port">Значение <see cref="T:System.Int32" />, которое обозначает порт, через который следует подключаться к <paramref name="host" />.</param>
+      <param name="authenticationType">Строка <see cref="T:System.String" />, указывающая схему проверку подлинности, используемую при подключении к <paramref name="host" /> с использованием <paramref name="cred" />.См. заметки.</param>
+      <param name="credential">Класс <see cref="T:System.Net.NetworkCredential" />, который должен добавляться в кэш учетных данных. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="host" /> имеет значение null. – или –Параметр <paramref name="authType" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="authType" /> не является приемлемым значением.См. заметки.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="port" /> меньше нуля.</exception>
+    </member>
+    <member name="M:System.Net.CredentialCache.Add(System.Uri,System.String,System.Net.NetworkCredential)">
+      <summary>Добавляет экземпляр <see cref="T:System.Net.NetworkCredential" /> в кэш учетных данных для использования с протоколами, отличными от SMTP, и связывает его с префиксом URI и протоколом проверки подлинности. </summary>
+      <param name="uriPrefix">Параметр <see cref="T:System.Uri" />, определяющий префикс URI ресурсов, к которым предоставляется доступ посредством учетных данных. </param>
+      <param name="authType">Схема проверки подлинности, которая используется ресурсом, названным в <paramref name="uriPrefix" />. </param>
+      <param name="cred">Класс <see cref="T:System.Net.NetworkCredential" />, который должен добавляться в кэш учетных данных. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="uriPrefix" /> имеет значение null. – или – Параметр <paramref name="authType" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentException">Такие же учетные данные добавляются несколько раз. </exception>
+    </member>
+    <member name="P:System.Net.CredentialCache.DefaultCredentials">
+      <summary>Получает системные учетные данные приложения.</summary>
+      <returns>Значение <see cref="T:System.Net.ICredentials" />, которое представляет системные учетные данные приложения.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="USERNAME" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Net.CredentialCache.DefaultNetworkCredentials">
+      <summary>Возвращает сетевые учетные данные текущего контекста безопасности.</summary>
+      <returns>Объект <see cref="T:System.Net.NetworkCredential" />, представляющий сетевые учетные данные текущего пользователя или приложения.</returns>
+    </member>
+    <member name="M:System.Net.CredentialCache.GetCredential(System.String,System.Int32,System.String)">
+      <summary>Возвращает экземпляр <see cref="T:System.Net.NetworkCredential" />, связанный с заданными узелом, портом и протоколом проверки подлинности.</summary>
+      <returns>Экземпляр <see cref="T:System.Net.NetworkCredential" /> или, если в кэше нет соответствующих учетных данных, — null.</returns>
+      <param name="host">Строка <see cref="T:System.String" />, которая указывает компьютер.</param>
+      <param name="port">Значение <see cref="T:System.Int32" />, которое обозначает порт, через который следует подключаться к <paramref name="host" />.</param>
+      <param name="authenticationType">Строка <see cref="T:System.String" />, указывающая схему проверку подлинности, используемую при подключении к <paramref name="host" />.См. заметки.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="host" /> имеет значение null. – или – Параметр <paramref name="authType" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="authType" /> не является приемлемым значением.См. заметки.– или –Параметр <paramref name="host" /> равен пустой строке ("").</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="port" /> меньше нуля.</exception>
+    </member>
+    <member name="M:System.Net.CredentialCache.GetCredential(System.Uri,System.String)">
+      <summary>Возвращает экземпляр <see cref="T:System.Net.NetworkCredential" />, связанный с указанным URI или узелом, а также с типом проверки подлинности.</summary>
+      <returns>Экземпляр <see cref="T:System.Net.NetworkCredential" /> или, если в кэше нет соответствующих учетных данных, — null.</returns>
+      <param name="uriPrefix">Параметр <see cref="T:System.Uri" />, определяющий префикс URI ресурсов, к которым предоставляется доступ посредством учетных данных. </param>
+      <param name="authType">Схема проверки подлинности, которая используется ресурсом, названным в <paramref name="uriPrefix" />. </param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="uriPrefix" /> или <paramref name="authType" /> — null. </exception>
+    </member>
+    <member name="M:System.Net.CredentialCache.GetEnumerator">
+      <summary>Возвращает перечислитель, с помощью которого можно перебирать все элементы экземпляра коллекции <see cref="T:System.Net.CredentialCache" />.</summary>
+      <returns>
+        <see cref="T:System.Collections.IEnumerator" /> для <see cref="T:System.Net.CredentialCache" />.</returns>
+    </member>
+    <member name="M:System.Net.CredentialCache.Remove(System.String,System.Int32,System.String)">
+      <summary>Удаляет экземпляр <see cref="T:System.Net.NetworkCredential" /> из кэша, если он связан с указанным узелом, портом и протоколом проверки подлинности.</summary>
+      <param name="host">Строка <see cref="T:System.String" />, которая указывает компьютер.</param>
+      <param name="port">Значение <see cref="T:System.Int32" />, которое обозначает порт, через который следует подключаться к <paramref name="host" />.</param>
+      <param name="authenticationType">Строка <see cref="T:System.String" />, указывающая схему проверку подлинности, используемую при подключении к <paramref name="host" />.См. заметки.</param>
+    </member>
+    <member name="M:System.Net.CredentialCache.Remove(System.Uri,System.String)">
+      <summary>Удаляет экземпляр <see cref="T:System.Net.NetworkCredential" /> из кэша, если он связан с указанным префиксом URI и протоколом проверки подлинности.</summary>
+      <param name="uriPrefix">Параметр <see cref="T:System.Uri" />, определяющий префикс URI ресурсов, для доступа к которым используются учетные данные. </param>
+      <param name="authType">Схема проверки подлинности, которая используется узелом, названным в <paramref name="uriPrefix" />. </param>
+    </member>
+    <member name="T:System.Net.DecompressionMethods">
+      <summary>Представляет формат кодирования сжатия и распаковки файлов, который будет использоваться для сжатия данных, полученных в ответ на <see cref="T:System.Net.HttpWebRequest" />.</summary>
+    </member>
+    <member name="F:System.Net.DecompressionMethods.Deflate">
+      <summary>Используйте алгоритм сжатия и распаковки Deflate.</summary>
+    </member>
+    <member name="F:System.Net.DecompressionMethods.GZip">
+      <summary>Используйте алгоритм сжатия и распаковки gZip.</summary>
+    </member>
+    <member name="F:System.Net.DecompressionMethods.None">
+      <summary>Этот метод не использует сжатия.</summary>
+    </member>
+    <member name="T:System.Net.DnsEndPoint">
+      <summary>Представляет сетевую конечную точку в виде имени узла или строкового представления IP-адреса и номера порта.</summary>
+    </member>
+    <member name="M:System.Net.DnsEndPoint.#ctor(System.String,System.Int32)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Net.DnsEndPoint" /> с именем узла или строковым представлением IP-адреса и номера порта.</summary>
+      <param name="host">Имя узла или строковое представление IP-адреса.</param>
+      <param name="port">Номер порта, связанный с адресом, или 0 для указания любого доступного порта.Параметр <paramref name="port" /> указывается в порядке основного приложения.</param>
+      <exception cref="T:System.ArgumentException">Параметр <paramref name="host" /> содержит пустую строку.</exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="host" /> равно null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение свойства <paramref name="port" /> меньше значения <see cref="F:System.Net.IPEndPoint.MinPort" />.– или – Значение <paramref name="port" /> больше значения <see cref="F:System.Net.IPEndPoint.MaxPort" />. </exception>
+    </member>
+    <member name="M:System.Net.DnsEndPoint.#ctor(System.String,System.Int32,System.Net.Sockets.AddressFamily)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Net.DnsEndPoint" /> с именем узла или строковым представлением IP-адреса, номера порта и семейства адресов.</summary>
+      <param name="host">Имя узла или строковое представление IP-адреса.</param>
+      <param name="port">Номер порта, связанный с адресом, или 0 для указания любого доступного порта.Параметр <paramref name="port" /> указывается в порядке основного приложения.</param>
+      <param name="addressFamily">Одно из значений <see cref="T:System.Net.Sockets.AddressFamily" />.</param>
+      <exception cref="T:System.ArgumentException">Параметр <paramref name="host" /> содержит пустую строку.– или – Параметр <paramref name="addressFamily" /> имеет значение <see cref="F:System.Net.Sockets.AddressFamily.Unknown" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="host" /> равно null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение свойства <paramref name="port" /> меньше значения <see cref="F:System.Net.IPEndPoint.MinPort" />.– или – Значение <paramref name="port" /> больше значения <see cref="F:System.Net.IPEndPoint.MaxPort" />.</exception>
+    </member>
+    <member name="P:System.Net.DnsEndPoint.AddressFamily">
+      <summary>Возвращает семейство IP-адресов.</summary>
+      <returns>Одно из значений <see cref="T:System.Net.Sockets.AddressFamily" />.</returns>
+    </member>
+    <member name="M:System.Net.DnsEndPoint.Equals(System.Object)">
+      <summary>Сравнивает два объекта <see cref="T:System.Net.DnsEndPoint" />.</summary>
+      <returns>Значение true, если два экземпляра класса <see cref="T:System.Net.DnsEndPoint" /> равны, в противном случае — значение false.</returns>
+      <param name="comparand">Экземпляр <see cref="T:System.Net.DnsEndPoint" /> для сравнения с текущим экземпляром.</param>
+    </member>
+    <member name="M:System.Net.DnsEndPoint.GetHashCode">
+      <summary>Возвращает значение хэша для объекта <see cref="T:System.Net.DnsEndPoint" />.</summary>
+      <returns>Целочисленное значение хэша для объекта <see cref="T:System.Net.DnsEndPoint" />.</returns>
+    </member>
+    <member name="P:System.Net.DnsEndPoint.Host">
+      <summary>Получает имя узла или строковое представление IP-адреса узла.</summary>
+      <returns>Имя узла или строковое представление IP-адреса.</returns>
+    </member>
+    <member name="P:System.Net.DnsEndPoint.Port">
+      <summary>Получает номер порта объекта <see cref="T:System.Net.DnsEndPoint" />.</summary>
+      <returns>Целочисленное значение от 0 до 0xffff, показывающее номер порта объекта <see cref="T:System.Net.DnsEndPoint" />.</returns>
+    </member>
+    <member name="M:System.Net.DnsEndPoint.ToString">
+      <summary>Возвращает имя узла или строковое представление IP-адреса и номера порта объекта <see cref="T:System.Net.DnsEndPoint" />.</summary>
+      <returns>Строка, содержащая семейство адресов, имя узла или строку IP-адреса и номер порта указанного объекта <see cref="T:System.Net.DnsEndPoint" />.</returns>
+    </member>
+    <member name="T:System.Net.EndPoint">
+      <summary>Определяет сетевой адрес.Это класс abstract.</summary>
+    </member>
+    <member name="M:System.Net.EndPoint.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Net.EndPoint" />. </summary>
+    </member>
+    <member name="P:System.Net.EndPoint.AddressFamily">
+      <summary>Получает семейство адресов, к которому принадлежит конечная точка.</summary>
+      <returns>Одно из значений <see cref="T:System.Net.Sockets.AddressFamily" />.</returns>
+      <exception cref="T:System.NotImplementedException">Если свойство не переопределено во вложенном классе, делаются все возможные попытки получить или задать его. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.EndPoint.Create(System.Net.SocketAddress)">
+      <summary>Создает экземпляр <see cref="T:System.Net.EndPoint" /> из экземпляра <see cref="T:System.Net.SocketAddress" />.</summary>
+      <returns>Новый экземпляр класса <see cref="T:System.Net.EndPoint" />, получаемый из заданного экземпляра класса <see cref="T:System.Net.SocketAddress" />.</returns>
+      <param name="socketAddress">Адрес сокета, который используется как конечная точка подключения. </param>
+      <exception cref="T:System.NotImplementedException">Предпринимаются любые попытки вызова данного метода, когда метод не переопределен в классе-потомке. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.EndPoint.Serialize">
+      <summary>Выводит в последовательном виде сведения о конечной точке в экземпляр класса <see cref="T:System.Net.SocketAddress" />.</summary>
+      <returns>Экземпляр класса <see cref="T:System.Net.SocketAddress" />, содержащий сведения о конечной точке.</returns>
+      <exception cref="T:System.NotImplementedException">Предпринимаются любые попытки вызова данного метода, когда метод не переопределен в классе-потомке. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Net.HttpStatusCode">
+      <summary>Содержит значения кодов состояний, определенных для протокола HTTP.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Accepted">
+      <summary>Эквивалент HTTP-состояния 202.Значение <see cref="F:System.Net.HttpStatusCode.Accepted" /> указывает, что запрос принят для дальнейшей обработки.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Ambiguous">
+      <summary>Эквивалентен HTTP-состоянию 300.<see cref="F:System.Net.HttpStatusCode.Ambiguous" /> указывает, что запрашиваемые данные имеют несколько представлений.Действие, выполняемое по умолчанию, состоит в перенаправлении и отслеживании данных заголовка Location, связанного с этим ответом.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.BadGateway">
+      <summary>Эквивалент HTTP-состояния 502.Значение <see cref="F:System.Net.HttpStatusCode.BadGateway" /> указывает, что промежуточный прокси-сервер получил неправильный ответ от другого прокси или исходного сервера.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.BadRequest">
+      <summary>Эквивалентен HTTP-состоянию 400.<see cref="F:System.Net.HttpStatusCode.BadRequest" /> указывает, что запрос не может быть воспринят сервером.<see cref="F:System.Net.HttpStatusCode.BadRequest" /> посылается, когда не применима любая другая ошибка или ошибка является неизвестной либо не имеет собственного кода ошибки.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Conflict">
+      <summary>Эквивалентен HTTP-состоянию 409.<see cref="F:System.Net.HttpStatusCode.Conflict" /> указывает, что запрос не может быть выполнен из-за конфликта на сервере.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Continue">
+      <summary>Эквивалентен HTTP-состоянию 100.<see cref="F:System.Net.HttpStatusCode.Continue" /> указывает, что клиент может продолжать выполнять свой запрос.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Created">
+      <summary>Эквивалентен HTTP-состоянию 201.<see cref="F:System.Net.HttpStatusCode.Created" /> указывает, что запрос привел к созданию нового ресурса до того, как был послан ответ.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.ExpectationFailed">
+      <summary>Эквивалентен HTTP-состоянию 417.<see cref="F:System.Net.HttpStatusCode.ExpectationFailed" /> указывает, что ожидание, заданное в заголовке Expect, не может быть выполнено сервером.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Forbidden">
+      <summary>Эквивалентен HTTP-состоянию 403.<see cref="F:System.Net.HttpStatusCode.Forbidden" /> указывает, что сервер отказывается выполнять запрос.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Found">
+      <summary>Эквивалентен HTTP-состоянию 302.<see cref="F:System.Net.HttpStatusCode.Found" /> указывает, что запрашиваемые данные расположены по универсальному коду ресурса (URI), заданному в заголовке Location.Действие, выполняемое по умолчанию при получении этого состояния, состоит в отслеживании заголовка Location, связанного с ответом.Если для исходного запроса использовался метод POST, перенаправляемый запрос будет использовать метод GET.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.GatewayTimeout">
+      <summary>Эквивалент HTTP-состояния 504.Значение <see cref="F:System.Net.HttpStatusCode.GatewayTimeout" /> указывает, что промежуточный прокси-сервер простаивает, ожидая ответа от другого прокси или исходного сервера.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Gone">
+      <summary>Эквивалентен HTTP-состоянию 410.<see cref="F:System.Net.HttpStatusCode.Gone" /> указывает, что запрашиваемый ресурс больше недоступен.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.HttpVersionNotSupported">
+      <summary>Эквивалентен HTTP-состоянию 505.<see cref="F:System.Net.HttpStatusCode.HttpVersionNotSupported" /> указывает, что запрашиваемая версия HTTP не поддерживается сервером.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.InternalServerError">
+      <summary>Эквивалентен HTTP-состоянию 500.<see cref="F:System.Net.HttpStatusCode.InternalServerError" /> указывает, что на сервере произошла общая ошибка.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.LengthRequired">
+      <summary>Эквивалентен HTTP-состоянию 411.<see cref="F:System.Net.HttpStatusCode.LengthRequired" /> указывает, что требуемый заголовок Content-Length отсутствует.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.MethodNotAllowed">
+      <summary>Эквивалентен HTTP-состоянию 405.<see cref="F:System.Net.HttpStatusCode.MethodNotAllowed" /> указывает, что метод запроса (POST или GET) не разрешен для запрашиваемого ресурса.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Moved">
+      <summary>Эквивалентен HTTP-состоянию 301.<see cref="F:System.Net.HttpStatusCode.Moved" /> указывает, что запрашиваемые данные перемещены по универсальному коду ресурса (URI), заданному в заголовке Location.Действие, выполняемое по умолчанию при получении этого состояния, состоит в отслеживании заголовка Location, связанного с ответом.Если для исходного запроса использовался метод POST, перенаправляемый запрос будет использовать метод GET.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.MovedPermanently">
+      <summary>Эквивалентен HTTP-состоянию 301.<see cref="F:System.Net.HttpStatusCode.MovedPermanently" /> указывает, что запрашиваемые данные перемещены по универсальному коду ресурса (URI), заданному в заголовке Location.Действие, выполняемое по умолчанию при получении этого состояния, состоит в отслеживании заголовка Location, связанного с ответом.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.MultipleChoices">
+      <summary>Эквивалентен HTTP-состоянию 300.<see cref="F:System.Net.HttpStatusCode.MultipleChoices" /> указывает, что запрашиваемые данные имеют несколько представлений.Действие, выполняемое по умолчанию, состоит в перенаправлении и отслеживании данных заголовка Location, связанного с этим ответом.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.NoContent">
+      <summary>Эквивалент HTTP-состояния 204.<see cref="F:System.Net.HttpStatusCode.NoContent" /> указывает, что запрос успешно обработан и ответ является преднамеренно пустым.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.NonAuthoritativeInformation">
+      <summary>Эквивалент HTTP-состояния 203.<see cref="F:System.Net.HttpStatusCode.NonAuthoritativeInformation" /> указывает, что возвращенные метаданные взяты из кэшированной копии вместо исходного сервера и поэтому могут быть неверными.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.NotAcceptable">
+      <summary>Эквивалентен HTTP-состоянию 406.<see cref="F:System.Net.HttpStatusCode.NotAcceptable" /> указывает, что клиент показывает с помощью заголовков Accept, что он не принимает любые из доступных представлений ресурса.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.NotFound">
+      <summary>Эквивалентен HTTP-состоянию 404.<see cref="F:System.Net.HttpStatusCode.NotFound" /> указывает, что запрашиваемый ресурс отсутствует на сервере.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.NotImplemented">
+      <summary>Эквивалентен HTTP-состоянию 501.<see cref="F:System.Net.HttpStatusCode.NotImplemented" /> указывает, что сервер не поддерживает запрашиваемую функцию.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.NotModified">
+      <summary>Эквивалентен HTTP-состоянию 304.<see cref="F:System.Net.HttpStatusCode.NotModified" /> указывает, что клиентская кэшированная копия является самой новой.Данные ресурса не пересылаются.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.OK">
+      <summary>Эквивалентен HTTP-состоянию 200.<see cref="F:System.Net.HttpStatusCode.OK" /> указывает, что запрос завершился успешно и запрашиваемые данные находятся в ответе.Это наиболее часто получаемый код состояния.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.PartialContent">
+      <summary>Эквивалентен HTTP-состоянию 206.Значение <see cref="F:System.Net.HttpStatusCode.PartialContent" /> указывает, что ответ является частичным ответом на запрос GET, содержащий диапазон байтов.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.PaymentRequired">
+      <summary>Эквивалентен HTTP-состоянию 402.<see cref="F:System.Net.HttpStatusCode.PaymentRequired" /> зарезервирован для дальнейшего использования.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.PreconditionFailed">
+      <summary>Эквивалент HTTP-состояния 412.<see cref="F:System.Net.HttpStatusCode.PreconditionFailed" /> указывает, что условие, установленное для этого запроса, не соблюдено и запрос не может быть выполнен.Условия задаются с помощью заголовков условного запроса, таких как If-Match, If-None-Match или If-Unmodified-Since.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.ProxyAuthenticationRequired">
+      <summary>Эквивалентен HTTP-состоянию 407.<see cref="F:System.Net.HttpStatusCode.ProxyAuthenticationRequired" /> указывает, что запрашиваемый прокси требует прохождения проверки подлинности.В заголовке Proxy-authenticate подробно излагается порядок выполнения проверки подлинности.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Redirect">
+      <summary>Эквивалентен HTTP-состоянию 302.<see cref="F:System.Net.HttpStatusCode.Redirect" /> указывает, что запрашиваемые данные расположены по универсальному коду ресурса (URI), заданному в заголовке Location.Действие, выполняемое по умолчанию при получении этого состояния, состоит в отслеживании заголовка Location, связанного с ответом.Если для исходного запроса использовался метод POST, перенаправляемый запрос будет использовать метод GET.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.RedirectKeepVerb">
+      <summary>Эквивалентен HTTP-состоянию 307.Значение <see cref="F:System.Net.HttpStatusCode.RedirectKeepVerb" /> указывает, что данные запроса расположены по универсальному коду ресурса (URI), заданному в заголовке Location.Действие, выполняемое по умолчанию при получении этого состояния, состоит в отслеживании заголовка Location, связанного с ответом.Если для исходного запроса использовался метод POST, перенаправляемый запрос будет также использовать метод POST.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.RedirectMethod">
+      <summary>Эквивалентен HTTP-состоянию 303.Значение <see cref="F:System.Net.HttpStatusCode.RedirectMethod" /> приводит к автоматическому перенаправлению клиента на универсальный код ресурса (URI), заданный в заголовке Location, в результате выполнения запроса POST.Запрос ресурса, задаваемого заголовком Location, выполняется с помощью метода GET.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.RequestedRangeNotSatisfiable">
+      <summary>Эквивалент HTTP-состояния 416.Значение <see cref="F:System.Net.HttpStatusCode.RequestedRangeNotSatisfiable" /> указывает, что диапазон данных, запрашиваемых из ресурса, не может быть возвращен из-за расположения начала диапазона до начала ресурса или конца диапазона после конца ресурса.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.RequestEntityTooLarge">
+      <summary>Эквивалентен HTTP-состоянию 413.<see cref="F:System.Net.HttpStatusCode.RequestEntityTooLarge" /> указывает, что запрос слишком велик для сервера, чтобы быть обработанным.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.RequestTimeout">
+      <summary>Эквивалентен HTTP-состоянию 408.<see cref="F:System.Net.HttpStatusCode.RequestTimeout" /> указывает, что клиент не послал запрос в пределах времени, когда запрос ожидался сервером.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.RequestUriTooLong">
+      <summary>Эквивалентен HTTP-состоянию 414.<see cref="F:System.Net.HttpStatusCode.RequestUriTooLong" /> указывает, что универсальный код ресурса (URI) слишком длинный.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.ResetContent">
+      <summary>Эквивалентен HTTP-состоянию 205.<see cref="F:System.Net.HttpStatusCode.ResetContent" /> указывает, что клиент должен сбросить (не перезагрузить) текущий ресурс.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.SeeOther">
+      <summary>Эквивалентен HTTP-состоянию 303.<see cref="F:System.Net.HttpStatusCode.SeeOther" /> в результате выполнения метода POST автоматически перенаправляет клиента на универсальный код ресурса (URI), заданный в заголовке Location.Запрос ресурса, задаваемого заголовком Location, выполняется с помощью метода GET.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.ServiceUnavailable">
+      <summary>Эквивалент HTTP-состояния 503.Значение <see cref="F:System.Net.HttpStatusCode.ServiceUnavailable" /> указывает, что сервер временно недоступен, обычно из-за высокой нагрузки или выполняемого обслуживания.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.SwitchingProtocols">
+      <summary>Эквивалентен HTTP-состоянию 101.<see cref="F:System.Net.HttpStatusCode.SwitchingProtocols" /> указывает, что изменяется протокол или версия протокола.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.TemporaryRedirect">
+      <summary>Эквивалентен HTTP-состоянию 307.<see cref="F:System.Net.HttpStatusCode.TemporaryRedirect" /> указывает, что данные запроса расположены по универсальному коду ресурса (URI), заданному в заголовке Location.Действие, выполняемое по умолчанию при получении этого состояния, состоит в отслеживании заголовка Location, связанного с ответом.Если для исходного запроса использовался метод POST, перенаправляемый запрос будет также использовать метод POST.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Unauthorized">
+      <summary>Эквивалент HTTP-состояния 401.Значение <see cref="F:System.Net.HttpStatusCode.Unauthorized" /> указывает, что для запрашиваемого ресурса требуется аутентификация.В заголовке WWW-Authenticate подробно излагается порядок выполнения проверки подлинности.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.UnsupportedMediaType">
+      <summary>Эквивалентен HTTP-состоянию 415.<see cref="F:System.Net.HttpStatusCode.UnsupportedMediaType" /> указывает, что запрос этого типа не поддерживается.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Unused">
+      <summary>Эквивалентен HTTP-состоянию 306.<see cref="F:System.Net.HttpStatusCode.Unused" /> является предлагаемым расширением спецификации HTTP/1.1, которая полностью не определена.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.UpgradeRequired">
+      <summary>Эквивалент HTTP-состояния 426.<see cref="F:System.Net.HttpStatusCode.UpgradeRequired" /> указывает, что клиент должен переключиться на другой протокол, например на TLS/1.0.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.UseProxy">
+      <summary>Эквивалентен HTTP-состоянию 305.<see cref="F:System.Net.HttpStatusCode.UseProxy" /> указывает, что запрос должен использовать прокси-сервер по универсальному коду ресурса (URI), заданному в заголовке Location.</summary>
+    </member>
+    <member name="T:System.Net.ICredentials">
+      <summary>Предоставляет основной интерфейс проверки подлинности для извлечения учетных данных, необходимых при проверке подлинности веб-клиента.</summary>
+    </member>
+    <member name="M:System.Net.ICredentials.GetCredential(System.Uri,System.String)">
+      <summary>Возвращает объект <see cref="T:System.Net.NetworkCredential" />, связанный с заданными URI и типом проверки подлинности.</summary>
+      <returns>Объект <see cref="T:System.Net.NetworkCredential" />, связанный с заданными URI и типом проверки подлинности, или null, если учетные данные отсутствуют.</returns>
+      <param name="uri">Параметр <see cref="T:System.Uri" />, для которого клиент предоставляет проверку подлинности. </param>
+      <param name="authType">Тип проверки подлинности согласно его определению в свойстве <see cref="P:System.Net.IAuthenticationModule.AuthenticationType" />. </param>
+    </member>
+    <member name="T:System.Net.ICredentialsByHost">
+      <summary>Предоставляет основной интерфейс для извлечения учетных данных, относящихся к узлу, порту и типу проверки подлинности.</summary>
+    </member>
+    <member name="M:System.Net.ICredentialsByHost.GetCredential(System.String,System.Int32,System.String)">
+      <summary>Возвращает учетные данные для указанного узла, порта и протокола проверки подлинности.</summary>
+      <returns>Учетные данные <see cref="T:System.Net.NetworkCredential" /> для указанного узла, порта и протокола проверки подлинности или значение null, если для указанных узла, порта и протокола проверки подлинности не определены учетные данные.</returns>
+      <param name="host">узел, проверяющий подлинность клиента.</param>
+      <param name="port">Порт на <paramref name="host " />, с которым клиент будет устанавливать связь.</param>
+      <param name="authenticationType">Протокол проверки подлинности.</param>
+    </member>
+    <member name="T:System.Net.IPAddress">
+      <summary>Предоставляет IP-адрес.</summary>
+    </member>
+    <member name="M:System.Net.IPAddress.#ctor(System.Byte[])">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Net.IPAddress" /> с указанным адресом, заданным в виде массива <see cref="T:System.Byte" />.</summary>
+      <param name="address">Значение байтового массива IP-адреса. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="address" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="address" /> содержит недопустимый IP-адрес. </exception>
+    </member>
+    <member name="M:System.Net.IPAddress.#ctor(System.Byte[],System.Int64)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Net.IPAddress" /> с адресом, указанным в виде массива <see cref="T:System.Byte" />, и указанным идентификатором области.</summary>
+      <param name="address">Значение байтового массива IP-адреса. </param>
+      <param name="scopeid">Длинное целое значение идентификатора области. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="address" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="address" /> содержит недопустимый IP-адрес. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="scopeid" /> &lt; 0 или <paramref name="scopeid" /> &gt; 0x00000000FFFFFFFF </exception>
+    </member>
+    <member name="M:System.Net.IPAddress.#ctor(System.Int64)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Net.IPAddress" /> с указанным адресом, заданным в виде массива <see cref="T:System.Int64" />.</summary>
+      <param name="newAddress">Длинное целое значение IP-адреса.Например, значение 0x2414188f в формате обратного порядка байтов будет являться IP-адресом 143.24.20.36.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="newAddress" /> &lt; 0 или <paramref name="newAddress" /> &gt; 0x00000000FFFFFFFF </exception>
+    </member>
+    <member name="P:System.Net.IPAddress.AddressFamily">
+      <summary>Возвращает семейство адресов для IP-адреса.</summary>
+      <returns>Возвращает <see cref="F:System.Net.Sockets.AddressFamily.InterNetwork" /> для протокола IPv4 или <see cref="F:System.Net.Sockets.AddressFamily.InterNetworkV6" /> для протокола IPv6.</returns>
+    </member>
+    <member name="F:System.Net.IPAddress.Any">
+      <summary>Предоставляет IP-адрес, указывающий, что сервер должен контролировать действия клиентов на всех сетевых интерфейсах.Это поле доступно только для чтения.</summary>
+    </member>
+    <member name="F:System.Net.IPAddress.Broadcast">
+      <summary>Предоставляет широковещательный IP-адрес.Это поле доступно только для чтения.</summary>
+    </member>
+    <member name="M:System.Net.IPAddress.Equals(System.Object)">
+      <summary>Сравнивает два IP-адреса.</summary>
+      <returns>Значение true, если два адреса совпадают; в противном случае — false.</returns>
+      <param name="comparand">Экземпляр класса <see cref="T:System.Net.IPAddress" />, используемый для сравнения с текущим экземпляром. </param>
+    </member>
+    <member name="M:System.Net.IPAddress.GetAddressBytes">
+      <summary>Предоставляет копию <see cref="T:System.Net.IPAddress" /> в виде массива байтов.</summary>
+      <returns>Массив <see cref="T:System.Byte" />.</returns>
+    </member>
+    <member name="M:System.Net.IPAddress.GetHashCode">
+      <summary>Возвращает значение хэш-функции для IP-адреса.</summary>
+      <returns>Целочисленное значение хэша.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.IPAddress.HostToNetworkOrder(System.Int16)">
+      <summary>Преобразует короткое значение из байтового формата узла в сетевой байтовый формат.</summary>
+      <returns>Короткое значение, представленное в сетевом байтовом формате.</returns>
+      <param name="host">Преобразуемое число, представленное в байтовом формате узла. </param>
+    </member>
+    <member name="M:System.Net.IPAddress.HostToNetworkOrder(System.Int32)">
+      <summary>Преобразует целое значение из байтового формата узла в сетевой байтовый формат.</summary>
+      <returns>Целое значение, представленное в сетевом байтовом формате.</returns>
+      <param name="host">Преобразуемое число, представленное в байтовом формате узла. </param>
+    </member>
+    <member name="M:System.Net.IPAddress.HostToNetworkOrder(System.Int64)">
+      <summary>Преобразует длинное целое значение из байтового формата узла в сетевой байтовый формат.</summary>
+      <returns>Длинное целое значение, представленное в сетевом байтовом формате.</returns>
+      <param name="host">Преобразуемое число, представленное в байтовом формате узла. </param>
+    </member>
+    <member name="F:System.Net.IPAddress.IPv6Any">
+      <summary>Метод <see cref="M:System.Net.Sockets.Socket.Bind(System.Net.EndPoint)" /> использует поле <see cref="F:System.Net.IPAddress.IPv6Any" /> для указания того, что экземпляр класса <see cref="T:System.Net.Sockets.Socket" /> должен контролировать действия клиентов на всех сетевых интерфейсах.</summary>
+    </member>
+    <member name="F:System.Net.IPAddress.IPv6Loopback">
+      <summary>Предоставляет IP-адрес замыкания на себя.Это свойство доступно только для чтения.</summary>
+    </member>
+    <member name="F:System.Net.IPAddress.IPv6None">
+      <summary>Предоставляет IP-адрес, указывающий, что сетевой интерфейс не должен использоваться.Это свойство доступно только для чтения.</summary>
+    </member>
+    <member name="P:System.Net.IPAddress.IsIPv4MappedToIPv6">
+      <summary>Возвращает сведения о том, является ли IP-адрес адресом IPv6, сопоставленным с IPv4.</summary>
+      <returns>Возвращает <see cref="T:System.Boolean" />.Значение true, если IP-адрес является сопоставленным в IPv4 адресом IPv6; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Net.IPAddress.IsIPv6LinkLocal">
+      <summary>Возвращает сведения о том, является ли адрес локальным IPv6-адресом для канала связи.</summary>
+      <returns>Значение true, если IP-адрес является локальным IPv6 –адресом для канала связи; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Net.IPAddress.IsIPv6Multicast">
+      <summary>Возвращает сведения о том, является ли IPv6-адрес многоадресным глобальным адресом.</summary>
+      <returns>Значение true, если IP-адрес является многоадресным глобальным IPv6-адресом; в противном случае — false.</returns>
+    </member>
+    <member name="P:System.Net.IPAddress.IsIPv6SiteLocal">
+      <summary>Возвращает сведения о том, является ли адрес локальным IPv6-адресом для веб-узла.</summary>
+      <returns>Значение true, если IP-адрес является локальным Ipv6-адресом веб-узла; в противном случае — false.</returns>
+    </member>
+    <member name="P:System.Net.IPAddress.IsIPv6Teredo">
+      <summary>Получает сведения о том, является ли адрес IPv6-адресом Teredo.</summary>
+      <returns>Значение true, если IP-адрес является IPv6-адресом Teredo; в противном случае — значение false.</returns>
+    </member>
+    <member name="M:System.Net.IPAddress.IsLoopback(System.Net.IPAddress)">
+      <summary>Показывает, является ли IP-адрес адресом замыкания на себя.</summary>
+      <returns>Значение true, если <paramref name="address" /> является адресом замыкания на себя; в противном случае — false.</returns>
+      <param name="address">IP-адрес. </param>
+    </member>
+    <member name="F:System.Net.IPAddress.Loopback">
+      <summary>Предоставляет IP-адрес замыкания на себя.Это поле доступно только для чтения.</summary>
+    </member>
+    <member name="M:System.Net.IPAddress.MapToIPv4">
+      <summary>Сопоставляет объект <see cref="T:System.Net.IPAddress" /> с адресом IPv4.</summary>
+      <returns>Возвращает <see cref="T:System.Net.IPAddress" />.Адрес IPv4.</returns>
+    </member>
+    <member name="M:System.Net.IPAddress.MapToIPv6">
+      <summary>Сопоставляет объект <see cref="T:System.Net.IPAddress" /> с адресом IPv6.</summary>
+      <returns>Возвращает <see cref="T:System.Net.IPAddress" />.Адрес IPv6.</returns>
+    </member>
+    <member name="M:System.Net.IPAddress.NetworkToHostOrder(System.Int16)">
+      <summary>Преобразует короткое значение из байтового формата узла в сетевой байтовый формат.</summary>
+      <returns>Короткое значение, представленное в байтовом формате узла.</returns>
+      <param name="network">Преобразуемое число, представленное в сетевом байтовом формате. </param>
+    </member>
+    <member name="M:System.Net.IPAddress.NetworkToHostOrder(System.Int32)">
+      <summary>Преобразует целое значение из байтового формата узла в сетевой байтовый формат.</summary>
+      <returns>Целое значение, представленное в байтовом формате узла.</returns>
+      <param name="network">Преобразуемое число, представленное в сетевом байтовом формате. </param>
+    </member>
+    <member name="M:System.Net.IPAddress.NetworkToHostOrder(System.Int64)">
+      <summary>Преобразует длинное целое значение из байтового формата узла в сетевой байтовый формат.</summary>
+      <returns>Длинное целое значение, представленное в байтовом формате узла.</returns>
+      <param name="network">Преобразуемое число, представленное в сетевом байтовом формате. </param>
+    </member>
+    <member name="F:System.Net.IPAddress.None">
+      <summary>Предоставляет IP-адрес, указывающий, что сетевой интерфейс не должен использоваться.Это поле доступно только для чтения.</summary>
+    </member>
+    <member name="M:System.Net.IPAddress.Parse(System.String)">
+      <summary>Преобразует строку IP-адреса в экземпляр класса <see cref="T:System.Net.IPAddress" />.</summary>
+      <returns>Экземпляр <see cref="T:System.Net.IPAddress" />.</returns>
+      <param name="ipString">Строка, содержащая IP-адрес, выраженный в случае протокола IPv4 в виде четырех чисел, разделенных точками, или представленный в системе записи "двоеточие-шестнадцатиричное число" в случае протокола IPv6. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="ipString" /> имеет значение null. </exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="ipString" /> не является допустимым IP-адресом. </exception>
+    </member>
+    <member name="P:System.Net.IPAddress.ScopeId">
+      <summary>Возвращает или задает идентификатор области действия адреса, соответствующего протоколу IPv6.</summary>
+      <returns>Длинное целое число, ограничивающее область действия адреса.</returns>
+      <exception cref="T:System.Net.Sockets.SocketException">AddressFamily = InterNetwork. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="scopeId" /> &lt; 0- или -<paramref name="scopeId" /> &gt; 0x00000000FFFFFFFF  </exception>
+    </member>
+    <member name="M:System.Net.IPAddress.ToString">
+      <summary>Преобразует адрес в Интернете в его стандартный формат.</summary>
+      <returns>Строка, содержащая IP-адрес, выраженный в формате четырех чисел, разделенных точками, согласно протоколу IPv4 или выраженный в системе "двоеточие-шестнадцатиричное число" согласно протоколу IPv6.</returns>
+      <exception cref="T:System.Net.Sockets.SocketException">Семья адресов является <see cref="F:System.Net.Sockets.AddressFamily.InterNetworkV6" />, используемый адрес недопустим. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.IPAddress.TryParse(System.String,System.Net.IPAddress@)">
+      <summary>Определяет, является ли строка допустимым IP-адресом.</summary>
+      <returns>Значение true, если <paramref name="ipString" /> является допустимым IP-адресом; в противном случае — false.</returns>
+      <param name="ipString">Строка, которую следует проверить.</param>
+      <param name="address">Возвращает версию строки <see cref="T:System.Net.IPAddress" />.</param>
+    </member>
+    <member name="T:System.Net.IPEndPoint">
+      <summary>Представляет сетевую конечную точка в виде IP-адреса и номера порта.</summary>
+    </member>
+    <member name="M:System.Net.IPEndPoint.#ctor(System.Int64,System.Int32)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Net.IPEndPoint" /> с заданными адресом и номером порта.</summary>
+      <param name="address">IP-адрес узла в Интернете. </param>
+      <param name="port">Номер порта, связанный с параметром <paramref name="address" />, или 0 для указания любого доступного порта.Параметр <paramref name="port" /> указывается в порядке основного приложения.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение свойства <paramref name="port" /> меньше значения <see cref="F:System.Net.IPEndPoint.MinPort" />.– или – Значение <paramref name="port" /> больше значения <see cref="F:System.Net.IPEndPoint.MaxPort" />.– или – <paramref name="address" /> меньше 0 или больше 0x00000000FFFFFFFF. </exception>
+    </member>
+    <member name="M:System.Net.IPEndPoint.#ctor(System.Net.IPAddress,System.Int32)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Net.IPEndPoint" /> с заданными адресом и номером порта.</summary>
+      <param name="address">Объект <see cref="T:System.Net.IPAddress" />. </param>
+      <param name="port">Номер порта, связанный с параметром <paramref name="address" />, или 0 для указания любого доступного порта.Параметр <paramref name="port" /> указывается в порядке основного приложения.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="address" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение свойства <paramref name="port" /> меньше значения <see cref="F:System.Net.IPEndPoint.MinPort" />.– или – Значение <paramref name="port" /> больше значения <see cref="F:System.Net.IPEndPoint.MaxPort" />.– или – <paramref name="address" /> меньше 0 или больше 0x00000000FFFFFFFF. </exception>
+    </member>
+    <member name="P:System.Net.IPEndPoint.Address">
+      <summary>Возвращает или задает IP-адрес конечной точки.</summary>
+      <returns>Экземпляр класса <see cref="T:System.Net.IPAddress" />, содержащий IP-адрес конечной точки.</returns>
+    </member>
+    <member name="P:System.Net.IPEndPoint.AddressFamily">
+      <summary>Возвращает семейство IP-адресов.</summary>
+      <returns>Возвращает <see cref="F:System.Net.Sockets.AddressFamily.InterNetwork" />.</returns>
+    </member>
+    <member name="M:System.Net.IPEndPoint.Create(System.Net.SocketAddress)">
+      <summary>Создает конечную точка по адресу сокета.</summary>
+      <returns>Экземпляр класса <see cref="T:System.Net.EndPoint" />, использующий заданный адрес сокета.</returns>
+      <param name="socketAddress">Параметр <see cref="T:System.Net.SocketAddress" />, используемый для создания конечной точки. </param>
+      <exception cref="T:System.ArgumentException">Значение свойства AddressFamily для <paramref name="socketAddress" /> не равно значению свойства AddressFamily для текущего экземпляра класса.– или – <paramref name="socketAddress" />.Size &lt; 8. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.IPEndPoint.Equals(System.Object)">
+      <summary>Определяет, равен ли заданный объект <see cref="T:System.Object" /> текущему экземпляру <see cref="T:System.Net.IPEndPoint" />.</summary>
+      <returns>true, если заданный объект равен текущему объекту; в противном случае — false.</returns>
+      <param name="comparand">Заданный объект <see cref="T:System.Object" /> для сравнения с текущим экземпляром <see cref="T:System.Net.IPEndPoint" />.</param>
+    </member>
+    <member name="M:System.Net.IPEndPoint.GetHashCode">
+      <summary>Возвращает хэш-значение для экземпляра <see cref="T:System.Net.IPEndPoint" />.</summary>
+      <returns>Целочисленное значение хэша.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="F:System.Net.IPEndPoint.MaxPort">
+      <summary>Определяет максимальное значение, которое может присваиваться свойству <see cref="P:System.Net.IPEndPoint.Port" />.Значение MaxPort установлено равным 0x0000FFFF.Это поле доступно только для чтения.</summary>
+    </member>
+    <member name="F:System.Net.IPEndPoint.MinPort">
+      <summary>Определяет минимальное значение, которое может присваиваться свойству <see cref="P:System.Net.IPEndPoint.Port" />.Это поле доступно только для чтения.</summary>
+    </member>
+    <member name="P:System.Net.IPEndPoint.Port">
+      <summary>Возвращает или задает номер порта конечной точки.</summary>
+      <returns>Целое значение из диапазона от <see cref="F:System.Net.IPEndPoint.MinPort" /> до <see cref="F:System.Net.IPEndPoint.MaxPort" />, показывающее номер порта конечной точки.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение, заданное для установленной операции, меньше <see cref="F:System.Net.IPEndPoint.MinPort" /> или больше <see cref="F:System.Net.IPEndPoint.MaxPort" />. </exception>
+    </member>
+    <member name="M:System.Net.IPEndPoint.Serialize">
+      <summary>Выводит в последовательном виде сведения о конечной точке в экземпляр класса <see cref="T:System.Net.SocketAddress" />.</summary>
+      <returns>Экземпляр класса <see cref="T:System.Net.SocketAddress" />, содержащий адрес сокета для конечной точки.</returns>
+    </member>
+    <member name="M:System.Net.IPEndPoint.ToString">
+      <summary>Возвращает IP-адрес и номер порта заданной конечной точки.</summary>
+      <returns>Строка, содержащая IP-адрес и номер порта заданной конечной точки (например, 192.168.1.2:80).</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Net.IWebProxy">
+      <summary>Предоставляет базовый интерфейс, помогающий реализовать доступ к прокси-серверу для класса <see cref="T:System.Net.WebRequest" />.</summary>
+    </member>
+    <member name="P:System.Net.IWebProxy.Credentials">
+      <summary>Учетные данные, передаваемые прокси-серверу для выполнения проверки подлинности.</summary>
+      <returns>Экземпляр <see cref="T:System.Net.ICredentials" />, содержащий учетные данные, необходимые для проверки подлинности запроса к прокси-серверу.</returns>
+    </member>
+    <member name="M:System.Net.IWebProxy.GetProxy(System.Uri)">
+      <summary>Возвращает URI, принадлежащий прокси-серверу.</summary>
+      <returns>Экземпляр <see cref="T:System.Uri" />, который содержит URI прокси-сервера, используемого для связи с <paramref name="destination" />.</returns>
+      <param name="destination">Перечисление <see cref="T:System.Uri" />, указывающее тип требуемого интернет-ресурса. </param>
+    </member>
+    <member name="M:System.Net.IWebProxy.IsBypassed(System.Uri)">
+      <summary>Указывает, что прокси-сервер не должен использоваться для заданного узла.</summary>
+      <returns>Значение true, если прокси-сервер не должен использоваться для <paramref name="host" />; в противном случае — false.</returns>
+      <param name="host">Принадлежащий узлу идентификатор <see cref="T:System.Uri" /> для проверки использования прокси-сервера. </param>
+    </member>
+    <member name="T:System.Net.NetworkCredential">
+      <summary>Предоставляет учетные данные для схем проверки подлинности на основе пароля, таких как "Обычная", "Дайджест", "NTLM" и "Kerberos".</summary>
+    </member>
+    <member name="M:System.Net.NetworkCredential.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Net.NetworkCredential" />.</summary>
+    </member>
+    <member name="M:System.Net.NetworkCredential.#ctor(System.String,System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Net.NetworkCredential" /> с заданными значениями пароля и имени пользователя.</summary>
+      <param name="userName">Имя пользователя, связанное с учетными данными. </param>
+      <param name="password">Пароль для имени пользователя, связанный с учетными данными. </param>
+    </member>
+    <member name="M:System.Net.NetworkCredential.#ctor(System.String,System.String,System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Net.NetworkCredential" /> с заданными значениями имени пользователя, пароля и домена.</summary>
+      <param name="userName">Имя пользователя, связанное с учетными данными. </param>
+      <param name="password">Пароль для имени пользователя, связанный с учетными данными. </param>
+      <param name="domain">Домен, связанный с этими учетными данными. </param>
+    </member>
+    <member name="P:System.Net.NetworkCredential.Domain">
+      <summary>Возвращает или устанавливает имя домена или компьютера, проверяющего учетные данные.</summary>
+      <returns>Имя домена, связанное с учетными данными.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.NetworkCredential.GetCredential(System.String,System.Int32,System.String)">
+      <summary>Возвращает экземпляр класса <see cref="T:System.Net.NetworkCredential" /> для заданных узла, порта и типа проверки подлинности.</summary>
+      <returns>Учетные данные <see cref="T:System.Net.NetworkCredential" /> для указанного узла, порта и протокола проверки подлинности или значение null, если для указанных узла, порта и протокола проверки подлинности не определены учетные данные.</returns>
+      <param name="host">узел, проверяющий подлинность клиента.</param>
+      <param name="port">Порт на <paramref name="host" />, с которым клиент будет устанавливать связь.</param>
+      <param name="authenticationType">Тип запрашиваемой проверки подлинности согласно его определению в свойстве <see cref="P:System.Net.IAuthenticationModule.AuthenticationType" />. </param>
+    </member>
+    <member name="M:System.Net.NetworkCredential.GetCredential(System.Uri,System.String)">
+      <summary>Возвращает экземпляр класса <see cref="T:System.Net.NetworkCredential" />, связанный с указанным URI и типом проверки подлинности.</summary>
+      <returns>Объект <see cref="T:System.Net.NetworkCredential" />.</returns>
+      <param name="uri">URI, для получения доступа к которому клиент проходит проверку подлинности. </param>
+      <param name="authType">Тип запрашиваемой проверки подлинности согласно его определению в свойстве <see cref="P:System.Net.IAuthenticationModule.AuthenticationType" />. </param>
+    </member>
+    <member name="P:System.Net.NetworkCredential.Password">
+      <summary>Возвращает или задает пароль для имени пользователя, связанного с учетными данными.</summary>
+      <returns>Пароль пользователя, связанный с учетными данными.Если данный экземпляр <see cref="T:System.Net.NetworkCredential" /> инициализируется с параметром <paramref name="password" />, имеющим значение null, свойство <see cref="P:System.Net.NetworkCredential.Password" /> вернет пустую строку.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Net.NetworkCredential.UserName">
+      <summary>Возвращает или задает имя пользователя, связанное с учетными данными.</summary>
+      <returns>Имя пользователя, связанное с учетными данными.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Net.SocketAddress">
+      <summary>Сохраняет сведения о сериализации для производных классов <see cref="T:System.Net.EndPoint" />.</summary>
+    </member>
+    <member name="M:System.Net.SocketAddress.#ctor(System.Net.Sockets.AddressFamily)">
+      <summary>Создает новый экземпляр класса <see cref="T:System.Net.SocketAddress" /> для указанного семейства адресов.</summary>
+      <param name="family">Значение перечисления <see cref="T:System.Net.Sockets.AddressFamily" />. </param>
+    </member>
+    <member name="M:System.Net.SocketAddress.#ctor(System.Net.Sockets.AddressFamily,System.Int32)">
+      <summary>Создает новый экземпляр класса <see cref="T:System.Net.SocketAddress" />, используя указанные семейство адресов и размер буфера.</summary>
+      <param name="family">Значение перечисления <see cref="T:System.Net.Sockets.AddressFamily" />. </param>
+      <param name="size">Количество байтов, выделяемое для соответствующего буфера. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="size" /> меньше 2.Эти 2 байта необходимы для хранения <paramref name="family" />.</exception>
+    </member>
+    <member name="M:System.Net.SocketAddress.Equals(System.Object)">
+      <summary>Определяет, равен ли заданный объект <see cref="T:System.Object" /> текущему экземпляру <see cref="T:System.Net.SocketAddress" />.</summary>
+      <returns>true, если заданный объект равен текущему объекту; в противном случае — false.</returns>
+      <param name="comparand">Заданный объект <see cref="T:System.Object" /> для сравнения с текущим экземпляром <see cref="T:System.Net.SocketAddress" />.</param>
+    </member>
+    <member name="P:System.Net.SocketAddress.Family">
+      <summary>Возвращает значение перечисления <see cref="T:System.Net.Sockets.AddressFamily" /> текущего <see cref="T:System.Net.SocketAddress" />.</summary>
+      <returns>Одно из значений перечисления <see cref="T:System.Net.Sockets.AddressFamily" />.</returns>
+    </member>
+    <member name="M:System.Net.SocketAddress.GetHashCode">
+      <summary>Служит в качестве хэш-функции для конкретного типа, который можно использовать в алгоритмах хэширования и структурах данных, подобных хэш-таблице.</summary>
+      <returns>Хэш-код для текущего объекта.</returns>
+    </member>
+    <member name="P:System.Net.SocketAddress.Item(System.Int32)">
+      <summary>Возвращает или устанавливает элемент с указанным индексом в соответствующем буфере.</summary>
+      <returns>Значение элемента с указанным индексом в соответствующем буфере.</returns>
+      <param name="offset">Элемент индекса массива нужных данных. </param>
+      <exception cref="T:System.IndexOutOfRangeException">Указанный индекс не существует в буфере. </exception>
+    </member>
+    <member name="P:System.Net.SocketAddress.Size">
+      <summary>Возвращает размер соответствующего буфера <see cref="T:System.Net.SocketAddress" />.</summary>
+      <returns>Размер соответствующего буфера <see cref="T:System.Net.SocketAddress" />.</returns>
+    </member>
+    <member name="M:System.Net.SocketAddress.ToString">
+      <summary>Возвращает сведения об адресе сокета.</summary>
+      <returns>Строка, содержащая сведения о <see cref="T:System.Net.SocketAddress" />.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Net.TransportContext">
+      <summary>Класс <see cref="T:System.Net.TransportContext" /> предоставляет дополнительный контекст о подлежащем транспортном слое.</summary>
+    </member>
+    <member name="M:System.Net.TransportContext.#ctor">
+      <summary>Создает новый экземпляр класса <see cref="T:System.Net.TransportContext" /></summary>
+    </member>
+    <member name="M:System.Net.TransportContext.GetChannelBinding(System.Security.Authentication.ExtendedProtection.ChannelBindingKind)">
+      <summary>Извлекает запрошенную привязку канала. </summary>
+      <returns>Запрошенная привязка <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding" /> или null, если привязка канала не поддерживается текущим транспортом или операционной системой.</returns>
+      <param name="kind">Тип привязки канала, которую требуется извлечь.</param>
+      <exception cref="T:System.NotSupportedException">Параметр <paramref name="kind" /> должен быть равен <see cref="F:System.Security.Authentication.ExtendedProtection.ChannelBindingKind.Endpoint" /> для использования с объектом <see cref="T:System.Net.TransportContext" />, извлеченным из свойства <see cref="P:System.Net.HttpListenerRequest.TransportContext" />.</exception>
+    </member>
+    <member name="T:System.Net.NetworkInformation.IPAddressCollection">
+      <summary>Хранит набор типов <see cref="T:System.Net.IPAddress" />.</summary>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Net.NetworkInformation.IPAddressCollection" />.</summary>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.Add(System.Net.IPAddress)">
+      <summary>Генерирует исключение <see cref="T:System.NotSupportedException" />, поскольку данная операция не поддерживается для этой коллекции.</summary>
+      <param name="address">Объект, добавляемый в коллекцию.</param>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.Clear">
+      <summary>Генерирует исключение <see cref="T:System.NotSupportedException" />, поскольку данная операция не поддерживается для этой коллекции.</summary>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.Contains(System.Net.IPAddress)">
+      <summary>Проверяет, содержит ли коллекция указанный объект <see cref="T:System.Net.IPAddress" />.</summary>
+      <returns>Значение true, если объект <see cref="T:System.Net.IPAddress" /> присутствует в коллекции; в противном случае — false.</returns>
+      <param name="address">Объект <see cref="T:System.Net.IPAddress" />, для которого выполняется поиск в коллекции.</param>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.CopyTo(System.Net.IPAddress[],System.Int32)">
+      <summary>Копирует элементы данной коллекции в одномерный массив типа <see cref="T:System.Net.IPAddress" />.</summary>
+      <param name="array">Одномерный массив, в который копируется коллекция.</param>
+      <param name="offset">Индекс в массиве <paramref name="array" /> (начиная с нуля), с которого начинается копирование.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="array" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="offset" /> меньше нуля. </exception>
+      <exception cref="T:System.ArgumentException">Массив <paramref name="array" /> является многомерным.– или – Количество элементов в исходном массиве <see cref="T:System.Net.NetworkInformation.IPAddressCollection" /> превышает доступное место, начиная с индекса <paramref name="offset" />, до конца массива назначения <paramref name="array" />. </exception>
+      <exception cref="T:System.InvalidCastException">Элементы в этой коллекции <see cref="T:System.Net.NetworkInformation.IPAddressCollection" /> нельзя автоматически привести к типу массива назначения <paramref name="array" />. </exception>
+    </member>
+    <member name="P:System.Net.NetworkInformation.IPAddressCollection.Count">
+      <summary>Возвращает число типов <see cref="T:System.Net.IPAddress" /> в данной коллекции.</summary>
+      <returns>Значение типа <see cref="T:System.Int32" />, которое содержит число типов <see cref="T:System.Net.IPAddress" /> в данной коллекции.</returns>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.GetEnumerator">
+      <summary>Возвращает объект, который может использоваться для выполнения итерации элементов данной коллекции.</summary>
+      <returns>Объект, реализующий интерфейс <see cref="T:System.Collections.IEnumerator" /> и предоставляющий доступ к типам <see cref="T:System.Net.NetworkInformation.IPAddressCollection" /> из этой коллекции.</returns>
+    </member>
+    <member name="P:System.Net.NetworkInformation.IPAddressCollection.IsReadOnly">
+      <summary>Возвращает значение, показывающее, доступна ли данная коллекция только для чтения.</summary>
+      <returns>true во всех случаях.</returns>
+    </member>
+    <member name="P:System.Net.NetworkInformation.IPAddressCollection.Item(System.Int32)">
+      <summary>Возвращает объект <see cref="T:System.Net.IPAddress" /> по указанному индексу коллекции.</summary>
+      <returns>Объект <see cref="T:System.Net.IPAddress" />, содержащийся в коллекции по определенному индексу.</returns>
+      <param name="index">Интересующий индекс.</param>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.Remove(System.Net.IPAddress)">
+      <summary>Генерирует исключение <see cref="T:System.NotSupportedException" />, поскольку данная операция не поддерживается для этой коллекции.</summary>
+      <returns>Всегда создает исключение <see cref="T:System.NotSupportedException" />.</returns>
+      <param name="address">Удаляемый объект.</param>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Возвращает объект, который может использоваться для выполнения итерации элементов данной коллекции.</summary>
+      <returns>Объект, реализующий интерфейс <see cref="T:System.Collections.IEnumerator" /> и предоставляющий доступ к типам <see cref="T:System.Net.NetworkInformation.IPAddressCollection" /> из этой коллекции.</returns>
+    </member>
+    <member name="T:System.Net.Security.AuthenticationLevel">
+      <summary>Определяет клиентские требования проверки подлинности и олицетворения при использовании класса <see cref="T:System.Net.WebRequest" /> и производных от него классов для запроса ресурса.</summary>
+    </member>
+    <member name="F:System.Net.Security.AuthenticationLevel.MutualAuthRequested">
+      <summary>Клиент и сервер должны пройти проверку подлинности.Запрос не завершается неудачно, если сервер не прошел проверку подлинности.Чтобы определить, произошла ли взаимная проверка подлинности, следует проверить значение свойства <see cref="P:System.Net.WebResponse.IsMutuallyAuthenticated" />.</summary>
+    </member>
+    <member name="F:System.Net.Security.AuthenticationLevel.MutualAuthRequired">
+      <summary>Клиент и сервер должны пройти проверку подлинности.Если сервер не прошел проверку подлинности, приложение получит исключение <see cref="T:System.IO.IOException" /> с внутренним исключением <see cref="T:System.Net.ProtocolViolationException" />, указывающим на неудачное завершение взаимной проверки подлинности.</summary>
+    </member>
+    <member name="F:System.Net.Security.AuthenticationLevel.None">
+      <summary>Для клиента и для сервера проверка подлинности не требуется.</summary>
+    </member>
+    <member name="T:System.Net.Security.SslPolicyErrors">
+      <summary>Перечисляет ошибки политики SSL.</summary>
+    </member>
+    <member name="F:System.Net.Security.SslPolicyErrors.None">
+      <summary>Ошибки политики SSL отсутствуют.</summary>
+    </member>
+    <member name="F:System.Net.Security.SslPolicyErrors.RemoteCertificateChainErrors">
+      <summary>Свойство <see cref="P:System.Security.Cryptography.X509Certificates.X509Chain.ChainStatus" /> возвратило непустой массив.</summary>
+    </member>
+    <member name="F:System.Net.Security.SslPolicyErrors.RemoteCertificateNameMismatch">
+      <summary>Имя сертификата не соответствует.</summary>
+    </member>
+    <member name="F:System.Net.Security.SslPolicyErrors.RemoteCertificateNotAvailable">
+      <summary>Сертификат недоступен.</summary>
+    </member>
+    <member name="T:System.Net.Sockets.AddressFamily">
+      <summary>Задает схему адресации, которую может использовать экземпляр класса <see cref="T:System.Net.Sockets.Socket" />.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.AppleTalk">
+      <summary>Адрес AppleTalk.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Atm">
+      <summary>Адрес собственных служб ATM.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Banyan">
+      <summary>Адрес Banyan.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Ccitt">
+      <summary>Адреса протоколов CCITT, таких как протокол X.25.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Chaos">
+      <summary>Адрес протоколов MIT CHAOS.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Cluster">
+      <summary>Адрес кластерных продуктов корпорации Майкрософт.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.DataKit">
+      <summary>Адрес протоколов Datakit.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.DataLink">
+      <summary>Адрес интерфейса прямого канала передачи данных.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.DecNet">
+      <summary>Адрес DECnet.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Ecma">
+      <summary>Адрес ЕСМА (European Computer Manufacturers Association — европейская ассоциация производителей компьютеров).</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.FireFox">
+      <summary>Адрес FireFox.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.HyperChannel">
+      <summary>Адрес NSC Hyperchannel.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Ieee12844">
+      <summary>Адрес рабочей группы IEEE 1284.4.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.ImpLink">
+      <summary>Адрес ARPANET IMP.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.InterNetwork">
+      <summary>IPv4-адрес.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.InterNetworkV6">
+      <summary>IPv6-адрес.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Ipx">
+      <summary>IPX- или SPX-адрес.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Irda">
+      <summary>IrDA-адрес.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Iso">
+      <summary>Адрес протоколов ISO.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Lat">
+      <summary>LAT-адрес.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.NetBios">
+      <summary>Адрес NetBios.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.NetworkDesigners">
+      <summary>Адрес шлюзовых протоколов Network Designers OSI.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.NS">
+      <summary>Адрес протоколов Xerox NS.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Osi">
+      <summary>Адрес протоколов OSI.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Pup">
+      <summary>Адрес протоколов PUP.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Sna">
+      <summary>Адрес IBM SNA.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Unix">
+      <summary>Локальный адрес Unix для узла.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Unknown">
+      <summary>Семейство неизвестных адресов.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Unspecified">
+      <summary>Семейство неустановленных адресов.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.VoiceView">
+      <summary>Адрес VoiceView.</summary>
+    </member>
+    <member name="T:System.Net.Sockets.SocketError">
+      <summary>Определяет коды ошибок для класса <see cref="T:System.Net.Sockets.Socket" />.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.AccessDenied">
+      <summary>Произведена попытка доступа к объекту <see cref="T:System.Net.Sockets.Socket" /> способом, запрещенным его разрешениями доступа.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.AddressAlreadyInUse">
+      <summary>Обычно разрешается использовать только адрес.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.AddressFamilyNotSupported">
+      <summary>Указанное семейство адресов не поддерживается.Эта ошибка возвращается в том случае, когда указано семейство IPv6-адресов, а стек протокола IPv6 не установлен на локальном компьютере.Эта ошибка возвращается в том случае, когда указано семейство IPv4-адресов, а стек протокола IPv4 не установлен на локальном компьютере.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.AddressNotAvailable">
+      <summary>Указанный IP-адрес в данном контексте является недопустимым.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.AlreadyInProgress">
+      <summary>Операция незаблокированного объекта <see cref="T:System.Net.Sockets.Socket" /> уже выполняется.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ConnectionAborted">
+      <summary>Подключение разорвано платформой .NET Framework или поставщиком основного сокета.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ConnectionRefused">
+      <summary>Удаленный узел активно отказывает в подключении.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ConnectionReset">
+      <summary>Подключение сброшено удаленным компьютером.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.DestinationAddressRequired">
+      <summary>Требуемый адрес был пропущен в операции на объекте <see cref="T:System.Net.Sockets.Socket" />.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.Disconnecting">
+      <summary>Выполняется правильная последовательность отключения.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.Fault">
+      <summary>Поставщиком основного сокета обнаружен недопустимый указатель адреса.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.HostDown">
+      <summary>Ошибка при выполнении операции, вызванная отключением удаленного узла.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.HostNotFound">
+      <summary>Такой узел не существует.Данное имя не является ни официальным именем узла, ни псевдонимом.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.HostUnreachable">
+      <summary>Отсутствует сетевой маршрут к указанному узлу.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.InProgress">
+      <summary>Выполняется блокирующая операция.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.Interrupted">
+      <summary>Блокирующее обращение к объекту <see cref="T:System.Net.Sockets.Socket" /> отменено.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.InvalidArgument">
+      <summary>Предоставлен недопустимый аргумент для члена объекта <see cref="T:System.Net.Sockets.Socket" />.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.IOPending">
+      <summary>Приложение инициировало перекрывающуюся операцию, которая не может быть закончена немедленно.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.IsConnected">
+      <summary>Объект <see cref="T:System.Net.Sockets.Socket" /> уже подключен.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.MessageSize">
+      <summary>У датаграммы слишком большая длина.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NetworkDown">
+      <summary>Сеть недоступна.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NetworkReset">
+      <summary>Приложение пытается задать значение <see cref="F:System.Net.Sockets.SocketOptionName.KeepAlive" /> для подключения, которое уже отключено.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NetworkUnreachable">
+      <summary>Не существует маршрута к удаленному узлу.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NoBufferSpaceAvailable">
+      <summary>Отсутствует свободное буферное пространство для операции объекта <see cref="T:System.Net.Sockets.Socket" />.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NoData">
+      <summary>Требуемое имя или IP-адрес не найдены на сервере имен.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NoRecovery">
+      <summary>Неустранимая ошибка, или не удается найти запрошенную базу данных.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NotConnected">
+      <summary>Приложение пытается отправить или получить данные, а объект <see cref="T:System.Net.Sockets.Socket" /> не подключен.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NotInitialized">
+      <summary>Основной поставщик сокета не инициализирован.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NotSocket">
+      <summary>Предпринята попытка выполнить операцию объекта <see cref="T:System.Net.Sockets.Socket" /> не на сокете.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.OperationAborted">
+      <summary>Перекрывающаяся операция была прервана из-за закрытия объекта <see cref="T:System.Net.Sockets.Socket" />.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.OperationNotSupported">
+      <summary>Семейство адресов не поддерживается семейством протоколов.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ProcessLimit">
+      <summary>Слишком много процессов используется основным поставщиком сокета.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ProtocolFamilyNotSupported">
+      <summary>Семейство протоколов не реализовано или не настроено.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ProtocolNotSupported">
+      <summary>Протокол не реализован или не настроен.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ProtocolOption">
+      <summary>Для объекта <see cref="T:System.Net.Sockets.Socket" /> был использован неизвестный, недопустимый или неподдерживаемый параметр или уровень.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ProtocolType">
+      <summary>Неверный тип протокола для данного объекта <see cref="T:System.Net.Sockets.Socket" />.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.Shutdown">
+      <summary>Запрос на отправку или получение данных отклонен, так как объект <see cref="T:System.Net.Sockets.Socket" /> уже закрыт.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.SocketError">
+      <summary>Произошла неопознанная ошибка объекта <see cref="T:System.Net.Sockets.Socket" />.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.SocketNotSupported">
+      <summary>Указанный тип сокета не поддерживается в данном семействе адресов.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.Success">
+      <summary>Операция объекта <see cref="T:System.Net.Sockets.Socket" /> выполнена успешно.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.SystemNotReady">
+      <summary>Подсистема сети недоступна.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.TimedOut">
+      <summary>Окончилось время ожидания попытки подключения, или произошел сбой при отклике подключенного узла.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.TooManyOpenSockets">
+      <summary>Слишком много открытых сокетов в основном поставщике сокета.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.TryAgain">
+      <summary>Не удалось разрешить имя хоста.Повторите операцию позднее.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.TypeNotFound">
+      <summary>Указанный класс не найден.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.VersionNotSupported">
+      <summary>Версия основного поставщика сокета выходит за пределы допустимого диапазона.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.WouldBlock">
+      <summary>Операция на незаблокированном сокете не может быть закончена немедленно.</summary>
+    </member>
+    <member name="T:System.Net.Sockets.SocketException">
+      <summary>Исключение, которое создается при возникновении ошибки на сокете.</summary>
+    </member>
+    <member name="M:System.Net.Sockets.SocketException.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Net.Sockets.SocketException" /> с кодом последней ошибки операционной системы.</summary>
+    </member>
+    <member name="M:System.Net.Sockets.SocketException.#ctor(System.Int32)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Net.Sockets.SocketException" /> с указанным кодом ошибки.</summary>
+      <param name="errorCode">Код ошибки, указывающий на возникшую ошибку. </param>
+    </member>
+    <member name="P:System.Net.Sockets.SocketException.Message">
+      <summary>Получает сообщение об ошибке, связанное с этим исключением.</summary>
+      <returns>Строка, содержащая сообщение об ошибке. </returns>
+    </member>
+    <member name="P:System.Net.Sockets.SocketException.SocketErrorCode">
+      <summary>Получает код ошибки, связанной с этим исключением.</summary>
+      <returns>Целочисленный код ошибки, связанной с этим исключением.</returns>
+    </member>
+    <member name="T:System.Security.Authentication.CipherAlgorithmType">
+      <summary>Определяет возможные алгоритмы шифрования для класса <see cref="T:System.Net.Security.SslStream" />.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Aes">
+      <summary>Алгоритм AES (Advanced Encryption Standard).</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Aes128">
+      <summary>Алгоритм AES (Advanced Encryption Standard) со 128-разрядным ключом.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Aes192">
+      <summary>Алгоритм AES (Advanced Encryption Standard) со 192-битовым шифрованием.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Aes256">
+      <summary>Алгоритм AES (Advanced Encryption Standard) с 256-разрядным ключом.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Des">
+      <summary>Алгоритм DES (Data Encryption Standard).</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.None">
+      <summary>Шифрование не применяется.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Null">
+      <summary>Шифрование не используется с алгоритмом шифрования Null. </summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Rc2">
+      <summary>Алгортим RC2 (Rivest's Code 2).</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Rc4">
+      <summary>Алгоритм RC4 (Rivest's Code 4).</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.TripleDes">
+      <summary>Алгоритм Triple DES (Triple Data Encryption Standard).</summary>
+    </member>
+    <member name="T:System.Security.Authentication.ExchangeAlgorithmType">
+      <summary>Задает алгоритм, с помощью которого создаются ключи, совместно используемые клиентом и сервером.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExchangeAlgorithmType.DiffieHellman">
+      <summary>Алгоритм обмена ключами Диффи-Хеллмана с использованием временного ключа.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExchangeAlgorithmType.None">
+      <summary>Алгоритм обмена ключами не используется.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExchangeAlgorithmType.RsaKeyX">
+      <summary>Алгоритм обмена открытыми ключами RSA.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExchangeAlgorithmType.RsaSign">
+      <summary>Алгоритм подписи открытых ключей RSA.</summary>
+    </member>
+    <member name="T:System.Security.Authentication.HashAlgorithmType">
+      <summary>Определяет алгоритм, с помощью которого создаются коды проверки подлинности сообщений (MAC).</summary>
+    </member>
+    <member name="F:System.Security.Authentication.HashAlgorithmType.Md5">
+      <summary>Алгоритм хэширования Message Digest 5 (MD5).</summary>
+    </member>
+    <member name="F:System.Security.Authentication.HashAlgorithmType.None">
+      <summary>Хэширование не применяется.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.HashAlgorithmType.Sha1">
+      <summary>Алгоритм Secure Hashing Algorithm (SHA1).</summary>
+    </member>
+    <member name="T:System.Security.Authentication.SslProtocols">
+      <summary>Определяет возможные версии <see cref="T:System.Security.Authentication.SslProtocols" />.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.SslProtocols.None">
+      <summary>Протокол SSL не задан.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.SslProtocols.Ssl2">
+      <summary>Задается протокол SSL 2.0.Протокол SSL 2.0 был заменен протоколом TLS и предоставляется только в целях обратной совместимости.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.SslProtocols.Ssl3">
+      <summary>Задается протокол SSL 3.0.Протокол SSL 3.0 был заменен протоколом TLS и предоставляется только в целях обратной совместимости.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.SslProtocols.Tls">
+      <summary>Задается протокол обеспечения безопасности TLS 1.0.Протокол TLS определяется в документе IETF RFC 2246.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.SslProtocols.Tls11">
+      <summary>Задается протокол обеспечения безопасности TLS 1.1.Протокол TLS определяется в документе IETF RFC 4346.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.SslProtocols.Tls12">
+      <summary>Задается протокол обеспечения безопасности TLS 1.2.Протокол TLS определяется в документе IETF RFC 5246.</summary>
+    </member>
+    <member name="T:System.Security.Authentication.ExtendedProtection.ChannelBinding">
+      <summary>Класс <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding" /> содержит указатель на непрозрачные данные, используемые для связывания прошедшей проверку подлинности транзакции с безопасным каналом.</summary>
+    </member>
+    <member name="M:System.Security.Authentication.ExtendedProtection.ChannelBinding.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding" />.</summary>
+    </member>
+    <member name="M:System.Security.Authentication.ExtendedProtection.ChannelBinding.#ctor(System.Boolean)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding" />.</summary>
+      <param name="ownsHandle">Логическое значение, указывающее, что приложение содержит безопасный дескриптор собственной области памяти, содержащей байтовые данные, которые передаются собственным вызовам, предоставляющим расширенную защиту для встроенной проверки подлинности Windows.</param>
+    </member>
+    <member name="P:System.Security.Authentication.ExtendedProtection.ChannelBinding.Size">
+      <summary>Свойство <see cref="P:System.Security.Authentication.ExtendedProtection.ChannelBinding.Size" /> получает размер (в байтах) токена привязки канала, связанного с экземпляром <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding" />.</summary>
+      <returns>Размер (в байтах) токена привязки канала, связанного с экземпляром <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding" />.</returns>
+    </member>
+    <member name="T:System.Security.Authentication.ExtendedProtection.ChannelBindingKind">
+      <summary>Перечисление <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBindingKind" /> представляет типы привязок каналов, которые можно ставить в очередь из безопасных каналов.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExtendedProtection.ChannelBindingKind.Endpoint">
+      <summary>Привязка канала, уникальная для данной конечной точки (например, сертификат сервера протокола TLS).</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExtendedProtection.ChannelBindingKind.Unique">
+      <summary>Привязка канала, полностью уникальная для данного канала (например, сеансовый ключ протокола TLS).</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExtendedProtection.ChannelBindingKind.Unknown">
+      <summary>Неизвестный тип привязки канала.</summary>
+    </member>
+  </members>
+</doc>

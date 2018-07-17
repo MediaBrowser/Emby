@@ -1,4 +1,6 @@
 {
+    "PlaybackSettings": "Playback settings",
+    "SubtitleSettings": "Subtitle settings",
     "MessageUnlockAppWithPurchaseOrSupporter": "\u901a\u8fc7\u4e00\u6b21\u6027\u4ed8\u8d39\u6216\u4e00\u4e2a\u6709\u6548\u7684 Emby Premiere \u8ba2\u9605\u6765\u89e3\u9501\u8fd9\u9879\u529f\u80fd\u3002",
     "MessageUnlockAppWithSupporter": "\u901a\u8fc7\u4e00\u4e2a\u6709\u6548\u7684 Emby Premiere \u8ba2\u9605\u6765\u89e3\u9501\u8fd9\u9879\u529f\u80fd\u3002",
     "MessageToValidateSupporter": "\u5982\u679c\u4f60\u5df2\u7ecf\u62e5\u6709\u4e00\u4e2a\u6709\u6548\u7684 Emby Premiere \u8ba2\u9605\uff0c\u8bf7\u786e\u4fdd\u4f60\u5df2\u7ecf\u5728\u4f60 Emby \u670d\u52a1\u5668\u63a7\u5236\u53f0\u7684\u201cEmby Premiere\u201d\u9009\u9879\u4e2d\u914d\u7f6e\u4e86\u4f60\u7684 Emby Premiere\uff0c\u4f60\u53ef\u4ee5\u5728 Emby \u670d\u52a1\u5668\u63a7\u5236\u53f0\u4e3b\u83dc\u5355\u4e2d\u627e\u5230\u201cEmby Premiere\u201d\u9009\u9879\u3002",
@@ -33,6 +35,7 @@
     "HeaderWakeServer": "\u5524\u9192\u670d\u52a1\u5668",
     "AttemptingWakeServer": "\u5c1d\u8bd5\u5524\u9192\u670d\u52a1\u5668\u4e2d\uff0c\u8bf7\u8010\u5fc3\u7b49\u5f85...",
     "WakeServerSuccess": "\u6210\u529f\uff01",
+    "HeaderCustomizeHomeScreen": "Customize Home Screen",
     "WakeServerError": "Wake On LAN \u6570\u636e\u5305\u5df2\u7ecf\u53d1\u9001\u5230\u4f60\u7684\u670d\u52a1\u5668\u6240\u5728\u673a\u5668\u4e0a\uff0c\u4f46\u6211\u4eec\u4e0d\u80fd\u8fde\u63a5\u5230\u4f60\u7684 Emby \u670d\u52a1\u5668\u3002\u4f60\u7684\u673a\u5668\u53ef\u80fd\u8fd8\u9700\u8981\u4e00\u4e9b\u65f6\u95f4\u624d\u80fd\u88ab\u5524\u9192\uff0c\u6216\u8005\n Emby \u670d\u52a1\u5668\u6ca1\u6709\u6b63\u786e\u7684\u5728\u673a\u5668\u4e0a\u542f\u52a8\u3002",
     "Sunday": "\u661f\u671f\u5929",
     "Monday": "\u661f\u671f\u4e00",
@@ -47,6 +50,7 @@
     "LabelSortOrder": "\u6392\u5e8f\u987a\u5e8f",
     "HeaderPhotoAlbums": "\u76f8\u518c",
     "Photos": "\u7167\u7247",
+    "HeaderAppearsOn": "Appears On",
     "List": "\u5217\u8868",
     "RecordSeries": "\u5f55\u5236\u7535\u89c6\u5267",
     "HeaderCinemaMode": "\u5f71\u9662\u6a21\u5f0f",
@@ -306,7 +310,8 @@
     "ConfirmDeleteItems": "Deleting these items will delete them from both the file system and your media library. Are you sure you wish to continue?",
     "PleaseRestartServerName": "\u8bf7\u91cd\u542f Emby \u670d\u52a1\u5668 - {0}\u3002",
     "LabelSyncJobName": "\u540c\u6b65\u4efb\u52a1\u540d\u79f0\uff1a",
-    "SyncJobCreated": "\u540c\u6b65\u4efb\u52a1\u5df2\u521b\u5efa",
+    "SyncingDots": "Syncing...",
+    "ConvertingDots": "Converting...",
     "LabelQuality": "\u8d28\u91cf\uff1a",
     "LabelSyncNoTargetsHelp": "\u770b\u8d77\u6765\u60a8\u76ee\u524d\u8fd8\u6ca1\u6709\u4efb\u4f55\u5e94\u7528\u7a0b\u5e8f\u652f\u6301\u79bb\u7ebf\u4e0b\u8f7d\u3002",
     "DownloadingDots": "\u6b63\u5728\u4e0b\u8f7d...",
@@ -547,6 +552,7 @@
     "Absolute": "Absolute",
     "Smart": "\u667a\u80fd\u6a21\u5f0f",
     "Small": "\u5c0f",
+    "Smaller": "Smaller",
     "Medium": "\u6807\u51c6",
     "Large": "\u5927",
     "ExtraLarge": "\u7279\u5927",
@@ -575,7 +581,7 @@
     "SubtitleAppearanceSettingsDisclaimer": "\u8fd9\u4e9b\u8bbe\u7f6e\u5c06\u4e0d\u4f1a\u5e94\u7528\u4e8e\u56fe\u5f62\u5b57\u5e55\uff08\u5982 PGS,DVD \u7b49\uff09\uff0c\u6216\u8005\u4e00\u4e9b\u6709\u7740\u81ea\u5df1\u7684\u5185\u7f6e\u5f0f\u6837\u7684\u5b57\u5e55\uff08ASS\/SSA)\u3002",
     "LabelBurnSubtitles": "\u70e7\u5f55\u5b57\u5e55\uff1a",
     "OnlyImageFormats": "\u4ec5\u56fe\u50cf\u683c\u5f0f\uff08VOBSUB, PGS, SUB\/IDX \u7b49\uff09",
-    "Normal": "Normal",
+    "Normal": "\u666e\u901a",
     "BurnSubtitlesHelp": "\u6839\u636e\u5b57\u5e55\u683c\u5f0f\u786e\u5b9a\u670d\u52a1\u5668\u5728\u8f6c\u6362\u89c6\u9891\u65f6\u662f\u5426\u5e94\u70e7\u5f55\u5b57\u5e55\u3002\u907f\u514d\u70e7\u5f55\u5b57\u5e55\u4f1a\u63d0\u9ad8\u670d\u52a1\u5668\u6027\u80fd\u3002\u9009\u62e9\u201c\u81ea\u52a8\u201d\u4ee5\u70e7\u5f55\u57fa\u4e8e\u56fe\u50cf\u7684\u5b57\u5e55\u683c\u5f0f\uff08\u5982 VOBSUB, PGS, SUB\/IDX \u7b49\uff09\u548c\u4e00\u4e9b\u590d\u6742\u7684 ASS\/SSA \u5b57\u5e55\u3002",
     "AllComplexFormats": "\u6240\u6709\u590d\u6742\u7684\u683c\u5f0f\uff08ASS, SSA, VOBSUB, PGS, SUB\/IDX \u7b49\uff09",
     "SubtitleAppearanceSettingsAlsoPassedToCastDevices": "\u8fd9\u4e9b\u8bbe\u5b9a\u4e5f\u4f1a\u88ab\u5e94\u7528\u4e8e\u4efb\u4f55\u901a\u8fc7\u6b64\u8bbe\u5907\u53d1\u8d77\u7684 Chromecast \u64ad\u653e\u3002",
@@ -677,5 +683,7 @@
     "ColorSpace": "Color space",
     "ColorTransfer": "Color transfer",
     "VideoRange": "Video range",
-    "SeriesDisplayOrderHelp": "Order episodes by air date, dvd order, or absolute numbering."
+    "SeriesDisplayOrderHelp": "Order episodes by air date, dvd order, or absolute numbering.",
+    "PlaybackSettingsIntro": "To configure default playback settings, stop video playback, then click your user icon in the top right section of the app.",
+    "SubtitleSettingsIntro": "To configure default subtitle appearance and language settings, stop video playback, then click your user icon in the top right section of the app."
 }

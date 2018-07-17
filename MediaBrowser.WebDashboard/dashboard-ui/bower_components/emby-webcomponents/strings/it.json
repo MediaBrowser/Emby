@@ -1,4 +1,6 @@
 {
+    "PlaybackSettings": "Playback settings",
+    "SubtitleSettings": "Subtitle settings",
     "MessageUnlockAppWithPurchaseOrSupporter": "Sblocca questa funzionalit\u00e0 con un piccolo acquisto singolo, o con un abbonamento Emby Premiere.",
     "MessageUnlockAppWithSupporter": "Sblocca questa funzionalit\u00e0 con un abbonamento Emby Premiere",
     "MessageToValidateSupporter": "Se hai un abbonamento Emby Premiere, assicurati di averlo configurato nel Pannello di Controllo del Server, a cui puoi accedere cliccando su Emby Premiere dal menu principale.",
@@ -33,6 +35,7 @@
     "HeaderWakeServer": "Sveglia il server",
     "AttemptingWakeServer": "Tentando di svegliare il server. Per piacere aspetta...",
     "WakeServerSuccess": "Successo!",
+    "HeaderCustomizeHomeScreen": "Customize Home Screen",
     "WakeServerError": "I pacchetti Wake On LAN sono stati inviati al computer server, ma non siamo in grado di connettersi al server Emby. Potrebbe essere necessario un po 'pi\u00f9 di tempo per riattivare la macchina, oppure il server Emby potrebbe non essere attivo sulla macchina.",
     "Sunday": "Domenica",
     "Monday": "Luned\u00ec",
@@ -47,6 +50,7 @@
     "LabelSortOrder": "Ordinato per:",
     "HeaderPhotoAlbums": "Album foto",
     "Photos": "Foto",
+    "HeaderAppearsOn": "Appears On",
     "List": "Lista",
     "RecordSeries": "Registra serie TV",
     "HeaderCinemaMode": "Modalit\u00e0 Cinema",
@@ -306,7 +310,8 @@
     "ConfirmDeleteItems": "L'eliminazione di questi elementi li canceller\u00e0 sia dal disco che dalla tua libreria multimediale. Sei sicuro di voler continuare?",
     "PleaseRestartServerName": "Per favore riavvia Emby Server - {0}.",
     "LabelSyncJobName": "Nome Attivit\u00e0 di Sinc.:",
-    "SyncJobCreated": "Attivit\u00e0 di Sinc. creata",
+    "SyncingDots": "Syncing...",
+    "ConvertingDots": "Converting...",
     "LabelQuality": "Qualit\u00e0:",
     "LabelSyncNoTargetsHelp": "Al momento non hai applicazioni che supportino il download offline.",
     "DownloadingDots": "In scaricamento...",
@@ -547,6 +552,7 @@
     "Absolute": "Assoluto",
     "Smart": "Intelligente",
     "Small": "Piccolo",
+    "Smaller": "Smaller",
     "Medium": "Medio",
     "Large": "Grande",
     "ExtraLarge": "Molto Grande",
@@ -677,5 +683,7 @@
     "ColorSpace": "Spazio Colore",
     "ColorTransfer": "Trasferimento Colore",
     "VideoRange": "Range del Video",
-    "SeriesDisplayOrderHelp": "Ordina gli episodi per data messa in onda, ordine dvd o numerazione assoluta."
+    "SeriesDisplayOrderHelp": "Ordina gli episodi per data messa in onda, ordine dvd o numerazione assoluta.",
+    "PlaybackSettingsIntro": "To configure default playback settings, stop video playback, then click your user icon in the top right section of the app.",
+    "SubtitleSettingsIntro": "To configure default subtitle appearance and language settings, stop video playback, then click your user icon in the top right section of the app."
 }

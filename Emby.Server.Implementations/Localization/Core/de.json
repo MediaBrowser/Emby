@@ -1,5 +1,12 @@
 {
     "HeaderCameraUploads": "Kamera Uploads",
+    "ValueHasBeenAddedToLibrary": "{0} wurde ihrer Bibliothek hinzugef\u00fcgt",
+    "NameInstallFailed": "{0} Installation fehlgeschlagen",
+    "CameraImageUploadedFrom": "Ein neues Bild wurde hochgeladen von {0}",
+    "ServerNameNeedsToBeRestarted": "{0} muss neu gestartet werden",
+    "NewVersionIsAvailable": "Eine neue Version von Emby Server steht zum Download bereit.",
+    "MessageApplicationUpdatedTo": "Emby Server wurde auf Version {0} aktualisiert",
+    "SubtitleDownloadFailureFromForItem": "Subtitles failed to download from {0} for {1}",
     "Latest": "Neueste",
     "ValueSpecialEpisodeName": "Special - {0}",
     "Inherit": "\u00dcbernehmen",

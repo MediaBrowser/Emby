@@ -1,18 +1,22 @@
-﻿<div id="liveTvStatusPage" data-role="page" class="page type-interior liveTvSettingsPage withTabs" data-helpurl="https://github.com/MediaBrowser/Wiki/wiki/Live%20TV" data-require="scripts/livetvstatus,emby-button">
+﻿<div id="liveTvStatusPage" data-role="page" class="page type-interior liveTvSettingsPage withTabs" data-require="scripts/livetvstatus,emby-button">
 
     <div>
         <div class="content-primary">
 
 
-            <div class="verticalSection">
+            <div class="verticalSection verticalSection-extrabottompadding">
 
-                <div class="sectionTitleContainer">
-                    <h2 class="sectionTitle">${HeaderTunerDevices}</h2>
-                    <button is="emby-button" type="button" class="fab btnAddDevice submit" style="margin-left:1em;" title="${ButtonAdd}">
-                        <i class="md-icon">&#xE145;</i>
-                    </button>
-                </div>
-                <div is="emby-itemscontainer" class="devicesList vertical-wrap" data-hovermenu="false" data-multiselect="false">
+                <div class="verticalSection verticalSection-extrabottompadding">
+                    <div class="sectionTitleContainer sectionTitleContainer-cards">
+                        <h2 class="sectionTitle sectionTitle-cards">
+                            <span>${HeaderTunerDevices}</span>
+                        </h2>
+                        <button is="emby-button" type="button" class="fab btnAddDevice submit sectionTitleButton" style="margin-left:1em;" title="${ButtonAdd}">
+                            <i class="md-icon">&#xE145;</i>
+                        </button>
+                        <a style="margin-left:2em!important;" is="emby-linkbutton" class="raised button-alt headerHelpButton" target="_blank" href="https://github.com/MediaBrowser/Wiki/wiki/Live%20TV">${Help}</a>
+                    </div>
+                    <div class="devicesList itemsContainer vertical-wrap" data-hovermenu="false" data-multiselect="false" style="margin-top: .5em;"></div>
                 </div>
             </div>
 

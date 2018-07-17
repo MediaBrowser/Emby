@@ -9,13 +9,12 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MediaBrowser.WebDashboard</RootNamespace>
     <AssemblyName>MediaBrowser.WebDashboard</AssemblyName>
-    <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <TargetFrameworkProfile>Profile7</TargetFrameworkProfile>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -46,31 +45,172 @@
     <Compile Include="Api\PackageCreator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerEntryPoint.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MediaBrowser.Common\MediaBrowser.Common.csproj">
-      <Project>{9142EEFA-7570-41E1-BFCC-468BB571AF2F}</Project>
-      <Name>MediaBrowser.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MediaBrowser.Controller\MediaBrowser.Controller.csproj">
-      <Project>{17E1F4E6-8ABD-4FE5-9ECF-43D4B6087BA2}</Project>
-      <Name>MediaBrowser.Controller</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MediaBrowser.Model\MediaBrowser.Model.csproj">
-      <Project>{7EEEB4BB-F3E8-48FC-B4C5-70F0FFF8329B}</Project>
-      <Name>MediaBrowser.Model</Name>
-    </ProjectReference>
+    <Reference Include="MediaBrowser.Common, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaBrowser.Common.3.5.0\lib\netstandard2.0\MediaBrowser.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="MediaBrowser.Controller, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaBrowser.Server.Core.3.5.0\lib\netstandard2.0\MediaBrowser.Controller.dll</HintPath>
+    </Reference>
+    <Reference Include="MediaBrowser.Model, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaBrowser.Common.3.5.0\lib\netstandard2.0\MediaBrowser.Model.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="dashboard-ui\**\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
+    <EmbeddedResource Include="dashboard-ui\**\*.*">
+      <Link>resources\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </EmbeddedResource>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="resources\bower_components\alameda\" />
+    <Folder Include="resources\bower_components\document-register-element\build\" />
+    <Folder Include="resources\bower_components\emby-apiclient\sync\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\actionsheet\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\alert\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\alphanumericshortcuts\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\alphapicker\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\appfooter\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\backdrop\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\cardbuilder\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\chromecast\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\collectioneditor\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\confirm\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\dialoghelper\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\dialog\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\displaysettings\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\emby-button\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\emby-checkbox\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\emby-collapse\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\emby-connect\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\emby-input\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\emby-itemrefreshindicator\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\emby-itemscontainer\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\emby-progressring\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\emby-radio\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\emby-scrollbuttons\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\emby-scroller\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\emby-select\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\emby-slider\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\emby-tabs\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\emby-textarea\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\emby-toggle\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\filtermenu\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\flvjs\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\fonts\material-icons\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\fullscreen\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\guide\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\headroom\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\homescreensettings\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\homesections\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\htmlaudioplayer\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\htmlvideoplayer\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\imagedownloader\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\imageeditor\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\images\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\imageuploader\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\indicators\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\input\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\itemidentifier\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\lazyloader\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\listview\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\loadingdialog\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\loading\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\mediainfo\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\metadataeditor\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\multiselect\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\native-promise-only\lib\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\notifications\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\nowplayingbar\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\pagejs\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\photoplayer\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\playbacksettings\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\playback\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\playerstats\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\playlisteditor\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\polyfills\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\prompt\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\recordingcreator\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\refreshdialog\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\registrationservices\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\require\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\resize-observer-polyfill\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\scroller\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\search\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\serverrestartdialog\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\serviceworker\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\slideshow\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\sortmenu\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\strings\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\subtitleeditor\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\subtitlesettings\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\sync\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\tabbedview\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\themes\appletv\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\themes\blueradiance\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\themes\dark-green\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\themes\dark-red\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\themes\dark\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\themes\halloween\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\themes\light-blue\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\themes\light-green\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\themes\light-pink\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\themes\light-purple\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\themes\light-red\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\themes\light\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\themes\wmc\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\toast\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\upnextdialog\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\userdatabuttons\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\usersettings\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\viewmanager\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\viewsettings\" />
+    <Folder Include="resources\bower_components\emby-webcomponents\youtubeplayer\" />
+    <Folder Include="resources\bower_components\fetch\" />
+    <Folder Include="resources\bower_components\hlsjs\dist\" />
+    <Folder Include="resources\bower_components\howlerjs\dist\" />
+    <Folder Include="resources\bower_components\jquery\dist\" />
+    <Folder Include="resources\bower_components\libjass\" />
+    <Folder Include="resources\bower_components\query-string\" />
+    <Folder Include="resources\bower_components\requirejs\" />
+    <Folder Include="resources\bower_components\Sortable\" />
+    <Folder Include="resources\bower_components\Swiper\dist\css\" />
+    <Folder Include="resources\bower_components\Swiper\dist\js\" />
+    <Folder Include="resources\bower_components\webcomponentsjs\" />
+    <Folder Include="resources\components\accessschedule\" />
+    <Folder Include="resources\components\channelmapper\" />
+    <Folder Include="resources\components\directorybrowser\" />
+    <Folder Include="resources\components\filterdialog\" />
+    <Folder Include="resources\components\guestinviter\" />
+    <Folder Include="resources\components\imageoptionseditor\" />
+    <Folder Include="resources\components\libraryoptionseditor\" />
+    <Folder Include="resources\components\medialibrarycreator\" />
+    <Folder Include="resources\components\medialibraryeditor\" />
+    <Folder Include="resources\components\navdrawer\" />
+    <Folder Include="resources\components\tvproviders\" />
+    <Folder Include="resources\css\images\supporter\" />
+    <Folder Include="resources\dashboard\" />
+    <Folder Include="resources\devices\ios\" />
+    <Folder Include="resources\home\" />
+    <Folder Include="resources\legacy\" />
+    <Folder Include="resources\list\" />
+    <Folder Include="resources\offline\" />
+    <Folder Include="resources\scripts\" />
+    <Folder Include="resources\strings\" />
+    <Folder Include="resources\thirdparty\jstree\themes\default\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>

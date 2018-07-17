@@ -98,7 +98,7 @@ namespace MediaBrowser.Server.Mono
 
             var environmentInfo = GetEnvironmentInfo(options);
 
-            var fileSystem = new ManagedFileSystem(logManager.GetLogger("FileSystem"), environmentInfo, null, appPaths.TempDirectory);
+            var fileSystem = new ManagedFileSystem(logManager.GetLogger("FileSystem"), environmentInfo, null, appPaths.TempDirectory, true);
 
             FileSystem = fileSystem;
 
@@ -107,7 +107,7 @@ namespace MediaBrowser.Server.Mono
                 options,
                 fileSystem,
                 new PowerManagement(),
-                "emby.mono.zip",
+                "embyserver-mono_{version}.zip",
                 environmentInfo,
                 new NullImageEncoder(),
                 new SystemEvents(logManager.GetLogger("SystemEvents")),

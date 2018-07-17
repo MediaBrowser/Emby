@@ -72,8 +72,9 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
         public async Task Record(IDirectStreamProvider directStreamProvider, MediaSourceInfo mediaSource, string targetFile, TimeSpan duration, Action onStarted, CancellationToken cancellationToken)
         {
-            //var durationToken = new CancellationTokenSource(duration);
-            //cancellationToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, durationToken.Token).Token;
+            // The media source is infinite so we need to handle stopping ourselves
+            var durationToken = new CancellationTokenSource(duration);
+            cancellationToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, durationToken.Token).Token;
 
             await RecordFromFile(mediaSource, mediaSource.Path, targetFile, duration, onStarted, cancellationToken).ConfigureAwait(false);
 
@@ -160,6 +161,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
             videoArgs += " -fflags +genpts";
 
             var durationParam = " -t " + _mediaEncoder.GetTimeParameter(duration.Ticks);
+            durationParam = string.Empty;
 
             var flags = new List<string>();
             if (mediaSource.IgnoreDts)
@@ -197,7 +199,7 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
 
             if (mediaSource.RequiresLooping)
             {
-                inputModifier += " -stream_loop -1";
+                inputModifier += " -stream_loop -1 -reconnect_at_eof 1 -reconnect_streamed 1 -reconnect_delay_max 2";
             }
 
             var analyzeDurationSeconds = 5;

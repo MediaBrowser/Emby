@@ -1,0 +1,808 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Text.RegularExpressions</name>
+  </assembly>
+  <members>
+    <member name="T:System.Text.RegularExpressions.Capture">
+      <summary>Representa los resultados de una sola captura de subexpresión correcta. </summary>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Capture.Index">
+      <summary>Posición en la cadena original donde se encuentra el primer carácter de la subcadena capturada.</summary>
+      <returns>Posición inicial basada en cero en la cadena original donde se encuentra la subcadena capturada.</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Capture.Length">
+      <summary>Obtiene la longitud de la subcadena capturada.</summary>
+      <returns>Longitud de la subcadena capturada.</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Capture.ToString">
+      <summary>Recupera la subcadena capturada de la cadena de entrada llamando a la propiedad <see cref="P:System.Text.RegularExpressions.Capture.Value" />. </summary>
+      <returns>Subcadena capturada por la coincidencia.</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Capture.Value">
+      <summary>Obtiene la subcadena capturada desde la cadena de entrada.</summary>
+      <returns>Subcadena capturada por la coincidencia.</returns>
+    </member>
+    <member name="T:System.Text.RegularExpressions.CaptureCollection">
+      <summary>Representa el conjunto de capturas realizado por un único grupo de capturas. </summary>
+    </member>
+    <member name="P:System.Text.RegularExpressions.CaptureCollection.Count">
+      <summary>Obtiene el número de subcadenas capturadas por el grupo.</summary>
+      <returns>Número de elementos de <see cref="T:System.Text.RegularExpressions.CaptureCollection" />.</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.CaptureCollection.GetEnumerator">
+      <summary>Ofrece un enumerador que recorre en iteración la colección.</summary>
+      <returns>Objeto que contiene todos los objetos <see cref="T:System.Text.RegularExpressions.Capture" /> de la <see cref="T:System.Text.RegularExpressions.CaptureCollection" />.</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.CaptureCollection.Item(System.Int32)">
+      <summary>Obtiene un miembro individual de la colección.</summary>
+      <returns>Subcadena capturada en la posición <paramref name="i" /> de la colección.</returns>
+      <param name="i">Índice en la colección de captura. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="i" /> es menor que 0 o mayor que <see cref="P:System.Text.RegularExpressions.CaptureCollection.Count" />. </exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.CaptureCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>Copia todos los elementos de la colección en la matriz indicada a partir del índice especificado.</summary>
+      <param name="array">La matriz unidimensional en la que se va a copiar la colección.</param>
+      <param name="arrayIndex">Índice de base cero de la matriz de destino donde se comienza a copiar.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="arrayIndex" /> está fuera de los límites de <paramref name="array" />.O bien<paramref name="arrayIndex" /> más <see cref="P:System.Text.RegularExpressions.CaptureCollection.Count" /> está fuera de los límites de <paramref name="array" />.</exception>
+    </member>
+    <member name="P:System.Text.RegularExpressions.CaptureCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>Obtiene un valor que indica si el acceso a la colección está sincronizado (es seguro para la ejecución de subprocesos).</summary>
+      <returns>Es false en todos los casos.</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.CaptureCollection.System#Collections#ICollection#SyncRoot">
+      <summary>Obtiene un objeto que se puede utilizar para sincronizar el acceso a la colección.</summary>
+      <returns>Objeto que se puede utilizar para sincronizar el acceso a la colección.</returns>
+    </member>
+    <member name="T:System.Text.RegularExpressions.Group">
+      <summary>Representa los resultados de un solo grupo de captura. </summary>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Group.Captures">
+      <summary>Obtiene una colección de todas las capturas que coinciden con el grupo de captura, en orden empezando por el más interno de la izquierda (o por el más interno de la derecha si se modifica con la opción <see cref="F:System.Text.RegularExpressions.RegexOptions.RightToLeft" />).La colección puede tener cero o más elementos.</summary>
+      <returns>Colección de subcadenas que coinciden por el grupo.</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Group.Success">
+      <summary>Obtiene un valor que indica si la coincidencia ha tenido éxito.</summary>
+      <returns>true si la coincidencia es correcta; en caso contrario, false.</returns>
+    </member>
+    <member name="T:System.Text.RegularExpressions.GroupCollection">
+      <summary>Devuelve el conjunto de grupos capturados en una única coincidencia.</summary>
+    </member>
+    <member name="P:System.Text.RegularExpressions.GroupCollection.Count">
+      <summary>Devuelve el número de grupos de la colección.</summary>
+      <returns>Número de grupos de la colección.</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.GroupCollection.GetEnumerator">
+      <summary>Proporciona un enumerador que recorre en iteración la colección.</summary>
+      <returns>Enumerador que contiene todos los objetos <see cref="T:System.Text.RegularExpressions.Group" /> de la colección <see cref="T:System.Text.RegularExpressions.GroupCollection" />.</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.GroupCollection.Item(System.Int32)">
+      <summary>Habilita el acceso a un miembro de la colección por índice de entero.</summary>
+      <returns>Miembro de la colección especificado por <paramref name="groupnum" />.</returns>
+      <param name="groupnum">Índice de base cero del miembro de la colección que se va a recuperar. </param>
+    </member>
+    <member name="P:System.Text.RegularExpressions.GroupCollection.Item(System.String)">
+      <summary>Habilita el acceso a un miembro de la colección por índice de cadena.</summary>
+      <returns>Miembro de la colección especificado por <paramref name="groupname" />.</returns>
+      <param name="groupname">Nombre de un grupo de captura. </param>
+    </member>
+    <member name="M:System.Text.RegularExpressions.GroupCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>Copia todos los elementos de la colección en la matriz especificada a partir del índice especificado.</summary>
+      <param name="array">Matriz unidimensional en la que se va a copiar la colección.</param>
+      <param name="arrayIndex">Índice de base cero de la matriz de destino donde se comienza a copiar.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="array" /> es null.</exception>
+      <exception cref="T:System.IndexOutOfRangeException">
+        <paramref name="arrayIndex" /> está fuera de los límites de <paramref name="array" />.o bien<paramref name="arrayIndex" /> más <see cref="P:System.Text.RegularExpressions.GroupCollection.Count" /> está fuera de los límites de <paramref name="array" />.</exception>
+    </member>
+    <member name="P:System.Text.RegularExpressions.GroupCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>Obtiene un valor que indica si el acceso a la colección está sincronizado (es seguro para la ejecución de subprocesos).</summary>
+      <returns>false en todos los casos.</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.GroupCollection.System#Collections#ICollection#SyncRoot">
+      <summary>Obtiene un objeto que se puede utilizar para sincronizar el acceso a la colección.</summary>
+      <returns>Objeto que se puede utilizar para sincronizar el acceso a la colección.</returns>
+    </member>
+    <member name="T:System.Text.RegularExpressions.Match">
+      <summary>Representa los resultados de una sola coincidencia de expresión regular.</summary>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Match.Empty">
+      <summary>Obtiene el grupo vacío.Todas las coincidencias erróneas devuelven esta coincidencia vacía.</summary>
+      <returns>Coincidencia vacía.</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Match.Groups">
+      <summary>Obtiene una colección de grupos que coinciden con la expresión regular.</summary>
+      <returns>Los grupos de carácter coinciden con el patrón.</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Match.NextMatch">
+      <summary>Devuelve un nuevo objeto <see cref="T:System.Text.RegularExpressions.Match" /> con los resultados de la siguiente coincidencia, empezando en la posición donde finalizó la última (en el carácter siguiente al último que coincidía).</summary>
+      <returns>Siguiente coincidencia de expresión regular.</returns>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Match.Result(System.String)">
+      <summary>Devuelve la expansión del patrón de reemplazo especificado. </summary>
+      <returns>Versión expandida del parámetro <paramref name="replacement" />.</returns>
+      <param name="replacement">Patrón de reemplazo que se va a utilizar. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="replacement" /> es null.</exception>
+      <exception cref="T:System.NotSupportedException">No se permite la expansión para este modelo.</exception>
+    </member>
+    <member name="T:System.Text.RegularExpressions.MatchCollection">
+      <summary>Representa el conjunto de coincidencias con éxito encontradas por la solicitud iterada de un modelo de expresión regular en la cadena de entrada.</summary>
+    </member>
+    <member name="P:System.Text.RegularExpressions.MatchCollection.Count">
+      <summary>Obtiene el número de coincidencias.</summary>
+      <returns>Número de coincidencias.</returns>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.MatchCollection.GetEnumerator">
+      <summary>Proporciona un enumerador que recorre en iteración la colección.</summary>
+      <returns>Objeto que contiene todos los objetos <see cref="T:System.Text.RegularExpressions.Match" /> de la <see cref="T:System.Text.RegularExpressions.MatchCollection" />.</returns>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.</exception>
+    </member>
+    <member name="P:System.Text.RegularExpressions.MatchCollection.Item(System.Int32)">
+      <summary>Obtiene un miembro individual de la colección.</summary>
+      <returns>Subcadena capturada en la posición <paramref name="i" /> de la colección.</returns>
+      <param name="i">Índice de la colección <see cref="T:System.Text.RegularExpressions.Match" />. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="i" /> es menor que 0, o mayor o igual a <see cref="P:System.Text.RegularExpressions.MatchCollection.Count" />. </exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.MatchCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>Copia todos los elementos de la colección en la matriz especificada, empezando por el índice especificado.</summary>
+      <param name="array">Matriz unidimensional en la que se va a copiar la colección.</param>
+      <param name="arrayIndex">Índice de base cero de la matriz donde se comienza a copiar.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> es una matriz multidimensional.</exception>
+      <exception cref="T:System.IndexOutOfRangeException">
+        <paramref name="arrayIndex" /> está fuera de los límites de una matriz.o bien<paramref name="arrayIndex" /> más <see cref="P:System.Text.RegularExpressions.MatchCollection.Count" /> está fuera de los límites de <paramref name="array" />.</exception>
+    </member>
+    <member name="P:System.Text.RegularExpressions.MatchCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>Obtiene un valor que indica si el acceso a la colección está sincronizado (es seguro para la ejecución de subprocesos).</summary>
+      <returns>falseen todos los casos.</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.MatchCollection.System#Collections#ICollection#SyncRoot">
+      <summary>Obtiene un objeto que se puede utilizar para sincronizar el acceso a la colección.</summary>
+      <returns>Objeto que se puede utilizar para sincronizar el acceso a la colección.Esta propiedad devuelve siempre el propio objeto.</returns>
+    </member>
+    <member name="T:System.Text.RegularExpressions.MatchEvaluator">
+      <summary>Representa el método al que se llama cada vez que se encuentra una coincidencia de expresión regular durante una operación del método <see cref="Overload:System.Text.RegularExpressions.Regex.Replace" />.</summary>
+      <returns>Cadena que devuelve el método representado por el delegado <see cref="T:System.Text.RegularExpressions.MatchEvaluator" />.</returns>
+      <param name="match">Objeto <see cref="T:System.Text.RegularExpressions.Match" /> que representa la coincidencia de la expresión regular única durante una operación del método <see cref="Overload:System.Text.RegularExpressions.Regex.Replace" />. </param>
+    </member>
+    <member name="T:System.Text.RegularExpressions.Regex">
+      <summary>Representa una expresión regular inmutable.Para examinar el código fuente de .NET Framework para este tipo, consulte el fuente de referencia de.</summary>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.RegularExpressions.Regex" />.</summary>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.#ctor(System.String)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.RegularExpressions.Regex" /> para la expresión regular especificada.</summary>
+      <param name="pattern">Patrón de expresión regular del que van a buscarse coincidencias. </param>
+      <exception cref="T:System.ArgumentException">Se ha producido un error de análisis de expresión regular. </exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="pattern" /> es null.</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.#ctor(System.String,System.Text.RegularExpressions.RegexOptions)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.RegularExpressions.Regex" /> para la expresión regular especificada, con opciones que modifican el modelo.</summary>
+      <param name="pattern">Patrón de expresión regular del que van a buscarse coincidencias. </param>
+      <param name="options">Combinación bit a bit de los valores de enumeración que modifican la expresión regular. </param>
+      <exception cref="T:System.ArgumentException">Se ha producido un error de análisis de expresión regular. </exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="pattern" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> contiene una marca no válida.</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.#ctor(System.String,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.RegularExpressions.Regex" /> para la expresión regular especificada, con las opciones que modifican el modelo y un valor que especifica cuánto tiempo debe intentar un método de coincidencia de modelos una coincidencia antes de que se agote el tiempo de espera.</summary>
+      <param name="pattern">Patrón de expresión regular del que van a buscarse coincidencias.</param>
+      <param name="options">Combinación bit a bit de los valores de enumeración que modifican la expresión regular.</param>
+      <param name="matchTimeout">Un intervalo de tiempo de espera, o <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" /> para indicar que el método no debe agotar el tiempo de espera.</param>
+      <exception cref="T:System.ArgumentException">Se ha producido un error de análisis de expresión regular.</exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="pattern" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> no es un valor válido de <see cref="T:System.Text.RegularExpressions.RegexOptions" />.o bien<paramref name="matchTimeout" /> es negativo, cero o mayor que 24 días aproximadamente.</exception>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Regex.CacheSize">
+      <summary>Obtiene o establece el número máximo de entradas en la memoria caché estática actual de expresiones regulares compiladas.</summary>
+      <returns>Número máximo de entradas en la memoria caché estática.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de una operación Set es menor que cero.</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Escape(System.String)">
+      <summary>Convierte en caracteres de escape un juego mínimo de caracteres (\, *, +, ?, |, {, [, (,), ^, $,., # y espacio en blanco) al reemplazarlos con sus códigos de escape.Esto indica al motor de expresiones regulares que interprete los caracteres literalmente en lugar de como metacaracteres.</summary>
+      <returns>Cadena de caracteres con metacaracteres convertidos a su forma de escape.</returns>
+      <param name="str">Cadena de entrada que contiene el texto que se va a convertir. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="str" /> es null.</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.GetGroupNames">
+      <summary>Devuelve una matriz de nombres de grupo de captura para la expresión regular.</summary>
+      <returns>Matriz de cadenas de nombres de grupo.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.GetGroupNumbers">
+      <summary>Devuelve una matriz de números de grupo de captura que corresponde a los nombres de grupo en una matriz.</summary>
+      <returns>Matriz de enteros de números de grupo.</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.GroupNameFromNumber(System.Int32)">
+      <summary>Obtiene el nombre de grupo que corresponde al número de grupo especificado.</summary>
+      <returns>Cadena que contiene el nombre de grupo asociado al número de grupo especificado.Si no hay un nombre de grupo que se corresponda con <paramref name="i" />, el método devuelve <see cref="F:System.String.Empty" />.</returns>
+      <param name="i">Número de grupo para convertir al nombre de grupo correspondiente. </param>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.GroupNumberFromName(System.String)">
+      <summary>Devuelve el número de grupo que corresponde al nombre de grupo especificado.</summary>
+      <returns>Número del grupo que corresponde al nombre de grupo especificado o -1 si <paramref name="name" /> no es un nombre de grupo válido.</returns>
+      <param name="name">Nombre de grupo para convertir al número de grupo correspondiente. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="name" /> es null.</exception>
+    </member>
+    <member name="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout">
+      <summary>Especifica que una operación de coincidencia de patrones no debe superar el tiempo de espera.</summary>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.IsMatch(System.String)">
+      <summary>Indica si la expresión regular especificada en el constructor <see cref="T:System.Text.RegularExpressions.Regex" /> encuentra una coincidencia en una cadena de entrada indicada.</summary>
+      <returns>true si la expresión regular encuentra una coincidencia; en caso contrario, false.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> es null.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.Int32)">
+      <summary>Indica si la expresión regular especificada en el constructor <see cref="T:System.Text.RegularExpressions.Regex" /> encuentra una coincidencia en la cadena de entrada especificada, empezando en la posición inicial indicada en la cadena.</summary>
+      <returns>true si la expresión regular encuentra una coincidencia; en caso contrario, false.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia. </param>
+      <param name="startat">Posición de carácter en la que se va a iniciar la búsqueda. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startat" /> es menor que cero o superior a la longitud de <paramref name="input" />.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.String)">
+      <summary>Indica si la expresión regular especificada busca una coincidencia en la cadena de entrada indicada.</summary>
+      <returns>true si la expresión regular encuentra una coincidencia; en caso contrario, false.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia. </param>
+      <param name="pattern">Patrón de expresión regular del que van a buscarse coincidencias. </param>
+      <exception cref="T:System.ArgumentException">Se ha producido un error de análisis de expresión regular.</exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> o <paramref name="pattern" /> es null. </exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.String,System.Text.RegularExpressions.RegexOptions)">
+      <summary>Indica si la expresión regular especificada encuentra una coincidencia en la cadena de entrada indicada, utilizando para ello las opciones de coincidencia especificadas.</summary>
+      <returns>true si la expresión regular encuentra una coincidencia; en caso contrario, false.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia. </param>
+      <param name="pattern">Patrón de expresión regular del que van a buscarse coincidencias. </param>
+      <param name="options">Combinación bit a bit de los valores de enumeración que proporcionan opciones de coincidencia. </param>
+      <exception cref="T:System.ArgumentException">Se ha producido un error de análisis de expresión regular.</exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> o <paramref name="pattern" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> no es un valor válido de <see cref="T:System.Text.RegularExpressions.RegexOptions" />.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.String,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>Indica si la expresión regular especificada encuentra una coincidencia en la cadena de entrada indicada, utilizando para ello las opciones de coincidencia y el intervalo de tiempo de espera que se especifiquen.</summary>
+      <returns>true si la expresión regular encuentra una coincidencia; en caso contrario, false.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia.</param>
+      <param name="pattern">Patrón de expresión regular del que van a buscarse coincidencias.</param>
+      <param name="options">Combinación bit a bit de los valores de enumeración que proporcionan opciones de coincidencia.</param>
+      <param name="matchTimeout">Un intervalo de tiempo de espera, o <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" /> para indicar que el método no debe agotar el tiempo de espera.</param>
+      <exception cref="T:System.ArgumentException">Se ha producido un error de análisis de expresión regular.</exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> o <paramref name="pattern" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> no es un valor válido de <see cref="T:System.Text.RegularExpressions.RegexOptions" />.o bien<paramref name="matchTimeout" /> es negativo, cero o mayor que 24 días aproximadamente.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Match(System.String)">
+      <summary>Busca en la cadena de entrada especificada la primera aparición de la expresión regular especificada en el constructor <see cref="T:System.Text.RegularExpressions.Regex" />.</summary>
+      <returns>Objeto que contiene información sobre la coincidencia.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> es null.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32)">
+      <summary>Busca en la cadena de entrada la primera aparición de una expresión regular, empezando en la posición inicial especificada de la cadena.</summary>
+      <returns>Objeto que contiene información sobre la coincidencia.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia. </param>
+      <param name="startat">Posición de carácter basada en cero en la que se va a iniciar la búsqueda. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startat" /> es menor que cero o superior a la longitud de <paramref name="input" />.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32,System.Int32)">
+      <summary>Busca en la cadena de entrada la primera aparición de una expresión regular, empezando en la posición inicial especificada y buscando solo en el número de caracteres indicado.</summary>
+      <returns>Objeto que contiene información sobre la coincidencia.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia. </param>
+      <param name="beginning">La posición de caracteres basada en cero en la cadena de entrada que define la posición más a la izquierda que se buscará. </param>
+      <param name="length">Número de caracteres de la subcadena que se van a incluir en la búsqueda. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="beginning" /> es menor que cero o superior a la longitud de <paramref name="input" />.o bien<paramref name="length" /> es menor que cero o superior a la longitud de <paramref name="input" />.o bien<paramref name="beginning" />+<paramref name="length" />– 1 identifies a position that is outside the range of <paramref name="input" />.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Match(System.String,System.String)">
+      <summary>Busca en la cadena de entrada especificada la primera aparición de la expresión regular indicada.</summary>
+      <returns>Objeto que contiene información sobre la coincidencia.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia. </param>
+      <param name="pattern">Patrón de expresión regular del que van a buscarse coincidencias. </param>
+      <exception cref="T:System.ArgumentException">Se ha producido un error de análisis de expresión regular.</exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> o <paramref name="pattern" /> es null.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Match(System.String,System.String,System.Text.RegularExpressions.RegexOptions)">
+      <summary>Busca en la cadena de entrada la primera aparición de la expresión regular especificada, utilizando para ello las opciones de coincidencia indicadas.</summary>
+      <returns>Objeto que contiene información sobre la coincidencia.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia. </param>
+      <param name="pattern">Patrón de expresión regular del que van a buscarse coincidencias. </param>
+      <param name="options">Combinación bit a bit de los valores de enumeración que proporcionan opciones de coincidencia. </param>
+      <exception cref="T:System.ArgumentException">Se ha producido un error de análisis de expresión regular.</exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> o <paramref name="pattern" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> no es una combinación bit a bit válida de valores <see cref="T:System.Text.RegularExpressions.RegexOptions" />.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Match(System.String,System.String,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>Busca en la cadena de entrada la primera aparición de la expresión regular especificada, utilizando para ello las opciones de coincidencia y el intervalo de tiempo de espera que se indiquen.</summary>
+      <returns>Objeto que contiene información sobre la coincidencia.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia.</param>
+      <param name="pattern">Patrón de expresión regular del que van a buscarse coincidencias.</param>
+      <param name="options">Combinación bit a bit de los valores de enumeración que proporcionan opciones de coincidencia.</param>
+      <param name="matchTimeout">Un intervalo de tiempo de espera, o <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" /> para indicar que el método no debe agotar el tiempo de espera.</param>
+      <exception cref="T:System.ArgumentException">Se ha producido un error de análisis de expresión regular.</exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> o <paramref name="pattern" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> no es una combinación bit a bit válida de valores <see cref="T:System.Text.RegularExpressions.RegexOptions" />.o bien<paramref name="matchTimeout" /> es negativo, cero o mayor que 24 días aproximadamente.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Matches(System.String)">
+      <summary>Busca en la cadena de entrada especificada todas las apariciones de una expresión regular.</summary>
+      <returns>Colección de los objetos <see cref="T:System.Text.RegularExpressions.Match" /> encontrados en la búsqueda.Si no se encuentran coincidencias, el método devuelve un objeto de colección vacía.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> es null.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.Int32)">
+      <summary>Busca en la cadena de entrada especificada todas las apariciones de una expresión regular, empezando en la posición de inicio especificada de la cadena.</summary>
+      <returns>Colección de los objetos <see cref="T:System.Text.RegularExpressions.Match" /> encontrados en la búsqueda.Si no se encuentran coincidencias, el método devuelve un objeto de colección vacía.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia. </param>
+      <param name="startat">Posición de carácter de la cadena de entrada en la que se va a iniciar la búsqueda. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startat" /> es menor que cero o superior a la longitud de <paramref name="input" />.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.String)">
+      <summary>Busca en la cadena de entrada especificada todas las apariciones de una expresión regular indicada.</summary>
+      <returns>Colección de los objetos <see cref="T:System.Text.RegularExpressions.Match" /> encontrados en la búsqueda.Si no se encuentran coincidencias, el método devuelve un objeto de colección vacía.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia. </param>
+      <param name="pattern">Patrón de expresión regular del que van a buscarse coincidencias. </param>
+      <exception cref="T:System.ArgumentException">Se ha producido un error de análisis de expresión regular.</exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> o <paramref name="pattern" /> es null.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.String,System.Text.RegularExpressions.RegexOptions)">
+      <summary>Busca en la cadena de entrada especificada todas las apariciones de una expresión regular indicada, utilizando para ello las opciones de coincidencia especificadas.</summary>
+      <returns>Colección de los objetos <see cref="T:System.Text.RegularExpressions.Match" /> encontrados en la búsqueda.Si no se encuentran coincidencias, el método devuelve un objeto de colección vacía.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia. </param>
+      <param name="pattern">Patrón de expresión regular del que van a buscarse coincidencias. </param>
+      <param name="options">Combinación bit a bit de los valores de enumeración que especifican opciones de coincidencia. </param>
+      <exception cref="T:System.ArgumentException">Se ha producido un error de análisis de expresión regular.</exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> o <paramref name="pattern" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> no es una combinación bit a bit válida de valores <see cref="T:System.Text.RegularExpressions.RegexOptions" />.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.String,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>Busca en la cadena de entrada especificada todas las apariciones de una expresión regular indicada, utilizando para ello las opciones de coincidencia y el intervalo de tiempo de espera que se especifiquen.</summary>
+      <returns>Colección de los objetos <see cref="T:System.Text.RegularExpressions.Match" /> encontrados en la búsqueda.Si no se encuentran coincidencias, el método devuelve un objeto de colección vacía.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia.</param>
+      <param name="pattern">Patrón de expresión regular del que van a buscarse coincidencias.</param>
+      <param name="options">Combinación bit a bit de los valores de enumeración que especifican opciones de coincidencia.</param>
+      <param name="matchTimeout">Un intervalo de tiempo de espera, o <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" /> para indicar que el método no debe agotar el tiempo de espera.</param>
+      <exception cref="T:System.ArgumentException">Se ha producido un error de análisis de expresión regular.</exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> o <paramref name="pattern" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> no es una combinación bit a bit válida de valores <see cref="T:System.Text.RegularExpressions.RegexOptions" />.o bien<paramref name="matchTimeout" /> es negativo, cero o mayor que 24 días aproximadamente.</exception>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Regex.MatchTimeout">
+      <summary>Obtiene el intervalo de tiempo de espera de la instancia actual.</summary>
+      <returns>Intervalo de tiempo máximo que puede transcurrir en una operación de coincidencia de modelos antes de que se produzca una <see cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException" /> o <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" /> si se deshabilitan los tiempos de espera.</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Regex.Options">
+      <summary>Obtiene las opciones que se pasaron en el constructor <see cref="T:System.Text.RegularExpressions.Regex" />.</summary>
+      <returns>Uno o más miembros de la enumeración <see cref="T:System.Text.RegularExpressions.RegexOptions" /> que representan opciones pasadas al constructor de <see cref="T:System.Text.RegularExpressions.Regex" /></returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String)">
+      <summary>En una cadena de entrada especificada, reemplaza todas las cadenas que coinciden con un modelo de expresión regular por una cadena de reemplazo especificada. </summary>
+      <returns>Cadena nueva que es idéntica a la cadena de entrada, salvo que la cadena de reemplazo ocupa el lugar de cada cadena coincidente.Si no se encuentran coincidencias del patrón de expresión regular en la instancia actual, el método devuelve la instancia sin modificar.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia. </param>
+      <param name="replacement">La cadena de reemplazo. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> o <paramref name="replacement" /> es null.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32)">
+      <summary>En una cadena de entrada especificada, reemplaza un número máximo especificado de cadenas que coinciden con un modelo de expresión regular por una cadena de reemplazo especificada. </summary>
+      <returns>Cadena nueva que es idéntica a la cadena de entrada, salvo que la cadena de reemplazo ocupa el lugar de cada cadena coincidente.Si no se encuentran coincidencias del patrón de expresión regular en la instancia actual, el método devuelve la instancia sin modificar.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia. </param>
+      <param name="replacement">La cadena de reemplazo. </param>
+      <param name="count">Número máximo de veces que puede producirse el reemplazo. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> o <paramref name="replacement" /> es null.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32,System.Int32)">
+      <summary>En una subcadena de entrada especificada, reemplaza un número máximo especificado de cadenas que coinciden con un modelo de expresión regular por una cadena de reemplazo especificada. </summary>
+      <returns>Cadena nueva que es idéntica a la cadena de entrada, salvo que la cadena de reemplazo ocupa el lugar de cada cadena coincidente.Si no se encuentran coincidencias del patrón de expresión regular en la instancia actual, el método devuelve la instancia sin modificar.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia. </param>
+      <param name="replacement">La cadena de reemplazo. </param>
+      <param name="count">Número máximo de veces que puede producirse el reemplazo. </param>
+      <param name="startat">Posición de carácter de la cadena de entrada donde comienza la búsqueda. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> o <paramref name="replacement" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startat" /> es menor que cero o superior a la longitud de <paramref name="input" />.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.String)">
+      <summary>En una cadena de entrada especificada, reemplaza todas las cadenas que coinciden con una expresión regular concreta por la cadena de reemplazo indicada. </summary>
+      <returns>Cadena nueva que es idéntica a la cadena de entrada, salvo que la cadena de reemplazo ocupa el lugar de cada cadena coincidente.Si <paramref name="pattern" /> no coincide con la instancia actual, el método devuelve la instancia actual sin modificar.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia. </param>
+      <param name="pattern">Patrón de expresión regular del que van a buscarse coincidencias. </param>
+      <param name="replacement">La cadena de reemplazo. </param>
+      <exception cref="T:System.ArgumentException">Se ha producido un error de análisis de expresión regular.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" />, <paramref name="pattern" /> o <paramref name="replacement" /> es null.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.String,System.Text.RegularExpressions.RegexOptions)">
+      <summary>En una cadena de entrada especificada, reemplaza todas las cadenas que coinciden con una expresión regular concreta por la cadena de reemplazo indicada.Las opciones especificadas modifican la operación de coincidencia.</summary>
+      <returns>Cadena nueva que es idéntica a la cadena de entrada, salvo que la cadena de reemplazo ocupa el lugar de cada cadena coincidente.Si <paramref name="pattern" /> no coincide con la instancia actual, el método devuelve la instancia actual sin modificar.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia. </param>
+      <param name="pattern">Patrón de expresión regular del que van a buscarse coincidencias. </param>
+      <param name="replacement">La cadena de reemplazo. </param>
+      <param name="options">Combinación bit a bit de los valores de enumeración que proporcionan opciones de coincidencia. </param>
+      <exception cref="T:System.ArgumentException">Se ha producido un error de análisis de expresión regular.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" />, <paramref name="pattern" /> o <paramref name="replacement" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> no es una combinación bit a bit válida de valores <see cref="T:System.Text.RegularExpressions.RegexOptions" />.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.String,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>En una cadena de entrada especificada, reemplaza todas las cadenas que coinciden con una expresión regular concreta por la cadena de reemplazo indicada.Los parámetros adicionales especifican las opciones que modifican la operación de coincidencia y un intervalo de tiempo de espera si no se encuentra ninguna coincidencia.</summary>
+      <returns>Cadena nueva que es idéntica a la cadena de entrada, salvo que la cadena de reemplazo ocupa el lugar de cada cadena coincidente.Si <paramref name="pattern" /> no coincide con la instancia actual, el método devuelve la instancia actual sin modificar.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia.</param>
+      <param name="pattern">Patrón de expresión regular del que van a buscarse coincidencias.</param>
+      <param name="replacement">La cadena de reemplazo.</param>
+      <param name="options">Combinación bit a bit de los valores de enumeración que proporcionan opciones de coincidencia.</param>
+      <param name="matchTimeout">Un intervalo de tiempo de espera, o <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" /> para indicar que el método no debe agotar el tiempo de espera.</param>
+      <exception cref="T:System.ArgumentException">Se ha producido un error de análisis de expresión regular.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" />, <paramref name="pattern" /> o <paramref name="replacement" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> no es una combinación bit a bit válida de valores <see cref="T:System.Text.RegularExpressions.RegexOptions" />.o bien<paramref name="matchTimeout" /> es negativo, cero o mayor que 24 días aproximadamente.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Text.RegularExpressions.MatchEvaluator)">
+      <summary>En una cadena de entrada especificada, reemplaza todas las cadenas que coinciden con una expresión regular especificada por una cadena devuelta por un delegado <see cref="T:System.Text.RegularExpressions.MatchEvaluator" />.</summary>
+      <returns>Cadena nueva que es idéntica a la cadena de entrada, salvo que una cadena de reemplazo ocupa el lugar de cada cadena coincidente.Si <paramref name="pattern" /> no coincide con la instancia actual, el método devuelve la instancia actual sin modificar.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia. </param>
+      <param name="pattern">Patrón de expresión regular del que van a buscarse coincidencias. </param>
+      <param name="evaluator">Un método personalizado que examina cada coincidencia y devuelve la cadena coincidente original o una cadena de reemplazo.</param>
+      <exception cref="T:System.ArgumentException">Se ha producido un error de análisis de expresión regular.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" />, <paramref name="pattern" /> o <paramref name="evaluator" /> es null.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Text.RegularExpressions.MatchEvaluator,System.Text.RegularExpressions.RegexOptions)">
+      <summary>En una cadena de entrada especificada, reemplaza todas las cadenas que coinciden con una expresión regular especificada por una cadena devuelta por un delegado <see cref="T:System.Text.RegularExpressions.MatchEvaluator" />.Las opciones especificadas modifican la operación de coincidencia.</summary>
+      <returns>Cadena nueva que es idéntica a la cadena de entrada, salvo que una cadena de reemplazo ocupa el lugar de cada cadena coincidente.Si <paramref name="pattern" /> no coincide con la instancia actual, el método devuelve la instancia actual sin modificar.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia. </param>
+      <param name="pattern">Patrón de expresión regular del que van a buscarse coincidencias. </param>
+      <param name="evaluator">Un método personalizado que examina cada coincidencia y devuelve la cadena coincidente original o una cadena de reemplazo. </param>
+      <param name="options">Combinación bit a bit de los valores de enumeración que proporcionan opciones de coincidencia. </param>
+      <exception cref="T:System.ArgumentException">Se ha producido un error de análisis de expresión regular.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" />, <paramref name="pattern" /> o <paramref name="evaluator" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> no es una combinación bit a bit válida de valores <see cref="T:System.Text.RegularExpressions.RegexOptions" />.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Text.RegularExpressions.MatchEvaluator,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>En una cadena de entrada especificada, reemplaza todas las subcadenas que coinciden con una expresión regular especificada por una cadena devuelta por un delegado <see cref="T:System.Text.RegularExpressions.MatchEvaluator" />.Los parámetros adicionales especifican las opciones que modifican la operación de coincidencia y un intervalo de tiempo de espera si no se encuentra ninguna coincidencia.</summary>
+      <returns>Cadena nueva que es idéntica a la cadena de entrada, salvo que la cadena de reemplazo ocupa el lugar de cada cadena coincidente.Si <paramref name="pattern" /> no coincide con la instancia actual, el método devuelve la instancia actual sin modificar.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia.</param>
+      <param name="pattern">Patrón de expresión regular del que van a buscarse coincidencias.</param>
+      <param name="evaluator">Un método personalizado que examina cada coincidencia y devuelve la cadena coincidente original o una cadena de reemplazo.</param>
+      <param name="options">Combinación bit a bit de los valores de la enumeración que proporcionan opciones de coincidencia.</param>
+      <param name="matchTimeout">Un intervalo de tiempo de espera, o <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" /> para indicar que el método no debe agotar el tiempo de espera.</param>
+      <exception cref="T:System.ArgumentException">Se ha producido un error de análisis de expresión regular.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" />, <paramref name="pattern" /> o <paramref name="evaluator" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> no es una combinación bit a bit válida de valores <see cref="T:System.Text.RegularExpressions.RegexOptions" />.o bien<paramref name="matchTimeout" /> es negativo, cero o mayor que 24 días aproximadamente.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator)">
+      <summary>En una cadena de entrada especificada, reemplaza todas las cadenas que coinciden con una expresión regular especificada por una cadena devuelta por un delegado <see cref="T:System.Text.RegularExpressions.MatchEvaluator" />. </summary>
+      <returns>Cadena nueva que es idéntica a la cadena de entrada, salvo que una cadena de reemplazo ocupa el lugar de cada cadena coincidente.Si no se encuentran coincidencias del patrón de expresión regular en la instancia actual, el método devuelve la instancia sin modificar.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia. </param>
+      <param name="evaluator">Un método personalizado que examina cada coincidencia y devuelve la cadena coincidente original o una cadena de reemplazo.</param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> o <paramref name="evaluator" /> es null.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32)">
+      <summary>En una cadena de entrada especificada, reemplaza un número máximo especificado de cadenas que coinciden con un modelo de expresión regular por una cadena devuelta por un delegado <see cref="T:System.Text.RegularExpressions.MatchEvaluator" />. </summary>
+      <returns>Cadena nueva que es idéntica a la cadena de entrada, salvo que una cadena de reemplazo ocupa el lugar de cada cadena coincidente.Si no se encuentran coincidencias del patrón de expresión regular en la instancia actual, el método devuelve la instancia sin modificar.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia. </param>
+      <param name="evaluator">Un método personalizado que examina cada coincidencia y devuelve la cadena coincidente original o una cadena de reemplazo.</param>
+      <param name="count">Número máximo de veces que se llevará a cabo el reemplazo. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> o <paramref name="evaluator" /> es null.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32,System.Int32)">
+      <summary>En una subcadena de entrada especificada, reemplaza un número máximo especificado de cadenas que coinciden con un modelo de expresión regular por una cadena devuelta por un delegado <see cref="T:System.Text.RegularExpressions.MatchEvaluator" />. </summary>
+      <returns>Cadena nueva que es idéntica a la cadena de entrada, salvo que una cadena de reemplazo ocupa el lugar de cada cadena coincidente.Si no se encuentran coincidencias del patrón de expresión regular en la instancia actual, el método devuelve la instancia sin modificar.</returns>
+      <param name="input">Cadena en la que se va a buscar una coincidencia. </param>
+      <param name="evaluator">Un método personalizado que examina cada coincidencia y devuelve la cadena coincidente original o una cadena de reemplazo.</param>
+      <param name="count">Número máximo de veces que se llevará a cabo el reemplazo. </param>
+      <param name="startat">Posición de carácter de la cadena de entrada donde comienza la búsqueda. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> o <paramref name="evaluator" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startat" /> es menor que cero o superior a la longitud de <paramref name="input" />.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Regex.RightToLeft">
+      <summary>Obtiene un valor que indica si la expresión regular busca de derecha a izquierda.</summary>
+      <returns>true si la expresión regular busca de derecha a izquierda; de lo contrario, false.</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Split(System.String)">
+      <summary>Divide una cadena de entrada en una matriz de subcadenas en las posiciones definidas por un modelo de expresión regular especificado en el constructor <see cref="T:System.Text.RegularExpressions.Regex" />.</summary>
+      <returns>Matriz de cadenas.</returns>
+      <param name="input">Cadena que se va a dividir. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> es null.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32)">
+      <summary>Divide una cadena de entrada por un número máximo especificado de veces en una matriz de subcadenas, en las posiciones definidas por una expresión regular especificada en el constructor <see cref="T:System.Text.RegularExpressions.Regex" />.</summary>
+      <returns>Matriz de cadenas.</returns>
+      <param name="input">Cadena que se va a dividir. </param>
+      <param name="count">Número máximo de veces que puede llevarse a cabo la división. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> es null.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32,System.Int32)">
+      <summary>Divide una cadena de entrada por un número máximo especificado de veces en una matriz de subcadenas, en las posiciones definidas por una expresión regular especificada en el constructor <see cref="T:System.Text.RegularExpressions.Regex" />.La búsqueda del patrón de expresión regular se inicia en la posición de carácter especificada de la cadena de entrada.</summary>
+      <returns>Matriz de cadenas.</returns>
+      <param name="input">Cadena que se va a dividir. </param>
+      <param name="count">Número máximo de veces que puede llevarse a cabo la división. </param>
+      <param name="startat">Posición de carácter de la cadena de entrada donde comenzará la búsqueda. </param>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startat" /> es menor que cero o superior a la longitud de <paramref name="input" />.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Split(System.String,System.String)">
+      <summary>Divide una cadena de entrada en una matriz de subcadenas en las posiciones definidas por un patrón de expresión regular.</summary>
+      <returns>Matriz de cadenas.</returns>
+      <param name="input">Cadena que se va a dividir. </param>
+      <param name="pattern">Patrón de expresión regular del que van a buscarse coincidencias. </param>
+      <exception cref="T:System.ArgumentException">Se ha producido un error de análisis de expresión regular.</exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> o <paramref name="pattern" /> es null.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Split(System.String,System.String,System.Text.RegularExpressions.RegexOptions)">
+      <summary>Divide una cadena de entrada en una matriz de subcadenas en las posiciones definidas por un patrón de expresión regular especificado.Las opciones especificadas modifican la operación de coincidencia.</summary>
+      <returns>Matriz de cadenas.</returns>
+      <param name="input">Cadena que se va a dividir. </param>
+      <param name="pattern">Patrón de expresión regular del que van a buscarse coincidencias. </param>
+      <param name="options">Combinación bit a bit de los valores de enumeración que proporcionan opciones de coincidencia. </param>
+      <exception cref="T:System.ArgumentException">Se ha producido un error de análisis de expresión regular.</exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> o <paramref name="pattern" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> no es una combinación bit a bit válida de valores <see cref="T:System.Text.RegularExpressions.RegexOptions" />.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Split(System.String,System.String,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>Divide una cadena de entrada en una matriz de subcadenas en las posiciones definidas por un patrón de expresión regular especificado.Los parámetros adicionales especifican las opciones que modifican la operación de coincidencia y un intervalo de tiempo de espera si no se encuentra ninguna coincidencia.</summary>
+      <returns>Matriz de cadenas.</returns>
+      <param name="input">Cadena que se va a dividir.</param>
+      <param name="pattern">Patrón de expresión regular del que van a buscarse coincidencias.</param>
+      <param name="options">Combinación bit a bit de los valores de enumeración que proporcionan opciones de coincidencia.</param>
+      <param name="matchTimeout">Un intervalo de tiempo de espera, o <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" /> para indicar que el método no debe agotar el tiempo de espera.</param>
+      <exception cref="T:System.ArgumentException">Se ha producido un error de análisis de expresión regular.</exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="input" /> o <paramref name="pattern" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> no es una combinación bit a bit válida de valores <see cref="T:System.Text.RegularExpressions.RegexOptions" />.o bien<paramref name="matchTimeout" /> es negativo, cero o mayor que 24 días aproximadamente.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">Se agotó un tiempo de espera.Para obtener más información sobre los tiempos de espera, vea la sección Comentarios.</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.ToString">
+      <summary>Devuelve el modelo de expresión regular que se pasó al constructor Regex.</summary>
+      <returns>Parámetro <paramref name="pattern" /> que se pasó al constructor Regex.</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Unescape(System.String)">
+      <summary>Convierte los caracteres de escape de la cadena de entrada.</summary>
+      <returns>Cadena de caracteres con caracteres de escape convertidos a su forma sin escape.</returns>
+      <param name="str">Cadena de entrada que contiene el texto que se desea convertir. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="str" /> incluye una secuencia de escape desconocida.</exception>
+      <exception cref="T:System.ArgumentNullException">El valor de <paramref name="str" /> es null.</exception>
+    </member>
+    <member name="T:System.Text.RegularExpressions.RegexMatchTimeoutException">
+      <summary>Excepción que se produce cuando el tiempo de ejecución de un método de coincidencia de expresión regular supera su intervalo de tiempo de espera.</summary>
+    </member>
+    <member name="M:System.Text.RegularExpressions.RegexMatchTimeoutException.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException" /> con un mensaje proporcionado por el sistema.</summary>
+    </member>
+    <member name="M:System.Text.RegularExpressions.RegexMatchTimeoutException.#ctor(System.String)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException" /> con la cadena de mensaje especificada.</summary>
+      <param name="message">Cadena que describe la excepción.</param>
+    </member>
+    <member name="M:System.Text.RegularExpressions.RegexMatchTimeoutException.#ctor(System.String,System.Exception)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException" /> con el mensaje de error especificado y una referencia a la excepción interna que representa la causa de esta excepción.</summary>
+      <param name="message">Cadena que describe la excepción.</param>
+      <param name="inner">La excepción que es la causa de la excepción actual.</param>
+    </member>
+    <member name="M:System.Text.RegularExpressions.RegexMatchTimeoutException.#ctor(System.String,System.String,System.TimeSpan)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException" /> con información sobre el modelo de expresión regular, el texto de entrada y el intervalo de tiempo de espera.</summary>
+      <param name="regexInput">Texto de entrada procesado por el motor de expresiones regulares cuando se supera el tiempo de espera.</param>
+      <param name="regexPattern">El modelo usado por el motor de expresiones regulares cuando se agota el tiempo de espera.</param>
+      <param name="matchTimeout">El intervalo de tiempo de espera.</param>
+    </member>
+    <member name="P:System.Text.RegularExpressions.RegexMatchTimeoutException.Input">
+      <summary>Obtiene el texto de entrada que el motor de expresiones regulares estaba procesando cuando se agotó el tiempo de espera.</summary>
+      <returns>El texto de entrada de la expresión regular.</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.RegexMatchTimeoutException.MatchTimeout">
+      <summary>Obtiene el intervalo de tiempo de espera para una coincidencia de expresión regular.</summary>
+      <returns>El intervalo de tiempo de espera.</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.RegexMatchTimeoutException.Pattern">
+      <summary>Obtiene el modelo de expresión regular usado en la operación coincidente cuando se agotó el tiempo de espera.</summary>
+      <returns>El modelo de expresión regular.</returns>
+    </member>
+    <member name="T:System.Text.RegularExpressions.RegexOptions">
+      <summary>Proporciona valores enumerados que se pueden utilizar para establecer las opciones de expresión regular.</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.Compiled">
+      <summary>Especifica que la expresión regular se compila en un ensamblado.Esto proporciona una ejecución más veloz pero incrementa el tiempo de inicio.Este valor no debe asignarse a la propiedad <see cref="P:System.Text.RegularExpressions.RegexCompilationInfo.Options" /> al llamar al método <see cref="M:System.Text.RegularExpressions.Regex.CompileToAssembly(System.Text.RegularExpressions.RegexCompilationInfo[],System.Reflection.AssemblyName)" />.Para obtener más información, vea la sección sobre expresiones regulares compiladas que encontrará en el tema Opciones de expresiones regulares.</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.CultureInvariant">
+      <summary>Especifica que las diferencias culturales de idioma se pasan por alto.Para obtener más información, vaya al tema Opciones de expresiones regulares y consulte la sección en la que se explica cómo realizar comparaciones con la referencia cultural de todos los idiomas.</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.ECMAScript">
+      <summary>Habilita el comportamiento conforme a ECMAScript para esta expresión.Este valor solo se puede utilizar junto con los valores <see cref="F:System.Text.RegularExpressions.RegexOptions.IgnoreCase" />, <see cref="F:System.Text.RegularExpressions.RegexOptions.Multiline" /> y <see cref="F:System.Text.RegularExpressions.RegexOptions.Compiled" />.El uso de este valor con otros valores dará como resultado una excepción.Para obtener más información sobre la opción <see cref="F:System.Text.RegularExpressions.RegexOptions.ECMAScript" />, vea la sección sobre el comportamiento de coincidencias de ECMAScript que encontrará en el tema Opciones de expresiones regulares. </summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.ExplicitCapture">
+      <summary>Especifica que las únicas capturas válidas son grupos denominados o numerados explícitamente con la forma (?&lt;nombre&gt;…).Esto permite que los paréntesis sin nombre actúen como grupos sin captura sin la torpeza sintáctica de la expresión (?:…).Para obtener más información, vea la sección «Solo capturas explícitas» que encontrará en el tema Opciones de expresiones regulares.</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.IgnoreCase">
+      <summary>Especifica la coincidencia con distinción entre mayúsculas y minúsculas.Para obtener más información, vea la sección sobre coincidencias sin distinción entre mayúsculas y minúsculas que encontrará en el tema Opciones de expresiones regulares.</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.IgnorePatternWhitespace">
+      <summary>Elimina el espacio en blanco sin escape del patrón y habilita los comentarios marcados con #.Sin embargo, este valor no afecta ni elimina el espacio en blanco en clases de caracteres, en cuantificadores numéricos ni en tokens que marquen el inicio de elementos de lenguaje de expresiones regulares individuales.Para obtener más información, vea la sección sobre la omisión del espacio en blanco que encontrará en el tema Opciones de expresiones regulares.</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.Multiline">
+      <summary>Modo multilínea.Cambia el significado de ^ y $ de manera que coincidan al principio y al final, respectivamente, de cada línea y no justo al principio y al final de toda la cadena.Para obtener más información, vea la sección sobre el modo multilínea que encontrará en el tema Opciones de expresiones regulares.</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.None">
+      <summary>Especifica que no hay opciones establecidas.Para obtener más información sobre el comportamiento predeterminado del motor de expresiones regulares, vea la sección sobre opciones predeterminadas que encontrará en el tema Opciones de expresiones regulares.</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.RightToLeft">
+      <summary>Especifica que la búsqueda será de derecha a izquierda en lugar de izquierda a derecha.Para obtener más información, vea la sección sobre el modo derecha a izquierda que encontrará en el tema Opciones de expresiones regulares.</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.Singleline">
+      <summary>Especifica el modo de una sola línea.Cambia el significado del punto (.) de manera que coincida con todos los caracteres (en lugar de hacerlo con todos los caracteres excepto con \n).Para obtener más información, vea la sección sobre el modo de una línea que encontrará en el tema Opciones de expresiones regulares.</summary>
+    </member>
+  </members>
+</doc>

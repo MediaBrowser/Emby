@@ -1,4 +1,6 @@
 {
+    "PlaybackSettings": "Param\u00e8tres de lecture",
+    "SubtitleSettings": "Param\u00e8tres des sous-titres",
     "MessageUnlockAppWithPurchaseOrSupporter": "D\u00e9verrouillez cette fonctionnalit\u00e9 avec un petit achat unique, ou avec un abonnement Emby Premiere.",
     "MessageUnlockAppWithSupporter": "D\u00e9verrouillez cette fonctionnalit\u00e9 avec un abonnement Emby Premiere.",
     "MessageToValidateSupporter": "Si vous avez un abonnement Emby Premiere, veuillez vous assurer que vous avez configur\u00e9 Emby Premiere dans le tableau de bord de votre serveur Emby auquel vous pouvez acc\u00e9der en cliquant sur Emby Premiere dans le menu principal",
@@ -33,6 +35,7 @@
     "HeaderWakeServer": "R\u00e9veiller le serveur",
     "AttemptingWakeServer": "Essai de r\u00e9veil du serveur. Veuillez patienter...",
     "WakeServerSuccess": "R\u00e9ussi\u00a0!",
+    "HeaderCustomizeHomeScreen": "Personnaliser l'\u00e9cran d'accueil",
     "WakeServerError": "Des paquets Wake-On-LAN on \u00e9t\u00e9 envoy\u00e9 \u00e0 votre serveur, mais nous ne pouvons pas nous connecter \u00e0 votre serveur Emby. Votre machine a peut-\u00eatre besoin de plus de temps pour se r\u00e9veiller, ou le serveur Emby n'est peut-\u00eatre pas lanc\u00e9 sur la machine.",
     "Sunday": "Dimanche",
     "Monday": "Lundi",
@@ -47,6 +50,7 @@
     "LabelSortOrder": "Ordre de tri :",
     "HeaderPhotoAlbums": "Albums photo",
     "Photos": "Photos",
+    "HeaderAppearsOn": "Apparait dans",
     "List": "Liste",
     "RecordSeries": "Enregistrer la s\u00e9rie",
     "HeaderCinemaMode": "Mode cin\u00e9ma",
@@ -250,7 +254,7 @@
     "Continuing": "En cours",
     "Ended": "Termin\u00e9",
     "HeaderEnabledFields": "Activer les champs",
-    "HeaderEnabledFieldsHelp": "D\u00e9cocher un champ pour le verrouiller et emp\u00eacher ainsi ses donn\u00e9es d'\u00eatre modifi\u00e9es.",
+    "HeaderEnabledFieldsHelp": "D\u00e9cocher un champ pour le verrouiller et emp\u00eacher ses donn\u00e9es d'\u00eatre modifi\u00e9es.",
     "Backdrops": "Arri\u00e8re-plans",
     "Images": "Images",
     "Runtime": "Dur\u00e9e",
@@ -306,7 +310,8 @@
     "ConfirmDeleteItems": "Supprimer ces \u00e9l\u00e9ments les effacera \u00e0 la fois du syst\u00e8me de fichiers et de votre m\u00e9diath\u00e8que. Voulez-vous vraiment continuer ?",
     "PleaseRestartServerName": "Veuillez red\u00e9marrer le serveur Emby - {0}.",
     "LabelSyncJobName": "Nom de la t\u00e2che de synchronisation :",
-    "SyncJobCreated": "T\u00e2che de synchronisation cr\u00e9\u00e9e.",
+    "SyncingDots": "Synchronisation...",
+    "ConvertingDots": "Conversion...",
     "LabelQuality": "Qualit\u00e9\u00a0:",
     "LabelSyncNoTargetsHelp": "Il semble que vous n'ayez actuellement aucune application qui supporte le t\u00e9l\u00e9chargement hors ligne.",
     "DownloadingDots": "T\u00e9l\u00e9chargement...",
@@ -547,6 +552,7 @@
     "Absolute": "Absolu",
     "Smart": "Intelligent",
     "Small": "Petit",
+    "Smaller": "Plus petit",
     "Medium": "Moyen",
     "Large": "Grand",
     "ExtraLarge": "Tr\u00e8s grand",
@@ -677,5 +683,7 @@
     "ColorSpace": "Espace colorim\u00e9trique",
     "ColorTransfer": "Transfert de couleur",
     "VideoRange": "Gamme vid\u00e9o",
-    "SeriesDisplayOrderHelp": "Ranger les \u00e9pisodes par date de diffusion, par ordre de DVD ou par num\u00e9ro absolu."
+    "SeriesDisplayOrderHelp": "Ranger les \u00e9pisodes par date de diffusion, par ordre de DVD ou par num\u00e9ro absolu.",
+    "PlaybackSettingsIntro": "Pour configurer les r\u00e9glages de lecture par d\u00e9faut, arr\u00eatez la lecture de la vid\u00e9o, puis cliquez sur votre ic\u00f4ne utilisateur situ\u00e9e en haut \u00e0 droite dans l'application.",
+    "SubtitleSettingsIntro": "Pour configurer l'apparence des sous-titres et la langue par d\u00e9faut, arr\u00eatez la lecture de la vid\u00e9o, puis cliquez sur votre ic\u00f4ne utilisateur situ\u00e9e en haut \u00e0 droite dans l'application."
 }

@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Resources.ResourceManager</name>
+  </assembly>
+  <members>
+    <member name="T:System.Resources.MissingManifestResourceException">
+      <summary>Исключение, которое создается, если основная сборка не содержит ресурсы для нейтрального языка и региональных параметров и соответствующая вспомогательная сборка отсутствует.</summary>
+    </member>
+    <member name="M:System.Resources.MissingManifestResourceException.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Resources.MissingManifestResourceException" /> свойствами по умолчанию.</summary>
+    </member>
+    <member name="M:System.Resources.MissingManifestResourceException.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Resources.MissingManifestResourceException" /> с заданным сообщением об ошибке.</summary>
+      <param name="message">Сообщение об ошибке с объяснением причин исключения. </param>
+    </member>
+    <member name="M:System.Resources.MissingManifestResourceException.#ctor(System.String,System.Exception)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Resources.MissingManifestResourceException" /> с заданным сообщением об ошибке и ссылкой на внутреннее исключение, которое стало причиной данного исключения.</summary>
+      <param name="message">Сообщение об ошибке с объяснением причин исключения. </param>
+      <param name="inner">Исключение, которое вызвало текущее исключение.Если значение параметра <paramref name="inner" /> не равно null, текущее исключение вызывается в блоке catch, обрабатывающем внутреннее исключение.</param>
+    </member>
+    <member name="T:System.Resources.NeutralResourcesLanguageAttribute">
+      <summary>Информирует диспетчер ресурсов о языке и региональных параметрах приложения по умолчанию.Этот класс не наследуется.</summary>
+    </member>
+    <member name="M:System.Resources.NeutralResourcesLanguageAttribute.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Resources.NeutralResourcesLanguageAttribute" />.</summary>
+      <param name="cultureName">Имя языка и региональных параметров, в которые записаны нейтральные ресурсы текущей сборки. </param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="cultureName" /> — null. </exception>
+    </member>
+    <member name="P:System.Resources.NeutralResourcesLanguageAttribute.CultureName">
+      <summary>Возвращает имя языка и региональных параметров.</summary>
+      <returns>Имя языка и региональных параметров по умолчанию для главной сборки.</returns>
+    </member>
+    <member name="T:System.Resources.ResourceManager">
+      <summary>Представляет диспетчер ресурсов, обеспечивающий удобный доступ к ресурсам, связанным с языком и региональными параметрами, во время выполнения.Примечание по безопасности. Вызов методов в классе с недоверенными данными представляет угрозу безопасности.Вызывайте методы только в классе с доверенными данными.Дополнительные сведения см. в разделе Untrusted Data Security Risks.</summary>
+    </member>
+    <member name="M:System.Resources.ResourceManager.#ctor(System.String,System.Reflection.Assembly)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Resources.ResourceManager" />, который ищет ресурсы, содержащиеся в файлах с указанным корневым именем, в данной сборке.</summary>
+      <param name="baseName">Корневое имя файла ресурсов без расширения, но включающее какое-либо полное имя пространства имен.Например, имя корневой папки для файла ресурсов MyApplication.MyResource.en-US.resources будет MyApplication.MyResource.</param>
+      <param name="assembly">Главная сборка для ресурсов. </param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="baseName" /> или параметра <paramref name="assembly" /> — null. </exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.#ctor(System.Type)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Resources.ResourceManager" />, который ищет ресурсы в сопутствующих сборках, используя сведения из указанного объекта типа.</summary>
+      <param name="resourceSource">Тип, из которого диспетчер ресурсов получает все сведения, необходимые для поиска RESOURCES-файлов. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="resourceSource" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.GetString(System.String)">
+      <summary>Возвращает значение указанного строкового ресурса.</summary>
+      <returns>Значение ресурса, локализованное для языка и региональных параметров текущего пользовательского интерфейса вызывающего объекта, или значение null, если не удается найти <paramref name="name" /> в наборе ресурсов.</returns>
+      <param name="name">Имя извлекаемого ресурса. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="name" /> имеет значение null. </exception>
+      <exception cref="T:System.InvalidOperationException">Значение указанного ресурса не является строковым. </exception>
+      <exception cref="T:System.Resources.MissingManifestResourceException">Не найден подходящий набор ресурсов и отсутствуют ресурсы языка и региональных параметров по умолчанию.Сведения об обработке этого исключения см. в подразделе "Обработка исключений MissingManifestResourceException и MissingSatelliteAssemblyException" раздела, посвященного классу <see cref="T:System.Resources.ResourceManager" />.</exception>
+      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">Ресурсы языка и региональных параметров по умолчанию находятся во вспомогательной сборке, которую не удалось найти.Сведения об обработке этого исключения см. в подразделе "Обработка исключений MissingManifestResourceException и MissingSatelliteAssemblyException" раздела, посвященного классу <see cref="T:System.Resources.ResourceManager" />.</exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.GetString(System.String,System.Globalization.CultureInfo)">
+      <summary>Возвращает значение строкового ресурса, локализованного для указанного языка и региональных параметров.</summary>
+      <returns>Значение ресурса, локализованное для указанного языка и региональных параметров, или значение null, если не удается найти <paramref name="name" /> в наборе ресурсов.</returns>
+      <param name="name">Имя извлекаемого ресурса. </param>
+      <param name="culture">Объект, предоставляющий язык и региональные параметры, для которых локализуется ресурс. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="name" /> имеет значение null. </exception>
+      <exception cref="T:System.InvalidOperationException">Значение указанного ресурса не является строковым. </exception>
+      <exception cref="T:System.Resources.MissingManifestResourceException">Не найден подходящий набор ресурсов и отсутствуют ресурсы языка и региональных параметров по умолчанию.Сведения об обработке этого исключения см. в подразделе "Обработка исключений MissingManifestResourceException и MissingSatelliteAssemblyException" раздела, посвященного классу <see cref="T:System.Resources.ResourceManager" />.</exception>
+      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">Ресурсы языка и региональных параметров по умолчанию находятся во вспомогательной сборке, которую не удалось найти.Сведения об обработке этого исключения см. в подразделе "Обработка исключений MissingManifestResourceException и MissingSatelliteAssemblyException" раздела, посвященного классу <see cref="T:System.Resources.ResourceManager" />.</exception>
+    </member>
+    <member name="T:System.Resources.SatelliteContractVersionAttribute">
+      <summary>Предписывает объекту <see cref="T:System.Resources.ResourceManager" /> запросить определенную версию вспомогательной сборки.</summary>
+    </member>
+    <member name="M:System.Resources.SatelliteContractVersionAttribute.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Resources.SatelliteContractVersionAttribute" />.</summary>
+      <param name="version">Строка, указывающая версию вспомогательных сборок для загрузки. </param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="version" /> — null. </exception>
+    </member>
+    <member name="P:System.Resources.SatelliteContractVersionAttribute.Version">
+      <summary>Получает версию вспомогательных сборок, содержащих требуемые ресурсы.</summary>
+      <returns>Строка, содержащая версию вспомогательных сборок с требуемыми ресурсами.</returns>
+    </member>
+  </members>
+</doc>

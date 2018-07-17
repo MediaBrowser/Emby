@@ -40,7 +40,7 @@ namespace MediaBrowser.Api.UserLibrary
         /// </summary>
         /// <value>The user id.</value>
         [ApiMember(Name = "UserId", Description = "Optional. Filter by user id, and attach user data", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
     }
 
     /// <summary>
@@ -70,7 +70,7 @@ namespace MediaBrowser.Api.UserLibrary
 
             var item = GetArtist(request.Name, LibraryManager, dtoOptions);
 
-            if (!string.IsNullOrWhiteSpace(request.UserId))
+            if (!request.UserId.Equals(Guid.Empty))
             {
                 var user = UserManager.GetUserById(request.UserId);
 

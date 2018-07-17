@@ -50,8 +50,8 @@ namespace MediaBrowser.Api.Images
         /// Gets or sets the id.
         /// </summary>
         /// <value>The id.</value>
-        [ApiMember(Name = "Id", Description = "Item Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
-        public string Id { get; set; }
+        [ApiMember(Name = "Id", Description = "Item Id", IsRequired = true, DataType = "string", ParameterType = "path")]
+        public Guid Id { get; set; }
     }
 
     /// <summary>
@@ -65,7 +65,7 @@ namespace MediaBrowser.Api.Images
         /// Gets or sets the id.
         /// </summary>
         /// <value>The id.</value>
-        [ApiMember(Name = "Id", Description = "Item Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
+        [ApiMember(Name = "Id", Description = "Item Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
         public string Id { get; set; }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace MediaBrowser.Api.Images
         /// Gets or sets the new index.
         /// </summary>
         /// <value>The new index.</value>
-        [ApiMember(Name = "NewIndex", Description = "The new image index", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "GET")]
+        [ApiMember(Name = "NewIndex", Description = "The new image index", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "POST")]
         public int NewIndex { get; set; }
     }
 
@@ -105,8 +105,8 @@ namespace MediaBrowser.Api.Images
     [Route("/Persons/{Name}/Images/{Type}/{Index}", "GET")]
     [Route("/Studios/{Name}/Images/{Type}", "GET")]
     [Route("/Studios/{Name}/Images/{Type}/{Index}", "GET")]
-    [Route("/Years/{Year}/Images/{Type}", "GET")]
-    [Route("/Years/{Year}/Images/{Type}/{Index}", "GET")]
+    ////[Route("/Years/{Year}/Images/{Type}", "GET")]
+    ////[Route("/Years/{Year}/Images/{Type}/{Index}", "GET")]
     [Route("/Artists/{Name}/Images/{Type}", "HEAD")]
     [Route("/Artists/{Name}/Images/{Type}/{Index}", "HEAD")]
     [Route("/Genres/{Name}/Images/{Type}", "HEAD")]
@@ -119,8 +119,8 @@ namespace MediaBrowser.Api.Images
     [Route("/Persons/{Name}/Images/{Type}/{Index}", "HEAD")]
     [Route("/Studios/{Name}/Images/{Type}", "HEAD")]
     [Route("/Studios/{Name}/Images/{Type}/{Index}", "HEAD")]
-    [Route("/Years/{Year}/Images/{Type}", "HEAD")]
-    [Route("/Years/{Year}/Images/{Type}/{Index}", "HEAD")]
+    ////[Route("/Years/{Year}/Images/{Type}", "HEAD")]
+    ////[Route("/Years/{Year}/Images/{Type}/{Index}", "HEAD")]
     public class GetItemByNameImage : ImageRequest
     {
         /// <summary>
@@ -145,7 +145,7 @@ namespace MediaBrowser.Api.Images
         /// </summary>
         /// <value>The id.</value>
         [ApiMember(Name = "Id", Description = "User Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "GET")]
-        public string Id { get; set; }
+        public Guid Id { get; set; }
     }
 
     /// <summary>
@@ -177,7 +177,7 @@ namespace MediaBrowser.Api.Images
         /// </summary>
         /// <value>The id.</value>
         [ApiMember(Name = "Id", Description = "User Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "DELETE")]
-        public string Id { get; set; }
+        public Guid Id { get; set; }
     }
 
     /// <summary>
@@ -265,7 +265,7 @@ namespace MediaBrowser.Api.Images
 
             var result = GetItemImageInfos(item);
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         /// <summary>
@@ -395,14 +395,14 @@ namespace MediaBrowser.Api.Images
         {
             var item = _userManager.GetUserById(request.Id);
 
-            return GetImage(request, null, item, false);
+            return GetImage(request, Guid.Empty, item, false);
         }
 
         public object Head(GetUserImage request)
         {
             var item = _userManager.GetUserById(request.Id);
 
-            return GetImage(request, null, item, true);
+            return GetImage(request, Guid.Empty, item, true);
         }
 
         public object Get(GetItemByNameImage request)
@@ -411,7 +411,7 @@ namespace MediaBrowser.Api.Images
 
             var item = GetItemByName(request.Name, type, _libraryManager, new DtoOptions(false));
 
-            return GetImage(request, item.Id.ToString("N"), item, false);
+            return GetImage(request, item.Id, item, false);
         }
 
         public object Head(GetItemByNameImage request)
@@ -420,7 +420,7 @@ namespace MediaBrowser.Api.Images
 
             var item = GetItemByName(request.Name, type, _libraryManager, new DtoOptions(false));
 
-            return GetImage(request, item.Id.ToString("N"), item, true);
+            return GetImage(request, item.Id, item, true);
         }
 
         /// <summary>
@@ -430,7 +430,7 @@ namespace MediaBrowser.Api.Images
         public Task Post(PostUserImage request)
         {
             var userId = GetPathValue(1);
-            AssertCanUpdateUser(_authContext, _userManager, userId, true);
+            AssertCanUpdateUser(_authContext, _userManager, new Guid(userId), true);
 
             request.Type = (ImageType)Enum.Parse(typeof(ImageType), GetPathValue(3), true);
 
@@ -511,7 +511,7 @@ namespace MediaBrowser.Api.Images
         /// <param name="isHeadRequest">if set to <c>true</c> [is head request].</param>
         /// <returns>System.Object.</returns>
         /// <exception cref="ResourceNotFoundException"></exception>
-        public Task<object> GetImage(ImageRequest request, string itemId, BaseItem item, bool isHeadRequest)
+        public Task<object> GetImage(ImageRequest request, Guid itemId, BaseItem item, bool isHeadRequest)
         {
             if (request.PercentPlayed.HasValue)
             {
@@ -540,13 +540,18 @@ namespace MediaBrowser.Api.Images
             if (item == null)
             {
                 item = _libraryManager.GetItemById(itemId);
+
+                if (item == null)
+                {
+                    throw new ResourceNotFoundException(string.Format("Item {0} not found.", itemId.ToString("N")));
+                }
             }
 
             var imageInfo = GetImageInfo(request, item);
 
             if (imageInfo == null)
             {
-                var displayText = item == null ? itemId : item.Name;
+                var displayText = item == null ? itemId.ToString() : item.Name;
                 throw new ResourceNotFoundException(string.Format("{0} does not have an image of type {1}", displayText, request.Type));
             }
 
@@ -602,7 +607,7 @@ namespace MediaBrowser.Api.Images
         }
 
         private async Task<object> GetImageResult(BaseItem item,
-            string itemId,
+            Guid itemId,
             ImageRequest request,
             ItemImageInfo image,
             bool cropwhitespace,

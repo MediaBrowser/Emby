@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>Microsoft.Win32.Primitives</name>
+  </assembly>
+  <members>
+    <member name="T:System.ComponentModel.Win32Exception">
+      <summary>Win32 오류 코드에 대한 예외를 throw합니다.</summary>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor">
+      <summary>마지막으로 발생한 Win32 오류를 사용하여 <see cref="T:System.ComponentModel.Win32Exception" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor(System.Int32)">
+      <summary>지정된 오류를 사용하여 <see cref="T:System.ComponentModel.Win32Exception" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="error">이 예외와 관련된 Win32 오류 코드입니다. </param>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor(System.Int32,System.String)">
+      <summary>지정된 오류 및 자세한 설명을 사용하여 <see cref="T:System.ComponentModel.Win32Exception" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="error">이 예외와 관련된 Win32 오류 코드입니다. </param>
+      <param name="message">오류에 대한 자세한 설명입니다. </param>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor(System.String)">
+      <summary>지정된 자세한 설명을 사용하여 <see cref="T:System.ComponentModel.Win32Exception" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+      <param name="message">오류에 대한 자세한 설명입니다.</param>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor(System.String,System.Exception)">
+      <summary>지정된 예외 및 자세한 설명을 사용하여 <see cref="T:System.ComponentModel.Win32Exception" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="message">오류에 대한 자세한 설명입니다.</param>
+      <param name="innerException">이 예외의 원인인 내부 예외에 대한 참조입니다.</param>
+    </member>
+    <member name="P:System.ComponentModel.Win32Exception.NativeErrorCode">
+      <summary>이 예외와 관련된 Win32 오류 코드를 가져옵니다.</summary>
+      <returns>이 예외와 관련된 Win32 오류 코드입니다.</returns>
+    </member>
+  </members>
+</doc>

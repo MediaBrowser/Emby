@@ -9,9 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SocketHttpListener</RootNamespace>
     <AssemblyName>SocketHttpListener</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,6 +35,12 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MediaBrowser.Common, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaBrowser.Common.3.5.0\lib\netstandard2.0\MediaBrowser.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="MediaBrowser.Model, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaBrowser.Common.3.5.0\lib\netstandard2.0\MediaBrowser.Model.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -58,6 +66,7 @@
     <Compile Include="Mask.cs" />
     <Compile Include="MessageEventArgs.cs" />
     <Compile Include="Net\AuthenticationSchemeSelector.cs" />
+    <Compile Include="Net\AuthenticationTypes.cs" />
     <Compile Include="Net\BoundaryType.cs" />
     <Compile Include="Net\ChunkedInputStream.cs" />
     <Compile Include="Net\ChunkStream.cs" />
@@ -66,11 +75,15 @@
     <Compile Include="Net\HttpConnection.cs" />
     <Compile Include="Net\HttpEndPointListener.cs" />
     <Compile Include="Net\HttpEndPointManager.cs" />
+    <Compile Include="Net\HttpKnownHeaderNames.cs" />
     <Compile Include="Net\HttpListener.cs" />
     <Compile Include="Net\HttpListenerBasicIdentity.cs" />
     <Compile Include="Net\HttpListenerContext.cs" />
+    <Compile Include="Net\HttpListenerContext.Managed.cs" />
     <Compile Include="Net\HttpListenerPrefixCollection.cs" />
     <Compile Include="Net\HttpListenerRequest.cs" />
+    <Compile Include="Net\HttpListenerRequest.Managed.cs" />
+    <Compile Include="Net\HttpListenerRequestUriBuilder.cs" />
     <Compile Include="Net\HttpListenerResponse.Managed.cs" />
     <Compile Include="Net\HttpListenerResponse.cs" />
     <Compile Include="Net\HttpRequestStream.cs" />
@@ -82,11 +95,15 @@
     <Compile Include="Net\HttpStreamAsyncResult.cs" />
     <Compile Include="Net\HttpVersion.cs" />
     <Compile Include="Net\ListenerPrefix.cs" />
-    <Compile Include="Net\SocketAcceptor.cs" />
+    <Compile Include="Net\UriScheme.cs" />
     <Compile Include="Net\WebHeaderCollection.cs" />
     <Compile Include="Net\WebHeaderEncoding.cs" />
     <Compile Include="Net\WebSockets\HttpListenerWebSocketContext.cs" />
+    <Compile Include="Net\WebSockets\HttpWebSocket.cs" />
+    <Compile Include="Net\WebSockets\HttpWebSocket.Managed.cs" />
+    <Compile Include="Net\WebSockets\WebSocketCloseStatus.cs" />
     <Compile Include="Net\WebSockets\WebSocketContext.cs" />
+    <Compile Include="Net\WebSockets\WebSocketValidate.cs" />
     <Compile Include="Opcode.cs" />
     <Compile Include="PayloadData.cs" />
     <Compile Include="Primitives\ITextEncoding.cs" />
@@ -98,14 +115,7 @@
     <Compile Include="WebSocketFrame.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MediaBrowser.Common\MediaBrowser.Common.csproj">
-      <Project>{9142eefa-7570-41e1-bfcc-468bb571af2f}</Project>
-      <Name>MediaBrowser.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MediaBrowser.Model\MediaBrowser.Model.csproj">
-      <Project>{7eeeb4bb-f3e8-48fc-b4c5-70f0fff8329b}</Project>
-      <Name>MediaBrowser.Model</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

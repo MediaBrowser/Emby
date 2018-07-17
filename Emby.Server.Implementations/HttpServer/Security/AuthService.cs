@@ -39,14 +39,12 @@ namespace Emby.Server.Implementations.HttpServer.Security
         /// </summary>
         public string HtmlRedirect { get; set; }
 
-        public void Authenticate(IRequest request,
-            IAuthenticationAttributes authAttribtues)
+        public void Authenticate(IRequest request, IAuthenticationAttributes authAttribtues)
         {
             ValidateUser(request, authAttribtues);
         }
 
-        private void ValidateUser(IRequest request,
-            IAuthenticationAttributes authAttribtues)
+        private void ValidateUser(IRequest request, IAuthenticationAttributes authAttribtues)
         {
             // This code is executed before the service
             var auth = AuthorizationContext.GetAuthorizationInfo(request);
@@ -61,11 +59,14 @@ namespace Emby.Server.Implementations.HttpServer.Security
                 }
             }
 
-            var user = string.IsNullOrEmpty(auth.UserId)
-                ? null
-                : UserManager.GetUserById(auth.UserId);
+            if (authAttribtues.AllowLocalOnly && !request.IsLocal)
+            {
+                throw new SecurityException("Operation not found.");
+            }
 
-            if (user == null & !string.IsNullOrEmpty(auth.UserId))
+            var user = auth.User;
+
+            if (user == null & !auth.UserId.Equals(Guid.Empty))
             {
                 throw new SecurityException("User with Id " + auth.UserId + " not found");
             }
@@ -141,6 +142,10 @@ namespace Emby.Server.Implementations.HttpServer.Security
             {
                 return true;
             }
+            if (authAttribtues.AllowLocalOnly && request.IsLocal)
+            {
+                return true;
+            }
 
             return false;
         }
@@ -157,12 +162,17 @@ namespace Emby.Server.Implementations.HttpServer.Security
                 return true;
             }
 
+            if (authAttribtues.AllowLocalOnly && request.IsLocal)
+            {
+                return true;
+            }
+
             if (string.IsNullOrEmpty(auth.Token))
             {
                 return true;
             }
 
-            if (tokenInfo != null && string.IsNullOrEmpty(tokenInfo.UserId))
+            if (tokenInfo != null && tokenInfo.UserId.Equals(Guid.Empty))
             {
                 return true;
             }
@@ -230,7 +240,7 @@ namespace Emby.Server.Implementations.HttpServer.Security
 
             var info = GetTokenInfo(request);
 
-            if (info == null || !info.IsActive)
+            if (info == null)
             {
                 throw new SecurityException("Access token is invalid or expired.");
             }

@@ -49,7 +49,7 @@ namespace MediaBrowser.Api
         [ApiMember(Name = "PackageType", Description = "Optional package type filter (System/UserInstalled)", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
         public string PackageType { get; set; }
 
-        [ApiMember(Name = "TargetSystems", Description = "Optional. Filter by target system type. Allows multiple, comma delimited.", IsRequired = false, DataType = "string", ParameterType = "path", Verb = "GET", AllowMultiple = true)]
+        [ApiMember(Name = "TargetSystems", Description = "Optional. Filter by target system type. Allows multiple, comma delimited.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET", AllowMultiple = true)]
         public string TargetSystems { get; set; }
 
         [ApiMember(Name = "IsPremium", Description = "Optional. Filter by premium status", IsRequired = false, DataType = "boolean", ParameterType = "query", Verb = "GET")]
@@ -244,7 +244,7 @@ namespace MediaBrowser.Api
         /// <param name="request">The request.</param>
         public void Delete(CancelPackageInstallation request)
         {
-            var info = _installationManager.CurrentInstallations.FirstOrDefault(i => string.Equals(i.Item1.Id, request.Id));
+            var info = _installationManager.CurrentInstallations.FirstOrDefault(i => i.Item1.Id.Equals(request.Id));
 
             if (info != null)
             {

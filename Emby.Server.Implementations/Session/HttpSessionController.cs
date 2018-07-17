@@ -48,7 +48,7 @@ namespace Emby.Server.Implementations.Session
         {
             get
             {
-                return (DateTime.UtcNow - Session.LastActivityDate).TotalMinutes <= 10;
+                return (DateTime.UtcNow - Session.LastActivityDate).TotalMinutes <= 5;
             }
         }
 
@@ -62,28 +62,24 @@ namespace Emby.Server.Implementations.Session
             return SendMessage(name, messageId, new Dictionary<string, string>(), cancellationToken);
         }
 
-        private async Task SendMessage(string name, string messageId, Dictionary<string, string> args, CancellationToken cancellationToken)
+        private Task SendMessage(string name, string messageId, Dictionary<string, string> args, CancellationToken cancellationToken)
         {
             args["messageId"] = messageId;
             var url = PostUrl + "/" + name + ToQueryString(args);
 
-            using ((await _httpClient.Post(new HttpRequestOptions
+            return SendRequest(new HttpRequestOptions
             {
                 Url = url,
                 CancellationToken = cancellationToken,
                 BufferContent = false
-
-            }).ConfigureAwait(false)))
-            {
-
-            }
+            });
         }
 
         private Task SendPlayCommand(PlayRequest command, string messageId, CancellationToken cancellationToken)
         {
             var dict = new Dictionary<string, string>();
 
-            dict["ItemIds"] = string.Join(",", command.ItemIds);
+            dict["ItemIds"] = string.Join(",", command.ItemIds.Select(i => i.ToString("N")).ToArray());
 
             if (command.StartPositionTicks.HasValue)
             {
@@ -182,12 +178,15 @@ namespace Emby.Server.Implementations.Session
                 }
             }
 
-            return _httpClient.Post(new HttpRequestOptions
+            return SendRequest(options);
+        }
+
+        private async Task SendRequest(HttpRequestOptions options)
+        {
+            using (var response = await _httpClient.Post(options).ConfigureAwait(false))
             {
-                Url = url,
-                CancellationToken = cancellationToken,
-                BufferContent = false
-            });
+
+            }
         }
 
         private string ToQueryString(Dictionary<string, string> nvc)

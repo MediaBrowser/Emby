@@ -1,4 +1,6 @@
 {
+    "PlaybackSettings": "Playback settings",
+    "SubtitleSettings": "Subtitle settings",
     "MessageUnlockAppWithPurchaseOrSupporter": "D\u00e9verrouillez cette fonctionnalit\u00e9 avec un petit achat unique ou avec un abonnement Emby Premiere actif.",
     "MessageUnlockAppWithSupporter": "D\u00e9verrouillez cette fonctionnalit\u00e9 avec un abonnement Emby Premi\u00e8re actif.",
     "MessageToValidateSupporter": "Si vous avez un abonnement Emby Premi\u00e8re actif, assurez-vous d'avoir install\u00e9 Emby Premi\u00e8re sur le tableau de bord de votre serveur Emby, auquel vous pouvez acc\u00e9der en cliquant sur Emby Premi\u00e8re dans le menu principal.",
@@ -33,6 +35,7 @@
     "HeaderWakeServer": "Wake Server",
     "AttemptingWakeServer": "Attempting to wake server. Please wait...",
     "WakeServerSuccess": "Success!",
+    "HeaderCustomizeHomeScreen": "Customize Home Screen",
     "WakeServerError": "Wake On LAN packets were sent to your server machine, but we're unable to connect to your Emby Server. Your machine may need a little more time to wake, or Emby Server may not be actively running on the machine.",
     "Sunday": "Dimanche",
     "Monday": "Lundi",
@@ -47,6 +50,7 @@
     "LabelSortOrder": "Sort order:",
     "HeaderPhotoAlbums": "Photo Albums",
     "Photos": "Photos",
+    "HeaderAppearsOn": "Appears On",
     "List": "List",
     "RecordSeries": "Record series",
     "HeaderCinemaMode": "Mode Cin\u00e9ma",
@@ -250,7 +254,7 @@
     "Continuing": "Continuing",
     "Ended": "Ended",
     "HeaderEnabledFields": "Enabled Fields",
-    "HeaderEnabledFieldsHelp": "Uncheck a field to lock it and prevent it's data from being changed.",
+    "HeaderEnabledFieldsHelp": "Uncheck a field to lock it and prevent its data from being changed.",
     "Backdrops": "Backdrops",
     "Images": "Images",
     "Runtime": "Runtime",
@@ -306,7 +310,8 @@
     "ConfirmDeleteItems": "Deleting these items will delete them from both the file system and your media library. Are you sure you wish to continue?",
     "PleaseRestartServerName": "Please restart Emby Server - {0}.",
     "LabelSyncJobName": "Sync job name:",
-    "SyncJobCreated": "Sync job created",
+    "SyncingDots": "Syncing...",
+    "ConvertingDots": "Converting...",
     "LabelQuality": "Quality:",
     "LabelSyncNoTargetsHelp": "It looks like you don't currently have any apps that support offline downloading.",
     "DownloadingDots": "Downloading...",
@@ -547,6 +552,7 @@
     "Absolute": "Absolute",
     "Smart": "Smart",
     "Small": "Small",
+    "Smaller": "Smaller",
     "Medium": "Medium",
     "Large": "Large",
     "ExtraLarge": "Extra large",
@@ -677,5 +683,7 @@
     "ColorSpace": "Color space",
     "ColorTransfer": "Color transfer",
     "VideoRange": "Video range",
-    "SeriesDisplayOrderHelp": "Order episodes by air date, dvd order, or absolute numbering."
+    "SeriesDisplayOrderHelp": "Order episodes by air date, dvd order, or absolute numbering.",
+    "PlaybackSettingsIntro": "To configure default playback settings, stop video playback, then click your user icon in the top right section of the app.",
+    "SubtitleSettingsIntro": "To configure default subtitle appearance and language settings, stop video playback, then click your user icon in the top right section of the app."
 }

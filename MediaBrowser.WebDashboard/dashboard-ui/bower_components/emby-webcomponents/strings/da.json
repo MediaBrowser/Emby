@@ -1,4 +1,6 @@
 {
+    "PlaybackSettings": "Playback settings",
+    "SubtitleSettings": "Subtitle settings",
     "MessageUnlockAppWithPurchaseOrSupporter": "L\u00e5s op for dette feature med en lille enkeltst\u00e5ende betaling, eller med et aktivt Emby Premiere abonnement.",
     "MessageUnlockAppWithSupporter": "L\u00e5s op for dette feature med et aktivt Emby Premiere abonnement.",
     "MessageToValidateSupporter": "Hvis du har et aktivt Emby Premiere abonnement, skal du v\u00e6re sikker p\u00e5 at Emby Premiere er konfigureret i dit Emby Server-kontrolpanel, som kan tilg\u00e5es ved at klikke p\u00e5 Emby Premiere i hovedmenuen.",
@@ -33,6 +35,7 @@
     "HeaderWakeServer": "Wake Server",
     "AttemptingWakeServer": "Attempting to wake server. Please wait...",
     "WakeServerSuccess": "Success!",
+    "HeaderCustomizeHomeScreen": "Customize Home Screen",
     "WakeServerError": "Wake On LAN packets were sent to your server machine, but we're unable to connect to your Emby Server. Your machine may need a little more time to wake, or Emby Server may not be actively running on the machine.",
     "Sunday": "S\u00f8ndag",
     "Monday": "Mandag",
@@ -47,6 +50,7 @@
     "LabelSortOrder": "Sort order:",
     "HeaderPhotoAlbums": "Photo Albums",
     "Photos": "Photos",
+    "HeaderAppearsOn": "Appears On",
     "List": "List",
     "RecordSeries": "Optag serie",
     "HeaderCinemaMode": "Biograftilstand",
@@ -306,7 +310,8 @@
     "ConfirmDeleteItems": "Sletning af disse emner vil b\u00e5de fjerne dem fra filsystemet og dit mediebibliotek. Er du sikker p\u00e5 at du vil forts\u00e6tte?",
     "PleaseRestartServerName": "Genstart venligst Emby Server - {0}.",
     "LabelSyncJobName": "Navn til synkroniserings job:",
-    "SyncJobCreated": "Sync job created",
+    "SyncingDots": "Syncing...",
+    "ConvertingDots": "Converting...",
     "LabelQuality": "Kvalitet:",
     "LabelSyncNoTargetsHelp": "It looks like you don't currently have any apps that support offline downloading.",
     "DownloadingDots": "Downloading...",
@@ -547,6 +552,7 @@
     "Absolute": "Absolute",
     "Smart": "Smart",
     "Small": "Small",
+    "Smaller": "Smaller",
     "Medium": "Medium",
     "Large": "Large",
     "ExtraLarge": "Extra large",
@@ -677,5 +683,7 @@
     "ColorSpace": "Color space",
     "ColorTransfer": "Color transfer",
     "VideoRange": "Video range",
-    "SeriesDisplayOrderHelp": "Order episodes by air date, dvd order, or absolute numbering."
+    "SeriesDisplayOrderHelp": "Order episodes by air date, dvd order, or absolute numbering.",
+    "PlaybackSettingsIntro": "To configure default playback settings, stop video playback, then click your user icon in the top right section of the app.",
+    "SubtitleSettingsIntro": "To configure default subtitle appearance and language settings, stop video playback, then click your user icon in the top right section of the app."
 }

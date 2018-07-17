@@ -1,0 +1,707 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.ObjectModel</name>
+  </assembly>
+  <members>
+    <member name="T:System.Collections.ObjectModel.KeyedCollection`2">
+      <summary>Предоставляет абстрактный базовый класс для коллекции, ключи которой внедрены в значения.</summary>
+      <typeparam name="TKey">Тип ключей в коллекции.</typeparam>
+      <typeparam name="TItem">Тип элементов в коллекции.</typeparam>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />, в котором используется функция сравнения по умолчанию.</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.#ctor(System.Collections.Generic.IEqualityComparer{`0})">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />, в котором используется указанная функция сравнения.</summary>
+      <param name="comparer">Реализация универсального интерфейса <see cref="T:System.Collections.Generic.IEqualityComparer`1" />, которая может использоваться при сравнении ключей, или null, чтобы использовать компаратор по умолчанию для типа ключа, полученного из <see cref="P:System.Collections.Generic.EqualityComparer`1.Default" />.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.#ctor(System.Collections.Generic.IEqualityComparer{`0},System.Int32)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />, который использует заданную функцию сравнения и создает словарь поиска при превышении заданного порога.</summary>
+      <param name="comparer">Реализация универсального интерфейса <see cref="T:System.Collections.Generic.IEqualityComparer`1" />, которая может использоваться при сравнении ключей, или null, чтобы использовать компаратор по умолчанию для типа ключа, полученного из <see cref="P:System.Collections.Generic.EqualityComparer`1.Default" />.</param>
+      <param name="dictionaryCreationThreshold">Количество элементов, которое может содержать коллекция без создания словаря поиска (при значении 0 словарь поиска создается при добавлении первого элемента), или –1, чтобы определить, что словарь поиска не будет создаться никогда.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="dictionaryCreationThreshold" /> is less than –1.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.ChangeItemKey(`1,`0)">
+      <summary>Изменяет ключ, связанный с указанным элементом в словаре поиска.</summary>
+      <param name="item">Элемент, ключ которого требуется изменить.</param>
+      <param name="newKey">Новый ключ для <paramref name="item" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="item" /> is null.-or-<paramref name="key" /> is null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="item" /> is not found.-or-<paramref name="key" /> already exists in the <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.ClearItems">
+      <summary>Удаляет все элементы из коллекции <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />.</summary>
+    </member>
+    <member name="P:System.Collections.ObjectModel.KeyedCollection`2.Comparer">
+      <summary>Получает универсальный компаратор, используемый для определения равенства ключей в коллекции.</summary>
+      <returns>Реализация универсального интерфейса <see cref="T:System.Collections.Generic.IEqualityComparer`1" />, используемого для определения равенства ключей в коллекции.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.Contains(`0)">
+      <summary>Определяет, содержится ли в коллекции элемент с указанным ключом.</summary>
+      <returns>true, если <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> содержит элемент с указанным ключом, в противном случае — false.</returns>
+      <param name="key">Ключ, который требуется найти в <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> is null.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.KeyedCollection`2.Dictionary">
+      <summary>Возвращает словарь поиска <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />.</summary>
+      <returns>Словарь поиска коллекции <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />, если он существует; в противном случае — значение null.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.GetKeyForItem(`1)">
+      <summary>При реализации в производном классе извлекает ключ из указанного элемента.</summary>
+      <returns>Ключ для указанного элемента.</returns>
+      <param name="item">Элемент, из которого нужно извлечь ключ.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.InsertItem(System.Int32,`1)">
+      <summary>Добавляет элемент в список <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> в позиции с указанным индексом.</summary>
+      <param name="index">Индекс (с нуля), по которому следует вставить параметр <paramref name="item" />.</param>
+      <param name="item">Вставляемый объект.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> is less than 0.-or-<paramref name="index" /> is greater than <see cref="P:System.Collections.ObjectModel.Collection`1.Count" />.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.KeyedCollection`2.Item(`0)">
+      <summary>Возвращает элемент с указанным ключом. </summary>
+      <returns>Элемент с указанным ключом.Если элемент с указанным ключом не найден, выдается исключение.</returns>
+      <param name="key">Ключ элемента, который требуется получить.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> is null.</exception>
+      <exception cref="T:System.Collections.Generic.KeyNotFoundException">An element with the specified key does not exist in the collection.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.Remove(`0)">
+      <summary>Удаляет элемент с указанным ключом из <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />.</summary>
+      <returns>Значение true, если элемент успешно удален; в противном случае — значение false.Этот метод также возвращает false, если элемент <paramref name="key" /> не найден в коллекции <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />.</returns>
+      <param name="key">Ключ элемента, который требуется удалить.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> is null.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.RemoveItem(System.Int32)">
+      <summary>Удаляет элемент списка <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> с указанным индексом.</summary>
+      <param name="index">Индекс элемента, который должен быть удален.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.SetItem(System.Int32,`1)">
+      <summary>Заменяет элемент по заданному индексу указанным элементом.</summary>
+      <param name="index">Индекс (с нуля) заменяемого элемента.</param>
+      <param name="item">Новый элемент.</param>
+    </member>
+    <member name="T:System.Collections.ObjectModel.ObservableCollection`1">
+      <summary>Представляет коллекцию динамических данных, обеспечивающих выдачу уведомления при получении и удалении элементов или при обновлении всего списка.</summary>
+      <typeparam name="T">Тип элементов в коллекции.</typeparam>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Collections.ObjectModel.ObservableCollection`1" />.</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+      <summary>Инициализирует новый экземпляр <see cref="T:System.Collections.ObjectModel.ObservableCollection`1" />, который содержит элементы, скопированные из указанного коллекции.</summary>
+      <param name="collection">Коллекция, из которой копируются элементы.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="collection" /> не может иметь значения null.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.BlockReentrancy">
+      <summary>Запрещает реентерабельные попытки изменения этой коллекции.</summary>
+      <returns>Объект <see cref="T:System.IDisposable" />, который может быть использован для уничтожения объекта.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.CheckReentrancy">
+      <summary>Проведите проверку на реентерабельные попытки изменения этой коллекции.</summary>
+      <exception cref="T:System.InvalidOperationException">Если был выполнен вызов метода <see cref="M:System.Collections.ObjectModel.ObservableCollection`1.BlockReentrancy" />, возвращаемое значение <see cref="T:System.IDisposable" /> которого ещё не было уничтожено.Как правило, это означает проведение дополнительных попыток изменения этой коллекции во время события <see cref="E:System.Collections.ObjectModel.ObservableCollection`1.CollectionChanged" />.Однако это зависит от того, когда производные классы осуществляют вызов метода <see cref="M:System.Collections.ObjectModel.ObservableCollection`1.BlockReentrancy" />.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.ClearItems">
+      <summary>Удаляет все элементы из коллекции.</summary>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ObservableCollection`1.CollectionChanged">
+      <summary>Происходит, когда элемент добавляется, удаляется, изменяется или перемещается, а также при обновлении всего списка.</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.InsertItem(System.Int32,`0)">
+      <summary>Вставляет элемент в коллекцию по указанному индексу.</summary>
+      <param name="index">Индекс (с нуля), по которому вставляется <paramref name="item" />.</param>
+      <param name="item">Объект, который нужно вставить.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.Move(System.Int32,System.Int32)">
+      <summary>Перемещает элемент по указанному индексу на новое местоположение в коллекции.</summary>
+      <param name="oldIndex">Начинающийся с нуля индекс, указывающий местоположение элемента, который требуется переместить.</param>
+      <param name="newIndex">Начинающийся с нуля индекс, указывающий новое местоположение элемента.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.MoveItem(System.Int32,System.Int32)">
+      <summary>Перемещает элемент по указанному индексу на новое местоположение в коллекции.</summary>
+      <param name="oldIndex">Начинающийся с нуля индекс, указывающий местоположение элемента, который требуется переместить.</param>
+      <param name="newIndex">Начинающийся с нуля индекс, указывающий новое местоположение элемента.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+      <summary>Вызывает событие <see cref="E:System.Collections.ObjectModel.ObservableCollection`1.CollectionChanged" /> с предоставленными аргументами.</summary>
+      <param name="e">Аргументы вызванного события.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs)">
+      <summary>Вызывает событие <see cref="E:System.Collections.ObjectModel.ObservableCollection`1.PropertyChanged" /> с предоставленными аргументами.</summary>
+      <param name="e">Аргументы вызванного события.</param>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ObservableCollection`1.PropertyChanged">
+      <summary>Возникает при смене значения свойства.</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.RemoveItem(System.Int32)">
+      <summary>Удаляет элемент по указанному индексу коллекции.</summary>
+      <param name="index">Индекс (с нуля) элемента, который требуется удалить.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.SetItem(System.Int32,`0)">
+      <summary>Заменяет элемент по указанному индексу.</summary>
+      <param name="index">Индекс (с нуля) элемента, который требуется заменить.</param>
+      <param name="item">Новое значение элемента по указанному индексу.</param>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ObservableCollection`1.System#ComponentModel#INotifyPropertyChanged#PropertyChanged">
+      <summary>Возникает при смене значения свойства.</summary>
+    </member>
+    <member name="T:System.Collections.ObjectModel.ReadOnlyDictionary`2">
+      <summary>Представляет универсальную коллекцию пар "ключ-значение", доступную только для чтения.</summary>
+      <typeparam name="TKey">Тип ключей в словаре.</typeparam>
+      <typeparam name="TValue">Тип значений в словаре.</typeparam>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.#ctor(System.Collections.Generic.IDictionary{`0,`1})">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" />, который является оболочкой для указанного словаря.</summary>
+      <param name="dictionary">Словарь, для которого создается класс-оболочка.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ContainsKey(`0)">
+      <summary>Определяет, содержится ли в словаре элемент с указанным ключом.</summary>
+      <returns>true, если в словаре содержится элемент с указанным ключом; в противном случае — false.</returns>
+      <param name="key">Ключ, который нужно найти в словаре.</param>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.Count">
+      <summary>Получает количество элементов словаря.</summary>
+      <returns>Количество элементов словаря.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.Dictionary">
+      <summary>Получает словарь, упакованный в данный объект <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" />.</summary>
+      <returns>Словарь, упакованный в данный объект.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.GetEnumerator">
+      <summary>Возвращает перечислитель, осуществляющий перебор элементов списка <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" />.</summary>
+      <returns>Перечислитель, который может использоваться для выполнения итерации по элементам коллекции.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.Item(`0)">
+      <summary>Получает элемент с указанным ключом.</summary>
+      <returns>Элемент, имеющий указанный ключ.</returns>
+      <param name="key">Ключ элемента, который требуется получить.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="key" /> имеет значение null.</exception>
+      <exception cref="T:System.Collections.Generic.KeyNotFoundException">Свойство получено и параметр <paramref name="key" /> не найден.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.Keys">
+      <summary>Получает коллекцию ключей, содержащую ключи словаря.</summary>
+      <returns>Коллекция ключей, содержащая ключи словаря.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#Add(System.Collections.Generic.KeyValuePair{`0,`1})">
+      <summary>Во всех случаях создает исключение <see cref="T:System.NotSupportedException" />.</summary>
+      <param name="item">Объект, добавляемый в словарь.</param>
+      <exception cref="T:System.NotSupportedException">Во всех случаях.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#Clear">
+      <summary>Во всех случаях создает исключение <see cref="T:System.NotSupportedException" />.</summary>
+      <exception cref="T:System.NotSupportedException">Во всех случаях.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#Contains(System.Collections.Generic.KeyValuePair{`0,`1})">
+      <summary>Определяет, содержится ли в словаре указанное значение.</summary>
+      <returns>Значение true, если элемент <paramref name="item" /> найден в словаре; в противном случае — значение false.</returns>
+      <param name="item">Объект, который требуется найти в словаре.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#CopyTo(System.Collections.Generic.KeyValuePair{`0,`1}[],System.Int32)">
+      <summary>Копирует элементы словаря в массив, начиная с указанного индекса массива.</summary>
+      <param name="array">Одномерный массив, в который копируются элементы словаря.Индексация в массиве должна вестись с нуля.</param>
+      <param name="arrayIndex">Индекс (с нуля) в массиве <paramref name="array" />, с которого начинается копирование.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="array" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="arrayIndex" /> меньше 0.</exception>
+      <exception cref="T:System.ArgumentException">Массив <paramref name="array" /> является многомерным.– или –Число элементов исходного словаря превышает размер доступного места в массиве <paramref name="array" /> от индекса <paramref name="arrayIndex" /> до конца массива.– или –Тип <paramref name="T" /> не может быть автоматически приведен к типу массива назначения <paramref name="array" />.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#IsReadOnly">
+      <summary>Получает значение, указывающее, действительно ли словарь доступен только для чтения.</summary>
+      <returns>true во всех случаях.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#Remove(System.Collections.Generic.KeyValuePair{`0,`1})">
+      <summary>Во всех случаях создает исключение <see cref="T:System.NotSupportedException" />.</summary>
+      <returns>Во всех случаях создает исключение <see cref="T:System.NotSupportedException" />.</returns>
+      <param name="item">Объект, удаляемый из словаря.</param>
+      <exception cref="T:System.NotSupportedException">Во всех случаях.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Add(`0,`1)">
+      <summary>Во всех случаях создает исключение <see cref="T:System.NotSupportedException" />.</summary>
+      <param name="key">Объект, используемый в качестве ключа добавляемого элемента.</param>
+      <param name="value">Объект, используемый в качестве значения добавляемого элемента.</param>
+      <exception cref="T:System.NotSupportedException">Во всех случаях.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Item(`0)">
+      <summary>Получает элемент с указанным ключом.</summary>
+      <returns>Элемент, имеющий указанный ключ.</returns>
+      <param name="key">Ключ элемента, который требуется получить или задать.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="key" /> имеет значение null.</exception>
+      <exception cref="T:System.Collections.Generic.KeyNotFoundException">Свойство получено и параметр <paramref name="key" /> не найден.</exception>
+      <exception cref="T:System.NotSupportedException">Свойство установлено.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Keys">
+      <summary>Получает коллекцию, содержащую ключи словаря.</summary>
+      <returns>Коллекция, содержащая ключи объекта, который реализует объект <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" />.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Remove(`0)">
+      <summary>Во всех случаях создает исключение <see cref="T:System.NotSupportedException" />.</summary>
+      <returns>Во всех случаях создает исключение <see cref="T:System.NotSupportedException" />.</returns>
+      <param name="key">Ключ удаляемого элемента.</param>
+      <exception cref="T:System.NotSupportedException">Во всех случаях.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Values">
+      <summary>Возвращает коллекцию, содержащую значения в словаре.</summary>
+      <returns>Коллекция, содержащая значения в объекте, который реализует объект <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" />.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey@TValue}#Keys">
+      <summary>Получает перечисляемую коллекция, содержащую ключи в словаре только для чтения. </summary>
+      <returns>Перечисляемая коллекция, содержащая ключи в словаре только для чтения.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey@TValue}#Values">
+      <summary>Получает перечисляемую коллекцию, содержащая значения в словаре только для чтения.</summary>
+      <returns>Перечисляемая коллекция, содержащая значения в словаре только для чтения.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>Копирует элементы словаря в массив, начиная с указанного индекса массива.</summary>
+      <param name="array">Одномерный массив, в который копируются элементы словаря.Индексация в массиве должна вестись с нуля.</param>
+      <param name="index">Индекс (с нуля) в массиве <paramref name="array" />, с которого начинается копирование. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="array" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> меньше нуля. </exception>
+      <exception cref="T:System.ArgumentException">Массив <paramref name="array" /> является многомерным.– или – Число элементов исходного словаря превышает размер доступного места в массиве <paramref name="array" /> от индекса <paramref name="index" /> до конца массива.– или – Тип исходного словаря нельзя автоматически привести к типу целевого массива <paramref name="array" /><paramref name="." /></exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#ICollection#IsSynchronized">
+      <summary>Получает значение, указывающее, является ли доступ к словарю синхронизированным (потокобезопасным).</summary>
+      <returns>Значение true, если доступ к словарю является синхронизированным (потокобезопасным); в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#ICollection#SyncRoot">
+      <summary>Получает объект, который может использоваться для синхронизации доступа к словарю.</summary>
+      <returns>Объект, который может использоваться для синхронизации доступа к словарю.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Add(System.Object,System.Object)">
+      <summary>Во всех случаях создает исключение <see cref="T:System.NotSupportedException" />.</summary>
+      <param name="key">Ключ добавляемого элемента. </param>
+      <param name="value">Добавляемое значение элемента. </param>
+      <exception cref="T:System.NotSupportedException">Во всех случаях.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Clear">
+      <summary>Во всех случаях создает исключение <see cref="T:System.NotSupportedException" />.</summary>
+      <exception cref="T:System.NotSupportedException">Во всех случаях.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Contains(System.Object)">
+      <summary>Определяет, содержится ли в словаре элемент с указанным ключом.</summary>
+      <returns>true, если в словаре содержится элемент с указанным ключом; в противном случае — false.</returns>
+      <param name="key">Ключ, который нужно найти в словаре.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="key" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#GetEnumerator">
+      <summary>Возвращает перечислитель для словаря.</summary>
+      <returns>Перечислитель для словаря.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#IsFixedSize">
+      <summary>Получает значение, указывающее, имеет ли словарь фиксированный размер.</summary>
+      <returns>Значение true, если словарь имеет фиксированный размер; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#IsReadOnly">
+      <summary>Получает значение, указывающее, действительно ли словарь доступен только для чтения.</summary>
+      <returns>true во всех случаях.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Item(System.Object)">
+      <summary>Получает элемент с указанным ключом.</summary>
+      <returns>Элемент, имеющий указанный ключ.</returns>
+      <param name="key">Ключ элемента, который требуется получить или задать. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="key" /> имеет значение null. </exception>
+      <exception cref="T:System.NotSupportedException">Свойство установлено.– или – Свойство установлено, ключ <paramref name="key" /> не существует в коллекции и словарь имеет фиксированный размер. </exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Keys">
+      <summary>Получает коллекцию, содержащую ключи словаря.</summary>
+      <returns>Коллекция, содержащая ключи словаря.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Remove(System.Object)">
+      <summary>Во всех случаях создает исключение <see cref="T:System.NotSupportedException" />.</summary>
+      <param name="key">Ключ удаляемого элемента. </param>
+      <exception cref="T:System.NotSupportedException">Во всех случаях.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Values">
+      <summary>Возвращает коллекцию, содержащую значения в словаре.</summary>
+      <returns>Коллекция, содержащая значения в словаре.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Возвращает перечислитель, осуществляющий перебор коллекции.</summary>
+      <returns>Перечислитель, который может использоваться для выполнения итерации по элементам коллекции.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.TryGetValue(`0,`1@)">
+      <summary>Извлекает значение, связанное с заданным ключом.</summary>
+      <returns>Значение true, если объект, реализующий <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" />, содержит элемент с указанным ключом, в противном случае — значение false.</returns>
+      <param name="key">Ключ, значение которого извлекается.</param>
+      <param name="value">Этот метод возвращает значение, связанное с указанным ключом, если он найден; в противном случае — значение по умолчанию для данного типа параметра <paramref name="value" />.Этот параметр передается без инициализации.</param>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.Values">
+      <summary>Возвращает коллекцию, содержащую значения в словаре.</summary>
+      <returns>Коллекция, содержащая значения в объекте, который реализует объект <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" />.</returns>
+    </member>
+    <member name="T:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection">
+      <summary>Представляет коллекцию ключей объекта <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" />, доступную только для чтения.</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.CopyTo(`0[],System.Int32)">
+      <summary>Копирует элементы коллекции в массив, начиная с указанного индекса массива.</summary>
+      <param name="array">Одномерный массив, куда копируются элементы из данной коллекции.Индексация в массиве должна вестись с нуля.</param>
+      <param name="arrayIndex">Индекс (с нуля) в массиве <paramref name="array" />, с которого начинается копирование.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="array" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="arrayIndex" /> меньше 0.</exception>
+      <exception cref="T:System.ArgumentException">Массив <paramref name="array" /> является многомерным.– или –Число элементов исходной коллекции превышает размер доступного места в массиве <paramref name="array" /> от индекса <paramref name="arrayIndex" /> до конца массива.– или –Тип <paramref name="T" /> не может быть автоматически приведен к типу массива назначения <paramref name="array" />.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.Count">
+      <summary>Получает количество элементов коллекции.</summary>
+      <returns>Количество элементов коллекции.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.GetEnumerator">
+      <summary>Возвращает перечислитель, выполняющий перебор элементов коллекции.</summary>
+      <returns>Перечислитель, который может использоваться для выполнения итерации по элементам коллекции.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#Generic#ICollection{T}#Add(`0)">
+      <summary>Во всех случаях создает исключение <see cref="T:System.NotSupportedException" />.</summary>
+      <param name="item">Объект для добавления в коллекцию.</param>
+      <exception cref="T:System.NotSupportedException">Во всех случаях.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#Generic#ICollection{T}#Clear">
+      <summary>Во всех случаях создает исключение <see cref="T:System.NotSupportedException" />.</summary>
+      <exception cref="T:System.NotSupportedException">Во всех случаях.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#Generic#ICollection{T}#Contains(`0)">
+      <summary>Определяет, содержит ли коллекция указанное значение.</summary>
+      <returns>Значение true, если элемент <paramref name="item" /> найден в коллекции; в противном случае — значение false.</returns>
+      <param name="item">Объект, который требуется найти в коллекции.</param>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#Generic#ICollection{T}#IsReadOnly">
+      <summary>Получает значение, указывающее, действительно ли коллекция доступна только для чтения.</summary>
+      <returns>true во всех случаях.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#Generic#ICollection{T}#Remove(`0)">
+      <summary>Во всех случаях создает исключение <see cref="T:System.NotSupportedException" />.</summary>
+      <returns>Значение true, если элемент <paramref name="item" /> был успешно удален из коллекции; в противном случае — значение false.Этот метод также возвращает значение false, если элемент <paramref name="item" /> не найден в исходной коллекции.</returns>
+      <param name="item">Объект, удаляемый из коллекции.</param>
+      <exception cref="T:System.NotSupportedException">Во всех случаях.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>Копирует элементы коллекции в массив, начиная с указанного индекса массива.</summary>
+      <param name="array">Одномерный массив, куда копируются элементы из данной коллекции.Индексация в массиве должна вестись с нуля.</param>
+      <param name="index">Индекс (с нуля) в массиве <paramref name="array" />, с которого начинается копирование.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="array" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> меньше 0.</exception>
+      <exception cref="T:System.ArgumentException">Массив <paramref name="array" /> является многомерным.– или –Число элементов исходной коллекции превышает размер доступного места в массиве <paramref name="array" /> от индекса <paramref name="index" /> до конца массива.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>Получает значение, указывающее, является ли доступ к коллекции синхронизированным (потокобезопасным).</summary>
+      <returns>Значение true, если доступ к коллекции синхронизирован (потокобезопасен); в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#ICollection#SyncRoot">
+      <summary>Получает объект, который может использоваться для синхронизации доступа к коллекции.</summary>
+      <returns>Объект, который можно использовать для синхронизации доступа к коллекции.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Возвращает перечислитель, выполняющий перебор элементов коллекции.</summary>
+      <returns>Перечислитель, который может использоваться для выполнения итерации по элементам коллекции.</returns>
+    </member>
+    <member name="T:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection">
+      <summary>Представляет коллекцию значений объекта <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" />, доступную только для чтения.</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.CopyTo(`1[],System.Int32)">
+      <summary>Копирует элементы коллекции в массив, начиная с указанного индекса массива.</summary>
+      <param name="array">Одномерный массив, куда копируются элементы из данной коллекции.Индексация в массиве должна вестись с нуля.</param>
+      <param name="arrayIndex">Индекс (с нуля) в массиве <paramref name="array" />, с которого начинается копирование.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="array" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="arrayIndex" /> меньше 0.</exception>
+      <exception cref="T:System.ArgumentException">Массив <paramref name="array" /> является многомерным.– или –Число элементов исходной коллекции превышает размер доступного места в массиве <paramref name="array" /> от индекса <paramref name="arrayIndex" /> до конца массива.– или –Тип <paramref name="T" /> не может быть автоматически приведен к типу массива назначения <paramref name="array" />.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.Count">
+      <summary>Получает количество элементов коллекции.</summary>
+      <returns>Количество элементов коллекции.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.GetEnumerator">
+      <summary>Возвращает перечислитель, выполняющий перебор элементов коллекции.</summary>
+      <returns>Перечислитель, который может использоваться для выполнения итерации по элементам коллекции.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#Generic#ICollection{T}#Add(`1)">
+      <summary>Во всех случаях создает исключение <see cref="T:System.NotSupportedException" />.</summary>
+      <param name="item">Объект для добавления в коллекцию.</param>
+      <exception cref="T:System.NotSupportedException">Во всех случаях.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#Generic#ICollection{T}#Clear">
+      <summary>Во всех случаях создает исключение <see cref="T:System.NotSupportedException" />.</summary>
+      <exception cref="T:System.NotSupportedException">Во всех случаях.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#Generic#ICollection{T}#Contains(`1)">
+      <summary>Определяет, содержит ли коллекция указанное значение.</summary>
+      <returns>Значение true, если элемент <paramref name="item" /> найден в коллекции; в противном случае — значение false.</returns>
+      <param name="item">Объект, который требуется найти в коллекции.</param>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#Generic#ICollection{T}#IsReadOnly">
+      <summary>Получает значение, указывающее, действительно ли коллекция доступна только для чтения.</summary>
+      <returns>true во всех случаях.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#Generic#ICollection{T}#Remove(`1)">
+      <summary>Во всех случаях создает исключение <see cref="T:System.NotSupportedException" />.</summary>
+      <returns>Значение true, если элемент <paramref name="item" /> был успешно удален из коллекции; в противном случае — значение false.Этот метод также возвращает значение false, если элемент <paramref name="item" /> не найден в исходной коллекции.</returns>
+      <param name="item">Объект, удаляемый из коллекции.</param>
+      <exception cref="T:System.NotSupportedException">Во всех случаях.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>Копирует элементы коллекции в массив, начиная с указанного индекса массива.</summary>
+      <param name="array">Одномерный массив, куда копируются элементы из данной коллекции.Индексация в массиве должна вестись с нуля.</param>
+      <param name="index">Индекс (с нуля) в массиве <paramref name="array" />, с которого начинается копирование.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="array" /> имеет значение null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Значение параметра <paramref name="index" /> меньше 0.</exception>
+      <exception cref="T:System.ArgumentException">Массив <paramref name="array" /> является многомерным.– или –Число элементов исходной коллекции превышает размер доступного места в массиве <paramref name="array" /> от индекса <paramref name="index" /> до конца массива.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>Получает значение, указывающее, является ли доступ к коллекции синхронизированным (потокобезопасным).</summary>
+      <returns>Значение true, если доступ к коллекции синхронизирован (потокобезопасен); в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#ICollection#SyncRoot">
+      <summary>Получает объект, который может использоваться для синхронизации доступа к коллекции.</summary>
+      <returns>Объект, который можно использовать для синхронизации доступа к коллекции.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Возвращает перечислитель, выполняющий перебор элементов коллекции.</summary>
+      <returns>Перечислитель, который может использоваться для выполнения итерации по элементам коллекции.</returns>
+    </member>
+    <member name="T:System.Collections.ObjectModel.ReadOnlyObservableCollection`1">
+      <summary>Представляет коллекцию <see cref="T:System.Collections.ObjectModel.ObservableCollection`1" />, доступную только для чтения.</summary>
+      <typeparam name="T">Тип элементов в коллекции.</typeparam>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.#ctor(System.Collections.ObjectModel.ObservableCollection{`0})">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Collections.ObjectModel.ReadOnlyObservableCollection`1" />, который служит оболочкой для указанной коллекции <see cref="T:System.Collections.ObjectModel.ObservableCollection`1" />.</summary>
+      <param name="list">Объект <see cref="T:System.Collections.ObjectModel.ObservableCollection`1" />, с помощью которого создается данный экземпляр класса <see cref="T:System.Collections.ObjectModel.ReadOnlyObservableCollection`1" />.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="list" /> имеет значение null.</exception>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.CollectionChanged">
+      <summary>Возникает, когда элемент добавлен или удален.</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+      <summary>Вызывает событие <see cref="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.CollectionChanged" />, используя предоставленные аргументы.</summary>
+      <param name="args">Аргументы вызванного события.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs)">
+      <summary>Вызывает событие <see cref="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.PropertyChanged" />, используя предоставленные аргументы.</summary>
+      <param name="args">Аргументы вызванного события.</param>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.PropertyChanged">
+      <summary>Возникает при смене значения свойства.</summary>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.System#Collections#Specialized#INotifyCollectionChanged#CollectionChanged">
+      <summary>Возникает при изменении коллекции.</summary>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.System#ComponentModel#INotifyPropertyChanged#PropertyChanged">
+      <summary>Возникает при смене значения свойства.</summary>
+    </member>
+    <member name="T:System.Collections.Specialized.INotifyCollectionChanged">
+      <summary>Уведомляет прослушивателя о динамических изменениях, происходящих, например, при добавлении и удалении элементов или обновлении всего списка.</summary>
+    </member>
+    <member name="E:System.Collections.Specialized.INotifyCollectionChanged.CollectionChanged">
+      <summary>Возникает при изменении коллекции.</summary>
+    </member>
+    <member name="T:System.Collections.Specialized.NotifyCollectionChangedAction">
+      <summary>Описывает действие, вызванное событием <see cref="E:System.Collections.Specialized.INotifyCollectionChanged.CollectionChanged" />. </summary>
+    </member>
+    <member name="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add">
+      <summary>Один или несколько элементов были добавлены к коллекции.</summary>
+    </member>
+    <member name="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move">
+      <summary>Один или несколько элементов были перемещены внутри коллекции.</summary>
+    </member>
+    <member name="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove">
+      <summary>Один или несколько элементов были удалены из коллекции.</summary>
+    </member>
+    <member name="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace">
+      <summary>Один или несколько элементов были заменены в коллекции.</summary>
+    </member>
+    <member name="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset">
+      <summary>Содержимое коллекции было существенно изменено.</summary>
+    </member>
+    <member name="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs">
+      <summary>Предоставляет данные для события <see cref="E:System.Collections.Specialized.INotifyCollectionChanged.CollectionChanged" />.</summary>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction)">
+      <summary>Инициализирует новый экземпляр <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" />, описывающий изменение <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />.</summary>
+      <param name="action">Действие, вызвавшее событие.Должно быть установлено значение <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />.</param>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Collections.IList)">
+      <summary>Инициализирует новый экземпляр <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" />, описывающий изменение для нескольких элементов.</summary>
+      <param name="action">Действие, вызвавшее событие.Возможными значениями являются: <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />, <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add" /> или <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove" />.</param>
+      <param name="changedItems">Элементы, на которые повлияло изменение.</param>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Collections.IList,System.Collections.IList)">
+      <summary>Инициализирует новый экземпляр <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" />, описывающий изменение <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" /> для нескольких элементов.</summary>
+      <param name="action">Действие, вызвавшее событие.Возможным значением может быть только <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" />.</param>
+      <param name="newItems">Новые элементы, заменяющие исходные элементы.</param>
+      <param name="oldItems">Исходные элементы, которые были заменены.</param>
+      <exception cref="T:System.ArgumentException">Если параметр <paramref name="action" /> не имеет значения Replace.</exception>
+      <exception cref="T:System.ArgumentNullException">Если параметр <paramref name="oldItems" /> или <paramref name="newItems" /> имеет значение null.</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Collections.IList,System.Collections.IList,System.Int32)">
+      <summary>Инициализирует новый экземпляр <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" />, описывающий изменение <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" /> для нескольких элементов.</summary>
+      <param name="action">Действие, вызвавшее событие.Возможным значением может быть только <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" />.</param>
+      <param name="newItems">Новые элементы, заменяющие исходные элементы.</param>
+      <param name="oldItems">Исходные элементы, которые были заменены.</param>
+      <param name="startingIndex">Индекс первого элемента заменяемых элементов.</param>
+      <exception cref="T:System.ArgumentException">Если параметр <paramref name="action" /> не имеет значения Replace.</exception>
+      <exception cref="T:System.ArgumentNullException">Если параметр <paramref name="oldItems" /> или <paramref name="newItems" /> имеет значение null.</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Collections.IList,System.Int32)">
+      <summary>Инициализирует новый экземпляр <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" />, описывающий изменение для нескольких элементов или изменение <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />.</summary>
+      <param name="action">Действие, вызвавшее событие.Возможными значениями являются: <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />, <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add" /> или <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove" />.</param>
+      <param name="changedItems">Элементы, на которые повлияло изменение.</param>
+      <param name="startingIndex">Индекс, указывающий, где произошло изменение.</param>
+      <exception cref="T:System.ArgumentException">Если параметр <paramref name="action" /> не имеет значения Reset, Add или Remove, или если параметр <paramref name="action" /> имеет значение Reset и либо параметр <paramref name="changedItems" /> не равен null, либо параметр <paramref name="startingIndex" /> не равен -1, или если действием является Add или Remove и параметр <paramref name="startingIndex" /> меньше -1.</exception>
+      <exception cref="T:System.ArgumentNullException">Если <paramref name="action" /> имеет значение Add или Remove и параметр <paramref name="changedItems" /> равен nul.</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Collections.IList,System.Int32,System.Int32)">
+      <summary>Инициализирует новый экземпляр <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" />, описывающий изменение <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" /> для нескольких элементов.</summary>
+      <param name="action">Действие, вызвавшее событие.Возможным значением может быть только <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" />.</param>
+      <param name="changedItems">Элементы, на которые повлияло изменение.</param>
+      <param name="index">Новый индекс для измененных элементов.</param>
+      <param name="oldIndex">Старый индекс для измененных элементов.</param>
+      <exception cref="T:System.ArgumentException">Если параметр <paramref name="action" /> не имеет значения Move или если параметр <paramref name="index" /> меньше 0.</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Object)">
+      <summary>Инициализирует новый экземпляр <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" />, описывающий изменение для одного элемента.</summary>
+      <param name="action">Действие, вызвавшее событие.Возможными значениями являются: <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />, <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add" /> или <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove" />.</param>
+      <param name="changedItem">Элемент, на которое повлияло изменение.</param>
+      <exception cref="T:System.ArgumentException">Если параметр <paramref name="action" /> не имеет значения Reset, Add или Remove или если параметр <paramref name="action" /> имеет значение Reset и параметр <paramref name="changedItem" /> не равен null.</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Object,System.Int32)">
+      <summary>Инициализирует новый экземпляр <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" />, описывающий изменение для одного элемента.</summary>
+      <param name="action">Действие, вызвавшее событие.Возможными значениями являются: <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />, <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add" /> или <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove" />.</param>
+      <param name="changedItem">Элемент, на которое повлияло изменение.</param>
+      <param name="index">Индекс, указывающий, где произошло изменение.</param>
+      <exception cref="T:System.ArgumentException">Если параметр <paramref name="action" /> не имеет значения Reset, Add или Remove или если параметр <paramref name="action" /> имеет значение Reset и либо параметр <paramref name="changedItems" /> не равен null, либо параметр <paramref name="index" /> не равен -1.</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Object,System.Int32,System.Int32)">
+      <summary>Инициализирует новый экземпляр <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" />, описывающий изменение <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" /> для одного элемента.</summary>
+      <param name="action">Действие, вызвавшее событие.Возможным значением может быть только <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" />.</param>
+      <param name="changedItem">Элемент, на который повлияло изменение.</param>
+      <param name="index">Новый индекс для измененного элемента.</param>
+      <param name="oldIndex">Старый индекс для измененного элемента.</param>
+      <exception cref="T:System.ArgumentException">Если параметр <paramref name="action" /> не имеет значения Move или если параметр <paramref name="index" /> меньше 0.</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Object,System.Object)">
+      <summary>Инициализирует новый экземпляр <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" />, описывающий изменение <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" /> для одного элемента.</summary>
+      <param name="action">Действие, вызвавшее событие.Возможным значением может быть только <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" />.</param>
+      <param name="newItem">Новый элемент, заменяющий исходный элемент.</param>
+      <param name="oldItem">Исходный элемент, который был заменен.</param>
+      <exception cref="T:System.ArgumentException">Если параметр <paramref name="action" /> не имеет значения Replace.</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Object,System.Object,System.Int32)">
+      <summary>Инициализирует новый экземпляр <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" />, описывающий изменение <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" /> для одного элемента.</summary>
+      <param name="action">Действие, вызвавшее событие.Возможным значением может быть <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" />.</param>
+      <param name="newItem">Новый элемент, заменяющий исходный элемент.</param>
+      <param name="oldItem">Исходный элемент, который был заменен.</param>
+      <param name="index">Индекс заменяемого элемента.</param>
+      <exception cref="T:System.ArgumentException">Если параметр <paramref name="action" /> не имеет значения Replace.</exception>
+    </member>
+    <member name="P:System.Collections.Specialized.NotifyCollectionChangedEventArgs.Action">
+      <summary>Получает действие, вызвавшее событие. </summary>
+      <returns>Значение <see cref="T:System.Collections.Specialized.NotifyCollectionChangedAction" />, описывающее действие, вызвавшее событие.</returns>
+    </member>
+    <member name="P:System.Collections.Specialized.NotifyCollectionChangedEventArgs.NewItems">
+      <summary>Возвращает список новых элементов, участвующих в изменении.</summary>
+      <returns>Список новых элементов, участвующих в изменении.</returns>
+    </member>
+    <member name="P:System.Collections.Specialized.NotifyCollectionChangedEventArgs.NewStartingIndex">
+      <summary>Получает индекс, при котором произошло изменение.</summary>
+      <returns>Индекс (с нуля), при котором произошло изменение.</returns>
+    </member>
+    <member name="P:System.Collections.Specialized.NotifyCollectionChangedEventArgs.OldItems">
+      <summary>Получает список элементов, на которые повлияло действие <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" />, Remove или Move.</summary>
+      <returns>Список элементов, на которые повлияло действие <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" />, Remove или Move.</returns>
+    </member>
+    <member name="P:System.Collections.Specialized.NotifyCollectionChangedEventArgs.OldStartingIndex">
+      <summary>Получает индекс, при котором произошло действие <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" />, Remove или Replace.</summary>
+      <returns>Индекс (с нуля), при котором произошло действие <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" />, Remove или Replace.</returns>
+    </member>
+    <member name="T:System.Collections.Specialized.NotifyCollectionChangedEventHandler">
+      <summary>Представляет метод, обрабатывающий событие <see cref="E:System.Collections.Specialized.INotifyCollectionChanged.CollectionChanged" />. </summary>
+      <param name="sender">Объект, вызвавший событие.</param>
+      <param name="e">Сведения о событии.</param>
+    </member>
+    <member name="T:System.ComponentModel.DataErrorsChangedEventArgs">
+      <summary>Предоставляет данные для события <see cref="E:System.ComponentModel.INotifyDataErrorInfo.ErrorsChanged" />.</summary>
+    </member>
+    <member name="M:System.ComponentModel.DataErrorsChangedEventArgs.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.ComponentModel.DataErrorsChangedEventArgs" />.</summary>
+      <param name="propertyName">Имя свойства, которое содержит ошибку.  null или <see cref="F:System.String.Empty" />, если ошибка уровня объекта.</param>
+    </member>
+    <member name="P:System.ComponentModel.DataErrorsChangedEventArgs.PropertyName">
+      <summary>Получает имя свойства с ошибкой.</summary>
+      <returns>Имя свойства с ошибкой.Значение null или <see cref="F:System.String.Empty" />, если это ошибка уровня объекта.</returns>
+    </member>
+    <member name="T:System.ComponentModel.INotifyDataErrorInfo">
+      <summary>Определяет члены, которые могут реализовываться классами сущностей данных для поддержки пользовательской синхронной и асинхронной проверки.</summary>
+    </member>
+    <member name="E:System.ComponentModel.INotifyDataErrorInfo.ErrorsChanged">
+      <summary>Происходит при изменении ошибок проверки для свойства или для сущности в целом. </summary>
+    </member>
+    <member name="M:System.ComponentModel.INotifyDataErrorInfo.GetErrors(System.String)">
+      <summary>Получает ошибки проверки для указанного свойства или для сущности в целом.</summary>
+      <returns>Ошибки проверки для свойства или сущности.</returns>
+      <param name="propertyName">Имя свойства, для которого извлекаются ошибки проверки, либо значение null или <see cref="F:System.String.Empty" /> для извлечения ошибок на уровне сущности.</param>
+    </member>
+    <member name="P:System.ComponentModel.INotifyDataErrorInfo.HasErrors">
+      <summary>Получает значение, указывающее, содержит ли сущность ошибки проверки. </summary>
+      <returns>Значение true, если сущность в данный момент содержит ошибки проверки; в противном случае — значение false.</returns>
+    </member>
+    <member name="T:System.ComponentModel.INotifyPropertyChanged">
+      <summary>Уведомляет клиентов об изменении значения свойства.</summary>
+    </member>
+    <member name="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged">
+      <summary>Возникает при смене значения свойства.</summary>
+    </member>
+    <member name="T:System.ComponentModel.INotifyPropertyChanging">
+      <summary>Уведомляет клиента об изменении значения свойства.</summary>
+    </member>
+    <member name="E:System.ComponentModel.INotifyPropertyChanging.PropertyChanging">
+      <summary>Происходит при изменении значения свойства.</summary>
+    </member>
+    <member name="T:System.ComponentModel.PropertyChangedEventArgs">
+      <summary>Предоставляет данные для события <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged" />.</summary>
+    </member>
+    <member name="M:System.ComponentModel.PropertyChangedEventArgs.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.ComponentModel.PropertyChangedEventArgs" />.</summary>
+      <param name="propertyName">Имя измененного свойства. </param>
+    </member>
+    <member name="P:System.ComponentModel.PropertyChangedEventArgs.PropertyName">
+      <summary>Получает имя измененного свойства.</summary>
+      <returns>Имя измененного свойства.</returns>
+    </member>
+    <member name="T:System.ComponentModel.PropertyChangedEventHandler">
+      <summary>Представляет метод, который обрабатывает событие <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged" />, возникающее при изменении свойства компонента.</summary>
+      <param name="sender">Источник события. </param>
+      <param name="e">Объект <see cref="T:System.ComponentModel.PropertyChangedEventArgs" />, содержащий данные события. </param>
+    </member>
+    <member name="T:System.ComponentModel.PropertyChangingEventArgs">
+      <summary>Предоставляет данные для события <see cref="E:System.ComponentModel.INotifyPropertyChanging.PropertyChanging" />. </summary>
+    </member>
+    <member name="M:System.ComponentModel.PropertyChangingEventArgs.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.ComponentModel.PropertyChangingEventArgs" />. </summary>
+      <param name="propertyName">Имя свойства, значение которого изменяется.</param>
+    </member>
+    <member name="P:System.ComponentModel.PropertyChangingEventArgs.PropertyName">
+      <summary>Возвращает имя свойства, значение которого изменяется.</summary>
+      <returns>Имя свойства, значение которого изменяется.</returns>
+    </member>
+    <member name="T:System.ComponentModel.PropertyChangingEventHandler">
+      <summary>Представляет метод, который будет обрабатывать событие <see cref="E:System.ComponentModel.INotifyPropertyChanging.PropertyChanging" /> интерфейса <see cref="T:System.ComponentModel.INotifyPropertyChanging" />. </summary>
+      <param name="sender">Источник события. </param>
+      <param name="e">Объект <see cref="T:System.ComponentModel.PropertyChangingEventArgs" />, содержащий данные, которые относятся к событию.</param>
+    </member>
+    <member name="T:System.Windows.Input.ICommand">
+      <summary>Определяет команду.</summary>
+    </member>
+    <member name="M:System.Windows.Input.ICommand.CanExecute(System.Object)">
+      <summary>Определяет метод, который определяет, может ли данная команда выполняться в ее текущем состоянии.</summary>
+      <returns>Значение true, если команда может быть выполнена; в противном случае — значение false..</returns>
+      <param name="parameter">Данные, используемые данной командой.Если для данной команды не требуется передача данных, можно присвоить этому объекту значение null.</param>
+    </member>
+    <member name="E:System.Windows.Input.ICommand.CanExecuteChanged">
+      <summary>Происходит при изменениях, влияющих на то, должна выполняться данная команда или нет.</summary>
+    </member>
+    <member name="M:System.Windows.Input.ICommand.Execute(System.Object)">
+      <summary>Определяет метод, вызываемый при вызове данной команды.</summary>
+      <param name="parameter">Данные, используемые данной командой.Если для данной команды не требуется передача данных, можно присвоить этому объекту значение null.</param>
+    </member>
+  </members>
+</doc>

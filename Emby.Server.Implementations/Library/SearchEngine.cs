@@ -31,11 +31,11 @@ namespace Emby.Server.Implementations.Library
             _logger = logManager.GetLogger("SearchEngine");
         }
 
-        public async Task<QueryResult<SearchHintInfo>> GetSearchHints(SearchQuery query)
+        public QueryResult<SearchHintInfo> GetSearchHints(SearchQuery query)
         {
             User user = null;
 
-            if (string.IsNullOrEmpty(query.UserId))
+            if (query.UserId.Equals(Guid.Empty))
             {
             }
             else
@@ -43,26 +43,22 @@ namespace Emby.Server.Implementations.Library
                 user = _userManager.GetUserById(query.UserId);
             }
 
-            var results = await GetSearchHints(query, user).ConfigureAwait(false);
-
-            var searchResultArray = results.ToArray();
-            results = searchResultArray;
-
-            var count = searchResultArray.Length;
+            var results = GetSearchHints(query, user);
+            var totalRecordCount = results.Count;
 
             if (query.StartIndex.HasValue)
             {
-                results = results.Skip(query.StartIndex.Value);
+                results = results.Skip(query.StartIndex.Value).ToList();
             }
 
             if (query.Limit.HasValue)
             {
-                results = results.Take(query.Limit.Value);
+                results = results.Take(query.Limit.Value).ToList();
             }
 
             return new QueryResult<SearchHintInfo>
             {
-                TotalRecordCount = count,
+                TotalRecordCount = totalRecordCount,
 
                 Items = results.ToArray()
             };
@@ -83,7 +79,7 @@ namespace Emby.Server.Implementations.Library
         /// <param name="user">The user.</param>
         /// <returns>IEnumerable{SearchHintResult}.</returns>
         /// <exception cref="System.ArgumentNullException">searchTerm</exception>
-        private Task<IEnumerable<SearchHintInfo>> GetSearchHints(SearchQuery query, User user)
+        private List<SearchHintInfo> GetSearchHints(SearchQuery query, User user)
         {
             var searchTerm = query.SearchTerm;
 
@@ -93,10 +89,6 @@ namespace Emby.Server.Implementations.Library
             }
 
             searchTerm = searchTerm.Trim().RemoveDiacritics();
-
-            searchTerm = this.FixUnicodeChars(searchTerm);
-
-            var terms = GetWords(searchTerm);
 
             var excludeItemTypes = query.ExcludeItemTypes.ToList();
             var includeItemTypes = (query.IncludeItemTypes ?? Array.Empty<string>()).ToList();
@@ -168,13 +160,13 @@ namespace Emby.Server.Implementations.Library
 
             var searchQuery = new InternalItemsQuery(user)
             {
-                NameContains = searchTerm,
+                SearchTerm = searchTerm,
                 ExcludeItemTypes = excludeItemTypes.ToArray(excludeItemTypes.Count),
                 IncludeItemTypes = includeItemTypes.ToArray(includeItemTypes.Count),
                 Limit = query.Limit,
                 IncludeItemsByName = string.IsNullOrEmpty(query.ParentId),
-                ParentId = string.IsNullOrEmpty(query.ParentId) ? (Guid?)null : new Guid(query.ParentId),
-                OrderBy = new[] { new Tuple<string, SortOrder>(ItemSortBy.SortName, SortOrder.Ascending) },
+                ParentId = string.IsNullOrEmpty(query.ParentId) ? Guid.Empty : new Guid(query.ParentId),
+                OrderBy = new[] { new ValueTuple<string, SortOrder>(ItemSortBy.SortName, SortOrder.Ascending) },
                 Recursive = true,
 
                 IsKids = query.IsKids,
@@ -200,11 +192,11 @@ namespace Emby.Server.Implementations.Library
 
             if (searchQuery.IncludeItemTypes.Length == 1 && string.Equals(searchQuery.IncludeItemTypes[0], "MusicArtist", StringComparison.OrdinalIgnoreCase))
             {
-                if (searchQuery.ParentId.HasValue)
+                if (!searchQuery.ParentId.Equals(Guid.Empty))
                 {
-                    searchQuery.AncestorIds = new Guid[] { searchQuery.ParentId.Value };
+                    searchQuery.AncestorIds = new[] { searchQuery.ParentId };
                 }
-                searchQuery.ParentId = null;
+                searchQuery.ParentId = Guid.Empty;
                 searchQuery.IncludeItemsByName = true;
                 searchQuery.IncludeItemTypes = Array.Empty<string>();
                 mediaItems = _libraryManager.GetAllArtists(searchQuery).Items.Select(i => i.Item1).ToList();
@@ -214,128 +206,11 @@ namespace Emby.Server.Implementations.Library
                 mediaItems = _libraryManager.GetItemList(searchQuery);
             }
 
-            var returnValue = mediaItems.Select(item =>
+            return mediaItems.Select(i => new SearchHintInfo
             {
-                var index = GetIndex(item.Name, searchTerm, terms);
+                Item = i
 
-                return new Tuple<BaseItem, string, int>(item, index.Item1, index.Item2);
-
-            }).OrderBy(i => i.Item3).ThenBy(i => i.Item1.SortName).Select(i => new SearchHintInfo
-            {
-                Item = i.Item1,
-                MatchedTerm = i.Item2
-            });
-
-            return Task.FromResult(returnValue);
-        }
-
-        /// <summary>
-        /// Gets the index.
-        /// </summary>
-        /// <param name="input">The input.</param>
-        /// <param name="searchInput">The search input.</param>
-        /// <param name="searchWords">The search input.</param>
-        /// <returns>System.Int32.</returns>
-        private Tuple<string, int> GetIndex(string input, string searchInput, List<string> searchWords)
-        {
-            if (string.IsNullOrEmpty(input))
-            {
-                throw new ArgumentNullException("input");
-            }
-
-            input = input.RemoveDiacritics();
-
-            if (string.Equals(input, searchInput, StringComparison.OrdinalIgnoreCase))
-            {
-                return new Tuple<string, int>(searchInput, 0);
-            }
-
-            var index = input.IndexOf(searchInput, StringComparison.OrdinalIgnoreCase);
-
-            if (index == 0)
-            {
-                return new Tuple<string, int>(searchInput, 1);
-            }
-            if (index > 0)
-            {
-                return new Tuple<string, int>(searchInput, 2);
-            }
-
-            var items = GetWords(input);
-
-            for (var i = 0; i < searchWords.Count; i++)
-            {
-                var searchTerm = searchWords[i];
-
-                for (var j = 0; j < items.Count; j++)
-                {
-                    var item = items[j];
-
-                    if (string.Equals(item, searchTerm, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return new Tuple<string, int>(searchTerm, 3 + (i + 1) * (j + 1));
-                    }
-
-                    index = item.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase);
-
-                    if (index == 0)
-                    {
-                        return new Tuple<string, int>(searchTerm, 4 + (i + 1) * (j + 1));
-                    }
-                    if (index > 0)
-                    {
-                        return new Tuple<string, int>(searchTerm, 5 + (i + 1) * (j + 1));
-                    }
-                }
-            }
-            return new Tuple<string, int>(null, -1);
-        }
-
-        /// <summary>
-        /// Gets the words.
-        /// </summary>
-        /// <param name="term">The term.</param>
-        /// <returns>System.String[][].</returns>
-        private List<string> GetWords(string term)
-        {
-            var stoplist = GetStopList().ToList();
-
-            return term.Split()
-                .Where(i => !string.IsNullOrWhiteSpace(i) && !stoplist.Contains(i, StringComparer.OrdinalIgnoreCase))
-                .ToList();
-        }
-
-        private string FixUnicodeChars(string buffer)
-        {
-            if (buffer.IndexOf('\u2013') > -1) buffer = buffer.Replace('\u2013', '-'); // en dash
-            if (buffer.IndexOf('\u2014') > -1) buffer = buffer.Replace('\u2014', '-'); // em dash
-            if (buffer.IndexOf('\u2015') > -1) buffer = buffer.Replace('\u2015', '-'); // horizontal bar
-            if (buffer.IndexOf('\u2017') > -1) buffer = buffer.Replace('\u2017', '_'); // double low line
-            if (buffer.IndexOf('\u2018') > -1) buffer = buffer.Replace('\u2018', '\''); // left single quotation mark
-            if (buffer.IndexOf('\u2019') > -1) buffer = buffer.Replace('\u2019', '\''); // right single quotation mark
-            if (buffer.IndexOf('\u201a') > -1) buffer = buffer.Replace('\u201a', ','); // single low-9 quotation mark
-            if (buffer.IndexOf('\u201b') > -1) buffer = buffer.Replace('\u201b', '\''); // single high-reversed-9 quotation mark
-            if (buffer.IndexOf('\u201c') > -1) buffer = buffer.Replace('\u201c', '\"'); // left double quotation mark
-            if (buffer.IndexOf('\u201d') > -1) buffer = buffer.Replace('\u201d', '\"'); // right double quotation mark
-            if (buffer.IndexOf('\u201e') > -1) buffer = buffer.Replace('\u201e', '\"'); // double low-9 quotation mark
-            if (buffer.IndexOf('\u2026') > -1) buffer = buffer.Replace("\u2026", "..."); // horizontal ellipsis
-            if (buffer.IndexOf('\u2032') > -1) buffer = buffer.Replace('\u2032', '\''); // prime
-            if (buffer.IndexOf('\u2033') > -1) buffer = buffer.Replace('\u2033', '\"'); // double prime
-            if (buffer.IndexOf('\u0060') > -1) buffer = buffer.Replace('\u0060', '\''); // grave accent
-            if (buffer.IndexOf('\u00B4') > -1) buffer = buffer.Replace('\u00B4', '\''); // acute accent
-
-            return buffer;
-        }
-
-        private IEnumerable<string> GetStopList()
-        {
-            return new[]
-            {
-                "the",
-                "a",
-                "of",
-                "an"
-            };
+            }).ToList();
         }
     }
 }

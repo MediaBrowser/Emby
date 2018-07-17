@@ -119,13 +119,12 @@ namespace MediaBrowser.WebDashboard.Api
         private readonly ILocalizationManager _localization;
         private readonly IJsonSerializer _jsonSerializer;
         private readonly IAssemblyInfo _assemblyInfo;
-        private readonly IMemoryStreamFactory _memoryStreamFactory;
         private IResourceFileManager _resourceFileManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DashboardService" /> class.
         /// </summary>
-        public DashboardService(IServerApplicationHost appHost, IResourceFileManager resourceFileManager, IServerConfigurationManager serverConfigurationManager, IFileSystem fileSystem, ILocalizationManager localization, IJsonSerializer jsonSerializer, IAssemblyInfo assemblyInfo, ILogger logger, IHttpResultFactory resultFactory, IMemoryStreamFactory memoryStreamFactory)
+        public DashboardService(IServerApplicationHost appHost, IResourceFileManager resourceFileManager, IServerConfigurationManager serverConfigurationManager, IFileSystem fileSystem, ILocalizationManager localization, IJsonSerializer jsonSerializer, IAssemblyInfo assemblyInfo, ILogger logger, IHttpResultFactory resultFactory)
         {
             _appHost = appHost;
             _serverConfigurationManager = serverConfigurationManager;
@@ -135,7 +134,6 @@ namespace MediaBrowser.WebDashboard.Api
             _assemblyInfo = assemblyInfo;
             _logger = logger;
             _resultFactory = resultFactory;
-            _memoryStreamFactory = memoryStreamFactory;
             _resourceFileManager = resourceFileManager;
         }
 
@@ -313,12 +311,13 @@ namespace MediaBrowser.WebDashboard.Api
 
             // Bounce them to the startup wizard if it hasn't been completed yet
             if (!_serverConfigurationManager.Configuration.IsStartupWizardCompleted &&
-                path.IndexOf("wizard", StringComparison.OrdinalIgnoreCase) == -1 && GetPackageCreator(basePath).IsCoreHtml(path))
+                Request.RawUrl.IndexOf("wizard", StringComparison.OrdinalIgnoreCase) == -1 && 
+                GetPackageCreator(basePath).IsCoreHtml(path))
             {
                 // But don't redirect if an html import is being requested.
                 if (path.IndexOf("bower_components", StringComparison.OrdinalIgnoreCase) == -1)
                 {
-                    Request.Response.Redirect("wizardstart.html");
+                    Request.Response.Redirect("index.html?start=wizard#!/wizardstart.html");
                     return null;
                 }
             }
@@ -332,7 +331,7 @@ namespace MediaBrowser.WebDashboard.Api
                 !contentType.StartsWith("font/", StringComparison.OrdinalIgnoreCase))
             {
                 var stream = await GetResourceStream(basePath, path, localizationCulture).ConfigureAwait(false);
-                return _resultFactory.GetResult(stream, contentType);
+                return _resultFactory.GetResult(Request, stream, contentType);
             }
 
             TimeSpan? cacheDuration = null;
@@ -371,7 +370,7 @@ namespace MediaBrowser.WebDashboard.Api
 
         private PackageCreator GetPackageCreator(string basePath)
         {
-            return new PackageCreator(basePath, _fileSystem, _logger, _serverConfigurationManager, _memoryStreamFactory, _resourceFileManager);
+            return new PackageCreator(basePath, _fileSystem, _logger, _serverConfigurationManager, _resourceFileManager);
         }
 
         public async Task<object> Get(GetDashboardPackage request)
@@ -402,16 +401,14 @@ namespace MediaBrowser.WebDashboard.Api
                 CopyDirectory(inputPath, targetPath);
             }
 
-            string culture = null;
-
             var appVersion = _appHost.ApplicationVersion.ToString();
 
-            await DumpHtml(packageCreator, inputPath, targetPath, mode, culture, appVersion);
+            await DumpHtml(packageCreator, inputPath, targetPath, mode, appVersion);
 
             return "";
         }
 
-        private async Task DumpHtml(PackageCreator packageCreator, string source, string destination, string mode, string culture, string appVersion)
+        private async Task DumpHtml(PackageCreator packageCreator, string source, string destination, string mode, string appVersion)
         {
             foreach (var file in _fileSystem.GetFiles(source))
             {
@@ -422,13 +419,13 @@ namespace MediaBrowser.WebDashboard.Api
                     continue;
                 }
 
-                await DumpFile(packageCreator, filename, Path.Combine(destination, filename), mode, culture, appVersion).ConfigureAwait(false);
+                await DumpFile(packageCreator, filename, Path.Combine(destination, filename), mode, appVersion).ConfigureAwait(false);
             }
         }
 
-        private async Task DumpFile(PackageCreator packageCreator, string resourceVirtualPath, string destinationFilePath, string mode, string culture, string appVersion)
+        private async Task DumpFile(PackageCreator packageCreator, string resourceVirtualPath, string destinationFilePath, string mode, string appVersion)
         {
-            using (var stream = await packageCreator.GetResource(resourceVirtualPath, mode, culture, appVersion).ConfigureAwait(false))
+            using (var stream = await packageCreator.GetResource(resourceVirtualPath, mode, null, appVersion).ConfigureAwait(false))
             {
                 using (var fs = _fileSystem.GetFileStream(destinationFilePath, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.Read))
                 {

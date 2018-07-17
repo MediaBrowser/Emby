@@ -41,7 +41,14 @@
     <TranscodingProfile container="jpeg" type="Photo" estimateContentLength="false" enableMpegtsM2TsMode="false" transcodeSeekInfo="Auto" copyTimestamps="false" context="Streaming" enableSubtitlesInManifest="false" minSegments="0" segmentLength="0" breakOnNonKeyFrames="false" />
   </TranscodingProfiles>
   <ContainerProfiles />
-  <CodecProfiles />
+  <CodecProfiles>
+    <CodecProfile type="Audio" container="flac">
+      <Conditions>
+        <ProfileCondition condition="LessThanEqual" property="AudioSampleRate" value="96000" isRequired="true" />
+      </Conditions>
+      <ApplyConditions />
+    </CodecProfile>
+  </CodecProfiles>
   <ResponseProfiles />
   <SubtitleProfiles>
     <SubtitleProfile format="srt" method="External" />

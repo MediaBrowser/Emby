@@ -1,0 +1,1103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Reflection</name>
+  </assembly>
+  <members>
+    <member name="T:System.Reflection.AmbiguousMatchException">
+      <summary>Исключение, которое создается в случае, если после привязки к члену критерию привязки соответствуют несколько членов.Этот класс не наследуется.</summary>
+    </member>
+    <member name="M:System.Reflection.AmbiguousMatchException.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Reflection.AmbiguousMatchException" /> пустой строкой сообщения и корневым исключением-причиной, равным null.</summary>
+    </member>
+    <member name="M:System.Reflection.AmbiguousMatchException.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Reflection.AmbiguousMatchException" /> заданным сообщением в качестве строки сообщения и корневым исключением-причиной, равным null.</summary>
+      <param name="message">Строка, показывающая причину создания исключения. </param>
+    </member>
+    <member name="M:System.Reflection.AmbiguousMatchException.#ctor(System.String,System.Exception)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Reflection.AmbiguousMatchException" /> с заданными сообщением об ошибке и ссылкой на внутреннее исключение, которое стало причиной данного исключения.</summary>
+      <param name="message">Сообщение об ошибке с объяснением причин исключения. </param>
+      <param name="inner">Исключение, которое вызвало текущее исключение.Если значение параметра <paramref name="inner" /> не равно null, текущее исключение вызывается в блоке catch, обрабатывающем внутреннее исключение.</param>
+    </member>
+    <member name="T:System.Reflection.Assembly">
+      <summary>Представляет сборку, которая является модулем с возможностью многократного использования, поддержкой версий и встроенным механизмом описания общеязыковой исполняющей среды.</summary>
+    </member>
+    <member name="P:System.Reflection.Assembly.CustomAttributes">
+      <summary>Получает коллекцию, содержащую пользовательские атрибуты этой сборки.</summary>
+      <returns>Коллекция, содержащая пользовательские атрибуты этой сборки.</returns>
+    </member>
+    <member name="P:System.Reflection.Assembly.DefinedTypes">
+      <summary>Получает коллекцию типов, определенных в этой сборке.</summary>
+      <returns>Коллекция типов, определенных в этой сборке.</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.Equals(System.Object)">
+      <summary>Определяет равенство сборки и заданного объекта.</summary>
+      <returns>Значение true, если значение параметра <paramref name="o" /> равно данному экземпляру; в противном случае — значение false.</returns>
+      <param name="o">Объект, сравниваемый с данным экземпляром. </param>
+    </member>
+    <member name="P:System.Reflection.Assembly.ExportedTypes">
+      <summary>Получает коллекцию открытых типов, определенных в этой сборке и видимых за ее пределами.</summary>
+      <returns>Коллекция открытых типов, определенных в этой сборке и видимых за ее пределами.</returns>
+    </member>
+    <member name="P:System.Reflection.Assembly.FullName">
+      <summary>Получает отображаемое имя сборки.</summary>
+      <returns>Отображаемое имя сборки.</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetHashCode">
+      <summary>Возвращает хэш-код данного экземпляра.</summary>
+      <returns>Хэш-код в виде 32-разрядного целого числа со знаком.</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetManifestResourceInfo(System.String)">
+      <summary>Возвращает сведения о сохранении заданного ресурса.</summary>
+      <returns>Объект со сведениями о топологии ресурса или null, если ресурс не найден.</returns>
+      <param name="resourceName">Имя ресурса, зависящее от регистра. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="resourceName" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentException">Параметр <paramref name="resourceName" /> является пустой строкой (""). </exception>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetManifestResourceNames">
+      <summary>Возвращает имена всех ресурсов в этой сборке.</summary>
+      <returns>Массив, который содержит имена всех ресурсов.</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetManifestResourceStream(System.String)">
+      <summary>Загружает указанный ресурс манифеста из сборки.</summary>
+      <returns>Ресурс манифеста; или значение null, если при компиляции не были заданы ресурсы или ресурс не является видимым для вызывающего объекта.</returns>
+      <param name="name">Имя запрашиваемого ресурса манифеста, зависящее от регистра. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="name" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentException">Параметр <paramref name="name" /> является пустой строкой (""). </exception>
+      <exception cref="T:System.IO.FileLoadException">В .NET for Windows Store apps или переносимой библиотеки классов, перехватить исключение базового класса, <see cref="T:System.IO.IOException" />, вместо нее.Не удалось загрузить обнаруженный файл. </exception>
+      <exception cref="T:System.IO.FileNotFoundException">Файл <paramref name="name" /> не найден. </exception>
+      <exception cref="T:System.BadImageFormatException">Сборка, определенная параметром <paramref name="name" />, является недопустимой. </exception>
+      <exception cref="T:System.NotImplementedException">Длина ресурса превышает <see cref="F:System.Int64.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetName">
+      <summary>Получает имя <see cref="T:System.Reflection.AssemblyName" /> для этой сборки.</summary>
+      <returns>Объект, содержащий полностью проанализированное отображаемое имя для этой сборки.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetType(System.String)">
+      <summary>Возвращает объект <see cref="T:System.Type" /> с указанным именем в экземпляре сборки.</summary>
+      <returns>Объект, представляющий указанный класс, или null, если класс не найден.</returns>
+      <param name="name">Полное имя типа. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> недопустим. </exception>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="name" /> имеет значение null. </exception>
+      <exception cref="T:System.IO.FileNotFoundException">Для параметра <paramref name="name" /> требуется зависимая сборка, которую не удалось найти. </exception>
+      <exception cref="T:System.IO.FileLoadException">В .NET for Windows Store apps или переносимой библиотеки классов, перехватить исключение базового класса, <see cref="T:System.IO.IOException" />, вместо нее.Для параметра <paramref name="name" /> требуется зависимая сборка, которую удалось найти, однако не удалось загрузить.-или-Текущая сборка была загружена в контекст, предназначенный только для отражения, а для параметра <paramref name="name" /> требуется зависимая сборка, которая не была предварительно загружена. </exception>
+      <exception cref="T:System.BadImageFormatException">Для параметра <paramref name="name" /> требуется зависимая сборка, однако данный файл не является допустимой сборкой. -или-Для параметра <paramref name="name" /> требуется зависимая сборка, которая была скомпилирована для более поздней версии среды выполнения, чем загруженная в текущий момент версия. </exception>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetType(System.String,System.Boolean,System.Boolean)">
+      <summary>Возвращает объект <see cref="T:System.Type" /> с заданным именем в экземпляре сборки, с возможностями игнорировать регистр и вызвать исключение, если тип не найден.</summary>
+      <returns>Объект, представляющий указанный класс.</returns>
+      <param name="name">Полное имя типа. </param>
+      <param name="throwOnError">Значение true для создания исключения, если тип не найден, в обратном случае — значение false, в результате чего будет возвращено значение null. </param>
+      <param name="ignoreCase">Значение true, чтобы игнорировать регистр имени типа, в обратном случае — значение false. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> недопустим.-или- Длина параметра <paramref name="name" /> превышает 1024 символа. </exception>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="name" /> имеет значение null. </exception>
+      <exception cref="T:System.TypeLoadException">Параметр <paramref name="throwOnError" /> имеет значение true, при этом не удалось обнаружить заданный тип.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">Для параметра <paramref name="name" /> требуется зависимая сборка, которую не удалось найти. </exception>
+      <exception cref="T:System.IO.FileLoadException">Для параметра <paramref name="name" /> требуется зависимая сборка, которую удалось найти, однако не удалось загрузить.-или-Текущая сборка была загружена в контекст, предназначенный только для отражения, а для параметра <paramref name="name" /> требуется зависимая сборка, которая не была предварительно загружена. </exception>
+      <exception cref="T:System.BadImageFormatException">Для параметра <paramref name="name" /> требуется зависимая сборка, однако данный файл не является допустимой сборкой. -или-Для параметра <paramref name="name" /> требуется зависимая сборка, которая была скомпилирована для более поздней версии среды выполнения, чем загруженная в текущий момент версия.</exception>
+    </member>
+    <member name="P:System.Reflection.Assembly.IsDynamic">
+      <summary>Получает значение, определяющее, была ли текущая сборка создана динамически в текущем процессе с помощью отражения.</summary>
+      <returns>Значение true, если текущая сборка была создана динамически в текущем процессе; в противном случае — значение false.</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.Load(System.Reflection.AssemblyName)">
+      <summary>Загружает сборку с заданным именем <see cref="T:System.Reflection.AssemblyName" />.</summary>
+      <returns>Загруженная сборка.</returns>
+      <param name="assemblyRef">Объект, описывающий загружаемую сборку. </param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="assemblyRef" /> имеет значение null. </exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="assemblyRef" /> не найден. </exception>
+      <exception cref="T:System.IO.FileLoadException">В .NET for Windows Store apps или переносимой библиотеки классов, перехватить исключение базового класса, <see cref="T:System.IO.IOException" />, вместо нее.Не удалось загрузить обнаруженный файл. </exception>
+      <exception cref="T:System.BadImageFormatException">Сборка, определенная параметром <paramref name="assemblyRef" />, является недопустимой.-или-В настоящий момент загружена версия 2.0 среды CLR, а параметр <paramref name="assemblyRef" /> был скомпилирован в более поздней версии.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="*AllFiles*" PathDiscovery="*AllFiles*" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Reflection.Assembly.ManifestModule">
+      <summary>Возвращает модуль, содержащий манифест текущей сборки. </summary>
+      <returns>Модуль, содержащий манифест текущей сборки. </returns>
+    </member>
+    <member name="P:System.Reflection.Assembly.Modules">
+      <summary>Получает коллекцию, содержащую модули в этой сборке.</summary>
+      <returns>Коллекция, содержащая модули в этой сборке.</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.ToString">
+      <summary>Возвращает полное имя сборки, также называемое отображаемым именем.</summary>
+      <returns>Полное имя сборки или имя класса, если полное имя сборки не может быть определено.</returns>
+    </member>
+    <member name="T:System.Reflection.AssemblyContentType">
+      <summary>Предоставляет сведения о типе кода, содержащемся в сборке.</summary>
+    </member>
+    <member name="F:System.Reflection.AssemblyContentType.Default">
+      <summary>Сборка содержит код .NET Framework.</summary>
+    </member>
+    <member name="F:System.Reflection.AssemblyContentType.WindowsRuntime">
+      <summary>Сборка содержит код Среда выполнения Windows.</summary>
+    </member>
+    <member name="T:System.Reflection.AssemblyName">
+      <summary>Полностью описывает уникальное удостоверение сборки.</summary>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Reflection.AssemblyName" />.</summary>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Reflection.AssemblyName" /> с указанным отображаемым именем.</summary>
+      <param name="assemblyName">Отображаемое имя сборки, возвращаемое свойством <see cref="P:System.Reflection.AssemblyName.FullName" />.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="assemblyName" /> имеет значение null. </exception>
+      <exception cref="T:System.ArgumentException">Параметр <paramref name="assemblyName" /> является строкой нулевой длины. </exception>
+      <exception cref="T:System.IO.FileLoadException">В .NET для приложений Магазина Windows или переносимой библиотеке классов вместо этого перехватите исключение базового класса <see cref="T:System.IO.IOException" />.Не удалось найти или загрузить сборку, на которую указывает ссылка.</exception>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.ContentType">
+      <summary>Получает или задает значение, указывающее, какой тип содержимого содержит сборка.</summary>
+      <returns>Значение, указывающее, какой тип содержимого сборка содержит.</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.CultureName">
+      <summary>Получает или задает имя языка и региональных параметров, связанных со сборкой.</summary>
+      <returns>Имя языка и региональных параметров.</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.Flags">
+      <summary>Возвращает или задает атрибуты сборки.</summary>
+      <returns>Ззначение, представляющее атрибуты сборки.</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.FullName">
+      <summary>Возвращает полное имя сборки, также называемое отображаемым именем.</summary>
+      <returns>Строка, являющаяся полным именем сборки, также называемая отображаемым именем.</returns>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.GetPublicKey">
+      <summary>Возвращает открытый ключ сборки.</summary>
+      <returns>Массив байтов, содержащий открытый ключ сборки.</returns>
+      <exception cref="T:System.Security.SecurityException">Был предоставлен открытый ключ (например, с помощью метода <see cref="M:System.Reflection.AssemblyName.SetPublicKey(System.Byte[])" />), но не был предоставлен маркер открытого ключа. </exception>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.GetPublicKeyToken">
+      <summary>Возвращает токен открытого ключа, представляющий собой последние 8 байт хэш-значения SHA-1 открытого ключа, которым подписаны приложение или сборка.</summary>
+      <returns>Массив байтов, содержащий токен открытого ключа.</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.Name">
+      <summary>Получает или задает простое имя сборки.Это, как правило (но не обязательно), имя файла манифеста сборки без указания его расширения.</summary>
+      <returns>Простое имя сборки.</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.ProcessorArchitecture">
+      <summary>Возвращает или задает значение, указывающее процессор и разрядность слова для платформы, являющейся целевой для исполняемого файла.</summary>
+      <returns>Одно из значений перечисления, которое определяет процессор и разрядность слова для платформы, являющейся целевой для исполняемого файла.</returns>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.SetPublicKey(System.Byte[])">
+      <summary>Задает открытый ключ, идентифицирующий сборку.</summary>
+      <param name="publicKey">Массив байтов, содержащий открытый ключ сборки. </param>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.SetPublicKeyToken(System.Byte[])">
+      <summary>Задает токен открытого ключа, представляющий собой последние 8 байт хэш-значения SHA-1 открытого ключа, которым подписаны приложение или сборка.</summary>
+      <param name="publicKeyToken">Массив байтов, содержащий токена открытого ключа сборки. </param>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.ToString">
+      <summary>Возвращает полное имя сборки, также называемое отображаемым именем.</summary>
+      <returns>Полное имя сборки или имя класса, если полное имя не может быть определено.</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.Version">
+      <summary>Возвращает или задает для сборки основной номер версии, промежуточный номер версии, номер построения и номер редакции.</summary>
+      <returns>Объект, предоставляющий для сборки основной номер версии, промежуточный номер версии, номер построения и номер редакции.</returns>
+    </member>
+    <member name="T:System.Reflection.ConstructorInfo">
+      <summary>Извлекает атрибуты конструктора класса и предоставляет доступ к метаданным конструктора. </summary>
+    </member>
+    <member name="F:System.Reflection.ConstructorInfo.ConstructorName">
+      <summary>Представляет хранящееся в метаданных имя метода конструктора класса.Это имя всегда имеет расширение CTOR.Это поле доступно только для чтения.</summary>
+    </member>
+    <member name="M:System.Reflection.ConstructorInfo.Equals(System.Object)">
+      <summary>Возвращает значение, указывающее, равен ли этот экземпляр указанному объекту.</summary>
+      <returns>true, если объект <paramref name="obj" /> типу и значению данного экземпляра; в противном случае — false.</returns>
+      <param name="obj">Объект, сравниваемый с этим экземпляром, или значение null.</param>
+    </member>
+    <member name="M:System.Reflection.ConstructorInfo.GetHashCode">
+      <summary>Возвращает хэш-код для данного экземпляра.</summary>
+      <returns>Хэш-код 32-битового целого числа со знаком.</returns>
+    </member>
+    <member name="M:System.Reflection.ConstructorInfo.Invoke(System.Object[])">
+      <summary>Вызывает конструктор, отраженный этим экземпляром с указанными параметрами, при условии, что значения по умолчанию для параметров не используются.</summary>
+      <returns>Экземпляр класса, связанного с конструктором.</returns>
+      <param name="parameters">Массив значений, соответствующий по количеству, порядку и типу (с учетом ограничений связывателя по умолчанию) параметрам данного конструктора.Если этот конструктор не принимает параметров, то используется либо массив с нулевыми элементами, либо null, как в Object[] parameters = new Object[0].Любой объект этого массива, который не был явно инициализирован с помощью значения, будет содержать значение по умолчанию для данного типа объекта.Для элементов ссылочного типа это значение равно null.Для элементов, тип которых передается по значению, это значение равно 0, 0,0 или false в зависимости от конкретного типа элемента.</param>
+      <exception cref="T:System.MemberAccessException">Это абстрактный класс.– или – Конструктор является инициализатором класса. </exception>
+      <exception cref="T:System.MethodAccessException">В .NET для приложений Магазина Windows или переносимой библиотеке классов вместо этого перехватите исключение базового класса <see cref="T:System.MemberAccessException" />.Конструктор является закрытым или защищенным, в вызывающем объекте отсутствует флаг <see cref="F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess" />. </exception>
+      <exception cref="T:System.ArgumentException">Массив <paramref name="parameters" /> не содержит значений, соответствующих типам, принимаемым этим конструктором. </exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">Вызванный конструктор выдал исключение. </exception>
+      <exception cref="T:System.Reflection.TargetParameterCountException">Было передано неверное количество параметров. </exception>
+      <exception cref="T:System.NotSupportedException">создание типов <see cref="T:System.TypedReference" />, <see cref="T:System.ArgIterator" /> и <see cref="T:System.RuntimeArgumentHandle" /> не поддерживается.</exception>
+      <exception cref="T:System.Security.SecurityException">Вызывающий объект не имеет разрешения на доступ к необходимому коду.</exception>
+    </member>
+    <member name="F:System.Reflection.ConstructorInfo.TypeConstructorName">
+      <summary>Представляет хранящееся в метаданных имя метода конструктора типа.Это имя всегда имеет расширение CCTOR.Это свойство доступно только для чтения.</summary>
+    </member>
+    <member name="T:System.Reflection.CustomAttributeData">
+      <summary>Обеспечивает доступ к данным настраиваемых атрибутов для сборок, модулей, типов, членов и параметров, загруженных в контекст, предназначенный только для отражения.</summary>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeData.AttributeType">
+      <summary>Получает тип атрибута.</summary>
+      <returns>Тип атрибута.</returns>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeData.ConstructorArguments">
+      <summary>Возвращает список позиционных аргументов, заданных для экземпляра атрибута, который представлен объектом <see cref="T:System.Reflection.CustomAttributeData" />.</summary>
+      <returns>Коллекция структур, представляющих позиционные аргументы, заданные для экземпляра настраиваемого атрибута.</returns>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeData.NamedArguments">
+      <summary>Возвращает список именованных аргументов, заданных для экземпляра атрибута, представленного объектом <see cref="T:System.Reflection.CustomAttributeData" />.</summary>
+      <returns>Коллекция структур, представляющих именованные аргументы, заданные для экземпляра настраиваемого атрибута.</returns>
+    </member>
+    <member name="T:System.Reflection.CustomAttributeNamedArgument">
+      <summary>Представляет именованный аргумент настраиваемого атрибута в контексте, предназначенном только для отражения.</summary>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeNamedArgument.IsField">
+      <summary>Получает значение, указывающее, является ли именованный аргумент полем.</summary>
+      <returns>Значение true, если именованный аргумент является полем; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeNamedArgument.MemberName">
+      <summary>Получает имя члена атрибута, который должен использоваться для задания именованного аргумента.</summary>
+      <returns>Имя члена атрибута, который должен использоваться для задания именованного аргумента.</returns>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeNamedArgument.TypedValue">
+      <summary>Возвращает структуру <see cref="T:System.Reflection.CustomAttributeTypedArgument" />, которая может использоваться для получения типа и значения текущего именованного аргумента.</summary>
+      <returns>Структура, которая может использоваться для получения типа и значения текущего именованного аргумента.</returns>
+    </member>
+    <member name="T:System.Reflection.CustomAttributeTypedArgument">
+      <summary>Представляет аргумент пользовательского атрибута в контексте, предназначенном только для отражения, или элемент аргумента-массива.</summary>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeTypedArgument.ArgumentType">
+      <summary>Получает тип аргумента или элемента аргумента-массива.</summary>
+      <returns>Объект <see cref="T:System.Type" />, представляющий тип аргумента или элемента массива.</returns>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeTypedArgument.Value">
+      <summary>Получает значение аргумента для простого аргумента или элемента аргумента-массива; получает коллекцию значений для аргумента-массива.</summary>
+      <returns>Объект, представляющий значение аргумента или элемента, или универсальная коллекция <see cref="T:System.Collections.ObjectModel.ReadOnlyCollection`1" /> объектов <see cref="T:System.Reflection.CustomAttributeTypedArgument" />, которая представляет значения аргумента типа массива.</returns>
+    </member>
+    <member name="T:System.Reflection.EventInfo">
+      <summary>Выявляет атрибуты события и обеспечивает доступ к метаданным события.</summary>
+    </member>
+    <member name="M:System.Reflection.EventInfo.AddEventHandler(System.Object,System.Delegate)">
+      <summary>Добавляет обработчик событий к источнику событий.</summary>
+      <param name="target">Источник события. </param>
+      <param name="handler">Инкапсулирует метод или методы, вызываемые, когда событие вызывается целевым объектом. </param>
+      <exception cref="T:System.InvalidOperationException">Для этого события не предусмотрен открытый метод доступа add.</exception>
+      <exception cref="T:System.ArgumentException">Переданный обработчик нельзя использовать. </exception>
+      <exception cref="T:System.MethodAccessException">В .NET для приложений Магазина Windows или переносимой библиотеке классов вместо этого перехватите исключение базового класса <see cref="T:System.MemberAccessException" />.Вызывающий оператор не имеет разрешения на доступ к данному члену. </exception>
+      <exception cref="T:System.Reflection.TargetException">В .NET для приложений Магазина Windows или переносимой библиотеке классов вместо этого перехватите <see cref="T:System.Exception" />.Параметр <paramref name="target" /> имеет значение null и событие не является статическим.– или – Объект <see cref="T:System.Reflection.EventInfo" /> не объявлен для целевого объекта. </exception>
+    </member>
+    <member name="P:System.Reflection.EventInfo.AddMethod">
+      <summary>Получает объект <see cref="T:System.Reflection.MethodInfo" /> для метода <see cref="M:System.Reflection.EventInfo.AddEventHandler(System.Object,System.Delegate)" /> события, включая методы, не являющиеся открытыми.</summary>
+      <returns>Объект <see cref="T:System.Reflection.MethodInfo" /> для метода <see cref="M:System.Reflection.EventInfo.AddEventHandler(System.Object,System.Delegate)" />.</returns>
+    </member>
+    <member name="P:System.Reflection.EventInfo.Attributes">
+      <summary>Получает атрибуты этого события.</summary>
+      <returns>Атрибуты этого события, доступные только для чтения.</returns>
+    </member>
+    <member name="M:System.Reflection.EventInfo.Equals(System.Object)">
+      <summary>Возвращает значение, указывающее, равен ли этот экземпляр указанному объекту.</summary>
+      <returns>true, если объект <paramref name="obj" /> типу и значению данного экземпляра; в противном случае — false.</returns>
+      <param name="obj">Объект, сравниваемый с этим экземпляром, или значение null.</param>
+    </member>
+    <member name="P:System.Reflection.EventInfo.EventHandlerType">
+      <summary>Получает объект Type базового делегата обработчика событий, связанного с данным событием.</summary>
+      <returns>Объект Type с доступом только для чтения, представляющий обработчик событий делегата.</returns>
+      <exception cref="T:System.Security.SecurityException">У вызывающего объекта отсутствует необходимое разрешение. </exception>
+    </member>
+    <member name="M:System.Reflection.EventInfo.GetHashCode">
+      <summary>Возвращает хэш-код для данного экземпляра.</summary>
+      <returns>Хэш-код 32-битового целого числа со знаком.</returns>
+    </member>
+    <member name="P:System.Reflection.EventInfo.IsSpecialName">
+      <summary>Возвращает значение, показывающее, есть ли у EventInfo имя со специальным значением.</summary>
+      <returns>Значение true, если у события есть специальное имя, в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.EventInfo.RaiseMethod">
+      <summary>Получает метод, вызываемый при возникновении события, включая неоткрытые методы.</summary>
+      <returns>Метод, вызываемый при возникновении события.</returns>
+    </member>
+    <member name="M:System.Reflection.EventInfo.RemoveEventHandler(System.Object,System.Delegate)">
+      <summary>Удаляет обработчик событий из источника событий.</summary>
+      <param name="target">Источник события. </param>
+      <param name="handler">Делегат, связь которого с событиями, вызываемыми целевым объектом, должна быть разорвана. </param>
+      <exception cref="T:System.InvalidOperationException">Для этого события не предусмотрен открытый метод доступа remove. </exception>
+      <exception cref="T:System.ArgumentException">Переданный обработчик нельзя использовать. </exception>
+      <exception cref="T:System.Reflection.TargetException">В .NET для приложений Магазина Windows или переносимой библиотеке классов вместо этого перехватите <see cref="T:System.Exception" />.Параметр <paramref name="target" /> имеет значение null и событие не является статическим.– или – Объект <see cref="T:System.Reflection.EventInfo" /> не объявлен для целевого объекта. </exception>
+      <exception cref="T:System.MethodAccessException">В .NET для приложений Магазина Windows или переносимой библиотеке классов вместо этого перехватите исключение базового класса <see cref="T:System.MemberAccessException" />.Вызывающий оператор не имеет разрешения на доступ к данному члену. </exception>
+    </member>
+    <member name="P:System.Reflection.EventInfo.RemoveMethod">
+      <summary>Получает объект MethodInfo для удаления метода события, включая методы, не являющиеся открытыми.</summary>
+      <returns>Объект MethodInfo для удаления метода события.</returns>
+    </member>
+    <member name="T:System.Reflection.FieldInfo">
+      <summary>Извлекает атрибуты поля и обеспечивает доступ к метаданным поля. </summary>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.Attributes">
+      <summary>Возвращает атрибуты, связанные с этим полем.</summary>
+      <returns>Атрибуты FieldAttributes для данного поля.</returns>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.Equals(System.Object)">
+      <summary>Возвращает значение, указывающее, равен ли этот экземпляр указанному объекту.</summary>
+      <returns>true, если объект <paramref name="obj" /> типу и значению данного экземпляра; в противном случае — false.</returns>
+      <param name="obj">Объект, сравниваемый с этим экземпляром, или значение null.</param>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.FieldType">
+      <summary>Возвращает тип этого объекта поля.</summary>
+      <returns>Тип этого объекта поля.</returns>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.GetFieldFromHandle(System.RuntimeFieldHandle)">
+      <summary>Возвращает значение <see cref="T:System.Reflection.FieldInfo" /> для поля, представленного указанным дескриптором.</summary>
+      <returns>Объект <see cref="T:System.Reflection.FieldInfo" />, представляющий поле, указанное параметром <paramref name="handle" />.</returns>
+      <param name="handle">Структура дескрипторов <see cref="T:System.RuntimeFieldHandle" />, содержащая дескриптор для обработки внутреннего представления поля в метаданных. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="handle" /> не является допустимым.</exception>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.GetFieldFromHandle(System.RuntimeFieldHandle,System.RuntimeTypeHandle)">
+      <summary>Получает объект <see cref="T:System.Reflection.FieldInfo" /> для представленного указанным дескриптором поля заданного универсального типа.</summary>
+      <returns>Объект <see cref="T:System.Reflection.FieldInfo" />, который представляет поле, определенное дескриптором <paramref name="handle" />, в универсальном типе, заданном параметром <paramref name="declaringType" />.</returns>
+      <param name="handle">Структура дескрипторов <see cref="T:System.RuntimeFieldHandle" />, содержащая дескриптор для обработки внутреннего представления поля в метаданных.</param>
+      <param name="declaringType">Структура дескрипторов <see cref="T:System.RuntimeTypeHandle" />, содержащая дескриптор для обработки универсального типа, который определяет это поле.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="handle" /> не является допустимым.– или –Параметр <paramref name="declaringType" /> несовместим с параметром <paramref name="handle" />.Например, параметр <paramref name="declaringType" /> представляет дескриптор типа среды выполнения определения универсального типа, а параметр <paramref name="handle" /> поступает из конструируемого типа.См. заметки.</exception>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.GetHashCode">
+      <summary>Возвращает хэш-код для данного экземпляра.</summary>
+      <returns>Хэш-код 32-битового целого числа со знаком.</returns>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.GetValue(System.Object)">
+      <summary>При переопределении в производном классе возвращает значение поля, поддерживаемое данным объектом.</summary>
+      <returns>Объект, содержащий значение поля, отраженное этим экземпляром.</returns>
+      <param name="obj">Объект, значение поля которого будет возвращено. </param>
+      <exception cref="T:System.Reflection.TargetException">В .NET для приложений Магазина Windows или переносимой библиотеке классов вместо этого перехватите <see cref="T:System.Exception" />.Это поле не является статическим, а параметр <paramref name="obj" /> имеет значение null. </exception>
+      <exception cref="T:System.NotSupportedException">Поле является помеченным литералом, однако для этого поля не задан допустимый тип литерала. </exception>
+      <exception cref="T:System.FieldAccessException">В .NET для приложений Магазина Windows или переносимой библиотеке классов вместо этого перехватите исключение базового класса <see cref="T:System.MemberAccessException" />.Вызывающий объект не имеет разрешения на доступ к этому полю. </exception>
+      <exception cref="T:System.ArgumentException">Этот метод не объявлен в классе с параметром <paramref name="obj" /> и не унаследован в таком классе. </exception>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsAssembly">
+      <summary>Возвращает значение, которое указывает, описана ли доступность данного поля в поле <see cref="F:System.Reflection.FieldAttributes.Assembly" />; другими словами, будет ли это поле полностью доступно для других полей той же сборки и недоступно для производных типов, не включенных в сборку.</summary>
+      <returns>Значение true, если видимость этого поля точно описана в поле <see cref="F:System.Reflection.FieldAttributes.Assembly" />; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsFamily">
+      <summary>Возвращает значение, которое указывает, описана ли доступность этого поля в поле <see cref="F:System.Reflection.FieldAttributes.Family" />; другими словами, будет ли это поле доступно только в своем классе и производных классах.</summary>
+      <returns>Значение true, если доступ к этому полю точно описан в поле <see cref="F:System.Reflection.FieldAttributes.Family" />; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsFamilyAndAssembly">
+      <summary>Возвращает значение, которое указывает, описана ли доступность этого поля в поле <see cref="F:System.Reflection.FieldAttributes.FamANDAssem" />; другими словами, будет ли это поле доступно только в производных классах, которые включены в ту же сборку.</summary>
+      <returns>Значение true, если доступ к этому полю точно описан в поле <see cref="F:System.Reflection.FieldAttributes.FamANDAssem" />; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsFamilyOrAssembly">
+      <summary>Возвращает значение, которое указывает, описана ли потенциальная доступность этого поля в поле <see cref="F:System.Reflection.FieldAttributes.FamORAssem" />; другими словами, будет ли это поле доступно в производных классах независимо от их местонахождения, а также в классах, которые включены в ту же сборку.</summary>
+      <returns>Значение true, если доступ к этому полю точно описан в поле <see cref="F:System.Reflection.FieldAttributes.FamORAssem" />; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsInitOnly">
+      <summary>Возвращает значение, которое определяет, устанавливается ли поле только в тексте сообщения конструктора.</summary>
+      <returns>Значение true, если для поля задан атрибут InitOnly, в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsLiteral">
+      <summary>Возвращает значение, показывающее, что значение записывается во время компиляции и не может быть изменено.</summary>
+      <returns>Значение true, если для поля задан атрибут Literal, в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsPrivate">
+      <summary>Возвращает значение, указывающее, является ли поле закрытым.</summary>
+      <returns>Значение true, если поле является закрытым; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsPublic">
+      <summary>Возвращает значение, указывающее, является ли поле открытым.</summary>
+      <returns>Значение true, если поле является открытым; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsSpecialName">
+      <summary>Возвращает значение, указывающее, установлен ли в перечислителе <see cref="T:System.Reflection.FieldAttributes" /> соответствующий атрибут SpecialName.</summary>
+      <returns>Значение true, если атрибут SpecialName установлен в классе <see cref="T:System.Reflection.FieldAttributes" />, в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsStatic">
+      <summary>Возвращает значение, указывающее, является ли поле статическим.</summary>
+      <returns>Значение true, если поле является статическим; в противном случае — значение false.</returns>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.SetValue(System.Object,System.Object)">
+      <summary>Устанавливает значение поля указанного объекта.</summary>
+      <param name="obj">Объект, для которого будет установлено значение поля. </param>
+      <param name="value">Значение, присваиваемое полю. </param>
+      <exception cref="T:System.FieldAccessException">В .NET для приложений Магазина Windows или переносимой библиотеке классов вместо этого перехватите исключение базового класса <see cref="T:System.MemberAccessException" />.Вызывающий объект не имеет разрешения на доступ к этому полю. </exception>
+      <exception cref="T:System.Reflection.TargetException">В .NET для приложений Магазина Windows или переносимой библиотеке классов вместо этого перехватите <see cref="T:System.Exception" />.Параметр <paramref name="obj" /> имеет значение null, поле является полем экземпляра. </exception>
+      <exception cref="T:System.ArgumentException">Это поле отсутствует в объекте.– или – Параметр <paramref name="value" /> не может быть преобразован и сохранен в данном поле. </exception>
+    </member>
+    <member name="T:System.Reflection.IntrospectionExtensions">
+      <summary>Содержит методы для преобразования объектов <see cref="T:System.Type" />.</summary>
+    </member>
+    <member name="M:System.Reflection.IntrospectionExtensions.GetTypeInfo(System.Type)">
+      <summary>Возвращает представление <see cref="T:System.Reflection.TypeInfo" /> указанного типа.</summary>
+      <returns>Преобразованный объект.</returns>
+      <param name="type">Преобразуемый тип.</param>
+    </member>
+    <member name="T:System.Reflection.IReflectableType">
+      <summary>Представляет тип, отражение которого можно выполнить</summary>
+    </member>
+    <member name="M:System.Reflection.IReflectableType.GetTypeInfo">
+      <summary>Извлекает Объект, представляющий данный тип.</summary>
+      <returns>Объект, представляющий данный тип.</returns>
+    </member>
+    <member name="T:System.Reflection.LocalVariableInfo">
+      <summary>Извлекает атрибуты локальной переменной и обеспечивает доступ к метаданным локальной переменной.</summary>
+    </member>
+    <member name="M:System.Reflection.LocalVariableInfo.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Reflection.LocalVariableInfo" />.</summary>
+    </member>
+    <member name="P:System.Reflection.LocalVariableInfo.IsPinned">
+      <summary>Получает значение <see cref="T:System.Boolean" />, определяющее, закреплен ли в памяти объект, на который ссылается локальная переменная.</summary>
+      <returns>Значение true, если объект, на который ссылается локальная переменная, закреплен в памяти; в обратном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.LocalVariableInfo.LocalIndex">
+      <summary>Возвращает индекс локальной переменной в основном тексте метода.</summary>
+      <returns>Целочисленное значение, которое представляет последовательность объявления локальной переменной в основном тексте метода.</returns>
+    </member>
+    <member name="P:System.Reflection.LocalVariableInfo.LocalType">
+      <summary>Возвращает тип локальной переменной.</summary>
+      <returns>Тип локальной переменной.</returns>
+    </member>
+    <member name="M:System.Reflection.LocalVariableInfo.ToString">
+      <summary>Возвращает понятную для пользователя строку, описывающую локальную переменную.</summary>
+      <returns>Строка, отображающая сведения о локальной переменной, включая имя типа, индекс и состояние закрепленности.</returns>
+    </member>
+    <member name="T:System.Reflection.ManifestResourceInfo">
+      <summary>Предоставляет доступ к ресурсам манифеста, которые представляют собой XML-файлы, описывающие зависимости приложения.  </summary>
+    </member>
+    <member name="M:System.Reflection.ManifestResourceInfo.#ctor(System.Reflection.Assembly,System.String,System.Reflection.ResourceLocation)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Reflection.ManifestResourceInfo" /> для ресурса, содержащегося в заданной сборке и файле и расположенного в указанном месте.</summary>
+      <param name="containingAssembly">Сборка, содержащая ресурс манифеста.</param>
+      <param name="containingFileName">Имя файла, содержащего ресурс манифеста, если этот файл отличается от файла манифеста.</param>
+      <param name="resourceLocation">Битовая комбинация значений перечисления, предоставляющего сведения о расположении ресурса манифеста. </param>
+    </member>
+    <member name="P:System.Reflection.ManifestResourceInfo.FileName">
+      <summary>Получает имя файла, содержащего ресурс манифеста, если этот файл отличается от файла манифеста.  </summary>
+      <returns>Имя файла ресурса манифеста.</returns>
+    </member>
+    <member name="P:System.Reflection.ManifestResourceInfo.ReferencedAssembly">
+      <summary>Получает для ресурса манифеста содержащую его сборку. </summary>
+      <returns>Сборка, содержащая ресурс манифеста.</returns>
+    </member>
+    <member name="P:System.Reflection.ManifestResourceInfo.ResourceLocation">
+      <summary>Получает расположение ресурса манифеста. </summary>
+      <returns>Побитовая комбинация флагов <see cref="T:System.Reflection.ResourceLocation" />, указывающих расположение ресурса манифеста. </returns>
+    </member>
+    <member name="T:System.Reflection.MemberInfo">
+      <summary>Получает сведения об атрибутах компонента и обеспечивает доступ к метаданным его членов.</summary>
+    </member>
+    <member name="P:System.Reflection.MemberInfo.CustomAttributes">
+      <summary>Получает коллекцию, содержащую пользовательские атрибуты этого члена.</summary>
+      <returns>Коллекция, содержащая пользовательские атрибуты этого члена.</returns>
+    </member>
+    <member name="P:System.Reflection.MemberInfo.DeclaringType">
+      <summary>Получает класс, объявляющий этот член.</summary>
+      <returns>Объект Type для класса, объявляющего данный член.</returns>
+    </member>
+    <member name="M:System.Reflection.MemberInfo.Equals(System.Object)">
+      <summary>Возвращает значение, указывающее, равен ли этот экземпляр указанному объекту.</summary>
+      <returns>true, если объект <paramref name="obj" /> типу и значению данного экземпляра; в противном случае — false.</returns>
+      <param name="obj">Объект, сравниваемый с этим экземпляром, или значение null.</param>
+    </member>
+    <member name="M:System.Reflection.MemberInfo.GetHashCode">
+      <summary>Возвращает хэш-код для данного экземпляра.</summary>
+      <returns>Хэш-код 32-битового целого числа со знаком.</returns>
+    </member>
+    <member name="P:System.Reflection.MemberInfo.Module">
+      <summary>Получает модуль, в котором определяется тип, объявляющий член, представленный текущим объектом <see cref="T:System.Reflection.MemberInfo" />.</summary>
+      <returns>Модуль <see cref="T:System.Reflection.Module" />, определяющий тип, в котором объявляется член, представленный текущим объектом <see cref="T:System.Reflection.MemberInfo" />.</returns>
+      <exception cref="T:System.NotImplementedException">Этот метод не реализован.</exception>
+    </member>
+    <member name="P:System.Reflection.MemberInfo.Name">
+      <summary>Возвращает имя текущего члена.</summary>
+      <returns>Объект <see cref="T:System.String" />, содержащий имя данного элемента.</returns>
+    </member>
+    <member name="T:System.Reflection.MethodBase">
+      <summary>Предоставляет сведения о методах и конструкторах. </summary>
+    </member>
+    <member name="P:System.Reflection.MethodBase.Attributes">
+      <summary>Возвращает атрибуты, сопоставленные этому методу.</summary>
+      <returns>Одно из значений <see cref="T:System.Reflection.MethodAttributes" />.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.CallingConvention">
+      <summary>Возвращает значение, показывающее соглашения о вызовах для этого метода.</summary>
+      <returns>Атрибуты <see cref="T:System.Reflection.CallingConventions" /> для этого метода.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.ContainsGenericParameters">
+      <summary>Возвращает значение, указывающее, содержит ли универсальный метод не присвоенные параметры универсального типа.</summary>
+      <returns>Значение true, если текущий объект <see cref="T:System.Reflection.MethodBase" /> представляет универсальный метод, который содержит не присвоенные параметры универсального типа; в обратном случае — значение false.</returns>
+    </member>
+    <member name="M:System.Reflection.MethodBase.Equals(System.Object)">
+      <summary>Возвращает значение, указывающее, равен ли этот экземпляр указанному объекту.</summary>
+      <returns>true, если объект <paramref name="obj" /> типу и значению данного экземпляра; в противном случае — false.</returns>
+      <param name="obj">Объект, сравниваемый с этим экземпляром, или значение null.</param>
+    </member>
+    <member name="M:System.Reflection.MethodBase.GetGenericArguments">
+      <summary>Возвращает массив объектов <see cref="T:System.Type" />, которые представляют аргументы универсального метода, относящиеся к типу, или параметры типа определения универсального метода.</summary>
+      <returns>Массив объектов <see cref="T:System.Type" />, представляющих аргументы типа, относящиеся к универсальному методу, или параметры типа определения универсального метода.Возвращает пустой массив, если текущий метод не является универсальным методом.</returns>
+      <exception cref="T:System.NotSupportedException">Текущий объект является объектом <see cref="T:System.Reflection.ConstructorInfo" />.Универсальные конструкторы в платформе .NET Framework версии 2.0 не поддерживаются.Это исключение является поведением по умолчанию, если этот метод не переопределен в производном классе.</exception>
+    </member>
+    <member name="M:System.Reflection.MethodBase.GetHashCode">
+      <summary>Возвращает хэш-код для данного экземпляра.</summary>
+      <returns>Хэш-код 32-битового целого числа со знаком.</returns>
+    </member>
+    <member name="M:System.Reflection.MethodBase.GetMethodFromHandle(System.RuntimeMethodHandle)">
+      <summary>Получает сведения о методе с помощью представления внутренних метаданных метода (дескриптора).</summary>
+      <returns>Строка MethodBase, содержащая сведения о методе.</returns>
+      <param name="handle">Дескриптор метода. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="handle" /> не является допустимым.</exception>
+    </member>
+    <member name="M:System.Reflection.MethodBase.GetMethodFromHandle(System.RuntimeMethodHandle,System.RuntimeTypeHandle)">
+      <summary>Возвращает объект <see cref="T:System.Reflection.MethodBase" /> для конструктора метода, представленного заданным дескриптором для заданного универсального типа.</summary>
+      <returns>Объект <see cref="T:System.Reflection.MethodBase" />, который представляет метод или конструктор, определенный дескриптором <paramref name="handle" />, в универсальном типе, заданном параметром <paramref name="declaringType" />.</returns>
+      <param name="handle">Дескриптор представления внутренних метаданных конструктора или метода.</param>
+      <param name="declaringType">Дескриптор универсального типа, определяющего конструктор или метод.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="handle" /> не является допустимым.</exception>
+    </member>
+    <member name="M:System.Reflection.MethodBase.GetParameters">
+      <summary>При переопределении в производном классе возвращает параметры заданного метода или конструктора.</summary>
+      <returns>Массив типа ParameterInfo, содержащий сведения, которые соответствуют подписи метода (или конструктора), представленного этим экземпляром MethodBase.</returns>
+    </member>
+    <member name="M:System.Reflection.MethodBase.Invoke(System.Object,System.Object[])">
+      <summary>Вызывает метод или конструктор, представленный текущим экземпляром, с использованием заданных параметров.</summary>
+      <returns>Объект, содержащий возвращаемое значение вызываемого метода, либо значение null для конструктора.ВниманиеЭлементы массива <paramref name="parameters" />, которые представляют параметры, объявленные с ключевое слово ref или out также могут быть изменены.</returns>
+      <param name="obj">Объект, для которого вызывается метод или конструктор.Если метод является статическим, данный аргумент не обрабатывается.Если конструктор является статическим, этот аргумент должен иметь значение null или содержать экземпляр класса, определяющего конструктор.</param>
+      <param name="parameters">Список аргументов для вызываемого метода или конструктора.Этот список представляет собой массив объектов с таким же количеством, последовательностью и типом элементов, что и у параметров вызываемого метода или конструктора.В отсутствие параметров значение <paramref name="parameters" /> должно быть равно null.Если метод или конструктор, представленный этим экземпляром, принимает параметр ref (ByRef в Visual Basic), для вызова метода или конструктора с использованием этой функции не требуются никакие специальные атрибуты.Любой объект этого массива, который не был явно инициализирован с помощью значения, будет содержать значение по умолчанию для данного типа объекта.Для элементов ссылочного типа это значение равно null.Для элементов, тип которых передается по значению, это значение равно 0, 0,0 или false в зависимости от конкретного типа элемента.</param>
+      <exception cref="T:System.Reflection.TargetException">В .NET для приложений Магазина Windows или переносимой библиотеке классов вместо этого перехватите <see cref="T:System.Exception" />.Значение параметра <paramref name="obj" /> равно null и метод не является статическим.-или- Метод не объявлен или унаследован классом объекта <paramref name="obj" />. -или-Вызывается статическим конструктором, параметр <paramref name="obj" /> не равен null и не содержит экземпляр класса, в котором был объявлен конструктор.</exception>
+      <exception cref="T:System.ArgumentException">Элементы массива <paramref name="parameters" /> не соответствуют сигнатуре метода или конструктора, отраженного этим экземпляром. </exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">Вызванный метод или конструктор выдает исключение. -или-Текущий экземпляр является классом <see cref="T:System.Reflection.Emit.DynamicMethod" />, который содержит непроверяемый код.См. подраздел "Проверка" в разделе примечаний к <see cref="T:System.Reflection.Emit.DynamicMethod" />.</exception>
+      <exception cref="T:System.Reflection.TargetParameterCountException">Массив <paramref name="parameters" /> не имеет правильного числа аргументов. </exception>
+      <exception cref="T:System.MethodAccessException">В .NET для приложений Магазина Windows или переносимой библиотеке классов вместо этого перехватите исключение базового класса <see cref="T:System.MemberAccessException" />.Вызывающий объект не имеет разрешения на выполнение метода или конструктора, представляемый текущим экземпляром. </exception>
+      <exception cref="T:System.InvalidOperationException">Тип, где объявляется метод, является открытым универсальным типом.Это означает, что свойство <see cref="P:System.Type.ContainsGenericParameters" /> возвращает true для объявляющего типа.</exception>
+      <exception cref="T:System.NotSupportedException">Текущий экземпляр является <see cref="T:System.Reflection.Emit.MethodBuilder" />.</exception>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsAbstract">
+      <summary>Возвращает значение, указывающее, является ли метод абстрактным.</summary>
+      <returns>Значение true, если метод является абстрактным; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsAssembly">
+      <summary>Возвращает значение, которое указывает, описана ли доступность данного метода или конструктора в поле <see cref="F:System.Reflection.MethodAttributes.Assembly" />; другими словами, этот метод или конструктор полностью доступен для других полей той же сборки и недоступен для производных типов, не включенных в сборку.</summary>
+      <returns>Значение true, если доступность этого метода или конструктора точно описана в поле <see cref="F:System.Reflection.MethodAttributes.Assembly" />; в обратном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsConstructor">
+      <summary>Возвращает значение, указывающее, является ли метод конструктором.</summary>
+      <returns>Значение true, если метод является конструктором, представленным объектом <see cref="T:System.Reflection.ConstructorInfo" /> (см. примечание, относящееся к объектам <see cref="T:System.Reflection.Emit.ConstructorBuilder" />, в разделе "Заметки"); в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsFamily">
+      <summary>Возвращает значение, которое указывает, описана ли доступность этого метода или конструктора в поле <see cref="F:System.Reflection.MethodAttributes.Family" />; другими словами, этот метод или конструктор доступен только в своем классе и производных классах.</summary>
+      <returns>Значение true, если доступность этого метода или конструктора точно описана в поле <see cref="F:System.Reflection.MethodAttributes.Family" />; в обратном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsFamilyAndAssembly">
+      <summary>Возвращает значение, которое указывает, описана ли доступность этого метода или конструктора в поле <see cref="F:System.Reflection.MethodAttributes.FamANDAssem" />; другими словами, этот метод или конструктор может вызываться в производных классах, но только в том случае, если они находятся в той же сборке.</summary>
+      <returns>Значение true, если доступность этого метода или конструктора точно описана в поле <see cref="F:System.Reflection.MethodAttributes.FamANDAssem" />; в обратном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsFamilyOrAssembly">
+      <summary>Возвращает значение, которое указывает, описана ли потенциальная доступность этого метода или конструктора в поле <see cref="F:System.Reflection.MethodAttributes.FamORAssem" />; другими словами, этот метод или конструктор может вызываться в производных классах независимо от их расположения, а также в классах той же сборки.</summary>
+      <returns>Значение true, если доступность этого метода или конструктора точно описана в поле <see cref="F:System.Reflection.MethodAttributes.FamORAssem" />; в обратном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsFinal">
+      <summary>Возвращает значение, указывающее, является ли метод final.</summary>
+      <returns>Значение true, если метод помечен атрибутом final; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsGenericMethod">
+      <summary>Возвращает значение, указывающее, является ли этот метод универсальным.</summary>
+      <returns>Значение true, если текущий объект <see cref="T:System.Reflection.MethodBase" /> представляет универсальный метод; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsGenericMethodDefinition">
+      <summary>Возвращает значение, указывающее, является ли этот метод определением универсального метода.</summary>
+      <returns>Значение true, если текущий объект <see cref="T:System.Reflection.MethodBase" /> представляет определение универсального метода; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsHideBySig">
+      <summary>Возвращает значение, указывающее, скрывается ли в производном классе только член такого же вида с точно такой же сигнатурой.</summary>
+      <returns>Значение true, если член скрыт на основе сигнатуры; в обратном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsPrivate">
+      <summary>Возвращает значение, указывающее, является ли этот член закрытым.</summary>
+      <returns>Значение true, если доступ к этому методу разрешен только элементам данного класса, в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsPublic">
+      <summary>Возвращает значение, указывающее, является ли метод открытым.</summary>
+      <returns>Значение true, если метод является открытым; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsSpecialName">
+      <summary>Возвращает значение, указывающее, имеет ли этот метод специальное имя.</summary>
+      <returns>Значение true, если у этого метода имеется специальное имя; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsStatic">
+      <summary>Возвращает значение, указывающее, является ли метод static.</summary>
+      <returns>Значение true, если метод помечен атрибутом static; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsVirtual">
+      <summary>Возвращает значение, указывающее, является ли метод virtual.</summary>
+      <returns>Значение true, если метод помечен атрибутом virtual; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.MethodImplementationFlags">
+      <summary>Получает флаги <see cref="T:System.Reflection.MethodImplAttributes" />, указывающие атрибуты реализации методы.</summary>
+      <returns>Флаги реализации метода.</returns>
+    </member>
+    <member name="T:System.Reflection.MethodInfo">
+      <summary>Выявляет атрибуты метода и обеспечивает доступ к его метаданным.</summary>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.CreateDelegate(System.Type)">
+      <summary>Создает делегат заданного типа из этого метода.</summary>
+      <returns>Делегат для этого метода.</returns>
+      <param name="delegateType">Тип создаваемого делегата.</param>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.CreateDelegate(System.Type,System.Object)">
+      <summary>Создает делегат заданного типа с заданным целевым объектом из этого метода.</summary>
+      <returns>Делегат для этого метода.</returns>
+      <param name="delegateType">Тип создаваемого делегата.</param>
+      <param name="target">Целевой объект для делегата.</param>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.Equals(System.Object)">
+      <summary>Возвращает значение, показывающее, равен ли экземпляр указанному объекту.</summary>
+      <returns>true, если значение параметра <paramref name="obj" /> равно типу и значению данного экземпляра; в противном случае — false.</returns>
+      <param name="obj">Объект, сравниваемый с этим экземпляром, или значение null.</param>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.GetGenericArguments">
+      <summary>Возвращает массив объектов <see cref="T:System.Type" />, которые представляют аргументы универсального метода, относящиеся к типу, или параметры типа определения универсального метода.</summary>
+      <returns>Массив объектов <see cref="T:System.Type" />, представляющих аргументы типа, относящиеся к универсальному методу, или параметры типа определения универсального метода.Возвращает пустой массив, если текущий метод не является универсальным методом.</returns>
+      <exception cref="T:System.NotSupportedException">Этот метод не поддерживается.</exception>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.GetGenericMethodDefinition">
+      <summary>Возвращает объект <see cref="T:System.Reflection.MethodInfo" />, представляющий определение универсального метода, на основе которого можно сконструировать текущий метод.</summary>
+      <returns>Объект <see cref="T:System.Reflection.MethodInfo" />, представляющий определение универсального метода, на основе которого может быть сконструирован текущий метод.</returns>
+      <exception cref="T:System.InvalidOperationException">Текущий метод не является универсальным методом.То есть <see cref="P:System.Reflection.MethodInfo.IsGenericMethod" /> возвращает значение false.</exception>
+      <exception cref="T:System.NotSupportedException">Этот метод не поддерживается.</exception>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.GetHashCode">
+      <summary>Возвращает хэш-код данного экземпляра.</summary>
+      <returns>Хэш-код в виде 32-разрядного целого числа со знаком.</returns>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.MakeGenericMethod(System.Type[])">
+      <summary>Заменяет параметры типа элементами массива типов для определения текущего универсального метода и возвращает объект <see cref="T:System.Reflection.MethodInfo" />, представляющий итоговый сконструированный метод.</summary>
+      <returns>Объект <see cref="T:System.Reflection.MethodInfo" /> который представляет сконструированный метод, сформированный путем замены элементами <paramref name="typeArguments" /> параметров типов текущего определения универсального метода.</returns>
+      <param name="typeArguments">Массив типов, который должен быть замещен параметрами типов текущего определения универсального метода.</param>
+      <exception cref="T:System.InvalidOperationException">Текущий объект <see cref="T:System.Reflection.MethodInfo" /> не представляет определение универсального метода.То есть <see cref="P:System.Reflection.MethodInfo.IsGenericMethodDefinition" /> возвращает значение false.</exception>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="typeArguments" /> имеет значение null.-или- Значение любого элемента массива <paramref name="typeArguments" /> — null. </exception>
+      <exception cref="T:System.ArgumentException">Число элементов <paramref name="typeArguments" /> не равно числу параметров типа в текущем определении универсального метода.-или- Элемент <paramref name="typeArguments" /> не соответствует ограничениям, указанным для соответствующего параметра типа текущего определения универсального метода. </exception>
+      <exception cref="T:System.NotSupportedException">Этот метод не поддерживается.</exception>
+    </member>
+    <member name="P:System.Reflection.MethodInfo.ReturnParameter">
+      <summary>Возвращает объект <see cref="T:System.Reflection.ParameterInfo" />, который содержит сведения о типе возвращаемого значения этого метода, например, имеет ли возвращаемый тип пользовательские модификаторы. </summary>
+      <returns>Объект <see cref="T:System.Reflection.ParameterInfo" />, содержащий сведения о типе возвращаемого значения.</returns>
+      <exception cref="T:System.NotImplementedException">Этот метод не реализован.</exception>
+    </member>
+    <member name="P:System.Reflection.MethodInfo.ReturnType">
+      <summary>Возвращает тип, возвращаемый этим методом.</summary>
+      <returns>Тип возвращаемого значения этого метода.</returns>
+    </member>
+    <member name="T:System.Reflection.Module">
+      <summary>Выполняет отражение для модуля.</summary>
+    </member>
+    <member name="P:System.Reflection.Module.Assembly">
+      <summary>Возвращает соответствующую сборку <see cref="T:System.Reflection.Assembly" /> для данного экземпляра <see cref="T:System.Reflection.Module" />.</summary>
+      <returns>Объект Assembly.</returns>
+    </member>
+    <member name="P:System.Reflection.Module.CustomAttributes">
+      <summary>Получает коллекцию, содержащая пользовательские атрибуты этого модуля.</summary>
+      <returns>Коллекция, содержащая пользовательские атрибуты этого модуля.</returns>
+    </member>
+    <member name="M:System.Reflection.Module.Equals(System.Object)">
+      <summary>Определяет, равны ли этот модуль и заданный объект.</summary>
+      <returns>Значение true, если значение <paramref name="o" /> равно данному экземпляру; в противном случае — значение false.</returns>
+      <param name="o">Объект, сравниваемый с данным экземпляром. </param>
+    </member>
+    <member name="P:System.Reflection.Module.FullyQualifiedName">
+      <summary>Возвращает строку, содержащую полное имя и путь к этому модулю.</summary>
+      <returns>Полное имя модуля.</returns>
+      <exception cref="T:System.Security.SecurityException">У вызывающего объекта нет необходимых разрешений. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Reflection.Module.GetHashCode">
+      <summary>Возвращает хэш-код для данного экземпляра.</summary>
+      <returns>Хэш-код 32-битового целого числа со знаком.</returns>
+    </member>
+    <member name="M:System.Reflection.Module.GetType(System.String,System.Boolean,System.Boolean)">
+      <summary>Возвращает указанный тип, определяя, следует ли учитывать регистр при поиске модуля и должно ли создаваться исключение, если не удалось обнаружить этот тип.</summary>
+      <returns>Объект <see cref="T:System.Type" />, представляющий указанный тип, если тип был объявлен в этом модуле; в противном случае — null.</returns>
+      <param name="className">Имя типа для поиска.Имя должно полностью соответствовать пространству имен.</param>
+      <param name="throwOnError">Значение true, чтобы создать исключение, если тип не удается найти; значение false, чтобы вернуть значение null. </param>
+      <param name="ignoreCase">Значение true, если поиск должен выполняться без учета регистра; в обратном случае — значение false. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="className" /> имеет значение null. </exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">Вызываются инициализаторы класса и создается исключение. </exception>
+      <exception cref="T:System.ArgumentException">Параметр <paramref name="className" /> является пустой строкой. </exception>
+      <exception cref="T:System.TypeLoadException">Параметр <paramref name="throwOnError" /> имеет значение true, при этом не удалось обнаружить заданный тип. </exception>
+      <exception cref="T:System.IO.FileNotFoundException">Для параметра <paramref name="className" /> требуется зависимая сборка, которую не удалось найти. </exception>
+      <exception cref="T:System.IO.FileLoadException">Для параметра <paramref name="className" /> требуется зависимая сборка, которую удалось найти, однако не удалось загрузить.– или –Текущая сборка была загружена в контекст, предназначенный только для отражения, а для параметра <paramref name="className" /> требуется зависимая сборка, которая не была предварительно загружена. </exception>
+      <exception cref="T:System.BadImageFormatException">Для параметра <paramref name="className" /> требуется зависимая сборка, однако данный файл не является допустимой сборкой. – или –Для параметра <paramref name="className" /> требуется зависимая сборка, которая была скомпилирована для более поздней версии среды выполнения, чем загруженная в текущий момент версия.</exception>
+    </member>
+    <member name="P:System.Reflection.Module.Name">
+      <summary>Возвращает строку String, представляющую имя модуля без пути.</summary>
+      <returns>Имя модуля без пути.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Reflection.Module.ToString">
+      <summary>Возвращает имя модуля.</summary>
+      <returns>Строка String, представляющая имя этого модуля.</returns>
+    </member>
+    <member name="T:System.Reflection.ParameterInfo">
+      <summary>Выявляет атрибуты параметра и обеспечивает доступ к его метаданным.</summary>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.Attributes">
+      <summary>Получает атрибуты этого параметра.</summary>
+      <returns>Объект ParameterAttributes, который представляет атрибуты этого параметра.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.CustomAttributes">
+      <summary>Получает коллекцию, содержащую пользовательские атрибуты этого параметра.</summary>
+      <returns>Коллекция, содержащая пользовательские атрибуты этого параметра.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.DefaultValue">
+      <summary>Возвращает значение, указывающее значение по умолчанию, если параметр имеет таковое.</summary>
+      <returns>Значение параметра по умолчанию или значение <see cref="F:System.DBNull.Value" />, если у параметра нет значения по умолчанию.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.HasDefaultValue">
+      <summary>Получает значение, указывающее, имеет ли данный параметр значение по умолчанию.</summary>
+      <returns>Значение true, если этот параметр имеет значение по умолчанию; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.IsIn">
+      <summary>Получает значение, указывающее, является ли этот параметр входным.</summary>
+      <returns>Значение true, если параметр является входным; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.IsOptional">
+      <summary>Возвращает значение, указывающее, является ли этот параметр необязательным.</summary>
+      <returns>Значение true, если параметр является необязательным; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.IsOut">
+      <summary>Возвращает значение, указывающее, является ли этот параметр выходным.</summary>
+      <returns>Значение true, если параметр является выходным; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.IsRetval">
+      <summary>Получает значение, показывающее, является ли этот параметр параметром Retval.</summary>
+      <returns>Значение true, если параметр является значением Retval; в обратном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.Member">
+      <summary>Возвращает значение, указывающее член, в котором реализован данный параметр.</summary>
+      <returns>Элемент, вставивший параметр, который представлен этим объектом <see cref="T:System.Reflection.ParameterInfo" />.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.Name">
+      <summary>Возвращает имя параметра.</summary>
+      <returns>Простое имя параметра.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.ParameterType">
+      <summary>Получает тип Type данного параметра.</summary>
+      <returns>Объект Type, который представляет тип Type данного параметра.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.Position">
+      <summary>Получает отсчитываемую от нуля позицию параметра в списке формальных параметров.</summary>
+      <returns>Целое число, представляющее позицию, которую этот параметр занимает в списке параметров.</returns>
+    </member>
+    <member name="T:System.Reflection.PropertyInfo">
+      <summary>Выявляет атрибуты свойства и обеспечивает доступ к его метаданным.</summary>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.Attributes">
+      <summary>Получает атрибуты данного свойства.</summary>
+      <returns>Атрибуты данного свойства.</returns>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.CanRead">
+      <summary>Получает значение, указывающее, можно ли выполнить считывание данного свойства.</summary>
+      <returns>Значение true, если свойство доступно для чтения; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.CanWrite">
+      <summary>Получает значение, указывающее, можно ли производить запись в данное свойство.</summary>
+      <returns>Значение true, если свойство доступно для записи; в обратном случае — значение false.</returns>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.Equals(System.Object)">
+      <summary>Возвращает значение, показывающее, равен ли экземпляр указанному объекту.</summary>
+      <returns>true, если объект <paramref name="obj" /> типу и значению данного экземпляра; в противном случае — false.</returns>
+      <param name="obj">Объект, сравниваемый с этим экземпляром, или значение null.</param>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.GetConstantValue">
+      <summary>Метод возвращает значение-литерал, связанное с этим свойством компилятором. </summary>
+      <returns>Объект <see cref="T:System.Object" />, содержащий значение-литерал, сопоставленное данному свойству.Если значение литерала является типом класса и при этом значение элемента равно нулю, возвращается значение null.</returns>
+      <exception cref="T:System.InvalidOperationException">Таблица констант в неуправляемых метаданных не содержит константы для текущего свойства.</exception>
+      <exception cref="T:System.FormatException">Тип этого значения не относится к типам, разрешенным в соответствии со спецификацией CLS.Более подробные сведения о форматировании см. в спецификации метаданных ECMA, часть II.</exception>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.GetHashCode">
+      <summary>Возвращает хэш-код данного экземпляра.</summary>
+      <returns>Хэш-код в виде 32-разрядного целого числа со знаком.</returns>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.GetIndexParameters">
+      <summary>При переопределении в производном классе возвращает для этого свойства массив всех параметров индекса.</summary>
+      <returns>Массив элементов типа ParameterInfo, содержащий параметры для индексов.Если свойство не индексировано, массив содержит 0 (нуль) элементов.</returns>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.GetMethod">
+      <summary>Получает метод доступа get для этого свойства.</summary>
+      <returns>Метод доступа get для этого свойства.</returns>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.GetValue(System.Object)">
+      <summary>Возвращает значение свойства указанного объекта.</summary>
+      <returns>Значение свойства указанного объекта.</returns>
+      <param name="obj">Объект, свойство которого будет возвращено.</param>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.GetValue(System.Object,System.Object[])">
+      <summary>Возвращает значение свойства заданного объекта с дополнительными значениями индекса для индексированных свойств.</summary>
+      <returns>Значение свойства указанного объекта.</returns>
+      <param name="obj">Объект, свойство которого будет возвращено. </param>
+      <param name="index">Необязательные значения индекса для индексированных свойств.Индексы индексированных свойств отсчитываются от нуля.Для неиндексированных свойств это значение должно быть равно null.</param>
+      <exception cref="T:System.ArgumentException">Массив <paramref name="index" /> не содержит тип необходимых аргументов.-или- Метод доступа get для свойства не найден. </exception>
+      <exception cref="T:System.Reflection.TargetException">В .NET для приложений Магазина Windows или переносимой библиотеке классов вместо этого перехватите <see cref="T:System.Exception" />.Объект не соответствует целевому типу или свойство является свойством экземпляра, однако параметр <paramref name="obj" /> имеет значение null. </exception>
+      <exception cref="T:System.Reflection.TargetParameterCountException">Число параметров в индексе <paramref name="index" /> не совпадает с числом параметров, которые принимает индексированное свойство. </exception>
+      <exception cref="T:System.MethodAccessException">В .NET для приложений Магазина Windows или переносимой библиотеке классов вместо этого перехватите исключение базового класса <see cref="T:System.MemberAccessException" />.Недопустимая попытка обращения к закрытому или защищенному методу внутри класса. </exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">Произошла ошибка при получении значения свойства.Например, значение индекса, указанное для индексированного свойства, выходит за границы диапазона.Свойство <see cref="P:System.Exception.InnerException" /> указывает причину возникновения ошибки.</exception>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.IsSpecialName">
+      <summary>Возвращает значение, указывающее, является ли свойство специальным именем.</summary>
+      <returns>Значение true, если свойство является специальным именем; в противном случае — значение false.</returns>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.PropertyType">
+      <summary>Возвращает тип этого свойства.</summary>
+      <returns>Тип этого свойства.</returns>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.SetMethod">
+      <summary>Получает метод доступа set для этого свойства.</summary>
+      <returns>set Для этого свойства или null , если свойство доступно только для чтения.</returns>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.SetValue(System.Object,System.Object)">
+      <summary>Задает значение свойства для указанного объекта.</summary>
+      <param name="obj">Объект, значение свойства которого будет установлено.</param>
+      <param name="value">Новое значение свойства.</param>
+      <exception cref="T:System.ArgumentException">Метод доступа set для свойства не найден. -или-<paramref name="value" />Невозможно преобразовать в тип <see cref="P:System.Reflection.PropertyInfo.PropertyType" />. </exception>
+      <exception cref="T:System.Reflection.TargetException">В .NET для приложений Магазина Windows или переносимой библиотеке классов вместо этого перехватите <see cref="T:System.Exception" />.Тип <paramref name="obj" /> не соответствует целевому типу или свойство является свойством экземпляра, но <paramref name="obj" /> — null. </exception>
+      <exception cref="T:System.MethodAccessException">В .NET для приложений Магазина Windows или переносимой библиотеке классов вместо этого перехватите исключение базового класса <see cref="T:System.MemberAccessException" />. Недопустимая попытка обращения к закрытому или защищенному методу внутри класса. </exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">Произошла ошибка при установке значения свойства.Свойство <see cref="P:System.Exception.InnerException" /> указывает причину возникновения ошибки.</exception>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.SetValue(System.Object,System.Object,System.Object[])">
+      <summary>Задает значение свойства заданного объекта с дополнительными значениями индекса для индексированных свойств.</summary>
+      <param name="obj">Объект, значение свойства которого будет установлено. </param>
+      <param name="value">Новое значение свойства. </param>
+      <param name="index">Необязательные значения индекса для индексированных свойств.Для неиндексированных свойств это значение должно быть равно null.</param>
+      <exception cref="T:System.ArgumentException">Массив <paramref name="index" /> не содержит тип необходимых аргументов.-или- Метод доступа set для свойства не найден. -или-<paramref name="value" />Невозможно преобразовать в тип <see cref="P:System.Reflection.PropertyInfo.PropertyType" />.</exception>
+      <exception cref="T:System.Reflection.TargetException">В .NET для приложений Магазина Windows или переносимой библиотеке классов вместо этого перехватите <see cref="T:System.Exception" />.Объект не соответствует целевому типу или свойство является свойством экземпляра, однако параметр <paramref name="obj" /> имеет значение null. </exception>
+      <exception cref="T:System.Reflection.TargetParameterCountException">Число параметров в индексе <paramref name="index" /> не совпадает с числом параметров, которые принимает индексированное свойство. </exception>
+      <exception cref="T:System.MethodAccessException">В .NET для приложений Магазина Windows или переносимой библиотеке классов вместо этого перехватите исключение базового класса <see cref="T:System.MemberAccessException" />.Недопустимая попытка обращения к закрытому или защищенному методу внутри класса. </exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">Произошла ошибка при установке значения свойства.Например, значение индекса, указанное для индексированного свойства, выходит за границы диапазона.Свойство <see cref="P:System.Exception.InnerException" /> указывает причину возникновения ошибки.</exception>
+    </member>
+    <member name="T:System.Reflection.ReflectionContext">
+      <summary>Представляет контекст, который может предоставить объекты отражения.</summary>
+    </member>
+    <member name="M:System.Reflection.ReflectionContext.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Reflection.ReflectionContext" />.</summary>
+    </member>
+    <member name="M:System.Reflection.ReflectionContext.GetTypeForObject(System.Object)">
+      <summary>Получает представление типа указанного объекта в данном контексте отражения.</summary>
+      <returns>Объект, представляющий тип указанного объекта.</returns>
+      <param name="value">Объект для представления.</param>
+    </member>
+    <member name="M:System.Reflection.ReflectionContext.MapAssembly(System.Reflection.Assembly)">
+      <summary>Получает представление в данном контексте отражения сборки, представляемой объектом из другого контекста отражения.</summary>
+      <returns>Представление сборки в данном контексте отражения.</returns>
+      <param name="assembly">Внешнее представление сборки, представляемой в данном контексте.</param>
+    </member>
+    <member name="M:System.Reflection.ReflectionContext.MapType(System.Reflection.TypeInfo)">
+      <summary>Получает представление в данном контексте отражения типа, представляемого объектом из другого контекста отражения.</summary>
+      <returns>Представление типа в данном контексте отражения.</returns>
+      <param name="type">Внешнее представление типа, представляемого в данном контексте.</param>
+    </member>
+    <member name="T:System.Reflection.ReflectionTypeLoadException">
+      <summary>Исключение вызывается методом <see cref="M:System.Reflection.Module.GetTypes" />, если какой-либо из классов модуля не может быть загружен.Этот класс не наследуется.</summary>
+    </member>
+    <member name="M:System.Reflection.ReflectionTypeLoadException.#ctor(System.Type[],System.Exception[])">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Reflection.ReflectionTypeLoadException" /> с данными классами и сопоставленными исключениями.</summary>
+      <param name="classes">Массив объектов типа Type, содержащий классы, которые были определены в модуле и загружены.Этот массив может содержать пустые ссылки (в Visual Basic — Nothing).</param>
+      <param name="exceptions">Массив объектов типа Exception, содержащий исключения, которые были созданы загрузчиком класса.Пустые ссылки (в Visual Basic — Nothing) в массиве <paramref name="classes" /> соответствуют исключениям в этом массиве <paramref name="exceptions" />.</param>
+    </member>
+    <member name="M:System.Reflection.ReflectionTypeLoadException.#ctor(System.Type[],System.Exception[],System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Reflection.ReflectionTypeLoadException" /> заданными классами, сопоставленными им исключениями и описаниями этих исключений.</summary>
+      <param name="classes">Массив объектов типа Type, содержащий классы, которые были определены в модуле и загружены.Этот массив может содержать пустые ссылки (в Visual Basic — Nothing).</param>
+      <param name="exceptions">Массив объектов типа Exception, содержащий исключения, которые были созданы загрузчиком класса.Пустые ссылки (в Visual Basic — Nothing) в массиве <paramref name="classes" /> соответствуют исключениям в этом массиве <paramref name="exceptions" />.</param>
+      <param name="message">Строка String описания причины создания исключения. </param>
+    </member>
+    <member name="P:System.Reflection.ReflectionTypeLoadException.LoaderExceptions">
+      <summary>Возвращает массив исключений, созданных загрузчиком класса.</summary>
+      <returns>Массив объектов типа Exception, содержащий исключения, которые были созданы загрузчиком класса.Пустые значения ссылок в массиве <paramref name="classes" /> этого экземпляра соответствуют исключениям в этом массиве.</returns>
+    </member>
+    <member name="P:System.Reflection.ReflectionTypeLoadException.Types">
+      <summary>Возвращает массив классов, которые были определены в модуле и загружены.</summary>
+      <returns>Массив объектов типа Type, содержащий классы, которые были определены в модуле и загружены.Некоторые объекты этого массива могут быть значениями null.</returns>
+    </member>
+    <member name="T:System.Reflection.ResourceLocation">
+      <summary>Задает расположение ресурса.</summary>
+    </member>
+    <member name="F:System.Reflection.ResourceLocation.ContainedInAnotherAssembly">
+      <summary>Указывает, что ресурс содержится в другой сборке.</summary>
+    </member>
+    <member name="F:System.Reflection.ResourceLocation.ContainedInManifestFile">
+      <summary>Указывает, что ресурс содержится в файле манифеста.</summary>
+    </member>
+    <member name="F:System.Reflection.ResourceLocation.Embedded">
+      <summary>Указывает, что ресурс является внедренным (то есть не подключается).</summary>
+    </member>
+    <member name="T:System.Reflection.TargetInvocationException">
+      <summary>Исключение выдается методами, вызываемыми средствами отражения.Этот класс не наследуется.</summary>
+    </member>
+    <member name="M:System.Reflection.TargetInvocationException.#ctor(System.Exception)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Reflection.TargetInvocationException" /> со ссылкой на внутреннее исключение, которое является причиной данного исключения.</summary>
+      <param name="inner">Исключение, которое вызвало текущее исключение.Если значение параметра <paramref name="inner" /> не равно null, текущее исключение вызывается в блоке catch, обрабатывающем внутреннее исключение.</param>
+    </member>
+    <member name="M:System.Reflection.TargetInvocationException.#ctor(System.String,System.Exception)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Reflection.TargetInvocationException" /> указанным сообщением об ошибке и ссылкой на внутреннее исключение, которое стало причиной данного исключения.</summary>
+      <param name="message">Сообщение об ошибке с объяснением причин исключения. </param>
+      <param name="inner">Исключение, которое вызвало текущее исключение.Если значение параметра <paramref name="inner" /> не равно null, текущее исключение вызывается в блоке catch, обрабатывающем внутреннее исключение.</param>
+    </member>
+    <member name="T:System.Reflection.TargetParameterCountException">
+      <summary>Исключение, которое выдается в том случае, если количество параметров для вызова не совпадает с ожидаемым.Этот класс не наследуется.</summary>
+    </member>
+    <member name="M:System.Reflection.TargetParameterCountException.#ctor">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Reflection.TargetParameterCountException" /> пустой строкой сообщения и корневой причиной исключения.</summary>
+    </member>
+    <member name="M:System.Reflection.TargetParameterCountException.#ctor(System.String)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Reflection.TargetParameterCountException" /> заданной строкой сообщения и корневой причиной исключения.</summary>
+      <param name="message">Объект String, содержащий описание причины выдачи исключения. </param>
+    </member>
+    <member name="M:System.Reflection.TargetParameterCountException.#ctor(System.String,System.Exception)">
+      <summary>Инициализирует новый экземпляр класса <see cref="T:System.Reflection.TargetParameterCountException" /> заданным сообщением об ошибке и ссылкой на внутреннее исключение, которое является причиной данного исключения.</summary>
+      <param name="message">Сообщение об ошибке с объяснением причин исключения. </param>
+      <param name="inner">Исключение, которое вызвало текущее исключение.Если значение параметра <paramref name="inner" /> не равно null, текущее исключение вызывается в блоке catch, обрабатывающем внутреннее исключение.</param>
+    </member>
+    <member name="T:System.Reflection.TypeInfo">
+      <summary>Представляет объявления типов для классов, интерфейсов, массивов, значений, перечислений, параметров, определений универсальных типов и открытых или закрытых сконструированных универсальных типов. </summary>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.Assembly"></member>
+    <member name="P:System.Reflection.TypeInfo.AssemblyQualifiedName"></member>
+    <member name="M:System.Reflection.TypeInfo.AsType">
+      <summary>Возвращает текущий тип в виде объекта <see cref="T:System.Type" />.</summary>
+      <returns>Текущий тип.</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.Attributes"></member>
+    <member name="P:System.Reflection.TypeInfo.BaseType"></member>
+    <member name="P:System.Reflection.TypeInfo.ContainsGenericParameters"></member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredConstructors">
+      <summary>Возвращает коллекцию конструкторов, объявленных текущим типом.</summary>
+      <returns>Коллекция конструкторов, объявленных текущим типом.</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredEvents">
+      <summary>Возвращает коллекцию событий, определенных текущим типом.</summary>
+      <returns>Коллекция событий, определенных текущим типом.</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredFields">
+      <summary>Возвращает коллекцию полей, определенных текущим типом.</summary>
+      <returns>Коллекция полей, определенных текущим типом.</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredMembers">
+      <summary>Возвращает коллекцию членов, определенных текущим типом.</summary>
+      <returns>Коллекция членов, определенных текущим типом.</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredMethods">
+      <summary>Возвращает коллекцию методов, определенных текущим типом.</summary>
+      <returns>Коллекция методов, определенных текущим типом.</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredNestedTypes">
+      <summary>Возвращает коллекцию вложенных типов, определенных текущим типом.</summary>
+      <returns>Коллекция вложенных типов, определенных текущим типом.</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredProperties">
+      <summary>Возвращает коллекцию свойств, определенных текущим типом. </summary>
+      <returns>Коллекция свойств, определенных текущим типом.</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaringMethod"></member>
+    <member name="P:System.Reflection.TypeInfo.FullName"></member>
+    <member name="P:System.Reflection.TypeInfo.GenericParameterAttributes"></member>
+    <member name="P:System.Reflection.TypeInfo.GenericParameterPosition"></member>
+    <member name="P:System.Reflection.TypeInfo.GenericTypeArguments"></member>
+    <member name="P:System.Reflection.TypeInfo.GenericTypeParameters">
+      <summary>Возвращает массив параметров универсального типа для текущего экземпляра. </summary>
+      <returns>Массив, содержащий параметры текущего экземпляра универсального типа или массив <see cref="P:System.Array.Length" /> 0, если текущий экземпляр не имеет параметры универсального типа. </returns>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetArrayRank"></member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredEvent(System.String)">
+      <summary>Возвращает объект, представляющий указанное открытое событие, объявленное текущим типом.</summary>
+      <returns>Объект, представляющий указанное событие, если оно найдено; в противном случае — значение null.</returns>
+      <param name="name">Имя события.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="name" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredField(System.String)">
+      <summary>Возвращает объект, представляющий указанное открытое поле, объявленное текущим типом.</summary>
+      <returns>Объект, представляющий указанное поле, если оно найдено; в противном случае — значение null.</returns>
+      <param name="name">Имя поля.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="name" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredMethod(System.String)">
+      <summary>Возвращает объект, представляющий указанный открытый метод, объявленный текущим типом.</summary>
+      <returns>Объект, представляющий указанный метод, если такой метод есть; в противном случае — значение null.</returns>
+      <param name="name">Имя метода.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="name" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredMethods(System.String)">
+      <summary>Возвращает коллекцию, содержащую все открытые методы, объявленные в текущем типе, которые соответствуют заданному имени.</summary>
+      <returns>Коллекция, содержащая методы, соответствующие <paramref name="name" />.</returns>
+      <param name="name">Имя метода для поиска.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="name" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredNestedType(System.String)">
+      <summary>Возвращает объект, представляющий указанный открытый вложенный тип, объявленный текущим типом.</summary>
+      <returns>Объект, представляющий указанный вложенный тип, если он найдено; в противном случае — значение null.</returns>
+      <param name="name">Имя вложенного типа.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="name" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredProperty(System.String)">
+      <summary>Возвращает объект, представляющий указанное открытое свойство, объявленное текущим типом.</summary>
+      <returns>Объект, представляющий указанное свойство, если оно найдено; в противном случае — значение null.</returns>
+      <param name="name">Имя свойства.</param>
+      <exception cref="T:System.ArgumentNullException">Свойство <paramref name="name" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetElementType"></member>
+    <member name="M:System.Reflection.TypeInfo.GetGenericParameterConstraints"></member>
+    <member name="M:System.Reflection.TypeInfo.GetGenericTypeDefinition"></member>
+    <member name="P:System.Reflection.TypeInfo.GUID"></member>
+    <member name="P:System.Reflection.TypeInfo.HasElementType"></member>
+    <member name="P:System.Reflection.TypeInfo.ImplementedInterfaces">
+      <summary>Возвращает коллекцию интерфейсов, реализованных текущим типом.</summary>
+      <returns>Коллекция интерфейсов, реализованных текущим типом.</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.IsAbstract"></member>
+    <member name="P:System.Reflection.TypeInfo.IsAnsiClass"></member>
+    <member name="P:System.Reflection.TypeInfo.IsArray"></member>
+    <member name="M:System.Reflection.TypeInfo.IsAssignableFrom(System.Reflection.TypeInfo)">
+      <summary>Возвращает значение, указывающее, можно ли назначить указанный тип текущему типу.</summary>
+      <returns>Значение true, если указанный тип может быть присвоен этому типу; в противном случае — значение false.</returns>
+      <param name="typeInfo">Проверяемый тип.</param>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.IsAutoClass"></member>
+    <member name="P:System.Reflection.TypeInfo.IsAutoLayout"></member>
+    <member name="P:System.Reflection.TypeInfo.IsByRef"></member>
+    <member name="P:System.Reflection.TypeInfo.IsClass"></member>
+    <member name="P:System.Reflection.TypeInfo.IsEnum"></member>
+    <member name="P:System.Reflection.TypeInfo.IsExplicitLayout"></member>
+    <member name="P:System.Reflection.TypeInfo.IsGenericParameter"></member>
+    <member name="P:System.Reflection.TypeInfo.IsGenericType"></member>
+    <member name="P:System.Reflection.TypeInfo.IsGenericTypeDefinition"></member>
+    <member name="P:System.Reflection.TypeInfo.IsImport"></member>
+    <member name="P:System.Reflection.TypeInfo.IsInterface"></member>
+    <member name="P:System.Reflection.TypeInfo.IsLayoutSequential"></member>
+    <member name="P:System.Reflection.TypeInfo.IsMarshalByRef"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNested"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedAssembly"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedFamANDAssem"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedFamily"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedFamORAssem"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedPrivate"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedPublic"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNotPublic"></member>
+    <member name="P:System.Reflection.TypeInfo.IsPointer"></member>
+    <member name="P:System.Reflection.TypeInfo.IsPrimitive"></member>
+    <member name="P:System.Reflection.TypeInfo.IsPublic"></member>
+    <member name="P:System.Reflection.TypeInfo.IsSealed"></member>
+    <member name="P:System.Reflection.TypeInfo.IsSerializable"></member>
+    <member name="P:System.Reflection.TypeInfo.IsSpecialName"></member>
+    <member name="M:System.Reflection.TypeInfo.IsSubclassOf(System.Type)"></member>
+    <member name="P:System.Reflection.TypeInfo.IsUnicodeClass"></member>
+    <member name="P:System.Reflection.TypeInfo.IsValueType"></member>
+    <member name="P:System.Reflection.TypeInfo.IsVisible"></member>
+    <member name="M:System.Reflection.TypeInfo.MakeArrayType"></member>
+    <member name="M:System.Reflection.TypeInfo.MakeArrayType(System.Int32)"></member>
+    <member name="M:System.Reflection.TypeInfo.MakeByRefType"></member>
+    <member name="M:System.Reflection.TypeInfo.MakeGenericType(System.Type[])"></member>
+    <member name="M:System.Reflection.TypeInfo.MakePointerType"></member>
+    <member name="P:System.Reflection.TypeInfo.Namespace"></member>
+    <member name="M:System.Reflection.TypeInfo.System#Reflection#IReflectableType#GetTypeInfo">
+      <summary>Возвращает представление текущего типа объекта <see cref="T:System.Reflection.TypeInfo" />.</summary>
+      <returns>Ссылка на текущий тип.</returns>
+    </member>
+  </members>
+</doc>

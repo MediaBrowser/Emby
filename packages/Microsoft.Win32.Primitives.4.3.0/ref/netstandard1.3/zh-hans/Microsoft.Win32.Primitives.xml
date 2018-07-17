@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>Microsoft.Win32.Primitives</name>
+  </assembly>
+  <members>
+    <member name="T:System.ComponentModel.Win32Exception">
+      <summary>针对 Win32 错误代码引发异常。</summary>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor">
+      <summary>使用出现的最后一个 Win32 错误初始化 <see cref="T:System.ComponentModel.Win32Exception" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor(System.Int32)">
+      <summary>使用指定错误初始化 <see cref="T:System.ComponentModel.Win32Exception" /> 类的新实例。</summary>
+      <param name="error">与此异常关联的 Win32 错误代码。</param>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor(System.Int32,System.String)">
+      <summary>使用指定错误和指定的详细说明初始化 <see cref="T:System.ComponentModel.Win32Exception" /> 类的新实例。</summary>
+      <param name="error">与此异常关联的 Win32 错误代码。</param>
+      <param name="message">该错误的详细说明。</param>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor(System.String)">
+      <summary>使用指定的详细说明初始化 <see cref="T:System.ComponentModel.Win32Exception" /> 类的新实例。</summary>
+      <param name="message">该错误的详细说明。</param>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor(System.String,System.Exception)">
+      <summary>使用指定的详细说明和指定异常初始化 <see cref="T:System.ComponentModel.Win32Exception" /> 类的新实例。</summary>
+      <param name="message">该错误的详细说明。</param>
+      <param name="innerException">对导致此异常的内部异常的引用。</param>
+    </member>
+    <member name="P:System.ComponentModel.Win32Exception.NativeErrorCode">
+      <summary>获取与此异常关联的 Win32 错误代码。</summary>
+      <returns>与此异常关联的 Win32 错误代码。</returns>
+    </member>
+  </members>
+</doc>

@@ -198,6 +198,10 @@ namespace Emby.Server.Implementations.Library
             {
                 return MediaProtocol.Ftp;
             }
+            if (path.StartsWith("udp", StringComparison.OrdinalIgnoreCase))
+            {
+                return MediaProtocol.Udp;
+            }
 
             return _fileSystem.IsPathFile(path) ? MediaProtocol.File : MediaProtocol.Http;
         }
@@ -366,14 +370,17 @@ namespace Emby.Server.Implementations.Library
 
             var preferredAudio = string.IsNullOrEmpty(user.Configuration.AudioLanguagePreference)
                 ? Array.Empty<string>()
-                : NormalizeLanguage(user.Configuration.SubtitleLanguagePreference);
+                : NormalizeLanguage(user.Configuration.AudioLanguagePreference);
 
             source.DefaultAudioStreamIndex = MediaStreamSelector.GetDefaultAudioStreamIndex(source.MediaStreams, preferredAudio, user.Configuration.PlayDefaultAudioTrack);
         }
 
         public void SetDefaultAudioAndSubtitleStreamIndexes(BaseItem item, MediaSourceInfo source, User user)
         {
-            if (item is Video)
+            // Item would only be null if the app didn't supply ItemId as part of the live stream open request
+            var mediaType = item == null ? MediaType.Video : item.MediaType;
+
+            if (string.Equals(mediaType, MediaType.Video, StringComparison.OrdinalIgnoreCase))
             {
                 var userData = item == null ? new UserItemData() : _userDataManager.GetUserData(user, item);
 
@@ -382,7 +389,7 @@ namespace Emby.Server.Implementations.Library
                 SetDefaultAudioStreamIndex(source, userData, user, allowRememberingSelection);
                 SetDefaultSubtitleStreamIndex(source, userData, user, allowRememberingSelection);
             }
-            else if (item is Audio)
+            else if (string.Equals(mediaType, MediaType.Audio, StringComparison.OrdinalIgnoreCase))
             {
                 var audio = source.MediaStreams.FirstOrDefault(i => i.Type == MediaStreamType.Audio);
 
@@ -414,21 +421,26 @@ namespace Emby.Server.Implementations.Library
             .ToList();
         }
 
-        private readonly Dictionary<string, LiveStreamInfo> _openStreams = new Dictionary<string, LiveStreamInfo>(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, ILiveStream> _openStreams = new Dictionary<string, ILiveStream>(StringComparer.OrdinalIgnoreCase);
         private readonly SemaphoreSlim _liveStreamSemaphore = new SemaphoreSlim(1, 1);
 
-        public async Task<LiveStreamResponse> OpenLiveStream(LiveStreamRequest request, CancellationToken cancellationToken)
+        public async Task<Tuple<LiveStreamResponse, IDirectStreamProvider>> OpenLiveStreamInternal(LiveStreamRequest request, CancellationToken cancellationToken)
         {
             await _liveStreamSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+            MediaSourceInfo mediaSource;
+            ILiveStream liveStream;
 
             try
             {
                 var tuple = GetProvider(request.OpenToken);
                 var provider = tuple.Item1;
 
-                var mediaSourceTuple = await provider.OpenMediaSource(tuple.Item2, cancellationToken).ConfigureAwait(false);
+                var currentLiveStreams = _openStreams.Values.ToList();
 
-                var mediaSource = mediaSourceTuple.Item1;
+                liveStream = await provider.OpenMediaSource(tuple.Item2, currentLiveStreams, cancellationToken).ConfigureAwait(false);
+
+                mediaSource = liveStream.MediaSource;
 
                 // Validate that this is actually possible
                 if (mediaSource.SupportsDirectStream)
@@ -436,45 +448,141 @@ namespace Emby.Server.Implementations.Library
                     mediaSource.SupportsDirectStream = SupportsDirectStream(mediaSource.Path, mediaSource.Protocol);
                 }
 
-                if (string.IsNullOrEmpty(mediaSource.LiveStreamId))
-                {
-                    throw new InvalidOperationException(string.Format("{0} returned null LiveStreamId", provider.GetType().Name));
-                }
-
                 SetKeyProperties(provider, mediaSource);
 
-                var info = new LiveStreamInfo
-                {
-                    Id = mediaSource.LiveStreamId,
-                    MediaSource = mediaSource,
-                    DirectStreamProvider = mediaSourceTuple.Item2,
-                    AllowLiveMediaInfoProbe = mediaSourceTuple.Item3
-                };
-
-                _openStreams[mediaSource.LiveStreamId] = info;
-
-                var json = _jsonSerializer.SerializeToString(mediaSource);
-                _logger.Info("Live stream opened: " + json);
-                var clone = _jsonSerializer.DeserializeFromString<MediaSourceInfo>(json);
-
-                if (!string.IsNullOrEmpty(request.UserId))
-                {
-                    var user = _userManager.GetUserById(request.UserId);
-                    var item = string.IsNullOrEmpty(request.ItemId)
-                        ? null
-                        : _libraryManager.GetItemById(request.ItemId);
-                    SetDefaultAudioAndSubtitleStreamIndexes(item, clone, user);
-                }
-
-                return new LiveStreamResponse
-                {
-                    MediaSource = clone
-                };
+                _openStreams[mediaSource.LiveStreamId] = liveStream;
             }
             finally
             {
                 _liveStreamSemaphore.Release();
             }
+
+            // TODO: Don't hardcode this
+            var isAudio = false;
+
+            try
+            {
+                if (mediaSource.MediaStreams.Any(i => i.Index != -1) || !mediaSource.SupportsProbing)
+                {
+                    AddMediaInfo(mediaSource, isAudio);
+                }
+                else
+                {
+                    // hack - these two values were taken from LiveTVMediaSourceProvider
+                    var cacheKey = request.OpenToken;
+
+                    await new LiveStreamHelper(_mediaEncoder(), _logger, _jsonSerializer, _appPaths).AddMediaInfoWithProbe(mediaSource, isAudio, cacheKey, true, cancellationToken).ConfigureAwait(false);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Error probing live tv stream", ex);
+                AddMediaInfo(mediaSource, isAudio);
+            }
+
+            var json = _jsonSerializer.SerializeToString(mediaSource);
+            _logger.Info("Live stream opened: " + json);
+            var clone = _jsonSerializer.DeserializeFromString<MediaSourceInfo>(json);
+
+            if (!request.UserId.Equals(Guid.Empty))
+            {
+                var user = _userManager.GetUserById(request.UserId);
+                var item = request.ItemId.Equals(Guid.Empty)
+                    ? null
+                    : _libraryManager.GetItemById(request.ItemId);
+                SetDefaultAudioAndSubtitleStreamIndexes(item, clone, user);
+            }
+
+            return new Tuple<LiveStreamResponse, IDirectStreamProvider>(new LiveStreamResponse
+            {
+                MediaSource = clone
+
+            }, liveStream as IDirectStreamProvider);
+        }
+
+        private void AddMediaInfo(MediaSourceInfo mediaSource, bool isAudio)
+        {
+            mediaSource.DefaultSubtitleStreamIndex = null;
+
+            // Null this out so that it will be treated like a live stream
+            if (mediaSource.IsInfiniteStream)
+            {
+                mediaSource.RunTimeTicks = null;
+            }
+
+            var audioStream = mediaSource.MediaStreams.FirstOrDefault(i => i.Type == MediaBrowser.Model.Entities.MediaStreamType.Audio);
+
+            if (audioStream == null || audioStream.Index == -1)
+            {
+                mediaSource.DefaultAudioStreamIndex = null;
+            }
+            else
+            {
+                mediaSource.DefaultAudioStreamIndex = audioStream.Index;
+            }
+
+            var videoStream = mediaSource.MediaStreams.FirstOrDefault(i => i.Type == MediaBrowser.Model.Entities.MediaStreamType.Video);
+            if (videoStream != null)
+            {
+                if (!videoStream.BitRate.HasValue)
+                {
+                    var width = videoStream.Width ?? 1920;
+
+                    if (width >= 3000)
+                    {
+                        videoStream.BitRate = 30000000;
+                    }
+
+                    else if (width >= 1900)
+                    {
+                        videoStream.BitRate = 20000000;
+                    }
+
+                    else if (width >= 1200)
+                    {
+                        videoStream.BitRate = 8000000;
+                    }
+
+                    else if (width >= 700)
+                    {
+                        videoStream.BitRate = 2000000;
+                    }
+                }
+            }
+
+            // Try to estimate this
+            mediaSource.InferTotalBitrate();
+        }
+
+        public async Task<IDirectStreamProvider> GetDirectStreamProviderByUniqueId(string uniqueId, CancellationToken cancellationToken)
+        {
+            await _liveStreamSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+            try
+            {
+                var info = _openStreams.Values.FirstOrDefault(i =>
+                {
+                    var liveStream = i as ILiveStream;
+                    if (liveStream != null)
+                    {
+                        return string.Equals(liveStream.UniqueId, uniqueId, StringComparison.OrdinalIgnoreCase);
+                    }
+
+                    return false;
+                });
+
+                return info as IDirectStreamProvider;
+            }
+            finally
+            {
+                _liveStreamSemaphore.Release();
+            }
+        }
+
+        public async Task<LiveStreamResponse> OpenLiveStream(LiveStreamRequest request, CancellationToken cancellationToken)
+        {
+            var result = await OpenLiveStreamInternal(request, cancellationToken).ConfigureAwait(false);
+            return result.Item1;
         }
 
         public async Task<MediaSourceInfo> GetLiveStreamMediaInfo(string id, CancellationToken cancellationToken)
@@ -483,7 +591,7 @@ namespace Emby.Server.Implementations.Library
 
             var mediaSource = liveStreamInfo.MediaSource;
 
-            if (liveStreamInfo.AllowLiveMediaInfoProbe)
+            if (liveStreamInfo is IDirectStreamProvider)
             {
                 var info = await _mediaEncoder().GetMediaInfo(new MediaInfoRequest
                 {
@@ -549,7 +657,7 @@ namespace Emby.Server.Implementations.Library
                 {
                     _fileSystem.CreateDirectory(_fileSystem.GetDirectoryName(cacheFilePath));
                     _jsonSerializer.SerializeToFile(mediaInfo, cacheFilePath);
-                    
+
                     //_logger.Debug("Saved media info to {0}", cacheFilePath);
                 }
             }
@@ -654,10 +762,10 @@ namespace Emby.Server.Implementations.Library
             }
 
             var info = await GetLiveStreamInfo(id, cancellationToken).ConfigureAwait(false);
-            return new Tuple<MediaSourceInfo, IDirectStreamProvider>(info.MediaSource, info.DirectStreamProvider);
+            return new Tuple<MediaSourceInfo, IDirectStreamProvider>(info.MediaSource, info as IDirectStreamProvider);
         }
 
-        private async Task<LiveStreamInfo> GetLiveStreamInfo(string id, CancellationToken cancellationToken)
+        private async Task<ILiveStream> GetLiveStreamInfo(string id, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -668,7 +776,7 @@ namespace Emby.Server.Implementations.Library
 
             try
             {
-                LiveStreamInfo info;
+                ILiveStream info;
                 if (_openStreams.TryGetValue(id, out info))
                 {
                     return info;
@@ -690,23 +798,6 @@ namespace Emby.Server.Implementations.Library
             return result.Item1;
         }
 
-        private async Task CloseLiveStreamWithProvider(IMediaSourceProvider provider, string streamId)
-        {
-            _logger.Info("Closing live stream {0} with provider {1}", streamId, provider.GetType().Name);
-
-            try
-            {
-                await provider.CloseMediaSource(streamId).ConfigureAwait(false);
-            }
-            catch (NotImplementedException)
-            {
-            }
-            catch (Exception ex)
-            {
-                _logger.ErrorException("Error closing live stream {0}", ex, streamId);
-            }
-        }
-
         public async Task CloseLiveStream(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -718,18 +809,22 @@ namespace Emby.Server.Implementations.Library
 
             try
             {
-                LiveStreamInfo current;
+                ILiveStream liveStream;
 
-                if (_openStreams.TryGetValue(id, out current))
+                if (_openStreams.TryGetValue(id, out liveStream))
                 {
-                    _openStreams.Remove(id);
-                    current.Closed = true;
+                    liveStream.ConsumerCount--;
 
-                    if (current.MediaSource.RequiresClosing)
+                    _logger.Info("Live stream {0} consumer count is now {1}", liveStream.OriginalStreamId, liveStream.ConsumerCount);
+
+                    if (liveStream.ConsumerCount <= 0)
                     {
-                        var tuple = GetProvider(id);
+                        _openStreams.Remove(id);
 
-                        await CloseLiveStreamWithProvider(tuple.Item1, tuple.Item2).ConfigureAwait(false);
+                        _logger.Info("Closing live stream {0}", id);
+
+                        await liveStream.Close().ConfigureAwait(false);
+                        _logger.Info("Live stream {0} closed successfully", id);
                     }
                 }
             }
@@ -786,15 +881,6 @@ namespace Emby.Server.Implementations.Library
                     }
                 }
             }
-        }
-
-        private class LiveStreamInfo
-        {
-            public string Id;
-            public bool Closed;
-            public MediaSourceInfo MediaSource;
-            public IDirectStreamProvider DirectStreamProvider;
-            public bool AllowLiveMediaInfoProbe { get; set; }
         }
     }
 }

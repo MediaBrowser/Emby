@@ -1,4 +1,6 @@
 {
+    "PlaybackSettings": "Playback settings",
+    "SubtitleSettings": "Subtitle settings",
     "MessageUnlockAppWithPurchaseOrSupporter": "L\u00e5s opp denne funksjonen med et engangskj\u00f8p, eller med et aktivt Emby Premiere-abonnement.",
     "MessageUnlockAppWithSupporter": "L\u00e5s opp denne funksjonen med et aktivt Emby Premiere-abonnement.",
     "MessageToValidateSupporter": "Hvis du har et aktivt Emby Premiere-abonnement, m\u00e5 du s\u00f8rge for at du har konfigurert Emby Premiere i Emby Server Dashboard, som du f\u00e5r tilgang til ved \u00e5 klikke Emby Premiere i hovedmenyen.",
@@ -33,6 +35,7 @@
     "HeaderWakeServer": "Vekk opp server",
     "AttemptingWakeServer": "Pr\u00f8ver \u00e5 vekke opp server. Vennligst vent,..",
     "WakeServerSuccess": "Suksess!",
+    "HeaderCustomizeHomeScreen": "Customize Home Screen",
     "WakeServerError": "Wake On LAN-pakker ble sendt til servermaskinen din, men tilkobling til din Emby Server mislyktes. Serveren din kan trenge litt mer tid til \u00e5 v\u00e5kne, eller s\u00e5 kj\u00f8rer ikke Emby Server p\u00e5 maskinen.",
     "Sunday": "S\u00f8ndag",
     "Monday": "Mandag",
@@ -47,6 +50,7 @@
     "LabelSortOrder": "Sort order:",
     "HeaderPhotoAlbums": "Photo Albums",
     "Photos": "Photos",
+    "HeaderAppearsOn": "Appears On",
     "List": "List",
     "RecordSeries": "Ta opp serien",
     "HeaderCinemaMode": "Kinomodus",
@@ -306,7 +310,8 @@
     "ConfirmDeleteItems": "Sletting av disse elementene vil slette dem fra b\u00e5de filsystemet og mediebiblioteket . Er du sikker p\u00e5 at du vil fortsette?",
     "PleaseRestartServerName": "Vennligst start gj\u00f8r en omstart av Emby Server  - {0}",
     "LabelSyncJobName": "Navn p\u00e5 synkroniseringsjobb:",
-    "SyncJobCreated": "Sync job created",
+    "SyncingDots": "Syncing...",
+    "ConvertingDots": "Converting...",
     "LabelQuality": "Kvalitet:",
     "LabelSyncNoTargetsHelp": "It looks like you don't currently have any apps that support offline downloading.",
     "DownloadingDots": "Downloading...",
@@ -547,6 +552,7 @@
     "Absolute": "Absolutt",
     "Smart": "Smart",
     "Small": "Small",
+    "Smaller": "Smaller",
     "Medium": "Medium",
     "Large": "Large",
     "ExtraLarge": "Extra large",
@@ -677,5 +683,7 @@
     "ColorSpace": "Fargeutvalg",
     "ColorTransfer": "Overf\u00f8ring av farger",
     "VideoRange": "Videoomr\u00e5de",
-    "SeriesDisplayOrderHelp": "Sorter episoder etter sendt dato, DVD-rekkef\u00f8lge eller nummerering."
+    "SeriesDisplayOrderHelp": "Sorter episoder etter sendt dato, DVD-rekkef\u00f8lge eller nummerering.",
+    "PlaybackSettingsIntro": "To configure default playback settings, stop video playback, then click your user icon in the top right section of the app.",
+    "SubtitleSettingsIntro": "To configure default subtitle appearance and language settings, stop video playback, then click your user icon in the top right section of the app."
 }

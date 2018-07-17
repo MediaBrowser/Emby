@@ -45,14 +45,14 @@ namespace Emby.Server.Implementations.EntryPoints
         {
             var session = e.SessionInfo;
 
-            if (!string.IsNullOrEmpty(session.AppName) &&
+            if (!string.IsNullOrEmpty(session.Client) &&
                 !string.IsNullOrEmpty(session.DeviceName) &&
                 !string.IsNullOrEmpty(session.DeviceId) &&
                 !string.IsNullOrEmpty(session.ApplicationVersion))
             {
                 var keys = new List<string>
                 {
-                    session.AppName,
+                    session.Client,
                     session.DeviceName,
                     session.DeviceId,
                     session.ApplicationVersion
@@ -65,7 +65,7 @@ namespace Emby.Server.Implementations.EntryPoints
                 {
                     info = new ClientInfo
                     {
-                        AppName = session.AppName,
+                        AppName = session.Client,
                         AppVersion = session.ApplicationVersion,
                         DeviceName = session.DeviceName,
                         DeviceId = session.DeviceId

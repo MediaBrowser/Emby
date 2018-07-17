@@ -137,7 +137,7 @@ namespace Emby.Photos
                                     item.ProductionYear = dateTaken.Value.Year;
                                 }
 
-                                item.Genres = image.ImageTag.Genres.ToList();
+                                item.Genres = image.ImageTag.Genres;
                                 item.Tags = image.ImageTag.Keywords;
                                 item.Software = image.ImageTag.Software;
 
@@ -179,7 +179,7 @@ namespace Emby.Photos
                 }
             }
 
-            if (!item.Width.HasValue || !item.Height.HasValue)
+            if (item.Width <= 0 || item.Height <= 0)
             {
                 var img = item.GetImageInfo(ImageType.Primary, 0);
 

@@ -18,14 +18,12 @@ namespace Emby.Server.Implementations.Data
     /// </summary>
     public class SqliteDisplayPreferencesRepository : BaseSqliteRepository, IDisplayPreferencesRepository
     {
-        private readonly IMemoryStreamFactory _memoryStreamProvider;
         protected IFileSystem FileSystem { get; private set; }
 
-        public SqliteDisplayPreferencesRepository(ILogger logger, IJsonSerializer jsonSerializer, IApplicationPaths appPaths, IMemoryStreamFactory memoryStreamProvider, IFileSystem fileSystem)
+        public SqliteDisplayPreferencesRepository(ILogger logger, IJsonSerializer jsonSerializer, IApplicationPaths appPaths, IFileSystem fileSystem)
             : base(logger)
         {
             _jsonSerializer = jsonSerializer;
-            _memoryStreamProvider = memoryStreamProvider;
             FileSystem = fileSystem;
             DbFilePath = Path.Combine(appPaths.DataPath, "displaypreferences.db");
         }
@@ -119,7 +117,7 @@ namespace Emby.Server.Implementations.Data
 
         private void SaveDisplayPreferences(DisplayPreferences displayPreferences, Guid userId, string client, IDatabaseConnection connection)
         {
-            var serialized = _jsonSerializer.SerializeToBytes(displayPreferences, _memoryStreamProvider);
+            var serialized = _jsonSerializer.SerializeToBytes(displayPreferences);
 
             using (var statement = connection.PrepareStatement("replace into userdisplaypreferences (id, userid, client, data) values (@id, @userId, @client, @data)"))
             {

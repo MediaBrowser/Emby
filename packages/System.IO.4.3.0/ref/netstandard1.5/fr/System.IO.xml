@@ -1,0 +1,2201 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.IO</name>
+  </assembly>
+  <members>
+    <member name="T:System.IO.BinaryReader">
+      <summary>Lit les types de données primitifs sous forme de valeurs binaires avec un encodage spécifique.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.#ctor(System.IO.Stream)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.BinaryReader" /> en fonction du flux spécifié et à l'aide de l'encodage UTF-8.</summary>
+      <param name="input">Flux d'entrée. </param>
+      <exception cref="T:System.ArgumentException">Le flux ne prend pas en charge l'écriture, il est null ou bien il est déjà fermé. </exception>
+    </member>
+    <member name="M:System.IO.BinaryReader.#ctor(System.IO.Stream,System.Text.Encoding)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.BinaryReader" /> en fonction du flux et l'encodage de caractères spécifiés.</summary>
+      <param name="input">Flux d'entrée. </param>
+      <param name="encoding">Encodage des caractères à utiliser. </param>
+      <exception cref="T:System.ArgumentException">Le flux ne prend pas en charge l'écriture, il est null ou bien il est déjà fermé. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="encoding" /> a la valeur null. </exception>
+    </member>
+    <member name="M:System.IO.BinaryReader.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.BinaryReader" /> en fonction du flux et de l'encodage de caractères spécifiés, et permet éventuellement de laisser le flux ouvert.</summary>
+      <param name="input">Flux d'entrée.</param>
+      <param name="encoding">Encodage des caractères à utiliser.</param>
+      <param name="leaveOpen">true pour maintenir le flux ouvert après avoir supprimé l'objet <see cref="T:System.IO.BinaryReader" /> ; sinon, false.</param>
+      <exception cref="T:System.ArgumentException">Le flux ne prend pas en charge l'écriture, il est null ou bien il est déjà fermé. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="encoding" /> ou <paramref name="input" /> a la valeur null. </exception>
+    </member>
+    <member name="P:System.IO.BinaryReader.BaseStream">
+      <summary>Expose l'accès au flux sous-jacent de l'élément <see cref="T:System.IO.BinaryReader" />.</summary>
+      <returns>Flux sous-jacent associé à l'élément BinaryReader.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.Dispose">
+      <summary>Libère toutes les ressources utilisées par l'instance actuelle de la classe <see cref="T:System.IO.BinaryReader" />.</summary>
+    </member>
+    <member name="M:System.IO.BinaryReader.Dispose(System.Boolean)">
+      <summary>Libère les ressources non managées utilisées par la classe <see cref="T:System.IO.BinaryReader" /> et libère éventuellement les ressources managées.</summary>
+      <param name="disposing">true pour libérer les ressources managées et non managées ; false pour ne libérer que les ressources non managées. </param>
+    </member>
+    <member name="M:System.IO.BinaryReader.FillBuffer(System.Int32)">
+      <summary>Remplit la mémoire tampon interne avec le nombre spécifié d'octets lus à partir du flux.</summary>
+      <param name="numBytes">Nombre d'octets à lire. </param>
+      <exception cref="T:System.IO.EndOfStreamException">La fin du flux est atteinte avant que <paramref name="numBytes" /> n'ait pu être lu. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="numBytes" /> demandé est plus grand que la taille de la mémoire tampon interne.</exception>
+    </member>
+    <member name="M:System.IO.BinaryReader.PeekChar">
+      <summary>Retourne le prochain caractère disponible et n'avance pas la position de caractère ou d'octet.</summary>
+      <returns>Prochain caractère disponible, ou -1 si aucun caractère n'est disponible ou si le flux ne prend pas en charge la recherche.</returns>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ArgumentException">Le caractère actuel ne peut pas être décodé dans la mémoire tampon de caractères interne à l'aide du <see cref="T:System.Text.Encoding" /> sélectionné pour le flux de données.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.Read">
+      <summary>Lit les caractères du flux sous-jacent et avance la position actuelle du flux conformément à la valeur Encoding utilisée et au caractère spécifique en cours de lecture dans le flux.</summary>
+      <returns>Caractère suivant du flux d'entrée, ou -1 si aucun caractère n'est actuellement disponible.</returns>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.Read(System.Byte[],System.Int32,System.Int32)">
+      <summary>Lit le nombre spécifié d'octets dans le flux, en commençant à un point spécifié dans le tableau d'octets. </summary>
+      <returns>Nombre d'octets lus dans <paramref name="buffer" />.Ce total peut être inférieur au nombre d'octets demandé si ce nombre d'octets n'est pas disponible, ou il peut être égal à zéro si la fin du flux est atteinte.</returns>
+      <param name="buffer">Mémoire tampon dans laquelle lire les données. </param>
+      <param name="index">Point de départ, dans la mémoire tampon, à partir duquel commencer la lecture de la mémoire tampon. </param>
+      <param name="count">Nombre d'octets à lire. </param>
+      <exception cref="T:System.ArgumentException">La longueur de la mémoire tampon moins <paramref name="index" /> est inférieure à <paramref name="count" />. ouLe nombre de caractères décodés à lire est supérieur à <paramref name="count" />.Cela peut arriver si un décodeur Unicode retourne des caractères de secours ou une paire de substitution.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est négatif. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.Read(System.Char[],System.Int32,System.Int32)">
+      <summary>Lit le nombre spécifié de caractères du flux, en commençant à un point spécifié dans le tableau de caractères.</summary>
+      <returns>Nombre total de caractères lus dans la mémoire tampon.Ce total peut être inférieur au nombre de caractères demandé si ce nombre de caractères n'est pas disponible actuellement, ou il peut être égal à zéro si la fin du flux est atteinte.</returns>
+      <param name="buffer">Mémoire tampon dans laquelle lire les données. </param>
+      <param name="index">Point de départ, dans la mémoire tampon, à partir duquel commencer la lecture de la mémoire tampon. </param>
+      <param name="count">Nombre de caractères à lire. </param>
+      <exception cref="T:System.ArgumentException">La longueur de la mémoire tampon moins <paramref name="index" /> est inférieure à <paramref name="count" />. ouLe nombre de caractères décodés à lire est supérieur à <paramref name="count" />.Cela peut arriver si un décodeur Unicode retourne des caractères de secours ou une paire de substitution.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est négatif. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.Read7BitEncodedInt">
+      <summary>Lit un entier 32 bits au format compressé.</summary>
+      <returns>Entier 32 bits au format compressé.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">La fin du flux est atteinte. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.FormatException">Le flux est endommagé.</exception>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadBoolean">
+      <summary>Lit une valeur Boolean à partir du flux actuel et avance la position actuelle du flux d'un octet.</summary>
+      <returns>true si l'octet est différent de zéro ; sinon, false.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">La fin du flux est atteinte. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadByte">
+      <summary>Lit l'octet suivant du flux actuel et avance la position actuelle du flux d'un octet.</summary>
+      <returns>Octet suivant lu dans le flux actuel.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">La fin du flux est atteinte. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadBytes(System.Int32)">
+      <summary>Lit le nombre spécifié d'octets du flux actuel dans un tableau d'octets et avance la position actuelle de ce nombre d'octets.</summary>
+      <returns>Tableau d'octets contenant les données lues dans le flux sous-jacent.Cette valeur peut être inférieure au nombre d'octets demandé si la fin du flux est atteinte.</returns>
+      <param name="count">Nombre d'octets à lire.Cette valeur doit être 0 ou un nombre non négatif, sinon une exception se produit.</param>
+      <exception cref="T:System.ArgumentException">Le nombre de caractères décodés à lire est supérieur à <paramref name="count" />.Cela peut arriver si un décodeur Unicode retourne des caractères de secours ou une paire de substitution.</exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> est négatif. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadChar">
+      <summary>Lit le caractère suivant dans le flux actuel et avance la position actuelle du flux conformément à la valeur Encoding utilisée et du caractère spécifique en cours de lecture dans le flux.</summary>
+      <returns>Caractère lu dans le flux actuel.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">La fin du flux est atteinte. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ArgumentException">Un caractère de substitution a été lu. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadChars(System.Int32)">
+      <summary>Lit le nombre spécifié de caractères dans le flux actuel, retourne les données dans un tableau de caractères et avance la position actuelle conformément à la valeur Encoding utilisée et au caractère spécifique en cours de lecture dans le flux.</summary>
+      <returns>Tableau de caractères contenant des données lues dans le flux sous-jacent.Cette valeur peut être inférieure au nombre de caractères demandés si la fin du flux est atteinte.</returns>
+      <param name="count">Nombre de caractères à lire. </param>
+      <exception cref="T:System.ArgumentException">Le nombre de caractères décodés à lire est supérieur à <paramref name="count" />.Cela peut arriver si un décodeur Unicode retourne des caractères de secours ou une paire de substitution.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> est négatif. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadDecimal">
+      <summary>Lit une valeur décimale dans le flux actuel et avance la position actuelle du flux de 16 octets.</summary>
+      <returns>Valeur décimale lue dans le flux actuel.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">La fin du flux est atteinte. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadDouble">
+      <summary>Lit une valeur à virgule flottante de 8 octets dans le flux actuel et avance la position actuelle du flux de huit octets.</summary>
+      <returns>Valeur à virgule flottante de 8 octets lue dans le flux actuel.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">La fin du flux est atteinte. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadInt16">
+      <summary>Lit un entier signé de 2 octets dans le flux actuel et avance la position actuelle du flux de deux octets.</summary>
+      <returns>Entier signé de 2 octets lu dans le flux actuel.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">La fin du flux est atteinte. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadInt32">
+      <summary>Lit un entier signé de 4 octets dans le flux actuel et avance la position actuelle du flux de quatre octets.</summary>
+      <returns>Entier signé de 4 octets lu dans le flux actuel.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">La fin du flux est atteinte. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadInt64">
+      <summary>Lit un entier signé de 8 octets dans le flux actuel et avance la position actuelle du flux de huit octets.</summary>
+      <returns>Entier signé de 8 octets lu dans le flux actuel.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">La fin du flux est atteinte. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadSByte">
+      <summary>Lit un octet signé dans ce flux et avance la position actuelle du flux d'un octet.</summary>
+      <returns>Octet signé lu dans le flux actuel.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">La fin du flux est atteinte. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadSingle">
+      <summary>Lit une valeur à virgule flottante de 4 octets dans le flux actuel et avance la position actuelle du flux de quatre octets.</summary>
+      <returns>Valeur à virgule flottante de 4 octets lue dans le flux actuel.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">La fin du flux est atteinte. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadString">
+      <summary>Lit une chaîne dans le flux actuel.La chaîne est précédée de la longueur, encodée sous la forme d'un entier de sept bits à la fois.</summary>
+      <returns>Chaîne en cours de lecture.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">La fin du flux est atteinte. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadUInt16">
+      <summary>Lit un entier non signé de 2 octets dans le flux actuel à l'aide de l’encodage Little Endian et avance la position du flux de deux octets.</summary>
+      <returns>Entier non signé de 2 octets lu dans ce flux.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">La fin du flux est atteinte. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadUInt32">
+      <summary>Lit un entier non signé de 4 octets dans le flux actuel et avance la position du flux de quatre octets.</summary>
+      <returns>Entier non signé de 4 octets lu dans ce flux.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">La fin du flux est atteinte. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryReader.ReadUInt64">
+      <summary>Lit un entier non signé de 8 octets dans le flux actuel et avance la position du flux de huit octets.</summary>
+      <returns>Entier non signé de 8 octets lu dans ce flux.</returns>
+      <exception cref="T:System.IO.EndOfStreamException">La fin du flux est atteinte. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.IO.BinaryWriter">
+      <summary>Écrit des types primitifs en binaire dans un flux et prend en charge l'écriture de chaînes dans un encodage spécifique.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.BinaryWriter" /> qui écrit dans un flux.</summary>
+    </member>
+    <member name="M:System.IO.BinaryWriter.#ctor(System.IO.Stream)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.BinaryWriter" /> en fonction du flux spécifié et à l'aide de l'encodage UTF-8.</summary>
+      <param name="output">Flux de sortie. </param>
+      <exception cref="T:System.ArgumentException">Le flux ne prend pas en charge l'écriture ou bien il est déjà fermé. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="output" /> a la valeur null. </exception>
+    </member>
+    <member name="M:System.IO.BinaryWriter.#ctor(System.IO.Stream,System.Text.Encoding)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.BinaryWriter" /> en fonction du flux et de l'encodage de caractères spécifiés.</summary>
+      <param name="output">Flux de sortie. </param>
+      <param name="encoding">Encodage de caractères à utiliser. </param>
+      <exception cref="T:System.ArgumentException">Le flux ne prend pas en charge l'écriture ou bien il est déjà fermé. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="output" /> ou <paramref name="encoding" /> est null. </exception>
+    </member>
+    <member name="M:System.IO.BinaryWriter.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.BinaryWriter" /> selon le flux et l'encodage de caractères spécifiés, et permet éventuellement de laisser le flux ouvert.</summary>
+      <param name="output">Flux de sortie.</param>
+      <param name="encoding">Encodage de caractères à utiliser.</param>
+      <param name="leaveOpen">true pour maintenir le flux ouvert après avoir supprimé l'objet <see cref="T:System.IO.BinaryWriter" /> ; sinon, false.</param>
+      <exception cref="T:System.ArgumentException">Le flux ne prend pas en charge l'écriture ou bien il est déjà fermé. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="output" /> ou <paramref name="encoding" /> est null. </exception>
+    </member>
+    <member name="P:System.IO.BinaryWriter.BaseStream">
+      <summary>Obtient le flux sous-jacent de <see cref="T:System.IO.BinaryWriter" />.</summary>
+      <returns>Flux sous-jacent associé à BinaryWriter.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Dispose">
+      <summary>Libère toutes les ressources utilisées par l'instance actuelle de la classe <see cref="T:System.IO.BinaryWriter" />.</summary>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Dispose(System.Boolean)">
+      <summary>Libère les ressources non managées utilisées par <see cref="T:System.IO.BinaryWriter" /> et libère éventuellement les ressources managées.</summary>
+      <param name="disposing">true pour libérer les ressources managées et non managées ; false pour libérer uniquement les ressources non managées. </param>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Flush">
+      <summary>Efface toutes les mémoires tampons pour le writer actuel et provoque l'écriture des données mises en mémoire tampon sur le périphérique sous-jacent.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.IO.BinaryWriter.Null">
+      <summary>Spécifie <see cref="T:System.IO.BinaryWriter" /> sans magasin de sauvegarde.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.IO.BinaryWriter.OutStream">
+      <summary>Contient le flux sous-jacent.</summary>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Seek(System.Int32,System.IO.SeekOrigin)">
+      <summary>Définit la position dans le flux actuel.</summary>
+      <returns>Position dans le flux actuel.</returns>
+      <param name="offset">Offset d'octet par rapport à <paramref name="origin" />. </param>
+      <param name="origin">Champ de <see cref="T:System.IO.SeekOrigin" /> indiquant le point de référence à partir duquel la nouvelle position doit être obtenue. </param>
+      <exception cref="T:System.IO.IOException">Le pointeur de fichier a été déplacé vers un emplacement non valide. </exception>
+      <exception cref="T:System.ArgumentException">La valeur <see cref="T:System.IO.SeekOrigin" /> n'est pas valide. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Boolean)">
+      <summary>Écrit une valeur Boolean de 1 octet dans le flux actuel, 0 représentant false et 1 représentant true.</summary>
+      <param name="value">Valeur Boolean à écrire (0 ou 1). </param>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Byte)">
+      <summary>Écrit un octet non signé dans le flux actuel et avance la position du flux d'un octet.</summary>
+      <param name="value">Octet non signé à écrire. </param>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Byte[])">
+      <summary>Écrit un tableau d'octets dans le flux sous-jacent.</summary>
+      <param name="buffer">Tableau d'octets contenant les données à écrire. </param>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Byte[],System.Int32,System.Int32)">
+      <summary>Écrit une zone d'un tableau d'octets dans le flux actuel.</summary>
+      <param name="buffer">Tableau d'octets contenant les données à écrire. </param>
+      <param name="index">Point de départ de <paramref name="buffer" /> à partir duquel l'écriture doit commencer. </param>
+      <param name="count">Nombre d'octets à écrire. </param>
+      <exception cref="T:System.ArgumentException">La longueur de la mémoire tampon moins <paramref name="index" /> est inférieure à <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est négatif. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Char)">
+      <summary>Écrit un caractère Unicode dans le flux actuel et avance la position actuelle du flux en fonction du Encoding utilisé et des caractères spécifiques en cours d'écriture dans le flux.</summary>
+      <param name="ch">Caractère Unicode de non-substitution à écrire. </param>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="ch" /> est un caractère de substitution unique.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Char[])">
+      <summary>Écrit un tableau de caractères dans le flux actuel et avance la position actuelle du flux en fonction du Encoding utilisé et des caractères spécifiques en cours d'écriture dans le flux.</summary>
+      <param name="chars">Tableau de caractères contenant les données à écrire. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> a la valeur null. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Char[],System.Int32,System.Int32)">
+      <summary>Écrit dans le flux actuel une section d'un tableau de caractères et avance la position actuelle du flux en fonction du Encoding utilisé et éventuellement des caractères spécifiques écrits.</summary>
+      <param name="chars">Tableau de caractères contenant les données à écrire. </param>
+      <param name="index">Point de départ de <paramref name="chars" /> à partir duquel l'écriture doit commencer. </param>
+      <param name="count">Nombre de caractères à écrire. </param>
+      <exception cref="T:System.ArgumentException">La longueur de la mémoire tampon moins <paramref name="index" /> est inférieure à <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est négatif. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Decimal)">
+      <summary>Écrit une valeur décimale dans le flux actuel et avance la position du flux de 16 octets.</summary>
+      <param name="value">Valeur décimale à écrire. </param>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Double)">
+      <summary>Écrit une valeur à virgule flottante de 8 octets dans le flux actuel et avance la position du flux de 8 octets.</summary>
+      <param name="value">Valeur à virgule flottante de 8 octets à écrire. </param>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Int16)">
+      <summary>Écrit un entier signé de 2 octets dans le flux actuel et avance la position du flux de 2 octets.</summary>
+      <param name="value">Entier signé de 2 octets à écrire. </param>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Int32)">
+      <summary>Écrit un entier signé de 4 octets dans le flux actuel et avance la position du flux de 4 octets.</summary>
+      <param name="value">Entier signé de 4 octets à écrire. </param>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Int64)">
+      <summary>Écrit un entier signé de 8 octets dans le flux actuel et avance la position du flux de 8 octets.</summary>
+      <param name="value">Entier signé de 8 octets à écrire. </param>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.SByte)">
+      <summary>Écrit un octet signé dans le flux actuel et avance la position du flux d'un octet.</summary>
+      <param name="value">Octet signé à écrire. </param>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.Single)">
+      <summary>Écrit une valeur à virgule flottante de 4 octets dans le flux actuel et avance la position du flux de 4 octets.</summary>
+      <param name="value">Valeur à virgule flottante de 4 octets à écrire. </param>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.String)">
+      <summary>Écrit dans ce flux une chaîne préfixée par sa longueur dans l'encodage actuel de <see cref="T:System.IO.BinaryWriter" /> et avance la position actuelle du flux en fonction de l'encodage utilisé et des caractères spécifiques écrits dans le flux.</summary>
+      <param name="value">Valeur à écrire. </param>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> a la valeur null. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.UInt16)">
+      <summary>Écrit un entier non signé de 2 octets dans le flux actuel et avance la position du flux de 2 octets.</summary>
+      <param name="value">Entier non signé de 2 octets à écrire. </param>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.UInt32)">
+      <summary>Écrit un entier non signé de 4 octets dans le flux actuel et avance la position du flux de 4 octets.</summary>
+      <param name="value">Entier non signé de 4 octets à écrire. </param>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write(System.UInt64)">
+      <summary>Écrit un entier non signé de 8 octets dans le flux actuel et avance la position du flux de 8 octets.</summary>
+      <param name="value">Entier non signé de 8 octets à écrire. </param>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.BinaryWriter.Write7BitEncodedInt(System.Int32)">
+      <summary>Écrit un nombre entier 32 bits dans un format compressé.</summary>
+      <param name="value">Entier 32 bits à écrire. </param>
+      <exception cref="T:System.IO.EndOfStreamException">La fin du flux est atteinte. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Le flux est fermé. </exception>
+    </member>
+    <member name="T:System.IO.EndOfStreamException">
+      <summary>Exception levée en cas de tentative de lecture au-delà de la fin du flux.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.EndOfStreamException.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.EndOfStreamException" /> dont la chaîne de message correspond à un message fourni par le système et HRESULT équivaut à COR_E_ENDOFSTREAM.</summary>
+    </member>
+    <member name="M:System.IO.EndOfStreamException.#ctor(System.String)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.EndOfStreamException" /> dont la chaîne de message correspond à <paramref name="message" /> et HRESULT équivaut à COR_E_ENDOFSTREAM.</summary>
+      <param name="message">Chaîne qui décrit l'erreur.Le contenu du <paramref name="message" /> doit être compréhensible pour les utilisateurs.L'appelant de ce constructeur doit vérifier que cette chaîne a été localisée pour la culture du système en cours.</param>
+    </member>
+    <member name="M:System.IO.EndOfStreamException.#ctor(System.String,System.Exception)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.EndOfStreamException" /> avec un message d'erreur spécifié et une référence à l'exception interne ayant provoqué cette exception.</summary>
+      <param name="message">Chaîne qui décrit l'erreur.Le contenu du <paramref name="message" /> doit être compréhensible pour les utilisateurs.L'appelant de ce constructeur doit vérifier que cette chaîne a été localisée pour la culture du système en cours.</param>
+      <param name="innerException">Exception qui constitue la cause de l'exception actuelle.Si le paramètre <paramref name="innerException" /> n'est pas null, l'exception en cours est levée dans un bloc catch qui gère l'exception interne.</param>
+    </member>
+    <member name="T:System.IO.InvalidDataException">
+      <summary>Exception qui est levée lorsque le format d'un flux de données n'est pas valide.</summary>
+    </member>
+    <member name="M:System.IO.InvalidDataException.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.InvalidDataException" />.</summary>
+    </member>
+    <member name="M:System.IO.InvalidDataException.#ctor(System.String)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.InvalidDataException" /> avec un message d'erreur spécifié.</summary>
+      <param name="message">Message d'erreur indiquant la raison de l'exception.</param>
+    </member>
+    <member name="M:System.IO.InvalidDataException.#ctor(System.String,System.Exception)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.InvalidDataException" /> avec une référence à l'exception interne qui est la cause de cette exception.</summary>
+      <param name="message">Message d'erreur indiquant la raison de l'exception.</param>
+      <param name="innerException">Exception qui constitue la cause de l'exception actuelle.Si le paramètre <paramref name="innerException" /> n'est pas null, l'exception en cours est levée dans un bloc catch qui gère l'exception interne.</param>
+    </member>
+    <member name="T:System.IO.MemoryStream">
+      <summary>Crée un flux dont le magasin de stockage est la mémoire.Pour parcourir le code source de .NET Framework pour ce type, consultez la Reference Source.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.MemoryStream" /> avec une capacité extensible initialisée à zéro.</summary>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor(System.Byte[])">
+      <summary>Initialise une nouvelle instance non redimensionnable de la classe <see cref="T:System.IO.MemoryStream" /> en fonction du tableau d'octets spécifié.</summary>
+      <param name="buffer">Tableau d'octets non signés à partir duquel créer le flux actuel. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null. </exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor(System.Byte[],System.Boolean)">
+      <summary>Initialise une nouvelle instance non redimensionnable de la classe <see cref="T:System.IO.MemoryStream" /> en fonction du tableau d'octets spécifié, avec la propriété <see cref="P:System.IO.MemoryStream.CanWrite" /> spécifiée.</summary>
+      <param name="buffer">Tableau d'octets non signés à partir duquel créer ce flux. </param>
+      <param name="writable">Définition de la propriété <see cref="P:System.IO.MemoryStream.CanWrite" />, qui détermine si le flux prend en charge l'écriture. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null. </exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor(System.Byte[],System.Int32,System.Int32)">
+      <summary>Initialise une nouvelle instance non redimensionnable de la classe <see cref="T:System.IO.MemoryStream" /> en fonction de la région (index) spécifiée d'un tableau d'octets.</summary>
+      <param name="buffer">Tableau d'octets non signés à partir duquel créer ce flux. </param>
+      <param name="index">Index dans <paramref name="buffer" /> auquel commence le flux. </param>
+      <param name="count">Longueur du flux en octets. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est inférieur à zéro. </exception>
+      <exception cref="T:System.ArgumentException">La longueur de la mémoire tampon moins <paramref name="index" /> est inférieure à <paramref name="count" />.</exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor(System.Byte[],System.Int32,System.Int32,System.Boolean)">
+      <summary>Initialise une nouvelle instance non redimensionnable de la classe <see cref="T:System.IO.MemoryStream" /> en fonction de la région spécifiée d'un tableau d'octets, avec la propriété <see cref="P:System.IO.MemoryStream.CanWrite" /> spécifiée.</summary>
+      <param name="buffer">Tableau d'octets non signés à partir duquel créer ce flux. </param>
+      <param name="index">Index dans <paramref name="buffer" /> auquel commence le flux. </param>
+      <param name="count">Longueur du flux en octets. </param>
+      <param name="writable">Définition de la propriété <see cref="P:System.IO.MemoryStream.CanWrite" />, qui détermine si le flux prend en charge l'écriture. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est négatif. </exception>
+      <exception cref="T:System.ArgumentException">La longueur de la mémoire tampon moins <paramref name="index" /> est inférieure à <paramref name="count" />.</exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor(System.Byte[],System.Int32,System.Int32,System.Boolean,System.Boolean)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.MemoryStream" /> en fonction de la région spécifiée d'un tableau d'octets, avec la propriété <see cref="P:System.IO.MemoryStream.CanWrite" /> spécifiée et la possibilité d'appeler <see cref="M:System.IO.MemoryStream.GetBuffer" /> comme spécifié.</summary>
+      <param name="buffer">Tableau d'octets non signés à partir duquel créer ce flux. </param>
+      <param name="index">Index dans <paramref name="buffer" /> auquel commence le flux. </param>
+      <param name="count">Longueur du flux en octets. </param>
+      <param name="writable">Définition de la propriété <see cref="P:System.IO.MemoryStream.CanWrite" />, qui détermine si le flux prend en charge l'écriture. </param>
+      <param name="publiclyVisible">true pour activer <see cref="M:System.IO.MemoryStream.GetBuffer" />, qui retourne le tableau d'octets non signés à partir duquel le flux a été créé ; sinon, false. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est négatif. </exception>
+      <exception cref="T:System.ArgumentException">La longueur de la mémoire tampon moins <paramref name="index" /> est inférieure à <paramref name="count" />. </exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.#ctor(System.Int32)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.MemoryStream" /> avec une capacité extensible initialisée à la valeur spécifiée.</summary>
+      <param name="capacity">Taille initiale du tableau interne, en octets. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="capacity" /> est négatif. </exception>
+    </member>
+    <member name="P:System.IO.MemoryStream.CanRead">
+      <summary>Obtient une valeur indiquant si le flux actuel prend en charge la lecture.</summary>
+      <returns>true si le flux est ouvert.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.MemoryStream.CanSeek">
+      <summary>Obtient une valeur indiquant si le flux actuel prend en charge la recherche.</summary>
+      <returns>true si le flux est ouvert.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.MemoryStream.CanWrite">
+      <summary>Obtient une valeur indiquant si le flux actuel prend en charge l'écriture.</summary>
+      <returns>true si le flux prend en charge l'écriture ; sinon, false.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.MemoryStream.Capacity">
+      <summary>Obtient ou définit le nombre d'octets alloués pour ce flux.</summary>
+      <returns>Longueur de la partie de la mémoire tampon qui peut être utilisée pour le flux.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">La capacité définie correspond à une valeur négative ou est inférieure à la longueur actuelle du flux. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux actuel est fermé. </exception>
+      <exception cref="T:System.NotSupportedException">set est appelé sur un flux dont la capacité ne peut pas être modifiée. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.CopyToAsync(System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
+      <summary>Lit de façon asynchrone tous les octets du flux actuel et les écrit dans un autre flux, en utilisant une taille de mémoire tampon et un jeton d'annulation spécifiés.</summary>
+      <returns>Tâche qui représente l'opération de copie asynchrone.</returns>
+      <param name="destination">Flux vers lequel le contenu du flux actuel sera copié.</param>
+      <param name="bufferSize">Taille en octets de la mémoire tampon.Cette valeur doit être supérieure à zéro.</param>
+      <param name="cancellationToken">Jeton pour surveiller les demandes d'annulation.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destination" /> a la valeur null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="buffersize" /> est négatif ou égal à zéro.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux de données actuel ou le flux de données de destination est supprimé.</exception>
+      <exception cref="T:System.NotSupportedException">Le flux de données actuel ne prend pas en charge la lecture, ou le flux de données de destination ne prend pas en charge l'écriture.</exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.Dispose(System.Boolean)">
+      <summary>Libère les ressources non managées utilisées par la classe <see cref="T:System.IO.MemoryStream" /> et libère éventuellement les ressources managées.</summary>
+      <param name="disposing">true pour libérer les ressources managées et non managées ; false pour ne libérer que les ressources non managées.</param>
+    </member>
+    <member name="M:System.IO.MemoryStream.Flush">
+      <summary>Remplace la méthode <see cref="M:System.IO.Stream.Flush" /> afin qu'aucune action ne soit effectuée.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.FlushAsync(System.Threading.CancellationToken)">
+      <summary>Efface de façon asynchrone toutes les mémoires tampons pour ce flux et surveille les demandes d'annulation.</summary>
+      <returns>Tâche qui représente l'opération de vidage asynchrone.</returns>
+      <param name="cancellationToken">Jeton pour surveiller les demandes d'annulation.</param>
+      <exception cref="T:System.ObjectDisposedException">Le flux a été supprimé.</exception>
+    </member>
+    <member name="P:System.IO.MemoryStream.Length">
+      <summary>Obtient la longueur du flux en octets.</summary>
+      <returns>Longueur du flux en octets.</returns>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.MemoryStream.Position">
+      <summary>Obtient ou définit la position actuelle dans le flux.</summary>
+      <returns>Position actuelle dans le flux.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">La position correspond à une valeur négative ou à une valeur supérieure à <see cref="F:System.Int32.MaxValue" />. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux est fermé. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.Read(System.Byte[],System.Int32,System.Int32)">
+      <summary>Lit un bloc d'octets à partir du flux actuel et écrit les données dans une mémoire tampon.</summary>
+      <returns>Nombre total d'octets écrits dans la mémoire tampon.Ce total peut être inférieur au nombre d'octets demandés si ce nombre d'octets n'est pas actuellement disponible, ou égal à zéro si la fin du flux a été atteinte avant que des octets soient lus.</returns>
+      <param name="buffer">Quand cette méthode retourne un résultat, contient le tableau d'octets spécifié dont les valeurs comprises entre <paramref name="offset" /> et (<paramref name="offset" /> + <paramref name="count" /> - 1) sont remplacées par les caractères lus dans le flux actuel. </param>
+      <param name="offset">Dans <paramref name="buffer" />, décalage d'octet de base zéro auquel commencer le stockage des données à partir du flux actuel.</param>
+      <param name="count">Nombre maximal d'octets à lire. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> ou <paramref name="count" /> est négatif. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="offset" /> soustrait à la longueur de la mémoire tampon est inférieur à <paramref name="count" />. </exception>
+      <exception cref="T:System.ObjectDisposedException">L'instance du flux actuel est fermée. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+      <summary>Lit de façon asynchrone une séquence d'octets dans le flux actuel, avance la position dans le flux du nombre d'octets lus et surveille les demandes d'annulation.</summary>
+      <returns>Tâche qui représente l'opération de lecture asynchrone.La valeur du paramètre <paramref name="TResult" /> contient le nombre total d'octets lus dans la mémoire tampon.La valeur du résultat peut être inférieure au nombre d'octets demandés si le nombre d'octets actuellement disponibles est inférieur au nombre demandé, ou elle peut avoir la valeur 0 (zéro) si la fin du flux a été atteinte.</returns>
+      <param name="buffer">Mémoire tampon dans laquelle les données sont écrites.</param>
+      <param name="offset">Dans <paramref name="buffer" />, décalage d'octet auquel commencer l'écriture des données à partir du flux.</param>
+      <param name="count">Nombre maximal d'octets à lire.</param>
+      <param name="cancellationToken">Jeton pour surveiller les demandes d'annulation.La valeur par défaut est <see cref="P:System.Threading.CancellationToken.None" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> ou <paramref name="count" /> est négatif.</exception>
+      <exception cref="T:System.ArgumentException">La somme de <paramref name="offset" /> et de <paramref name="count" /> est supérieure à la longueur de la mémoire tampon.</exception>
+      <exception cref="T:System.NotSupportedException">Le flux ne prend pas en charge la lecture.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux a été supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le flux est en cours d'utilisation par une opération de lecture précédente. </exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.ReadByte">
+      <summary>Lit un octet dans le flux actuel.</summary>
+      <returns>Conversion du type (transtypage) de l'octet en <see cref="T:System.Int32" />, ou -1 si la fin du flux a été atteinte.</returns>
+      <exception cref="T:System.ObjectDisposedException">L'instance du flux actuel est fermée. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.Seek(System.Int64,System.IO.SeekOrigin)">
+      <summary>Définit la position dans le flux actuel à la valeur spécifiée.</summary>
+      <returns>Nouvelle position dans le flux, calculée en combinant le point de référence initial et le décalage.</returns>
+      <param name="offset">Nouvelle position dans le flux.Elle est relative au paramètre <paramref name="loc" /> et peut être positive ou négative.</param>
+      <param name="loc">Valeur de type <see cref="T:System.IO.SeekOrigin" />, qui sert de point de référence à la recherche. </param>
+      <exception cref="T:System.IO.IOException">Tentative de recherche avant le début du flux. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> est supérieur à <see cref="F:System.Int32.MaxValue" />. </exception>
+      <exception cref="T:System.ArgumentException">Un <see cref="T:System.IO.SeekOrigin" /> n'est pas valide. ou<paramref name="offset" /> a entraîné des dépassements de capacité arithmétiques.</exception>
+      <exception cref="T:System.ObjectDisposedException">L'instance du flux actuel est fermée. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.SetLength(System.Int64)">
+      <summary>Définit la longueur du flux actuel à la valeur spécifiée.</summary>
+      <param name="value">Valeur à laquelle définir la longueur. </param>
+      <exception cref="T:System.NotSupportedException">Le flux actuel n'est pas redimensionnable et <paramref name="value" /> est supérieur à la capacité actuelle.ou Le flux actuel ne prend pas en charge l'écriture. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="value" /> est négatif ou supérieur à la longueur maximale de <see cref="T:System.IO.MemoryStream" />, où la longueur maximale est (<see cref="F:System.Int32.MaxValue" /> - origine), et l'origine est l'index dans la mémoire tampon sous-jacente auquel commence le flux. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.ToArray">
+      <summary>Écrit le contenu du flux dans un tableau d'octets, indépendamment de la propriété <see cref="P:System.IO.MemoryStream.Position" />.</summary>
+      <returns>Nouveau tableau d'octets.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.TryGetBuffer(System.ArraySegment{System.Byte}@)">
+      <summary>Retourne le tableau d'octets non signés à partir duquel ce flux a été créé.La valeur de retour indique si la conversion a réussi.</summary>
+      <returns>true si la conversion a réussi ; sinon, false.</returns>
+      <param name="buffer">Segment de tableau d'octets à partir duquel ce flux a été créé.</param>
+    </member>
+    <member name="M:System.IO.MemoryStream.Write(System.Byte[],System.Int32,System.Int32)">
+      <summary>Écrit un bloc d'octets dans le flux actuel en utilisant des données lues dans une mémoire tampon.</summary>
+      <param name="buffer">Mémoire tampon dont sont issues les données à écrire. </param>
+      <param name="offset">Dans <paramref name="buffer" />, décalage d'octet de base zéro auquel commencer la copie des octets dans le flux actuel.</param>
+      <param name="count">Nombre maximal d'octets à écrire. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null. </exception>
+      <exception cref="T:System.NotSupportedException">Le flux ne prend pas en charge l'écriture.Pour plus d'informations, consultez <see cref="P:System.IO.Stream.CanWrite" />.ou La position actuelle est à moins de <paramref name="count" /> octets de la fin du flux et la capacité ne peut pas être modifiée. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="offset" /> soustrait à la longueur de la mémoire tampon est inférieur à <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> ou <paramref name="count" /> est négatif. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ObjectDisposedException">L'instance du flux actuel est fermée. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+      <summary>Écrit de façon asynchrone une séquence d'octets dans le flux actuel, avance la position actuelle dans ce flux du nombre d'octets écrits et surveille les demandes d'annulation.</summary>
+      <returns>Tâche qui représente l'opération d'écriture asynchrone.</returns>
+      <param name="buffer">Mémoire tampon dont sont issues les données à écrire.</param>
+      <param name="offset">Dans <paramref name="buffer" />, décalage d'octet de base zéro à partir duquel commencer la copie des octets dans le flux.</param>
+      <param name="count">Nombre maximal d'octets à écrire.</param>
+      <param name="cancellationToken">Jeton pour surveiller les demandes d'annulation.La valeur par défaut est <see cref="P:System.Threading.CancellationToken.None" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> ou <paramref name="count" /> est négatif.</exception>
+      <exception cref="T:System.ArgumentException">La somme de <paramref name="offset" /> et de <paramref name="count" /> est supérieure à la longueur de la mémoire tampon.</exception>
+      <exception cref="T:System.NotSupportedException">Le flux ne prend pas en charge l'écriture.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux a été supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le flux est actuellement utilisé par une opération d'écriture précédente. </exception>
+    </member>
+    <member name="M:System.IO.MemoryStream.WriteByte(System.Byte)">
+      <summary>Écrit un octet à la position actuelle dans le flux actuel.</summary>
+      <param name="value">Octet à écrire. </param>
+      <exception cref="T:System.NotSupportedException">Le flux ne prend pas en charge l'écriture.Pour plus d'informations, consultez <see cref="P:System.IO.Stream.CanWrite" />.ou La position actuelle est à la fin du flux et la capacité ne peut pas être modifiée. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux actuel est fermé. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.MemoryStream.WriteTo(System.IO.Stream)">
+      <summary>Écrit le contenu complet de ce flux de mémoire dans un autre flux.</summary>
+      <param name="stream">Flux dans lequel écrire ce flux de mémoire. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="stream" /> a la valeur null. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux en cours ou le flux cible est fermé. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.IO.SeekOrigin">
+      <summary>Spécifie la position au sein d'un flux à utiliser pour la recherche.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.SeekOrigin.Begin">
+      <summary>Spécifie le début d'un flux.</summary>
+    </member>
+    <member name="F:System.IO.SeekOrigin.Current">
+      <summary>Spécifie la position actuelle au sein d'un flux.</summary>
+    </member>
+    <member name="F:System.IO.SeekOrigin.End">
+      <summary>Spécifie la fin d'un flux.</summary>
+    </member>
+    <member name="T:System.IO.Stream">
+      <summary>Fournit une vue générique d'une séquence d'octets.Il s'agit d'une classe abstraite.Pour parcourir le code source de .NET Framework pour ce type, consultez la Reference Source.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.Stream" />. </summary>
+    </member>
+    <member name="P:System.IO.Stream.CanRead">
+      <summary>En cas de remplacement dans une classe dérivée, obtient une valeur indiquant si le flux actuel prend en charge la lecture.</summary>
+      <returns>true si le flux prend en charge la lecture ; sinon, false.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.IO.Stream.CanSeek">
+      <summary>En cas de remplacement dans une classe dérivée, obtient une valeur indiquant si le flux actuel prend en charge la recherche.</summary>
+      <returns>true si le flux prend en charge la recherche ; sinon, false.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.IO.Stream.CanTimeout">
+      <summary>Obtient une valeur qui détermine si le flux actuel peut dépasser le délai d'attente.</summary>
+      <returns>Valeur qui détermine si le flux actuel peut dépasser le délai d'attente.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.Stream.CanWrite">
+      <summary>En cas de remplacement dans une classe dérivée, obtient une valeur indiquant si le flux actuel prend en charge l'écriture.</summary>
+      <returns>true si le flux prend en charge l'écriture ; sinon, false.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.CopyTo(System.IO.Stream)">
+      <summary>Lit les octets du flux actuel et les écrit dans un autre flux.</summary>
+      <param name="destination">Flux vers lequel le contenu du flux actuel sera copié.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destination" /> a la valeur null.</exception>
+      <exception cref="T:System.NotSupportedException">Le flux actuel ne prend pas en charge la lecture.ou<paramref name="destination" /> ne prend pas en charge l'écriture.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux actuel ou de <paramref name="destination" /> a été fermé avant l'appel de la méthode <see cref="M:System.IO.Stream.CopyTo(System.IO.Stream)" />.</exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S s'est produite.</exception>
+    </member>
+    <member name="M:System.IO.Stream.CopyTo(System.IO.Stream,System.Int32)">
+      <summary>Lit tous les octets du flux actuel et les écrit dans un autre flux, en utilisant une taille de mémoire tampon spécifiée.</summary>
+      <param name="destination">Flux vers lequel le contenu du flux actuel sera copié.</param>
+      <param name="bufferSize">Taille de la mémoire tampon.Cette valeur doit être supérieure à zéro.La taille par défaut est 81920.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destination" /> a la valeur null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="bufferSize" /> est négatif ou égal à zéro.</exception>
+      <exception cref="T:System.NotSupportedException">Le flux actuel ne prend pas en charge la lecture.ou<paramref name="destination" /> ne prend pas en charge l'écriture.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux actuel ou de <paramref name="destination" /> a été fermé avant l'appel de la méthode <see cref="M:System.IO.Stream.CopyTo(System.IO.Stream)" />.</exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S s'est produite.</exception>
+    </member>
+    <member name="M:System.IO.Stream.CopyToAsync(System.IO.Stream)">
+      <summary>Lit de façon asynchrone tous les octets du flux actuel et les écrit dans un autre flux.</summary>
+      <returns>Tâche qui représente l'opération de copie asynchrone.</returns>
+      <param name="destination">Flux vers lequel le contenu du flux actuel sera copié.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destination" /> a la valeur null.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux de données actuel ou le flux de données de destination est supprimé.</exception>
+      <exception cref="T:System.NotSupportedException">Le flux de données actuel ne prend pas en charge la lecture, ou le flux de données de destination ne prend pas en charge l'écriture.</exception>
+    </member>
+    <member name="M:System.IO.Stream.CopyToAsync(System.IO.Stream,System.Int32)">
+      <summary>Lit de façon asynchrone tous les octets du flux actuel et les écrit dans un autre flux, en utilisant une taille de mémoire tampon spécifiée.</summary>
+      <returns>Tâche qui représente l'opération de copie asynchrone.</returns>
+      <param name="destination">Flux vers lequel le contenu du flux actuel sera copié.</param>
+      <param name="bufferSize">Taille en octets de la mémoire tampon.Cette valeur doit être supérieure à zéro.La taille par défaut est 81920.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destination" /> a la valeur null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="buffersize" /> est négatif ou égal à zéro.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux de données actuel ou le flux de données de destination est supprimé.</exception>
+      <exception cref="T:System.NotSupportedException">Le flux de données actuel ne prend pas en charge la lecture, ou le flux de données de destination ne prend pas en charge l'écriture.</exception>
+    </member>
+    <member name="M:System.IO.Stream.CopyToAsync(System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
+      <summary>Lit de façon asynchrone les octets du flux actuel et les écrit dans un autre flux, en utilisant une taille de mémoire tampon et d'un jeton d'annulation spécifiés.</summary>
+      <returns>Tâche qui représente l'opération de copie asynchrone.</returns>
+      <param name="destination">Flux vers lequel le contenu du flux actuel sera copié.</param>
+      <param name="bufferSize">Taille en octets de la mémoire tampon.Cette valeur doit être supérieure à zéro.La taille par défaut est 81920.</param>
+      <param name="cancellationToken">Jeton pour surveiller les demandes d'annulation.La valeur par défaut est <see cref="P:System.Threading.CancellationToken.None" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destination" /> a la valeur null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="buffersize" /> est négatif ou égal à zéro.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux de données actuel ou le flux de données de destination est supprimé.</exception>
+      <exception cref="T:System.NotSupportedException">Le flux de données actuel ne prend pas en charge la lecture, ou le flux de données de destination ne prend pas en charge l'écriture.</exception>
+    </member>
+    <member name="M:System.IO.Stream.Dispose">
+      <summary>Libère toutes les ressources utilisées par <see cref="T:System.IO.Stream" />.</summary>
+    </member>
+    <member name="M:System.IO.Stream.Dispose(System.Boolean)">
+      <summary>Libère les ressources non managées utilisées par <see cref="T:System.IO.Stream" /> et libère éventuellement les ressources managées.</summary>
+      <param name="disposing">true pour libérer les ressources managées et non managées ; false pour ne libérer que les ressources non managées.</param>
+    </member>
+    <member name="M:System.IO.Stream.Flush">
+      <summary>En cas de remplacement dans une classe dérivée, efface toutes les mémoires tampons pour ce flux et provoque l'écriture de toutes les données se trouvant dans des mémoires tampons sur l'appareil sous-jacent.</summary>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.FlushAsync">
+      <summary>Efface de façon asynchrone toutes les mémoires tampons pour ce flux et provoque l'écriture des données mises en mémoire tampon sur l'appareil sous-jacent.</summary>
+      <returns>Tâche qui représente l'opération de vidage asynchrone.</returns>
+      <exception cref="T:System.ObjectDisposedException">Le flux a été supprimé.</exception>
+    </member>
+    <member name="M:System.IO.Stream.FlushAsync(System.Threading.CancellationToken)">
+      <summary>Efface de façon asynchrone toutes les mémoires tampons pour ce flux, provoque l'écriture des données mises en mémoire tampon sur l'appareil sous-jacent et surveille les demandes d'annulation.</summary>
+      <returns>Tâche qui représente l'opération de vidage asynchrone.</returns>
+      <param name="cancellationToken">Jeton pour surveiller les demandes d'annulation.La valeur par défaut est <see cref="P:System.Threading.CancellationToken.None" />.</param>
+      <exception cref="T:System.ObjectDisposedException">Le flux a été supprimé.</exception>
+    </member>
+    <member name="P:System.IO.Stream.Length">
+      <summary>En cas de remplacement dans une classe dérivée, obtient la longueur du flux en octets.</summary>
+      <returns>Valeur de type long représentant la longueur du flux en octets.</returns>
+      <exception cref="T:System.NotSupportedException">Une classe dérivée de Stream ne prend pas en charge la recherche. </exception>
+      <exception cref="T:System.ObjectDisposedException">Des méthodes ont été appelées après que le flux a été fermé. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.IO.Stream.Null">
+      <summary>Élément Stream sans magasin de stockage.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.IO.Stream.Position">
+      <summary>En cas de remplacement dans une classe dérivée, obtient ou définit la position dans le flux actuel.</summary>
+      <returns>Position actuelle dans le flux.</returns>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.NotSupportedException">Le flux ne prend pas en charge la recherche. </exception>
+      <exception cref="T:System.ObjectDisposedException">Des méthodes ont été appelées après que le flux a été fermé. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.Read(System.Byte[],System.Int32,System.Int32)">
+      <summary>En cas de remplacement dans une classe dérivée, lit une séquence d'octets dans le flux actuel et avance la position dans le flux du nombre d'octets lus.</summary>
+      <returns>Nombre total d'octets lus dans la mémoire tampon.Le nombre d'octets peut être inférieur au nombre d'octets demandés si ce nombre n'est pas actuellement disponible ou égal à zéro (0) si la fin du flux a été atteinte.</returns>
+      <param name="buffer">Tableau d'octets.Quand cette méthode retourne un résultat, la mémoire tampon contient le tableau d'octets spécifié dont les valeurs comprises entre <paramref name="offset" /> et (<paramref name="offset" /> + <paramref name="count" /> - 1) sont remplacées par les octets lus dans la source actuelle.</param>
+      <param name="offset">Dans <paramref name="buffer" />, décalage d'octet de base zéro auquel commencer le stockage des données lues dans le flux actuel. </param>
+      <param name="count">Nombre maximal d'octets à lire dans le flux actuel. </param>
+      <exception cref="T:System.ArgumentException">La somme de <paramref name="offset" /> et de <paramref name="count" /> est supérieure à la longueur de la mémoire tampon. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> ou <paramref name="count" /> est négatif. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.NotSupportedException">Le flux ne prend pas en charge la lecture. </exception>
+      <exception cref="T:System.ObjectDisposedException">Des méthodes ont été appelées après que le flux a été fermé. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.ReadAsync(System.Byte[],System.Int32,System.Int32)">
+      <summary>Lit de façon asynchrone une séquence d'octets dans le flux actuel et avance la position dans le flux du nombre d'octets lus.</summary>
+      <returns>Tâche qui représente l'opération de lecture asynchrone.La valeur du paramètre <paramref name="TResult" /> contient le nombre total d'octets lus dans la mémoire tampon.La valeur du résultat peut être inférieure au nombre d'octets demandés si le nombre d'octets actuellement disponibles est inférieur au nombre demandé, ou elle peut avoir la valeur 0 (zéro) si la fin du flux a été atteinte.</returns>
+      <param name="buffer">Mémoire tampon dans laquelle les données sont écrites.</param>
+      <param name="offset">Dans <paramref name="buffer" />, décalage d'octet auquel commencer l'écriture des données à partir du flux.</param>
+      <param name="count">Nombre maximal d'octets à lire.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> ou <paramref name="count" /> est négatif.</exception>
+      <exception cref="T:System.ArgumentException">La somme de <paramref name="offset" /> et de <paramref name="count" /> est supérieure à la longueur de la mémoire tampon.</exception>
+      <exception cref="T:System.NotSupportedException">Le flux ne prend pas en charge la lecture.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux a été supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le flux est en cours d'utilisation par une opération de lecture précédente. </exception>
+    </member>
+    <member name="M:System.IO.Stream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+      <summary>Lit de façon asynchrone une séquence d'octets dans le flux actuel, avance la position dans le flux du nombre d'octets lus et surveille les demandes d'annulation.</summary>
+      <returns>Tâche qui représente l'opération de lecture asynchrone.La valeur du paramètre <paramref name="TResult" /> contient le nombre total d'octets lus dans la mémoire tampon.La valeur du résultat peut être inférieure au nombre d'octets demandés si le nombre d'octets actuellement disponibles est inférieur au nombre demandé, ou elle peut avoir la valeur 0 (zéro) si la fin du flux a été atteinte.</returns>
+      <param name="buffer">Mémoire tampon dans laquelle les données sont écrites.</param>
+      <param name="offset">Dans <paramref name="buffer" />, décalage d'octet auquel commencer l'écriture des données à partir du flux.</param>
+      <param name="count">Nombre maximal d'octets à lire.</param>
+      <param name="cancellationToken">Jeton pour surveiller les demandes d'annulation.La valeur par défaut est <see cref="P:System.Threading.CancellationToken.None" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> ou <paramref name="count" /> est négatif.</exception>
+      <exception cref="T:System.ArgumentException">La somme de <paramref name="offset" /> et de <paramref name="count" /> est supérieure à la longueur de la mémoire tampon.</exception>
+      <exception cref="T:System.NotSupportedException">Le flux ne prend pas en charge la lecture.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux a été supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le flux est en cours d'utilisation par une opération de lecture précédente. </exception>
+    </member>
+    <member name="M:System.IO.Stream.ReadByte">
+      <summary>Lit un octet du flux et avance d'un octet la position au sein du flux, ou retourne -1 si la fin du flux a été atteinte.</summary>
+      <returns>Conversion de type (transtypage) de l'octet non signé en Int32, ou -1 si la fin du flux a été atteinte.</returns>
+      <exception cref="T:System.NotSupportedException">Le flux ne prend pas en charge la lecture. </exception>
+      <exception cref="T:System.ObjectDisposedException">Des méthodes ont été appelées après que le flux a été fermé. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.Stream.ReadTimeout">
+      <summary>Obtient ou définit une valeur, exprimée en millisecondes, qui définit la durée pendant laquelle le flux tentera d'effectuer la lecture avant d’expiration du délai d’attente. </summary>
+      <returns>Valeur exprimée en millisecondes, qui définit la durée pendant laquelle le flux tentera d'effectuer la lecture avant de dépasser le délai d'attente.</returns>
+      <exception cref="T:System.InvalidOperationException">La méthode <see cref="P:System.IO.Stream.ReadTimeout" /> lève toujours <see cref="T:System.InvalidOperationException" />. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.Seek(System.Int64,System.IO.SeekOrigin)">
+      <summary>En cas de remplacement dans une classe dérivée, définit la position dans le flux actuel.</summary>
+      <returns>Nouvelle position dans le flux actuel.</returns>
+      <param name="offset">Offset d'octet par rapport au paramètre <paramref name="origin" />. </param>
+      <param name="origin">Valeur de type <see cref="T:System.IO.SeekOrigin" /> indiquant le point de référence utilisé pour obtenir la nouvelle position. </param>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.NotSupportedException">Le flux ne prend pas en charge la recherche, comme s'il était construit à partir d'un canal ou d'une sortie console. </exception>
+      <exception cref="T:System.ObjectDisposedException">Des méthodes ont été appelées après que le flux a été fermé. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.SetLength(System.Int64)">
+      <summary>En cas de substitution dans une classe dérivée, définit la longueur de flux actuel.</summary>
+      <param name="value">Longueur souhaitée du flux actuel en octets. </param>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.NotSupportedException">Le flux ne prend en charge ni l'écriture, ni la recherche, comme s'il était construit à partir d'un canal ou d'une sortie console. </exception>
+      <exception cref="T:System.ObjectDisposedException">Des méthodes ont été appelées après que le flux a été fermé. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.Write(System.Byte[],System.Int32,System.Int32)">
+      <summary>En cas de remplacement dans une classe dérivée, écrit une séquence d'octets dans le flux actuel et avance la position actuelle dans ce flux du nombre d'octets écrits.</summary>
+      <param name="buffer">Tableau d'octets.Cette méthode copie <paramref name="count" /> octets à partir de <paramref name="buffer" /> dans le flux actuel.</param>
+      <param name="offset">Dans <paramref name="buffer" />, décalage d'octet de base zéro auquel commencer la copie des octets dans le flux actuel. </param>
+      <param name="count">Nombre d'octets à écrire dans le flux actuel. </param>
+      <exception cref="T:System.ArgumentException">La somme des <paramref name="offset" /> et <paramref name="count" /> est supérieure à la longueur du tampon.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" />  est null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> ou <paramref name="count" /> est un nombre négatif.</exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'e/s est survenue, tels que le fichier spécifié est introuvable.</exception>
+      <exception cref="T:System.NotSupportedException">Le flux ne prend pas en charge l'écriture.</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="M:System.IO.Stream.Write(System.Byte[],System.Int32,System.Int32)" /> a été appelée une fois que le flux a été fermé.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.Stream.WriteAsync(System.Byte[],System.Int32,System.Int32)">
+      <summary>Écrit de façon asynchrone une séquence d'octets dans le flux actuel et avance la position actuelle dans le flux du nombre d'octets écrits.</summary>
+      <returns>Tâche qui représente l'opération d'écriture asynchrone.</returns>
+      <param name="buffer">Mémoire tampon dont sont issues les données à écrire.</param>
+      <param name="offset">Dans <paramref name="buffer" />, décalage d'octet de base zéro à partir duquel commencer la copie des octets dans le flux.</param>
+      <param name="count">Nombre maximal d'octets à écrire.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> ou <paramref name="count" /> est négatif.</exception>
+      <exception cref="T:System.ArgumentException">La somme de <paramref name="offset" /> et de <paramref name="count" /> est supérieure à la longueur de la mémoire tampon.</exception>
+      <exception cref="T:System.NotSupportedException">Le flux ne prend pas en charge l'écriture.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux a été supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le flux est actuellement utilisé par une opération d'écriture précédente. </exception>
+    </member>
+    <member name="M:System.IO.Stream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+      <summary>Écrit de façon asynchrone une séquence d'octets dans le flux actuel, avance la position actuelle dans ce flux du nombre d'octets écrits et surveille les demandes d'annulation.</summary>
+      <returns>Tâche qui représente l'opération d'écriture asynchrone.</returns>
+      <param name="buffer">Mémoire tampon dont sont issues les données à écrire.</param>
+      <param name="offset">Dans <paramref name="buffer" />, décalage d'octet de base zéro à partir duquel commencer la copie des octets dans le flux.</param>
+      <param name="count">Nombre maximal d'octets à écrire.</param>
+      <param name="cancellationToken">Jeton pour surveiller les demandes d'annulation.La valeur par défaut est <see cref="P:System.Threading.CancellationToken.None" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> ou <paramref name="count" /> est négatif.</exception>
+      <exception cref="T:System.ArgumentException">La somme de <paramref name="offset" /> et de <paramref name="count" /> est supérieure à la longueur de la mémoire tampon.</exception>
+      <exception cref="T:System.NotSupportedException">Le flux ne prend pas en charge l'écriture.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux a été supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le flux est actuellement utilisé par une opération d'écriture précédente. </exception>
+    </member>
+    <member name="M:System.IO.Stream.WriteByte(System.Byte)">
+      <summary>Écrit un octet à la position actuelle dans le flux et avance d'un octet la position dans le flux.</summary>
+      <param name="value">Octet à écrire dans le flux. </param>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.NotSupportedException">Le flux ne prend pas en charge l'écriture ou bien il est déjà fermé. </exception>
+      <exception cref="T:System.ObjectDisposedException">Des méthodes ont été appelées après que le flux a été fermé. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.Stream.WriteTimeout">
+      <summary>Obtient ou définit une valeur, exprimée en millisecondes, qui définit la durée pendant laquelle le flux tentera d'écrire des données avant l’expiration du délai d'attente. </summary>
+      <returns>Valeur exprimée en millisecondes, qui définit la durée pendant laquelle le flux tentera d'écrire des données avant de dépasser le délai d'attente.</returns>
+      <exception cref="T:System.InvalidOperationException">La méthode <see cref="P:System.IO.Stream.WriteTimeout" /> lève toujours <see cref="T:System.InvalidOperationException" />. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.IO.StreamReader">
+      <summary>Implémente <see cref="T:System.IO.TextReader" /> qui lit les caractères à partir d'un flux d'octets dans un encodage particulier.Pour parcourir le code source de .NET Framework pour ce type, consultez la Reference Source.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.#ctor(System.IO.Stream)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.StreamReader" /> pour le flux spécifié.</summary>
+      <param name="stream">Flux à lire. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="stream" /> ne prend pas en charge la lecture. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="stream" /> a la valeur null. </exception>
+    </member>
+    <member name="M:System.IO.StreamReader.#ctor(System.IO.Stream,System.Boolean)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.StreamReader" /> pour le flux spécifié, avec l'option de détection de la marque d'ordre d'octet spécifiée.</summary>
+      <param name="stream">Flux à lire. </param>
+      <param name="detectEncodingFromByteOrderMarks">Indique s'il faut rechercher les marques d'ordre des octets au début du fichier. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="stream" /> ne prend pas en charge la lecture. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="stream" /> a la valeur null. </exception>
+    </member>
+    <member name="M:System.IO.StreamReader.#ctor(System.IO.Stream,System.Text.Encoding)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.StreamReader" /> pour le flux spécifié, avec l'encodage de caractères spécifié.</summary>
+      <param name="stream">Flux à lire. </param>
+      <param name="encoding">Encodage des caractères à utiliser. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="stream" /> ne prend pas en charge la lecture. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="stream" /> ou <paramref name="encoding" /> a la valeur null. </exception>
+    </member>
+    <member name="M:System.IO.StreamReader.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.StreamReader" /> pour le flux spécifié, avec l'encodage de caractères et l'option de détection de la marque d'ordre d'octet spécifiés.</summary>
+      <param name="stream">Flux à lire. </param>
+      <param name="encoding">Encodage des caractères à utiliser. </param>
+      <param name="detectEncodingFromByteOrderMarks">Indique s'il faut rechercher les marques d'ordre des octets au début du fichier. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="stream" /> ne prend pas en charge la lecture. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="stream" /> ou <paramref name="encoding" /> a la valeur null. </exception>
+    </member>
+    <member name="M:System.IO.StreamReader.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean,System.Int32)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.StreamReader" /> pour le flux spécifié, avec l'encodage de caractères, l'option de détection de la marque d'ordre d'octet et la taille de mémoire tampon spécifiés.</summary>
+      <param name="stream">Flux à lire. </param>
+      <param name="encoding">Encodage des caractères à utiliser. </param>
+      <param name="detectEncodingFromByteOrderMarks">Indique s'il faut rechercher les marques d'ordre des octets au début du fichier. </param>
+      <param name="bufferSize">Taille minimale de la mémoire tampon. </param>
+      <exception cref="T:System.ArgumentException">Le flux ne prend pas en charge la lecture. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="stream" /> ou <paramref name="encoding" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="bufferSize" /> est inférieur ou égal à zéro. </exception>
+    </member>
+    <member name="M:System.IO.StreamReader.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean,System.Int32,System.Boolean)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.StreamReader" /> pour le flux spécifié en fonction de l'encodage de caractères, de l'option de détection de la marque d'ordre d'octet et de la taille de mémoire tampon spécifiés, et permet éventuellement de laisser le flux ouvert.</summary>
+      <param name="stream">Flux à lire.</param>
+      <param name="encoding">Encodage des caractères à utiliser.</param>
+      <param name="detectEncodingFromByteOrderMarks">true pour rechercher les marques d'ordre d'octet au début du fichier ; sinon, false.</param>
+      <param name="bufferSize">Taille minimale de la mémoire tampon.</param>
+      <param name="leaveOpen">true pour maintenir le flux ouvert après avoir supprimé l'objet <see cref="T:System.IO.StreamReader" /> ; sinon, false.</param>
+    </member>
+    <member name="P:System.IO.StreamReader.BaseStream">
+      <summary>Retourne le flux sous-jacent.</summary>
+      <returns>Flux sous-jacent.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.StreamReader.CurrentEncoding">
+      <summary>Obtient l'encodage de caractères actuel utilisé par l'objet <see cref="T:System.IO.StreamReader" /> actuel.</summary>
+      <returns>Encodage des caractères actuel utilisé par le lecteur en cours.La valeur peut être différente après le premier appel à toute méthode <see cref="Overload:System.IO.StreamReader.Read" /> de <see cref="T:System.IO.StreamReader" />, car la détection automatique de l'encodage n'est effectuée qu'au premier appel à une méthode <see cref="Overload:System.IO.StreamReader.Read" />.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.DiscardBufferedData">
+      <summary>Efface la mémoire tampon interne.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.Dispose(System.Boolean)">
+      <summary>Ferme le flux sous-jacent, libère les ressources non managées utilisées par l'élément <see cref="T:System.IO.StreamReader" /> et libère éventuellement les ressources managées.</summary>
+      <param name="disposing">true pour libérer les ressources managées et non managées ; false pour ne libérer que les ressources non managées. </param>
+    </member>
+    <member name="P:System.IO.StreamReader.EndOfStream">
+      <summary>Obtient une valeur qui indique si la position actuelle dans le flux est à la fin du flux.</summary>
+      <returns>true si la position actuelle dans le flux est à la fin du flux ; sinon, false.</returns>
+      <exception cref="T:System.ObjectDisposedException">Le flux sous-jacent a été supprimé.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.IO.StreamReader.Null">
+      <summary>Objet <see cref="T:System.IO.StreamReader" /> autour d'un flux vide.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.Peek">
+      <summary>Retourne le caractère disponible suivant, mais ne le consomme pas.</summary>
+      <returns>Entier représentant le caractère suivant à lire, ou -1 s'il n'y a pas de caractère à lire ou si le flux ne prend pas en charge la recherche.</returns>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.Read">
+      <summary>Lit le caractère suivant dans le flux d'entrée et avance la position d'un caractère.</summary>
+      <returns>Caractère suivant du flux d'entrée, représenté sous la forme d'un objet <see cref="T:System.Int32" />, ou -1 s'il n'y a plus de caractère disponible.</returns>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.Read(System.Char[],System.Int32,System.Int32)">
+      <summary>Lit un nombre maximal de caractères spécifié du flux actuel dans une mémoire tampon, en commençant à l'index spécifié.</summary>
+      <returns>Le nombre de caractères qui ont été lus, ou 0 si c'est la fin du flux et qu'aucune donnée n'a été lue.Le nombre sera inférieur ou égal à la valeur du paramètre <paramref name="count" />, selon que les données sont, ou non, disponibles dans le flux.</returns>
+      <param name="buffer">Quand cette méthode retourne un résultat, contient le tableau de caractères spécifié dont les valeurs comprises entre <paramref name="index" /> et (<paramref name="index + count - 1" />) sont remplacées par les caractères lus dans la source actuelle. </param>
+      <param name="index">Index de <paramref name="buffer" /> auquel commencer l'écriture. </param>
+      <param name="count">Nombre maximal de caractères à lire. </param>
+      <exception cref="T:System.ArgumentException">La longueur de la mémoire tampon moins <paramref name="index" /> est inférieure à <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est négatif. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S, telle que la fermeture du flux, se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Lit un nombre maximal spécifié de caractères dans le flux actuel de manière asynchrone, et écrit les données dans une mémoire tampon, en commençant à l'index spécifié. </summary>
+      <returns>Tâche qui représente l'opération de lecture asynchrone.La valeur du paramètre <paramref name="TResult" /> contient le nombre total d'octets lus dans la mémoire tampon.La valeur du résultat peut être inférieure au nombre d'octets demandés si le nombre d'octets actuellement disponibles est inférieur au nombre demandé, ou elle peut avoir la valeur 0 (zéro) si la fin du flux a été atteinte.</returns>
+      <param name="buffer">Quand cette méthode est retournée, contient le tableau de caractères spécifié dont les valeurs comprises entre <paramref name="index" /> et (<paramref name="index" /> + <paramref name="count" /> - 1) sont remplacées par les caractères lus dans la source actuelle.</param>
+      <param name="index">Position dans <paramref name="buffer" /> à partir de laquelle commencer l'écriture.</param>
+      <param name="count">Nombre maximal de caractères à lire.Si la fin du flux est atteinte avant que le nombre de caractères spécifié soit écrit dans la mémoire tampon, la méthode en cours se termine.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est négatif.</exception>
+      <exception cref="T:System.ArgumentException">La somme de <paramref name="index" /> et de <paramref name="count" /> est supérieure à la longueur de la mémoire tampon.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux a été supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Lecteur est en cours d'utilisation par une opération de lecture précédente. </exception>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadBlock(System.Char[],System.Int32,System.Int32)">
+      <summary>Lit un nombre maximal spécifié de caractères à partir du flux actuel et écrit les données dans une mémoire tampon, en commençant à l'index spécifié.</summary>
+      <returns>Nombre de caractères lus.Le nombre sera inférieur ou égal à <paramref name="count" />, selon que tous les caractères d'entrée ont été lus ou non.</returns>
+      <param name="buffer">Quand cette méthode retourne un résultat, contient le tableau de caractères spécifié dont les valeurs comprises entre <paramref name="index" /> et (<paramref name="index + count - 1" />) sont remplacées par les caractères lus dans la source actuelle.</param>
+      <param name="index">Position dans <paramref name="buffer" /> à partir de laquelle commencer l'écriture.</param>
+      <param name="count">Nombre maximal de caractères à lire.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentException">La longueur de la mémoire tampon moins <paramref name="index" /> est inférieure à <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est négatif. </exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.StreamReader" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S s'est produite. </exception>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadBlockAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Lit un nombre maximal spécifié de caractères dans le flux actuel de manière asynchrone, et écrit les données dans une mémoire tampon, en commençant à l'index spécifié.</summary>
+      <returns>Tâche qui représente l'opération de lecture asynchrone.La valeur du paramètre <paramref name="TResult" /> contient le nombre total d'octets lus dans la mémoire tampon.La valeur du résultat peut être inférieure au nombre d'octets demandés si le nombre d'octets actuellement disponibles est inférieur au nombre demandé, ou elle peut avoir la valeur 0 (zéro) si la fin du flux a été atteinte.</returns>
+      <param name="buffer">Quand cette méthode est retournée, contient le tableau de caractères spécifié dont les valeurs comprises entre <paramref name="index" /> et (<paramref name="index" /> + <paramref name="count" /> - 1) sont remplacées par les caractères lus dans la source actuelle.</param>
+      <param name="index">Position dans <paramref name="buffer" /> à partir de laquelle commencer l'écriture.</param>
+      <param name="count">Nombre maximal de caractères à lire.Si la fin du flux est atteinte avant que le nombre de caractères spécifié soit écrit dans la mémoire tampon, la méthode se termine.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est négatif.</exception>
+      <exception cref="T:System.ArgumentException">La somme de <paramref name="index" /> et de <paramref name="count" /> est supérieure à la longueur de la mémoire tampon.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux a été supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Lecteur est en cours d'utilisation par une opération de lecture précédente. </exception>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadLine">
+      <summary>Lit une ligne de caractères du flux actuel et retourne les données sous forme de chaîne.</summary>
+      <returns>Ligne suivante du flux d'entrée, ou null si la fin du flux d'entrée est atteinte.</returns>
+      <exception cref="T:System.OutOfMemoryException">La mémoire disponible est insuffisante pour allouer une mémoire tampon pour la chaîne retournée. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadLineAsync">
+      <summary>Lit une ligne de caractères de manière asynchrone dans le flux actuel et retourne les données sous forme de chaîne.</summary>
+      <returns>Tâche qui représente l'opération de lecture asynchrone.La valeur du paramètre <paramref name="TResult" /> contient la ligne suivante du flux, ou a la valeur null si tous les caractères ont été lus.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Le nombre de caractères contenus dans la ligne suivante est supérieur à <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux a été supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Lecteur est en cours d'utilisation par une opération de lecture précédente. </exception>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadToEnd">
+      <summary>Lit tous les caractères entre la position actuelle et la fin du flux.</summary>
+      <returns>Le reste du flux sous forme de chaîne, de la position actuelle jusqu'à la fin.Si la position actuelle est à la fin du flux, retourne une chaîne vide ("").</returns>
+      <exception cref="T:System.OutOfMemoryException">La mémoire disponible est insuffisante pour allouer une mémoire tampon pour la chaîne retournée. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamReader.ReadToEndAsync">
+      <summary>Lit tous les caractères entre la position actuelle et la fin du flux de manière asynchrone, puis les retourne sous la forme d'une chaîne.</summary>
+      <returns>Tâche qui représente l'opération de lecture asynchrone.La valeur du paramètre <paramref name="TResult" /> contient une chaîne composée des caractères allant de la position actuelle à la fin du flux.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Le nombre de caractères est supérieur à <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le flux a été supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Lecteur est en cours d'utilisation par une opération de lecture précédente. </exception>
+    </member>
+    <member name="T:System.IO.StreamWriter">
+      <summary>Implémente <see cref="T:System.IO.TextWriter" /> pour écrire les caractères dans un flux selon un encodage particulier.Pour parcourir le code source de .NET Framework pour ce type, consultez la Source de référence.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.#ctor(System.IO.Stream)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.StreamWriter" /> pour le flux spécifié, à l'aide de l'encodage UTF-8 et de la taille de la mémoire tampon par défaut.</summary>
+      <param name="stream">Le flux dans lequel écrire. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="stream" /> n'est pas accessible en écriture. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="stream" /> a la valeur null. </exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.#ctor(System.IO.Stream,System.Text.Encoding)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.StreamWriter" /> pour le flux spécifié, à l'aide de l'encodage spécifié et de la taille de mémoire tampon par défaut.</summary>
+      <param name="stream">Le flux dans lequel écrire. </param>
+      <param name="encoding">Encodage des caractères à utiliser. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="stream" /> ou <paramref name="encoding" /> est null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="stream" /> n'est pas accessible en écriture. </exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.#ctor(System.IO.Stream,System.Text.Encoding,System.Int32)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.StreamWriter" /> pour le flux spécifié, à l'aide de l'encodage et de la taille de mémoire tampon spécifiés.</summary>
+      <param name="stream">Le flux dans lequel écrire. </param>
+      <param name="encoding">Encodage des caractères à utiliser. </param>
+      <param name="bufferSize">Taille de la mémoire tampon en octets. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="stream" /> ou <paramref name="encoding" /> est null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="bufferSize" /> est négatif. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="stream" /> n'est pas accessible en écriture. </exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.#ctor(System.IO.Stream,System.Text.Encoding,System.Int32,System.Boolean)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.StreamWriter" /> pour le flux spécifié, à l'aide de l'encodage et de la taille de mémoire tampon spécifiés, et permet éventuellement de laisser le flux ouvert.</summary>
+      <param name="stream">Le flux dans lequel écrire.</param>
+      <param name="encoding">Encodage des caractères à utiliser.</param>
+      <param name="bufferSize">Taille de la mémoire tampon en octets.</param>
+      <param name="leaveOpen">true pour maintenir le flux ouvert après avoir supprimé l'objet <see cref="T:System.IO.StreamWriter" /> ; sinon, false.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="stream" /> ou <paramref name="encoding" /> est null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="bufferSize" /> est négatif. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="stream" /> n'est pas accessible en écriture. </exception>
+    </member>
+    <member name="P:System.IO.StreamWriter.AutoFlush">
+      <summary>Obtient ou définit une valeur indiquant si <see cref="T:System.IO.StreamWriter" /> vide sa mémoire tampon vers le flux sous-jacent après chaque appel à <see cref="M:System.IO.StreamWriter.Write(System.Char)" />.</summary>
+      <returns>true pour forcer <see cref="T:System.IO.StreamWriter" /> à vider sa mémoire tampon ; sinon, false.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.IO.StreamWriter.BaseStream">
+      <summary>Obtient le flux sous-jacent qui sert d'interface avec un magasin de stockage.</summary>
+      <returns>Flux dans lequel ce StreamWriter écrit.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.Dispose(System.Boolean)">
+      <summary>Libère les ressources non managées utilisées par <see cref="T:System.IO.StreamWriter" /> et libère éventuellement les ressources managées.</summary>
+      <param name="disposing">true pour libérer les ressources managées et non managées ; false pour ne libérer que les ressources non managées. </param>
+      <exception cref="T:System.Text.EncoderFallbackException">L'encodage actuel ne prend pas en charge l'affichage de la moitié d'une paire de substitution Unicode.</exception>
+    </member>
+    <member name="P:System.IO.StreamWriter.Encoding">
+      <summary>Obtient le <see cref="T:System.Text.Encoding" /> dans lequel la sortie est écrite.</summary>
+      <returns>
+        <see cref="T:System.Text.Encoding" /> spécifié dans le constructeur pour l'instance actuelle, ou <see cref="T:System.Text.UTF8Encoding" /> si aucun encodage n'est spécifié.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.Flush">
+      <summary>Efface toutes les mémoires tampons pour le writer actuel et provoque l'écriture des données mises en mémoire tampon dans le flux sous-jacent.</summary>
+      <exception cref="T:System.ObjectDisposedException">Le writer actuel est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S s'est produite. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">L'encodage actuel ne prend pas en charge l'affichage de la moitié d'une paire de substitution Unicode. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.FlushAsync">
+      <summary>Efface toutes les mémoires tampons pour ce flux de manière asynchrone et provoque l'écriture des données mises en mémoire tampon sur l'appareil sous-jacent.</summary>
+      <returns>Tâche qui représente l'opération de vidage asynchrone.</returns>
+      <exception cref="T:System.ObjectDisposedException">Le flux a été supprimé.</exception>
+    </member>
+    <member name="F:System.IO.StreamWriter.Null">
+      <summary>Fournit un StreamWriter sans magasin de sauvegarde dans lequel il est possible d'écrire, mais qu'il est impossible de lire.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.Write(System.Char)">
+      <summary>Écrit un caractère dans le flux.</summary>
+      <param name="value">Caractère à écrire dans le flux. </param>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> a la valeur true ou la mémoire tampon de <see cref="T:System.IO.StreamWriter" /> est saturée, et le writer actuel est fermé. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> a la valeur true ou la mémoire tampon de <see cref="T:System.IO.StreamWriter" /> est saturée, et le contenu de la mémoire tampon ne peut pas être écrit dans le flux de taille fixe sous-jacent, car <see cref="T:System.IO.StreamWriter" /> se trouve à la fin du flux. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.Write(System.Char[])">
+      <summary>Écrit un tableau de caractères dans le flux.</summary>
+      <param name="buffer">Tableau de caractères contenant les données à écrire.Si <paramref name="buffer" /> est null, rien n'est écrit.</param>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> a la valeur true ou la mémoire tampon de <see cref="T:System.IO.StreamWriter" /> est saturée, et le writer actuel est fermé. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> a la valeur true ou la mémoire tampon de <see cref="T:System.IO.StreamWriter" /> est saturée, et le contenu de la mémoire tampon ne peut pas être écrit dans le flux de taille fixe sous-jacent, car <see cref="T:System.IO.StreamWriter" /> se trouve à la fin du flux. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.Write(System.Char[],System.Int32,System.Int32)">
+      <summary>Écrit un sous-tableau de caractères dans le flux.</summary>
+      <param name="buffer">Tableau de caractères contenant les données à écrire. </param>
+      <param name="index">Position du caractère dans la mémoire tampon où la lecture des données. </param>
+      <param name="count">Nombre maximal de caractères à écrire. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentException">La longueur de la mémoire tampon moins <paramref name="index" /> est inférieure à <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est négatif. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> a la valeur true ou la mémoire tampon de <see cref="T:System.IO.StreamWriter" /> est saturée, et le writer actuel est fermé. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> a la valeur true ou la mémoire tampon de <see cref="T:System.IO.StreamWriter" /> est saturée, et le contenu de la mémoire tampon ne peut pas être écrit dans le flux de taille fixe sous-jacent, car <see cref="T:System.IO.StreamWriter" /> se trouve à la fin du flux. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.Write(System.String)">
+      <summary>Écrit une chaîne dans le flux.</summary>
+      <param name="value">Chaîne à écrire dans le flux.Si <paramref name="value" /> a la valeur null, rien n'est écrit.</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> a la valeur true ou la mémoire tampon de <see cref="T:System.IO.StreamWriter" /> est saturée, et le writer actuel est fermé. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <see cref="P:System.IO.StreamWriter.AutoFlush" /> a la valeur true ou la mémoire tampon de <see cref="T:System.IO.StreamWriter" /> est saturée, et le contenu de la mémoire tampon ne peut pas être écrit dans le flux de taille fixe sous-jacent, car <see cref="T:System.IO.StreamWriter" /> se trouve à la fin du flux. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteAsync(System.Char)">
+      <summary>Écrit un caractère dans le flux de façon asynchrone.</summary>
+      <returns>Tâche qui représente l'opération d'écriture asynchrone.</returns>
+      <param name="value">Caractère à écrire dans le flux.</param>
+      <exception cref="T:System.ObjectDisposedException">Le writer de flux est supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le writer du flux est actuellement utilisé par une opération d'écriture précédente.</exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Écrit un sous-tableau de caractères dans le flux de façon asynchrone.</summary>
+      <returns>Tâche qui représente l'opération d'écriture asynchrone.</returns>
+      <param name="buffer">Tableau de caractères contenant les données à écrire.</param>
+      <param name="index">Position du caractère dans la mémoire où commencer la lecture des données.</param>
+      <param name="count">Nombre maximal de caractères à écrire.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> plus <paramref name="count" /> est supérieur à  la longueur de la mémoire tampon.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est négatif.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le writer de flux est supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le writer du flux est actuellement utilisé par une opération d'écriture précédente. </exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteAsync(System.String)">
+      <summary>Écrit une chaîne dans le flux de façon asynchrone.</summary>
+      <returns>Tâche qui représente l'opération d'écriture asynchrone.</returns>
+      <param name="value">Chaîne à écrire dans le flux.Si <paramref name="value" /> est null, rien n'est écrit.</param>
+      <exception cref="T:System.ObjectDisposedException">Le writer de flux est supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le writer du flux est actuellement utilisé par une opération d'écriture précédente.</exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteLineAsync">
+      <summary>Écrit un terminateur de ligne dans le flux de façon asynchrone.</summary>
+      <returns>Tâche qui représente l'opération d'écriture asynchrone.</returns>
+      <exception cref="T:System.ObjectDisposedException">Le writer de flux est supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le writer du flux est actuellement utilisé par une opération d'écriture précédente.</exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteLineAsync(System.Char)">
+      <summary>Écrit dans le flux un caractère suivi d'un terminateur de ligne de façon asynchrone.</summary>
+      <returns>Tâche qui représente l'opération d'écriture asynchrone.</returns>
+      <param name="value">Caractère à écrire dans le flux.</param>
+      <exception cref="T:System.ObjectDisposedException">Le writer de flux est supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le writer du flux est actuellement utilisé par une opération d'écriture précédente.</exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteLineAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Écrit un sous-tableau de caractères suivi d'un terminateur de ligne de façon asynchrone dans le flux.</summary>
+      <returns>Tâche qui représente l'opération d'écriture asynchrone.</returns>
+      <param name="buffer">Tableau de caractères à partir duquel les données doivent être écrites.</param>
+      <param name="index">Position du caractère dans la mémoire tampon où la lecture des données.</param>
+      <param name="count">Nombre maximal de caractères à écrire.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> plus <paramref name="count" /> est supérieur à  la longueur de la mémoire tampon.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est négatif.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le writer de flux est supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le writer du flux est actuellement utilisé par une opération d'écriture précédente. </exception>
+    </member>
+    <member name="M:System.IO.StreamWriter.WriteLineAsync(System.String)">
+      <summary>Écrit une chaîne suivie d'un terminateur de ligne de façon asynchrone dans le flux.</summary>
+      <returns>Tâche qui représente l'opération d'écriture asynchrone.</returns>
+      <param name="value">Chaîne à écrire.Si la valeur est null, seul le terminateur de ligne est écrit.</param>
+      <exception cref="T:System.ObjectDisposedException">Le writer de flux est supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le writer du flux est actuellement utilisé par une opération d'écriture précédente.</exception>
+    </member>
+    <member name="T:System.IO.StringReader">
+      <summary>Implémente <see cref="T:System.IO.TextReader" /> qui lit une chaîne.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringReader.#ctor(System.String)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.StringReader" /> qui lit la chaîne spécifiée.</summary>
+      <param name="s">Chaîne à laquelle <see cref="T:System.IO.StringReader" /> doit être initialisé. </param>
+      <exception cref="T:System.ArgumentNullException">Le paramètre <paramref name="s" /> est null. </exception>
+    </member>
+    <member name="M:System.IO.StringReader.Dispose(System.Boolean)">
+      <summary>Libère les ressources non managées utilisées par <see cref="T:System.IO.StringReader" /> et libère éventuellement les ressources managées.</summary>
+      <param name="disposing">true pour libérer les ressources managées et non managées ; false pour libérer uniquement les ressources non managées. </param>
+    </member>
+    <member name="M:System.IO.StringReader.Peek">
+      <summary>Retourne le prochain caractère disponible, mais ne le consomme pas.</summary>
+      <returns>Entier représentant le prochain caractère à lire, ou -1 si plus aucun caractère n'est disponible ou si le flux ne prend pas en charge la recherche.</returns>
+      <exception cref="T:System.ObjectDisposedException">Le lecteur actuel est fermé. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringReader.Read">
+      <summary>Lit le caractère suivant dans la chaîne d'entrée et avance sa position d'un caractère.</summary>
+      <returns>Caractère suivant de la chaîne sous-jacente, ou -1 si plus aucun caractère n'est disponible.</returns>
+      <exception cref="T:System.ObjectDisposedException">Le lecteur actuel est fermé. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringReader.Read(System.Char[],System.Int32,System.Int32)">
+      <summary>Lit un bloc de caractères dans la chaîne d'entrée et avance la position du caractère de <paramref name="count" />.</summary>
+      <returns>Nombre total de caractères lus dans la mémoire tampon.Cela peut être inférieur au nombre de caractères demandé si ce nombre n'est pas actuellement disponible, ou égal à zéro si la fin de la chaîne sous-jacente a été atteinte.</returns>
+      <param name="buffer">Lorsque cette méthode est retournée, contient le tableau de caractères spécifié dont les valeurs comprises entre <paramref name="index" /> et (<paramref name="index" /> + <paramref name="count" /> - 1) sont remplacées par les caractères lus dans la source en cours. </param>
+      <param name="index">Index de début dans la mémoire tampon. </param>
+      <param name="count">Nombre de caractères à lire. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentException">La longueur de la mémoire tampon moins <paramref name="index" /> est inférieure à <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est négatif. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le lecteur actuel est fermé. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringReader.ReadAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Lit un nombre maximal spécifié de caractères à partir de la chaîne actuelle de manière asynchrone, et écrit les données dans une mémoire tampon, en commençant à l'index spécifié. </summary>
+      <returns>Tâche qui représente l'opération de lecture asynchrone.La valeur du paramètre <paramref name="TResult" /> contient le nombre total d'octets lus dans la mémoire tampon.La valeur de résultat peut être inférieure au nombre d'octets demandés si le nombre d'octets actuellement disponibles est inférieur au nombre demandé, ou elle peut avoir la valeur 0 (zéro) si la fin de la chaîne a été atteinte.</returns>
+      <param name="buffer">Lorsque cette méthode est retournée, contient le tableau de caractères spécifié dont les valeurs comprises entre <paramref name="index" /> et (<paramref name="index" /> + <paramref name="count" /> - 1) sont remplacées par les caractères lus dans la source en cours.</param>
+      <param name="index">Position dans <paramref name="buffer" /> à partir de laquelle commencer l'écriture.</param>
+      <param name="count">Nombre maximal de caractères à lire.Si la fin de la chaîne est atteinte avant que le nombre de caractères spécifié soit écrit dans la mémoire tampon, la méthode est retournée.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est négatif.</exception>
+      <exception cref="T:System.ArgumentException">La somme de <paramref name="index" /> et de <paramref name="count" /> est supérieure à la longueur de la mémoire tampon.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le lecteur de chaîne a été supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Lecteur est en cours d'utilisation par une opération de lecture précédente. </exception>
+    </member>
+    <member name="M:System.IO.StringReader.ReadBlockAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Lit un nombre maximal spécifié de caractères à partir de la chaîne actuelle de manière asynchrone, et écrit les données dans une mémoire tampon, en commençant à l'index spécifié.</summary>
+      <returns>Tâche qui représente l'opération de lecture asynchrone.La valeur du paramètre <paramref name="TResult" /> contient le nombre total d'octets lus dans la mémoire tampon.La valeur de résultat peut être inférieure au nombre d'octets demandés si le nombre d'octets actuellement disponibles est inférieur au nombre demandé, ou elle peut avoir la valeur 0 (zéro) si la fin de la chaîne a été atteinte.</returns>
+      <param name="buffer">Lorsque cette méthode est retournée, contient le tableau de caractères spécifié dont les valeurs comprises entre <paramref name="index" /> et (<paramref name="index" /> + <paramref name="count" /> - 1) sont remplacées par les caractères lus dans la source en cours.</param>
+      <param name="index">Position dans <paramref name="buffer" /> à partir de laquelle commencer l'écriture.</param>
+      <param name="count">Nombre maximal de caractères à lire.Si la fin de la chaîne est atteinte avant que le nombre de caractères spécifié soit écrit dans la mémoire tampon, la méthode est retournée.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est négatif.</exception>
+      <exception cref="T:System.ArgumentException">La somme de <paramref name="index" /> et de <paramref name="count" /> est supérieure à la longueur de la mémoire tampon.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le lecteur de chaîne a été supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Lecteur est en cours d'utilisation par une opération de lecture précédente. </exception>
+    </member>
+    <member name="M:System.IO.StringReader.ReadLine">
+      <summary>Lit une ligne de caractères à partir de la chaîne en cours et retourne les données sous forme de chaîne.</summary>
+      <returns>Ligne suivante dans la chaîne actuelle ou null si la fin de la chaîne est atteinte.</returns>
+      <exception cref="T:System.ObjectDisposedException">Le lecteur actuel est fermé. </exception>
+      <exception cref="T:System.OutOfMemoryException">La mémoire disponible est insuffisante pour allouer une mémoire tampon pour la chaîne retournée. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringReader.ReadLineAsync">
+      <summary>Lit une ligne de caractères de manière asynchrone à partir de la chaîne en cours et retourne les données sous forme de chaîne.</summary>
+      <returns>Tâche qui représente l'opération de lecture asynchrone.La valeur du paramètre <paramref name="TResult" /> contient la ligne suivante issue du lecteur de chaîne, ou a la valeur null si tous les caractères ont été lus.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Le nombre de caractères contenus dans la ligne suivante est supérieur à <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le lecteur de chaîne a été supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Lecteur est en cours d'utilisation par une opération de lecture précédente. </exception>
+    </member>
+    <member name="M:System.IO.StringReader.ReadToEnd">
+      <summary>Lit tous les caractères entre la position actuelle et la fin de la chaîne, puis les retourne sous la forme d'une chaîne unique.</summary>
+      <returns>Contenu à partir de la position actuelle jusqu'à la fin du flux sous-jacent.</returns>
+      <exception cref="T:System.OutOfMemoryException">La mémoire disponible est insuffisante pour allouer une mémoire tampon pour la chaîne retournée. </exception>
+      <exception cref="T:System.ObjectDisposedException">Le lecteur actuel est fermé. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringReader.ReadToEndAsync">
+      <summary>Lit tous les caractères entre la position actuelle et la fin de la chaîne de manière asynchrone, puis les retourne sous la forme d'une chaîne unique.</summary>
+      <returns>Tâche qui représente l'opération de lecture asynchrone.La valeur du paramètre <paramref name="TResult" /> contient une chaîne composée des caractères de la position actuelle jusqu'à la fin de la chaîne.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Le nombre de caractères est supérieur à <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le lecteur de chaîne a été supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Lecteur est en cours d'utilisation par une opération de lecture précédente. </exception>
+    </member>
+    <member name="T:System.IO.StringWriter">
+      <summary>Implémente <see cref="T:System.IO.TextWriter" /> pour l'écriture d'informations dans une chaîne.Les informations sont stockées dans un <see cref="T:System.Text.StringBuilder" /> sous-jacent.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.StringWriter" />.</summary>
+    </member>
+    <member name="M:System.IO.StringWriter.#ctor(System.IFormatProvider)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.StringWriter" /> avec le contrôle de format spécifié.</summary>
+      <param name="formatProvider">Objet <see cref="T:System.IFormatProvider" /> qui contrôle la mise en forme. </param>
+    </member>
+    <member name="M:System.IO.StringWriter.#ctor(System.Text.StringBuilder)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.StringWriter" /> qui écrit dans le <see cref="T:System.Text.StringBuilder" /> spécifié.</summary>
+      <param name="sb">StringBuilder dans lequel écrire. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="sb" /> a la valeur null. </exception>
+    </member>
+    <member name="M:System.IO.StringWriter.#ctor(System.Text.StringBuilder,System.IFormatProvider)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.StringWriter" /> qui écrit dans le <see cref="T:System.Text.StringBuilder" /> spécifié et possède le fournisseur de formats donné.</summary>
+      <param name="sb">StringBuilder dans lequel écrire. </param>
+      <param name="formatProvider">Objet <see cref="T:System.IFormatProvider" /> qui contrôle la mise en forme. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="sb" /> a la valeur null. </exception>
+    </member>
+    <member name="M:System.IO.StringWriter.Dispose(System.Boolean)">
+      <summary>Libère les ressources non managées utilisées par <see cref="T:System.IO.StringWriter" /> et libère éventuellement les ressources managées.</summary>
+      <param name="disposing">true pour libérer les ressources managées et non managées ; false pour libérer uniquement les ressources non managées. </param>
+    </member>
+    <member name="P:System.IO.StringWriter.Encoding">
+      <summary>Obtient le <see cref="T:System.Text.Encoding" /> dans lequel la sortie est écrite.</summary>
+      <returns>Encoding dans lequel la sortie est écrite.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.FlushAsync">
+      <summary>Efface de façon asynchrone toutes les mémoires tampons pour le writer actuel et provoque l'écriture des données mises en mémoire tampon sur le périphérique sous-jacent. </summary>
+      <returns>Tâche qui représente l'opération de vidage asynchrone.</returns>
+    </member>
+    <member name="M:System.IO.StringWriter.GetStringBuilder">
+      <summary>Retourne le <see cref="T:System.Text.StringBuilder" /> sous-jacent.</summary>
+      <returns>StringBuilder sous-jacent.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.ToString">
+      <summary>Retourne une chaîne contenant les caractères écrits jusqu'ici dans le StringWriter en cours.</summary>
+      <returns>Chaîne contenant les caractères écrits dans le StringWriter en cours.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.Write(System.Char)">
+      <summary>Écrit un caractère dans la chaîne.</summary>
+      <param name="value">Caractère à écrire. </param>
+      <exception cref="T:System.ObjectDisposedException">Le writer est fermé. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.Write(System.Char[],System.Int32,System.Int32)">
+      <summary>Écrit un sous-tableau de caractères dans la chaîne.</summary>
+      <param name="buffer">Tableau de caractères à partir duquel les données doivent être écrites. </param>
+      <param name="index">Position dans la mémoire tampon à laquelle commencer la lecture des données.</param>
+      <param name="count">Nombre maximal de caractères à écrire. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est négatif. </exception>
+      <exception cref="T:System.ArgumentException">(<paramref name="index" /> + <paramref name="count" />)&gt; <paramref name="buffer" />.Length.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le writer est fermé. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.Write(System.String)">
+      <summary>Écrit une chaîne dans la chaîne actuelle.</summary>
+      <param name="value">Chaîne à écrire. </param>
+      <exception cref="T:System.ObjectDisposedException">Le writer est fermé. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.StringWriter.WriteAsync(System.Char)">
+      <summary>Écrit un caractère dans la chaîne de façon asynchrone.</summary>
+      <returns>Tâche qui représente l'opération d'écriture asynchrone.</returns>
+      <param name="value">Caractère à écrire dans la chaîne.</param>
+      <exception cref="T:System.ObjectDisposedException">Le writer de chaîne est supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le writer de chaîne est actuellement utilisé par une opération d'écriture précédente. </exception>
+    </member>
+    <member name="M:System.IO.StringWriter.WriteAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Écrit un sous-tableau de caractères dans la chaîne de façon asynchrone.</summary>
+      <returns>Tâche qui représente l'opération d'écriture asynchrone.</returns>
+      <param name="buffer">Tableau de caractères à partir duquel les données doivent être écrites.</param>
+      <param name="index">Position dans la mémoire tampon à laquelle commencer la lecture des données.</param>
+      <param name="count">Nombre maximal de caractères à écrire.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> plus <paramref name="count" /> est supérieur à  la longueur de la mémoire tampon.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est négatif.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le writer de chaîne est supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le writer de chaîne est actuellement utilisé par une opération d'écriture précédente. </exception>
+    </member>
+    <member name="M:System.IO.StringWriter.WriteAsync(System.String)">
+      <summary>Écrit une chaîne dans la chaîne actuelle de façon asynchrone.</summary>
+      <returns>Tâche qui représente l'opération d'écriture asynchrone.</returns>
+      <param name="value">Chaîne à écrire.Si <paramref name="value" /> est null, rien n'est écrit dans le flux de texte.</param>
+      <exception cref="T:System.ObjectDisposedException">Le writer de chaîne est supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le writer de chaîne est actuellement utilisé par une opération d'écriture précédente. </exception>
+    </member>
+    <member name="M:System.IO.StringWriter.WriteLineAsync(System.Char)">
+      <summary>Écrit dans la chaîne un caractère suivi d'un terminateur de ligne de façon asynchrone.</summary>
+      <returns>Tâche qui représente l'opération d'écriture asynchrone.</returns>
+      <param name="value">Caractère à écrire dans la chaîne.</param>
+      <exception cref="T:System.ObjectDisposedException">Le writer de chaîne est supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le writer de chaîne est actuellement utilisé par une opération d'écriture précédente. </exception>
+    </member>
+    <member name="M:System.IO.StringWriter.WriteLineAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Écrit un sous-tableau de caractères suivi d'un terminateur de ligne de façon asynchrone dans la chaîne.</summary>
+      <returns>Tâche qui représente l'opération d'écriture asynchrone.</returns>
+      <param name="buffer">Tableau de caractères à partir duquel les données doivent être écrites.</param>
+      <param name="index">Position dans la mémoire tampon à laquelle commencer la lecture des données.</param>
+      <param name="count">Nombre maximal de caractères à écrire. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> plus <paramref name="count" /> est supérieur à  la longueur de la mémoire tampon.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est négatif.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le writer de chaîne est supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le writer de chaîne est actuellement utilisé par une opération d'écriture précédente. </exception>
+    </member>
+    <member name="M:System.IO.StringWriter.WriteLineAsync(System.String)">
+      <summary>Écrit une chaîne suivie par un terminateur de ligne de façon asynchrone dans la chaîne actuelle.</summary>
+      <returns>Tâche qui représente l'opération d'écriture asynchrone.</returns>
+      <param name="value">Chaîne à écrire.Si la valeur est null, seul le terminateur de ligne est écrit.</param>
+      <exception cref="T:System.ObjectDisposedException">Le writer de chaîne est supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le writer de chaîne est actuellement utilisé par une opération d'écriture précédente. </exception>
+    </member>
+    <member name="T:System.IO.TextReader">
+      <summary>Représente un lecteur capable de lire une série séquentielle de caractères.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.TextReader" />.</summary>
+    </member>
+    <member name="M:System.IO.TextReader.Dispose">
+      <summary>Libère toutes les ressources utilisées par <see cref="T:System.IO.TextReader" />.</summary>
+    </member>
+    <member name="M:System.IO.TextReader.Dispose(System.Boolean)">
+      <summary>Libère les ressources non managées utilisées par l'objet <see cref="T:System.IO.TextReader" /> et libère éventuellement les ressources managées.</summary>
+      <param name="disposing">true pour libérer les ressources managées et non managées ; false pour ne libérer que les ressources non managées. </param>
+    </member>
+    <member name="F:System.IO.TextReader.Null">
+      <summary>Fournit un TextReader sans données à lire.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.Peek">
+      <summary>Lit le caractère suivant sans modifier l'état du lecteur ou la source du caractère.Retourne le prochain caractère disponible sans le lire réellement à partir du flux lecteur.</summary>
+      <returns>Entier représentant le prochain caractère à lire, ou -1 si plus aucun caractère n'est disponible ou si le lecteur ne prend pas en charge la recherche.</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextReader" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.Read">
+      <summary>Lit le caractère suivant à partir du lecteur de texte et avance la position d'un caractère.</summary>
+      <returns>Caractère suivant du lecteur de texte ou -1 s'il n'y a plus de caractères disponibles.L'implémentation par défaut retourne -1.</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextReader" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.Read(System.Char[],System.Int32,System.Int32)">
+      <summary>Lit un nombre maximal spécifié de caractères à partir du lecteur actuel et écrit les données dans une mémoire tampon, en commençant à l'index spécifié.</summary>
+      <returns>Nombre de caractères lus.Le nombre sera inférieur ou égal à <paramref name="count" />, selon les données disponibles dans le lecteur.Cette méthode retourne zéro si elle est appelée alors qu'il ne reste aucun caractère à lire.</returns>
+      <param name="buffer">Lorsque cette méthode est retournée, contient le tableau de caractères spécifié dont les valeurs comprises entre <paramref name="index" /> et (<paramref name="index" /> + <paramref name="count" /> - 1) sont remplacées par les caractères lus dans la source en cours. </param>
+      <param name="index">Position dans <paramref name="buffer" /> à partir de laquelle commencer l'écriture. </param>
+      <param name="count">Nombre maximal de caractères à lire.Si la fin du lecteur est atteinte avant que le nombre de caractères spécifié soit lu dans la mémoire tampon, la méthode est retournée.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentException">La longueur de la mémoire tampon moins <paramref name="index" /> est inférieure à <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est négatif. </exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextReader" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.ReadAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Lit de façon asynchrone un nombre maximal de caractères spécifié dans le lecteur de texte actuel et écrit les données dans une mémoire tampon, en commençant à l'index spécifié. </summary>
+      <returns>Tâche qui représente l'opération de lecture asynchrone.La valeur du paramètre <paramref name="TResult" /> contient le nombre total d'octets lus dans la mémoire tampon.La valeur de résultat peut être inférieure au nombre d'octets demandés si le nombre d'octets actuellement disponibles est inférieur au nombre demandé, ou elle peut avoir la valeur 0 (zéro) si la fin du texte a été atteinte.</returns>
+      <param name="buffer">Lorsque cette méthode est retournée, contient le tableau de caractères spécifié dont les valeurs comprises entre <paramref name="index" /> et (<paramref name="index" /> + <paramref name="count" /> - 1) sont remplacées par les caractères lus dans la source en cours.</param>
+      <param name="index">Position dans <paramref name="buffer" /> à partir de laquelle commencer l'écriture.</param>
+      <param name="count">Nombre maximal de caractères à lire.Si la fin du texte est atteinte avant que le nombre de caractères spécifié soit lu dans la mémoire tampon, la méthode en cours est retournée.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est négatif.</exception>
+      <exception cref="T:System.ArgumentException">La somme de <paramref name="index" /> et de <paramref name="count" /> est supérieure à la longueur de la mémoire tampon.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le lecteur de texte a été supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Lecteur est en cours d'utilisation par une opération de lecture précédente. </exception>
+    </member>
+    <member name="M:System.IO.TextReader.ReadBlock(System.Char[],System.Int32,System.Int32)">
+      <summary>Lit un nombre maximal spécifié de caractères à partir du lecteur de texte actuel et écrit les données dans une mémoire tampon, en commençant à l'index spécifié.</summary>
+      <returns>Nombre de caractères lus.Le nombre sera inférieur ou égal à <paramref name="count" />, selon que tous les caractères d'entrée ont été lus.</returns>
+      <param name="buffer">Lorsque cette méthode est retournée, ce paramètre contient le tableau de caractères spécifié dont les valeurs comprises entre <paramref name="index" /> et (<paramref name="index" /> + <paramref name="count" /> -1) sont remplacées par les caractères lus dans la source en cours. </param>
+      <param name="index">Position dans <paramref name="buffer" /> à partir de laquelle commencer l'écriture.</param>
+      <param name="count">Nombre maximal de caractères à lire. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentException">La longueur de la mémoire tampon moins <paramref name="index" /> est inférieure à <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est négatif. </exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextReader" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.ReadBlockAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Lit de façon asynchrone un nombre maximal de caractères spécifié dans le lecteur de texte actuel et écrit les données dans une mémoire tampon, en commençant à l'index spécifié.</summary>
+      <returns>Tâche qui représente l'opération de lecture asynchrone.La valeur du paramètre <paramref name="TResult" /> contient le nombre total d'octets lus dans la mémoire tampon.La valeur de résultat peut être inférieure au nombre d'octets demandés si le nombre d'octets actuellement disponibles est inférieur au nombre demandé, ou elle peut avoir la valeur 0 (zéro) si la fin du texte a été atteinte.</returns>
+      <param name="buffer">Lorsque cette méthode est retournée, contient le tableau de caractères spécifié dont les valeurs comprises entre <paramref name="index" /> et (<paramref name="index" /> + <paramref name="count" /> - 1) sont remplacées par les caractères lus dans la source en cours.</param>
+      <param name="index">Position dans <paramref name="buffer" /> à partir de laquelle commencer l'écriture.</param>
+      <param name="count">Nombre maximal de caractères à lire.Si la fin du texte est atteinte avant que le nombre de caractères spécifié soit lu dans la mémoire tampon, la méthode en cours est retournée.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est négatif.</exception>
+      <exception cref="T:System.ArgumentException">La somme de <paramref name="index" /> et de <paramref name="count" /> est supérieure à la longueur de la mémoire tampon.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le lecteur de texte a été supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Lecteur est en cours d'utilisation par une opération de lecture précédente. </exception>
+    </member>
+    <member name="M:System.IO.TextReader.ReadLine">
+      <summary>Lit une ligne de caractères à partir du lecteur de texte et retourne les données sous forme de chaîne.</summary>
+      <returns>La ligne suivante du lecteur ou null si tous les caractères ont été lus.</returns>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.OutOfMemoryException">La mémoire disponible est insuffisante pour allouer une mémoire tampon pour la chaîne retournée. </exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextReader" /> est fermé. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Le nombre de caractères contenus dans la ligne suivante est supérieur à <see cref="F:System.Int32.MaxValue" /></exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.ReadLineAsync">
+      <summary>Lit une ligne de caractères de manière asynchrone et retourne les données sous forme de chaîne. </summary>
+      <returns>Tâche qui représente l'opération de lecture asynchrone.La valeur du paramètre <paramref name="TResult" /> contient la ligne suivante issue du lecteur de texte, ou a la valeur null si tous les caractères ont été lus.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Le nombre de caractères contenus dans la ligne suivante est supérieur à <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le lecteur de texte a été supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Lecteur est en cours d'utilisation par une opération de lecture précédente. </exception>
+    </member>
+    <member name="M:System.IO.TextReader.ReadToEnd">
+      <summary>Lit tous les caractères entre la position actuelle et la fin du lecteur de texte, puis les retourne sous forme d'une chaîne.</summary>
+      <returns>Chaîne contenant tous les caractères entre la position actuelle et la fin du lecteur de texte.</returns>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextReader" /> est fermé. </exception>
+      <exception cref="T:System.OutOfMemoryException">La mémoire disponible est insuffisante pour allouer une mémoire tampon pour la chaîne retournée. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Le nombre de caractères contenus dans la ligne suivante est supérieur à <see cref="F:System.Int32.MaxValue" /></exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextReader.ReadToEndAsync">
+      <summary>Lit tous les caractères entre la position actuelle et la fin du lecteur de texte de manière asynchrone, puis les retourne sous la forme d'une chaîne.</summary>
+      <returns>Tâche qui représente l'opération de lecture asynchrone.La valeur du paramètre <paramref name="TResult" /> contient une chaîne composée des caractères de la position actuelle jusqu'à la fin du flux du lecteur de texte.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Le nombre de caractères est supérieur à <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le lecteur de texte a été supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Lecteur est en cours d'utilisation par une opération de lecture précédente. </exception>
+    </member>
+    <member name="T:System.IO.TextWriter">
+      <summary>Représente un writer capable d'écrire une série de caractères séquentiels.Cette classe est abstraite.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.TextWriter" />.</summary>
+    </member>
+    <member name="M:System.IO.TextWriter.#ctor(System.IFormatProvider)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.IO.TextWriter" /> avec le fournisseur de format spécifié.</summary>
+      <param name="formatProvider">Objet <see cref="T:System.IFormatProvider" /> qui contrôle la mise en forme. </param>
+    </member>
+    <member name="F:System.IO.TextWriter.CoreNewLine">
+      <summary>Stocke les caractères de saut de ligne utilisés pour ce TextWriter.</summary>
+    </member>
+    <member name="M:System.IO.TextWriter.Dispose">
+      <summary>Libère toutes les ressources utilisées par l'objet <see cref="T:System.IO.TextWriter" />.</summary>
+    </member>
+    <member name="M:System.IO.TextWriter.Dispose(System.Boolean)">
+      <summary>Libère les ressources non managées utilisées par <see cref="T:System.IO.TextWriter" /> et libère éventuellement les ressources managées.</summary>
+      <param name="disposing">true pour libérer les ressources managées et non managées ; false pour ne libérer que les ressources non managées. </param>
+    </member>
+    <member name="P:System.IO.TextWriter.Encoding">
+      <summary>En cas de substitution dans une classe dérivée, retourne l'encodage de caractères dans lequel la sortie est écrite.</summary>
+      <returns>Encodage de caractères dans lequel la sortie est écrite.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Flush">
+      <summary>Efface toutes les mémoires tampons pour le writer actuel et provoque l'écriture des données mises en mémoire tampon sur l'appareil sous-jacent.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.FlushAsync">
+      <summary>Efface de façon asynchrone toutes les mémoires tampons pour le writer actuel et provoque l'écriture des données mises en mémoire tampon sur l'appareil sous-jacent. </summary>
+      <returns>Tâche qui représente l'opération de vidage asynchrone. </returns>
+      <exception cref="T:System.ObjectDisposedException">Le writer de texte est supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le writer est actuellement utilisé par une opération d'écriture précédente. </exception>
+    </member>
+    <member name="P:System.IO.TextWriter.FormatProvider">
+      <summary>Obtient un objet qui contrôle la mise en forme.</summary>
+      <returns>Objet <see cref="T:System.IFormatProvider" /> pour une culture spécifique, ou mise en forme de la culture actuelle si aucune autre culture n'est spécifiée.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.IO.TextWriter.NewLine">
+      <summary>Obtient ou définit la chaîne de marque de fin de ligne utilisée pour le TextWriter actuel.</summary>
+      <returns>Chaîne de marque de fin de ligne pour le TextWriter actuel.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.IO.TextWriter.Null">
+      <summary>Fournit un élément TextWriter sans magasin de stockage dans lequel il est possible d'écrire, mais pas de lire.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Boolean)">
+      <summary>Écrit la représentation textuelle d'une valeur Boolean dans la chaîne ou le flux de texte.</summary>
+      <param name="value">La valeur Boolean à écrire. </param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Char)">
+      <summary>Écrit un caractère dans la chaîne ou le flux de texte.</summary>
+      <param name="value">Caractère à écrire dans le flux de texte. </param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Char[])">
+      <summary>Écrit un tableau de caractères dans la chaîne ou le flux de texte.</summary>
+      <param name="buffer">Tableau de caractères à écrire dans le flux de texte. </param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Char[],System.Int32,System.Int32)">
+      <summary>Écrit un sous-tableau de caractères dans la chaîne ou le flux de texte.</summary>
+      <param name="buffer">Tableau de caractères à partir duquel les données doivent être écrites. </param>
+      <param name="index">Position du caractère dans la mémoire tampon à laquelle commencer la récupération des données. </param>
+      <param name="count">Nombre de caractères à écrire. </param>
+      <exception cref="T:System.ArgumentException">La longueur de la mémoire tampon moins <paramref name="index" /> est inférieure à <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentNullException">Le paramètre <paramref name="buffer" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est négatif. </exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Decimal)">
+      <summary>Écrit la représentation textuelle d'une valeur décimale dans la chaîne ou le flux de texte.</summary>
+      <param name="value">Valeur décimale à écrire. </param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Double)">
+      <summary>Écrit la représentation textuelle d'une valeur à virgule flottante de 8 octets dans la chaîne ou le flux de texte.</summary>
+      <param name="value">Valeur à virgule flottante de 8 octets à écrire. </param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Int32)">
+      <summary>Écrit la représentation textuelle d'un entier signé de 4 octets dans la chaîne ou le flux de texte.</summary>
+      <param name="value">Entier signé de 4 octets à écrire. </param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Int64)">
+      <summary>Écrit la représentation textuelle d'un entier signé de 8 octets dans la chaîne ou le flux de texte.</summary>
+      <param name="value">Entier signé de 8 octets à écrire. </param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Object)">
+      <summary>Écrit la représentation textuelle d'un objet dans la chaîne ou le flux de texte en appelant la méthode ToString sur cet objet.</summary>
+      <param name="value">Objet à écrire. </param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.Single)">
+      <summary>Écrit la représentation textuelle d'une valeur à virgule flottante de 4 octets dans la chaîne ou le flux de texte.</summary>
+      <param name="value">Valeur à virgule flottante de 4 octets à écrire. </param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.String)">
+      <summary>Écrit une chaîne dans la chaîne ou le flux de texte.</summary>
+      <param name="value">Chaîne à écrire. </param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.String,System.Object)">
+      <summary>Écrit une chaîne mise en forme dans la chaîne ou le flux de texte, en utilisant la même sémantique que la méthode <see cref="M:System.String.Format(System.String,System.Object)" />.</summary>
+      <param name="format">Chaîne de format composite (consultez la section Notes). </param>
+      <param name="arg0">Objet à mettre en forme et à écrire. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> a la valeur null. </exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> n'est pas une chaîne de format composite.ou L'index d'un élément de format est inférieur à 0 (zéro) ou supérieur ou égal au nombre d'objets à mettre en forme (qui, pour cette surcharge de méthode, s'élève à un). </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.String,System.Object,System.Object)">
+      <summary>Écrit une chaîne mise en forme dans la chaîne ou le flux de texte, en utilisant la même sémantique que la méthode <see cref="M:System.String.Format(System.String,System.Object,System.Object)" />.</summary>
+      <param name="format">Chaîne de format composite (consultez la section Notes). </param>
+      <param name="arg0">Premier objet à mettre en forme et à écrire. </param>
+      <param name="arg1">Deuxième objet à mettre en forme et à écrire. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> a la valeur null. </exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> n'est pas une chaîne de format composite.ou L'index d'un élément de format est inférieur à 0 (zéro) ou supérieur ou égal au nombre d'objets à mettre en forme (qui, pour cette surcharge de méthode, s'élève à deux). </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.String,System.Object,System.Object,System.Object)">
+      <summary>Écrit une chaîne mise en forme dans la chaîne ou le flux de texte, en utilisant la même sémantique que la méthode <see cref="M:System.String.Format(System.String,System.Object,System.Object,System.Object)" />.</summary>
+      <param name="format">Chaîne de format composite (consultez la section Notes). </param>
+      <param name="arg0">Premier objet à mettre en forme et à écrire. </param>
+      <param name="arg1">Deuxième objet à mettre en forme et à écrire. </param>
+      <param name="arg2">Troisième objet à mettre en forme et à écrire. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> a la valeur null. </exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> n'est pas une chaîne de format composite.ou L'index d'un élément de format est inférieur à 0 (zéro) ou supérieur ou égal au nombre d'objets à mettre en forme (qui, pour cette surcharge de méthode, s'élève à trois). </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.String,System.Object[])">
+      <summary>Écrit une chaîne mise en forme dans la chaîne ou le flux de texte, en utilisant la même sémantique que la méthode <see cref="M:System.String.Format(System.String,System.Object[])" />.</summary>
+      <param name="format">Chaîne de format composite (consultez la section Notes). </param>
+      <param name="arg">Tableau d'objets contenant aucun, un ou plusieurs objets à mettre en forme et à écrire. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> ou <paramref name="arg" /> a la valeur null. </exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> n'est pas une chaîne de format composite.ou L'index d'un élément de mise en forme est inférieur à 0 (zéro), ou supérieur ou égal à la longueur du tableau <paramref name="arg" />. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.UInt32)">
+      <summary>Écrit la représentation textuelle d'un entier non signé de 4 octets dans la chaîne ou le flux de texte.</summary>
+      <param name="value">Entier non signé de 4 octets à écrire. </param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.Write(System.UInt64)">
+      <summary>Écrit la représentation textuelle d'un entier non signé de 8 octets dans la chaîne ou le flux de texte.</summary>
+      <param name="value">Entier non signé de 8 octets à écrire. </param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteAsync(System.Char)">
+      <summary>Écrit un caractère de façon asynchrone dans la chaîne ou le flux de texte.</summary>
+      <returns>Tâche qui représente l'opération d'écriture asynchrone.</returns>
+      <param name="value">Caractère à écrire dans le flux de texte.</param>
+      <exception cref="T:System.ObjectDisposedException">Le writer de texte est supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le writer de texte est actuellement utilisé par une opération d'écriture précédente. </exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteAsync(System.Char[])">
+      <summary>Écrit un tableau de caractères de façon asynchrone dans la chaîne ou le flux de texte.</summary>
+      <returns>Tâche qui représente l'opération d'écriture asynchrone.</returns>
+      <param name="buffer">Tableau de caractères à écrire dans le flux de texte.Si <paramref name="buffer" /> a la valeur null, rien n'est écrit.</param>
+      <exception cref="T:System.ObjectDisposedException">Le writer de texte est supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le writer de texte est actuellement utilisé par une opération d'écriture précédente. </exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Écrit un sous-tableau de caractères de façon asynchrone dans la chaîne ou le flux de texte. </summary>
+      <returns>Tâche qui représente l'opération d'écriture asynchrone.</returns>
+      <param name="buffer">Tableau de caractères à partir duquel les données doivent être écrites. </param>
+      <param name="index">Position du caractère dans la mémoire tampon à laquelle commencer la récupération des données. </param>
+      <param name="count">Nombre de caractères à écrire. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> plus <paramref name="count" /> est supérieur à  la longueur de la mémoire tampon.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est négatif.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le writer de texte est supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le writer de texte est actuellement utilisé par une opération d'écriture précédente. </exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteAsync(System.String)">
+      <summary>Écrit une chaîne de façon asynchrone dans la chaîne ou le flux de texte.</summary>
+      <returns>Tâche qui représente l'opération d'écriture asynchrone. </returns>
+      <param name="value">Chaîne à écrire.Si <paramref name="value" /> a la valeur null, rien n'est écrit dans le flux de texte.</param>
+      <exception cref="T:System.ObjectDisposedException">Le writer de texte est supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le writer de texte est actuellement utilisé par une opération d'écriture précédente. </exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine">
+      <summary>Écrit une marque de fin de ligne dans la chaîne ou le flux de texte.</summary>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Boolean)">
+      <summary>Écrit la représentation textuelle d'une valeur Boolean suivie d'une marque de fin de ligne dans la chaîne ou le flux de texte.</summary>
+      <param name="value">La valeur Boolean à écrire. </param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Char)">
+      <summary>Écrit un caractère suivi d'une marque de fin de ligne dans la chaîne ou le flux de texte.</summary>
+      <param name="value">Caractère à écrire dans le flux de texte. </param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Char[])">
+      <summary>Écrit un tableau de caractères suivi d'une marque de fin de ligne dans la chaîne ou le flux de texte.</summary>
+      <param name="buffer">Tableau de caractères dans lequel sont lues des données. </param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Char[],System.Int32,System.Int32)">
+      <summary>Écrit un sous-tableau de caractères suivi d'une marque de fin de ligne dans la chaîne ou le flux de texte.</summary>
+      <param name="buffer">Tableau de caractères dans lequel sont lues des données. </param>
+      <param name="index">Dans <paramref name="buffer" />, position de caractère à laquelle commencer la lecture des données. </param>
+      <param name="count">Nombre maximal de caractères à écrire. </param>
+      <exception cref="T:System.ArgumentException">La longueur de la mémoire tampon moins <paramref name="index" /> est inférieure à <paramref name="count" />. </exception>
+      <exception cref="T:System.ArgumentNullException">Le paramètre <paramref name="buffer" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est négatif. </exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Decimal)">
+      <summary>Écrit la représentation textuelle d'une valeur décimale suivie d'une marque de fin de ligne dans la chaîne ou le flux de texte.</summary>
+      <param name="value">Valeur décimale à écrire. </param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Double)">
+      <summary>Écrit la représentation textuelle d'une valeur à virgule flottante de 8 octets suivie d'une marque de fin de ligne dans la chaîne ou le flux de texte.</summary>
+      <param name="value">Valeur à virgule flottante de 8 octets à écrire. </param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Int32)">
+      <summary>Écrit la représentation textuelle d'un entier signé de 4 octets suivie d'une marque de fin de ligne dans la chaîne ou le flux de texte.</summary>
+      <param name="value">Entier signé de 4 octets à écrire. </param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Int64)">
+      <summary>Écrit la représentation textuelle d'un entier signé de 8 octets suivi d'une marque de fin de ligne dans la chaîne ou le flux de texte.</summary>
+      <param name="value">Entier signé de 8 octets à écrire. </param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Object)">
+      <summary>Écrit la représentation textuelle d'un objet en appelant la méthode ToString sur cet objet, suivie d'une marque de fin de ligne dans la chaîne ou le flux de texte.</summary>
+      <param name="value">Objet à écrire.Si <paramref name="value" /> a la valeur null, seule la marque de fin de ligne est écrite.</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.Single)">
+      <summary>Écrit la représentation textuelle d'une valeur à virgule flottante de 4 octets suivie d'une marque de fin de ligne dans la chaîne ou le flux de texte.</summary>
+      <param name="value">Valeur à virgule flottante de 4 octets à écrire. </param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.String)">
+      <summary>Écrit une chaîne suivie d'une marque de fin de ligne dans la chaîne ou le flux de texte.</summary>
+      <param name="value">Chaîne à écrire.Si <paramref name="value" /> a la valeur null, seule la marque de fin de ligne est écrite.</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.String,System.Object)">
+      <summary>Écrit une chaîne mise en forme et une nouvelle ligne dans la chaîne ou le flux de texte, en utilisant la même sémantique que la méthode <see cref="M:System.String.Format(System.String,System.Object)" />.</summary>
+      <param name="format">Chaîne de format composite (consultez la section Notes).</param>
+      <param name="arg0">Objet à mettre en forme et à écrire. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> a la valeur null. </exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> n'est pas une chaîne de format composite.ou L'index d'un élément de format est inférieur à 0 (zéro) ou supérieur ou égal au nombre d'objets à mettre en forme (qui, pour cette surcharge de méthode, s'élève à un). </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.String,System.Object,System.Object)">
+      <summary>Écrit une chaîne mise en forme et une nouvelle ligne dans la chaîne ou le flux de texte, en utilisant la même sémantique que la méthode <see cref="M:System.String.Format(System.String,System.Object,System.Object)" />.</summary>
+      <param name="format">Chaîne de format composite (consultez la section Notes).</param>
+      <param name="arg0">Premier objet à mettre en forme et à écrire. </param>
+      <param name="arg1">Deuxième objet à mettre en forme et à écrire. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> a la valeur null. </exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> n'est pas une chaîne de format composite.ou L'index d'un élément de format est inférieur à 0 (zéro) ou supérieur ou égal au nombre d'objets à mettre en forme (qui, pour cette surcharge de méthode, s'élève à deux). </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.String,System.Object,System.Object,System.Object)">
+      <summary>Écrit une chaîne mise en forme et une nouvelle ligne, en utilisant la même sémantique que <see cref="M:System.String.Format(System.String,System.Object)" />.</summary>
+      <param name="format">Chaîne de format composite (consultez la section Notes).</param>
+      <param name="arg0">Premier objet à mettre en forme et à écrire. </param>
+      <param name="arg1">Deuxième objet à mettre en forme et à écrire. </param>
+      <param name="arg2">Troisième objet à mettre en forme et à écrire. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> a la valeur null. </exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> n'est pas une chaîne de format composite.ou L'index d'un élément de format est inférieur à 0 (zéro) ou supérieur ou égal au nombre d'objets à mettre en forme (qui, pour cette surcharge de méthode, s'élève à trois). </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.String,System.Object[])">
+      <summary>Écrit une chaîne mise en forme et une nouvelle ligne, en utilisant la même sémantique que <see cref="M:System.String.Format(System.String,System.Object)" />.</summary>
+      <param name="format">Chaîne de format composite (consultez la section Notes).</param>
+      <param name="arg">Tableau d'objets contenant aucun, un ou plusieurs objets à mettre en forme et à écrire. </param>
+      <exception cref="T:System.ArgumentNullException">Une chaîne ou un objet est passé en tant que null. </exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> n'est pas une chaîne de format composite.ou L'index d'un élément de mise en forme est inférieur à 0 (zéro), ou supérieur ou égal à la longueur du tableau <paramref name="arg" />. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.UInt32)">
+      <summary>Écrit la représentation textuelle d'un entier non signé de 4 octets suivie d'une marque de fin de ligne dans la chaîne ou le flux de texte.</summary>
+      <param name="value">Entier non signé de 4 octets à écrire. </param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLine(System.UInt64)">
+      <summary>Écrit la représentation textuelle d'un entier non signé de 8 octets suivi d'une marque de fin de ligne dans la chaîne ou le flux de texte.</summary>
+      <param name="value">Entier non signé de 8 octets à écrire. </param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.IO.TextWriter" /> est fermé. </exception>
+      <exception cref="T:System.IO.IOException">Une erreur d'E/S se produit. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLineAsync">
+      <summary>Écrit une marque de fin de ligne de façon asynchrone dans la chaîne ou le flux de texte.</summary>
+      <returns>Tâche qui représente l'opération d'écriture asynchrone. </returns>
+      <exception cref="T:System.ObjectDisposedException">Le writer de texte est supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le writer de texte est actuellement utilisé par une opération d'écriture précédente. </exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLineAsync(System.Char)">
+      <summary>Écrit un caractère suivi d'une marque de fin de ligne de façon asynchrone dans la chaîne ou le flux de texte.</summary>
+      <returns>Tâche qui représente l'opération d'écriture asynchrone.</returns>
+      <param name="value">Caractère à écrire dans le flux de texte.</param>
+      <exception cref="T:System.ObjectDisposedException">Le writer de texte est supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le writer de texte est actuellement utilisé par une opération d'écriture précédente. </exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLineAsync(System.Char[])">
+      <summary>Écrit un tableau de caractères suivi d'une marque de fin de ligne de façon asynchrone dans la chaîne ou le flux de texte.</summary>
+      <returns>Tâche qui représente l'opération d'écriture asynchrone.</returns>
+      <param name="buffer">Tableau de caractères à écrire dans le flux de texte.Si le tableau de caractères a la valeur null, seul la marque de fin de ligne est écrite.</param>
+      <exception cref="T:System.ObjectDisposedException">Le writer de texte est supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le writer de texte est actuellement utilisé par une opération d'écriture précédente. </exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLineAsync(System.Char[],System.Int32,System.Int32)">
+      <summary>Écrit un sous-tableau de caractères suivi d'une marque de fin de ligne de façon asynchrone dans la chaîne ou le flux de texte.</summary>
+      <returns>Tâche qui représente l'opération d'écriture asynchrone.</returns>
+      <param name="buffer">Tableau de caractères à partir duquel les données doivent être écrites. </param>
+      <param name="index">Position du caractère dans la mémoire tampon à laquelle commencer la récupération des données. </param>
+      <param name="count">Nombre de caractères à écrire. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> a la valeur null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> plus <paramref name="count" /> est supérieur à  la longueur de la mémoire tampon.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> ou <paramref name="count" /> est négatif.</exception>
+      <exception cref="T:System.ObjectDisposedException">Le writer de texte est supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le writer de texte est actuellement utilisé par une opération d'écriture précédente. </exception>
+    </member>
+    <member name="M:System.IO.TextWriter.WriteLineAsync(System.String)">
+      <summary>Écrit une chaîne suivie d'une marque de fin de ligne de façon asynchrone dans la chaîne ou le flux de texte. </summary>
+      <returns>Tâche qui représente l'opération d'écriture asynchrone.</returns>
+      <param name="value">Chaîne à écrire.Si la valeur est null, seul une marque de fin de ligne est écrite.</param>
+      <exception cref="T:System.ObjectDisposedException">Le writer de texte est supprimé.</exception>
+      <exception cref="T:System.InvalidOperationException">Le writer de texte est actuellement utilisé par une opération d'écriture précédente. </exception>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,438 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Reflection.Extensions</name>
+  </assembly>
+  <members>
+    <member name="T:System.Reflection.CustomAttributeExtensions">
+      <summary>Содержит статические методы извлечения настраиваемых атрибутов.</summary>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.Assembly)">
+      <summary>Извлекает пользовательский атрибут заданного типа, примененный к указанной сборке. </summary>
+      <returns>Настраиваемый атрибут, соответствующий <paramref name="T" /> или null, если такой атрибут не найден.</returns>
+      <param name="element">Сборка для проверки.</param>
+      <typeparam name="T">Искомый тип атрибута.</typeparam>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="element" /> имеет значение null. </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">Найдено несколько запрошенных атрибутов. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.Assembly,System.Type)">
+      <summary>Извлекает пользовательский атрибут заданного типа, примененный к указанной сборке.</summary>
+      <returns>Настраиваемый атрибут, соответствующий <paramref name="attributeType" />, или значение null, если такой атрибут не найден.</returns>
+      <param name="element">Сборка для проверки.</param>
+      <param name="attributeType">Искомый тип атрибута.</param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> или <paramref name="attributeType" /> — null. </exception>
+      <exception cref="T:System.ArgumentException">Тип <paramref name="attributeType" /> не является производным объекта <see cref="T:System.Attribute" />. </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">Найдено несколько запрошенных атрибутов. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.MemberInfo)">
+      <summary>Извлекает пользовательский атрибут заданного типа, примененный к указанному элементу.</summary>
+      <returns>Настраиваемый атрибут, соответствующий <paramref name="T" /> или null, если такой атрибут не найден.</returns>
+      <param name="element">Проверяемый член.</param>
+      <typeparam name="T">Искомый тип атрибута.</typeparam>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="element" /> имеет значение null. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> не представляет конструктор, метод, свойство, событие, тип или поле. </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">Найдено несколько запрошенных атрибутов. </exception>
+      <exception cref="T:System.TypeLoadException">Не удается загрузить тип настраиваемого атрибута. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.MemberInfo,System.Boolean)">
+      <summary>Извлекает настраиваемый атрибут указанного типа, который применяется к указанному элементу и, при необходимости, проверяет предков этого элемента.</summary>
+      <returns>Настраиваемый атрибут, соответствующий <paramref name="T" /> или null, если такой атрибут не найден.</returns>
+      <param name="element">Проверяемый член.</param>
+      <param name="inherit">Значение true для проверки предков <paramref name="element" />; в противном случае — значение false. </param>
+      <typeparam name="T">Искомый тип атрибута.</typeparam>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="element" /> имеет значение null. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> не представляет конструктор, метод, свойство, событие, тип или поле. </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">Найдено несколько запрошенных атрибутов. </exception>
+      <exception cref="T:System.TypeLoadException">Не удается загрузить тип настраиваемого атрибута. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.MemberInfo,System.Type)">
+      <summary>Извлекает пользовательский атрибут заданного типа, примененный к указанному элементу.</summary>
+      <returns>Настраиваемый атрибут, соответствующий <paramref name="attributeType" />, или значение null, если такой атрибут не найден.</returns>
+      <param name="element">Проверяемый член.</param>
+      <param name="attributeType">Искомый тип атрибута.</param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> или <paramref name="attributeType" /> — null. </exception>
+      <exception cref="T:System.ArgumentException">Тип <paramref name="attributeType" /> не является производным объекта <see cref="T:System.Attribute" />. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> не представляет конструктор, метод, свойство, событие, тип или поле. </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">Найдено несколько запрошенных атрибутов. </exception>
+      <exception cref="T:System.TypeLoadException">Не удается загрузить тип настраиваемого атрибута. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.MemberInfo,System.Type,System.Boolean)">
+      <summary>Извлекает настраиваемый атрибут указанного типа, который применяется к указанному элементу и, при необходимости, проверяет предков этого элемента.</summary>
+      <returns>Настраиваемый атрибут, соответствующий <paramref name="attributeType" />, или значение null, если такой атрибут не найден.</returns>
+      <param name="element">Проверяемый член.</param>
+      <param name="attributeType">Искомый тип атрибута.</param>
+      <param name="inherit">Значение true для проверки предков <paramref name="element" />; в противном случае — значение false. </param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> или <paramref name="attributeType" /> — null. </exception>
+      <exception cref="T:System.ArgumentException">Тип <paramref name="attributeType" /> не является производным объекта <see cref="T:System.Attribute" />. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> не представляет конструктор, метод, свойство, событие, тип или поле. </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">Найдено несколько запрошенных атрибутов. </exception>
+      <exception cref="T:System.TypeLoadException">Не удается загрузить тип настраиваемого атрибута. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.Module)">
+      <summary>Извлекает пользовательский атрибут заданного типа, примененный к указанному модулю.</summary>
+      <returns>Настраиваемый атрибут, соответствующий <paramref name="T" /> или null, если такой атрибут не найден.</returns>
+      <param name="element">Проверяемый модуль.</param>
+      <typeparam name="T">Искомый тип атрибута.</typeparam>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="element" /> имеет значение null. </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">Найдено несколько запрошенных атрибутов. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.Module,System.Type)">
+      <summary>Извлекает пользовательский атрибут заданного типа, примененный к указанному модулю.</summary>
+      <returns>Настраиваемый атрибут, соответствующий <paramref name="attributeType" />, или значение null, если такой атрибут не найден.</returns>
+      <param name="element">Проверяемый модуль.</param>
+      <param name="attributeType">Искомый тип атрибута.</param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> или <paramref name="attributeType" /> — null. </exception>
+      <exception cref="T:System.ArgumentException">Тип <paramref name="attributeType" /> не является производным объекта <see cref="T:System.Attribute" />. </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">Найдено несколько запрошенных атрибутов. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.ParameterInfo)">
+      <summary>Извлекает пользовательский атрибут заданного типа, примененный к указанной параметру.</summary>
+      <returns>Настраиваемый атрибут, соответствующий <paramref name="T" /> или null, если такой атрибут не найден.</returns>
+      <param name="element">Проверяемый параметр.</param>
+      <typeparam name="T">Искомый тип атрибута.</typeparam>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="element" /> имеет значение null. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> не представляет конструктор, метод, свойство, событие, тип или поле. </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">Найдено несколько запрошенных атрибутов. </exception>
+      <exception cref="T:System.TypeLoadException">Не удается загрузить тип настраиваемого атрибута. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute``1(System.Reflection.ParameterInfo,System.Boolean)">
+      <summary>Извлекает настраиваемый атрибут указанного типа, который применяется к указанному параметру и, при необходимости, проверяет предков этого параметра.</summary>
+      <returns>Настраиваемый атрибут, соответствующий <paramref name="T" /> или null, если такой атрибут не найден.</returns>
+      <param name="element">Проверяемый параметр.</param>
+      <param name="inherit">Значение true для проверки предков <paramref name="element" />; в противном случае — значение false. </param>
+      <typeparam name="T">Искомый тип атрибута.</typeparam>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="element" /> имеет значение null. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> не представляет конструктор, метод, свойство, событие, тип или поле. </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">Найдено несколько запрошенных атрибутов. </exception>
+      <exception cref="T:System.TypeLoadException">Не удается загрузить тип настраиваемого атрибута. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.ParameterInfo,System.Type)">
+      <summary>Извлекает пользовательский атрибут заданного типа, примененный к указанной параметру.</summary>
+      <returns>Настраиваемый атрибут, соответствующий <paramref name="attributeType" />, или значение null, если такой атрибут не найден.</returns>
+      <param name="element">Проверяемый параметр.</param>
+      <param name="attributeType">Искомый тип атрибута.</param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> или <paramref name="attributeType" /> — null. </exception>
+      <exception cref="T:System.ArgumentException">Тип <paramref name="attributeType" /> не является производным объекта <see cref="T:System.Attribute" />. </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">Найдено несколько запрошенных атрибутов. </exception>
+      <exception cref="T:System.TypeLoadException">Не удается загрузить тип настраиваемого атрибута. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttribute(System.Reflection.ParameterInfo,System.Type,System.Boolean)">
+      <summary>Извлекает настраиваемый атрибут указанного типа, который применяется к указанному параметру и, при необходимости, проверяет предков этого параметра.</summary>
+      <returns>Настраиваемый атрибут, соответствующий <paramref name="attributeType" />, или значение null, если такой атрибут не найден.</returns>
+      <param name="element">Проверяемый параметр.</param>
+      <param name="attributeType">Искомый тип атрибута.</param>
+      <param name="inherit">Значение true для проверки предков <paramref name="element" />; в противном случае — значение false. </param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> или <paramref name="attributeType" /> — null. </exception>
+      <exception cref="T:System.ArgumentException">Тип <paramref name="attributeType" /> не является производным объекта <see cref="T:System.Attribute" />. </exception>
+      <exception cref="T:System.Reflection.AmbiguousMatchException">Найдено несколько запрошенных атрибутов. </exception>
+      <exception cref="T:System.TypeLoadException">Не удается загрузить тип настраиваемого атрибута. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.Assembly)">
+      <summary>Извлекает коллекцию пользовательских атрибутов заданного типа, примененных к указанной сборке. </summary>
+      <returns>Коллекция настраиваемых атрибутов, которые применяются к <paramref name="element" /> и соответствуют <paramref name="T" />, либо пустая коллекция, если таких атрибутов не существует. </returns>
+      <param name="element">Сборка для проверки.</param>
+      <typeparam name="T">Искомый тип атрибута.</typeparam>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="element" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.Assembly)">
+      <summary>Извлекает коллекцию настраиваемых атрибутов, примененных к указанной сборке.</summary>
+      <returns>Коллекция настраиваемых атрибутов, которые применяются к <paramref name="element" />, либо пустая коллекция, если таких атрибутов не существует. </returns>
+      <param name="element">Сборка для проверки.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="element" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.Assembly,System.Type)">
+      <summary>Извлекает коллекцию пользовательских атрибутов заданного типа, примененных к указанной сборке.</summary>
+      <returns>Коллекция настраиваемых атрибутов, которые применяются к <paramref name="element" /> и соответствуют <paramref name="attributeType" />, либо пустая коллекция, если таких атрибутов не существует. </returns>
+      <param name="element">Сборка для проверки.</param>
+      <param name="attributeType">Искомый тип атрибута.</param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> или <paramref name="attributeType" /> — null. </exception>
+      <exception cref="T:System.ArgumentException">Тип <paramref name="attributeType" /> не является производным объекта <see cref="T:System.Attribute" />. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.MemberInfo)">
+      <summary>Извлекает коллекцию настраиваемых атрибутов, примененных к указанному члену.</summary>
+      <returns>Коллекция настраиваемых атрибутов, которые применяются к <paramref name="element" />, либо пустая коллекция, если таких атрибутов не существует. </returns>
+      <param name="element">Проверяемый член.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="element" /> имеет значение null. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> не представляет конструктор, метод, свойство, событие, тип или поле. </exception>
+      <exception cref="T:System.TypeLoadException">Не удается загрузить тип настраиваемого атрибута. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.MemberInfo)">
+      <summary>Извлекает коллекцию пользовательских атрибутов заданного типа, примененных к указанному элементу.</summary>
+      <returns>Коллекция настраиваемых атрибутов, которые применяются к <paramref name="element" /> и соответствуют <paramref name="T" />, либо пустая коллекция, если таких атрибутов не существует. </returns>
+      <param name="element">Проверяемый член.</param>
+      <typeparam name="T">Искомый тип атрибута.</typeparam>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="element" /> имеет значение null. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> не представляет конструктор, метод, свойство, событие, тип или поле. </exception>
+      <exception cref="T:System.TypeLoadException">Не удается загрузить тип настраиваемого атрибута. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.MemberInfo,System.Boolean)">
+      <summary>Извлекает коллекцию пользовательских атрибутов указанного типа, которые применяется к указанному элементу и, при необходимости, проверяет предков этого элемента.</summary>
+      <returns>Коллекция настраиваемых атрибутов, которые применяются к <paramref name="element" /> и соответствуют <paramref name="T" />, либо пустая коллекция, если таких атрибутов не существует. </returns>
+      <param name="element">Проверяемый член.</param>
+      <param name="inherit">Значение true для проверки предков <paramref name="element" />; в противном случае — значение false. </param>
+      <typeparam name="T">Искомый тип атрибута.</typeparam>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="element" /> имеет значение null. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> не представляет конструктор, метод, свойство, событие, тип или поле. </exception>
+      <exception cref="T:System.TypeLoadException">Не удается загрузить тип настраиваемого атрибута. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.MemberInfo,System.Boolean)">
+      <summary>Извлекает коллекцию пользовательских атрибутов, которые применяются к указанному элементу и, при необходимости, проверяет предков этого элемента.</summary>
+      <returns>Коллекция настраиваемых атрибутов, которые применяются к параметру <paramref name="element" />, соответствующему заданным критериям, либо пустая коллекция, если таких атрибутов не существует. </returns>
+      <param name="element">Проверяемый член.</param>
+      <param name="inherit">Значение true для проверки предков <paramref name="element" />; в противном случае — значение false. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="element" /> имеет значение null. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> не представляет конструктор, метод, свойство, событие, тип или поле. </exception>
+      <exception cref="T:System.TypeLoadException">Не удается загрузить тип настраиваемого атрибута. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.MemberInfo,System.Type)">
+      <summary>Извлекает коллекцию пользовательских атрибутов заданного типа, примененных к указанному элементу.</summary>
+      <returns>Коллекция настраиваемых атрибутов, которые применяются к <paramref name="element" /> и соответствуют <paramref name="attributeType" />, либо пустая коллекция, если таких атрибутов не существует. </returns>
+      <param name="element">Проверяемый член.</param>
+      <param name="attributeType">Искомый тип атрибута.</param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> или <paramref name="attributeType" /> — null. </exception>
+      <exception cref="T:System.ArgumentException">Тип <paramref name="attributeType" /> не является производным объекта <see cref="T:System.Attribute" />. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> не представляет конструктор, метод, свойство, событие, тип или поле. </exception>
+      <exception cref="T:System.TypeLoadException">Не удается загрузить тип настраиваемого атрибута. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.MemberInfo,System.Type,System.Boolean)">
+      <summary>Извлекает коллекцию пользовательских атрибутов указанного типа, которые применяется к указанному элементу и, при необходимости, проверяет предков этого элемента.</summary>
+      <returns>Коллекция настраиваемых атрибутов, которые применяются к <paramref name="element" /> и соответствуют <paramref name="attributeType" />, либо пустая коллекция, если таких атрибутов не существует.</returns>
+      <param name="element">Проверяемый член.</param>
+      <param name="attributeType">Искомый тип атрибута.</param>
+      <param name="inherit">Значение true для проверки предков <paramref name="element" />; в противном случае — значение false. </param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> или <paramref name="attributeType" /> — null. </exception>
+      <exception cref="T:System.ArgumentException">Тип <paramref name="attributeType" /> не является производным объекта <see cref="T:System.Attribute" />. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> не представляет конструктор, метод, свойство, событие, тип или поле. </exception>
+      <exception cref="T:System.TypeLoadException">Не удается загрузить тип настраиваемого атрибута. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.Module)">
+      <summary>Извлекает коллекцию настраиваемых атрибутов, примененных к указанному модулю.</summary>
+      <returns>Коллекция настраиваемых атрибутов, которые применяются к <paramref name="element" />, либо пустая коллекция, если таких атрибутов не существует. </returns>
+      <param name="element">Проверяемый модуль.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="element" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.Module)">
+      <summary>Извлекает коллекцию пользовательских атрибутов заданного типа, примененных к указанному модулю.</summary>
+      <returns>Коллекция настраиваемых атрибутов, которые применяются к <paramref name="element" /> и соответствуют <paramref name="T" />, либо пустая коллекция, если таких атрибутов не существует. </returns>
+      <param name="element">Проверяемый модуль.</param>
+      <typeparam name="T">Искомый тип атрибута.</typeparam>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="element" /> имеет значение null. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.Module,System.Type)">
+      <summary>Извлекает коллекцию пользовательских атрибутов заданного типа, примененных к указанному модулю.</summary>
+      <returns>Коллекция настраиваемых атрибутов, которые применяются к <paramref name="element" /> и соответствуют <paramref name="attributeType" />, либо пустая коллекция, если таких атрибутов не существует.</returns>
+      <param name="element">Проверяемый модуль.</param>
+      <param name="attributeType">Искомый тип атрибута.</param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> или <paramref name="attributeType" /> — null. </exception>
+      <exception cref="T:System.ArgumentException">Тип <paramref name="attributeType" /> не является производным объекта <see cref="T:System.Attribute" />. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.ParameterInfo)">
+      <summary>Извлекает коллекцию настраиваемых атрибутов, примененных к указанному параметру.</summary>
+      <returns>Коллекция настраиваемых атрибутов, которые применяются к <paramref name="element" />, либо пустая коллекция, если таких атрибутов не существует. </returns>
+      <param name="element">Проверяемый параметр.</param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="element" /> имеет значение null. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> не представляет конструктор, метод, свойство, событие, тип или поле. </exception>
+      <exception cref="T:System.TypeLoadException">Не удается загрузить тип настраиваемого атрибута. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.ParameterInfo)">
+      <summary>Извлекает коллекцию пользовательских атрибутов заданного типа, примененных к указанному параметру.</summary>
+      <returns>Коллекция настраиваемых атрибутов, которые применяются к <paramref name="element" /> и соответствуют <paramref name="T" />, либо пустая коллекция, если таких атрибутов не существует. </returns>
+      <param name="element">Проверяемый параметр.</param>
+      <typeparam name="T">Искомый тип атрибута.</typeparam>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="element" /> имеет значение null. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> не представляет конструктор, метод, свойство, событие, тип или поле. </exception>
+      <exception cref="T:System.TypeLoadException">Не удается загрузить тип настраиваемого атрибута. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.ParameterInfo,System.Boolean)">
+      <summary>Извлекает коллекцию пользовательских атрибутов, которые применяются к указанному параметру и, при необходимости, проверяет предков этого параметра.</summary>
+      <returns>Коллекция настраиваемых атрибутов, которые применяются к <paramref name="element" />, либо пустая коллекция, если таких атрибутов не существует. </returns>
+      <param name="element">Проверяемый параметр.</param>
+      <param name="inherit">Значение true для проверки предков <paramref name="element" />; в противном случае — значение false. </param>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="element" /> имеет значение null. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> не представляет конструктор, метод, свойство, событие, тип или поле. </exception>
+      <exception cref="T:System.TypeLoadException">Не удается загрузить тип настраиваемого атрибута. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes``1(System.Reflection.ParameterInfo,System.Boolean)">
+      <summary>Извлекает коллекцию пользовательских атрибутов указанного типа, которые применяется к указанному параметру и, при необходимости, проверяет предков этого параметра.</summary>
+      <returns>Коллекция настраиваемых атрибутов, которые применяются к <paramref name="element" /> и соответствуют <paramref name="T" />, либо пустая коллекция, если таких атрибутов не существует. </returns>
+      <param name="element">Проверяемый параметр.</param>
+      <param name="inherit">Значение true для проверки предков <paramref name="element" />; в противном случае — значение false. </param>
+      <typeparam name="T">Искомый тип атрибута.</typeparam>
+      <exception cref="T:System.ArgumentNullException">Параметр <paramref name="element" /> имеет значение null. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> не представляет конструктор, метод, свойство, событие, тип или поле. </exception>
+      <exception cref="T:System.TypeLoadException">Не удается загрузить тип настраиваемого атрибута. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.ParameterInfo,System.Type)">
+      <summary>Извлекает коллекцию пользовательских атрибутов заданного типа, примененных к указанному параметру.</summary>
+      <returns>Коллекция настраиваемых атрибутов, которые применяются к <paramref name="element" /> и соответствуют <paramref name="attributeType" />, либо пустая коллекция, если таких атрибутов не существует. </returns>
+      <param name="element">Проверяемый параметр.</param>
+      <param name="attributeType">Искомый тип атрибута.</param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> или <paramref name="attributeType" /> — null. </exception>
+      <exception cref="T:System.ArgumentException">Тип <paramref name="attributeType" /> не является производным объекта <see cref="T:System.Attribute" />. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> не представляет конструктор, метод, свойство, событие, тип или поле. </exception>
+      <exception cref="T:System.TypeLoadException">Не удается загрузить тип настраиваемого атрибута. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.GetCustomAttributes(System.Reflection.ParameterInfo,System.Type,System.Boolean)">
+      <summary>Извлекает коллекцию пользовательских атрибутов указанного типа, которые применяется к указанному параметру и, при необходимости, проверяет предков этого параметра.</summary>
+      <returns>Коллекция настраиваемых атрибутов, которые применяются к <paramref name="element" /> и соответствуют <paramref name="attributeType" />, либо пустая коллекция, если таких атрибутов не существует. </returns>
+      <param name="element">Проверяемый параметр.</param>
+      <param name="attributeType">Искомый тип атрибута.</param>
+      <param name="inherit">Значение true для проверки предков <paramref name="element" />; в противном случае — значение false. </param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> или <paramref name="attributeType" /> — null. </exception>
+      <exception cref="T:System.ArgumentException">Тип <paramref name="attributeType" /> не является производным объекта <see cref="T:System.Attribute" />. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> не представляет конструктор, метод, свойство, событие, тип или поле. </exception>
+      <exception cref="T:System.TypeLoadException">Не удается загрузить тип настраиваемого атрибута. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.Assembly,System.Type)">
+      <summary>Указывает, применены ли какие-либо пользовательские атрибуты заданного типа к указанной сборке.</summary>
+      <returns>Значение true, если атрибут указанного типа применен к <paramref name="element" />; в противном случае — значение false.</returns>
+      <param name="element">Сборка для проверки.</param>
+      <param name="attributeType">Искомый тип атрибута.</param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> или <paramref name="attributeType" /> — null. </exception>
+      <exception cref="T:System.ArgumentException">Тип <paramref name="attributeType" /> не является производным объекта <see cref="T:System.Attribute" />. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.MemberInfo,System.Type)">
+      <summary>Указывает, применены ли какие-либо пользовательские атрибуты заданного типа к указанному члену.</summary>
+      <returns>Значение true, если атрибут указанного типа применен к <paramref name="element" />; в противном случае — значение false.</returns>
+      <param name="element">Проверяемый член.</param>
+      <param name="attributeType">Искомый тип атрибута.</param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> или <paramref name="attributeType" /> — null. </exception>
+      <exception cref="T:System.ArgumentException">Тип <paramref name="attributeType" /> не является производным объекта <see cref="T:System.Attribute" />. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> не представляет конструктор, метод, свойство, событие, тип или поле. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.MemberInfo,System.Type,System.Boolean)">
+      <summary>Указывает применены ли настраиваемые атрибуты указанного типа к указанному элементу и, при необходимости, применены ли они к его предкам.</summary>
+      <returns>Значение true, если атрибут указанного типа применен к <paramref name="element" />; в противном случае — значение false.</returns>
+      <param name="element">Проверяемый член.</param>
+      <param name="attributeType">Искомый тип атрибута.</param>
+      <param name="inherit">Значение true для проверки предков <paramref name="element" />; в противном случае — значение false. </param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> или <paramref name="attributeType" /> — null. </exception>
+      <exception cref="T:System.ArgumentException">Тип <paramref name="attributeType" /> не является производным объекта <see cref="T:System.Attribute" />. </exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="element" /> не представляет конструктор, метод, свойство, событие, тип или поле. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.Module,System.Type)">
+      <summary>Указывает, применены ли какие-либо пользовательские атрибуты заданного типа к указанному модулю.</summary>
+      <returns>Значение true, если атрибут указанного типа применен к <paramref name="element" />; в противном случае — значение false.</returns>
+      <param name="element">Проверяемый модуль.</param>
+      <param name="attributeType">Искомый тип атрибута.</param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> или <paramref name="attributeType" /> — null. </exception>
+      <exception cref="T:System.ArgumentException">Тип <paramref name="attributeType" /> не является производным объекта <see cref="T:System.Attribute" />. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.ParameterInfo,System.Type)">
+      <summary>Указывает, применены ли какие-либо пользовательские атрибуты заданного типа к указанному параметру.</summary>
+      <returns>Значение true, если атрибут указанного типа применен к <paramref name="element" />; в противном случае — значение false.</returns>
+      <param name="element">Проверяемый параметр.</param>
+      <param name="attributeType">Искомый тип атрибута.</param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> или <paramref name="attributeType" /> — null. </exception>
+      <exception cref="T:System.ArgumentException">Тип <paramref name="attributeType" /> не является производным объекта <see cref="T:System.Attribute" />. </exception>
+    </member>
+    <member name="M:System.Reflection.CustomAttributeExtensions.IsDefined(System.Reflection.ParameterInfo,System.Type,System.Boolean)">
+      <summary>Указывает применены ли настраиваемые атрибуты указанного типа к указанному параметру и, при необходимости, применены ли они к его предкам.</summary>
+      <returns>Значение true, если атрибут указанного типа применен к <paramref name="element" />; в противном случае — значение false.</returns>
+      <param name="element">Проверяемый параметр.</param>
+      <param name="attributeType">Искомый тип атрибута.</param>
+      <param name="inherit">Значение true для проверки предков <paramref name="element" />; в противном случае — значение false. </param>
+      <exception cref="T:System.ArgumentNullException">Значение параметра <paramref name="element" /> или <paramref name="attributeType" /> — null. </exception>
+      <exception cref="T:System.ArgumentException">Тип <paramref name="attributeType" /> не является производным объекта <see cref="T:System.Attribute" />. </exception>
+    </member>
+    <member name="T:System.Reflection.InterfaceMapping">
+      <summary>Извлекает отображение интерфейса в фактических методах класса, который реализует этот интерфейс.</summary>
+    </member>
+    <member name="F:System.Reflection.InterfaceMapping.InterfaceMethods">
+      <summary>Показывает методы, определенные в интерфейсе.</summary>
+    </member>
+    <member name="F:System.Reflection.InterfaceMapping.InterfaceType">
+      <summary>Показывает тип, представляющий интерфейс.</summary>
+    </member>
+    <member name="F:System.Reflection.InterfaceMapping.TargetMethods">
+      <summary>Показывает методы, которые реализуют интерфейс.</summary>
+    </member>
+    <member name="F:System.Reflection.InterfaceMapping.TargetType">
+      <summary>Представляет тип, который использовался для создания отображения интерфейса.</summary>
+    </member>
+    <member name="T:System.Reflection.RuntimeReflectionExtensions">
+      <summary>Предоставляет методы, которые получают сведения о типах во время выполнения.</summary>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetMethodInfo(System.Delegate)">
+      <summary>Получает объект, представляющий метод, представленный указанным делегатом.</summary>
+      <returns>Объект, представляющий метод.</returns>
+      <param name="del">Проверяемый делегат.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeBaseDefinition(System.Reflection.MethodInfo)">
+      <summary>Извлекает объект, представляющий указанный метода в прямом или косвенном базовом классе, где он был первоначально объявлен.</summary>
+      <returns>Объект, представляющий первичное объявление указанного метода в базовом классе.</returns>
+      <param name="method">Метод для извлечения сведений.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeEvent(System.Type,System.String)">
+      <summary>Получает объект, представляющий указанное событие.</summary>
+      <returns>Объект, представляющий указанное событие, или значение null, если событие не найдено.</returns>
+      <param name="type">Тип, содержащий событие.</param>
+      <param name="name">Имя события.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeEvents(System.Type)">
+      <summary>Извлекает коллекцию, представляющую все события, определенные в указанном типе.</summary>
+      <returns>Коллекция событий заданного типа.</returns>
+      <param name="type">Тип, содержащий события.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeField(System.Type,System.String)">
+      <summary>Извлекает объект , который представляет указанное поле.</summary>
+      <returns>Объект, представляющий указанное поле, или значение null, если поле не найдено.</returns>
+      <param name="type">Тип, содержащий поле.</param>
+      <param name="name">Имя поля.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeFields(System.Type)">
+      <summary>Извлекает коллекцию, представляющую все поля, определенные в указанном типе.</summary>
+      <returns>Коллекция полей заданного типа.</returns>
+      <param name="type">Тип, содержащий поля.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeInterfaceMap(System.Reflection.TypeInfo,System.Type)">
+      <summary>Возвращает сопоставление интерфейса для заданного типа и указанного интерфейса.</summary>
+      <returns>Объект, представляющий сопоставление интерфейса для указанного интерфейса и типа.</returns>
+      <param name="typeInfo">Тип, для которого требуется извлечь сопоставление.</param>
+      <param name="interfaceType">Интерфейс, для которого требуется извлечь сопоставление.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeMethod(System.Type,System.String,System.Type[])">
+      <summary>Извлекает объект, который представляет указанный метод.</summary>
+      <returns>Объект, представляющий указанный метод, или значение null, если метод не найден.</returns>
+      <param name="type">Тип, содержащий метод.</param>
+      <param name="name">Имя метода.</param>
+      <param name="parameters">Массив, содержащий параметры метода.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeMethods(System.Type)">
+      <summary>Извлекает коллекцию, представляющую все методы, определенные в указанном типе.</summary>
+      <returns>Коллекция методов заданного типа.</returns>
+      <param name="type">Тип, содержащий методы.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeProperties(System.Type)">
+      <summary>Извлекает коллекцию, представляющую все свойства, определенные в указанном типе.</summary>
+      <returns>Коллекция свойств для заданного типа.</returns>
+      <param name="type">Тип, содержащий свойства.</param>
+    </member>
+    <member name="M:System.Reflection.RuntimeReflectionExtensions.GetRuntimeProperty(System.Type,System.String)">
+      <summary>Извлекает объект, который представляет указанное свойство.</summary>
+      <returns>Объект, представляющий указанное свойство, или значение null, если свойство не найдено.</returns>
+      <param name="type">Тип, содержащий свойство.</param>
+      <param name="name">Имя свойства.</param>
+    </member>
+  </members>
+</doc>

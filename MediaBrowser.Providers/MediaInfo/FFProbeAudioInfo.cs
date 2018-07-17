@@ -10,11 +10,12 @@ using MediaBrowser.Model.MediaInfo;
 using MediaBrowser.Model.Serialization;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using MediaBrowser.Model.Dto;
+using System;
+using MediaBrowser.Controller.Providers;
 
 namespace MediaBrowser.Providers.MediaInfo
 {
@@ -25,35 +26,50 @@ namespace MediaBrowser.Providers.MediaInfo
         private readonly IApplicationPaths _appPaths;
         private readonly IJsonSerializer _json;
         private readonly ILibraryManager _libraryManager;
+        private readonly IMediaSourceManager _mediaSourceManager;
 
         private readonly CultureInfo _usCulture = new CultureInfo("en-US");
 
-        public FFProbeAudioInfo(IMediaEncoder mediaEncoder, IItemRepository itemRepo, IApplicationPaths appPaths, IJsonSerializer json, ILibraryManager libraryManager)
+        public FFProbeAudioInfo(IMediaSourceManager mediaSourceManager, IMediaEncoder mediaEncoder, IItemRepository itemRepo, IApplicationPaths appPaths, IJsonSerializer json, ILibraryManager libraryManager)
         {
             _mediaEncoder = mediaEncoder;
             _itemRepo = itemRepo;
             _appPaths = appPaths;
             _json = json;
             _libraryManager = libraryManager;
+            _mediaSourceManager = mediaSourceManager;
         }
 
-        public async Task<ItemUpdateType> Probe<T>(T item, CancellationToken cancellationToken)
+        public async Task<ItemUpdateType> Probe<T>(T item, MetadataRefreshOptions options,
+            CancellationToken cancellationToken)
             where T : Audio
         {
-            var result = await _mediaEncoder.GetMediaInfo(new MediaInfoRequest
+            var path = item.Path;
+            var protocol = item.PathProtocol ?? MediaProtocol.File;
+
+            if (!item.IsShortcut || options.EnableRemoteContentProbe)
             {
-                MediaType = DlnaProfileType.Audio,
-                MediaSource = new MediaSourceInfo
+                if (item.IsShortcut)
                 {
-                    Path = item.Path,
-                    Protocol = item.PathProtocol ?? MediaProtocol.File
+                    path = item.ShortcutPath;
+                    protocol = _mediaSourceManager.GetPathProtocol(path);
                 }
 
-            }, cancellationToken).ConfigureAwait(false);
+                var result = await _mediaEncoder.GetMediaInfo(new MediaInfoRequest
+                {
+                    MediaType = DlnaProfileType.Audio,
+                    MediaSource = new MediaSourceInfo
+                    {
+                        Path = path,
+                        Protocol = protocol
+                    }
 
-            cancellationToken.ThrowIfCancellationRequested();
+                }, cancellationToken).ConfigureAwait(false);
 
-            Fetch(item, cancellationToken, result);
+                cancellationToken.ThrowIfCancellationRequested();
+
+                Fetch(item, cancellationToken, result);
+            }
 
             return ItemUpdateType.MetadataImport;
         }
@@ -129,7 +145,7 @@ namespace MediaBrowser.Providers.MediaInfo
 
             if (!audio.LockedFields.Contains(MetadataFields.Genres))
             {
-                audio.Genres.Clear();
+                audio.Genres = Array.Empty<string>();
 
                 foreach (var genre in data.Genres)
                 {

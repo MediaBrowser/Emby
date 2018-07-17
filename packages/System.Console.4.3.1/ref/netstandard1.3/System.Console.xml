@@ -1,0 +1,469 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Console</name>
+  </assembly>
+  <members>
+    <member name="T:System.Console">
+      <summary>Represents the standard input, output, and error streams for console applications. This class cannot be inherited.To browse the .NET Framework source code for this type, see the Reference Source.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Console.BackgroundColor">
+      <summary>Gets or sets the background color of the console.</summary>
+      <returns>A value that specifies the background color of the console; that is, the color that appears behind each character. The default is black.</returns>
+      <exception cref="T:System.ArgumentException">The color specified in a set operation is not a valid member of <see cref="T:System.ConsoleColor" />. </exception>
+      <exception cref="T:System.Security.SecurityException">The user does not have permission to perform this action. </exception>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Window="SafeTopLevelWindows" />
+      </PermissionSet>
+    </member>
+    <member name="E:System.Console.CancelKeyPress">
+      <summary>Occurs when the <see cref="F:System.ConsoleModifiers.Control" /> modifier key (Ctrl) and either the <see cref="F:System.ConsoleKey.C" /> console key (C) or the Break key are pressed simultaneously (Ctrl+C or Ctrl+Break).</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Console.Error">
+      <summary>Gets the standard error output stream.</summary>
+      <returns>A <see cref="T:System.IO.TextWriter" /> that represents the standard error output stream.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Console.ForegroundColor">
+      <summary>Gets or sets the foreground color of the console.</summary>
+      <returns>A <see cref="T:System.ConsoleColor" /> that specifies the foreground color of the console; that is, the color of each character that is displayed. The default is gray.</returns>
+      <exception cref="T:System.ArgumentException">The color specified in a set operation is not a valid member of <see cref="T:System.ConsoleColor" />. </exception>
+      <exception cref="T:System.Security.SecurityException">The user does not have permission to perform this action. </exception>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Window="SafeTopLevelWindows" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Console.In">
+      <summary>Gets the standard input stream.</summary>
+      <returns>A <see cref="T:System.IO.TextReader" /> that represents the standard input stream.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.OpenStandardError">
+      <summary>Acquires the standard error stream.</summary>
+      <returns>The standard error stream.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.OpenStandardInput">
+      <summary>Acquires the standard input stream.</summary>
+      <returns>The standard input stream.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.OpenStandardOutput">
+      <summary>Acquires the standard output stream.</summary>
+      <returns>The standard output stream.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Console.Out">
+      <summary>Gets the standard output stream.</summary>
+      <returns>A <see cref="T:System.IO.TextWriter" /> that represents the standard output stream.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Read">
+      <summary>Reads the next character from the standard input stream.</summary>
+      <returns>The next character from the input stream, or negative one (-1) if there are currently no more characters to be read.</returns>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.ReadLine">
+      <summary>Reads the next line of characters from the standard input stream.</summary>
+      <returns>The next line of characters from the input stream, or null if no more lines are available.</returns>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <exception cref="T:System.OutOfMemoryException">There is insufficient memory to allocate a buffer for the returned string. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The number of characters in the next line of characters is greater than <see cref="F:System.Int32.MaxValue" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.ResetColor">
+      <summary>Sets the foreground and background console colors to their defaults.</summary>
+      <exception cref="T:System.Security.SecurityException">The user does not have permission to perform this action. </exception>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Window="SafeTopLevelWindows" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Console.SetError(System.IO.TextWriter)">
+      <summary>Sets the <see cref="P:System.Console.Error" /> property to the specified <see cref="T:System.IO.TextWriter" /> object.</summary>
+      <param name="newError">A stream that is the new standard error output. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="newError" /> is null. </exception>
+      <exception cref="T:System.Security.SecurityException">The caller does not have the required permission. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Console.SetIn(System.IO.TextReader)">
+      <summary>Sets the <see cref="P:System.Console.In" /> property to the specified <see cref="T:System.IO.TextReader" /> object.</summary>
+      <param name="newIn">A stream that is the new standard input. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="newIn" /> is null. </exception>
+      <exception cref="T:System.Security.SecurityException">The caller does not have the required permission. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Console.SetOut(System.IO.TextWriter)">
+      <summary>Sets the <see cref="P:System.Console.Out" /> property to the specified <see cref="T:System.IO.TextWriter" /> object.</summary>
+      <param name="newOut">A stream that is the new standard output. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="newOut" /> is null. </exception>
+      <exception cref="T:System.Security.SecurityException">The caller does not have the required permission. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Console.Write(System.Boolean)">
+      <summary>Writes the text representation of the specified Boolean value to the standard output stream.</summary>
+      <param name="value">The value to write. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Char)">
+      <summary>Writes the specified Unicode character value to the standard output stream.</summary>
+      <param name="value">The value to write. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Char[])">
+      <summary>Writes the specified array of Unicode characters to the standard output stream.</summary>
+      <param name="buffer">A Unicode character array. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Char[],System.Int32,System.Int32)">
+      <summary>Writes the specified subarray of Unicode characters to the standard output stream.</summary>
+      <param name="buffer">An array of Unicode characters. </param>
+      <param name="index">The starting position in <paramref name="buffer" />. </param>
+      <param name="count">The number of characters to write. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> or <paramref name="count" /> is less than zero. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> plus <paramref name="count" /> specify a position that is not within <paramref name="buffer" />. </exception>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Decimal)">
+      <summary>Writes the text representation of the specified <see cref="T:System.Decimal" /> value to the standard output stream.</summary>
+      <param name="value">The value to write. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Double)">
+      <summary>Writes the text representation of the specified double-precision floating-point value to the standard output stream.</summary>
+      <param name="value">The value to write. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Int32)">
+      <summary>Writes the text representation of the specified 32-bit signed integer value to the standard output stream.</summary>
+      <param name="value">The value to write. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Int64)">
+      <summary>Writes the text representation of the specified 64-bit signed integer value to the standard output stream.</summary>
+      <param name="value">The value to write. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Object)">
+      <summary>Writes the text representation of the specified object to the standard output stream.</summary>
+      <param name="value">The value to write, or null. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Single)">
+      <summary>Writes the text representation of the specified single-precision floating-point value to the standard output stream.</summary>
+      <param name="value">The value to write. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String)">
+      <summary>Writes the specified string value to the standard output stream.</summary>
+      <param name="value">The value to write. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String,System.Object)">
+      <summary>Writes the text representation of the specified object to the standard output stream using the specified format information.</summary>
+      <param name="format">A composite format string (see Remarks). </param>
+      <param name="arg0">An object to write using <paramref name="format" />. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> is null. </exception>
+      <exception cref="T:System.FormatException">The format specification in <paramref name="format" /> is invalid. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String,System.Object,System.Object)">
+      <summary>Writes the text representation of the specified objects to the standard output stream using the specified format information.</summary>
+      <param name="format">A composite format string (see Remarks).</param>
+      <param name="arg0">The first object to write using <paramref name="format" />. </param>
+      <param name="arg1">The second object to write using <paramref name="format" />. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> is null. </exception>
+      <exception cref="T:System.FormatException">The format specification in <paramref name="format" /> is invalid. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String,System.Object,System.Object,System.Object)">
+      <summary>Writes the text representation of the specified objects to the standard output stream using the specified format information.</summary>
+      <param name="format">A composite format string (see Remarks).</param>
+      <param name="arg0">The first object to write using <paramref name="format" />. </param>
+      <param name="arg1">The second object to write using <paramref name="format" />. </param>
+      <param name="arg2">The third object to write using <paramref name="format" />. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> is null. </exception>
+      <exception cref="T:System.FormatException">The format specification in <paramref name="format" /> is invalid. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String,System.Object[])">
+      <summary>Writes the text representation of the specified array of objects to the standard output stream using the specified format information.</summary>
+      <param name="format">A composite format string (see Remarks).</param>
+      <param name="arg">An array of objects to write using <paramref name="format" />. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> or <paramref name="arg" /> is null. </exception>
+      <exception cref="T:System.FormatException">The format specification in <paramref name="format" /> is invalid. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.UInt32)">
+      <summary>Writes the text representation of the specified 32-bit unsigned integer value to the standard output stream.</summary>
+      <param name="value">The value to write. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.UInt64)">
+      <summary>Writes the text representation of the specified 64-bit unsigned integer value to the standard output stream.</summary>
+      <param name="value">The value to write. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine">
+      <summary>Writes the current line terminator to the standard output stream.</summary>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Boolean)">
+      <summary>Writes the text representation of the specified Boolean value, followed by the current line terminator, to the standard output stream.</summary>
+      <param name="value">The value to write. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Char)">
+      <summary>Writes the specified Unicode character, followed by the current line terminator, value to the standard output stream.</summary>
+      <param name="value">The value to write. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Char[])">
+      <summary>Writes the specified array of Unicode characters, followed by the current line terminator, to the standard output stream.</summary>
+      <param name="buffer">A Unicode character array. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Char[],System.Int32,System.Int32)">
+      <summary>Writes the specified subarray of Unicode characters, followed by the current line terminator, to the standard output stream.</summary>
+      <param name="buffer">An array of Unicode characters. </param>
+      <param name="index">The starting position in <paramref name="buffer" />. </param>
+      <param name="count">The number of characters to write. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> or <paramref name="count" /> is less than zero. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> plus <paramref name="count" /> specify a position that is not within <paramref name="buffer" />. </exception>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Decimal)">
+      <summary>Writes the text representation of the specified <see cref="T:System.Decimal" /> value, followed by the current line terminator, to the standard output stream.</summary>
+      <param name="value">The value to write. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Double)">
+      <summary>Writes the text representation of the specified double-precision floating-point value, followed by the current line terminator, to the standard output stream.</summary>
+      <param name="value">The value to write. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Int32)">
+      <summary>Writes the text representation of the specified 32-bit signed integer value, followed by the current line terminator, to the standard output stream.</summary>
+      <param name="value">The value to write. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Int64)">
+      <summary>Writes the text representation of the specified 64-bit signed integer value, followed by the current line terminator, to the standard output stream.</summary>
+      <param name="value">The value to write. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Object)">
+      <summary>Writes the text representation of the specified object, followed by the current line terminator, to the standard output stream.</summary>
+      <param name="value">The value to write. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Single)">
+      <summary>Writes the text representation of the specified single-precision floating-point value, followed by the current line terminator, to the standard output stream.</summary>
+      <param name="value">The value to write. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String)">
+      <summary>Writes the specified string value, followed by the current line terminator, to the standard output stream.</summary>
+      <param name="value">The value to write. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String,System.Object)">
+      <summary>Writes the text representation of the specified object, followed by the current line terminator, to the standard output stream using the specified format information.</summary>
+      <param name="format">A composite format string (see Remarks).</param>
+      <param name="arg0">An object to write using <paramref name="format" />. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> is null. </exception>
+      <exception cref="T:System.FormatException">The format specification in <paramref name="format" /> is invalid. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String,System.Object,System.Object)">
+      <summary>Writes the text representation of the specified objects, followed by the current line terminator, to the standard output stream using the specified format information.</summary>
+      <param name="format">A composite format string (see Remarks).</param>
+      <param name="arg0">The first object to write using <paramref name="format" />. </param>
+      <param name="arg1">The second object to write using <paramref name="format" />. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> is null. </exception>
+      <exception cref="T:System.FormatException">The format specification in <paramref name="format" /> is invalid. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String,System.Object,System.Object,System.Object)">
+      <summary>Writes the text representation of the specified objects, followed by the current line terminator, to the standard output stream using the specified format information.</summary>
+      <param name="format">A composite format string (see Remarks).</param>
+      <param name="arg0">The first object to write using <paramref name="format" />. </param>
+      <param name="arg1">The second object to write using <paramref name="format" />. </param>
+      <param name="arg2">The third object to write using <paramref name="format" />. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> is null. </exception>
+      <exception cref="T:System.FormatException">The format specification in <paramref name="format" /> is invalid. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String,System.Object[])">
+      <summary>Writes the text representation of the specified array of objects, followed by the current line terminator, to the standard output stream using the specified format information.</summary>
+      <param name="format">A composite format string (see Remarks).</param>
+      <param name="arg">An array of objects to write using <paramref name="format" />. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> or <paramref name="arg" /> is null. </exception>
+      <exception cref="T:System.FormatException">The format specification in <paramref name="format" /> is invalid. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.UInt32)">
+      <summary>Writes the text representation of the specified 32-bit unsigned integer value, followed by the current line terminator, to the standard output stream.</summary>
+      <param name="value">The value to write. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.UInt64)">
+      <summary>Writes the text representation of the specified 64-bit unsigned integer value, followed by the current line terminator, to the standard output stream.</summary>
+      <param name="value">The value to write. </param>
+      <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.ConsoleCancelEventArgs">
+      <summary>Provides data for the <see cref="E:System.Console.CancelKeyPress" /> event. This class cannot be inherited.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.ConsoleCancelEventArgs.Cancel">
+      <summary>Gets or sets a value that indicates whether simultaneously pressing the <see cref="F:System.ConsoleModifiers.Control" /> modifier key and the <see cref="F:System.ConsoleKey.C" /> console key (Ctrl+C) or the Ctrl+Break keys terminates the current process. The default is false, which terminates the current process. </summary>
+      <returns>true if the current process should resume when the event handler concludes; false if the current process should terminate. The default value is false; the current process terminates when the event handler returns. If true, the current process continues. </returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.ConsoleCancelEventArgs.SpecialKey">
+      <summary>Gets the combination of modifier and console keys that interrupted the current process.</summary>
+      <returns>One of the enumeration values that specifies the key combination that interrupted the current process. There is no default value.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.ConsoleCancelEventHandler">
+      <summary>Represents the method that will handle the <see cref="E:System.Console.CancelKeyPress" /> event of a <see cref="T:System.Console" />.</summary>
+      <param name="sender">The source of the event. </param>
+      <param name="e">A <see cref="T:System.ConsoleCancelEventArgs" /> object that contains the event data. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.ConsoleColor">
+      <summary>Specifies constants that define foreground and background colors for the console.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.ConsoleColor.Black">
+      <summary>The color black.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Blue">
+      <summary>The color blue.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Cyan">
+      <summary>The color cyan (blue-green).</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkBlue">
+      <summary>The color dark blue.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkCyan">
+      <summary>The color dark cyan (dark blue-green).</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkGray">
+      <summary>The color dark gray.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkGreen">
+      <summary>The color dark green.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkMagenta">
+      <summary>The color dark magenta (dark purplish-red).</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkRed">
+      <summary>The color dark red.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkYellow">
+      <summary>The color dark yellow (ochre).</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Gray">
+      <summary>The color gray.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Green">
+      <summary>The color green.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Magenta">
+      <summary>The color magenta (purplish-red).</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Red">
+      <summary>The color red.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.White">
+      <summary>The color white.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Yellow">
+      <summary>The color yellow.</summary>
+    </member>
+    <member name="T:System.ConsoleSpecialKey">
+      <summary>Specifies combinations of modifier and console keys that can interrupt the current process.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.ConsoleSpecialKey.ControlBreak">
+      <summary>The <see cref="F:System.ConsoleModifiers.Control" /> modifier key plus the BREAK console key.</summary>
+    </member>
+    <member name="F:System.ConsoleSpecialKey.ControlC">
+      <summary>The <see cref="F:System.ConsoleModifiers.Control" /> modifier key plus the <see cref="F:System.ConsoleKey.C" /> console key.</summary>
+    </member>
+  </members>
+</doc>

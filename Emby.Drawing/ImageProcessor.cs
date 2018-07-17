@@ -262,7 +262,7 @@ namespace Emby.Drawing
             //{
             //    // Just spit out the original file if all the options are default
             //    _logger.Info("Returning original image {0}", originalImagePath);
-            //    return new Tuple<string, string, DateTime>(originalImagePath, MimeTypes.GetMimeType(originalImagePath), dateModified);
+            //    return new ValueTuple<string, string, DateTime>(originalImagePath, MimeTypes.GetMimeType(originalImagePath), dateModified);
             //}
 
             var newSize = ImageHelper.GetNewImageSize(options, null);
@@ -518,19 +518,26 @@ namespace Emby.Drawing
         /// <exception cref="System.ArgumentNullException">item</exception>
         public string GetImageCacheTag(BaseItem item, ItemImageInfo image)
         {
-            if (item == null)
-            {
-                throw new ArgumentNullException("item");
-            }
-
-            if (image == null)
-            {
-                throw new ArgumentNullException("image");
-            }
-
             var supportedEnhancers = GetSupportedEnhancers(item, image.Type);
 
             return GetImageCacheTag(item, image, supportedEnhancers);
+        }
+
+        public string GetImageCacheTag(BaseItem item, ChapterInfo chapter)
+        {
+            try
+            {
+                return GetImageCacheTag(item, new ItemImageInfo
+                {
+                    Path = chapter.ImagePath,
+                    Type = ImageType.Chapter,
+                    DateModified = chapter.ImageDateModified
+                });
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -543,21 +550,6 @@ namespace Emby.Drawing
         /// <exception cref="System.ArgumentNullException">item</exception>
         public string GetImageCacheTag(BaseItem item, ItemImageInfo image, IImageEnhancer[] imageEnhancers)
         {
-            if (item == null)
-            {
-                throw new ArgumentNullException("item");
-            }
-
-            if (imageEnhancers == null)
-            {
-                throw new ArgumentNullException("imageEnhancers");
-            }
-
-            if (image == null)
-            {
-                throw new ArgumentNullException("image");
-            }
-
             var originalImagePath = image.Path;
             var dateModified = image.DateModified;
             var imageType = image.Type;
@@ -575,7 +567,7 @@ namespace Emby.Drawing
             return string.Join("|", cacheKeys.ToArray(cacheKeys.Count)).GetMD5().ToString("N");
         }
 
-        private async Task<Tuple<string, DateTime>> GetSupportedImage(string originalImagePath, DateTime dateModified)
+        private async Task<ValueTuple<string, DateTime>> GetSupportedImage(string originalImagePath, DateTime dateModified)
         {
             var inputFormat = (Path.GetExtension(originalImagePath) ?? string.Empty)
                 .TrimStart('.')
@@ -584,7 +576,7 @@ namespace Emby.Drawing
             // These are just jpg files renamed as tbn
             if (string.Equals(inputFormat, "tbn", StringComparison.OrdinalIgnoreCase))
             {
-                return new Tuple<string, DateTime>(originalImagePath, dateModified);
+                return new ValueTuple<string, DateTime>(originalImagePath, dateModified);
             }
 
             if (!_imageEncoder.SupportedInputFormats.Contains(inputFormat, StringComparer.OrdinalIgnoreCase))
@@ -615,7 +607,7 @@ namespace Emby.Drawing
                 }
             }
 
-            return new Tuple<string, DateTime>(originalImagePath, dateModified);
+            return new ValueTuple<string, DateTime>(originalImagePath, dateModified);
         }
 
         /// <summary>
@@ -638,7 +630,7 @@ namespace Emby.Drawing
             return result.Item1;
         }
 
-        private async Task<Tuple<string, DateTime, bool>> GetEnhancedImage(ItemImageInfo image,
+        private async Task<ValueTuple<string, DateTime, bool>> GetEnhancedImage(ItemImageInfo image,
             bool inputImageSupportsTransparency,
             BaseItem item,
             int imageIndex,
@@ -663,7 +655,7 @@ namespace Emby.Drawing
                 {
                     var treatmentRequiresTransparency = ehnancedImageInfo.Item2;
 
-                    return new Tuple<string, DateTime, bool>(ehnancedImagePath, _fileSystem.GetLastWriteTimeUtc(ehnancedImagePath), treatmentRequiresTransparency);
+                    return new ValueTuple<string, DateTime, bool>(ehnancedImagePath, _fileSystem.GetLastWriteTimeUtc(ehnancedImagePath), treatmentRequiresTransparency);
                 }
             }
             catch (Exception ex)
@@ -671,7 +663,7 @@ namespace Emby.Drawing
                 _logger.ErrorException("Error enhancing image", ex);
             }
 
-            return new Tuple<string, DateTime, bool>(originalImagePath, dateModified, inputImageSupportsTransparency);
+            return new ValueTuple<string, DateTime, bool>(originalImagePath, dateModified, inputImageSupportsTransparency);
         }
 
         /// <summary>
@@ -689,7 +681,7 @@ namespace Emby.Drawing
         /// or
         /// item
         /// </exception>
-        private async Task<Tuple<string, bool>> GetEnhancedImageInternal(string originalImagePath,
+        private async Task<ValueTuple<string, bool>> GetEnhancedImageInternal(string originalImagePath,
             BaseItem item,
             ImageType imageType,
             int imageIndex,
@@ -732,14 +724,14 @@ namespace Emby.Drawing
                 // Check again in case of contention
                 if (_fileSystem.FileExists(enhancedImagePath))
                 {
-                    return new Tuple<string, bool>(enhancedImagePath, treatmentRequiresTransparency);
+                    return new ValueTuple<string, bool>(enhancedImagePath, treatmentRequiresTransparency);
                 }
 
                 _fileSystem.CreateDirectory(_fileSystem.GetDirectoryName(enhancedImagePath));
 
                 await ExecuteImageEnhancers(supportedEnhancers, originalImagePath, enhancedImagePath, item, imageType, imageIndex).ConfigureAwait(false);
 
-                return new Tuple<string, bool>(enhancedImagePath, treatmentRequiresTransparency);
+                return new ValueTuple<string, bool>(enhancedImagePath, treatmentRequiresTransparency);
             }
             finally
             {
@@ -865,7 +857,7 @@ namespace Emby.Drawing
                 }
             }
 
-            return list == null ? new IImageEnhancer[] { } : list.ToArray();
+            return list == null ? Array.Empty<IImageEnhancer>() : list.ToArray();
         }
 
         private Dictionary<string, LockInfo> _locks = new Dictionary<string, LockInfo>();

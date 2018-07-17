@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Threading.Timer</name>
+  </assembly>
+  <members>
+    <member name="T:System.Threading.Timer">
+      <summary>Предоставляет механизм для выполнения метода в заданные интервалы времени.Этот класс не наследуется.Просмотреть исходный код .NET Framework для этого типа можно на портале Reference Source.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Timer.#ctor(System.Threading.TimerCallback,System.Object,System.Int32,System.Int32)">
+      <summary>Инициализирует новый экземпляр класса Timer, используя указанное 32-разрядное знаковое целое число для задания временного интервала.</summary>
+      <param name="callback">Делегат <see cref="T:System.Threading.TimerCallback" />, представляющий выполняемый метод. </param>
+      <param name="state">Объект, содержащий информацию, используемую методом ответного вызова, или значение null. </param>
+      <param name="dueTime">Количество времени до начала использования параметра <paramref name="callback" />, в миллисекундах.Следует задать поле <see cref="F:System.Threading.Timeout.Infinite" /> для того, чтобы не допустить запуск таймера.Задайте значение ноль (0) для немедленного запуска таймера.</param>
+      <param name="period">Временной интервал между вызовами параметра <paramref name="callback" />, в миллисекундах.Следует задать поле <see cref="F:System.Threading.Timeout.Infinite" /> для отключения периодической сигнализации.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter is negative and is not equal to <see cref="F:System.Threading.Timeout.Infinite" />. </exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="callback" /> parameter is null. </exception>
+    </member>
+    <member name="M:System.Threading.Timer.#ctor(System.Threading.TimerCallback,System.Object,System.TimeSpan,System.TimeSpan)">
+      <summary>Инициализирует новый экземпляр класса Timer, используя значения объекта <see cref="T:System.TimeSpan" /> для измерения временных интервалов.</summary>
+      <param name="callback">Делегат, представляющий выполняемый метод. </param>
+      <param name="state">Объект, содержащий информацию, используемую методом ответного вызова, или значение null. </param>
+      <param name="dueTime">Количество времени, которое следует подождать до того, как параметр <paramref name="callback" /> вызовет свои методы.Следует задать минус одну (-1) миллисекунду для того, чтобы не допустить запуск таймера.Задайте значение ноль (0) для немедленного запуска таймера.</param>
+      <param name="period">Временной интервал между вызовами методов, на которые ссылается параметр <paramref name="callback" />.Следует задать минус одну (-1) миллисекунду для отключения периодической сигнализации.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The number of milliseconds in the value of <paramref name="dueTime" /> or <paramref name="period" /> is negative and not equal to <see cref="F:System.Threading.Timeout.Infinite" />, or is greater than <see cref="F:System.Int32.MaxValue" />. </exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="callback" /> parameter is null. </exception>
+    </member>
+    <member name="M:System.Threading.Timer.Change(System.Int32,System.Int32)">
+      <summary>Меняет время запуска и интервал между вызовами метода таймера, используя 32-разрядные знаковые целые числа для измерения временных интервалов.</summary>
+      <returns>Значение true, если таймер успешно обновлен; в противном случае — значение false.</returns>
+      <param name="dueTime">Количество времени, в миллисекундах, которое должно пройти до вызова метода ответного вызова при создании объекта <see cref="T:System.Threading.Timer" />.Следует задать поле <see cref="F:System.Threading.Timeout.Infinite" /> для того, чтобы не допустить повторный запуск таймера.Задайте значение ноль (0) для немедленного перезапуска таймера.</param>
+      <param name="period">Временной интервал в миллисекундах между вызовами метода обратного вызова, определенный в конструкторе объекта <see cref="T:System.Threading.Timer" />.Следует задать поле <see cref="F:System.Threading.Timeout.Infinite" /> для отключения периодической сигнализации.</param>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.Timer" /> has already been disposed. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter is negative and is not equal to <see cref="F:System.Threading.Timeout.Infinite" />. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.Timer.Change(System.TimeSpan,System.TimeSpan)">
+      <summary>Меняет время запуска и интервал межу вызовами метода таймера, используя значения объекта <see cref="T:System.TimeSpan" /> для измерения временных интервалов.</summary>
+      <returns>Значение true, если таймер успешно обновлен; в противном случае — значение false.</returns>
+      <param name="dueTime">Объект <see cref="T:System.TimeSpan" />, представляющий количество времени в миллисекундах, которое должно пройти до вызова метода ответного вызова при создании объекта <see cref="T:System.Threading.Timer" />.Следует задать минус одну (-1) миллисекунду для того, чтобы не допустить повторный запуск таймера.Задайте значение ноль (0) для немедленного перезапуска таймера.</param>
+      <param name="period">Временной интервал между вызовами метода обратного вызова, определенный в конструкторе объекта <see cref="T:System.Threading.Timer" />.Следует задать минус одну (-1) миллисекунду для отключения периодической сигнализации.</param>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.Timer" /> has already been disposed. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter, in milliseconds, is less than -1. </exception>
+      <exception cref="T:System.NotSupportedException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter, in milliseconds, is greater than 4294967294. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.Timer.Dispose">
+      <summary>Освобождает все ресурсы, используемые экземпляром класса <see cref="T:System.Threading.Timer" />.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.TimerCallback">
+      <summary>Представляет метод, обрабатывающий вызовы от события <see cref="T:System.Threading.Timer" />.</summary>
+      <param name="state">Объект, содержащий информацию о конкретном приложении, существенные для метода, вызванного этим делегатом, или значение null. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+  </members>
+</doc>

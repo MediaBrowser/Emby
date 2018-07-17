@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>Microsoft.Win32.Primitives</name>
+  </assembly>
+  <members>
+    <member name="T:System.ComponentModel.Win32Exception">
+      <summary>對 Win32 錯誤碼擲回例外狀況。</summary>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor">
+      <summary>使用最後發生的 Win32 錯誤，初始化 <see cref="T:System.ComponentModel.Win32Exception" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor(System.Int32)">
+      <summary>使用指定的錯誤來初始化 <see cref="T:System.ComponentModel.Win32Exception" /> 類別的新執行個體。</summary>
+      <param name="error">與這個例外狀況關聯的 Win32 錯誤碼。</param>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor(System.Int32,System.String)">
+      <summary>使用指定的錯誤和指定的詳細描述來初始化 <see cref="T:System.ComponentModel.Win32Exception" /> 類別的新執行個體。</summary>
+      <param name="error">與這個例外狀況關聯的 Win32 錯誤碼。</param>
+      <param name="message">錯誤的詳細描述。</param>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor(System.String)">
+      <summary>使用指定的詳細描述來初始化 <see cref="T:System.ComponentModel.Win32Exception" /> 類別的新執行個體。</summary>
+      <param name="message">錯誤的詳細描述。</param>
+    </member>
+    <member name="M:System.ComponentModel.Win32Exception.#ctor(System.String,System.Exception)">
+      <summary>使用指定的詳細描述和指定的例外狀況，初始化 <see cref="T:System.ComponentModel.Win32Exception" /> 類別的新執行個體。</summary>
+      <param name="message">錯誤的詳細描述。</param>
+      <param name="innerException">造成這個例外狀況之內部例外狀況的參考。</param>
+    </member>
+    <member name="P:System.ComponentModel.Win32Exception.NativeErrorCode">
+      <summary>取得與這個例外狀況關聯的 Win32 錯誤碼。</summary>
+      <returns>與這個例外狀況關聯的 Win32 錯誤碼。</returns>
+    </member>
+  </members>
+</doc>

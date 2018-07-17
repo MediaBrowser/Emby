@@ -23,8 +23,8 @@ namespace MediaBrowser.Api
         /// Gets or sets the user id.
         /// </summary>
         /// <value>The user id.</value>
-        [ApiMember(Name = "UserId", Description = "User Id", IsRequired = false, DataType = "string", ParameterType = "path", Verb = "GET")]
-        public string UserId { get; set; }
+        [ApiMember(Name = "UserId", Description = "User Id", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
+        public Guid UserId { get; set; }
 
         /// <summary>
         /// Skips over a given number of items within the results. Use for paging.
@@ -78,7 +78,7 @@ namespace MediaBrowser.Api
         /// </summary>
         /// <value>The user id.</value>
         [ApiMember(Name = "UserId", Description = "User Id", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
 
         /// <summary>
         /// Skips over a given number of items within the results. Use for paging.
@@ -126,7 +126,7 @@ namespace MediaBrowser.Api
         /// Gets the order by.
         /// </summary>
         /// <returns>IEnumerable{ItemSortBy}.</returns>
-        public Tuple<string, SortOrder>[] GetOrderBy()
+        public ValueTuple<string, SortOrder>[] GetOrderBy()
         {
             return BaseItemsRequest.GetOrderBy(SortBy, SortOrder);
         }
@@ -140,7 +140,7 @@ namespace MediaBrowser.Api
         /// </summary>
         /// <value>The user id.</value>
         [ApiMember(Name = "UserId", Description = "User Id", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
 
         /// <summary>
         /// Skips over a given number of items within the results. Use for paging.
@@ -225,7 +225,7 @@ namespace MediaBrowser.Api
 
         public async Task<object> Get(GetChannelItems request)
         {
-            var user = string.IsNullOrEmpty(request.UserId)
+            var user = request.UserId.Equals(Guid.Empty)
                 ? null
                 : _userManager.GetUserById(request.UserId);
 
@@ -234,7 +234,7 @@ namespace MediaBrowser.Api
                 Limit = request.Limit,
                 StartIndex = request.StartIndex,
                 ChannelIds = new Guid[] { new Guid(request.Id) },
-                ParentId = string.IsNullOrWhiteSpace(request.FolderId) ? (Guid?)null : new Guid(request.FolderId),
+                ParentId = string.IsNullOrWhiteSpace(request.FolderId) ? Guid.Empty : new Guid(request.FolderId),
                 OrderBy = request.GetOrderBy(),
                 DtoOptions = new Controller.Dto.DtoOptions
                 {
@@ -284,7 +284,7 @@ namespace MediaBrowser.Api
 
         public async Task<object> Get(GetLatestChannelItems request)
         {
-            var user = string.IsNullOrEmpty(request.UserId)
+            var user = request.UserId.Equals(Guid.Empty)
                 ? null
                 : _userManager.GetUserById(request.UserId);
 
@@ -297,7 +297,6 @@ namespace MediaBrowser.Api
                 {
                     Fields = request.GetItemFields()
                 }
-
             };
 
             foreach (var filter in request.GetFilters())

@@ -1,5 +1,12 @@
 {
     "HeaderCameraUploads": "\u76f8\u673a\u4e0a\u4f20",
+    "ValueHasBeenAddedToLibrary": "{0} has been added to your media library",
+    "NameInstallFailed": "{0} installation failed",
+    "CameraImageUploadedFrom": "A new camera image has been uploaded from {0}",
+    "ServerNameNeedsToBeRestarted": "{0} needs to be restarted",
+    "NewVersionIsAvailable": "A new version of Emby Server is available for download.",
+    "MessageApplicationUpdatedTo": "Emby Server has been updated to {0}",
+    "SubtitleDownloadFailureFromForItem": "Subtitles failed to download from {0} for {1}",
     "Latest": "\u6700\u65b0",
     "ValueSpecialEpisodeName": "\u7279\u5178 - {0}",
     "Inherit": "\u7ee7\u627f",

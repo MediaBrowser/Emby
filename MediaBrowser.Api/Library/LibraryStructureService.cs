@@ -210,7 +210,7 @@ namespace MediaBrowser.Api.Library
         {
             var result = _libraryManager.GetVirtualFolders(true);
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         public void Post(UpdateLibraryOptions request)

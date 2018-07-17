@@ -1,4 +1,6 @@
 {
+    "PlaybackSettings": "Playback settings",
+    "SubtitleSettings": "Subtitle settings",
     "MessageUnlockAppWithPurchaseOrSupporter": "Unlock this feature with a small one-time purchase, or with an active Emby Premiere subscription.",
     "MessageUnlockAppWithSupporter": "Unlock this feature with an active Emby Premiere subscription.",
     "MessageToValidateSupporter": "If you have an active Emby Premiere subscription, ensure you've setup Emby Premiere in your Emby Server Dashboard, which you can access by clicking Emby Premiere within the main menu.",
@@ -33,6 +35,7 @@
     "HeaderWakeServer": "Wake Server",
     "AttemptingWakeServer": "Attempting to wake server. Please wait...",
     "WakeServerSuccess": "Success!",
+    "HeaderCustomizeHomeScreen": "Customize Home Screen",
     "WakeServerError": "Wake On LAN packets were sent to your server machine, but we're unable to connect to your Emby Server. Your machine may need a little more time to wake, or Emby Server may not be actively running on the machine.",
     "Sunday": "Domingo",
     "Monday": "Segunda",
@@ -47,6 +50,7 @@
     "LabelSortOrder": "Sort order:",
     "HeaderPhotoAlbums": "Photo Albums",
     "Photos": "Photos",
+    "HeaderAppearsOn": "Appears On",
     "List": "List",
     "RecordSeries": "Record series",
     "HeaderCinemaMode": "Cinema Mode",
@@ -306,7 +310,8 @@
     "ConfirmDeleteItems": "Ao excluir estes itens voc\u00ea os excluir\u00e1 do sistema de arquivos e de sua biblioteca multim\u00e9dia. Deseja realmente continuar?",
     "PleaseRestartServerName": "Please restart Emby Server - {0}.",
     "LabelSyncJobName": "Sync job name:",
-    "SyncJobCreated": "Sync job created",
+    "SyncingDots": "Syncing...",
+    "ConvertingDots": "Converting...",
     "LabelQuality": "Quality:",
     "LabelSyncNoTargetsHelp": "It looks like you don't currently have any apps that support offline downloading.",
     "DownloadingDots": "Downloading...",
@@ -547,6 +552,7 @@
     "Absolute": "Absolute",
     "Smart": "Smart",
     "Small": "Small",
+    "Smaller": "Smaller",
     "Medium": "Medium",
     "Large": "Large",
     "ExtraLarge": "Extra large",
@@ -677,5 +683,7 @@
     "ColorSpace": "Color space",
     "ColorTransfer": "Color transfer",
     "VideoRange": "Video range",
-    "SeriesDisplayOrderHelp": "Order episodes by air date, dvd order, or absolute numbering."
+    "SeriesDisplayOrderHelp": "Order episodes by air date, dvd order, or absolute numbering.",
+    "PlaybackSettingsIntro": "To configure default playback settings, stop video playback, then click your user icon in the top right section of the app.",
+    "SubtitleSettingsIntro": "To configure default subtitle appearance and language settings, stop video playback, then click your user icon in the top right section of the app."
 }

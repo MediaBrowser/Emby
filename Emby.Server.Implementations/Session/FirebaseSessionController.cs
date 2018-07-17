@@ -50,7 +50,7 @@ namespace Emby.Server.Implementations.Session
         {
             get
             {
-                return (DateTime.UtcNow - Session.LastActivityDate).TotalHours <= 1;
+                return (DateTime.UtcNow - Session.LastActivityDate).TotalDays <= 3;
             }
         }
 

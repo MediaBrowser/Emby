@@ -1,0 +1,1002 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Text.Encoding.Extensions</name>
+  </assembly>
+  <members>
+    <member name="T:System.Text.ASCIIEncoding">
+      <summary>Rappresenta una codifica di caratteri ASCII dei caratteri Unicode.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Text.ASCIIEncoding" />.</summary>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetByteCount(System.Char*,System.Int32)">
+      <summary>Calcola il numero di byte prodotti dalla codifica di un insieme di caratteri a partire dal puntatore ai caratteri specificato.</summary>
+      <returns>Numero di byte prodotti dalla codifica dei caratteri specificati.</returns>
+      <param name="chars">Puntatore al primo carattere da codificare.</param>
+      <param name="count">Numero di caratteri da codificare.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> è null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> è minore di zero.- oppure - Il numero di byte risultante è superiore al numero massimo che può essere restituito come intero. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Si è verificato un fallback (per la spiegazione completa, vedere Codifica di caratteri in .NET Framework)- e -<see cref="P:System.Text.Encoding.EncoderFallback" /> è impostato su <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetByteCount(System.Char[],System.Int32,System.Int32)">
+      <summary>Consente di calcolare il numero di byte prodotti dalla codifica di un set di caratteri nella matrice di caratteri specificata.</summary>
+      <returns>Numero di byte prodotti dalla codifica dei caratteri specificati.</returns>
+      <param name="chars">Matrice di caratteri contenente l'set di caratteri da codificare.</param>
+      <param name="index">Indice del primo carattere da codificare.</param>
+      <param name="count">Numero di caratteri da codificare.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> è null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il parametro <paramref name="index" /> o <paramref name="count" /> è minore di zero.- oppure - <paramref name="index" /> e <paramref name="count" /> non identificano un intervallo valido in <paramref name="chars" />.- oppure - Il numero di byte risultante è superiore al numero massimo che può essere restituito come intero. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Si è verificato un fallback (per la spiegazione completa, vedere Codifica di caratteri in .NET Framework)- e -<see cref="P:System.Text.Encoding.EncoderFallback" /> è impostato su <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetByteCount(System.String)">
+      <summary>Consente di calcolare il numero di byte prodotti dalla codifica dei caratteri nell'oggetto <see cref="T:System.String" /> specificato.</summary>
+      <returns>Numero di byte prodotti dalla codifica dei caratteri specificati.</returns>
+      <param name="chars">
+        <see cref="T:System.String" /> contenente l'set di caratteri da codificare.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> è null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il numero di byte risultante è superiore al numero massimo che può essere restituito come intero. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Si è verificato un fallback (per la spiegazione completa, vedere Codifica di caratteri in .NET Framework)- e -<see cref="P:System.Text.Encoding.EncoderFallback" /> è impostato su <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetBytes(System.Char*,System.Int32,System.Byte*,System.Int32)">
+      <summary>Consente di codificare un set di caratteri, a partire dal puntatore ai caratteri specificato, in una sequenza di byte archiviati a partire dal puntatore ai byte specificato.</summary>
+      <returns>Numero effettivo dei byte scritti nella posizione indicata da <paramref name="bytes" />.</returns>
+      <param name="chars">Puntatore al primo carattere da codificare.</param>
+      <param name="charCount">Numero di caratteri da codificare.</param>
+      <param name="bytes">Puntatore alla posizione in cui iniziare a scrivere la sequenza di byte risultante.</param>
+      <param name="byteCount">Numero massimo di byte da scrivere.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> è null.- oppure - <paramref name="bytes" /> è null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il parametro <paramref name="charCount" /> o <paramref name="byteCount" /> è minore di zero. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="byteCount" /> è minore del numero di byte risultante. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Si è verificato un fallback (per la spiegazione completa, vedere Codifica di caratteri in .NET Framework)- e -<see cref="P:System.Text.Encoding.EncoderFallback" /> è impostato su <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>Consente di codificare un set di caratteri dalla matrice di caratteri specificata nella matrice di byte specificata.</summary>
+      <returns>Numero effettivo di byte scritti in <paramref name="bytes" />.</returns>
+      <param name="chars">Matrice di caratteri contenente l'set di caratteri da codificare.</param>
+      <param name="charIndex">Indice del primo carattere da codificare.</param>
+      <param name="charCount">Numero di caratteri da codificare.</param>
+      <param name="bytes">Matrice di byte per contenere la sequenza di byte risultante.</param>
+      <param name="byteIndex">Indice in corrispondenza del quale iniziare la scrittura della sequenza di byte risultante.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> è null.- oppure - <paramref name="bytes" /> è null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" /> o <paramref name="charCount" /> o <paramref name="byteIndex" /> è minore di zero.- oppure - <paramref name="charIndex" /> e <paramref name="charCount" /> non identificano un intervallo valido in <paramref name="chars" />.- oppure - <paramref name="byteIndex" /> non è un indice valido in <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="bytes" /> non dispone di sufficiente capacità da <paramref name="byteIndex" /> alla fine della matrice per contenere i byte risultanti. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Si è verificato un fallback (per la spiegazione completa, vedere Codifica di caratteri in .NET Framework)- e -<see cref="P:System.Text.Encoding.EncoderFallback" /> è impostato su <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetBytes(System.String,System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>Consente di codificare un set di caratteri dall'oggetto <see cref="T:System.String" /> specificato nella matrice di byte specificata.</summary>
+      <returns>Numero effettivo di byte scritti in <paramref name="bytes" />.</returns>
+      <param name="chars">
+        <see cref="T:System.String" /> contenente l'set di caratteri da codificare.</param>
+      <param name="charIndex">Indice del primo carattere da codificare.</param>
+      <param name="charCount">Numero di caratteri da codificare.</param>
+      <param name="bytes">Matrice di byte per contenere la sequenza di byte risultante.</param>
+      <param name="byteIndex">Indice in corrispondenza del quale iniziare la scrittura della sequenza di byte risultante.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> è null.- oppure - <paramref name="bytes" /> è null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" /> o <paramref name="charCount" /> o <paramref name="byteIndex" /> è minore di zero.- oppure - <paramref name="charIndex" /> e <paramref name="charCount" /> non identificano un intervallo valido in <paramref name="chars" />.- oppure - <paramref name="byteIndex" /> non è un indice valido in <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="bytes" /> non dispone di sufficiente capacità da <paramref name="byteIndex" /> alla fine della matrice per contenere i byte risultanti. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Si è verificato un fallback (per la spiegazione completa, vedere Codifica di caratteri in .NET Framework)- e -<see cref="P:System.Text.Encoding.EncoderFallback" /> è impostato su <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetCharCount(System.Byte*,System.Int32)">
+      <summary>Consente di calcolare il numero di caratteri prodotti dalla decodifica di una sequenza di byte a partire dal puntatore ai byte specificato.</summary>
+      <returns>Numero di caratteri prodotti dalla decodifica della sequenza di byte specificata.</returns>
+      <param name="bytes">Puntatore al primo byte da decodificare.</param>
+      <param name="count">Numero di byte da decodificare.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> è null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> è minore di zero.- oppure - Il numero di byte risultante è superiore al numero massimo che può essere restituito come intero. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Si è verificato un fallback (per la spiegazione completa, vedere Codifica di caratteri in .NET Framework)- e -<see cref="P:System.Text.Encoding.DecoderFallback" /> è impostato su <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetCharCount(System.Byte[],System.Int32,System.Int32)">
+      <summary>Consente di calcolare il numero di caratteri prodotti dalla decodifica di una sequenza di byte dalla matrice di byte specificata.</summary>
+      <returns>Numero di caratteri prodotti dalla decodifica della sequenza di byte specificata.</returns>
+      <param name="bytes">Matrice di byte contenente la sequenza di byte da decodificare.</param>
+      <param name="index">Indice del primo byte da decodificare.</param>
+      <param name="count">Numero di byte da decodificare.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> è null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il parametro <paramref name="index" /> o <paramref name="count" /> è minore di zero.- oppure - <paramref name="index" /> e <paramref name="count" /> non identificano un intervallo valido in <paramref name="bytes" />.- oppure - Il numero di byte risultante è superiore al numero massimo che può essere restituito come intero. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Si è verificato un fallback (per la spiegazione completa, vedere Codifica di caratteri in .NET Framework)- e -<see cref="P:System.Text.Encoding.DecoderFallback" /> è impostato su <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetChars(System.Byte*,System.Int32,System.Char*,System.Int32)">
+      <summary>Consente di decodificare una sequenza di byte a partire dal puntatore ai byte specificato in un insieme di caratteri archiviati a partire dal puntatore ai caratteri specificato.</summary>
+      <returns>Numero effettivo dei caratteri scritti nella posizione indicata da <paramref name="chars" />.</returns>
+      <param name="bytes">Puntatore al primo byte da decodificare.</param>
+      <param name="byteCount">Numero di byte da decodificare.</param>
+      <param name="chars">Puntatore alla posizione in cui iniziare a scrivere l'set di caratteri risultante.</param>
+      <param name="charCount">Numero massimo di caratteri da scrivere.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> è null.- oppure - <paramref name="chars" /> è null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il parametro <paramref name="byteCount" /> o <paramref name="charCount" /> è minore di zero. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="charCount" /> è minore del numero di caratteri risultante. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Si è verificato un fallback (per la spiegazione completa, vedere Codifica di caratteri in .NET Framework)- e -<see cref="P:System.Text.Encoding.DecoderFallback" /> è impostato su <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)">
+      <summary>Consente di decodificare una sequenza di byte dalla matrice di byte specificata nella matrice di caratteri specificata.</summary>
+      <returns>Numero effettivo di caratteri scritti in <paramref name="chars" />.</returns>
+      <param name="bytes">Matrice di byte contenente la sequenza di byte da decodificare.</param>
+      <param name="byteIndex">Indice del primo byte da decodificare.</param>
+      <param name="byteCount">Numero di byte da decodificare.</param>
+      <param name="chars">Matrice di caratteri per contenere l'insieme di caratteri risultante.</param>
+      <param name="charIndex">Indice in corrispondenza del quale iniziare la scrittura dell'insieme di caratteri risultante.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> è null.- oppure - <paramref name="chars" /> è null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteIndex" /> o <paramref name="byteCount" /> o <paramref name="charIndex" /> è minore di zero.- oppure - <paramref name="byteindex" /> e <paramref name="byteCount" /> non identificano un intervallo valido in <paramref name="bytes" />.- oppure - <paramref name="charIndex" /> non è un indice valido in <paramref name="chars" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="chars" /> non dispone di sufficiente capacità da <paramref name="charIndex" /> alla fine della matrice per contenere i caratteri risultanti. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Si è verificato un fallback (per la spiegazione completa, vedere Codifica di caratteri in .NET Framework)- e -<see cref="P:System.Text.Encoding.DecoderFallback" /> è impostato su <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetDecoder">
+      <summary>Ottiene un decodificatore in grado di convertire una sequenza di byte codificati ASCII in una sequenza di caratteri Unicode.</summary>
+      <returns>Oggetto <see cref="T:System.Text.Decoder" /> in grado di convertire una sequenza di byte codificati ASCII in una sequenza di caratteri Unicode.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetEncoder">
+      <summary>Ottiene un codificatore in grado di convertire una sequenza di caratteri Unicode in una sequenza di byte codificati ASCII.</summary>
+      <returns>Oggetto <see cref="T:System.Text.Encoder" /> in grado di convertire una sequenza di caratteri Unicode in una sequenza di byte codificati ASCII.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetMaxByteCount(System.Int32)">
+      <summary>Consente di calcolare il numero massimo di byte prodotti dalla codifica del numero di caratteri specificato.</summary>
+      <returns>Numero massimo di byte prodotti dalla codifica del numero di caratteri specificato.</returns>
+      <param name="charCount">Numero di caratteri da codificare.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charCount" /> è minore di zero.- oppure - Il numero di byte risultante è superiore al numero massimo che può essere restituito come intero. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetMaxCharCount(System.Int32)">
+      <summary>Consente di calcolare il numero massimo di caratteri prodotti dalla decodifica del numero di byte specificato.</summary>
+      <returns>Numero massimo di caratteri prodotti dalla decodifica del numero di byte specificato.</returns>
+      <param name="byteCount">Numero di byte da decodificare.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteCount" /> è minore di zero.- oppure - Il numero di byte risultante è superiore al numero massimo che può essere restituito come intero. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetString(System.Byte[],System.Int32,System.Int32)">
+      <summary>Decodifica un intervallo di byte da una matrice di byte in una stringa.</summary>
+      <returns>Oggetto <see cref="T:System.String" /> contenente i risultati di decodifica della sequenza di byte specificata.</returns>
+      <param name="bytes">Matrice di byte contenente la sequenza di byte da decodificare.</param>
+      <param name="byteIndex">Indice del primo byte da decodificare.</param>
+      <param name="byteCount">Numero di byte da decodificare.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> è null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il parametro <paramref name="index" /> o <paramref name="count" /> è minore di zero.- oppure - <paramref name="index" /> e <paramref name="count" /> non identificano un intervallo valido in <paramref name="bytes" />. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Si è verificato un fallback (per la spiegazione completa, vedere Codifica di caratteri in .NET Framework)- e -<see cref="P:System.Text.Encoding.DecoderFallback" /> è impostato su <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.ASCIIEncoding.IsSingleByte">
+      <summary>Ottiene un valore che indica se la codifica corrente utilizza punti di codice a singolo byte.</summary>
+      <returns>Questa proprietà è sempre true.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.UnicodeEncoding">
+      <summary>Rappresenta una codifica UTF-16 dei caratteri Unicode. </summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Text.UnicodeEncoding" />.</summary>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.#ctor(System.Boolean,System.Boolean)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Text.UnicodeEncoding" />.I parametri specificano se usare l'ordine dei byte big-endian e se il metodo <see cref="M:System.Text.UnicodeEncoding.GetPreamble" /> restituisce un byte order mark Unicode.</summary>
+      <param name="bigEndian">true per usare l'ordine dei byte big-endian (byte più significativo al primo posto) o false per usare l'ordine dei byte little-endian (byte meno significativo al primo posto). </param>
+      <param name="byteOrderMark">true per specificare che il metodo <see cref="M:System.Text.UnicodeEncoding.GetPreamble" /> restituisce un byte order mark Unicode; in caso contrario, false.Per altre informazioni, vedere la sezione Osservazioni.</param>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.#ctor(System.Boolean,System.Boolean,System.Boolean)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Text.UnicodeEncoding" />.I parametri specificano se usare l'ordine dei byte big-endian, se fornire un byte order mark Unicode e se generare un'eccezione quando viene rilevata una codifica non valida.</summary>
+      <param name="bigEndian">true per usare l'ordine dei byte big-endian (byte più significativo al primo posto) o false per usare l'ordine dei byte little-endian (byte meno significativo al primo posto). </param>
+      <param name="byteOrderMark">true per specificare che il metodo <see cref="M:System.Text.UnicodeEncoding.GetPreamble" /> restituisce un byte order mark Unicode; in caso contrario, false.Per altre informazioni, vedere la sezione Osservazioni.</param>
+      <param name="throwOnInvalidBytes">true per specificare che viene generata un'eccezione quando viene rilevata una codifica non valida; in caso contrario, false. </param>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.Equals(System.Object)">
+      <summary>Determina se l'oggetto <see cref="T:System.Object" /> specificato è uguale all'oggetto <see cref="T:System.Text.UnicodeEncoding" /> corrente.</summary>
+      <returns>true se <paramref name="value" /> è un'istanza di <see cref="T:System.Text.UnicodeEncoding" /> ed è uguale all'oggetto corrente; in caso contrario, false.</returns>
+      <param name="value">Oggetto da confrontare con l'oggetto corrente. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.GetByteCount(System.Char[],System.Int32,System.Int32)">
+      <summary>Calcola il numero di byte prodotti dalla codifica di un set di caratteri dalla matrice di caratteri specificata.</summary>
+      <returns>Numero di byte prodotti dalla codifica dei caratteri specificati.</returns>
+      <param name="chars">Matrice di caratteri contenente il set di caratteri da codificare. </param>
+      <param name="index">Indice del primo carattere da codificare. </param>
+      <param name="count">Numero di caratteri da codificare. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> is null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> or <paramref name="count" /> is less than zero.-or- <paramref name="index" /> and <paramref name="count" /> do not denote a valid range in <paramref name="chars" />.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for fuller explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.GetByteCount(System.String)">
+      <summary>Calcola il numero di byte prodotti dalla codifica dei caratteri nella stringa specificata.</summary>
+      <returns>Numero di byte prodotti dalla codifica dei caratteri specificati. </returns>
+      <param name="s">Stringa contenente il set di caratteri da codificare. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> is null . </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="s" /> contains an invalid sequence of characters. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for fuller explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>Codifica un set di caratteri dalla matrice di caratteri specificata nella matrice di byte specificata.</summary>
+      <returns>Numero effettivo di byte scritti in <paramref name="bytes" />.</returns>
+      <param name="chars">Matrice di caratteri contenente il set di caratteri da codificare. </param>
+      <param name="charIndex">Indice del primo carattere da codificare. </param>
+      <param name="charCount">Numero di caratteri da codificare. </param>
+      <param name="bytes">Matrice di byte che deve contenere la sequenza di byte risultante. </param>
+      <param name="byteIndex">Indice in corrispondenza del quale iniziare a scrivere la sequenza di byte risultante. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> is null (Nothing).-or- <paramref name="bytes" /> is null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" /> or <paramref name="charCount" /> or <paramref name="byteIndex" /> is less than zero.-or- <paramref name="charIndex" /> and <paramref name="charCount" /> do not denote a valid range in <paramref name="chars" />.-or- <paramref name="byteIndex" /> is not a valid index in <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters.-or- <paramref name="bytes" /> does not have enough capacity from <paramref name="byteIndex" /> to the end of the array to accommodate the resulting bytes. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for fuller explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.GetBytes(System.String,System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>Codifica un set di caratteri dall'oggetto <see cref="T:System.String" /> specificato nella matrice di byte specificata.</summary>
+      <returns>Numero effettivo di byte scritti in <paramref name="bytes" />.</returns>
+      <param name="s">Stringa contenente il set di caratteri da codificare. </param>
+      <param name="charIndex">Indice del primo carattere da codificare. </param>
+      <param name="charCount">Numero di caratteri da codificare. </param>
+      <param name="bytes">Matrice di byte che deve contenere la sequenza di byte risultante. </param>
+      <param name="byteIndex">Indice in corrispondenza del quale iniziare a scrivere la sequenza di byte risultante. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> is null .-or- <paramref name="bytes" /> is null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" /> or <paramref name="charCount" /> or <paramref name="byteIndex" /> is less than zero.-or- <paramref name="charIndex" /> and <paramref name="charCount" /> do not denote a valid range in <paramref name="chars" />.-or- <paramref name="byteIndex" /> is not a valid index in <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="s" /> contains an invalid sequence of characters.-or- <paramref name="bytes" /> does not have enough capacity from <paramref name="byteIndex" /> to the end of the array to accommodate the resulting bytes. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for fuller explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.GetCharCount(System.Byte[],System.Int32,System.Int32)">
+      <summary>Calcola il numero di caratteri prodotti dalla decodifica di una sequenza di byte dalla matrice di byte specificata.</summary>
+      <returns>Numero di caratteri prodotti dalla decodifica della sequenza di byte specificata.</returns>
+      <param name="bytes">Matrice di byte contenente la sequenza di byte da decodificare. </param>
+      <param name="index">Indice del primo byte da decodificare. </param>
+      <param name="count">Numero di byte da decodificare. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> is null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> or <paramref name="count" /> is less than zero.-or- <paramref name="index" /> and <paramref name="count" /> do not denote a valid range in <paramref name="bytes" />.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for fuller explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)">
+      <summary>Decodifica una sequenza di byte dalla matrice di byte specificata nella matrice di caratteri specificata.</summary>
+      <returns>Numero effettivo di caratteri scritti in <paramref name="chars" />.</returns>
+      <param name="bytes">Matrice di byte contenente la sequenza di byte da decodificare. </param>
+      <param name="byteIndex">Indice del primo byte da decodificare. </param>
+      <param name="byteCount">Numero di byte da decodificare. </param>
+      <param name="chars">Matrice di caratteri che deve contenere il set di caratteri risultante. </param>
+      <param name="charIndex">Indice in corrispondenza del quale iniziare a scrivere il set di caratteri risultante. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> is null (Nothing).-or- <paramref name="chars" /> is null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteIndex" /> or <paramref name="byteCount" /> or <paramref name="charIndex" /> is less than zero.-or- <paramref name="byteindex" /> and <paramref name="byteCount" /> do not denote a valid range in <paramref name="bytes" />.-or- <paramref name="charIndex" /> is not a valid index in <paramref name="chars" />. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes.-or- <paramref name="chars" /> does not have enough capacity from <paramref name="charIndex" /> to the end of the array to accommodate the resulting characters. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for fuller explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.GetDecoder">
+      <summary>Ottiene un decodificatore in grado di convertire una sequenza di byte codificati UTF-16 in una sequenza di caratteri Unicode.</summary>
+      <returns>Oggetto <see cref="T:System.Text.Decoder" /> che converte una sequenza di byte codificati UTF-16 in una sequenza di caratteri Unicode.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.GetEncoder">
+      <summary>Ottiene un codificatore in grado di convertire una sequenza di caratteri Unicode in una sequenza di byte codificati UTF-16.</summary>
+      <returns>Oggetto <see cref="T:System.Text.Encoder" /> che converte una sequenza di caratteri Unicode in una sequenza di byte codificati UTF-16.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.GetHashCode">
+      <summary>Restituisce il codice hash per l'istanza corrente.</summary>
+      <returns>Codice hash per l'oggetto <see cref="T:System.Text.UnicodeEncoding" /> corrente.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.GetMaxByteCount(System.Int32)">
+      <summary>Calcola il numero massimo di byte prodotti dalla codifica del numero di caratteri specificato.</summary>
+      <returns>Numero massimo di byte prodotti dalla codifica del numero di caratteri specificato.</returns>
+      <param name="charCount">Numero di caratteri da codificare. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charCount" /> is less than zero.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for fuller explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.GetMaxCharCount(System.Int32)">
+      <summary>Calcola il numero massimo di caratteri prodotti dalla decodifica del numero di byte specificato.</summary>
+      <returns>Numero massimo di caratteri prodotti dalla decodifica del numero di byte specificato.</returns>
+      <param name="byteCount">Numero di byte da decodificare. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteCount" /> is less than zero.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for fuller explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.GetPreamble">
+      <summary>Restituisce un byte order mark e Unicode codificato in formato UTF-16, se il costruttore per questa istanza ne ha richiesto la presenza.</summary>
+      <returns>Matrice di byte contenente il byte order mark Unicode, se l'oggetto <see cref="T:System.Text.UnicodeEncoding" /> è configurato per fornirne uno.In caso contrario, questo metodo restituisce una matrice di byte di lunghezza zero.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.GetString(System.Byte[],System.Int32,System.Int32)">
+      <summary>Decodifica un intervallo di byte da una matrice di byte in una stringa.</summary>
+      <returns>Oggetto <see cref="T:System.String" /> contenente i risultati di decodifica della sequenza di byte specificata.</returns>
+      <param name="bytes">Matrice di byte contenente la sequenza di byte da decodificare. </param>
+      <param name="index">Indice del primo byte da decodificare. </param>
+      <param name="count">Numero di byte da decodificare. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> is null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> or <paramref name="count" /> is less than zero.-or- <paramref name="index" /> and <paramref name="count" /> do not denote a valid range in <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for fuller explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Text.UTF32Encoding">
+      <summary>Rappresenta una codifica UTF-32 dei caratteri Unicode.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Text.UTF32Encoding" />.</summary>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.#ctor(System.Boolean,System.Boolean)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Text.UTF32Encoding" />.I parametri specificano se usare l'ordine dei byte big-endian e se il metodo <see cref="M:System.Text.UTF32Encoding.GetPreamble" /> restituisce un byte order mark Unicode.</summary>
+      <param name="bigEndian">true per usare l'ordine dei byte big-endian (byte più significativo al primo posto) o false per usare l'ordine dei byte little-endian (byte meno significativo al primo posto). </param>
+      <param name="byteOrderMark">true per specificare che viene fornito un byte order mark Unicode; in caso contrario, false. </param>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.#ctor(System.Boolean,System.Boolean,System.Boolean)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Text.UTF32Encoding" />.I parametri specificano se usare l'ordine dei byte big-endian, se fornire un byte order mark Unicode e se generare un'eccezione quando viene rilevata una codifica non valida.</summary>
+      <param name="bigEndian">true per usare l'ordine dei byte big-endian (byte più significativo al primo posto) o false per usare l'ordine dei byte little-endian (byte meno significativo al primo posto). </param>
+      <param name="byteOrderMark">true per specificare che viene fornito un byte order mark Unicode; in caso contrario, false. </param>
+      <param name="throwOnInvalidCharacters">true per specificare che viene generata un'eccezione quando viene rilevata una codifica non valida; in caso contrario, false. </param>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.Equals(System.Object)">
+      <summary>Determina se l'oggetto <see cref="T:System.Object" /> specificato è uguale all'oggetto <see cref="T:System.Text.UTF32Encoding" /> corrente.</summary>
+      <returns>true se <paramref name="value" /> è un'istanza di <see cref="T:System.Text.UTF32Encoding" /> ed è uguale all'oggetto corrente; in caso contrario, false.</returns>
+      <param name="value">Classe <see cref="T:System.Object" /> da confrontare con l'oggetto corrente. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetByteCount(System.Char*,System.Int32)">
+      <summary>Calcola il numero di byte prodotti dalla codifica di un set di caratteri a partire dal puntatore ai caratteri specificato.</summary>
+      <returns>Numero di byte prodotti dalla codifica dei caratteri specificati.</returns>
+      <param name="chars">Puntatore al primo carattere da codificare. </param>
+      <param name="count">Numero di caratteri da codificare. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> is less than zero.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for complete explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetByteCount(System.Char[],System.Int32,System.Int32)">
+      <summary>Calcola il numero di byte prodotti dalla codifica di un set di caratteri dalla matrice di caratteri specificata.</summary>
+      <returns>Numero di byte prodotti dalla codifica dei caratteri specificati.</returns>
+      <param name="chars">Matrice di caratteri contenente il set di caratteri da codificare. </param>
+      <param name="index">Indice del primo carattere da codificare. </param>
+      <param name="count">Numero di caratteri da codificare. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> or <paramref name="count" /> is less than zero.-or- <paramref name="index" /> and <paramref name="count" /> do not denote a valid range in <paramref name="chars" />.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for complete explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetByteCount(System.String)">
+      <summary>Calcola il numero di byte prodotti dalla codifica dei caratteri nell'oggetto <see cref="T:System.String" /> specificato.</summary>
+      <returns>Numero di byte prodotti dalla codifica dei caratteri specificati.</returns>
+      <param name="s">Oggetto <see cref="T:System.String" /> contenente il set di caratteri da codificare. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="s" /> contains an invalid sequence of characters. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for complete explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetBytes(System.Char*,System.Int32,System.Byte*,System.Int32)">
+      <summary>Codifica un set di caratteri a partire dal puntatore ai caratteri specificato in una sequenza di byte archiviati a partire dal puntatore ai byte specificato.</summary>
+      <returns>Numero effettivo di byte scritti nella posizione indicata dal parametro <paramref name="bytes" />.</returns>
+      <param name="chars">Puntatore al primo carattere da codificare. </param>
+      <param name="charCount">Numero di caratteri da codificare. </param>
+      <param name="bytes">Puntatore alla posizione in cui iniziare a scrivere la sequenza di byte risultante. </param>
+      <param name="byteCount">Numero massimo di byte da scrivere. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> is null.-or- <paramref name="bytes" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charCount" /> or <paramref name="byteCount" /> is less than zero. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters.-or- <paramref name="byteCount" /> is less than the resulting number of bytes. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for complete explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>Codifica un set di caratteri dalla matrice di caratteri specificata nella matrice di byte specificata.</summary>
+      <returns>Numero effettivo di byte scritti in <paramref name="bytes" />.</returns>
+      <param name="chars">Matrice di caratteri contenente il set di caratteri da codificare. </param>
+      <param name="charIndex">Indice del primo carattere da codificare. </param>
+      <param name="charCount">Numero di caratteri da codificare. </param>
+      <param name="bytes">Matrice di byte che deve contenere la sequenza di byte risultante. </param>
+      <param name="byteIndex">Indice in corrispondenza del quale iniziare a scrivere la sequenza di byte risultante. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> is null.-or- <paramref name="bytes" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" /> or <paramref name="charCount" /> or <paramref name="byteIndex" /> is less than zero.-or- <paramref name="charIndex" /> and <paramref name="charCount" /> do not denote a valid range in <paramref name="chars" />.-or- <paramref name="byteIndex" /> is not a valid index in <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters.-or- <paramref name="bytes" /> does not have enough capacity from <paramref name="byteIndex" /> to the end of the array to accommodate the resulting bytes. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for complete explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetBytes(System.String,System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>Codifica un set di caratteri dall'oggetto <see cref="T:System.String" /> specificato nella matrice di byte specificata.</summary>
+      <returns>Numero effettivo di byte scritti in <paramref name="bytes" />.</returns>
+      <param name="s">Oggetto <see cref="T:System.String" /> contenente il set di caratteri da codificare. </param>
+      <param name="charIndex">Indice del primo carattere da codificare. </param>
+      <param name="charCount">Numero di caratteri da codificare. </param>
+      <param name="bytes">Matrice di byte che deve contenere la sequenza di byte risultante. </param>
+      <param name="byteIndex">Indice in corrispondenza del quale iniziare a scrivere la sequenza di byte risultante. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> is null.-or- <paramref name="bytes" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" /> or <paramref name="charCount" /> or <paramref name="byteIndex" /> is less than zero.-or- <paramref name="charIndex" /> and <paramref name="charCount" /> do not denote a valid range in <paramref name="chars" />.-or- <paramref name="byteIndex" /> is not a valid index in <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="s" /> contains an invalid sequence of characters.-or- <paramref name="bytes" /> does not have enough capacity from <paramref name="byteIndex" /> to the end of the array to accommodate the resulting bytes. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for complete explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetCharCount(System.Byte*,System.Int32)">
+      <summary>Calcola il numero di caratteri prodotti dalla decodifica di una sequenza di byte a partire dal puntatore ai byte specificato.</summary>
+      <returns>Numero di caratteri prodotti dalla decodifica della sequenza di byte specificata.</returns>
+      <param name="bytes">Puntatore al primo byte da decodificare. </param>
+      <param name="count">Numero di byte da decodificare. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> is less than zero.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for complete explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetCharCount(System.Byte[],System.Int32,System.Int32)">
+      <summary>Calcola il numero di caratteri prodotti dalla decodifica di una sequenza di byte dalla matrice di byte specificata.</summary>
+      <returns>Numero di caratteri prodotti dalla decodifica della sequenza di byte specificata.</returns>
+      <param name="bytes">Matrice di byte contenente la sequenza di byte da decodificare. </param>
+      <param name="index">Indice del primo byte da decodificare. </param>
+      <param name="count">Numero di byte da decodificare. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> or <paramref name="count" /> is less than zero.-or- <paramref name="index" /> and <paramref name="count" /> do not denote a valid range in <paramref name="bytes" />.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for complete explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetChars(System.Byte*,System.Int32,System.Char*,System.Int32)">
+      <summary>Decodifica una sequenza di byte a partire dal puntatore ai byte specificato in un set di caratteri archiviati a partire dal puntatore ai caratteri specificato.</summary>
+      <returns>Numero effettivo di caratteri scritti nella posizione indicata da <paramref name="chars" />.</returns>
+      <param name="bytes">Puntatore al primo byte da decodificare. </param>
+      <param name="byteCount">Numero di byte da decodificare. </param>
+      <param name="chars">Puntatore alla posizione in cui iniziare a scrivere il set di caratteri risultante. </param>
+      <param name="charCount">Numero massimo di caratteri da scrivere. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> is null.-or- <paramref name="chars" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteCount" /> or <paramref name="charCount" /> is less than zero. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes.-or- <paramref name="charCount" /> is less than the resulting number of characters. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for complete explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)">
+      <summary>Decodifica una sequenza di byte dalla matrice di byte specificata nella matrice di caratteri specificata.</summary>
+      <returns>Numero effettivo di caratteri scritti in <paramref name="chars" />.</returns>
+      <param name="bytes">Matrice di byte contenente la sequenza di byte da decodificare. </param>
+      <param name="byteIndex">Indice del primo byte da decodificare. </param>
+      <param name="byteCount">Numero di byte da decodificare. </param>
+      <param name="chars">Matrice di caratteri che deve contenere il set di caratteri risultante. </param>
+      <param name="charIndex">Indice in corrispondenza del quale iniziare a scrivere il set di caratteri risultante. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> is null.-or- <paramref name="chars" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteIndex" /> or <paramref name="byteCount" /> or <paramref name="charIndex" /> is less than zero.-or- <paramref name="byteindex" /> and <paramref name="byteCount" /> do not denote a valid range in <paramref name="bytes" />.-or- <paramref name="charIndex" /> is not a valid index in <paramref name="chars" />. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes.-or- <paramref name="chars" /> does not have enough capacity from <paramref name="charIndex" /> to the end of the array to accommodate the resulting characters. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for complete explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetDecoder">
+      <summary>Ottiene un decodificatore in grado di convertire una sequenza di byte codificati UTF-32 in una sequenza di caratteri Unicode.</summary>
+      <returns>Oggetto <see cref="T:System.Text.Decoder" /> che converte una sequenza di byte codificati UTF-32 in una sequenza di caratteri Unicode.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetEncoder">
+      <summary>Ottiene un codificatore in grado di convertire una sequenza di caratteri Unicode in una sequenza di byte codificati UTF-32.</summary>
+      <returns>Oggetto <see cref="T:System.Text.Encoder" /> che converte una sequenza di byte codificati UTF-32 in una sequenza di caratteri Unicode.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetHashCode">
+      <summary>Restituisce il codice hash per l'istanza corrente.</summary>
+      <returns>Codice hash per l'oggetto <see cref="T:System.Text.UTF32Encoding" /> corrente.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetMaxByteCount(System.Int32)">
+      <summary>Calcola il numero massimo di byte prodotti dalla codifica del numero di caratteri specificato.</summary>
+      <returns>Numero massimo di byte prodotti dalla codifica del numero di caratteri specificato.</returns>
+      <param name="charCount">Numero di caratteri da codificare. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charCount" /> is less than zero.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for complete explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetMaxCharCount(System.Int32)">
+      <summary>Calcola il numero massimo di caratteri prodotti dalla decodifica del numero di byte specificato.</summary>
+      <returns>Numero massimo di caratteri prodotti dalla decodifica del numero di byte specificato.</returns>
+      <param name="byteCount">Numero di byte da decodificare. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteCount" /> is less than zero.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for complete explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetPreamble">
+      <summary>Restituisce un byte order mark Unicode codificato in formato UTF-32, se il costruttore per questa istanza ne ha richiesto la presenza.</summary>
+      <returns>Matrice di byte contenente il byte order mark Unicode, se il costruttore per questa istanza ne ha richiesto la presenza.In caso contrario, questo metodo restituisce una matrice di byte di lunghezza zero.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetString(System.Byte[],System.Int32,System.Int32)">
+      <summary>Decodifica un intervallo di byte da una matrice di byte in una stringa.</summary>
+      <returns>Oggetto <see cref="T:System.String" /> contenente i risultati di decodifica della sequenza di byte specificata.</returns>
+      <param name="bytes">Matrice di byte contenente la sequenza di byte da decodificare. </param>
+      <param name="index">Indice del primo byte da decodificare. </param>
+      <param name="count">Numero di byte da decodificare. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> or <paramref name="count" /> is less than zero.-or- <paramref name="index" /> and <paramref name="count" /> do not denote a valid range in <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for complete explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Text.UTF7Encoding">
+      <summary>Rappresenta una codifica UTF-7 dei caratteri Unicode.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Text.UTF7Encoding" />.</summary>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.#ctor(System.Boolean)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Text.UTF7Encoding" />.Un parametro specifica se consentire caratteri facoltativi.</summary>
+      <param name="allowOptionals">true per specificare che i caratteri facoltativi sono consentiti; in caso contrario, false. </param>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.Equals(System.Object)">
+      <summary>Ottiene un valore che indica se l'oggetto specificato è uguale all'oggetto <see cref="T:System.Text.UTF7Encoding" /> corrente.</summary>
+      <returns>true se <paramref name="value" /> è un oggetto <see cref="T:System.Text.UTF7Encoding" /> ed è uguale all'oggetto <see cref="T:System.Text.UTF7Encoding" /> corrente; in caso contrario, false.</returns>
+      <param name="value">Oggetto da confrontare con l'oggetto <see cref="T:System.Text.UTF7Encoding" /> corrente.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetByteCount(System.Char*,System.Int32)">
+      <summary>Calcola il numero di byte prodotti dalla codifica di un insieme di caratteri a partire dal puntatore ai caratteri specificato.</summary>
+      <returns>Numero di byte prodotti dalla codifica dei caratteri specificati.</returns>
+      <param name="chars">Puntatore al primo carattere da codificare. </param>
+      <param name="count">Numero di caratteri da codificare. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> è null  (Nothing  in Visual Basic .NET). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> è minore di zero.- oppure - Il numero risultante di byte è superiore al numero massimo che può essere restituito come int. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Si è verificato un fallback (per la spiegazione completa, vedere Codifica di caratteri in .NET Framework)- e -<see cref="P:System.Text.Encoding.EncoderFallback" /> è impostato su <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetByteCount(System.Char[],System.Int32,System.Int32)">
+      <summary>Consente di calcolare il numero di byte prodotti dalla codifica di un set di caratteri nella matrice di caratteri specificata.</summary>
+      <returns>Numero di byte prodotti dalla codifica dei caratteri specificati.</returns>
+      <param name="chars">Matrice di caratteri contenente l'set di caratteri da codificare. </param>
+      <param name="index">Indice del primo carattere da codificare. </param>
+      <param name="count">Numero di caratteri da codificare. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> è null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il parametro <paramref name="index" /> o <paramref name="count" /> è minore di zero.- oppure - <paramref name="index" /> e <paramref name="count" /> non identificano un intervallo valido in <paramref name="chars" />.- oppure - Il numero risultante di byte è superiore al numero massimo che può essere restituito come int. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Si è verificato un fallback (per la spiegazione completa, vedere Codifica di caratteri in .NET Framework)- e -<see cref="P:System.Text.Encoding.EncoderFallback" /> è impostato su <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetByteCount(System.String)">
+      <summary>Calcola il numero di byte prodotti dalla codifica dei caratteri nell'oggetto <see cref="T:System.String" /> specificato.</summary>
+      <returns>Numero di byte prodotti dalla codifica dei caratteri specificati.</returns>
+      <param name="s">Oggetto <see cref="T:System.String" /> contenente l'insieme di caratteri da codificare. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> è null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il numero risultante di byte è superiore al numero massimo che può essere restituito come int. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Si è verificato un fallback (per una spiegazione più completa, vedere Codifica di caratteri in .NET Framework)- e -<see cref="P:System.Text.Encoding.EncoderFallback" /> è impostato su <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetBytes(System.Char*,System.Int32,System.Byte*,System.Int32)">
+      <summary>Consente di codificare un set di caratteri, a partire dal puntatore ai caratteri specificato, in una sequenza di byte archiviati a partire dal puntatore ai byte specificato.</summary>
+      <returns>Numero effettivo dei byte scritti nella posizione indicata da <paramref name="bytes" />.</returns>
+      <param name="chars">Puntatore al primo carattere da codificare. </param>
+      <param name="charCount">Numero di caratteri da codificare. </param>
+      <param name="bytes">Puntatore alla posizione in cui iniziare a scrivere la sequenza di byte risultante. </param>
+      <param name="byteCount">Numero massimo di byte da scrivere. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> è null (Nothing).- oppure - <paramref name="bytes" /> è null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il parametro <paramref name="charCount" /> o <paramref name="byteCount" /> è minore di zero. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="byteCount" /> è minore del numero di byte risultante. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Si è verificato un fallback (per una spiegazione più completa, vedere Codifica di caratteri in .NET Framework)- e -<see cref="P:System.Text.Encoding.EncoderFallback" /> è impostato su <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>Consente di codificare un set di caratteri dalla matrice di caratteri specificata nella matrice di byte specificata.</summary>
+      <returns>Numero effettivo di byte scritti in <paramref name="bytes" />.</returns>
+      <param name="chars">Matrice di caratteri contenente l'set di caratteri da codificare. </param>
+      <param name="charIndex">Indice del primo carattere da codificare. </param>
+      <param name="charCount">Numero di caratteri da codificare. </param>
+      <param name="bytes">Matrice di byte per contenere la sequenza di byte risultante. </param>
+      <param name="byteIndex">Indice in corrispondenza del quale iniziare la scrittura della sequenza di byte risultante. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> è null (Nothing).- oppure - <paramref name="bytes" /> è null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" /> o <paramref name="charCount" /> o <paramref name="byteIndex" /> è minore di zero.- oppure - <paramref name="charIndex" /> e <paramref name="charCount" /> non identificano un intervallo valido in <paramref name="chars" />.- oppure - <paramref name="byteIndex" /> non è un indice valido in <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="bytes" /> non dispone di sufficiente capacità da <paramref name="byteIndex" /> alla fine della matrice per contenere i byte risultanti. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Si è verificato un fallback (per una spiegazione più completa, vedere Codifica di caratteri in .NET Framework)- e -<see cref="P:System.Text.Encoding.EncoderFallback" /> è impostato su <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetBytes(System.String,System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>Consente di codificare un set di caratteri dall'oggetto <see cref="T:System.String" /> specificato nella matrice di byte specificata.</summary>
+      <returns>Numero effettivo di byte scritti in <paramref name="bytes" />.</returns>
+      <param name="s">
+        <see cref="T:System.String" /> contenente l'set di caratteri da codificare. </param>
+      <param name="charIndex">Indice del primo carattere da codificare. </param>
+      <param name="charCount">Numero di caratteri da codificare. </param>
+      <param name="bytes">Matrice di byte per contenere la sequenza di byte risultante. </param>
+      <param name="byteIndex">Indice in corrispondenza del quale iniziare la scrittura della sequenza di byte risultante. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> è null (Nothing).- oppure - <paramref name="bytes" /> è null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" /> o <paramref name="charCount" /> o <paramref name="byteIndex" /> è minore di zero.- oppure - <paramref name="charIndex" /> e <paramref name="charCount" /> non identificano un intervallo valido in <paramref name="chars" />.- oppure - <paramref name="byteIndex" /> non è un indice valido in <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="bytes" /> non dispone di sufficiente capacità da <paramref name="byteIndex" /> alla fine della matrice per contenere i byte risultanti. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Si è verificato un fallback (per una spiegazione più completa, vedere Codifica di caratteri in .NET Framework)- e -<see cref="P:System.Text.Encoding.EncoderFallback" /> è impostato su <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetCharCount(System.Byte*,System.Int32)">
+      <summary>Consente di calcolare il numero di caratteri prodotti dalla decodifica di una sequenza di byte a partire dal puntatore ai byte specificato.</summary>
+      <returns>Numero di caratteri prodotti dalla decodifica della sequenza di byte specificata.</returns>
+      <param name="bytes">Puntatore al primo byte da decodificare. </param>
+      <param name="count">Numero di byte da decodificare. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> è null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> è minore di zero.- oppure - Il numero risultante di caratteri è maggiore del numero massimo che può essere restituito come int. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Si è verificato un fallback (per una spiegazione più completa, vedere Codifica di caratteri in .NET Framework)- e -<see cref="P:System.Text.Encoding.DecoderFallback" /> è impostato su <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetCharCount(System.Byte[],System.Int32,System.Int32)">
+      <summary>Consente di calcolare il numero di caratteri prodotti dalla decodifica di una sequenza di byte dalla matrice di byte specificata.</summary>
+      <returns>Numero di caratteri prodotti dalla decodifica della sequenza di byte specificata.</returns>
+      <param name="bytes">Matrice di byte contenente la sequenza di byte da decodificare. </param>
+      <param name="index">Indice del primo byte da decodificare. </param>
+      <param name="count">Numero di byte da decodificare. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> è null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il parametro <paramref name="index" /> o <paramref name="count" /> è minore di zero.- oppure - <paramref name="index" /> e <paramref name="count" /> non identificano un intervallo valido in <paramref name="bytes" />.- oppure - Il numero risultante di caratteri è maggiore del numero massimo che può essere restituito come int. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Si è verificato un fallback (per la spiegazione completa, vedere Codifica di caratteri in .NET Framework)- e -<see cref="P:System.Text.Encoding.DecoderFallback" /> è impostato su <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetChars(System.Byte*,System.Int32,System.Char*,System.Int32)">
+      <summary>Consente di decodificare una sequenza di byte a partire dal puntatore ai byte specificato in un insieme di caratteri archiviati a partire dal puntatore ai caratteri specificato.</summary>
+      <returns>Numero effettivo dei caratteri scritti nella posizione indicata da <paramref name="chars" />.</returns>
+      <param name="bytes">Puntatore al primo byte da decodificare. </param>
+      <param name="byteCount">Numero di byte da decodificare. </param>
+      <param name="chars">Puntatore alla posizione in cui iniziare a scrivere l'set di caratteri risultante. </param>
+      <param name="charCount">Numero massimo di caratteri da scrivere. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> è null (Nothing).- oppure - <paramref name="chars" /> è null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il parametro <paramref name="byteCount" /> o <paramref name="charCount" /> è minore di zero. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="charCount" /> è minore del numero di caratteri risultante. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Si è verificato un fallback (per la spiegazione completa, vedere Codifica di caratteri in .NET Framework)- e -<see cref="P:System.Text.Encoding.DecoderFallback" /> è impostato su <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)">
+      <summary>Consente di decodificare una sequenza di byte dalla matrice di byte specificata nella matrice di caratteri specificata.</summary>
+      <returns>Numero effettivo di caratteri scritti in <paramref name="chars" />.</returns>
+      <param name="bytes">Matrice di byte contenente la sequenza di byte da decodificare. </param>
+      <param name="byteIndex">Indice del primo byte da decodificare. </param>
+      <param name="byteCount">Numero di byte da decodificare. </param>
+      <param name="chars">Matrice di caratteri per contenere l'insieme di caratteri risultante. </param>
+      <param name="charIndex">Indice in corrispondenza del quale iniziare la scrittura dell'insieme di caratteri risultante. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> è null (Nothing).- oppure - <paramref name="chars" /> è null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteIndex" /> o <paramref name="byteCount" /> o <paramref name="charIndex" /> è minore di zero.- oppure - <paramref name="byteindex" /> e <paramref name="byteCount" /> non identificano un intervallo valido in <paramref name="bytes" />.- oppure - <paramref name="charIndex" /> non è un indice valido in <paramref name="chars" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="chars" /> non dispone di sufficiente capacità da <paramref name="charIndex" /> alla fine della matrice per contenere i caratteri risultanti. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Si è verificato un fallback (per la spiegazione completa, vedere Codifica di caratteri in .NET Framework)- e -<see cref="P:System.Text.Encoding.DecoderFallback" /> è impostato su <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetDecoder">
+      <summary>Ottiene un decodificatore in grado di convertire una sequenza di byte codificati UTF-7 in una sequenza di caratteri Unicode.</summary>
+      <returns>
+        <see cref="T:System.Text.Decoder" /> che converte una sequenza di byte codificati UTF-7 in una sequenza di caratteri Unicode.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetEncoder">
+      <summary>Ottiene un codificatore in grado di convertire una sequenza di caratteri Unicode in una sequenza di byte codificati UTF-7.</summary>
+      <returns>
+        <see cref="T:System.Text.Encoder" /> che converte una sequenza di byte codificati UTF-7 in una sequenza di caratteri Unicode.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetHashCode">
+      <summary>Restituisce il codice hash per l'oggetto <see cref="T:System.Text.UTF7Encoding" /> corrente.</summary>
+      <returns>Codice hash integer con segno a 32 bit.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetMaxByteCount(System.Int32)">
+      <summary>Consente di calcolare il numero massimo di byte prodotti dalla codifica del numero di caratteri specificato.</summary>
+      <returns>Numero massimo di byte prodotti dalla codifica del numero di caratteri specificato.</returns>
+      <param name="charCount">Numero di caratteri da codificare. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charCount" /> è minore di zero.- oppure - Il numero risultante di byte è superiore al numero massimo che può essere restituito come int. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">Si è verificato un fallback (per la spiegazione completa, vedere Codifica di caratteri in .NET Framework)- e -<see cref="P:System.Text.Encoding.EncoderFallback" /> è impostato su <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetMaxCharCount(System.Int32)">
+      <summary>Consente di calcolare il numero massimo di caratteri prodotti dalla decodifica del numero di byte specificato.</summary>
+      <returns>Numero massimo di caratteri prodotti dalla decodifica del numero di byte specificato.</returns>
+      <param name="byteCount">Numero di byte da decodificare. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteCount" /> è minore di zero.- oppure - Il numero risultante di caratteri è maggiore del numero massimo che può essere restituito come int. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Si è verificato un fallback (per la spiegazione completa, vedere Codifica di caratteri in .NET Framework)- e -<see cref="P:System.Text.Encoding.DecoderFallback" /> è impostato su <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetString(System.Byte[],System.Int32,System.Int32)">
+      <summary>Decodifica un intervallo di byte da una matrice di byte in una stringa.</summary>
+      <returns>Oggetto <see cref="T:System.String" /> contenente i risultati di decodifica della sequenza di byte specificata.</returns>
+      <param name="bytes">Matrice di byte contenente la sequenza di byte da decodificare. </param>
+      <param name="index">Indice del primo byte da decodificare. </param>
+      <param name="count">Numero di byte da decodificare. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> è null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il parametro <paramref name="index" /> o <paramref name="count" /> è minore di zero.- oppure - <paramref name="index" /> e <paramref name="count" /> non identificano un intervallo valido in <paramref name="bytes" />. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">Si è verificato un fallback (per una spiegazione più completa, vedere Codifica di caratteri in .NET Framework)- e -<see cref="P:System.Text.Encoding.DecoderFallback" /> è impostato su <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Text.UTF8Encoding">
+      <summary>Rappresenta una codifica UTF-8 dei caratteri Unicode.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Text.UTF8Encoding" />.</summary>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.#ctor(System.Boolean)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Text.UTF8Encoding" />.Un parametro specifica se fornire un byte order mark Unicode.</summary>
+      <param name="encoderShouldEmitUTF8Identifier">true per specificare che il metodo <see cref="M:System.Text.UTF8Encoding.GetPreamble" /> restituisce un byte order mark Unicode; in caso contrario, false.Per altre informazioni, vedere la sezione Osservazioni.</param>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.#ctor(System.Boolean,System.Boolean)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Text.UTF8Encoding" />.I parametri specificano se fornire un byte order mark Unicode e se generare un'eccezione quando viene rilevata una codifica non valida.</summary>
+      <param name="encoderShouldEmitUTF8Identifier">true per specificare che il metodo <see cref="M:System.Text.UTF8Encoding.GetPreamble" /> deve restituire un byte order mark Unicode; in caso contrario, false.Per altre informazioni, vedere la sezione Osservazioni.</param>
+      <param name="throwOnInvalidBytes">true per generare un'eccezione quando viene rilevata una codifica non valida; in caso contrario, false. </param>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.Equals(System.Object)">
+      <summary>Determina se l'oggetto specificato è uguale all'oggetto <see cref="T:System.Text.UTF8Encoding" /> corrente.</summary>
+      <returns>true se <paramref name="value" /> è un'istanza di <see cref="T:System.Text.UTF8Encoding" /> ed è uguale all'oggetto corrente; in caso contrario, false.</returns>
+      <param name="value">Oggetto da confrontare con l'istanza corrente. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetByteCount(System.Char*,System.Int32)">
+      <summary>Calcola il numero di byte prodotti dalla codifica di un set di caratteri a partire dal puntatore ai caratteri specificato.</summary>
+      <returns>Numero di byte prodotti dalla codifica dei caratteri specificati. </returns>
+      <param name="chars">Puntatore al primo carattere da codificare. </param>
+      <param name="count">Numero di caratteri da codificare. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> is less than zero.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for a complete explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetByteCount(System.Char[],System.Int32,System.Int32)">
+      <summary>Calcola il numero di byte prodotti dalla codifica di un set di caratteri dalla matrice di caratteri specificata.</summary>
+      <returns>Numero di byte prodotti dalla codifica dei caratteri specificati. </returns>
+      <param name="chars">Matrice di caratteri contenente il set di caratteri da codificare. </param>
+      <param name="index">Indice del primo carattere da codificare. </param>
+      <param name="count">Numero di caratteri da codificare. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> or <paramref name="count" /> is less than zero.-or- <paramref name="index" /> and <paramref name="count" /> do not denote a valid range in <paramref name="chars" />.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for complete explanation)-and-The <see cref="P:System.Text.Encoding.EncoderFallback" /> property is set to <see cref="T:System.Text.EncoderExceptionFallback" />. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetByteCount(System.String)">
+      <summary>Calcola il numero di byte prodotti dalla codifica dei caratteri nell'oggetto <see cref="T:System.String" /> specificato.</summary>
+      <returns>Numero di byte prodotti dalla codifica dei caratteri specificati.</returns>
+      <param name="chars">Oggetto <see cref="T:System.String" /> contenente il set di caratteri da codificare. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for complete explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetBytes(System.Char*,System.Int32,System.Byte*,System.Int32)">
+      <summary>Codifica un set di caratteri a partire dal puntatore ai caratteri specificato in una sequenza di byte archiviati a partire dal puntatore ai byte specificato.</summary>
+      <returns>Numero effettivo di byte scritti nella posizione indicata da <paramref name="bytes" />.</returns>
+      <param name="chars">Puntatore al primo carattere da codificare. </param>
+      <param name="charCount">Numero di caratteri da codificare. </param>
+      <param name="bytes">Puntatore alla posizione in cui iniziare a scrivere la sequenza di byte risultante. </param>
+      <param name="byteCount">Numero massimo di byte da scrivere. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> is null.-or- <paramref name="bytes" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charCount" /> or <paramref name="byteCount" /> is less than zero. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters.-or- <paramref name="byteCount" /> is less than the resulting number of bytes. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for complete explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>Codifica un set di caratteri dalla matrice di caratteri specificata nella matrice di byte specificata.</summary>
+      <returns>Numero effettivo di byte scritti in <paramref name="bytes" />.</returns>
+      <param name="chars">Matrice di caratteri contenente il set di caratteri da codificare. </param>
+      <param name="charIndex">Indice del primo carattere da codificare. </param>
+      <param name="charCount">Numero di caratteri da codificare. </param>
+      <param name="bytes">Matrice di byte che deve contenere la sequenza di byte risultante. </param>
+      <param name="byteIndex">Indice in corrispondenza del quale iniziare a scrivere la sequenza di byte risultante. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> is null.-or- <paramref name="bytes" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" /> or <paramref name="charCount" /> or <paramref name="byteIndex" /> is less than zero.-or- <paramref name="charIndex" /> and <paramref name="charCount" /> do not denote a valid range in <paramref name="chars" />.-or- <paramref name="byteIndex" /> is not a valid index in <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters.-or- <paramref name="bytes" /> does not have enough capacity from <paramref name="byteIndex" /> to the end of the array to accommodate the resulting bytes. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for complete explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetBytes(System.String,System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>Codifica un set di caratteri dall'oggetto <see cref="T:System.String" /> specificato nella matrice di byte specificata.</summary>
+      <returns>Numero effettivo di byte scritti in <paramref name="bytes" />.</returns>
+      <param name="s">Oggetto <see cref="T:System.String" /> contenente il set di caratteri da codificare. </param>
+      <param name="charIndex">Indice del primo carattere da codificare. </param>
+      <param name="charCount">Numero di caratteri da codificare. </param>
+      <param name="bytes">Matrice di byte che deve contenere la sequenza di byte risultante. </param>
+      <param name="byteIndex">Indice in corrispondenza del quale iniziare a scrivere la sequenza di byte risultante. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> is null.-or- <paramref name="bytes" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" /> or <paramref name="charCount" /> or <paramref name="byteIndex" /> is less than zero.-or- <paramref name="charIndex" /> and <paramref name="charCount" /> do not denote a valid range in <paramref name="chars" />.-or- <paramref name="byteIndex" /> is not a valid index in <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="s" /> contains an invalid sequence of characters.-or- <paramref name="bytes" /> does not have enough capacity from <paramref name="byteIndex" /> to the end of the array to accommodate the resulting bytes. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for complete explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetCharCount(System.Byte*,System.Int32)">
+      <summary>Calcola il numero di caratteri prodotti dalla decodifica di una sequenza di byte a partire dal puntatore ai byte specificato.</summary>
+      <returns>Numero di caratteri prodotti dalla decodifica della sequenza di byte specificata.</returns>
+      <param name="bytes">Puntatore al primo byte da decodificare. </param>
+      <param name="count">Numero di byte da decodificare. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> is less than zero.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for complete explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetCharCount(System.Byte[],System.Int32,System.Int32)">
+      <summary>Calcola il numero di caratteri prodotti dalla decodifica di una sequenza di byte dalla matrice di byte specificata.</summary>
+      <returns>Numero di caratteri prodotti dalla decodifica della sequenza di byte specificata.</returns>
+      <param name="bytes">Matrice di byte contenente la sequenza di byte da decodificare. </param>
+      <param name="index">Indice del primo byte da decodificare. </param>
+      <param name="count">Numero di byte da decodificare. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> or <paramref name="count" /> is less than zero.-or- <paramref name="index" /> and <paramref name="count" /> do not denote a valid range in <paramref name="bytes" />.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for complete explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetChars(System.Byte*,System.Int32,System.Char*,System.Int32)">
+      <summary>Decodifica una sequenza di byte a partire dal puntatore ai byte specificato in un set di caratteri archiviati a partire dal puntatore ai caratteri specificato.</summary>
+      <returns>Numero effettivo di caratteri scritti nella posizione indicata da <paramref name="chars" />.</returns>
+      <param name="bytes">Puntatore al primo byte da decodificare. </param>
+      <param name="byteCount">Numero di byte da decodificare. </param>
+      <param name="chars">Puntatore alla posizione in cui iniziare a scrivere il set di caratteri risultante. </param>
+      <param name="charCount">Numero massimo di caratteri da scrivere. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> is null.-or- <paramref name="chars" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteCount" /> or <paramref name="charCount" /> is less than zero. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes.-or- <paramref name="charCount" /> is less than the resulting number of characters. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for complete explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)">
+      <summary>Decodifica una sequenza di byte dalla matrice di byte specificata nella matrice di caratteri specificata.</summary>
+      <returns>Numero effettivo di caratteri scritti in <paramref name="chars" />.</returns>
+      <param name="bytes">Matrice di byte contenente la sequenza di byte da decodificare. </param>
+      <param name="byteIndex">Indice del primo byte da decodificare. </param>
+      <param name="byteCount">Numero di byte da decodificare. </param>
+      <param name="chars">Matrice di caratteri che deve contenere il set di caratteri risultante. </param>
+      <param name="charIndex">Indice in corrispondenza del quale iniziare a scrivere il set di caratteri risultante. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> is null.-or- <paramref name="chars" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteIndex" /> or <paramref name="byteCount" /> or <paramref name="charIndex" /> is less than zero.-or- <paramref name="byteindex" /> and <paramref name="byteCount" /> do not denote a valid range in <paramref name="bytes" />.-or- <paramref name="charIndex" /> is not a valid index in <paramref name="chars" />. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes.-or- <paramref name="chars" /> does not have enough capacity from <paramref name="charIndex" /> to the end of the array to accommodate the resulting characters. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for complete explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetDecoder">
+      <summary>Ottiene un decodificatore che converte una sequenza di byte con codifica UTF-8 in una sequenza di caratteri Unicode. </summary>
+      <returns>Decodificatore che converte una sequenza di byte con codifica UTF-8 in una sequenza di caratteri Unicode.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetEncoder">
+      <summary>Ottiene un codificatore che converte una sequenza di caratteri Unicode in una sequenza di byte con codifica UTF-8.</summary>
+      <returns>Oggetto <see cref="T:System.Text.Encoder" /> che converte una sequenza di caratteri Unicode in una sequenza di byte con codifica UTF-8.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetHashCode">
+      <summary>Restituisce il codice hash per l'istanza corrente.</summary>
+      <returns>Codice hash per l'istanza corrente.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetMaxByteCount(System.Int32)">
+      <summary>Calcola il numero massimo di byte prodotti dalla codifica del numero di caratteri specificato.</summary>
+      <returns>Numero massimo di byte prodotti dalla codifica del numero di caratteri specificato.</returns>
+      <param name="charCount">Numero di caratteri da codificare. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charCount" /> is less than zero.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for complete explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetMaxCharCount(System.Int32)">
+      <summary>Calcola il numero massimo di caratteri prodotti dalla decodifica del numero di byte specificato.</summary>
+      <returns>Numero massimo di caratteri prodotti dalla decodifica del numero di byte specificato.</returns>
+      <param name="byteCount">Numero di byte da decodificare. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteCount" /> is less than zero.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for complete explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetPreamble">
+      <summary>Restituisce un byte order mark Unicode codificato in formato UTF-8, se l'oggetto di codifica <see cref="T:System.Text.UTF8Encoding" /> è configurato per fornirne uno. </summary>
+      <returns>Matrice di byte contenente il byte order mark Unicode, se l'oggetto di codifica <see cref="T:System.Text.UTF8Encoding" /> è configurato per fornirne uno.In caso contrario, questo metodo restituisce una matrice di byte di lunghezza zero.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetString(System.Byte[],System.Int32,System.Int32)">
+      <summary>Decodifica un intervallo di byte da una matrice di byte in una stringa.</summary>
+      <returns>Oggetto <see cref="T:System.String" /> contenente i risultati di decodifica della sequenza di byte specificata.</returns>
+      <param name="bytes">Matrice di byte contenente la sequenza di byte da decodificare. </param>
+      <param name="index">Indice del primo byte da decodificare. </param>
+      <param name="count">Numero di byte da decodificare. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> or <paramref name="count" /> is less than zero.-or- <paramref name="index" /> and <paramref name="count" /> do not denote a valid range in <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Codifica di caratteri in .NET Framework for complete explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Runtime.Handles</name>
+  </assembly>
+  <members>
+    <member name="T:Microsoft.Win32.SafeHandles.SafeWaitHandle">
+      <summary>Rappresenta una classe wrapper per un handle di attesa. </summary>
+    </member>
+    <member name="M:Microsoft.Win32.SafeHandles.SafeWaitHandle.#ctor(System.IntPtr,System.Boolean)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:Microsoft.Win32.SafeHandles.SafeWaitHandle" />. </summary>
+      <param name="existingHandle">Oggetto <see cref="T:System.IntPtr" /> che rappresenta l'handle preesistente da utilizzare.</param>
+      <param name="ownsHandle">true per rilasciare in modo affidabile l'handle durante la fase di finalizzazione; false per impedire il rilascio affidabile (non consigliato).</param>
+    </member>
+    <member name="P:Microsoft.Win32.SafeHandles.SafeWaitHandle.IsInvalid"></member>
+    <member name="T:System.IO.HandleInheritability">
+      <summary>Specifica se l’handle sottostante può essere ereditato dai processi figlio.</summary>
+    </member>
+    <member name="F:System.IO.HandleInheritability.Inheritable">
+      <summary>Specifica che l’handle sottostante può essere ereditato dai processi figlio.</summary>
+    </member>
+    <member name="F:System.IO.HandleInheritability.None">
+      <summary>Specifica che l’handle sottostante non può essere ereditato dai processi figlio.</summary>
+    </member>
+    <member name="T:System.Runtime.InteropServices.CriticalHandle">
+      <summary>Rappresenta una classe wrapper per risorse di handle.</summary>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.#ctor(System.IntPtr)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Runtime.InteropServices.CriticalHandle" /> con il valore di handle non valido specificato.</summary>
+      <param name="invalidHandleValue">Valore di un handle non valido (in genere 0 o -1).</param>
+      <exception cref="T:System.TypeLoadException">La classe derivata risiede in un assembly senza autorizzazione di accesso al codice non gestito.</exception>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.Dispose">
+      <summary>Rilascia tutte le risorse utilizzate da <see cref="T:System.Runtime.InteropServices.CriticalHandle" />. </summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.Dispose(System.Boolean)">
+      <summary>Rilascia le risorse non gestite utilizzate dalla classe <see cref="T:System.Runtime.InteropServices.CriticalHandle" /> specificando se eseguire una normale operazione di eliminazione.</summary>
+      <param name="disposing">true per una normale operazione di eliminazione, false per finalizzare l'handle.</param>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.Finalize">
+      <summary>Libera tutte le risorse associate all'handle.</summary>
+    </member>
+    <member name="F:System.Runtime.InteropServices.CriticalHandle.handle">
+      <summary>Specifica l'handle di cui eseguire il wrapping.</summary>
+    </member>
+    <member name="P:System.Runtime.InteropServices.CriticalHandle.IsClosed">
+      <summary>Ottiene un valore che indica se l'handle è chiuso.</summary>
+      <returns>true se l'handle è chiuso. In caso contrario, false.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Runtime.InteropServices.CriticalHandle.IsInvalid">
+      <summary>Quando è sottoposto a override in una classe derivata, consente di ottenere un valore che indica se il valore dell'handle non è valido.</summary>
+      <returns>true se l'handle è valido. In caso contrario, false.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.ReleaseHandle">
+      <summary>Quando viene sottoposto a override in una classe derivata, esegue il codice necessario per liberare l'handle.</summary>
+      <returns>true se l'handle viene rilasciato correttamente; in caso contrario, se si verifica un errore irreversibile,  false.In questo caso, genera un assistente al debug gestito releaseHandleFailed (MDA).</returns>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.SetHandle(System.IntPtr)">
+      <summary>Imposta l'handle sull'handle preesistente specificato.</summary>
+      <param name="handle">Handle preesistente da utilizzare.</param>
+    </member>
+    <member name="M:System.Runtime.InteropServices.CriticalHandle.SetHandleAsInvalid">
+      <summary>Contrassegna un handle come non valido.</summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Runtime.InteropServices.SafeHandle">
+      <summary>Rappresenta una classe wrapper per gli handle del sistema operativo.La classe deve essere ereditata.</summary>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.#ctor(System.IntPtr,System.Boolean)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Runtime.InteropServices.SafeHandle" /> con il valore di handle non valido specificato.</summary>
+      <param name="invalidHandleValue">Valore di un handle non valido (in genere 0 o -1).L'implementazione di <see cref="P:System.Runtime.InteropServices.SafeHandle.IsInvalid" /> dovrebbe restituire true per questo valore.</param>
+      <param name="ownsHandle">true per fare in modo che <see cref="T:System.Runtime.InteropServices.SafeHandle" /> rilasci in modo affidabile l'handle durante la fase di finalizzazione; in caso contrario, false (opzione non consigliata). </param>
+      <exception cref="T:System.TypeLoadException">La classe derivata risiede in un assembly senza autorizzazione di accesso al codice non gestito. </exception>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.DangerousAddRef(System.Boolean@)">
+      <summary>Incrementa manualmente il numero di riferimenti nelle istanze di <see cref="T:System.Runtime.InteropServices.SafeHandle" />.</summary>
+      <param name="success">true se il numero di riferimenti è stato incrementato correttamente; in caso contrario, false.</param>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.DangerousGetHandle">
+      <summary>Restituisce il valore del campo <see cref="F:System.Runtime.InteropServices.SafeHandle.handle" />.</summary>
+      <returns>Valore IntPtr che rappresenta il valore del campo <see cref="F:System.Runtime.InteropServices.SafeHandle.handle" />.Se l'handle è stato contrassegnato come non valido con <see cref="M:System.Runtime.InteropServices.SafeHandle.SetHandleAsInvalid" />, questo metodo restituisce comunque il valore di handle originale, che può essere un valore non aggiornato.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.DangerousRelease">
+      <summary>Decrementa manualmente il numero di riferimenti in un'istanza di <see cref="T:System.Runtime.InteropServices.SafeHandle" />.</summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.Dispose">
+      <summary>Rilascia tutte le risorse usate dalla classe <see cref="T:System.Runtime.InteropServices.SafeHandle" />.</summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.Dispose(System.Boolean)">
+      <summary>Rilascia le risorse non gestite usate dalla classe <see cref="T:System.Runtime.InteropServices.SafeHandle" /> specificando se eseguire una normale operazione di eliminazione.</summary>
+      <param name="disposing">true per una normale operazione di eliminazione; false per finalizzare l'handle.</param>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.Finalize">
+      <summary>Libera tutte le risorse associate all'handle.</summary>
+    </member>
+    <member name="F:System.Runtime.InteropServices.SafeHandle.handle">
+      <summary>Specifica l'handle di cui eseguire il wrapping.</summary>
+    </member>
+    <member name="P:System.Runtime.InteropServices.SafeHandle.IsClosed">
+      <summary>Ottiene un valore che indica se l'handle è chiuso.</summary>
+      <returns>true se l'handle è chiuso; in caso contrario, false.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Runtime.InteropServices.SafeHandle.IsInvalid">
+      <summary>Quando ne viene eseguito l'override in una classe derivata, ottiene un valore che indica se il valore dell'handle non è valido.</summary>
+      <returns>true se il valore dell'handle non è valido; in caso contrario, false.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.ReleaseHandle">
+      <summary>Quando ne viene eseguito l'override in una classe derivata, esegue il codice necessario per liberare l'handle.</summary>
+      <returns>true se l'handle viene rilasciato correttamente; in caso contrario, se si verifica un errore irreversibile,  false.In questo caso, genera un assistente al debug gestito releaseHandleFailed (MDA).</returns>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.SetHandle(System.IntPtr)">
+      <summary>Imposta l'handle sull'handle preesistente specificato.</summary>
+      <param name="handle">Handle preesistente da usare. </param>
+    </member>
+    <member name="M:System.Runtime.InteropServices.SafeHandle.SetHandleAsInvalid">
+      <summary>Contrassegna un handle come non più usato.</summary>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Threading.WaitHandleExtensions">
+      <summary>Fornisce metodi pratici per usare un handle sicuro per un handle di attesa. </summary>
+    </member>
+    <member name="M:System.Threading.WaitHandleExtensions.GetSafeWaitHandle(System.Threading.WaitHandle)">
+      <summary>Ottiene l'handle sicuro per un handle di attesa nativo del sistema operativo. </summary>
+      <returns>Handle di attesa sicuro che esegue il wrapping dell'handle di attesa nativo del sistema operativo. </returns>
+      <param name="waitHandle">Handle nativo del sistema operativo. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="waitHandle" /> è null. </exception>
+    </member>
+    <member name="M:System.Threading.WaitHandleExtensions.SetSafeWaitHandle(System.Threading.WaitHandle,Microsoft.Win32.SafeHandles.SafeWaitHandle)">
+      <summary>Imposta un handle sicuro per un handle di attesa nativo del sistema operativo. </summary>
+      <param name="waitHandle">Handle di attesa che incapsula un oggetto specifico del sistema operativo che attende l'accesso esclusivo a una risorsa condivisa. </param>
+      <param name="value">Handle sicuro usato per il wrapping dell'handle del sistema operativo. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="waitHandle" /> è null. </exception>
+    </member>
+  </members>
+</doc>

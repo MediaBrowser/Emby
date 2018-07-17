@@ -1,0 +1,1131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Reflection</name>
+  </assembly>
+  <members>
+    <member name="T:System.Reflection.AmbiguousMatchException">
+      <summary>Eccezione generata quando, in seguito all'associazione a un membro, più membri corrispondono ai criteri di associazione.La classe non può essere ereditata.</summary>
+    </member>
+    <member name="M:System.Reflection.AmbiguousMatchException.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Reflection.AmbiguousMatchException" /> con una stringa di messaggio vuota e l'eccezione della causa radice impostata su null.</summary>
+    </member>
+    <member name="M:System.Reflection.AmbiguousMatchException.#ctor(System.String)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Reflection.AmbiguousMatchException" /> con la stringa di messaggio impostata sul messaggio specificato e con l'eccezione della causa radice impostata su null.</summary>
+      <param name="message">Stringa che indica il motivo per il quale è stata generata l'eccezione. </param>
+    </member>
+    <member name="M:System.Reflection.AmbiguousMatchException.#ctor(System.String,System.Exception)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Reflection.AmbiguousMatchException" /> con un messaggio di errore specificato e un riferimento all'eccezione interna che è la causa dell'eccezione corrente.</summary>
+      <param name="message">Messaggio di errore nel quale viene indicato il motivo dell’eccezione </param>
+      <param name="inner">Eccezione causa dell'eccezione corrente.Se il parametro <paramref name="inner" /> non è null, l'eccezione corrente verrà generata in un blocco catch che gestisce l'eccezione interna.</param>
+    </member>
+    <member name="T:System.Reflection.Assembly">
+      <summary>Rappresenta un assembly, ovvero un blocco predefinito di un'applicazione Common Language Runtime riutilizzabile, autodescrittivo e di cui è possibile eseguire il controllo delle versioni.</summary>
+    </member>
+    <member name="P:System.Reflection.Assembly.CustomAttributes">
+      <summary>Ottiene una raccolta che contiene gli attributi personalizzati di questo assembly.</summary>
+      <returns>Raccolta che contiene gli attributi personalizzati di questo assembly.</returns>
+    </member>
+    <member name="P:System.Reflection.Assembly.DefinedTypes">
+      <summary>Ottiene una raccolta dei tipi definiti in questo assembly.</summary>
+      <returns>Raccolta dei tipi definiti in questo assembly.</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.Equals(System.Object)">
+      <summary>Determina se questo assembly e l'oggetto specificato sono uguali.</summary>
+      <returns>true se <paramref name="o" /> è uguale all'istanza; in caso contrario, false.</returns>
+      <param name="o">Oggetto da confrontare con questa istanza. </param>
+    </member>
+    <member name="P:System.Reflection.Assembly.ExportedTypes">
+      <summary>Ottiene una raccolta dei tipi pubblici definiti in questo assembly visibili all'esterno dell'assembly.</summary>
+      <returns>Raccolta dei tipi pubblici definiti in questo assembly visibili all'esterno dell'assembly.</returns>
+    </member>
+    <member name="P:System.Reflection.Assembly.FullName">
+      <summary>Ottiene il nome visualizzato dell'assembly.</summary>
+      <returns>Nome visualizzato dell'assembly.</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetHashCode">
+      <summary>Restituisce il codice hash per l'istanza.</summary>
+      <returns>Codice hash di un intero con segno a 32 bit.</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetManifestResourceInfo(System.String)">
+      <summary>Restituisce informazioni sul modo in cui la risorsa specificata è stata resa persistente.</summary>
+      <returns>Oggetto popolato con informazioni relative alla topologia della risorsa oppure null se la risorsa non viene trovata.</returns>
+      <param name="resourceName">Nome della risorsa con distinzione tra maiuscole e minuscole. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="resourceName" /> è null. </exception>
+      <exception cref="T:System.ArgumentException">Il parametro <paramref name="resourceName" /> è una stringa vuota (""). </exception>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetManifestResourceNames">
+      <summary>Restituisce i nomi di tutte le risorse di questo assembly.</summary>
+      <returns>Matrice che contiene i nomi di tutte le risorse.</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetManifestResourceStream(System.String)">
+      <summary>Carica la risorsa del manifesto specificata da questo assembly.</summary>
+      <returns>Risorsa di manifesto oppure null se non vengono specificate risorse durante la compilazione o se la risorsa non è visibile al chiamante.</returns>
+      <param name="name">Nome della risorsa del manifesto richiesta con distinzione tra maiuscole e minuscole. </param>
+      <exception cref="T:System.ArgumentNullException">Il valore del parametro <paramref name="name" /> è null. </exception>
+      <exception cref="T:System.ArgumentException">Il parametro <paramref name="name" /> è una stringa vuota (""). </exception>
+      <exception cref="T:System.IO.FileLoadException">Nel .NET for Windows Store apps o libreria di classi portabile, intercettare l'eccezione della classe di base, <see cref="T:System.IO.IOException" />, al contrario.Non è possibile caricare il file trovato. </exception>
+      <exception cref="T:System.IO.FileNotFoundException">Impossibile trovare <paramref name="name" />. </exception>
+      <exception cref="T:System.BadImageFormatException">
+        <paramref name="name" /> non è un assembly valido. </exception>
+      <exception cref="T:System.NotImplementedException">La lunghezza della risorsa è maggiore di <see cref="F:System.Int64.MaxValue" />.</exception>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetName">
+      <summary>Ottiene un oggetto <see cref="T:System.Reflection.AssemblyName" /> per questo assembly.</summary>
+      <returns>Oggetto che contiene il nome visualizzato completamente analizzato per questo assembly.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetType(System.String)">
+      <summary>Ottiene l'oggetto <see cref="T:System.Type" /> con il nome specificato nell'istanza dell'assembly.</summary>
+      <returns>Oggetto che rappresenta la classe specificata o null se la classe non viene trovata.</returns>
+      <param name="name">Nome completo del tipo. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> non è valido. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> è null. </exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="name" /> richiede un assembly dipendente che non è stato trovato. </exception>
+      <exception cref="T:System.IO.FileLoadException">Nel .NET for Windows Store apps o libreria di classi portabile, intercettare l'eccezione della classe di base, <see cref="T:System.IO.IOException" />, al contrario.<paramref name="name" /> richiede un assembly dipendente che è stato trovato ma che non è stato possibile caricare.-oppure-L'assembly corrente è stato caricato nel contesto ReflectionOnly e <paramref name="name" /> richiede un assembly dipendente che non è stato precaricato. </exception>
+      <exception cref="T:System.BadImageFormatException">
+        <paramref name="name" /> richiede un assembly dipendente, ma il file non è un assembly valido. -oppure-<paramref name="name" /> richiede un assembly dipendente che è stato compilato per una versione del runtime successiva a quella attualmente caricata. </exception>
+    </member>
+    <member name="M:System.Reflection.Assembly.GetType(System.String,System.Boolean,System.Boolean)">
+      <summary>Ottiene l'oggetto <see cref="T:System.Type" /> con il nome specificato nell'istanza dell'assembly, con la possibilità di ignorare la distinzione tra maiuscole e minuscole e di generare un'eccezione se il tipo non viene trovato.</summary>
+      <returns>Oggetto che rappresenta la classe specificata.</returns>
+      <param name="name">Nome completo del tipo. </param>
+      <param name="throwOnError">true per generare un'eccezione se il tipo non viene trovato; false per restituire null. </param>
+      <param name="ignoreCase">true per ignorare la distinzione tra maiuscole e minuscole nel nome del tipo; in caso contrario, false. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> non è valido.-oppure- La lunghezza di <paramref name="name" /> supera i 1024 caratteri. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> è null. </exception>
+      <exception cref="T:System.TypeLoadException">
+        <paramref name="throwOnError" /> è true e il tipo non è stato trovato.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="name" /> richiede un assembly dipendente che non è stato trovato. </exception>
+      <exception cref="T:System.IO.FileLoadException">
+        <paramref name="name" /> richiede un assembly dipendente che è stato trovato ma che non è stato possibile caricare.-oppure-L'assembly corrente è stato caricato nel contesto ReflectionOnly e <paramref name="name" /> richiede un assembly dipendente che non è stato precaricato. </exception>
+      <exception cref="T:System.BadImageFormatException">
+        <paramref name="name" /> richiede un assembly dipendente, ma il file non è un assembly valido. -oppure-<paramref name="name" /> richiede un assembly dipendente che è stato compilato per una versione del runtime successiva a quella attualmente caricata.</exception>
+    </member>
+    <member name="P:System.Reflection.Assembly.IsDynamic">
+      <summary>Ottiene un valore che indica se l'assembly corrente è stato generato dinamicamente nel processo corrente tramite reflection emit.</summary>
+      <returns>true se l'assembly corrente è stato generato dinamicamente nel processo corrente; in caso contrario, false.</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.Load(System.Reflection.AssemblyName)">
+      <summary>Carica un assembly dato il relativo oggetto <see cref="T:System.Reflection.AssemblyName" />.</summary>
+      <returns>Assembly caricato.</returns>
+      <param name="assemblyRef">Oggetto che descrive l'assembly da caricare. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="assemblyRef" /> è null. </exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="assemblyRef" /> non trovata. </exception>
+      <exception cref="T:System.IO.FileLoadException">Nel .NET for Windows Store apps o libreria di classi portabile, intercettare l'eccezione della classe di base, <see cref="T:System.IO.IOException" />, al contrario.Non è possibile caricare il file trovato. </exception>
+      <exception cref="T:System.BadImageFormatException">
+        <paramref name="assemblyRef" /> non è un assembly valido.-oppure-La versione di Common Language Runtime attualmente caricata è la 2.0 o successiva e <paramref name="assemblyRef" /> è stato compilato con una versione più recente.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="*AllFiles*" PathDiscovery="*AllFiles*" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Reflection.Assembly.ManifestModule">
+      <summary>Ottiene il modulo contenente il manifesto per l'assembly corrente. </summary>
+      <returns>Modulo contenente il manifesto per l'assembly. </returns>
+    </member>
+    <member name="P:System.Reflection.Assembly.Modules">
+      <summary>Ottiene una raccolta contenente i moduli dell'assembly.</summary>
+      <returns>Raccolta contenente i moduli dell'assembly.</returns>
+    </member>
+    <member name="M:System.Reflection.Assembly.ToString">
+      <summary>Restituisce il nome completo dell'assembly, noto anche come nome visualizzato.</summary>
+      <returns>Nome completo dell'assembly o nome della classe se non è possibile determinare il nome completo dell'assembly.</returns>
+    </member>
+    <member name="T:System.Reflection.AssemblyContentType">
+      <summary>Fornisce informazioni sul tipo di codice contenuto in un assembly.</summary>
+    </member>
+    <member name="F:System.Reflection.AssemblyContentType.Default">
+      <summary>L'assembly contiene il codice.NET Framework.</summary>
+    </member>
+    <member name="F:System.Reflection.AssemblyContentType.WindowsRuntime">
+      <summary>Assembly contenente il codice Windows Runtime.</summary>
+    </member>
+    <member name="T:System.Reflection.AssemblyName">
+      <summary>Descrive in modo completo l'identità univoca di un assembly.</summary>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Reflection.AssemblyName" />.</summary>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.#ctor(System.String)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Reflection.AssemblyName" /> con il nome visualizzato specificato.</summary>
+      <param name="assemblyName">Nome visualizzato dell'assembly, restituito dalla proprietà <see cref="P:System.Reflection.AssemblyName.FullName" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="assemblyName" /> è null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="assemblyName" /> è una stringa di lunghezza zero. </exception>
+      <exception cref="T:System.IO.FileLoadException">Nell'API.NET per le applicazioni Windows o nella Libreria di classi portabile, rilevare piuttosto l'eccezione della classe di base <see cref="T:System.IO.IOException" />.Impossibile trovare l'assembly a cui viene fatto riferimento o non è possibile caricarlo.</exception>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.ContentType">
+      <summary>Ottiene o imposta un valore che indica il tipo di contenuto dell'assembly.</summary>
+      <returns>Valore che indica il tipo di contenuto che l'assembly contiene.</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.CultureName">
+      <summary>Ottiene o imposta il nome delle impostazioni di cultura associate all'assembly.</summary>
+      <returns>Nome delle impostazioni cultura.</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.Flags">
+      <summary>Ottiene o imposta gli attributi dell'assembly.</summary>
+      <returns>Valore che rappresenta gli attributi dell'assembly.</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.FullName">
+      <summary>Ottiene il nome completo dell'assembly o nome di visualizzazione.</summary>
+      <returns>Stringa che rappresenta il nome completo dell'assembly o nome di visualizzazione.</returns>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.GetPublicKey">
+      <summary>Ottiene la chiave pubblica dell'assembly.</summary>
+      <returns>Matrice di byte che contiene la chiave pubblica dell'assembly.</returns>
+      <exception cref="T:System.Security.SecurityException">È stata fornita una chiave pubblica, ad esempio utilizzando il metodo <see cref="M:System.Reflection.AssemblyName.SetPublicKey(System.Byte[])" />, ma non è stato fornito il token di chiave pubblica. </exception>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.GetPublicKeyToken">
+      <summary>Ottiene il token di chiave pubblica, rappresentato dagli ultimi 8 byte dell'algoritmo hash SHA-1 della chiave pubblica in cui viene eseguita la firma dell'applicazione o dell'assembly.</summary>
+      <returns>Matrice di byte che contiene il token di chiave pubblica.</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.Name">
+      <summary>Ottiene o imposta il nome semplice dell'assembly.Tale nome corrisponde in genere, ma non necessariamente, al nome del file manifesto dell'assembly, meno l'estensione.</summary>
+      <returns>Nome semplice dell'assembly.</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.ProcessorArchitecture">
+      <summary>Ottiene o imposta un valore che identifica il processore e i bit per parola della piattaforma di destinazione di un file eseguibile.</summary>
+      <returns>Uno dei valori di enumerazione che identifica il processore e i bit per parola della piattaforma di destinazione di un file eseguibile.</returns>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.SetPublicKey(System.Byte[])">
+      <summary>Imposta la chiave pubblica che identifica l'assembly.</summary>
+      <param name="publicKey">Matrice di byte che contiene la chiave pubblica dell'assembly. </param>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.SetPublicKeyToken(System.Byte[])">
+      <summary>Imposta il token di chiave pubblica, rappresentato dagli ultimi 8 byte dell'algoritmo hash SHA-1 della chiave pubblica in cui viene eseguita la firma dell'applicazione o dell'assembly.</summary>
+      <param name="publicKeyToken">Matrice di byte che contiene il token di chiave pubblica dell'assembly. </param>
+    </member>
+    <member name="M:System.Reflection.AssemblyName.ToString">
+      <summary>Restituisce il nome completo dell'assembly o nome di visualizzazione.</summary>
+      <returns>Nome completo dell'assembly o nome della classe se non è possibile determinare il nome completo.</returns>
+    </member>
+    <member name="P:System.Reflection.AssemblyName.Version">
+      <summary>Ottiene o imposta il numero principale, secondario, di build e di revisione dell'assembly.</summary>
+      <returns>Oggetto che rappresenta il numero principale, secondario, di build e di revisione dell'assembly.</returns>
+    </member>
+    <member name="T:System.Reflection.ConstructorInfo">
+      <summary>Individua gli attributi di un costruttore della classe e consente di accedere ai relativi metadati. </summary>
+    </member>
+    <member name="F:System.Reflection.ConstructorInfo.ConstructorName">
+      <summary>Rappresenta il nome del metodo del costruttore della classe così come è memorizzato nei metadati.Questo nome è sempre ".ctor".Questo è un campo di sola lettura.</summary>
+    </member>
+    <member name="M:System.Reflection.ConstructorInfo.Equals(System.Object)">
+      <summary>Restituisce un valore che indica se l'istanza è uguale a un oggetto specificato.</summary>
+      <returns>true se <paramref name="obj" /> è uguale al tipo e al valore di questa istanza. In caso contrario, false.</returns>
+      <param name="obj">Oggetto da confrontare con questa istanza o null.</param>
+    </member>
+    <member name="M:System.Reflection.ConstructorInfo.GetHashCode">
+      <summary>Restituisce il codice hash per l'istanza.</summary>
+      <returns>Codice hash integer con segno a 32 bit.</returns>
+    </member>
+    <member name="M:System.Reflection.ConstructorInfo.Invoke(System.Object[])">
+      <summary>Richiama il costruttore riprodotto dall'istanza con i parametri specificati, fornendo valori predefiniti per i parametri non utilizzati comunemente.</summary>
+      <returns>Istanza della classe associata al costruttore.</returns>
+      <param name="parameters">Una matrice di valori che corrisponde al numero, all'ordine e al tipo (in base ai vincoli del gestore di associazione predefinito) dei parametri per questo costruttore.Se questo costruttore non accetta alcun parametro, utilizzare una matrice con zero elementi o null, come in Object[] parameters = new Object[0].Gli oggetti dell'array non inizializzati in modo esplicito con un valore conterranno il valore predefinito per il tipo di oggetto in questione.Per gli elementi di tipo riferimento, questo valore è null.Per gli elementi di tipo valore, questo valore è 0, 0.0 o false, a seconda del tipo di elemento specifico.</param>
+      <exception cref="T:System.MemberAccessException">La classe è astratta.- oppure - Il costruttore è un inizializzatore di classi. </exception>
+      <exception cref="T:System.MethodAccessException">Nell'API.NET per le applicazioni Windows o nella Libreria di classi portabile, rilevare piuttosto l'eccezione della classe di base <see cref="T:System.MemberAccessException" />.Il costruttore è privato o protetto e il chiamante non dispone di <see cref="F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess" />. </exception>
+      <exception cref="T:System.ArgumentException">La matrice <paramref name="parameters" /> non contiene valori corrispondenti ai tipi accettati da questo costruttore. </exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">Il costruttore richiamato genera un'eccezione. </exception>
+      <exception cref="T:System.Reflection.TargetParameterCountException">È stato passato un numero errato di parametri. </exception>
+      <exception cref="T:System.NotSupportedException">La creazione dei tipi <see cref="T:System.TypedReference" />, <see cref="T:System.ArgIterator" /> e <see cref="T:System.RuntimeArgumentHandle" /> non è supportata.</exception>
+      <exception cref="T:System.Security.SecurityException">Il chiamante non dispone dell'autorizzazione necessaria per l'accesso di codice.</exception>
+    </member>
+    <member name="F:System.Reflection.ConstructorInfo.TypeConstructorName">
+      <summary>Rappresenta il nome del metodo del costruttore del tipo così come è memorizzato nei metadati.Questo nome è sempre ".cctor".Questa proprietà è in sola lettura.</summary>
+    </member>
+    <member name="T:System.Reflection.CustomAttributeData">
+      <summary>Fornisce l'accesso a dati di attributi personalizzati per assembly, moduli, tipi, membri e parametri caricati nel contesto solo reflection.</summary>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeData.AttributeType">
+      <summary>Ottiene il tipo dell'attributo.</summary>
+      <returns>Tipo dell'attributo.</returns>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeData.ConstructorArguments">
+      <summary>Ottiene l'elenco degli argomenti posizionali specificati per l'istanza dell'attributo rappresentata dall'oggetto <see cref="T:System.Reflection.CustomAttributeData" />.</summary>
+      <returns>Raccolta di strutture che rappresentano gli argomenti posizionali specificati per l'istanza dell'attributo personalizzato.</returns>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeData.NamedArguments">
+      <summary>Ottiene l'elenco degli argomenti denominati specificati per l'istanza dell'attributo rappresentata dall'oggetto <see cref="T:System.Reflection.CustomAttributeData" />.</summary>
+      <returns>Raccolta di strutture che rappresentano gli argomenti denominati specificati per l'istanza dell'attributo personalizzato.</returns>
+    </member>
+    <member name="T:System.Reflection.CustomAttributeNamedArgument">
+      <summary>Rappresenta un argomento denominato di un attributo personalizzato nel contesto solo reflection.</summary>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeNamedArgument.IsField">
+      <summary>Ottiene un valore che indica se l'argomento denominato è un campo.</summary>
+      <returns>true se l'argomento denominato è un campo; in caso contrario, false.</returns>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeNamedArgument.MemberName">
+      <summary>Ottiene il nome dell'attributo che verrà utilizzato per impostare l'argomento denominato.</summary>
+      <returns>Nome del membro dell'attributo che verrà utilizzato per impostare l'argomento denominato.</returns>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeNamedArgument.TypedValue">
+      <summary>Ottiene una struttura <see cref="T:System.Reflection.CustomAttributeTypedArgument" /> che può essere utilizzata per ottenere il tipo e il valore dell'argomento denominato corrente.</summary>
+      <returns>Struttura che può essere utilizzata per ottenere il tipo e il valore dell'argomento denominato corrente.</returns>
+    </member>
+    <member name="T:System.Reflection.CustomAttributeTypedArgument">
+      <summary>Rappresenta un argomento di un attributo personalizzato nel contesto solo reflection o un elemento di un argomento di matrice.</summary>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeTypedArgument.ArgumentType">
+      <summary>Ottiene il tipo dell'argomento o dell'elemento argomento di matrice.</summary>
+      <returns>Oggetto <see cref="T:System.Type" /> che rappresenta il tipo dell'argomento o l'elemento di matrice.</returns>
+    </member>
+    <member name="P:System.Reflection.CustomAttributeTypedArgument.Value">
+      <summary>Ottiene il valore dell'argomento per un argomento semplice o per un elemento di un argomento di matrice. Ottiene un insieme di valori per un argomento di matrice.</summary>
+      <returns>Oggetto che rappresenta il valore dell'argomento o dell'elemento, oppure oggetto <see cref="T:System.Collections.ObjectModel.ReadOnlyCollection`1" /> generico di oggetti <see cref="T:System.Reflection.CustomAttributeTypedArgument" /> che rappresentano i valori di un argomento di tipo matrice.</returns>
+    </member>
+    <member name="T:System.Reflection.EventInfo">
+      <summary>Individua gli attributi di un evento e consente di accedere ai relativi metadati.</summary>
+    </member>
+    <member name="M:System.Reflection.EventInfo.AddEventHandler(System.Object,System.Delegate)">
+      <summary>Aggiunge un gestore eventi a un'origine eventi.</summary>
+      <param name="target">Origine dell'evento. </param>
+      <param name="handler">Incapsula uno o più metodi da richiamare quando l'evento viene generato dalla destinazione. </param>
+      <exception cref="T:System.InvalidOperationException">L'evento non dispone di una funzione di accesso add pubblica.</exception>
+      <exception cref="T:System.ArgumentException">Non è possibile utilizzare il gestore che è stato passato. </exception>
+      <exception cref="T:System.MethodAccessException">Nell'API.NET per le applicazioni Windows o nella Libreria di classi portabile, rilevare piuttosto l'eccezione della classe di base <see cref="T:System.MemberAccessException" />.Il chiamante non dispone dell'autorizzazione per accedere al membro. </exception>
+      <exception cref="T:System.Reflection.TargetException">Nell'API.NET per le applicazioni Windows o nella Libreria di classi portabile, rilevare piuttosto <see cref="T:System.Exception" />.Il parametro <paramref name="target" /> non è null e l'evento non è static.- oppure - L'oggetto <see cref="T:System.Reflection.EventInfo" /> non è dichiarato nella destinazione. </exception>
+    </member>
+    <member name="P:System.Reflection.EventInfo.AddMethod">
+      <summary>Ottiene l'oggetto <see cref="T:System.Reflection.MethodInfo" /> per il metodo <see cref="M:System.Reflection.EventInfo.AddEventHandler(System.Object,System.Delegate)" /> dell'evento, inclusi i metodi non pubblici.</summary>
+      <returns>Oggetto <see cref="T:System.Reflection.MethodInfo" /> per il metodo <see cref="M:System.Reflection.EventInfo.AddEventHandler(System.Object,System.Delegate)" />.</returns>
+    </member>
+    <member name="P:System.Reflection.EventInfo.Attributes">
+      <summary>Ottiene gli attributi per questo evento.</summary>
+      <returns>Attributi di sola lettura per questo evento.</returns>
+    </member>
+    <member name="M:System.Reflection.EventInfo.Equals(System.Object)">
+      <summary>Restituisce un valore che indica se l'istanza è uguale a un oggetto specificato.</summary>
+      <returns>true se <paramref name="obj" /> è uguale al tipo e al valore di questa istanza. In caso contrario, false.</returns>
+      <param name="obj">Oggetto da confrontare con questa istanza o null.</param>
+    </member>
+    <member name="P:System.Reflection.EventInfo.EventHandlerType">
+      <summary>Ottiene l'oggetto Type del delegato del gestore eventi sottostante associato a questo evento.</summary>
+      <returns>Oggetto Type di sola lettura che rappresenta il gestore eventi del delegato.</returns>
+      <exception cref="T:System.Security.SecurityException">Il chiamante non dispone dell'autorizzazione richiesta. </exception>
+    </member>
+    <member name="M:System.Reflection.EventInfo.GetHashCode">
+      <summary>Restituisce il codice hash per l'istanza.</summary>
+      <returns>Codice hash integer con segno a 32 bit.</returns>
+    </member>
+    <member name="P:System.Reflection.EventInfo.IsSpecialName">
+      <summary>Ottiene un valore che indica se EventInfo ha un nome con significato speciale.</summary>
+      <returns>true se questo evento ha un nome speciale; in caso contrario, false.</returns>
+    </member>
+    <member name="P:System.Reflection.EventInfo.RaiseMethod">
+      <summary>Ottiene il metodo chiamato quando viene generato l'evento, inclusi i metodi non pubblici.</summary>
+      <returns>Metodo chiamato quando viene generato l'evento.</returns>
+    </member>
+    <member name="M:System.Reflection.EventInfo.RemoveEventHandler(System.Object,System.Delegate)">
+      <summary>Rimuove un gestore eventi da un'origine eventi.</summary>
+      <param name="target">Origine dell'evento. </param>
+      <param name="handler">Delegato da dissociare dagli eventi generati dalla destinazione. </param>
+      <exception cref="T:System.InvalidOperationException">L'evento non dispone di una funzione di accesso remove pubblica. </exception>
+      <exception cref="T:System.ArgumentException">Non è possibile utilizzare il gestore che è stato passato. </exception>
+      <exception cref="T:System.Reflection.TargetException">Nell'API.NET per le applicazioni Windows o nella Libreria di classi portabile, rilevare piuttosto <see cref="T:System.Exception" />.Il parametro <paramref name="target" /> non è null e l'evento non è static.- oppure - L'oggetto <see cref="T:System.Reflection.EventInfo" /> non è dichiarato nella destinazione. </exception>
+      <exception cref="T:System.MethodAccessException">Nell'API.NET per le applicazioni Windows o nella Libreria di classi portabile, rilevare piuttosto l'eccezione della classe di base <see cref="T:System.MemberAccessException" />.Il chiamante non dispone dell'autorizzazione per accedere al membro. </exception>
+    </member>
+    <member name="P:System.Reflection.EventInfo.RemoveMethod">
+      <summary>Ottiene l'oggetto MethodInfo per rimuovere un metodo dell'evento, inclusi i metodi non pubblici.</summary>
+      <returns>Oggetto MethodInfo per rimuovere un metodo dell'evento.</returns>
+    </member>
+    <member name="T:System.Reflection.FieldInfo">
+      <summary>Individua gli attributi di un campo e consente di accedere ai relativi metadati. </summary>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.Attributes">
+      <summary>Ottiene gli attributi associati a questo campo.</summary>
+      <returns>Oggetto FieldAttributes di questo campo.</returns>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.Equals(System.Object)">
+      <summary>Restituisce un valore che indica se l'istanza è uguale a un oggetto specificato.</summary>
+      <returns>true se <paramref name="obj" /> è uguale al tipo e al valore di questa istanza. In caso contrario, false.</returns>
+      <param name="obj">Oggetto da confrontare con questa istanza o null.</param>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.FieldType">
+      <summary>Ottiene il tipo di questo oggetto campo.</summary>
+      <returns>Il tipo di questo oggetto campo.</returns>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.GetFieldFromHandle(System.RuntimeFieldHandle)">
+      <summary>Ottiene un oggetto <see cref="T:System.Reflection.FieldInfo" /> per il campo rappresentato dall'handle specificato.</summary>
+      <returns>Oggetto <see cref="T:System.Reflection.FieldInfo" /> che rappresenta il campo specificato da <paramref name="handle" />.</returns>
+      <param name="handle">Struttura <see cref="T:System.RuntimeFieldHandle" /> contenente l'handle per la rappresentazione dei metadati interni di un campo. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="handle" /> non è valido.</exception>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.GetFieldFromHandle(System.RuntimeFieldHandle,System.RuntimeTypeHandle)">
+      <summary>Ottiene un oggetto <see cref="T:System.Reflection.FieldInfo" /> per il campo rappresentato dall'handle specificato, per il tipo generico specificato.</summary>
+      <returns>Oggetto <see cref="T:System.Reflection.FieldInfo" /> che rappresenta il campo specificato da <paramref name="handle" />, nel tipo generico specificato da <paramref name="declaringType" />.</returns>
+      <param name="handle">Struttura <see cref="T:System.RuntimeFieldHandle" /> contenente l'handle per la rappresentazione dei metadati interni di un campo.</param>
+      <param name="declaringType">Struttura <see cref="T:System.RuntimeTypeHandle" /> contenente l'handle al tipo generico che definisce il campo.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="handle" /> non è valido.- oppure -<paramref name="declaringType" /> non è compatibile con <paramref name="handle" />.Ad esempio, il parametro <paramref name="declaringType" /> è l'handle di tipo runtime della definizione di tipo generico e <paramref name="handle" /> proviene da un tipo costruito.Vedere la sezione Osservazioni.</exception>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.GetHashCode">
+      <summary>Restituisce il codice hash per l'istanza.</summary>
+      <returns>Codice hash integer con segno a 32 bit.</returns>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.GetValue(System.Object)">
+      <summary>Quando se ne effettua l'override in una classe derivata, restituisce il valore di un campo supportato da un determinato oggetto.</summary>
+      <returns>Oggetto contenente il valore del campo ottenuto mediante reflection da questa istanza.</returns>
+      <param name="obj">L'oggetto il cui valore di campo deve essere restituito. </param>
+      <exception cref="T:System.Reflection.TargetException">Nell'API.NET per le applicazioni Windows o nella Libreria di classi portabile, rilevare piuttosto <see cref="T:System.Exception" />.Il metodo non è statico e <paramref name="obj" /> è null. </exception>
+      <exception cref="T:System.NotSupportedException">Un campo è contrassegnato come literal, ma non dispone di uno dei tipi literal accettati. </exception>
+      <exception cref="T:System.FieldAccessException">Nell'API.NET per le applicazioni Windows o nella Libreria di classi portabile, rilevare piuttosto l'eccezione della classe di base <see cref="T:System.MemberAccessException" />.Il chiamante non dispone delle autorizzazioni per accedere a questo campo. </exception>
+      <exception cref="T:System.ArgumentException">Il metodo non è dichiarato né ereditato dalla classe di <paramref name="obj" />. </exception>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsAssembly">
+      <summary>Ottiene un valore che indica se la visibilità potenziale di questo campo è descritta da <see cref="F:System.Reflection.FieldAttributes.Assembly" />, ovvero se il campo è visibile al massimo ad altri tipi dello stesso assembly, ma non ai tipi derivati all'esterno dell'assembly.</summary>
+      <returns>true se la visibilità di questo campo è descritta esattamente da <see cref="F:System.Reflection.FieldAttributes.Assembly" />; in caso contrario, false.</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsFamily">
+      <summary>Ottiene un valore che indica se la visibilità di questo campo è descritta da <see cref="F:System.Reflection.FieldAttributes.Family" />, ovvero se il campo è visibile solo all'interno della relativa classe e delle classi derivate.</summary>
+      <returns>true se l'accesso al campo è descritto esattamente da <see cref="F:System.Reflection.FieldAttributes.Family" />; in caso contrario false.</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsFamilyAndAssembly">
+      <summary>Ottiene un valore che indica se la visibilità di questo campo è descritta da <see cref="F:System.Reflection.FieldAttributes.FamANDAssem" />, ovvero se è possibile accedere al campo da classi derivate, ma solo se appartenenti allo stesso assembly.</summary>
+      <returns>true se l'accesso al campo è descritto esattamente da <see cref="F:System.Reflection.FieldAttributes.FamANDAssem" />; in caso contrario false.</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsFamilyOrAssembly">
+      <summary>Ottiene un valore che indica se la visibilità potenziale di questo campo è descritta da <see cref="F:System.Reflection.FieldAttributes.FamORAssem" />, ovvero se è possibile accedere al campo da classi derivate indipendentemente dalla posizione e da classi appartenenti allo stesso assembly.</summary>
+      <returns>true se l'accesso al campo è descritto esattamente da <see cref="F:System.Reflection.FieldAttributes.FamORAssem" />; in caso contrario false.</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsInitOnly">
+      <summary>Ottiene un valore che indica se il campo può essere impostato solo nel corpo del costruttore.</summary>
+      <returns>true se l'attributo InitOnly del campo è impostato; in caso contrario false.</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsLiteral">
+      <summary>Ottiene un valore che indica se il valore viene scritto in fase di compilazione e non può essere modificato.</summary>
+      <returns>true se l'attributo Literal del campo è impostato; in caso contrario false.</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsPrivate">
+      <summary>Ottiene un valore che indica se il campo è privato.</summary>
+      <returns>true se il campo è privato; in caso contrario,false.</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsPublic">
+      <summary>Ottiene un valore che indica se il campo è pubblico.</summary>
+      <returns>true se il campo è pubblico; in caso contrario,false.</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsSpecialName">
+      <summary>Ottiene un valore che indica se l'attributo SpecialName corrispondente è impostato sull'enumeratore <see cref="T:System.Reflection.FieldAttributes" />.</summary>
+      <returns>true se l'attributo SpecialName è impostato in <see cref="T:System.Reflection.FieldAttributes" />; in caso contrario, false.</returns>
+    </member>
+    <member name="P:System.Reflection.FieldInfo.IsStatic">
+      <summary>Ottiene un valore che indica se il campo è statico.</summary>
+      <returns>true se il campo è statico; in caso contrario,false.</returns>
+    </member>
+    <member name="M:System.Reflection.FieldInfo.SetValue(System.Object,System.Object)">
+      <summary>Imposta il valore del campo supportato dall'oggetto indicato.</summary>
+      <param name="obj">Oggetto il cui valore di campo deve essere impostato. </param>
+      <param name="value">Valore da assegnare al campo. </param>
+      <exception cref="T:System.FieldAccessException">Nell'API.NET per le applicazioni Windows o nella Libreria di classi portabile, rilevare piuttosto l'eccezione della classe di base <see cref="T:System.MemberAccessException" />.Il chiamante non dispone delle autorizzazioni per accedere a questo campo. </exception>
+      <exception cref="T:System.Reflection.TargetException">Nell'API.NET per le applicazioni Windows o nella Libreria di classi portabile, rilevare piuttosto <see cref="T:System.Exception" />.Il parametro <paramref name="obj" /> è null e il campo è di istanza. </exception>
+      <exception cref="T:System.ArgumentException">Il campo non esiste sull'oggetto.- oppure - Non è possibile convertire e memorizzare nel campo il parametro <paramref name="value" />. </exception>
+    </member>
+    <member name="T:System.Reflection.IntrospectionExtensions">
+      <summary>Contiene metodi per convertire gli oggetti <see cref="T:System.Type" /> .</summary>
+    </member>
+    <member name="M:System.Reflection.IntrospectionExtensions.GetTypeInfo(System.Type)">
+      <summary>Restituisce la rappresentazione <see cref="T:System.Reflection.TypeInfo" /> del tipo specificato.</summary>
+      <returns>Oggetto convertito.</returns>
+      <param name="type">Tipo da convertire.</param>
+    </member>
+    <member name="T:System.Reflection.IReflectableType">
+      <summary>Rappresenta un tipo su cui è possibile eseguire la reflection.</summary>
+    </member>
+    <member name="M:System.Reflection.IReflectableType.GetTypeInfo">
+      <summary>Recupera un oggetto che rappresenta il tipo.</summary>
+      <returns>Oggetto che rappresenta il tipo.</returns>
+    </member>
+    <member name="T:System.Reflection.LocalVariableInfo">
+      <summary>Individua gli attributi di una variabile locale e consente di accedere ai relativi metadati.</summary>
+    </member>
+    <member name="M:System.Reflection.LocalVariableInfo.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Reflection.LocalVariableInfo" />.</summary>
+    </member>
+    <member name="P:System.Reflection.LocalVariableInfo.IsPinned">
+      <summary>Ottiene un valore <see cref="T:System.Boolean" /> che indica se l'oggetto a cui fa riferimento la variabile locale è bloccato in memoria.</summary>
+      <returns>true se l'oggetto a cui fa riferimento la variabile è bloccato in memoria; in caso contrario, false.</returns>
+    </member>
+    <member name="P:System.Reflection.LocalVariableInfo.LocalIndex">
+      <summary>Ottiene l'indice della variabile locale all'interno del corpo del metodo.</summary>
+      <returns>Integer che rappresenta l'ordine di dichiarazione della variabile locale all'interno del corpo del metodo.</returns>
+    </member>
+    <member name="P:System.Reflection.LocalVariableInfo.LocalType">
+      <summary>Ottiene il tipo della variabile locale.</summary>
+      <returns>Tipo della variabile locale.</returns>
+    </member>
+    <member name="M:System.Reflection.LocalVariableInfo.ToString">
+      <summary>Restituisce una stringa leggibile dall'utente che descrive la variabile locale.</summary>
+      <returns>Stringa che fornisce informazioni sulla variabile locale, inclusi il nome del tipo, l'indice e lo stato di blocco.</returns>
+    </member>
+    <member name="T:System.Reflection.ManifestResourceInfo">
+      <summary>Fornisce accesso a risorse del manifesto, corrispondenti a file XML che descrivono dipendenze dell'applicazione.  </summary>
+    </member>
+    <member name="M:System.Reflection.ManifestResourceInfo.#ctor(System.Reflection.Assembly,System.String,System.Reflection.ResourceLocation)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Reflection.ManifestResourceInfo" /> per una risorsa contenuta dall'assembly e dal file specificati, caratterizzata dal percorso specificato.</summary>
+      <param name="containingAssembly">Assembly che contiene la risorsa del manifesto.</param>
+      <param name="containingFileName">Nome del file che contiene la risorsa del manifesto, se il file non equivale al file del manifesto.</param>
+      <param name="resourceLocation">Combinazione bit per bit di valori di enumerazione che fornisce informazioni sul percorso della risorsa del manifesto. </param>
+    </member>
+    <member name="P:System.Reflection.ManifestResourceInfo.FileName">
+      <summary>Ottiene il nome del file che contiene la risorsa del manifesto, se non equivale al file del manifesto.  </summary>
+      <returns>Nome del file della risorsa di manifesto.</returns>
+    </member>
+    <member name="P:System.Reflection.ManifestResourceInfo.ReferencedAssembly">
+      <summary>Ottiene l'assembly contenitore della risorsa del manifesto. </summary>
+      <returns>Assembly contenitore della risorsa del manifesto.</returns>
+    </member>
+    <member name="P:System.Reflection.ManifestResourceInfo.ResourceLocation">
+      <summary>Ottiene il percorso della risorsa del manifesto. </summary>
+      <returns>Combinazione bit per bit di flag <see cref="T:System.Reflection.ResourceLocation" /> che indica il percorso della risorsa del manifesto. </returns>
+    </member>
+    <member name="T:System.Reflection.MemberInfo">
+      <summary>Ottiene informazioni sugli attributi di un membro e fornisce accesso ai relativi metadati.</summary>
+    </member>
+    <member name="P:System.Reflection.MemberInfo.CustomAttributes">
+      <summary>Ottiene una raccolta che contiene gli attributi personalizzati del membro.</summary>
+      <returns>Raccolta che contiene gli attributi personalizzati del membro.</returns>
+    </member>
+    <member name="P:System.Reflection.MemberInfo.DeclaringType">
+      <summary>Ottiene la classe che dichiara questo membro.</summary>
+      <returns>Oggetto Type per la classe che dichiara questo membro.</returns>
+    </member>
+    <member name="M:System.Reflection.MemberInfo.Equals(System.Object)">
+      <summary>Restituisce un valore che indica se l'istanza è uguale a un oggetto specificato.</summary>
+      <returns>true se <paramref name="obj" /> è uguale al tipo e al valore di questa istanza. In caso contrario, false.</returns>
+      <param name="obj">Oggetto da confrontare con questa istanza o null.</param>
+    </member>
+    <member name="M:System.Reflection.MemberInfo.GetHashCode">
+      <summary>Restituisce il codice hash per l'istanza.</summary>
+      <returns>Codice hash integer con segno a 32 bit.</returns>
+    </member>
+    <member name="P:System.Reflection.MemberInfo.Module">
+      <summary>Ottiene il modulo in cui viene definito il tipo che dichiara il membro rappresentato dall'oggetto <see cref="T:System.Reflection.MemberInfo" /> corrente.</summary>
+      <returns>Oggetto <see cref="T:System.Reflection.Module" /> in cui viene definito il tipo che dichiara il membro rappresentato dall'oggetto <see cref="T:System.Reflection.MemberInfo" /> corrente.</returns>
+      <exception cref="T:System.NotImplementedException">Il metodo non è implementato.</exception>
+    </member>
+    <member name="P:System.Reflection.MemberInfo.Name">
+      <summary>Ottiene il nome del membro corrente.</summary>
+      <returns>
+        <see cref="T:System.String" /> che contiene il nome di questo membro.</returns>
+    </member>
+    <member name="T:System.Reflection.MethodBase">
+      <summary>Fornisce informazioni su metodi e costruttori. </summary>
+    </member>
+    <member name="P:System.Reflection.MethodBase.Attributes">
+      <summary>Ottiene gli attributi associati a questo metodo.</summary>
+      <returns>Uno dei valori di <see cref="T:System.Reflection.MethodAttributes" />.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.CallingConvention">
+      <summary>Ottiene un valore che indica le convenzioni di chiamata per questo metodo.</summary>
+      <returns>Oggetto <see cref="T:System.Reflection.CallingConventions" /> per questo metodo.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.ContainsGenericParameters">
+      <summary>Ottiene un valore che indica se il metodo generico contiene parametri di tipo generico non assegnati.</summary>
+      <returns>true se l'oggetto <see cref="T:System.Reflection.MethodBase" /> corrente rappresenta un metodo generico contenente parametri di tipo generico non assegnati; in caso contrario, false.</returns>
+    </member>
+    <member name="M:System.Reflection.MethodBase.Equals(System.Object)">
+      <summary>Restituisce un valore che indica se l'istanza è uguale a un oggetto specificato.</summary>
+      <returns>true se <paramref name="obj" /> è uguale al tipo e al valore di questa istanza. In caso contrario, false.</returns>
+      <param name="obj">Oggetto da confrontare con questa istanza o null.</param>
+    </member>
+    <member name="M:System.Reflection.MethodBase.GetGenericArguments">
+      <summary>Restituisce una matrice di oggetti <see cref="T:System.Type" /> che rappresentano gli argomenti di tipo di un metodo generico o i parametri di tipo della definizione di un metodo generico.</summary>
+      <returns>Matrice di oggetti <see cref="T:System.Type" /> che rappresentano gli argomenti di tipo di un metodo generico o i parametri di tipo della definizione di un metodo generica.Restituisce una matrice vuota se il metodo corrente non è un metodo generico.</returns>
+      <exception cref="T:System.NotSupportedException">L'oggetto corrente è un <see cref="T:System.Reflection.ConstructorInfo" />.I costruttori generici non sono supportati in .NET Framework versione 2.0.Questa eccezione rappresenta il comportamento predefinito se non viene eseguito l'override del metodo in una classe derivata.</exception>
+    </member>
+    <member name="M:System.Reflection.MethodBase.GetHashCode">
+      <summary>Restituisce il codice hash per l'istanza.</summary>
+      <returns>Codice hash integer con segno a 32 bit.</returns>
+    </member>
+    <member name="M:System.Reflection.MethodBase.GetMethodFromHandle(System.RuntimeMethodHandle)">
+      <summary>Ottiene le informazioni sul metodo utilizzando la rappresentazione interna dei metadati (handle) del metodo.</summary>
+      <returns>MethodBase contenente informazioni sul metodo.</returns>
+      <param name="handle">Handle del metodo. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="handle" /> non è valido.</exception>
+    </member>
+    <member name="M:System.Reflection.MethodBase.GetMethodFromHandle(System.RuntimeMethodHandle,System.RuntimeTypeHandle)">
+      <summary>Ottiene un oggetto <see cref="T:System.Reflection.MethodBase" /> per il costruttore o il metodo rappresentati dall'handle specificato, per il tipo generico specificato.</summary>
+      <returns>Oggetto <see cref="T:System.Reflection.MethodBase" /> che rappresenta il metodo o il costruttore specificati da <paramref name="handle" />, nel tipo generico specificato da <paramref name="declaringType" />.</returns>
+      <param name="handle">Handle per la rappresentazione dei metadati interni di un costruttore o di un metodo.</param>
+      <param name="declaringType">Handle al tipo generico che definisce il costruttore o il metodo.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="handle" /> non è valido.</exception>
+    </member>
+    <member name="M:System.Reflection.MethodBase.GetParameters">
+      <summary>Quando viene sottoposto a override in una classe derivata, ottiene i parametri del metodo o del costruttore specificato.</summary>
+      <returns>Matrice di tipo ParameterInfo contenente le informazioni corrispondenti alla firma del metodo (o del costruttore) ottenuto mediante reflection da questa istanza di MethodBase.</returns>
+    </member>
+    <member name="M:System.Reflection.MethodBase.Invoke(System.Object,System.Object[])">
+      <summary>Richiama il metodo o il costruttore rappresentati dall'istanza corrente utilizzando i parametri specificati.</summary>
+      <returns>Oggetto contenente il valore restituito del metodo richiamato oppure null nel caso di un costruttore.AttenzioneÈ possibile che anche elementi della matrice di <paramref name="parameters" /> che rappresentano parametri dichiarati con la parola chiave ref o out vengano modificati.</returns>
+      <param name="obj">L'oggetto su cui richiamare il metodo o il costruttore.Se un metodo è statico, questo argomento viene ignorato.Se un costruttore è statico, questo argomento deve essere null oppure un'istanza della classe che definisce il costruttore.</param>
+      <param name="parameters">Elenco di argomenti per il metodo o il costruttore richiamato.È rappresentato da una matrice di oggetti che contiene lo stesso numero, ordine e tipo dei parametri del metodo o del costruttore da richiamare.In assenza di parametri, <paramref name="parameters" /> deve essere null.Se il metodo o il costruttore rappresentato da questa istanza accetta un parametro ref (ByRef in Visual Basic), non sono richiesti attributi speciali per tale parametro per poter richiamare il metodo o il costruttore tramite la funzione.Gli oggetti dell'array non inizializzati in modo esplicito con un valore conterranno il valore predefinito per il tipo di oggetto in questione.Per gli elementi di tipo riferimento, questo valore è null.Per gli elementi di tipo valore, questo valore è 0, 0.0 o false, a seconda del tipo di elemento specifico.</param>
+      <exception cref="T:System.Reflection.TargetException">Nell'API.NET per le applicazioni Windows o nella Libreria di classi portabile, rilevare piuttosto <see cref="T:System.Exception" />.Il parametro <paramref name="obj" /> è null e il metodo non è static.In alternativa Il metodo non è dichiarato né ereditato dalla classe di <paramref name="obj" />. In alternativaViene richiamato un costruttore statico e <paramref name="obj" /> non è null né un'istanza della classe che ha dichiarato il costruttore.</exception>
+      <exception cref="T:System.ArgumentException">Gli elementi della matrice di <paramref name="parameters" /> non corrispondono alla firma del metodo o del costruttore ottenuto mediante reflection da questa istanza. </exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">Il metodo o il costruttore richiamato genera un'eccezione. In alternativaL'istanza corrente è un oggetto <see cref="T:System.Reflection.Emit.DynamicMethod" /> contenente codice non verificabile.Vedere la sezione "Verifica" nelle note per <see cref="T:System.Reflection.Emit.DynamicMethod" />.</exception>
+      <exception cref="T:System.Reflection.TargetParameterCountException">La matrice <paramref name="parameters" /> non contiene il numero corretto di argomenti. </exception>
+      <exception cref="T:System.MethodAccessException">Nell'API.NET per le applicazioni Windows o nella Libreria di classi portabile, rilevare piuttosto l'eccezione della classe di base <see cref="T:System.MemberAccessException" />.Il chiamante non è autorizzato a eseguire il metodo o il costruttore rappresentato dall'istanza corrente. </exception>
+      <exception cref="T:System.InvalidOperationException">Il tipo che dichiara il metodo è un tipo generico aperto,ovvero la proprietà <see cref="P:System.Type.ContainsGenericParameters" /> restituisce true per il tipo dichiarante.</exception>
+      <exception cref="T:System.NotSupportedException">L'istanza corrente è <see cref="T:System.Reflection.Emit.MethodBuilder" />.</exception>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsAbstract">
+      <summary>Ottiene un valore che indica se il metodo è astratto.</summary>
+      <returns>true se il metodo è astratto; in caso contrario, false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsAssembly">
+      <summary>Ottiene un valore che indica se la visibilità potenziale di questo metodo o costruttore è descritta da <see cref="F:System.Reflection.MethodAttributes.Assembly" />, ovvero se il metodo o costruttore è visibile al massimo ad altri tipi dello stesso assembly, ma non ai tipi derivati all'esterno dell'assembly.</summary>
+      <returns>true se la visibilità di questo metodo o costruttore è descritta esattamente da <see cref="F:System.Reflection.MethodAttributes.Assembly" />; in caso contrario, false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsConstructor">
+      <summary>Ottiene un valore che indica se il metodo è un costruttore.</summary>
+      <returns>true se il metodo è un costruttore rappresentato da un oggetto <see cref="T:System.Reflection.ConstructorInfo" /> (vedere la nota sugli oggetti <see cref="T:System.Reflection.Emit.ConstructorBuilder" /> nella sezione Osservazioni); in caso contrario, false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsFamily">
+      <summary>Ottiene un valore che indica se la visibilità di questo metodo o costruttore è descritta da <see cref="F:System.Reflection.MethodAttributes.Family" />, ovvero se il metodo o costruttore è visibile solo all'interno della relativa classe e delle classi derivate.</summary>
+      <returns>true se l'accesso al metodo o costruttore è descritto esattamente da <see cref="F:System.Reflection.MethodAttributes.Family" />; in caso contrario, false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsFamilyAndAssembly">
+      <summary>Ottiene un valore che indica se la visibilità di questo metodo o costruttore è descritta da <see cref="F:System.Reflection.MethodAttributes.FamANDAssem" />, ovvero se è possibile chiamare il metodo o il costruttore da classi derivate, ma solo se appartenenti allo stesso assembly.</summary>
+      <returns>true se l'accesso al metodo o costruttore è descritto esattamente da <see cref="F:System.Reflection.MethodAttributes.FamANDAssem" />; in caso contrario, false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsFamilyOrAssembly">
+      <summary>Ottiene un valore che indica se la visibilità potenziale di questo metodo o costruttore è descritta da <see cref="F:System.Reflection.MethodAttributes.FamORAssem" />, ovvero se è possibile chiamare il metodo o il costruttore da classi derivate indipendentemente dalla posizione e da classi appartenenti allo stesso assembly.</summary>
+      <returns>true se l'accesso al metodo o costruttore è descritto esattamente da <see cref="F:System.Reflection.MethodAttributes.FamORAssem" />; in caso contrario, false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsFinal">
+      <summary>Ottiene un valore che indica se il metodo è final.</summary>
+      <returns>true se il metodo è final; in caso contrario false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsGenericMethod">
+      <summary>Ottiene un valore che indica se il metodo è generico.</summary>
+      <returns>true se la classe <see cref="T:System.Reflection.MethodBase" /> corrente rappresenta un metodo generico; in caso contrario false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsGenericMethodDefinition">
+      <summary>Ottiene un valore che indica se il metodo è una definizione di un metodo generico.</summary>
+      <returns>true se l'oggetto <see cref="T:System.Reflection.MethodBase" /> corrente rappresenta la definizione di un metodo generico; in caso contrario false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsHideBySig">
+      <summary>Ottiene un valore che indica se nella classe derivata è nascosto un solo membro dello stesso tipo che riporta esattamente la stessa firma.</summary>
+      <returns>true se il membro è nascosto dalla firma; in caso contrario, false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsPrivate">
+      <summary>Ottiene un valore che indica se questo membro è privato.</summary>
+      <returns>true se l'accesso al metodo è limitato agli altri membri della classe; in caso contrario, false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsPublic">
+      <summary>Ottiene un valore che indica se si tratta di un metodo pubblico.</summary>
+      <returns>true se il metodo è pubblico; in caso contrario false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsSpecialName">
+      <summary>Ottiene un valore che indica se questo metodo ha un nome speciale.</summary>
+      <returns>true se questo metodo ha un nome speciale; in caso contrario, false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsStatic">
+      <summary>Ottiene un valore che indica se il metodo è static.</summary>
+      <returns>true se il metodo è static; in caso contrario false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.IsVirtual">
+      <summary>Ottiene un valore che indica se il metodo è virtual.</summary>
+      <returns>true se il metodo è virtual; in caso contrario false.</returns>
+    </member>
+    <member name="P:System.Reflection.MethodBase.MethodImplementationFlags">
+      <summary>Ottiene i flag <see cref="T:System.Reflection.MethodImplAttributes" /> che specificano gli attributi di implementazione di un metodo.</summary>
+      <returns>Flag di implementazione dei metodi.</returns>
+    </member>
+    <member name="T:System.Reflection.MethodInfo">
+      <summary>Individua gli attributi di un metodo e consente di accedere ai relativi metadati.</summary>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.CreateDelegate(System.Type)">
+      <summary>Crea un delegato del tipo specificato da questo metodo.</summary>
+      <returns>Delegato per questo metodo.</returns>
+      <param name="delegateType">Tipo del delegato da creare.</param>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.CreateDelegate(System.Type,System.Object)">
+      <summary>Crea un delegato del tipo specificato con la destinazione specificata da questo metodo.</summary>
+      <returns>Delegato per questo metodo.</returns>
+      <param name="delegateType">Tipo del delegato da creare.</param>
+      <param name="target">Oggetto impostato come destinazione dal delegato.</param>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.Equals(System.Object)">
+      <summary>Restituisce un valore che indica se questa istanza è uguale a un oggetto specificato.</summary>
+      <returns>true se <paramref name="obj" /> è uguale al tipo e al valore di questa istanza; in caso contrario, false.</returns>
+      <param name="obj">Oggetto da confrontare con questa istanza o null.</param>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.GetGenericArguments">
+      <summary>Restituisce una matrice di oggetti <see cref="T:System.Type" /> che rappresentano gli argomenti di tipo di un metodo generico o i parametri di tipo della definizione di un metodo generico.</summary>
+      <returns>Matrice di oggetti <see cref="T:System.Type" /> che rappresentano gli argomenti di tipo di un metodo generico o i parametri di tipo della definizione di un metodo generica.Restituisce una matrice vuota se il metodo corrente non è un metodo generico.</returns>
+      <exception cref="T:System.NotSupportedException">Questo metodo non è supportato.</exception>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.GetGenericMethodDefinition">
+      <summary>Restituisce un oggetto <see cref="T:System.Reflection.MethodInfo" /> che rappresenta la definizione di un metodo generica da cui è possibile costruire il metodo corrente.</summary>
+      <returns>Oggetto <see cref="T:System.Reflection.MethodInfo" /> che rappresenta la definizione di un metodo generica da cui è possibile costruire il metodo corrente.</returns>
+      <exception cref="T:System.InvalidOperationException">Il metodo corrente non è un metodo generico,ovvero la proprietà <see cref="P:System.Reflection.MethodInfo.IsGenericMethod" /> restituisce false.</exception>
+      <exception cref="T:System.NotSupportedException">Questo metodo non è supportato.</exception>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.GetHashCode">
+      <summary>Restituisce il codice hash per l'istanza.</summary>
+      <returns>Codice hash di un intero con segno a 32 bit.</returns>
+    </member>
+    <member name="M:System.Reflection.MethodInfo.MakeGenericMethod(System.Type[])">
+      <summary>Sostituisce con gli elementi di una matrice di tipi i parametri di tipo della definizione di metodo generica corrente e restituisce un oggetto <see cref="T:System.Reflection.MethodInfo" /> che rappresenta il metodo costruito risultante.</summary>
+      <returns>Oggetto <see cref="T:System.Reflection.MethodInfo" /> che rappresenta il metodo costruito ottenuto sostituendo gli elementi di <paramref name="typeArguments" /> per i parametri di tipo della definizione di metodo generica corrente.</returns>
+      <param name="typeArguments">Matrice di tipi con cui sostituire i parametri di tipo della definizione del metodo generica corrente.</param>
+      <exception cref="T:System.InvalidOperationException">La classe <see cref="T:System.Reflection.MethodInfo" /> corrente non rappresenta una definizione di metodo generica,ovvero la proprietà <see cref="P:System.Reflection.MethodInfo.IsGenericMethodDefinition" /> restituisce false.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="typeArguments" /> è null.-oppure- Qualsiasi elemento di <paramref name="typeArguments" /> è null. </exception>
+      <exception cref="T:System.ArgumentException">Il numero di elementi in <paramref name="typeArguments" /> non corrisponde al numero di parametri di tipo nella definizione del metodo generica corrente.-oppure- Uno degli elementi di <paramref name="typeArguments" /> non soddisfa i vincoli specificati per il parametro di tipo corrispondente della definizione di metodo generica corrente. </exception>
+      <exception cref="T:System.NotSupportedException">Questo metodo non è supportato.</exception>
+    </member>
+    <member name="P:System.Reflection.MethodInfo.ReturnParameter">
+      <summary>Ottiene un oggetto <see cref="T:System.Reflection.ParameterInfo" /> contenente informazioni sul tipo restituito dal metodo, ad esempio se il tipo restituito contiene modificatori personalizzati. </summary>
+      <returns>Oggetto <see cref="T:System.Reflection.ParameterInfo" /> contenente informazioni relative al tipo restituito.</returns>
+      <exception cref="T:System.NotImplementedException">Il metodo non è implementato.</exception>
+    </member>
+    <member name="P:System.Reflection.MethodInfo.ReturnType">
+      <summary>Ottiene il tipo restituito di questo metodo.</summary>
+      <returns>Il tipo restituito di questo metodo.</returns>
+    </member>
+    <member name="T:System.Reflection.Module">
+      <summary>Esegue la funzionalità di reflection su un modulo.</summary>
+    </member>
+    <member name="P:System.Reflection.Module.Assembly">
+      <summary>Ottiene l'oggetto <see cref="T:System.Reflection.Assembly" /> appropriato per questa istanza di <see cref="T:System.Reflection.Module" />.</summary>
+      <returns>Un oggetto Assembly.</returns>
+    </member>
+    <member name="P:System.Reflection.Module.CustomAttributes">
+      <summary>Ottiene una raccolta che contiene gli attributi personalizzati del modulo.</summary>
+      <returns>Raccolta che contiene gli attributi personalizzati di questo membro.</returns>
+    </member>
+    <member name="M:System.Reflection.Module.Equals(System.Object)">
+      <summary>Determina se questo modulo e l'oggetto specificato sono uguali.</summary>
+      <returns>true se <paramref name="o" /> è uguale a questa istanza. In caso contrario, false.</returns>
+      <param name="o">Oggetto da confrontare con questa istanza. </param>
+    </member>
+    <member name="P:System.Reflection.Module.FullyQualifiedName">
+      <summary>Ottiene una stringa che rappresenta il nome e il percorso completi di questo modulo.</summary>
+      <returns>Nome completo del modulo.</returns>
+      <exception cref="T:System.Security.SecurityException">Il chiamante non dispone delle autorizzazioni necessarie. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Reflection.Module.GetHashCode">
+      <summary>Restituisce il codice hash per l'istanza.</summary>
+      <returns>Codice hash integer con segno a 32 bit.</returns>
+    </member>
+    <member name="M:System.Reflection.Module.GetType(System.String,System.Boolean,System.Boolean)">
+      <summary>Restituisce il tipo specificato e indica se eseguire una ricerca nel modulo con la distinzione tra maiuscole e minuscole e se deve essere generata un'eccezione se il tipo non viene trovato.</summary>
+      <returns>Oggetto <see cref="T:System.Type" /> che rappresenta il tipo specificato, se il tipo è dichiarato in questo modulo. In caso contrario, null.</returns>
+      <param name="className">Nome del tipo da individuare.Il nome deve essere completo con lo spazio dei nomi.</param>
+      <param name="throwOnError">true per generare un'eccezione se non è possibile trovare il tipo; false per restituire null. </param>
+      <param name="ignoreCase">true per eseguire una ricerca senza distinzione tra maiuscole e minuscole; in caso contrario, false. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="className" /> è null. </exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">Vengono chiamati gli inizializzatori della classe e viene generata un'eccezione. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="className" /> è una stringa di lunghezza zero. </exception>
+      <exception cref="T:System.TypeLoadException">
+        <paramref name="throwOnError" /> è true e il tipo non è stato trovato. </exception>
+      <exception cref="T:System.IO.FileNotFoundException">
+        <paramref name="className" /> richiede un assembly dipendente che non è stato trovato. </exception>
+      <exception cref="T:System.IO.FileLoadException">
+        <paramref name="className" /> richiede un assembly dipendente che è stato trovato ma che non è stato possibile caricare.- oppure -L'assembly corrente è stato caricato nel contesto ReflectionOnly e <paramref name="className" /> richiede un assembly dipendente che non è stato precaricato. </exception>
+      <exception cref="T:System.BadImageFormatException">
+        <paramref name="className" /> richiede un assembly dipendente, ma il file non è un assembly valido. - oppure -<paramref name="className" /> richiede un assembly dipendente che è stato compilato per una versione del runtime successiva a quella attualmente caricata.</exception>
+    </member>
+    <member name="P:System.Reflection.Module.Name">
+      <summary>Ottiene un oggetto String che rappresenta il nome del modulo con il percorso rimosso.</summary>
+      <returns>Nome del modulo senza percorso.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Reflection.Module.ToString">
+      <summary>Restituisce il nome del modulo.</summary>
+      <returns>Oggetto String che rappresenta il nome di questo modulo.</returns>
+    </member>
+    <member name="T:System.Reflection.ParameterInfo">
+      <summary>Individua gli attributi di un parametro e consente di accedere ai relativi metadati.</summary>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.Attributes">
+      <summary>Ottiene gli attributi per questo parametro.</summary>
+      <returns>Oggetto ParameterAttributes che rappresenta gli attributi di questo parametro.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.CustomAttributes">
+      <summary>Ottiene una raccolta che contiene gli attributi personalizzati del parametro.</summary>
+      <returns>Raccolta che contiene gli attributi personalizzati del parametro.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.DefaultValue">
+      <summary>Ottiene un valore che indica il valore predefinito se il parametro dispone di un valore predefinito.</summary>
+      <returns>Valore predefinito del parametro oppure <see cref="F:System.DBNull.Value" /> se il parametro non ha un valore predefinito.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.HasDefaultValue">
+      <summary>Ottiene un valore che indica se il parametro possiede un valore predefinito.</summary>
+      <returns>true se questo parametro possiede un valore predefinito; in caso contrario, false.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.IsIn">
+      <summary>Ottiene un valore che indica se si tratta di un parametro di input.</summary>
+      <returns>true se si tratta di un parametro di input; in caso contrario, false.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.IsOptional">
+      <summary>Ottiene un valore che indica se questo parametro è opzionale.</summary>
+      <returns>true se il parametro è opzionale; in caso contrario,false.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.IsOut">
+      <summary>Ottiene un valore che indica se si tratta di un parametro di output.</summary>
+      <returns>true se si tratta di un parametro di output; in caso contrario, false.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.IsRetval">
+      <summary>Ottiene un valore che indica se si tratta di un parametro Retval.</summary>
+      <returns>true se il parametro è Retval; in caso contrario, false.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.Member">
+      <summary>Ottiene un valore che indica il membro in cui il parametro viene implementato.</summary>
+      <returns>Il membro che utilizzato il parametro rappresentato da questo <see cref="T:System.Reflection.ParameterInfo" />.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.Name">
+      <summary>Ottiene il nome del parametro.</summary>
+      <returns>Nome semplice di questo parametro.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.ParameterType">
+      <summary>Ottiene l'oggetto Type di questo parametro.</summary>
+      <returns>Oggetto Type che rappresenta il Type di questo parametro.</returns>
+    </member>
+    <member name="P:System.Reflection.ParameterInfo.Position">
+      <summary>Ottiene la posizione in base zero del parametro nell'elenco di parametri formali.</summary>
+      <returns>Intero che rappresenta la posizione di questo parametro nell'elenco dei parametri.</returns>
+    </member>
+    <member name="T:System.Reflection.PropertyInfo">
+      <summary>Individua gli attributi di una proprietà e consente di accedere ai relativi metadati.</summary>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.Attributes">
+      <summary>Ottiene gli attributi per questa proprietà.</summary>
+      <returns>Attributi di questa proprietà.</returns>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.CanRead">
+      <summary>Ottiene un valore che indica se è possibile leggere la proprietà.</summary>
+      <returns>true se è possibile leggere la proprietà; in caso contrario, false.</returns>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.CanWrite">
+      <summary>Ottiene un valore che indica se è possibile scrivere nella proprietà.</summary>
+      <returns>true se è possibile scrivere nella proprietà; in caso contrario, false.</returns>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.Equals(System.Object)">
+      <summary>Restituisce un valore che indica se questa istanza è uguale a un oggetto specificato.</summary>
+      <returns>true se <paramref name="obj" /> è uguale al tipo e al valore di questa istanza; in caso contrario, false.</returns>
+      <param name="obj">Oggetto da confrontare con questa istanza o null.</param>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.GetConstantValue">
+      <summary>Restituisce un valore letterale associato alla proprietà da un compilatore. </summary>
+      <returns>Oggetto <see cref="T:System.Object" /> contenente il valore letterale associato alla proprietà.Se il valore letterale è un tipo di classe con un valore dell'elemento uguale a zero, il valore restituito è null.</returns>
+      <exception cref="T:System.InvalidOperationException">La tabella delle costanti nei metadati non gestiti non contiene un valore della costante per la proprietà corrente.</exception>
+      <exception cref="T:System.FormatException">Il tipo di valore non è incluso in quelli consentiti dalle specifiche CLS (Common Language Specification).Vedere le specifiche ECMA Partition II, Metadata.</exception>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.GetHashCode">
+      <summary>Restituisce il codice hash relativo a questa istanza.</summary>
+      <returns>Codice hash di un intero con segno a 32 bit.</returns>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.GetIndexParameters">
+      <summary>Quando ne viene eseguito l'override in una classe derivata, restituisce una matrice di tutti i parametri di indice per la proprietà.</summary>
+      <returns>Matrice di tipo ParameterInfo contenente i parametri per gli indici.Se la proprietà non è stata indicizzata, la matrice conterrà 0 (zero) elementi.</returns>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.GetMethod">
+      <summary>Ottiene la funzione di accesso get per questa proprietà.</summary>
+      <returns>Funzione di accesso get per questa proprietà.</returns>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.GetValue(System.Object)">
+      <summary>Restituisce il valore della proprietà di un oggetto specificato.</summary>
+      <returns>Valore della proprietà dell'oggetto specificato.</returns>
+      <param name="obj">Oggetto di cui verrà restituito il valore della proprietà.</param>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.GetValue(System.Object,System.Object[])">
+      <summary>Restituisce il valore della proprietà di un oggetto specificato, con valori di indice facoltativi per le proprietà indicizzate.</summary>
+      <returns>Valore della proprietà dell'oggetto specificato.</returns>
+      <param name="obj">Oggetto di cui verrà restituito il valore della proprietà. </param>
+      <param name="index">Valori di indice facoltativi per le proprietà indicizzate.Gli indici delle proprietà indicizzate sono in base zero.Il valore deve essere null per le proprietà non indicizzate.</param>
+      <exception cref="T:System.ArgumentException">La matrice <paramref name="index" /> non contiene il tipo di argomenti necessario.-oppure- Non è possibile trovare la funzione di accesso get della proprietà. </exception>
+      <exception cref="T:System.Reflection.TargetException">Nell'API.NET per le applicazioni Windows o nella Libreria di classi portabile, rilevare piuttosto <see cref="T:System.Exception" />.L'oggetto non corrisponde al tipo di destinazione oppure una proprietà è di istanza ma <paramref name="obj" /> è null. </exception>
+      <exception cref="T:System.Reflection.TargetParameterCountException">Il numero di parametri in <paramref name="index" /> non corrisponde a quello dei parametri accettati dalla proprietà indicizzata. </exception>
+      <exception cref="T:System.MethodAccessException">Nell'API.NET per le applicazioni Windows o nella Libreria di classi portabile, rilevare piuttosto l'eccezione della classe di base <see cref="T:System.MemberAccessException" />.È stato effettuato un tentativo non valido di accedere a un metodo privato o protetto all'interno di una classe. </exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">Si è verificato un errore durante il recupero del valore della proprietà.Ad esempio, un valore di indice specificato per una proprietà indicizzata non è compreso nell'intervallo.Il motivo dell'errore è indicato dalla proprietà <see cref="P:System.Exception.InnerException" />.</exception>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.IsSpecialName">
+      <summary>Ottiene un valore che indica se la proprietà è il nome speciale.</summary>
+      <returns>true se questa proprietà è il nome speciale; in caso contrario, false.</returns>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.PropertyType">
+      <summary>Ottiene il tipo della proprietà.</summary>
+      <returns>Tipo della proprietà.</returns>
+    </member>
+    <member name="P:System.Reflection.PropertyInfo.SetMethod">
+      <summary>Ottiene la funzione di accesso set per questa proprietà.</summary>
+      <returns>Funzione di accesso set per questa proprietà oppure null se la proprietà è di sola lettura.</returns>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.SetValue(System.Object,System.Object)">
+      <summary>Imposta il valore della proprietà di un oggetto specificato.</summary>
+      <param name="obj">Oggetto di cui verrà impostato il valore della proprietà.</param>
+      <param name="value">Nuovo valore della proprietà.</param>
+      <exception cref="T:System.ArgumentException">Non è possibile trovare la funzione di accesso set della proprietà. -oppure-<paramref name="value" />non può essere convertito nel tipo di <see cref="P:System.Reflection.PropertyInfo.PropertyType" />. </exception>
+      <exception cref="T:System.Reflection.TargetException">Nell'API.NET per le applicazioni Windows o nella Libreria di classi portabile, rilevare piuttosto <see cref="T:System.Exception" />.Il tipo di <paramref name="obj" /> non corrisponde al tipo di destinazione o una proprietà è una proprietà di istanza ma <paramref name="obj" /> è null. </exception>
+      <exception cref="T:System.MethodAccessException">Nell'API.NET per le applicazioni Windows o nella Libreria di classi portabile, rilevare piuttosto l'eccezione della classe di base <see cref="T:System.MemberAccessException" />. È stato effettuato un tentativo non valido di accedere a un metodo privato o protetto all'interno di una classe. </exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">Si è verificato un errore durante l'impostazione del valore della proprietà.Il motivo dell'errore è indicato dalla proprietà <see cref="P:System.Exception.InnerException" />.</exception>
+    </member>
+    <member name="M:System.Reflection.PropertyInfo.SetValue(System.Object,System.Object,System.Object[])">
+      <summary>Imposta il valore della proprietà di un oggetto specificato con valori di indice facoltativi per le proprietà di indice.</summary>
+      <param name="obj">Oggetto di cui verrà impostato il valore della proprietà. </param>
+      <param name="value">Nuovo valore della proprietà. </param>
+      <param name="index">Valori di indice facoltativi per le proprietà indicizzate.Il valore deve essere null per le proprietà non indicizzate.</param>
+      <exception cref="T:System.ArgumentException">La matrice <paramref name="index" /> non contiene il tipo di argomenti necessario.-oppure- Non è possibile trovare la funzione di accesso set della proprietà. -oppure-<paramref name="value" />non può essere convertito nel tipo di <see cref="P:System.Reflection.PropertyInfo.PropertyType" />.</exception>
+      <exception cref="T:System.Reflection.TargetException">Nell'API.NET per le applicazioni Windows o nella Libreria di classi portabile, rilevare piuttosto <see cref="T:System.Exception" />.L'oggetto non corrisponde al tipo di destinazione oppure una proprietà è di istanza ma <paramref name="obj" /> è null. </exception>
+      <exception cref="T:System.Reflection.TargetParameterCountException">Il numero di parametri in <paramref name="index" /> non corrisponde a quello dei parametri accettati dalla proprietà indicizzata. </exception>
+      <exception cref="T:System.MethodAccessException">Nell'API.NET per le applicazioni Windows o nella Libreria di classi portabile, rilevare piuttosto l'eccezione della classe di base <see cref="T:System.MemberAccessException" />.È stato effettuato un tentativo non valido di accedere a un metodo privato o protetto all'interno di una classe. </exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">Si è verificato un errore durante l'impostazione del valore della proprietà.Ad esempio, un valore di indice specificato per una proprietà indicizzata non è compreso nell'intervallo.Il motivo dell'errore è indicato dalla proprietà <see cref="P:System.Exception.InnerException" />.</exception>
+    </member>
+    <member name="T:System.Reflection.ReflectionContext">
+      <summary>Rappresenta un contesto che può fornire oggetti reflection.</summary>
+    </member>
+    <member name="M:System.Reflection.ReflectionContext.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Reflection.ReflectionContext" />.</summary>
+    </member>
+    <member name="M:System.Reflection.ReflectionContext.GetTypeForObject(System.Object)">
+      <summary>Ottiene la rappresentazione del tipo dell'oggetto specificato nel contesto di reflection.</summary>
+      <returns>Oggetto che rappresenta il tipo dell'oggetto specificato.</returns>
+      <param name="value">Oggetto da rappresentare.</param>
+    </member>
+    <member name="M:System.Reflection.ReflectionContext.MapAssembly(System.Reflection.Assembly)">
+      <summary>Ottiene la rappresentazione, in questo contesto di reflection, di un assembly rappresentato da un oggetto da un altro contesto di reflection.</summary>
+      <returns>Rappresentazione dell'assembly in questo contesto di reflection.</returns>
+      <param name="assembly">Rappresentazione esterna dell'assembly da rappresentare in questo contesto.</param>
+    </member>
+    <member name="M:System.Reflection.ReflectionContext.MapType(System.Reflection.TypeInfo)">
+      <summary>Ottiene la rappresentazione, in questo contesto di reflection, di un tipo rappresentato da un oggetto da un altro contesto di reflection.</summary>
+      <returns>Rappresentazione del tipo in questo contesto di reflection.</returns>
+      <param name="type">Rappresentazione esterna del tipo da rappresentare in questo contesto.</param>
+    </member>
+    <member name="T:System.Reflection.ReflectionTypeLoadException">
+      <summary>Eccezione generata dal metodo <see cref="M:System.Reflection.Module.GetTypes" /> quando non è possibile caricare una qualsiasi delle classi in un modulo.La classe non può essere ereditata.</summary>
+    </member>
+    <member name="M:System.Reflection.ReflectionTypeLoadException.#ctor(System.Type[],System.Exception[])">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Reflection.ReflectionTypeLoadException" /> con le classi date e le relative eccezioni associate.</summary>
+      <param name="classes">Matrice di tipo Type contenente le classi definite nel modulo e caricate.Questa matrice può contenere valori riferimento null, Nothing in Visual Basic.</param>
+      <param name="exceptions">Matrice di tipo Exception contenente le eccezioni generate dal caricatore della classe.I valori riferimento null, Nothing in Visual Basic, nella matrice <paramref name="classes" /> si allineano alle eccezioni in questa matrice <paramref name="exceptions" />.</param>
+    </member>
+    <member name="M:System.Reflection.ReflectionTypeLoadException.#ctor(System.Type[],System.Exception[],System.String)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Reflection.ReflectionTypeLoadException" /> con le classi date, le relative eccezioni associate e le descrizioni delle eccezioni.</summary>
+      <param name="classes">Matrice di tipo Type contenente le classi definite nel modulo e caricate.Questa matrice può contenere valori riferimento null, Nothing in Visual Basic.</param>
+      <param name="exceptions">Matrice di tipo Exception contenente le eccezioni generate dal caricatore della classe.I valori riferimento null, Nothing in Visual Basic, nella matrice <paramref name="classes" /> si allineano alle eccezioni in questa matrice <paramref name="exceptions" />.</param>
+      <param name="message">Oggetto String che indica la ragione per la quale è stata generata l'eccezione. </param>
+    </member>
+    <member name="P:System.Reflection.ReflectionTypeLoadException.LoaderExceptions">
+      <summary>Ottiene la matrice delle eccezioni generate dal caricatore della classe.</summary>
+      <returns>Matrice di tipo Exception contenente le eccezioni generate dal caricatore della classe.I valori null nella matrice <paramref name="classes" /> di questa istanza vengono allineati alle eccezioni in questa matrice.</returns>
+    </member>
+    <member name="P:System.Reflection.ReflectionTypeLoadException.Types">
+      <summary>Ottiene la matrice delle classi definite nel modulo e caricate.</summary>
+      <returns>Matrice di tipo Type contenente le classi definite nel modulo e caricate.Questa matrice può contenere valori null.</returns>
+    </member>
+    <member name="T:System.Reflection.ResourceLocation">
+      <summary>Specifica il percorso della risorsa.</summary>
+    </member>
+    <member name="F:System.Reflection.ResourceLocation.ContainedInAnotherAssembly">
+      <summary>Specifica che la risorsa è contenuta in un altro assembly.</summary>
+    </member>
+    <member name="F:System.Reflection.ResourceLocation.ContainedInManifestFile">
+      <summary>Specifica che la risorsa è contenuta nel file del manifesto.</summary>
+    </member>
+    <member name="F:System.Reflection.ResourceLocation.Embedded">
+      <summary>Specifica una risorsa incorporata, ossia non collegata.</summary>
+    </member>
+    <member name="T:System.Reflection.TargetInvocationException">
+      <summary>L'eccezione generata dai metodi richiamati tramite la funzionalità di reflection.La classe non può essere ereditata.</summary>
+    </member>
+    <member name="M:System.Reflection.TargetInvocationException.#ctor(System.Exception)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Reflection.TargetInvocationException" /> con un riferimento all'eccezione interna che è la causa dell'eccezione.</summary>
+      <param name="inner">Eccezione causa dell'eccezione corrente.Se il parametro <paramref name="inner" /> non è null, l'eccezione corrente verrà generata in un blocco catch che gestisce l'eccezione interna.</param>
+    </member>
+    <member name="M:System.Reflection.TargetInvocationException.#ctor(System.String,System.Exception)">
+      <summary>Consente l'inizializzazione di una nuova istanza della classe <see cref="T:System.Reflection.TargetInvocationException" /> con un messaggio di errore specificato e un riferimento all'eccezione interna che è la causa dell'eccezione corrente.</summary>
+      <param name="message">Messaggio di errore nel quale viene indicato il motivo dell’eccezione </param>
+      <param name="inner">Eccezione causa dell'eccezione corrente.Se il parametro <paramref name="inner" /> non è null, l'eccezione corrente verrà generata in un blocco catch che gestisce l'eccezione interna.</param>
+    </member>
+    <member name="T:System.Reflection.TargetParameterCountException">
+      <summary>Eccezione generata quando il numero di parametri per una chiamata non corrisponde al numero previsto.La classe non può essere ereditata.</summary>
+    </member>
+    <member name="M:System.Reflection.TargetParameterCountException.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Reflection.TargetParameterCountException" /> con una stringa di messaggio vuota e la causa radice dell'eccezione.</summary>
+    </member>
+    <member name="M:System.Reflection.TargetParameterCountException.#ctor(System.String)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Reflection.TargetParameterCountException" /> con la stringa di messaggio impostata sul messaggio dato e con l'eccezione della causa radice.</summary>
+      <param name="message">Oggetto String che indica il motivo per il quale è stata generata l'eccezione. </param>
+    </member>
+    <member name="M:System.Reflection.TargetParameterCountException.#ctor(System.String,System.Exception)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Reflection.TargetParameterCountException" /> con un messaggio di errore specificato e un riferimento all'eccezione interna che è la causa dell'eccezione corrente.</summary>
+      <param name="message">Messaggio di errore nel quale viene indicato il motivo dell’eccezione </param>
+      <param name="inner">Eccezione causa dell'eccezione corrente.Se il parametro <paramref name="inner" /> non è null, l'eccezione corrente verrà generata in un blocco catch che gestisce l'eccezione interna.</param>
+    </member>
+    <member name="T:System.Reflection.TypeInfo">
+      <summary>Rappresenta dichiarazioni di tipo per tipi di classe, tipi di interfaccia, tipi di matrice, tipi di valore, tipi di enumerazione, parametri di tipo, definizioni di tipo generico e tipi generici costruiti chiusi o aperti. </summary>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.Assembly"></member>
+    <member name="P:System.Reflection.TypeInfo.AssemblyQualifiedName"></member>
+    <member name="M:System.Reflection.TypeInfo.AsType">
+      <summary>Restituisce il tipo corrente come oggetto <see cref="T:System.Type" />.</summary>
+      <returns>Tipo corrente.</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.Attributes"></member>
+    <member name="P:System.Reflection.TypeInfo.BaseType"></member>
+    <member name="P:System.Reflection.TypeInfo.ContainsGenericParameters"></member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredConstructors">
+      <summary>Ottiene una raccolta di costruttori dichiarati dal tipo corrente.</summary>
+      <returns>Raccolta di costruttori dichiarati dal tipo corrente.</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredEvents">
+      <summary>Ottiene una raccolta di eventi definiti dal tipo corrente.</summary>
+      <returns>Raccolta di eventi definiti dal tipo corrente.</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredFields">
+      <summary>Ottiene una raccolta di campi definiti dal tipo corrente.</summary>
+      <returns>Raccolta di campi definiti dal tipo corrente.</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredMembers">
+      <summary>Ottiene una raccolta di membri definiti dal tipo corrente.</summary>
+      <returns>Raccolta di membri definiti dal tipo corrente.</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredMethods">
+      <summary>Ottiene una raccolta di metodi definiti dal tipo corrente.</summary>
+      <returns>Raccolta di metodi definiti dal tipo corrente.</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredNestedTypes">
+      <summary>Ottiene una raccolta di tipi annidati definiti dal tipo corrente.</summary>
+      <returns>Raccolta di tipi annidati definiti dal tipo corrente.</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaredProperties">
+      <summary>Ottiene una raccolta di proprietà definite dal tipo corrente. </summary>
+      <returns>Raccolta di proprietà definite dal tipo corrente.</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.DeclaringMethod"></member>
+    <member name="P:System.Reflection.TypeInfo.FullName"></member>
+    <member name="P:System.Reflection.TypeInfo.GenericParameterAttributes"></member>
+    <member name="P:System.Reflection.TypeInfo.GenericParameterPosition"></member>
+    <member name="P:System.Reflection.TypeInfo.GenericTypeArguments"></member>
+    <member name="P:System.Reflection.TypeInfo.GenericTypeParameters">
+      <summary>Ottiene una matrice dei parametri generici dell'istanza corrente. </summary>
+      <returns>Matrice che contiene i parametri di tipo generico dell'istanza corrente o una matrice di <see cref="P:System.Array.Length" /> con valore zero se l'istanza corrente non ha alcun parametro di tipo generico. </returns>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetArrayRank"></member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredEvent(System.String)">
+      <summary>Restituisce un oggetto che rappresenta l'evento pubblico specificato dichiarato dal tipo corrente.</summary>
+      <returns>Oggetto che rappresenta l'evento specificato, se trovato; in caso contrario, null.</returns>
+      <param name="name">Nome dell'evento.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> è null. </exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredField(System.String)">
+      <summary>Restituisce un oggetto che rappresenta il campo pubblico specificato dichiarato dal tipo corrente.</summary>
+      <returns>Oggetto che rappresenta il campo specificato, se trovato; in caso contrario, null.</returns>
+      <param name="name">Nome del campo.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> è null. </exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredMethod(System.String)">
+      <summary>Restituisce un oggetto che rappresenta il metodo pubblico specificato dichiarato dal tipo corrente.</summary>
+      <returns>Oggetto che rappresenta il metodo specificato, se trovato; in caso contrario, null.</returns>
+      <param name="name">Nome del metodo.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> è null. </exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredMethods(System.String)">
+      <summary>Restituisce una raccolta che contiene tutti i metodi pubblici dichiarati nel tipo corrente che corrispondono al nome specificato.</summary>
+      <returns>Raccolta che contiene i metodi che corrispondono a <paramref name="name" />.</returns>
+      <param name="name">Nome del metodo da cercare.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> è null. </exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredNestedType(System.String)">
+      <summary>Restituisce un oggetto che rappresenta il tipo annidato pubblico specificato dichiarato dal tipo corrente.</summary>
+      <returns>Oggetto che rappresenta il tipo annidato specificato, se trovato; in caso contrario, null.</returns>
+      <param name="name">Nome del tipo annidato.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> è null. </exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetDeclaredProperty(System.String)">
+      <summary>Restituisce un oggetto che rappresenta la proprietà pubblica specificata dichiarata dal tipo corrente.</summary>
+      <returns>Oggetto che rappresenta la proprietà specificata, se trovata; in caso contrario, null.</returns>
+      <param name="name">Nome della proprietà.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> è null. </exception>
+    </member>
+    <member name="M:System.Reflection.TypeInfo.GetElementType"></member>
+    <member name="M:System.Reflection.TypeInfo.GetGenericParameterConstraints"></member>
+    <member name="M:System.Reflection.TypeInfo.GetGenericTypeDefinition"></member>
+    <member name="P:System.Reflection.TypeInfo.GUID"></member>
+    <member name="P:System.Reflection.TypeInfo.HasElementType"></member>
+    <member name="P:System.Reflection.TypeInfo.ImplementedInterfaces">
+      <summary>Ottiene una raccolta delle interfacce implementate dal tipo corrente.</summary>
+      <returns>Raccolta delle interfacce implementate dal tipo corrente.</returns>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.IsAbstract"></member>
+    <member name="P:System.Reflection.TypeInfo.IsAnsiClass"></member>
+    <member name="P:System.Reflection.TypeInfo.IsArray"></member>
+    <member name="M:System.Reflection.TypeInfo.IsAssignableFrom(System.Reflection.TypeInfo)">
+      <summary>Restituisce un valore che indica se il tipo specificato può essere assegnato al tipo corrente.</summary>
+      <returns>true se il tipo specificato può essere assegnato a questo tipo; in caso contrario, false.</returns>
+      <param name="typeInfo">Tipo da controllare.</param>
+    </member>
+    <member name="P:System.Reflection.TypeInfo.IsAutoClass"></member>
+    <member name="P:System.Reflection.TypeInfo.IsAutoLayout"></member>
+    <member name="P:System.Reflection.TypeInfo.IsByRef"></member>
+    <member name="P:System.Reflection.TypeInfo.IsClass"></member>
+    <member name="P:System.Reflection.TypeInfo.IsEnum"></member>
+    <member name="P:System.Reflection.TypeInfo.IsExplicitLayout"></member>
+    <member name="P:System.Reflection.TypeInfo.IsGenericParameter"></member>
+    <member name="P:System.Reflection.TypeInfo.IsGenericType"></member>
+    <member name="P:System.Reflection.TypeInfo.IsGenericTypeDefinition"></member>
+    <member name="P:System.Reflection.TypeInfo.IsImport"></member>
+    <member name="P:System.Reflection.TypeInfo.IsInterface"></member>
+    <member name="P:System.Reflection.TypeInfo.IsLayoutSequential"></member>
+    <member name="P:System.Reflection.TypeInfo.IsMarshalByRef"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNested"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedAssembly"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedFamANDAssem"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedFamily"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedFamORAssem"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedPrivate"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNestedPublic"></member>
+    <member name="P:System.Reflection.TypeInfo.IsNotPublic"></member>
+    <member name="P:System.Reflection.TypeInfo.IsPointer"></member>
+    <member name="P:System.Reflection.TypeInfo.IsPrimitive"></member>
+    <member name="P:System.Reflection.TypeInfo.IsPublic"></member>
+    <member name="P:System.Reflection.TypeInfo.IsSealed"></member>
+    <member name="P:System.Reflection.TypeInfo.IsSerializable"></member>
+    <member name="P:System.Reflection.TypeInfo.IsSpecialName"></member>
+    <member name="M:System.Reflection.TypeInfo.IsSubclassOf(System.Type)"></member>
+    <member name="P:System.Reflection.TypeInfo.IsUnicodeClass"></member>
+    <member name="P:System.Reflection.TypeInfo.IsValueType"></member>
+    <member name="P:System.Reflection.TypeInfo.IsVisible"></member>
+    <member name="M:System.Reflection.TypeInfo.MakeArrayType"></member>
+    <member name="M:System.Reflection.TypeInfo.MakeArrayType(System.Int32)"></member>
+    <member name="M:System.Reflection.TypeInfo.MakeByRefType"></member>
+    <member name="M:System.Reflection.TypeInfo.MakeGenericType(System.Type[])"></member>
+    <member name="M:System.Reflection.TypeInfo.MakePointerType"></member>
+    <member name="P:System.Reflection.TypeInfo.Namespace"></member>
+    <member name="M:System.Reflection.TypeInfo.System#Reflection#IReflectableType#GetTypeInfo">
+      <summary>Restituisce una rappresentazione del tipo corrente come oggetto <see cref="T:System.Reflection.TypeInfo" />.</summary>
+      <returns>Riferimento al tipo corrente.</returns>
+    </member>
+  </members>
+</doc>

@@ -31,16 +31,17 @@ namespace Emby.Server.Implementations.HttpServer
         private readonly ILogger _logger;
         private readonly IFileSystem _fileSystem;
         private readonly IJsonSerializer _jsonSerializer;
-        private readonly IMemoryStreamFactory _memoryStreamFactory;
+
+        private IBrotliCompressor _brotliCompressor;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HttpResultFactory" /> class.
         /// </summary>
-        public HttpResultFactory(ILogManager logManager, IFileSystem fileSystem, IJsonSerializer jsonSerializer, IMemoryStreamFactory memoryStreamFactory)
+        public HttpResultFactory(ILogManager logManager, IFileSystem fileSystem, IJsonSerializer jsonSerializer, IBrotliCompressor brotliCompressor)
         {
             _fileSystem = fileSystem;
             _jsonSerializer = jsonSerializer;
-            _memoryStreamFactory = memoryStreamFactory;
+            _brotliCompressor = brotliCompressor;
             _logger = logManager.GetLogger("HttpResultFactory");
         }
 
@@ -51,12 +52,22 @@ namespace Emby.Server.Implementations.HttpServer
         /// <param name="contentType">Type of the content.</param>
         /// <param name="responseHeaders">The response headers.</param>
         /// <returns>System.Object.</returns>
-        public object GetResult(object content, string contentType, IDictionary<string, string> responseHeaders = null)
+        public object GetResult(IRequest requestContext, byte[] content, string contentType, IDictionary<string, string> responseHeaders = null)
+        {
+            return GetHttpResult(requestContext, content, contentType, true, responseHeaders);
+        }
+
+        public object GetResult(string content, string contentType, IDictionary<string, string> responseHeaders = null)
         {
             return GetHttpResult(null, content, contentType, true, responseHeaders);
         }
 
-        public object GetResult(IRequest requestContext, object content, string contentType, IDictionary<string, string> responseHeaders = null)
+        public object GetResult(IRequest requestContext, Stream content, string contentType, IDictionary<string, string> responseHeaders = null)
+        {
+            return GetHttpResult(requestContext, content, contentType, true, responseHeaders);
+        }
+
+        public object GetResult(IRequest requestContext, string content, string contentType, IDictionary<string, string> responseHeaders = null)
         {
             return GetHttpResult(requestContext, content, contentType, true, responseHeaders);
         }
@@ -76,50 +87,98 @@ namespace Emby.Server.Implementations.HttpServer
         /// <summary>
         /// Gets the HTTP result.
         /// </summary>
-        private IHasHeaders GetHttpResult(IRequest requestContext, object content, string contentType, bool addCachePrevention, IDictionary<string, string> responseHeaders = null)
+        private IHasHeaders GetHttpResult(IRequest requestContext, Stream content, string contentType, bool addCachePrevention, IDictionary<string, string> responseHeaders = null)
+        {
+            var result = new StreamWriter(content, contentType, _logger);
+
+            if (responseHeaders == null)
+            {
+                responseHeaders = new Dictionary<string, string>();
+            }
+
+            string expires;
+            if (addCachePrevention && !responseHeaders.TryGetValue("Expires", out expires))
+            {
+                responseHeaders["Expires"] = "-1";
+            }
+
+            AddResponseHeaders(result, responseHeaders);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Gets the HTTP result.
+        /// </summary>
+        private IHasHeaders GetHttpResult(IRequest requestContext, byte[] content, string contentType, bool addCachePrevention, IDictionary<string, string> responseHeaders = null)
         {
             IHasHeaders result;
 
-            var stream = content as Stream;
+            var compressionType = requestContext == null ? null : GetCompressionType(requestContext, content, contentType);
 
-            if (stream != null)
+            var isHeadRequest = string.Equals(requestContext.Verb, "head", StringComparison.OrdinalIgnoreCase);
+
+            if (string.IsNullOrEmpty(compressionType))
             {
-                result = new StreamWriter(stream, contentType, _logger);
-            }
+                var contentLength = content.Length;
 
+                if (isHeadRequest)
+                {
+                    content = Array.Empty<byte>();
+                }
+
+                result = new StreamWriter(content, contentType, contentLength, _logger);
+            }
             else
             {
-                var bytes = content as byte[];
-
-                if (bytes != null)
-                {
-                    result = new StreamWriter(bytes, contentType, _logger);
-                }
-                else
-                {
-                    var text = content as string;
-
-                    if (text != null)
-                    {
-                        var compressionType = requestContext == null ? null : GetCompressionType(requestContext);
-
-                        if (string.IsNullOrEmpty(compressionType))
-                        {
-                            result = new StreamWriter(Encoding.UTF8.GetBytes(text), contentType, _logger);
-                        }
-                        else
-                        {
-                            var isHeadRequest = string.Equals(requestContext.Verb, "head", StringComparison.OrdinalIgnoreCase);
-
-                            result = GetCompressedResult(Encoding.UTF8.GetBytes(text), compressionType, responseHeaders, isHeadRequest, contentType);
-                        }
-                    }
-                    else
-                    {
-                        result = new HttpResult(content, contentType, HttpStatusCode.OK);
-                    }
-                }
+                result = GetCompressedResult(content, compressionType, responseHeaders, isHeadRequest, contentType);
             }
+
+            if (responseHeaders == null)
+            {
+                responseHeaders = new Dictionary<string, string>();
+            }
+
+            string expires;
+            if (addCachePrevention && !responseHeaders.TryGetValue("Expires", out expires))
+            {
+                responseHeaders["Expires"] = "-1";
+            }
+
+            AddResponseHeaders(result, responseHeaders);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Gets the HTTP result.
+        /// </summary>
+        private IHasHeaders GetHttpResult(IRequest requestContext, string content, string contentType, bool addCachePrevention, IDictionary<string, string> responseHeaders = null)
+        {
+            IHasHeaders result;
+
+            var bytes = Encoding.UTF8.GetBytes(content);
+
+            var compressionType = requestContext == null ? null : GetCompressionType(requestContext, bytes, contentType);
+
+            var isHeadRequest = requestContext == null ? false : string.Equals(requestContext.Verb, "head", StringComparison.OrdinalIgnoreCase);
+
+            if (string.IsNullOrEmpty(compressionType))
+            {
+                var contentLength = bytes.Length;
+
+                if (isHeadRequest)
+                {
+                    bytes = Array.Empty<byte>();
+                }
+
+                result = new StreamWriter(bytes, contentType, contentLength, _logger);
+            }
+            else
+            {
+                result = GetCompressedResult(bytes, compressionType, responseHeaders, isHeadRequest, contentType);
+            }
+
             if (responseHeaders == null)
             {
                 responseHeaders = new Dictionary<string, string>();
@@ -140,19 +199,8 @@ namespace Emby.Server.Implementations.HttpServer
         /// Gets the optimized result.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="requestContext">The request context.</param>
-        /// <param name="result">The result.</param>
-        /// <param name="responseHeaders">The response headers.</param>
-        /// <returns>System.Object.</returns>
-        /// <exception cref="System.ArgumentNullException">result</exception>
-        public object GetOptimizedResult<T>(IRequest requestContext, T result, IDictionary<string, string> responseHeaders = null)
+        public object GetResult<T>(IRequest requestContext, T result, IDictionary<string, string> responseHeaders = null)
             where T : class
-        {
-            return GetOptimizedResultInternal<T>(requestContext, result, true, responseHeaders);
-        }
-
-        private object GetOptimizedResultInternal<T>(IRequest requestContext, T result, bool addCachePrevention, IDictionary<string, string> responseHeaders = null)
-          where T : class
         {
             if (result == null)
             {
@@ -164,24 +212,49 @@ namespace Emby.Server.Implementations.HttpServer
                 responseHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             }
 
-            if (addCachePrevention)
-            {
-                responseHeaders["Expires"] = "-1";
-            }
+            responseHeaders["Expires"] = "-1";
 
             return ToOptimizedResultInternal(requestContext, result, responseHeaders);
         }
 
-        public static string GetCompressionType(IRequest request)
+        private string GetCompressionType(IRequest request, byte[] content, string responseContentType)
+        {
+            if (responseContentType == null)
+            {
+                return null;
+            }
+
+            // Per apple docs, hls manifests must be compressed
+            if (!responseContentType.StartsWith("text/", StringComparison.OrdinalIgnoreCase) &&
+                responseContentType.IndexOf("json", StringComparison.OrdinalIgnoreCase) == -1 &&
+                responseContentType.IndexOf("javascript", StringComparison.OrdinalIgnoreCase) == -1 &&
+                responseContentType.IndexOf("xml", StringComparison.OrdinalIgnoreCase) == -1 &&
+                responseContentType.IndexOf("application/x-mpegURL", StringComparison.OrdinalIgnoreCase) == -1)
+            {
+                return null;
+            }
+
+            if (content.Length < 1024)
+            {
+                return null;
+            }
+
+            return GetCompressionType(request);
+        }
+
+        private string GetCompressionType(IRequest request)
         {
             var acceptEncoding = request.Headers["Accept-Encoding"];
 
-            if (!string.IsNullOrWhiteSpace(acceptEncoding))
+            if (acceptEncoding != null)
             {
-                if (acceptEncoding.Contains("deflate"))
+                //if (_brotliCompressor != null && acceptEncoding.IndexOf("br", StringComparison.OrdinalIgnoreCase) != -1)
+                //    return "br";
+
+                if (acceptEncoding.IndexOf("deflate", StringComparison.OrdinalIgnoreCase) != -1)
                     return "deflate";
 
-                if (acceptEncoding.Contains("gzip"))
+                if (acceptEncoding.IndexOf("gzip", StringComparison.OrdinalIgnoreCase) != -1)
                     return "gzip";
             }
 
@@ -229,7 +302,10 @@ namespace Emby.Server.Implementations.HttpServer
 
             if (isHeadRequest)
             {
-                return GetHttpResult(request, Array.Empty<byte>(), contentType, true, responseHeaders);
+                using (ms)
+                {
+                    return GetHttpResult(request, Array.Empty<byte>(), contentType, true, responseHeaders);
+                }
             }
 
             return GetHttpResult(request, ms, contentType, true, responseHeaders);
@@ -246,25 +322,22 @@ namespace Emby.Server.Implementations.HttpServer
                 responseHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             }
 
-            // Per apple docs, hls manifests must be compressed
-            if ((contentType ?? string.Empty).IndexOf("application/x-mpegURL") != -1)
-            {
-                content = Compress(content, requestedCompressionType);
-                responseHeaders["Content-Encoding"] = requestedCompressionType;
-            }
+            content = Compress(content, requestedCompressionType);
+            responseHeaders["Content-Encoding"] = requestedCompressionType;
 
             responseHeaders["Vary"] = "Accept-Encoding";
-            responseHeaders["Content-Length"] = content.Length.ToString(UsCulture);
+
+            var contentLength = content.Length;
 
             if (isHeadRequest)
             {
-                var result = new StreamWriter(Array.Empty<byte>(), contentType, _logger);
+                var result = new StreamWriter(Array.Empty<byte>(), contentType, contentLength, _logger);
                 AddResponseHeaders(result, responseHeaders);
                 return result;
             }
             else
             {
-                var result = new StreamWriter(content, contentType, _logger);
+                var result = new StreamWriter(content, contentType, contentLength, _logger);
                 AddResponseHeaders(result, responseHeaders);
                 return result;
             }
@@ -272,13 +345,21 @@ namespace Emby.Server.Implementations.HttpServer
 
         private byte[] Compress(byte[] bytes, string compressionType)
         {
-            if (compressionType == "deflate")
+            if (string.Equals(compressionType, "br", StringComparison.OrdinalIgnoreCase))
+                return CompressBrotli(bytes);
+
+            if (string.Equals(compressionType, "deflate", StringComparison.OrdinalIgnoreCase))
                 return Deflate(bytes);
 
-            if (compressionType == "gzip")
+            if (string.Equals(compressionType, "gzip", StringComparison.OrdinalIgnoreCase))
                 return GZip(bytes);
 
             throw new NotSupportedException(compressionType);
+        }
+
+        private byte[] CompressBrotli(byte[] bytes)
+        {
+            return _brotliCompressor.Compress(bytes);
         }
 
         private byte[] Deflate(byte[] bytes)
@@ -332,104 +413,6 @@ namespace Emby.Server.Implementations.HttpServer
                     return reader.ReadToEnd();
                 }
             }
-        }
-
-        /// <summary>
-        /// Gets the optimized result using cache.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="requestContext">The request context.</param>
-        /// <param name="cacheKey">The cache key.</param>
-        /// <param name="lastDateModified">The last date modified.</param>
-        /// <param name="cacheDuration">Duration of the cache.</param>
-        /// <param name="factoryFn">The factory fn.</param>
-        /// <param name="responseHeaders">The response headers.</param>
-        /// <returns>System.Object.</returns>
-        /// <exception cref="System.ArgumentNullException">cacheKey
-        /// or
-        /// factoryFn</exception>
-        public object GetOptimizedResultUsingCache<T>(IRequest requestContext, Guid cacheKey, DateTime? lastDateModified, TimeSpan? cacheDuration, Func<T> factoryFn, IDictionary<string, string> responseHeaders = null)
-               where T : class
-        {
-            if (cacheKey.Equals(Guid.Empty))
-            {
-                throw new ArgumentNullException("cacheKey");
-            }
-            if (factoryFn == null)
-            {
-                throw new ArgumentNullException("factoryFn");
-            }
-
-            var key = cacheKey.ToString("N");
-
-            if (responseHeaders == null)
-            {
-                responseHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            }
-
-            // See if the result is already cached in the browser
-            var result = GetCachedResult(requestContext, responseHeaders, cacheKey, key, lastDateModified, cacheDuration, null);
-
-            if (result != null)
-            {
-                return result;
-            }
-
-            return GetOptimizedResultInternal(requestContext, factoryFn(), false, responseHeaders);
-        }
-
-        /// <summary>
-        /// To the cached result.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="requestContext">The request context.</param>
-        /// <param name="cacheKey">The cache key.</param>
-        /// <param name="lastDateModified">The last date modified.</param>
-        /// <param name="cacheDuration">Duration of the cache.</param>
-        /// <param name="factoryFn">The factory fn.</param>
-        /// <param name="contentType">Type of the content.</param>
-        /// <param name="responseHeaders">The response headers.</param>
-        /// <returns>System.Object.</returns>
-        /// <exception cref="System.ArgumentNullException">cacheKey</exception>
-        public object GetCachedResult<T>(IRequest requestContext, Guid cacheKey, DateTime? lastDateModified, TimeSpan? cacheDuration, Func<T> factoryFn, string contentType, IDictionary<string, string> responseHeaders = null)
-          where T : class
-        {
-            if (cacheKey.Equals(Guid.Empty))
-            {
-                throw new ArgumentNullException("cacheKey");
-            }
-            if (factoryFn == null)
-            {
-                throw new ArgumentNullException("factoryFn");
-            }
-
-            var key = cacheKey.ToString("N");
-
-            if (responseHeaders == null)
-            {
-                responseHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            }
-
-            // See if the result is already cached in the browser
-            var result = GetCachedResult(requestContext, responseHeaders, cacheKey, key, lastDateModified, cacheDuration, contentType);
-
-            if (result != null)
-            {
-                return result;
-            }
-
-            result = factoryFn();
-
-            // Apply caching headers
-            var hasHeaders = result as IHasHeaders;
-
-            if (hasHeaders != null)
-            {
-                AddResponseHeaders(hasHeaders, responseHeaders);
-                return hasHeaders;
-            }
-
-            return GetHttpResult(requestContext, result, contentType, false, responseHeaders);
         }
 
         /// <summary>
@@ -551,19 +534,17 @@ namespace Emby.Server.Implementations.HttpServer
             options.ResponseHeaders = options.ResponseHeaders ?? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             var contentType = options.ContentType;
 
-            if (cacheKey.Equals(Guid.Empty))
+            if (!cacheKey.Equals(Guid.Empty))
             {
-                throw new ArgumentNullException("cacheKey");
-            }
+                var key = cacheKey.ToString("N");
 
-            var key = cacheKey.ToString("N");
+                // See if the result is already cached in the browser
+                var result = GetCachedResult(requestContext, options.ResponseHeaders, cacheKey, key, options.DateLastModified, options.CacheDuration, contentType);
 
-            // See if the result is already cached in the browser
-            var result = GetCachedResult(requestContext, options.ResponseHeaders, cacheKey, key, options.DateLastModified, options.CacheDuration, contentType);
-
-            if (result != null)
-            {
-                return result;
+                if (result != null)
+                {
+                    return result;
+                }
             }
 
             // TODO: We don't really need the option value
@@ -588,11 +569,24 @@ namespace Emby.Server.Implementations.HttpServer
                 return hasHeaders;
             }
 
-            if (!string.IsNullOrWhiteSpace(rangeHeader))
-            {
-                var stream = await factoryFn().ConfigureAwait(false);
+            var stream = await factoryFn().ConfigureAwait(false);
 
-                var hasHeaders = new RangeRequestWriter(rangeHeader, stream, contentType, isHeadRequest, _logger)
+            var totalContentLength = options.ContentLength;
+            if (!totalContentLength.HasValue)
+            {
+                try
+                {
+                    totalContentLength = stream.Length;
+                }
+                catch (NotSupportedException)
+                {
+
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(rangeHeader) && totalContentLength.HasValue)
+            {
+                var hasHeaders = new RangeRequestWriter(rangeHeader, totalContentLength.Value, stream, contentType, isHeadRequest, _logger)
                 {
                     OnComplete = options.OnComplete
                 };
@@ -602,15 +596,17 @@ namespace Emby.Server.Implementations.HttpServer
             }
             else
             {
-                var stream = await factoryFn().ConfigureAwait(false);
-
-                responseHeaders["Content-Length"] = stream.Length.ToString(UsCulture);
+                if (totalContentLength.HasValue)
+                {
+                    responseHeaders["Content-Length"] = totalContentLength.Value.ToString(UsCulture);
+                }
 
                 if (isHeadRequest)
                 {
-                    stream.Dispose();
-
-                    return GetHttpResult(requestContext, Array.Empty<byte>(), contentType, true, responseHeaders);
+                    using (stream)
+                    {
+                        return GetHttpResult(requestContext, Array.Empty<byte>(), contentType, true, responseHeaders);
+                    }
                 }
 
                 var hasHeaders = new StreamWriter(stream, contentType, _logger)
@@ -694,7 +690,7 @@ namespace Emby.Server.Implementations.HttpServer
         /// <param name="lastDateModified">The last date modified.</param>
         /// <param name="cacheDuration">Duration of the cache.</param>
         /// <returns><c>true</c> if [is not modified] [the specified cache key]; otherwise, <c>false</c>.</returns>
-        private bool IsNotModified(IRequest requestContext, Guid? cacheKey, DateTime? lastDateModified, TimeSpan? cacheDuration)
+        private bool IsNotModified(IRequest requestContext, Guid cacheKey, DateTime? lastDateModified, TimeSpan? cacheDuration)
         {
             //var isNotModified = true;
 
@@ -715,8 +711,10 @@ namespace Emby.Server.Implementations.HttpServer
 
             var ifNoneMatchHeader = requestContext.Headers.Get("If-None-Match");
 
+            var hasCacheKey = !cacheKey.Equals(Guid.Empty);
+
             // Validate If-None-Match
-            if ((cacheKey.HasValue || !string.IsNullOrEmpty(ifNoneMatchHeader)))
+            if ((hasCacheKey || !string.IsNullOrEmpty(ifNoneMatchHeader)))
             {
                 Guid ifNoneMatch;
 
@@ -724,7 +722,7 @@ namespace Emby.Server.Implementations.HttpServer
 
                 if (Guid.TryParse(ifNoneMatchHeader, out ifNoneMatch))
                 {
-                    if (cacheKey.HasValue && cacheKey.Value == ifNoneMatch)
+                    if (hasCacheKey && cacheKey.Equals(ifNoneMatch))
                     {
                         return true;
                     }
@@ -787,5 +785,10 @@ namespace Emby.Server.Implementations.HttpServer
                 hasHeaders.Headers[item.Key] = item.Value;
             }
         }
+    }
+
+    public interface IBrotliCompressor
+    {
+        byte[] Compress(byte[] content);
     }
 }

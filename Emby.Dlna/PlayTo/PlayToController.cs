@@ -321,12 +321,12 @@ namespace Emby.Dlna.PlayTo
         {
             _logger.Debug("{0} - Received PlayRequest: {1}", this._session.DeviceName, command.PlayCommand);
 
-            var user = String.IsNullOrEmpty(command.ControllingUserId) ? null : _userManager.GetUserById(command.ControllingUserId);
+            var user = command.ControllingUserId.Equals(Guid.Empty) ? null : _userManager.GetUserById(command.ControllingUserId);
 
             var items = new List<BaseItem>();
-            foreach (string id in command.ItemIds)
+            foreach (var id in command.ItemIds)
             {
-                AddItemFromId(Guid.Parse(id), items);
+                AddItemFromId(id, items);
             }
 
             var startIndex = command.StartIndex ?? 0;
@@ -362,9 +362,9 @@ namespace Emby.Dlna.PlayTo
                 Playlist.AddRange(playlist);
             }
 
-            if (!String.IsNullOrEmpty(command.ControllingUserId))
+            if (!command.ControllingUserId.Equals(Guid.Empty))
             {
-                _sessionManager.LogSessionActivity(_session.AppName, _session.ApplicationVersion, _session.DeviceId,
+                _sessionManager.LogSessionActivity(_session.Client, _session.ApplicationVersion, _session.DeviceId,
                        _session.DeviceName, _session.RemoteEndPoint, user);
             }
 
@@ -413,7 +413,7 @@ namespace Emby.Dlna.PlayTo
 
                 if (info.Item != null && !EnableClientSideSeek(info))
                 {
-                    var user = _session.UserId.HasValue ? _userManager.GetUserById(_session.UserId.Value) : null;
+                    var user = !_session.UserId.Equals(Guid.Empty) ? _userManager.GetUserById(_session.UserId) : null;
                     var newItem = CreatePlaylistItem(info.Item, user, newPosition, info.MediaSourceId, info.AudioStreamIndex, info.SubtitleStreamIndex);
 
                     await _device.SetAvTransport(newItem.StreamUrl, GetDlnaHeaders(newItem), newItem.Didl, CancellationToken.None).ConfigureAwait(false);
@@ -496,7 +496,7 @@ namespace Emby.Dlna.PlayTo
                     streamInfo.TargetAudioChannels,
                     streamInfo.TargetAudioBitDepth,
                     streamInfo.IsDirectStream,
-                    streamInfo.RunTimeTicks,
+                    streamInfo.RunTimeTicks ?? 0,
                     streamInfo.TranscodeSeekInfo);
             }
 
@@ -512,10 +512,10 @@ namespace Emby.Dlna.PlayTo
                     streamInfo.TargetVideoBitrate,
                     streamInfo.TargetTimestamp,
                     streamInfo.IsDirectStream,
-                    streamInfo.RunTimeTicks,
+                    streamInfo.RunTimeTicks ?? 0,
                     streamInfo.TargetVideoProfile,
                     streamInfo.TargetVideoLevel,
-                    streamInfo.TargetFramerate,
+                    streamInfo.TargetFramerate ?? 0,
                     streamInfo.TargetPacketLength,
                     streamInfo.TranscodeSeekInfo,
                     streamInfo.IsTargetAnamorphic,
@@ -550,8 +550,8 @@ namespace Emby.Dlna.PlayTo
                 {
                     StreamInfo = new StreamBuilder(_mediaEncoder, GetStreamBuilderLogger()).BuildVideoItem(new VideoOptions
                     {
-                        ItemId = item.Id.ToString("N"),
-                        MediaSources = mediaSources.ToArray(mediaSources.Count),
+                        ItemId = item.Id,
+                        MediaSources = mediaSources.ToArray(),
                         Profile = profile,
                         DeviceId = deviceId,
                         MaxBitrate = profile.MaxStreamingBitrate,
@@ -570,7 +570,7 @@ namespace Emby.Dlna.PlayTo
                 {
                     StreamInfo = new StreamBuilder(_mediaEncoder, GetStreamBuilderLogger()).BuildAudioItem(new AudioOptions
                     {
-                        ItemId = item.Id.ToString("N"),
+                        ItemId = item.Id,
                         MediaSources = mediaSources.ToArray(mediaSources.Count),
                         Profile = profile,
                         DeviceId = deviceId,
@@ -675,7 +675,7 @@ namespace Emby.Dlna.PlayTo
                             {
                                 int val;
 
-                                if (Int32.TryParse(arg, NumberStyles.Any, _usCulture, out val))
+                                if (int.TryParse(arg, NumberStyles.Integer, _usCulture, out val))
                                 {
                                     return SetAudioStreamIndex(val);
                                 }
@@ -693,7 +693,7 @@ namespace Emby.Dlna.PlayTo
                             {
                                 int val;
 
-                                if (Int32.TryParse(arg, NumberStyles.Any, _usCulture, out val))
+                                if (int.TryParse(arg, NumberStyles.Integer, _usCulture, out val))
                                 {
                                     return SetSubtitleStreamIndex(val);
                                 }
@@ -711,7 +711,7 @@ namespace Emby.Dlna.PlayTo
                             {
                                 int volume;
 
-                                if (Int32.TryParse(arg, NumberStyles.Any, _usCulture, out volume))
+                                if (int.TryParse(arg, NumberStyles.Integer, _usCulture, out volume))
                                 {
                                     return _device.SetVolume(volume, cancellationToken);
                                 }
@@ -741,7 +741,7 @@ namespace Emby.Dlna.PlayTo
                 {
                     var newPosition = GetProgressPositionTicks(media, info) ?? 0;
 
-                    var user = _session.UserId.HasValue ? _userManager.GetUserById(_session.UserId.Value) : null;
+                    var user = !_session.UserId.Equals(Guid.Empty) ? _userManager.GetUserById(_session.UserId) : null;
                     var newItem = CreatePlaylistItem(info.Item, user, newPosition, info.MediaSourceId, newIndex, info.SubtitleStreamIndex);
 
                     await _device.SetAvTransport(newItem.StreamUrl, GetDlnaHeaders(newItem), newItem.Didl, CancellationToken.None).ConfigureAwait(false);
@@ -766,7 +766,7 @@ namespace Emby.Dlna.PlayTo
                 {
                     var newPosition = GetProgressPositionTicks(media, info) ?? 0;
 
-                    var user = _session.UserId.HasValue ? _userManager.GetUserById(_session.UserId.Value) : null;
+                    var user = !_session.UserId.Equals(Guid.Empty) ? _userManager.GetUserById(_session.UserId) : null;
                     var newItem = CreatePlaylistItem(info.Item, user, newPosition, info.MediaSourceId, info.AudioStreamIndex, newIndex);
 
                     await _device.SetAvTransport(newItem.StreamUrl, GetDlnaHeaders(newItem), newItem.Didl, CancellationToken.None).ConfigureAwait(false);
@@ -795,7 +795,7 @@ namespace Emby.Dlna.PlayTo
 
         private class StreamParams
         {
-            public string ItemId { get; set; }
+            public Guid ItemId { get; set; }
 
             public bool IsDirectStream { get; set; }
 
@@ -835,7 +835,7 @@ namespace Emby.Dlna.PlayTo
                 return MediaSource;
             }
 
-            private static string GetItemId(string url)
+            private static Guid GetItemId(string url)
             {
                 if (string.IsNullOrEmpty(url))
                 {
@@ -853,12 +853,12 @@ namespace Emby.Dlna.PlayTo
                     {
                         if (parts.Length > i + 1)
                         {
-                            return parts[i + 1];
+                            return Guid.Parse(parts[i + 1]);
                         }
                     }
                 }
 
-                return null;
+                return Guid.Empty;
             }
 
             public static StreamParams ParseFromUrl(string url, ILibraryManager libraryManager, IMediaSourceManager mediaSourceManager)
@@ -873,9 +873,7 @@ namespace Emby.Dlna.PlayTo
                     ItemId = GetItemId(url)
                 };
 
-                Guid parsedId;
-
-                if (string.IsNullOrWhiteSpace(request.ItemId) || !Guid.TryParse(request.ItemId, out parsedId))
+                if (request.ItemId.Equals(Guid.Empty))
                 {
                     return request;
                 }
@@ -896,9 +894,7 @@ namespace Emby.Dlna.PlayTo
                 request.SubtitleStreamIndex = GetIntValue(values, "SubtitleStreamIndex");
                 request.StartPositionTicks = GetLongValue(values, "StartPositionTicks");
 
-                request.Item = string.IsNullOrEmpty(request.ItemId)
-                    ? null
-                    : libraryManager.GetItemById(parsedId);
+                request.Item = libraryManager.GetItemById(request.ItemId);
 
                 request._mediaSourceManager = mediaSourceManager;
 

@@ -1,0 +1,1854 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Threading</name>
+  </assembly>
+  <members>
+    <member name="T:System.Threading.AbandonedMutexException">
+      <summary>当某个线程获取由另一个线程放弃（即在未释放的情况下退出）的 <see cref="T:System.Threading.Mutex" /> 对象时引发的异常。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor">
+      <summary>使用默认值初始化 <see cref="T:System.Threading.AbandonedMutexException" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.Int32,System.Threading.WaitHandle)">
+      <summary>用被放弃的互斥体的指定索引（如果可用）和表示该互斥体的 <see cref="T:System.Threading.Mutex" /> 对象初始化 <see cref="T:System.Threading.AbandonedMutexException" /> 类的新实例。</summary>
+      <param name="location">如果对 <see cref="Overload:System.Threading.WaitHandle.WaitAny" /> 方法引发异常，则为等待句柄数组中被放弃的互斥体的索引，如果对 <see cref="Overload:System.Threading.WaitHandle.WaitOne" /> 或 <see cref="Overload:System.Threading.WaitHandle.WaitAll" /> 方法引发异常，则为 –1。</param>
+      <param name="handle">一个 <see cref="T:System.Threading.Mutex" /> 对象，表示被放弃的互斥体。</param>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.String)">
+      <summary>使用指定的错误消息初始化 <see cref="T:System.Threading.AbandonedMutexException" /> 类的新实例。</summary>
+      <param name="message">解释异常原因的错误消息。</param>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.String,System.Exception)">
+      <summary>用指定的错误信息和内部异常初始化 <see cref="T:System.Threading.AbandonedMutexException" /> 类的新实例。</summary>
+      <param name="message">解释异常原因的错误消息。</param>
+      <param name="inner">导致当前异常的异常。如果 <paramref name="inner" /> 参数不为 null，则当前异常将在处理内部异常的 catch 块中引发。</param>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.String,System.Exception,System.Int32,System.Threading.WaitHandle)">
+      <summary>用指定的错误信息、内部异常、被放弃的互斥体的索引（如果可用）以及表示该互斥体的 <see cref="T:System.Threading.Mutex" /> 对象初始化 <see cref="T:System.Threading.AbandonedMutexException" /> 类的新实例。</summary>
+      <param name="message">解释异常原因的错误消息。</param>
+      <param name="inner">导致当前异常的异常。如果 <paramref name="inner" /> 参数不为 null，则当前异常将在处理内部异常的 catch 块中引发。</param>
+      <param name="location">如果对 <see cref="Overload:System.Threading.WaitHandle.WaitAny" /> 方法引发异常，则为等待句柄数组中被放弃的互斥体的索引，如果对 <see cref="Overload:System.Threading.WaitHandle.WaitOne" /> 或 <see cref="Overload:System.Threading.WaitHandle.WaitAll" /> 方法引发异常，则为 –1。</param>
+      <param name="handle">一个 <see cref="T:System.Threading.Mutex" /> 对象，表示被放弃的互斥体。</param>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.String,System.Int32,System.Threading.WaitHandle)">
+      <summary>用指定的错误信息、被放弃的互斥体的索引（如果可用）以及被放弃的互斥体初始化 <see cref="T:System.Threading.AbandonedMutexException" /> 类的新实例。</summary>
+      <param name="message">解释异常原因的错误消息。</param>
+      <param name="location">如果对 <see cref="Overload:System.Threading.WaitHandle.WaitAny" /> 方法引发异常，则为等待句柄数组中被放弃的互斥体的索引，如果对 <see cref="Overload:System.Threading.WaitHandle.WaitOne" /> 或 <see cref="Overload:System.Threading.WaitHandle.WaitAll" /> 方法引发异常，则为 –1。</param>
+      <param name="handle">一个 <see cref="T:System.Threading.Mutex" /> 对象，表示被放弃的互斥体。</param>
+    </member>
+    <member name="P:System.Threading.AbandonedMutexException.Mutex">
+      <summary>获取导致异常的被放弃的互斥体（如果已知的话）。</summary>
+      <returns>如果未能识别被放弃的互斥体，则为表示该被放弃的互斥体的 <see cref="T:System.Threading.Mutex" /> 对象或 null。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Threading.AbandonedMutexException.MutexIndex">
+      <summary>获取导致异常的被放弃的互斥体的索引（如果已知的话）。</summary>
+      <returns>如果未能确定被放弃的互斥体的索引，则为传递给 <see cref="Overload:System.Threading.WaitHandle.WaitAny" /> 方法的等待句柄数组中的索引、表示该被放弃的互斥体的 <see cref="T:System.Threading.Mutex" /> 对象的索引或 –1。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.AsyncLocal`1">
+      <summary>表示对于给定异步控制流（如异步方法）是本地数据的环境数据。</summary>
+      <typeparam name="T">环境数据的类型。</typeparam>
+    </member>
+    <member name="M:System.Threading.AsyncLocal`1.#ctor">
+      <summary>实例化不接收更改通知的 <see cref="T:System.Threading.AsyncLocal`1" /> 实例。</summary>
+    </member>
+    <member name="M:System.Threading.AsyncLocal`1.#ctor(System.Action{System.Threading.AsyncLocalValueChangedArgs{`0}})">
+      <summary>实例化接收更改通知的 <see cref="T:System.Threading.AsyncLocal`1" /> 本地实例。</summary>
+      <param name="valueChangedHandler">只要当前值在任何线程上发生更改时便会调用的委托。</param>
+    </member>
+    <member name="P:System.Threading.AsyncLocal`1.Value">
+      <summary>获取或设置环境数据的值。</summary>
+      <returns>环境数据的值。</returns>
+    </member>
+    <member name="T:System.Threading.AsyncLocalValueChangedArgs`1">
+      <summary>向针对更改通知进行了注册的 <see cref="T:System.Threading.AsyncLocal`1" /> 实例提供数据更改信息的类。</summary>
+      <typeparam name="T">数据的类型。</typeparam>
+    </member>
+    <member name="P:System.Threading.AsyncLocalValueChangedArgs`1.CurrentValue">
+      <summary>获取数据的当前值。</summary>
+      <returns>数据的当前值。</returns>
+    </member>
+    <member name="P:System.Threading.AsyncLocalValueChangedArgs`1.PreviousValue">
+      <summary>获取数据的上一个值。</summary>
+      <returns>数据的上一个值。</returns>
+    </member>
+    <member name="P:System.Threading.AsyncLocalValueChangedArgs`1.ThreadContextChanged">
+      <summary>返回一个值，该值指示是否由于执行上下文更改而更改了值。</summary>
+      <returns>如果由于执行上下文更改而更改了值，则为 true；否则为 false。</returns>
+    </member>
+    <member name="T:System.Threading.AutoResetEvent">
+      <summary>通知正在等待的线程已发生事件。此类不能被继承。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.AutoResetEvent.#ctor(System.Boolean)">
+      <summary>使用 Boolean 值（指示是否将初始状态设置为终止的）初始化 <see cref="T:System.Threading.AutoResetEvent" /> 类的新实例。</summary>
+      <param name="initialState">若要将初始状态设置为终止，则为 true；若要将初始状态设置为非终止，则为 false。</param>
+    </member>
+    <member name="T:System.Threading.Barrier">
+      <summary>使多个任务能够采用并行方式依据某种算法在多个阶段中协同工作。</summary>
+    </member>
+    <member name="M:System.Threading.Barrier.#ctor(System.Int32)">
+      <summary>初始化 <see cref="T:System.Threading.Barrier" /> 类的新实例。</summary>
+      <param name="participantCount">参与线程的数量。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="participantCount" /> 小于 0 或大于 32,767。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.#ctor(System.Int32,System.Action{System.Threading.Barrier})">
+      <summary>初始化 <see cref="T:System.Threading.Barrier" /> 类的新实例。</summary>
+      <param name="participantCount">参与线程的数量。</param>
+      <param name="postPhaseAction">在每个阶段之后要执行的 <see cref="T:System.Action`1" />。可以传递 null (在 Visual Basic 中为 Nothing) 以指示不执行任何操作。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="participantCount" /> 小于 0 或大于 32,767。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.AddParticipant">
+      <summary>通知 <see cref="T:System.Threading.Barrier" />，告知其将会有另一个参与者。</summary>
+      <returns>新参与者将首先参与的屏障的阶段编号。</returns>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+      <exception cref="T:System.InvalidOperationException">添加参与者将导致屏障的参与者计数超过 32,767。- 或 -该方法从阶段后操作中调用。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.AddParticipants(System.Int32)">
+      <summary>通知 <see cref="T:System.Threading.Barrier" />，告知其将会有多个其他参与者。</summary>
+      <returns>新参与者将首先参与的屏障的阶段编号。</returns>
+      <param name="participantCount">要添加到屏障的其他参与者的数量。</param>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="participantCount" /> 小于 0。- 或 -添加 <paramref name="participantCount" /> 参与者将导致屏障的参与者计数超过 32,767。</exception>
+      <exception cref="T:System.InvalidOperationException">该方法从阶段后操作中调用。</exception>
+    </member>
+    <member name="P:System.Threading.Barrier.CurrentPhaseNumber">
+      <summary>获取屏障的当前阶段的编号。</summary>
+      <returns>返回屏障的当前阶段的编号。</returns>
+    </member>
+    <member name="M:System.Threading.Barrier.Dispose">
+      <summary>释放由 <see cref="T:System.Threading.Barrier" /> 类的当前实例占用的所有资源。</summary>
+      <exception cref="T:System.InvalidOperationException">该方法从阶段后操作中调用。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.Dispose(System.Boolean)">
+      <summary>释放由 <see cref="T:System.Threading.Barrier" /> 占用的非托管资源，还可以另外再释放托管资源。</summary>
+      <param name="disposing">如果为 true，则同时释放托管资源和非托管资源；如果为 false，则仅释放非托管资源。</param>
+    </member>
+    <member name="P:System.Threading.Barrier.ParticipantCount">
+      <summary>获取屏障中参与者的总数。</summary>
+      <returns>返回屏障中参与者的总数。</returns>
+    </member>
+    <member name="P:System.Threading.Barrier.ParticipantsRemaining">
+      <summary>获取屏障中尚未在当前阶段发出信号的参与者的数量。</summary>
+      <returns>返回屏障中尚未在当前阶段发出信号的参与者的数量。</returns>
+    </member>
+    <member name="M:System.Threading.Barrier.RemoveParticipant">
+      <summary>通知 <see cref="T:System.Threading.Barrier" />，告知其将会减少一个参与者。</summary>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+      <exception cref="T:System.InvalidOperationException">屏障已经有 0 个参与者。- 或 -该方法从阶段后操作中调用。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.RemoveParticipants(System.Int32)">
+      <summary>通知 <see cref="T:System.Threading.Barrier" />，告知其将会减少一些参与者。</summary>
+      <param name="participantCount">要从屏障中移除的其他参与者的数量。</param>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="participantCount" /> 小于 0。</exception>
+      <exception cref="T:System.InvalidOperationException">屏障已经有 0 个参与者。- 或 -该方法从阶段后操作中调用。 - 或 -当前的参与者计数小于指定 participantCount</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">参与者总数小于指定的 <paramref name=" participantCount" /></exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait">
+      <summary>发出参与者已达到屏障并等待所有其他参与者也达到屏障。</summary>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+      <exception cref="T:System.InvalidOperationException">该方法从阶段后操作中调用，当前屏障具有 0 个参与者，或该屏障被注册为参与者的更多线程终止。</exception>
+      <exception cref="T:System.Threading.BarrierPostPhaseException">在所有参与线程调用了 SignalAndWait 之后，如果关卡的后期阶段操作中引发了异常，该异常将包装在 BarrierPostPhaseException 中并在所有参与线程上引发。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.Int32)">
+      <summary>发出参与者已达到屏障的信号，并等待所有其他参与者也达到屏障，同时使用 32 位带符号整数测量超时。</summary>
+      <returns>如果所有参与者都已在指定时间内达到屏障，则为 true；否则为 false。</returns>
+      <param name="millisecondsTimeout">等待的毫秒数，或为 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)，表示无限期等待。</param>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一个非 -1 的负数，而 -1 表示无限期超时。</exception>
+      <exception cref="T:System.InvalidOperationException">该方法从阶段后操作中调用，当前屏障具有 0 个参与者，或该屏障被注册为参与者的更多线程终止。</exception>
+      <exception cref="T:System.Threading.BarrierPostPhaseException">在所有参与线程调用了 SignalAndWait 之后，如果关卡的后期阶段操作中引发了异常，该异常将包装在 BarrierPostPhaseException 中并在所有参与线程上引发。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.Int32,System.Threading.CancellationToken)">
+      <summary>发出参与者已达到屏障的信号，并等待所有其他参与者也达到屏障，使用 32 位带符号整数测量超时，同时观察取消标记。</summary>
+      <returns>如果所有参与者都已在指定时间内达到屏障，则为 true；否则为 false。</returns>
+      <param name="millisecondsTimeout">等待的毫秒数，或为 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)，表示无限期等待。</param>
+      <param name="cancellationToken">要观察的 <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> 已取消。</exception>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一个非 -1 的负数，而 -1 表示无限期超时。</exception>
+      <exception cref="T:System.InvalidOperationException">该方法从阶段后操作中调用，当前屏障具有 0 个参与者，或该屏障被注册为参与者的更多线程终止。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.Threading.CancellationToken)">
+      <summary>发出参与者已达到屏障的信号，并等待所有其他参与者达到屏障，同时观察取消标记。</summary>
+      <param name="cancellationToken">要观察的 <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> 已取消。</exception>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+      <exception cref="T:System.InvalidOperationException">该方法从阶段后操作中调用，当前屏障具有 0 个参与者，或该屏障被注册为参与者的更多线程终止。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.TimeSpan)">
+      <summary>发出参与者已达到屏障的信号，并等待所有其他参与者也达到屏障，同时使用 <see cref="T:System.TimeSpan" /> 对象测量时间间隔。</summary>
+      <returns>如果所有其他参与者已达到屏障，则为 true；否则为 false。</returns>
+      <param name="timeout">表示等待的毫秒数的 <see cref="T:System.TimeSpan" />，或表示 -1 毫秒（无限期等待）的 <see cref="T:System.TimeSpan" />。</param>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 是 -1 毫秒之外的负数，表示无限超时或者超时大于 32,767。</exception>
+      <exception cref="T:System.InvalidOperationException">该方法从阶段后操作中调用，当前屏障具有 0 个参与者，或该屏障被注册为参与者的更多线程终止。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>发出参与者已达到屏障的信号，并等待所有其他参与者也达到屏障，使用 <see cref="T:System.TimeSpan" /> 对象测量时间间隔，同时观察取消标记。</summary>
+      <returns>如果所有其他参与者已达到屏障，则为 true；否则为 false。</returns>
+      <param name="timeout">表示等待的毫秒数的 <see cref="T:System.TimeSpan" />，或表示 -1 毫秒（无限期等待）的 <see cref="T:System.TimeSpan" />。</param>
+      <param name="cancellationToken">要观察的 <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> 已取消。</exception>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 是一个非 -1 毫秒的负数，而 -1 表示无限期超时。</exception>
+      <exception cref="T:System.InvalidOperationException">该方法从阶段后操作中调用，当前屏障具有 0 个参与者，或该屏障被注册为参与者的更多线程终止。</exception>
+    </member>
+    <member name="T:System.Threading.BarrierPostPhaseException">
+      <summary>
+        <see cref="T:System.Threading.Barrier" /> 阶段后操作失败时引发的异常。</summary>
+    </member>
+    <member name="M:System.Threading.BarrierPostPhaseException.#ctor">
+      <summary>使用由系统提供的用来描述错误的消息初始化 <see cref="T:System.Threading.BarrierPostPhaseException" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Threading.BarrierPostPhaseException.#ctor(System.Exception)">
+      <summary>使用指定的内部异常初始化 <see cref="T:System.Threading.BarrierPostPhaseException" /> 类的新实例。</summary>
+      <param name="innerException">导致当前异常的异常。</param>
+    </member>
+    <member name="M:System.Threading.BarrierPostPhaseException.#ctor(System.String)">
+      <summary>使用指定的描述错误的消息初始化 <see cref="T:System.Threading.BarrierPostPhaseException" /> 类的新实例。</summary>
+      <param name="message">描述该异常的消息。此构造函数的调用方需要确保此字符串已针对当前系统区域性进行了本地化。</param>
+    </member>
+    <member name="M:System.Threading.BarrierPostPhaseException.#ctor(System.String,System.Exception)">
+      <summary>使用指定错误消息和对作为此异常原因的内部异常的引用来初始化 <see cref="T:System.Threading.BarrierPostPhaseException" /> 类的新实例。</summary>
+      <param name="message">描述该异常的消息。此构造函数的调用方需要确保此字符串已针对当前系统区域性进行了本地化。</param>
+      <param name="innerException">导致当前异常的异常。如果 <paramref name="innerException" /> 参数不为 null，则当前异常将在处理内部异常的 catch 块中引发。</param>
+    </member>
+    <member name="T:System.Threading.ContextCallback">
+      <summary>表示要在新上下文中调用的方法。</summary>
+      <param name="state">一个对象，包含回调方法在每次执行时要使用的信息。</param>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.CountdownEvent">
+      <summary>表示在计数变为零时处于有信号状态的同步基元。</summary>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.#ctor(System.Int32)">
+      <summary>使用指定计数初始化 <see cref="T:System.Threading.CountdownEvent" /> 类的新实例。</summary>
+      <param name="initialCount">设置 <see cref="T:System.Threading.CountdownEvent" /> 时最初必需的信号数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="initialCount" /> 小于 0。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.AddCount">
+      <summary>将 <see cref="T:System.Threading.CountdownEvent" /> 的当前计数加 1。</summary>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+      <exception cref="T:System.InvalidOperationException">当前实例已设置 。- 或 -<see cref="P:System.Threading.CountdownEvent.CurrentCount" /> 等于或大于 <see cref="F:System.Int32.MaxValue" />。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.AddCount(System.Int32)">
+      <summary>将 <see cref="T:System.Threading.CountdownEvent" /> 的当前计数增加指定值。</summary>
+      <param name="signalCount">
+        <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> 的增量值。</param>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="signalCount" /> 小于或等于零。</exception>
+      <exception cref="T:System.InvalidOperationException">当前实例已设置 。- 或 -在计数由 <paramref name="signalCount." /> 递增后，<see cref="P:System.Threading.CountdownEvent.CurrentCount" /> 大于或等于 <see cref="F:System.Int32.MaxValue" />。</exception>
+    </member>
+    <member name="P:System.Threading.CountdownEvent.CurrentCount">
+      <summary>获取设置事件时所必需的剩余信号数。</summary>
+      <returns> 设置事件时所必需的剩余信号数。</returns>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Dispose">
+      <summary>释放由 <see cref="T:System.Threading.CountdownEvent" /> 类的当前实例占用的所有资源。</summary>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Dispose(System.Boolean)">
+      <summary>释放由 <see cref="T:System.Threading.CountdownEvent" /> 占用的非托管资源，还可以另外再释放托管资源。</summary>
+      <param name="disposing">如果为 true，则同时释放托管资源和非托管资源；如果为 false，则仅释放非托管资源。</param>
+    </member>
+    <member name="P:System.Threading.CountdownEvent.InitialCount">
+      <summary>获取设置事件时最初必需的信号数。</summary>
+      <returns> 设置事件时最初必需的信号数。</returns>
+    </member>
+    <member name="P:System.Threading.CountdownEvent.IsSet">
+      <summary>确定是否设置了事件。</summary>
+      <returns>如果设置了事件，则为 true；否则为 false。</returns>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Reset">
+      <summary>将 <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> 重置为 <see cref="P:System.Threading.CountdownEvent.InitialCount" /> 的值。</summary>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Reset(System.Int32)">
+      <summary>将 <see cref="P:System.Threading.CountdownEvent.InitialCount" /> 属性重新设置为指定值。</summary>
+      <param name="count">设置 <see cref="T:System.Threading.CountdownEvent" /> 时所必需的信号的数量。</param>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> 小于 0。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Signal">
+      <summary>向 <see cref="T:System.Threading.CountdownEvent" /> 注册信号，同时减小 <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> 的值。</summary>
+      <returns>如果信号导致计数变为零并且设置了事件，则为 true；否则为 false。</returns>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+      <exception cref="T:System.InvalidOperationException">当前实例已设置 。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Signal(System.Int32)">
+      <summary>向 <see cref="T:System.Threading.CountdownEvent" /> 注册多个信号，同时将 <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> 的值减少指定数量。</summary>
+      <returns>如果信号导致计数变为零并且设置了事件，则为 true；否则为 false。</returns>
+      <param name="signalCount">要注册的信号的数量。</param>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="signalCount" /> 小于 1。</exception>
+      <exception cref="T:System.InvalidOperationException">当前实例已设置 。- 或 - <paramref name="signalCount" /> 大于 <see cref="P:System.Threading.CountdownEvent.CurrentCount" />。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.TryAddCount">
+      <summary>增加一个 <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> 的尝试。</summary>
+      <returns>如果成功增加，则为 true；否则为 false。如果 <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> 已为零，则此方法将返回 false。</returns>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> 等于 <see cref="F:System.Int32.MaxValue" />。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.TryAddCount(System.Int32)">
+      <summary>增加指定值的 <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> 的尝试。</summary>
+      <returns>如果成功增加，则为 true；否则为 false。如果 <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> 已为零，则此方法将返回 false。</returns>
+      <param name="signalCount">
+        <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> 的增量值。</param>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="signalCount" /> 小于或等于零。</exception>
+      <exception cref="T:System.InvalidOperationException">当前实例已设置 。- 或 -<see cref="P:System.Threading.CountdownEvent.CurrentCount" /> + <paramref name="signalCount" /> 大于等于 <see cref="F:System.Int32.MaxValue" />。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait">
+      <summary>阻止当前线程，直到设置了 <see cref="T:System.Threading.CountdownEvent" /> 为止。</summary>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.Int32)">
+      <summary>阻止当前线程，直到设置了 <see cref="T:System.Threading.CountdownEvent" /> 为止，同时使用 32 位带符号整数测量超时。</summary>
+      <returns>如果设置了 <see cref="T:System.Threading.CountdownEvent" />，则为 true；否则为 false。</returns>
+      <param name="millisecondsTimeout">等待的毫秒数，或为 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)，表示无限期等待。</param>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一个非 -1 的负数，而 -1 表示无限期超时。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.Int32,System.Threading.CancellationToken)">
+      <summary>阻止当前线程，直到设置了 <see cref="T:System.Threading.CountdownEvent" /> 为止，并使用 32 位带符号整数测量超时，同时观察 <see cref="T:System.Threading.CancellationToken" />。</summary>
+      <returns>如果设置了 <see cref="T:System.Threading.CountdownEvent" />，则为 true；否则为 false。</returns>
+      <param name="millisecondsTimeout">等待的毫秒数，或为 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)，表示无限期等待。</param>
+      <param name="cancellationToken">要观察的 <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> 已取消。</exception>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。- 或 - 创建 <paramref name="cancellationToken" /> 的 <see cref="T:System.Threading.CancellationTokenSource" /> 已被释放。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一个非 -1 的负数，而 -1 表示无限期超时。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.Threading.CancellationToken)">
+      <summary>阻止当前线程，直到设置了 <see cref="T:System.Threading.CountdownEvent" /> 为止，同时观察 <see cref="T:System.Threading.CancellationToken" />。</summary>
+      <param name="cancellationToken">要观察的 <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> 已取消。</exception>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。- 或 - 创建 <paramref name="cancellationToken" /> 的 <see cref="T:System.Threading.CancellationTokenSource" /> 已被释放。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.TimeSpan)">
+      <summary>阻止当前线程，直到设置了 <see cref="T:System.Threading.CountdownEvent" /> 为止，同时使用 <see cref="T:System.TimeSpan" /> 测量超时。</summary>
+      <returns>如果设置了 <see cref="T:System.Threading.CountdownEvent" />，则为 true；否则为 false。</returns>
+      <param name="timeout">表示等待的毫秒数的 <see cref="T:System.TimeSpan" />，或表示 -1 毫秒（无限期等待）的 <see cref="T:System.TimeSpan" />。</param>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 是 -1 毫秒之外的负数，表示无限超时或者超时大于 <see cref="F:System.Int32.MaxValue" />。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>阻止当前线程，直到设置了 <see cref="T:System.Threading.CountdownEvent" /> 为止，并使用 <see cref="T:System.TimeSpan" /> 测量超时，同时观察 <see cref="T:System.Threading.CancellationToken" />。</summary>
+      <returns>如果设置了 <see cref="T:System.Threading.CountdownEvent" />，则为 true；否则为 false。</returns>
+      <param name="timeout">表示等待的毫秒数的 <see cref="T:System.TimeSpan" />，或表示 -1 毫秒（无限期等待）的 <see cref="T:System.TimeSpan" />。</param>
+      <param name="cancellationToken">要观察的 <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> 已取消。</exception>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。- 或 - 创建 <paramref name="cancellationToken" /> 的 <see cref="T:System.Threading.CancellationTokenSource" /> 已被释放。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 是 -1 毫秒之外的负数，表示无限超时或者超时大于 <see cref="F:System.Int32.MaxValue" />。</exception>
+    </member>
+    <member name="P:System.Threading.CountdownEvent.WaitHandle">
+      <summary>获取用于等待要设置的事件的 <see cref="T:System.Threading.WaitHandle" />。</summary>
+      <returns>用于等待要设置的事件的 <see cref="T:System.Threading.WaitHandle" />。</returns>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+    </member>
+    <member name="T:System.Threading.EventResetMode">
+      <summary>指示在接收信号后是自动重置 <see cref="T:System.Threading.EventWaitHandle" /> 还是手动重置。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Threading.EventResetMode.AutoReset">
+      <summary>当终止时，<see cref="T:System.Threading.EventWaitHandle" /> 在释放一个线程后自动重置。如果没有等待的线程，<see cref="T:System.Threading.EventWaitHandle" /> 将保持终止状态直到一个线程阻止，并在释放此线程后重置。</summary>
+    </member>
+    <member name="F:System.Threading.EventResetMode.ManualReset">
+      <summary>当终止时，<see cref="T:System.Threading.EventWaitHandle" /> 释放所有等待的线程，并在手动重置前保持终止状态。</summary>
+    </member>
+    <member name="T:System.Threading.EventWaitHandle">
+      <summary>表示一个线程同步事件。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.#ctor(System.Boolean,System.Threading.EventResetMode)">
+      <summary>初始化 <see cref="T:System.Threading.EventWaitHandle" /> 类的新实例，并指定等待句柄最初是否处于终止状态，以及它是自动重置还是手动重置。</summary>
+      <param name="initialState">如果为 true，则将初始状态设置为终止；如果为 false，则将初始状态设置为非终止。</param>
+      <param name="mode">
+        <see cref="T:System.Threading.EventResetMode" /> 值之一，它确定事件是自动重置还是手动重置。</param>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.#ctor(System.Boolean,System.Threading.EventResetMode,System.String)">
+      <summary>初始化 <see cref="T:System.Threading.EventWaitHandle" /> 类的新实例，并指定在此调用后创建的等待句柄最初是否处于终止状态，它是自动重置还是手动重置，以及系统同步事件的名称。</summary>
+      <param name="initialState">如果命名事件是通过此调用创建的，则 true 将初始状态设置为终止；false 将初始状态设置为非终止。</param>
+      <param name="mode">
+        <see cref="T:System.Threading.EventResetMode" /> 值之一，它确定事件是自动重置还是手动重置。</param>
+      <param name="name">系统范围内同步事件的名称。</param>
+      <exception cref="T:System.IO.IOException">发生了一个 Win32 错误。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">命名事件存在并具有访问控制安全性，但用户不具有 <see cref="F:System.Security.AccessControl.EventWaitHandleRights.FullControl" />。</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">无法创建命名事件，原因可能是与另一个不同类型的等待句柄同名。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 的长度超过 260 个字符。</exception>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.#ctor(System.Boolean,System.Threading.EventResetMode,System.String,System.Boolean@)">
+      <summary>初始化 <see cref="T:System.Threading.EventWaitHandle" /> 类的新实例，并指定在此调用后创建的等待句柄最初是否处于终止状态，它是自动重置还是手动重置，系统同步事件的名称，以及一个 Boolean 变量（其值在调用后表示是否创建了已命名的系统事件）。</summary>
+      <param name="initialState">如果命名事件是通过此调用创建的，则 true 将初始状态设置为终止；false 将初始状态设置为非终止。</param>
+      <param name="mode">
+        <see cref="T:System.Threading.EventResetMode" /> 值之一，它确定事件是自动重置还是手动重置。</param>
+      <param name="name">系统范围内同步事件的名称。</param>
+      <param name="createdNew">在此方法返回时，如果创建了本地事件（即，如果 <paramref name="name" /> 为 null 或空字符串）或指定的命名系统事件，则包含 true；如果指定的命名系统事件已存在，则为 false。该参数未经初始化即被传递。</param>
+      <exception cref="T:System.IO.IOException">发生了一个 Win32 错误。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">命名事件存在并具有访问控制安全性，但用户不具有 <see cref="F:System.Security.AccessControl.EventWaitHandleRights.FullControl" />。</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">无法创建命名事件，原因可能是与另一个不同类型的等待句柄同名。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 的长度超过 260 个字符。</exception>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.OpenExisting(System.String)">
+      <summary>打开指定名称为同步事件（如果已经存在）。</summary>
+      <returns>一个对象，表示已命名的系统事件。</returns>
+      <param name="name">要打开的系统同步事件的名称。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 是空字符串。- 或 -<paramref name="name" /> 的长度超过 260 个字符。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 为 null。</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">命名的系统事件不存在。</exception>
+      <exception cref="T:System.IO.IOException">发生了一个 Win32 错误。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">已命名的事件存在，但用户不具备使用它所需的安全访问权限。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.Reset">
+      <summary>将事件状态设置为非终止状态，导致线程阻止。</summary>
+      <returns>如果该操作成功，则为 true；否则，为 false。</returns>
+      <exception cref="T:System.ObjectDisposedException">之前已对此 <see cref="T:System.Threading.EventWaitHandle" /> 调用 <see cref="M:System.Threading.EventWaitHandle.Close" /> 方法。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.Set">
+      <summary>将事件状态设置为终止状态，允许一个或多个等待线程继续。</summary>
+      <returns>如果该操作成功，则为 true；否则，为 false。</returns>
+      <exception cref="T:System.ObjectDisposedException">之前已对此 <see cref="T:System.Threading.EventWaitHandle" /> 调用 <see cref="M:System.Threading.EventWaitHandle.Close" /> 方法。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.TryOpenExisting(System.String,System.Threading.EventWaitHandle@)">
+      <summary>打开指定名称为同步事件（如果已经存在），并返回指示操作是否成功的值。</summary>
+      <returns>如果命名同步事件成功打开，则为 true；否则为 false。</returns>
+      <param name="name">要打开的系统同步事件的名称。</param>
+      <param name="result">当此方法返回时，如果调用成功，则包含表示命名同步事件的 <see cref="T:System.Threading.EventWaitHandle" /> 对象；否则为 null。该参数未经初始化即被处理。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 是空字符串。- 或 -<paramref name="name" /> 的长度超过 260 个字符。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 为 null。</exception>
+      <exception cref="T:System.IO.IOException">发生了一个 Win32 错误。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">已命名的事件存在，但用户不具备所需的安全访问权限。</exception>
+    </member>
+    <member name="T:System.Threading.ExecutionContext">
+      <summary>管理当前线程的执行上下文。此类不能被继承。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.ExecutionContext.Capture">
+      <summary>从当前线程捕获执行上下文。</summary>
+      <returns>一个 <see cref="T:System.Threading.ExecutionContext" /> 对象，表示当前线程的执行上下文。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.ExecutionContext.Run(System.Threading.ExecutionContext,System.Threading.ContextCallback,System.Object)">
+      <summary>在当前线程上的指定执行上下文中运行某个方法。</summary>
+      <param name="executionContext">要设置的 <see cref="T:System.Threading.ExecutionContext" />。</param>
+      <param name="callback">一个 <see cref="T:System.Threading.ContextCallback" /> 委托，表示要在提供的执行上下文中运行的方法。</param>
+      <param name="state">要传递给回调方法的对象。</param>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="executionContext" /> 为 null。- 或 -<paramref name="executionContext" /> 不是通过捕获操作获取的。- 或 -<paramref name="executionContext" /> 已用作 <see cref="M:System.Threading.ExecutionContext.Run(System.Threading.ExecutionContext,System.Threading.ContextCallback,System.Object)" /> 调用的参数。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="Infrastructure" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Threading.Interlocked">
+      <summary>为多个线程共享的变量提供原子操作。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Add(System.Int32@,System.Int32)">
+      <summary>对两个 32 位整数进行求和并用和替换第一个整数，上述操作作为一个原子操作完成。</summary>
+      <returns>存储在 <paramref name="location1" /> 处的新值。</returns>
+      <param name="location1">一个变量，包含要添加的第一个值。两个值的和存储在 <paramref name="location1" /> 中。</param>
+      <param name="value">要添加到整数中的 <paramref name="location1" /> 位置的值。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Add(System.Int64@,System.Int64)">
+      <summary>对两个 64 位整数进行求和并用和替换第一个整数，上述操作作为一个原子操作完成。</summary>
+      <returns>存储在 <paramref name="location1" /> 处的新值。</returns>
+      <param name="location1">一个变量，包含要添加的第一个值。两个值的和存储在 <paramref name="location1" /> 中。</param>
+      <param name="value">要添加到整数中的 <paramref name="location1" /> 位置的值。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Double@,System.Double,System.Double)">
+      <summary>比较两个双精度浮点数是否相等，如果相等，则替换第一个值。</summary>
+      <returns>
+        <paramref name="location1" /> 中的原始值。</returns>
+      <param name="location1">其值将与 <paramref name="comparand" /> 进行比较并且可能被替换的目标。</param>
+      <param name="value">比较结果相等时替换目标值的值。</param>
+      <param name="comparand">与位于 <paramref name="location1" /> 处的值进行比较的值。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Int32@,System.Int32,System.Int32)">
+      <summary>比较两个 32 位有符号整数是否相等，如果相等，则替换第一个值。</summary>
+      <returns>
+        <paramref name="location1" /> 中的原始值。</returns>
+      <param name="location1">其值将与 <paramref name="comparand" /> 进行比较并且可能被替换的目标。</param>
+      <param name="value">比较结果相等时替换目标值的值。</param>
+      <param name="comparand">与位于 <paramref name="location1" /> 处的值进行比较的值。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Int64@,System.Int64,System.Int64)">
+      <summary>比较两个 64 位有符号整数是否相等，如果相等，则替换第一个值。</summary>
+      <returns>
+        <paramref name="location1" /> 中的原始值。</returns>
+      <param name="location1">其值将与 <paramref name="comparand" /> 进行比较并且可能被替换的目标。</param>
+      <param name="value">比较结果相等时替换目标值的值。</param>
+      <param name="comparand">与位于 <paramref name="location1" /> 处的值进行比较的值。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.IntPtr@,System.IntPtr,System.IntPtr)">
+      <summary>比较两个平台特定的句柄或指针是否相等，如果相等，则替换第一个。</summary>
+      <returns>
+        <paramref name="location1" /> 中的原始值。</returns>
+      <param name="location1">其值与 <paramref name="comparand" /> 的值进行比较并且可能被 <paramref name="value" /> 替换的目标 <see cref="T:System.IntPtr" />。</param>
+      <param name="value">比较结果相等时替换目标值的 <see cref="T:System.IntPtr" />。</param>
+      <param name="comparand">与位于 <paramref name="location1" /> 处的值进行比较的 <see cref="T:System.IntPtr" />。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Object@,System.Object,System.Object)">
+      <summary>比较两个对象是否相等，如果相等，则替换第一个对象。</summary>
+      <returns>
+        <paramref name="location1" /> 中的原始值。</returns>
+      <param name="location1">其值与 <paramref name="comparand" /> 进行比较并且可能被替换的目标对象。</param>
+      <param name="value">在比较结果相等时替换目标对象的对象。</param>
+      <param name="comparand">与位于 <paramref name="location1" /> 处的对象进行比较的对象。</param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Single@,System.Single,System.Single)">
+      <summary>比较两个单精度浮点数是否相等，如果相等，则替换第一个值。</summary>
+      <returns>
+        <paramref name="location1" /> 中的原始值。</returns>
+      <param name="location1">其值将与 <paramref name="comparand" /> 进行比较并且可能被替换的目标。</param>
+      <param name="value">比较结果相等时替换目标值的值。</param>
+      <param name="comparand">与位于 <paramref name="location1" /> 处的值进行比较的值。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange``1(``0@,``0,``0)">
+      <summary>比较指定的引用类型 <paramref name="T" /> 的两个实例是否相等，如果相等，则替换第一个。</summary>
+      <returns>
+        <paramref name="location1" /> 中的原始值。</returns>
+      <param name="location1">其值将与 <paramref name="comparand" /> 进行比较并且可能被替换的目标。这是一个引用参数（在 C# 中是 ref，在 Visual Basic 中是 ByRef）。</param>
+      <param name="value">比较结果相等时替换目标值的值。</param>
+      <param name="comparand">与位于 <paramref name="location1" /> 处的值进行比较的值。</param>
+      <typeparam name="T">用于 <paramref name="location1" />, <paramref name="value" /> 和 <paramref name="comparand" /> 的类型。此类型必须是引用类型。</typeparam>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+    </member>
+    <member name="M:System.Threading.Interlocked.Decrement(System.Int32@)">
+      <summary>以原子操作的形式递减指定变量的值并存储结果。</summary>
+      <returns>递减的值。</returns>
+      <param name="location">其值要递减的变量。</param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Decrement(System.Int64@)">
+      <summary>以原子操作的形式递减指定变量的值并存储结果。</summary>
+      <returns>递减的值。</returns>
+      <param name="location">其值要递减的变量。</param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Double@,System.Double)">
+      <summary>以原子操作的形式，将双精度浮点数设置为指定的值并返回原始值。</summary>
+      <returns>
+        <paramref name="location1" /> 的原始值。</returns>
+      <param name="location1">要设置为指定值的变量。</param>
+      <param name="value">
+        <paramref name="location1" /> 参数被设置为的值。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Int32@,System.Int32)">
+      <summary>以原子操作的形式，将 32 位有符号整数设置为指定的值并返回原始值。</summary>
+      <returns>
+        <paramref name="location1" /> 的原始值。</returns>
+      <param name="location1">要设置为指定值的变量。</param>
+      <param name="value">
+        <paramref name="location1" /> 参数被设置为的值。</param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Int64@,System.Int64)">
+      <summary>以原子操作的形式，将 64 位有符号整数设置为指定的值并返回原始值。</summary>
+      <returns>
+        <paramref name="location1" /> 的原始值。</returns>
+      <param name="location1">要设置为指定值的变量。</param>
+      <param name="value">
+        <paramref name="location1" /> 参数被设置为的值。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.IntPtr@,System.IntPtr)">
+      <summary>以原子操作的形式，将平台特定的句柄或指针设置为指定的值并返回原始值。</summary>
+      <returns>
+        <paramref name="location1" /> 的原始值。</returns>
+      <param name="location1">要设置为指定值的变量。</param>
+      <param name="value">
+        <paramref name="location1" /> 参数被设置为的值。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Object@,System.Object)">
+      <summary>以原子操作的形式，将对象设置为指定的值并返回对原始对象的引用。</summary>
+      <returns>
+        <paramref name="location1" /> 的原始值。</returns>
+      <param name="location1">要设置为指定值的变量。</param>
+      <param name="value">
+        <paramref name="location1" /> 参数被设置为的值。</param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Single@,System.Single)">
+      <summary>以原子操作的形式，将单精度浮点数设置为指定的值并返回原始值。</summary>
+      <returns>
+        <paramref name="location1" /> 的原始值。</returns>
+      <param name="location1">要设置为指定值的变量。</param>
+      <param name="value">
+        <paramref name="location1" /> 参数被设置为的值。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange``1(``0@,``0)">
+      <summary>以原子操作的形式，将指定类型 <paramref name="T" /> 的变量设置为指定的值并返回原始值。</summary>
+      <returns>
+        <paramref name="location1" /> 的原始值。</returns>
+      <param name="location1">要设置为指定值的变量。这是一个引用参数（在 C# 中是 ref，在 Visual Basic 中是 ByRef）。</param>
+      <param name="value">
+        <paramref name="location1" /> 参数被设置为的值。</param>
+      <typeparam name="T">用于 <paramref name="location1" /> 和 <paramref name="value" /> 的类型。此类型必须是引用类型。</typeparam>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+    </member>
+    <member name="M:System.Threading.Interlocked.Increment(System.Int32@)">
+      <summary>以原子操作的形式递增指定变量的值并存储结果。</summary>
+      <returns>递增的值。</returns>
+      <param name="location">其值要递增的变量。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Increment(System.Int64@)">
+      <summary>以原子操作的形式递增指定变量的值并存储结果。</summary>
+      <returns>递增的值。</returns>
+      <param name="location">其值要递增的变量。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.MemoryBarrier">
+      <summary>按如下方式同步内存存取：执行当前线程的处理器在对指令重新排序时，不能采用先执行 <see cref="M:System.Threading.Interlocked.MemoryBarrier" /> 调用之后的内存存取，再执行 <see cref="M:System.Threading.Interlocked.MemoryBarrier" /> 调用之前的内存存取的方式。</summary>
+    </member>
+    <member name="M:System.Threading.Interlocked.Read(System.Int64@)">
+      <summary>返回一个以原子操作形式加载的 64 位值。</summary>
+      <returns>加载的值。</returns>
+      <param name="location">要加载的 64 位值。</param>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.LazyInitializer">
+      <summary>提供延迟初始化例程。</summary>
+    </member>
+    <member name="M:System.Threading.LazyInitializer.EnsureInitialized``1(``0@)">
+      <summary>在目标引用或值类型尚未初始化的情况下，使用其默认构造函数初始化目标引用或值类型。</summary>
+      <returns>类型 <paramref name="T" /> 的初始化引用。</returns>
+      <param name="target">在类型尚未初始化的情况下，要初始化的类型 <paramref name="T" /> 的引用。</param>
+      <typeparam name="T">要初始化的引用的类型。</typeparam>
+      <exception cref="T:System.MemberAccessException">缺少访问类型 <paramref name="T" /> 的构造函数的权限。</exception>
+      <exception cref="T:System.MissingMemberException">类型 <paramref name="T" /> 没有默认的构造函数。</exception>
+    </member>
+    <member name="M:System.Threading.LazyInitializer.EnsureInitialized``1(``0@,System.Boolean@,System.Object@)">
+      <summary>在目标引用或值类型尚未初始化的情况下，使用其默认构造函数初始化目标引用或值类型。</summary>
+      <returns>类型 <paramref name="T" /> 的初始化值。</returns>
+      <param name="target">在尚未初始化的情况下要初始化的类型 <paramref name="T" /> 的引用或值。</param>
+      <param name="initialized">对布尔值的引用，该值确定目标是否已初始化。</param>
+      <param name="syncLock">对用作相互排斥锁的对象的引用，用于初始化 <paramref name="target" />。如果 <paramref name="syncLock" /> 为 null，则新的对象将被实例化。</param>
+      <typeparam name="T">要初始化的引用的类型。</typeparam>
+      <exception cref="T:System.MemberAccessException">缺少访问类型 <paramref name="T" /> 的构造函数的权限。</exception>
+      <exception cref="T:System.MissingMemberException">类型 <paramref name="T" /> 没有默认的构造函数。</exception>
+    </member>
+    <member name="M:System.Threading.LazyInitializer.EnsureInitialized``1(``0@,System.Boolean@,System.Object@,System.Func{``0})">
+      <summary>在目标引用或值类型尚未初始化的情况下，使用指定函数初始化目标引用或值类型。</summary>
+      <returns>类型 <paramref name="T" /> 的初始化值。</returns>
+      <param name="target">在尚未初始化的情况下要初始化的类型 <paramref name="T" /> 的引用或值。</param>
+      <param name="initialized">对布尔值的引用，该值确定目标是否已初始化。</param>
+      <param name="syncLock">对用作相互排斥锁的对象的引用，用于初始化 <paramref name="target" />。如果 <paramref name="syncLock" /> 为 null，则新的对象将被实例化。</param>
+      <param name="valueFactory">调用函数以初始化该引用或值。</param>
+      <typeparam name="T">要初始化的引用的类型。</typeparam>
+      <exception cref="T:System.MemberAccessException">缺少访问类型 <paramref name="T" /> 的构造函数的权限。</exception>
+      <exception cref="T:System.MissingMemberException">类型 <paramref name="T" /> 没有默认的构造函数。</exception>
+    </member>
+    <member name="M:System.Threading.LazyInitializer.EnsureInitialized``1(``0@,System.Func{``0})">
+      <summary>在目标引用类型尚未初始化的情况下，使用指定函数初始化目标引用类型。</summary>
+      <returns>类型 <paramref name="T" /> 的初始化值。</returns>
+      <param name="target">在类型尚未初始化的情况下，要初始化的类型 <paramref name="T" /> 的引用。</param>
+      <param name="valueFactory">调用函数以初始化该引用。</param>
+      <typeparam name="T">要初始化的引用的引用类型。</typeparam>
+      <exception cref="T:System.MissingMemberException">类型 <paramref name="T" /> 没有默认的构造函数。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="valueFactory" /> 返回 null（在 Visual Basic 中为 Nothing）。</exception>
+    </member>
+    <member name="T:System.Threading.LockRecursionException">
+      <summary>当进入锁定状态的递归与此锁定的递归策略不兼容时引发的异常。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.LockRecursionException.#ctor">
+      <summary>使用由系统提供的用来描述错误的消息初始化 <see cref="T:System.Threading.LockRecursionException" /> 类的新实例。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.LockRecursionException.#ctor(System.String)">
+      <summary>使用指定的描述错误的消息初始化 <see cref="T:System.Threading.LockRecursionException" /> 类的新实例。</summary>
+      <param name="message">描述该异常的消息。此构造函数的调用方必须确保此字符串已针对当前系统区域性进行了本地化。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.LockRecursionException.#ctor(System.String,System.Exception)">
+      <summary>使用指定错误消息和对作为此异常原因的内部异常的引用来初始化 <see cref="T:System.Threading.LockRecursionException" /> 类的新实例。</summary>
+      <param name="message">描述该异常的消息。此构造函数的调用方必须确保此字符串已针对当前系统区域性进行了本地化。</param>
+      <param name="innerException">引发当前异常的异常。如果 <paramref name="innerException" /> 参数不为 null，则当前异常将在处理内部异常的 catch 块中引发。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.LockRecursionPolicy">
+      <summary>指定同一个线程是否可以多次进入一个锁定状态。</summary>
+    </member>
+    <member name="F:System.Threading.LockRecursionPolicy.NoRecursion">
+      <summary>如果线程尝试以递归方式进入锁定状态，将引发异常。某些类可能会在此设置生效时允许使用特定的递归方式。</summary>
+    </member>
+    <member name="F:System.Threading.LockRecursionPolicy.SupportsRecursion">
+      <summary>线程可以采用递归方式进入锁定状态。某些类可能会限制此功能。</summary>
+    </member>
+    <member name="T:System.Threading.ManualResetEvent">
+      <summary>通知一个或多个正在等待的线程已发生事件。此类不能被继承。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.ManualResetEvent.#ctor(System.Boolean)">
+      <summary>用一个指示是否将初始状态设置为终止的布尔值初始化 <see cref="T:System.Threading.ManualResetEvent" /> 类的新实例。</summary>
+      <param name="initialState">如果为 true，则将初始状态设置为终止；如果为 false，则将初始状态设置为非终止。</param>
+    </member>
+    <member name="T:System.Threading.ManualResetEventSlim">
+      <summary>提供 <see cref="T:System.Threading.ManualResetEvent" /> 的简化版本。</summary>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.#ctor">
+      <summary>使用非终止初始状态初始化 <see cref="T:System.Threading.ManualResetEventSlim" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.#ctor(System.Boolean)">
+      <summary>使用 Boolean 值（指示是否将初始状态设置为终止状态）初始化 <see cref="T:System.Threading.ManualResetEventSlim" /> 类的新实例。</summary>
+      <param name="initialState">若要将初始状态设置为终止，则为 true；若要将初始状态设置为非终止，则为 false。</param>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.#ctor(System.Boolean,System.Int32)">
+      <summary>使用 Boolean 值（指示是否将初始状态设置为终止或指定的旋转数）初始化 <see cref="T:System.Threading.ManualResetEventSlim" /> 类的新实例。</summary>
+      <param name="initialState">若要将初始状态设置为终止，则为 true；若要将初始状态设置为非终止，则为 false。</param>
+      <param name="spinCount">在回退到基于内核的等待操作之前发生的自旋等待数量。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="spinCount" /> is less than 0 or greater than the maximum allowed value.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Dispose">
+      <summary>释放由 <see cref="T:System.Threading.ManualResetEventSlim" /> 类的当前实例占用的所有资源。</summary>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Dispose(System.Boolean)">
+      <summary>释放由 <see cref="T:System.Threading.ManualResetEventSlim" /> 占用的非托管资源，还可以另外再释放托管资源。</summary>
+      <param name="disposing">为 true 则释放托管资源和非托管资源；为 false 则仅释放非托管资源。</param>
+    </member>
+    <member name="P:System.Threading.ManualResetEventSlim.IsSet">
+      <summary>获取是否已设置事件。</summary>
+      <returns>如果设置了事件，则为 true；否则为 false。</returns>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Reset">
+      <summary>将事件状态设置为非终止，从而导致线程受阻。</summary>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Set">
+      <summary>将事件状态设置为有信号，从而允许一个或多个等待该事件的线程继续。</summary>
+    </member>
+    <member name="P:System.Threading.ManualResetEventSlim.SpinCount">
+      <summary>获取在回退到基于内核的等待操作之前发生的自旋等待数量。</summary>
+      <returns>返回在回退到基于内核的等待操作之前发生的自旋等待数量。</returns>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait">
+      <summary>阻止当前线程，直到设置了当前 <see cref="T:System.Threading.ManualResetEventSlim" /> 为止。</summary>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.Int32)">
+      <summary>阻止当前线程，直到设定 <see cref="T:System.Threading.ManualResetEventSlim" />，使用 32 位已签名整数测量时间间隔。</summary>
+      <returns>如果已设置 <see cref="T:System.Threading.ManualResetEventSlim" />，则为 true；否则为 false。</returns>
+      <param name="millisecondsTimeout">等待的毫秒数，或为 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)，表示无限期等待。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> is a negative number other than -1, which represents an infinite time-out.</exception>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.Int32,System.Threading.CancellationToken)">
+      <summary>阻止当前线程，直到设定 <see cref="T:System.Threading.ManualResetEventSlim" />，使用 32 位已签名整数测量时间间隔，同时观察 <see cref="T:System.Threading.CancellationToken" />。</summary>
+      <returns>如果已设置 <see cref="T:System.Threading.ManualResetEventSlim" />，则为 true；否则为 false。</returns>
+      <param name="millisecondsTimeout">等待的毫秒数，或为 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)，表示无限期等待。</param>
+      <param name="cancellationToken">要观察的 <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> was canceled.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> is a negative number other than -1, which represents an infinite time-out.</exception>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed or the <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.Threading.CancellationToken)">
+      <summary>阻止当前线程，直到 <see cref="T:System.Threading.ManualResetEventSlim" /> 接收到信号，同时观察 <see cref="T:System.Threading.CancellationToken" />。</summary>
+      <param name="cancellationToken">要观察的 <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> was canceled.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed or the <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.TimeSpan)">
+      <summary>阻止当前线程，直到当前 <see cref="T:System.Threading.ManualResetEventSlim" /> 已设定，使用 <see cref="T:System.TimeSpan" /> 测量时间间隔。</summary>
+      <returns>如果已设置 <see cref="T:System.Threading.ManualResetEventSlim" />，则为 true；否则为 false。</returns>
+      <param name="timeout">表示等待毫秒数的 <see cref="T:System.TimeSpan" />，或表示 -1 毫秒（无限期等待）的 <see cref="T:System.TimeSpan" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> is a negative number other than -1 milliseconds, which represents an infinite time-out. -or-The number of milliseconds in <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" />. </exception>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>阻止当前线程，直到当前 <see cref="T:System.Threading.ManualResetEventSlim" /> 已设定，使用 <see cref="T:System.TimeSpan" /> 测量时间间隔，同时观察 <see cref="T:System.Threading.CancellationToken" />。</summary>
+      <returns>如果已设置 <see cref="T:System.Threading.ManualResetEventSlim" />，则为 true；否则为 false。</returns>
+      <param name="timeout">表示等待毫秒数的 <see cref="T:System.TimeSpan" />，或表示 -1 毫秒（无限期等待）的 <see cref="T:System.TimeSpan" />。</param>
+      <param name="cancellationToken">要观察的 <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> was canceled.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> is a negative number other than -1 milliseconds, which represents an infinite time-out. -or-The number of milliseconds in <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" />. </exception>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded. </exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed or the <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has been disposed.</exception>
+    </member>
+    <member name="P:System.Threading.ManualResetEventSlim.WaitHandle">
+      <summary>获取此 <see cref="T:System.Threading.ManualResetEventSlim" /> 的基础 <see cref="T:System.Threading.WaitHandle" /> 对象。</summary>
+      <returns>此 <see cref="T:System.Threading.ManualResetEventSlim" /> 的基础 <see cref="T:System.Threading.WaitHandle" /> 事件对象。</returns>
+    </member>
+    <member name="T:System.Threading.Monitor">
+      <summary>提供同步访问对象的机制。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.Enter(System.Object)">
+      <summary>在指定对象上获取排他锁。</summary>
+      <param name="obj">在其上获取监视器锁的对象。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 参数为 null。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.Enter(System.Object,System.Boolean@)">
+      <summary>获取指定对象上的排他锁，并自动设置一个值，指示是否获取了该锁。</summary>
+      <param name="obj">要在其上等待的对象。</param>
+      <param name="lockTaken">尝试获取锁的结果，通过引用传递。输入必须为 false。如果已获取锁，则输出为 true；否则输出为 false。即使在尝试获取锁的过程中发生异常，也会设置输出。注意   如果没有发生异常，则此方法的输出始终为 true。</param>
+      <exception cref="T:System.ArgumentException">对 <paramref name="lockTaken" /> 的输入是 true。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Threading.Monitor.Exit(System.Object)">
+      <summary>释放指定对象上的排他锁。</summary>
+      <param name="obj">在其上释放锁的对象。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 参数为 null。</exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">当前线程不拥有指定对象的锁。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.IsEntered(System.Object)">
+      <summary>确定当前线程是否保留指定对象上的锁。</summary>
+      <returns>如果当前线程持有 <paramref name="obj" /> 锁，则为 true；否则为 false。</returns>
+      <param name="obj">要测试的对象。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Threading.Monitor.Pulse(System.Object)">
+      <summary>通知等待队列中的线程锁定对象状态的更改。</summary>
+      <param name="obj">线程正在等待的对象。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 参数为 null。</exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">调用线程不拥有指定对象的锁。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.PulseAll(System.Object)">
+      <summary>通知所有的等待线程对象状态的更改。</summary>
+      <param name="obj">发送脉冲的对象。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 参数为 null。</exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">调用线程不拥有指定对象的锁。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object)">
+      <summary>尝试获取指定对象的排他锁。</summary>
+      <returns>如果当前线程获取该锁，则为 true；否则为 false。</returns>
+      <param name="obj">在其上获取锁的对象。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 参数为 null。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.Boolean@)">
+      <summary>尝试获取指定对象上的排他锁，并自动设置一个值，指示是否获取了该锁。</summary>
+      <param name="obj">在其上获取锁的对象。</param>
+      <param name="lockTaken">尝试获取锁的结果，通过引用传递。输入必须为 false。如果已获取锁，则输出为 true；否则输出为 false。即使在尝试获取锁的过程中发生异常，也会设置输出。</param>
+      <exception cref="T:System.ArgumentException">对 <paramref name="lockTaken" /> 的输入是 true。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.Int32)">
+      <summary>在指定的毫秒数内尝试获取指定对象上的排他锁。</summary>
+      <returns>如果当前线程获取该锁，则为 true；否则为 false。</returns>
+      <param name="obj">在其上获取锁的对象。</param>
+      <param name="millisecondsTimeout">等待锁所需的毫秒数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 参数为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 为负且不等于 <see cref="F:System.Threading.Timeout.Infinite" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.Int32,System.Boolean@)">
+      <summary>在指定的毫秒数内尝试获取指定对象上的排他锁，并自动设置一个值，指示是否获取了该锁。</summary>
+      <param name="obj">在其上获取锁的对象。</param>
+      <param name="millisecondsTimeout">等待锁所需的毫秒数。</param>
+      <param name="lockTaken">尝试获取锁的结果，通过引用传递。输入必须为 false。如果已获取锁，则输出为 true；否则输出为 false。即使在尝试获取锁的过程中发生异常，也会设置输出。</param>
+      <exception cref="T:System.ArgumentException">对 <paramref name="lockTaken" /> 的输入是 true。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 参数为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 为负且不等于 <see cref="F:System.Threading.Timeout.Infinite" />。</exception>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.TimeSpan)">
+      <summary>在指定的时间内尝试获取指定对象上的排他锁。</summary>
+      <returns>如果当前线程获取该锁，则为 true；否则为 false。</returns>
+      <param name="obj">在其上获取锁的对象。</param>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" />，表示等待锁所需的时间量。值为 -1 毫秒表示指定无限期等待。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 参数为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 值（以毫秒为单位）为负且不等于 <see cref="F:System.Threading.Timeout.Infinite" />（-1 毫秒），或者大于 <see cref="F:System.Int32.MaxValue" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.TimeSpan,System.Boolean@)">
+      <summary>在指定的一段时间内尝试获取指定对象上的排他锁，并自动设置一个值，指示是否获得了该锁。</summary>
+      <param name="obj">在其上获取锁的对象。</param>
+      <param name="timeout">用于等待锁的时间。值为 -1 毫秒表示指定无限期等待。</param>
+      <param name="lockTaken">尝试获取锁的结果，通过引用传递。输入必须为 false。如果已获取锁，则输出为 true；否则输出为 false。即使在尝试获取锁的过程中发生异常，也会设置输出。</param>
+      <exception cref="T:System.ArgumentException">对 <paramref name="lockTaken" /> 的输入是 true。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 参数为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 值（以毫秒为单位）为负且不等于 <see cref="F:System.Threading.Timeout.Infinite" />（-1 毫秒），或者大于 <see cref="F:System.Int32.MaxValue" />。</exception>
+    </member>
+    <member name="M:System.Threading.Monitor.Wait(System.Object)">
+      <summary>释放对象上的锁并阻止当前线程，直到它重新获取该锁。</summary>
+      <returns>如果调用由于调用方重新获取了指定对象的锁而返回，则为 true。如果未重新获取该锁，则此方法不会返回。</returns>
+      <param name="obj">要在其上等待的对象。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 参数为 null。</exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">调用线程不拥有指定对象的锁。</exception>
+      <exception cref="T:System.Threading.ThreadInterruptedException">调用 Wait 的线程稍后从等待状态中断。当另一个线程调用此线程的 <see cref="M:System.Threading.Thread.Interrupt" /> 方法时会发生这种情况。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.Wait(System.Object,System.Int32)">
+      <summary>释放对象上的锁并阻止当前线程，直到它重新获取该锁。如果已用指定的超时时间间隔，则线程进入就绪队列。</summary>
+      <returns>如果在指定的时间过期之前重新获取该锁，则为 true；如果在指定的时间过期之后重新获取该锁，则为 false。此方法只有在重新获取该锁后才会返回。</returns>
+      <param name="obj">要在其上等待的对象。</param>
+      <param name="millisecondsTimeout">线程进入就绪队列之前等待的毫秒数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 参数为 null。</exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">调用线程不拥有指定对象的锁。</exception>
+      <exception cref="T:System.Threading.ThreadInterruptedException">调用 Wait 的线程稍后从等待状态中断。当另一个线程调用此线程的 <see cref="M:System.Threading.Thread.Interrupt" /> 方法时会发生这种情况。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 参数值为负且不等于 <see cref="F:System.Threading.Timeout.Infinite" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.Wait(System.Object,System.TimeSpan)">
+      <summary>释放对象上的锁并阻止当前线程，直到它重新获取该锁。如果已用指定的超时时间间隔，则线程进入就绪队列。</summary>
+      <returns>如果在指定的时间过期之前重新获取该锁，则为 true；如果在指定的时间过期之后重新获取该锁，则为 false。此方法只有在重新获取该锁后才会返回。</returns>
+      <param name="obj">要在其上等待的对象。</param>
+      <param name="timeout">
+        <see cref="T:System.TimeSpan" />，表示线程进入就绪队列之前等待的时间量。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 参数为 null。</exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">调用线程不拥有指定对象的锁。</exception>
+      <exception cref="T:System.Threading.ThreadInterruptedException">调用 Wait 的线程稍后从等待状态中断。当另一个线程调用此线程的 <see cref="M:System.Threading.Thread.Interrupt" /> 方法时会发生这种情况。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 参数值（以毫秒为单位）为负且不表示 <see cref="F:System.Threading.Timeout.Infinite" />（-1 毫秒），或者大于 <see cref="F:System.Int32.MaxValue" />。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.Mutex">
+      <summary>还可用于进程间同步的同步基元。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Mutex.#ctor">
+      <summary>使用默认属性初始化 <see cref="T:System.Threading.Mutex" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Threading.Mutex.#ctor(System.Boolean)">
+      <summary>使用 Boolean 值（指示调用线程是否应具有互斥体的初始所有权）初始化 <see cref="T:System.Threading.Mutex" /> 类的新实例。</summary>
+      <param name="initiallyOwned">如果给调用线程赋予互斥体的初始所属权，则为 true；否则为 false。</param>
+    </member>
+    <member name="M:System.Threading.Mutex.#ctor(System.Boolean,System.String)">
+      <summary>使用 Boolean 值（指示调用线程是否应具有互斥体的初始所有权以及字符串是否为互斥体的名称）初始化 <see cref="T:System.Threading.Mutex" /> 类的新实例。</summary>
+      <param name="initiallyOwned">如果为 true，则给予调用线程已命名的系统互斥体的初始所属权（如果已命名的系统互斥体是通过此调用创建的）；否则为 false。</param>
+      <param name="name">
+        <see cref="T:System.Threading.Mutex" /> 的名称。如果值为 null，则 <see cref="T:System.Threading.Mutex" /> 是未命名的。</param>
+      <exception cref="T:System.UnauthorizedAccessException">命名的互斥体存在并具有访问控制安全性，但用户不具有 <see cref="F:System.Security.AccessControl.MutexRights.FullControl" />。</exception>
+      <exception cref="T:System.IO.IOException">发生了一个 Win32 错误。</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">无法创建命名的互斥体，原因可能是与其他类型的等待句柄同名。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 长度超过 260 个字符。</exception>
+    </member>
+    <member name="M:System.Threading.Mutex.#ctor(System.Boolean,System.String,System.Boolean@)">
+      <summary>使用可指示调用线程是否应具有互斥体的初始所有权以及字符串是否为互斥体的名称的 Boolean 值和当线程返回时可指示调用线程是否已赋予互斥体的初始所有权的 Boolean 值初始化 <see cref="T:System.Threading.Mutex" /> 类的新实例。</summary>
+      <param name="initiallyOwned">如果为 true，则给予调用线程已命名的系统互斥体的初始所属权（如果已命名的系统互斥体是通过此调用创建的）；否则为 false。</param>
+      <param name="name">
+        <see cref="T:System.Threading.Mutex" /> 的名称。如果值为 null，则 <see cref="T:System.Threading.Mutex" /> 是未命名的。</param>
+      <param name="createdNew">在此方法返回时，如果创建了局部互斥体（即，如果 <paramref name="name" /> 为 null 或空字符串）或指定的命名系统互斥体，则包含布尔值 true；如果指定的命名系统互斥体已存在，则为 false。此参数未经初始化即被传递。</param>
+      <exception cref="T:System.UnauthorizedAccessException">命名的互斥体存在并具有访问控制安全性，但用户不具有 <see cref="F:System.Security.AccessControl.MutexRights.FullControl" />。</exception>
+      <exception cref="T:System.IO.IOException">发生了一个 Win32 错误。</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">无法创建命名的互斥体，原因可能是与其他类型的等待句柄同名。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 长度超过 260 个字符。</exception>
+    </member>
+    <member name="M:System.Threading.Mutex.OpenExisting(System.String)">
+      <summary>打开指定的已命名的互斥体（如果已经存在）。</summary>
+      <returns>表示已命名的系统互斥体的对象。</returns>
+      <param name="name">要打开的系统互斥体的名称。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 是一个空字符串。- 或 -<paramref name="name" /> 长度超过 260 个字符。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 为 null。</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">命名的 mutex 不存在。</exception>
+      <exception cref="T:System.IO.IOException">发生了一个 Win32 错误。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">已命名的互斥体存在，但用户不具备使用它所需的安全访问权限。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Threading.Mutex.ReleaseMutex">
+      <summary>释放 <see cref="T:System.Threading.Mutex" /> 一次。</summary>
+      <exception cref="T:System.ApplicationException">调用线程不拥有互斥体。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Mutex.TryOpenExisting(System.String,System.Threading.Mutex@)">
+      <summary>打开指定的已命名的互斥体（如果已经存在），并返回指示操作是否成功的值。</summary>
+      <returns>如果命名互斥体成功打开，则为 true；否则为 false。</returns>
+      <param name="name">要打开的系统互斥体的名称。</param>
+      <param name="result">当此方法返回时，如果调用成功，则包含表示命名互斥体的 <see cref="T:System.Threading.Mutex" /> 对象；否则为 null。该参数未经初始化即被处理。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 是一个空字符串。- 或 -<paramref name="name" /> 长度超过 260 个字符。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 为 null。</exception>
+      <exception cref="T:System.IO.IOException">发生了一个 Win32 错误。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">已命名的互斥体存在，但用户不具备使用它所需的安全访问权限。</exception>
+    </member>
+    <member name="T:System.Threading.ReaderWriterLockSlim">
+      <summary>表示用于管理资源访问的锁定状态，可实现多线程读取或进行独占式写入访问。</summary>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.#ctor">
+      <summary>使用默认属性值初始化 <see cref="T:System.Threading.ReaderWriterLockSlim" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.#ctor(System.Threading.LockRecursionPolicy)">
+      <summary>在指定锁定递归策略的情况下初始化 <see cref="T:System.Threading.ReaderWriterLockSlim" /> 类的新实例。</summary>
+      <param name="recursionPolicy">枚举值之一，用于指定锁定递归策略。</param>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.CurrentReadCount">
+      <summary>获取已进入读取模式锁定状态的独有线程的总数。</summary>
+      <returns>已进入读取模式锁定状态的独有线程的数量。</returns>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.Dispose">
+      <summary>释放 <see cref="T:System.Threading.ReaderWriterLockSlim" /> 类的当前实例所使用的所有资源。</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">
+        <see cref="P:System.Threading.ReaderWriterLockSlim.WaitingReadCount" /> is greater than zero. -or-<see cref="P:System.Threading.ReaderWriterLockSlim.WaitingUpgradeCount" /> is greater than zero. -or-<see cref="P:System.Threading.ReaderWriterLockSlim.WaitingWriteCount" /> is greater than zero. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.EnterReadLock">
+      <summary>尝试进入读取模式锁定状态。</summary>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered read mode. -or-The current thread may not acquire the read lock when it already holds the write lock. -or-The recursion number would exceed the capacity of the counter.This limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.EnterUpgradeableReadLock">
+      <summary>尝试进入可升级模式锁定状态。</summary>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock in any mode. -or-The current thread has entered read mode, so trying to enter upgradeable mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.EnterWriteLock">
+      <summary>尝试进入写入模式锁定状态。</summary>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock in any mode. -or-The current thread has entered read mode, so trying to enter the lock in write mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.ExitReadLock">
+      <summary>减少读取模式的递归计数，并在生成的计数为 0（零）时退出读取模式。</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">The current thread has not entered the lock in read mode. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.ExitUpgradeableReadLock">
+      <summary>减少可升级模式的递归计数，并在生成的计数为 0（零）时退出可升级模式。</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">The current thread has not entered the lock in upgradeable mode.</exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.ExitWriteLock">
+      <summary>减少写入模式的递归计数，并在生成的计数为 0（零）时退出写入模式。</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">The current thread has not entered the lock in write mode.</exception>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.IsReadLockHeld">
+      <summary>获取一个值，该值指示当前线程是否已进入读取模式的锁定状态。</summary>
+      <returns>如果当前线程已进入读取模式，则为 true；否则为 false。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.IsUpgradeableReadLockHeld">
+      <summary>获取一个值，该值指示当前线程是否已进入可升级模式的锁定状态。</summary>
+      <returns>如果当前线程已进入可升级模式，则为 true；否则为 false。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.IsWriteLockHeld">
+      <summary>获取一个值，该值指示当前线程是否已进入写入模式的锁定状态。</summary>
+      <returns>如果当前线程已进入写入模式，则为 true；否则为 false。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy">
+      <summary>获取一个值，该值指示当前 <see cref="T:System.Threading.ReaderWriterLockSlim" /> 对象的递归策略。</summary>
+      <returns>枚举值之一，用于指定锁定递归策略。</returns>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.RecursiveReadCount">
+      <summary>获取当前线程进入读取模式锁定状态的次数，用于指示递归。</summary>
+      <returns>如果当前线程未进入读取模式，则为 0（零）；如果线程已进入读取模式但却不是以递归方式进入的，则为 1；或者如果线程已经以递归方式进入锁定模式 n - 1 次，则为 n。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.RecursiveUpgradeCount">
+      <summary>获取当前线程进入可升级模式锁定状态的次数，用于指示递归。</summary>
+      <returns>如果当前线程没有进入可升级模式，则为 0；如果线程已进入可升级模式却不是以递归方式进入的，则为 1；或者如果线程已经以递归方式进入可升级模式 n - 1 次，则为 n。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.RecursiveWriteCount">
+      <summary>获取当前线程进入写入模式锁定状态的次数，用于指示递归。</summary>
+      <returns>如果当前线程没有进入写入模式，则为 0；如果线程已进入写入模式却不是以递归方式进入的，则为 1；或者如果线程已经以递归方式进入写入模式 n - 1 次，则为 n。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterReadLock(System.Int32)">
+      <summary>尝试进入读取模式锁定状态，可以选择整数超时时间。</summary>
+      <returns>如果调用线程已进入读取模式，则为 true；否则为 false。</returns>
+      <param name="millisecondsTimeout">等待的毫秒数，或为 -1 (<see cref="F:System.Threading.Timeout.Infinite" />)，表示无限期等待。</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="millisecondsTimeout" /> is negative, but it is not equal to <see cref="F:System.Threading.Timeout.Infinite" /> (-1), which is the only negative value allowed. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterReadLock(System.TimeSpan)">
+      <summary>尝试进入读取模式锁定状态，可以选择超时时间。</summary>
+      <returns>如果调用线程已进入读取模式，则为 true；否则为 false。</returns>
+      <param name="timeout">等待的间隔；或为 -1 毫秒，表示无限期等待。</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="timeout" /> is negative, but it is not equal to -1 milliseconds, which is the only negative value allowed.-or-The value of <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" /> milliseconds. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterUpgradeableReadLock(System.Int32)">
+      <summary>尝试进入可升级模式锁定状态，可以选择超时时间。</summary>
+      <returns>如果调用线程已进入可升级模式，则为 true；否则为 false。</returns>
+      <param name="millisecondsTimeout">等待的毫秒数，或为 -1 (<see cref="F:System.Threading.Timeout.Infinite" />)，表示无限期等待。</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The current thread initially entered the lock in read mode, and therefore trying to enter upgradeable mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="millisecondsTimeout" /> is negative, but it is not equal to <see cref="F:System.Threading.Timeout.Infinite" /> (-1), which is the only negative value allowed. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterUpgradeableReadLock(System.TimeSpan)">
+      <summary>尝试进入可升级模式锁定状态，可以选择超时时间。</summary>
+      <returns>如果调用线程已进入可升级模式，则为 true；否则为 false。</returns>
+      <param name="timeout">等待的间隔；或为 -1 毫秒，表示无限期等待。</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The current thread initially entered the lock in read mode, and therefore trying to enter upgradeable mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="timeout" /> is negative, but it is not equal to -1 milliseconds, which is the only negative value allowed.-or-The value of <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" /> milliseconds. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterWriteLock(System.Int32)">
+      <summary>尝试进入写入模式锁定状态，可以选择超时时间。</summary>
+      <returns>如果调用线程已进入写入模式，则为 true；否则为 false。</returns>
+      <param name="millisecondsTimeout">等待的毫秒数，或为 -1 (<see cref="F:System.Threading.Timeout.Infinite" />)，表示无限期等待。</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The current thread initially entered the lock in read mode, and therefore trying to enter write mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="millisecondsTimeout" /> is negative, but it is not equal to <see cref="F:System.Threading.Timeout.Infinite" /> (-1), which is the only negative value allowed. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterWriteLock(System.TimeSpan)">
+      <summary>尝试进入写入模式锁定状态，可以选择超时时间。</summary>
+      <returns>如果调用线程已进入写入模式，则为 true；否则为 false。</returns>
+      <param name="timeout">等待的间隔；或为 -1 毫秒，表示无限期等待。</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The current thread initially entered the lock in read mode, and therefore trying to enter write mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="timeout" /> is negative, but it is not equal to -1 milliseconds, which is the only negative value allowed.-or-The value of <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" /> milliseconds. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.WaitingReadCount">
+      <summary>获取等待进入读取模式锁定状态的线程总数。</summary>
+      <returns>等待进入读取模式的线程总数。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.WaitingUpgradeCount">
+      <summary>获取等待进入可升级模式锁定状态的线程总数。</summary>
+      <returns>等待进入可升级模式的线程总数。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.WaitingWriteCount">
+      <summary>获取等待进入写入模式锁定状态的线程总数。</summary>
+      <returns>等待进入写入模式的线程总数。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.Semaphore">
+      <summary>限制可同时访问某一资源或资源池的线程数。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Semaphore.#ctor(System.Int32,System.Int32)">
+      <summary>初始化 <see cref="T:System.Threading.Semaphore" /> 类的新实例，并指定初始入口数和最大并发入口数。</summary>
+      <param name="initialCount">可以同时授予的信号量的初始请求数。</param>
+      <param name="maximumCount">可以同时授予的信号量的最大请求数。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="initialCount" /> 大于 <paramref name="maximumCount" />。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="maximumCount" /> 为小于 1。- 或 -<paramref name="initialCount" /> 小于 0。</exception>
+    </member>
+    <member name="M:System.Threading.Semaphore.#ctor(System.Int32,System.Int32,System.String)">
+      <summary>初始化 <see cref="T:System.Threading.Semaphore" /> 类的新实例，并指定初始入口数和最大并发入口数，可以选择指定系统信号量对象的名称。</summary>
+      <param name="initialCount">可以同时授予的信号量的初始请求数。</param>
+      <param name="maximumCount">可以同时授予的信号量的最大请求数。</param>
+      <param name="name">命名系统信号量对象的名称。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="initialCount" /> 大于 <paramref name="maximumCount" />。- 或 -<paramref name="name" /> 长度超过 260 个字符。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="maximumCount" /> 为小于 1。- 或 -<paramref name="initialCount" /> 小于 0。</exception>
+      <exception cref="T:System.IO.IOException">发生了一个 Win32 错误。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">命名信号量存在并具有访问控制安全性，但用户不具有 <see cref="F:System.Security.AccessControl.SemaphoreRights.FullControl" />。</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">无法创建命名的信号量，可能是因为存在同名但类型不同的等待句柄。</exception>
+    </member>
+    <member name="M:System.Threading.Semaphore.#ctor(System.Int32,System.Int32,System.String,System.Boolean@)">
+      <summary>初始化 <see cref="T:System.Threading.Semaphore" /> 类的新实例，并指定初始入口数和最大并发入口数，还可以选择指定系统信号量对象的名称，以及指定一个变量来接收指示是否创建了新系统信号量的值。</summary>
+      <param name="initialCount">可以同时满足的信号量的初始请求数。</param>
+      <param name="maximumCount">可以同时满足的信号量的最大请求数。</param>
+      <param name="name">命名系统信号量对象的名称。</param>
+      <param name="createdNew">在此方法返回时，如果创建了本地信号量（即，如果 <paramref name="name" /> 为 null 或空字符串）或指定的命名系统信号量，则包含 true；如果指定的命名系统信号量已存在，则为 false。此参数未经初始化即被传递。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="initialCount" /> 大于 <paramref name="maximumCount" />。- 或 -<paramref name="name" /> 长度超过 260 个字符。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="maximumCount" /> 为小于 1。- 或 -<paramref name="initialCount" /> 小于 0。</exception>
+      <exception cref="T:System.IO.IOException">发生了一个 Win32 错误。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">命名信号量存在并具有访问控制安全性，但用户不具有 <see cref="F:System.Security.AccessControl.SemaphoreRights.FullControl" />。</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">无法创建命名的信号量，可能是因为存在同名但类型不同的等待句柄。</exception>
+    </member>
+    <member name="M:System.Threading.Semaphore.OpenExisting(System.String)">
+      <summary>打开指定名称为信号量（如果已经存在）。</summary>
+      <returns>一个对象，表示已命名的系统信号量。</returns>
+      <param name="name">要打开的系统信号量的名称。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 是一个空字符串。- 或 -<paramref name="name" /> 长度超过 260 个字符。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 为 null。</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">命名的信号量不存在。</exception>
+      <exception cref="T:System.IO.IOException">发生了一个 Win32 错误。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">已命名的信号量存在，但用户不具备使用它所需的安全访问权。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Threading.Semaphore.Release">
+      <summary>退出信号量并返回前一个计数。</summary>
+      <returns>调用 <see cref="Overload:System.Threading.Semaphore.Release" /> 方法前信号量的计数。</returns>
+      <exception cref="T:System.Threading.SemaphoreFullException">信号量计数已是最大值。</exception>
+      <exception cref="T:System.IO.IOException">发生已命名信号量的 Win32 错误。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">当前信号量表示一个已命名的系统信号量，但用户不具备 <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" />。- 或 -当前信号量表示一个已命名的系统信号量，但它未用 <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" /> 打开。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Semaphore.Release(System.Int32)">
+      <summary>以指定的次数退出信号量并返回前一个计数。</summary>
+      <returns>调用 <see cref="Overload:System.Threading.Semaphore.Release" /> 方法前信号量的计数。</returns>
+      <param name="releaseCount">退出信号量的次数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="releaseCount" /> 为小于 1。</exception>
+      <exception cref="T:System.Threading.SemaphoreFullException">信号量计数已是最大值。</exception>
+      <exception cref="T:System.IO.IOException">发生已命名信号量的 Win32 错误。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">当前信号量表示一个已命名的系统信号量，但用户不具备 <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" /> 权限。- 或 -当前信号量表示一个已命名的系统信号量，但它不是以 <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" /> 权限打开的。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Semaphore.TryOpenExisting(System.String,System.Threading.Semaphore@)">
+      <summary>打开指定名称为信号量（如果已经存在），并返回指示操作是否成功的值。</summary>
+      <returns>如果命名信号量成功打开，则为 true；否则为 false。</returns>
+      <param name="name">要打开的系统信号量的名称。</param>
+      <param name="result">当此方法返回时，如果调用成功，则包含表示命名信号的 <see cref="T:System.Threading.Semaphore" /> 对象；否则为 null。该参数未经初始化即被处理。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 是一个空字符串。- 或 -<paramref name="name" /> 长度超过 260 个字符。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 为 null。</exception>
+      <exception cref="T:System.IO.IOException">发生了一个 Win32 错误。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">已命名的信号量存在，但用户不具备使用它所需的安全访问权。</exception>
+    </member>
+    <member name="T:System.Threading.SemaphoreFullException">
+      <summary>对计数已达到最大值的信号量调用 <see cref="Overload:System.Threading.Semaphore.Release" /> 方法时引发的异常。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SemaphoreFullException.#ctor">
+      <summary>使用默认值初始化 <see cref="T:System.Threading.SemaphoreFullException" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Threading.SemaphoreFullException.#ctor(System.String)">
+      <summary>使用指定的错误消息初始化 <see cref="T:System.Threading.SemaphoreFullException" /> 类的新实例。</summary>
+      <param name="message">解释异常原因的错误信息。</param>
+    </member>
+    <member name="M:System.Threading.SemaphoreFullException.#ctor(System.String,System.Exception)">
+      <summary>使用指定错误消息和对作为此异常原因的内部异常的引用来初始化 <see cref="T:System.Threading.SemaphoreFullException" /> 类的新实例。</summary>
+      <param name="message">解释异常原因的错误信息。</param>
+      <param name="innerException">导致当前异常的异常。如果 <paramref name="innerException" /> 参数不为 null，则当前异常将在处理内部异常的 catch 块中引发。</param>
+    </member>
+    <member name="T:System.Threading.SemaphoreSlim">
+      <summary>对可同时访问资源或资源池的线程数加以限制的 <see cref="T:System.Threading.Semaphore" /> 的轻量替代。</summary>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.#ctor(System.Int32)">
+      <summary>初始化 <see cref="T:System.Threading.SemaphoreSlim" /> 类的新实例，以指定可同时授予的请求的初始数量。</summary>
+      <param name="initialCount">可以同时授予的信号量的初始请求数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="initialCount" /> 小于 0。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.#ctor(System.Int32,System.Int32)">
+      <summary>初始化 <see cref="T:System.Threading.SemaphoreSlim" /> 类的新实例，同时指定可同时授予的请求的初始数量和最大数量。</summary>
+      <param name="initialCount">可以同时授予的信号量的初始请求数。</param>
+      <param name="maxCount">可以同时授予的信号量的最大请求数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="initialCount" /> 小于 0，或 <paramref name="initialCount" /> 大于 <paramref name="maxCount" />，或 <paramref name="maxCount" /> 小于等于 0。</exception>
+    </member>
+    <member name="P:System.Threading.SemaphoreSlim.AvailableWaitHandle">
+      <summary>返回一个可用于在信号量上等待的 <see cref="T:System.Threading.WaitHandle" />。</summary>
+      <returns>可用于在信号量上等待的 <see cref="T:System.Threading.WaitHandle" />。</returns>
+      <exception cref="T:System.ObjectDisposedException">已释放了 <see cref="T:System.Threading.SemaphoreSlim" />。</exception>
+    </member>
+    <member name="P:System.Threading.SemaphoreSlim.CurrentCount">
+      <summary>获取可以输入 <see cref="T:System.Threading.SemaphoreSlim" /> 对象的剩余线程数。</summary>
+      <returns>可以输入信号量的剩余线程数。</returns>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Dispose">
+      <summary>释放 <see cref="T:System.Threading.SemaphoreSlim" /> 类的当前实例所使用的所有资源。</summary>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Dispose(System.Boolean)">
+      <summary>释放由 <see cref="T:System.Threading.SemaphoreSlim" /> 占用的非托管资源，还可以另外再释放托管资源。</summary>
+      <param name="disposing">若要释放托管资源和非托管资源，则为 true；若仅释放非托管资源，则为 false。</param>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Release">
+      <summary>释放 <see cref="T:System.Threading.SemaphoreSlim" /> 对象一次。</summary>
+      <returns>
+        <see cref="T:System.Threading.SemaphoreSlim" /> 的前一个计数。</returns>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+      <exception cref="T:System.Threading.SemaphoreFullException">
+        <see cref="T:System.Threading.SemaphoreSlim" /> 已达到其最大大小。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Release(System.Int32)">
+      <summary>释放 <see cref="T:System.Threading.SemaphoreSlim" /> 对象指定的次数。</summary>
+      <returns>
+        <see cref="T:System.Threading.SemaphoreSlim" /> 的前一个计数。</returns>
+      <param name="releaseCount">退出信号量的次数。</param>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="releaseCount" /> 为小于 1。</exception>
+      <exception cref="T:System.Threading.SemaphoreFullException">
+        <see cref="T:System.Threading.SemaphoreSlim" /> 已达到其最大大小。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait">
+      <summary>阻止当前线程，直至它可进入 <see cref="T:System.Threading.SemaphoreSlim" /> 为止。</summary>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.Int32)">
+      <summary>阻止当前线程，直至它可进入 <see cref="T:System.Threading.SemaphoreSlim" /> 为止，同时使用 32 位带符号整数来指定超时。</summary>
+      <returns>如果当前线程成功进入 <see cref="T:System.Threading.SemaphoreSlim" />，则为 true；否则为 false。</returns>
+      <param name="millisecondsTimeout">等待的毫秒数，或为 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)，表示无限期等待。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一个非 -1 的负数，而 -1 表示无限期超时。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.Int32,System.Threading.CancellationToken)">
+      <summary>阻止当前线程，直至它可进入 <see cref="T:System.Threading.SemaphoreSlim" /> 为止，并使用 32 位带符号整数来指定超时，同时观察 <see cref="T:System.Threading.CancellationToken" />。</summary>
+      <returns>如果当前线程成功进入 <see cref="T:System.Threading.SemaphoreSlim" />，则为 true；否则为 false。</returns>
+      <param name="millisecondsTimeout">等待的毫秒数，或为 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)，表示无限期等待。</param>
+      <param name="cancellationToken">要观察的 <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> 已取消。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一个非 -1 的负数，而 -1 表示无限期超时。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Threading.SemaphoreSlim" /> 实例已被释放，或 <see cref="T:System.Threading.CancellationTokenSource" /> 创建 <paramref name="cancellationToken" /> 已被释放。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.Threading.CancellationToken)">
+      <summary>阻止当前线程，直至它可进入 <see cref="T:System.Threading.SemaphoreSlim" /> 为止，同时观察 <see cref="T:System.Threading.CancellationToken" />。</summary>
+      <param name="cancellationToken">要观察的 <see cref="T:System.Threading.CancellationToken" /> 标记。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> 已取消。</exception>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。- 或 -<see cref="T:System.Threading.CancellationTokenSource" /> 创建<paramref name=" cancellationToken" /> 已释放。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.TimeSpan)">
+      <summary>阻止当前线程，直至它可进入 <see cref="T:System.Threading.SemaphoreSlim" /> 为止，同时使用 <see cref="T:System.TimeSpan" /> 来指定超时。</summary>
+      <returns>如果当前线程成功进入 <see cref="T:System.Threading.SemaphoreSlim" />，则为 true；否则为 false。</returns>
+      <param name="timeout">表示等待毫秒数的 <see cref="T:System.TimeSpan" />，或表示 -1 毫秒（无限期等待）的 <see cref="T:System.TimeSpan" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 是 -1 毫秒之外的负数，表示无限超时或者超时大于 <see cref="F:System.Int32.MaxValue" />。</exception>
+      <exception cref="T:System.ObjectDisposedException">semaphoreSlim 实例已处理 <paramref name="." /></exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>阻止当前线程，直至它可进入 <see cref="T:System.Threading.SemaphoreSlim" /> 为止，并使用 <see cref="T:System.TimeSpan" /> 来指定超时，同时观察 <see cref="T:System.Threading.CancellationToken" />。</summary>
+      <returns>如果当前线程成功进入 <see cref="T:System.Threading.SemaphoreSlim" />，则为 true；否则为 false。</returns>
+      <param name="timeout">表示等待毫秒数的 <see cref="T:System.TimeSpan" />，或表示 -1 毫秒（无限期等待）的 <see cref="T:System.TimeSpan" />。</param>
+      <param name="cancellationToken">要观察的 <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> 已取消。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 是 -1 毫秒之外的负数，表示无限超时或者超时大于 <see cref="F:System.Int32.MaxValue" />。</exception>
+      <exception cref="T:System.ObjectDisposedException">semaphoreSlim 实例已处理 <paramref name="." /><paramref name="-or-" />创建了 <see cref="T:System.Threading.CancellationTokenSource" /> 的 <paramref name="cancellationToken" /> 已经被释放。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync">
+      <summary>输入 <see cref="T:System.Threading.SemaphoreSlim" /> 的异步等待。</summary>
+      <returns>输入信号量时完成任务。</returns>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.Int32)">
+      <summary>输入 <see cref="T:System.Threading.SemaphoreSlim" /> 的异步等待，使用 32 位带符号整数度量时间间隔。</summary>
+      <returns>如果当前线程成功输入了 <see cref="T:System.Threading.SemaphoreSlim" />，则为将通过 true 的结果一起完成的任务，否则将通过 false 的结果完成。</returns>
+      <param name="millisecondsTimeout">等待的毫秒数，或为 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)，表示无限期等待。</param>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一个非 -1 的负数，而 -1 表示无限期超时。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.Int32,System.Threading.CancellationToken)">
+      <summary>在观察 <see cref="T:System.Threading.CancellationToken" /> 时，输入 <see cref="T:System.Threading.SemaphoreSlim" /> 的异步等待，使用 32 位带符号整数度量时间间隔。</summary>
+      <returns>如果当前线程成功输入了 <see cref="T:System.Threading.SemaphoreSlim" />，则为将通过 true 的结果一起完成的任务，否则将通过 false 的结果完成。</returns>
+      <param name="millisecondsTimeout">等待的毫秒数，或为 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)，表示无限期等待。</param>
+      <param name="cancellationToken">要观察的 <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一个非 -1 的负数，而 -1 表示无限期超时。</exception>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> 已取消。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.Threading.CancellationToken)">
+      <summary>在观察 <see cref="T:System.Threading.CancellationToken" /> 时，输入 <see cref="T:System.Threading.SemaphoreSlim" /> 的异步等待。</summary>
+      <returns>输入信号量时完成任务。</returns>
+      <param name="cancellationToken">要观察的 <see cref="T:System.Threading.CancellationToken" /> 标记。</param>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> 已取消。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.TimeSpan)">
+      <summary>输入 <see cref="T:System.Threading.SemaphoreSlim" /> 的异步等待，使用 <see cref="T:System.TimeSpan" /> 度量时间间隔。</summary>
+      <returns>如果当前线程成功输入了 <see cref="T:System.Threading.SemaphoreSlim" />，则为将通过 true 的结果一起完成的任务，否则将通过 false 的结果完成。</returns>
+      <param name="timeout">表示等待毫秒数的 <see cref="T:System.TimeSpan" />，或表示 -1 毫秒（无限期等待）的 <see cref="T:System.TimeSpan" />。</param>
+      <exception cref="T:System.ObjectDisposedException">当前实例已被释放。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一个非 -1 的负数，而 -1 表示无限期超时 - 或 - 超时大于 <see cref="F:System.Int32.MaxValue" />。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>在观察 <see cref="T:System.Threading.CancellationToken" /> 时，输入 <see cref="T:System.Threading.SemaphoreSlim" /> 的异步等待，使用 <see cref="T:System.TimeSpan" /> 度量时间间隔。</summary>
+      <returns>如果当前线程成功输入了 <see cref="T:System.Threading.SemaphoreSlim" />，则为将通过 true 的结果一起完成的任务，否则将通过 false 的结果完成。</returns>
+      <param name="timeout">表示等待毫秒数的 <see cref="T:System.TimeSpan" />，或表示 -1 毫秒（无限期等待）的 <see cref="T:System.TimeSpan" />。</param>
+      <param name="cancellationToken">要观察的 <see cref="T:System.Threading.CancellationToken" /> 标记。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一个非 -1 的负数，而 -1 表示无限期超时- 或 -超时大于 <see cref="F:System.Int32.MaxValue" />。</exception>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> 已取消。</exception>
+    </member>
+    <member name="T:System.Threading.SendOrPostCallback">
+      <summary>表示在消息即将被调度到同步上下文时要调用的方法。</summary>
+      <param name="state">传递给委托的对象。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.SpinLock">
+      <summary>提供一个相互排斥锁基元，在该基元中，尝试获取锁的线程将在重复检查的循环中等待，直至该锁变为可用为止。</summary>
+    </member>
+    <member name="M:System.Threading.SpinLock.#ctor(System.Boolean)">
+      <summary>使用用于跟踪线程 ID 以改善调试的选项初始化 <see cref="T:System.Threading.SpinLock" /> 结构的新实例。</summary>
+      <param name="enableThreadOwnerTracking">是否捕获线程 ID 并将其用于调试目的。</param>
+    </member>
+    <member name="M:System.Threading.SpinLock.Enter(System.Boolean@)">
+      <summary>采用可靠的方式获取锁，这样，即使在方法调用中发生异常的情况下，都能采用可靠的方式检查 <paramref name="lockTaken" /> 以确定是否已获取锁。</summary>
+      <param name="lockTaken">如果已获取锁，则为 true，否则为 false。调用此方法前，必须将 <paramref name="lockTaken" /> 始化为 false。</param>
+      <exception cref="T:System.ArgumentException">在调用 Enter 之前，<paramref name="lockTaken" /> 参数必须初始化为 false。</exception>
+      <exception cref="T:System.Threading.LockRecursionException">线程所有权跟踪已启用，当前线程已获取此锁定。</exception>
+    </member>
+    <member name="M:System.Threading.SpinLock.Exit">
+      <summary>释放锁。</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">启用线程所有权跟踪，当前线程不是此锁的所有者。</exception>
+    </member>
+    <member name="M:System.Threading.SpinLock.Exit(System.Boolean)">
+      <summary>释放锁。</summary>
+      <param name="useMemoryBarrier">一个布尔值，该值指示是否应发出内存界定，以便将退出操作立即发布到其他线程。</param>
+      <exception cref="T:System.Threading.SynchronizationLockException">启用线程所有权跟踪，当前线程不是此锁的所有者。</exception>
+    </member>
+    <member name="P:System.Threading.SpinLock.IsHeld">
+      <summary>获取锁当前是否已由任何线程占用。</summary>
+      <returns>如果锁当前已由任何线程占用，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Threading.SpinLock.IsHeldByCurrentThread">
+      <summary>获取锁是否已由当前线程占用。</summary>
+      <returns>如果锁已由当前线程占用，则为 true；否则为 false。</returns>
+      <exception cref="T:System.InvalidOperationException">禁用线程所有权跟踪。</exception>
+    </member>
+    <member name="P:System.Threading.SpinLock.IsThreadOwnerTrackingEnabled">
+      <summary>获取是否已为此实例启用了线程所有权跟踪。</summary>
+      <returns>如果已为此实例启用了线程所有权跟踪，则为 true；否则为 false。</returns>
+    </member>
+    <member name="M:System.Threading.SpinLock.TryEnter(System.Boolean@)">
+      <summary>尝试采用可靠的方式获取锁，这样，即使在方法调用中发生异常的情况下，都能采用可靠的方式检查  <paramref name="lockTaken" /> 以确定是否已获取锁。</summary>
+      <param name="lockTaken">如果已获取锁，则为 true，否则为 false。调用此方法前，必须将 <paramref name="lockTaken" /> 始化为 false。</param>
+      <exception cref="T:System.ArgumentException">在调用 TryEnter 之前，<paramref name="lockTaken" /> 参数必须在初始化为 false。</exception>
+      <exception cref="T:System.Threading.LockRecursionException">线程所有权跟踪已启用，当前线程已获取此锁定。</exception>
+    </member>
+    <member name="M:System.Threading.SpinLock.TryEnter(System.Int32,System.Boolean@)">
+      <summary>尝试采用可靠的方式获取锁，这样，即使在方法调用中发生异常的情况下，都能采用可靠的方式检查  <paramref name="lockTaken" /> 以确定是否已获取锁。</summary>
+      <param name="millisecondsTimeout">等待的毫秒数，或为 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)，表示无限期等待。</param>
+      <param name="lockTaken">如果已获取锁，则为 true，否则为 false。调用此方法前，必须将 <paramref name="lockTaken" /> 始化为 false。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一个非 -1 的负数，而 -1 表示无限期超时。</exception>
+      <exception cref="T:System.ArgumentException">在调用 TryEnter 之前，<paramref name="lockTaken" /> 参数必须在初始化为 false。</exception>
+      <exception cref="T:System.Threading.LockRecursionException">线程所有权跟踪已启用，当前线程已获取此锁定。</exception>
+    </member>
+    <member name="M:System.Threading.SpinLock.TryEnter(System.TimeSpan,System.Boolean@)">
+      <summary>尝试采用可靠的方式获取锁，这样，即使在方法调用中发生异常的情况下，都能采用可靠的方式检查  <paramref name="lockTaken" /> 以确定是否已获取锁。</summary>
+      <param name="timeout">表示等待的毫秒数的 <see cref="T:System.TimeSpan" />，或表示 -1 毫秒（无限期等待）的 <see cref="T:System.TimeSpan" />。</param>
+      <param name="lockTaken">如果已获取锁，则为 true，否则为 false。调用此方法前，必须将 <paramref name="lockTaken" /> 始化为 false。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 是 -1 毫秒之外的负数，表示无限超时或者超时大于 <see cref="F:System.Int32.MaxValue" /> 毫秒。</exception>
+      <exception cref="T:System.ArgumentException">在调用 TryEnter 之前，<paramref name="lockTaken" /> 参数必须在初始化为 false。</exception>
+      <exception cref="T:System.Threading.LockRecursionException">线程所有权跟踪已启用，当前线程已获取此锁定。</exception>
+    </member>
+    <member name="T:System.Threading.SpinWait">
+      <summary>提供对基于自旋的等待的支持。</summary>
+    </member>
+    <member name="P:System.Threading.SpinWait.Count">
+      <summary>获取已对此实例调用 <see cref="M:System.Threading.SpinWait.SpinOnce" /> 的次数。</summary>
+      <returns>返回一个整数，该整数表示已对此实例调用 <see cref="M:System.Threading.SpinWait.SpinOnce" /> 的次数。</returns>
+    </member>
+    <member name="P:System.Threading.SpinWait.NextSpinWillYield">
+      <summary>获取对 <see cref="M:System.Threading.SpinWait.SpinOnce" /> 的下一次调用是否将产生处理器，同时触发强制上下文切换。</summary>
+      <returns>对 <see cref="M:System.Threading.SpinWait.SpinOnce" /> 的下一次调用是否将产生处理器，同时触发强制上下文切换。</returns>
+    </member>
+    <member name="M:System.Threading.SpinWait.Reset">
+      <summary>重置自旋计数器。</summary>
+    </member>
+    <member name="M:System.Threading.SpinWait.SpinOnce">
+      <summary>执行单一自旋。</summary>
+    </member>
+    <member name="M:System.Threading.SpinWait.SpinUntil(System.Func{System.Boolean})">
+      <summary>在指定条件得到满足之前自旋。</summary>
+      <param name="condition">在返回 true 之前重复执行的委托。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="condition" /> 参数为 null。</exception>
+    </member>
+    <member name="M:System.Threading.SpinWait.SpinUntil(System.Func{System.Boolean},System.Int32)">
+      <summary>在指定条件得到满足或指定超时过期之前自旋。</summary>
+      <returns>如果条件在超时时间内得到满足，则为 true；否则为 false</returns>
+      <param name="condition">在返回 true 之前重复执行的委托。</param>
+      <param name="millisecondsTimeout">等待的毫秒数，或为 <see cref="F:System.Threading.Timeout.Infinite" /> (-1)，表示无限期等待。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="condition" /> 参数为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 是一个非 -1 的负数，而 -1 表示无限期超时。</exception>
+    </member>
+    <member name="M:System.Threading.SpinWait.SpinUntil(System.Func{System.Boolean},System.TimeSpan)">
+      <summary>在指定条件得到满足或指定超时过期之前自旋。</summary>
+      <returns>如果条件在超时时间内得到满足，则为 true；否则为 false</returns>
+      <param name="condition">在返回 true 之前重复执行的委托。</param>
+      <param name="timeout">一个 <see cref="T:System.TimeSpan" />，表示等待的毫秒数；或者一个 TimeSpan，表示 -1 毫秒（无限期等待）。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="condition" /> 参数为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 是 -1 毫秒之外的负数，表示无限超时或者超时大于 <see cref="F:System.Int32.MaxValue" />。</exception>
+    </member>
+    <member name="T:System.Threading.SynchronizationContext">
+      <summary>提供在各种同步模型中传播同步上下文的基本功能。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.#ctor">
+      <summary>创建 <see cref="T:System.Threading.SynchronizationContext" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.CreateCopy">
+      <summary>在派生类中重写时，创建同步上下文的副本。 </summary>
+      <returns>一个新 <see cref="T:System.Threading.SynchronizationContext" /> 对象。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.SynchronizationContext.Current">
+      <summary>获取当前线程的同步上下文。</summary>
+      <returns>一个 <see cref="T:System.Threading.SynchronizationContext" /> 对象，它表示当前同步上下文。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.OperationCompleted">
+      <summary>在派生类中重写时，响应操作已完成的通知。</summary>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.OperationStarted">
+      <summary>在派生类中重写时，响应操作已开始的通知。</summary>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.Post(System.Threading.SendOrPostCallback,System.Object)">
+      <summary>在派生类中重写时，将异步消息分派到同步上下文。</summary>
+      <param name="d">要调用的 <see cref="T:System.Threading.SendOrPostCallback" /> 委托。</param>
+      <param name="state">传递给委托的对象。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.Send(System.Threading.SendOrPostCallback,System.Object)">
+      <summary>在派生类中重写时，将同步消息分派到同步上下文。</summary>
+      <param name="d">要调用的 <see cref="T:System.Threading.SendOrPostCallback" /> 委托。</param>
+      <param name="state">传递给委托的对象。</param>
+      <exception cref="T:System.NotSupportedException">The method was called in a Windows Store app.The implementation of <see cref="T:System.Threading.SynchronizationContext" /> for Windows Store apps does not support the <see cref="M:System.Threading.SynchronizationContext.Send(System.Threading.SendOrPostCallback,System.Object)" /> method.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.SetSynchronizationContext(System.Threading.SynchronizationContext)">
+      <summary>设置当前同步上下文。</summary>
+      <param name="syncContext">要设置的 <see cref="T:System.Threading.SynchronizationContext" /> 对象。</param>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence, ControlPolicy" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Threading.SynchronizationLockException">
+      <summary>当某个方法请求调用方拥有给定 Monitor 上的锁时将引发该异常，而且由不拥有该锁的调用方调用此方法。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationLockException.#ctor">
+      <summary>使用默认属性初始化 <see cref="T:System.Threading.SynchronizationLockException" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Threading.SynchronizationLockException.#ctor(System.String)">
+      <summary>使用指定的错误消息初始化 <see cref="T:System.Threading.SynchronizationLockException" /> 类的新实例。</summary>
+      <param name="message">解释异常原因的错误信息。</param>
+    </member>
+    <member name="M:System.Threading.SynchronizationLockException.#ctor(System.String,System.Exception)">
+      <summary>使用指定错误消息和对作为此异常原因的内部异常的引用来初始化 <see cref="T:System.Threading.SynchronizationLockException" /> 类的新实例。</summary>
+      <param name="message">解释异常原因的错误信息。</param>
+      <param name="innerException">导致当前异常的异常。如果 <paramref name="innerException" /> 参数不为 null，则当前异常将在处理内部异常的 catch 块中引发。</param>
+    </member>
+    <member name="T:System.Threading.ThreadLocal`1">
+      <summary>提供数据的线程本地存储。</summary>
+      <typeparam name="T">指定每线程的已存储数据的类型。</typeparam>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.#ctor">
+      <summary>初始化 <see cref="T:System.Threading.ThreadLocal`1" /> 实例。</summary>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.#ctor(System.Boolean)">
+      <summary>初始化 <see cref="T:System.Threading.ThreadLocal`1" /> 实例。</summary>
+      <param name="trackAllValues">是否要跟踪实例上的所有值集并通过 <see cref="P:System.Threading.ThreadLocal`1.Values" /> 属性将其公开。</param>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.#ctor(System.Func{`0})">
+      <summary>使用指定的 <paramref name="valueFactory" /> 函数初始化 <see cref="T:System.Threading.ThreadLocal`1" /> 实例。</summary>
+      <param name="valueFactory">如果在 <see cref="P:System.Threading.ThreadLocal`1.Value" /> 之前尚未初始化的情况下尝试对其进行检索，则会调用 <see cref="T:System.Func`1" /> 生成延迟初始化的值。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="valueFactory" /> 是 null 引用（在 Visual Basic 中为 Nothing）。</exception>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.#ctor(System.Func{`0},System.Boolean)">
+      <summary>使用指定的 <paramref name="valueFactory" /> 函数初始化 <see cref="T:System.Threading.ThreadLocal`1" /> 实例。</summary>
+      <param name="valueFactory">如果在 <see cref="P:System.Threading.ThreadLocal`1.Value" /> 之前尚未初始化的情况下尝试对其进行检索，则会调用 <see cref="T:System.Func`1" /> 生成延迟初始化的值。</param>
+      <param name="trackAllValues">是否要跟踪实例上的所有值集并通过 <see cref="P:System.Threading.ThreadLocal`1.Values" /> 属性将其公开。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="valueFactory" /> 为 null 引用（在 Visual Basic 中为 Nothing）。</exception>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.Dispose">
+      <summary>释放由 <see cref="T:System.Threading.ThreadLocal`1" /> 类的当前实例占用的所有资源。</summary>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.Dispose(System.Boolean)">
+      <summary>释放此 <see cref="T:System.Threading.ThreadLocal`1" /> 实例使用的资源。</summary>
+      <param name="disposing">一个布尔值，该值指示是否由于调用 <see cref="M:System.Threading.ThreadLocal`1.Dispose" /> 的原因而调用此方法。</param>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.Finalize">
+      <summary>释放此 <see cref="T:System.Threading.ThreadLocal`1" /> 实例使用的资源。</summary>
+    </member>
+    <member name="P:System.Threading.ThreadLocal`1.IsValueCreated">
+      <summary>获取是否在当前线程上初始化 <see cref="P:System.Threading.ThreadLocal`1.Value" />。</summary>
+      <returns>如果在当前线程上初始化 <see cref="P:System.Threading.ThreadLocal`1.Value" />，则为 true；否则为 false。</returns>
+      <exception cref="T:System.ObjectDisposedException">已释放 <see cref="T:System.Threading.ThreadLocal`1" /> 实例。</exception>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.ToString">
+      <summary>创建并返回当前线程的此实例的字符串表示形式。</summary>
+      <returns>对 <see cref="P:System.Threading.ThreadLocal`1.Value" /> 调用 <see cref="M:System.Object.ToString" /> 的结果。</returns>
+      <exception cref="T:System.ObjectDisposedException">已释放 <see cref="T:System.Threading.ThreadLocal`1" /> 实例。</exception>
+      <exception cref="T:System.NullReferenceException">当前线程的 <see cref="P:System.Threading.ThreadLocal`1.Value" /> 为 null 引用（Visual Basic 中为 Nothing）。</exception>
+      <exception cref="T:System.InvalidOperationException">初始化函数尝试以递归方式引用 <see cref="P:System.Threading.ThreadLocal`1.Value" />。</exception>
+      <exception cref="T:System.MissingMemberException">没有提供默认构造函数，且没有提供值工厂。</exception>
+    </member>
+    <member name="P:System.Threading.ThreadLocal`1.Value">
+      <summary>获取或设置当前线程的此实例的值。</summary>
+      <returns>返回此 ThreadLocal 负责初始化的对象的实例。</returns>
+      <exception cref="T:System.ObjectDisposedException">已释放 <see cref="T:System.Threading.ThreadLocal`1" /> 实例。</exception>
+      <exception cref="T:System.InvalidOperationException">初始化函数尝试以递归方式引用 <see cref="P:System.Threading.ThreadLocal`1.Value" />。</exception>
+      <exception cref="T:System.MissingMemberException">没有提供默认构造函数，且没有提供值工厂。</exception>
+    </member>
+    <member name="P:System.Threading.ThreadLocal`1.Values">
+      <summary>获取当前由已经访问此实例的所有线程存储的所有值的列表。</summary>
+      <returns>访问此实例由所有线程存储的当前的所有值的列表。</returns>
+      <exception cref="T:System.ObjectDisposedException">已释放 <see cref="T:System.Threading.ThreadLocal`1" /> 实例。</exception>
+    </member>
+    <member name="T:System.Threading.Volatile">
+      <summary>包含用于执行易失内存操作的方法。</summary>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Boolean@)">
+      <summary>读取指定字段的值。在需要进行此操作的系统上，插入防止处理器重新对内存操作进行排序的内存屏障，如下所示：如果读取或写入操作在代码中出现在此方法之后，则处理器无法将其移至此方法之前。</summary>
+      <returns>读取的值。无论处理器的数目或处理器缓存的状态如何，该值都是由计算机的任何处理器写入的最新值。</returns>
+      <param name="location">要读取的字段。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Byte@)">
+      <summary>读取指定字段的值。在需要进行此操作的系统上，插入防止处理器重新对内存操作进行排序的内存屏障，如下所示：如果读取或写入操作在代码中出现在此方法之后，则处理器无法将其移至此方法之前。</summary>
+      <returns>读取的值。无论处理器的数目或处理器缓存的状态如何，该值都是由计算机的任何处理器写入的最新值。</returns>
+      <param name="location">要读取的字段。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Double@)">
+      <summary>读取指定字段的值。在需要进行此操作的系统上，插入防止处理器重新对内存操作进行排序的内存屏障，如下所示：如果读取或写入操作在代码中出现在此方法之后，则处理器无法将其移至此方法之前。</summary>
+      <returns>读取的值。无论处理器的数目或处理器缓存的状态如何，该值都是由计算机的任何处理器写入的最新值。</returns>
+      <param name="location">要读取的字段。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Int16@)">
+      <summary>读取指定字段的值。在需要进行此操作的系统上，插入防止处理器重新对内存操作进行排序的内存屏障，如下所示：如果读取或写入操作在代码中出现在此方法之后，则处理器无法将其移至此方法之前。</summary>
+      <returns>读取的值。无论处理器的数目或处理器缓存的状态如何，该值都是由计算机的任何处理器写入的最新值。</returns>
+      <param name="location">要读取的字段。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Int32@)">
+      <summary>读取指定字段的值。在需要进行此操作的系统上，插入防止处理器重新对内存操作进行排序的内存屏障，如下所示：如果读取或写入操作在代码中出现在此方法之后，则处理器无法将其移至此方法之前。</summary>
+      <returns>读取的值。无论处理器的数目或处理器缓存的状态如何，该值都是由计算机的任何处理器写入的最新值。</returns>
+      <param name="location">要读取的字段。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Int64@)">
+      <summary>读取指定字段的值。在需要进行此操作的系统上，插入防止处理器重新对内存操作进行排序的内存屏障，如下所示：如果读取或写入操作在代码中出现在此方法之后，则处理器无法将其移至此方法之前。</summary>
+      <returns>读取的值。无论处理器的数目或处理器缓存的状态如何，该值都是由计算机的任何处理器写入的最新值。</returns>
+      <param name="location">要读取的字段。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.IntPtr@)">
+      <summary>读取指定字段的值。在需要进行此操作的系统上，插入防止处理器重新对内存操作进行排序的内存屏障，如下所示：如果读取或写入操作在代码中出现在此方法之后，则处理器无法将其移至此方法之前。</summary>
+      <returns>读取的值。无论处理器的数目或处理器缓存的状态如何，该值都是由计算机的任何处理器写入的最新值。</returns>
+      <param name="location">要读取的字段。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.SByte@)">
+      <summary>读取指定字段的值。在需要进行此操作的系统上，插入防止处理器重新对内存操作进行排序的内存屏障，如下所示：如果读取或写入操作在代码中出现在此方法之后，则处理器无法将其移至此方法之前。</summary>
+      <returns>读取的值。无论处理器的数目或处理器缓存的状态如何，该值都是由计算机的任何处理器写入的最新值。</returns>
+      <param name="location">要读取的字段。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Single@)">
+      <summary>读取指定字段的值。在需要进行此操作的系统上，插入防止处理器重新对内存操作进行排序的内存屏障，如下所示：如果读取或写入操作在代码中出现在此方法之后，则处理器无法将其移至此方法之前。</summary>
+      <returns>读取的值。无论处理器的数目或处理器缓存的状态如何，该值都是由计算机的任何处理器写入的最新值。</returns>
+      <param name="location">要读取的字段。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.UInt16@)">
+      <summary>读取指定字段的值。在需要进行此操作的系统上，插入防止处理器重新对内存操作进行排序的内存屏障，如下所示：如果读取或写入操作在代码中出现在此方法之后，则处理器无法将其移至此方法之前。</summary>
+      <returns>读取的值。无论处理器的数目或处理器缓存的状态如何，该值都是由计算机的任何处理器写入的最新值。</returns>
+      <param name="location">要读取的字段。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.UInt32@)">
+      <summary>读取指定字段的值。在需要进行此操作的系统上，插入防止处理器重新对内存操作进行排序的内存屏障，如下所示：如果读取或写入操作在代码中出现在此方法之后，则处理器无法将其移至此方法之前。</summary>
+      <returns>读取的值。无论处理器的数目或处理器缓存的状态如何，该值都是由计算机的任何处理器写入的最新值。</returns>
+      <param name="location">要读取的字段。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.UInt64@)">
+      <summary>读取指定字段的值。在需要进行此操作的系统上，插入防止处理器重新对内存操作进行排序的内存屏障，如下所示：如果读取或写入操作在代码中出现在此方法之后，则处理器无法将其移至此方法之前。</summary>
+      <returns>读取的值。无论处理器的数目或处理器缓存的状态如何，该值都是由计算机的任何处理器写入的最新值。</returns>
+      <param name="location">要读取的字段。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.UIntPtr@)">
+      <summary>读取指定字段的值。在需要进行此操作的系统上，插入防止处理器重新对内存操作进行排序的内存屏障，如下所示：如果读取或写入操作在代码中出现在此方法之后，则处理器无法将其移至此方法之前。</summary>
+      <returns>读取的值。无论处理器的数目或处理器缓存的状态如何，该值都是由计算机的任何处理器写入的最新值。</returns>
+      <param name="location">要读取的字段。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read``1(``0@)">
+      <summary>从指定的字段读取对象引用。在需要进行此操作的系统上，插入防止处理器重新对内存操作进行排序的内存屏障，如下所示：如果读取或写入操作在代码中出现在此方法之后，则处理器无法将其移至此方法之前。</summary>
+      <returns>对读取的 <paramref name="T" /> 的引用。无论处理器的数目或处理器缓存的状态如何，该引用都是由计算机的任何处理器写入的最新引用。</returns>
+      <param name="location">要读取的字段。</param>
+      <typeparam name="T">要读取的字段的类型。此类型必须是引用类型，而不是值类型。</typeparam>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Boolean@,System.Boolean)">
+      <summary>将指定的值写入指定字段。在需要进行此操作的系统上，插入防止处理器重新对内存操作进行排序的内存屏障，如下所示：如果读取或写入操作在代码中出现在此方法之前，则处理器无法将其移至此方法之后。</summary>
+      <param name="location">将值写入的字段。</param>
+      <param name="value">要写入的值。立即写入一个值，以使该值对计算机中的所有处理器都可见。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Byte@,System.Byte)">
+      <summary>将指定的值写入指定字段。在需要进行此操作的系统上，插入防止处理器重新对内存操作进行排序的内存屏障，如下所示：如果读取或写入操作在代码中出现在此方法之前，则处理器无法将其移至此方法之后。</summary>
+      <param name="location">将值写入的字段。</param>
+      <param name="value">要写入的值。立即写入一个值，以使该值对计算机中的所有处理器都可见。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Double@,System.Double)">
+      <summary>将指定的值写入指定字段。在需要进行此操作的系统上，插入防止处理器重新对内存操作进行排序的内存屏障，如下所示：如果读取或写入操作在代码中出现在此方法之前，则处理器无法将其移至此方法之后。</summary>
+      <param name="location">将值写入的字段。</param>
+      <param name="value">要写入的值。立即写入一个值，以使该值对计算机中的所有处理器都可见。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Int16@,System.Int16)">
+      <summary>将指定的值写入指定字段。在需要进行此操作的系统上，插入防止处理器重新对内存操作进行排序的内存屏障，如下所示：如果读取或写入操作在代码中出现在此方法之前，则处理器无法将其移至此方法之后。</summary>
+      <param name="location">将值写入的字段。</param>
+      <param name="value">要写入的值。立即写入一个值，以使该值对计算机中的所有处理器都可见。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Int32@,System.Int32)">
+      <summary>将指定的值写入指定字段。在需要进行此操作的系统上，插入防止处理器重新对内存操作进行排序的内存屏障，如下所示：如果读取或写入操作在代码中出现在此方法之前，则处理器无法将其移至此方法之后。</summary>
+      <param name="location">将值写入的字段。</param>
+      <param name="value">要写入的值。立即写入一个值，以使该值对计算机中的所有处理器都可见。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Int64@,System.Int64)">
+      <summary>将指定的值写入指定字段。在需要进行此操作的系统上，插入如下所示的防止处理器重新对内存操作进行排序的内存栅：如果内存操作出现在代码中的此方法之前，则处理器不能将其移至此方法之后。</summary>
+      <param name="location">将值写入的字段。</param>
+      <param name="value">要写入的值。立即写入一个值，以使该值对计算机中的所有处理器都可见。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.IntPtr@,System.IntPtr)">
+      <summary>将指定的值写入指定字段。在需要进行此操作的系统上，插入防止处理器重新对内存操作进行排序的内存屏障，如下所示：如果读取或写入操作在代码中出现在此方法之前，则处理器无法将其移至此方法之后。</summary>
+      <param name="location">将值写入的字段。</param>
+      <param name="value">要写入的值。立即写入一个值，以使该值对计算机中的所有处理器都可见。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.SByte@,System.SByte)">
+      <summary>将指定的值写入指定字段。在需要进行此操作的系统上，插入防止处理器重新对内存操作进行排序的内存屏障，如下所示：如果读取或写入操作在代码中出现在此方法之前，则处理器无法将其移至此方法之后。</summary>
+      <param name="location">将值写入的字段。</param>
+      <param name="value">要写入的值。立即写入一个值，以使该值对计算机中的所有处理器都可见。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Single@,System.Single)">
+      <summary>将指定的值写入指定字段。在需要进行此操作的系统上，插入防止处理器重新对内存操作进行排序的内存屏障，如下所示：如果读取或写入操作在代码中出现在此方法之前，则处理器无法将其移至此方法之后。</summary>
+      <param name="location">将值写入的字段。</param>
+      <param name="value">要写入的值。立即写入一个值，以使该值对计算机中的所有处理器都可见。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.UInt16@,System.UInt16)">
+      <summary>将指定的值写入指定字段。在需要进行此操作的系统上，插入防止处理器重新对内存操作进行排序的内存屏障，如下所示：如果读取或写入操作在代码中出现在此方法之前，则处理器无法将其移至此方法之后。</summary>
+      <param name="location">将值写入的字段。</param>
+      <param name="value">要写入的值。立即写入一个值，以使该值对计算机中的所有处理器都可见。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.UInt32@,System.UInt32)">
+      <summary>将指定的值写入指定字段。在需要进行此操作的系统上，插入防止处理器重新对内存操作进行排序的内存屏障，如下所示：如果读取或写入操作在代码中出现在此方法之前，则处理器无法将其移至此方法之后。</summary>
+      <param name="location">将值写入的字段。</param>
+      <param name="value">要写入的值。立即写入一个值，以使该值对计算机中的所有处理器都可见。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.UInt64@,System.UInt64)">
+      <summary>将指定的值写入指定字段。在需要进行此操作的系统上，插入防止处理器重新对内存操作进行排序的内存屏障，如下所示：如果读取或写入操作在代码中出现在此方法之前，则处理器无法将其移至此方法之后。</summary>
+      <param name="location">将值写入的字段。</param>
+      <param name="value">要写入的值。立即写入一个值，以使该值对计算机中的所有处理器都可见。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.UIntPtr@,System.UIntPtr)">
+      <summary>将指定的值写入指定字段。在需要进行此操作的系统上，插入防止处理器重新对内存操作进行排序的内存屏障，如下所示：如果读取或写入操作在代码中出现在此方法之前，则处理器无法将其移至此方法之后。</summary>
+      <param name="location">将值写入的字段。</param>
+      <param name="value">要写入的值。立即写入一个值，以使该值对计算机中的所有处理器都可见。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write``1(``0@,``0)">
+      <summary>将指定的对象引用写入指定字段。在需要进行此操作的系统上，插入防止处理器重新对内存操作进行排序的内存屏障，如下所示：如果读取或写入操作在代码中出现在此方法之前，则处理器无法将其移至此方法之后。</summary>
+      <param name="location">将对象引用写入的字段。</param>
+      <param name="value">要写入的对象引用。立即写入一个引用，以使该引用对计算机中的所有处理器都可见。</param>
+      <typeparam name="T">要写入的字段的类型。此类型必须是引用类型，而不是值类型。</typeparam>
+    </member>
+    <member name="T:System.Threading.WaitHandleCannotBeOpenedException">
+      <summary>在尝试打开不存在的系统互斥体或信号量时引发的异常。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.WaitHandleCannotBeOpenedException.#ctor">
+      <summary>使用默认值初始化 <see cref="T:System.Threading.WaitHandleCannotBeOpenedException" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Threading.WaitHandleCannotBeOpenedException.#ctor(System.String)">
+      <summary>使用指定的错误消息初始化 <see cref="T:System.Threading.WaitHandleCannotBeOpenedException" /> 类的新实例。</summary>
+      <param name="message">解释异常原因的错误信息。</param>
+    </member>
+    <member name="M:System.Threading.WaitHandleCannotBeOpenedException.#ctor(System.String,System.Exception)">
+      <summary>使用指定错误消息和对作为此异常原因的内部异常的引用来初始化 <see cref="T:System.Threading.WaitHandleCannotBeOpenedException" /> 类的新实例。</summary>
+      <param name="message">解释异常原因的错误信息。</param>
+      <param name="innerException">导致当前异常的异常。如果 <paramref name="innerException" /> 参数不为 null，则当前异常将在处理内部异常的 catch 块中引发。</param>
+    </member>
+  </members>
+</doc>

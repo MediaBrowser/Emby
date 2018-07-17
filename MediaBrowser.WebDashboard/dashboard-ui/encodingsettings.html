@@ -1,9 +1,16 @@
-﻿<div id="encodingSettingsPage" data-role="page" class="page type-interior playbackConfigurationPage" data-helpurl="https://github.com/MediaBrowser/Wiki/wiki/Transcoding" data-require="scripts/encodingsettings,emby-input,emby-checkbox,emby-button,emby-select">
+﻿<div id="encodingSettingsPage" data-role="page" class="page type-interior playbackConfigurationPage" data-require="scripts/encodingsettings,emby-input,emby-checkbox,emby-button,emby-select">
 
     <div>
         <div class="content-primary">
 
             <form class="encodingSettingsForm">
+
+                <div class="verticalSection">
+                    <div class="sectionTitleContainer flex align-items-center">
+                        <h2 class="sectionTitle">${TabTranscoding}</h2>
+                        <a is="emby-linkbutton" class="raised button-alt headerHelpButton" target="_blank" href="https://github.com/MediaBrowser/Wiki/wiki/Transcoding">${Help}</a>
+                    </div>
+                </div>
 
                 <div class="selectContainer">
                     <select is="emby-select" id="selectVideoDecoder" label="${LabelHardwareAccelerationType}">

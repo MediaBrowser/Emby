@@ -36,7 +36,7 @@ namespace MediaBrowser.Api.Movies
     [Route("/Collections/{Id}/Items", "DELETE", Summary = "Removes items from a collection")]
     public class RemoveFromCollection : IReturnVoid
     {
-        [ApiMember(Name = "Ids", Description = "Item id, comma delimited", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "POST")]
+        [ApiMember(Name = "Ids", Description = "Item id, comma delimited", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "DELETE")]
         public string Ids { get; set; }
 
         [ApiMember(Name = "Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "DELETE")]
@@ -69,7 +69,7 @@ namespace MediaBrowser.Api.Movies
                 Name = request.Name,
                 ParentId = parentId,
                 ItemIdList = SplitValue(request.Ids, ','),
-                UserIds = new string[] { userId }
+                UserIds = new [] { userId }
 
             });
 

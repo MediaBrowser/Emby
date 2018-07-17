@@ -1,4 +1,6 @@
 {
+    "PlaybackSettings": "Playback settings",
+    "SubtitleSettings": "Subtitle settings",
     "MessageUnlockAppWithPurchaseOrSupporter": "Odemknout tuto funkci pomoc\u00ed jednor\u00e1zov\u00e9 platby, nebo pomoc\u00ed aktivace p\u0159edplatn\u00e9ho Emby Premiere.",
     "MessageUnlockAppWithSupporter": "Odemknout tuto funkci pomoc\u00ed aktivn\u00edho p\u0159edplatn\u00e9ho Emby Premiere.",
     "MessageToValidateSupporter": "Pokud m\u00e1te aktivn\u00ed p\u0159edplatn\u00e9 Emby Premiere, ujist\u011bte se, \u017ee m\u00e1te nastaven Emby Premiere v panelu Nastaven\u00ed pod N\u00e1pov\u011bda -> Emby Premiere.",
@@ -33,6 +35,7 @@
     "HeaderWakeServer": "Wake Server",
     "AttemptingWakeServer": "Attempting to wake server. Please wait...",
     "WakeServerSuccess": "Success!",
+    "HeaderCustomizeHomeScreen": "Customize Home Screen",
     "WakeServerError": "Wake On LAN packets were sent to your server machine, but we're unable to connect to your Emby Server. Your machine may need a little more time to wake, or Emby Server may not be actively running on the machine.",
     "Sunday": "Ned\u011ble",
     "Monday": "Pond\u011bl\u00ed",
@@ -47,6 +50,7 @@
     "LabelSortOrder": "Sort order:",
     "HeaderPhotoAlbums": "Photo Albums",
     "Photos": "Fotky",
+    "HeaderAppearsOn": "Appears On",
     "List": "Seznam",
     "RecordSeries": "Nahr\u00e1t s\u00e9rie",
     "HeaderCinemaMode": "Cinema M\u00f3d",
@@ -306,7 +310,8 @@
     "ConfirmDeleteItems": "Odstran\u011bn\u00edm t\u011bchto polo\u017eek odstran\u00edte va\u0161e m\u00e9dia jak z knihovny m\u00e9di\u00ed, tak i ze souborov\u00e9ho syst\u00e9mu. Jste si jisti, \u017ee chcete pokra\u010dovat?",
     "PleaseRestartServerName": "Pros\u00edm, restartujte Emby Server - {0}.",
     "LabelSyncJobName": "N\u00e1zev Sync \u00falohy:",
-    "SyncJobCreated": "\u00daloha Sync vytvo\u0159ena",
+    "SyncingDots": "Syncing...",
+    "ConvertingDots": "Converting...",
     "LabelQuality": "Kvalita:",
     "LabelSyncNoTargetsHelp": "It looks like you don't currently have any apps that support offline downloading.",
     "DownloadingDots": "Stahov\u00e1n\u00ed...",
@@ -547,6 +552,7 @@
     "Absolute": "Absolute",
     "Smart": "Chytr\u00fd",
     "Small": "Mal\u00fd",
+    "Smaller": "Smaller",
     "Medium": "St\u0159edn\u00ed",
     "Large": "Velk\u00fd",
     "ExtraLarge": "Extra velk\u00fd",
@@ -677,5 +683,7 @@
     "ColorSpace": "Color space",
     "ColorTransfer": "Color transfer",
     "VideoRange": "Video range",
-    "SeriesDisplayOrderHelp": "Order episodes by air date, dvd order, or absolute numbering."
+    "SeriesDisplayOrderHelp": "Order episodes by air date, dvd order, or absolute numbering.",
+    "PlaybackSettingsIntro": "To configure default playback settings, stop video playback, then click your user icon in the top right section of the app.",
+    "SubtitleSettingsIntro": "To configure default subtitle appearance and language settings, stop video playback, then click your user icon in the top right section of the app."
 }

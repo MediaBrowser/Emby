@@ -1,0 +1,740 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.ObjectModel</name>
+  </assembly>
+  <members>
+    <member name="T:System.Collections.ObjectModel.KeyedCollection`2">
+      <summary>提供键嵌入在值中的集合的抽象基类。</summary>
+      <typeparam name="TKey">集合中的键的类型。</typeparam>
+      <typeparam name="TItem">集合中的项的类型。</typeparam>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.#ctor">
+      <summary>初始化 <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> 类的新实例，该实例使用默认的相等比较器。</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.#ctor(System.Collections.Generic.IEqualityComparer{`0})">
+      <summary>初始化 <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> 类的新实例，该实例使用指定的相等比较器。</summary>
+      <param name="comparer">比较键时要使用的 <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> 泛型接口的实现，如果为 null，则使用从 <see cref="P:System.Collections.Generic.EqualityComparer`1.Default" /> 获取的该类型的键的默认相等比较器。</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.#ctor(System.Collections.Generic.IEqualityComparer{`0},System.Int32)">
+      <summary>初始化 <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> 类的新实例，该实例使用指定的相等比较器并在超过指定阈值时创建一个查找字典。</summary>
+      <param name="comparer">比较键时要使用的 <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> 泛型接口的实现，如果为 null，则使用从 <see cref="P:System.Collections.Generic.EqualityComparer`1.Default" /> 获取的该类型的键的默认相等比较器。</param>
+      <param name="dictionaryCreationThreshold">在不创建查找字典的情况下集合可容纳的元素的数目（0 表示添加第一项时创建查找字典）；或者为 -1，表示指定永远不会创建查找字典。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="dictionaryCreationThreshold" /> is less than –1.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.ChangeItemKey(`1,`0)">
+      <summary>更改与查找字典中指定元素相关联的键。</summary>
+      <param name="item">要更改其键的元素。</param>
+      <param name="newKey">
+        <paramref name="item" /> 的新键。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="item" /> is null.-or-<paramref name="key" /> is null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="item" /> is not found.-or-<paramref name="key" /> already exists in the <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.ClearItems">
+      <summary>从 <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> 中移除所有元素。</summary>
+    </member>
+    <member name="P:System.Collections.ObjectModel.KeyedCollection`2.Comparer">
+      <summary>获取用于确定集合中的键是否相等的泛型相等比较器。</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> 泛型接口的实现，用于确定集合中的键是否相等。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.Contains(`0)">
+      <summary>确定集合是否包含具有指定键的元素。</summary>
+      <returns>如果 <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> 包含具有指定键的元素，则为 true；否则为 false。</returns>
+      <param name="key">要在 <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> 中定位的键。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> is null.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.KeyedCollection`2.Dictionary">
+      <summary>获取 <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> 的查找字典。</summary>
+      <returns>如果存在，则为 <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> 的查找字典；否则为 null。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.GetKeyForItem(`1)">
+      <summary>在派生类中实现时，将从指定元素提取键。</summary>
+      <returns>指定元素的键。</returns>
+      <param name="item">从中提取键的元素。</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.InsertItem(System.Int32,`1)">
+      <summary>将元素插入 <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> 的指定索引处。</summary>
+      <param name="index">从零开始的索引，应在该位置插入 <paramref name="item" />。</param>
+      <param name="item">要插入的对象。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> is less than 0.-or-<paramref name="index" /> is greater than <see cref="P:System.Collections.ObjectModel.Collection`1.Count" />.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.KeyedCollection`2.Item(`0)">
+      <summary>获取具有指定键的元素。</summary>
+      <returns>带有指定键的元素。如果未找到具有指定键的元素，则引发异常。</returns>
+      <param name="key">要获取的元素的键。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> is null.</exception>
+      <exception cref="T:System.Collections.Generic.KeyNotFoundException">An element with the specified key does not exist in the collection.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.Remove(`0)">
+      <summary>从 <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> 中移除带有指定键的元素。</summary>
+      <returns>如果成功移除了元素，则为 true；否则为 false。如果未在 <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> 中找到 <paramref name="key" />，则此方法还返回 false。</returns>
+      <param name="key">要移除的元素的键。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> is null.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.RemoveItem(System.Int32)">
+      <summary>移除 <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> 的指定索引处的元素。</summary>
+      <param name="index">要移除的元素的索引。</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.SetItem(System.Int32,`1)">
+      <summary>使用指定项替换指定索引处的项。</summary>
+      <param name="index">要替换的项的从零开始的索引。</param>
+      <param name="item">新项目。</param>
+    </member>
+    <member name="T:System.Collections.ObjectModel.ObservableCollection`1">
+      <summary>表示一个动态数据集合，在添加项、移除项或刷新整个列表时，此集合将提供通知。</summary>
+      <typeparam name="T">集合中的元素类型。</typeparam>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.#ctor">
+      <summary>初始化 <see cref="T:System.Collections.ObjectModel.ObservableCollection`1" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+      <summary>初始化 <see cref="T:System.Collections.ObjectModel.ObservableCollection`1" /> 类的新实例，该类包含从指定集合中复制的元素。</summary>
+      <param name="collection">从中复制元素的集合。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collection" /> 参数不能为 null。</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.BlockReentrancy">
+      <summary>不允许可重入的更改此集合的尝试。</summary>
+      <returns>可用于释放对象的 <see cref="T:System.IDisposable" /> 对象。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.CheckReentrancy">
+      <summary>检查可重入的更改此集合的尝试。</summary>
+      <exception cref="T:System.InvalidOperationException">如果存在对 <see cref="M:System.Collections.ObjectModel.ObservableCollection`1.BlockReentrancy" />（尚未释放其 <see cref="T:System.IDisposable" /> 返回值）的调用。通常，这意味着在 <see cref="E:System.Collections.ObjectModel.ObservableCollection`1.CollectionChanged" /> 事件期间进行了额外的更改此集合的尝试。但是，这取决于派生类何时选择调用 <see cref="M:System.Collections.ObjectModel.ObservableCollection`1.BlockReentrancy" />。</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.ClearItems">
+      <summary>从集合中移除所有项。</summary>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ObservableCollection`1.CollectionChanged">
+      <summary>在添加、移除、更改或移动项或者在刷新整个列表时发生。</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.InsertItem(System.Int32,`0)">
+      <summary>将一项插入集合中指定索引处。</summary>
+      <param name="index">从零开始的索引，应在该位置插入 <paramref name="item" />。</param>
+      <param name="item">要插入的对象。</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.Move(System.Int32,System.Int32)">
+      <summary>将指定索引处的项移至集合中的新位置。</summary>
+      <param name="oldIndex">从零开始的索引，用于指定要移动的项的位置。</param>
+      <param name="newIndex">从零开始的索引，用于指定项的新位置。</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.MoveItem(System.Int32,System.Int32)">
+      <summary>将指定索引处的项移至集合中的新位置。</summary>
+      <param name="oldIndex">从零开始的索引，用于指定要移动的项的位置。</param>
+      <param name="newIndex">从零开始的索引，用于指定项的新位置。</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+      <summary>引发带有提供的参数的 <see cref="E:System.Collections.ObjectModel.ObservableCollection`1.CollectionChanged" /> 事件。</summary>
+      <param name="e">要引发的事件的参数。</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs)">
+      <summary>引发带有提供的参数的 <see cref="E:System.Collections.ObjectModel.ObservableCollection`1.PropertyChanged" /> 事件。</summary>
+      <param name="e">要引发的事件的参数。</param>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ObservableCollection`1.PropertyChanged">
+      <summary>在属性值更改时发生。</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.RemoveItem(System.Int32)">
+      <summary>移除集合中指定索引处的项。</summary>
+      <param name="index">要移除的元素的从零开始的索引。</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.SetItem(System.Int32,`0)">
+      <summary>替换指定索引处的元素。</summary>
+      <param name="index">待替换元素的从零开始的索引。</param>
+      <param name="item">位于指定索引处的元素的新值。</param>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ObservableCollection`1.System#ComponentModel#INotifyPropertyChanged#PropertyChanged">
+      <summary>在属性值更改时发生。</summary>
+    </member>
+    <member name="T:System.Collections.ObjectModel.ReadOnlyDictionary`2">
+      <summary>表示键/值对的只读泛型集合。</summary>
+      <typeparam name="TKey">字典中键的类型。</typeparam>
+      <typeparam name="TValue">字典中值的类型。</typeparam>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.#ctor(System.Collections.Generic.IDictionary{`0,`1})">
+      <summary>初始化 <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" /> 类的新实例，该实例是指定字典周围的包装。</summary>
+      <param name="dictionary">要包装的字典。</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ContainsKey(`0)">
+      <summary>确定字典是否包含具有指定键的元素。</summary>
+      <returns>如果词典包含具有指定键的元素，则为 true；否则为 false。</returns>
+      <param name="key">要在字典中定位的键。</param>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.Count">
+      <summary>获取字典中项的数目。</summary>
+      <returns>字典中的项数。</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.Dictionary">
+      <summary>获取由  <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" /> 对象包装的字典。</summary>
+      <returns>由此对象包装的字典。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.GetEnumerator">
+      <summary>返回循环访问 <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" /> 的枚举数。</summary>
+      <returns>一个可用于循环访问集合的枚举器。</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.Item(`0)">
+      <summary>获取具有指定键的元素。</summary>
+      <returns>具有指定键的元素。</returns>
+      <param name="key">要获取的元素的键。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> 为 null。</exception>
+      <exception cref="T:System.Collections.Generic.KeyNotFoundException">检索了属性但没有找到 <paramref name="key" />。</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.Keys">
+      <summary>获取包含字典中的键的键集合。</summary>
+      <returns>包含字典中的键的键集合。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#Add(System.Collections.Generic.KeyValuePair{`0,`1})">
+      <summary>任何情况下均引发 <see cref="T:System.NotSupportedException" /> 异常。</summary>
+      <param name="item">要添加到字典中的对象。</param>
+      <exception cref="T:System.NotSupportedException">在所有情况下。</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#Clear">
+      <summary>任何情况下均引发 <see cref="T:System.NotSupportedException" /> 异常。</summary>
+      <exception cref="T:System.NotSupportedException">在所有情况下。</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#Contains(System.Collections.Generic.KeyValuePair{`0,`1})">
+      <summary>确定字典是否包含特定值。</summary>
+      <returns>如果在字典中找到 <paramref name="item" />，则为 true；否则为 false。</returns>
+      <param name="item">要在字典中定位的对象。</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#CopyTo(System.Collections.Generic.KeyValuePair{`0,`1}[],System.Int32)">
+      <summary>从指定的数组索引开始，将字典中的元素复制到一个数组中。</summary>
+      <param name="array">作为从字典复制的元素的目标的一维数组。该数组的索引必须从零开始。</param>
+      <param name="arrayIndex">
+        <paramref name="array" /> 中从零开始的索引，从此索引处开始进行复制。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="arrayIndex" /> 小于 0。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> 是多维的。- 或 -源字典中的元素数大于从 <paramref name="arrayIndex" /> 到目标 <paramref name="array" /> 的末尾的可用空间。- 或 -无法自动将类型 <paramref name="T" /> 强制转换为目标 <paramref name="array" /> 的类型。</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#IsReadOnly">
+      <summary>获取一个值，该值指示字典是否为只读。</summary>
+      <returns>任何情况下都为 true。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#Remove(System.Collections.Generic.KeyValuePair{`0,`1})">
+      <summary>任何情况下均引发 <see cref="T:System.NotSupportedException" /> 异常。</summary>
+      <returns>任何情况下均引发 <see cref="T:System.NotSupportedException" /> 异常。</returns>
+      <param name="item">要从字典中移除的对象。</param>
+      <exception cref="T:System.NotSupportedException">在所有情况下。</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Add(`0,`1)">
+      <summary>任何情况下均引发 <see cref="T:System.NotSupportedException" /> 异常。</summary>
+      <param name="key">用作要添加的元素的键的对象。</param>
+      <param name="value">作为要添加的元素的值的对象。</param>
+      <exception cref="T:System.NotSupportedException">在所有情况下。</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Item(`0)">
+      <summary>获取具有指定键的元素。</summary>
+      <returns>具有指定键的元素。</returns>
+      <param name="key">要获取或设置的元素的键。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> 为 null。</exception>
+      <exception cref="T:System.Collections.Generic.KeyNotFoundException">检索了属性但没有找到 <paramref name="key" />。</exception>
+      <exception cref="T:System.NotSupportedException">已设置此属性。</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Keys">
+      <summary>获取包含词典中的键的集合。</summary>
+      <returns>一个集合，其中包含实现 <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" /> 的对象的键。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Remove(`0)">
+      <summary>任何情况下均引发 <see cref="T:System.NotSupportedException" /> 异常。</summary>
+      <returns>任何情况下均引发 <see cref="T:System.NotSupportedException" /> 异常。</returns>
+      <param name="key">要移除的元素的键。</param>
+      <exception cref="T:System.NotSupportedException">在所有情况下。</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Values">
+      <summary>获取包含词典中的值的集合。</summary>
+      <returns>一个集合，其中包含实现 <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" /> 的对象的值。</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey@TValue}#Keys">
+      <summary>获取包含只读字典中的密钥的可枚举集合。</summary>
+      <returns>包含只读字典中的密钥的可枚举集合。</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey@TValue}#Values">
+      <summary>获取包含只读字典中的值的可枚举集合。</summary>
+      <returns>包含只读字典中的值的可枚举集合。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>从指定的数组索引开始，将字典中的元素复制到一个数组中。</summary>
+      <param name="array">作为从字典复制的元素的目标的一维数组。该数组的索引必须从零开始。</param>
+      <param name="index">
+        <paramref name="array" /> 中从零开始的索引，从此索引处开始进行复制。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> 小于零。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> 是多维的。- 或 -源字典中的元素数大于从 <paramref name="index" /> 到目标 <paramref name="array" /> 的末尾的可用空间。- 或 - 无法自动将源字典的类型强制转换为目标 <paramref name="array" /><paramref name="." /> 的类型。</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#ICollection#IsSynchronized">
+      <summary>获取一个值，该值指示对字典的访问是否同步（线程安全）。</summary>
+      <returns>如果对该字典的访问是同步的（线程安全），则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#ICollection#SyncRoot">
+      <summary>获取可用于同步对字典的访问的对象。</summary>
+      <returns>一个可用于同步对字典的访问的对象。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Add(System.Object,System.Object)">
+      <summary>任何情况下均引发 <see cref="T:System.NotSupportedException" /> 异常。</summary>
+      <param name="key">要添加的元素的键。</param>
+      <param name="value">要添加的元素的值。</param>
+      <exception cref="T:System.NotSupportedException">在所有情况下。</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Clear">
+      <summary>任何情况下均引发 <see cref="T:System.NotSupportedException" /> 异常。</summary>
+      <exception cref="T:System.NotSupportedException">在所有情况下。</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Contains(System.Object)">
+      <summary>确定字典是否包含具有指定键的元素。</summary>
+      <returns>如果词典包含具有指定键的元素，则为 true；否则为 false。</returns>
+      <param name="key">要在字典中定位的键。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#GetEnumerator">
+      <summary>返回字典的一个枚举数。</summary>
+      <returns>字典的枚举数。</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#IsFixedSize">
+      <summary>获取一个值，该值指示字典是否具有固定大小。</summary>
+      <returns>如果字典具有固定大小，则为 true；否则为 false。</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#IsReadOnly">
+      <summary>获取一个值，该值指示字典是否为只读。</summary>
+      <returns>任何情况下都为 true。</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Item(System.Object)">
+      <summary>获取具有指定键的元素。</summary>
+      <returns>具有指定键的元素。</returns>
+      <param name="key">要获取或设置的元素的键。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> 为 null。</exception>
+      <exception cref="T:System.NotSupportedException">已设置此属性。- 或 -设置该属性，集合中不存在 <paramref name="key" />，而且字典具有固定大小。</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Keys">
+      <summary>获取包含词典中的键的集合。</summary>
+      <returns>一个集合，包含词典中的键。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Remove(System.Object)">
+      <summary>任何情况下均引发 <see cref="T:System.NotSupportedException" /> 异常。</summary>
+      <param name="key">要移除的元素的键。</param>
+      <exception cref="T:System.NotSupportedException">在所有情况下。</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Values">
+      <summary>获取包含词典中的值的集合。</summary>
+      <returns>包含词典中的值的集合。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IEnumerable#GetEnumerator">
+      <summary>返回一个循环访问集合的枚举器。</summary>
+      <returns>一个可用于循环访问集合的枚举器。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.TryGetValue(`0,`1@)">
+      <summary>检索与指定键关联的值。</summary>
+      <returns>如果实现 <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" /> 的对象包含具有指定键的元素，则为 true；否则，为 false。</returns>
+      <param name="key">将检索其值的键。</param>
+      <param name="value">当此方法返回时，如果找到指定键，则返回与该键相关联的值；否则，将返回 <paramref name="value" /> 参数的类型的默认值。该参数未经初始化即被传递。</param>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.Values">
+      <summary>获取包含词典中的值的集合。</summary>
+      <returns>一个集合，其中包含实现 <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" /> 的对象的值。</returns>
+    </member>
+    <member name="T:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection">
+      <summary>表示 <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" /> 对象的键的只读集合。</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.CopyTo(`0[],System.Int32)">
+      <summary>从特定的数组索引开始，将集合的元素复制到一个数组中。</summary>
+      <param name="array">作为集合中元素的复制目标位置的一维数组。该数组的索引必须从零开始。</param>
+      <param name="arrayIndex">
+        <paramref name="array" /> 中从零开始的索引，从此索引处开始进行复制。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="arrayIndex" /> 小于 0。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> 是多维的。- 或 -源集合中的元素数大于从 <paramref name="arrayIndex" /> 到目标 <paramref name="array" /> 的末尾的可用空间。- 或 -无法自动将类型 <paramref name="T" /> 强制转换为目标 <paramref name="array" /> 的类型。</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.Count">
+      <summary>获取集合中的元素数。</summary>
+      <returns>集合中的元素数。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.GetEnumerator">
+      <summary>返回一个循环访问集合的枚举器。</summary>
+      <returns>一个可用于循环访问集合的枚举器。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#Generic#ICollection{T}#Add(`0)">
+      <summary>任何情况下均引发 <see cref="T:System.NotSupportedException" /> 异常。</summary>
+      <param name="item">要添加到集合中的对象。</param>
+      <exception cref="T:System.NotSupportedException">在所有情况下。</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#Generic#ICollection{T}#Clear">
+      <summary>任何情况下均引发 <see cref="T:System.NotSupportedException" /> 异常。</summary>
+      <exception cref="T:System.NotSupportedException">在所有情况下。</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#Generic#ICollection{T}#Contains(`0)">
+      <summary>确定该集合是否包含特定值。</summary>
+      <returns>如果在集合中找到 <paramref name="item" />，则为 true；否则为 false。</returns>
+      <param name="item">要在集合中定位的对象。</param>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#Generic#ICollection{T}#IsReadOnly">
+      <summary>获取一个值，该值指示该集合是否为只读集合。</summary>
+      <returns>任何情况下都为 true。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#Generic#ICollection{T}#Remove(`0)">
+      <summary>任何情况下均引发 <see cref="T:System.NotSupportedException" /> 异常。</summary>
+      <returns>如果从集合中成功移除了 <paramref name="item" />，则为 true；否则为 false。如果在原始集合中找不到 <paramref name="item" />，此方法也会返回 false。</returns>
+      <param name="item">要从集合中移除的对象。</param>
+      <exception cref="T:System.NotSupportedException">在所有情况下。</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>从特定的数组索引开始，将集合的元素复制到一个数组中。</summary>
+      <param name="array">作为集合中元素的复制目标位置的一维数组。该数组的索引必须从零开始。</param>
+      <param name="index">
+        <paramref name="array" /> 中从零开始的索引，从此索引处开始进行复制。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> 小于 0。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> 是多维的。- 或 -源集合中的元素数大于从 <paramref name="index" /> 到目标 <paramref name="array" /> 的末尾的可用空间。</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>获取一个值，指示对集合的访问是否同步（线程安全）。</summary>
+      <returns>如果对该集合的访问是同步的（线程安全），则为 true；否则，为 false。</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#ICollection#SyncRoot">
+      <summary>获取可用于同步对集合的访问的对象。</summary>
+      <returns>可用于同步集合访问的对象。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#IEnumerable#GetEnumerator">
+      <summary>返回一个循环访问集合的枚举器。</summary>
+      <returns>一个可用于循环访问集合的枚举器。</returns>
+    </member>
+    <member name="T:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection">
+      <summary>表示 <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" /> 对象的值的只读集合。</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.CopyTo(`1[],System.Int32)">
+      <summary>从特定的数组索引开始，将集合的元素复制到一个数组中。</summary>
+      <param name="array">作为集合中元素的复制目标位置的一维数组。该数组的索引必须从零开始。</param>
+      <param name="arrayIndex">
+        <paramref name="array" /> 中从零开始的索引，从此索引处开始进行复制。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="arrayIndex" /> 小于 0。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> 是多维的。- 或 -源集合中的元素数大于从 <paramref name="arrayIndex" /> 到目标 <paramref name="array" /> 的末尾的可用空间。- 或 -无法自动将类型 <paramref name="T" /> 强制转换为目标 <paramref name="array" /> 的类型。</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.Count">
+      <summary>获取集合中的元素数。</summary>
+      <returns>集合中的元素数。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.GetEnumerator">
+      <summary>返回一个循环访问集合的枚举器。</summary>
+      <returns>一个可用于循环访问集合的枚举器。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#Generic#ICollection{T}#Add(`1)">
+      <summary>任何情况下均引发 <see cref="T:System.NotSupportedException" /> 异常。</summary>
+      <param name="item">要添加到集合中的对象。</param>
+      <exception cref="T:System.NotSupportedException">在所有情况下。</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#Generic#ICollection{T}#Clear">
+      <summary>任何情况下均引发 <see cref="T:System.NotSupportedException" /> 异常。</summary>
+      <exception cref="T:System.NotSupportedException">在所有情况下。</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#Generic#ICollection{T}#Contains(`1)">
+      <summary>确定该集合是否包含特定值。</summary>
+      <returns>如果在集合中找到 <paramref name="item" />，则为 true；否则为 false。</returns>
+      <param name="item">要在集合中定位的对象。</param>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#Generic#ICollection{T}#IsReadOnly">
+      <summary>获取一个值，该值指示该集合是否为只读集合。</summary>
+      <returns>任何情况下都为 true。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#Generic#ICollection{T}#Remove(`1)">
+      <summary>任何情况下均引发 <see cref="T:System.NotSupportedException" /> 异常。</summary>
+      <returns>如果从集合中成功移除了 <paramref name="item" />，则为 true；否则为 false。如果在原始集合中找不到 <paramref name="item" />，此方法也会返回 false。</returns>
+      <param name="item">要从集合中移除的对象。</param>
+      <exception cref="T:System.NotSupportedException">在所有情况下。</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>从特定的数组索引开始，将集合的元素复制到一个数组中。</summary>
+      <param name="array">作为集合中元素的复制目标位置的一维数组。该数组的索引必须从零开始。</param>
+      <param name="index">
+        <paramref name="array" /> 中从零开始的索引，从此索引处开始进行复制。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> 小于 0。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> 是多维的。- 或 -源集合中的元素数大于从 <paramref name="index" /> 到目标 <paramref name="array" /> 的末尾的可用空间。</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>获取一个值，指示对集合的访问是否同步（线程安全）。</summary>
+      <returns>如果对该集合的访问是同步的（线程安全），则为 true；否则，为 false。</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#ICollection#SyncRoot">
+      <summary>获取可用于同步对集合的访问的对象。</summary>
+      <returns>可用于同步集合访问的对象。</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#IEnumerable#GetEnumerator">
+      <summary>返回一个循环访问集合的枚举器。</summary>
+      <returns>一个可用于循环访问集合的枚举器。</returns>
+    </member>
+    <member name="T:System.Collections.ObjectModel.ReadOnlyObservableCollection`1">
+      <summary>表示只读 <see cref="T:System.Collections.ObjectModel.ObservableCollection`1" />。</summary>
+      <typeparam name="T">集合中的元素类型。</typeparam>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.#ctor(System.Collections.ObjectModel.ObservableCollection{`0})">
+      <summary>初始化 <see cref="T:System.Collections.ObjectModel.ReadOnlyObservableCollection`1" /> 类的新实例，该实例用作指定 <see cref="T:System.Collections.ObjectModel.ObservableCollection`1" /> 周围的包装。</summary>
+      <param name="list">用于创建 <see cref="T:System.Collections.ObjectModel.ReadOnlyObservableCollection`1" /> 类的此实例的 <see cref="T:System.Collections.ObjectModel.ObservableCollection`1" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="list" /> 为 null。</exception>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.CollectionChanged">
+      <summary>在添加或移除项时发生。</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+      <summary>使用提供的参数引发 <see cref="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.CollectionChanged" /> 事件。</summary>
+      <param name="args">要引发的事件的参数。</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs)">
+      <summary>使用提供的参数引发 <see cref="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.PropertyChanged" /> 事件。</summary>
+      <param name="args">要引发的事件的参数。</param>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.PropertyChanged">
+      <summary>在属性值更改时发生。</summary>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.System#Collections#Specialized#INotifyCollectionChanged#CollectionChanged">
+      <summary>当集合更改时发生。</summary>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.System#ComponentModel#INotifyPropertyChanged#PropertyChanged">
+      <summary>在属性值更改时发生。</summary>
+    </member>
+    <member name="T:System.Collections.Specialized.INotifyCollectionChanged">
+      <summary>向侦听器通知动态更改，如在添加或移除项时或在刷新整个列表时。</summary>
+    </member>
+    <member name="E:System.Collections.Specialized.INotifyCollectionChanged.CollectionChanged">
+      <summary>当集合更改时发生。</summary>
+    </member>
+    <member name="T:System.Collections.Specialized.NotifyCollectionChangedAction">
+      <summary>描述引起了 <see cref="E:System.Collections.Specialized.INotifyCollectionChanged.CollectionChanged" /> 事件的操作。</summary>
+    </member>
+    <member name="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add">
+      <summary>向集合中添加了一个或多个项。</summary>
+    </member>
+    <member name="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move">
+      <summary>在集合中移动了一个或多个项。</summary>
+    </member>
+    <member name="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove">
+      <summary>从集合中移除了一个或多个项。</summary>
+    </member>
+    <member name="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace">
+      <summary>在集合中替换了一个或多个项。</summary>
+    </member>
+    <member name="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset">
+      <summary>集合的内容发生显著更改。</summary>
+    </member>
+    <member name="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs">
+      <summary>为 <see cref="E:System.Collections.Specialized.INotifyCollectionChanged.CollectionChanged" /> 事件提供数据。</summary>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction)">
+      <summary>初始化描述 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" /> 更改的 <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> 类的新实例。</summary>
+      <param name="action">引起该事件的操作。这必须设置为 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />。</param>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Collections.IList)">
+      <summary>初始化描述多项更改的 <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> 类的新实例。</summary>
+      <param name="action">引起该事件的操作。这可以设置为 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />、<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add" /> 或 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove" />。</param>
+      <param name="changedItems">受更改影响的各项。</param>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Collections.IList,System.Collections.IList)">
+      <summary>初始化描述多项 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" /> 更改的 <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> 类的新实例。</summary>
+      <param name="action">引起该事件的操作。这仅可设置为 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" />。</param>
+      <param name="newItems">要替换原始项的各个新项。</param>
+      <param name="oldItems">要替换的各原始项。</param>
+      <exception cref="T:System.ArgumentException">如果 <paramref name="action" /> 不是 Replace。</exception>
+      <exception cref="T:System.ArgumentNullException">如果 <paramref name="oldItems" /> 或 <paramref name="newItems" /> 不是 null。</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Collections.IList,System.Collections.IList,System.Int32)">
+      <summary>初始化描述多项 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" /> 更改的 <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> 类的新实例。</summary>
+      <param name="action">引起该事件的操作。这仅可设置为 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" />。</param>
+      <param name="newItems">要替换原始项的各个新项。</param>
+      <param name="oldItems">要替换的各原始项。</param>
+      <param name="startingIndex">要替换的各项中第一项的索引。</param>
+      <exception cref="T:System.ArgumentException">如果 <paramref name="action" /> 不是 Replace。</exception>
+      <exception cref="T:System.ArgumentNullException">如果 <paramref name="oldItems" /> 或 <paramref name="newItems" /> 不是 null。</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Collections.IList,System.Int32)">
+      <summary>初始化 <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> 类的新实例，该类描述多项更改或 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" /> 更改。</summary>
+      <param name="action">引起该事件的操作。这可以设置为 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />、<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add" /> 或 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove" />。</param>
+      <param name="changedItems">受更改影响的各项。</param>
+      <param name="startingIndex">发生更改处的索引。</param>
+      <exception cref="T:System.ArgumentException">如果 <paramref name="action" /> 不是 Reset、Add 或 Remove；如果 <paramref name="action" /> 是 Reset，并且要么 <paramref name="changedItems" /> 不是 null，要么 <paramref name="startingIndex" /> 不是 –1；或者如果 action 是 Add 或 Remove，并且 <paramref name="startingIndex" /> 小于 –1。</exception>
+      <exception cref="T:System.ArgumentNullException">如果 <paramref name="action" /> 是 Add 或 Remove，并且 <paramref name="changedItems" /> 是 null。</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Collections.IList,System.Int32,System.Int32)">
+      <summary>初始化描述多项 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" /> 更改的 <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> 类的新实例。</summary>
+      <param name="action">引起该事件的操作。这仅可设置为 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" />。</param>
+      <param name="changedItems">受更改影响的各项。</param>
+      <param name="index">各更改项的新索引。</param>
+      <param name="oldIndex">各更改项的旧索引。</param>
+      <exception cref="T:System.ArgumentException">如果 <paramref name="action" /> 不是 Move 或者 <paramref name="index" /> 小于 0。</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Object)">
+      <summary>初始化描述单项更改的 <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> 类的新实例。</summary>
+      <param name="action">引起该事件的操作。这可以设置为 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />、<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add" /> 或 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove" />。</param>
+      <param name="changedItem">受更改影响的项。</param>
+      <exception cref="T:System.ArgumentException">如果 <paramref name="action" /> 不是 Reset、Add 或 Remove；或者如果 <paramref name="action" /> 是 Reset 并且 <paramref name="changedItem" /> 不是 null。</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Object,System.Int32)">
+      <summary>初始化描述单项更改的 <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> 类的新实例。</summary>
+      <param name="action">引起该事件的操作。这可以设置为 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />、<see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add" /> 或 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove" />。</param>
+      <param name="changedItem">受更改影响的项。</param>
+      <param name="index">发生更改处的索引。</param>
+      <exception cref="T:System.ArgumentException">如果 <paramref name="action" /> 不是 Reset、Add 或 Remove；或者如果 <paramref name="action" /> 是 Reset，并且要么 <paramref name="changedItems" /> 不是 null，要么 <paramref name="index" /> 不是 -1。</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Object,System.Int32,System.Int32)">
+      <summary>初始化描述单项 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" /> 更改的 <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> 类的新实例。</summary>
+      <param name="action">引起该事件的操作。这仅可设置为 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" />。</param>
+      <param name="changedItem">受更改影响的项。</param>
+      <param name="index">更改的项的新索引。</param>
+      <param name="oldIndex">更改的项的旧索引。</param>
+      <exception cref="T:System.ArgumentException">如果 <paramref name="action" /> 不是 Move 或者 <paramref name="index" /> 小于 0。</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Object,System.Object)">
+      <summary>初始化描述单项 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" /> 更改的 <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> 类的新实例。</summary>
+      <param name="action">引起该事件的操作。这仅可设置为 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" />。</param>
+      <param name="newItem">要替换原始项的新项。</param>
+      <param name="oldItem">要替换的原始项。</param>
+      <exception cref="T:System.ArgumentException">如果 <paramref name="action" /> 不是 Replace。</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Object,System.Object,System.Int32)">
+      <summary>初始化描述单项 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" /> 更改的 <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> 类的新实例。</summary>
+      <param name="action">引起该事件的操作。这可设置为 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" />。</param>
+      <param name="newItem">要替换原始项的新项。</param>
+      <param name="oldItem">要替换的原始项。</param>
+      <param name="index">要替换的项的索引。</param>
+      <exception cref="T:System.ArgumentException">如果 <paramref name="action" /> 不是 Replace。</exception>
+    </member>
+    <member name="P:System.Collections.Specialized.NotifyCollectionChangedEventArgs.Action">
+      <summary>获取引起该事件的操作。</summary>
+      <returns>描述引起该事件的操作的 <see cref="T:System.Collections.Specialized.NotifyCollectionChangedAction" /> 值。</returns>
+    </member>
+    <member name="P:System.Collections.Specialized.NotifyCollectionChangedEventArgs.NewItems">
+      <summary>获取更改中涉及的新项的列表。</summary>
+      <returns>更改中涉及的新项的列表。</returns>
+    </member>
+    <member name="P:System.Collections.Specialized.NotifyCollectionChangedEventArgs.NewStartingIndex">
+      <summary>获取更改发生处的索引。</summary>
+      <returns>更改发生处的从零开始的索引。</returns>
+    </member>
+    <member name="P:System.Collections.Specialized.NotifyCollectionChangedEventArgs.OldItems">
+      <summary>获取受 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" />、Remove 或 Move 操作影响的各项的列表。</summary>
+      <returns>受 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" />、Remove 或 Move 操作影响的各项的列表。</returns>
+    </member>
+    <member name="P:System.Collections.Specialized.NotifyCollectionChangedEventArgs.OldStartingIndex">
+      <summary>获取 <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" />、Remove 或 Replace 操作发生处的索引。</summary>
+      <returns>
+        <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" />、Remove 或 Replace 操作发生的从零开始的索引。</returns>
+    </member>
+    <member name="T:System.Collections.Specialized.NotifyCollectionChangedEventHandler">
+      <summary>表示处理 <see cref="E:System.Collections.Specialized.INotifyCollectionChanged.CollectionChanged" /> 事件的方法。</summary>
+      <param name="sender">引发事件的对象。</param>
+      <param name="e">有关事件的信息。</param>
+    </member>
+    <member name="T:System.ComponentModel.DataErrorsChangedEventArgs">
+      <summary>为 <see cref="E:System.ComponentModel.INotifyDataErrorInfo.ErrorsChanged" /> 事件提供数据。</summary>
+    </member>
+    <member name="M:System.ComponentModel.DataErrorsChangedEventArgs.#ctor(System.String)">
+      <summary>初始化 <see cref="T:System.ComponentModel.DataErrorsChangedEventArgs" /> 类的新实例。</summary>
+      <param name="propertyName">具有错误的属性的名称。null 或 <see cref="F:System.String.Empty" />（如果错误为对象级别）。</param>
+    </member>
+    <member name="P:System.ComponentModel.DataErrorsChangedEventArgs.PropertyName">
+      <summary>获取有错误的属性的名称。</summary>
+      <returns>有错误的属性的名称。如果错误是对象级别，则 null 或 <see cref="F:System.String.Empty" />。</returns>
+    </member>
+    <member name="T:System.ComponentModel.INotifyDataErrorInfo">
+      <summary>定义数据实体类可以实现以提供自定义同步和异步验证支持的成员。</summary>
+    </member>
+    <member name="E:System.ComponentModel.INotifyDataErrorInfo.ErrorsChanged">
+      <summary>当属性或整个实体的验证错误已经更改时发生。</summary>
+    </member>
+    <member name="M:System.ComponentModel.INotifyDataErrorInfo.GetErrors(System.String)">
+      <summary>获取指定属性或整个实体的验证错误。</summary>
+      <returns>属性或实体的验证错误。</returns>
+      <param name="propertyName">要检索验证错误的属性的名称；若检索实体级别错误，则为 null 或 <see cref="F:System.String.Empty" />。</param>
+    </member>
+    <member name="P:System.ComponentModel.INotifyDataErrorInfo.HasErrors">
+      <summary>获取一个指示该实体是否有验证错误的值。</summary>
+      <returns>如果该实体当前有验证错误，则为 true；否则为 false。</returns>
+    </member>
+    <member name="T:System.ComponentModel.INotifyPropertyChanged">
+      <summary>向客户端发出某一属性值已更改的通知。</summary>
+    </member>
+    <member name="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged">
+      <summary>在属性值更改时发生。</summary>
+    </member>
+    <member name="T:System.ComponentModel.INotifyPropertyChanging">
+      <summary>通知客户端某个属性值将更改。</summary>
+    </member>
+    <member name="E:System.ComponentModel.INotifyPropertyChanging.PropertyChanging">
+      <summary>在属性值更改时发生。</summary>
+    </member>
+    <member name="T:System.ComponentModel.PropertyChangedEventArgs">
+      <summary>为 <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged" /> 事件提供数据。</summary>
+    </member>
+    <member name="M:System.ComponentModel.PropertyChangedEventArgs.#ctor(System.String)">
+      <summary>初始化 <see cref="T:System.ComponentModel.PropertyChangedEventArgs" /> 类的新实例。</summary>
+      <param name="propertyName">已更改的属性的名称。</param>
+    </member>
+    <member name="P:System.ComponentModel.PropertyChangedEventArgs.PropertyName">
+      <summary>获取已更改的属性名称。</summary>
+      <returns>已更改的属性的名称。</returns>
+    </member>
+    <member name="T:System.ComponentModel.PropertyChangedEventHandler">
+      <summary>表示将处理 <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged" /> 事件的方法，该事件在更改组件上的属性时引发。</summary>
+      <param name="sender">事件源。</param>
+      <param name="e">包含事件数据的 <see cref="T:System.ComponentModel.PropertyChangedEventArgs" />。</param>
+    </member>
+    <member name="T:System.ComponentModel.PropertyChangingEventArgs">
+      <summary>为 <see cref="E:System.ComponentModel.INotifyPropertyChanging.PropertyChanging" /> 事件提供数据。</summary>
+    </member>
+    <member name="M:System.ComponentModel.PropertyChangingEventArgs.#ctor(System.String)">
+      <summary>初始化 <see cref="T:System.ComponentModel.PropertyChangingEventArgs" /> 类的新实例。</summary>
+      <param name="propertyName">其值将更改的属性的名称。</param>
+    </member>
+    <member name="P:System.ComponentModel.PropertyChangingEventArgs.PropertyName">
+      <summary>获取其值将更改的属性的名称。</summary>
+      <returns>其值将更改的属性的名称。</returns>
+    </member>
+    <member name="T:System.ComponentModel.PropertyChangingEventHandler">
+      <summary>表示将对 <see cref="T:System.ComponentModel.INotifyPropertyChanging" /> 接口的 <see cref="E:System.ComponentModel.INotifyPropertyChanging.PropertyChanging" /> 事件进行处理的方法。</summary>
+      <param name="sender">事件源。</param>
+      <param name="e">包含事件数据的 <see cref="T:System.ComponentModel.PropertyChangingEventArgs" />。</param>
+    </member>
+    <member name="T:System.Windows.Input.ICommand">
+      <summary>定义一个命令。</summary>
+    </member>
+    <member name="M:System.Windows.Input.ICommand.CanExecute(System.Object)">
+      <summary>定义确定此命令是否可在其当前状态下执行的方法。</summary>
+      <returns>如果可执行此命令，则为 true；否则为 false。</returns>
+      <param name="parameter">此命令使用的数据。如果此命令不需要传递数据，则该对象可以设置为 null。</param>
+    </member>
+    <member name="E:System.Windows.Input.ICommand.CanExecuteChanged">
+      <summary>当出现影响是否应执行该命令的更改时发生。</summary>
+    </member>
+    <member name="M:System.Windows.Input.ICommand.Execute(System.Object)">
+      <summary>定义在调用此命令时要调用的方法。</summary>
+      <param name="parameter">此命令使用的数据。如果此命令不需要传递数据，则该对象可以设置为 null。</param>
+    </member>
+  </members>
+</doc>

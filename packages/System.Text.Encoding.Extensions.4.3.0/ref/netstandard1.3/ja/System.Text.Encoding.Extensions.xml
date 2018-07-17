@@ -1,0 +1,1052 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Text.Encoding.Extensions</name>
+  </assembly>
+  <members>
+    <member name="T:System.Text.ASCIIEncoding">
+      <summary>Unicode 文字の ASCII 文字エンコーディングを表します。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.#ctor">
+      <summary>
+        <see cref="T:System.Text.ASCIIEncoding" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetByteCount(System.Char*,System.Int32)">
+      <summary>指定した文字ポインターで始まる文字のセットをエンコードすることによって生成されるバイト数を計算します。</summary>
+      <returns>指定した文字をエンコードすることによって生成されるバイト数。</returns>
+      <param name="chars">エンコードする最初の文字へのポインター。</param>
+      <param name="count">エンコードする文字数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> が 0 未満です。または結果のバイト数が、整数として返すことのできる最大数を超えています。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.EncoderFallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetByteCount(System.Char[],System.Int32,System.Int32)">
+      <summary>指定した文字配列から文字のセットをエンコードすることによって生成されるバイト数を計算します。</summary>
+      <returns>指定した文字をエンコードすることによって生成されるバイト数。</returns>
+      <param name="chars">エンコード対象の文字のセットを格納している文字配列。</param>
+      <param name="index">エンコードする最初の文字のインデックス。</param>
+      <param name="count">エンコードする文字数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が 0 未満です。または<paramref name="index" /> および <paramref name="count" /> が <paramref name="chars" /> 内の有効な範囲を示していません。または結果のバイト数が、整数として返すことのできる最大数を超えています。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.EncoderFallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetByteCount(System.String)">
+      <summary>指定した <see cref="T:System.String" /> 内の文字をエンコードすることによって生成されるバイト数を計算します。</summary>
+      <returns>指定した文字をエンコードすることによって生成されるバイト数。</returns>
+      <param name="chars">エンコード対象の文字のセットを格納している <see cref="T:System.String" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">結果のバイト数が、整数として返すことのできる最大数を超えています。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.EncoderFallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetBytes(System.Char*,System.Int32,System.Byte*,System.Int32)">
+      <summary>指定した文字ポインターで始まる文字のセットを、指定したバイト ポインターを開始位置として格納されるバイト シーケンスにエンコードします。</summary>
+      <returns>
+        <paramref name="bytes" /> によって示される位置に書き込まれた実際のバイト数。</returns>
+      <param name="chars">エンコードする最初の文字へのポインター。</param>
+      <param name="charCount">エンコードする文字数。</param>
+      <param name="bytes">結果のバイト シーケンスの書き込みを開始する位置へのポインター。</param>
+      <param name="byteCount">書き込む最大バイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> は null なので、または<paramref name="bytes" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charCount" /> または <paramref name="byteCount" /> が 0 未満です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="byteCount" /> が結果のバイト数より少なくなっています。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.EncoderFallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>指定した文字配列に格納されている文字のセットを指定したバイト配列にエンコードします。</summary>
+      <returns>
+        <paramref name="bytes" /> に書き込まれた実際のバイト数。</returns>
+      <param name="chars">エンコード対象の文字のセットを格納している文字配列。</param>
+      <param name="charIndex">エンコードする最初の文字のインデックス。</param>
+      <param name="charCount">エンコードする文字数。</param>
+      <param name="bytes">結果のバイト シーケンスを格納するバイト配列。</param>
+      <param name="byteIndex">結果のバイト シーケンスを書き込む開始位置のインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> は null なので、または<paramref name="bytes" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" />、<paramref name="charCount" />、または <paramref name="byteIndex" /> が 0 未満です。または<paramref name="charIndex" /> および <paramref name="charCount" /> が <paramref name="chars" /> 内の有効な範囲を示していません。または<paramref name="byteIndex" /> が <paramref name="bytes" /> の有効なインデックスではありません。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="bytes" /> には、<paramref name="byteIndex" /> から配列の末尾までに十分なサイズがなく、結果のバイトを格納できません。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.EncoderFallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetBytes(System.String,System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>指定した <see cref="T:System.String" /> の文字セットを、指定したバイト配列にエンコードします。</summary>
+      <returns>
+        <paramref name="bytes" /> に書き込まれた実際のバイト数。</returns>
+      <param name="chars">エンコード対象の文字のセットを格納している <see cref="T:System.String" />。</param>
+      <param name="charIndex">エンコードする最初の文字のインデックス。</param>
+      <param name="charCount">エンコードする文字数。</param>
+      <param name="bytes">結果のバイト シーケンスを格納するバイト配列。</param>
+      <param name="byteIndex">結果のバイト シーケンスを書き込む開始位置のインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> は null なので、または<paramref name="bytes" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" />、<paramref name="charCount" />、または <paramref name="byteIndex" /> が 0 未満です。または<paramref name="charIndex" /> および <paramref name="charCount" /> が <paramref name="chars" /> 内の有効な範囲を示していません。または<paramref name="byteIndex" /> が <paramref name="bytes" /> の有効なインデックスではありません。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="bytes" /> には、<paramref name="byteIndex" /> から配列の末尾までに十分なサイズがなく、結果のバイトを格納できません。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.EncoderFallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetCharCount(System.Byte*,System.Int32)">
+      <summary>指定したバイト ポインターで始まるバイト シーケンスをデコードすることによって生成される文字数を計算します。</summary>
+      <returns>指定したバイト シーケンスをデコードすることによって生成される文字数。</returns>
+      <param name="bytes">デコードする最初のバイトへのポインター。</param>
+      <param name="count">デコードするバイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> が 0 未満です。または結果のバイト数が、整数として返すことのできる最大数を超えています。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.DecoderFallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetCharCount(System.Byte[],System.Int32,System.Int32)">
+      <summary>指定したバイト配列からバイト シーケンスをデコードすることによって生成される文字数を計算します。</summary>
+      <returns>指定したバイト シーケンスをデコードすることによって生成される文字数。</returns>
+      <param name="bytes">デコード対象のバイト シーケンスが格納されたバイト配列。</param>
+      <param name="index">デコードする最初のバイトのインデックス。</param>
+      <param name="count">デコードするバイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が 0 未満です。または<paramref name="index" /> および <paramref name="count" /> が <paramref name="bytes" /> 内の有効な範囲を示していません。または結果のバイト数が、整数として返すことのできる最大数を超えています。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.DecoderFallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetChars(System.Byte*,System.Int32,System.Char*,System.Int32)">
+      <summary>指定したバイト ポインターで始まるバイト シーケンスを、指定した文字ポインターを開始位置として格納される文字のセットにデコードします。</summary>
+      <returns>
+        <paramref name="chars" /> によって示される位置に書き込まれた実際の文字数。</returns>
+      <param name="bytes">デコードする最初のバイトへのポインター。</param>
+      <param name="byteCount">デコードするバイト数。</param>
+      <param name="chars">結果の文字セットの書き込みを開始する位置へのポインター。</param>
+      <param name="charCount">書き込む文字の最大数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> は null なので、または<paramref name="chars" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteCount" /> または <paramref name="charCount" /> が 0 未満です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="charCount" /> が結果の文字数より少なくなっています。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.DecoderFallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)">
+      <summary>指定したバイト配列に格納されているバイト シーケンスを指定した文字配列にデコードします。</summary>
+      <returns>
+        <paramref name="chars" /> に書き込まれた実際の文字数。</returns>
+      <param name="bytes">デコード対象のバイト シーケンスが格納されたバイト配列。</param>
+      <param name="byteIndex">デコードする最初のバイトのインデックス。</param>
+      <param name="byteCount">デコードするバイト数。</param>
+      <param name="chars">結果の文字のセットを格納する文字配列。</param>
+      <param name="charIndex">結果の文字のセットを書き込む開始位置のインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> は null なので、または<paramref name="chars" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteIndex" />、<paramref name="byteCount" />、または <paramref name="charIndex" /> が 0 未満です。または<paramref name="byteindex" /> および <paramref name="byteCount" /> が <paramref name="bytes" /> 内の有効な範囲を示していません。または<paramref name="charIndex" /> が <paramref name="chars" /> の有効なインデックスではありません。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="chars" /> には、<paramref name="charIndex" /> から配列の末尾までに十分なサイズがなく、結果の文字を格納できません。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.DecoderFallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetDecoder">
+      <summary>ASCII でエンコードされたバイト シーケンスを Unicode 文字のシーケンスに変換するデコーダーを取得します。</summary>
+      <returns>ASCII でエンコードされたバイト シーケンスを Unicode 文字のシーケンスに変換する <see cref="T:System.Text.Decoder" />。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetEncoder">
+      <summary>Unicode 文字のシーケンスを ASCII でエンコードされたバイト シーケンスに変換するエンコーダーを取得します。</summary>
+      <returns>Unicode 文字のシーケンスを ASCII でエンコードされたバイト シーケンスに変換する <see cref="T:System.Text.Encoder" />。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetMaxByteCount(System.Int32)">
+      <summary>指定した文字数をエンコードすることによって生成される最大バイト数を計算します。</summary>
+      <returns>指定した文字数をエンコードすることによって生成される最大バイト数。</returns>
+      <param name="charCount">エンコードする文字数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charCount" /> が 0 未満です。または結果のバイト数が、整数として返すことのできる最大数を超えています。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetMaxCharCount(System.Int32)">
+      <summary>指定したバイト数をデコードすることによって生成される最大文字数を計算します。</summary>
+      <returns>指定したバイト数をデコードすることによって生成される最大文字数。</returns>
+      <param name="byteCount">デコードするバイト数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteCount" /> が 0 未満です。または結果のバイト数が、整数として返すことのできる最大数を超えています。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.ASCIIEncoding.GetString(System.Byte[],System.Int32,System.Int32)">
+      <summary>バイト配列に格納されているある範囲のバイトを文字列にデコードします。</summary>
+      <returns>指定したバイト シーケンスのデコード結果が格納されている <see cref="T:System.String" />。</returns>
+      <param name="bytes">デコード対象のバイト シーケンスが格納されたバイト配列。</param>
+      <param name="byteIndex">デコードする最初のバイトのインデックス。</param>
+      <param name="byteCount">デコードするバイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が 0 未満です。または<paramref name="index" /> および <paramref name="count" /> が <paramref name="bytes" /> 内の有効な範囲を示していません。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.DecoderFallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Text.ASCIIEncoding.IsSingleByte">
+      <summary>現在のエンコーディングが 1 バイトのコード ポイントを使用するかどうかを示す値を取得します。</summary>
+      <returns>このプロパティは常に true です。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Text.UnicodeEncoding">
+      <summary>Unicode 文字の UTF-16 エンコーディングを表します。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.#ctor">
+      <summary>
+        <see cref="T:System.Text.UnicodeEncoding" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.#ctor(System.Boolean,System.Boolean)">
+      <summary>
+        <see cref="T:System.Text.UnicodeEncoding" /> クラスの新しいインスタンスを初期化します。パラメーターでは、ビッグ エンディアン バイト順を使用するかどうか、および <see cref="M:System.Text.UnicodeEncoding.GetPreamble" /> メソッドが Unicode バイト順マークを返すかどうかを指定します。</summary>
+      <param name="bigEndian">最上位バイトが先頭に配置されるビッグ エンディアン バイト順を使用する場合は true。最下位バイトが先頭に配置されるリトル エンディアン バイト順を使用する場合は false。</param>
+      <param name="byteOrderMark">
+        <see cref="M:System.Text.UnicodeEncoding.GetPreamble" /> メソッドが Unicode バイト順マークを返すよう指定する場合は true。それ以外の場合は false。詳細については、次の「解説」を参照してください。</param>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.#ctor(System.Boolean,System.Boolean,System.Boolean)">
+      <summary>
+        <see cref="T:System.Text.UnicodeEncoding" /> クラスの新しいインスタンスを初期化します。パラメーターでは、ビッグ エンディアン バイト順を使用するかどうか、Unicode バイト順マークを付加するかどうか、および無効なエンコーディングを検出したときに例外をスローするかどうかを指定します。</summary>
+      <param name="bigEndian">最上位バイトが先頭に配置されるビッグ エンディアン バイト順を使用する場合は true。最下位バイトが先頭に配置されるリトル エンディアン バイト順を使用する場合は false。</param>
+      <param name="byteOrderMark">
+        <see cref="M:System.Text.UnicodeEncoding.GetPreamble" /> メソッドが Unicode バイト順マークを返すよう指定する場合は true。それ以外の場合は false。詳細については、次の「解説」を参照してください。</param>
+      <param name="throwOnInvalidBytes">無効なエンコーディングが検出されたときに例外をスローすることを指定する場合は true、それ以外の場合は false。</param>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.Equals(System.Object)">
+      <summary>指定した <see cref="T:System.Object" /> が、現在の <see cref="T:System.Text.UnicodeEncoding" /> オブジェクトと等しいかどうかを判断します。</summary>
+      <returns>
+        <paramref name="value" /> が <see cref="T:System.Text.UnicodeEncoding" /> のインスタンスで、現在のオブジェクトと等しい場合は true。それ以外の場合は false。</returns>
+      <param name="value">現在のオブジェクトと比較するオブジェクト。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.GetByteCount(System.Char[],System.Int32,System.Int32)">
+      <summary>指定した文字配列から文字のセットをエンコードすることによって生成されるバイト数を計算します。</summary>
+      <returns>指定した文字をエンコードすることによって生成されるバイト数。</returns>
+      <param name="chars">エンコード対象の文字のセットを格納している文字配列。</param>
+      <param name="index">エンコードする最初の文字のインデックス。</param>
+      <param name="count">エンコードする文字数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> is null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> or <paramref name="count" /> is less than zero.-or- <paramref name="index" /> and <paramref name="count" /> do not denote a valid range in <paramref name="chars" />.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for fuller explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.GetByteCount(System.String)">
+      <summary>指定した文字列内の文字をエンコードすることによって生成されるバイト数を計算します。</summary>
+      <returns>指定した文字をエンコードすることによって生成されるバイト数。</returns>
+      <param name="s">エンコード対象の文字のセットを格納する文字列。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> is null . </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="s" /> contains an invalid sequence of characters. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for fuller explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>指定した文字配列に格納されている文字のセットを指定したバイト配列にエンコードします。</summary>
+      <returns>
+        <paramref name="bytes" /> に書き込まれた実際のバイト数。</returns>
+      <param name="chars">エンコード対象の文字のセットを格納している文字配列。</param>
+      <param name="charIndex">エンコードする最初の文字のインデックス。</param>
+      <param name="charCount">エンコードする文字数。</param>
+      <param name="bytes">結果のバイト シーケンスを格納するバイト配列。</param>
+      <param name="byteIndex">結果のバイト シーケンスを書き込む開始位置のインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> is null (Nothing).-or- <paramref name="bytes" /> is null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" /> or <paramref name="charCount" /> or <paramref name="byteIndex" /> is less than zero.-or- <paramref name="charIndex" /> and <paramref name="charCount" /> do not denote a valid range in <paramref name="chars" />.-or- <paramref name="byteIndex" /> is not a valid index in <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters.-or- <paramref name="bytes" /> does not have enough capacity from <paramref name="byteIndex" /> to the end of the array to accommodate the resulting bytes. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for fuller explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.GetBytes(System.String,System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>指定した <see cref="T:System.String" /> の文字セットを、指定したバイト配列にエンコードします。</summary>
+      <returns>
+        <paramref name="bytes" /> に書き込まれた実際のバイト数。</returns>
+      <param name="s">エンコード対象の文字のセットを格納している文字列。</param>
+      <param name="charIndex">エンコードする最初の文字のインデックス。</param>
+      <param name="charCount">エンコードする文字数。</param>
+      <param name="bytes">結果のバイト シーケンスを格納するバイト配列。</param>
+      <param name="byteIndex">結果のバイト シーケンスを書き込む開始位置のインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> is null .-or- <paramref name="bytes" /> is null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" /> or <paramref name="charCount" /> or <paramref name="byteIndex" /> is less than zero.-or- <paramref name="charIndex" /> and <paramref name="charCount" /> do not denote a valid range in <paramref name="chars" />.-or- <paramref name="byteIndex" /> is not a valid index in <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="s" /> contains an invalid sequence of characters.-or- <paramref name="bytes" /> does not have enough capacity from <paramref name="byteIndex" /> to the end of the array to accommodate the resulting bytes. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for fuller explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.GetCharCount(System.Byte[],System.Int32,System.Int32)">
+      <summary>指定したバイト配列からバイト シーケンスをデコードすることによって生成される文字数を計算します。</summary>
+      <returns>指定したバイト シーケンスをデコードすることによって生成される文字数。</returns>
+      <param name="bytes">デコード対象のバイト シーケンスが格納されたバイト配列。</param>
+      <param name="index">デコードする最初のバイトのインデックス。</param>
+      <param name="count">デコードするバイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> is null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> or <paramref name="count" /> is less than zero.-or- <paramref name="index" /> and <paramref name="count" /> do not denote a valid range in <paramref name="bytes" />.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for fuller explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)">
+      <summary>指定したバイト配列に格納されているバイト シーケンスを指定した文字配列にデコードします。</summary>
+      <returns>
+        <paramref name="chars" /> に書き込まれた実際の文字数。</returns>
+      <param name="bytes">デコード対象のバイト シーケンスが格納されたバイト配列。</param>
+      <param name="byteIndex">デコードする最初のバイトのインデックス。</param>
+      <param name="byteCount">デコードするバイト数。</param>
+      <param name="chars">結果の文字のセットを格納する文字配列。</param>
+      <param name="charIndex">結果の文字のセットを書き込む開始位置のインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> is null (Nothing).-or- <paramref name="chars" /> is null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteIndex" /> or <paramref name="byteCount" /> or <paramref name="charIndex" /> is less than zero.-or- <paramref name="byteindex" /> and <paramref name="byteCount" /> do not denote a valid range in <paramref name="bytes" />.-or- <paramref name="charIndex" /> is not a valid index in <paramref name="chars" />. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes.-or- <paramref name="chars" /> does not have enough capacity from <paramref name="charIndex" /> to the end of the array to accommodate the resulting characters. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for fuller explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.GetDecoder">
+      <summary>UTF-16 でエンコードされたバイト シーケンスを Unicode 文字のシーケンスに変換するデコーダーを取得します。</summary>
+      <returns>UTF-16 でエンコードされたバイト シーケンスを Unicode 文字のシーケンスに変換する <see cref="T:System.Text.Decoder" />。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.GetEncoder">
+      <summary>Unicode 文字のシーケンスを UTF-16 でエンコードされたバイト シーケンスに変換するエンコーダーを取得します。</summary>
+      <returns>Unicode 文字のシーケンスを UTF-16 でエンコードされたバイト シーケンスに変換する <see cref="T:System.Text.Encoder" /> オブジェクト。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.GetHashCode">
+      <summary>現在のインスタンスのハッシュ コードを返します。</summary>
+      <returns>現在の <see cref="T:System.Text.UnicodeEncoding" /> オブジェクトのハッシュ コード。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.GetMaxByteCount(System.Int32)">
+      <summary>指定した文字数をエンコードすることによって生成される最大バイト数を計算します。</summary>
+      <returns>指定した文字数をエンコードすることによって生成される最大バイト数。</returns>
+      <param name="charCount">エンコードする文字数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charCount" /> is less than zero.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for fuller explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.GetMaxCharCount(System.Int32)">
+      <summary>指定したバイト数をデコードすることによって生成される最大文字数を計算します。</summary>
+      <returns>指定したバイト数をデコードすることによって生成される最大文字数。</returns>
+      <param name="byteCount">デコードするバイト数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteCount" /> is less than zero.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for fuller explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.GetPreamble">
+      <summary>このインスタンスのコンストラクターでバイト順マークを要求した場合は、UTF-16 形式でエンコードされた Unicode バイト順マークを返します。</summary>
+      <returns>Unicode のバイト順マークが格納されたバイト配列を提供するように <see cref="T:System.Text.UnicodeEncoding" /> オブジェクトが構成されている場合には、そうしたバイト配列。それ以外の場合、このメソッドは長さがゼロのバイト配列を返します。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UnicodeEncoding.GetString(System.Byte[],System.Int32,System.Int32)">
+      <summary>バイト配列に格納されているある範囲のバイトを文字列にデコードします。</summary>
+      <returns>指定したバイト シーケンスのデコード結果が格納されている <see cref="T:System.String" /> オブジェクト。</returns>
+      <param name="bytes">デコード対象のバイト シーケンスが格納されたバイト配列。</param>
+      <param name="index">デコードする最初のバイトのインデックス。</param>
+      <param name="count">デコードするバイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> is null (Nothing). </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> or <paramref name="count" /> is less than zero.-or- <paramref name="index" /> and <paramref name="count" /> do not denote a valid range in <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for fuller explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Text.UTF32Encoding">
+      <summary>Unicode 文字の UTF-32 エンコーディングを表します。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.#ctor">
+      <summary>
+        <see cref="T:System.Text.UTF32Encoding" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.#ctor(System.Boolean,System.Boolean)">
+      <summary>
+        <see cref="T:System.Text.UTF32Encoding" /> クラスの新しいインスタンスを初期化します。パラメーターでは、ビッグ エンディアン バイト順を使用するかどうか、および <see cref="M:System.Text.UTF32Encoding.GetPreamble" /> メソッドが Unicode の Unicode バイト順マークを返すかどうかを指定します。</summary>
+      <param name="bigEndian">最上位バイトが先頭に配置されるビッグ エンディアン バイト順を使用する場合は true。最下位バイトが先頭に配置されるリトル エンディアン バイト順を使用する場合は false。</param>
+      <param name="byteOrderMark">Unicode バイト順マークを付加するよう指定する場合は true。それ以外の場合は false。</param>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.#ctor(System.Boolean,System.Boolean,System.Boolean)">
+      <summary>
+        <see cref="T:System.Text.UTF32Encoding" /> クラスの新しいインスタンスを初期化します。パラメーターでは、ビッグ エンディアン バイト順を使用するかどうか、Unicode バイト順マークを付加するかどうか、および無効なエンコーディングを検出したときに例外をスローするかどうかを指定します。</summary>
+      <param name="bigEndian">最上位バイトが先頭に配置されるビッグ エンディアン バイト順を使用する場合は true。最下位バイトが先頭に配置されるリトル エンディアン バイト順を使用する場合は false。</param>
+      <param name="byteOrderMark">Unicode バイト順マークを付加するよう指定する場合は true。それ以外の場合は false。</param>
+      <param name="throwOnInvalidCharacters">無効なエンコーディングが検出されたときに例外をスローすることを指定する場合は true、それ以外の場合は false。</param>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.Equals(System.Object)">
+      <summary>指定した <see cref="T:System.Object" /> が、現在の <see cref="T:System.Text.UTF32Encoding" /> オブジェクトと等しいかどうかを判断します。</summary>
+      <returns>
+        <paramref name="value" /> が <see cref="T:System.Text.UTF32Encoding" /> のインスタンスで、現在のオブジェクトと等しい場合は true。それ以外の場合は false。</returns>
+      <param name="value">比較相手の <see cref="T:System.Object" />。これと現在のオブジェクトを比較することになります。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetByteCount(System.Char*,System.Int32)">
+      <summary>指定した文字ポインターで始まる文字のセットをエンコードすることによって生成されるバイト数を計算します。</summary>
+      <returns>指定した文字をエンコードすることによって生成されるバイト数。</returns>
+      <param name="chars">エンコードする最初の文字へのポインター。</param>
+      <param name="count">エンコードする文字数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> is less than zero.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for complete explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetByteCount(System.Char[],System.Int32,System.Int32)">
+      <summary>指定した文字配列から文字のセットをエンコードすることによって生成されるバイト数を計算します。</summary>
+      <returns>指定した文字をエンコードすることによって生成されるバイト数。</returns>
+      <param name="chars">エンコード対象の文字のセットを格納している文字配列。</param>
+      <param name="index">エンコードする最初の文字のインデックス。</param>
+      <param name="count">エンコードする文字数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> or <paramref name="count" /> is less than zero.-or- <paramref name="index" /> and <paramref name="count" /> do not denote a valid range in <paramref name="chars" />.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for complete explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetByteCount(System.String)">
+      <summary>指定した <see cref="T:System.String" /> 内の文字をエンコードすることによって生成されるバイト数を計算します。</summary>
+      <returns>指定した文字をエンコードすることによって生成されるバイト数。</returns>
+      <param name="s">エンコード対象の文字のセットを格納している <see cref="T:System.String" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="s" /> contains an invalid sequence of characters. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for complete explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetBytes(System.Char*,System.Int32,System.Byte*,System.Int32)">
+      <summary>指定した文字ポインターで始まる文字のセットを、指定したバイト ポインターを開始位置として格納されるバイト シーケンスにエンコードします。</summary>
+      <returns>
+        <paramref name="bytes" /> パラメーターによって示される位置に書き込む実際のバイト数。</returns>
+      <param name="chars">エンコードする最初の文字へのポインター。</param>
+      <param name="charCount">エンコードする文字数。</param>
+      <param name="bytes">結果のバイト シーケンスの書き込みを開始する位置へのポインター。</param>
+      <param name="byteCount">書き込む最大バイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> is null.-or- <paramref name="bytes" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charCount" /> or <paramref name="byteCount" /> is less than zero. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters.-or- <paramref name="byteCount" /> is less than the resulting number of bytes. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for complete explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>指定した文字配列に格納されている文字のセットを指定したバイト配列にエンコードします。</summary>
+      <returns>
+        <paramref name="bytes" /> に書き込まれた実際のバイト数。</returns>
+      <param name="chars">エンコード対象の文字のセットを格納している文字配列。</param>
+      <param name="charIndex">エンコードする最初の文字のインデックス。</param>
+      <param name="charCount">エンコードする文字数。</param>
+      <param name="bytes">結果のバイト シーケンスを格納するバイト配列。</param>
+      <param name="byteIndex">結果のバイト シーケンスを書き込む開始位置のインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> is null.-or- <paramref name="bytes" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" /> or <paramref name="charCount" /> or <paramref name="byteIndex" /> is less than zero.-or- <paramref name="charIndex" /> and <paramref name="charCount" /> do not denote a valid range in <paramref name="chars" />.-or- <paramref name="byteIndex" /> is not a valid index in <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters.-or- <paramref name="bytes" /> does not have enough capacity from <paramref name="byteIndex" /> to the end of the array to accommodate the resulting bytes. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for complete explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetBytes(System.String,System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>指定した <see cref="T:System.String" /> の文字セットを、指定したバイト配列にエンコードします。</summary>
+      <returns>
+        <paramref name="bytes" /> に書き込まれた実際のバイト数。</returns>
+      <param name="s">エンコード対象の文字のセットを格納している <see cref="T:System.String" />。</param>
+      <param name="charIndex">エンコードする最初の文字のインデックス。</param>
+      <param name="charCount">エンコードする文字数。</param>
+      <param name="bytes">結果のバイト シーケンスを格納するバイト配列。</param>
+      <param name="byteIndex">結果のバイト シーケンスを書き込む開始位置のインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> is null.-or- <paramref name="bytes" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" /> or <paramref name="charCount" /> or <paramref name="byteIndex" /> is less than zero.-or- <paramref name="charIndex" /> and <paramref name="charCount" /> do not denote a valid range in <paramref name="chars" />.-or- <paramref name="byteIndex" /> is not a valid index in <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="s" /> contains an invalid sequence of characters.-or- <paramref name="bytes" /> does not have enough capacity from <paramref name="byteIndex" /> to the end of the array to accommodate the resulting bytes. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for complete explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetCharCount(System.Byte*,System.Int32)">
+      <summary>指定したバイト ポインターで始まるバイト シーケンスをデコードすることによって生成される文字数を計算します。</summary>
+      <returns>指定したバイト シーケンスをデコードすることによって生成される文字数。</returns>
+      <param name="bytes">デコードする最初のバイトへのポインター。</param>
+      <param name="count">デコードするバイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> is less than zero.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for complete explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetCharCount(System.Byte[],System.Int32,System.Int32)">
+      <summary>指定したバイト配列からバイト シーケンスをデコードすることによって生成される文字数を計算します。</summary>
+      <returns>指定したバイト シーケンスをデコードすることによって生成される文字数。</returns>
+      <param name="bytes">デコード対象のバイト シーケンスが格納されたバイト配列。</param>
+      <param name="index">デコードする最初のバイトのインデックス。</param>
+      <param name="count">デコードするバイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> or <paramref name="count" /> is less than zero.-or- <paramref name="index" /> and <paramref name="count" /> do not denote a valid range in <paramref name="bytes" />.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for complete explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetChars(System.Byte*,System.Int32,System.Char*,System.Int32)">
+      <summary>指定したバイト ポインターで始まるバイト シーケンスを、指定した文字ポインターを開始位置として格納される文字のセットにデコードします。</summary>
+      <returns>
+        <paramref name="chars" /> によって示される位置に書き込まれる実際の文字数。</returns>
+      <param name="bytes">デコードする最初のバイトへのポインター。</param>
+      <param name="byteCount">デコードするバイト数。</param>
+      <param name="chars">結果の文字セットの書き込みを開始する位置へのポインター。</param>
+      <param name="charCount">書き込む文字の最大数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> is null.-or- <paramref name="chars" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteCount" /> or <paramref name="charCount" /> is less than zero. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes.-or- <paramref name="charCount" /> is less than the resulting number of characters. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for complete explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)">
+      <summary>指定したバイト配列に格納されているバイト シーケンスを指定した文字配列にデコードします。</summary>
+      <returns>
+        <paramref name="chars" /> に書き込まれた実際の文字数。</returns>
+      <param name="bytes">デコード対象のバイト シーケンスが格納されたバイト配列。</param>
+      <param name="byteIndex">デコードする最初のバイトのインデックス。</param>
+      <param name="byteCount">デコードするバイト数。</param>
+      <param name="chars">結果の文字のセットを格納する文字配列。</param>
+      <param name="charIndex">結果の文字のセットを書き込む開始位置のインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> is null.-or- <paramref name="chars" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteIndex" /> or <paramref name="byteCount" /> or <paramref name="charIndex" /> is less than zero.-or- <paramref name="byteindex" /> and <paramref name="byteCount" /> do not denote a valid range in <paramref name="bytes" />.-or- <paramref name="charIndex" /> is not a valid index in <paramref name="chars" />. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes.-or- <paramref name="chars" /> does not have enough capacity from <paramref name="charIndex" /> to the end of the array to accommodate the resulting characters. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for complete explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetDecoder">
+      <summary>UTF-32 でエンコードされたバイト シーケンスを Unicode 文字のシーケンスに変換するデコーダーを取得します。</summary>
+      <returns>UTF-32 でエンコードされたバイト シーケンスを Unicode 文字のシーケンスに変換する <see cref="T:System.Text.Decoder" />。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetEncoder">
+      <summary>Unicode 文字のシーケンスを UTF-32 でエンコードされたバイト シーケンスに変換するエンコーダーを取得します。</summary>
+      <returns>Unicode 文字のシーケンスを UTF-32 でエンコードされたバイト シーケンスに変換する <see cref="T:System.Text.Encoder" />。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetHashCode">
+      <summary>現在のインスタンスのハッシュ コードを返します。</summary>
+      <returns>現在の <see cref="T:System.Text.UTF32Encoding" /> オブジェクトのハッシュ コード。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetMaxByteCount(System.Int32)">
+      <summary>指定した文字数をエンコードすることによって生成される最大バイト数を計算します。</summary>
+      <returns>指定した文字数をエンコードすることによって生成される最大バイト数。</returns>
+      <param name="charCount">エンコードする文字数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charCount" /> is less than zero.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for complete explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetMaxCharCount(System.Int32)">
+      <summary>指定したバイト数をデコードすることによって生成される最大文字数を計算します。</summary>
+      <returns>指定したバイト数をデコードすることによって生成される最大文字数。</returns>
+      <param name="byteCount">デコードするバイト数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteCount" /> is less than zero.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for complete explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetPreamble">
+      <summary>このインスタンスのコンストラクターでバイト順マークを要求した場合は、UTF-32 形式でエンコードされた Unicode バイト順マークを返します。</summary>
+      <returns>このインスタンスのコンストラクターでバイト順マークを要求した場合に、Unicode バイト順マークが格納されるバイト配列。それ以外の場合、このメソッドは長さがゼロのバイト配列を返します。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF32Encoding.GetString(System.Byte[],System.Int32,System.Int32)">
+      <summary>バイト配列に格納されているある範囲のバイトを文字列にデコードします。</summary>
+      <returns>指定したバイト シーケンスのデコード結果が格納されている <see cref="T:System.String" />。</returns>
+      <param name="bytes">デコード対象のバイト シーケンスが格納されたバイト配列。</param>
+      <param name="index">デコードする最初のバイトのインデックス。</param>
+      <param name="count">デコードするバイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> or <paramref name="count" /> is less than zero.-or- <paramref name="index" /> and <paramref name="count" /> do not denote a valid range in <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for complete explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Text.UTF7Encoding">
+      <summary>Unicode 文字の UTF-7 エンコーディングを表します。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.#ctor">
+      <summary>
+        <see cref="T:System.Text.UTF7Encoding" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.#ctor(System.Boolean)">
+      <summary>
+        <see cref="T:System.Text.UTF7Encoding" /> クラスの新しいインスタンスを初期化します。パラメーターでは、省略可能な文字を許可するかどうかを指定します。</summary>
+      <param name="allowOptionals">省略文字を許可するよう指定する場合は true。それ以外の場合は false。</param>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.Equals(System.Object)">
+      <summary>指定したオブジェクトが、現在の <see cref="T:System.Text.UTF7Encoding" /> オブジェクトと等しいかどうかを示す値を取得します。</summary>
+      <returns>
+        <paramref name="value" /> が <see cref="T:System.Text.UTF7Encoding" /> オブジェクトで、現在の <see cref="T:System.Text.UTF7Encoding" /> オブジェクトと等しい場合は true。それ以外の場合は false。</returns>
+      <param name="value">現在の <see cref="T:System.Text.UTF7Encoding" /> オブジェクトと比較するオブジェクト。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetByteCount(System.Char*,System.Int32)">
+      <summary>指定した文字ポインターで始まる文字のセットをエンコードすることによって生成されるバイト数を計算します。</summary>
+      <returns>指定した文字をエンコードすることによって生成されるバイト数。</returns>
+      <param name="chars">エンコードする最初の文字へのポインター。</param>
+      <param name="count">エンコードする文字数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> が null  (Visual Basic .NET の場合は Nothing ) です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> が 0 未満です。または結果のバイト数が、int として返すことのできる最大数を超えています。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.EncoderFallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetByteCount(System.Char[],System.Int32,System.Int32)">
+      <summary>指定した文字配列から文字のセットをエンコードすることによって生成されるバイト数を計算します。</summary>
+      <returns>指定した文字をエンコードすることによって生成されるバイト数。</returns>
+      <param name="chars">エンコード対象の文字のセットを格納している文字配列。</param>
+      <param name="index">エンコードする最初の文字のインデックス。</param>
+      <param name="count">エンコードする文字数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> が null  (Nothing) です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が 0 未満です。または<paramref name="index" /> および <paramref name="count" /> が <paramref name="chars" /> 内の有効な範囲を示していません。または結果のバイト数が、int として返すことのできる最大数を超えています。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.EncoderFallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetByteCount(System.String)">
+      <summary>指定した <see cref="T:System.String" /> オブジェクト内の文字をエンコードすることによって生成されるバイト数を計算します。</summary>
+      <returns>指定した文字をエンコードすることによって生成されるバイト数。</returns>
+      <param name="s">エンコード対象の文字のセットを格納している <see cref="T:System.String" /> オブジェクト。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> が null  (Nothing) です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">結果のバイト数が、int として返すことのできる最大数を超えています。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.EncoderFallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetBytes(System.Char*,System.Int32,System.Byte*,System.Int32)">
+      <summary>指定した文字ポインターで始まる文字のセットを、指定したバイト ポインターを開始位置として格納されるバイト シーケンスにエンコードします。</summary>
+      <returns>
+        <paramref name="bytes" /> によって示される位置に書き込まれた実際のバイト数。</returns>
+      <param name="chars">エンコードする最初の文字へのポインター。</param>
+      <param name="charCount">エンコードする文字数。</param>
+      <param name="bytes">結果のバイト シーケンスの書き込みを開始する位置へのポインター。</param>
+      <param name="byteCount">書き込む最大バイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> が null  (Nothing) です。または<paramref name="bytes" /> が null  (Nothing) です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charCount" /> または <paramref name="byteCount" /> が 0 未満です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="byteCount" /> が結果のバイト数より少なくなっています。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.EncoderFallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>指定した文字配列に格納されている文字のセットを指定したバイト配列にエンコードします。</summary>
+      <returns>
+        <paramref name="bytes" /> に書き込まれた実際のバイト数。</returns>
+      <param name="chars">エンコード対象の文字のセットを格納している文字配列。</param>
+      <param name="charIndex">エンコードする最初の文字のインデックス。</param>
+      <param name="charCount">エンコードする文字数。</param>
+      <param name="bytes">結果のバイト シーケンスを格納するバイト配列。</param>
+      <param name="byteIndex">結果のバイト シーケンスを書き込む開始位置のインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> が null  (Nothing) です。または<paramref name="bytes" /> が null  (Nothing) です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" />、<paramref name="charCount" />、または <paramref name="byteIndex" /> が 0 未満です。または<paramref name="charIndex" /> および <paramref name="charCount" /> が <paramref name="chars" /> 内の有効な範囲を示していません。または<paramref name="byteIndex" /> が <paramref name="bytes" /> の有効なインデックスではありません。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="bytes" /> には、<paramref name="byteIndex" /> から配列の末尾までに十分なサイズがなく、結果のバイトを格納できません。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.EncoderFallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetBytes(System.String,System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>指定した <see cref="T:System.String" /> の文字セットを、指定したバイト配列にエンコードします。</summary>
+      <returns>
+        <paramref name="bytes" /> に書き込まれた実際のバイト数。</returns>
+      <param name="s">エンコード対象の文字のセットを格納している <see cref="T:System.String" />。</param>
+      <param name="charIndex">エンコードする最初の文字のインデックス。</param>
+      <param name="charCount">エンコードする文字数。</param>
+      <param name="bytes">結果のバイト シーケンスを格納するバイト配列。</param>
+      <param name="byteIndex">結果のバイト シーケンスを書き込む開始位置のインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> が null  (Nothing) です。または<paramref name="bytes" /> が null  (Nothing) です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" />、<paramref name="charCount" />、または <paramref name="byteIndex" /> が 0 未満です。または<paramref name="charIndex" /> および <paramref name="charCount" /> が <paramref name="chars" /> 内の有効な範囲を示していません。または<paramref name="byteIndex" /> が <paramref name="bytes" /> の有効なインデックスではありません。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="bytes" /> には、<paramref name="byteIndex" /> から配列の末尾までに十分なサイズがなく、結果のバイトを格納できません。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.EncoderFallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetCharCount(System.Byte*,System.Int32)">
+      <summary>指定したバイト ポインターで始まるバイト シーケンスをデコードすることによって生成される文字数を計算します。</summary>
+      <returns>指定したバイト シーケンスをデコードすることによって生成される文字数。</returns>
+      <param name="bytes">デコードする最初のバイトへのポインター。</param>
+      <param name="count">デコードするバイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> が null  (Nothing) です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> が 0 未満です。または結果の文字数が、int として返すことのできる最大数を超えています。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.DecoderFallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetCharCount(System.Byte[],System.Int32,System.Int32)">
+      <summary>指定したバイト配列からバイト シーケンスをデコードすることによって生成される文字数を計算します。</summary>
+      <returns>指定したバイト シーケンスをデコードすることによって生成される文字数。</returns>
+      <param name="bytes">デコード対象のバイト シーケンスが格納されたバイト配列。</param>
+      <param name="index">デコードする最初のバイトのインデックス。</param>
+      <param name="count">デコードするバイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> が null  (Nothing) です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が 0 未満です。または<paramref name="index" /> および <paramref name="count" /> が <paramref name="bytes" /> 内の有効な範囲を示していません。または結果の文字数が、int として返すことのできる最大数を超えています。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.DecoderFallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetChars(System.Byte*,System.Int32,System.Char*,System.Int32)">
+      <summary>指定したバイト ポインターで始まるバイト シーケンスを、指定した文字ポインターを開始位置として格納される文字のセットにデコードします。</summary>
+      <returns>
+        <paramref name="chars" /> によって示される位置に書き込まれた実際の文字数。</returns>
+      <param name="bytes">デコードする最初のバイトへのポインター。</param>
+      <param name="byteCount">デコードするバイト数。</param>
+      <param name="chars">結果の文字セットの書き込みを開始する位置へのポインター。</param>
+      <param name="charCount">書き込む文字の最大数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> が null  (Nothing) です。または<paramref name="chars" /> が null  (Nothing) です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteCount" /> または <paramref name="charCount" /> が 0 未満です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="charCount" /> が結果の文字数より少なくなっています。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.DecoderFallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)">
+      <summary>指定したバイト配列に格納されているバイト シーケンスを指定した文字配列にデコードします。</summary>
+      <returns>
+        <paramref name="chars" /> に書き込まれた実際の文字数。</returns>
+      <param name="bytes">デコード対象のバイト シーケンスが格納されたバイト配列。</param>
+      <param name="byteIndex">デコードする最初のバイトのインデックス。</param>
+      <param name="byteCount">デコードするバイト数。</param>
+      <param name="chars">結果の文字のセットを格納する文字配列。</param>
+      <param name="charIndex">結果の文字のセットを書き込む開始位置のインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> が null  (Nothing) です。または<paramref name="chars" /> が null  (Nothing) です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteIndex" />、<paramref name="byteCount" />、または <paramref name="charIndex" /> が 0 未満です。または<paramref name="byteindex" /> および <paramref name="byteCount" /> が <paramref name="bytes" /> 内の有効な範囲を示していません。または<paramref name="charIndex" /> が <paramref name="chars" /> の有効なインデックスではありません。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="chars" /> には、<paramref name="charIndex" /> から配列の末尾までに十分なサイズがなく、結果の文字を格納できません。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.DecoderFallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetDecoder">
+      <summary>UTF-7 でエンコードされたバイト シーケンスを Unicode 文字のシーケンスに変換するデコーダーを取得します。</summary>
+      <returns>UTF-7 でエンコードされたバイト シーケンスを Unicode 文字のシーケンスに変換する <see cref="T:System.Text.Decoder" />。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetEncoder">
+      <summary>Unicode 文字のシーケンスを UTF-7 でエンコードされたバイト シーケンスに変換するエンコーダーを取得します。</summary>
+      <returns>Unicode 文字のシーケンスを UTF-7 でエンコードされたバイト シーケンスに変換する <see cref="T:System.Text.Encoder" />。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetHashCode">
+      <summary>現在の <see cref="T:System.Text.UTF7Encoding" /> オブジェクトのハッシュ コードを返します。</summary>
+      <returns>32 ビット符号付き整数ハッシュ コード。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetMaxByteCount(System.Int32)">
+      <summary>指定した文字数をエンコードすることによって生成される最大バイト数を計算します。</summary>
+      <returns>指定した文字数をエンコードすることによって生成される最大バイト数。</returns>
+      <param name="charCount">エンコードする文字数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charCount" /> が 0 未満です。または結果のバイト数が、int として返すことのできる最大数を超えています。</exception>
+      <exception cref="T:System.Text.EncoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.EncoderFallback" /> が <see cref="T:System.Text.EncoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetMaxCharCount(System.Int32)">
+      <summary>指定したバイト数をデコードすることによって生成される最大文字数を計算します。</summary>
+      <returns>指定したバイト数をデコードすることによって生成される最大文字数。</returns>
+      <param name="byteCount">デコードするバイト数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteCount" /> が 0 未満です。または結果の文字数が、int として返すことのできる最大数を超えています。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.DecoderFallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF7Encoding.GetString(System.Byte[],System.Int32,System.Int32)">
+      <summary>バイト配列に格納されているある範囲のバイトを文字列にデコードします。</summary>
+      <returns>指定したバイト シーケンスのデコード結果が格納されている <see cref="T:System.String" />。</returns>
+      <param name="bytes">デコード対象のバイト シーケンスが格納されたバイト配列。</param>
+      <param name="index">デコードする最初のバイトのインデックス。</param>
+      <param name="count">デコードするバイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> が null  (Nothing) です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> または <paramref name="count" /> が 0 未満です。または<paramref name="index" /> および <paramref name="count" /> が <paramref name="bytes" /> 内の有効な範囲を示していません。</exception>
+      <exception cref="T:System.Text.DecoderFallbackException">フォールバックが発生しました (詳細については、「.NET Framework における文字エンコーディング」を参照してください)。および<see cref="P:System.Text.Encoding.DecoderFallback" /> が <see cref="T:System.Text.DecoderExceptionFallback" /> に設定されます。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Text.UTF8Encoding">
+      <summary>Unicode 文字の UTF-8 エンコードを表します。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.#ctor">
+      <summary>
+        <see cref="T:System.Text.UTF8Encoding" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.#ctor(System.Boolean)">
+      <summary>
+        <see cref="T:System.Text.UTF8Encoding" /> クラスの新しいインスタンスを初期化します。Unicode バイト順マークを付加するかどうかを指定するパラメーター。</summary>
+      <param name="encoderShouldEmitUTF8Identifier">
+        <see cref="M:System.Text.UTF8Encoding.GetPreamble" /> メソッドが Unicode バイト順マークを返すよう指定する場合は true、それ以外の場合は false。詳細については、次の「解説」を参照してください。</param>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.#ctor(System.Boolean,System.Boolean)">
+      <summary>
+        <see cref="T:System.Text.UTF8Encoding" /> クラスの新しいインスタンスを初期化します。パラメーターでは、Unicode バイト順マークを付加するかどうか、および無効なエンコードが検出されたときに例外をスローするかどうかを指定します。</summary>
+      <param name="encoderShouldEmitUTF8Identifier">
+        <see cref="M:System.Text.UTF8Encoding.GetPreamble" /> メソッドが Unicode バイト順マークを返すよう指定する場合は true、それ以外の場合は false。詳細については、次の「解説」を参照してください。</param>
+      <param name="throwOnInvalidBytes">無効なエンコードが検出されたときに例外をスローする場合は true、それ以外の場合は false。</param>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.Equals(System.Object)">
+      <summary>指定したオブジェクトが、現在の <see cref="T:System.Text.UTF8Encoding" /> オブジェクトと等しいかどうかを判断します。</summary>
+      <returns>
+        <paramref name="value" /> が <see cref="T:System.Text.UTF8Encoding" /> のインスタンスで、現在のオブジェクトと等しい場合は true。それ以外の場合は false。</returns>
+      <param name="value">現在のインスタンスと比較するオブジェクト。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetByteCount(System.Char*,System.Int32)">
+      <summary>指定した文字ポインターで始まる文字のセットをエンコードすることによって生成されるバイト数を計算します。</summary>
+      <returns>指定した文字をエンコードすることによって生成されるバイト数。</returns>
+      <param name="chars">エンコードする最初の文字へのポインター。</param>
+      <param name="count">エンコードする文字数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> is less than zero.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for a complete explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetByteCount(System.Char[],System.Int32,System.Int32)">
+      <summary>指定した文字配列から文字のセットをエンコードすることによって生成されるバイト数を計算します。</summary>
+      <returns>指定した文字をエンコードすることによって生成されるバイト数。</returns>
+      <param name="chars">エンコード対象の文字のセットを格納している文字配列。</param>
+      <param name="index">エンコードする最初の文字のインデックス。</param>
+      <param name="count">エンコードする文字数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> or <paramref name="count" /> is less than zero.-or- <paramref name="index" /> and <paramref name="count" /> do not denote a valid range in <paramref name="chars" />.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for complete explanation)-and-The <see cref="P:System.Text.Encoding.EncoderFallback" /> property is set to <see cref="T:System.Text.EncoderExceptionFallback" />. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetByteCount(System.String)">
+      <summary>指定した <see cref="T:System.String" /> 内の文字をエンコードすることによって生成されるバイト数を計算します。</summary>
+      <returns>指定した文字をエンコードすることによって生成されるバイト数。</returns>
+      <param name="chars">エンコード対象の文字のセットを格納している <see cref="T:System.String" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for complete explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetBytes(System.Char*,System.Int32,System.Byte*,System.Int32)">
+      <summary>指定した文字ポインターで始まる文字のセットを、指定したバイト ポインターを開始位置として格納されるバイト シーケンスにエンコードします。</summary>
+      <returns>
+        <paramref name="bytes" /> によって示される位置に書き込まれる実際のバイト数。</returns>
+      <param name="chars">エンコードする最初の文字へのポインター。</param>
+      <param name="charCount">エンコードする文字数。</param>
+      <param name="bytes">結果のバイト シーケンスの書き込みを開始する位置へのポインター。</param>
+      <param name="byteCount">書き込む最大バイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> is null.-or- <paramref name="bytes" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charCount" /> or <paramref name="byteCount" /> is less than zero. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters.-or- <paramref name="byteCount" /> is less than the resulting number of bytes. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for complete explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>指定した文字配列に格納されている文字のセットを指定したバイト配列にエンコードします。</summary>
+      <returns>
+        <paramref name="bytes" /> に書き込まれた実際のバイト数。</returns>
+      <param name="chars">エンコード対象の文字のセットを格納している文字配列。</param>
+      <param name="charIndex">エンコードする最初の文字のインデックス。</param>
+      <param name="charCount">エンコードする文字数。</param>
+      <param name="bytes">結果のバイト シーケンスを格納するバイト配列。</param>
+      <param name="byteIndex">結果のバイト シーケンスを書き込む開始位置のインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="chars" /> is null.-or- <paramref name="bytes" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" /> or <paramref name="charCount" /> or <paramref name="byteIndex" /> is less than zero.-or- <paramref name="charIndex" /> and <paramref name="charCount" /> do not denote a valid range in <paramref name="chars" />.-or- <paramref name="byteIndex" /> is not a valid index in <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters.-or- <paramref name="bytes" /> does not have enough capacity from <paramref name="byteIndex" /> to the end of the array to accommodate the resulting bytes. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for complete explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetBytes(System.String,System.Int32,System.Int32,System.Byte[],System.Int32)">
+      <summary>指定した <see cref="T:System.String" /> の文字セットを、指定したバイト配列にエンコードします。</summary>
+      <returns>
+        <paramref name="bytes" /> に書き込まれた実際のバイト数。</returns>
+      <param name="s">エンコード対象の文字のセットを格納している <see cref="T:System.String" />。</param>
+      <param name="charIndex">エンコードする最初の文字のインデックス。</param>
+      <param name="charCount">エンコードする文字数。</param>
+      <param name="bytes">結果のバイト シーケンスを格納するバイト配列。</param>
+      <param name="byteIndex">結果のバイト シーケンスを書き込む開始位置のインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> is null.-or- <paramref name="bytes" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charIndex" /> or <paramref name="charCount" /> or <paramref name="byteIndex" /> is less than zero.-or- <paramref name="charIndex" /> and <paramref name="charCount" /> do not denote a valid range in <paramref name="chars" />.-or- <paramref name="byteIndex" /> is not a valid index in <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="s" /> contains an invalid sequence of characters.-or- <paramref name="bytes" /> does not have enough capacity from <paramref name="byteIndex" /> to the end of the array to accommodate the resulting bytes. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for complete explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetCharCount(System.Byte*,System.Int32)">
+      <summary>指定したバイト ポインターで始まるバイト シーケンスをデコードすることによって生成される文字数を計算します。</summary>
+      <returns>指定したバイト シーケンスをデコードすることによって生成される文字数。</returns>
+      <param name="bytes">デコードする最初のバイトへのポインター。</param>
+      <param name="count">デコードするバイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> is less than zero.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for complete explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetCharCount(System.Byte[],System.Int32,System.Int32)">
+      <summary>指定したバイト配列からバイト シーケンスをデコードすることによって生成される文字数を計算します。</summary>
+      <returns>指定したバイト シーケンスをデコードすることによって生成される文字数。</returns>
+      <param name="bytes">デコード対象のバイト シーケンスが格納されたバイト配列。</param>
+      <param name="index">デコードする最初のバイトのインデックス。</param>
+      <param name="count">デコードするバイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> or <paramref name="count" /> is less than zero.-or- <paramref name="index" /> and <paramref name="count" /> do not denote a valid range in <paramref name="bytes" />.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for complete explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetChars(System.Byte*,System.Int32,System.Char*,System.Int32)">
+      <summary>指定したバイト ポインターで始まるバイト シーケンスを、指定した文字ポインターを開始位置として格納される文字のセットにデコードします。</summary>
+      <returns>
+        <paramref name="chars" /> によって示される位置に書き込まれる実際の文字数。</returns>
+      <param name="bytes">デコードする最初のバイトへのポインター。</param>
+      <param name="byteCount">デコードするバイト数。</param>
+      <param name="chars">結果の文字セットの書き込みを開始する位置へのポインター。</param>
+      <param name="charCount">書き込む文字の最大数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> is null.-or- <paramref name="chars" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteCount" /> or <paramref name="charCount" /> is less than zero. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes.-or- <paramref name="charCount" /> is less than the resulting number of characters. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for complete explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)">
+      <summary>指定したバイト配列に格納されているバイト シーケンスを指定した文字配列にデコードします。</summary>
+      <returns>
+        <paramref name="chars" /> に書き込まれた実際の文字数。</returns>
+      <param name="bytes">デコード対象のバイト シーケンスが格納されたバイト配列。</param>
+      <param name="byteIndex">デコードする最初のバイトのインデックス。</param>
+      <param name="byteCount">デコードするバイト数。</param>
+      <param name="chars">結果の文字のセットを格納する文字配列。</param>
+      <param name="charIndex">結果の文字のセットを書き込む開始位置のインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> is null.-or- <paramref name="chars" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteIndex" /> or <paramref name="byteCount" /> or <paramref name="charIndex" /> is less than zero.-or- <paramref name="byteindex" /> and <paramref name="byteCount" /> do not denote a valid range in <paramref name="bytes" />.-or- <paramref name="charIndex" /> is not a valid index in <paramref name="chars" />. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes.-or- <paramref name="chars" /> does not have enough capacity from <paramref name="charIndex" /> to the end of the array to accommodate the resulting characters. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for complete explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetDecoder">
+      <summary>UTF-8 でエンコードされたバイト シーケンスを Unicode 文字のシーケンスに変換するデコーダーを取得します。</summary>
+      <returns>UTF-8 でエンコードされたバイト シーケンスを Unicode 文字のシーケンスに変換するデコーダー。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetEncoder">
+      <summary>Unicode 文字のシーケンスを UTF-8 でエンコードされたバイト シーケンスに変換するエンコーダーを取得します。</summary>
+      <returns>Unicode 文字のシーケンスを UTF-8 でエンコードされたバイト シーケンスに変換する <see cref="T:System.Text.Encoder" />。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetHashCode">
+      <summary>現在のインスタンスのハッシュ コードを返します。</summary>
+      <returns>現在のインスタンスのハッシュ コード。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetMaxByteCount(System.Int32)">
+      <summary>指定した文字数をエンコードすることによって生成される最大バイト数を計算します。</summary>
+      <returns>指定した文字数をエンコードすることによって生成される最大バイト数。</returns>
+      <param name="charCount">エンコードする文字数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="charCount" /> is less than zero.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for complete explanation)-and-<see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetMaxCharCount(System.Int32)">
+      <summary>指定したバイト数をデコードすることによって生成される最大文字数を計算します。</summary>
+      <returns>指定したバイト数をデコードすることによって生成される最大文字数。</returns>
+      <param name="byteCount">デコードするバイト数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="byteCount" /> is less than zero.-or- The resulting number of bytes is greater than the maximum number that can be returned as an integer. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for complete explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetPreamble">
+      <summary>
+        <see cref="T:System.Text.UTF8Encoding" /> エンコード オブジェクトが UTF-8 形式でエンコードされた Unicode バイト順マークを提供するように構成されている場合、そのようなマークが返されます。</summary>
+      <returns>
+        <see cref="T:System.Text.UTF8Encoding" /> エンコード オブジェクトが Unicode バイト順マークを提供するように構成されている場合、そうしたマークが格納されているバイト配列。それ以外の場合、このメソッドは長さがゼロのバイト配列を返します。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Text.UTF8Encoding.GetString(System.Byte[],System.Int32,System.Int32)">
+      <summary>バイト配列に格納されているある範囲のバイトを文字列にデコードします。</summary>
+      <returns>指定したバイト シーケンスのデコード結果が格納されている <see cref="T:System.String" />。</returns>
+      <param name="bytes">デコード対象のバイト シーケンスが格納されたバイト配列。</param>
+      <param name="index">デコードする最初のバイトのインデックス。</param>
+      <param name="count">デコードするバイト数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="bytes" /> is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> or <paramref name="count" /> is less than zero.-or- <paramref name="index" /> and <paramref name="count" /> do not denote a valid range in <paramref name="bytes" />. </exception>
+      <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes. </exception>
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see .NET Framework における文字エンコーディング for complete explanation)-and-<see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+  </members>
+</doc>

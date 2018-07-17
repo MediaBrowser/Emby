@@ -1,0 +1,1385 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Collections.Concurrent</name>
+  </assembly>
+  <members>
+    <member name="T:System.Collections.Concurrent.BlockingCollection`1">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> を実装するスレッド セーフなコレクションに、ブロッキングと範囲指定の機能を提供します。</summary>
+      <typeparam name="T">コレクション内の要素の型。</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.#ctor">
+      <summary>上限を指定せずに、<see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.#ctor(System.Collections.Concurrent.IProducerConsumerCollection{`0})">
+      <summary>上限を指定せずに、指定した <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> を基になるデータ ストアとして使用して、<see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="collection">基になるデータ ストアとして使用するコレクション。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collection" /> 引数が null です。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.#ctor(System.Collections.Concurrent.IProducerConsumerCollection{`0},System.Int32)">
+      <summary>上限を指定し、指定した <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> を基になるデータ ストアとして使用して、<see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="collection">基になるデータ ストアとして使用するコレクション。</param>
+      <param name="boundedCapacity">コレクションのサイズの制限。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collection" /> 引数が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="boundedCapacity" /> は正の値ではありません。</exception>
+      <exception cref="T:System.ArgumentException">指定された <paramref name="collection" /> に、<paramref name="boundedCapacity" /> によって許可されているよりも多い値が含まれています。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.#ctor(System.Int32)">
+      <summary>上限を指定して、<see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="boundedCapacity">コレクションのサイズの制限。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="boundedCapacity" /> は正の値ではありません。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.Add(`0)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> に項目を追加します。</summary>
+      <param name="item">コレクションに追加する項目。この値は null 参照でもかまいません。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> は破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> は、追加に関して完了としてマークされました。または基になるコレクションが項目を受け入れませんでした。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.Add(`0,System.Threading.CancellationToken)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> に項目を追加します。</summary>
+      <param name="item">コレクションに追加する項目。この値は null 参照でもかまいません。</param>
+      <param name="cancellationToken">観察するキャンセル トークン。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <see cref="T:System.Threading.CancellationToken" /> が取り消されている場合。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> が破棄されているか、<paramref name="cancellationToken" /> を所有する <see cref="T:System.Threading.CancellationTokenSource" /> が破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> は、追加に関して完了としてマークされました。または基になるコレクションが項目を受け入れませんでした。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.AddToAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0)">
+      <summary>指定したいずれかの <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスに、指定した項目を追加します。</summary>
+      <returns>項目が追加された <paramref name="collections" /> 配列内のコレクションのインデックス。</returns>
+      <param name="collections">コレクションの配列。</param>
+      <param name="item">いずれかのコレクションに追加する項目。</param>
+      <exception cref="T:System.ObjectDisposedException">1 つ以上の <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスが破棄されています。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collections" /> 引数が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="collections" /> の数が STA および MTA の最大サイズ (STA の場合は 62、MTA の場合は 63) を超えています。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> 引数が長さ 0 の配列であるか、NULL 要素がこの引数に含まれます。または 1 つ以上のコレクションが追加完了としてマークされています。</exception>
+      <exception cref="T:System.InvalidOperationException">1 つ以上の基になるコレクションで項目が受け入れられませんでした。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.AddToAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0,System.Threading.CancellationToken)">
+      <summary>指定したいずれかの <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスに、指定した項目を追加します。</summary>
+      <returns>項目が追加された <paramref name="collections" /> 配列内のコレクションのインデックス。</returns>
+      <param name="collections">コレクションの配列。</param>
+      <param name="item">いずれかのコレクションに追加する項目。</param>
+      <param name="cancellationToken">観察するキャンセル トークン。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <see cref="T:System.Threading.CancellationToken" /> が取り消されている場合。</exception>
+      <exception cref="T:System.InvalidOperationException">1 つ以上の基になるコレクションで項目が受け入れられませんでした。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collections" /> 引数が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="collections" /> の数が STA および MTA の最大サイズ (STA の場合は 62、MTA の場合は 63) を超えています。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> 引数が長さ 0 の配列であるか、NULL 要素がこの引数に含まれます。または 1 つ以上のコレクションが追加完了としてマークされています。</exception>
+      <exception cref="T:System.ObjectDisposedException">1 つ以上の <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスが破棄されているか、<paramref name="cancellationToken" /> を作成した <see cref="T:System.Threading.CancellationTokenSource" /> が破棄されています。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.BlockingCollection`1.BoundedCapacity">
+      <summary>この <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスの容量の上限。</summary>
+      <returns>このコレクションの容量の上限。上限が指定されていない場合は int.MaxValue。</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> は破棄されています。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.CompleteAdding">
+      <summary>それ以上追加を受け入れないように、<see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスをマークします。</summary>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> は破棄されています。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.CopyTo(`0[],System.Int32)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンス内のすべての項目を、互換性のある 1 次元配列にコピーします。コピー操作は、コピー先の配列の、指定したインデックスから始まります。</summary>
+      <param name="array">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスから要素がコピーされる 1 次元配列。配列には、0 から始まるインデックスが設定されている必要があります。</param>
+      <param name="index">コピーの開始位置となる、<paramref name="array" /> 内の 0 から始まるインデックス。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> は破棄されています。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> 引数が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" />引数が 0 未満です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> 引数は <paramref name="array" /> の長さ以上です。目的の配列は、小さすぎるため、すべての BlockingCcollection 要素を保持できません。配列ランクが一致しません。この配列型は BlockingCollection 要素の型と互換性がありません。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.BlockingCollection`1.Count">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> に格納されている項目の数を取得します。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> に格納されている項目の数。</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> は破棄されています。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.Dispose">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> クラスの現在のインスタンスによって使用されているすべてのリソースを解放します。</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.Dispose(System.Boolean)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスによって使用されているリソースを解放します。</summary>
+      <param name="disposing">明示的に破棄される場合は true、ファイナライザーによる場合は false。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.GetConsumingEnumerable">
+      <summary>コレクション内の項目を取り出す <see cref="T:System.Collections.Generic.IEnumerator`1" /> を提供します。</summary>
+      <returns>コレクションから項目を削除して返す <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> は破棄されています。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.GetConsumingEnumerable(System.Threading.CancellationToken)">
+      <summary>コレクション内の項目を取り出す <see cref="T:System.Collections.Generic.IEnumerable`1" /> を提供します。</summary>
+      <returns>コレクションから項目を削除して返す <see cref="T:System.Collections.Generic.IEnumerable`1" />。</returns>
+      <param name="cancellationToken">観察するキャンセル トークン。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <see cref="T:System.Threading.CancellationToken" /> が取り消されている場合。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> が破棄されているか、<paramref name="cancellationToken" /> を作成した <see cref="T:System.Threading.CancellationTokenSource" /> が破棄されています。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.BlockingCollection`1.IsAddingCompleted">
+      <summary>この <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> が追加完了としてマークされているかどうかを取得します。</summary>
+      <returns>このコレクションが追加完了としてマークされているかどうか。</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> は破棄されています。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.BlockingCollection`1.IsCompleted">
+      <summary>この <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> が追加完了としてマークされていて、かつ空であるかどうかを取得します。</summary>
+      <returns>このコレクションが追加完了としてマークされていて、かつ空であるかどうか。</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> は破棄されています。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.System#Collections#Generic#IEnumerable{T}#GetEnumerator">
+      <summary>コレクション内の項目に対する <see cref="T:System.Collections.Generic.IEnumerator`1" /> を提供します。</summary>
+      <returns>コレクション内の項目に対する <see cref="T:System.Collections.Generic.IEnumerator`1" />。</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> は破棄されています。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンス内のすべての項目を、互換性のある 1 次元配列にコピーします。コピー操作は、コピー先の配列の、指定したインデックスから始まります。</summary>
+      <param name="array">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスから要素がコピーされる 1 次元配列。配列には、0 から始まるインデックスが設定されている必要があります。</param>
+      <param name="index">コピーの開始位置となる、<paramref name="array" /> 内の 0 から始まるインデックス。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> は破棄されています。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> 引数が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" />引数が 0 未満です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> 引数が <paramref name="array" /> の長さ以上か、配列が多次元か、またはコレクションの型パラメーターを自動的にコピー先の配列の型にキャストできません。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.BlockingCollection`1.System#Collections#ICollection#IsSynchronized">
+      <summary>
+        <see cref="T:System.Collections.ICollection" /> へのアクセスの同期がとられているかどうかを示す値を取得します。</summary>
+      <returns>常に false を返します。</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> は破棄されています。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.BlockingCollection`1.System#Collections#ICollection#SyncRoot">
+      <summary>
+        <see cref="T:System.Collections.ICollection" /> へのアクセスの同期に使用できるオブジェクトを取得します。このプロパティはサポートされていません。</summary>
+      <returns>null を返します。</returns>
+      <exception cref="T:System.NotSupportedException">SyncRoot プロパティはサポートされていません。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.System#Collections#IEnumerable#GetEnumerator">
+      <summary>コレクション内の項目に対する <see cref="T:System.Collections.IEnumerator" /> を提供します。</summary>
+      <returns>コレクション内の項目に対する <see cref="T:System.Collections.IEnumerator" />。</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> は破棄されています。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.Take">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> から項目を削除します。</summary>
+      <returns>コレクションから削除される項目。</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> は破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">基になるコレクションがこの <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスの外で変更されました。または、<see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> が空で、コレクションが追加完了としてマークされています。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.Take(System.Threading.CancellationToken)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> から項目を削除します。</summary>
+      <returns>コレクションから削除される項目。</returns>
+      <param name="cancellationToken">取得操作を取り消すために使用できるオブジェクト。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <see cref="T:System.Threading.CancellationToken" /> は取り消されます。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> が破棄されているか、トークンを作成した <see cref="T:System.Threading.CancellationTokenSource" /> が取り消されています。</exception>
+      <exception cref="T:System.InvalidOperationException">基になるコレクションがこの <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスの外で変更されたか、BlockingCollection が追加するために完了としてマークされているか、<see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> が空です。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TakeFromAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0@)">
+      <summary>指定したいずれかの <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスから項目を取得します。</summary>
+      <returns>項目が削除された <paramref name="collections" /> 配列内のコレクションのインデックス。</returns>
+      <param name="collections">コレクションの配列。</param>
+      <param name="item">いずれかのコレクションから削除される項目。</param>
+      <exception cref="T:System.ObjectDisposedException">1 つ以上の <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスが破棄されています。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collections" /> 引数が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="collections" /> の数が STA および MTA の最大サイズ (STA の場合は 62、MTA の場合は 63) を超えています。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> 引数が長さ 0 の配列であるか、NULL 要素がこの引数に含まれています。または、<see cref="M:System.Collections.Concurrent.BlockingCollection`1.CompleteAdding" /> がコレクションで呼び出されました。</exception>
+      <exception cref="T:System.InvalidOperationException">1 つ以上の基になるコレクションが <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンス以外で変更されました。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TakeFromAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0@,System.Threading.CancellationToken)">
+      <summary>指定したキャンセル トークンを観察しながら、指定した <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスのいずれかから項目を取得します。</summary>
+      <returns>項目が削除された <paramref name="collections" /> 配列内のコレクションのインデックス。</returns>
+      <param name="collections">コレクションの配列。</param>
+      <param name="item">いずれかのコレクションから削除される項目。</param>
+      <param name="cancellationToken">観察するキャンセル トークン。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <see cref="T:System.Threading.CancellationToken" /> が取り消されている場合。</exception>
+      <exception cref="T:System.InvalidOperationException">1 つ以上の基になるコレクションが <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンス以外で変更されました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collections" /> 引数が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="collections" /> の数が STA および MTA の最大サイズ (STA の場合は 62、MTA の場合は 63) を超えています。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> 引数が長さ 0 の配列であるか、NULL 要素がこの引数に含まれています。または、<see cref="M:System.Collections.Concurrent.BlockingCollection`1.CompleteAdding" /> がコレクションで呼び出されました。</exception>
+      <exception cref="T:System.ObjectDisposedException">1 つ以上の <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスが破棄されています。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.ToArray">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスの項目を新しい配列にコピーします。</summary>
+      <returns>コレクションの要素のコピーを格納する配列。</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> は破棄されています。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAdd(`0)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> に対して、指定した項目の追加を試みます。</summary>
+      <returns>
+        <paramref name="item" /> を追加できる場合は true。それ以外の場合は false。項目が重複しており、基になるコレクションが項目の重複を受け入れない場合は、<see cref="T:System.InvalidOperationException" /> がスローされます。</returns>
+      <param name="item">コレクションに追加する項目。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> は破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> は、追加に関して完了としてマークされました。または基になるコレクションが項目を受け入れませんでした。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAdd(`0,System.Int32)">
+      <summary>指定した期間内に、<see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> に対して指定した項目の追加を試みます。</summary>
+      <returns>指定した時間内にコレクションに <paramref name="item" /> を追加できた場合は true。それ以外の場合は false。項目が重複しており、基になるコレクションが項目の重複を受け入れない場合は、<see cref="T:System.InvalidOperationException" /> がスローされます。</returns>
+      <param name="item">コレクションに追加する項目。</param>
+      <param name="millisecondsTimeout">待機するミリ秒数。無制限に待機する場合は <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> は破棄されています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> が -1 以外の負数です。-1 は無制限のタイムアウトを表します。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> は、追加に関して完了としてマークされました。または基になるコレクションが項目を受け入れませんでした。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAdd(`0,System.Int32,System.Threading.CancellationToken)">
+      <summary>キャンセル トークンを観察しながら、指定した期間内に、<see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> に対して指定した項目の追加を試みます。</summary>
+      <returns>指定した時間内にコレクションに <paramref name="item" /> を追加できた場合は true。それ以外の場合は false。項目が重複しており、基になるコレクションが項目の重複を受け入れない場合は、<see cref="T:System.InvalidOperationException" /> がスローされます。</returns>
+      <param name="item">コレクションに追加する項目。</param>
+      <param name="millisecondsTimeout">待機するミリ秒数。無制限に待機する場合は <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <param name="cancellationToken">観察するキャンセル トークン。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <see cref="T:System.Threading.CancellationToken" /> が取り消されている場合。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> が破棄されているか、基になる <see cref="T:System.Threading.CancellationTokenSource" /> が破棄されています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> が -1 以外の負数です。-1 は無制限のタイムアウトを表します。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> は、追加に関して完了としてマークされました。または基になるコレクションが項目を受け入れませんでした。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAdd(`0,System.TimeSpan)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> に対して、指定した項目の追加を試みます。</summary>
+      <returns>指定した期間内にコレクションに <paramref name="item" /> を追加できた場合は true。それ以外の場合は false。</returns>
+      <param name="item">コレクションに追加する項目。</param>
+      <param name="timeout">待機するミリ秒数を表す <see cref="T:System.TimeSpan" />。無制限に待機する場合は、-1 ミリ秒を表す <see cref="T:System.TimeSpan" />。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> は破棄されています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> が -1 ミリ秒以外の負数です。-1 は無制限のタイムアウトを表します。または、タイムアウトが <see cref="F:System.Int32.MaxValue" /> を超えています。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> は、追加に関して完了としてマークされました。または基になるコレクションが項目を受け入れませんでした。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAddToAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0)">
+      <summary>指定したいずれかの <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスに対して、指定した項目の追加を試みます。</summary>
+      <returns>
+        <paramref name="collections" /> 配列内の、項目が追加されたコレクションのインデックス。項目を追加できなかった場合は -1。</returns>
+      <param name="collections">コレクションの配列。</param>
+      <param name="item">いずれかのコレクションに追加する項目。</param>
+      <exception cref="T:System.ObjectDisposedException">1 つ以上の <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスが破棄されています。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collections" /> 引数が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="collections" /> の数が STA および MTA の最大サイズ (STA の場合は 62、MTA の場合は 63) を超えています。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> 引数が長さ 0 の配列であるか、NULL 要素がこの引数に含まれます。または 1 つ以上のコレクションが追加完了としてマークされています。</exception>
+      <exception cref="T:System.InvalidOperationException">1 つ以上の基になるコレクションで項目が受け入れられませんでした。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAddToAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0,System.Int32)">
+      <summary>指定したいずれかの <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスに対して、指定した項目の追加を試みます。</summary>
+      <returns>
+        <paramref name="collections" /> 配列内の、項目が追加されたコレクションのインデックス。項目を追加できなかった場合は -1。</returns>
+      <param name="collections">コレクションの配列。</param>
+      <param name="item">いずれかのコレクションに追加する項目。</param>
+      <param name="millisecondsTimeout">待機するミリ秒数。無制限に待機する場合は <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <exception cref="T:System.ObjectDisposedException">1 つ以上の <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスが破棄されています。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collections" /> 引数が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> が -1 以外の負数です。-1 は無制限のタイムアウトを表します。または<paramref name="collections" /> の数が STA および MTA の最大サイズ (STA の場合は 62、MTA の場合は 63) を超えています。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> 引数が長さ 0 の配列であるか、NULL 要素がこの引数に含まれます。または 1 つ以上のコレクションが追加完了としてマークされています。</exception>
+      <exception cref="T:System.InvalidOperationException">1 つ以上の基になるコレクションで項目が受け入れられませんでした。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAddToAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0,System.Int32,System.Threading.CancellationToken)">
+      <summary>指定したいずれかの <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスに対して、指定した項目の追加を試みます。</summary>
+      <returns>
+        <paramref name="collections" /> 配列内の、項目が追加されたコレクションのインデックス。項目を追加できなかった場合は -1。</returns>
+      <param name="collections">コレクションの配列。</param>
+      <param name="item">いずれかのコレクションに追加する項目。</param>
+      <param name="millisecondsTimeout">待機するミリ秒数。無制限に待機する場合は <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <param name="cancellationToken">観察するキャンセル トークン。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <see cref="T:System.Threading.CancellationToken" /> が取り消されている場合。</exception>
+      <exception cref="T:System.InvalidOperationException">1 つ以上の基になるコレクションで項目が受け入れられませんでした。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collections" /> 引数が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> が -1 以外の負数です。-1 は無制限のタイムアウトを表します。または<paramref name="collections" /> の数が STA および MTA の最大サイズ (STA の場合は 62、MTA の場合は 63) を超えています。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> 引数が長さ 0 の配列であるか、NULL 要素がこの引数に含まれます。または 1 つ以上のコレクションが追加完了としてマークされています。</exception>
+      <exception cref="T:System.ObjectDisposedException">1 つ以上の <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスが破棄されています。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryAddToAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0,System.TimeSpan)">
+      <summary>指定したキャンセル トークンを観察しながら、指定したいずれかの <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスに対して指定した項目の追加を試みます。</summary>
+      <returns>
+        <paramref name="collections" /> 配列内の、項目が追加されたコレクションのインデックス。項目を追加できなかった場合は -1。</returns>
+      <param name="collections">コレクションの配列。</param>
+      <param name="item">いずれかのコレクションに追加する項目。</param>
+      <param name="timeout">待機するミリ秒数を表す <see cref="T:System.TimeSpan" />。無制限に待機する場合は、-1 ミリ秒を表す <see cref="T:System.TimeSpan" />。</param>
+      <exception cref="T:System.ObjectDisposedException">1 つ以上の <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンス、または <paramref name="cancellationToken" /> を作成した <see cref="T:System.Threading.CancellationTokenSource" /> が破棄されています。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collections" /> 引数が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> が -1 ミリ秒以外の負数です。-1 は無制限のタイムアウトを表します。または、タイムアウトが <see cref="F:System.Int32.MaxValue" /> を超えています。または<paramref name="collections" /> の数が STA および MTA の最大サイズ (STA の場合は 62、MTA の場合は 63) を超えています。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> 引数が長さ 0 の配列であるか、NULL 要素がこの引数に含まれます。または 1 つ以上のコレクションが追加完了としてマークされています。</exception>
+      <exception cref="T:System.InvalidOperationException">1 つ以上の基になるコレクションで項目が受け入れられませんでした。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTake(`0@)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> から項目の削除を試みます。</summary>
+      <returns>項目を削除できた場合は true。それ以外の場合は false。</returns>
+      <param name="item">コレクションから削除される項目。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> は破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">基になるコレクションが、この <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンス以外で変更されました。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTake(`0@,System.Int32)">
+      <summary>指定した期間内に、<see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> から項目の削除を試みます。</summary>
+      <returns>指定した時間内にコレクションから項目を削除できた場合は true。それ以外の場合は false。</returns>
+      <param name="item">コレクションから削除される項目。</param>
+      <param name="millisecondsTimeout">待機するミリ秒数。無制限に待機する場合は <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> は破棄されています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> が -1 以外の負数です。-1 は無制限のタイムアウトを表します。</exception>
+      <exception cref="T:System.InvalidOperationException">基になるコレクションが、この <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンス以外で変更されました。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTake(`0@,System.Int32,System.Threading.CancellationToken)">
+      <summary>キャンセル トークンを観察しながら、指定した期間内に、<see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> から項目の削除を試みます。</summary>
+      <returns>指定した時間内にコレクションから項目を削除できた場合は true。それ以外の場合は false。</returns>
+      <param name="item">コレクションから削除される項目。</param>
+      <param name="millisecondsTimeout">待機するミリ秒数。無制限に待機する場合は <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <param name="cancellationToken">観察するキャンセル トークン。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <see cref="T:System.Threading.CancellationToken" /> が取り消されました。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> が破棄されているか、基になる <see cref="T:System.Threading.CancellationTokenSource" /> が破棄されています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> が -1 以外の負数です。-1 は無制限のタイムアウトを表します。</exception>
+      <exception cref="T:System.InvalidOperationException">基になるコレクションが、この <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスの外部で変更されました。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTake(`0@,System.TimeSpan)">
+      <summary>指定した期間内に、<see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> から項目の削除を試みます。</summary>
+      <returns>指定した時間内にコレクションから項目を削除できた場合は true。それ以外の場合は false。</returns>
+      <param name="item">コレクションから削除される項目。</param>
+      <param name="timeout">待機するミリ秒数を表すオブジェクト。無制限に待機する場合は、-1 ミリ秒を表すオブジェクト。 </param>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> は破棄されています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> が -1 ミリ秒以外の負数です。-1 は無制限のタイムアウトを表します。または <paramref name="timeout" /> が <see cref="F:System.Int32.MaxValue" /> より大きくなっています。</exception>
+      <exception cref="T:System.InvalidOperationException">基になるコレクションが、この <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンス以外で変更されました。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTakeFromAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0@)">
+      <summary>指定したいずれかの <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスから項目の削除を試みます。</summary>
+      <returns>
+        <paramref name="collections" /> 配列内の、項目が削除されたコレクションのインデックス。項目を削除できなかった場合は -1。</returns>
+      <param name="collections">コレクションの配列。</param>
+      <param name="item">いずれかのコレクションから削除される項目。</param>
+      <exception cref="T:System.ObjectDisposedException">1 つ以上の <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスが破棄されています。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collections" /> 引数が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="collections" /> の数が STA および MTA の最大サイズ (STA の場合は 62、MTA の場合は 63) を超えています。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> 引数が長さ 0 の配列であるか、NULL 要素がこの引数に含まれています。</exception>
+      <exception cref="T:System.InvalidOperationException">1 つ以上の基になるコレクションが <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンス以外で変更されました。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTakeFromAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0@,System.Int32)">
+      <summary>指定したいずれかの <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスから項目の削除を試みます。</summary>
+      <returns>
+        <paramref name="collections" /> 配列内の、項目が削除されたコレクションのインデックス。項目を削除できなかった場合は -1。</returns>
+      <param name="collections">コレクションの配列。</param>
+      <param name="item">いずれかのコレクションから削除される項目。</param>
+      <param name="millisecondsTimeout">待機するミリ秒数。無制限に待機する場合は <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <exception cref="T:System.ObjectDisposedException">1 つ以上の <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスが破棄されています。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collections" /> 引数が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> が -1 以外の負数です。-1 は無制限のタイムアウトを表します。または<paramref name="collections" /> の数が STA および MTA の最大サイズ (STA の場合は 62、MTA の場合は 63) を超えています。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> 引数が長さ 0 の配列であるか、NULL 要素がこの引数に含まれています。</exception>
+      <exception cref="T:System.InvalidOperationException">1 つ以上の基になるコレクションが <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンス以外で変更されました。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTakeFromAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0@,System.Int32,System.Threading.CancellationToken)">
+      <summary>指定したいずれかの <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスから項目の削除を試みます。</summary>
+      <returns>
+        <paramref name="collections" /> 配列内の、項目が削除されたコレクションのインデックス。項目を削除できなかった場合は -1。</returns>
+      <param name="collections">コレクションの配列。</param>
+      <param name="item">いずれかのコレクションから削除される項目。</param>
+      <param name="millisecondsTimeout">待機するミリ秒数。無制限に待機する場合は <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <param name="cancellationToken">観察するキャンセル トークン。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <see cref="T:System.Threading.CancellationToken" /> が取り消されている場合。</exception>
+      <exception cref="T:System.InvalidOperationException">1 つ以上の基になるコレクションが <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンス以外で変更されました。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collections" /> 引数が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> が -1 以外の負数です。-1 は無制限のタイムアウトを表します。または<paramref name="collections" /> の数が STA および MTA の最大サイズ (STA の場合は 62、MTA の場合は 63) を超えています。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> 引数が長さ 0 の配列であるか、NULL 要素がこの引数に含まれています。</exception>
+      <exception cref="T:System.ObjectDisposedException">1 つ以上の <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスが破棄されています。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.BlockingCollection`1.TryTakeFromAny(System.Collections.Concurrent.BlockingCollection{`0}[],`0@,System.TimeSpan)">
+      <summary>指定したいずれかの <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスから項目の削除を試みます。</summary>
+      <returns>
+        <paramref name="collections" /> 配列内の、項目が削除されたコレクションのインデックス。項目を削除できなかった場合は -1。</returns>
+      <param name="collections">コレクションの配列。</param>
+      <param name="item">いずれかのコレクションから削除される項目。</param>
+      <param name="timeout">待機するミリ秒数を表す <see cref="T:System.TimeSpan" />。無制限に待機する場合は、-1 ミリ秒を表す <see cref="T:System.TimeSpan" />。</param>
+      <exception cref="T:System.ObjectDisposedException">1 つ以上の <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンスが破棄されています。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collections" /> 引数が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> が -1 ミリ秒以外の負数です。-1 は無制限のタイムアウトを表します。または、タイムアウトが <see cref="F:System.Int32.MaxValue" /> を超えています。または<paramref name="collections" /> の数が STA および MTA の最大サイズ (STA の場合は 62、MTA の場合は 63) を超えています。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collections" /> 引数が長さ 0 の配列であるか、NULL 要素がこの引数に含まれています。</exception>
+      <exception cref="T:System.InvalidOperationException">1 つ以上の基になるコレクションが <see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> インスタンス以外で変更されました。</exception>
+    </member>
+    <member name="T:System.Collections.Concurrent.ConcurrentBag`1">
+      <summary>オブジェクトの順序付けられていないスレッド セーフなコレクションを表します。</summary>
+      <typeparam name="T">コレクションに格納する要素の型。</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.#ctor">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+      <summary>指定したコレクションからコピーされた要素を格納する、<see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="collection">新しい <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> に要素がコピーされたコレクション。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collection" /> が null 参照 (Visual Basic では Nothing) です。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.Add(`0)">
+      <summary>オブジェクトを <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> に追加します。</summary>
+      <param name="item">
+        <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> に追加するオブジェクト。参照型の場合、この値は null 参照 (Visual Basic の場合は Nothing) でもかまいません。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.CopyTo(`0[],System.Int32)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> の要素を既存の 1 次元の <see cref="T:System.Array" /> にコピーします。コピー操作は、配列内の指定したインデックスから始まります。</summary>
+      <param name="array">The one-dimensional <see cref="T:System.Array" /> that is the destination of the elements copied from the <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.<see cref="T:System.Array" /> には、0 から始まるインデックス番号が必要です。</param>
+      <param name="index">コピーの開始位置となる、<paramref name="array" /> 内の 0 から始まるインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> が null 参照 (Visual Basic では Nothing) です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> が 0 未満です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> が <paramref name="array" /> の長さ以上です。または、コピー元の <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> の要素数が、コピー先の <paramref name="array" /> の <paramref name="index" /> から最後までの領域を超えています。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentBag`1.Count">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> に格納されている要素の数を取得します。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> に含まれている要素の数。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.GetEnumerator">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> を反復処理する列挙子を返します。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> のコンテンツの列挙子。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentBag`1.IsEmpty">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> が空かどうかを示す値を取得します。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> が空の場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.System#Collections#Concurrent#IProducerConsumerCollection{T}#TryAdd(`0)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> に対してオブジェクトの追加を試みます。</summary>
+      <returns>常に真を返します</returns>
+      <param name="item">
+        <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> に追加するオブジェクト。参照型の場合、この値は null 参照 (Visual Basic の場合は Nothing) でもかまいません。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>
+        <see cref="T:System.Collections.ICollection" /> の要素を <see cref="T:System.Array" /> にコピーします。コピーは特定の <see cref="T:System.Array" /> のインデックスから開始されます。</summary>
+      <param name="array">The one-dimensional <see cref="T:System.Array" /> that is the destination of the elements copied from the <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" />.<see cref="T:System.Array" /> には、0 から始まるインデックス番号が必要です。</param>
+      <param name="index">コピーの開始位置となる、<paramref name="array" /> 内の 0 から始まるインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> が null 参照 (Visual Basic では Nothing) です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> が 0 未満です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> が多次元です。または、<paramref name="array" /> に 0 から始まるインデックス番号がありません。-または- <paramref name="index" /> が <paramref name="array" /> の長さ以上です。-または- コピー元の <see cref="T:System.Collections.ICollection" /> の要素数が、コピー先の <paramref name="array" /> の <paramref name="index" /> から最後までの領域を超えています。または、コピー元の <see cref="T:System.Collections.ICollection" /> の型をコピー先の <paramref name="array" /> の型に自動的にキャストすることはできません。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentBag`1.System#Collections#ICollection#IsSynchronized">
+      <summary>
+        <see cref="T:System.Collections.ICollection" /> へのアクセスが SyncRoot で同期されているかどうかを示す値を取得します。</summary>
+      <returns>
+        <see cref="T:System.Collections.ICollection" /> へのアクセスが SyncRoot で同期されている場合は true。それ以外の場合は false。<see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> の場合、このプロパティは常に false を返します。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentBag`1.System#Collections#ICollection#SyncRoot">
+      <summary>
+        <see cref="T:System.Collections.ICollection" /> へのアクセスの同期に使用できるオブジェクトを取得します。このプロパティはサポートされていません。</summary>
+      <returns>null (Visual Basic の場合は Nothing) を返します。</returns>
+      <exception cref="T:System.NotSupportedException">SyncRoot プロパティはサポートされていません。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.System#Collections#IEnumerable#GetEnumerator">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> を反復処理する列挙子を返します。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> のコンテンツの列挙子。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.ToArray">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> の要素を新しい配列にコピーします。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> からコピーされた要素のスナップショットを格納する新しい配列。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.TryPeek(`0@)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> からオブジェクトを削除せずに返そうと試みます。</summary>
+      <returns>オブジェクトが正常に返された場合は true。それ以外の場合は false。</returns>
+      <param name="result">このメソッドから戻るときに、<see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> のオブジェクトが <paramref name="result" /> に格納されます。操作が失敗した場合は、<paramref name="T" /> の既定値が格納されます。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentBag`1.TryTake(`0@)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> からオブジェクトを削除して返そうと試みます。</summary>
+      <returns>オブジェクトが正常に削除された場合は true。それ以外の場合は false。</returns>
+      <param name="result">このメソッドから戻るときに、<see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> から削除されたオブジェクトが <paramref name="result" /> に格納されます。このバッグが空の場合は、<paramref name="T" /> の既定値が格納されます。</param>
+    </member>
+    <member name="T:System.Collections.Concurrent.ConcurrentDictionary`2">
+      <summary>同時に複数のスレッドからアクセスできる、スレッド セーフなキーと値のペアのコレクションを表します。</summary>
+      <typeparam name="TKey">ディクショナリ内のキーの型。</typeparam>
+      <typeparam name="TValue">ディクショナリ内の値の型。</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor">
+      <summary>空で、既定の同時実行レベルと既定の初期量を備え、キーの型の既定の比較子を使用する、<see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}})">
+      <summary>指定した <see cref="T:System.Collections.Generic.IEnumerable`1" /> からコピーされた要素を格納し、既定の同時実行レベルと既定の初期量を備え、キーの型の既定の比較子を使用する、<see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="collection">新しい <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> に要素がコピーされた <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collection" /> またはそのキーが null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collection" /> に、1 つ以上の重複するキーが格納されています。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}},System.Collections.Generic.IEqualityComparer{`0})">
+      <summary>指定した <see cref="T:System.Collections.IEnumerable" /> からコピーされた要素を格納し、既定の同時実行レベルと既定の初期量を備え、指定した <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> を使用する、<see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="collection">新しい <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> に要素がコピーされた <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="comparer">キーの比較時に使用する <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> の実装。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collection" /> または <paramref name="comparer" /> が null です。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor(System.Collections.Generic.IEqualityComparer{`0})">
+      <summary>空で、既定の同時実行レベルと容量を備え、指定した <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> を使用する、<see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="comparer">キーの比較時に使用する等価比較の実装。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="comparer" /> は null です。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}},System.Collections.Generic.IEqualityComparer{`0})">
+      <summary>指定した <see cref="T:System.Collections.IEnumerable" /> から要素をコピーして格納し、指定した <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> を使用する、<see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="concurrencyLevel">同時に <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> を更新するスレッドの推定数。</param>
+      <param name="collection">新しい <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> に要素がコピーされた <see cref="T:System.Collections.Generic.IEnumerable`1" />。</param>
+      <param name="comparer">キーの比較時に使用する <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> の実装。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collection" /> または <paramref name="comparer" /> が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="concurrencyLevel" /> が 1 未満です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="collection" /> に、1 つ以上の重複するキーが格納されています。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor(System.Int32,System.Int32)">
+      <summary>空で、指定した同時実行レベルと容量を備え、キーの型の既定の比較子を使用する、<see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="concurrencyLevel">同時に <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> を更新するスレッドの推定数。</param>
+      <param name="capacity">
+        <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> が格納できる要素数の初期値。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="concurrencyLevel" /> が 1 未満です。または<paramref name="capacity" /> が 0 未満です。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.#ctor(System.Int32,System.Int32,System.Collections.Generic.IEqualityComparer{`0})">
+      <summary>空で、指定した同時実行レベルと指定した初期量を備え、指定した <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> を使用する、<see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="concurrencyLevel">同時に <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> を更新するスレッドの推定数。</param>
+      <param name="capacity">
+        <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> が格納できる要素数の初期値。</param>
+      <param name="comparer">キーの比較時に使用する <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> の実装。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="comparer" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="concurrencyLevel" /> または <paramref name="capacity" /> が 1 未満です。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.AddOrUpdate(`0,System.Func{`0,`1},System.Func{`0,`1,`1})">
+      <summary>指定した関数を使用して、キーがまだ存在しない場合は <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> にキーと値のペアを追加し、キーが既に存在する場合は <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> のキーと値のペアを更新します。</summary>
+      <returns>キーの新しい値。これは、addValueFactory の結果 (キーが存在しない場合) か updateValueFactory の結果 (キーが存在する場合) のどちらかになります。</returns>
+      <param name="key">追加するキーまたは値を更新するキー</param>
+      <param name="addValueFactory">キーが存在しない場合に、値を生成するために使用される関数</param>
+      <param name="updateValueFactory">キーが存在する場合に、キーの既存の値に基づいて新しい値を生成するために使用される関数</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" />、<paramref name="addValueFactory" />、または <paramref name="updateValueFactory" /> が null です。</exception>
+      <exception cref="T:System.OverflowException">ディクショナリには、既に要素の最大数 (<see cref="F:System.Int32.MaxValue" />) が含まれています。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.AddOrUpdate(`0,`1,System.Func{`0,`1,`1})">
+      <summary>キーがまだ存在しない場合は <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> にキーと値のペアを追加し、キーが既に存在する場合は、指定された関数を使用して <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> のキーと値のペアを更新します。</summary>
+      <returns>キーの新しい値。これは、addValue (キーが存在しない場合) か updateValueFactory の結果 (キーが存在する場合) のどちらかになります。</returns>
+      <param name="key">追加するキーまたは値を更新するキー</param>
+      <param name="addValue">キーが存在しない場合に追加する値</param>
+      <param name="updateValueFactory">キーが存在する場合に、キーの既存の値に基づいて新しい値を生成するために使用される関数</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> または <paramref name="updateValueFactory" /> が null です。</exception>
+      <exception cref="T:System.OverflowException">ディクショナリには、既に要素の最大数 (<see cref="F:System.Int32.MaxValue" />) が含まれています。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.Clear">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> からすべてのキーと値を削除します。</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.ContainsKey(`0)">
+      <summary>指定したキーが <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> に格納されているかどうかを判断します。</summary>
+      <returns>true if the <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> contains an element with the specified key; otherwise, false.</returns>
+      <param name="key">
+        <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> 内で検索するキー。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> は null です。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.Count">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> に格納されているキー/値ペアの数を取得します。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> に格納されているキー/値ペアの数。</returns>
+      <exception cref="T:System.OverflowException">ディクショナリには、既に要素の最大数 (<see cref="F:System.Int32.MaxValue" />) が含まれています。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.GetEnumerator">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> を反復処理する列挙子を返します。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> の列挙子。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.GetOrAdd(`0,System.Func{`0,`1})">
+      <summary>キーがまだ存在しない場合に、指定された関数を使用して <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> にキーと値のペアを追加します。</summary>
+      <returns>キーの値。キーがディクショナリに既に存在する場合はキーの既存の値、キーがディクショナリに存在していなかった場合は valueFactory から返されたキーの新しい値になります。</returns>
+      <param name="key">追加する要素のキー。</param>
+      <param name="valueFactory">キーの値を生成するために使用される関数</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> または <paramref name="valueFactory" /> が null です。</exception>
+      <exception cref="T:System.OverflowException">ディクショナリには、既に要素の最大数 (<see cref="F:System.Int32.MaxValue" />) が含まれています。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.GetOrAdd(`0,`1)">
+      <summary>キーがまだ存在しない場合に、<see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> にキーと値のペアを追加します。</summary>
+      <returns>キーの値。キーがディクショナリに既に存在する場合はキーの既存の値、キーがディクショナリに存在していなかった場合は新しい値になります。</returns>
+      <param name="key">追加する要素のキー。</param>
+      <param name="value">キーがまだ存在しない場合に追加する値</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> は null です。</exception>
+      <exception cref="T:System.OverflowException">ディクショナリには、既に要素の最大数 (<see cref="F:System.Int32.MaxValue" />) が含まれています。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.IsEmpty">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> が空かどうかを示す値を取得します。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> が空の場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.Item(`0)">
+      <summary>指定されたキーに関連付けられている値を取得または設定します。</summary>
+      <returns>指定したインデックス位置にあるキーと値のペアの値。</returns>
+      <param name="key">取得または設定する値のキー。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> は null です。</exception>
+      <exception cref="T:System.Collections.Generic.KeyNotFoundException">プロパティが取得されましたが、コレクション内に <paramref name="key" /> が存在しません。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.Keys">
+      <summary>
+        <see cref="T:System.Collections.Generic.Dictionary`2" /> 内のキーを格納しているコレクションを取得します。</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.Dictionary`2" /> のキーのコレクション。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#ICollection{T}#Add(System.Collections.Generic.KeyValuePair{`0,`1})">
+      <summary>項目をコレクションに追加します。</summary>
+      <param name="keyValuePair">ディクショナリに追加する <see cref="T:System.Collections.Generic.KeyValuePair`2" />。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#ICollection{T}#Contains(System.Collections.Generic.KeyValuePair{`0,`1})">
+      <summary>指定したキーを持つ要素が <see cref="T:System.Collections.Generic.ICollection`1" /> に含まれているかどうかを取得します。</summary>
+      <returns>true if the <see cref="T:System.Collections.Generic.ICollection`1" /> contains an element with the specified key; otherwise, false.</returns>
+      <param name="keyValuePair">
+        <see cref="T:System.Collections.Generic.ICollection`1" /> 内で検索するキー。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#ICollection{T}#CopyTo(System.Collections.Generic.KeyValuePair{`0,`1}[],System.Int32)">
+      <summary>指定した配列インデックスを開始位置として、配列に <see cref="T:System.Collections.ICollection" /> の要素をコピーします。</summary>
+      <param name="array">
+        <see cref="T:System.Collections.ICollection" /> から要素がコピーされる 1 次元配列。配列には、0 から始まるインデックスが設定されている必要があります。</param>
+      <param name="index">コピーの開始位置となる、<paramref name="array" /> 内の 0 から始まるインデックス。</param>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#ICollection{T}#IsReadOnly">
+      <summary>
+        <see cref="T:System.Collections.ICollection" /> が読み取り専用であるかどうかを示す値を取得します。</summary>
+      <returns>
+        <see cref="T:System.Collections.ICollection" /> が読み取り専用の場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#ICollection{T}#Remove(System.Collections.Generic.KeyValuePair{`0,`1})">
+      <summary>コレクションから、指定したキーと値のペアを削除します。</summary>
+      <returns>要素が正常に削除された場合は true。それ以外の場合は false。このメソッドは、元の <see cref="T:System.Collections.Generic.ICollection`1" /> で <paramref name="key" /> が見つからなかった場合にも false を返します。</returns>
+      <param name="keyValuePair">削除する <see cref="T:System.Collections.Generic.KeyValuePair`2" />。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Add(`0,`1)">
+      <summary>指定したキーと値を <see cref="T:System.Collections.Generic.IDictionary`2" /> に追加します。</summary>
+      <param name="key">追加する要素のキーとして使用するオブジェクト。</param>
+      <param name="value">追加する要素の値として使用するオブジェクト。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> は null です。</exception>
+      <exception cref="T:System.ArgumentException">同じキーを持つ要素が、<see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> に既に存在します。</exception>
+      <exception cref="T:System.OverflowException">ディクショナリには、既に要素の最大数 (<see cref="F:System.Int32.MaxValue" />) が含まれています。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Remove(`0)">
+      <summary>指定したキーを持つ要素を <see cref="T:System.Collections.Generic.IDictionary`2" /> から削除します。</summary>
+      <returns>要素が正常に削除された場合は true。それ以外の場合は false。This method also returns false if <paramref name="key" /> was not found in the original <see cref="T:System.Collections.Generic.IDictionary`2" />.</returns>
+      <param name="key">削除する要素のキー。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> は null です。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey@TValue}#Keys">
+      <summary>
+        <see cref="T:System.Collections.Generic.Dictionary`2" /> 内のキーを格納しているコレクションを取得します。</summary>
+      <returns>コレクション内のキーを含む、<see cref="T:System.Collections.Generic.Dictionary`2" />です。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey@TValue}#Values">
+      <summary>
+        <see cref="T:System.Collections.Generic.Dictionary`2" /> 内の値を含むコレクションを取得します。</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.Dictionary`2" /> 内の値を格納しているコレクション。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>指定した配列インデックスを開始位置として、配列に <see cref="T:System.Collections.ICollection" /> の要素をコピーします。</summary>
+      <param name="array">
+        <see cref="T:System.Collections.ICollection" /> から要素がコピーされる 1 次元配列。配列には、0 から始まるインデックスが設定されている必要があります。</param>
+      <param name="index">コピーの開始位置となる、<paramref name="array" /> 内の 0 から始まるインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> は null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> が 0 未満です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> が <paramref name="array" /> の長さ以上です。またはコピー元の <see cref="T:System.Collections.ICollection" /> の要素数が、<paramref name="index" /> からコピー先の <paramref name="array" /> の末尾までに格納できる数を超えています。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#ICollection#IsSynchronized">
+      <summary>
+        <see cref="T:System.Collections.ICollection" /> へのアクセスが SyncRoot で同期されているかどうかを示す値を取得します。</summary>
+      <returns>true if access to the <see cref="T:System.Collections.ICollection" /> is synchronized (thread safe); otherwise, false.<see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> の場合、このプロパティは常に false を返します。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#ICollection#SyncRoot">
+      <summary>
+        <see cref="T:System.Collections.ICollection" /> へのアクセスの同期に使用できるオブジェクトを取得します。このプロパティはサポートされていません。</summary>
+      <returns>常に null を返します。</returns>
+      <exception cref="T:System.NotSupportedException">このプロパティはサポートされていません。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#Add(System.Object,System.Object)">
+      <summary>指定したキーと値をディクショナリに追加します。</summary>
+      <param name="key">キーとして使用するオブジェクト。</param>
+      <param name="value">値として使用するオブジェクト。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> は null です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="key" /> が、<see cref="T:System.Collections.Generic.Dictionary`2" /> のキーの型に代入できない型です。または <paramref name="value" /> が、<see cref="T:System.Collections.Generic.Dictionary`2" /> 内の値の型に代入できない型です。 または同じキーを持つ値が、<see cref="T:System.Collections.Generic.Dictionary`2" /> に既に存在します。</exception>
+      <exception cref="T:System.OverflowException">ディクショナリには、既に要素の最大数 (<see cref="F:System.Int32.MaxValue" />) が含まれています。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#Contains(System.Object)">
+      <summary>指定したキーを持つ要素が <see cref="T:System.Collections.Generic.IDictionary`2" /> に含まれているかどうかを取得します。</summary>
+      <returns>true if the <see cref="T:System.Collections.Generic.IDictionary`2" /> contains an element with the specified key; otherwise, false.</returns>
+      <param name="key">
+        <see cref="T:System.Collections.Generic.IDictionary`2" /> 内で検索するキー。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> は null です。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#GetEnumerator">
+      <summary>
+        <see cref="T:System.Collections.Generic.IDictionary`2" /> に対する <see cref="T:System.Collections.IDictionaryEnumerator" /> を提供します。</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IDictionary`2" /> の <see cref="T:System.Collections.IDictionaryEnumerator" />。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#IsFixedSize">
+      <summary>
+        <see cref="T:System.Collections.Generic.IDictionary`2" /> が固定サイズかどうかを示す値を取得します。</summary>
+      <returns>true if the <see cref="T:System.Collections.Generic.IDictionary`2" /> has a fixed size; otherwise, false.<see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> の場合、このプロパティは常に false を返します。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#IsReadOnly">
+      <summary>
+        <see cref="T:System.Collections.Generic.IDictionary`2" /> が読み取り専用であるかどうかを示す値を取得します。</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IDictionary`2" /> が読み取り専用の場合は true。それ以外の場合は false。<see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> の場合、このプロパティは常に false を返します。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#Item(System.Object)">
+      <summary>指定されたキーに関連付けられている値を取得または設定します。</summary>
+      <returns>指定したキーに関連付けられている値。<paramref name="key" /> がディクショナリに存在しない場合、または <paramref name="key" /> が <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> のキーの型に代入できない型である場合は null。</returns>
+      <param name="key">取得または設定する値のキー。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> は null です。</exception>
+      <exception cref="T:System.ArgumentException">値を代入しようとしていますが、<paramref name="key" /> は、<see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> のキーの型または値型に代入できない型です。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#Keys">
+      <summary>
+        <see cref="T:System.Collections.Generic.IDictionary`2" /> のキーが格納されている <see cref="T:System.Collections.ICollection" /> を取得します。</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.IDictionary`2" /> のキーを格納しているインターフェイス。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#Remove(System.Object)">
+      <summary>指定したキーを持つ要素を <see cref="T:System.Collections.IDictionary" /> から削除します。</summary>
+      <param name="key">削除する要素のキー。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> は null です。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IDictionary#Values">
+      <summary>
+        <see cref="T:System.Collections.IDictionary" /> 内の値を格納している <see cref="T:System.Collections.ICollection" /> を取得します。</summary>
+      <returns>
+        <see cref="T:System.Collections.IDictionary" /> 内の値を含むインターフェイス。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IEnumerable#GetEnumerator">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> を反復処理する列挙子を返します。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> の列挙子。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.ToArray">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> に格納されているキーと値のペアを新しい配列にコピーします。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> からコピーされたキーと値のペアのスナップショットを格納する新しい配列。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.TryAdd(`0,`1)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> に対して、指定したキーと値の追加を試みます。</summary>
+      <returns>キーと値のペアが <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> に正常に追加された場合は true。キーが既に存在する場合は false。</returns>
+      <param name="key">追加する要素のキー。</param>
+      <param name="value">追加する要素の値。参照型の場合は null の値を使用できます。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> は null です。</exception>
+      <exception cref="T:System.OverflowException">ディクショナリには、既に要素の最大数 (<see cref="F:System.Int32.MaxValue" />) が含まれています。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.TryGetValue(`0,`1@)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> から、指定したキーに関連付けられている値の取得を試みます。</summary>
+      <returns>キーが <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> に見つかった場合は true。それ以外の場合は false。</returns>
+      <param name="key">取得する値のキー。</param>
+      <param name="value">このメソッドが戻るときからのオブジェクトが含まれている、<see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />いる指定したキー、または、型の既定値は、操作が失敗した場合。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> は null です。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.TryRemove(`0,`1@)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> から、指定したキーを持つ値を削除して返そうと試みます。</summary>
+      <returns>オブジェクトが正常に削除された場合は true。それ以外の場合は false。</returns>
+      <param name="key">削除して返す要素のキー。</param>
+      <param name="value">このメソッドから戻るときに、<see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" /> から削除されたオブジェクトが格納されます。<paramref name="key" /> が存在しない場合は、TValue 型の既定値が格納されます。 </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> は null です。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentDictionary`2.TryUpdate(`0,`1,`1)">
+      <summary>指定したキーの既存の値と指定した値を比較し、等しい場合は別の値でキーを更新します。</summary>
+      <returns>
+        <paramref name="key" /> を持つ値が <paramref name="comparisonValue" /> に等しかったため、<paramref name="newValue" /> に置き換えられた場合は true。それ以外の場合は false。</returns>
+      <param name="key">値を <paramref name="comparisonValue" /> と比較し、場合によっては置き換えるキー。</param>
+      <param name="newValue">比較した結果が等しい場合に、指定した <paramref name="key" /> を持つ要素の値を置き換える値。</param>
+      <param name="comparisonValue">指定した <paramref name="key" /> を持つ要素の値と比較する値。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> は null です。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentDictionary`2.Values">
+      <summary>
+        <see cref="T:System.Collections.Generic.Dictionary`2" /> 内の値を含むコレクションを取得します。</summary>
+      <returns>
+        <see cref="T:System.Collections.Generic.Dictionary`2" /> 内の値を格納しているコレクション。</returns>
+    </member>
+    <member name="T:System.Collections.Concurrent.ConcurrentQueue`1">
+      <summary>スレッド セーフな先入れ先出し (FIFO) コレクションを表します。</summary>
+      <typeparam name="T">キューに格納されている要素の型。</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.#ctor">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+      <summary>指定したコレクションからコピーされた要素を格納する、<see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="collection">新しい <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> に要素がコピーされたコレクション。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="collection" /> 引数が null です。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.CopyTo(`0[],System.Int32)">
+      <summary>指定した配列インデックスを開始位置として、<see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> の要素を既存の 1 次元の <see cref="T:System.Array" /> にコピーします。</summary>
+      <param name="array">
+        <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> から要素がコピーされる 1 次元の <see cref="T:System.Array" />。<see cref="T:System.Array" /> には、0 から始まるインデックス番号が必要です。</param>
+      <param name="index">コピーの開始位置となる、<paramref name="array" /> 内の 0 から始まるインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> が null 参照 (Visual Basic の場合は Nothing) です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> が 0 未満です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> が <paramref name="array" /> の長さ以上です。または、コピー元の <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> の要素数が、コピー先の <paramref name="array" /> の <paramref name="index" /> から最後までの領域を超えています。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentQueue`1.Count">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> に格納されている要素の数を取得します。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> に格納されている要素の数。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.Enqueue(`0)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> の末尾にオブジェクトを追加します。</summary>
+      <param name="item">
+        <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> の末尾に追加するオブジェクト。参照型の場合、この値は null 参照 (Visual Basic の場合は Nothing) でもかまいません。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.GetEnumerator">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> を反復処理する列挙子を返します。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> のコンテンツの列挙子。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentQueue`1.IsEmpty">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> が空かどうかを示す値を取得します。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> が空の場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.System#Collections#Concurrent#IProducerConsumerCollection{T}#TryAdd(`0)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> に対してオブジェクトの追加を試みます。</summary>
+      <returns>オブジェクトが正常に追加された場合は true。それ以外の場合は false。</returns>
+      <param name="item">
+        <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> に追加するオブジェクト。参照型の場合、この値は null 参照 (Visual Basic の場合は Nothing) でもかまいません。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.System#Collections#Concurrent#IProducerConsumerCollection{T}#TryTake(`0@)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> からオブジェクトを削除して返そうと試みます。</summary>
+      <returns>要素が正常に削除されて返された場合は true。それ以外の場合は false。</returns>
+      <param name="item">操作が正常に終了した場合は、このメソッドから戻るときに、削除されたオブジェクトが <paramref name="item" /> に格納されます。削除できるオブジェクトがない場合、値は指定されません。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>
+        <see cref="T:System.Collections.ICollection" /> の要素を <see cref="T:System.Array" /> にコピーします。<see cref="T:System.Array" /> の特定のインデックスからコピーが開始されます。</summary>
+      <param name="array">
+        <see cref="T:System.Collections.Concurrent.ConcurrentBag`1" /> からコピーされる要素のコピー先となる 1 次元の <see cref="T:System.Array" />。<see cref="T:System.Array" /> には、0 から始まるインデックス番号が必要です。</param>
+      <param name="index">コピーの開始位置となる、<paramref name="array" /> 内の 0 から始まるインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> が null 参照 (Visual Basic の場合は Nothing) です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> が 0 未満です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> が多次元です。または、<paramref name="array" /> に 0 から始まるインデックス番号がありません。-または- <paramref name="index" /> が <paramref name="array" /> の長さ以上です。-または- コピー元の <see cref="T:System.Collections.ICollection" /> の要素数が、コピー先の <paramref name="array" /> の <paramref name="index" /> から最後までの領域を超えています。または、コピー元の <see cref="T:System.Collections.ICollection" /> の型をコピー先の <paramref name="array" /> の型に自動的にキャストすることはできません。</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentQueue`1.System#Collections#ICollection#IsSynchronized">
+      <summary>
+        <see cref="T:System.Collections.ICollection" /> へのアクセスが SyncRoot で同期されているかどうかを示す値を取得します。</summary>
+      <returns>
+        <see cref="T:System.Collections.ICollection" /> へのアクセスが SyncRoot で同期されている場合は true。それ以外の場合は false。<see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> の場合、このプロパティは常に false を返します。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentQueue`1.System#Collections#ICollection#SyncRoot">
+      <summary>
+        <see cref="T:System.Collections.ICollection" /> へのアクセスを同期するために使用できるオブジェクトを取得します。このプロパティはサポートされていません。</summary>
+      <returns>null (Visual Basic の場合は Nothing) を返します。</returns>
+      <exception cref="T:System.NotSupportedException">SyncRoot プロパティはサポートされていません。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.System#Collections#IEnumerable#GetEnumerator">
+      <summary>コレクションを反復処理する列挙子を返します。</summary>
+      <returns>コレクションを反復処理するために使用できる <see cref="T:System.Collections.IEnumerator" />。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.ToArray">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> に格納されている要素を新しい配列にコピーします。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> からコピーされた要素のスナップショットを格納する新しい配列。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.TryDequeue(`0@)">
+      <summary>同時実行キューの先頭にあるオブジェクトを削除して返そうと試みます。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> の先頭から要素が正常に削除されて返された場合は true。それ以外の場合は false。</returns>
+      <param name="result">操作が正常に終了した場合は、このメソッドから戻るときに、削除されたオブジェクトが <paramref name="result" /> に格納されます。削除できるオブジェクトがない場合、値は指定されません。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentQueue`1.TryPeek(`0@)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> の先頭にあるオブジェクトを削除せずに返そうと試みます。</summary>
+      <returns>オブジェクトが正常に返された場合は true。それ以外の場合は false。</returns>
+      <param name="result">このメソッドから戻るときに、<see cref="T:System.Collections.Concurrent.ConcurrentQueue`1" /> の先頭にあるオブジェクトが <paramref name="result" /> に格納されます。操作が失敗した場合、値は指定されません。</param>
+    </member>
+    <member name="T:System.Collections.Concurrent.ConcurrentStack`1">
+      <summary>スレッド セーフな後入れ先出し (LIFO) コレクションを表します。</summary>
+      <typeparam name="T">スタックに格納されている要素の型。</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.#ctor">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+      <summary>指定したコレクションからコピーされた要素を格納する、<see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="collection">新しい <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> に要素がコピーされたコレクション。</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="collection" /> argument is null.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.Clear">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> からすべてのオブジェクトを削除します。</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.CopyTo(`0[],System.Int32)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> の要素を既存の 1 次元の <see cref="T:System.Array" /> にコピーします。コピー操作は、配列内の指定したインデックスから始まります。</summary>
+      <param name="array">
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> からコピーされる要素のコピー先となる 1 次元の <see cref="T:System.Array" />。<see cref="T:System.Array" /> には、0 から始まるインデックス番号が必要です。</param>
+      <param name="index">コピーの開始位置とする <paramref name="array" /> のインデックス (0 から始まる)。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> is a null reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> is less than zero.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> is equal to or greater than the length of the <paramref name="array" /> -or- The number of elements in the source <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentStack`1.Count">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> に格納されている要素の数を取得します。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> に格納されている要素の数。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.GetEnumerator">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> を反復処理する列挙子を返します。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> の列挙子。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentStack`1.IsEmpty">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> が空かどうかを示す値を取得します。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> が空の場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.Push(`0)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> の先頭にオブジェクトを挿入します。</summary>
+      <param name="item">
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> にプッシュするオブジェクト。参照型の場合、この値は null 参照 (Visual Basic の場合は Nothing) でもかまいません。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.PushRange(`0[])">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> の先頭に複数のオブジェクトをアトミックに挿入します。</summary>
+      <param name="items">
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> にプッシュするオブジェクト。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="items" /> is a null reference (Nothing in Visual Basic).</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.PushRange(`0[],System.Int32,System.Int32)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> の先頭に複数のオブジェクトをアトミックに挿入します。</summary>
+      <param name="items">
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> にプッシュするオブジェクト。</param>
+      <param name="startIndex">
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> の先頭に挿入する要素の開始位置を示す、<paramref name="items" /> 内の 0 から始まるオフセット。</param>
+      <param name="count">
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> の先頭に挿入する要素の数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="items" /> is a null reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> or <paramref name="count" /> is negative.Or <paramref name="startIndex" /> is greater than or equal to the length of <paramref name="items" />.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="startIndex" /> + <paramref name="count" /> is greater than the length of <paramref name="items" />.</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.System#Collections#Concurrent#IProducerConsumerCollection{T}#TryAdd(`0)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> に対してオブジェクトの追加を試みます。</summary>
+      <returns>オブジェクトが正常に追加された場合は true。それ以外の場合は false。</returns>
+      <param name="item">
+        <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> に追加するオブジェクト。参照型の場合、この値は null 参照 (Visual Basic の場合は Nothing) でもかまいません。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.System#Collections#Concurrent#IProducerConsumerCollection{T}#TryTake(`0@)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> からオブジェクトを削除して返そうと試みます。</summary>
+      <returns>要素が正常に削除されて返された場合は true。それ以外の場合は false。</returns>
+      <param name="item">操作が正常に終了した場合は、このメソッドから戻るときに、削除されたオブジェクトが <paramref name="item" /> に格納されます。削除できるオブジェクトがない場合、値は指定されません。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>
+        <see cref="T:System.Collections.ICollection" /> の要素を <see cref="T:System.Array" /> にコピーします。<see cref="T:System.Array" /> の特定のインデックスからコピーが開始されます。</summary>
+      <param name="array">
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> からコピーされる要素のコピー先となる 1 次元の <see cref="T:System.Array" />。<see cref="T:System.Array" /> には、0 から始まるインデックス番号が必要です。</param>
+      <param name="index">コピーの開始位置とする <paramref name="array" /> のインデックス (0 から始まる)。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> is a null reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> is less than zero.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> is multidimensional.-or- <paramref name="array" /> does not have zero-based indexing.-or- <paramref name="index" /> is equal to or greater than the length of the <paramref name="array" /> -or- The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.-or- The type of the source <see cref="T:System.Collections.ICollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentStack`1.System#Collections#ICollection#IsSynchronized">
+      <summary>
+        <see cref="T:System.Collections.ICollection" /> へのアクセスが SyncRoot で同期されているかどうかを示す値を取得します。</summary>
+      <returns>
+        <see cref="T:System.Collections.ICollection" /> へのアクセスが SyncRoot で同期されている場合は true。それ以外の場合は false。<see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> の場合、このプロパティは常に false を返します。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.ConcurrentStack`1.System#Collections#ICollection#SyncRoot">
+      <summary>
+        <see cref="T:System.Collections.ICollection" /> へのアクセスを同期するために使用できるオブジェクトを取得します。このプロパティはサポートされていません。</summary>
+      <returns>null (Visual Basic の場合は Nothing) を返します。</returns>
+      <exception cref="T:System.NotSupportedException">The SyncRoot property is not supported</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.System#Collections#IEnumerable#GetEnumerator">
+      <summary>コレクションを反復処理する列挙子を返します。</summary>
+      <returns>コレクションを反復処理するために使用できる <see cref="T:System.Collections.IEnumerator" />。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.ToArray">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> に格納されている項目を新しい配列にコピーします。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> からコピーされた要素のスナップショットを格納する新しい配列。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.TryPeek(`0@)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> の先頭にあるオブジェクトを削除せずに返そうと試みます。</summary>
+      <returns>オブジェクトが正常に返された場合は true。それ以外の場合は false。</returns>
+      <param name="result">このメソッドから戻るときに、<see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> の先頭にあるオブジェクトが <paramref name="result" /> に格納されます。操作が失敗した場合、値は指定されません。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.TryPop(`0@)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> の先頭にあるオブジェクトをポップして返そうと試みます。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> の先頭から要素が正常に削除されて返された場合は true。それ以外の場合は false。</returns>
+      <param name="result">操作が正常に終了した場合は、このメソッドから戻るときに、削除されたオブジェクトが <paramref name="result" /> に格納されます。削除できるオブジェクトがない場合、値は指定されません。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.TryPopRange(`0[])">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> の先頭にある複数のオブジェクトをアトミックにポップして返そうと試みます。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> の先頭から正常にポップされ、<paramref name="items" /> に挿入されたオブジェクトの数。</returns>
+      <param name="items">
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> の先頭からポップされたオブジェクトの追加先となる <see cref="T:System.Array" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="items" /> is a null argument (Nothing in Visual Basic).</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.ConcurrentStack`1.TryPopRange(`0[],System.Int32,System.Int32)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> の先頭にある複数のオブジェクトをアトミックにポップして返そうと試みます。</summary>
+      <returns>スタックの一番上から正常にポップされ、<paramref name="items" /> に挿入されたオブジェクトの数。</returns>
+      <param name="items">
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> の先頭からポップされたオブジェクトの追加先となる <see cref="T:System.Array" />。</param>
+      <param name="startIndex">
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> の先頭からの要素を挿入する開始位置を示す、<paramref name="items" /> 内の 0 から始まるオフセット。</param>
+      <param name="count">
+        <see cref="T:System.Collections.Concurrent.ConcurrentStack`1" /> の先頭からポップして <paramref name="items" /> に挿入する要素の数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="items" /> is a null reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> or <paramref name="count" /> is negative.Or <paramref name="startIndex" /> is greater than or equal to the length of <paramref name="items" />.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="startIndex" /> + <paramref name="count" /> is greater than the length of <paramref name="items" />.</exception>
+    </member>
+    <member name="T:System.Collections.Concurrent.EnumerablePartitionerOptions">
+      <summary>パーティショナーのバッファリング動作を制御するオプションを指定します。</summary>
+    </member>
+    <member name="F:System.Collections.Concurrent.EnumerablePartitionerOptions.NoBuffering">
+      <summary>元の列挙から項目を 1 つずつ受け取り、複数のスレッドからより効率的にアクセスできる中間ストレージを使用しないパーティショナーを作成します。このオプションは、短い待機時間のサポート (項目がソースから使用可能になると同時に処理されます) と、項目間の依存関係の部分的なサポート (スレッド自体で処理する項目を待機する間にスレッドでデッドロックが発生することはありません) を提供します。</summary>
+    </member>
+    <member name="F:System.Collections.Concurrent.EnumerablePartitionerOptions.None">
+      <summary>既定の動作を使用します。既定の動作では、最適なパフォーマンスを実現するために、バッファリングを使用します。</summary>
+    </member>
+    <member name="T:System.Collections.Concurrent.IProducerConsumerCollection`1">
+      <summary>プロデューサーまたはコンシューマーが使用するためのスレッド セーフなコレクションを操作するメソッドを定義します。このインスタンスには、プロデューサー/コンシューマー コレクションの統一された表現が用意されています。<see cref="T:System.Collections.Concurrent.BlockingCollection`1" /> のような高度な抽象化では、基になるストレージ機構としてこのコレクションを使用できます。</summary>
+      <typeparam name="T">コレクション内の要素の型を指定します。</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.IProducerConsumerCollection`1.CopyTo(`0[],System.Int32)">
+      <summary>指定したインデックスを開始位置として、<see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> の要素を <see cref="T:System.Array" /> にコピーします。</summary>
+      <param name="array">
+        <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> から要素がコピーされる 1 次元の <see cref="T:System.Array" />。 配列では 0 から始まるインデックスを使用する必要があります。</param>
+      <param name="index">コピーの開始位置となる、<paramref name="array" /> 内の 0 から始まるインデックス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> が null 参照 (Visual Basic の場合は Nothing) です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> が 0 未満です。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> が <paramref name="array" /> の長さ以上です。または、コレクション内の要素数が、 <paramref name="index" /> から <paramref name="array" /> の最後までの領域を超えています。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.IProducerConsumerCollection`1.ToArray">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> に格納されている要素を新しい配列にコピーします。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> からコピーされた要素を格納する新しい配列。</returns>
+    </member>
+    <member name="M:System.Collections.Concurrent.IProducerConsumerCollection`1.TryAdd(`0)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> に対してオブジェクトの追加を試みます。</summary>
+      <returns>オブジェクトが正常に追加された場合は true。それ以外の場合は false。</returns>
+      <param name="item">
+        <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> に追加するオブジェクト。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="item" /> は、このコレクションには無効です。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.IProducerConsumerCollection`1.TryTake(`0@)">
+      <summary>
+        <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1" /> からオブジェクトを削除して返そうと試みます。</summary>
+      <returns>オブジェクトが正常に削除されて返された場合は true。それ以外の場合は false。</returns>
+      <param name="item">オブジェクトが正常に削除されて返された場合は、このメソッドから戻るときに、削除されたオブジェクトが <paramref name="item" /> に格納されます。削除できるオブジェクトがない場合、値は指定されません。</param>
+    </member>
+    <member name="T:System.Collections.Concurrent.OrderablePartitioner`1">
+      <summary>順序付け可能なデータ ソースを複数のパーティションに分割する特定の方法を表します。</summary>
+      <typeparam name="TSource">コレクション内の要素の型。</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.OrderablePartitioner`1.#ctor(System.Boolean,System.Boolean,System.Boolean)">
+      <summary>インデックス キーに関する制約を指定して <see cref="T:System.Collections.Concurrent.OrderablePartitioner`1" /> クラスを初期化するために、派生クラスのコンストラクターから呼び出されます。</summary>
+      <param name="keysOrderedInEachPartition">各パーティション内の要素のキーが昇順になるかどうかを示します。</param>
+      <param name="keysOrderedAcrossPartitions">前にあるパーティション内の要素の順序が、後にあるパーティション内の要素よりも常に前になるかどうかを示します。true の場合、パーティション 0 の各要素の順序キーは、パーティション 1 のどの要素よりも小さくなり、パーティション 1 の各要素の順序キーは、パーティション 2 のどの要素よりも小さくなります。以降も同様です。</param>
+      <param name="keysNormalized">キーを正規化するかどうかを示します。true の場合、順序キーはすべて [0 .. numberOfElements-1] の範囲内の一意の整数になります。false の場合も順序キーは一意である必要がありますが、相対的な順序だけが考慮され、それぞれの絶対値は考慮されません。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.OrderablePartitioner`1.GetDynamicPartitions">
+      <summary>基になるコレクションを可変個のパーティションに分割できるオブジェクトを作成します。</summary>
+      <returns>基になるデータ ソースのパーティションを作成できるオブジェクト。</returns>
+      <exception cref="T:System.NotSupportedException">動的パーティションは、基本クラスにサポートされていません。派生クラスによって実装されている必要があります。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.OrderablePartitioner`1.GetOrderableDynamicPartitions">
+      <summary>基になるコレクションを可変個のパーティションに分割できるオブジェクトを作成します。</summary>
+      <returns>基になるデータ ソースのパーティションを作成できるオブジェクト。</returns>
+      <exception cref="T:System.NotSupportedException">動的パーティションは、このパーティショナーにサポートされていません。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.OrderablePartitioner`1.GetOrderablePartitions(System.Int32)">
+      <summary>基になるコレクションを、指定した数の順序付け可能なパーティションに分割します。</summary>
+      <returns>
+        <paramref name="partitionCount" /> 列挙子を格納するリスト。</returns>
+      <param name="partitionCount">作成するパーティションの数。</param>
+    </member>
+    <member name="M:System.Collections.Concurrent.OrderablePartitioner`1.GetPartitions(System.Int32)">
+      <summary>基になるコレクションを、指定した数の順序付きのパーティションに分割します。</summary>
+      <returns>
+        <paramref name="partitionCount" /> 列挙子を格納するリスト。</returns>
+      <param name="partitionCount">作成するパーティションの数。</param>
+    </member>
+    <member name="P:System.Collections.Concurrent.OrderablePartitioner`1.KeysNormalized">
+      <summary>順序キーが正規化されるかどうかを取得します。</summary>
+      <returns>キーが正規化される場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.OrderablePartitioner`1.KeysOrderedAcrossPartitions">
+      <summary>前にあるパーティション内の要素の順序が、後にあるパーティション内の要素よりも常に前になるかどうかを取得します。</summary>
+      <returns>前にあるパーティション内の要素の順序が、後にあるパーティション内の要素よりも常に前になる場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Collections.Concurrent.OrderablePartitioner`1.KeysOrderedInEachPartition">
+      <summary>各パーティション内の要素のキーが昇順になるかどうかを取得します。</summary>
+      <returns>各パーティション内の要素のキーが昇順になる場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="T:System.Collections.Concurrent.Partitioner">
+      <summary>配列、リスト、および列挙体に使用できる共通のパーティション方法を提供します。</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> インスタンスから順序付け可能なパーティショナーを作成します。</summary>
+      <returns>入力配列に基づく順序付け可能なパーティショナー。</returns>
+      <param name="source">パーティションに分割する列挙体。</param>
+      <typeparam name="TSource">元の列挙内の要素の型。</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Concurrent.EnumerablePartitionerOptions)">
+      <summary>
+        <see cref="T:System.Collections.Generic.IEnumerable`1" /> インスタンスから順序付け可能なパーティショナーを作成します。</summary>
+      <returns>入力配列に基づく順序付け可能なパーティショナー。</returns>
+      <param name="source">パーティションに分割する列挙体。</param>
+      <param name="partitionerOptions">パーティショナーのバッファー動作を制御するオプション。</param>
+      <typeparam name="TSource">元の列挙内の要素の型。</typeparam>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="partitionerOptions" /> 引数が、<see cref="T:System.Collections.Concurrent.EnumerablePartitionerOptions" /> の無効な値を指定しています。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create``1(System.Collections.Generic.IList{``0},System.Boolean)">
+      <summary>
+        <see cref="T:System.Collections.Generic.IList`1" /> インスタンスから順序付け可能なパーティショナーを作成します。</summary>
+      <returns>入力リストに基づく順序付け可能なパーティショナー。</returns>
+      <param name="list">パーティションに分割するリスト。</param>
+      <param name="loadBalance">作成されたパーティショナーで、静的にパーティションを割り当てるのではなく、動的にパーティション間で負荷を分散する必要があるかどうかを示すブール値。</param>
+      <typeparam name="TSource">元のリスト内の要素の型。</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create(System.Int32,System.Int32)">
+      <summary>ユーザーが指定した範囲をチャンクするパーティショナーを作成します。</summary>
+      <returns>パーティショナー。</returns>
+      <param name="fromInclusive">範囲の下限。この値も含まれます。</param>
+      <param name="toExclusive">範囲の上限。この値は含まれません。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="toExclusive" /> 引数が <paramref name="fromInclusive" /> 引数以下です。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create(System.Int32,System.Int32,System.Int32)">
+      <summary>ユーザーが指定した範囲をチャンクするパーティショナーを作成します。</summary>
+      <returns>パーティショナー。</returns>
+      <param name="fromInclusive">範囲の下限。この値も含まれます。</param>
+      <param name="toExclusive">範囲の上限。この値は含まれません。</param>
+      <param name="rangeSize">各サブ範囲のサイズ。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="toExclusive" /> 引数が <paramref name="fromInclusive" /> 引数以下です。または<paramref name="rangeSize" /> 引数が 0 以下です。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create(System.Int64,System.Int64)">
+      <summary>ユーザーが指定した範囲をチャンクするパーティショナーを作成します。</summary>
+      <returns>パーティショナー。</returns>
+      <param name="fromInclusive">範囲の下限。この値も含まれます。</param>
+      <param name="toExclusive">範囲の上限。この値は含まれません。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="toExclusive" /> 引数が <paramref name="fromInclusive" /> 引数以下です。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create(System.Int64,System.Int64,System.Int64)">
+      <summary>ユーザーが指定した範囲をチャンクするパーティショナーを作成します。</summary>
+      <returns>パーティショナー。</returns>
+      <param name="fromInclusive">範囲の下限。この値も含まれます。</param>
+      <param name="toExclusive">範囲の上限。この値は含まれません。</param>
+      <param name="rangeSize">各サブ範囲のサイズ。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="toExclusive" /> 引数が <paramref name="fromInclusive" /> 引数以下です。または<paramref name="rangeSize" /> 引数が 0 以下です。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner.Create``1(``0[],System.Boolean)">
+      <summary>
+        <see cref="T:System.Array" /> インスタンスから順序付け可能なパーティショナーを作成します。</summary>
+      <returns>入力配列に基づく順序付け可能なパーティショナー。</returns>
+      <param name="array">パーティションに分割する配列。</param>
+      <param name="loadBalance">作成されたパーティショナーで、静的にパーティションを割り当てるのではなく、動的にパーティション間で負荷を分散する必要があるかどうかを示すブール値。</param>
+      <typeparam name="TSource">元の配列内の要素の型。</typeparam>
+    </member>
+    <member name="T:System.Collections.Concurrent.Partitioner`1">
+      <summary>データ ソースを複数のパーティションに分割する特定の方法を表します。</summary>
+      <typeparam name="TSource">コレクション内の要素の型。</typeparam>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner`1.#ctor">
+      <summary>新しいパーティショナー インスタンスを作成します。</summary>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner`1.GetDynamicPartitions">
+      <summary>基になるコレクションを可変個のパーティションに分割できるオブジェクトを作成します。</summary>
+      <returns>基になるデータ ソースのパーティションを作成できるオブジェクト。</returns>
+      <exception cref="T:System.NotSupportedException">動的パーティションは、基本クラスにサポートされていません。派生クラスで実装する必要があります。</exception>
+    </member>
+    <member name="M:System.Collections.Concurrent.Partitioner`1.GetPartitions(System.Int32)">
+      <summary>基になるコレクションを指定した数のパーティションに分割します。</summary>
+      <returns>
+        <paramref name="partitionCount" /> 列挙子を格納するリスト。</returns>
+      <param name="partitionCount">作成するパーティションの数。</param>
+    </member>
+    <member name="P:System.Collections.Concurrent.Partitioner`1.SupportsDynamicPartitions">
+      <summary>追加のパーティションを動的に作成できるかどうかを取得します。</summary>
+      <returns>
+        <see cref="T:System.Collections.Concurrent.Partitioner`1" /> で、要求に応じて動的にパーティションを作成できる場合は true。<see cref="T:System.Collections.Concurrent.Partitioner`1" /> で、静的にパーティションを割り当てることしかできない場合は false。</returns>
+    </member>
+  </members>
+</doc>

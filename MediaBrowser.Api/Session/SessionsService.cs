@@ -20,13 +20,15 @@ namespace MediaBrowser.Api.Session
     /// </summary>
     [Route("/Sessions", "GET", Summary = "Gets a list of sessions")]
     [Authenticated]
-    public class GetSessions : IReturn<SessionInfoDto[]>
+    public class GetSessions : IReturn<SessionInfo[]>
     {
         [ApiMember(Name = "ControllableByUserId", Description = "Optional. Filter by sessions that a given user is allowed to remote control.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public string ControllableByUserId { get; set; }
+        public Guid ControllableByUserId { get; set; }
 
         [ApiMember(Name = "DeviceId", Description = "Optional. Filter by device id.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
         public string DeviceId { get; set; }
+
+        public int? ActiveWithinSeconds { get; set; }
     }
 
     /// <summary>
@@ -190,7 +192,7 @@ namespace MediaBrowser.Api.Session
         /// Gets or sets the id.
         /// </summary>
         /// <value>The id.</value>
-        [ApiMember(Name = "Id", Description = "Session Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
+        [ApiMember(Name = "Id", Description = "Session Id", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "POST")]
         public string Id { get; set; }
 
         [ApiMember(Name = "PlayableMediaTypes", Description = "A list of playable media types, comma delimited. Audio, Video, Book, Game, Photo.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "POST")]
@@ -198,9 +200,6 @@ namespace MediaBrowser.Api.Session
 
         [ApiMember(Name = "SupportedCommands", Description = "A list of supported remote control commands, comma delimited", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "POST")]
         public string SupportedCommands { get; set; }
-
-        [ApiMember(Name = "MessageCallbackUrl", Description = "A url to post messages to, including remote control commands.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "POST")]
-        public string MessageCallbackUrl { get; set; }
 
         [ApiMember(Name = "SupportsMediaControl", Description = "Determines whether media can be played remotely.", IsRequired = false, DataType = "bool", ParameterType = "query", Verb = "POST")]
         public bool SupportsMediaControl { get; set; }
@@ -210,8 +209,6 @@ namespace MediaBrowser.Api.Session
 
         [ApiMember(Name = "SupportsPersistentIdentifier", Description = "Determines whether the device supports a unique identifier.", IsRequired = false, DataType = "bool", ParameterType = "query", Verb = "POST")]
         public bool SupportsPersistentIdentifier { get; set; }
-
-        public bool SupportsContentUploading { get; set; }
 
         public PostCapabilities()
         {
@@ -227,7 +224,7 @@ namespace MediaBrowser.Api.Session
         /// Gets or sets the id.
         /// </summary>
         /// <value>The id.</value>
-        [ApiMember(Name = "Id", Description = "Session Id", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
+        [ApiMember(Name = "Id", Description = "Session Id", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "POST")]
         public string Id { get; set; }
     }
 
@@ -253,7 +250,7 @@ namespace MediaBrowser.Api.Session
     [Authenticated(Roles = "Admin")]
     public class RevokeKey
     {
-        [ApiMember(Name = "Key", Description = "Auth Key", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "POST")]
+        [ApiMember(Name = "Key", Description = "Auth Key", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "DELETE")]
         public string Key { get; set; }
     }
 
@@ -309,14 +306,13 @@ namespace MediaBrowser.Api.Session
             _authRepo.Create(new AuthenticationInfo
             {
                 AppName = request.App,
-                IsActive = true,
                 AccessToken = Guid.NewGuid().ToString("N"),
                 DateCreated = DateTime.UtcNow,
                 DeviceId = _appHost.SystemId,
                 DeviceName = _appHost.FriendlyName,
                 AppVersion = _appHost.ApplicationVersion.ToString()
 
-            }, CancellationToken.None);
+            });
         }
 
         public void Post(ReportSessionEnded request)
@@ -330,7 +326,6 @@ namespace MediaBrowser.Api.Session
         {
             var result = _authRepo.Get(new AuthenticationInfoQuery
             {
-                IsActive = true,
                 HasUser = false
             });
 
@@ -344,27 +339,33 @@ namespace MediaBrowser.Api.Session
         /// <returns>System.Object.</returns>
         public object Get(GetSessions request)
         {
-            var result = _sessionManager.Sessions.Where(i => i.IsActive);
+            var result = _sessionManager.Sessions;
 
             if (!string.IsNullOrEmpty(request.DeviceId))
             {
                 result = result.Where(i => string.Equals(i.DeviceId, request.DeviceId, StringComparison.OrdinalIgnoreCase));
             }
 
-            if (!string.IsNullOrWhiteSpace(request.ControllableByUserId))
+            if (!request.ControllableByUserId.Equals(Guid.Empty))
             {
-                result = result.Where(i => i.SupportsMediaControl);
+                result = result.Where(i => i.SupportsRemoteControl);
 
                 var user = _userManager.GetUserById(request.ControllableByUserId);
 
                 if (!user.Policy.EnableRemoteControlOfOtherUsers)
                 {
-                    result = result.Where(i => !i.UserId.HasValue || i.ContainsUser(request.ControllableByUserId));
+                    result = result.Where(i => i.UserId.Equals(Guid.Empty) || i.ContainsUser(request.ControllableByUserId));
                 }
 
                 if (!user.Policy.EnableSharedDeviceControl)
                 {
-                    result = result.Where(i => i.UserId.HasValue);
+                    result = result.Where(i => !i.UserId.Equals(Guid.Empty));
+                }
+
+                if (request.ActiveWithinSeconds.HasValue && request.ActiveWithinSeconds.Value > 0)
+                {
+                    var minActiveDate = DateTime.UtcNow.AddSeconds(0 - request.ActiveWithinSeconds.Value);
+                    result = result.Where(i => i.LastActivityDate >= minActiveDate);
                 }
 
                 result = result.Where(i =>
@@ -383,7 +384,7 @@ namespace MediaBrowser.Api.Session
                 });
             }
 
-            return ToOptimizedResult(result.Select(_sessionManager.GetSessionInfoDto).ToArray());
+            return ToOptimizedResult(result.ToArray());
         }
 
         public Task Post(SendPlaystateCommand request)
@@ -426,7 +427,7 @@ namespace MediaBrowser.Api.Session
             var command = new GeneralCommand
             {
                 Name = name,
-                ControllingUserId = currentSession.UserId.HasValue ? currentSession.UserId.Value.ToString("N") : null
+                ControllingUserId = currentSession.UserId
             };
 
             return _sessionManager.SendGeneralCommand(currentSession.Id, request.Id, command, CancellationToken.None);
@@ -464,7 +465,7 @@ namespace MediaBrowser.Api.Session
             var command = new GeneralCommand
             {
                 Name = request.Command,
-                ControllingUserId = currentSession.UserId.HasValue ? currentSession.UserId.Value.ToString("N") : null
+                ControllingUserId = currentSession.UserId
             };
 
             return _sessionManager.SendGeneralCommand(currentSession.Id, request.Id, command, CancellationToken.None);
@@ -474,19 +475,19 @@ namespace MediaBrowser.Api.Session
         {
             var currentSession = GetSession(_sessionContext);
 
-            request.ControllingUserId = currentSession.UserId.HasValue ? currentSession.UserId.Value.ToString("N") : null;
+            request.ControllingUserId = currentSession.UserId;
 
             return _sessionManager.SendGeneralCommand(currentSession.Id, request.Id, request, CancellationToken.None);
         }
 
         public void Post(AddUserToSession request)
         {
-            _sessionManager.AddAdditionalUser(request.Id, request.UserId);
+            _sessionManager.AddAdditionalUser(request.Id, new Guid(request.UserId));
         }
 
         public void Delete(RemoveUserFromSession request)
         {
-            _sessionManager.RemoveAdditionalUser(request.Id, request.UserId);
+            _sessionManager.RemoveAdditionalUser(request.Id, new Guid(request.UserId));
         }
 
         public void Post(PostCapabilities request)
@@ -503,11 +504,7 @@ namespace MediaBrowser.Api.Session
 
                 SupportsMediaControl = request.SupportsMediaControl,
 
-                MessageCallbackUrl = request.MessageCallbackUrl,
-
                 SupportsSync = request.SupportsSync,
-
-                SupportsContentUploading = request.SupportsContentUploading,
 
                 SupportsPersistentIdentifier = request.SupportsPersistentIdentifier
             });

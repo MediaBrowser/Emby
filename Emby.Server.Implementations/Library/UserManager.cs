@@ -45,7 +45,9 @@ namespace Emby.Server.Implementations.Library
         /// Gets the users.
         /// </summary>
         /// <value>The users.</value>
-        public IEnumerable<User> Users { get; private set; }
+        public IEnumerable<User> Users { get { return _users; } }
+
+        private User[] _users;
 
         /// <summary>
         /// The _logger
@@ -94,7 +96,7 @@ namespace Emby.Server.Implementations.Library
             _fileSystem = fileSystem;
             _cryptographyProvider = cryptographyProvider;
             ConfigurationManager = configurationManager;
-            Users = new List<User>();
+            _users = Array.Empty<User>();
 
             DeletePinFile();
         }
@@ -192,7 +194,7 @@ namespace Emby.Server.Implementations.Library
 
         public void Initialize()
         {
-            Users = LoadUsers();
+            _users = LoadUsers();
 
             var users = Users.ToList();
 
@@ -248,7 +250,7 @@ namespace Emby.Server.Implementations.Library
             return builder.ToString();
         }
 
-        public async Task<User> AuthenticateUser(string username, string password, string hashedPassword, string passwordMd5, string remoteEndPoint, bool isUserSession)
+        public async Task<User> AuthenticateUser(string username, string password, string hashedPassword, string remoteEndPoint, bool isUserSession)
         {
             if (string.IsNullOrWhiteSpace(username))
             {
@@ -276,7 +278,7 @@ namespace Emby.Server.Implementations.Library
                 {
                     try
                     {
-                        await _connectFactory().Authenticate(user.ConnectUserName, password, passwordMd5).ConfigureAwait(false);
+                        await _connectFactory().Authenticate(user.ConnectUserName, password).ConfigureAwait(false);
                         success = true;
                     }
                     catch
@@ -321,7 +323,7 @@ namespace Emby.Server.Implementations.Library
             {
                 try
                 {
-                    var connectAuthResult = await _connectFactory().Authenticate(username, password, passwordMd5).ConfigureAwait(false);
+                    var connectAuthResult = await _connectFactory().Authenticate(username, password).ConfigureAwait(false);
 
                     user = Users.FirstOrDefault(i => string.Equals(i.ConnectUserId, connectAuthResult.User.Id, StringComparison.OrdinalIgnoreCase));
 
@@ -526,9 +528,9 @@ namespace Emby.Server.Implementations.Library
         /// Loads the users from the repository
         /// </summary>
         /// <returns>IEnumerable{User}.</returns>
-        private List<User> LoadUsers()
+        private User[] LoadUsers()
         {
-            var users = UserRepository.RetrieveAllUsers().ToList();
+            var users = UserRepository.RetrieveAllUsers();
 
             // There always has to be at least one user.
             if (users.Count == 0)
@@ -544,7 +546,7 @@ namespace Emby.Server.Implementations.Library
 
                 user.DateLastSaved = DateTime.UtcNow;
 
-                UserRepository.SaveUser(user, CancellationToken.None);
+                UserRepository.CreateUser(user);
 
                 users.Add(user);
 
@@ -554,7 +556,7 @@ namespace Emby.Server.Implementations.Library
                 UpdateUserPolicy(user, user.Policy, false);
             }
 
-            return users;
+            return users.ToArray();
         }
 
         public UserDto GetUserDto(User user, string remoteEndPoint = null)
@@ -573,7 +575,7 @@ namespace Emby.Server.Implementations.Library
 
             var dto = new UserDto
             {
-                Id = user.Id.ToString("N"),
+                Id = user.Id,
                 Name = user.Name,
                 HasPassword = hasPassword,
                 HasConfiguredPassword = hasConfiguredPassword,
@@ -704,7 +706,7 @@ namespace Emby.Server.Implementations.Library
             user.DateModified = DateTime.UtcNow;
             user.DateLastSaved = DateTime.UtcNow;
 
-            UserRepository.SaveUser(user, CancellationToken.None);
+            UserRepository.UpdateUser(user);
 
             OnUserUpdated(user);
         }
@@ -745,11 +747,11 @@ namespace Emby.Server.Implementations.Library
 
                 var list = Users.ToList();
                 list.Add(user);
-                Users = list;
+                _users = list.ToArray();
 
                 user.DateLastSaved = DateTime.UtcNow;
 
-                UserRepository.SaveUser(user, CancellationToken.None);
+                UserRepository.CreateUser(user);
 
                 EventHelper.QueueEventIfNotNull(UserCreated, this, new GenericEventArgs<User> { Argument = user }, _logger);
 
@@ -777,7 +779,7 @@ namespace Emby.Server.Implementations.Library
 
             if (user.ConnectLinkType.HasValue)
             {
-                await _connectFactory().RemoveConnect(user.Id.ToString("N")).ConfigureAwait(false);
+                await _connectFactory().RemoveConnect(user).ConfigureAwait(false);
             }
 
             var allUsers = Users.ToList();
@@ -803,7 +805,7 @@ namespace Emby.Server.Implementations.Library
             {
                 var configPath = GetConfigurationFilePath(user);
 
-                UserRepository.DeleteUser(user, CancellationToken.None);
+                UserRepository.DeleteUser(user);
 
                 try
                 {
@@ -816,7 +818,7 @@ namespace Emby.Server.Implementations.Library
 
                 DeleteUserPolicy(user);
 
-                Users = allUsers.Where(i => i.Id != user.Id).ToList();
+                _users = allUsers.Where(i => i.Id != user.Id).ToArray();
 
                 OnUserDeleted(user);
             }
@@ -1097,7 +1099,7 @@ namespace Emby.Server.Implementations.Library
         }
 
         private readonly object _policySyncLock = new object();
-        public void UpdateUserPolicy(string userId, UserPolicy userPolicy)
+        public void UpdateUserPolicy(Guid userId, UserPolicy userPolicy)
         {
             var user = GetUserById(userId);
             UpdateUserPolicy(user, userPolicy, true);
@@ -1187,7 +1189,7 @@ namespace Emby.Server.Implementations.Library
         }
 
         private readonly object _configSyncLock = new object();
-        public void UpdateConfiguration(string userId, UserConfiguration config)
+        public void UpdateConfiguration(Guid userId, UserConfiguration config)
         {
             var user = GetUserById(userId);
             UpdateConfiguration(user, config);
@@ -1257,7 +1259,7 @@ namespace Emby.Server.Implementations.Library
         {
             var existing = _authRepo.Get(new AuthenticationInfoQuery
             {
-                UserId = user.Id.ToString("N")
+                UserId = user.Id
 
             }).Items;
 
@@ -1265,7 +1267,7 @@ namespace Emby.Server.Implementations.Library
             {
                 if (!string.IsNullOrEmpty(authInfo.DeviceId) && !_deviceManager.CanAccessDevice(user, authInfo.DeviceId))
                 {
-                    _sessionManager.Logout(authInfo.AccessToken);
+                    _sessionManager.Logout(authInfo);
                 }
             }
         }

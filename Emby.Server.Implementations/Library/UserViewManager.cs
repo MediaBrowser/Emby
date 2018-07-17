@@ -59,7 +59,7 @@ namespace Emby.Server.Implementations.Library
 
                 if (UserView.IsUserSpecific(folder))
                 {
-                    list.Add(_libraryManager.GetNamedView(user, folder.Name, folder.Id.ToString("N"), folderViewType, null));
+                    list.Add(_libraryManager.GetNamedView(user, folder.Name, folder.Id, folderViewType, null));
                     continue;
                 }
 
@@ -111,7 +111,7 @@ namespace Emby.Server.Implementations.Library
 
                 list.AddRange(channels);
 
-                if (_liveTvManager.GetEnabledUsers().Select(i => i.Id.ToString("N")).Contains(query.UserId))
+                if (_liveTvManager.GetEnabledUsers().Select(i => i.Id).Contains(query.UserId))
                 {
                     list.Add(_liveTvManager.GetInternalLiveTvFolder(CancellationToken.None));
                 }
@@ -150,14 +150,14 @@ namespace Emby.Server.Implementations.Library
                 .ToArray();
         }
 
-        public UserView GetUserSubViewWithName(string name, string parentId, string type, string sortName)
+        public UserView GetUserSubViewWithName(string name, Guid parentId, string type, string sortName)
         {
             var uniqueId = parentId + "subview" + type;
 
             return _libraryManager.GetNamedView(name, parentId, type, sortName, uniqueId);
         }
 
-        public UserView GetUserSubView(string parentId, string type, string localizationKey, string sortName)
+        public UserView GetUserSubView(Guid parentId, string type, string localizationKey, string sortName)
         {
             var name = _localizationManager.GetLocalizedString(localizationKey);
 
@@ -234,7 +234,7 @@ namespace Emby.Server.Implementations.Library
 
             var parents = new List<BaseItem>();
 
-            if (!string.IsNullOrEmpty(parentId))
+            if (!parentId.Equals(Guid.Empty))
             {
                 var parentItem = _libraryManager.GetItemById(parentId);
                 var parentItemChannel = parentItem as Channel;
@@ -242,7 +242,7 @@ namespace Emby.Server.Implementations.Library
                 {
                     return _channelManager.GetLatestChannelItemsInternal(new InternalItemsQuery(user)
                     {
-                        ChannelIds = new Guid[] { new Guid(request.ParentId) },
+                        ChannelIds = new [] { parentId },
                         IsPlayed = request.IsPlayed,
                         StartIndex = request.StartIndex,
                         Limit = request.Limit,
@@ -347,7 +347,7 @@ namespace Emby.Server.Implementations.Library
             var query = new InternalItemsQuery(user)
             {
                 IncludeItemTypes = includeItemTypes,
-                OrderBy = new[] { new Tuple<string, SortOrder>(ItemSortBy.DateCreated, SortOrder.Descending) },
+                OrderBy = new[] { new ValueTuple<string, SortOrder>(ItemSortBy.DateCreated, SortOrder.Descending) },
                 IsFolder = includeItemTypes.Length == 0 ? false : (bool?)null,
                 ExcludeItemTypes = excludeItemTypes,
                 IsVirtualItem = false,

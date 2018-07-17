@@ -13,7 +13,7 @@
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -50,12 +50,20 @@
     <Compile Include="ContentDirectory\ContentDirectoryXmlBuilder.cs" />
     <Compile Include="ContentDirectory\ControlHandler.cs" />
     <Compile Include="ContentDirectory\ServiceActionListBuilder.cs" />
+    <Compile Include="ControlRequest.cs" />
+    <Compile Include="ControlResponse.cs" />
     <Compile Include="Didl\DidlBuilder.cs" />
     <Compile Include="Didl\Filter.cs" />
     <Compile Include="Didl\StringWriterWithEncoding.cs" />
     <Compile Include="DlnaManager.cs" />
     <Compile Include="Eventing\EventManager.cs" />
     <Compile Include="Eventing\EventSubscription.cs" />
+    <Compile Include="EventSubscriptionResponse.cs" />
+    <Compile Include="IConnectionManager.cs" />
+    <Compile Include="IContentDirectory.cs" />
+    <Compile Include="IEventManager.cs" />
+    <Compile Include="IMediaReceiverRegistrar.cs" />
+    <Compile Include="IUpnpService.cs" />
     <Compile Include="Main\DlnaEntryPoint.cs" />
     <Compile Include="MediaReceiverRegistrar\ControlHandler.cs" />
     <Compile Include="MediaReceiverRegistrar\MediaReceiverRegistrar.cs" />
@@ -129,18 +137,6 @@
     <EmbeddedResource Include="Images\people480.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MediaBrowser.Common\MediaBrowser.Common.csproj">
-      <Project>{9142eefa-7570-41e1-bfcc-468bb571af2f}</Project>
-      <Name>MediaBrowser.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MediaBrowser.Controller\MediaBrowser.Controller.csproj">
-      <Project>{17e1f4e6-8abd-4fe5-9ecf-43d4b6087ba2}</Project>
-      <Name>MediaBrowser.Controller</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MediaBrowser.Model\MediaBrowser.Model.csproj">
-      <Project>{7eeeb4bb-f3e8-48fc-b4c5-70f0fff8329b}</Project>
-      <Name>MediaBrowser.Model</Name>
-    </ProjectReference>
     <ProjectReference Include="..\RSSDP\RSSDP.csproj">
       <Project>{21002819-c39a-4d3e-be83-2a276a77fb1f}</Project>
       <Name>RSSDP</Name>
@@ -177,9 +173,21 @@
     <EmbeddedResource Include="Profiles\Xml\Xbox One.xml" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="MediaBrowser.Common, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaBrowser.Common.3.5.0\lib\netstandard2.0\MediaBrowser.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="MediaBrowser.Controller, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaBrowser.Server.Core.3.5.0\lib\netstandard2.0\MediaBrowser.Controller.dll</HintPath>
+    </Reference>
+    <Reference Include="MediaBrowser.Model, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaBrowser.Common.3.5.0\lib\netstandard2.0\MediaBrowser.Model.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.1\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -190,6 +198,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Profiles\Xml\Marantz.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

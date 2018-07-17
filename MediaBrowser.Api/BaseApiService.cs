@@ -81,17 +81,17 @@ namespace MediaBrowser.Api
         protected object ToOptimizedResult<T>(T result)
             where T : class
         {
-            return ResultFactory.GetOptimizedResult(Request, result);
+            return ResultFactory.GetResult(Request, result);
         }
 
-        protected void AssertCanUpdateUser(IAuthorizationContext authContext, IUserManager userManager, string userId, bool restrictUserPreferences)
+        protected void AssertCanUpdateUser(IAuthorizationContext authContext, IUserManager userManager, Guid userId, bool restrictUserPreferences)
         {
             var auth = authContext.GetAuthorizationInfo(Request);
 
-            var authenticatedUser = userManager.GetUserById(auth.UserId);
+            var authenticatedUser = auth.User;
 
             // If they're going to update the record of another user, they must be an administrator
-            if (!string.Equals(userId, auth.UserId, StringComparison.OrdinalIgnoreCase))
+            if (!userId.Equals(auth.UserId))
             {
                 if (!authenticatedUser.Policy.IsAdministrator)
                 {
@@ -105,18 +105,6 @@ namespace MediaBrowser.Api
                     throw new SecurityException("Unauthorized access.");
                 }
             }
-        }
-
-        /// <summary>
-        /// To the optimized serialized result using cache.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="result">The result.</param>
-        /// <returns>System.Object.</returns>
-        protected object ToOptimizedSerializedResultUsingCache<T>(T result)
-           where T : class
-        {
-            return ToOptimizedResult(result);
         }
 
         /// <summary>
@@ -145,7 +133,7 @@ namespace MediaBrowser.Api
                 options.Fields = hasFields.GetItemFields();
             }
 
-            if (!options.Fields.Contains(Model.Querying.ItemFields.RecursiveItemCount) || !options.Fields.Contains(Model.Querying.ItemFields.ChildCount))
+            if (!options.ContainsField(Model.Querying.ItemFields.RecursiveItemCount) || !options.ContainsField(Model.Querying.ItemFields.ChildCount))
             {
                 var client = authContext.GetAuthorizationInfo(Request).Client ?? string.Empty;
                 if (client.IndexOf("kodi", StringComparison.OrdinalIgnoreCase) != -1 ||
@@ -294,7 +282,7 @@ namespace MediaBrowser.Api
                 IncludeItemTypes = new[] { typeof(T).Name },
                 DtoOptions = dtoOptions
 
-            }).OfType<Person>().FirstOrDefault();
+            }).OfType<T>().FirstOrDefault();
 
             if (result == null)
             {
@@ -304,7 +292,7 @@ namespace MediaBrowser.Api
                     IncludeItemTypes = new[] { typeof(T).Name },
                     DtoOptions = dtoOptions
 
-                }).OfType<Person>().FirstOrDefault();
+                }).OfType<T>().FirstOrDefault();
             }
 
             if (result == null)
@@ -315,10 +303,10 @@ namespace MediaBrowser.Api
                     IncludeItemTypes = new[] { typeof(T).Name },
                     DtoOptions = dtoOptions
 
-                }).OfType<Person>().FirstOrDefault();
+                }).OfType<T>().FirstOrDefault();
             }
 
-            return result as T;
+            return result;
         }
 
         protected string GetPathValue(int index)

@@ -89,7 +89,7 @@ namespace Emby.Server.Implementations.Library
 
                 Limit = 200,
 
-                OrderBy = new [] { new Tuple<string, SortOrder>(ItemSortBy.Random, SortOrder.Ascending) },
+                OrderBy = new [] { new ValueTuple<string, SortOrder>(ItemSortBy.Random, SortOrder.Ascending) },
 
                 DtoOptions = dtoOptions
 

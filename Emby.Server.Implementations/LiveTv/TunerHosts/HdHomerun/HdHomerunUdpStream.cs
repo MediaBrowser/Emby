@@ -26,8 +26,8 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
         private readonly int _numTuners;
         private readonly INetworkManager _networkManager;
 
-        public HdHomerunUdpStream(MediaSourceInfo mediaSource, TunerHostInfo tunerHostInfo, string originalStreamId, IHdHomerunChannelCommands channelCommands, int numTuners, IFileSystem fileSystem, IHttpClient httpClient, ILogger logger, IServerApplicationPaths appPaths, IServerApplicationHost appHost, MediaBrowser.Model.Net.ISocketFactory socketFactory, INetworkManager networkManager, IEnvironmentInfo environment)
-            : base(mediaSource, tunerHostInfo, environment, fileSystem, logger, appPaths)
+        public HdHomerunUdpStream(MediaSourceInfo mediaSource, TunerHostInfo tunerHostInfo, string originalStreamId, IHdHomerunChannelCommands channelCommands, int numTuners, IFileSystem fileSystem, IHttpClient httpClient, ILogger logger, IServerApplicationPaths appPaths, IServerApplicationHost appHost, MediaBrowser.Model.Net.ISocketFactory socketFactory, INetworkManager networkManager)
+            : base(mediaSource, tunerHostInfo, fileSystem, logger, appPaths)
         {
             _appHost = appHost;
             _socketFactory = socketFactory;
@@ -107,8 +107,8 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
             //OpenedMediaSource.Path = tempFile;
             //OpenedMediaSource.ReadAtNativeFramerate = true;
 
-            OpenedMediaSource.Path = _appHost.GetLocalApiUrl("127.0.0.1") + "/LiveTv/LiveStreamFiles/" + UniqueId + "/stream.ts";
-            OpenedMediaSource.Protocol = MediaProtocol.Http;
+            MediaSource.Path = _appHost.GetLocalApiUrl("127.0.0.1") + "/LiveTv/LiveStreamFiles/" + UniqueId + "/stream.ts";
+            MediaSource.Protocol = MediaProtocol.Http;
             //OpenedMediaSource.SupportsDirectPlay = false;
             //OpenedMediaSource.SupportsDirectStream = true;
             //OpenedMediaSource.SupportsTranscoding = true;

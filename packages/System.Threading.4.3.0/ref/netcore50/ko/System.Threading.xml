@@ -1,0 +1,1952 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Threading</name>
+  </assembly>
+  <members>
+    <member name="T:System.Threading.AbandonedMutexException">
+      <summary>스레드가 다른 스레드에서 해제하지 않고 종료하여 중단한 <see cref="T:System.Threading.Mutex" /> 개체를 가져오면 throw되는 예외입니다.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor">
+      <summary>기본값으로 <see cref="T:System.Threading.AbandonedMutexException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.Int32,System.Threading.WaitHandle)">
+      <summary>중단된 뮤텍스의 지정된 인덱스 및 뮤텍스를 나타내는 <see cref="T:System.Threading.Mutex" /> 개체(해당 사항이 있을 경우)를 사용하여 <see cref="T:System.Threading.AbandonedMutexException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="location">
+        <see cref="Overload:System.Threading.WaitHandle.WaitAny" /> 메서드에 대해 예외가 throw되면 대기 핸들의 배열에서 중단된 뮤텍스의 인덱스이고, <see cref="Overload:System.Threading.WaitHandle.WaitOne" /> 또는 <see cref="Overload:System.Threading.WaitHandle.WaitAll" /> 메서드에 대해 예외가 throw되면 –1입니다.</param>
+      <param name="handle">중단된 뮤텍스를 나타내는 <see cref="T:System.Threading.Mutex" /> 개체입니다.</param>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.String)">
+      <summary>지정된 오류 메시지를 사용하여 <see cref="T:System.Threading.AbandonedMutexException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="message">예외에 대한 이유를 설명하는 오류 메시지입니다.</param>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.String,System.Exception)">
+      <summary>지정된 오류 메시지와 내부 예외를 사용하여 <see cref="T:System.Threading.AbandonedMutexException" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+      <param name="message">예외에 대한 이유를 설명하는 오류 메시지입니다.</param>
+      <param name="inner">현재 예외의 원인이 되는 예외입니다.<paramref name="inner" /> 매개 변수가 null이 아니면 현재 예외는 내부 예외를 처리하는 catch 블록에서 발생합니다.</param>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.String,System.Exception,System.Int32,System.Threading.WaitHandle)">
+      <summary>지정된 오류 메시지, 내부 예외, 중단된 뮤텍스의 인덱스 및 뮤텍스를 나타내는 <see cref="T:System.Threading.Mutex" /> 개체(해당 사항이 있을 경우)를 사용하여 <see cref="T:System.Threading.AbandonedMutexException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="message">예외에 대한 이유를 설명하는 오류 메시지입니다.</param>
+      <param name="inner">현재 예외의 원인이 되는 예외입니다.<paramref name="inner" /> 매개 변수가 null이 아니면 현재 예외는 내부 예외를 처리하는 catch 블록에서 발생합니다.</param>
+      <param name="location">
+        <see cref="Overload:System.Threading.WaitHandle.WaitAny" /> 메서드에 대해 예외가 throw되면 대기 핸들의 배열에서 중단된 뮤텍스의 인덱스이고, <see cref="Overload:System.Threading.WaitHandle.WaitOne" /> 또는 <see cref="Overload:System.Threading.WaitHandle.WaitAll" /> 메서드에 대해 예외가 throw되면 –1입니다.</param>
+      <param name="handle">중단된 뮤텍스를 나타내는 <see cref="T:System.Threading.Mutex" /> 개체입니다.</param>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.String,System.Int32,System.Threading.WaitHandle)">
+      <summary>지정된 오류 메시지, 중단된 뮤텍스의 인덱스 및 중단된 뮤텍스(해당 사항이 있을 경우)를 사용하여 <see cref="T:System.Threading.AbandonedMutexException" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+      <param name="message">예외에 대한 이유를 설명하는 오류 메시지입니다.</param>
+      <param name="location">
+        <see cref="Overload:System.Threading.WaitHandle.WaitAny" /> 메서드에 대해 예외가 throw되면 대기 핸들의 배열에서 중단된 뮤텍스의 인덱스이고, <see cref="Overload:System.Threading.WaitHandle.WaitOne" /> 또는 <see cref="Overload:System.Threading.WaitHandle.WaitAll" /> 메서드에 대해 예외가 throw되면 –1입니다.</param>
+      <param name="handle">중단된 뮤텍스를 나타내는 <see cref="T:System.Threading.Mutex" /> 개체입니다.</param>
+    </member>
+    <member name="P:System.Threading.AbandonedMutexException.Mutex">
+      <summary>예외의 발생시킨 중단된 뮤텍스를 가져옵니다.</summary>
+      <returns>중단된 뮤텍스를 나타내는 <see cref="T:System.Threading.Mutex" /> 개체이며, 중단된 뮤텍스를 식별할 수 없는 경우에는 null입니다.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Threading.AbandonedMutexException.MutexIndex">
+      <summary>예외의 발생시킨 중단된 뮤텍스를 가져옵니다.</summary>
+      <returns>
+        <see cref="Overload:System.Threading.WaitHandle.WaitAny" /> 메서드에 전달된 대기 핸들의 배열에서 중단된 뮤텍스를 나타내는 <see cref="T:System.Threading.Mutex" /> 개체의 인덱스이고, 중단된 뮤텍스의 인덱스를 식별할 수 없는 경우에는 –1입니다.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.AsyncLocal`1">
+      <summary>비동기 메서드와 같은 지정된 비동기 제어 흐름에 로컬인 앰비언트 데이터를 나타냅니다. </summary>
+      <typeparam name="T">앰비언트 데이터의 형식입니다. </typeparam>
+    </member>
+    <member name="M:System.Threading.AsyncLocal`1.#ctor">
+      <summary>변경 알림을 받지 않는 <see cref="T:System.Threading.AsyncLocal`1" /> 인스턴스를 인스턴스화합니다. </summary>
+    </member>
+    <member name="M:System.Threading.AsyncLocal`1.#ctor(System.Action{System.Threading.AsyncLocalValueChangedArgs{`0}})">
+      <summary>변경 알림을 받는 <see cref="T:System.Threading.AsyncLocal`1" /> 로컬 인스턴스를 인스턴스화합니다. </summary>
+      <param name="valueChangedHandler">스레드에서 현재 값이 변경될 때마다 호출되는 대리자입니다. </param>
+    </member>
+    <member name="P:System.Threading.AsyncLocal`1.Value">
+      <summary>앰비언트 데이터의 값을 가져오거나 설정합니다. </summary>
+      <returns>앰비언트 데이터의 값입니다. </returns>
+    </member>
+    <member name="T:System.Threading.AsyncLocalValueChangedArgs`1">
+      <summary>변경 알림을 등록하는 <see cref="T:System.Threading.AsyncLocal`1" /> 인스턴스에 데이터 변경 정보를 제공하는 클래스입니다. </summary>
+      <typeparam name="T">데이터 형식입니다. </typeparam>
+    </member>
+    <member name="P:System.Threading.AsyncLocalValueChangedArgs`1.CurrentValue">
+      <summary>데이터의 현재 값을 가져옵니다. </summary>
+      <returns>데이터의 현재 값입니다. </returns>
+    </member>
+    <member name="P:System.Threading.AsyncLocalValueChangedArgs`1.PreviousValue">
+      <summary>데이터의 이전 값을 가져옵니다.</summary>
+      <returns>데이터의 이전 값입니다. </returns>
+    </member>
+    <member name="P:System.Threading.AsyncLocalValueChangedArgs`1.ThreadContextChanged">
+      <summary>실행 컨텍스트가 변경되어 값이 변경되었는지 여부를 나타내는 값을 반환합니다. </summary>
+      <returns>실행 컨텍스트가 변경되어 값이 변경되었으면 true이고, 그렇지 않으면 false입니다. </returns>
+    </member>
+    <member name="T:System.Threading.AutoResetEvent">
+      <summary>대기 중인 스레드에 이벤트가 발생했음을 알립니다.이 클래스는 상속될 수 없습니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.AutoResetEvent.#ctor(System.Boolean)">
+      <summary>초기 상태를 신호 받음으로 설정할지를 나타내는 부울 값을 사용하여 <see cref="T:System.Threading.AutoResetEvent" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="initialState">
+              초기 상태를 신호 받음으로 설정하려면 true를 사용하고 초기 상태를 신호 없음으로 설정하려면 false를 사용합니다. </param>
+    </member>
+    <member name="T:System.Threading.Barrier">
+      <summary>여러 작업이 여러 단계에 걸쳐 특정 알고리즘에서 병렬로 함께 작동할 수 있도록 합니다.</summary>
+    </member>
+    <member name="M:System.Threading.Barrier.#ctor(System.Int32)">
+      <summary>
+        <see cref="T:System.Threading.Barrier" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="participantCount">참여 스레드의 수입니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="participantCount" />가 0보다 작거나 32,767보다 큰 경우</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.#ctor(System.Int32,System.Action{System.Threading.Barrier})">
+      <summary>
+        <see cref="T:System.Threading.Barrier" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="participantCount">참여 스레드의 수입니다.</param>
+      <param name="postPhaseAction">각 단계 후에 실행할 <see cref="T:System.Action`1" />입니다. 아무 작업도 수행되지 않았음을 나타내기 위해 null(Visual Basic의 경우 Nothing)이 전달될 수 있습니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="participantCount" />가 0보다 작거나 32,767보다 큰 경우</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.AddParticipant">
+      <summary>추가 참가자가 있음을 <see cref="T:System.Threading.Barrier" />에 알립니다.</summary>
+      <returns>새 참가자가 처음으로 참여할 장벽의 단계 번호입니다.</returns>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+      <exception cref="T:System.InvalidOperationException">참가자를 추가하면 해당 장애물 참가자 수가 32,767을 초과하게 됩니다.또는이 메서드는 사후 단계 작업 내에서 호출되었습니다.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.AddParticipants(System.Int32)">
+      <summary>추가 참가자가 있음을 <see cref="T:System.Threading.Barrier" />에 알립니다.</summary>
+      <returns>새 참가자가 처음으로 참여할 장벽의 단계 번호입니다.</returns>
+      <param name="participantCount">장벽에 추가할 추가 참가자의 수입니다.</param>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="participantCount" />가 0보다 작은 경우.또는<paramref name="participantCount" /> 참가자를 추가하면 해당 장애물 참가자 수가 32,767을 초과하게 됩니다.</exception>
+      <exception cref="T:System.InvalidOperationException">이 메서드는 사후 단계 작업 내에서 호출되었습니다.</exception>
+    </member>
+    <member name="P:System.Threading.Barrier.CurrentPhaseNumber">
+      <summary>장벽의 현재 단계 번호를 가져옵니다.</summary>
+      <returns>장벽의 현재 단계 번호를 반환합니다.</returns>
+    </member>
+    <member name="M:System.Threading.Barrier.Dispose">
+      <summary>
+        <see cref="T:System.Threading.Barrier" /> 클래스의 현재 인스턴스에서 사용하는 모든 리소스를 해제합니다.</summary>
+      <exception cref="T:System.InvalidOperationException">이 메서드는 사후 단계 작업 내에서 호출되었습니다.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.Dispose(System.Boolean)">
+      <summary>
+        <see cref="T:System.Threading.Barrier" />에서 사용하는 관리되지 않는 리소스를 해제하고, 관리되는 리소스를 선택적으로 해제합니다.</summary>
+      <param name="disposing">관리되는 리소스와 관리되지 않는 리소스를 모두 해제하려면 true이고, 관리되지 않는 리소스만 해제하려면 false입니다.</param>
+    </member>
+    <member name="P:System.Threading.Barrier.ParticipantCount">
+      <summary>장벽에 있는 참가자의 총 수를 가져옵니다.</summary>
+      <returns>장벽에 있는 참가자의 총 수를 반환합니다.</returns>
+    </member>
+    <member name="P:System.Threading.Barrier.ParticipantsRemaining">
+      <summary>현재 단계에서 아직 신호를 받지 않은 장벽의 참가자 수를 가져옵니다.</summary>
+      <returns>현재 단계에서 아직 신호를 받지 않은 장벽의 참가자 수를 반환합니다.</returns>
+    </member>
+    <member name="M:System.Threading.Barrier.RemoveParticipant">
+      <summary>참가자가 하나 감소함을 <see cref="T:System.Threading.Barrier" />에 알립니다.</summary>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+      <exception cref="T:System.InvalidOperationException">해당 장애물에 이미 0 참가자가 있습니다.또는이 메서드는 사후 단계 작업 내에서 호출되었습니다.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.RemoveParticipants(System.Int32)">
+      <summary>참가자가 감소함을 <see cref="T:System.Threading.Barrier" />에 알립니다.</summary>
+      <param name="participantCount">장벽에서 제거할 추가 참가자의 수입니다.</param>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="participantCount" />가 0보다 작은 경우.</exception>
+      <exception cref="T:System.InvalidOperationException">해당 장애물에 이미 0 참가자가 있습니다.또는이 메서드는 사후 단계 작업 내에서 호출되었습니다. 또는현재 참가자 수가 지정된 participantCount보다 작습니다.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">총 참가자 수가 지정된 <paramref name=" participantCount" />보다 작습니다.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait">
+      <summary>참가자가 장벽에 도달했다는 신호를 보내고 다른 모든 참가자도 장벽에 도달할 때까지 기다립니다.</summary>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+      <exception cref="T:System.InvalidOperationException">메서드는 사후 단계 작업 내에서 호출되며 현재 장애물에 0 참가자가 있거나 장애물이 참가자로 등록된 것보다 많은 스레드에서 신호를 받습니다.</exception>
+      <exception cref="T:System.Threading.BarrierPostPhaseException">모든 참가 스레드가 SignalAndWait를 호출한 후에 Barrier의 단계 후 작업에서 예외가 throw되는 경우 예외가 BarrierPostPhaseException에서 래핑되고 모든 참가 스레드에서 throw됩니다.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.Int32)">
+      <summary>참가자가 장벽에 도달했다는 신호를 보내고 부호 있는 32비트 정수로 시간 제한을 측정하여 다른 모든 참가자도 장벽에 도달할 때까지 기다립니다.</summary>
+      <returns>지정된 시간 내에 모든 참가자가 장벽에 도달했으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="millisecondsTimeout">대기할 시간(밀리초)이거나, 무기한 대기할 경우 <see cref="F:System.Threading.Timeout.Infinite" />(-1)입니다.</param>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" />이 무기한 시간 제한을 나타내는 -1 이외의 음수인 경우</exception>
+      <exception cref="T:System.InvalidOperationException">메서드는 사후 단계 작업 내에서 호출되며 현재 장애물에 0 참가자가 있거나 장애물이 참가자로 등록된 것보다 많은 스레드에서 신호를 받습니다.</exception>
+      <exception cref="T:System.Threading.BarrierPostPhaseException">모든 참가 스레드가 SignalAndWait를 호출한 후에 Barrier의 단계 후 작업에서 예외가 throw되는 경우 예외가 BarrierPostPhaseException에서 래핑되고 모든 참가 스레드에서 throw됩니다.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.Int32,System.Threading.CancellationToken)">
+      <summary>참가자가 장벽에 도달했다는 신호를 보내고 취소 토큰을 확인하면서 부호 있는 32비트 정수로 시간 제한을 측정하여 다른 모든 참가자도 장벽에 도달할 때까지 기다립니다.</summary>
+      <returns>지정된 시간 내에 모든 참가자가 장벽에 도달했으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="millisecondsTimeout">대기할 시간(밀리초)이거나, 무기한 대기할 경우 <see cref="F:System.Threading.Timeout.Infinite" />(-1)입니다.</param>
+      <param name="cancellationToken">확인할 <see cref="T:System.Threading.CancellationToken" />입니다.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" />이 취소되었습니다.</exception>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" />이 무기한 시간 제한을 나타내는 -1 이외의 음수인 경우</exception>
+      <exception cref="T:System.InvalidOperationException">메서드는 사후 단계 작업 내에서 호출되며 현재 장애물에 0 참가자가 있거나 장애물이 참가자로 등록된 것보다 많은 스레드에서 신호를 받습니다.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.Threading.CancellationToken)">
+      <summary>참가자가 장벽에 도달했다는 신호를 보내고 취소 토큰을 확인하면서 다른 모든 참가자도 장벽에 도달할 때까지 기다립니다.</summary>
+      <param name="cancellationToken">확인할 <see cref="T:System.Threading.CancellationToken" />입니다.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" />이 취소되었습니다.</exception>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+      <exception cref="T:System.InvalidOperationException">메서드는 사후 단계 작업 내에서 호출되며 현재 장애물에 0 참가자가 있거나 장애물이 참가자로 등록된 것보다 많은 스레드에서 신호를 받습니다.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.TimeSpan)">
+      <summary>참가자가 장벽에 도달했다는 신호를 보내고 <see cref="T:System.TimeSpan" /> 개체를 사용하여 시간 간격을 측정하여 다른 참가자도 장벽에 도달할 때까지 기다립니다.</summary>
+      <returns>다른 모든 참가자가 장벽에 도달했으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="timeout">대기할 시간(밀리초)을 나타내는 <see cref="T:System.TimeSpan" />이거나, 무한 대기하도록 -1밀리초를 나타내는 <see cref="T:System.TimeSpan" />입니다.</param>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" />이 무기한 시간 제한을 나타내는 -1밀리초 이외의 음수이거나 시간 제한이 없거나, 32,767보다 큰 경우.</exception>
+      <exception cref="T:System.InvalidOperationException">메서드는 사후 단계 작업 내에서 호출되며 현재 장애물에 0 참가자가 있거나 장애물이 참가자로 등록된 것보다 많은 스레드에서 신호를 받습니다.</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>참가자가 장벽에 도달했다는 신호를 보내고 취소 토큰을 확인하면서 <see cref="T:System.TimeSpan" /> 개체를 사용하여 시간 제한을 측정하여 다른 모든 참가자도 장벽에 도달할 때까지 기다립니다.</summary>
+      <returns>다른 모든 참가자가 장벽에 도달했으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="timeout">대기할 시간(밀리초)을 나타내는 <see cref="T:System.TimeSpan" />이거나, 무한 대기하도록 -1밀리초를 나타내는 <see cref="T:System.TimeSpan" />입니다.</param>
+      <param name="cancellationToken">확인할 <see cref="T:System.Threading.CancellationToken" />입니다.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" />이 취소되었습니다.</exception>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" />이 무기한 시간 제한을 나타내는 -1밀리초 이외의 음수인 경우</exception>
+      <exception cref="T:System.InvalidOperationException">메서드는 사후 단계 작업 내에서 호출되며 현재 장애물에 0 참가자가 있거나 장애물이 참가자로 등록된 것보다 많은 스레드에서 신호를 받습니다.</exception>
+    </member>
+    <member name="T:System.Threading.BarrierPostPhaseException">
+      <summary>
+        <see cref="T:System.Threading.Barrier" />의 사후 단계 작업이 실패할 경우 throw되는 예외입니다.</summary>
+    </member>
+    <member name="M:System.Threading.BarrierPostPhaseException.#ctor">
+      <summary>오류를 설명하는 시스템 제공 메시지를 사용하여 <see cref="T:System.Threading.BarrierPostPhaseException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Threading.BarrierPostPhaseException.#ctor(System.Exception)">
+      <summary>지정된 내부 예외를 사용하여 <see cref="T:System.Threading.BarrierPostPhaseException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="innerException">현재 예외의 원인이 되는 예외입니다.</param>
+    </member>
+    <member name="M:System.Threading.BarrierPostPhaseException.#ctor(System.String)">
+      <summary>오류를 설명하는 지정된 메시지를 사용하여 <see cref="T:System.Threading.BarrierPostPhaseException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="message">예외를 설명하는 메시지입니다.이 생성자의 호출자는 이 문자열이 현재 시스템 문화권에 맞게 지역화되었는지 확인하는 데 필요합니다.</param>
+    </member>
+    <member name="M:System.Threading.BarrierPostPhaseException.#ctor(System.String,System.Exception)">
+      <summary>지정된 오류 메시지와 해당 예외의 근본 원인인 내부 예외에 대한 참조를 사용하여 <see cref="T:System.Threading.BarrierPostPhaseException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="message">예외를 설명하는 메시지입니다.이 생성자의 호출자는 이 문자열이 현재 시스템 문화권에 맞게 지역화되었는지 확인하는 데 필요합니다.</param>
+      <param name="innerException">현재 예외의 원인이 되는 예외입니다.<paramref name="innerException" /> 매개 변수가 null이 아니면 현재 예외는 내부 예외를 처리하는 catch 블록에서 발생합니다.</param>
+    </member>
+    <member name="T:System.Threading.ContextCallback">
+      <summary>새 컨텍스트 내에서 호출될 메서드를 나타냅니다.  </summary>
+      <param name="state">콜백 메서드가 실행될 때마다 사용할 정보가 포함된 개체입니다.</param>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.CountdownEvent">
+      <summary>수가 0에 도달하는 경우 신호를 받는 동기화 기본 형식을 나타냅니다.</summary>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.#ctor(System.Int32)">
+      <summary>지정된 수를 사용하여 <see cref="T:System.Threading.CountdownEvent" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="initialCount">
+        <see cref="T:System.Threading.CountdownEvent" />를 설정하는 데 처음 필요한 신호의 수입니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="initialCount" />가 0보다 작은 경우</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.AddCount">
+      <summary>
+        <see cref="T:System.Threading.CountdownEvent" />의 현재 수를 1씩 늘립니다.</summary>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+      <exception cref="T:System.InvalidOperationException">현재 인스턴스가 이미 설정되어 있습니다.또는<see cref="P:System.Threading.CountdownEvent.CurrentCount" />가 <see cref="F:System.Int32.MaxValue" />보다 크거나 같은 경우</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.AddCount(System.Int32)">
+      <summary>
+        <see cref="T:System.Threading.CountdownEvent" />의 현재 수를 지정된 값만큼 늘립니다.</summary>
+      <param name="signalCount">
+        <see cref="P:System.Threading.CountdownEvent.CurrentCount" />를 늘릴 값입니다.</param>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="signalCount" />가 0보다 작거나 같은 경우</exception>
+      <exception cref="T:System.InvalidOperationException">현재 인스턴스가 이미 설정되어 있습니다.또는개수가 <paramref name="signalCount." /> 만큼 증가된 후에 <see cref="P:System.Threading.CountdownEvent.CurrentCount" />가 <see cref="F:System.Int32.MaxValue" />보다 크거나 같은 경우</exception>
+    </member>
+    <member name="P:System.Threading.CountdownEvent.CurrentCount">
+      <summary>이벤트를 설정하는 데 필요한 남아 있는 신호의 수를 가져옵니다.</summary>
+      <returns> 이벤트를 설정하는 데 필요한 남아 있는 신호의 수입니다.</returns>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Dispose">
+      <summary>
+        <see cref="T:System.Threading.CountdownEvent" /> 클래스의 현재 인스턴스에서 사용하는 모든 리소스를 해제합니다.</summary>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Dispose(System.Boolean)">
+      <summary>
+        <see cref="T:System.Threading.CountdownEvent" />에서 사용하는 관리되지 않는 리소스를 해제하고, 관리되는 리소스를 선택적으로 해제합니다.</summary>
+      <param name="disposing">관리되는 리소스와 관리되지 않는 리소스를 모두 해제하려면 true이고, 관리되지 않는 리소스만 해제하려면 false입니다.</param>
+    </member>
+    <member name="P:System.Threading.CountdownEvent.InitialCount">
+      <summary>이벤트를 설정하는 데 처음으로 필요한 신호의 수를 가져옵니다.</summary>
+      <returns> 이벤트를 설정하는 데 처음으로 필요한 신호의 수입니다.</returns>
+    </member>
+    <member name="P:System.Threading.CountdownEvent.IsSet">
+      <summary>이벤트가 설정되었는지 여부를 확인합니다.</summary>
+      <returns>이벤트가 설정되었으면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Reset">
+      <summary>
+        <see cref="P:System.Threading.CountdownEvent.CurrentCount" />를 <see cref="P:System.Threading.CountdownEvent.InitialCount" />의 값으로 다시 설정합니다.</summary>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Reset(System.Int32)">
+      <summary>
+        <see cref="P:System.Threading.CountdownEvent.InitialCount" /> 속성을 지정된 값으로 재설정합니다.</summary>
+      <param name="count">
+        <see cref="T:System.Threading.CountdownEvent" />를 설정하는 데 필요한 신호의 수입니다.</param>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" />가 0보다 작은 경우</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Signal">
+      <summary>
+        <see cref="P:System.Threading.CountdownEvent.CurrentCount" />의 값을 줄이면서 신호를 <see cref="T:System.Threading.CountdownEvent" />에 등록합니다.</summary>
+      <returns>신호로 인해 수가 0에 도달하고 이벤트가 설정되었으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+      <exception cref="T:System.InvalidOperationException">현재 인스턴스가 이미 설정되어 있습니다.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Signal(System.Int32)">
+      <summary>지정된 양만큼 <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> 값을 줄이면서 여러 신호를 <see cref="T:System.Threading.CountdownEvent" />에 등록합니다.</summary>
+      <returns>신호로 인해 수가 0에 도달하고 이벤트가 설정되었으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="signalCount">등록할 신호의 수입니다.</param>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="signalCount" />가 1보다 작은 경우.</exception>
+      <exception cref="T:System.InvalidOperationException">현재 인스턴스가 이미 설정되어 있습니다. -또는- <paramref name="signalCount" />가 <see cref="P:System.Threading.CountdownEvent.CurrentCount" />보다 큰 경우</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.TryAddCount">
+      <summary>하나씩 <see cref="P:System.Threading.CountdownEvent.CurrentCount" />를 증가하려고 시도했습니다.</summary>
+      <returns>늘렸으면 true이고 그렇지 않으면 false입니다.<see cref="P:System.Threading.CountdownEvent.CurrentCount" />가 이미 0이면 이 메서드에서 false를 반환합니다.</returns>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="P:System.Threading.CountdownEvent.CurrentCount" />가 <see cref="F:System.Int32.MaxValue" />와 같은 경우</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.TryAddCount(System.Int32)">
+      <summary>지정된 값만큼 <see cref="P:System.Threading.CountdownEvent.CurrentCount" />를 증가하려고 시도했습니다.</summary>
+      <returns>늘렸으면 true이고 그렇지 않으면 false입니다.<see cref="P:System.Threading.CountdownEvent.CurrentCount" />가 이미 0이면 false를 반환합니다.</returns>
+      <param name="signalCount">
+        <see cref="P:System.Threading.CountdownEvent.CurrentCount" />를 늘릴 값입니다.</param>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="signalCount" />가 0보다 작거나 같은 경우</exception>
+      <exception cref="T:System.InvalidOperationException">현재 인스턴스가 이미 설정되어 있습니다.또는<see cref="P:System.Threading.CountdownEvent.CurrentCount" /> + <paramref name="signalCount" />가 <see cref="F:System.Int32.MaxValue" />보다 크거나 같은 경우</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait">
+      <summary>
+        <see cref="T:System.Threading.CountdownEvent" />가 설정될 때까지 현재 스레드를 차단합니다.</summary>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.Int32)">
+      <summary>부호 있는 32비트 정수로 시간 제한을 측정하여 <see cref="T:System.Threading.CountdownEvent" />가 설정될 때까지 현재 스레드를 차단합니다.</summary>
+      <returns>
+        <see cref="T:System.Threading.CountdownEvent" />가 설정되었으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="millisecondsTimeout">대기할 시간(밀리초)이거나, 무기한 대기할 경우 <see cref="F:System.Threading.Timeout.Infinite" />(-1)입니다.</param>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" />이 무기한 시간 제한을 나타내는 -1 이외의 음수인 경우</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.Int32,System.Threading.CancellationToken)">
+      <summary>
+        <see cref="T:System.Threading.CancellationToken" />을 확인하면서 부호 있는 32비트 정수로 시간 제한을 측정하여 <see cref="T:System.Threading.CountdownEvent" />가 설정될 때까지 현재 스레드를 차단합니다.</summary>
+      <returns>
+        <see cref="T:System.Threading.CountdownEvent" />가 설정되었으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="millisecondsTimeout">대기할 시간(밀리초)이거나, 무기한 대기할 경우 <see cref="F:System.Threading.Timeout.Infinite" />(-1)입니다.</param>
+      <param name="cancellationToken">확인할 <see cref="T:System.Threading.CancellationToken" />입니다.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" />이 취소되었습니다.</exception>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우 -또는- <paramref name="cancellationToken" />을 만든 <see cref="T:System.Threading.CancellationTokenSource" />가 이미 삭제되었습니다.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" />이 무기한 시간 제한을 나타내는 -1 이외의 음수인 경우</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.Threading.CancellationToken)">
+      <summary>
+        <see cref="T:System.Threading.CancellationToken" />을 확인하면서 <see cref="T:System.Threading.CountdownEvent" />가 설정될 때까지 현재 스레드를 차단합니다.</summary>
+      <param name="cancellationToken">확인할 <see cref="T:System.Threading.CancellationToken" />입니다.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" />이 취소되었습니다.</exception>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우 -또는- <paramref name="cancellationToken" />을 만든 <see cref="T:System.Threading.CancellationTokenSource" />가 이미 삭제되었습니다.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.TimeSpan)">
+      <summary>
+        <see cref="T:System.TimeSpan" />으로 시간 제한을 측정하여 <see cref="T:System.Threading.CountdownEvent" />가 설정될 때까지 현재 스레드를 차단합니다.</summary>
+      <returns>
+        <see cref="T:System.Threading.CountdownEvent" />가 설정되었으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="timeout">대기할 시간(밀리초)을 나타내는 <see cref="T:System.TimeSpan" />이거나, 무한 대기하도록 -1밀리초를 나타내는 <see cref="T:System.TimeSpan" />입니다.</param>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" />이 무기한 시간 제한을 나타내는 -1밀리초 이외의 음수이거나 시간 제한이 <see cref="F:System.Int32.MaxValue" />보다 큰 경우.</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>
+        <see cref="T:System.Threading.CancellationToken" />을 확인하면서 <see cref="T:System.TimeSpan" />으로 시간 제한을 측정하여 <see cref="T:System.Threading.CountdownEvent" />가 설정될 때까지 현재 스레드를 차단합니다.</summary>
+      <returns>
+        <see cref="T:System.Threading.CountdownEvent" />가 설정되었으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="timeout">대기할 시간(밀리초)을 나타내는 <see cref="T:System.TimeSpan" />이거나, 무한 대기하도록 -1밀리초를 나타내는 <see cref="T:System.TimeSpan" />입니다.</param>
+      <param name="cancellationToken">확인할 <see cref="T:System.Threading.CancellationToken" />입니다.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" />이 취소되었습니다.</exception>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우 -또는- <paramref name="cancellationToken" />을 만든 <see cref="T:System.Threading.CancellationTokenSource" />가 이미 삭제되었습니다.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" />이 무기한 시간 제한을 나타내는 -1밀리초 이외의 음수이거나 시간 제한이 <see cref="F:System.Int32.MaxValue" />보다 큰 경우.</exception>
+    </member>
+    <member name="P:System.Threading.CountdownEvent.WaitHandle">
+      <summary>이벤트가 설정될 때까지 대기하는 데 사용되는 <see cref="T:System.Threading.WaitHandle" />을 가져옵니다.</summary>
+      <returns>이벤트가 설정될 때까지 대기하는 데 사용되는 <see cref="T:System.Threading.WaitHandle" />입니다.</returns>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+    </member>
+    <member name="T:System.Threading.EventResetMode">
+      <summary>
+        <see cref="T:System.Threading.EventWaitHandle" />이 신호를 받은 후 자동이나 수동으로 다시 설정되는지 여부를 나타냅니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Threading.EventResetMode.AutoReset">
+      <summary>신호를 받으면 <see cref="T:System.Threading.EventWaitHandle" />이 스레드 하나를 해제한 후 자동으로 다시 설정됩니다.대기 중인 스레드가 없으면 <see cref="T:System.Threading.EventWaitHandle" />은 스레드가 차단될 때까지 신호를 받은 상태로 유지되다가 스레드를 해제한 후 다시 설정됩니다.</summary>
+    </member>
+    <member name="F:System.Threading.EventResetMode.ManualReset">
+      <summary>신호를 받으면 <see cref="T:System.Threading.EventWaitHandle" />이 대기하는 스레드를 모두 해제하고 수동으로 다시 설정될 때까지 신호를 받은 상태로 유지됩니다.</summary>
+    </member>
+    <member name="T:System.Threading.EventWaitHandle">
+      <summary>스레드 동기화 이벤트를 나타냅니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.#ctor(System.Boolean,System.Threading.EventResetMode)">
+      <summary>대기 핸들의 초기 상태를 신호 받음으로 설정할지 여부와 대기 핸들을 자동으로 다시 설정할지 수동으로 다시 설정할지 여부를 지정하여 <see cref="T:System.Threading.EventWaitHandle" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="initialState">초기 상태를 신호 받음으로 설정하려면 true를 사용하고 초기 상태를 신호 없음으로 설정하려면 false를 사용합니다.</param>
+      <param name="mode">이벤트를 자동으로 다시 설정할지 수동으로 다시 설정할지 결정하는 <see cref="T:System.Threading.EventResetMode" /> 값 중 하나입니다.</param>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.#ctor(System.Boolean,System.Threading.EventResetMode,System.String)">
+      <summary>이 호출의 결과로 만들어진 대기 핸들의 초기 상태를 신호 받음으로 설정할지 여부, 대기 핸들을 자동으로 다시 설정할지 수동으로 다시 설정할지 여부 및 시스템 동기화 이벤트의 이름을 지정하여 <see cref="T:System.Threading.EventWaitHandle" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="initialState">이 호출의 결과로 명명된 이벤트가 만들어진 경우 초기 상태를 신호 받음으로 설정하려면 true를 사용하고, 초기 상태를 신호 없음으로 설정하려면 false를 사용합니다.</param>
+      <param name="mode">이벤트를 자동으로 다시 설정할지 수동으로 다시 설정할지 결정하는 <see cref="T:System.Threading.EventResetMode" /> 값 중 하나입니다.</param>
+      <param name="name">시스템 차원의 동기화 이벤트의 이름입니다.</param>
+      <exception cref="T:System.IO.IOException">Win32 오류가 발생한 경우</exception>
+      <exception cref="T:System.UnauthorizedAccessException">명명된 이벤트가 존재하고 액세스 제어 보안이 있지만 사용자에게 <see cref="F:System.Security.AccessControl.EventWaitHandleRights.FullControl" />이 없는 경우</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">명명된 이벤트를 만들 수 없는 경우. 다른 형식의 대기 핸들이 같은 이름을 가지고 있기 때문인 것 같습니다.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" />이 260자보다 긴 경우</exception>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.#ctor(System.Boolean,System.Threading.EventResetMode,System.String,System.Boolean@)">
+      <summary>이 호출의 결과로 만들어진 대기 핸들의 초기 상태를 신호 받음으로 설정할지 여부, 대기 핸들을 자동으로 다시 설정할지 수동으로 다시 설정할지 여부, 시스템 동기화 이벤트의 이름 및 호출 후 명명된 시스템 이벤트가 만들어졌는지 여부를 나타내는 부울 변수를 지정하여 <see cref="T:System.Threading.EventWaitHandle" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="initialState">이 호출의 결과로 명명된 이벤트가 만들어진 경우 초기 상태를 신호 받음으로 설정하려면 true를 사용하고, 초기 상태를 신호 없음으로 설정하려면 false를 사용합니다.</param>
+      <param name="mode">이벤트를 자동으로 다시 설정할지 수동으로 다시 설정할지 결정하는 <see cref="T:System.Threading.EventResetMode" /> 값 중 하나입니다.</param>
+      <param name="name">시스템 차원의 동기화 이벤트의 이름입니다.</param>
+      <param name="createdNew">이 메서드가 반환될 때 로컬 이벤트가 만들어지거나(<paramref name="name" />이 null 또는 빈 문자열) 명명된 지정 시스템 이벤트가 만들어지면 true가 포함되고 명명된 지정 시스템 이벤트가 이미 있으면 false가 포함됩니다.이 매개 변수는 초기화되지 않은 상태로 전달됩니다.</param>
+      <exception cref="T:System.IO.IOException">Win32 오류가 발생한 경우</exception>
+      <exception cref="T:System.UnauthorizedAccessException">명명된 이벤트가 존재하고 액세스 제어 보안이 있지만 사용자에게 <see cref="F:System.Security.AccessControl.EventWaitHandleRights.FullControl" />이 없는 경우</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">명명된 이벤트를 만들 수 없는 경우. 다른 형식의 대기 핸들이 같은 이름을 가지고 있기 때문인 것 같습니다.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" />이 260자보다 긴 경우</exception>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.OpenExisting(System.String)">
+      <summary>이미 있는 경우 지정한 명명된 동기화 이벤트를 엽니다.</summary>
+      <returns>명명된 시스템 이벤트를 나타내는 개체입니다.</returns>
+      <param name="name">열려는 시스템 동기화 이벤트의 이름입니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" />이 빈 문자열인 경우 또는<paramref name="name" />이 260자보다 긴 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" />가 null입니다.</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">명명된 시스템 이벤트가 없는 경우</exception>
+      <exception cref="T:System.IO.IOException">Win32 오류가 발생한 경우</exception>
+      <exception cref="T:System.UnauthorizedAccessException">명명된 이벤트가 있지만 사용자에게 이 이벤트를 사용하는 데 필요한 보안 액세스 권한이 없는 경우</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.Reset">
+      <summary>스레드가 차단되도록 이벤트 상태를 신호 없음으로 설정합니다.</summary>
+      <returns>작업이 성공적으로 수행되면 true이고, 그렇지 않으면 false입니다.</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="M:System.Threading.EventWaitHandle.Close" /> 메서드가 이 <see cref="T:System.Threading.EventWaitHandle" />에 대해 이전에 호출된 경우</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.Set">
+      <summary>하나 이상의 대기 중인 스레드가 계속 진행되도록 이벤트 상태를 신호 받음으로 설정합니다.</summary>
+      <returns>작업이 성공적으로 수행되면 true이고, 그렇지 않으면 false입니다.</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="M:System.Threading.EventWaitHandle.Close" /> 메서드가 이 <see cref="T:System.Threading.EventWaitHandle" />에 대해 이전에 호출된 경우</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.TryOpenExisting(System.String,System.Threading.EventWaitHandle@)">
+      <summary>지정된 명명된 synchronization 이벤트(이미 존재하는 경우)를 열고 작업이 성공적으로 수행되었는지를 나타내는 값을 반환합니다.</summary>
+      <returns>명명된 동기화 이벤트를 열었으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="name">열려는 시스템 동기화 이벤트의 이름입니다.</param>
+      <param name="result">이 메서드가 반환될 때 호출이 성공적으로 실행된 경우 이름이 지정된 동기화 이벤트를 나타내는 <see cref="T:System.Threading.EventWaitHandle" /> 개체를 포함하고 호출에 실패한 경우는 null을 포함해야 합니다.이 매개 변수는 초기화되지 않은 것으로 취급됩니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" />이 빈 문자열인 경우또는<paramref name="name" />이 260자보다 긴 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" />가 null입니다.</exception>
+      <exception cref="T:System.IO.IOException">Win32 오류가 발생한 경우</exception>
+      <exception cref="T:System.UnauthorizedAccessException">명명된 이벤트가 있지만 사용자에게 원하는 보안 액세스가 없는 경우</exception>
+    </member>
+    <member name="T:System.Threading.ExecutionContext">
+      <summary>현재 스레드의 실행 컨텍스트를 관리합니다.이 클래스는 상속될 수 없습니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.ExecutionContext.Capture">
+      <summary>현재 스레드에서 실행 컨텍스트를 캡처합니다.</summary>
+      <returns>현재 스레드의 실행 컨텍스트를 나타내는 <see cref="T:System.Threading.ExecutionContext" /> 개체입니다.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.ExecutionContext.Run(System.Threading.ExecutionContext,System.Threading.ContextCallback,System.Object)">
+      <summary>현재 스레드의 지정된 실행 컨텍스트에서 메서드를 실행합니다.</summary>
+      <param name="executionContext">설정할 <see cref="T:System.Threading.ExecutionContext" />입니다.</param>
+      <param name="callback">제공된 실행 컨텍스트에서 실행할 메서드를 나타내는 <see cref="T:System.Threading.ContextCallback" /> 대리자입니다.</param>
+      <param name="state">콜백 메서드로 전달할 개체입니다.</param>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="executionContext" />가 null입니다.또는캡처 작업을 통해 <paramref name="executionContext" />를 가져오지 않은 경우 또는<paramref name="executionContext" />가 이미 <see cref="M:System.Threading.ExecutionContext.Run(System.Threading.ExecutionContext,System.Threading.ContextCallback,System.Object)" /> 호출의 인수로 사용된 경우</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="Infrastructure" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Threading.Interlocked">
+      <summary>다중 스레드에서 공유하는 변수에 대한 원자 단위 연산을 제공합니다. </summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Add(System.Int32@,System.Int32)">
+      <summary>원자 단위 연산으로 두 32비트 정수를 더하고 첫 번째 정수를 합계로 바꿉니다.</summary>
+      <returns>
+        <paramref name="location1" />에 저장된 새 값입니다.</returns>
+      <param name="location1">더할 첫 번째 값이 있는 변수입니다.두 값의 합계는 <paramref name="location1" />에 저장됩니다.</param>
+      <param name="value">
+        <paramref name="location1" />에서 정수에 더할 값입니다.</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Add(System.Int64@,System.Int64)">
+      <summary>원자 단위 연산으로 두 64비트 정수를 더하고 첫 번째 정수를 합계로 바꿉니다.</summary>
+      <returns>
+        <paramref name="location1" />에 저장된 새 값입니다.</returns>
+      <param name="location1">더할 첫 번째 값이 있는 변수입니다.두 값의 합계는 <paramref name="location1" />에 저장됩니다.</param>
+      <param name="value">
+        <paramref name="location1" />에서 정수에 더할 값입니다.</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Double@,System.Double,System.Double)">
+      <summary>두 배 정밀도 부동 소수점 숫자가 같은지 비교하여 같으면 두 값 중 하나를 바꿉니다.</summary>
+      <returns>
+        <paramref name="location1" />의 원래 값입니다.</returns>
+      <param name="location1">
+        <paramref name="comparand" />와 비교되어 바뀔 수 있는 값을 가진 대상입니다. </param>
+      <param name="value">비교 결과가 같은 경우 대상 값을 바꿀 값입니다. </param>
+      <param name="comparand">
+        <paramref name="location1" />의 값과 비교할 값입니다. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Int32@,System.Int32,System.Int32)">
+      <summary>두 개의 부호 있는 32비트 정수가 같은지 비교하여 같으면 첫 번째 값을 바꿉니다.</summary>
+      <returns>
+        <paramref name="location1" />의 원래 값입니다.</returns>
+      <param name="location1">
+        <paramref name="comparand" />와 비교되어 바뀔 수 있는 값을 가진 대상입니다. </param>
+      <param name="value">비교 결과가 같은 경우 대상 값을 바꿀 값입니다. </param>
+      <param name="comparand">
+        <paramref name="location1" />의 값과 비교할 값입니다. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Int64@,System.Int64,System.Int64)">
+      <summary>두 개의 부호 있는 64비트 정수가 같은지 비교하여 같으면 첫 번째 값을 바꿉니다.</summary>
+      <returns>
+        <paramref name="location1" />의 원래 값입니다.</returns>
+      <param name="location1">
+        <paramref name="comparand" />와 비교되어 바뀔 수 있는 값을 가진 대상입니다. </param>
+      <param name="value">비교 결과가 같은 경우 대상 값을 바꿀 값입니다. </param>
+      <param name="comparand">
+        <paramref name="location1" />의 값과 비교할 값입니다. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.IntPtr@,System.IntPtr,System.IntPtr)">
+      <summary>두 플랫폼별 핸들이나 포인터가 같은지 비교하여 같으면 첫 번째 값을 바꿉니다.</summary>
+      <returns>
+        <paramref name="location1" />의 원래 값입니다.</returns>
+      <param name="location1">
+        <paramref name="comparand" /> 값과 비교되어 <paramref name="value" />로 바뀔 수 있는 값을 가진 대상 <see cref="T:System.IntPtr" />입니다. </param>
+      <param name="value">비교 결과가 같은 경우 대상 값을 바꿀 <see cref="T:System.IntPtr" />입니다. </param>
+      <param name="comparand">
+        <paramref name="location1" />의 값과 비교할 <see cref="T:System.IntPtr" />입니다. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Object@,System.Object,System.Object)">
+      <summary>두 개체의 참조가 같은지 비교하여 같으면 첫 번째 개체를 바꿉니다.</summary>
+      <returns>
+        <paramref name="location1" />의 원래 값입니다.</returns>
+      <param name="location1">
+        <paramref name="comparand" />와 비교되어 바뀔 수 있는 대상 개체입니다. </param>
+      <param name="value">비교한 결과 같은 경우 대상 개체를 바꾸는 개체입니다. </param>
+      <param name="comparand">
+        <paramref name="location1" />의 개체와 비교할 개체입니다. </param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Single@,System.Single,System.Single)">
+      <summary>두 단정밀도 부동 소수점 숫자가 같은지 비교하여 같으면 첫 번째 값을 바꿉니다.</summary>
+      <returns>
+        <paramref name="location1" />의 원래 값입니다.</returns>
+      <param name="location1">
+        <paramref name="comparand" />와 비교되어 바뀔 수 있는 값을 가진 대상입니다. </param>
+      <param name="value">비교 결과가 같은 경우 대상 값을 바꿀 값입니다. </param>
+      <param name="comparand">
+        <paramref name="location1" />의 값과 비교할 값입니다. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange``1(``0@,``0,``0)">
+      <summary>지정된 참조 형식 <paramref name="T" />의 두 인스턴스가 같은지 비교하여 같으면 두 값 중 하나를 바꿉니다.</summary>
+      <returns>
+        <paramref name="location1" />의 원래 값입니다.</returns>
+      <param name="location1">
+        <paramref name="comparand" />와 비교되어 바뀔 수 있는 값을 가진 대상입니다.이것은 참조 매개 변수입니다. C#에서는 ref이고, Visual Basic에서는 ByRef입니다.</param>
+      <param name="value">비교 결과가 같은 경우 대상 값을 바꿀 값입니다. </param>
+      <param name="comparand">
+        <paramref name="location1" />의 값과 비교할 값입니다. </param>
+      <typeparam name="T">
+        <paramref name="location1" />, <paramref name="value" /> 및 <paramref name="comparand" />에 사용될 형식입니다.이 형식은 참조 형식이어야 합니다.</typeparam>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+    </member>
+    <member name="M:System.Threading.Interlocked.Decrement(System.Int32@)">
+      <summary>원자 단위 연산으로 지정된 변수를 감소시키고 결과를 저장합니다.</summary>
+      <returns>감소한 값입니다.</returns>
+      <param name="location">값을 감소시킬 변수입니다. </param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Decrement(System.Int64@)">
+      <summary>원자 단위 연산으로 지정된 변수를 감소시키고 결과를 저장합니다.</summary>
+      <returns>감소한 값입니다.</returns>
+      <param name="location">값을 감소시킬 변수입니다. </param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Double@,System.Double)">
+      <summary>원자 단위 연산으로 배정밀도 부동 소수점 숫자를 지정된 값으로 설정하고 원래 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="location1" />의 원래 값입니다.</returns>
+      <param name="location1">지정된 값으로 설정할 변수입니다. </param>
+      <param name="value">
+        <paramref name="location1" /> 매개 변수의 설정값입니다. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Int32@,System.Int32)">
+      <summary>원자 단위 연산으로 부호 있는 32비트 정수를 지정된 값으로 설정하고 원래 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="location1" />의 원래 값입니다.</returns>
+      <param name="location1">지정된 값으로 설정할 변수입니다. </param>
+      <param name="value">
+        <paramref name="location1" /> 매개 변수의 설정값입니다. </param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Int64@,System.Int64)">
+      <summary>원자 단위 연산으로 부호 있는 64비트 정수를 지정된 값으로 설정하고 원래 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="location1" />의 원래 값입니다.</returns>
+      <param name="location1">지정된 값으로 설정할 변수입니다. </param>
+      <param name="value">
+        <paramref name="location1" /> 매개 변수의 설정값입니다. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.IntPtr@,System.IntPtr)">
+      <summary>원자 단위 연산으로 플랫폼별 핸들 또는 포인터를 지정된 값으로 설정하고 원래 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="location1" />의 원래 값입니다.</returns>
+      <param name="location1">지정된 값으로 설정할 변수입니다. </param>
+      <param name="value">
+        <paramref name="location1" /> 매개 변수의 설정값입니다. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Object@,System.Object)">
+      <summary>원자 단위 연산으로 개체를 지정된 값으로 설정하고 참조를 원래 개체로 반환합니다.</summary>
+      <returns>
+        <paramref name="location1" />의 원래 값입니다.</returns>
+      <param name="location1">지정된 값으로 설정할 변수입니다. </param>
+      <param name="value">
+        <paramref name="location1" /> 매개 변수의 설정값입니다. </param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Single@,System.Single)">
+      <summary>원자 단위 연산으로 단정밀도 부동 소수점 숫자를 지정된 값으로 설정하고 원래 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="location1" />의 원래 값입니다.</returns>
+      <param name="location1">지정된 값으로 설정할 변수입니다. </param>
+      <param name="value">
+        <paramref name="location1" /> 매개 변수의 설정값입니다. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange``1(``0@,``0)">
+      <summary>원자 단위 연산으로 지정된 형식 <paramref name="T" />의 변수를 지정된 값으로 설정하고 원래 값을 반환합니다.</summary>
+      <returns>
+        <paramref name="location1" />의 원래 값입니다.</returns>
+      <param name="location1">지정된 값으로 설정할 변수입니다.이것은 참조 매개 변수입니다. C#에서는 ref이고, Visual Basic에서는 ByRef입니다.</param>
+      <param name="value">
+        <paramref name="location1" /> 매개 변수의 설정값입니다. </param>
+      <typeparam name="T">
+        <paramref name="location1" /> 및 <paramref name="value" />에 사용될 형식입니다.이 형식은 참조 형식이어야 합니다.</typeparam>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+    </member>
+    <member name="M:System.Threading.Interlocked.Increment(System.Int32@)">
+      <summary>원자 단위 연산으로 지정된 변수를 증가시키고 결과를 저장합니다.</summary>
+      <returns>증가한 값입니다.</returns>
+      <param name="location">값을 증가시킬 변수입니다. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Increment(System.Int64@)">
+      <summary>원자 단위 연산으로 지정된 변수를 증가시키고 결과를 저장합니다.</summary>
+      <returns>증가한 값입니다.</returns>
+      <param name="location">값을 증가시킬 변수입니다. </param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.MemoryBarrier">
+      <summary>다음과 같이 메모리 액세스를 동기화합니다. 현재 스레드를 실행하는 프로세서는 <see cref="M:System.Threading.Interlocked.MemoryBarrier" />에 대한 호출 이전의 메모리 액세스가 <see cref="M:System.Threading.Interlocked.MemoryBarrier" />에 대한 호출 이후의 메모리 액세스 뒤에 실행되는 방식으로 명령을 다시 정렬할 수 없습니다.</summary>
+    </member>
+    <member name="M:System.Threading.Interlocked.Read(System.Int64@)">
+      <summary>원자 단위 연산으로 로드된 64비트 값을 반환합니다.</summary>
+      <returns>로드된 값입니다.</returns>
+      <param name="location">로드될 64비트 값입니다.</param>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.LazyInitializer">
+      <summary>초기화 지연 루틴을 제공합니다.</summary>
+    </member>
+    <member name="M:System.Threading.LazyInitializer.EnsureInitialized``1(``0@)">
+      <summary>아직 초기화되지 않은 경우 형식의 기본 생성자를 사용하여 대상 참조 형식을 초기화합니다.</summary>
+      <returns>초기화된 <paramref name="T" /> 형식의 참조입니다.</returns>
+      <param name="target">아직 초기화되지 않은 경우 초기화할 <paramref name="T" /> 형식의 참조입니다.</param>
+      <typeparam name="T">초기화할 참조의 형식입니다.</typeparam>
+      <exception cref="T:System.MemberAccessException">형식 <paramref name="T" />의 생성자에 액세스할 수 있는 권한이 없습니다.</exception>
+      <exception cref="T:System.MissingMemberException">형식 <paramref name="T" />에 기본 생성자가 없는 경우</exception>
+    </member>
+    <member name="M:System.Threading.LazyInitializer.EnsureInitialized``1(``0@,System.Boolean@,System.Object@)">
+      <summary>아직 초기화되지 않은 경우 해당 기본 생성자를 사용하여 대상 참조 또는 값 형식을 초기화합니다.</summary>
+      <returns>초기화된 <paramref name="T" /> 형식의 값입니다.</returns>
+      <param name="target">아직 초기화되지 않은 경우 초기화할 <paramref name="T" /> 형식의 참조 또는 값입니다.</param>
+      <param name="initialized">대상이 이미 초기화되었는지 여부를 결정하는 부울 값에 대한 참조입니다.</param>
+      <param name="syncLock">
+        <paramref name="target" />을 초기화할 때 상호 배타적인 잠금으로 사용할 개체에 대한 참조입니다.<paramref name="syncLock" />이 null이면 새 개체를 인스턴스화할 수 있습니다.</param>
+      <typeparam name="T">초기화할 참조의 형식입니다.</typeparam>
+      <exception cref="T:System.MemberAccessException">형식 <paramref name="T" />의 생성자에 액세스할 수 있는 권한이 없습니다.</exception>
+      <exception cref="T:System.MissingMemberException">형식 <paramref name="T" />에 기본 생성자가 없는 경우</exception>
+    </member>
+    <member name="M:System.Threading.LazyInitializer.EnsureInitialized``1(``0@,System.Boolean@,System.Object@,System.Func{``0})">
+      <summary>아직 초기화되지 않은 경우 지정된 함수를 사용하여 대상 참조 또는 값 형식을 초기화합니다.</summary>
+      <returns>초기화된 <paramref name="T" /> 형식의 값입니다.</returns>
+      <param name="target">아직 초기화되지 않은 경우 초기화할 <paramref name="T" /> 형식의 참조 또는 값입니다.</param>
+      <param name="initialized">대상이 이미 초기화되었는지 여부를 결정하는 부울 값에 대한 참조입니다.</param>
+      <param name="syncLock">
+        <paramref name="target" />을 초기화할 때 상호 배타적인 잠금으로 사용할 개체에 대한 참조입니다.<paramref name="syncLock" />이 null이면 새 개체를 인스턴스화할 수 있습니다.</param>
+      <param name="valueFactory">참조 또는 값을 초기화하기 위해 호출되는 함수입니다.</param>
+      <typeparam name="T">초기화할 참조의 형식입니다.</typeparam>
+      <exception cref="T:System.MemberAccessException">형식 <paramref name="T" />의 생성자에 액세스할 수 있는 권한이 없습니다.</exception>
+      <exception cref="T:System.MissingMemberException">형식 <paramref name="T" />에 기본 생성자가 없는 경우</exception>
+    </member>
+    <member name="M:System.Threading.LazyInitializer.EnsureInitialized``1(``0@,System.Func{``0})">
+      <summary>아직 초기화되지 않은 경우 지정된 함수를 사용하여 대상 참조 형식을 초기화합니다.</summary>
+      <returns>초기화된 <paramref name="T" /> 형식의 값입니다.</returns>
+      <param name="target">아직 초기화되지 않은 경우 초기화할 <paramref name="T" /> 형식의 참조입니다.</param>
+      <param name="valueFactory">참조를 초기화하기 위해 호출되는 함수입니다.</param>
+      <typeparam name="T">초기화할 참조의 참조 형식입니다.</typeparam>
+      <exception cref="T:System.MissingMemberException">형식 <paramref name="T" />에 기본 생성자가 없는 경우</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="valueFactory" />가 null을 반환합니다(Visual Basic의 경우 Nothing).</exception>
+    </member>
+    <member name="T:System.Threading.LockRecursionException">
+      <summary>잠금에 대한 재귀 정책과 맞지 않는 방식으로 잠금을 재귀적으로 시작할 때 throw되는 예외입니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.LockRecursionException.#ctor">
+      <summary>오류를 설명하는 시스템 제공 메시지를 사용하여 <see cref="T:System.Threading.LockRecursionException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.LockRecursionException.#ctor(System.String)">
+      <summary>오류를 설명하는 지정된 메시지를 사용하여 <see cref="T:System.Threading.LockRecursionException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="message">예외를 설명하는 메시지입니다.이 생성자의 호출자는 이 문자열이 현재 시스템 문화권에 따라 지역화되었는지 확인해야 합니다.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.LockRecursionException.#ctor(System.String,System.Exception)">
+      <summary>지정된 오류 메시지와 해당 예외의 근본 원인인 내부 예외에 대한 참조를 사용하여 <see cref="T:System.Threading.LockRecursionException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="message">예외를 설명하는 메시지입니다.이 생성자의 호출자는 이 문자열이 현재 시스템 문화권에 따라 지역화되었는지 확인해야 합니다.</param>
+      <param name="innerException">현재 예외를 발생시킨 예외입니다.<paramref name="innerException" /> 매개 변수가 null이 아니면 현재 예외는 내부 예외를 처리하는 catch 블록에서 발생합니다.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.LockRecursionPolicy">
+      <summary>동일한 스레드에서 잠금을 여러 번 시작할 수 있는지 여부를 지정합니다.</summary>
+    </member>
+    <member name="F:System.Threading.LockRecursionPolicy.NoRecursion">
+      <summary>스레드에서 잠금을 재귀적으로 시작하려고 하면 예외가 throw됩니다.이 설정을 적용하는 경우 일부 클래스에서 특정 재귀가 허용될 수도 있습니다.</summary>
+    </member>
+    <member name="F:System.Threading.LockRecursionPolicy.SupportsRecursion">
+      <summary>스레드에서 잠금을 재귀적으로 시작할 수 있습니다.일부 클래스에서는 이 기능이 제한될 수 있습니다.</summary>
+    </member>
+    <member name="T:System.Threading.ManualResetEvent">
+      <summary>하나 이상의 대기 중인 스레드에 이벤트가 발생했음을 알립니다.이 클래스는 상속될 수 없습니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.ManualResetEvent.#ctor(System.Boolean)">
+      <summary>초기 상태를 신호 받음으로 설정할지 여부를 나타내는 부울 값을 사용하여 <see cref="T:System.Threading.ManualResetEvent" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="initialState">초기 상태를 신호 받음으로 설정하려면 true를 사용하고 초기 상태를 신호 없음으로 설정하려면 false를 사용합니다. </param>
+    </member>
+    <member name="T:System.Threading.ManualResetEventSlim">
+      <summary>
+        <see cref="T:System.Threading.ManualResetEvent" />의 슬림 다운 버전을 제공합니다.</summary>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.#ctor">
+      <summary>신호 없음을 초기 상태로 사용하여 <see cref="T:System.Threading.ManualResetEventSlim" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.#ctor(System.Boolean)">
+      <summary>초기 상태를 신호 받음으로 설정할지를 나타내는 부울 값을 사용하여 <see cref="T:System.Threading.ManualResetEventSlim" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="initialState">초기 상태를 신호 받음으로 설정하려면 true이고 초기 상태를 신호 없음으로 설정하려면 false입니다.</param>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.#ctor(System.Boolean,System.Int32)">
+      <summary>초기 상태를 신호 받음으로 설정할지를 나타내는 부울 값과 지정된 회전 수를 사용하여 <see cref="T:System.Threading.ManualResetEventSlim" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="initialState">초기 상태를 신호 받음으로 설정하려면 true이고 초기 상태를 신호 없음으로 설정하려면 false입니다.</param>
+      <param name="spinCount">커널 기반의 대기 작업으로 대체하기 전에 수행되는 회전 대기 수입니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="spinCount" /> is less than 0 or greater than the maximum allowed value.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Dispose">
+      <summary>
+        <see cref="T:System.Threading.ManualResetEventSlim" /> 클래스의 현재 인스턴스에서 사용하는 모든 리소스를 해제합니다.</summary>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Dispose(System.Boolean)">
+      <summary>
+        <see cref="T:System.Threading.ManualResetEventSlim" />에서 사용하는 관리되지 않는 리소스를 해제하고, 관리되는 리소스를 선택적으로 해제할 수 있습니다.</summary>
+      <param name="disposing">관리되는 리소스와 관리되지 않는 리소스를 모두 해제하려면 true이고, 관리되지 않는 리소스만 해제하려면 false입니다.</param>
+    </member>
+    <member name="P:System.Threading.ManualResetEventSlim.IsSet">
+      <summary>이벤트가 설정되었는지를 가져옵니다.</summary>
+      <returns>이벤트가 설정되었으면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Reset">
+      <summary>스레드가 차단되도록 이벤트 상태를 신호 없음으로 설정합니다.</summary>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Set">
+      <summary>이벤트에서 대기 중인 하나 이상의 스레드가 계속 진행되도록 이벤트 상태를 신호 받음으로 설정합니다.</summary>
+    </member>
+    <member name="P:System.Threading.ManualResetEventSlim.SpinCount">
+      <summary>커널 기반의 대기 작업으로 대체하기 전에 수행되는 회전 대기 수를 가져옵니다.</summary>
+      <returns>커널 기반의 대기 작업으로 대체하기 전에 수행되는 회전 대기 수를 반환합니다.</returns>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait">
+      <summary>현재 <see cref="T:System.Threading.ManualResetEventSlim" />이 설정될 때까지 현재 스레드를 차단합니다.</summary>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.Int32)">
+      <summary>부호 있는 32비트 정수로 시간 간격을 측정하여 현재 <see cref="T:System.Threading.ManualResetEventSlim" />이 설정될 때까지 현재 스레드를 차단합니다.</summary>
+      <returns>
+        <see cref="T:System.Threading.ManualResetEventSlim" />가 설정되었으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="millisecondsTimeout">대기할 시간(밀리초)이거나, 무기한 대기할 경우 <see cref="F:System.Threading.Timeout.Infinite" />(-1)입니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> is a negative number other than -1, which represents an infinite time-out.</exception>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.Int32,System.Threading.CancellationToken)">
+      <summary>
+        <see cref="T:System.Threading.CancellationToken" />을 확인하면서 부호 있는 32비트 정수로 시간 간격을 측정하여 현재 <see cref="T:System.Threading.ManualResetEventSlim" />이 설정될 때까지 현재 스레드를 차단합니다.</summary>
+      <returns>
+        <see cref="T:System.Threading.ManualResetEventSlim" />가 설정되었으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="millisecondsTimeout">대기할 시간(밀리초)이거나, 무기한 대기할 경우 <see cref="F:System.Threading.Timeout.Infinite" />(-1)입니다.</param>
+      <param name="cancellationToken">확인할 <see cref="T:System.Threading.CancellationToken" />입니다.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> was canceled.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> is a negative number other than -1, which represents an infinite time-out.</exception>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed or the <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.Threading.CancellationToken)">
+      <summary>
+        <see cref="T:System.Threading.CancellationToken" />을 확인하면서 현재 <see cref="T:System.Threading.ManualResetEventSlim" />이 신호를 받을 때까지 현재 스레드를 차단합니다.</summary>
+      <param name="cancellationToken">확인할 <see cref="T:System.Threading.CancellationToken" />입니다.</param>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> was canceled.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed or the <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.TimeSpan)">
+      <summary>
+        <see cref="T:System.TimeSpan" />으로 시간 간격을 측정하여 현재 <see cref="T:System.Threading.ManualResetEventSlim" />이 설정될 때까지 현재 스레드를 차단합니다.</summary>
+      <returns>
+        <see cref="T:System.Threading.ManualResetEventSlim" />가 설정되었으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="timeout">대기할 시간(밀리초)을 나타내는 <see cref="T:System.TimeSpan" />이거나, 무한 대기하도록 -1밀리초를 나타내는 <see cref="T:System.TimeSpan" />입니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> is a negative number other than -1 milliseconds, which represents an infinite time-out. -or-The number of milliseconds in <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" />. </exception>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>
+        <see cref="T:System.Threading.CancellationToken" />을 확인하면서 <see cref="T:System.TimeSpan" />으로 시간 간격을 측정하여 현재 <see cref="T:System.Threading.ManualResetEventSlim" />이 설정될 때까지 현재 스레드를 차단합니다.</summary>
+      <returns>
+        <see cref="T:System.Threading.ManualResetEventSlim" />가 설정되었으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="timeout">대기할 시간(밀리초)을 나타내는 <see cref="T:System.TimeSpan" />이거나, 무한 대기하도록 -1밀리초를 나타내는 <see cref="T:System.TimeSpan" />입니다.</param>
+      <param name="cancellationToken">확인할 <see cref="T:System.Threading.CancellationToken" />입니다.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> was canceled.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> is a negative number other than -1 milliseconds, which represents an infinite time-out. -or-The number of milliseconds in <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" />. </exception>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded. </exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed or the <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has been disposed.</exception>
+    </member>
+    <member name="P:System.Threading.ManualResetEventSlim.WaitHandle">
+      <summary>이 <see cref="T:System.Threading.ManualResetEventSlim" />의 내부 <see cref="T:System.Threading.WaitHandle" /> 개체를 가져옵니다.</summary>
+      <returns>이 <see cref="T:System.Threading.ManualResetEventSlim" />에 대한 내부 <see cref="T:System.Threading.WaitHandle" /> 이벤트 개체입니다.</returns>
+    </member>
+    <member name="T:System.Threading.Monitor">
+      <summary>개체에 대한 액세스를 동기화하는 메커니즘을 제공합니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.Enter(System.Object)">
+      <summary>지정된 개체의 단독 잠금을 가져옵니다.</summary>
+      <param name="obj">모니터 잠금을 가져올 개체입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 매개 변수가 null인 경우 </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.Enter(System.Object,System.Boolean@)">
+      <summary>지정된 개체의 단독 잠금을 가져오고 잠금 설정 여부를 나타내는 값을 자동으로 설정합니다.</summary>
+      <param name="obj">대기할 개체입니다. </param>
+      <param name="lockTaken">잠금을 얻기 위한 시도의 결과로서, 참조에 의해 전달됩니다.입력은 false여야 합니다.잠금을 얻으면 출력이 true이고, 그렇지 않으면 출력이 false입니다.잠금을 얻으려는 시도 도중에 예외가 발생해도 출력이 설정됩니다.예외가 발생하지 않는 경우 이 메서드의 출력은 항상 true입니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="lockTaken" />에 대한 입력이 true인 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 매개 변수가 null인 경우 </exception>
+    </member>
+    <member name="M:System.Threading.Monitor.Exit(System.Object)">
+      <summary>지정된 개체의 단독 잠금을 해제합니다.</summary>
+      <param name="obj">잠금을 해제할 개체입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 매개 변수가 null인 경우 </exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">현재 스레드가 지정된 개체 잠금을 소유하지 않는 경우 </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.IsEntered(System.Object)">
+      <summary>현재 스레드에 지정된 개체에 대한 잠금이 있는지 여부를 확인합니다. </summary>
+      <returns>현재 스레드에 <paramref name="obj" />에 대한 잠금이 있으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="obj">테스트할 개체입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" />가 null인 경우 </exception>
+    </member>
+    <member name="M:System.Threading.Monitor.Pulse(System.Object)">
+      <summary>대기 중인 큐에 포함된 스레드에 잠겨 있는 개체의 상태 변경을 알립니다.</summary>
+      <param name="obj">스레드에서 기다리는 개체입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 매개 변수가 null인 경우 </exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">호출한 스레드가 지정된 개체 잠금을 소유하지 않는 경우 </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.PulseAll(System.Object)">
+      <summary>대기 중인 모든 스레드에 개체 상태 변경을 알립니다.</summary>
+      <param name="obj">펄스를 보내는 개체입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 매개 변수가 null인 경우 </exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">호출한 스레드가 지정된 개체 잠금을 소유하지 않는 경우 </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object)">
+      <summary>지정된 개체의 단독 잠금을 가져오려고 했습니다.</summary>
+      <returns>현재 스레드에서 잠금을 가져오면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="obj">잠금을 가져올 개체입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 매개 변수가 null인 경우 </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.Boolean@)">
+      <summary>지정된 개체의 단독 잠금을 가져오고 잠금 설정 여부를 나타내는 값을 자동으로 설정하려고 시도합니다.</summary>
+      <param name="obj">잠금을 가져올 개체입니다. </param>
+      <param name="lockTaken">잠금을 얻기 위한 시도의 결과로서, 참조에 의해 전달됩니다.입력은 false여야 합니다.잠금을 얻으면 출력이 true이고, 그렇지 않으면 출력이 false입니다.잠금을 얻으려는 시도 도중에 예외가 발생해도 출력이 설정됩니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="lockTaken" />에 대한 입력이 true인 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 매개 변수가 null인 경우 </exception>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.Int32)">
+      <summary>지정된 시간(밀리초) 동안 지정된 개체의 단독 잠금을 가져오려고 했습니다.</summary>
+      <returns>현재 스레드에서 잠금을 가져오면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="obj">잠금을 가져올 개체입니다. </param>
+      <param name="millisecondsTimeout">잠금을 기다릴 밀리초 수입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 매개 변수가 null인 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" />이 음수이고 <see cref="F:System.Threading.Timeout.Infinite" />와 같지 않은 경우 </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.Int32,System.Boolean@)">
+      <summary>지정된 시간(밀리초) 동안 지정된 개체의 단독 잠금을 가져오고 잠금 설정 여부를 나타내는 값을 자동으로 설정하려고 시도합니다.</summary>
+      <param name="obj">잠금을 가져올 개체입니다. </param>
+      <param name="millisecondsTimeout">잠금을 기다릴 밀리초 수입니다. </param>
+      <param name="lockTaken">잠금을 얻기 위한 시도의 결과로서, 참조에 의해 전달됩니다.입력은 false여야 합니다.잠금을 얻으면 출력이 true이고, 그렇지 않으면 출력이 false입니다.잠금을 얻으려는 시도 도중에 예외가 발생해도 출력이 설정됩니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="lockTaken" />에 대한 입력이 true인 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 매개 변수가 null인 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" />이 음수이고 <see cref="F:System.Threading.Timeout.Infinite" />와 같지 않은 경우 </exception>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.TimeSpan)">
+      <summary>지정된 시간 동안 지정된 개체의 단독 잠금을 가져오려고 했습니다.</summary>
+      <returns>현재 스레드에서 잠금을 가져오면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="obj">잠금을 가져올 개체입니다. </param>
+      <param name="timeout">잠금을 기다리는 시간을 나타내는 <see cref="T:System.TimeSpan" />입니다.-1밀리초 값은 무한 대기를 지정합니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 매개 변수가 null인 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 값(밀리초)이 음수이고 <see cref="F:System.Threading.Timeout.Infinite" />(–1밀리초)와 같지 않거나 <see cref="F:System.Int32.MaxValue" />보다 큰 경우 </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.TimeSpan,System.Boolean@)">
+      <summary>지정된 시간 동안 지정된 개체의 단독 잠금을 가져오고 잠금 설정 여부를 나타내는 값을 자동으로 설정하려고 시도합니다.</summary>
+      <param name="obj">잠금을 가져올 개체입니다. </param>
+      <param name="timeout">잠금을 대기할 시간입니다.-1밀리초 값은 무한 대기를 지정합니다.</param>
+      <param name="lockTaken">잠금을 얻기 위한 시도의 결과로서, 참조에 의해 전달됩니다.입력은 false여야 합니다.잠금을 얻으면 출력이 true이고, 그렇지 않으면 출력이 false입니다.잠금을 얻으려는 시도 도중에 예외가 발생해도 출력이 설정됩니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="lockTaken" />에 대한 입력이 true인 경우</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 매개 변수가 null인 경우 </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 값(밀리초)이 음수이고 <see cref="F:System.Threading.Timeout.Infinite" />(–1밀리초)와 같지 않거나 <see cref="F:System.Int32.MaxValue" />보다 큰 경우 </exception>
+    </member>
+    <member name="M:System.Threading.Monitor.Wait(System.Object)">
+      <summary>개체의 잠금을 해제한 다음 잠금을 다시 가져올 때까지 현재 스레드를 차단합니다.</summary>
+      <returns>지정된 개체 잠금을 호출자가 다시 가져와 호출이 반환되면 true입니다.잠금을 다시 가져오지 않으면 이 메서드는 반환하지 않습니다.</returns>
+      <param name="obj">대기할 개체입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 매개 변수가 null인 경우 </exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">호출한 스레드가 지정된 개체 잠금을 소유하지 않는 경우 </exception>
+      <exception cref="T:System.Threading.ThreadInterruptedException">Wait를 호출하는 스레드가 나중에 대기 상태에서 중단된 경우.이는 다른 스레드에서 이 스레드의 <see cref="M:System.Threading.Thread.Interrupt" /> 메서드를 호출할 때 발생합니다.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.Wait(System.Object,System.Int32)">
+      <summary>개체의 잠금을 해제한 다음 잠금을 다시 가져올 때까지 현재 스레드를 차단합니다.지정된 시간 제한 간격이 지나면 스레드가 준비된 큐에 들어갑니다.</summary>
+      <returns>지정된 시간이 경과하기 전에 잠금을 다시 가져오면 true이고, 지정된 시간이 경과한 후에 잠금을 다시 가져오면 false입니다.이 메서드는 잠금을 다시 가져올 때까지 반환하지 않습니다.</returns>
+      <param name="obj">대기할 개체입니다. </param>
+      <param name="millisecondsTimeout">스레드가 준비된 큐에 들어가기 전에 대기할 밀리초 수입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 매개 변수가 null인 경우 </exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">호출한 스레드가 지정된 개체 잠금을 소유하지 않는 경우 </exception>
+      <exception cref="T:System.Threading.ThreadInterruptedException">Wait를 호출하는 스레드가 나중에 대기 상태에서 중단된 경우.이는 다른 스레드에서 이 스레드의 <see cref="M:System.Threading.Thread.Interrupt" /> 메서드를 호출할 때 발생합니다.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> 매개 변수의 값이 음이고 <see cref="F:System.Threading.Timeout.Infinite" />와 같지 않은 경우 </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.Wait(System.Object,System.TimeSpan)">
+      <summary>개체의 잠금을 해제한 다음 잠금을 다시 가져올 때까지 현재 스레드를 차단합니다.지정된 시간 제한 간격이 지나면 스레드가 준비된 큐에 들어갑니다.</summary>
+      <returns>지정된 시간이 경과하기 전에 잠금을 다시 가져오면 true이고, 지정된 시간이 경과한 후에 잠금을 다시 가져오면 false입니다.이 메서드는 잠금을 다시 가져올 때까지 반환하지 않습니다.</returns>
+      <param name="obj">대기할 개체입니다. </param>
+      <param name="timeout">스레드가 준비된 큐에 들어가기 전에 대기할 시간을 나타내는 <see cref="T:System.TimeSpan" />입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> 매개 변수가 null인 경우 </exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">호출한 스레드가 지정된 개체 잠금을 소유하지 않는 경우 </exception>
+      <exception cref="T:System.Threading.ThreadInterruptedException">Wait를 호출하는 스레드가 나중에 대기 상태에서 중단된 경우.이는 다른 스레드에서 이 스레드의 <see cref="M:System.Threading.Thread.Interrupt" /> 메서드를 호출할 때 발생합니다.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> 매개 변수의 값(밀리초)이 음수이고 <see cref="F:System.Threading.Timeout.Infinite" />(-1밀리초)를 나타내지 않거나 <see cref="F:System.Int32.MaxValue" />보다 큰 경우 </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.Mutex">
+      <summary>프로세스 간 동기화에 사용할 수도 있는 동기화 기본 형식입니다. </summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Mutex.#ctor">
+      <summary>기본 속성을 사용하여 <see cref="T:System.Threading.Mutex" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Threading.Mutex.#ctor(System.Boolean)">
+      <summary>호출한 스레드가 뮤텍스의 초기 소유권을 가져야 할지를 나타내는 부울 값을 사용하여 <see cref="T:System.Threading.Mutex" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="initiallyOwned">호출한 스레드에 뮤텍스의 초기 소유권을 부여하면 true이고, 그렇지 않으면 false입니다. </param>
+    </member>
+    <member name="M:System.Threading.Mutex.#ctor(System.Boolean,System.String)">
+      <summary>호출 스레드가 뮤텍스의 초기 소유권을 가져야 할지를 나타내는 부울 값과 뮤텍스 이름인 문자열을 사용하여 <see cref="T:System.Threading.Mutex" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="initiallyOwned">이 호출의 결과로 명명된 시스템 뮤텍스가 만들어지는 경우 호출한 스레드에 명명된 시스템 뮤텍스의 초기 소유권을 부여하려면 true이고, 그렇지 않으면 false입니다. </param>
+      <param name="name">
+        <see cref="T:System.Threading.Mutex" />의 이름입니다.값이 null이면 <see cref="T:System.Threading.Mutex" />이(가) 명명되지 않습니다.</param>
+      <exception cref="T:System.UnauthorizedAccessException">명명된 뮤텍스가 존재하고 액세스 제어 보안이 있지만 사용자에게 <see cref="F:System.Security.AccessControl.MutexRights.FullControl" />이 없는 경우</exception>
+      <exception cref="T:System.IO.IOException">Win32 오류가 발생한 경우</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">명명된 뮤텍스를 만들 수 없는 경우. 다른 형식의 대기 핸들이 같은 이름을 가지고 있기 때문인 것 같습니다.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 260 자 보다 깁니다.</exception>
+    </member>
+    <member name="M:System.Threading.Mutex.#ctor(System.Boolean,System.String,System.Boolean@)">
+      <summary>호출한 스레드가 뮤텍스의 초기 소유권을 가져야 할지를 나타내는 부울 값, 뮤텍스의 이름인 문자열 및 메서드에서 반환할 때 호출한 스레드에 뮤텍스의 초기 소유권이 부여되었는지를 나타내는 부울 값을 사용하여 <see cref="T:System.Threading.Mutex" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="initiallyOwned">이 호출의 결과로 명명된 시스템 뮤텍스가 만들어지는 경우 호출한 스레드에 명명된 시스템 뮤텍스의 초기 소유권을 부여하려면 true이고, 그렇지 않으면 false입니다. </param>
+      <param name="name">
+        <see cref="T:System.Threading.Mutex" />의 이름입니다.값이 null이면 <see cref="T:System.Threading.Mutex" />이(가) 명명되지 않습니다.</param>
+      <param name="createdNew">이 메서드가 반환될 때 로컬 뮤텍스가 만들어진 경우(즉, <paramref name="name" />이(가) null이거나 빈 문자열인 경우)나 지정된 명명된 시스템 뮤텍스가 만들어진 경우에는 true인 부울이 포함되고, 지정된 명명된 시스템 뮤텍스가 이미 있는 경우에는 false이(가) 포함됩니다.이 매개 변수는 초기화되지 않은 상태로 전달됩니다.</param>
+      <exception cref="T:System.UnauthorizedAccessException">명명된 뮤텍스가 존재하고 액세스 제어 보안이 있지만 사용자에게 <see cref="F:System.Security.AccessControl.MutexRights.FullControl" />이 없는 경우</exception>
+      <exception cref="T:System.IO.IOException">Win32 오류가 발생한 경우</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">명명된 뮤텍스를 만들 수 없는 경우. 다른 형식의 대기 핸들이 같은 이름을 가지고 있기 때문인 것 같습니다.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 260 자 보다 깁니다.</exception>
+    </member>
+    <member name="M:System.Threading.Mutex.OpenExisting(System.String)">
+      <summary>이미 있는 경우 지정한 명명된 뮤텍스를 엽니다.</summary>
+      <returns>명명된 시스템 뮤텍스를 나타내는 개체입니다.</returns>
+      <param name="name">열려는 시스템 뮤텍스의 이름입니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" />이 빈 문자열인 경우또는<paramref name="name" /> 260 자 보다 깁니다.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" />가 null인 경우</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">명명된 뮤텍스가 없는 경우</exception>
+      <exception cref="T:System.IO.IOException">Win32 오류가 발생한 경우</exception>
+      <exception cref="T:System.UnauthorizedAccessException">명명된 뮤텍스가 있지만 사용자에게 이 뮤텍스를 사용하는 데 필요한 보안 액세스 권한이 없는 경우</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Threading.Mutex.ReleaseMutex">
+      <summary>
+        <see cref="T:System.Threading.Mutex" />을(를) 한 번 해제합니다.</summary>
+      <exception cref="T:System.ApplicationException">호출한 스레드가 뮤텍스를 소유하지 않은 경우 </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Mutex.TryOpenExisting(System.String,System.Threading.Mutex@)">
+      <summary>지정한 명명된 뮤텍스(이미 존재하는 경우)를 열고 작업이 수행되었는지를 나타내는 값을 반환합니다.</summary>
+      <returns>명명된 뮤텍스를 열었으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="name">열려는 시스템 뮤텍스의 이름입니다.</param>
+      <param name="result">이 메서드가 반환될 때 호출이 성공적으로 실행된 경우 이름이 지정된 뮤텍스를 나타내는 <see cref="T:System.Threading.Mutex" /> 개체를 포함하고 호출에 실패한 경우는 null을(를) 포함해야 합니다.이 매개 변수는 초기화되지 않은 것으로 처리됩니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" />이 빈 문자열인 경우또는<paramref name="name" /> 260 자 보다 깁니다.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" />가 null인 경우</exception>
+      <exception cref="T:System.IO.IOException">Win32 오류가 발생한 경우</exception>
+      <exception cref="T:System.UnauthorizedAccessException">명명된 뮤텍스가 있지만 사용자에게 이 뮤텍스를 사용하는 데 필요한 보안 액세스 권한이 없는 경우</exception>
+    </member>
+    <member name="T:System.Threading.ReaderWriterLockSlim">
+      <summary>여러 스레드에서 읽을 수 있도록 허용하거나 쓰기를 위한 단독 액세스를 허용하여 리소스에 대한 액세스를 관리하는 데 사용되는 잠금을 나타냅니다.</summary>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.#ctor">
+      <summary>기본 속성 값으로 <see cref="T:System.Threading.ReaderWriterLockSlim" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.#ctor(System.Threading.LockRecursionPolicy)">
+      <summary>잠금 재귀 정책을 지정하여 <see cref="T:System.Threading.ReaderWriterLockSlim" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="recursionPolicy">잠금 재귀 정책을 지정하는 열거형 값 중 하나입니다. </param>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.CurrentReadCount">
+      <summary>읽기 모드로 잠금을 시작한 고유 스레드의 총 개수를 가져옵니다.</summary>
+      <returns>읽기 모드로 잠금을 시작한 고유 스레드의 총 개수입니다.</returns>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.Dispose">
+      <summary>
+        <see cref="T:System.Threading.ReaderWriterLockSlim" /> 클래스의 현재 인스턴스에서 사용하는 모든 리소스를 해제합니다.</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">
+        <see cref="P:System.Threading.ReaderWriterLockSlim.WaitingReadCount" /> is greater than zero. -or-<see cref="P:System.Threading.ReaderWriterLockSlim.WaitingUpgradeCount" /> is greater than zero. -or-<see cref="P:System.Threading.ReaderWriterLockSlim.WaitingWriteCount" /> is greater than zero. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.EnterReadLock">
+      <summary>읽기 모드로 잠금을 시작하려고 합니다.</summary>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered read mode. -or-The current thread may not acquire the read lock when it already holds the write lock. -or-The recursion number would exceed the capacity of the counter.This limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.EnterUpgradeableReadLock">
+      <summary>업그레이드 가능 모드로 잠금을 시작하려고 합니다.</summary>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock in any mode. -or-The current thread has entered read mode, so trying to enter upgradeable mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.EnterWriteLock">
+      <summary>쓰기 모드로 잠금을 시작하려고 합니다.</summary>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock in any mode. -or-The current thread has entered read mode, so trying to enter the lock in write mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.ExitReadLock">
+      <summary>읽기 모드의 재귀 횟수를 줄이고, 결과 횟수가 0이 되면 읽기 모드를 종료합니다.</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">The current thread has not entered the lock in read mode. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.ExitUpgradeableReadLock">
+      <summary>업그레이드 가능 모드의 재귀 횟수를 줄이고, 결과 횟수가 0이 되면 업그레이드 가능 모드를 종료합니다.</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">The current thread has not entered the lock in upgradeable mode.</exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.ExitWriteLock">
+      <summary>쓰기 모드의 재귀 횟수를 줄이고, 결과 횟수가 0이 되면 쓰기 모드를 종료합니다.</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">The current thread has not entered the lock in write mode.</exception>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.IsReadLockHeld">
+      <summary>현재 스레드에서 읽기 모드로 잠금을 시작했는지를 나타내는 값을 가져옵니다.</summary>
+      <returns>현재 스레드에서 읽기 모드가 시작되었으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.IsUpgradeableReadLockHeld">
+      <summary>현재 스레드에서 업그레이드 가능 모드로 잠금을 시작했는지 여부를 나타내는 값을 가져옵니다. </summary>
+      <returns>현재 스레드에서 업그레이드 가능 모드가 시작되었으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.IsWriteLockHeld">
+      <summary>현재 스레드에서 쓰기 모드로 잠금을 시작했는지를 나타내는 값을 가져옵니다.</summary>
+      <returns>현재 스레드에서 쓰기 모드가 시작되었으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy">
+      <summary>현재 <see cref="T:System.Threading.ReaderWriterLockSlim" /> 개체에 대한 재귀 정책을 나타내는 값을 가져옵니다.</summary>
+      <returns>잠금 재귀 정책을 지정하는 열거형 값 중 하나입니다.</returns>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.RecursiveReadCount">
+      <summary>재귀를 확인하기 위해 현재 스레드에서 읽기 모드로 잠금을 시작한 횟수를 가져옵니다.</summary>
+      <returns>현재 스레드에서 읽기 모드를 시작하지 않았으면 0이고, 스레드에서 읽기 모드를 시작했지만 재귀적으로 시작하지 않았으면 1이고, 스레드에서 재귀적으로 잠금을 n-1회 시작했으면 n입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.RecursiveUpgradeCount">
+      <summary>재귀를 확인하기 위해 현재 스레드에서 업그레이드 가능 모드로 잠금을 시작한 횟수를 가져옵니다.</summary>
+      <returns>현재 스레드에서 업그레이드 가능 모드를 시작하지 않았으면 0이고, 스레드에서 업그레이드 가능 모드를 시작했지만 재귀적으로 시작하지 않았으면 1이고, 스레드에서 재귀적으로 업그레이드 가능 모드를 n-1회 시작했으면 n입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.RecursiveWriteCount">
+      <summary>재귀를 확인하기 위해 현재 스레드에서 쓰기 모드로 잠금을 시작한 횟수를 가져옵니다.</summary>
+      <returns>현재 스레드에서 쓰기 모드를 시작하지 않았으면 0이고, 스레드에서 쓰기 모드를 시작했지만 재귀적으로 시작하지 않았으면 1이고, 스레드에서 재귀적으로 쓰기 모드를 n-1회 시작했으면 n입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterReadLock(System.Int32)">
+      <summary>제한 시간(정수)을 선택적으로 적용하여 읽기 모드로 잠금을 시작하려고 합니다.</summary>
+      <returns>호출하는 스레드에서 읽기 모드가 시작되었으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="millisecondsTimeout">대기할 시간(밀리초)이거나, 무기한 대기할 경우 -1(<see cref="F:System.Threading.Timeout.Infinite" />)입니다.</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="millisecondsTimeout" /> is negative, but it is not equal to <see cref="F:System.Threading.Timeout.Infinite" /> (-1), which is the only negative value allowed. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterReadLock(System.TimeSpan)">
+      <summary>제한 시간을 선택적으로 적용하여 읽기 모드로 잠금을 시작하려고 합니다.</summary>
+      <returns>호출하는 스레드에서 읽기 모드가 시작되었으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="timeout">대기할 간격이거나, 무기한 대기하려는 경우 -1밀리초입니다. </param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="timeout" /> is negative, but it is not equal to -1 milliseconds, which is the only negative value allowed.-or-The value of <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" /> milliseconds. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterUpgradeableReadLock(System.Int32)">
+      <summary>제한 시간을 선택적으로 적용하여 업그레이드 가능 모드로 잠금을 시작하려고 합니다.</summary>
+      <returns>호출하는 스레드에서 업그레이드 가능 모드가 시작되었으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="millisecondsTimeout">대기할 시간(밀리초)이거나, 무기한 대기할 경우 -1(<see cref="F:System.Threading.Timeout.Infinite" />)입니다.</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The current thread initially entered the lock in read mode, and therefore trying to enter upgradeable mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="millisecondsTimeout" /> is negative, but it is not equal to <see cref="F:System.Threading.Timeout.Infinite" /> (-1), which is the only negative value allowed. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterUpgradeableReadLock(System.TimeSpan)">
+      <summary>제한 시간을 선택적으로 적용하여 업그레이드 가능 모드로 잠금을 시작하려고 합니다.</summary>
+      <returns>호출하는 스레드에서 업그레이드 가능 모드가 시작되었으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="timeout">대기할 간격이거나, 무기한 대기하려는 경우 -1밀리초입니다.</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The current thread initially entered the lock in read mode, and therefore trying to enter upgradeable mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="timeout" /> is negative, but it is not equal to -1 milliseconds, which is the only negative value allowed.-or-The value of <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" /> milliseconds. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterWriteLock(System.Int32)">
+      <summary>제한 시간을 선택적으로 적용하여 쓰기 모드로 잠금을 시작하려고 합니다.</summary>
+      <returns>호출하는 스레드에서 쓰기 모드가 시작되었으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="millisecondsTimeout">대기할 시간(밀리초)이거나, 무기한 대기할 경우 -1(<see cref="F:System.Threading.Timeout.Infinite" />)입니다.</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The current thread initially entered the lock in read mode, and therefore trying to enter write mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="millisecondsTimeout" /> is negative, but it is not equal to <see cref="F:System.Threading.Timeout.Infinite" /> (-1), which is the only negative value allowed. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterWriteLock(System.TimeSpan)">
+      <summary>제한 시간을 선택적으로 적용하여 쓰기 모드로 잠금을 시작하려고 합니다.</summary>
+      <returns>호출하는 스레드에서 쓰기 모드가 시작되었으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="timeout">대기할 간격이거나, 무기한 대기하려는 경우 -1밀리초입니다.</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The current thread initially entered the lock in read mode, and therefore trying to enter write mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="timeout" /> is negative, but it is not equal to -1 milliseconds, which is the only negative value allowed.-or-The value of <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" /> milliseconds. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.WaitingReadCount">
+      <summary>읽기 모드로 잠금을 시작하려고 대기 중인 스레드의 총 개수를 가져옵니다.</summary>
+      <returns>읽기 모드를 시작하려고 대기 중인 스레드의 총 개수입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.WaitingUpgradeCount">
+      <summary>업그레이드 가능 모드로 잠금을 시작하려고 대기 중인 스레드의 총 개수를 가져옵니다.</summary>
+      <returns>업그레이드 가능 모드를 시작하려고 대기 중인 스레드의 총 개수입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.WaitingWriteCount">
+      <summary>쓰기 모드로 잠금을 시작하려고 대기 중인 스레드의 총 개수를 가져옵니다.</summary>
+      <returns>쓰기 모드를 시작하려고 대기 중인 스레드의 총 개수입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.Semaphore">
+      <summary>리소스 또는 리소스 풀에 동시에 액세스할 수 있는 스레드 수를 제한합니다. </summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Semaphore.#ctor(System.Int32,System.Int32)">
+      <summary>초기 항목 수 및 최대 동시 항목 수를 지정하여 <see cref="T:System.Threading.Semaphore" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+      <param name="initialCount">세마포에 동시에 부여할 수 있는 초기 요청 수입니다. </param>
+      <param name="maximumCount">세마포에 동시에 부여할 수 있는 최대 요청 수입니다. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="initialCount" />가 <paramref name="maximumCount" />보다 큰 경우</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="maximumCount" /> 1 보다 작으면입니다.또는<paramref name="initialCount" />가 0보다 작은 경우</exception>
+    </member>
+    <member name="M:System.Threading.Semaphore.#ctor(System.Int32,System.Int32,System.String)">
+      <summary>초기 항목 수 및 최대 동시 항목 수를 지정하고 선택적으로 시스템 세마포 개체의 이름을 지정하여 <see cref="T:System.Threading.Semaphore" /> 클래스의 새 인스턴스를 초기화합니다. </summary>
+      <param name="initialCount">세마포에 동시에 부여할 수 있는 초기 요청 수입니다. </param>
+      <param name="maximumCount">세마포에 동시에 부여할 수 있는 최대 요청 수입니다.</param>
+      <param name="name">명명된 시스템 세마포 개체의 이름입니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="initialCount" />가 <paramref name="maximumCount" />보다 큰 경우또는<paramref name="name" /> 260 자 보다 깁니다.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="maximumCount" /> 1 보다 작으면입니다.또는<paramref name="initialCount" />가 0보다 작은 경우</exception>
+      <exception cref="T:System.IO.IOException">Win32 오류가 발생한 경우</exception>
+      <exception cref="T:System.UnauthorizedAccessException">명명된 세마포가 존재하고 액세스 제어 보안이 있지만 사용자에게 <see cref="F:System.Security.AccessControl.SemaphoreRights.FullControl" />이 없는 경우</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">명명된 세마포를 만들 수 없는 경우. 다른 형식의 대기 핸들이 같은 이름을 가지고 있기 때문인 것 같습니다.</exception>
+    </member>
+    <member name="M:System.Threading.Semaphore.#ctor(System.Int32,System.Int32,System.String,System.Boolean@)">
+      <summary>초기 항목 수 및 최대 동시 항목 수를 지정하고, 선택적으로 시스템 세마포 개체의 이름을 지정하고, 새 시스템 세마포가 만들어졌는지 여부를 나타내는 값을 받을 변수를 지정하여 <see cref="T:System.Threading.Semaphore" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="initialCount">동시에 충족될 수 있는 세마포의 초기 요청 수입니다. </param>
+      <param name="maximumCount">동시에 충족될 수 있는 세마포의 최대 요청 수입니다.</param>
+      <param name="name">명명된 시스템 세마포 개체의 이름입니다.</param>
+      <param name="createdNew">이 메서드가 반환될 때 로컬 세마포가 만들어진 경우(즉, <paramref name="name" />이 null이거나 빈 문자열인 경우) 또는 지정한 명명된 시스템 세마포가 만들어진 경우에는 true가 포함되고, 지정한 명명된 시스템 세마포가 이미 있는 경우에는 false가 포함됩니다.이 매개 변수는 초기화되지 않은 상태로 전달됩니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="initialCount" />가 <paramref name="maximumCount" />보다 큰 경우 또는<paramref name="name" /> 260 자 보다 깁니다.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="maximumCount" /> 1 보다 작으면입니다.또는<paramref name="initialCount" />가 0보다 작은 경우</exception>
+      <exception cref="T:System.IO.IOException">Win32 오류가 발생한 경우</exception>
+      <exception cref="T:System.UnauthorizedAccessException">명명된 세마포가 존재하고 액세스 제어 보안이 있지만 사용자에게 <see cref="F:System.Security.AccessControl.SemaphoreRights.FullControl" />이 없는 경우</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">명명된 세마포를 만들 수 없는 경우. 다른 형식의 대기 핸들이 같은 이름을 가지고 있기 때문인 것 같습니다.</exception>
+    </member>
+    <member name="M:System.Threading.Semaphore.OpenExisting(System.String)">
+      <summary>이미 있는 경우 지정한 명명된 세마포를 엽니다.</summary>
+      <returns>명명된 시스템 세마포를 나타내는 개체입니다.</returns>
+      <param name="name">열려는 시스템 세마포의 이름입니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" />이 빈 문자열인 경우또는<paramref name="name" /> 260 자 보다 깁니다.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" />가 null인 경우</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">명명된 세마포가 없는 경우</exception>
+      <exception cref="T:System.IO.IOException">Win32 오류가 발생한 경우</exception>
+      <exception cref="T:System.UnauthorizedAccessException">명명된 세마포가 있지만 사용자에게 이 세마포를 사용하는 데 필요한 보안 액세스가 없는 경우 </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Threading.Semaphore.Release">
+      <summary>세마포를 종료하고 이전 카운트를 반환합니다.</summary>
+      <returns>
+        <see cref="Overload:System.Threading.Semaphore.Release" /> 메서드가 호출되기 전의 세마포 카운트입니다. </returns>
+      <exception cref="T:System.Threading.SemaphoreFullException">세마포 카운트가 이미 최대값인 경우</exception>
+      <exception cref="T:System.IO.IOException">명명된 세마포에서 Win32 오류가 발생한 경우</exception>
+      <exception cref="T:System.UnauthorizedAccessException">현재 세마포가 명명된 시스템 세마포를 나타내지만 사용자에게 <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" />가 없는 경우또는현재 세마포가 명명된 시스템 세마포를 나타내지만 세마포가 <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" />를 사용하여 열리지 않은 경우</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Semaphore.Release(System.Int32)">
+      <summary>지정된 횟수만큼 세마포를 종료하고 이전 카운트를 반환합니다.</summary>
+      <returns>
+        <see cref="Overload:System.Threading.Semaphore.Release" /> 메서드가 호출되기 전의 세마포 카운트입니다. </returns>
+      <param name="releaseCount">세마포를 종료할 횟수입니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="releaseCount" /> 1 보다 작으면입니다.</exception>
+      <exception cref="T:System.Threading.SemaphoreFullException">세마포 카운트가 이미 최대값인 경우</exception>
+      <exception cref="T:System.IO.IOException">명명된 세마포에서 Win32 오류가 발생한 경우</exception>
+      <exception cref="T:System.UnauthorizedAccessException">현재 세마포가 명명된 시스템 세마포를 나타내지만 사용자에게 <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" /> 권한이 없는 경우또는현재 세마포가 명명된 시스템 세마포를 나타내지만 세마포가 <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" /> 권한을 사용하여 열리지 않은 경우</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Semaphore.TryOpenExisting(System.String,System.Threading.Semaphore@)">
+      <summary>지정한 명명된 세마포(이미 존재하는 경우)를 열고 작업이 성공했는지를 나타내는 값을 반환합니다.</summary>
+      <returns>명명된 세마포를 열었으면 true이고, 그 열지 않았으면 false입니다.</returns>
+      <param name="name">열려는 시스템 세마포의 이름입니다.</param>
+      <param name="result">이 메서드가 반환될 때 호출에 성공한 경우에는 명명된 세마포를 나타내는 <see cref="T:System.Threading.Semaphore" /> 개체를 포함하고 호출에 실패한 경우에는 null을 포함합니다.이 매개 변수는 초기화되지 않은 것으로 처리됩니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" />이 빈 문자열인 경우또는<paramref name="name" /> 260 자 보다 깁니다.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" />가 null인 경우</exception>
+      <exception cref="T:System.IO.IOException">Win32 오류가 발생한 경우</exception>
+      <exception cref="T:System.UnauthorizedAccessException">명명된 세마포가 있지만 사용자에게 이 세마포를 사용하는 데 필요한 보안 액세스가 없는 경우 </exception>
+    </member>
+    <member name="T:System.Threading.SemaphoreFullException">
+      <summary>카운트가 이미 최대값에 도달한 세마포에서 <see cref="Overload:System.Threading.Semaphore.Release" /> 메서드를 호출하면 throw되는 예외입니다. </summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SemaphoreFullException.#ctor">
+      <summary>기본값으로 <see cref="T:System.Threading.SemaphoreFullException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Threading.SemaphoreFullException.#ctor(System.String)">
+      <summary>지정된 오류 메시지를 사용하여 <see cref="T:System.Threading.SemaphoreFullException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="message">예외에 대한 이유를 설명하는 오류 메시지입니다.</param>
+    </member>
+    <member name="M:System.Threading.SemaphoreFullException.#ctor(System.String,System.Exception)">
+      <summary>지정된 오류 메시지와 해당 예외의 근본 원인인 내부 예외에 대한 참조를 사용하여 <see cref="T:System.Threading.SemaphoreFullException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="message">예외에 대한 이유를 설명하는 오류 메시지입니다.</param>
+      <param name="innerException">현재 예외의 원인이 되는 예외입니다.<paramref name="innerException" /> 매개 변수가 null이 아니면 현재 예외는 내부 예외를 처리하는 catch 블록에서 발생합니다.</param>
+    </member>
+    <member name="T:System.Threading.SemaphoreSlim">
+      <summary>리소스 또는 리소스 풀에 동시에 액세스할 수 있는 스레드 수를 제한하는 <see cref="T:System.Threading.Semaphore" /> 대신 사용할 수 있는 간단한 클래스를 나타냅니다.</summary>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.#ctor(System.Int32)">
+      <summary>동시에 부여할 수 있는 초기 요청 수를 지정하여 <see cref="T:System.Threading.SemaphoreSlim" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="initialCount">세마포에 동시에 부여할 수 있는 초기 요청 수입니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="initialCount" />가 0보다 작은 경우</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.#ctor(System.Int32,System.Int32)">
+      <summary>동시에 부여할 수 있는 초기 및 최대 요청 수를 지정하여 <see cref="T:System.Threading.SemaphoreSlim" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="initialCount">세마포에 동시에 부여할 수 있는 초기 요청 수입니다.</param>
+      <param name="maxCount">세마포에 동시에 부여할 수 있는 최대 요청 수입니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="initialCount" />가 0보다 작거나 <paramref name="initialCount" />가 <paramref name="maxCount" />보다 크거나 <paramref name="maxCount" />가 0보다 작거나 같은 경우.</exception>
+    </member>
+    <member name="P:System.Threading.SemaphoreSlim.AvailableWaitHandle">
+      <summary>세마포에서 대기하는 데 사용할 수 있는 <see cref="T:System.Threading.WaitHandle" />을(를) 반환합니다.</summary>
+      <returns>세마포에서 대기하는 데 사용할 수 있는 <see cref="T:System.Threading.WaitHandle" />입니다.</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Threading.SemaphoreSlim" />가 삭제된 경우</exception>
+    </member>
+    <member name="P:System.Threading.SemaphoreSlim.CurrentCount">
+      <summary>
+        <see cref="T:System.Threading.SemaphoreSlim" /> 개체에 들어갈 수 있는 남아 있는 스레드의 수를 가져옵니다. </summary>
+      <returns>세마포에 들어갈 수 있는 남아 있는 스레드의 수입니다.</returns>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Dispose">
+      <summary>
+        <see cref="T:System.Threading.SemaphoreSlim" /> 클래스의 현재 인스턴스에서 사용하는 모든 리소스를 해제합니다.</summary>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Dispose(System.Boolean)">
+      <summary>
+        <see cref="T:System.Threading.SemaphoreSlim" />에서 사용하는 관리되지 않는 리소스를 해제하고, 관리되는 리소스를 선택적으로 해제할 수 있습니다.</summary>
+      <param name="disposing">관리되는 리소스와 관리되지 않는 리소스를 모두 해제하려면 true로 설정하고, 관리되지 않는 리소스만 해제하려면 false로 설정합니다.</param>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Release">
+      <summary>
+        <see cref="T:System.Threading.SemaphoreSlim" /> 개체를 한 번 해제합니다.</summary>
+      <returns>
+        <see cref="T:System.Threading.SemaphoreSlim" />의 이전 횟수입니다.</returns>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+      <exception cref="T:System.Threading.SemaphoreFullException">
+        <see cref="T:System.Threading.SemaphoreSlim" />이 이미 최대 크기에 도달했습니다.</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Release(System.Int32)">
+      <summary>
+        <see cref="T:System.Threading.SemaphoreSlim" /> 개체를 지정된 횟수만큼 해제합니다.</summary>
+      <returns>
+        <see cref="T:System.Threading.SemaphoreSlim" />의 이전 횟수입니다.</returns>
+      <param name="releaseCount">세마포를 종료할 횟수입니다.</param>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="releaseCount" /> 1 보다 작으면입니다.</exception>
+      <exception cref="T:System.Threading.SemaphoreFullException">
+        <see cref="T:System.Threading.SemaphoreSlim" />이 이미 최대 크기에 도달했습니다.</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait">
+      <summary>현재 스레드가 <see cref="T:System.Threading.SemaphoreSlim" />에 진입할 수 있을 때까지 스레드를 차단합니다.</summary>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.Int32)">
+      <summary>제한 시간을 지정하는 부호 있는 32비트 정수를 사용하여 현재 스레드가 <see cref="T:System.Threading.SemaphoreSlim" />에 진입할 수 있을 때까지 스레드를 차단합니다.</summary>
+      <returns>현재 스레드가 <see cref="T:System.Threading.SemaphoreSlim" />에 진입했으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="millisecondsTimeout">대기할 시간(밀리초)이거나, 무기한 대기할 경우 <see cref="F:System.Threading.Timeout.Infinite" />(-1)입니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" />이 무기한 시간 제한을 나타내는 -1 이외의 음수인 경우</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.Int32,System.Threading.CancellationToken)">
+      <summary>
+        <see cref="T:System.Threading.CancellationToken" />을(를) 확인하면서 제한 시간을 지정하는 부호 있는 32비트 정수를 사용하여 현재 스레드가 <see cref="T:System.Threading.SemaphoreSlim" />에 진입할 수 있을 때까지 스레드를 차단합니다.</summary>
+      <returns>현재 스레드가 <see cref="T:System.Threading.SemaphoreSlim" />에 진입했으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="millisecondsTimeout">대기할 시간(밀리초)이거나, 무기한 대기할 경우 <see cref="F:System.Threading.Timeout.Infinite" />(-1)입니다.</param>
+      <param name="cancellationToken">확인할 <see cref="T:System.Threading.CancellationToken" />입니다.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" />이 취소되었습니다.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" />이 무기한 시간 제한을 나타내는 -1 이외의 음수인 경우</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Threading.SemaphoreSlim" /> 인스턴스가 삭제 또는 <see cref="T:System.Threading.CancellationTokenSource" /> 만든 <paramref name="cancellationToken" /> 가 삭제 되었습니다.</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.Threading.CancellationToken)">
+      <summary>
+        <see cref="T:System.Threading.CancellationToken" />을(를) 확인하면서 현재 스레드가 <see cref="T:System.Threading.SemaphoreSlim" />에 진입할 수 있을 때까지 스레드를 차단합니다.</summary>
+      <param name="cancellationToken">확인할 <see cref="T:System.Threading.CancellationToken" /> 토큰입니다.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" />이 취소되었습니다.</exception>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우또는<see cref="T:System.Threading.CancellationTokenSource" /> 만든<paramref name=" cancellationToken" /> 이미 삭제 되었습니다.</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.TimeSpan)">
+      <summary>
+        <see cref="T:System.TimeSpan" />(으)로 제한 시간을 지정하여 현재 스레드가 <see cref="T:System.Threading.SemaphoreSlim" />에 진입할 수 있을 때까지 스레드를 차단합니다.</summary>
+      <returns>현재 스레드가 <see cref="T:System.Threading.SemaphoreSlim" />에 진입했으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="timeout">대기할 시간(밀리초)을 나타내는 <see cref="T:System.TimeSpan" />이거나, 무한 대기하도록 -1밀리초를 나타내는 <see cref="T:System.TimeSpan" />입니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" />이 무기한 시간 제한을 나타내는 -1밀리초 이외의 음수이거나 시간 제한이 <see cref="F:System.Int32.MaxValue" />보다 큰 경우.</exception>
+      <exception cref="T:System.ObjectDisposedException">semaphoreSlim 인스턴스가 삭제되었습니다<paramref name="." /></exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>
+        <see cref="T:System.Threading.CancellationToken" />을(를) 확인하면서 제한 시간을 지정하는 <see cref="T:System.TimeSpan" />을(를) 사용하여 현재 스레드가 <see cref="T:System.Threading.SemaphoreSlim" />에 진입할 수 있을 때까지 스레드를 차단합니다.</summary>
+      <returns>현재 스레드가 <see cref="T:System.Threading.SemaphoreSlim" />에 진입했으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="timeout">대기할 시간(밀리초)을 나타내는 <see cref="T:System.TimeSpan" />이거나, 무한 대기하도록 -1밀리초를 나타내는 <see cref="T:System.TimeSpan" />입니다.</param>
+      <param name="cancellationToken">확인할 <see cref="T:System.Threading.CancellationToken" />입니다.</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" />이 취소되었습니다.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" />이 무기한 시간 제한을 나타내는 -1밀리초 이외의 음수이거나 시간 제한이 <see cref="F:System.Int32.MaxValue" />보다 큰 경우.</exception>
+      <exception cref="T:System.ObjectDisposedException">semaphoreSlim 인스턴스가 삭제되었습니다<paramref name="." /><paramref name="-or-" /><see cref="T:System.Threading.CancellationTokenSource" />을 만든 <paramref name="cancellationToken" />가 이미 삭제되었습니다.</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync">
+      <summary>
+        <see cref="T:System.Threading.SemaphoreSlim" />(으)로 전환될 때까지 비동기적으로 기다립니다. </summary>
+      <returns>세마포가 입력되었을 때 완료될 작업입니다.</returns>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.Int32)">
+      <summary>32비트 부호 있는 정수를 사용하여 시간 간격을 측정하여 <see cref="T:System.Threading.SemaphoreSlim" />(으)로 전환될 때까지 비동기적으로 기다립니다. </summary>
+      <returns>현재 스레드가 성공적으로 <see cref="T:System.Threading.SemaphoreSlim" />에 들어온 경우 true의 결과로 완료되는 작업이고, 그렇지 않으면 false의 결과로 완료되는 작업입니다.</returns>
+      <param name="millisecondsTimeout">대기할 시간(밀리초)이거나, 무기한 대기할 경우 <see cref="F:System.Threading.Timeout.Infinite" />(-1)입니다.</param>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" />이 무기한 시간 제한을 나타내는 -1 이외의 음수인 경우</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.Int32,System.Threading.CancellationToken)">
+      <summary>
+        <see cref="T:System.Threading.CancellationToken" />을(를) 관찰하는 동안 32비트 부호 있는 정수를 사용하여 시간 간격을 측정하여 <see cref="T:System.Threading.SemaphoreSlim" />(으)로 전환될 때까지 비동기적으로 기다립니다. </summary>
+      <returns>현재 스레드가 성공적으로 <see cref="T:System.Threading.SemaphoreSlim" />에 들어온 경우 true의 결과로 완료되는 작업이고, 그렇지 않으면 false의 결과로 완료되는 작업입니다. </returns>
+      <param name="millisecondsTimeout">대기할 시간(밀리초)이거나, 무기한 대기할 경우 <see cref="F:System.Threading.Timeout.Infinite" />(-1)입니다.</param>
+      <param name="cancellationToken">확인할 <see cref="T:System.Threading.CancellationToken" />입니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" />이 무기한 시간 제한을 나타내는 -1 이외의 음수인 경우 </exception>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우 </exception>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" />이 취소되었습니다. </exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.Threading.CancellationToken)">
+      <summary>
+        <see cref="T:System.Threading.CancellationToken" />을(를) 관찰하는 동안 <see cref="T:System.Threading.SemaphoreSlim" />(으)로 전환될 때까지 비동기적으로 기다립니다. </summary>
+      <returns>세마포가 입력되었을 때 완료될 작업입니다. </returns>
+      <param name="cancellationToken">확인할 <see cref="T:System.Threading.CancellationToken" /> 토큰입니다.</param>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" />이 취소되었습니다. </exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.TimeSpan)">
+      <summary>
+        <see cref="T:System.TimeSpan" />을(를) 사용하여 시간 간격을 측정하여 <see cref="T:System.Threading.SemaphoreSlim" />(으)로 전환될 때까지 비동기적으로 기다립니다.</summary>
+      <returns>현재 스레드가 성공적으로 <see cref="T:System.Threading.SemaphoreSlim" />에 들어온 경우 true의 결과로 완료되는 작업이고, 그렇지 않으면 false의 결과로 완료되는 작업입니다.</returns>
+      <param name="timeout">대기할 시간(밀리초)을 나타내는 <see cref="T:System.TimeSpan" />이거나, 무한 대기하도록 -1밀리초를 나타내는 <see cref="T:System.TimeSpan" />입니다.</param>
+      <exception cref="T:System.ObjectDisposedException">현재 인스턴스가 이미 삭제된 경우</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" />이 무기한 시간 제한을 나타내는 -1 이외의 음수인 경우 또는 제한 시간이 <see cref="F:System.Int32.MaxValue" />보다 큰 경우</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>
+        <see cref="T:System.Threading.CancellationToken" />을 관찰하는 동안 <see cref="T:System.TimeSpan" />을(를) 사용하여 시간 간격을 측정하여 <see cref="T:System.Threading.SemaphoreSlim" />(으)로 전환될 때까지 비동기적으로 기다립니다.</summary>
+      <returns>현재 스레드가 성공적으로 <see cref="T:System.Threading.SemaphoreSlim" />에 들어온 경우 true의 결과로 완료되는 작업이고, 그렇지 않으면 false의 결과로 완료되는 작업입니다.</returns>
+      <param name="timeout">대기할 시간(밀리초)을 나타내는 <see cref="T:System.TimeSpan" />이거나, 무한 대기하도록 -1밀리초를 나타내는 <see cref="T:System.TimeSpan" />입니다.</param>
+      <param name="cancellationToken">확인할 <see cref="T:System.Threading.CancellationToken" /> 토큰입니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" />이 무기한 시간 제한을 나타내는 -1 이외의 음수인 경우또는제한 시간이 <see cref="F:System.Int32.MaxValue" />보다 큰 경우</exception>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" />이 취소되었습니다. </exception>
+    </member>
+    <member name="T:System.Threading.SendOrPostCallback">
+      <summary>메시지가 동기화 컨텍스트로 디스패치될 때 호출할 메서드를 나타냅니다.  </summary>
+      <param name="state">대리자에 전달된 개체입니다.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.SpinLock">
+      <summary>잠금을 얻으려는 스레드가 잠금을 사용할 수 있을 때까지 루프에서 반복적으로 확인하면서 대기하는 기본적인 상호 배타 잠금을 제공합니다.</summary>
+    </member>
+    <member name="M:System.Threading.SpinLock.#ctor(System.Boolean)">
+      <summary>디버깅을 향상시키기 위해 스레드 ID를 추적하는 옵션을 사용하여 <see cref="T:System.Threading.SpinLock" /> 구조체의 새 인스턴스를 초기화합니다.</summary>
+      <param name="enableThreadOwnerTracking">디버깅 용도로 스레드 ID를 캡처하고 사용할지 여부입니다.</param>
+    </member>
+    <member name="M:System.Threading.SpinLock.Enter(System.Boolean@)">
+      <summary>메서드 호출에서 예외가 발생하는 경우에도 안정적인 방식으로 잠금을 얻으며 잠금을 얻었는지 확인하기 위해 <paramref name="lockTaken" />을 안정적으로 검사할 수 있습니다.</summary>
+      <param name="lockTaken">잠금을 얻었으면 true이고, 그렇지 않으면 false입니다.이 메서드를 호출하기 전에 <paramref name="lockTaken" />을 false로 초기화해야 합니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="lockTaken" /> 인수는 Enter를 호출하기 전에 false로 초기화해야 합니다.</exception>
+      <exception cref="T:System.Threading.LockRecursionException">스레드 소유권 추적 기능을 사용할 수 있으며 현재 스레드가 이미 이 잠금을 획득했습니다.</exception>
+    </member>
+    <member name="M:System.Threading.SpinLock.Exit">
+      <summary>잠금을 해제합니다.</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">스레드 소유권 추적 기능을 사용할 수 있으며 현재 스레드가 이 잠금의 소유자가 아닙니다.</exception>
+    </member>
+    <member name="M:System.Threading.SpinLock.Exit(System.Boolean)">
+      <summary>잠금을 해제합니다.</summary>
+      <param name="useMemoryBarrier">종료 작업을 다른 스레드에 즉시 게시하기 위해 메모리 펜스를 실행할지 여부를 나타내는 부울 값입니다.</param>
+      <exception cref="T:System.Threading.SynchronizationLockException">스레드 소유권 추적 기능을 사용할 수 있으며 현재 스레드가 이 잠금의 소유자가 아닙니다.</exception>
+    </member>
+    <member name="P:System.Threading.SpinLock.IsHeld">
+      <summary>스레드에서 현재 잠금을 보유하고 있는지 여부를 가져옵니다.</summary>
+      <returns>스레드에서 현재 잠금을 보유하고 있으면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="P:System.Threading.SpinLock.IsHeldByCurrentThread">
+      <summary>현재 스레드에서 잠금을 보유하고 있는지 여부를 가져옵니다.</summary>
+      <returns>현재 스레드에서 잠금을 보유하고 있으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <exception cref="T:System.InvalidOperationException">스레드 소유권 추적을 사용할 수 없습니다.</exception>
+    </member>
+    <member name="P:System.Threading.SpinLock.IsThreadOwnerTrackingEnabled">
+      <summary>이 인스턴스에 대해 스레드 소유권 추적이 사용되는지 여부를 가져옵니다.</summary>
+      <returns>이 인스턴스에 대해 스레드 소유권 추적이 사용되면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+    <member name="M:System.Threading.SpinLock.TryEnter(System.Boolean@)">
+      <summary>메서드 호출에서 예외가 발생하는 경우에도 안정적인 방식으로 잠금을 얻으려고 시도합니다. 잠금을 얻었는지 확인하기 위해 <paramref name="lockTaken" />을 안정적으로 검사할 수 있습니다.</summary>
+      <param name="lockTaken">잠금을 얻었으면 true이고, 그렇지 않으면 false입니다.이 메서드를 호출하기 전에 <paramref name="lockTaken" />을 false로 초기화해야 합니다.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="lockTaken" /> 인수는 TryEnter를 호출하기 전에 false로 초기화해야 합니다.</exception>
+      <exception cref="T:System.Threading.LockRecursionException">스레드 소유권 추적 기능을 사용할 수 있으며 현재 스레드가 이미 이 잠금을 획득했습니다.</exception>
+    </member>
+    <member name="M:System.Threading.SpinLock.TryEnter(System.Int32,System.Boolean@)">
+      <summary>메서드 호출에서 예외가 발생하는 경우에도 안정적인 방식으로 잠금을 얻으려고 시도합니다. 잠금을 얻었는지 확인하기 위해 <paramref name="lockTaken" />을 안정적으로 검사할 수 있습니다.</summary>
+      <param name="millisecondsTimeout">대기할 시간(밀리초)이거나, 무기한 대기할 경우 <see cref="F:System.Threading.Timeout.Infinite" />(-1)입니다.</param>
+      <param name="lockTaken">잠금을 얻었으면 true이고, 그렇지 않으면 false입니다.이 메서드를 호출하기 전에 <paramref name="lockTaken" />을 false로 초기화해야 합니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" />이 무기한 시간 제한을 나타내는 -1 이외의 음수인 경우</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="lockTaken" /> 인수는 TryEnter를 호출하기 전에 false로 초기화해야 합니다.</exception>
+      <exception cref="T:System.Threading.LockRecursionException">스레드 소유권 추적 기능을 사용할 수 있으며 현재 스레드가 이미 이 잠금을 획득했습니다.</exception>
+    </member>
+    <member name="M:System.Threading.SpinLock.TryEnter(System.TimeSpan,System.Boolean@)">
+      <summary>메서드 호출에서 예외가 발생하는 경우에도 안정적인 방식으로 잠금을 얻으려고 시도합니다. 잠금을 얻었는지 확인하기 위해 <paramref name="lockTaken" />을 안정적으로 검사할 수 있습니다.</summary>
+      <param name="timeout">대기할 시간(밀리초)을 나타내는 <see cref="T:System.TimeSpan" />이거나, 무한 대기하도록 -1밀리초를 나타내는 <see cref="T:System.TimeSpan" />입니다.</param>
+      <param name="lockTaken">잠금을 얻었으면 true이고, 그렇지 않으면 false입니다.이 메서드를 호출하기 전에 <paramref name="lockTaken" />을 false로 초기화해야 합니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" />이 무기한 시간 제한을 나타내는 -1밀리초 이외의 음수이거나 시간 제한이 <see cref="F:System.Int32.MaxValue" />밀리초보다 큰 경우.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="lockTaken" /> 인수는 TryEnter를 호출하기 전에 false로 초기화해야 합니다.</exception>
+      <exception cref="T:System.Threading.LockRecursionException">스레드 소유권 추적 기능을 사용할 수 있으며 현재 스레드가 이미 이 잠금을 획득했습니다.</exception>
+    </member>
+    <member name="T:System.Threading.SpinWait">
+      <summary>회전 기반 대기를 지원합니다.</summary>
+    </member>
+    <member name="P:System.Threading.SpinWait.Count">
+      <summary>이 인스턴스에서 <see cref="M:System.Threading.SpinWait.SpinOnce" />가 호출된 횟수를 가져옵니다.</summary>
+      <returns>이 인스턴스에서 <see cref="M:System.Threading.SpinWait.SpinOnce" />가 호출된 횟수를 나타내는 정수를 반환합니다.</returns>
+    </member>
+    <member name="P:System.Threading.SpinWait.NextSpinWillYield">
+      <summary>다음 <see cref="M:System.Threading.SpinWait.SpinOnce" /> 호출이 프로세서를 생성하여 강제 컨텍스트 전환을 트리거할지 여부를 가져옵니다.</summary>
+      <returns>다음 <see cref="M:System.Threading.SpinWait.SpinOnce" /> 호출이 프로세서를 생성하여 강제 컨텍스트 전환을 트리거할지 여부입니다.</returns>
+    </member>
+    <member name="M:System.Threading.SpinWait.Reset">
+      <summary>회전 수를 다시 설정합니다.</summary>
+    </member>
+    <member name="M:System.Threading.SpinWait.SpinOnce">
+      <summary>단일 회전을 수행합니다.</summary>
+    </member>
+    <member name="M:System.Threading.SpinWait.SpinUntil(System.Func{System.Boolean})">
+      <summary>지정된 조건이 충족될 때까지 회전합니다.</summary>
+      <param name="condition">true를 반환할 때까지 계속 실행되는 대리자입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="condition" /> 인수가 null인 경우</exception>
+    </member>
+    <member name="M:System.Threading.SpinWait.SpinUntil(System.Func{System.Boolean},System.Int32)">
+      <summary>지정된 조건이 충족되거나 지정된 제한 시간이 만료될 때까지 회전합니다.</summary>
+      <returns>제한 시간 내에 지정된 조건이 충족되면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="condition">true를 반환할 때까지 계속 실행되는 대리자입니다.</param>
+      <param name="millisecondsTimeout">대기할 시간(밀리초)이거나, 무기한 대기할 경우 <see cref="F:System.Threading.Timeout.Infinite" />(-1)입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="condition" /> 인수가 null인 경우</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" />이 무기한 시간 제한을 나타내는 -1 이외의 음수인 경우</exception>
+    </member>
+    <member name="M:System.Threading.SpinWait.SpinUntil(System.Func{System.Boolean},System.TimeSpan)">
+      <summary>지정된 조건이 충족되거나 지정된 제한 시간이 만료될 때까지 회전합니다.</summary>
+      <returns>제한 시간 내에 지정된 조건이 충족되면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="condition">true를 반환할 때까지 계속 실행되는 대리자입니다.</param>
+      <param name="timeout">대기할 시간(밀리초)을 나타내는 <see cref="T:System.TimeSpan" />이거나, 무한 대기하도록 -1밀리초를 나타내는 TimeSpan입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="condition" /> 인수가 null인 경우</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" />이 무기한 시간 제한을 나타내는 -1밀리초 이외의 음수이거나 시간 제한이 <see cref="F:System.Int32.MaxValue" />보다 큰 경우.</exception>
+    </member>
+    <member name="T:System.Threading.SynchronizationContext">
+      <summary>다양한 동기화 모델에서 동기화 컨텍스트를 전파하기 위한 기본 기능을 제공합니다. </summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.#ctor">
+      <summary>
+        <see cref="T:System.Threading.SynchronizationContext" /> 클래스의 새 인스턴스를 만듭니다.</summary>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.CreateCopy">
+      <summary>파생 클래스에서 재정의된 경우 동기화 컨텍스트의 복사본을 만듭니다.  </summary>
+      <returns>새 <see cref="T:System.Threading.SynchronizationContext" /> 개체입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.SynchronizationContext.Current">
+      <summary>현재 스레드의 동기화 컨텍스트를 가져옵니다.</summary>
+      <returns>현재 동기화 컨텍스트를 나타내는 <see cref="T:System.Threading.SynchronizationContext" /> 개체입니다.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.OperationCompleted">
+      <summary>파생 클래스에서 재정의되면 작업이 완료되었음을 알리는 메시지에 응답합니다.</summary>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.OperationStarted">
+      <summary>파생 클래스에서 재정의되면 작업이 시작되었음을 알리는 메시지에 응답합니다.</summary>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.Post(System.Threading.SendOrPostCallback,System.Object)">
+      <summary>파생 클래스에서 재정의될 때 비동기 메시지를 동기화 컨텍스트로 디스패치합니다.</summary>
+      <param name="d">호출할 <see cref="T:System.Threading.SendOrPostCallback" /> 대리자입니다.</param>
+      <param name="state">대리자에 전달된 개체입니다.</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.Send(System.Threading.SendOrPostCallback,System.Object)">
+      <summary>파생 클래스에서 재정의될 때 동기 메시지를 동기화 컨텍스트로 디스패치합니다.</summary>
+      <param name="d">호출할 <see cref="T:System.Threading.SendOrPostCallback" /> 대리자입니다.</param>
+      <param name="state">대리자에 전달된 개체입니다. </param>
+      <exception cref="T:System.NotSupportedException">The method was called in a Windows Store app.The implementation of <see cref="T:System.Threading.SynchronizationContext" /> for Windows Store apps does not support the <see cref="M:System.Threading.SynchronizationContext.Send(System.Threading.SendOrPostCallback,System.Object)" /> method.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.SetSynchronizationContext(System.Threading.SynchronizationContext)">
+      <summary>현재 동기화 컨텍스트를 설정합니다.</summary>
+      <param name="syncContext">설정할 <see cref="T:System.Threading.SynchronizationContext" /> 개체입니다.</param>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence, ControlPolicy" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Threading.SynchronizationLockException">
+      <summary>메서드가 지정된 Monitor에 대해 잠금을 소유하도록 호출자에게 요구하지만 해당 잠금을 소유하지 않는 호출자가 해당 메서드를 호출할 때 throw되는 예외입니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationLockException.#ctor">
+      <summary>기본 속성을 사용하여 <see cref="T:System.Threading.SynchronizationLockException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Threading.SynchronizationLockException.#ctor(System.String)">
+      <summary>지정된 오류 메시지를 사용하여 <see cref="T:System.Threading.SynchronizationLockException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="message">예외에 대한 이유를 설명하는 오류 메시지입니다. </param>
+    </member>
+    <member name="M:System.Threading.SynchronizationLockException.#ctor(System.String,System.Exception)">
+      <summary>지정된 오류 메시지와 해당 예외의 근본 원인인 내부 예외에 대한 참조를 사용하여 <see cref="T:System.Threading.SynchronizationLockException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="message">예외에 대한 이유를 설명하는 오류 메시지입니다. </param>
+      <param name="innerException">현재 예외의 원인이 되는 예외입니다.<paramref name="innerException" /> 매개 변수가 null이 아니면 현재 예외는 내부 예외를 처리하는 catch 블록에서 발생합니다.</param>
+    </member>
+    <member name="T:System.Threading.ThreadLocal`1">
+      <summary>데이터의 스레드 로컬 저장소를 제공합니다.</summary>
+      <typeparam name="T">스레드별로 저장되는 데이터의 형식을 지정합니다.</typeparam>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.#ctor">
+      <summary>
+        <see cref="T:System.Threading.ThreadLocal`1" /> 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.#ctor(System.Boolean)">
+      <summary>
+        <see cref="T:System.Threading.ThreadLocal`1" /> 인스턴스를 초기화합니다.</summary>
+      <param name="trackAllValues">인스턴스에 설정된 모든 값을 추적하고 해당 값을 <see cref="P:System.Threading.ThreadLocal`1.Values" /> 속성을 통해 노출할지 여부</param>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.#ctor(System.Func{`0})">
+      <summary>지정된 <paramref name="valueFactory" /> 함수를 사용하여 <see cref="T:System.Threading.ThreadLocal`1" />의 인스턴스를 초기화합니다.</summary>
+      <param name="valueFactory">
+        <see cref="T:System.Func`1" />를 이전에 초기화하지 않고 검색하려고 하는 경우 lazily-initialized 값을 생성하기 위해 호출되는 <see cref="P:System.Threading.ThreadLocal`1.Value" />입니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="valueFactory" />는 null 참조(Visual Basic의 경우 Nothing)입니다.</exception>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.#ctor(System.Func{`0},System.Boolean)">
+      <summary>지정된 <paramref name="valueFactory" /> 함수를 사용하여 <see cref="T:System.Threading.ThreadLocal`1" />의 인스턴스를 초기화합니다.</summary>
+      <param name="valueFactory">
+        <see cref="P:System.Threading.ThreadLocal`1.Value" />를 이전에 초기화하지 않고 검색하려고 하는 경우 lazily-initialized 값을 생성하기 위해 호출되는 <see cref="T:System.Func`1" />입니다.</param>
+      <param name="trackAllValues">인스턴스에 설정된 모든 값을 추적하고 해당 값을 <see cref="P:System.Threading.ThreadLocal`1.Values" /> 속성을 통해 노출할지 여부</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="valueFactory" />이 null 참조(Visual Basic의 경우 Nothing)인 경우</exception>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.Dispose">
+      <summary>
+        <see cref="T:System.Threading.ThreadLocal`1" /> 클래스의 현재 인스턴스에서 사용하는 모든 리소스를 해제합니다.</summary>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.Dispose(System.Boolean)">
+      <summary>이 <see cref="T:System.Threading.ThreadLocal`1" /> 인스턴스에서 사용하는 리소스를 해제합니다.</summary>
+      <param name="disposing">
+        <see cref="M:System.Threading.ThreadLocal`1.Dispose" /> 호출로 인해 이 메서드가 호출되는지 여부를 나타내는 부울 값입니다.</param>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.Finalize">
+      <summary>이 <see cref="T:System.Threading.ThreadLocal`1" /> 인스턴스에서 사용하는 리소스를 해제합니다.</summary>
+    </member>
+    <member name="P:System.Threading.ThreadLocal`1.IsValueCreated">
+      <summary>
+        <see cref="P:System.Threading.ThreadLocal`1.Value" />가 현재 스레드에서 초기화되었는지 여부를 가져옵니다.</summary>
+      <returns>현재 스레드에서 <see cref="P:System.Threading.ThreadLocal`1.Value" />가 초기화되었으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Threading.ThreadLocal`1" /> 인스턴스가 삭제된 경우</exception>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.ToString">
+      <summary>현재 스레드에 대한 이 인스턴스의 문자열 표현을 만들고 반환합니다.</summary>
+      <returns>
+        <see cref="P:System.Threading.ThreadLocal`1.Value" />에서 <see cref="M:System.Object.ToString" />을 호출한 결과입니다.</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Threading.ThreadLocal`1" /> 인스턴스가 삭제된 경우</exception>
+      <exception cref="T:System.NullReferenceException">현재 스레드의 <see cref="P:System.Threading.ThreadLocal`1.Value" />는 null 참조입니다(Visual Basic에서는 Nothing).</exception>
+      <exception cref="T:System.InvalidOperationException">초기화 함수는 <see cref="P:System.Threading.ThreadLocal`1.Value" />를 재귀적으로 참조하려고 했습니다.</exception>
+      <exception cref="T:System.MissingMemberException">기본 생성자가 제공되지 않으며 값 팩터리가 제공되지 않습니다.</exception>
+    </member>
+    <member name="P:System.Threading.ThreadLocal`1.Value">
+      <summary>현재 인스턴스에 대한 이 인스턴스의 값을 가져오거나 설정합니다.</summary>
+      <returns>이 ThreadLocal이 초기화를 담당하는 개체의 인스턴스를 반환합니다.</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Threading.ThreadLocal`1" /> 인스턴스가 삭제된 경우</exception>
+      <exception cref="T:System.InvalidOperationException">초기화 함수는 <see cref="P:System.Threading.ThreadLocal`1.Value" />를 재귀적으로 참조하려고 했습니다.</exception>
+      <exception cref="T:System.MissingMemberException">기본 생성자가 제공되지 않으며 값 팩터리가 제공되지 않습니다.</exception>
+    </member>
+    <member name="P:System.Threading.ThreadLocal`1.Values">
+      <summary>이 인스턴스에 액세스한 모든 스레드가 현재 저장한 모든 값의 목록을 가져옵니다.</summary>
+      <returns>이 인스턴스에 액세스한 모든 스레드가 현재 저장한 모든 값의 목록입니다.</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Threading.ThreadLocal`1" /> 인스턴스가 삭제된 경우</exception>
+    </member>
+    <member name="T:System.Threading.Volatile">
+      <summary>휘발성 메모리 작업을 수행하기 위한 메서드가 포함되어 있습니다.</summary>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Boolean@)">
+      <summary>지정된 필드의 값을 읽습니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 읽기 또는 쓰기가 이 메서드 뒤에 나타나는 경우 프로세서가 이 메서드 앞으로 읽기 또는 쓰기를 이동할 수 없습니다.</summary>
+      <returns>읽은 값입니다.이 값은 프로세서 수나 프로세서 캐시의 상태에 관계없이 컴퓨터의 어떠한 프로세서에서든 마지막으로 쓴 것입니다.</returns>
+      <param name="location">읽을 필드입니다.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Byte@)">
+      <summary>지정된 필드의 값을 읽습니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 읽기 또는 쓰기가 이 메서드 뒤에 나타나는 경우 프로세서가 이 메서드 앞으로 읽기 또는 쓰기를 이동할 수 없습니다.</summary>
+      <returns>읽은 값입니다.이 값은 프로세서 수나 프로세서 캐시의 상태에 관계없이 컴퓨터의 어떠한 프로세서에서든 마지막으로 쓴 것입니다.</returns>
+      <param name="location">읽을 필드입니다.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Double@)">
+      <summary>지정된 필드의 값을 읽습니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 읽기 또는 쓰기가 이 메서드 뒤에 나타나는 경우 프로세서가 이 메서드 앞으로 읽기 또는 쓰기를 이동할 수 없습니다.</summary>
+      <returns>읽은 값입니다.이 값은 프로세서 수나 프로세서 캐시의 상태에 관계없이 컴퓨터의 어떠한 프로세서에서든 마지막으로 쓴 것입니다.</returns>
+      <param name="location">읽을 필드입니다.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Int16@)">
+      <summary>지정된 필드의 값을 읽습니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 읽기 또는 쓰기가 이 메서드 뒤에 나타나는 경우 프로세서가 이 메서드 앞으로 읽기 또는 쓰기를 이동할 수 없습니다.</summary>
+      <returns>읽은 값입니다.이 값은 프로세서 수나 프로세서 캐시의 상태에 관계없이 컴퓨터의 어떠한 프로세서에서든 마지막으로 쓴 것입니다.</returns>
+      <param name="location">읽을 필드입니다.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Int32@)">
+      <summary>지정된 필드의 값을 읽습니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 읽기 또는 쓰기가 이 메서드 뒤에 나타나는 경우 프로세서가 이 메서드 앞으로 읽기 또는 쓰기를 이동할 수 없습니다.</summary>
+      <returns>읽은 값입니다.이 값은 프로세서 수나 프로세서 캐시의 상태에 관계없이 컴퓨터의 어떠한 프로세서에서든 마지막으로 쓴 것입니다.</returns>
+      <param name="location">읽을 필드입니다.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Int64@)">
+      <summary>지정된 필드의 값을 읽습니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 읽기 또는 쓰기가 이 메서드 뒤에 나타나는 경우 프로세서가 이 메서드 앞으로 읽기 또는 쓰기를 이동할 수 없습니다.</summary>
+      <returns>읽은 값입니다.이 값은 프로세서 수나 프로세서 캐시의 상태에 관계없이 컴퓨터의 어떠한 프로세서에서든 마지막으로 쓴 것입니다.</returns>
+      <param name="location">읽을 필드입니다.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.IntPtr@)">
+      <summary>지정된 필드의 값을 읽습니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 읽기 또는 쓰기가 이 메서드 뒤에 나타나는 경우 프로세서가 이 메서드 앞으로 읽기 또는 쓰기를 이동할 수 없습니다.</summary>
+      <returns>읽은 값입니다.이 값은 프로세서 수나 프로세서 캐시의 상태에 관계없이 컴퓨터의 어떠한 프로세서에서든 마지막으로 쓴 것입니다.</returns>
+      <param name="location">읽을 필드입니다.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.SByte@)">
+      <summary>지정된 필드의 값을 읽습니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 읽기 또는 쓰기가 이 메서드 뒤에 나타나는 경우 프로세서가 이 메서드 앞으로 읽기 또는 쓰기를 이동할 수 없습니다.</summary>
+      <returns>읽은 값입니다.이 값은 프로세서 수나 프로세서 캐시의 상태에 관계없이 컴퓨터의 어떠한 프로세서에서든 마지막으로 쓴 것입니다.</returns>
+      <param name="location">읽을 필드입니다.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Single@)">
+      <summary>지정된 필드의 값을 읽습니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 읽기 또는 쓰기가 이 메서드 뒤에 나타나는 경우 프로세서가 이 메서드 앞으로 읽기 또는 쓰기를 이동할 수 없습니다.</summary>
+      <returns>읽은 값입니다.이 값은 프로세서 수나 프로세서 캐시의 상태에 관계없이 컴퓨터의 어떠한 프로세서에서든 마지막으로 쓴 것입니다.</returns>
+      <param name="location">읽을 필드입니다.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.UInt16@)">
+      <summary>지정된 필드의 값을 읽습니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 읽기 또는 쓰기가 이 메서드 뒤에 나타나는 경우 프로세서가 이 메서드 앞으로 읽기 또는 쓰기를 이동할 수 없습니다.</summary>
+      <returns>읽은 값입니다.이 값은 프로세서 수나 프로세서 캐시의 상태에 관계없이 컴퓨터의 어떠한 프로세서에서든 마지막으로 쓴 것입니다.</returns>
+      <param name="location">읽을 필드입니다.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.UInt32@)">
+      <summary>지정된 필드의 값을 읽습니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 읽기 또는 쓰기가 이 메서드 뒤에 나타나는 경우 프로세서가 이 메서드 앞으로 읽기 또는 쓰기를 이동할 수 없습니다.</summary>
+      <returns>읽은 값입니다.이 값은 프로세서 수나 프로세서 캐시의 상태에 관계없이 컴퓨터의 어떠한 프로세서에서든 마지막으로 쓴 것입니다.</returns>
+      <param name="location">읽을 필드입니다.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.UInt64@)">
+      <summary>지정된 필드의 값을 읽습니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 읽기 또는 쓰기가 이 메서드 뒤에 나타나는 경우 프로세서가 이 메서드 앞으로 읽기 또는 쓰기를 이동할 수 없습니다.</summary>
+      <returns>읽은 값입니다.이 값은 프로세서 수나 프로세서 캐시의 상태에 관계없이 컴퓨터의 어떠한 프로세서에서든 마지막으로 쓴 것입니다.</returns>
+      <param name="location">읽을 필드입니다.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.UIntPtr@)">
+      <summary>지정된 필드의 값을 읽습니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 읽기 또는 쓰기가 이 메서드 뒤에 나타나는 경우 프로세서가 이 메서드 앞으로 읽기 또는 쓰기를 이동할 수 없습니다.</summary>
+      <returns>읽은 값입니다.이 값은 프로세서 수나 프로세서 캐시의 상태에 관계없이 컴퓨터의 어떠한 프로세서에서든 마지막으로 쓴 것입니다.</returns>
+      <param name="location">읽을 필드입니다.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read``1(``0@)">
+      <summary>지정된 필드에서 개체 참조를 읽습니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 읽기 또는 쓰기가 이 메서드 뒤에 나타나는 경우 프로세서가 이 메서드 앞으로 읽기 또는 쓰기를 이동할 수 없습니다.</summary>
+      <returns>읽은 <paramref name="T" />에 대한 참조입니다.이 참조는 프로세서 수나 프로세서 캐시의 상태에 관계없이 컴퓨터의 어떠한 프로세서에서든 마지막으로 쓴 것입니다.</returns>
+      <param name="location">읽을 필드입니다.</param>
+      <typeparam name="T">읽을 필드의 형식입니다.이 형식은 값 형식이 아니라 참조 형식이어야 합니다.</typeparam>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Boolean@,System.Boolean)">
+      <summary>지정된 필드에 지정된 값을 씁니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 읽기 또는 쓰기가 이 메서드 앞에 나타나는 경우 프로세서가 이 메서드 뒤로 읽기 또는 쓰기를 이동할 수 없습니다.</summary>
+      <param name="location">값을 쓴 필드입니다.</param>
+      <param name="value">쓸 값입니다.컴퓨터의 모든 프로세서에서 값을 볼 수 있도록 값을 즉시 씁니다.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Byte@,System.Byte)">
+      <summary>지정된 필드에 지정된 값을 씁니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 읽기 또는 쓰기가 이 메서드 앞에 나타나는 경우 프로세서가 이 메서드 뒤로 읽기 또는 쓰기를 이동할 수 없습니다.</summary>
+      <param name="location">값을 쓴 필드입니다.</param>
+      <param name="value">쓸 값입니다.컴퓨터의 모든 프로세서에서 값을 볼 수 있도록 값을 즉시 씁니다.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Double@,System.Double)">
+      <summary>지정된 필드에 지정된 값을 씁니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 읽기 또는 쓰기가 이 메서드 앞에 나타나는 경우 프로세서가 이 메서드 뒤로 읽기 또는 쓰기를 이동할 수 없습니다.</summary>
+      <param name="location">값을 쓴 필드입니다.</param>
+      <param name="value">쓸 값입니다.컴퓨터의 모든 프로세서에서 값을 볼 수 있도록 값을 즉시 씁니다.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Int16@,System.Int16)">
+      <summary>지정된 필드에 지정된 값을 씁니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 읽기 또는 쓰기가 이 메서드 앞에 나타나는 경우 프로세서가 이 메서드 뒤로 읽기 또는 쓰기를 이동할 수 없습니다.</summary>
+      <param name="location">값을 쓴 필드입니다.</param>
+      <param name="value">쓸 값입니다.컴퓨터의 모든 프로세서에서 값을 볼 수 있도록 값을 즉시 씁니다.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Int32@,System.Int32)">
+      <summary>지정된 필드에 지정된 값을 씁니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 읽기 또는 쓰기가 이 메서드 앞에 나타나는 경우 프로세서가 이 메서드 뒤로 읽기 또는 쓰기를 이동할 수 없습니다.</summary>
+      <param name="location">값을 쓴 필드입니다.</param>
+      <param name="value">쓸 값입니다.컴퓨터의 모든 프로세서에서 값을 볼 수 있도록 값을 즉시 씁니다.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Int64@,System.Int64)">
+      <summary>지정된 필드에 지정된 값을 씁니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 메모리 작업이 이 메서드 앞에 나타나는 경우 프로세서가 이 메서드 뒤로 메모리 작업을 이동할 수 없습니다.</summary>
+      <param name="location">값을 쓴 필드입니다.</param>
+      <param name="value">쓸 값입니다.컴퓨터의 모든 프로세서에서 값을 볼 수 있도록 값을 즉시 씁니다.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.IntPtr@,System.IntPtr)">
+      <summary>지정된 필드에 지정된 값을 씁니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 읽기 또는 쓰기가 이 메서드 앞에 나타나는 경우 프로세서가 이 메서드 뒤로 읽기 또는 쓰기를 이동할 수 없습니다.</summary>
+      <param name="location">값을 쓴 필드입니다.</param>
+      <param name="value">쓸 값입니다.컴퓨터의 모든 프로세서에서 값을 볼 수 있도록 값을 즉시 씁니다.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.SByte@,System.SByte)">
+      <summary>지정된 필드에 지정된 값을 씁니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 읽기 또는 쓰기가 이 메서드 앞에 나타나는 경우 프로세서가 이 메서드 뒤로 읽기 또는 쓰기를 이동할 수 없습니다.</summary>
+      <param name="location">값을 쓴 필드입니다.</param>
+      <param name="value">쓸 값입니다.컴퓨터의 모든 프로세서에서 값을 볼 수 있도록 값을 즉시 씁니다.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Single@,System.Single)">
+      <summary>지정된 필드에 지정된 값을 씁니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 읽기 또는 쓰기가 이 메서드 앞에 나타나는 경우 프로세서가 이 메서드 뒤로 읽기 또는 쓰기를 이동할 수 없습니다.</summary>
+      <param name="location">값을 쓴 필드입니다.</param>
+      <param name="value">쓸 값입니다.컴퓨터의 모든 프로세서에서 값을 볼 수 있도록 값을 즉시 씁니다.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.UInt16@,System.UInt16)">
+      <summary>지정된 필드에 지정된 값을 씁니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 읽기 또는 쓰기가 이 메서드 앞에 나타나는 경우 프로세서가 이 메서드 뒤로 읽기 또는 쓰기를 이동할 수 없습니다.</summary>
+      <param name="location">값을 쓴 필드입니다.</param>
+      <param name="value">쓸 값입니다.컴퓨터의 모든 프로세서에서 값을 볼 수 있도록 값을 즉시 씁니다.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.UInt32@,System.UInt32)">
+      <summary>지정된 필드에 지정된 값을 씁니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 읽기 또는 쓰기가 이 메서드 앞에 나타나는 경우 프로세서가 이 메서드 뒤로 읽기 또는 쓰기를 이동할 수 없습니다.</summary>
+      <param name="location">값을 쓴 필드입니다.</param>
+      <param name="value">쓸 값입니다.컴퓨터의 모든 프로세서에서 값을 볼 수 있도록 값을 즉시 씁니다.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.UInt64@,System.UInt64)">
+      <summary>지정된 필드에 지정된 값을 씁니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 읽기 또는 쓰기가 이 메서드 앞에 나타나는 경우 프로세서가 이 메서드 뒤로 읽기 또는 쓰기를 이동할 수 없습니다.</summary>
+      <param name="location">값을 쓴 필드입니다.</param>
+      <param name="value">쓸 값입니다.컴퓨터의 모든 프로세서에서 값을 볼 수 있도록 값을 즉시 씁니다.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.UIntPtr@,System.UIntPtr)">
+      <summary>지정된 필드에 지정된 값을 씁니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 읽기 또는 쓰기가 이 메서드 앞에 나타나는 경우 프로세서가 이 메서드 뒤로 읽기 또는 쓰기를 이동할 수 없습니다.</summary>
+      <param name="location">값을 쓴 필드입니다.</param>
+      <param name="value">쓸 값입니다.컴퓨터의 모든 프로세서에서 값을 볼 수 있도록 값을 즉시 씁니다.</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write``1(``0@,``0)">
+      <summary>지정된 필드에 지정된 개체 참조를 씁니다.필요한 시스템에서는 프로세서가 메모리 작업을 다시 정렬하는 것을 막는 메모리 차단을 다음과 같이 삽입합니다. 코드에서 읽기 또는 쓰기가 이 메서드 앞에 나타나는 경우 프로세서가 이 메서드 뒤로 읽기 또는 쓰기를 이동할 수 없습니다.</summary>
+      <param name="location">개체 참조를 쓴 필드입니다.</param>
+      <param name="value">쓸 개체 참조입니다.컴퓨터의 모든 프로세서에서 참조를 볼 수 있도록 참조를 즉시 씁니다.</param>
+      <typeparam name="T">쓸 필드의 형식입니다.이 형식은 값 형식이 아니라 참조 형식이어야 합니다.</typeparam>
+    </member>
+    <member name="T:System.Threading.WaitHandleCannotBeOpenedException">
+      <summary>존재하지 않는 시스템 뮤텍스 또는 세마포를 열려고 시도할 때 throw되는 예외입니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.WaitHandleCannotBeOpenedException.#ctor">
+      <summary>기본값으로 <see cref="T:System.Threading.WaitHandleCannotBeOpenedException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Threading.WaitHandleCannotBeOpenedException.#ctor(System.String)">
+      <summary>지정된 오류 메시지를 사용하여 <see cref="T:System.Threading.WaitHandleCannotBeOpenedException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="message">예외에 대한 이유를 설명하는 오류 메시지입니다.</param>
+    </member>
+    <member name="M:System.Threading.WaitHandleCannotBeOpenedException.#ctor(System.String,System.Exception)">
+      <summary>지정된 오류 메시지와 해당 예외의 근본 원인인 내부 예외에 대한 참조를 사용하여 <see cref="T:System.Threading.WaitHandleCannotBeOpenedException" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="message">예외에 대한 이유를 설명하는 오류 메시지입니다.</param>
+      <param name="innerException">현재 예외의 원인이 되는 예외입니다.<paramref name="innerException" /> 매개 변수가 null이 아니면 현재 예외는 내부 예외를 처리하는 catch 블록에서 발생합니다.</param>
+    </member>
+  </members>
+</doc>

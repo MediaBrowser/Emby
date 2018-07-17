@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MediaBrowser.Tests</RootNamespace>
     <AssemblyName>MediaBrowser.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -39,6 +39,15 @@
   <ItemGroup>
     <Reference Include="Emby.Server.MediaEncoding">
       <HintPath>..\ThirdParty\emby\Emby.Server.MediaEncoding.dll</HintPath>
+    </Reference>
+    <Reference Include="MediaBrowser.Common, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaBrowser.Common.3.5.0\lib\netstandard2.0\MediaBrowser.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="MediaBrowser.Controller, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaBrowser.Server.Core.3.5.0\lib\netstandard2.0\MediaBrowser.Controller.dll</HintPath>
+    </Reference>
+    <Reference Include="MediaBrowser.Model, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaBrowser.Common.3.5.0\lib\netstandard2.0\MediaBrowser.Model.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.XML" />
@@ -71,18 +80,6 @@
       <Project>{e383961b-9356-4d5d-8233-9a1079d03055}</Project>
       <Name>Emby.Server.Implementations</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MediaBrowser.Common\MediaBrowser.Common.csproj">
-      <Project>{9142eefa-7570-41e1-bfcc-468bb571af2f}</Project>
-      <Name>MediaBrowser.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MediaBrowser.Controller\MediaBrowser.Controller.csproj">
-      <Project>{17e1f4e6-8abd-4fe5-9ecf-43d4b6087ba2}</Project>
-      <Name>MediaBrowser.Controller</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MediaBrowser.Model\MediaBrowser.Model.csproj">
-      <Project>{7eeeb4bb-f3e8-48fc-b4c5-70f0fff8329b}</Project>
-      <Name>MediaBrowser.Model</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MediaBrowser.Providers\MediaBrowser.Providers.csproj">
       <Project>{442B5058-DCAF-4263-BB6A-F21E31120A1B}</Project>
       <Name>MediaBrowser.Providers</Name>
@@ -98,6 +95,7 @@
     <None Include="MediaEncoding\Subtitles\TestSubtitles\data2.ass" />
     <None Include="MediaEncoding\Subtitles\TestSubtitles\expected.vtt" />
     <None Include="MediaEncoding\Subtitles\TestSubtitles\unit.srt" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ContentWithTargetPath Include="ConsistencyTests\Resources\StringCheck.xslt">

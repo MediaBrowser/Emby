@@ -11,7 +11,9 @@
     <AssemblyName>Emby.Server.Implementations</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -63,7 +65,6 @@
     <Compile Include="Data\TypeMapper.cs" />
     <Compile Include="Devices\DeviceId.cs" />
     <Compile Include="Devices\DeviceManager.cs" />
-    <Compile Include="Devices\SqliteDeviceRepository.cs" />
     <Compile Include="Diagnostics\CommonProcess.cs" />
     <Compile Include="Diagnostics\ProcessFactory.cs" />
     <Compile Include="Dto\DtoService.cs" />
@@ -86,7 +87,6 @@
     <Compile Include="FFMpeg\FFMpegLoader.cs" />
     <Compile Include="HttpClientManager\HttpClientInfo.cs" />
     <Compile Include="HttpClientManager\HttpClientManager.cs" />
-    <Compile Include="HttpServerFactory.cs" />
     <Compile Include="HttpServer\FileWriter.cs" />
     <Compile Include="HttpServer\HttpListenerHost.cs" />
     <Compile Include="HttpServer\HttpResultFactory.cs" />
@@ -97,12 +97,8 @@
     <Compile Include="HttpServer\Security\AuthorizationContext.cs" />
     <Compile Include="HttpServer\Security\AuthService.cs" />
     <Compile Include="HttpServer\Security\SessionContext.cs" />
-    <Compile Include="HttpServer\SocketSharp\RequestMono.cs" />
-    <Compile Include="HttpServer\SocketSharp\SharpWebSocket.cs" />
-    <Compile Include="HttpServer\SocketSharp\WebSocketSharpListener.cs" />
-    <Compile Include="HttpServer\SocketSharp\WebSocketSharpRequest.cs" />
-    <Compile Include="HttpServer\SocketSharp\WebSocketSharpResponse.cs" />
     <Compile Include="HttpServer\StreamWriter.cs" />
+    <Compile Include="HttpServer\WebSocketConnection.cs" />
     <Compile Include="Images\BaseDynamicImageProvider.cs" />
     <Compile Include="IO\ExtendedFileSystemInfo.cs" />
     <Compile Include="IO\FileRefresher.cs" />
@@ -110,7 +106,6 @@
     <Compile Include="IO\LibraryMonitor.cs" />
     <Compile Include="IO\ManagedFileSystem.cs" />
     <Compile Include="IO\MbLinkShortcutHandler.cs" />
-    <Compile Include="IO\MemoryStreamProvider.cs" />
     <Compile Include="IO\SharpCifsFileSystem.cs" />
     <Compile Include="IO\SharpCifs\Config.cs" />
     <Compile Include="IO\SharpCifs\Dcerpc\DcerpcBind.cs" />
@@ -335,11 +330,13 @@
     <Compile Include="IO\SharpCifs\Util\Transport\Response.cs" />
     <Compile Include="IO\SharpCifs\Util\Transport\Transport.cs" />
     <Compile Include="IO\SharpCifs\Util\Transport\TransportException.cs" />
+    <Compile Include="IO\StreamHelper.cs" />
     <Compile Include="IO\ThrottledStream.cs" />
     <Compile Include="Library\CoreResolutionIgnoreRule.cs" />
     <Compile Include="Library\DefaultAuthenticationProvider.cs" />
+    <Compile Include="Library\ExclusiveLiveStream.cs" />
     <Compile Include="Library\LibraryManager.cs" />
-    <Compile Include="Library\LocalTrailerPostScanTask.cs" />
+    <Compile Include="Library\LiveStreamHelper.cs" />
     <Compile Include="Library\MediaSourceManager.cs" />
     <Compile Include="Library\MediaStreamSelector.cs" />
     <Compile Include="Library\MusicManager.cs" />
@@ -387,7 +384,6 @@
     <Compile Include="LiveTv\EmbyTV\SeriesTimerManager.cs" />
     <Compile Include="LiveTv\EmbyTV\TimerManager.cs" />
     <Compile Include="LiveTv\Listings\SchedulesDirect.cs" />
-    <Compile Include="LiveTv\LiveStreamHelper.cs" />
     <Compile Include="LiveTv\LiveTvConfigurationFactory.cs" />
     <Compile Include="LiveTv\LiveTvDtoService.cs" />
     <Compile Include="LiveTv\LiveTvManager.cs" />
@@ -413,18 +409,12 @@
     <Compile Include="Networking\IPNetwork\IPNetworkCollection.cs" />
     <Compile Include="Networking\NetworkManager.cs" />
     <Compile Include="Net\DisposableManagedObjectBase.cs" />
+    <Compile Include="Net\IWebSocket.cs" />
     <Compile Include="Net\SocketFactory.cs" />
     <Compile Include="Net\UdpSocket.cs" />
+    <Compile Include="Net\WebSocketConnectEventArgs.cs" />
     <Compile Include="News\NewsEntryPoint.cs" />
     <Compile Include="News\NewsService.cs" />
-    <Compile Include="Notifications\CoreNotificationTypes.cs" />
-    <Compile Include="Notifications\IConfigurableNotificationService.cs" />
-    <Compile Include="Notifications\InternalNotificationService.cs" />
-    <Compile Include="Notifications\NotificationConfigurationFactory.cs" />
-    <Compile Include="Notifications\NotificationManager.cs" />
-    <Compile Include="Notifications\Notifications.cs" />
-    <Compile Include="Notifications\SqliteNotificationsRepository.cs" />
-    <Compile Include="Notifications\WebSocketNotifier.cs" />
     <Compile Include="Data\BaseSqliteRepository.cs" />
     <Compile Include="Data\CleanDatabaseScheduledTask.cs" />
     <Compile Include="Data\SqliteExtensions.cs" />
@@ -457,8 +447,6 @@
     <Compile Include="Serialization\JsonSerializer.cs" />
     <Compile Include="Serialization\XmlSerializer.cs" />
     <Compile Include="ServerApplicationPaths.cs" />
-    <Compile Include="ServerManager\ServerManager.cs" />
-    <Compile Include="ServerManager\WebSocketConnection.cs" />
     <Compile Include="Services\ServicePath.cs" />
     <Compile Include="Services\ServiceMethod.cs" />
     <Compile Include="Services\ResponseHelper.cs" />
@@ -468,7 +456,6 @@
     <Compile Include="Services\ServiceController.cs" />
     <Compile Include="Services\ServiceExec.cs" />
     <Compile Include="Services\StringMapTypeDeserializer.cs" />
-    <Compile Include="Services\SwaggerService.cs" />
     <Compile Include="Services\UrlExtensions.cs" />
     <Compile Include="Session\FirebaseSessionController.cs" />
     <Compile Include="Session\HttpSessionController.cs" />
@@ -578,6 +565,10 @@
       <Project>{08fff49b-f175-4807-a2b5-73b0ebd9f716}</Project>
       <Name>Emby.Drawing</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Emby.Notifications\Emby.Notifications.csproj">
+      <Project>{4d1d313b-60bb-4e11-acf9-cda6745266ef}</Project>
+      <Name>Emby.Notifications</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Emby.Photos\Emby.Photos.csproj">
       <Project>{89ab4548-770d-41fd-a891-8daff44f452c}</Project>
       <Name>Emby.Photos</Name>
@@ -586,21 +577,9 @@
       <Project>{4fd51ac5-2c16-4308-a993-c3a84f3b4582}</Project>
       <Name>MediaBrowser.Api</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MediaBrowser.Common\MediaBrowser.Common.csproj">
-      <Project>{9142eefa-7570-41e1-bfcc-468bb571af2f}</Project>
-      <Name>MediaBrowser.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MediaBrowser.Controller\MediaBrowser.Controller.csproj">
-      <Project>{17e1f4e6-8abd-4fe5-9ecf-43d4b6087ba2}</Project>
-      <Name>MediaBrowser.Controller</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MediaBrowser.LocalMetadata\MediaBrowser.LocalMetadata.csproj">
       <Project>{7ef9f3e0-697d-42f3-a08f-19deb5f84392}</Project>
       <Name>MediaBrowser.LocalMetadata</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MediaBrowser.Model\MediaBrowser.Model.csproj">
-      <Project>{7eeeb4bb-f3e8-48fc-b4c5-70f0fff8329b}</Project>
-      <Name>MediaBrowser.Model</Name>
     </ProjectReference>
     <ProjectReference Include="..\MediaBrowser.Providers\MediaBrowser.Providers.csproj">
       <Project>{442b5058-dcaf-4263-bb6a-f21e31120a1b}</Project>
@@ -618,48 +597,196 @@
       <Project>{cb7f2326-6497-4a3d-ba03-48513b17a7be}</Project>
       <Name>Mono.Nat</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SocketHttpListener\SocketHttpListener.csproj">
-      <Project>{1d74413b-e7cf-455b-b021-f52bdf881542}</Project>
-      <Name>SocketHttpListener</Name>
-    </ProjectReference>
-    <Reference Include="Emby.Naming, Version=1.1.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MediaBrowser.Naming.1.1.4\lib\netstandard1.3\Emby.Naming.dll</HintPath>
+    <Reference Include="Emby.Naming, Version=1.1.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaBrowser.Naming.1.1.7-beta\lib\netstandard2.0\Emby.Naming.dll</HintPath>
     </Reference>
     <Reference Include="Emby.Server.MediaEncoding">
       <HintPath>..\ThirdParty\emby\Emby.Server.MediaEncoding.dll</HintPath>
     </Reference>
-    <Reference Include="Emby.XmlTv, Version=1.0.6604.28157, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Emby.XmlTv.1.0.14\lib\portable-net45+netstandard2.0+win8\Emby.XmlTv.dll</HintPath>
+    <Reference Include="Emby.XmlTv, Version=1.0.6700.31789, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Emby.XmlTv.1.0.15\lib\portable-net45+netstandard2.0+win8\Emby.XmlTv.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Text, Version=4.5.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ServiceStack.Text.4.5.8\lib\net45\ServiceStack.Text.dll</HintPath>
+    <Reference Include="MediaBrowser.Common, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaBrowser.Common.3.5.0\lib\netstandard2.0\MediaBrowser.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="MediaBrowser.Controller, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaBrowser.Server.Core.3.5.0\lib\netstandard2.0\MediaBrowser.Controller.dll</HintPath>
+    </Reference>
+    <Reference Include="MediaBrowser.Model, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaBrowser.Common.3.5.0\lib\netstandard2.0\MediaBrowser.Model.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Win32.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Win32.Primitives.4.3.0\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
+      <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SharpCompress, Version=0.18.2.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpCompress.0.18.2\lib\net45\SharpCompress.dll</HintPath>
+    <Reference Include="PlaylistsNET, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PlaylistsNET.1.0.2\lib\netstandard1.4\PlaylistsNET.dll</HintPath>
     </Reference>
-    <Reference Include="SimpleInjector, Version=4.0.12.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
-      <HintPath>..\packages\SimpleInjector.4.0.12\lib\net45\SimpleInjector.dll</HintPath>
+    <Reference Include="ServiceStack.Text, Version=5.0.0.0, Culture=neutral, PublicKeyToken=02c12cbda47e6587, processorArchitecture=MSIL">
+      <HintPath>..\packages\ServiceStack.Text.5.1.0\lib\net45\ServiceStack.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpCompress, Version=0.21.1.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpCompress.0.21.1\lib\net45\SharpCompress.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector, Version=4.3.0.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleInjector.4.3.0\lib\net45\SimpleInjector.dll</HintPath>
     </Reference>
     <Reference Include="SQLitePCL.pretty, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SQLitePCL.pretty.1.1.0\lib\portable-net45+netcore45+wpa81+wp8\SQLitePCL.pretty.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="SQLitePCLRaw.core, Version=1.1.11.121, Culture=neutral, PublicKeyToken=1488e028ca7ab535, processorArchitecture=MSIL">
+      <HintPath>..\packages\SQLitePCLRaw.core.1.1.11\lib\net45\SQLitePCLRaw.core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.1\lib\netstandard2.0\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.1\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.ReaderWriter, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Xml.ReaderWriter.4.3.1\lib\net46\System.Xml.ReaderWriter.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="SQLitePCLRaw.core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1488e028ca7ab535, processorArchitecture=MSIL">
-      <HintPath>..\packages\SQLitePCLRaw.core.1.1.8\lib\net45\SQLitePCLRaw.core.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.AppContext, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.AppContext.4.3.0\lib\net463\System.AppContext.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Console, Version=4.0.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Console.4.3.1\lib\net46\System.Console.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.5.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Diagnostics.Tracing, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.Tracing.4.3.0\lib\net462\System.Diagnostics.Tracing.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Globalization.Calendars, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Globalization.Calendars.4.3.0\lib\net46\System.Globalization.Calendars.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Compression.4.3.0\lib\net46\System.IO.Compression.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.IO.Compression.ZipFile, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Compression.ZipFile.4.3.0\lib\net46\System.IO.Compression.ZipFile.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.FileSystem, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.FileSystem.4.3.0\lib\net46\System.IO.FileSystem.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.FileSystem.Primitives.4.3.0\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Linq, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.4.3.0\lib\net463\System.Linq.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Linq.Expressions, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.Expressions.4.3.0\lib\net463\System.Linq.Expressions.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Http, Version=4.1.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Http.4.3.3\lib\net46\System.Net.Http.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Sockets, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Sockets.4.3.0\lib\net46\System.Net.Sockets.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reflection, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reflection.4.3.0\lib\net462\System.Reflection.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.4.3.0\lib\net462\System.Runtime.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Extensions, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.Extensions.4.3.0\lib\net462\System.Runtime.Extensions.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.4.3.0\lib\net463\System.Runtime.InteropServices.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.1\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.2\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Text.RegularExpressions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.RegularExpressions.4.3.0\lib\net463\System.Text.RegularExpressions.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -699,6 +826,8 @@
     <EmbeddedResource Include="Localization\Core\en-US.json" />
     <EmbeddedResource Include="Localization\Core\el.json" />
     <EmbeddedResource Include="Localization\Core\gsw.json" />
+    <EmbeddedResource Include="Localization\Core\fa.json" />
+    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="TextEncoding\NLangDetect\Profiles\afr" />
     <None Include="TextEncoding\NLangDetect\Profiles\ara" />
@@ -807,6 +936,13 @@
     <EmbeddedResource Include="values.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

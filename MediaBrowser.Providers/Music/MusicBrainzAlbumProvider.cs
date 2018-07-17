@@ -75,8 +75,11 @@ namespace MediaBrowser.Providers.Music
                 {
                     isNameSearch = true;
 
+                    // I'm sure there is a better way but for now it resolves search for 12" Mixes
+                    var queryName = searchInfo.Name.Replace("\"", string.Empty);
+
                     url = string.Format("/ws/2/release/?query=\"{0}\" AND artist:\"{1}\"",
-                       WebUtility.UrlEncode(searchInfo.Name),
+                       WebUtility.UrlEncode(queryName),
                        WebUtility.UrlEncode(searchInfo.GetAlbumArtist()));
                 }
             }
@@ -296,7 +299,7 @@ namespace MediaBrowser.Providers.Music
             public string Overview;
             public int? Year;
 
-            public List<Tuple<string, string>> Artists = new List<Tuple<string, string>>();
+            public List<ValueTuple<string, string>> Artists = new List<ValueTuple<string, string>>();
 
             public static List<ReleaseResult> Parse(XmlReader reader)
             {
@@ -450,7 +453,7 @@ namespace MediaBrowser.Providers.Music
                                     {
                                         var artist = ParseArtistCredit(subReader);
 
-                                        if (artist != null)
+                                        if (!string.IsNullOrEmpty(artist.Item1))
                                         {
                                             result.Artists.Add(artist);
                                         }
@@ -475,7 +478,7 @@ namespace MediaBrowser.Providers.Music
             }
         }
 
-        private static Tuple<string, string> ParseArtistCredit(XmlReader reader)
+        private static ValueTuple<string, string> ParseArtistCredit(XmlReader reader)
         {
             reader.MoveToContent();
             reader.Read();
@@ -509,10 +512,10 @@ namespace MediaBrowser.Providers.Music
                 }
             }
 
-            return null;
+            return new ValueTuple<string, string>();
         }
 
-        private static Tuple<string, string> ParseArtistNameCredit(XmlReader reader)
+        private static ValueTuple<string, string> ParseArtistNameCredit(XmlReader reader)
         {
             reader.MoveToContent();
             reader.Read();
@@ -549,15 +552,10 @@ namespace MediaBrowser.Providers.Music
                 }
             }
 
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                return null;
-            }
-
-            return new Tuple<string, string>(name, null);
+            return new ValueTuple<string, string>(name, null);
         }
 
-        private static Tuple<string, string> ParseArtistArtistCredit(XmlReader reader, string artistId)
+        private static ValueTuple<string, string> ParseArtistArtistCredit(XmlReader reader, string artistId)
         {
             reader.MoveToContent();
             reader.Read();
@@ -591,12 +589,7 @@ namespace MediaBrowser.Providers.Music
                 }
             }
 
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                return null;
-            }
-
-            return new Tuple<string, string>(name, artistId);
+            return new ValueTuple<string, string>(name, artistId);
         }
 
         private async Task<string> GetReleaseIdFromReleaseGroupId(string releaseGroupId, CancellationToken cancellationToken)
@@ -773,7 +766,7 @@ namespace MediaBrowser.Providers.Music
                         {
                             using (var stream = response.Content)
                             {
-                                var results = _json.DeserializeFromStream<List<MbzUrl>>(stream);
+                                var results = await _json.DeserializeFromStreamAsync<List<MbzUrl>>(stream).ConfigureAwait(false);
 
                                 list = results;
                             }

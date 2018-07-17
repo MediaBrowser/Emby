@@ -1,0 +1,467 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Console</name>
+  </assembly>
+  <members>
+    <member name="T:System.Console">
+      <summary>Stellt die Standardstreams für Eingabe, Ausgabe und Fehler bei Konsolenanwendungen dar.Diese Klasse kann nicht vererbt werden.Um den .NET Framework-Quellcode für diesen Typ zu durchsuchen, finden Sie unter der Reference Source.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Console.BackgroundColor">
+      <summary>Ruft die Hintergrundfarbe der Konsole ab oder legt diese fest.</summary>
+      <returns>Ein Wert, der die Hintergrundfarbe der Konsole, d. h. die hinter jedem Zeichen angezeigte Farbe angibt.Die Standardeinstellung ist schwarz.</returns>
+      <exception cref="T:System.ArgumentException">Die in einer Set-Operation angegebene Farbe ist kein gültiger Member von <see cref="T:System.ConsoleColor" />. </exception>
+      <exception cref="T:System.Security.SecurityException">Der Benutzer besitzt keine Berechtigung zum Ausführen dieser Aktion. </exception>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Window="SafeTopLevelWindows" />
+      </PermissionSet>
+    </member>
+    <member name="E:System.Console.CancelKeyPress">
+      <summary>Tritt ein, wenn die <see cref="F:System.ConsoleModifiers.Control" />-Modifizierertaste (STRG) und entweder die <see cref="F:System.ConsoleKey.C" />-Konsolentaste (c) oder die UNTBR-TASTE gleichzeitig gedrückt werden (STRG+C oder STRG+UNTBR).</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Console.Error">
+      <summary>Ruft den Standard-Fehlerausgabestream ab.</summary>
+      <returns>Ein <see cref="T:System.IO.TextWriter" />, der den Standard-Fehlerausgabestream darstellt.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Console.ForegroundColor">
+      <summary>Ruft die Vordergrundfarbe der Konsole ab oder legt diese fest.</summary>
+      <returns>Eine <see cref="T:System.ConsoleColor" />, die die Vordergrundfarbe der Konsole angibt, d. h. die Farbe, in der alle Zeichen angezeigt werden.Die Standardeinstellung ist grau.</returns>
+      <exception cref="T:System.ArgumentException">Die in einer Set-Operation angegebene Farbe ist kein gültiger Member von <see cref="T:System.ConsoleColor" />. </exception>
+      <exception cref="T:System.Security.SecurityException">Der Benutzer besitzt keine Berechtigung zum Ausführen dieser Aktion. </exception>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Window="SafeTopLevelWindows" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Console.In">
+      <summary>Ruft den Standardeingabestream ab.</summary>
+      <returns>Ein <see cref="T:System.IO.TextReader" />, der den Standardeingabestream darstellt.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.OpenStandardError">
+      <summary>Ruft den Standardfehlerstream ab.</summary>
+      <returns>Der Standardfehlerstream.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.OpenStandardInput">
+      <summary>Ruft den Standardeingabestream ab.</summary>
+      <returns>Der Standardeingabestream.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.OpenStandardOutput">
+      <summary>Ruft den Standardausgabestream ab.</summary>
+      <returns>Der Standardausgabestream.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Console.Out">
+      <summary>Ruft den Standardausgabestream ab.</summary>
+      <returns>Ein <see cref="T:System.IO.TextWriter" />, der den Standardausgabestream darstellt.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Read">
+      <summary>Liest das nächste Zeichen aus dem Standardeingabestream.</summary>
+      <returns>Das nächste Zeichen aus dem Eingabestream bzw. -1, wenn derzeit keine weiteren Zeichen gelesen werden können.</returns>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.ReadLine">
+      <summary>Liest die nächste Zeile von Zeichen aus dem Standardeingabestream.</summary>
+      <returns>Die nächste Zeile von Zeichen aus dem Eingabestream oder null, wenn keine weiteren Zeilen verfügbar sind.</returns>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <exception cref="T:System.OutOfMemoryException">Es ist nicht genügend Speicherplatz vorhanden, um einen Puffer für die zurückgegebene Zeichenfolge zu reservieren. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Die Anzahl der Zeichen in der nächsten Zeile von Zeichen ist größer als <see cref="F:System.Int32.MaxValue" />.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.ResetColor">
+      <summary>Legt die Vordergrund- und Hintergrundkonsolenfarben auf die entsprechenden Standardwerte fest.</summary>
+      <exception cref="T:System.Security.SecurityException">Der Benutzer besitzt keine Berechtigung zum Ausführen dieser Aktion. </exception>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Window="SafeTopLevelWindows" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Console.SetError(System.IO.TextWriter)">
+      <summary>Legt die <see cref="P:System.Console.Error" />-Eigenschaft auf den angegebenen <see cref="T:System.IO.TextWriter" /> fest.</summary>
+      <param name="newError">Ein Datenstrom, der die neue Standardfehlerausgabe darstellt. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="newError" /> ist null. </exception>
+      <exception cref="T:System.Security.SecurityException">Der Aufrufer verfügt nicht über die erforderliche Berechtigung. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Console.SetIn(System.IO.TextReader)">
+      <summary>Legt die <see cref="P:System.Console.In" />-Eigenschaft auf den angegebenen <see cref="T:System.IO.TextReader" /> fest.</summary>
+      <param name="newIn">Ein Datenstrom, der die neue Standardeingabe darstellt. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="newIn" /> ist null. </exception>
+      <exception cref="T:System.Security.SecurityException">Der Aufrufer verfügt nicht über die erforderliche Berechtigung. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Console.SetOut(System.IO.TextWriter)">
+      <summary>Legt die <see cref="P:System.Console.Out" />-Eigenschaft auf den angegebenen <see cref="T:System.IO.TextWriter" /> fest.</summary>
+      <param name="newOut">Ein Datenstrom, der die neue Standardausgabe darstellt. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="newOut" /> ist null. </exception>
+      <exception cref="T:System.Security.SecurityException">Der Aufrufer verfügt nicht über die erforderliche Berechtigung. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Console.Write(System.Boolean)">
+      <summary>Schreibt die Textdarstellung des angegebenen booleschen Werts in den Standardausgabestream.</summary>
+      <param name="value">Der zu schreibende Wert. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Char)">
+      <summary>Schreibt das angegebene Unicode-Zeichen in den Standardausgabestream.</summary>
+      <param name="value">Der zu schreibende Wert. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Char[])">
+      <summary>Schreibt das angegebene Array von Unicode-Zeichen in den Standardausgabestream.</summary>
+      <param name="buffer">Ein Array von Unicode-Zeichen. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Char[],System.Int32,System.Int32)">
+      <summary>Schreibt das angegebene Unterarray von Unicode-Zeichen in den Standardausgabestream.</summary>
+      <param name="buffer">Ein Array von Unicode-Zeichen. </param>
+      <param name="index">Die Anfangsposition in <paramref name="buffer" />. </param>
+      <param name="count">Die Anzahl der zu schreibenden Zeichen. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> ist null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> oder <paramref name="count" /> ist kleiner als 0. </exception>
+      <exception cref="T:System.ArgumentException">Die Summe von <paramref name="index" /> und <paramref name="count" /> bezeichnet eine Position außerhalb von <paramref name="buffer" />. </exception>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Decimal)">
+      <summary>Schreibt die Textdarstellung des angegebenen <see cref="T:System.Decimal" />-Werts in den Standardausgabestream.</summary>
+      <param name="value">Der zu schreibende Wert. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Double)">
+      <summary>Schreibt die Textdarstellung der angegebenen Gleitkommazahl mit doppelter Genauigkeit in den Standardausgabestream.</summary>
+      <param name="value">Der zu schreibende Wert. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Int32)">
+      <summary>Schreibt die Textdarstellung der angegebenen 32-Bit-Ganzzahl mit Vorzeichen in den Standardausgabestream.</summary>
+      <param name="value">Der zu schreibende Wert. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Int64)">
+      <summary>Schreibt die Textdarstellung der angegebenen 64-Bit-Ganzzahl mit Vorzeichen in den Standardausgabestream.</summary>
+      <param name="value">Der zu schreibende Wert. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Object)">
+      <summary>Schreibt die Textdarstellung des angegebenen Objekts in den Standardausgabestream.</summary>
+      <param name="value">Der zu schreibende Wert oder null. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.Single)">
+      <summary>Schreibt die Textdarstellung der angegebenen Gleitkommazahl mit einfacher Genauigkeit in den Standardausgabestream.</summary>
+      <param name="value">Der zu schreibende Wert. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String)">
+      <summary>Schreibt die angegebene Zeichenfolge in den Standardausgabestream.</summary>
+      <param name="value">Der zu schreibende Wert. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String,System.Object)">
+      <summary>Schreibt die Textdarstellung des angegebenen Objekts unter Verwendung der angegebenen Formatinformationen in den Standardausgabestream.</summary>
+      <param name="format">Eine kombinierte Formatierungszeichenfolge (siehe Hinweise). </param>
+      <param name="arg0">Ein mit <paramref name="format" /> zu schreibendes Objekt. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> ist null. </exception>
+      <exception cref="T:System.FormatException">Die Formatangabe in <paramref name="format" /> ist ungültig. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String,System.Object,System.Object)">
+      <summary>Schreibt die Textdarstellung der angegebenen Objekte unter Verwendung der angegebenen Formatinformationen in den Standardausgabestream.</summary>
+      <param name="format">Eine kombinierte Formatierungszeichenfolge (siehe Hinweise).</param>
+      <param name="arg0">Das erste mit <paramref name="format" /> zu schreibende Objekt. </param>
+      <param name="arg1">Das zweite mit <paramref name="format" /> zu schreibende Objekt. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> ist null. </exception>
+      <exception cref="T:System.FormatException">Die Formatangabe in <paramref name="format" /> ist ungültig. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String,System.Object,System.Object,System.Object)">
+      <summary>Schreibt die Textdarstellung der angegebenen Objekte unter Verwendung der angegebenen Formatinformationen in den Standardausgabestream.</summary>
+      <param name="format">Eine kombinierte Formatierungszeichenfolge (siehe Hinweise).</param>
+      <param name="arg0">Das erste mit <paramref name="format" /> zu schreibende Objekt. </param>
+      <param name="arg1">Das zweite mit <paramref name="format" /> zu schreibende Objekt. </param>
+      <param name="arg2">Das dritte mit <paramref name="format" /> zu schreibende Objekt. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> ist null. </exception>
+      <exception cref="T:System.FormatException">Die Formatangabe in <paramref name="format" /> ist ungültig. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.String,System.Object[])">
+      <summary>Schreibt die Textdarstellung des angegebenen Arrays von Objekten unter Verwendung der angegebenen Formatinformationen in den Standardausgabestream.</summary>
+      <param name="format">Eine kombinierte Formatierungszeichenfolge (siehe Hinweise).</param>
+      <param name="arg">Ein mit <paramref name="format" /> zu schreibendes Array von Objekten. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> oder <paramref name="arg" /> ist null. </exception>
+      <exception cref="T:System.FormatException">Die Formatangabe in <paramref name="format" /> ist ungültig. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.UInt32)">
+      <summary>Schreibt die Textdarstellung der angegebenen 32-Bit-Ganzzahl ohne Vorzeichen in den Standardausgabestream.</summary>
+      <param name="value">Der zu schreibende Wert. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.Write(System.UInt64)">
+      <summary>Schreibt die Textdarstellung der angegebenen 64-Bit-Ganzzahl ohne Vorzeichen in den Standardausgabestream.</summary>
+      <param name="value">Der zu schreibende Wert. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine">
+      <summary>Schreibt das aktuelle Zeichen für den Zeilenabschluss in den Standardausgabestream.</summary>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Boolean)">
+      <summary>Schreibt die Textdarstellung des angegebenen booleschen Werts, gefolgt vom aktuellen Zeichen für den Zeilenabschluss, in den Standardausgabestream.</summary>
+      <param name="value">Der zu schreibende Wert. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Char)">
+      <summary>Schreibt das angegebene Unicode-Zeichen, gefolgt vom aktuellen Zeichen für den Zeilenabschluss, in den Standardausgabestream.</summary>
+      <param name="value">Der zu schreibende Wert. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Char[])">
+      <summary>Schreibt das angegebenen Array von Unicode-Zeichen, gefolgt vom aktuellen Zeichen für den Zeilenabschluss, in den Standardausgabestream.</summary>
+      <param name="buffer">Ein Array von Unicode-Zeichen. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Char[],System.Int32,System.Int32)">
+      <summary>Schreibt das angegebene Unterarray von Unicode-Zeichen, gefolgt vom aktuellen Zeichen für den Zeilenabschluss, in den Standardausgabestream.</summary>
+      <param name="buffer">Ein Array von Unicode-Zeichen. </param>
+      <param name="index">Die Anfangsposition in <paramref name="buffer" />. </param>
+      <param name="count">Die Anzahl der zu schreibenden Zeichen. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> ist null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> oder <paramref name="count" /> ist kleiner als 0. </exception>
+      <exception cref="T:System.ArgumentException">Die Summe von <paramref name="index" /> und <paramref name="count" /> bezeichnet eine Position außerhalb von <paramref name="buffer" />. </exception>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Decimal)">
+      <summary>Schreibt die Textdarstellung des angegebenen <see cref="T:System.Decimal" />-Werts, gefolgt vom aktuellen Zeichen für den Zeilenabschluss, in den Standardausgabestream.</summary>
+      <param name="value">Der zu schreibende Wert. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Double)">
+      <summary>Schreibt die Textdarstellung der angegebenen Gleitkommazahl mit doppelter Genauigkeit, gefolgt vom aktuellen Zeichen für den Zeilenabschluss, in den Standardausgabestream.</summary>
+      <param name="value">Der zu schreibende Wert. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Int32)">
+      <summary>Schreibt die Textdarstellung der angegebenen 32-Bit-Ganzzahl mit Vorzeichen, gefolgt vom aktuellen Zeichen für den Zeilenabschluss, in den Standardausgabestream.</summary>
+      <param name="value">Der zu schreibende Wert. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Int64)">
+      <summary>Schreibt die Textdarstellung der angegebenen 64-Bit-Ganzzahl mit Vorzeichen, gefolgt vom aktuellen Zeichen für den Zeilenabschluss, in den Standardausgabestream.</summary>
+      <param name="value">Der zu schreibende Wert. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Object)">
+      <summary>Schreibt die Textdarstellung des angegebenen Objekts, gefolgt vom aktuellen Zeichen für den Zeilenabschluss, in den Standardausgabestream.</summary>
+      <param name="value">Der zu schreibende Wert. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.Single)">
+      <summary>Schreibt die Textdarstellung der angegebenen Gleitkommazahl mit einfacher Genauigkeit, gefolgt vom aktuellen Zeichen für den Zeilenabschluss, in den Standardausgabestream.</summary>
+      <param name="value">Der zu schreibende Wert. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String)">
+      <summary>Schreibt den angegebenen Zeichenfolgenwert, gefolgt vom aktuellen Zeichen für den Zeilenabschluss, in den Standardausgabestream.</summary>
+      <param name="value">Der zu schreibende Wert. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String,System.Object)">
+      <summary>Schreibt die Textdarstellung des angegebenen Objekts, gefolgt vom aktuellen Zeichen für den Zeilenabschluss, unter Verwendung der angegebenen Formatinformationen in den Standardausgabestream.</summary>
+      <param name="format">Eine kombinierte Formatierungszeichenfolge (siehe Hinweise).</param>
+      <param name="arg0">Ein mit <paramref name="format" /> zu schreibendes Objekt. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> ist null. </exception>
+      <exception cref="T:System.FormatException">Die Formatangabe in <paramref name="format" /> ist ungültig. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String,System.Object,System.Object)">
+      <summary>Schreibt die Textdarstellung der angegebenen Objekte, gefolgt vom aktuellen Zeichen für den Zeilenabschluss, unter Verwendung der angegebenen Formatinformationen in den Standardausgabestream.</summary>
+      <param name="format">Eine kombinierte Formatierungszeichenfolge (siehe Hinweise).</param>
+      <param name="arg0">Das erste mit <paramref name="format" /> zu schreibende Objekt. </param>
+      <param name="arg1">Das zweite mit <paramref name="format" /> zu schreibende Objekt. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> ist null. </exception>
+      <exception cref="T:System.FormatException">Die Formatangabe in <paramref name="format" /> ist ungültig. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String,System.Object,System.Object,System.Object)">
+      <summary>Schreibt die Textdarstellung der angegebenen Objekte, gefolgt vom aktuellen Zeichen für den Zeilenabschluss, unter Verwendung der angegebenen Formatinformationen in den Standardausgabestream.</summary>
+      <param name="format">Eine kombinierte Formatierungszeichenfolge (siehe Hinweise).</param>
+      <param name="arg0">Das erste mit <paramref name="format" /> zu schreibende Objekt. </param>
+      <param name="arg1">Das zweite mit <paramref name="format" /> zu schreibende Objekt. </param>
+      <param name="arg2">Das dritte mit <paramref name="format" /> zu schreibende Objekt. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> ist null. </exception>
+      <exception cref="T:System.FormatException">Die Formatangabe in <paramref name="format" /> ist ungültig. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.String,System.Object[])">
+      <summary>Schreibt die Textdarstellung des angegebenen Arrays von Objekten, gefolgt vom aktuellen Zeichen für den Zeilenabschluss, unter Verwendung der angegebenen Formatinformationen in den Standardausgabestream.</summary>
+      <param name="format">Eine kombinierte Formatierungszeichenfolge (siehe Hinweise).</param>
+      <param name="arg">Ein mit <paramref name="format" /> zu schreibendes Array von Objekten. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="format" /> oder <paramref name="arg" /> ist null. </exception>
+      <exception cref="T:System.FormatException">Die Formatangabe in <paramref name="format" /> ist ungültig. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.UInt32)">
+      <summary>Schreibt die Textdarstellung der angegebenen 32-Bit-Ganzzahl ohne Vorzeichen, gefolgt vom aktuellen Zeichen für den Zeilenabschluss, in den Standardausgabestream.</summary>
+      <param name="value">Der zu schreibende Wert. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Console.WriteLine(System.UInt64)">
+      <summary>Schreibt die Textdarstellung der angegebenen 64-Bit-Ganzzahl ohne Vorzeichen, gefolgt vom aktuellen Zeichen für den Zeilenabschluss, in den Standardausgabestream.</summary>
+      <param name="value">Der zu schreibende Wert. </param>
+      <exception cref="T:System.IO.IOException">Ein E/A-Fehler ist aufgetreten. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.ConsoleCancelEventArgs">
+      <summary>Stellt Daten für das <see cref="E:System.Console.CancelKeyPress" />-Ereignis bereit.Diese Klasse kann nicht vererbt werden.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.ConsoleCancelEventArgs.Cancel">
+      <summary>Ruft einen Wert ab, der angibt, ob gleichzeitiges Drücken von <see cref="F:System.ConsoleModifiers.Control" />-Zusatztaste und <see cref="F:System.ConsoleKey.C" />-Konsolentaste (STRG+C) oder STRG+UNTBR den aktuellen Vorgang beendet, oder legt diesen Wert fest.Der Standardwert ist false, der den aktuellen Prozess beendet.</summary>
+      <returns>true, wenn der aktuelle Vorgang fortgesetzt werden soll, wenn der Ereignishandler abgeschlossen wird; false, wenn der aktuelle Vorgang beendet werden soll.Der Standardwert ist false; der aktuelle Prozess wird beendet, wenn der Ereignishandler zurückkehrt.Wenn true, wird der aktuelle Prozess fortgesetzt .</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.ConsoleCancelEventArgs.SpecialKey">
+      <summary>Ruft die Kombination von Zusatz- und Konsolentaste ab, die den aktuellen Vorgang unterbrochen hat.</summary>
+      <returns>Einer der Enumerationswerte, der die Tastenkombination angibt, die den aktuellen Prozess unterbrochen hat.Es ist kein Standardwert vorhanden.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.ConsoleCancelEventHandler">
+      <summary>Stellt die Methode dar, die das <see cref="E:System.Console.CancelKeyPress" />-Ereignis von <see cref="T:System.Console" /> behandelt.</summary>
+      <param name="sender">Die Quelle des Ereignisses. </param>
+      <param name="e">Ein <see cref="T:System.ConsoleCancelEventArgs" />-Objekt, das die Ereignisdaten enthält. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.ConsoleColor">
+      <summary>Gibt Konstanten an, mit denen die Vordergrund- und Hintergrundfarben für die Konsole definiert werden.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.ConsoleColor.Black">
+      <summary>Die Farbe Schwarz.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Blue">
+      <summary>Die Farbe Blau.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Cyan">
+      <summary>Die Farbe Zyan (Blaugrün).</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkBlue">
+      <summary>Die Farbe Dunkelblau.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkCyan">
+      <summary>Die Farbe Dunkelzyan (dunkles Blaugrün).</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkGray">
+      <summary>Die Farbe Dunkelgrau.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkGreen">
+      <summary>Die Farbe Dunkelgrün.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkMagenta">
+      <summary>Die Farbe Dunkelmagenta (dunkles, purpurähnliches Rot).</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkRed">
+      <summary>Die Farbe Dunkelrot.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.DarkYellow">
+      <summary>Die Farbe Dunkelgelb (Ocker).</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Gray">
+      <summary>Die Farbe Grau.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Green">
+      <summary>Die Farbe Grün.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Magenta">
+      <summary>Das Farbe Magenta (purpurähnliches Rot).</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Red">
+      <summary>Die Farbe Rot.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.White">
+      <summary>Die Farbe Weiß.</summary>
+    </member>
+    <member name="F:System.ConsoleColor.Yellow">
+      <summary>Die Farbe Gelb.</summary>
+    </member>
+    <member name="T:System.ConsoleSpecialKey">
+      <summary>Gibt Kombinationen von Modifizierer- und Konsolentasten an, mit denen der derzeit ausgeführte Prozess unterbrochen werden kann.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.ConsoleSpecialKey.ControlBreak">
+      <summary>Die Modifizierertaste <see cref="F:System.ConsoleModifiers.Control" /> und die Konsolentaste UNTBR.</summary>
+    </member>
+    <member name="F:System.ConsoleSpecialKey.ControlC">
+      <summary>Die Modifizierertaste <see cref="F:System.ConsoleModifiers.Control" /> und die Konsolentaste <see cref="F:System.ConsoleKey.C" />.</summary>
+    </member>
+  </members>
+</doc>

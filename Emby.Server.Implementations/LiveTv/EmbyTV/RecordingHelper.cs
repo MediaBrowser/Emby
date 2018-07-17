@@ -26,15 +26,13 @@ namespace Emby.Server.Implementations.LiveTv.EmbyTV
                 }
                 else if (info.OriginalAirDate.HasValue)
                 {
-                    var localAirDate = info.OriginalAirDate.Value.ToLocalTime();
-
-                    if (localAirDate.Date.Equals(DateTime.Now.Date))
+                    if (info.OriginalAirDate.Value.Date.Equals(info.StartDate.Date))
                     {
-                        name += " " + GetDateString(localAirDate);
+                        name += " " + GetDateString(info.StartDate);
                     }
                     else
                     {
-                        name += " " + localAirDate.ToString("yyyy-MM-dd");
+                        name += " " + info.OriginalAirDate.Value.ToLocalTime().ToString("yyyy-MM-dd");
                     }
                 }
                 else

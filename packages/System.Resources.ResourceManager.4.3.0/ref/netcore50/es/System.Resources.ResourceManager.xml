@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Resources.ResourceManager</name>
+  </assembly>
+  <members>
+    <member name="T:System.Resources.MissingManifestResourceException">
+      <summary>Excepción que se produce si el ensamblado principal no contiene los recursos de la referencia cultural neutral y falta un ensamblado satélite apropiado.</summary>
+    </member>
+    <member name="M:System.Resources.MissingManifestResourceException.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Resources.MissingManifestResourceException" /> con propiedades predeterminadas.</summary>
+    </member>
+    <member name="M:System.Resources.MissingManifestResourceException.#ctor(System.String)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Resources.MissingManifestResourceException" /> con el mensaje de error especificado.</summary>
+      <param name="message">Mensaje de error que explica la razón de la excepción. </param>
+    </member>
+    <member name="M:System.Resources.MissingManifestResourceException.#ctor(System.String,System.Exception)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Resources.MissingManifestResourceException" /> con el mensaje de error especificado y una referencia a la excepción interna que causó esta excepción.</summary>
+      <param name="message">Mensaje de error que explica la razón de la excepción. </param>
+      <param name="inner">La excepción que es la causa de la excepción actual.Si el parámetro <paramref name="inner" /> no es null, la excepción actual se produce en un bloque catch que controla la excepción interna.</param>
+    </member>
+    <member name="T:System.Resources.NeutralResourcesLanguageAttribute">
+      <summary>Informa al administrador de recursos de la referencia cultural predeterminada de una aplicación.Esta clase no puede heredarse.</summary>
+    </member>
+    <member name="M:System.Resources.NeutralResourcesLanguageAttribute.#ctor(System.String)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Resources.NeutralResourcesLanguageAttribute" />.</summary>
+      <param name="cultureName">Nombre de la referencia cultural en la que se escribieron los recursos neutrales del ensamblado actual. </param>
+      <exception cref="T:System.ArgumentNullException">El valor del parámetro <paramref name="cultureName" /> es null. </exception>
+    </member>
+    <member name="P:System.Resources.NeutralResourcesLanguageAttribute.CultureName">
+      <summary>Obtiene el nombre de la referencia cultural.</summary>
+      <returns>Nombre de la referencia cultural predeterminada para el ensamblado principal.</returns>
+    </member>
+    <member name="T:System.Resources.ResourceManager">
+      <summary>Representa un administrador de recursos que proporciona un acceso más cómodo a los recursos específicos de la referencia cultural en tiempo de ejecución.Nota de seguridad: llamar a métodos en esta clase con datos que no son de confianza conlleva un riesgo de seguridad.Llame a los métodos en la clase solo con datos de confianza.Para obtener más información, consulte Untrusted Data Security Risks.</summary>
+    </member>
+    <member name="M:System.Resources.ResourceManager.#ctor(System.String,System.Reflection.Assembly)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Resources.ResourceManager" /> que busca los recursos que contienen los archivos con el nombre raíz especificado, en el objeto dado.</summary>
+      <param name="baseName">Nombre de raíz del archivo de recursos sin su extensión pero con cualquier nombre de espacio de nombres completo.Por ejemplo, el nombre de raíz para el archivo de recursos denominado "MyApplication.MyResource.en-US.resources" es "MyApplication.MyResource".</param>
+      <param name="assembly">Ensamblado principal de los recursos. </param>
+      <exception cref="T:System.ArgumentNullException">El parámetro <paramref name="baseName" /> o <paramref name="assembly" /> es null. </exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.#ctor(System.Type)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Resources.ResourceManager" /> que busca recursos en los ensamblados satélite a partir de la información del objeto de tipo especificado.</summary>
+      <param name="resourceSource">Tipo a partir del cual el administrador de recursos deriva toda la información para buscar archivos .resources. </param>
+      <exception cref="T:System.ArgumentNullException">El parámetro <paramref name="resourceSource" /> es null. </exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.GetString(System.String)">
+      <summary>Devuelve el valor del recurso de cadena especificado.</summary>
+      <returns>El valor del recurso localizado para la referencia cultural de la interfaz de usuario actual del llamador, o null si <paramref name="name" /> no se encuentra en un conjunto de recursos.</returns>
+      <param name="name">Nombre del recurso que se va a recuperar. </param>
+      <exception cref="T:System.ArgumentNullException">El parámetro <paramref name="name" /> es null. </exception>
+      <exception cref="T:System.InvalidOperationException">El valor del recurso especificado no es una cadena. </exception>
+      <exception cref="T:System.Resources.MissingManifestResourceException">No se han encontrado conjuntos de recursos que se puedan usar y no hay recursos para la referencia cultural neutral.Para obtener información sobre cómo controlar esta excepción, vea la sección "Controlar excepciones MissingManifestResourceException y MissingSatelliteAssemblyException" en el <see cref="T:System.Resources.ResourceManager" /> tema de la clase.</exception>
+      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">Los recursos de la referencia cultural predeterminada residen en un ensamblado satélite que no se encuentra.Para obtener información sobre cómo controlar esta excepción, vea la sección "Controlar excepciones MissingManifestResourceException y MissingSatelliteAssemblyException" en el <see cref="T:System.Resources.ResourceManager" /> tema de la clase.</exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.GetString(System.String,System.Globalization.CultureInfo)">
+      <summary>Devuelve el valor del recurso de cadena adaptado a la referencia cultural especificada.</summary>
+      <returns>El valor del recurso localizado para la referencia cultural especificada, o null si <paramref name="name" /> no se encuentra en un conjunto de recursos.</returns>
+      <param name="name">Nombre del recurso que se va a recuperar. </param>
+      <param name="culture">Objeto que representa la referencia cultural a la que se va a adaptar el recurso. </param>
+      <exception cref="T:System.ArgumentNullException">El parámetro <paramref name="name" /> es null. </exception>
+      <exception cref="T:System.InvalidOperationException">El valor del recurso especificado no es una cadena. </exception>
+      <exception cref="T:System.Resources.MissingManifestResourceException">No se han encontrado conjuntos de recursos que se puedan usar y no hay recursos para una referencia cultural predeterminada.Para obtener información sobre cómo controlar esta excepción, vea la sección "Controlar excepciones MissingManifestResourceException y MissingSatelliteAssemblyException" en el <see cref="T:System.Resources.ResourceManager" /> tema de la clase.</exception>
+      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">Los recursos de la referencia cultural predeterminada residen en un ensamblado satélite que no se encuentra.Para obtener información sobre cómo controlar esta excepción, vea la sección "Controlar excepciones MissingManifestResourceException y MissingSatelliteAssemblyException" en el <see cref="T:System.Resources.ResourceManager" /> tema de la clase.</exception>
+    </member>
+    <member name="T:System.Resources.SatelliteContractVersionAttribute">
+      <summary>Indica a un objeto <see cref="T:System.Resources.ResourceManager" /> que solicite una versión determinada de un ensamblado satélite.</summary>
+    </member>
+    <member name="M:System.Resources.SatelliteContractVersionAttribute.#ctor(System.String)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Resources.SatelliteContractVersionAttribute" />.</summary>
+      <param name="version">Cadena que especifica la versión de los ensamblados satélites que se va a cargar. </param>
+      <exception cref="T:System.ArgumentNullException">El parámetro <paramref name="version" /> es null. </exception>
+    </member>
+    <member name="P:System.Resources.SatelliteContractVersionAttribute.Version">
+      <summary>Obtiene la versión de los ensamblados satélites con los recursos necesarios.</summary>
+      <returns>Cadena que contiene la versión de los ensamblados satélites con los recursos necesarios.</returns>
+    </member>
+  </members>
+</doc>

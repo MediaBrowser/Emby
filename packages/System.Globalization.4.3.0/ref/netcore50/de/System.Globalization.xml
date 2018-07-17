@@ -1,0 +1,1662 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Globalization</name>
+  </assembly>
+  <members>
+    <member name="T:System.Globalization.Calendar">
+      <summary>Stellt die Zeit in Abschnitte aufgeteilt dar, z. B. in Wochen, Monate und Jahre.</summary>
+    </member>
+    <member name="M:System.Globalization.Calendar.#ctor">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Globalization.Calendar" />-Klasse.</summary>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddDays(System.DateTime,System.Int32)">
+      <summary>Gibt eine <see cref="T:System.DateTime" /> zurück, die dem angegebenen Zeitintervall zur angegebenen <see cref="T:System.DateTime" /> in Tagen entspricht.</summary>
+      <returns>Die <see cref="T:System.DateTime" />, die sich ergibt, wenn der angegebenen <see cref="T:System.DateTime" /> die angegebene Anzahl von Tagen hinzugefügt wird.</returns>
+      <param name="time">Die <see cref="T:System.DateTime" />, der Tage hinzugefügt werden sollen. </param>
+      <param name="days">Die Anzahl der hinzuzufügenden Tage. </param>
+      <exception cref="T:System.ArgumentException">Die resultierende <see cref="T:System.DateTime" /> liegt außerhalb des unterstützten Bereichs dieses Kalenders. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="days" /> liegt außerhalb des unterstützten Bereichs des <see cref="T:System.DateTime" />-Rückgabewerts. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddHours(System.DateTime,System.Int32)">
+      <summary>Gibt eine <see cref="T:System.DateTime" /> zurück, die dem angegebenen Zeitintervall zur angegebenen <see cref="T:System.DateTime" /> in Stunden entspricht.</summary>
+      <returns>Die <see cref="T:System.DateTime" />, die sich ergibt, wenn der angegebenen <see cref="T:System.DateTime" /> die angegebene Anzahl von Stunden hinzugefügt wird.</returns>
+      <param name="time">Die <see cref="T:System.DateTime" />, der Stunden hinzugefügt werden sollen. </param>
+      <param name="hours">Die Anzahl der hinzuzufügenden Stunden. </param>
+      <exception cref="T:System.ArgumentException">Die resultierende <see cref="T:System.DateTime" /> liegt außerhalb des unterstützten Bereichs dieses Kalenders. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="hours" /> liegt außerhalb des unterstützten Bereichs des <see cref="T:System.DateTime" />-Rückgabewerts. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddMilliseconds(System.DateTime,System.Double)">
+      <summary>Gibt eine <see cref="T:System.DateTime" /> zurück, die dem angegebenen Zeitintervall zur angegebenen <see cref="T:System.DateTime" /> in Millisekunden entspricht.</summary>
+      <returns>Die <see cref="T:System.DateTime" />, die sich ergibt, wenn der angegebenen <see cref="T:System.DateTime" /> die angegebene Anzahl von Millisekunden hinzugefügt wird.</returns>
+      <param name="time">Die <see cref="T:System.DateTime" />, der Millisekunden hinzugefügt werden sollen. </param>
+      <param name="milliseconds">Die Anzahl der hinzuzufügenden Millisekunden.</param>
+      <exception cref="T:System.ArgumentException">Die resultierende <see cref="T:System.DateTime" /> liegt außerhalb des unterstützten Bereichs dieses Kalenders. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="milliseconds" /> liegt außerhalb des unterstützten Bereichs des <see cref="T:System.DateTime" />-Rückgabewerts. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddMinutes(System.DateTime,System.Int32)">
+      <summary>Gibt eine <see cref="T:System.DateTime" /> zurück, die dem angegebenen Zeitintervall zur angegebenen <see cref="T:System.DateTime" /> in Minuten entspricht.</summary>
+      <returns>Die <see cref="T:System.DateTime" />, die sich ergibt, wenn der angegebenen <see cref="T:System.DateTime" /> die angegebene Anzahl von Minuten hinzugefügt wird.</returns>
+      <param name="time">Die <see cref="T:System.DateTime" />, der Minuten hinzugefügt werden sollen. </param>
+      <param name="minutes">Die Anzahl der hinzuzufügenden Minuten. </param>
+      <exception cref="T:System.ArgumentException">Die resultierende <see cref="T:System.DateTime" /> liegt außerhalb des unterstützten Bereichs dieses Kalenders. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="minutes" /> liegt außerhalb des unterstützten Bereichs des <see cref="T:System.DateTime" />-Rückgabewerts. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddMonths(System.DateTime,System.Int32)">
+      <summary>Gibt beim Überschreiben in einer abgeleiteten Klasse eine <see cref="T:System.DateTime" /> zurück, die dem angegebenen Zeitintervall zur angegebenen <see cref="T:System.DateTime" /> in Monaten entspricht.</summary>
+      <returns>Die <see cref="T:System.DateTime" />, die sich ergibt, wenn der angegebenen <see cref="T:System.DateTime" /> die angegebene Anzahl von Monaten hinzugefügt wird.</returns>
+      <param name="time">Die <see cref="T:System.DateTime" />, der Monate hinzugefügt werden sollen. </param>
+      <param name="months">Die Anzahl der hinzuzufügenden Monate. </param>
+      <exception cref="T:System.ArgumentException">Die resultierende <see cref="T:System.DateTime" /> liegt außerhalb des unterstützten Bereichs dieses Kalenders. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="months" /> liegt außerhalb des unterstützten Bereichs des <see cref="T:System.DateTime" />-Rückgabewerts. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddSeconds(System.DateTime,System.Int32)">
+      <summary>Gibt eine <see cref="T:System.DateTime" /> zurück, die dem angegebenen Zeitintervall zur angegebenen <see cref="T:System.DateTime" /> in Sekunden entspricht.</summary>
+      <returns>Die <see cref="T:System.DateTime" />, die sich ergibt, wenn der angegebenen <see cref="T:System.DateTime" /> die angegebene Anzahl von Sekunden hinzugefügt wird.</returns>
+      <param name="time">Die <see cref="T:System.DateTime" />, der Sekunden hinzugefügt werden sollen. </param>
+      <param name="seconds">Die Anzahl der hinzuzufügenden Sekunden. </param>
+      <exception cref="T:System.ArgumentException">Die resultierende <see cref="T:System.DateTime" /> liegt außerhalb des unterstützten Bereichs dieses Kalenders. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="seconds" /> liegt außerhalb des unterstützten Bereichs des <see cref="T:System.DateTime" />-Rückgabewerts. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddWeeks(System.DateTime,System.Int32)">
+      <summary>Gibt eine <see cref="T:System.DateTime" /> zurück, die dem angegebenen Zeitintervall zur angegebenen <see cref="T:System.DateTime" /> in Wochen entspricht.</summary>
+      <returns>Die <see cref="T:System.DateTime" />, die sich ergibt, wenn der angegebenen <see cref="T:System.DateTime" /> die angegebene Anzahl von Wochen hinzugefügt wird.</returns>
+      <param name="time">Die <see cref="T:System.DateTime" />, der Wochen hinzugefügt werden sollen. </param>
+      <param name="weeks">Die Anzahl der hinzuzufügenden Wochen. </param>
+      <exception cref="T:System.ArgumentException">Die resultierende <see cref="T:System.DateTime" /> liegt außerhalb des unterstützten Bereichs dieses Kalenders. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="weeks" /> liegt außerhalb des unterstützten Bereichs des <see cref="T:System.DateTime" />-Rückgabewerts. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.AddYears(System.DateTime,System.Int32)">
+      <summary>Gibt beim Überschreiben in einer abgeleiteten Klasse eine <see cref="T:System.DateTime" /> zurück, die dem angegebenen Zeitintervall zur angegebenen <see cref="T:System.DateTime" /> in Jahren entspricht.</summary>
+      <returns>Die <see cref="T:System.DateTime" />, die sich ergibt, wenn der angegebenen <see cref="T:System.DateTime" /> die angegebene Anzahl von Jahren hinzugefügt wird.</returns>
+      <param name="time">Die <see cref="T:System.DateTime" />, der Jahre hinzugefügt werden sollen. </param>
+      <param name="years">Die Anzahl der hinzuzufügenden Jahre. </param>
+      <exception cref="T:System.ArgumentException">Die resultierende <see cref="T:System.DateTime" /> liegt außerhalb des unterstützten Bereichs dieses Kalenders. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="years" /> liegt außerhalb des unterstützten Bereichs des <see cref="T:System.DateTime" />-Rückgabewerts. </exception>
+    </member>
+    <member name="F:System.Globalization.Calendar.CurrentEra">
+      <summary>Stellt den aktuellen Zeitraum des aktuellen Kalenders dar. </summary>
+    </member>
+    <member name="P:System.Globalization.Calendar.Eras">
+      <summary>Ruft beim Überschreiben in einer abgeleiteten Klasse die Liste der Zeiträume im aktuellen Kalender ab.</summary>
+      <returns>Ein Array von ganzen Zahlen, das die Zeiträume im aktuellen Kalender darstellt.</returns>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDayOfMonth(System.DateTime)">
+      <summary>Gibt beim Überschreiben in einer abgeleiteten Klasse den Tag des Monats in der angegebenen <see cref="T:System.DateTime" /> zurück.</summary>
+      <returns>Eine positive ganze Zahl, die den im <paramref name="time" />-Parameter angegebenen Tag des Monats darstellt.</returns>
+      <param name="time">Die zu lesende <see cref="T:System.DateTime" />. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDayOfWeek(System.DateTime)">
+      <summary>Gibt beim Überschreiben in einer abgeleiteten Klasse den Wochentag in der angegebenen <see cref="T:System.DateTime" /> zurück.</summary>
+      <returns>Ein <see cref="T:System.DayOfWeek" />-Wert, der den im <paramref name="time" />-Parameter angegebenen Wochentag darstellt.</returns>
+      <param name="time">Die zu lesende <see cref="T:System.DateTime" />. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDayOfYear(System.DateTime)">
+      <summary>Gibt beim Überschreiben in einer abgeleiteten Klasse den Tag des Jahres in der angegebenen <see cref="T:System.DateTime" /> zurück.</summary>
+      <returns>Eine positive ganze Zahl, die den im <paramref name="time" />-Parameter angegebenen Tag des Jahres darstellt.</returns>
+      <param name="time">Die zu lesende <see cref="T:System.DateTime" />. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDaysInMonth(System.Int32,System.Int32)">
+      <summary>Gibt die Anzahl der Tage im angegebenen Monat und Jahr im aktuellen Zeitraum zurück.</summary>
+      <returns>Die Anzahl der Tage im angegebenen Monat des angegebenen Jahres im aktuellen Zeitraum.</returns>
+      <param name="year">Eine ganze Zahl, die das Jahr darstellt. </param>
+      <param name="month">Eine positive ganze Zahl, die den Monat darstellt. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird.- oder - <paramref name="month" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDaysInMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>Gibt beim Überschreiben in einer abgeleiteten Klasse die Anzahl der Tage im angegebenen Monat, Jahr und Zeitraum zurück.</summary>
+      <returns>Die Anzahl der Tage im angegebenen Monat des angegebenen Jahres im angegebenen Zeitraum.</returns>
+      <param name="year">Eine ganze Zahl, die das Jahr darstellt. </param>
+      <param name="month">Eine positive ganze Zahl, die den Monat darstellt. </param>
+      <param name="era">Eine ganze Zahl, die den Zeitraum darstellt. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird.- oder - <paramref name="month" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird.- oder - <paramref name="era" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDaysInYear(System.Int32)">
+      <summary>Gibt die Anzahl der Tage im angegebenen Jahr des aktuellen Zeitraums zurück.</summary>
+      <returns>Die Anzahl der Tage des angegebenen Jahres im aktuellen Zeitraum.</returns>
+      <param name="year">Eine ganze Zahl, die das Jahr darstellt. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetDaysInYear(System.Int32,System.Int32)">
+      <summary>Gibt beim Überschreiben in einer abgeleiteten Klasse die Anzahl der Tage im angegebenen Jahr und Zeitraum zurück.</summary>
+      <returns>Die Anzahl der Tage des angegebenen Jahres im angegebenen Zeitraum.</returns>
+      <param name="year">Eine ganze Zahl, die das Jahr darstellt. </param>
+      <param name="era">Eine ganze Zahl, die den Zeitraum darstellt. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird.- oder - <paramref name="era" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetEra(System.DateTime)">
+      <summary>Gibt beim Überschreiben in einer abgeleiteten Klasse den Zeitraum in der angegebenen <see cref="T:System.DateTime" /> zurück.</summary>
+      <returns>Eine ganze Zahl, die den Zeitraum in <paramref name="time" /> darstellt.</returns>
+      <param name="time">Die zu lesende <see cref="T:System.DateTime" />. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetHour(System.DateTime)">
+      <summary>Gibt den Stundenwert in der angegebenen <see cref="T:System.DateTime" /> zurück.</summary>
+      <returns>Eine ganze Zahl zwischen 0 und 23, die die Stunde in <paramref name="time" /> darstellt.</returns>
+      <param name="time">Die zu lesende <see cref="T:System.DateTime" />. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetLeapMonth(System.Int32,System.Int32)">
+      <summary>Berechnet den Schaltmonat für ein angegebenes Jahr und einen angegebenen Zeitraum.</summary>
+      <returns>Eine positive ganze Zahl, die den Schaltmonat im angegebenen Jahr und im angegebenen Zeitraum angibt.- oder -0 (null), wenn dieser Kalender keinen Schaltmonat unterstützt oder wenn mit dem <paramref name="year" />-Parameter und dem <paramref name="era" />-Parameter kein Schaltjahr angegeben wird.</returns>
+      <param name="year">Ein Jahr.</param>
+      <param name="era">Ein Zeitraum.</param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetMilliseconds(System.DateTime)">
+      <summary>Gibt den Millisekundenwert in der angegebenen <see cref="T:System.DateTime" /> zurück.</summary>
+      <returns>Eine Gleitkommazahl mit doppelter Genauigkeit von 0 bis 999, die die Millisekunden im <paramref name="time" />-Parameter darstellt.</returns>
+      <param name="time">Die zu lesende <see cref="T:System.DateTime" />. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetMinute(System.DateTime)">
+      <summary>Gibt den Minutenwert in der angegebenen <see cref="T:System.DateTime" /> zurück.</summary>
+      <returns>Eine ganze Zahl zwischen 0 und 59, die die Minuten in <paramref name="time" /> darstellt.</returns>
+      <param name="time">Die zu lesende <see cref="T:System.DateTime" />. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetMonth(System.DateTime)">
+      <summary>Gibt beim Überschreiben in einer abgeleiteten Klasse den Monat in der angegebenen <see cref="T:System.DateTime" /> zurück.</summary>
+      <returns>Eine positive ganze Zahl, die den Monat in <paramref name="time" /> darstellt.</returns>
+      <param name="time">Die zu lesende <see cref="T:System.DateTime" />. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetMonthsInYear(System.Int32)">
+      <summary>Gibt die Anzahl der Monate des angegebenen Jahres im aktuellen Zeitraum zurück.</summary>
+      <returns>Die Anzahl der Monate des angegebenen Jahres im aktuellen Zeitraum.</returns>
+      <param name="year">Eine ganze Zahl, die das Jahr darstellt. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetMonthsInYear(System.Int32,System.Int32)">
+      <summary>Gibt beim Überschreiben in einer abgeleiteten Klasse die Anzahl der Monate des angegebenen Jahres im angegebenen Zeitraum zurück.</summary>
+      <returns>Die Anzahl der Monate des angegebenen Jahres im angegebenen Zeitraum.</returns>
+      <param name="year">Eine ganze Zahl, die das Jahr darstellt. </param>
+      <param name="era">Eine ganze Zahl, die den Zeitraum darstellt. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird.- oder - <paramref name="era" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetSecond(System.DateTime)">
+      <summary>Gibt den Sekundenwert in der angegebenen <see cref="T:System.DateTime" /> zurück.</summary>
+      <returns>Eine ganze Zahl zwischen 0 und 59, die die Sekunden in <paramref name="time" /> darstellt.</returns>
+      <param name="time">Die zu lesende <see cref="T:System.DateTime" />. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetWeekOfYear(System.DateTime,System.Globalization.CalendarWeekRule,System.DayOfWeek)">
+      <summary>Gibt die Woche des Jahrs zurück, in die das Datum im angegebenen <see cref="T:System.DateTime" />-Wert fällt.</summary>
+      <returns>Eine positive ganze Zahl, die die Woche des Jahres darstellt, in die das im <paramref name="time" />-Parameter angegebene Datum fällt.</returns>
+      <param name="time">Ein Datums- und Uhrzeitwert. </param>
+      <param name="rule">Ein Enumerationswert, der eine Kalenderwoche definiert. </param>
+      <param name="firstDayOfWeek">Ein Enumerationswert, der den ersten Tag der Woche darstellt. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="time" /> ist früher als <see cref="P:System.Globalization.Calendar.MinSupportedDateTime" /> oder später als <see cref="P:System.Globalization.Calendar.MaxSupportedDateTime" />.- oder -<paramref name="firstDayOfWeek" /> ist kein gültiger <see cref="T:System.DayOfWeek" />-Wert.- oder - <paramref name="rule" /> ist kein gültiger <see cref="T:System.Globalization.CalendarWeekRule" />-Wert. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.GetYear(System.DateTime)">
+      <summary>Gibt beim Überschreiben in einer abgeleiteten Klasse das Jahr in der angegebenen <see cref="T:System.DateTime" /> zurück.</summary>
+      <returns>Eine ganze Zahl, die das Jahr in <paramref name="time" /> darstellt.</returns>
+      <param name="time">Die zu lesende <see cref="T:System.DateTime" />. </param>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapDay(System.Int32,System.Int32,System.Int32)">
+      <summary>Bestimmt, ob das angegebene Datum im aktuellen Zeitraum ein Schalttag ist.</summary>
+      <returns>true, wenn der angegebene Tag ein Schalttag ist, andernfalls false.</returns>
+      <param name="year">Eine ganze Zahl, die das Jahr darstellt. </param>
+      <param name="month">Eine positive ganze Zahl, die den Monat darstellt. </param>
+      <param name="day">Eine positive ganze Zahl, die den Tag darstellt. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird.- oder - <paramref name="month" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird.- oder - <paramref name="day" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapDay(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>Bestimmt beim Überschreiben in einer abgeleiteten Klasse, ob das angegebene Datum im angegebenen Zeitraum ein Schalttag ist.</summary>
+      <returns>true, wenn der angegebene Tag ein Schalttag ist, andernfalls false.</returns>
+      <param name="year">Eine ganze Zahl, die das Jahr darstellt. </param>
+      <param name="month">Eine positive ganze Zahl, die den Monat darstellt. </param>
+      <param name="day">Eine positive ganze Zahl, die den Tag darstellt. </param>
+      <param name="era">Eine ganze Zahl, die den Zeitraum darstellt. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird.- oder - <paramref name="month" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird.- oder - <paramref name="day" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird.- oder - <paramref name="era" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapMonth(System.Int32,System.Int32)">
+      <summary>Bestimmt, ob der angegebene Monat des angegebenen Jahres im aktuellen Zeitraum ein Schaltmonat ist.</summary>
+      <returns>true, wenn der angegebene Monat ein Schaltmonat ist, andernfalls false.</returns>
+      <param name="year">Eine ganze Zahl, die das Jahr darstellt. </param>
+      <param name="month">Eine positive ganze Zahl, die den Monat darstellt. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird.- oder - <paramref name="month" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapMonth(System.Int32,System.Int32,System.Int32)">
+      <summary>Bestimmt beim Überschreiben in einer abgeleiteten Klasse, ob der angegebene Monat des angegebenen Jahres im aktuellen Zeitraum ein Schaltmonat ist.</summary>
+      <returns>true, wenn der angegebene Monat ein Schaltmonat ist, andernfalls false.</returns>
+      <param name="year">Eine ganze Zahl, die das Jahr darstellt. </param>
+      <param name="month">Eine positive ganze Zahl, die den Monat darstellt. </param>
+      <param name="era">Eine ganze Zahl, die den Zeitraum darstellt. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird.- oder - <paramref name="month" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird.- oder - <paramref name="era" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapYear(System.Int32)">
+      <summary>Bestimmt, ob das angegebene Jahr im aktuellen Zeitraum ein Schaltjahr ist.</summary>
+      <returns>true, wenn das angegebene Jahr ein Schaltjahr ist, andernfalls false.</returns>
+      <param name="year">Eine ganze Zahl, die das Jahr darstellt. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.IsLeapYear(System.Int32,System.Int32)">
+      <summary>Bestimmt beim Überschreiben in einer abgeleiteten Klasse, ob das angegebene Jahr im angegebenen Zeitraum ein Schaltjahr ist.</summary>
+      <returns>true, wenn das angegebene Jahr ein Schaltjahr ist, andernfalls false.</returns>
+      <param name="year">Eine ganze Zahl, die das Jahr darstellt. </param>
+      <param name="era">Eine ganze Zahl, die den Zeitraum darstellt. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird.- oder - <paramref name="era" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird. </exception>
+    </member>
+    <member name="P:System.Globalization.Calendar.IsReadOnly">
+      <summary>Ruft einen Wert ab, der angibt, ob dieses <see cref="T:System.Globalization.Calendar" />-Objekt schreibgeschützt ist.</summary>
+      <returns>true, wenn dieses <see cref="T:System.Globalization.Calendar" />-Objekt schreibgeschützt ist, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Globalization.Calendar.MaxSupportedDateTime">
+      <summary>Ruft das späteste von diesem <see cref="T:System.Globalization.Calendar" />-Objekt unterstützte Datum und die späteste Uhrzeit ab.</summary>
+      <returns>Das späteste Datum und die späteste Uhrzeit, die von diesem Kalender unterstützt werden.Die Standardeinstellung ist <see cref="F:System.DateTime.MaxValue" />.</returns>
+    </member>
+    <member name="P:System.Globalization.Calendar.MinSupportedDateTime">
+      <summary>Ruft das früheste von diesem <see cref="T:System.Globalization.Calendar" />-Objekt unterstützte Datum und die früheste Uhrzeit ab.</summary>
+      <returns>Das früheste Datum und die früheste Uhrzeit, die von diesem Kalender unterstützt werden.Die Standardeinstellung ist <see cref="F:System.DateTime.MinValue" />.</returns>
+    </member>
+    <member name="M:System.Globalization.Calendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>Gibt eine <see cref="T:System.DateTime" /> zurück, die auf das angegebene Datum und die angegebene Uhrzeit im aktuellen Zeitraum festgelegt ist.</summary>
+      <returns>Die <see cref="T:System.DateTime" />, die auf das angegebene Datum und die angegebene Uhrzeit im aktuellen Zeitraum festgelegt ist.</returns>
+      <param name="year">Eine ganze Zahl, die das Jahr darstellt. </param>
+      <param name="month">Eine positive ganze Zahl, die den Monat darstellt. </param>
+      <param name="day">Eine positive ganze Zahl, die den Tag darstellt. </param>
+      <param name="hour">Eine ganze Zahl zwischen 0 und 23, die die Stunde darstellt. </param>
+      <param name="minute">Eine ganze Zahl zwischen 0 und 59, die die Minute darstellt. </param>
+      <param name="second">Eine ganze Zahl zwischen 0 und 59, die die Sekunde darstellt. </param>
+      <param name="millisecond">Eine ganze Zahl zwischen 0 und 999, die die Millisekunde darstellt. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird.- oder - <paramref name="month" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird.- oder - <paramref name="day" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird.- oder - <paramref name="hour" /> ist kleiner als 0 oder größer als 23.- oder - <paramref name="minute" /> ist kleiner als 0 (null) oder größer als 59.- oder - <paramref name="second" /> ist kleiner als 0 (null) oder größer als 59.- oder - <paramref name="millisecond" /> ist kleiner als 0 (null) oder größer als 999. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.ToDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>Gibt beim Überschreiben in einer abgeleiteten Klasse eine <see cref="T:System.DateTime" /> zurück, die auf das angegebene Datum und die angegebene Uhrzeit im aktuellen Zeitraum festgelegt ist.</summary>
+      <returns>Die <see cref="T:System.DateTime" />, die auf das angegebene Datum und die angegebene Uhrzeit im aktuellen Zeitraum festgelegt ist.</returns>
+      <param name="year">Eine ganze Zahl, die das Jahr darstellt. </param>
+      <param name="month">Eine positive ganze Zahl, die den Monat darstellt. </param>
+      <param name="day">Eine positive ganze Zahl, die den Tag darstellt. </param>
+      <param name="hour">Eine ganze Zahl zwischen 0 und 23, die die Stunde darstellt. </param>
+      <param name="minute">Eine ganze Zahl zwischen 0 und 59, die die Minute darstellt. </param>
+      <param name="second">Eine ganze Zahl zwischen 0 und 59, die die Sekunde darstellt. </param>
+      <param name="millisecond">Eine ganze Zahl zwischen 0 und 999, die die Millisekunde darstellt. </param>
+      <param name="era">Eine ganze Zahl, die den Zeitraum darstellt. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird.- oder - <paramref name="month" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird.- oder - <paramref name="day" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird.- oder - <paramref name="hour" /> ist kleiner als 0 oder größer als 23.- oder - <paramref name="minute" /> ist kleiner als 0 (null) oder größer als 59.- oder - <paramref name="second" /> ist kleiner als 0 (null) oder größer als 59.- oder - <paramref name="millisecond" /> ist kleiner als 0 (null) oder größer als 999.- oder - <paramref name="era" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird. </exception>
+    </member>
+    <member name="M:System.Globalization.Calendar.ToFourDigitYear(System.Int32)">
+      <summary>Konvertiert das angegebene Jahr in eine vierstellige Jahresangabe, indem anhand der <see cref="P:System.Globalization.Calendar.TwoDigitYearMax" />-Eigenschaft das entsprechende Jahrhundert bestimmt wird.</summary>
+      <returns>Eine ganze Zahl, die die vierstellige Darstellung von <paramref name="year" /> enthält.</returns>
+      <param name="year">Eine zwei- oder vierstellige ganze Zahl, die das zu konvertierende Jahr darstellt. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="year" /> liegt außerhalb des Bereichs, der vom Kalender unterstützt wird. </exception>
+    </member>
+    <member name="P:System.Globalization.Calendar.TwoDigitYearMax">
+      <summary>Ruft das letzte Jahr eines Bereichs von 100 Jahren ab, das durch eine Jahresangabe mit 2 Stellen dargestellt werden kann, oder legt dieses fest.</summary>
+      <returns>Das letzte Jahr eines Bereichs von 100 Jahren, das durch eine Jahresangabe mit 2 Stellen dargestellt werden kann.</returns>
+      <exception cref="T:System.InvalidOperationException">Das aktuelle <see cref="T:System.Globalization.Calendar" />-Objekt ist schreibgeschützt.</exception>
+    </member>
+    <member name="T:System.Globalization.CalendarWeekRule">
+      <summary>Definiert verschiedene Regeln für die Bestimmung der ersten Woche des Jahres.</summary>
+    </member>
+    <member name="F:System.Globalization.CalendarWeekRule.FirstDay">
+      <summary>Gibt an, dass die erste Woche des Jahres am ersten Tag des Jahres beginnt und vor dem folgenden, als erstem Wochentag bestimmten Tag endet.Der Wert ist 0 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.CalendarWeekRule.FirstFourDayWeek">
+      <summary>Gibt an, dass die erste Woche des Jahres am ersten Tag des Jahres beginnt und vor dem folgenden, als erstem Wochentag bestimmten Tag endet.Der Wert ist 2.</summary>
+    </member>
+    <member name="F:System.Globalization.CalendarWeekRule.FirstFullWeek">
+      <summary>Gibt an, dass die erste Woche des Jahres beim ersten Vorkommen des Tages, der als erster Wochentag festgelegt wurde, an oder nach dem ersten Tag des Jahres beginnt.Der Wert ist 1.</summary>
+    </member>
+    <member name="T:System.Globalization.CharUnicodeInfo">
+      <summary>Ruft Informationen über ein Unicode-Zeichen ab.Diese Klasse kann nicht vererbt werden.</summary>
+    </member>
+    <member name="M:System.Globalization.CharUnicodeInfo.GetNumericValue(System.Char)">
+      <summary>Ruft den dem angegebenen Zeichen zugeordneten numerischen Wert ab.</summary>
+      <returns>Der dem angegebenen Zeichen zugeordnete numerische Wert.- oder - -1, wenn das angegebene Zeichen kein numerisches Zeichen ist.</returns>
+      <param name="ch">Das Unicode-Zeichen, dessen numerischer Wert abgerufen werden soll. </param>
+    </member>
+    <member name="M:System.Globalization.CharUnicodeInfo.GetNumericValue(System.String,System.Int32)">
+      <summary>Ruft den dem Zeichen am angegebenen Index der angegebenen Zeichenfolge zugeordneten numerischen Wert ab.</summary>
+      <returns>Der dem Zeichen am angegebenen Index der angegebenen Zeichenfolge zugeordnete numerische Wert.- oder - -1, wenn das Zeichen am angegebenen Index der angegebenen Zeichenfolge kein numerisches Zeichen ist.</returns>
+      <param name="s">Der <see cref="T:System.String" /> mit dem Unicode-Zeichen, dessen numerischer Wert abgerufen werden soll. </param>
+      <param name="index">Der Index des Unicode-Zeichens, dessen numerischer Wert abgerufen werden soll. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> ist null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> liegt außerhalb des Bereichs der gültigen Indizes für <paramref name="s" />. </exception>
+    </member>
+    <member name="M:System.Globalization.CharUnicodeInfo.GetUnicodeCategory(System.Char)">
+      <summary>Ruft die Unicode-Kategorie des angegebenen Zeichens ab.</summary>
+      <returns>Ein <see cref="T:System.Globalization.UnicodeCategory" />-Wert, der die Kategorie des angegebenen Zeichens angibt.</returns>
+      <param name="ch">Das Unicode-Zeichen, dessen Unicode-Kategorie abgerufen werden soll. </param>
+    </member>
+    <member name="M:System.Globalization.CharUnicodeInfo.GetUnicodeCategory(System.String,System.Int32)">
+      <summary>Ruft die Unicode-Kategorie des Zeichens am angegebenen Index der angegebenen Zeichenfolge ab.</summary>
+      <returns>Ein <see cref="T:System.Globalization.UnicodeCategory" />-Wert, der die Kategorie des Zeichens am angegebenen Index der angegebenen Zeichenfolge angibt.</returns>
+      <param name="s">Der <see cref="T:System.String" /> mit dem Unicode-Zeichen, dessen Unicode-Kategorie abgerufen werden soll. </param>
+      <param name="index">Der Index des Unicode-Zeichens, dessen Unicode-Kategorie abgerufen werden soll. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> ist null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> liegt außerhalb des Bereichs der gültigen Indizes für <paramref name="s" />. </exception>
+    </member>
+    <member name="T:System.Globalization.CompareInfo">
+      <summary>Implementiert eine Reihe von Methoden für kulturabhängige Zeichenfolgenvergleiche.</summary>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.Int32,System.Int32,System.String,System.Int32,System.Int32)">
+      <summary>Vergleicht einen Abschnitt einer Zeichenfolge mit einem Abschnitt einer anderen Zeichenfolge.</summary>
+      <returns>Eine 32-Bit-Ganzzahl mit Vorzeichen, die die lexikalische Beziehung der beiden verglichenen Elemente angibt.Wert Bedingung Null Die beiden Zeichenfolgen sind gleich. kleiner als 0 (Null) Der angegebene Abschnitt von <paramref name="string1" /> ist kleiner als der angegebene Abschnitt von <paramref name="string2" />. größer als 0 (Null) Der angegebene Abschnitt von <paramref name="string1" /> ist größer als der angegebene Abschnitt von <paramref name="string2" />. </returns>
+      <param name="string1">Die erste zu vergleichende Zeichenfolge. </param>
+      <param name="offset1">Der nullbasierte Index des Zeichens in <paramref name="string1" />, an dem der Vergleich beginnen soll. </param>
+      <param name="length1">Die Anzahl der zu vergleichenden aufeinander folgenden Zeichen in <paramref name="string1" />. </param>
+      <param name="string2">Die zweite zu vergleichende Zeichenfolge. </param>
+      <param name="offset2">Der nullbasierte Index des Zeichens in <paramref name="string2" />, an dem der Vergleich beginnen soll. </param>
+      <param name="length2">Die Anzahl der zu vergleichenden aufeinander folgenden Zeichen in <paramref name="string2" />. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset1" />, <paramref name="length1" />, <paramref name="offset2" /> oder <paramref name="length2" /> ist kleiner als 0 (Null).- oder -  <paramref name="offset1" /> ist größer oder gleich der Anzahl von Zeichen in <paramref name="string1" />.- oder -  <paramref name="offset2" /> ist größer oder gleich der Anzahl von Zeichen in <paramref name="string2" />.- oder -  <paramref name="length1" /> ist größer als die Anzahl der Zeichen ab <paramref name="offset1" /> bis zum Ende von <paramref name="string1" />.- oder -  <paramref name="length2" /> ist größer als die Anzahl der Zeichen ab <paramref name="offset2" /> bis zum Ende von <paramref name="string2" />. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.Int32,System.Int32,System.String,System.Int32,System.Int32,System.Globalization.CompareOptions)">
+      <summary>Vergleicht mithilfe des angegebenen <see cref="T:System.Globalization.CompareOptions" />-Werts einen Abschnitt einer Zeichenfolge mit einem Abschnitt einer anderen Zeichenfolge.</summary>
+      <returns>Eine 32-Bit-Ganzzahl mit Vorzeichen, die die lexikalische Beziehung der beiden verglichenen Elemente angibt.Wert Bedingung Null Die beiden Zeichenfolgen sind gleich. kleiner als 0 (Null) Der angegebene Abschnitt von <paramref name="string1" /> ist kleiner als der angegebene Abschnitt von <paramref name="string2" />. größer als 0 (Null) Der angegebene Abschnitt von <paramref name="string1" /> ist größer als der angegebene Abschnitt von <paramref name="string2" />. </returns>
+      <param name="string1">Die erste zu vergleichende Zeichenfolge. </param>
+      <param name="offset1">Der nullbasierte Index des Zeichens in <paramref name="string1" />, an dem der Vergleich beginnen soll. </param>
+      <param name="length1">Die Anzahl der zu vergleichenden aufeinander folgenden Zeichen in <paramref name="string1" />. </param>
+      <param name="string2">Die zweite zu vergleichende Zeichenfolge. </param>
+      <param name="offset2">Der nullbasierte Index des Zeichens in <paramref name="string2" />, an dem der Vergleich beginnen soll. </param>
+      <param name="length2">Die Anzahl der zu vergleichenden aufeinander folgenden Zeichen in <paramref name="string2" />. </param>
+      <param name="options">Ein Wert, der definiert, wie <paramref name="string1" /> und <paramref name="string2" /> verglichen werden sollen.<paramref name="options" /> ist entweder der allein verwendete Enumerationswert <see cref="F:System.Globalization.CompareOptions.Ordinal" /> oder a bitweise Kombination eines oder mehrerer der folgenden Werte: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> , <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> und <see cref="F:System.Globalization.CompareOptions.StringSort" />.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset1" />, <paramref name="length1" />, <paramref name="offset2" /> oder <paramref name="length2" /> ist kleiner als 0 (Null).- oder -  <paramref name="offset1" /> ist größer oder gleich der Anzahl von Zeichen in <paramref name="string1" />.- oder -  <paramref name="offset2" /> ist größer oder gleich der Anzahl von Zeichen in <paramref name="string2" />.- oder -  <paramref name="length1" /> ist größer als die Anzahl der Zeichen ab <paramref name="offset1" /> bis zum Ende von <paramref name="string1" />.- oder -  <paramref name="length2" /> ist größer als die Anzahl der Zeichen ab <paramref name="offset2" /> bis zum Ende von <paramref name="string2" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> enthält einen ungültigen <see cref="T:System.Globalization.CompareOptions" />-Wert. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.Int32,System.String,System.Int32)">
+      <summary>Vergleicht den Endabschnitt einer Zeichenfolge mit dem Endabschnitt einer anderen Zeichenfolge.</summary>
+      <returns>Eine 32-Bit-Ganzzahl mit Vorzeichen, die die lexikalische Beziehung der beiden verglichenen Elemente angibt.Wert Bedingung Null Die beiden Zeichenfolgen sind gleich. kleiner als 0 (Null) Der angegebene Abschnitt von <paramref name="string1" /> ist kleiner als der angegebene Abschnitt von <paramref name="string2" />. größer als 0 (Null) Der angegebene Abschnitt von <paramref name="string1" /> ist größer als der angegebene Abschnitt von <paramref name="string2" />. </returns>
+      <param name="string1">Die erste zu vergleichende Zeichenfolge. </param>
+      <param name="offset1">Der nullbasierte Index des Zeichens in <paramref name="string1" />, an dem der Vergleich beginnen soll. </param>
+      <param name="string2">Die zweite zu vergleichende Zeichenfolge. </param>
+      <param name="offset2">Der nullbasierte Index des Zeichens in <paramref name="string2" />, an dem der Vergleich beginnen soll. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset1" /> oder <paramref name="offset2" /> ist kleiner als 0.- oder -  <paramref name="offset1" /> ist größer oder gleich der Anzahl von Zeichen in <paramref name="string1" />.- oder -  <paramref name="offset2" /> ist größer oder gleich der Anzahl von Zeichen in <paramref name="string2" />. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.Int32,System.String,System.Int32,System.Globalization.CompareOptions)">
+      <summary>Vergleicht mithilfe des angegebenen <see cref="T:System.Globalization.CompareOptions" />-Werts den Endabschnitt einer Zeichenfolge mit dem Endabschnitt einer anderen Zeichenfolge.</summary>
+      <returns>Eine 32-Bit-Ganzzahl mit Vorzeichen, die die lexikalische Beziehung der beiden verglichenen Elemente angibt.Wert Bedingung Null Die beiden Zeichenfolgen sind gleich. kleiner als 0 (Null) Der angegebene Abschnitt von <paramref name="string1" /> ist kleiner als der angegebene Abschnitt von <paramref name="string2" />. größer als 0 (Null) Der angegebene Abschnitt von <paramref name="string1" /> ist größer als der angegebene Abschnitt von <paramref name="string2" />. </returns>
+      <param name="string1">Die erste zu vergleichende Zeichenfolge. </param>
+      <param name="offset1">Der nullbasierte Index des Zeichens in <paramref name="string1" />, an dem der Vergleich beginnen soll. </param>
+      <param name="string2">Die zweite zu vergleichende Zeichenfolge. </param>
+      <param name="offset2">Der nullbasierte Index des Zeichens in <paramref name="string2" />, an dem der Vergleich beginnen soll. </param>
+      <param name="options">Ein Wert, der definiert, wie <paramref name="string1" /> und <paramref name="string2" /> verglichen werden sollen.<paramref name="options" /> ist entweder der allein verwendete Enumerationswert <see cref="F:System.Globalization.CompareOptions.Ordinal" /> oder a bitweise Kombination eines oder mehrerer der folgenden Werte: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> , <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> und <see cref="F:System.Globalization.CompareOptions.StringSort" />.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset1" /> oder <paramref name="offset2" /> ist kleiner als 0.- oder -  <paramref name="offset1" /> ist größer oder gleich der Anzahl von Zeichen in <paramref name="string1" />.- oder -  <paramref name="offset2" /> ist größer oder gleich der Anzahl von Zeichen in <paramref name="string2" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> enthält einen ungültigen <see cref="T:System.Globalization.CompareOptions" />-Wert. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.String)">
+      <summary>Vergleicht zwei Zeichenfolgen. </summary>
+      <returns>Eine 32-Bit-Ganzzahl mit Vorzeichen, die die lexikalische Beziehung der beiden verglichenen Elemente angibt.Wert Bedingung Null Die beiden Zeichenfolgen sind gleich. kleiner als 0 (Null) <paramref name="string1" /> ist kleiner als <paramref name="string2" />. größer als 0 (Null) <paramref name="string1" /> ist größer als <paramref name="string2" />. </returns>
+      <param name="string1">Die erste zu vergleichende Zeichenfolge. </param>
+      <param name="string2">Die zweite zu vergleichende Zeichenfolge. </param>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Compare(System.String,System.String,System.Globalization.CompareOptions)">
+      <summary>Vergleicht mithilfe des angegebenen <see cref="T:System.Globalization.CompareOptions" />-Werts zwei Zeichenfolgen.</summary>
+      <returns>Eine 32-Bit-Ganzzahl mit Vorzeichen, die die lexikalische Beziehung der beiden verglichenen Elemente angibt.Wert Bedingung Null Die beiden Zeichenfolgen sind gleich. kleiner als 0 (Null) <paramref name="string1" /> ist kleiner als <paramref name="string2" />. größer als 0 (Null) <paramref name="string1" /> ist größer als <paramref name="string2" />. </returns>
+      <param name="string1">Die erste zu vergleichende Zeichenfolge. </param>
+      <param name="string2">Die zweite zu vergleichende Zeichenfolge. </param>
+      <param name="options">Ein Wert, der definiert, wie <paramref name="string1" /> und <paramref name="string2" /> verglichen werden sollen.<paramref name="options" /> ist entweder der allein verwendete Enumerationswert <see cref="F:System.Globalization.CompareOptions.Ordinal" /> oder a bitweise Kombination eines oder mehrerer der folgenden Werte: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> , <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" /> und <see cref="F:System.Globalization.CompareOptions.StringSort" />.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> enthält einen ungültigen <see cref="T:System.Globalization.CompareOptions" />-Wert. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.Equals(System.Object)">
+      <summary>Bestimmt, ob das angegebene Objekt und das aktuelle <see cref="T:System.Globalization.CompareInfo" />-Objekt gleich sind.</summary>
+      <returns>true, wenn das angegebene Objekt und die aktuelle <see cref="T:System.Globalization.CompareInfo" /> gleich sind, andernfalls false.</returns>
+      <param name="value">Das Objekt, das mit der aktuellen <see cref="T:System.Globalization.CompareInfo" /> verglichen werden soll. </param>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.GetCompareInfo(System.String)">
+      <summary>Initialisiert ein neues <see cref="T:System.Globalization.CompareInfo" />-Objekt, das der Kultur mit dem angegebenen Namen zugeordnet ist.</summary>
+      <returns>Ein neues <see cref="T:System.Globalization.CompareInfo" />-Objekt, das der Kultur mit dem angegebenen Bezeichner zugeordnet ist und Methoden zum Zeichenfolgenvergleich aus der aktuellen <see cref="T:System.Reflection.Assembly" /> verwendet.</returns>
+      <param name="name">Eine Zeichenfolge, die den Kulturnamen darstellt. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> ist null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> ist ein ungültiger Kulturname. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.GetHashCode">
+      <summary>Fungiert als Hashfunktion für die aktuelle <see cref="T:System.Globalization.CompareInfo" /> für die Verwendung in Hashalgorithmen und -datenstrukturen, z. B. in einer Hashtabelle.</summary>
+      <returns>Ein Hashcode für die aktuelle <see cref="T:System.Globalization.CompareInfo" />.</returns>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.GetHashCode(System.String,System.Globalization.CompareOptions)">
+      <summary>Ruft den Hash für eine Zeichenfolge basierend auf den angegebenen Vergleichsoptionen ab. </summary>
+      <returns>Ein 32-Bit-Hashcode als ganze Zahl mit Vorzeichen. </returns>
+      <param name="source">Die Zeichenfolge, deren Hash zurückgegeben werden soll. </param>
+      <param name="options">Ein Wert, der definiert, wie Zeichenfolgen verglichen werden sollen. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ist null. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.Char)">
+      <summary>Sucht nach dem angegebenen Zeichen und gibt den nullbasierten Index des ersten Vorkommens in der gesamten Quellzeichenfolge zurück.</summary>
+      <returns>Der nullbasierte Index des ersten Vorkommens von <paramref name="value" /> in <paramref name="source" />, sofern gefunden, andernfalls -1.Gibt 0 (null) zurück, wenn <paramref name="value" /> ein ignorierbares Zeichen ist.</returns>
+      <param name="source">Die zu durchsuchende Zeichenfolge. </param>
+      <param name="value">Das Zeichen, das in der <paramref name="source" /> gesucht werden soll. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ist null. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.Char,System.Globalization.CompareOptions)">
+      <summary>Sucht mithilfe des angegebenen <see cref="T:System.Globalization.CompareOptions" />-Werts nach dem angegebenen Zeichen und gibt den nullbasierten Index des ersten Vorkommens in der gesamten Quellzeichenfolge zurück.</summary>
+      <returns>Der nullbasierte Index des mithilfe der angegebenen Vergleichsoptionen gesuchten ersten Vorkommens von <paramref name="value" /> in <paramref name="source" />, sofern gefunden, andernfalls -1.Gibt 0 (null) zurück, wenn <paramref name="value" /> ein ignorierbares Zeichen ist.</returns>
+      <param name="source">Die zu durchsuchende Zeichenfolge. </param>
+      <param name="value">Das Zeichen, das in der <paramref name="source" /> gesucht werden soll. </param>
+      <param name="options">Ein Wert, der definiert, wie die Zeichenfolgen verglichen werden sollen.<paramref name="options" /> ist entweder der allein verwendete Enumerationswert <see cref="F:System.Globalization.CompareOptions.Ordinal" /> oder a bitweise Kombination eines oder mehrerer der folgenden Werte: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> und <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ist null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> enthält einen ungültigen <see cref="T:System.Globalization.CompareOptions" />-Wert. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.Char,System.Int32,System.Globalization.CompareOptions)">
+      <summary>	Sucht mithilfe des angegebenen <see cref="T:System.Globalization.CompareOptions" />-Werts nach dem angegebenen Zeichen und gibt den nullbasierten Index des ersten Vorkommens in dem Abschnitt der Quellzeichenfolge zurück, der vom angegebenen Index bis zum Ende der Zeichenfolge reicht.</summary>
+      <returns>Der nullbasierte Index des mithilfe der angegebenen Vergleichsoptionen gesuchten ersten Vorkommens von <paramref name="value" /> in dem Abschnitt von <paramref name="source" />, der sich von <paramref name="startIndex" /> bis zum Ende von <paramref name="source" /> erstreckt, sofern gefunden, andernfalls -1.Gibt <paramref name="startIndex" /> zurück, wenn <paramref name="value" /> ein ignorierbares Zeichen ist.</returns>
+      <param name="source">Die zu durchsuchende Zeichenfolge. </param>
+      <param name="value">Das Zeichen, das in der <paramref name="source" /> gesucht werden soll. </param>
+      <param name="startIndex">Der nullbasierte Startindex für die Suche. </param>
+      <param name="options">Ein Wert, der definiert, wie <paramref name="source" /> und <paramref name="value" /> verglichen werden sollen.<paramref name="options" /> ist entweder der allein verwendete Enumerationswert <see cref="F:System.Globalization.CompareOptions.Ordinal" /> oder a bitweise Kombination eines oder mehrerer der folgenden Werte: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> und <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ist null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> liegt außerhalb des Bereichs der gültigen Indizes für <paramref name="source" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> enthält einen ungültigen <see cref="T:System.Globalization.CompareOptions" />-Wert. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.Char,System.Int32,System.Int32)">
+      <summary>Sucht nach dem angegebenen Zeichen und gibt den nullbasierten Index des ersten Vorkommens in dem Abschnitt der Quellzeichenfolge zurück, der beim angegebenen Index beginnt und die angegebene Anzahl von Elementen enthält.</summary>
+      <returns>Der nullbasierte Index des ersten Vorkommens von <paramref name="value" /> in dem Abschnitt von <paramref name="source" />, der bei <paramref name="startIndex" /> beginnt und die durch <paramref name="count" /> angegebene Anzahl von Elementen enthält, sofern gefunden, andernfalls -1.Gibt <paramref name="startIndex" /> zurück, wenn <paramref name="value" /> ein ignorierbares Zeichen ist.</returns>
+      <param name="source">Die zu durchsuchende Zeichenfolge. </param>
+      <param name="value">Das Zeichen, das in der <paramref name="source" /> gesucht werden soll. </param>
+      <param name="startIndex">Der nullbasierte Startindex für die Suche. </param>
+      <param name="count">Die Anzahl der Elemente im zu durchsuchenden Abschnitt. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ist null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> liegt außerhalb des Bereichs der gültigen Indizes für <paramref name="source" />.- oder -  <paramref name="count" /> ist kleiner als 0.- oder -  <paramref name="startIndex" /> und <paramref name="count" /> geben keinen gültigen Abschnitt in <paramref name="source" /> an. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.Char,System.Int32,System.Int32,System.Globalization.CompareOptions)">
+      <summary>Sucht mithilfe des angegebenen <see cref="T:System.Globalization.CompareOptions" />-Werts nach dem angegebenen Zeichen und gibt den nullbasierten Index des ersten Vorkommens in dem Abschnitt der Quellzeichenfolge zurück, der beim angegebenen Index beginnt und die angegebene Anzahl von Elementen enthält.</summary>
+      <returns>Der nullbasierte Index des mithilfe der angegebenen Vergleichsoptionen gesuchten ersten Vorkommens von <paramref name="value" /> in dem Abschnitt von <paramref name="source" />, der bei <paramref name="startIndex" /> beginnt und die durch <paramref name="count" /> angegebene Anzahl von Elementen enthält, sofern gefunden, andernfalls -1.Gibt <paramref name="startIndex" /> zurück, wenn <paramref name="value" /> ein ignorierbares Zeichen ist.</returns>
+      <param name="source">Die zu durchsuchende Zeichenfolge. </param>
+      <param name="value">Das Zeichen, das in der <paramref name="source" /> gesucht werden soll. </param>
+      <param name="startIndex">Der nullbasierte Startindex für die Suche. </param>
+      <param name="count">Die Anzahl der Elemente im zu durchsuchenden Abschnitt. </param>
+      <param name="options">Ein Wert, der definiert, wie <paramref name="source" /> und <paramref name="value" /> verglichen werden sollen.<paramref name="options" /> ist entweder der allein verwendete Enumerationswert <see cref="F:System.Globalization.CompareOptions.Ordinal" /> oder a bitweise Kombination eines oder mehrerer der folgenden Werte: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> und <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ist null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> liegt außerhalb des Bereichs der gültigen Indizes für <paramref name="source" />.- oder -  <paramref name="count" /> ist kleiner als 0.- oder -  <paramref name="startIndex" /> und <paramref name="count" /> geben keinen gültigen Abschnitt in <paramref name="source" /> an. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> enthält einen ungültigen <see cref="T:System.Globalization.CompareOptions" />-Wert. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.String)">
+      <summary>Sucht nach der angegebenen Teilzeichenfolge und gibt den nullbasierten Index des ersten Vorkommens in der gesamten Quellzeichenfolge zurück.</summary>
+      <returns>Der nullbasierte Index des ersten Vorkommens von <paramref name="value" /> in <paramref name="source" />, sofern gefunden, andernfalls -1.Gibt 0 (null) zurück, wenn <paramref name="value" /> ein ignorierbares Zeichen ist.</returns>
+      <param name="source">Die zu durchsuchende Zeichenfolge. </param>
+      <param name="value">Die Zeichenfolge, die in der <paramref name="source" /> gesucht werden soll. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ist null.- oder -  <paramref name="value" /> ist null. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.String,System.Globalization.CompareOptions)">
+      <summary>Sucht mithilfe des angegebenen <see cref="T:System.Globalization.CompareOptions" />-Werts nach der angegebenen Teilzeichenfolge und gibt den nullbasierten Index des ersten Vorkommens in der gesamten Quellzeichenfolge zurück.</summary>
+      <returns>Der nullbasierte Index des mithilfe der angegebenen Vergleichsoptionen gesuchten ersten Vorkommens von <paramref name="value" /> in <paramref name="source" />, sofern gefunden, andernfalls -1.Gibt 0 (null) zurück, wenn <paramref name="value" /> ein ignorierbares Zeichen ist.</returns>
+      <param name="source">Die zu durchsuchende Zeichenfolge. </param>
+      <param name="value">Die Zeichenfolge, die in der <paramref name="source" /> gesucht werden soll. </param>
+      <param name="options">Ein Wert, der definiert, wie <paramref name="source" /> und <paramref name="value" /> verglichen werden sollen.<paramref name="options" /> ist entweder der allein verwendete Enumerationswert <see cref="F:System.Globalization.CompareOptions.Ordinal" /> oder a bitweise Kombination eines oder mehrerer der folgenden Werte: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> und <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ist null.- oder -  <paramref name="value" /> ist null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> enthält einen ungültigen <see cref="T:System.Globalization.CompareOptions" />-Wert. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.String,System.Int32,System.Globalization.CompareOptions)">
+      <summary>Sucht mithilfe des angegebenen <see cref="T:System.Globalization.CompareOptions" />-Werts nach der angegebenen Teilzeichenfolge und gibt den nullbasierten Index des ersten Vorkommens in dem Abschnitt der Quellzeichenfolge zurück, der vom angegebenen Index bis zum Ende der Zeichenfolge reicht.</summary>
+      <returns>Der nullbasierte Index des mithilfe der angegebenen Vergleichsoptionen gesuchten ersten Vorkommens von <paramref name="value" /> in dem Abschnitt von <paramref name="source" />, der sich von <paramref name="startIndex" /> bis zum Ende von <paramref name="source" /> erstreckt, sofern gefunden, andernfalls -1.Gibt <paramref name="startIndex" /> zurück, wenn <paramref name="value" /> ein ignorierbares Zeichen ist.</returns>
+      <param name="source">Die zu durchsuchende Zeichenfolge. </param>
+      <param name="value">Die Zeichenfolge, die in der <paramref name="source" /> gesucht werden soll. </param>
+      <param name="startIndex">Der nullbasierte Startindex für die Suche. </param>
+      <param name="options">Ein Wert, der definiert, wie <paramref name="source" /> und <paramref name="value" /> verglichen werden sollen.<paramref name="options" /> ist entweder der allein verwendete Enumerationswert <see cref="F:System.Globalization.CompareOptions.Ordinal" /> oder a bitweise Kombination eines oder mehrerer der folgenden Werte: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> und <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ist null.- oder -  <paramref name="value" /> ist null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> liegt außerhalb des Bereichs der gültigen Indizes für <paramref name="source" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> enthält einen ungültigen <see cref="T:System.Globalization.CompareOptions" />-Wert. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.String,System.Int32,System.Int32)">
+      <summary>Sucht nach der angegebenen Teilzeichenfolge und gibt den nullbasierten Index des ersten Vorkommens in dem Abschnitt der Quellzeichenfolge zurück, der beim angegebenen Index beginnt und die angegebene Anzahl von Elementen enthält.</summary>
+      <returns>Der nullbasierte Index des ersten Vorkommens von <paramref name="value" /> in dem Abschnitt von <paramref name="source" />, der bei <paramref name="startIndex" /> beginnt und die durch <paramref name="count" /> angegebene Anzahl von Elementen enthält, sofern gefunden, andernfalls -1.Gibt <paramref name="startIndex" /> zurück, wenn <paramref name="value" /> ein ignorierbares Zeichen ist.</returns>
+      <param name="source">Die zu durchsuchende Zeichenfolge. </param>
+      <param name="value">Die Zeichenfolge, die in der <paramref name="source" /> gesucht werden soll. </param>
+      <param name="startIndex">Der nullbasierte Startindex für die Suche. </param>
+      <param name="count">Die Anzahl der Elemente im zu durchsuchenden Abschnitt. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ist null.- oder -  <paramref name="value" /> ist null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> liegt außerhalb des Bereichs der gültigen Indizes für <paramref name="source" />.- oder -  <paramref name="count" /> ist kleiner als 0.- oder -  <paramref name="startIndex" /> und <paramref name="count" /> geben keinen gültigen Abschnitt in <paramref name="source" /> an. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IndexOf(System.String,System.String,System.Int32,System.Int32,System.Globalization.CompareOptions)">
+      <summary>Sucht mithilfe des angegebenen <see cref="T:System.Globalization.CompareOptions" />-Werts nach der angegebenen Teilzeichenfolge und gibt den nullbasierten Index des ersten Vorkommens in dem Abschnitt der Quellzeichenfolge zurück, der beim angegebenen Index beginnt und die angegebene Anzahl von Elementen enthält.</summary>
+      <returns>Der nullbasierte Index des mithilfe der angegebenen Vergleichsoptionen gesuchten ersten Vorkommens von <paramref name="value" /> in dem Abschnitt von <paramref name="source" />, der bei <paramref name="startIndex" /> beginnt und die durch <paramref name="count" /> angegebene Anzahl von Elementen enthält, sofern gefunden, andernfalls -1.Gibt <paramref name="startIndex" /> zurück, wenn <paramref name="value" /> ein ignorierbares Zeichen ist.</returns>
+      <param name="source">Die zu durchsuchende Zeichenfolge. </param>
+      <param name="value">Die Zeichenfolge, die in der <paramref name="source" /> gesucht werden soll. </param>
+      <param name="startIndex">Der nullbasierte Startindex für die Suche. </param>
+      <param name="count">Die Anzahl der Elemente im zu durchsuchenden Abschnitt. </param>
+      <param name="options">Ein Wert, der definiert, wie <paramref name="source" /> und <paramref name="value" /> verglichen werden sollen.<paramref name="options" /> ist entweder der allein verwendete Enumerationswert <see cref="F:System.Globalization.CompareOptions.Ordinal" /> oder a bitweise Kombination eines oder mehrerer der folgenden Werte: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> und <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ist null.- oder -  <paramref name="value" /> ist null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> liegt außerhalb des Bereichs der gültigen Indizes für <paramref name="source" />.- oder -  <paramref name="count" /> ist kleiner als 0.- oder -  <paramref name="startIndex" /> und <paramref name="count" /> geben keinen gültigen Abschnitt in <paramref name="source" /> an. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> enthält einen ungültigen <see cref="T:System.Globalization.CompareOptions" />-Wert. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IsPrefix(System.String,System.String)">
+      <summary>Bestimmt, ob die angegebene Quellzeichenfolge mit dem angegebenen Präfix beginnt.</summary>
+      <returns>true, wenn die Länge von <paramref name="prefix" /> kleiner oder gleich der Länge von <paramref name="source" /> ist und <paramref name="source" /> mit <paramref name="prefix" /> beginnt, andernfalls false.</returns>
+      <param name="source">Die zu durchsuchende Zeichenfolge. </param>
+      <param name="prefix">Die Zeichenfolge, die mit dem Anfang von <paramref name="source" /> verglichen werden soll. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ist null.- oder -  <paramref name="prefix" /> ist null. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IsPrefix(System.String,System.String,System.Globalization.CompareOptions)">
+      <summary>Bestimmt mithilfe des angegebenen <see cref="T:System.Globalization.CompareOptions" />-Werts, ob die angegebene Quellzeichenfolge mit dem angegebenen Präfix beginnt.</summary>
+      <returns>true, wenn die Länge von <paramref name="prefix" /> kleiner oder gleich der Länge von <paramref name="source" /> ist und <paramref name="source" /> mit <paramref name="prefix" /> beginnt, andernfalls false.</returns>
+      <param name="source">Die zu durchsuchende Zeichenfolge. </param>
+      <param name="prefix">Die Zeichenfolge, die mit dem Anfang von <paramref name="source" /> verglichen werden soll. </param>
+      <param name="options">Ein Wert, der definiert, wie <paramref name="source" /> und <paramref name="prefix" /> verglichen werden sollen.<paramref name="options" /> ist entweder der allein verwendete Enumerationswert <see cref="F:System.Globalization.CompareOptions.Ordinal" /> oder a bitweise Kombination eines oder mehrerer der folgenden Werte: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> und <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ist null.- oder -  <paramref name="prefix" /> ist null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> enthält einen ungültigen <see cref="T:System.Globalization.CompareOptions" />-Wert. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IsSuffix(System.String,System.String)">
+      <summary>Bestimmt, ob die angegebene Quellzeichenfolge mit dem angegebenen Suffix endet.</summary>
+      <returns>true, wenn die Länge von <paramref name="suffix" /> kleiner oder gleich der Länge von <paramref name="source" /> ist und <paramref name="source" /> mit <paramref name="suffix" /> endet, andernfalls false.</returns>
+      <param name="source">Die zu durchsuchende Zeichenfolge. </param>
+      <param name="suffix">Die Zeichenfolge, die mit dem Ende von <paramref name="source" /> verglichen werden soll. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ist null.- oder -  <paramref name="suffix" /> ist null. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.IsSuffix(System.String,System.String,System.Globalization.CompareOptions)">
+      <summary>Bestimmt mithilfe des angegebenen<see cref="T:System.Globalization.CompareOptions" />-Werts, ob die angegebene Quellzeichenfolge mit dem angegebenen Suffix endet.</summary>
+      <returns>true, wenn die Länge von <paramref name="suffix" /> kleiner oder gleich der Länge von <paramref name="source" /> ist und <paramref name="source" /> mit <paramref name="suffix" /> endet, andernfalls false.</returns>
+      <param name="source">Die zu durchsuchende Zeichenfolge. </param>
+      <param name="suffix">Die Zeichenfolge, die mit dem Ende von <paramref name="source" /> verglichen werden soll. </param>
+      <param name="options">Ein Wert, der definiert, wie <paramref name="source" /> und <paramref name="suffix" /> verglichen werden sollen.<paramref name="options" /> ist entweder der allein verwendete Enumerationswert <see cref="F:System.Globalization.CompareOptions.Ordinal" /> oder die bitweise Kombination eines oder mehrerer der folgenden Werte: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> und <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ist null.- oder -  <paramref name="suffix" /> ist null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> enthält einen ungültigen <see cref="T:System.Globalization.CompareOptions" />-Wert. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.Char)">
+      <summary>Sucht nach dem angegebenen Zeichen und gibt den nullbasierten Index des letzten Vorkommens in der gesamten Quellzeichenfolge zurück.</summary>
+      <returns>Der nullbasierte Index des letzten Vorkommens von <paramref name="value" /> in <paramref name="source" />, sofern gefunden, andernfalls -1.</returns>
+      <param name="source">Die zu durchsuchende Zeichenfolge. </param>
+      <param name="value">Das Zeichen, das in der <paramref name="source" /> gesucht werden soll. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ist null. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.Char,System.Globalization.CompareOptions)">
+      <summary>Sucht mithilfe des angegebenen <see cref="T:System.Globalization.CompareOptions" />-Werts nach dem angegebenen Zeichen und gibt den nullbasierten Index des letzten Vorkommens in der gesamten Quellzeichenfolge zurück.</summary>
+      <returns>Der nullbasierte Index des mithilfe der angegebenen Vergleichsoptionen gesuchten letzten Vorkommens von <paramref name="value" /> in <paramref name="source" />, sofern gefunden, andernfalls -1.</returns>
+      <param name="source">Die zu durchsuchende Zeichenfolge. </param>
+      <param name="value">Das Zeichen, das in der <paramref name="source" /> gesucht werden soll. </param>
+      <param name="options">Ein Wert, der definiert, wie <paramref name="source" /> und <paramref name="value" /> verglichen werden sollen.<paramref name="options" /> ist entweder der allein verwendete Enumerationswert <see cref="F:System.Globalization.CompareOptions.Ordinal" /> oder a bitweise Kombination eines oder mehrerer der folgenden Werte: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> und <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ist null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> enthält einen ungültigen <see cref="T:System.Globalization.CompareOptions" />-Wert. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.Char,System.Int32,System.Globalization.CompareOptions)">
+      <summary>Sucht mithilfe des angegebenen <see cref="T:System.Globalization.CompareOptions" />-Werts nach dem angegebenen Zeichen und gibt den nullbasierten Index des letzten Vorkommens in dem Abschnitt der Quellzeichenfolge zurück, der vom Anfang der Zeichenfolge bis zum angegebenen Index reicht.</summary>
+      <returns>Der nullbasierte Index des mithilfe der angegebenen Vergleichsoptionen gesuchten letzten Vorkommens von <paramref name="value" /> in dem Abschnitt von <paramref name="source" />, der sich vom Anfang von <paramref name="source" /> bis <paramref name="startIndex" /> erstreckt, sofern gefunden, andernfalls -1.Gibt <paramref name="startIndex" /> zurück, wenn <paramref name="value" /> ein ignorierbares Zeichen ist.</returns>
+      <param name="source">Die zu durchsuchende Zeichenfolge. </param>
+      <param name="value">Das Zeichen, das in der <paramref name="source" /> gesucht werden soll. </param>
+      <param name="startIndex">Der nullbasierte Startindex für die Rückwärtssuche. </param>
+      <param name="options">Ein Wert, der definiert, wie <paramref name="source" /> und <paramref name="value" /> verglichen werden sollen.<paramref name="options" /> ist entweder der allein verwendete Enumerationswert <see cref="F:System.Globalization.CompareOptions.Ordinal" /> oder a bitweise Kombination eines oder mehrerer der folgenden Werte: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> und <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ist null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> liegt außerhalb des Bereichs der gültigen Indizes für <paramref name="source" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> enthält einen ungültigen <see cref="T:System.Globalization.CompareOptions" />-Wert. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.Char,System.Int32,System.Int32)">
+      <summary>Sucht nach dem angegebenen Zeichen und gibt den nullbasierten Index des letzten Vorkommens in dem Abschnitt der Quellzeichenfolge zurück, der die angegebene Anzahl von Elementen enthält und am angegebenen Index endet.</summary>
+      <returns>Der nullbasierte Index des letzten Vorkommens von <paramref name="value" /> in dem Abschnitt von <paramref name="source" />, der die durch <paramref name="count" /> angegebene Anzahl von Elementen enthält und bei <paramref name="startIndex" /> endet, sofern gefunden, andernfalls -1.Gibt <paramref name="startIndex" /> zurück, wenn <paramref name="value" /> ein ignorierbares Zeichen ist.</returns>
+      <param name="source">Die zu durchsuchende Zeichenfolge. </param>
+      <param name="value">Das Zeichen, das in der <paramref name="source" /> gesucht werden soll. </param>
+      <param name="startIndex">Der nullbasierte Startindex für die Rückwärtssuche. </param>
+      <param name="count">Die Anzahl der Elemente im zu durchsuchenden Abschnitt. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ist null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> liegt außerhalb des Bereichs der gültigen Indizes für <paramref name="source" />.- oder -  <paramref name="count" /> ist kleiner als 0.- oder -  <paramref name="startIndex" /> und <paramref name="count" /> geben keinen gültigen Abschnitt in <paramref name="source" /> an. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.Char,System.Int32,System.Int32,System.Globalization.CompareOptions)">
+      <summary>Sucht mithilfe des angegebenen <see cref="T:System.Globalization.CompareOptions" />-Werts nach dem angegebenen Zeichen und gibt den nullbasierten Index des letzten Vorkommens in dem Abschnitt der Quellzeichenfolge zurück, der die angegebene Anzahl von Elementen enthält und am angegebenen Index endet.</summary>
+      <returns>Der nullbasierte Index des mithilfe der angegebenen Vergleichsoptionen gesuchten letzten Vorkommens von <paramref name="value" /> in dem Abschnitt von <paramref name="source" />, der die durch <paramref name="count" /> angegebene Anzahl von Elementen enthält und bei <paramref name="startIndex" /> endet, sofern gefunden, andernfalls -1.Gibt <paramref name="startIndex" /> zurück, wenn <paramref name="value" /> ein ignorierbares Zeichen ist.</returns>
+      <param name="source">Die zu durchsuchende Zeichenfolge. </param>
+      <param name="value">Das Zeichen, das in der <paramref name="source" /> gesucht werden soll. </param>
+      <param name="startIndex">Der nullbasierte Startindex für die Rückwärtssuche. </param>
+      <param name="count">Die Anzahl der Elemente im zu durchsuchenden Abschnitt. </param>
+      <param name="options">Ein Wert, der definiert, wie <paramref name="source" /> und <paramref name="value" /> verglichen werden sollen.<paramref name="options" /> ist entweder der allein verwendete Enumerationswert <see cref="F:System.Globalization.CompareOptions.Ordinal" /> oder a bitweise Kombination eines oder mehrerer der folgenden Werte: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> und <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ist null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> liegt außerhalb des Bereichs der gültigen Indizes für <paramref name="source" />.- oder -  <paramref name="count" /> ist kleiner als 0.- oder -  <paramref name="startIndex" /> und <paramref name="count" /> geben keinen gültigen Abschnitt in <paramref name="source" /> an. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> enthält einen ungültigen <see cref="T:System.Globalization.CompareOptions" />-Wert. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.String)">
+      <summary>Sucht nach der angegebenen Teilzeichenfolge und gibt den nullbasierten Index des letzten Vorkommens in der gesamten Quellzeichenfolge zurück.</summary>
+      <returns>Der nullbasierte Index des letzten Vorkommens von <paramref name="value" /> in <paramref name="source" />, sofern gefunden, andernfalls -1.</returns>
+      <param name="source">Die zu durchsuchende Zeichenfolge. </param>
+      <param name="value">Die Zeichenfolge, die in der <paramref name="source" /> gesucht werden soll. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ist null.- oder -  <paramref name="value" /> ist null. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.String,System.Globalization.CompareOptions)">
+      <summary>Sucht mithilfe des angegebenen <see cref="T:System.Globalization.CompareOptions" />-Werts nach der angegebenen Teilzeichenfolge und gibt den nullbasierten Index des letzten Vorkommens in der gesamten Quellzeichenfolge zurück.</summary>
+      <returns>Der nullbasierte Index des mithilfe der angegebenen Vergleichsoptionen gesuchten letzten Vorkommens von <paramref name="value" /> in <paramref name="source" />, sofern gefunden, andernfalls -1.</returns>
+      <param name="source">Die zu durchsuchende Zeichenfolge. </param>
+      <param name="value">Die Zeichenfolge, die in der <paramref name="source" /> gesucht werden soll. </param>
+      <param name="options">Ein Wert, der definiert, wie <paramref name="source" /> und <paramref name="value" /> verglichen werden sollen.<paramref name="options" /> ist entweder der allein verwendete Enumerationswert <see cref="F:System.Globalization.CompareOptions.Ordinal" /> oder a bitweise Kombination eines oder mehrerer der folgenden Werte: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> und <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ist null.- oder -  <paramref name="value" /> ist null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> enthält einen ungültigen <see cref="T:System.Globalization.CompareOptions" />-Wert. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.String,System.Int32,System.Globalization.CompareOptions)">
+      <summary>Sucht mithilfe des angegebenen <see cref="T:System.Globalization.CompareOptions" />-Werts nach der angegebenen Teilzeichenfolge und gibt den nullbasierten Index des letzten Vorkommens in dem Abschnitt der Quellzeichenfolge zurück, der vom Anfang der Zeichenfolge bis zum angegebenen Index reicht.</summary>
+      <returns>Der nullbasierte Index des mithilfe der angegebenen Vergleichsoptionen gesuchten letzten Vorkommens von <paramref name="value" /> in dem Abschnitt von <paramref name="source" />, der sich vom Anfang von <paramref name="source" /> bis <paramref name="startIndex" /> erstreckt, sofern gefunden, andernfalls -1.Gibt <paramref name="startIndex" /> zurück, wenn <paramref name="value" /> ein ignorierbares Zeichen ist.</returns>
+      <param name="source">Die zu durchsuchende Zeichenfolge. </param>
+      <param name="value">Die Zeichenfolge, die in der <paramref name="source" /> gesucht werden soll. </param>
+      <param name="startIndex">Der nullbasierte Startindex für die Rückwärtssuche. </param>
+      <param name="options">Ein Wert, der definiert, wie <paramref name="source" /> und <paramref name="value" /> verglichen werden sollen.<paramref name="options" /> ist entweder der allein verwendete Enumerationswert <see cref="F:System.Globalization.CompareOptions.Ordinal" /> oder a bitweise Kombination eines oder mehrerer der folgenden Werte: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> und <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ist null.- oder -  <paramref name="value" /> ist null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> liegt außerhalb des Bereichs der gültigen Indizes für <paramref name="source" />. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> enthält einen ungültigen <see cref="T:System.Globalization.CompareOptions" />-Wert. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.String,System.Int32,System.Int32)">
+      <summary>Sucht nach der angegebenen Teilzeichenfolge und gibt den nullbasierten Index des letzten Vorkommens in dem Abschnitt der Quellzeichenfolge zurück, der die angegebene Anzahl von Elementen enthält und am angegebenen Index endet.</summary>
+      <returns>Der nullbasierte Index des letzten Vorkommens von <paramref name="value" /> in dem Abschnitt von <paramref name="source" />, der die durch <paramref name="count" /> angegebene Anzahl von Elementen enthält und bei <paramref name="startIndex" /> endet, sofern gefunden, andernfalls -1.Gibt <paramref name="startIndex" /> zurück, wenn <paramref name="value" /> ein ignorierbares Zeichen ist.</returns>
+      <param name="source">Die zu durchsuchende Zeichenfolge. </param>
+      <param name="value">Die Zeichenfolge, die in der <paramref name="source" /> gesucht werden soll. </param>
+      <param name="startIndex">Der nullbasierte Startindex für die Rückwärtssuche. </param>
+      <param name="count">Die Anzahl der Elemente im zu durchsuchenden Abschnitt. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ist null.- oder -  <paramref name="value" /> ist null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> liegt außerhalb des Bereichs der gültigen Indizes für <paramref name="source" />.- oder -  <paramref name="count" /> ist kleiner als 0.- oder -  <paramref name="startIndex" /> und <paramref name="count" /> geben keinen gültigen Abschnitt in <paramref name="source" /> an. </exception>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.LastIndexOf(System.String,System.String,System.Int32,System.Int32,System.Globalization.CompareOptions)">
+      <summary>Sucht mithilfe des angegebenen <see cref="T:System.Globalization.CompareOptions" />-Werts nach der angegebenen Teilzeichenfolge und gibt den nullbasierten Index des letzten Vorkommens in dem Abschnitt der Quellzeichenfolge zurück, der die angegebene Anzahl von Elementen enthält und am angegebenen Index endet.</summary>
+      <returns>Der nullbasierte Index des mithilfe der angegebenen Vergleichsoptionen gesuchten letzten Vorkommens von <paramref name="value" /> in dem Abschnitt von <paramref name="source" />, der die durch <paramref name="count" /> angegebene Anzahl von Elementen enthält und bei <paramref name="startIndex" /> endet, sofern gefunden, andernfalls -1.Gibt <paramref name="startIndex" /> zurück, wenn <paramref name="value" /> ein ignorierbares Zeichen ist.</returns>
+      <param name="source">Die zu durchsuchende Zeichenfolge. </param>
+      <param name="value">Die Zeichenfolge, die in der <paramref name="source" /> gesucht werden soll. </param>
+      <param name="startIndex">Der nullbasierte Startindex für die Rückwärtssuche. </param>
+      <param name="count">Die Anzahl der Elemente im zu durchsuchenden Abschnitt. </param>
+      <param name="options">Ein Wert, der definiert, wie <paramref name="source" /> und <paramref name="value" /> verglichen werden sollen.<paramref name="options" /> ist entweder der allein verwendete Enumerationswert <see cref="F:System.Globalization.CompareOptions.Ordinal" /> oder a bitweise Kombination eines oder mehrerer der folgenden Werte: <see cref="F:System.Globalization.CompareOptions.IgnoreCase" />, <see cref="F:System.Globalization.CompareOptions.IgnoreSymbols" />, <see cref="F:System.Globalization.CompareOptions.IgnoreNonSpace" />, <see cref="F:System.Globalization.CompareOptions.IgnoreWidth" /> und <see cref="F:System.Globalization.CompareOptions.IgnoreKanaType" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> ist null.- oder -  <paramref name="value" /> ist null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> liegt außerhalb des Bereichs der gültigen Indizes für <paramref name="source" />.- oder -  <paramref name="count" /> ist kleiner als 0.- oder -  <paramref name="startIndex" /> und <paramref name="count" /> geben keinen gültigen Abschnitt in <paramref name="source" /> an. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> enthält einen ungültigen <see cref="T:System.Globalization.CompareOptions" />-Wert. </exception>
+    </member>
+    <member name="P:System.Globalization.CompareInfo.Name">
+      <summary>Ruft den Namen der Kultur ab, die von diesem <see cref="T:System.Globalization.CompareInfo" />-Objekt für Sortiervorgänge verwendet wird.</summary>
+      <returns>Der Name einer Kultur.</returns>
+    </member>
+    <member name="M:System.Globalization.CompareInfo.ToString">
+      <summary>Gibt eine Zeichenfolge zurück, die das aktuelle <see cref="T:System.Globalization.CompareInfo" />-Objekt darstellt.</summary>
+      <returns>Eine Zeichenfolge, die das aktuelle <see cref="T:System.Globalization.CompareInfo" />-Objekt darstellt.</returns>
+    </member>
+    <member name="T:System.Globalization.CompareOptions">
+      <summary>Definiert die mit <see cref="T:System.Globalization.CompareInfo" /> zu verwendenden Optionen für den Zeichenfolgenvergleich.</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.IgnoreCase">
+      <summary>Gibt an, dass beim Zeichenfolgenvergleich die Groß- und Kleinschreibung nicht beachtet wird.</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.IgnoreKanaType">
+      <summary>Gibt an, dass beim Zeichenfolgenvergleich Zeichen vom Typ Kana ignoriert werden.Der Kana-Zeichentyp bezieht sich auf die japanischen Hiragana- und Katakana-Schriftzeichen, die im Japanischen phonetische Laute darstellen.Hiragana wird für japanische Ausdrücke und Wörter verwendet, während Katakana für Lehnwörter aus anderen Sprachen, z. B. "Computer" oder "Internet", verwendet wird.Ein phonetischer Laut kann sowohl in Hiragana als auch in Katakana dargestellt werden.Wenn dieser Wert ausgewählt ist, wird das Hiragana-Zeichen für einen Laut als gleichwertig mit dem Katakana-Zeichen für denselben Laut betrachtet.</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.IgnoreNonSpace">
+      <summary>Gibt an, dass bei Zeichenfolgenvergleichen Kombinationszeichen ohne horizontalen Vorschub, z. B. diakritische Zeichen, ignoriert werden.Der Unicode-Standard definiert Kombinationszeichen als Zeichen, die mit Basiszeichen kombiniert werden, um ein neues Zeichen zu erzeugen.Kombinationszeichen ohne horizontalen Vorschub nehmen bei der Darstellung keinen über die Breite des Basiszeichens hinausgehenden Platz ein.</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.IgnoreSymbols">
+      <summary>Gibt an, dass beim Zeichenfolgenvergleich Symbole, wie Leerzeichen, Satzzeichen, Währungssymbole, das Prozentzeichen, mathematische Symbole, das kaufmännische Und-Zeichen (&amp;) usw., ignoriert werden.</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.IgnoreWidth">
+      <summary>Gibt an, dass beim Zeichenfolgenvergleich die Zeichenbreite ignoriert wird.Japanische Katakana-Zeichen können z. B. in voller oder halber Breite geschrieben werden.Wenn dieser Wert ausgewählt ist, werden die in voller Breite geschriebenen Katakana-Zeichen als denselben in halber Breite geschriebenen Zeichen gleichwertig betrachtet.</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.None">
+      <summary>Gibt die Standardeinstellungen der Optionen für Zeichenfolgenvergleiche an.</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.Ordinal">
+      <summary>Gibt an, dass der Zeichenfolgenvergleich aufeinanderfolgende Unicode UTF-16-codierte Werte der Zeichenfolge verwenden muss (Vergleich von Codeeinheiten). Dies führt zu einem schnellen, jedoch kulturunabhängigen Vergleich.Eine Zeichenfolge, die mit der Codeeinheit XXXX16 beginnt, kommt vor einer Zeichenfolge, die mit YYYY16 beginnt, wenn XXXX16 kleiner als YYYY16 ist.Dieser Wert kann nicht mit anderen <see cref="T:System.Globalization.CompareOptions" />-Werten kombiniert werden und muss allein verwendet werden.</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.OrdinalIgnoreCase">
+      <summary>Beim Zeichenfolgenvergleich darf die Groß- und Kleinschreibung nicht berücksichtigt werden, und anschließend muss ein ordinaler Vergleich erfolgen.Dieses Verfahren entspricht dem Konvertieren der Zeichenfolge in Großbuchstaben mithilfe der invarianten Kultur und dem anschließenden Ordinalvergleich mit dem Ergebnis.</summary>
+    </member>
+    <member name="F:System.Globalization.CompareOptions.StringSort">
+      <summary>Gibt an, dass beim Zeichenfolgenvergleich der Zeichenfolgensortieralgorithmus verwendet werden muss.Bei der Zeichenfolgensortierung werden Bindestriche und Apostrophe sowie andere nicht alphanumerische Symbole vor alphanumerischen Zeichen aufgeführt.</summary>
+    </member>
+    <member name="T:System.Globalization.CultureInfo">
+      <summary>Stellt Informationen über eine bestimmte Kultur bereit (die bei der nicht verwalteten Codeentwicklung als locale bezeichnet wird).Zu diesen Informationen gehören der Name der Kultur, das Schriftsystem, der verwendete Kalender sowie die Formatierung für Datumsangaben und sortierte Zeichenfolgen.</summary>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.#ctor(System.String)">
+      <summary>	Initialisiert eine neue Instanz der <see cref="T:System.Globalization.CultureInfo" />-Klasse auf der Grundlage der durch den Namen angegebenen Kultur.</summary>
+      <param name="name">Ein vordefinierter <see cref="T:System.Globalization.CultureInfo" />-Name, eine <see cref="P:System.Globalization.CultureInfo.Name" />-Eigenschaft einer vorhandenen <see cref="T:System.Globalization.CultureInfo" />-Klasse oder ein nur für Windows definierter Kulturname.Bei <paramref name="name" /> wird nicht zwischen Groß- und Kleinschreibung unterschieden.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> is null. </exception>
+      <exception cref="T:System.Globalization.CultureNotFoundException">
+        <paramref name="name" /> is not a valid culture name.For more information, see the Notes to Callers section.</exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.Calendar">
+      <summary>Ruft den von der Kultur verwendeten Standardkalender ab.</summary>
+      <returns>Ein <see cref="T:System.Globalization.Calendar" />, der den von der Kultur verwendeten Standardkalender darstellt.</returns>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.Clone">
+      <summary>Erstellt eine Kopie der aktuellen <see cref="T:System.Globalization.CultureInfo" />.</summary>
+      <returns>Eine Kopie der aktuellen <see cref="T:System.Globalization.CultureInfo" />.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.CompareInfo">
+      <summary>Ruft die <see cref="T:System.Globalization.CompareInfo" /> ab, in der festgelegt wird, wie Zeichenfolgen für die Kultur verglichen werden.</summary>
+      <returns>Die <see cref="T:System.Globalization.CompareInfo" />, in der festgelegt wird, wie Zeichenfolgen für die Kultur verglichen werden.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.CurrentCulture">
+      <summary>Ruft das <see cref="T:System.Globalization.CultureInfo" />-Objekt ab, das die vom aktuellen Thread verwendete Kultur darstellt, oder setzt dieses Objekt.</summary>
+      <returns>Ein Objekt, das die vom aktuellen Thread verwendete Kultur darstellt.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is set to null.</exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.CurrentUICulture">
+      <summary>Ruft das <see cref="T:System.Globalization.CultureInfo" />-Objekt ab, das die aktuelle Benutzeroberfläche darstellt, mit deren Hilfe der Ressourcen-Manager kulturabhängige Ressourcen zur Laufzeit sucht, oder setzt dieses Objekt.</summary>
+      <returns>Die aktuelle Kultur, mit deren Hilfe der Ressourcen-Manager zur Laufzeit kulturabhängige Ressourcen sucht, oder legt diese fest.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is set to null.</exception>
+      <exception cref="T:System.ArgumentException">The property is set to a culture name that cannot be used to locate a resource file.Resource filenames can include only letters, numbers, hyphens, or underscores.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.DateTimeFormat">
+      <summary>Ruft die <see cref="T:System.Globalization.DateTimeFormatInfo" /> ab, die das für die Kultur spezifische Format zum Anzeigen von Datumsangaben und Uhrzeiten definiert, oder legt diese fest.</summary>
+      <returns>Eine <see cref="T:System.Globalization.DateTimeFormatInfo" />, die das für die Kultur spezifische Format zum Anzeigen von Datumsangaben und Uhrzeiten definiert.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Globalization.CultureInfo.DateTimeFormat" /> property or any of the <see cref="T:System.Globalization.DateTimeFormatInfo" /> properties is set, and the <see cref="T:System.Globalization.CultureInfo" /> is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.DefaultThreadCurrentCulture">
+      <summary>Ruft die Standardkultur für Threads in der aktuellen Anwendungsdomäne ab oder legt diese fest.</summary>
+      <returns>Die Standardkultur für Threads in der aktuellen Anwendungsdomäne oder null, wenn die aktuelle Systemkultur die standardmäßige Threadkultur in der Anwendungsdomäne ist.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.DefaultThreadCurrentUICulture">
+      <summary>Ruft die standardmäßige Benutzeroberflächenkultur für Threads in der aktuellen Anwendungsdomäne ab oder legt diese fest.</summary>
+      <returns>Die Standardkultur der Benutzeroberfläche für Threads in der aktuellen Anwendungsdomäne oder null, wenn die aktuelle Systemkultur der Benutzeroberfläche die standardmäßige Threadkultur der Benutzeroberfläche in der Anwendungsdomäne ist.</returns>
+      <exception cref="T:System.ArgumentException">In a set operation, the <see cref="P:System.Globalization.CultureInfo.Name" /> property value is invalid. </exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.DisplayName">
+      <summary>Ruft den vollständig lokalisierten Kulturnamen ab. </summary>
+      <returns>Der vollständig lokalisierte Kulturname im Format languagefull [country/regionfull], wobei languagefull der vollständige Name der Sprache ist und country/regionfull der vollständige Name des Landes bzw. der Region.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.EnglishName">
+      <summary>	Ruft den Kulturnamen im Format languagefull [country/regionfull] auf Englisch ab.</summary>
+      <returns>Der Kulturname im Format languagefull [country/regionfull] auf Englisch, wobei languagefull der vollständige Name der Sprache ist und country/regionfull der vollständige Name des Landes bzw. der Region.</returns>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.Equals(System.Object)">
+      <summary>Bestimmt, ob das angegebene Objekt dieselbe Kultur aufweist wie die aktuelle <see cref="T:System.Globalization.CultureInfo" />.</summary>
+      <returns>true, wenn <paramref name="value" /> dieselbe Kultur aufweist wie die aktuelle <see cref="T:System.Globalization.CultureInfo" />, andernfalls false.</returns>
+      <param name="value">Das Objekt, das mit der aktuellen <see cref="T:System.Globalization.CultureInfo" /> verglichen werden soll. </param>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.GetFormat(System.Type)">
+      <summary>Ruft ein Objekt ab, das definiert, wie der angegebene Typ formatiert werden soll.</summary>
+      <returns>Der Wert der <see cref="P:System.Globalization.CultureInfo.NumberFormat" />-Eigenschaft, bei der es sich um eine <see cref="T:System.Globalization.NumberFormatInfo" /> mit Informationen über das Standardzahlenformat für die aktuelle <see cref="T:System.Globalization.CultureInfo" /> handelt, wenn <paramref name="formatType" /> das <see cref="T:System.Type" />-Objekt für die <see cref="T:System.Globalization.NumberFormatInfo" />-Klasse ist.- oder -  Der Wert der <see cref="P:System.Globalization.CultureInfo.DateTimeFormat" />-Eigenschaft, bei der es sich um eine <see cref="T:System.Globalization.DateTimeFormatInfo" /> mit Informationen über das Standardformat für Datums- und Uhrzeitangaben für die aktuelle <see cref="T:System.Globalization.CultureInfo" /> handelt, wenn <paramref name="formatType" /> das <see cref="T:System.Type" />-Objekt für die <see cref="T:System.Globalization.DateTimeFormatInfo" />-Klasse ist.- oder -  NULL, wenn <paramref name="formatType" /> ein beliebiges anderes Objekt ist.</returns>
+      <param name="formatType">Der <see cref="T:System.Type" />, für den ein Formatierungsobjekt abgerufen werden soll.	Diese Methode unterstützt nur den <see cref="T:System.Globalization.NumberFormatInfo" />-Typ und den <see cref="T:System.Globalization.DateTimeFormatInfo" />-Typ.</param>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.GetHashCode">
+      <summary>Fungiert als Hashfunktion für die aktuelle <see cref="T:System.Globalization.CultureInfo" />, die sich für die Verwendung in Hashalgorithmen und -datenstrukturen eignet, z. B. in einer Hashtabelle.</summary>
+      <returns>Ein Hashcode für die aktuelle <see cref="T:System.Globalization.CultureInfo" />.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.InvariantCulture">
+      <summary>Ruft das kulturunabhängige (invariante) <see cref="T:System.Globalization.CultureInfo" />-Objekt ab.</summary>
+      <returns>Das Objekt, das die kulturunabhängige (invariante) ist.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.IsNeutralCulture">
+      <summary>Ruft einen Wert ab, der angibt, ob die aktuelle <see cref="T:System.Globalization.CultureInfo" /> eine neutrale Kultur darstellt.</summary>
+      <returns>true, wenn die aktuelle <see cref="T:System.Globalization.CultureInfo" /> eine neutrale Kultur darstellt, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.IsReadOnly">
+      <summary>Ruft einen Wert ab, der angibt, ob die aktuelle <see cref="T:System.Globalization.CultureInfo" /> schreibgeschützt ist.</summary>
+      <returns>true, wenn die aktuelle <see cref="T:System.Globalization.CultureInfo" /> schreibgeschützt ist, andernfalls false.Die Standardeinstellung ist false.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.Name">
+      <summary>	Ruft den Kulturnamen im Format languagecode2-country/regioncode2 ab.</summary>
+      <returns>Der Kulturname im Format languagecode2-country/regioncode2.languagecode2 ist ein aus ISO 639-1 abgeleiteter, aus zwei Kleinbuchstaben bestehender Code.country/regioncode2 ist aus ISO 3166 abgeleitet und verwendet normalerweise zwei Großbuchstaben oder ein BCP-47-Sprachtag.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.NativeName">
+      <summary>Ruft den Namen der Kultur ab, der aus der Sprache, dem Land oder der Region und dem optionalen Skript besteht, das in der Kultur angezeigt werden soll.</summary>
+      <returns>Der Kulturname, der aus dem vollständigen Namen der Sprache, dem vollständigen Namen des Landes bzw. der Region und dem optionalen Skript besteht.Das Format wird in der Beschreibung der <see cref="T:System.Globalization.CultureInfo" />-Klasse erläutert.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.NumberFormat">
+      <summary>Ruft die <see cref="T:System.Globalization.NumberFormatInfo" /> ab, die das für die Kultur spezifische Format zum Anzeigen von Zahlen, Währungen und Prozentsätzen definiert, oder legt diese fest.</summary>
+      <returns>Eine <see cref="T:System.Globalization.NumberFormatInfo" />, die das für die Kultur spezifische Format zum Anzeigen von Zahlen, Währungen und Prozentsätzen definiert.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Globalization.CultureInfo.NumberFormat" /> property or any of the <see cref="T:System.Globalization.NumberFormatInfo" /> properties is set, and the <see cref="T:System.Globalization.CultureInfo" /> is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.OptionalCalendars">
+      <summary>Ruft die Liste der Kalender ab, die von dieser Kultur verwendet werden können.</summary>
+      <returns>Ein Array vom Typ <see cref="T:System.Globalization.Calendar" />, das die Kalender darstellt, die von der Kultur verwendet werden können, die von der aktuellen <see cref="T:System.Globalization.CultureInfo" /> dargestellt werden.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.Parent">
+      <summary>Ruft die <see cref="T:System.Globalization.CultureInfo" /> ab, die die übergeordnete Kultur zur aktuellen <see cref="T:System.Globalization.CultureInfo" /> darstellt.</summary>
+      <returns>Die <see cref="T:System.Globalization.CultureInfo" />, die die übergeordnete Kultur zur aktuellen <see cref="T:System.Globalization.CultureInfo" /> darstellt.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.ReadOnly(System.Globalization.CultureInfo)">
+      <summary>Gibt einen schreibgeschützten Wrapper für das angegebene <see cref="T:System.Globalization.CultureInfo" />-Objekt zurück. </summary>
+      <returns>Ein schreibgeschützter <see cref="T:System.Globalization.CultureInfo" />-Wrapper um <paramref name="ci" />.</returns>
+      <param name="ci">Das <see cref="T:System.Globalization.CultureInfo" />-Objekt, für das der Wrapper erstellt wird. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="ci" /> is null. </exception>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.TextInfo">
+      <summary>Ruft die <see cref="T:System.Globalization.TextInfo" /> ab, die das der Kultur zugeordnete Schriftsystem definiert.</summary>
+      <returns>Die <see cref="T:System.Globalization.TextInfo" />, die das der Kultur zugeordnete Schriftsystem definiert.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Globalization.CultureInfo.ToString">
+      <summary>Gibt eine Zeichenfolge mit dem Namen der aktuellen <see cref="T:System.Globalization.CultureInfo" /> im Format Sprachcode2-Landes-/Regionscode2 zurück.</summary>
+      <returns>Eine Zeichenfolge, die den Namen der aktuellen <see cref="T:System.Globalization.CultureInfo" />-Klasse enthält.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureInfo.TwoLetterISOLanguageName">
+      <summary>	Ruft den aus zwei Buchstaben bestehenden Code nach ISO 639-1 für die Sprache der aktuellen <see cref="T:System.Globalization.CultureInfo" /> ab.</summary>
+      <returns>Der aus zwei Buchstaben bestehende Code nach ISO 639-1 für die Sprache der aktuellen <see cref="T:System.Globalization.CultureInfo" />.</returns>
+    </member>
+    <member name="T:System.Globalization.CultureNotFoundException">
+      <summary>Die Ausnahme, die ausgelöst wird, wenn eine Methode aufgerufen wird, die versucht, eine Kultur zu erstellen, die auf dem Computer nicht verfügbar ist.</summary>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Globalization.CultureNotFoundException" />-Klasse, bei der die Nachrichtenzeichenfolge auf eine Systemmeldung eingestellt wurde.</summary>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor(System.String)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Globalization.CultureNotFoundException" />-Klasse mit der angegebenen Fehlermeldung.</summary>
+      <param name="message">Die mit dieser Ausnahme anzuzeigende Fehlermeldung.</param>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor(System.String,System.Exception)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Globalization.CultureNotFoundException" />-Klasse mit einer angegebenen Fehlermeldung und einem Verweis auf die innere Ausnahme, die diese Ausnahme ausgelöst hat.</summary>
+      <param name="message">Die mit dieser Ausnahme anzuzeigende Fehlermeldung.</param>
+      <param name="innerException">Die Ausnahme, die die Ursache der aktuellen Ausnahme ist.Wenn der <paramref name="innerException" />-Parameter kein NULL-Verweis ist, wird die aktuelle Ausnahme in einem catch-Block ausgelöst, der die innere Ausnahme behandelt.</param>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor(System.String,System.String)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Globalization.CultureNotFoundException" />-Klasse mit einer angegebenen Fehlermeldung und dem Namen des Parameters, der die Ausnahme auslöst.</summary>
+      <param name="paramName">Der Name des Parameters, der die aktuelle Ausnahme verursacht hat.</param>
+      <param name="message">Die mit dieser Ausnahme anzuzeigende Fehlermeldung.</param>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor(System.String,System.String,System.Exception)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Globalization.CultureNotFoundException" />-Klasse mit einer angegebenen Fehlermeldung, dem ungültigen Kulturnamen und einem Verweis auf die innere Ausnahme, die diese Ausnahme ausgelöst hat.</summary>
+      <param name="message">Die mit dieser Ausnahme anzuzeigende Fehlermeldung.</param>
+      <param name="invalidCultureName">Der Kulturname, der nicht gefunden werden kann.</param>
+      <param name="innerException">Die Ausnahme, die die Ursache der aktuellen Ausnahme ist.Wenn der <paramref name="innerException" />-Parameter kein NULL-Verweis ist, wird die aktuelle Ausnahme in einem catch-Block ausgelöst, der die innere Ausnahme behandelt.</param>
+    </member>
+    <member name="M:System.Globalization.CultureNotFoundException.#ctor(System.String,System.String,System.String)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Globalization.CultureNotFoundException" />-Klasse mit einer angegebenen Fehlermeldung, dem ungültigen Kulturnamen und dem Namen des Parameters, der diese Ausnahme verursacht hat.</summary>
+      <param name="paramName">Der Name des Parameters, der die aktuelle Ausnahme verursacht hat.</param>
+      <param name="invalidCultureName">Der Kulturname, der nicht gefunden werden kann.</param>
+      <param name="message">Die mit dieser Ausnahme anzuzeigende Fehlermeldung.</param>
+    </member>
+    <member name="P:System.Globalization.CultureNotFoundException.InvalidCultureName">
+      <summary>Ruft den Kulturnamen ab, der nicht gefunden werden kann.</summary>
+      <returns>Der ungültige Kulturname.</returns>
+    </member>
+    <member name="P:System.Globalization.CultureNotFoundException.Message">
+      <summary>Ruft die Fehlermeldung ab, in der die Ursache der Ausnahme erklärt wird.</summary>
+      <returns>Eine Textzeichenfolge, die die Ausnahme detailliert beschreibt.</returns>
+    </member>
+    <member name="T:System.Globalization.DateTimeFormatInfo">
+      <summary>Stellt kulturabhängige Informationen zum Format von Datum und Zeitangaben bereit.</summary>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.#ctor">
+      <summary>Initialisiert eine neue, schreibbare Instanz der <see cref="T:System.Globalization.DateTimeFormatInfo" />-Klasse, die kulturunabhängig (invariant) ist.</summary>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.AbbreviatedDayNames">
+      <summary>	Ruft ein eindimensionales Array vom Typ <see cref="T:System.String" /> ab, das die kulturabhängigen abgekürzten Namen der Wochentage enthält, oder legt dieses fest.</summary>
+      <returns>	Ein eindimensionales Array vom Typ <see cref="T:System.String" />, das die kulturabhängigen abgekürzten Namen der Wochentage enthält.Das Array für <see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> enthält "Sun", "Mon", "Tue", "Wed", "Thu", "Fri" und "Sat".</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.ArgumentException">The property is being set to an array that is multidimensional or that has a length that is not exactly 7. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.AbbreviatedMonthGenitiveNames">
+      <summary>	Ruft ein Zeichenfolgenarray der abgekürzten Monatsnamen ab, die dem aktuellen <see cref="T:System.Globalization.DateTimeFormatInfo" />-Objekt zugeordnet sind, oder legt dieses fest.</summary>
+      <returns>Ein Array von abgekürzten Monatsnamen.</returns>
+      <exception cref="T:System.ArgumentException">In a set operation, the array is multidimensional or has a length that is not exactly 13.</exception>
+      <exception cref="T:System.ArgumentNullException">In a set operation, the array or one of the elements of the array is null.</exception>
+      <exception cref="T:System.InvalidOperationException">In a set operation, the current <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only.</exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.AbbreviatedMonthNames">
+      <summary>Ruft ein eindimensionales Zeichenfolgenarray ab, das die kulturabhängigen abgekürzten Namen der Monate enthält, oder legt dieses fest.</summary>
+      <returns>Ein eindimensionales Zeichenfolgenarray mit 13 Elementen, das die kulturabhängigen abgekürzten Namen der Monate enthält.Bei Kalendern mit 12 Monaten ist das 13. Element des Arrays eine leere Zeichenfolge.Das Array für <see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> enthält "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" und "".</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.ArgumentException">The property is being set to an array that is multidimensional or that has a length that is not exactly 13. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.AMDesignator">
+      <summary>Ruft den Zeichenfolgenkennzeichner für Zeitangaben vor 12 Uhr mittags ("ante meridiem", a.m.) ab oder legt diesen fest.</summary>
+      <returns>Der Zeichenfolgenkennzeichner für Zeitangaben vor 12 Uhr mittags ("ante meridiem", a.m.).Die Standardeinstellung für <see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> ist "AM".</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.Calendar">
+      <summary>Ruft den für die aktuelle Kultur zu verwendenden Kalender ab oder legen diesen fest.</summary>
+      <returns>Der für die aktuelle Kultur zu verwendende Kalender.Der Standardwert für <see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> ist ein <see cref="T:System.Globalization.GregorianCalendar" />-Objekt.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The property is being set to a <see cref="T:System.Globalization.Calendar" /> object that is not valid for the current culture. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.CalendarWeekRule">
+      <summary>Ruft einen Wert ab, der die Regel zum Bestimmen der ersten Kalenderwoche eines Jahres angibt, oder legt diesen fest.</summary>
+      <returns>Ein Wert, der die erste Kalenderwoche des Jahres bestimmt.Die Standardeinstellung für <see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> ist <see cref="F:System.Globalization.CalendarWeekRule.FirstDay" />.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The property is being set to a value that is not a valid <see cref="T:System.Globalization.CalendarWeekRule" /> value. </exception>
+      <exception cref="T:System.InvalidOperationException">In a set operation, the current <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only.</exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.Clone">
+      <summary>Erstellt eine flache Kopie von <see cref="T:System.Globalization.DateTimeFormatInfo" />.</summary>
+      <returns>Ein neues <see cref="T:System.Globalization.DateTimeFormatInfo" />-Objekt, das aus dem ursprünglichen <see cref="T:System.Globalization.DateTimeFormatInfo" /> kopiert wurde.</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.CurrentInfo">
+      <summary>Ruft ein schreibgeschütztes <see cref="T:System.Globalization.DateTimeFormatInfo" />-Objekt ab, das Werte auf Grundlage der aktuellen Kultur formatiert.</summary>
+      <returns>	Ein schreibgeschütztes <see cref="T:System.Globalization.DateTimeFormatInfo" />-Objekt, das auf dem <see cref="T:System.Globalization.CultureInfo" />-Objekt für den aktuellen Thread basiert.</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.DayNames">
+      <summary>Ruft ein eindimensionales Zeichenfolgenarray ab, das die kulturabhängigen vollständigen Namen der Wochentage enthält, oder legt dieses fest.</summary>
+      <returns>Ein eindimensionales Zeichenfolgenarray, das die kulturabhängigen vollständigen Namen der Wochentage enthält.Das Array für <see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> enthält "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" und "Saturday".</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.ArgumentException">The property is being set to an array that is multidimensional or that has a length that is not exactly 7. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.FirstDayOfWeek">
+      <summary>Ruft den ersten Tag der Woche ab oder legt diesen fest.</summary>
+      <returns>Ein Enumerationswert, der den ersten Tag der Woche darstellt.Die Standardeinstellung für <see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> ist <see cref="F:System.DayOfWeek.Sunday" />.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The property is being set to a value that is not a valid <see cref="T:System.DayOfWeek" /> value. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.FullDateTimePattern">
+      <summary>Ruft die benutzerdefinierte Formatzeichenfolge für einen langen Datums- und Uhrzeitwert ab oder legt dieses fest.</summary>
+      <returns>Die benutzerdefinierte Formatzeichenfolge für einen langen Datums-und Zeitwert.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetAbbreviatedDayName(System.DayOfWeek)">
+      <summary>	Gibt den kulturabhängigen abgekürzten Namen des angegebenen Wochentags entsprechend der Kultur zurück, die dem aktuellen <see cref="T:System.Globalization.DateTimeFormatInfo" />-Objekts zugeordnet ist.</summary>
+      <returns>Der kulturabhängige abgekürzte Name des Wochentags, dargestellt durch <paramref name="dayofweek" />.</returns>
+      <param name="dayofweek"> Ein <see cref="T:System.DayOfWeek" />-Wert. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="dayofweek" /> is not a valid <see cref="T:System.DayOfWeek" /> value. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetAbbreviatedEraName(System.Int32)">
+      <summary>Gibt die Zeichenfolge zurück, die den abgekürzten Namen des angegebenen Zeitraums enthält, sofern eine Abkürzung vorhanden ist.</summary>
+      <returns>Eine Zeichenfolge, die den abgekürzten Namen des angegebenen Zeitraums enthält, sofern eine Abkürzung vorhanden ist.- oder -  Eine Zeichenfolge, die den vollständigen Namen des Zeitraums enthält, sofern keine Abkürzung vorhanden ist.</returns>
+      <param name="era">Die Ganzzahl, die den Zeitraum darstellt. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> does not represent a valid era in the calendar specified in the <see cref="P:System.Globalization.DateTimeFormatInfo.Calendar" /> property. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetAbbreviatedMonthName(System.Int32)">
+      <summary>Gibt den kulturabhängigen abgekürzten Namen des angegebenen Monats entsprechend der Kultur zurück, die dem aktuellen <see cref="T:System.Globalization.DateTimeFormatInfo" />-Objekt zugeordnet ist.</summary>
+      <returns>Der kulturabhängige abgekürzte Name des Monats, dargestellt durch <paramref name="month" />.</returns>
+      <param name="month">Eine Ganzzahl zwischen 1 und 13, die den abzurufenden Monatsnamen darstellt. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="month" /> is less than 1 or greater than 13. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetDayName(System.DayOfWeek)">
+      <summary>Gibt den kulturabhängigen vollständigen Namen des angegebenen Wochentags entsprechend der Kultur zurück, die dem aktuellen<see cref="T:System.Globalization.DateTimeFormatInfo" />-Objekt zugeordnet ist.</summary>
+      <returns>Der kulturabhängige vollständige Name des Wochentags, dargestellt durch <paramref name="dayofweek" />.</returns>
+      <param name="dayofweek"> Ein <see cref="T:System.DayOfWeek" />-Wert. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="dayofweek" /> is not a valid <see cref="T:System.DayOfWeek" /> value. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetEra(System.String)">
+      <summary>Gibt die Ganzzahl zurück, die den angegebenen Zeitraum darstellt.</summary>
+      <returns>	Die Ganzzahl, die den Zeitraum darstellt, wenn <paramref name="eraName" /> gültig ist, andernfalls -1.</returns>
+      <param name="eraName">Die Zeichenfolge mit dem Namen des Zeitraums. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="eraName" /> is null. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetEraName(System.Int32)">
+      <summary>Gibt die Zeichenfolge mit dem Namen des angegebenen Zeitraums zurück.</summary>
+      <returns>Eine Zeichenfolge mit dem Namen des Zeitraums.</returns>
+      <param name="era">Die Ganzzahl, die den Zeitraum darstellt. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="era" /> does not represent a valid era in the calendar specified in the <see cref="P:System.Globalization.DateTimeFormatInfo.Calendar" /> property. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetFormat(System.Type)">
+      <summary>Gibt ein Objekt vom angegebenen Typ zurück, das einen Datum-und Zeit-Formatierungsdienst bereitstellt.</summary>
+      <returns>Das aktuelle Objekt, wenn <paramref name="formatType" /> mit dem Typ der aktuellen<see cref="T:System.Globalization.DateTimeFormatInfo" /> übereinstimmt, andernfalls null.</returns>
+      <param name="formatType">Der Typ des erforderlichen Formatierungsdiensts. </param>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetInstance(System.IFormatProvider)">
+      <summary>Gibt das <see cref="T:System.Globalization.DateTimeFormatInfo" />-Objekt zurück, das dem angegebenen <see cref="T:System.IFormatProvider" /> zugeordnet ist.</summary>
+      <returns>Ein <see cref="T:System.Globalization.DateTimeFormatInfo" />-Objekt, das <see cref="T:System.IFormatProvider" /> zugeordnet ist.</returns>
+      <param name="provider">Der <see cref="T:System.IFormatProvider" />, der das <see cref="T:System.Globalization.DateTimeFormatInfo" />-Objekt abruft.- oder -  null zum Abrufen von <see cref="P:System.Globalization.DateTimeFormatInfo.CurrentInfo" />. </param>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.GetMonthName(System.Int32)">
+      <summary>Gibt den kulturabhängigen vollständigen Namen des angegebenen Monats entsprechend der Kultur zurück, die dem aktuellen <see cref="T:System.Globalization.DateTimeFormatInfo" />-Objekt zugeordnet ist.</summary>
+      <returns>Der kulturabhängige vollständige Name des Monats, dargestellt durch <paramref name="month" />.</returns>
+      <param name="month">Eine Ganzzahl zwischen 1 und 13, die den abzurufenden Monatsnamen darstellt. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="month" /> is less than 1 or greater than 13. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.InvariantInfo">
+      <summary>Ruft das schreibgeschützte <see cref="T:System.Globalization.DateTimeFormatInfo" />-Standardobjekt ab, das kulturunabhängig (invariant) ist.</summary>
+      <returns>Ein schreibgeschütztes Objekt, das kulturunabhängig (invariant) ist.</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.IsReadOnly">
+      <summary>Ruft einen Wert ab, der angibt, ob das <see cref="T:System.Globalization.DateTimeFormatInfo" /> schreibgeschützt ist.</summary>
+      <returns>true, wenn das <see cref="T:System.Globalization.DateTimeFormatInfo" />-Objekt schreibgeschützt ist, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.LongDatePattern">
+      <summary>Ruft die benutzerdefinierte Formatzeichenfolge für einen langen Datumswert ab oder legt diese fest.</summary>
+      <returns>Die benutzerdefinierte Formatzeichenfolge für einen langen Datumswert.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.LongTimePattern">
+      <summary>Ruft die benutzerdefinierte Formatzeichenfolge für einen langen Uhrzeitwert ab oder legt diese fest.</summary>
+      <returns>Das Formatmuster für einen langen Zeitwert.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.MonthDayPattern">
+      <summary>Ruft die benutzerdefinierte Formatzeichenfolge für einen Monats- und Tageswert ab oder legt diese fest.</summary>
+      <returns>Die benutzerdefinierte Formatzeichenfolge für einen Tages- und Monatswert.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.MonthGenitiveNames">
+      <summary>Ruft ein Zeichenfolgenarray der Monatsnamen ab, die dem aktuellen <see cref="T:System.Globalization.DateTimeFormatInfo" />-Objekt zugeordnet sind, oder legt dieses fest.</summary>
+      <returns>Ein Zeichenfolgenarray von Monatsnamen.</returns>
+      <exception cref="T:System.ArgumentException">In a set operation, the array is multidimensional or has a length that is not exactly 13.</exception>
+      <exception cref="T:System.ArgumentNullException">In a set operation, the array or one of its elements is null.</exception>
+      <exception cref="T:System.InvalidOperationException">In a set operation, the current <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only.</exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.MonthNames">
+      <summary>Ruft ein eindimensionales Array vom Typ <see cref="T:System.String" />ab, das die kulturabhängigen vollständigen Namen der Monate enthält, oder legt dieses fest.</summary>
+      <returns>Ein eindimensionales Array vom Typ <see cref="T:System.String" />, das die kulturabhängigen vollständigen Namen der Monate enthält.In einem Kalender mit 12 Monaten ist das 13. Element des Arrays eine leere Zeichenfolge.Das Array für <see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> enthält "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" und "".</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.ArgumentException">The property is being set to an array that is multidimensional or that has a length that is not exactly 13. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.PMDesignator">
+      <summary>Ruft den Zeichenfolgenkennzeichner für Zeitangaben nach 12 Uhr mittags ("post meridiem", p.m.) ab oder legt diesen fest.</summary>
+      <returns>Der Zeichenfolgenkennzeichner für Zeitangaben nach 12 Uhr mittags ("post meridiem", p.m.).Die Standardeinstellung für <see cref="P:System.Globalization.DateTimeFormatInfo.InvariantInfo" /> ist "PM".</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="M:System.Globalization.DateTimeFormatInfo.ReadOnly(System.Globalization.DateTimeFormatInfo)">
+      <summary>Gibt einen schreibgeschützten <see cref="T:System.Globalization.DateTimeFormatInfo" />-Wrapper zurück.</summary>
+      <returns>Ein schreibgeschützter <see cref="T:System.Globalization.DateTimeFormatInfo" /> Wrapper.</returns>
+      <param name="dtfi">Das <see cref="T:System.Globalization.DateTimeFormatInfo" />-Objekt, für das ein Wrapper erstellt wird. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="dtfi" /> is null. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.RFC1123Pattern">
+      <summary>Ruft die benutzerdefinierte Formatzeichenfolge für einen Uhrzeitwert ab, der auf der Spezifikation 1123 Request for Comments (Internet Engineering Task Force- IETF RFC ()) basiert.</summary>
+      <returns>Die benutzerdefinierte Formatierungszeichenfolge für einen Uhrzeitwert, die auf der RFC-Spezifikation 1123 der IETF basiert.</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.ShortDatePattern">
+      <summary>Ruft die benutzerdefinierte Formatzeichenfolge für einen kurzen Datumswert ab oder legt diese fest.</summary>
+      <returns>Die benutzerdefinierte Formatzeichenfolge für einen kurzen Datumswert.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.ShortestDayNames">
+      <summary>Ruft ein Zeichenfolgenarray der am stärksten abgekürzten, eindeutigen Tagesnamen ab, die dem aktuellen <see cref="T:System.Globalization.DateTimeFormatInfo" />-Objekt zugeordnet sind, oder legt diese fest.</summary>
+      <returns>Ein Zeichenfolgenarray von Tagesnamen.</returns>
+      <exception cref="T:System.ArgumentException">In a set operation, the array does not have exactly seven elements.</exception>
+      <exception cref="T:System.ArgumentNullException">In a set operation, the value array or one of the elements of the value array is null.</exception>
+      <exception cref="T:System.InvalidOperationException">In a set operation, the current <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only.</exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.ShortTimePattern">
+      <summary>Ruft die benutzerdefinierte Formatzeichenfolge für einen kurzen Uhrzeitwert ab oder legt diese fest.</summary>
+      <returns>Die benutzerdefinierte Formatzeichenfolge für einen kurzen Zeitwert.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.SortableDateTimePattern">
+      <summary>Ruft die benutzerdefinierte Formatzeichenfolge für einen sortierbaren Datums-und Zeitwert ab.</summary>
+      <returns>Die benutzerdefinierte Formatzeichenfolge für einen sortierbaren Datums-und Zeitwert.</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.UniversalSortableDateTimePattern">
+      <summary>Ruft die benutzerdefinierte Formatzeichenfolge für eine universelle sortierbare Datums- und Zeitzeichenfolge ab.</summary>
+      <returns>Die benutzerdefinierte Formatzeichenfolge für eine universelle sortierbare Datums- und Zeitzeichenfolge.</returns>
+    </member>
+    <member name="P:System.Globalization.DateTimeFormatInfo.YearMonthPattern">
+      <summary>Ruft die benutzerdefinierte Formatzeichenfolge für einen Jahres- und Monatswert ab oder legt diese fest.</summary>
+      <returns>Die benutzerdefinierte Formatzeichenfolge für einen Jahres- und Monatswert.</returns>
+      <exception cref="T:System.ArgumentNullException">The property is being set to null. </exception>
+      <exception cref="T:System.InvalidOperationException">The property is being set and the <see cref="T:System.Globalization.DateTimeFormatInfo" /> object is read-only. </exception>
+    </member>
+    <member name="T:System.Globalization.NumberFormatInfo">
+      <summary>Stellt kulturspezifische Informationen für Formatierung und Analyse für numerische Werte bereitstellt. </summary>
+    </member>
+    <member name="M:System.Globalization.NumberFormatInfo.#ctor">
+      <summary>Initialisiert eine neue, schreibbare Instanz der <see cref="T:System.Globalization.NumberFormatInfo" />-Klasse, die kulturunabhängig (invariant) ist.</summary>
+    </member>
+    <member name="M:System.Globalization.NumberFormatInfo.Clone">
+      <summary>Erstellt eine flache Kopie des <see cref="T:System.Globalization.NumberFormatInfo" />-Objekts.</summary>
+      <returns>Ein neues Objekt, das aus dem ursprünglichen <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt kopiert wurde.</returns>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyDecimalDigits">
+      <summary>Ruft die Anzahl der in Währungswerten zu verwendenden Dezimalstellen ab oder legt diese fest.</summary>
+      <returns>Die Anzahl der in Währungsangaben zu verwendenden Dezimalstellen.Der Standard für <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> ist 2.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Die Eigenschaft wird auf einen Wert kleiner als 0 oder größer als 99 festgelegt. </exception>
+      <exception cref="T:System.InvalidOperationException">Die Eigenschaft wird gerade festgelegt, und das <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt ist schreibgeschützt. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyDecimalSeparator">
+      <summary>Ruft die in Währungsangaben als Dezimaltrennzeichen zu verwendende Zeichenfolge ab oder legt diese fest.</summary>
+      <returns>Die in Währungsangaben als Dezimaltrennzeichen zu verwendende Zeichenfolge.Der Standard für <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> ist ".".</returns>
+      <exception cref="T:System.ArgumentNullException">Die Eigenschaft wird auf null festgelegt. </exception>
+      <exception cref="T:System.InvalidOperationException">Die Eigenschaft wird gerade festgelegt, und das <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt ist schreibgeschützt. </exception>
+      <exception cref="T:System.ArgumentException">Die Eigenschaft wird auf eine leere Zeichenfolge festgelegt.</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyGroupSeparator">
+      <summary>Ruft die Zeichenfolge ab, mit der bei Währungsangaben Zifferngruppen links vom Dezimaltrennzeichen getrennt werden, oder legt diese fest.</summary>
+      <returns>Die Zeichenfolge, mit der bei Währungsangaben Zifferngruppen links vom Dezimaltrennzeichen getrennt werden.Der Standard für <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> ist ",".</returns>
+      <exception cref="T:System.ArgumentNullException">Die Eigenschaft wird auf null festgelegt. </exception>
+      <exception cref="T:System.InvalidOperationException">Die Eigenschaft wird gerade festgelegt, und das <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt ist schreibgeschützt. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyGroupSizes">
+      <summary>Ruft die Anzahl von Ziffern in jeder Gruppe links vom Dezimaltrennzeichen in Währungsangaben ab oder legt diese fest.</summary>
+      <returns>Die Anzahl von Ziffern in jeder Gruppe links vom Dezimaltrennzeichen in Währungsangaben.Der Standard für <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> ist ein eindimensionales Array, das ein einziges, auf 3 festgelegtes Element enthält.</returns>
+      <exception cref="T:System.ArgumentNullException">Die Eigenschaft wird auf null festgelegt. </exception>
+      <exception cref="T:System.ArgumentException">Die Eigenschaft wird festgelegt, und das Array enthält einen Eintrag, dessen Wert kleiner als 0 (null) oder größer als 9 ist.- oder -  Die Eigenschaft wird festgelegt, und das Array enthält einen Eintrag, der nicht der letzte Eintrag und auf 0 (null) festgelegt ist. </exception>
+      <exception cref="T:System.InvalidOperationException">Die Eigenschaft wird gerade festgelegt, und das <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt ist schreibgeschützt. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyNegativePattern">
+      <summary>Ruft das Formatmuster für negative Währungsangaben ab oder legt dieses fest.</summary>
+      <returns>Das Formatmuster für negative Währungsangaben.Der Standard für <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> ist 0 (null), womit "($n)" dargestellt wird, wobei "$" das <see cref="P:System.Globalization.NumberFormatInfo.CurrencySymbol" /> und <paramref name="n" /> eine Zahl ist.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Die Eigenschaft wird auf einen Wert kleiner als 0 oder größer als 15 festgelegt. </exception>
+      <exception cref="T:System.InvalidOperationException">Die Eigenschaft wird gerade festgelegt, und das <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt ist schreibgeschützt. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencyPositivePattern">
+      <summary>Ruft das Formatmuster für positive Währungsangaben ab oder legt dieses fest.</summary>
+      <returns>Das Formatmuster für positive Währungsangaben.Der Standard für <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> ist 0 (null), womit "$n" dargestellt wird, wobei "$" das <see cref="P:System.Globalization.NumberFormatInfo.CurrencySymbol" /> und <paramref name="n" /> eine Zahl ist.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Die Eigenschaft wird auf einen Wert festgelegt, der kleiner als 0 oder größer als 3 ist. </exception>
+      <exception cref="T:System.InvalidOperationException">Die Eigenschaft wird gerade festgelegt, und das <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt ist schreibgeschützt. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrencySymbol">
+      <summary>Ruft die als Währungssymbol zu verwendende Zeichenfolge ab oder legt diese fest.</summary>
+      <returns>Die als Währungssymbol zu verwendende Zeichenfolge.Der Standard für <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> ist "¤".</returns>
+      <exception cref="T:System.ArgumentNullException">Die Eigenschaft wird auf null festgelegt. </exception>
+      <exception cref="T:System.InvalidOperationException">Die Eigenschaft wird gerade festgelegt, und das <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt ist schreibgeschützt. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.CurrentInfo">
+      <summary>Ruft eine schreibgeschützte <see cref="T:System.Globalization.NumberFormatInfo" /> ab, die Werte auf Grundlage der aktuellen Kultur formatiert.</summary>
+      <returns>Eine schreibgeschützte <see cref="T:System.Globalization.NumberFormatInfo" />, die auf der Kultur des aktuellen Threads basiert.</returns>
+    </member>
+    <member name="M:System.Globalization.NumberFormatInfo.GetFormat(System.Type)">
+      <summary>Ruft ein Objekt vom angegebenen Typ ab, das einen Zahlenformatierungsdienst bereitstellt.</summary>
+      <returns>Die aktuelle <see cref="T:System.Globalization.NumberFormatInfo" />, wenn<paramref name="formatType" /> mit dem Typ der aktuellen <see cref="T:System.Globalization.NumberFormatInfo" />, andernfalls null.</returns>
+      <param name="formatType">Der <see cref="T:System.Type" /> des erforderlichen Formatierungsdiensts. </param>
+    </member>
+    <member name="M:System.Globalization.NumberFormatInfo.GetInstance(System.IFormatProvider)">
+      <summary>Ruft die <see cref="T:System.Globalization.NumberFormatInfo" /> ab, die dem angegebenen <see cref="T:System.IFormatProvider" /> zugeordnet ist.</summary>
+      <returns>Die <see cref="T:System.Globalization.NumberFormatInfo" />, die dem angegebenen <see cref="T:System.IFormatProvider" /> zugeordnet ist.</returns>
+      <param name="formatProvider">Der <see cref="T:System.IFormatProvider" />, der zum Abrufen der <see cref="T:System.Globalization.NumberFormatInfo" /> verwendet wird.- oder -  null zum Abrufen von <see cref="P:System.Globalization.NumberFormatInfo.CurrentInfo" />. </param>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.InvariantInfo">
+      <summary>Ruft ein schreibgeschütztes <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt ab, das kulturunabhängig (invariant) ist.</summary>
+      <returns>Ein schreibgeschütztes Objekt, das kulturunabhängig (invariant) ist.</returns>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.IsReadOnly">
+      <summary>Ruft einen Wert ab, der angibt, ob dieses <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt schreibgeschützt ist.</summary>
+      <returns>true, wenn das <see cref="T:System.Globalization.NumberFormatInfo" /> schreibgeschützt ist, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NaNSymbol">
+      <summary>Ruft die Zeichenfolge ab, die den IEEE-NaN-Wert (Not a Number) darstellt, oder legt diese fest.</summary>
+      <returns>Die Zeichenfolge, die den IEEE-NaN-Wert (Not a Number) darstellt.Die Standardeinstellung für <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> ist "NaN".</returns>
+      <exception cref="T:System.ArgumentNullException">Die Eigenschaft wird auf null festgelegt. </exception>
+      <exception cref="T:System.InvalidOperationException">Die Eigenschaft wird gerade festgelegt, und das <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt ist schreibgeschützt. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NegativeInfinitySymbol">
+      <summary>Ruft die Zeichenfolge ab, die minus unendlich darstellt, oder legt diese fest.</summary>
+      <returns>Die Zeichenfolge, die minus unendlich darstellt.Die Standardeinstellung für <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> ist "-Infinity".</returns>
+      <exception cref="T:System.ArgumentNullException">Die Eigenschaft wird auf null festgelegt. </exception>
+      <exception cref="T:System.InvalidOperationException">Die Eigenschaft wird gerade festgelegt, und das <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt ist schreibgeschützt. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NegativeSign">
+      <summary>Ruft die Zeichenfolge ab, die kennzeichnet, dass die zugeordnete Zahl negativ ist, oder legt diese fest.</summary>
+      <returns>Die Zeichenfolge, die kennzeichnet, dass die zugeordnete Zahl negativ ist.Die Standardeinstellung für <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> ist "-".</returns>
+      <exception cref="T:System.ArgumentNullException">Die Eigenschaft wird auf null festgelegt. </exception>
+      <exception cref="T:System.InvalidOperationException">Die Eigenschaft wird gerade festgelegt, und das <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt ist schreibgeschützt. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NumberDecimalDigits">
+      <summary>Ruft die Anzahl der in numerischen Werten zu verwendenden Dezimalstellen ab oder legt diese fest.</summary>
+      <returns>Die Anzahl der in numerischen Werten zu verwendenden Dezimalstellen.Der Standard für <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> ist 2.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Die Eigenschaft wird auf einen Wert kleiner als 0 oder größer als 99 festgelegt. </exception>
+      <exception cref="T:System.InvalidOperationException">Die Eigenschaft wird gerade festgelegt, und das <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt ist schreibgeschützt. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NumberDecimalSeparator">
+      <summary>Ruft die in numerischen Werten als Dezimaltrennzeichen zu verwendende Zeichenfolge ab oder legt diese fest.</summary>
+      <returns>Gibt die in numerischen Werten als Dezimaltrennzeichen zu verwendende Zeichenfolge an.Der Standard für <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> ist ".".</returns>
+      <exception cref="T:System.ArgumentNullException">Die Eigenschaft wird auf null festgelegt. </exception>
+      <exception cref="T:System.InvalidOperationException">Die Eigenschaft wird gerade festgelegt, und das <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt ist schreibgeschützt. </exception>
+      <exception cref="T:System.ArgumentException">Die Eigenschaft wird auf eine leere Zeichenfolge festgelegt.</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NumberGroupSeparator">
+      <summary>Ruft die Zeichenfolge ab, mit der bei numerischen Werten Zifferngruppen links vom Dezimaltrennzeichen getrennt werden, oder legt diese fest.</summary>
+      <returns>Die Zeichenfolge, mit der bei numerischen Werten Zifferngruppen links vom Dezimaltrennzeichen getrennt werden.Der Standard für <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> ist ",".</returns>
+      <exception cref="T:System.ArgumentNullException">Die Eigenschaft wird auf null festgelegt. </exception>
+      <exception cref="T:System.InvalidOperationException">Die Eigenschaft wird gerade festgelegt, und das <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt ist schreibgeschützt. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NumberGroupSizes">
+      <summary>Ruft die Anzahl von Ziffern in jeder Gruppe links vom Dezimaltrennzeichen in numerischen Werten ab oder legt diese fest.</summary>
+      <returns>Die Anzahl von Ziffern in jeder Gruppe links vom Dezimaltrennzeichen in numerischen Werten.Der Standard für <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> ist ein eindimensionales Array, das ein einziges, auf 3 festgelegtes Element enthält.</returns>
+      <exception cref="T:System.ArgumentNullException">Die Eigenschaft wird auf null festgelegt. </exception>
+      <exception cref="T:System.ArgumentException">Die Eigenschaft wird festgelegt, und das Array enthält einen Eintrag, dessen Wert kleiner als 0 (null) oder größer als 9 ist.- oder -  Die Eigenschaft wird festgelegt, und das Array enthält einen Eintrag, der nicht der letzte Eintrag und auf 0 (null) festgelegt ist. </exception>
+      <exception cref="T:System.InvalidOperationException">Die Eigenschaft wird gerade festgelegt, und das <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt ist schreibgeschützt. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.NumberNegativePattern">
+      <summary>Ruft das Formatmuster für negative numerische Werte ab oder legt dieses fest.</summary>
+      <returns>Das Formatmuster für negative numerische Werte. </returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Die Eigenschaft wird auf einen Wert festgelegt, der kleiner als 0 oder größer als 4 ist. </exception>
+      <exception cref="T:System.InvalidOperationException">Die Eigenschaft wird gerade festgelegt, und das <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt ist schreibgeschützt. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentDecimalDigits">
+      <summary>Ruft die Anzahl der in Prozentwerten zu verwendenden Dezimalstellen ab oder legt diese fest. </summary>
+      <returns>Die Anzahl der in Prozentangaben zu verwendenden Dezimalstellen.Der Standard für <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> ist 2.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Die Eigenschaft wird auf einen Wert kleiner als 0 oder größer als 99 festgelegt. </exception>
+      <exception cref="T:System.InvalidOperationException">Die Eigenschaft wird gerade festgelegt, und das <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt ist schreibgeschützt. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentDecimalSeparator">
+      <summary>Ruft die in Prozentwerten als Dezimaltrennzeichen zu verwendende Zeichenfolge ab oder legt diese fest. </summary>
+      <returns>Die in Prozentangaben als Dezimaltrennzeichen zu verwendende Zeichenfolge.Der Standard für <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> ist ".".</returns>
+      <exception cref="T:System.ArgumentNullException">Die Eigenschaft wird auf null festgelegt. </exception>
+      <exception cref="T:System.InvalidOperationException">Die Eigenschaft wird gerade festgelegt, und das <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt ist schreibgeschützt. </exception>
+      <exception cref="T:System.ArgumentException">Die Eigenschaft wird auf eine leere Zeichenfolge festgelegt.</exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentGroupSeparator">
+      <summary>Ruft die Zeichenfolge ab, mit der in Prozentwerten Zifferngruppen links vom Dezimaltrennzeichen getrennt werden, oder legt diese fest. </summary>
+      <returns>Die Zeichenfolge, mit der bei Prozentangaben Zifferngruppen links vom Dezimaltrennzeichen getrennt werden.Der Standard für <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> ist ",".</returns>
+      <exception cref="T:System.ArgumentNullException">Die Eigenschaft wird auf null festgelegt. </exception>
+      <exception cref="T:System.InvalidOperationException">Die Eigenschaft wird gerade festgelegt, und das <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt ist schreibgeschützt. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentGroupSizes">
+      <summary>Ruft die Anzahl von Ziffern in jeder Gruppe links vom Dezimaltrennzeichen in Prozentwerten ab oder legt diese fest. </summary>
+      <returns>Die Anzahl von Ziffern in jeder Gruppe links vom Dezimaltrennzeichen in Prozentangaben.Der Standard für <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> ist ein eindimensionales Array, das ein einziges, auf 3 festgelegtes Element enthält.</returns>
+      <exception cref="T:System.ArgumentNullException">Die Eigenschaft wird auf null festgelegt. </exception>
+      <exception cref="T:System.ArgumentException">Die Eigenschaft wird festgelegt, und das Array enthält einen Eintrag, dessen Wert kleiner als 0 (null) oder größer als 9 ist.- oder -  Die Eigenschaft wird festgelegt, und das Array enthält einen Eintrag, der nicht der letzte Eintrag und auf 0 (null) festgelegt ist. </exception>
+      <exception cref="T:System.InvalidOperationException">Die Eigenschaft wird gerade festgelegt, und das <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt ist schreibgeschützt. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentNegativePattern">
+      <summary>Ruft das Formatmuster für negative Prozentangaben ab oder legt dieses fest.</summary>
+      <returns>Das Formatmuster für negative Prozentangaben.Die Standardeinstellung für <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> ist (null), womit "-n %" dargestellt wird, wobei "%" das <see cref="P:System.Globalization.NumberFormatInfo.PercentSymbol" /> und <paramref name="n" /> eine Zahl ist.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Die Eigenschaft wird auf einen Wert kleiner als 0 oder größer als 11 festgelegt. </exception>
+      <exception cref="T:System.InvalidOperationException">Die Eigenschaft wird gerade festgelegt, und das <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt ist schreibgeschützt. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentPositivePattern">
+      <summary>Ruft das Formatmuster für positive Prozentangaben ab oder legt dieses fest.</summary>
+      <returns>Das Formatmuster für positive Prozentangaben.Die Standardeinstellung für <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> ist (null), womit "n %" dargestellt wird, wobei "%" das <see cref="P:System.Globalization.NumberFormatInfo.PercentSymbol" /> und <paramref name="n" /> eine Zahl ist.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Die Eigenschaft wird auf einen Wert festgelegt, der kleiner als 0 oder größer als 3 ist. </exception>
+      <exception cref="T:System.InvalidOperationException">Die Eigenschaft wird gerade festgelegt, und das <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt ist schreibgeschützt. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PercentSymbol">
+      <summary>Ruft die als Prozentsymbol zu verwendende Zeichenfolge ab oder legt diese fest.</summary>
+      <returns>Die als Prozentsymbol zu verwendende Zeichenfolge.Der Standard für <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> ist "%".</returns>
+      <exception cref="T:System.ArgumentNullException">Die Eigenschaft wird auf null festgelegt. </exception>
+      <exception cref="T:System.InvalidOperationException">Die Eigenschaft wird gerade festgelegt, und das <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt ist schreibgeschützt. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PerMilleSymbol">
+      <summary>Ruft die als Promillesymbol zu verwendende Zeichenfolge ab oder legt diese fest.</summary>
+      <returns>Die als Promillesymbol zu verwendende Zeichenfolge.Der Standardwert für<see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> ist "‰", also das Unicode-Zeichen "U+2030".</returns>
+      <exception cref="T:System.ArgumentNullException">Die Eigenschaft wird auf null festgelegt. </exception>
+      <exception cref="T:System.InvalidOperationException">Die Eigenschaft wird gerade festgelegt, und das <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt ist schreibgeschützt. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PositiveInfinitySymbol">
+      <summary>Ruft die Zeichenfolge ab, die plus unendlich darstellt, oder legt diese fest.</summary>
+      <returns>Die Zeichenfolge, die plus unendlich darstellt.Die Standardeinstellung für <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> ist "Infinity".</returns>
+      <exception cref="T:System.ArgumentNullException">Die Eigenschaft wird auf null festgelegt. </exception>
+      <exception cref="T:System.InvalidOperationException">Die Eigenschaft wird gerade festgelegt, und das <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt ist schreibgeschützt. </exception>
+    </member>
+    <member name="P:System.Globalization.NumberFormatInfo.PositiveSign">
+      <summary>Ruft die Zeichenfolge ab, die kennzeichnet, dass die zugeordnete Zahl positiv ist, oder legt diese fest.</summary>
+      <returns>Die Zeichenfolge, die kennzeichnet, dass die zugeordnete Zahl positiv ist.Der Standard für <see cref="P:System.Globalization.NumberFormatInfo.InvariantInfo" /> ist "+".</returns>
+      <exception cref="T:System.ArgumentNullException">Der in einem Set-Vorgang zuzuweisende Wert ist null.</exception>
+      <exception cref="T:System.InvalidOperationException">Die Eigenschaft wird gerade festgelegt, und das <see cref="T:System.Globalization.NumberFormatInfo" />-Objekt ist schreibgeschützt. </exception>
+    </member>
+    <member name="M:System.Globalization.NumberFormatInfo.ReadOnly(System.Globalization.NumberFormatInfo)">
+      <summary>Gibt einen schreibgeschützten <see cref="T:System.Globalization.NumberFormatInfo" />-Wrapper zurück.</summary>
+      <returns>Ein schreibgeschützter <see cref="T:System.Globalization.NumberFormatInfo" />-Wrapper um <paramref name="nfi" />.</returns>
+      <param name="nfi">Die zu umschließende <see cref="T:System.Globalization.NumberFormatInfo" />. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="nfi" /> ist null. </exception>
+    </member>
+    <member name="T:System.Globalization.RegionInfo">
+      <summary>Enthält Informationen über das Land bzw. die Region.</summary>
+    </member>
+    <member name="M:System.Globalization.RegionInfo.#ctor(System.String)">
+      <summary>	Initialisiert eine neue Instanz der <see cref="T:System.Globalization.RegionInfo" />-Klasse auf der Grundlage des Landes oder der Region bzw. einer bestimmten Kultur, dessen bzw. deren Name angegeben ist.</summary>
+      <param name="name">Eine Zeichenfolge, die einen aus zwei Buchstaben bestehenden Landes-/Regionscodes nach ISO 3166 enthält.- oder - Eine Zeichenfolge, die den Kulturnamen für eine bestimmte Kultur oder Nur-Windows-Kultur enthält.Wenn der Kulturname nicht in einem Format gemäß dem Standard RFC 4646 vorliegt, muss in der Anwendung der vollständige Kulturname angegeben werden. Die Angabe des Landes oder der Region reicht nicht aus.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> is null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> is not a valid country/region name or specific culture name.</exception>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.CurrencySymbol">
+      <summary>Ruft das dem Land bzw. der Region zugeordnete Währungssymbol ab.</summary>
+      <returns>Das dem Land bzw. der Region zugeordnete Währungssymbol.</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.CurrentRegion">
+      <summary>Ruft die <see cref="T:System.Globalization.RegionInfo" /> ab, die das vom aktuellen Thread verwendete Land oder die Region darstellt.</summary>
+      <returns>Die <see cref="T:System.Globalization.RegionInfo" />, die das vom aktuellen Thread verwendete Land oder die Region darstellt.</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.DisplayName">
+      <summary>Ruft den vollständigen Namen des Landes bzw. der Region in der Sprache der lokalisierten Version von .NET Framework ab.</summary>
+      <returns>Der vollständige Name des Landes bzw. der Region in der Sprache der lokalisierten Version von .NET Framework.</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.EnglishName">
+      <summary>Ruft den vollständigen Namen des Landes bzw. der Region in Englisch ab.</summary>
+      <returns>Der vollständige Name des Landes bzw. der Region auf Englisch.</returns>
+    </member>
+    <member name="M:System.Globalization.RegionInfo.Equals(System.Object)">
+      <summary>Bestimmt, ob das angegebene Objekt dieselbe Instanz aufweist wie die aktuelle <see cref="T:System.Globalization.RegionInfo" />.</summary>
+      <returns>true, wenn der <paramref name="value" />-Parameter ein <see cref="T:System.Globalization.RegionInfo" />-Objekt ist und dessen <see cref="P:System.Globalization.RegionInfo.Name" />-Eigenschaft mit der <see cref="P:System.Globalization.RegionInfo.Name" />-Eigenschaft des aktuellen <see cref="T:System.Globalization.RegionInfo" />-Objekts übereinstimmt, andernfalls false.</returns>
+      <param name="value">Das Objekt, das mit der aktuellen <see cref="T:System.Globalization.RegionInfo" /> verglichen werden soll. </param>
+    </member>
+    <member name="M:System.Globalization.RegionInfo.GetHashCode">
+      <summary>Fungiert als Hashfunktion für die aktuelle <see cref="T:System.Globalization.RegionInfo" />, die sich für die Verwendung in Hashalgorithmen und -datenstrukturen eignet, z. B. in einer Hashtabelle.</summary>
+      <returns>Ein Hashcode für die aktuelle <see cref="T:System.Globalization.RegionInfo" />.</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.IsMetric">
+      <summary>Ruft einen Wert ab, der angibt, ob in dem Land bzw. der Region für Maßeinheiten das metrische System verwendet wird.</summary>
+      <returns>true, wenn in dem Land oder der Region für Maßeinheiten das metrische System verwendet wird, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.ISOCurrencySymbol">
+      <summary>Ruft das aus drei Zeichen bestehende, dem Land bzw. der Region nach ISO 4217 zugeordnete Währungssymbol ab.</summary>
+      <returns>Das aus drei Zeichen bestehende, dem Land bzw. der Region nach ISO 4217 zugeordnete Währungssymbol.</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.Name">
+      <summary>Ruft den Namen oder den aus zwei Buchstaben bestehenden Code für das Land oder die Region gemäß ISO 3166 für das aktuelle <see cref="T:System.Globalization.RegionInfo" />-Objekt ab.</summary>
+      <returns>Der vom <paramref name="name" />-Parameter des <see cref="M:System.Globalization.RegionInfo.#ctor(System.String)" />-Konstruktors angegebene Wert.Der zurückgegebene Wert besteht aus Großbuchstaben.- oder - Der vom <paramref name="culture" />-Parameter des <see cref="M:System.Globalization.RegionInfo.#ctor(System.Int32)" />Konstruktors angegebene zweibuchstabige Code für das Land oder die Region gemäß ISO 3166.Der zurückgegebene Wert besteht aus Großbuchstaben.</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.NativeName">
+      <summary>Ruft den Namen eines Lands oder einer Region in der systemeigenen Sprache des Lands oder der Region ab.</summary>
+      <returns>Der systemeigene Name des Lands oder der Region in der Sprache, die dem Code für das Land oder die Region gemäß ISO 3166 entspricht. </returns>
+    </member>
+    <member name="M:System.Globalization.RegionInfo.ToString">
+      <summary>Gibt eine Zeichenfolge zurück, die den Kulturnamen oder den aus zwei Buchstaben bestehenden Code nach ISO 3166 für das Land oder die Region für die aktuelle <see cref="T:System.Globalization.RegionInfo" /> enthält.</summary>
+      <returns>Eine Zeichenfolge, die den Kulturnamen oder den aus zwei Buchstaben bestehenden Code nach ISO 3166 für das Land oder die Region für die aktuelle <see cref="T:System.Globalization.RegionInfo" /> enthält.</returns>
+    </member>
+    <member name="P:System.Globalization.RegionInfo.TwoLetterISORegionName">
+      <summary>Ruft den in ISO 3166 definierten, aus zwei Buchstaben bestehenden Code für das Land oder die Region ab.</summary>
+      <returns>Der in ISO 3166 definierte, aus zwei Buchstaben bestehende Code für das Land oder die Region.</returns>
+    </member>
+    <member name="T:System.Globalization.StringInfo">
+      <summary>Ermöglicht das Aufteilen einer Zeichenfolge in Textelemente und das Durchlaufen dieser Textelemente.</summary>
+    </member>
+    <member name="M:System.Globalization.StringInfo.#ctor">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Globalization.StringInfo" />-Klasse. </summary>
+    </member>
+    <member name="M:System.Globalization.StringInfo.#ctor(System.String)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Globalization.StringInfo" />-Klasse für eine angegebene Zeichenfolge.</summary>
+      <param name="value">Eine Zeichenfolge, die dieses <see cref="T:System.Globalization.StringInfo" />-Objekt initialisiert.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> ist null.</exception>
+    </member>
+    <member name="M:System.Globalization.StringInfo.Equals(System.Object)">
+      <summary>Gibt an, ob das aktuelle <see cref="T:System.Globalization.StringInfo" />-Objekt einem angegebenen Objekt entspricht.</summary>
+      <returns>true, wenn der <paramref name="value" />-Parameter ein <see cref="T:System.Globalization.StringInfo" />-Objekt ist und dessen <see cref="P:System.Globalization.StringInfo.String" />-Eigenschaft mit der <see cref="P:System.Globalization.StringInfo.String" />-Eigenschaft dieses <see cref="T:System.Globalization.StringInfo" />-Objekts übereinstimmt, andernfalls false.</returns>
+      <param name="value">Ein Objekt.</param>
+    </member>
+    <member name="M:System.Globalization.StringInfo.GetHashCode">
+      <summary>Berechnet einen Hashcode für den Wert des aktuellen <see cref="T:System.Globalization.StringInfo" />-Objekts.</summary>
+      <returns>Ein 32-Bit-Ganzzahl-Hashcode mit Vorzeichen, der auf dem Zeichenfolgenwert dieses <see cref="T:System.Globalization.StringInfo" />-Objekts basiert.</returns>
+    </member>
+    <member name="M:System.Globalization.StringInfo.GetNextTextElement(System.String)">
+      <summary>Ruft das erste Textelement in einer angegebenen Zeichenfolge ab.</summary>
+      <returns>Eine Zeichenfolge, die das erste Textelement aus der angegebenen Zeichenfolge enthält.</returns>
+      <param name="str">Die Zeichenfolge, aus der das Textelement abgerufen werden soll. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> ist null. </exception>
+    </member>
+    <member name="M:System.Globalization.StringInfo.GetNextTextElement(System.String,System.Int32)">
+      <summary>Ruft das Textelement am angegebenen Index der angegebenen Zeichenfolge ab.</summary>
+      <returns>Eine Zeichenfolge, die das Textelement am angegebenen Index der angegebenen Zeichenfolge enthält.</returns>
+      <param name="str">Die Zeichenfolge, aus der das Textelement abgerufen werden soll. </param>
+      <param name="index">Der nullbasierte Index, an dem das Textelement beginnt. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> ist null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> liegt außerhalb des Bereichs der gültigen Indizes für <paramref name="str" />. </exception>
+    </member>
+    <member name="M:System.Globalization.StringInfo.GetTextElementEnumerator(System.String)">
+      <summary>Gibt einen Enumerator zurück, der die Textelemente der gesamten Zeichenfolge durchläuft.</summary>
+      <returns>Ein <see cref="T:System.Globalization.TextElementEnumerator" /> für die gesamte Zeichenfolge.</returns>
+      <param name="str">Die Zeichenfolge, die durchlaufen werden soll. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> ist null. </exception>
+    </member>
+    <member name="M:System.Globalization.StringInfo.GetTextElementEnumerator(System.String,System.Int32)">
+      <summary>Gibt einen Enumerator zurück, der die Textelemente der Zeichenfolge beginnend am angegebenen Index durchläuft.</summary>
+      <returns>Ein <see cref="T:System.Globalization.TextElementEnumerator" /> für die am <paramref name="index" /> beginnende Zeichenfolge.</returns>
+      <param name="str">Die Zeichenfolge, die durchlaufen werden soll. </param>
+      <param name="index">Der nullbasierte Index, an dem das Durchlaufen begonnen werden soll. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> ist null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> liegt außerhalb des Bereichs der gültigen Indizes für <paramref name="str" />. </exception>
+    </member>
+    <member name="P:System.Globalization.StringInfo.LengthInTextElements">
+      <summary>Ruft die Anzahl der Textelemente im aktuellen <see cref="T:System.Globalization.StringInfo" />-Objekt ab.</summary>
+      <returns>Die Anzahl der Basiszeichen, Ersatzzeichenpaare und Kombinationszeichenfolgen in diesem <see cref="T:System.Globalization.StringInfo" />-Objekt.</returns>
+    </member>
+    <member name="M:System.Globalization.StringInfo.ParseCombiningCharacters(System.String)">
+      <summary>Gibt die Indizes aller Basiszeichen, hohen Ersatzzeichen oder Steuerzeichen in der angegebenen Zeichenfolge zurück.</summary>
+      <returns>Ein Array von Ganzzahlen, das die nullbasierten Indizes aller Basiszeichen, hohen Ersatzzeichen oder Steuerzeichen in der angegebenen Zeichenfolge enthält.</returns>
+      <param name="str">Die zu durchsuchende Zeichenfolge. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> ist null. </exception>
+    </member>
+    <member name="P:System.Globalization.StringInfo.String">
+      <summary>Ruft den Wert des aktuellen <see cref="T:System.Globalization.StringInfo" />-Objekts ab oder legt diesen fest.</summary>
+      <returns>Die Zeichenfolge, die den Wert des aktuellen <see cref="T:System.Globalization.StringInfo" />-Objekts bildet.</returns>
+      <exception cref="T:System.ArgumentNullException">Der Wert in einem set-Vorgang ist null.</exception>
+    </member>
+    <member name="T:System.Globalization.TextElementEnumerator">
+      <summary>Listet die Textelemente einer Zeichenfolge auf. </summary>
+    </member>
+    <member name="P:System.Globalization.TextElementEnumerator.Current">
+      <summary>Ruft das aktuelle Textelement in der Zeichenfolge ab.</summary>
+      <returns>Ein Objekt, das das aktuelle Textelement in der Zeichenfolge enthält.</returns>
+      <exception cref="T:System.InvalidOperationException">Der Enumerator ist vor dem ersten Textelement oder hinter dem letzten Textelement der Zeichenfolge positioniert. </exception>
+    </member>
+    <member name="P:System.Globalization.TextElementEnumerator.ElementIndex">
+      <summary>Ruft den Index des Textelements ab, über dem sich der Enumerator gerade befindet.</summary>
+      <returns>Der Index des Textelements, über dem sich der Enumerator gerade befindet.</returns>
+      <exception cref="T:System.InvalidOperationException">Der Enumerator ist vor dem ersten Textelement oder hinter dem letzten Textelement der Zeichenfolge positioniert. </exception>
+    </member>
+    <member name="M:System.Globalization.TextElementEnumerator.GetTextElement">
+      <summary>Ruft das aktuelle Textelement in der Zeichenfolge ab.</summary>
+      <returns>Eine neue Zeichenfolge, die das aktuelle Textelement aus der gerade gelesenen Zeichenfolge enthält.</returns>
+      <exception cref="T:System.InvalidOperationException">Der Enumerator ist vor dem ersten Textelement oder hinter dem letzten Textelement der Zeichenfolge positioniert. </exception>
+    </member>
+    <member name="M:System.Globalization.TextElementEnumerator.MoveNext">
+      <summary>Setzt den Enumerator auf das nächste Textelement der Zeichenfolge.</summary>
+      <returns>true, wenn der Enumerator erfolgreich auf das nächste Textelement gesetzt wurde, false, wenn der Enumerator das Ende der Zeichenfolge überschritten hat.</returns>
+    </member>
+    <member name="M:System.Globalization.TextElementEnumerator.Reset">
+      <summary>Setzt den Enumerator auf seine anfängliche Position vor dem ersten Textelement in der Zeichenfolge.</summary>
+    </member>
+    <member name="T:System.Globalization.TextInfo">
+      <summary>Definiert für ein bestimmtes Schriftsystem typische Texteigenschaften und -verhalten, z. B. Groß-/Kleinschreibung. </summary>
+    </member>
+    <member name="P:System.Globalization.TextInfo.CultureName">
+      <summary>Ruft den Namen der Kultur ab, die dem aktuellen <see cref="T:System.Globalization.TextInfo" />Objekt zugeordnet ist.</summary>
+      <returns>Der Name einer Kultur. </returns>
+    </member>
+    <member name="M:System.Globalization.TextInfo.Equals(System.Object)">
+      <summary>Bestimmt, ob das angegebene Objekt dasselbe Schriftsystem darstellt wie das aktuelle <see cref="T:System.Globalization.TextInfo" />-Objekt.</summary>
+      <returns>true, wenn <paramref name="obj" /> dasselbe Schriftsystem darstellt wie die aktuelle <see cref="T:System.Globalization.TextInfo" />, andernfalls false.</returns>
+      <param name="obj">Das Objekt, das mit der aktuellen <see cref="T:System.Globalization.TextInfo" /> verglichen werden soll. </param>
+    </member>
+    <member name="M:System.Globalization.TextInfo.GetHashCode">
+      <summary>Fungiert als Hashfunktion für die aktuelle <see cref="T:System.Globalization.TextInfo" />, die sich für die Verwendung in Hashalgorithmen und -datenstrukturen eignet, z. B. in einer Hashtabelle.</summary>
+      <returns>Ein Hashcode für die aktuelle <see cref="T:System.Globalization.TextInfo" />.</returns>
+    </member>
+    <member name="P:System.Globalization.TextInfo.IsReadOnly">
+      <summary>Ruft einen Wert ab, der angibt, ob das aktuelle <see cref="T:System.Globalization.TextInfo" />-Objekt schreibgeschützt ist.</summary>
+      <returns>true, wenn das <see cref="T:System.Globalization.TextInfo" />-Objekt schreibgeschützt ist, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Globalization.TextInfo.IsRightToLeft">
+      <summary>	Ruft einen Wert ab, der angibt, ob das aktuelle <see cref="T:System.Globalization.TextInfo" />-Objekt ein Schriftsystem mit Schreibrichtung von rechts nach links darstellt.</summary>
+      <returns>true, wenn die Schreibrichtung von rechts nach links verläuft, andernfalls false.</returns>
+    </member>
+    <member name="P:System.Globalization.TextInfo.ListSeparator">
+      <summary>Ruft die Zeichenfolge ab, die Elemente in einer Liste trennt, oder legt diese fest.</summary>
+      <returns>Die Zeichenfolge, die Elemente in einer Liste trennt.</returns>
+      <exception cref="T:System.ArgumentNullException">The value in a set operation is null.</exception>
+      <exception cref="T:System.InvalidOperationException">In a set operation, the current <see cref="T:System.Globalization.TextInfo" /> object is read-only.</exception>
+    </member>
+    <member name="M:System.Globalization.TextInfo.ToLower(System.Char)">
+      <summary>Wandelt das angegebene Zeichen in einen Kleinbuchstaben um.</summary>
+      <returns>Das in einen Kleinbuchstaben konvertierte angegebene Zeichen.</returns>
+      <param name="c">Das in einen Kleinbuchstaben umzuwandelnde Zeichen. </param>
+    </member>
+    <member name="M:System.Globalization.TextInfo.ToLower(System.String)">
+      <summary>Wandelt die angegebene Zeichenfolge in Kleinbuchstaben um.</summary>
+      <returns>Die in Kleinbuchstaben konvertierte angegebene Zeichenfolge.</returns>
+      <param name="str">Die in Kleinbuchstaben umzuwandelnde Zeichenfolge. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> is null. </exception>
+    </member>
+    <member name="M:System.Globalization.TextInfo.ToString">
+      <summary>Gibt eine Zeichenfolge zurück, die die aktuelle <see cref="T:System.Globalization.TextInfo" /> darstellt.</summary>
+      <returns>Eine Zeichenfolge, die den aktuellen <see cref="T:System.Globalization.TextInfo" /> darstellt.</returns>
+    </member>
+    <member name="M:System.Globalization.TextInfo.ToUpper(System.Char)">
+      <summary>Wandelt das angegebene Zeichen in einen Großbuchstaben um.</summary>
+      <returns>Das in einen Großbuchstaben konvertierte angegebene Zeichen.</returns>
+      <param name="c">Das in einen Großbuchstaben umzuwandelnde Zeichen. </param>
+    </member>
+    <member name="M:System.Globalization.TextInfo.ToUpper(System.String)">
+      <summary>Wandelt die angegebene Zeichenfolge in Großbuchstaben um.</summary>
+      <returns>Die in Großbuchstaben konvertierte angegebene Zeichenfolge.</returns>
+      <param name="str">Die in Großbuchstaben umzuwandelnde Zeichenfolge. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> is null. </exception>
+    </member>
+    <member name="T:System.Globalization.UnicodeCategory">
+      <summary>Definiert die Unicode-Kategorie eines Zeichens.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.ClosePunctuation">
+      <summary>Das schließende Zeichen eines Satzzeichenpaars, z. B. von einfachen, eckigen oder geschweiften Klammern.Dargestellt wird es durch die Unicode-Bezeichnung "Pe" (Punctuation, Close, d. h. Interpunktion, schließen).Der Wert ist 21 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.ConnectorPunctuation">
+      <summary>Das Verbindungssatzzeichen, das zwei Zeichen verbindet.Dargestellt wird es durch die Unicode-Bezeichnung "Pc" (Punctuation, Connector, d. h. Interpunktion, Verbindung).Der Wert ist 18 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.Control">
+      <summary>Ein Steuerungscodezeichen, dessen Unicode-Wert U+007F ist oder im Bereich zwischen U+0000 und U+001F oder zwischen U+0080 und U+009F liegt.Dargestellt wird es durch die Unicode-Bezeichnung "Cc" (Other, Control, d. h. Andere, Steuerzeichen).Der Wert ist 14 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.CurrencySymbol">
+      <summary>Ein Währungssymbolzeichen.Dargestellt wird es durch die Unicode-Bezeichnung "Sc" (Symbol, Currency, d. h. Symbol, Währung).Der Wert ist 26 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.DashPunctuation">
+      <summary>Das Gedankenstrich- oder Bindestrichzeichen.Dargestellt wird es durch die Unicode-Bezeichnung "Pd" (Punctuation, Dash, d. h. Interpunktion, Bindestrich).Der Wert ist 19 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.DecimalDigitNumber">
+      <summary>Ein Dezimalzifferzeichen, also ein Zeichen im Bereich von 0 bis 9.Wird durch die Unicode-Bezeichnung "Nd" (Nummer, Dezimalziffer) dargestellt.Der Wert ist 8 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.EnclosingMark">
+      <summary>Ein einschließendes Zeichen. Dies ist ein Kombinationszeichen ohne Zwischenraum, das alle vorhergehenden Zeichen bis einschließlich eines Basiszeichens umgibt.Dargestellt wird es durch die Unicode-Bezeichnung "Me" (Mark, Enclosing, d. h. Satzzeichen, einschließend).Der Wert ist 7 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.FinalQuotePunctuation">
+      <summary>Das schließende Anführungszeichen oder Schlussanführungszeichen.Dargestellt wird es durch die Unicode-Bezeichnung "Pf" (Punctuation, Final Quote, d. h. Interpunktion, schließendes Anführungszeichen).Der Wert ist 23 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.Format">
+      <summary>Ein Formatzeichen, das sich auf das Textlayout oder die Textverarbeitungsvorgänge auswirkt, normalerweise jedoch nicht gerendert wird.Dargestellt wird es durch die Unicode-Bezeichnung "Cf" (Other, Format, d. h. Andere, Format).Der Wert ist 15 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.InitialQuotePunctuation">
+      <summary>Das öffnende Anführungszeichen oder Anfangsanführungszeichen.Dargestellt wird es durch die Unicode-Bezeichnung "Pi" (Punctuation, Initial Quote, d. h. Interpunktion, öffnendes Anführungszeichen).Der Wert ist 22 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.LetterNumber">
+      <summary>Eine Zahl, die anstelle einer Dezimalzahl durch einen Buchstaben dargestellt wird, z. B. "V", die römische Ziffer Fünf.Dargestellt wird es durch die Unicode-Bezeichnung "Nl" (number, letter, d. h. Zahl, Buchstabe).Der Wert ist 9 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.LineSeparator">
+      <summary>Ein zum Trennen von Textzeilen verwendetes Zeichen.Dargestellt wird es durch die Unicode-Bezeichnung "Zl" (Separator, Line, d. h. Trennzeichen, Zeile).Der Wert ist 12 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.LowercaseLetter">
+      <summary>Ein Kleinbuchstabe.Dargestellt wird es durch die Unicode-Bezeichnung "Ll" (Letter, Lowercase, d. h. Buchstabe, Kleinschreibung).Der Wert ist 1.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.MathSymbol">
+      <summary>Ein mathematisches Symbolzeichen, z. B. "+" oder "=".Dargestellt wird es durch die Unicode-Bezeichnung "Sm" (Symbol, Math, d. h. Symbol, Mathematik).Der Wert ist 25 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.ModifierLetter">
+      <summary>Ein Modifikationsbuchstabenzeichen, d. h. ein allein stehendes Zeichen mit Leerzeichen, das Änderungen an einem vorangehenden Buchstaben angibt.Dargestellt wird es durch die Unicode-Bezeichnung "Lm" (Letter, Modifier, d. h. Buchstabe, Modifizierer).Der Wert ist 3 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.ModifierSymbol">
+      <summary>Ein Modifikationssymbolzeichen, das Änderungen an umgebenden Zeichen angibt.So gibt z. B. der Bruchstrich an, dass die links stehende Zahl der Zähler und die rechts stehende Zahl der Nenner ist.Dargestellt wird es durch die Unicode-Bezeichnung "Sk" (Symbol, Modifier, d. h. Symbol, Modifizierer).Der Wert ist 27 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.NonSpacingMark">
+      <summary>Ein Zeichen ohne Zwischenraum, das Änderungen eines Basiszeichens angibt.Dargestellt wird es durch die Unicode-Bezeichnung "Mn" (Mark, Nonspacing, d. h. Satzzeichen, ohne horizontalen Vorschub).Der Wert ist 5 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OpenPunctuation">
+      <summary>Das öffnende Zeichen eines Satzzeichenpaars, z. B. von einfachen, eckigen oder geschweiften Klammern.Dargestellt wird es durch die Unicode-Bezeichnung "Ps" (Punctuation, Open, d. h. Interpunktion, öffnend).Der Wert ist 20 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OtherLetter">
+      <summary>Ein Buchstabe, der kein Großbuchstabe, Kleinbuchstabe, Titelschriftbuchstabe oder Modifikationszeichen ist.Dargestellt wird es durch die Unicode-Bezeichnung "Lo" (Letter, Other, d. h. Buchstabe, andere).Der Wert ist 4 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OtherNotAssigned">
+      <summary>Ein Zeichen, das keiner Unicode-Kategorie zugeordnet ist.Dargestellt wird dies durch die Unicode-Bezeichnung "Cn" (Other, Not Assigned, d. h. Andere, nicht zugeordnet).Der Wert ist 29 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OtherNumber">
+      <summary>Eine Zahl, die weder eine Dezimalzahl noch eine Buchstabenzahl ist, z. B. der Bruch 1/2.Dieses Zeichen wird durch die Unicode-Bezeichnung "No" (Number, Other = Zahl, Sonstiges) dargestellt.Der Wert ist 10 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OtherPunctuation">
+      <summary>Ein Satzzeichen, das kein Verbindungszeichen, Gedankenstrich, öffnendes Satzzeichen, schließendes Satzzeichen, öffnendes Anführungszeichen oder schließendes Anführungszeichen ist.Dargestellt wird es durch die Unicode-Bezeichnung "Po" (Punctuation, Other, d. h. Interpunktion, Andere).Der Wert ist 24 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.OtherSymbol">
+      <summary>Ein Symbolzeichen, das kein mathematisches Symbol, Währungssymbol oder Modifikationssymbol ist.Dargestellt wird es durch die Unicode-Bezeichnung "So" (Symbol, Other, d. h. Symbol, Andere).Der Wert ist 28 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.ParagraphSeparator">
+      <summary>Ein zum Trennen von Absätzen verwendetes Zeichen.Dargestellt wird es durch die Unicode-Bezeichnung "Zp" (Separator, Paragraph, d. h. Trennzeichen, Absatz).Der Wert ist 13 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.PrivateUse">
+      <summary>Ein Zeichen zur privaten Verwendung, dessen Unicode-Wert im Bereich zwischen U+E000 und U+F8FF liegt.Dargestellt wird es durch die Unicode-Bezeichnung "Co" (Other, Private Use, d. h. Andere, persönliche Verwendung).Der Wert ist 17 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.SpaceSeparator">
+      <summary>Ein Leerzeichen, das nicht über eine Glyphe verfügt, jedoch kein Steuerungs- oder Formatzeichen ist.Dargestellt wird es durch die Unicode-Bezeichnung "Zs" (Separator, Space, d. h. Trennzeichen, Leerzeichen).Der Wert ist 11 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.SpacingCombiningMark">
+      <summary>Ein Leerzeichen, das Änderungen eines Basiszeichens anzeigt und die Breite der Glyphe für dieses Basiszeichen beeinflusst.Dargestellt wird es durch die Unicode-Bezeichnung "Mc" (Mark, Spacing Combining, d. h. Satzzeichen, Kombinationszeichen mit Vorschub).Der Wert ist 6 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.Surrogate">
+      <summary>Ein hohes oder niedriges Ersatzzeichen.Die Codewerte für Ersatzzeichen liegen im Bereich von U+D800 bis U+DFFF.Dargestellt werden solche Zeichen durch die Unicode-Bezeichnung "Cs" (Other, Surrogate, d. h. Andere, Ersatzzeichen).Der Wert ist 16 (null).</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.TitlecaseLetter">
+      <summary>Ein Titelschriftbuchstabe.Dargestellt wird es durch die Unicode-Bezeichnung "Lt" (Letter, Titlecase, d. h. Buchstabe, großer Anfangsbuchstabe).Der Wert ist 2.</summary>
+    </member>
+    <member name="F:System.Globalization.UnicodeCategory.UppercaseLetter">
+      <summary>Ein Großbuchstabe.Dargestellt wird es durch die Unicode-Bezeichnung "Lu" (Letter, Uppercase, d. h. Buchstabe, Großbuchstabe).Der Wert ist 0 (null).</summary>
+    </member>
+  </members>
+</doc>

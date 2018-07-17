@@ -36,10 +36,9 @@ namespace MediaBrowser.Providers.TV
         private readonly CultureInfo _usCulture = new CultureInfo("en-US");
         private readonly ILogger _logger;
         private readonly ILibraryManager _libraryManager;
-        private readonly IMemoryStreamFactory _memoryStreamProvider;
         private readonly ILocalizationManager _localizationManager;
 
-        public TvdbSeriesProvider(IZipClient zipClient, IHttpClient httpClient, IFileSystem fileSystem, IServerConfigurationManager config, ILogger logger, ILibraryManager libraryManager, IMemoryStreamFactory memoryStreamProvider, IXmlReaderSettingsFactory xmlSettings, ILocalizationManager localizationManager)
+        public TvdbSeriesProvider(IZipClient zipClient, IHttpClient httpClient, IFileSystem fileSystem, IServerConfigurationManager config, ILogger logger, ILibraryManager libraryManager, IXmlReaderSettingsFactory xmlSettings, ILocalizationManager localizationManager)
         {
             _zipClient = zipClient;
             _httpClient = httpClient;
@@ -47,7 +46,6 @@ namespace MediaBrowser.Providers.TV
             _config = config;
             _logger = logger;
             _libraryManager = libraryManager;
-            _memoryStreamProvider = memoryStreamProvider;
             _xmlSettings = xmlSettings;
             _localizationManager = localizationManager;
             Current = this;
@@ -576,9 +574,10 @@ namespace MediaBrowser.Providers.TV
         private async Task<List<RemoteSearchResult>> FindSeriesInternal(string name, string language, CancellationToken cancellationToken)
         {
             var url = string.Format(SeriesSearchUrl, WebUtility.UrlEncode(name), NormalizeLanguage(language));
-            var searchResults = new List<RemoteSearchResult>();
 
             var comparableName = GetComparableName(name);
+
+            var list = new List<Tuple<List<string>, RemoteSearchResult>>();
 
             using (var response = await _httpClient.SendAsync(new HttpRequestOptions
             {
@@ -622,11 +621,11 @@ namespace MediaBrowser.Providers.TV
                                                 }
                                                 using (var subtree = reader.ReadSubtree())
                                                 {
-                                                    var searchResult = GetSeriesSearchResultFromSubTree(subtree, comparableName);
-                                                    if (searchResult != null)
+                                                    var searchResultInfo = GetSeriesSearchResultFromSubTree(subtree);
+                                                    if (searchResultInfo != null)
                                                     {
-                                                        searchResult.SearchProviderName = Name;
-                                                        searchResults.Add(searchResult);
+                                                        searchResultInfo.Item2.SearchProviderName = Name;
+                                                        list.Add(searchResultInfo);
                                                     }
                                                 }
                                                 break;
@@ -647,15 +646,14 @@ namespace MediaBrowser.Providers.TV
                 }
             }
 
-            if (searchResults.Count == 0)
-            {
-                _logger.Info("TVDb Provider - Could not find " + name + ". Check name on Thetvdb.org.");
-            }
-
-            return searchResults;
+            return list
+                .OrderBy(i => i.Item1.Contains(comparableName, StringComparer.OrdinalIgnoreCase) ? 0 : 1)
+                .ThenBy(i => list.IndexOf(i))
+                .Select(i => i.Item2)
+                .ToList();
         }
 
-        private RemoteSearchResult GetSeriesSearchResultFromSubTree(XmlReader reader, string comparableName)
+        private Tuple<List<string>, RemoteSearchResult> GetSeriesSearchResultFromSubTree(XmlReader reader)
         {
             var searchResult = new RemoteSearchResult
             {
@@ -755,21 +753,15 @@ namespace MediaBrowser.Providers.TV
                 }
             }
 
-            foreach (var title in tvdbTitles)
+            if (tvdbTitles.Count == 0)
             {
-                if (string.Equals(title, comparableName, StringComparison.OrdinalIgnoreCase))
-                {
-                    if (!string.IsNullOrWhiteSpace(seriesId))
-                    {
-                        searchResult.Name = title;
-                        searchResult.SetProviderId(MetadataProviders.Tvdb, seriesId);
-                        return searchResult;
-                    }
-                    break;
-                }
+                return null;
             }
 
-            return null;
+            searchResult.Name = tvdbTitles.FirstOrDefault();
+            searchResult.SetProviderId(MetadataProviders.Tvdb, seriesId);
+
+            return new Tuple<List<string>, RemoteSearchResult>(tvdbTitles, searchResult);
         }
 
         /// <summary>
@@ -1321,7 +1313,7 @@ namespace MediaBrowser.Providers.TV
 
                                     if (vals.Count > 0)
                                     {
-                                        item.Genres.Clear();
+                                        item.Genres = Array.Empty<string>();
 
                                         foreach (var genre in vals)
                                         {

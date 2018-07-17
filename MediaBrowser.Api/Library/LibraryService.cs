@@ -88,7 +88,7 @@ namespace MediaBrowser.Api.Library
         /// </summary>
         /// <value>The user id.</value>
         [ApiMember(Name = "UserId", Description = "Optional. Filter by user id, and attach user data", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
 
         /// <summary>
         /// Gets or sets the id.
@@ -113,7 +113,7 @@ namespace MediaBrowser.Api.Library
         /// </summary>
         /// <value>The user id.</value>
         [ApiMember(Name = "UserId", Description = "Optional. Filter by user id, and attach user data", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
 
         /// <summary>
         /// Gets or sets the id.
@@ -138,7 +138,7 @@ namespace MediaBrowser.Api.Library
         /// </summary>
         /// <value>The user id.</value>
         [ApiMember(Name = "UserId", Description = "Optional. Filter by user id, and attach user data", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
 
         /// <summary>
         /// Gets or sets the id.
@@ -169,7 +169,7 @@ namespace MediaBrowser.Api.Library
     [Authenticated]
     public class DeleteItems : IReturnVoid
     {
-        [ApiMember(Name = "Ids", Description = "Ids", IsRequired = true, DataType = "string", ParameterType = "path", Verb = "DELETE")]
+        [ApiMember(Name = "Ids", Description = "Ids", IsRequired = true, DataType = "string", ParameterType = "query", Verb = "DELETE")]
         public string Ids { get; set; }
     }
 
@@ -178,7 +178,7 @@ namespace MediaBrowser.Api.Library
     public class GetItemCounts : IReturn<ItemCounts>
     {
         [ApiMember(Name = "UserId", Description = "Optional. Get counts from a specific user's library.", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
 
         [ApiMember(Name = "IsFavorite", Description = "Optional. Get counts of favorite items", IsRequired = false, DataType = "bool", ParameterType = "query", Verb = "GET")]
         public bool? IsFavorite { get; set; }
@@ -193,7 +193,7 @@ namespace MediaBrowser.Api.Library
         /// </summary>
         /// <value>The user id.</value>
         [ApiMember(Name = "UserId", Description = "Optional. Filter by user id, and attach user data", IsRequired = false, DataType = "string", ParameterType = "query", Verb = "GET")]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
 
         /// <summary>
         /// Gets or sets the id.
@@ -225,7 +225,7 @@ namespace MediaBrowser.Api.Library
     [Authenticated]
     public class PostUpdatedSeries : IReturnVoid
     {
-        [ApiMember(Name = "TvdbId", Description = "Tvdb Id", IsRequired = false, DataType = "string", ParameterType = "path", Verb = "GET")]
+        [ApiMember(Name = "TvdbId", Description = "Tvdb Id", IsRequired = false, DataType = "string", ParameterType = "path", Verb = "POST")]
         public string TvdbId { get; set; }
     }
 
@@ -234,9 +234,9 @@ namespace MediaBrowser.Api.Library
     [Authenticated]
     public class PostUpdatedMovies : IReturnVoid
     {
-        [ApiMember(Name = "TmdbId", Description = "Tmdb Id", IsRequired = false, DataType = "string", ParameterType = "path", Verb = "GET")]
+        [ApiMember(Name = "TmdbId", Description = "Tmdb Id", IsRequired = false, DataType = "string", ParameterType = "path", Verb = "POST")]
         public string TmdbId { get; set; }
-        [ApiMember(Name = "ImdbId", Description = "Imdb Id", IsRequired = false, DataType = "string", ParameterType = "path", Verb = "GET")]
+        [ApiMember(Name = "ImdbId", Description = "Imdb Id", IsRequired = false, DataType = "string", ParameterType = "path", Verb = "POST")]
         public string ImdbId { get; set; }
     }
 
@@ -268,14 +268,20 @@ namespace MediaBrowser.Api.Library
         public string Id { get; set; }
     }
 
+    [Route("/Games/{Id}/Similar", "GET", Summary = "Finds games similar to a given game.")]
+    [Route("/Artists/{Id}/Similar", "GET", Summary = "Finds albums similar to a given album.")]
     [Route("/Items/{Id}/Similar", "GET", Summary = "Gets similar items")]
+    [Route("/Albums/{Id}/Similar", "GET", Summary = "Finds albums similar to a given album.")]
+    [Route("/Shows/{Id}/Similar", "GET", Summary = "Finds tv shows similar to a given one.")]
+    [Route("/Movies/{Id}/Similar", "GET", Summary = "Finds movies and trailers similar to a given movie.")]
+    [Route("/Trailers/{Id}/Similar", "GET", Summary = "Finds movies and trailers similar to a given trailer.")]
     [Authenticated]
     public class GetSimilarItems : BaseGetSimilarItemsFromItem
     {
     }
 
     [Route("/Libraries/AvailableOptions", "GET")]
-    [Authenticated]
+    [Authenticated(AllowBeforeStartupWizard = true)]
     public class GetLibraryOptionsInfo : IReturn<LibraryOptionsResult>
     {
         public string LibraryContentType { get; set; }
@@ -407,7 +413,7 @@ namespace MediaBrowser.Api.Library
                 {
                     if (string.Equals(type, "Series", StringComparison.OrdinalIgnoreCase))
                     {
-                        return false;
+                        return true;
                     }
                     if (string.Equals(type, "Season", StringComparison.OrdinalIgnoreCase))
                     {
@@ -624,58 +630,11 @@ namespace MediaBrowser.Api.Library
 
         public object Get(GetSimilarItems request)
         {
-            var user = !string.IsNullOrWhiteSpace(request.UserId) ? _userManager.GetUserById(request.UserId) : null;
+            var user = !request.UserId.Equals(Guid.Empty) ? _userManager.GetUserById(request.UserId) : null;
 
             var item = string.IsNullOrEmpty(request.Id) ?
-                (!string.IsNullOrWhiteSpace(request.UserId) ? _libraryManager.GetUserRootFolder() :
+                (!request.UserId.Equals(Guid.Empty) ? _libraryManager.GetUserRootFolder() :
                 _libraryManager.RootFolder) : _libraryManager.GetItemById(request.Id);
-
-            if (item is Game)
-            {
-                return new GamesService(_userManager, _userDataManager, _libraryManager, _itemRepo, _dtoService, _authContext)
-                {
-                    Request = Request,
-
-                }.Get(new GetSimilarGames
-                {
-                    Fields = request.Fields,
-                    Id = request.Id,
-                    Limit = request.Limit,
-                    UserId = request.UserId,
-                    ImageTypeLimit = request.ImageTypeLimit
-                });
-            }
-            if (item is MusicAlbum)
-            {
-                return new AlbumsService(_userManager, _userDataManager, _libraryManager, _itemRepo, _dtoService, _authContext)
-                {
-                    Request = Request,
-
-                }.Get(new GetSimilarAlbums
-                {
-                    Fields = request.Fields,
-                    Id = request.Id,
-                    Limit = request.Limit,
-                    UserId = request.UserId,
-                    ExcludeArtistIds = request.ExcludeArtistIds,
-                    ImageTypeLimit = request.ImageTypeLimit
-                });
-            }
-            if (item is MusicArtist)
-            {
-                return new AlbumsService(_userManager, _userDataManager, _libraryManager, _itemRepo, _dtoService, _authContext)
-                {
-                    Request = Request,
-
-                }.Get(new GetSimilarArtists
-                {
-                    Fields = request.Fields,
-                    Id = request.Id,
-                    Limit = request.Limit,
-                    UserId = request.UserId,
-                    ImageTypeLimit = request.ImageTypeLimit
-                });
-            }
 
             var program = item as IHasProgramAttributes;
 
@@ -685,33 +644,70 @@ namespace MediaBrowser.Api.Library
                 {
                     Request = Request,
 
-                }.Get(new GetSimilarMovies
-                {
-                    Fields = request.Fields,
-                    Id = request.Id,
-                    Limit = request.Limit,
-                    UserId = request.UserId,
-                    ImageTypeLimit = request.ImageTypeLimit
-                });
+                }.GetSimilarItemsResult(request);
             }
 
-            if (item is Series || (program != null && program.IsSeries))
+            if (program != null && program.IsSeries)
             {
-                return new TvShowsService(_userManager, _userDataManager, _libraryManager, _itemRepo, _dtoService, _tvManager, _authContext)
-                {
-                    Request = Request,
-
-                }.Get(new GetSimilarShows
-                {
-                    Fields = request.Fields,
-                    Id = request.Id,
-                    Limit = request.Limit,
-                    UserId = request.UserId,
-                    ImageTypeLimit = request.ImageTypeLimit
-                });
+                return GetSimilarItemsResult(request, new[] { typeof(Series).Name });
             }
 
-            return new QueryResult<BaseItemDto>();
+            if (item is Episode || (item is IItemByName && !(item is MusicArtist)))
+            {
+                return new QueryResult<BaseItemDto>();
+            }
+
+            return GetSimilarItemsResult(request, new[] { item.GetType().Name });
+        }
+
+        private QueryResult<BaseItemDto> GetSimilarItemsResult(BaseGetSimilarItemsFromItem request, string[] includeItemTypes)
+        {
+            var user = !request.UserId.Equals(Guid.Empty) ? _userManager.GetUserById(request.UserId) : null;
+
+            var item = string.IsNullOrEmpty(request.Id) ?
+                (!request.UserId.Equals(Guid.Empty) ? _libraryManager.GetUserRootFolder() :
+                _libraryManager.RootFolder) : _libraryManager.GetItemById(request.Id);
+
+            var dtoOptions = GetDtoOptions(_authContext, request);
+
+            var query = new InternalItemsQuery(user)
+            {
+                Limit = request.Limit,
+                IncludeItemTypes = includeItemTypes,
+                SimilarTo = item,
+                DtoOptions = dtoOptions,
+                EnableTotalRecordCount = false
+            };
+
+            // ExcludeArtistIds
+            if (!string.IsNullOrEmpty(request.ExcludeArtistIds))
+            {
+                query.ExcludeArtistIds = BaseApiService.GetGuids(request.ExcludeArtistIds);
+            }
+
+            List<BaseItem> itemsResult;
+
+            if (item is MusicArtist)
+            {
+                query.IncludeItemTypes = Array.Empty<string>();
+
+                itemsResult = _libraryManager.GetArtists(query).Items.Select(i => i.Item1).ToList();
+            }
+            else
+            {
+                itemsResult = _libraryManager.GetItemList(query);
+            }
+
+            var returnList = _dtoService.GetBaseItemDtos(itemsResult, dtoOptions, user);
+
+            var result = new QueryResult<BaseItemDto>
+            {
+                Items = returnList,
+
+                TotalRecordCount = itemsResult.Count
+            };
+
+            return result;
         }
 
         public object Get(GetMediaFolders request)
@@ -802,7 +798,7 @@ namespace MediaBrowser.Api.Library
             var item = _libraryManager.GetItemById(request.Id);
             var auth = _authContext.GetAuthorizationInfo(Request);
 
-            var user = _userManager.GetUserById(auth.UserId);
+            var user = auth.User;
 
             if (user != null)
             {
@@ -865,15 +861,6 @@ namespace MediaBrowser.Api.Library
         {
             var item = _libraryManager.GetItemById(request.Id);
 
-            if (!item.IsFileProtocol)
-            {
-                throw new ArgumentException("This command cannot be used for remote or virtual items.");
-            }
-            if (_fileSystem.DirectoryExists(item.Path))
-            {
-                throw new ArgumentException("This command cannot be used for directories.");
-            }
-
             return ResultFactory.GetStaticFileResult(Request, item.Path);
         }
 
@@ -888,7 +875,7 @@ namespace MediaBrowser.Api.Library
                 .SelectMany(c => c.PhysicalLocations)
                 .ToList();
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         /// <summary>
@@ -900,7 +887,7 @@ namespace MediaBrowser.Api.Library
         {
             var result = GetAncestors(request);
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         /// <summary>
@@ -914,7 +901,7 @@ namespace MediaBrowser.Api.Library
 
             var baseItemDtos = new List<BaseItemDto>();
 
-            var user = !string.IsNullOrWhiteSpace(request.UserId) ? _userManager.GetUserById(request.UserId) : null;
+            var user = !request.UserId.Equals(Guid.Empty) ? _userManager.GetUserById(request.UserId) : null;
 
             var dtoOptions = GetDtoOptions(_authContext, request);
 
@@ -962,7 +949,7 @@ namespace MediaBrowser.Api.Library
         /// <returns>System.Object.</returns>
         public object Get(GetItemCounts request)
         {
-            var user = string.IsNullOrWhiteSpace(request.UserId) ? null : _userManager.GetUserById(request.UserId);
+            var user = request.UserId.Equals(Guid.Empty) ? null : _userManager.GetUserById(request.UserId);
 
             var counts = new ItemCounts
             {
@@ -978,7 +965,7 @@ namespace MediaBrowser.Api.Library
                 BookCount = GetCount(typeof(Book), user, request)
             };
 
-            return ToOptimizedSerializedResultUsingCache(counts);
+            return ToOptimizedResult(counts);
         }
 
         private int GetCount(Type type, User user, GetItemCounts request)
@@ -1032,7 +1019,7 @@ namespace MediaBrowser.Api.Library
             {
                 var item = _libraryManager.GetItemById(i);
                 var auth = _authContext.GetAuthorizationInfo(Request);
-                var user = _userManager.GetUserById(auth.UserId);
+                var user = auth.User;
 
                 if (!item.CanDelete(user))
                 {
@@ -1082,7 +1069,7 @@ namespace MediaBrowser.Api.Library
 
             });
 
-            return ToOptimizedSerializedResultUsingCache(new AllThemeMediaResult
+            return ToOptimizedResult(new AllThemeMediaResult
             {
                 ThemeSongsResult = themeSongs,
                 ThemeVideosResult = themeVideos,
@@ -1100,15 +1087,15 @@ namespace MediaBrowser.Api.Library
         {
             var result = GetThemeSongs(request);
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         private ThemeMediaResult GetThemeSongs(GetThemeSongs request)
         {
-            var user = !string.IsNullOrWhiteSpace(request.UserId) ? _userManager.GetUserById(request.UserId) : null;
+            var user = !request.UserId.Equals(Guid.Empty) ? _userManager.GetUserById(request.UserId) : null;
 
             var item = string.IsNullOrEmpty(request.Id)
-                           ? (!string.IsNullOrWhiteSpace(request.UserId)
+                           ? (!request.UserId.Equals(Guid.Empty)
                                   ? _libraryManager.GetUserRootFolder()
                                   : (Folder)_libraryManager.RootFolder)
                            : _libraryManager.GetItemById(request.Id);
@@ -1118,24 +1105,33 @@ namespace MediaBrowser.Api.Library
                 throw new ResourceNotFoundException("Item not found.");
             }
 
-            if (request.InheritFromParent)
+            BaseItem[] themeItems = Array.Empty<BaseItem>();
+
+            while (true)
             {
-                while (item.ThemeSongIds.Length == 0)
+                themeItems = item.GetThemeSongs().ToArray();
+
+                if (themeItems.Length > 0)
                 {
-                    var parent = item.GetParent();
-                    if (parent == null)
-                    {
-                        break;
-                    }
-                    item = parent;
+                    break;
                 }
+
+                if (!request.InheritFromParent)
+                {
+                    break;
+                }
+
+                var parent = item.GetParent();
+                if (parent == null)
+                {
+                    break;
+                }
+                item = parent;
             }
 
             var dtoOptions = GetDtoOptions(_authContext, request);
 
-            var dtos = item.ThemeSongIds.Select(_libraryManager.GetItemById)
-                            .Where(i => i != null)
-                            .OrderBy(i => i.SortName)
+            var dtos = themeItems
                             .Select(i => _dtoService.GetBaseItemDto(i, dtoOptions, user, item));
 
             var items = dtos.ToArray();
@@ -1144,7 +1140,7 @@ namespace MediaBrowser.Api.Library
             {
                 Items = items,
                 TotalRecordCount = items.Length,
-                OwnerId = _dtoService.GetDtoId(item)
+                OwnerId = item.Id
             };
         }
 
@@ -1157,15 +1153,15 @@ namespace MediaBrowser.Api.Library
         {
             var result = GetThemeVideos(request);
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         public ThemeMediaResult GetThemeVideos(GetThemeVideos request)
         {
-            var user = !string.IsNullOrWhiteSpace(request.UserId) ? _userManager.GetUserById(request.UserId) : null;
+            var user = !request.UserId.Equals(Guid.Empty) ? _userManager.GetUserById(request.UserId) : null;
 
             var item = string.IsNullOrEmpty(request.Id)
-                           ? (!string.IsNullOrWhiteSpace(request.UserId)
+                           ? (!request.UserId.Equals(Guid.Empty)
                                   ? _libraryManager.GetUserRootFolder()
                                   : (Folder)_libraryManager.RootFolder)
                            : _libraryManager.GetItemById(request.Id);
@@ -1175,24 +1171,33 @@ namespace MediaBrowser.Api.Library
                 throw new ResourceNotFoundException("Item not found.");
             }
 
-            if (request.InheritFromParent)
+            BaseItem[] themeItems = Array.Empty<BaseItem>();
+
+            while (true)
             {
-                while (item.ThemeVideoIds.Length == 0)
+                themeItems = item.GetThemeVideos().ToArray();
+
+                if (themeItems.Length > 0)
                 {
-                    var parent = item.GetParent();
-                    if (parent == null)
-                    {
-                        break;
-                    }
-                    item = parent;
+                    break;
                 }
+
+                if (!request.InheritFromParent)
+                {
+                    break;
+                }
+
+                var parent = item.GetParent();
+                if (parent == null)
+                {
+                    break;
+                }
+                item = parent;
             }
 
             var dtoOptions = GetDtoOptions(_authContext, request);
 
-            var dtos = item.ThemeVideoIds.Select(_libraryManager.GetItemById)
-                            .Where(i => i != null)
-                            .OrderBy(i => i.SortName)
+            var dtos = themeItems
                             .Select(i => _dtoService.GetBaseItemDto(i, dtoOptions, user, item));
 
             var items = dtos.ToArray();
@@ -1201,7 +1206,7 @@ namespace MediaBrowser.Api.Library
             {
                 Items = items,
                 TotalRecordCount = items.Length,
-                OwnerId = _dtoService.GetDtoId(item)
+                OwnerId = item.Id
             };
         }
     }

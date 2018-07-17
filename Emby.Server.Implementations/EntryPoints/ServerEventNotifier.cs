@@ -22,11 +22,6 @@ namespace Emby.Server.Implementations.EntryPoints
     public class ServerEventNotifier : IServerEntryPoint
     {
         /// <summary>
-        /// The _server manager
-        /// </summary>
-        private readonly IServerManager _serverManager;
-
-        /// <summary>
         /// The _user manager
         /// </summary>
         private readonly IUserManager _userManager;
@@ -48,9 +43,8 @@ namespace Emby.Server.Implementations.EntryPoints
 
         private readonly ISessionManager _sessionManager;
 
-        public ServerEventNotifier(IServerManager serverManager, IServerApplicationHost appHost, IUserManager userManager, IInstallationManager installationManager, ITaskManager taskManager, ISessionManager sessionManager)
+        public ServerEventNotifier(IServerApplicationHost appHost, IUserManager userManager, IInstallationManager installationManager, ITaskManager taskManager, ISessionManager sessionManager)
         {
-            _serverManager = serverManager;
             _userManager = userManager;
             _installationManager = installationManager;
             _appHost = appHost;
@@ -78,27 +72,27 @@ namespace Emby.Server.Implementations.EntryPoints
 
         void _installationManager_PackageInstalling(object sender, InstallationEventArgs e)
         {
-            _serverManager.SendWebSocketMessage("PackageInstalling", e.InstallationInfo);
+            SendMessageToAdminSessions("PackageInstalling", e.InstallationInfo);
         }
 
         void _installationManager_PackageInstallationCancelled(object sender, InstallationEventArgs e)
         {
-            _serverManager.SendWebSocketMessage("PackageInstallationCancelled", e.InstallationInfo);
+            SendMessageToAdminSessions("PackageInstallationCancelled", e.InstallationInfo);
         }
 
         void _installationManager_PackageInstallationCompleted(object sender, InstallationEventArgs e)
         {
-            _serverManager.SendWebSocketMessage("PackageInstallationCompleted", e.InstallationInfo);
+            SendMessageToAdminSessions("PackageInstallationCompleted", e.InstallationInfo);
         }
 
         void _installationManager_PackageInstallationFailed(object sender, InstallationFailedEventArgs e)
         {
-            _serverManager.SendWebSocketMessage("PackageInstallationFailed", e.InstallationInfo);
+            SendMessageToAdminSessions("PackageInstallationFailed", e.InstallationInfo);
         }
 
         void _taskManager_TaskCompleted(object sender, TaskCompletionEventArgs e)
         {
-            _serverManager.SendWebSocketMessage("ScheduledTaskEnded", e.Result);
+            SendMessageToAdminSessions("ScheduledTaskEnded", e.Result);
         }
 
         /// <summary>
@@ -108,7 +102,7 @@ namespace Emby.Server.Implementations.EntryPoints
         /// <param name="e">The e.</param>
         void InstallationManager_PluginUninstalled(object sender, GenericEventArgs<IPlugin> e)
         {
-            _serverManager.SendWebSocketMessage("PluginUninstalled", e.Argument.GetPluginInfo());
+            SendMessageToAdminSessions("PluginUninstalled", e.Argument.GetPluginInfo());
         }
 
         /// <summary>
@@ -157,17 +151,33 @@ namespace Emby.Server.Implementations.EntryPoints
             SendMessageToUserSession(e.Argument, "UserConfigurationUpdated", dto);
         }
 
-        private async void SendMessageToUserSession<T>(User user, string name, T data)
+        private async void SendMessageToAdminSessions<T>(string name, T data)
         {
             try
             {
-                await _sessionManager.SendMessageToUserSessions(new List<string> { user.Id.ToString("N") }, name, data, CancellationToken.None);
+                await _sessionManager.SendMessageToAdminSessions(name, data, CancellationToken.None);
             }
             catch (ObjectDisposedException)
             {
 
             }
-            catch (Exception ex)
+            catch (Exception)
+            {
+                //Logger.ErrorException("Error sending message", ex);
+            }
+        }
+
+        private async void SendMessageToUserSession<T>(User user, string name, T data)
+        {
+            try
+            {
+                await _sessionManager.SendMessageToUserSessions(new List<Guid> { user.Id }, name, data, CancellationToken.None);
+            }
+            catch (ObjectDisposedException)
+            {
+
+            }
+            catch (Exception)
             {
                 //Logger.ErrorException("Error sending message", ex);
             }

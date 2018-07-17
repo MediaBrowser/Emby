@@ -5,6 +5,7 @@ using MediaBrowser.Controller.Security;
 using MediaBrowser.Controller.Session;
 using System.Threading.Tasks;
 using MediaBrowser.Model.Services;
+using System;
 
 namespace Emby.Server.Implementations.HttpServer.Security
 {
@@ -25,7 +26,7 @@ namespace Emby.Server.Implementations.HttpServer.Security
         {
             var authorization = _authContext.GetAuthorizationInfo(requestContext);
 
-            var user = string.IsNullOrEmpty(authorization.UserId) ? null : _userManager.GetUserById(authorization.UserId);
+            var user = authorization.User;
             return _sessionManager.LogSessionActivity(authorization.Client, authorization.Version, authorization.DeviceId, authorization.Device, requestContext.RemoteIp, user);
         }
 
@@ -45,7 +46,7 @@ namespace Emby.Server.Implementations.HttpServer.Security
         {
             var session = GetSession(requestContext);
 
-            return session == null || !session.UserId.HasValue ? null : _userManager.GetUserById(session.UserId.Value);
+            return session == null || session.UserId.Equals(Guid.Empty) ? null : _userManager.GetUserById(session.UserId);
         }
 
         public User GetUser(object requestContext)

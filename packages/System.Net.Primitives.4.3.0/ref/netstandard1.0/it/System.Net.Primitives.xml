@@ -1,0 +1,1411 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Net.Primitives</name>
+  </assembly>
+  <members>
+    <member name="T:System.Net.AuthenticationSchemes">
+      <summary>Specifica i protocolli per l'autenticazione.</summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.Anonymous">
+      <summary>Specifica l'autenticazione anonima.</summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.Basic">
+      <summary>Specifica l'autenticazione di base. </summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.Digest">
+      <summary>Specifica l'autenticazione digest.</summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.IntegratedWindowsAuthentication">
+      <summary>Specifica l'autenticazione Windows.</summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.Negotiate">
+      <summary>Negozia con il client per determinare lo schema di autenticazione.Viene utilizzata se il client e il server supportano entrambi Kerberos; in caso contrario, viene utilizzato NTLM.</summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.None">
+      <summary>Non è consentita alcuna autenticazione.Un client che richiede un oggetto <see cref="T:System.Net.HttpListener" /> con questo flag impostato, riceve sempre uno stato 403 Forbidden.Utilizzare questo flag quando una risorsa non deve essere inviata a un client.</summary>
+    </member>
+    <member name="F:System.Net.AuthenticationSchemes.Ntlm">
+      <summary>Specifica l'autenticazione NTLM.</summary>
+    </member>
+    <member name="T:System.Net.Cookie">
+      <summary>Fornisce un insieme di proprietà e metodi utilizzati per gestire i cookie.La classe non può essere ereditata.</summary>
+    </member>
+    <member name="M:System.Net.Cookie.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Net.Cookie" />.</summary>
+    </member>
+    <member name="M:System.Net.Cookie.#ctor(System.String,System.String)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Net.Cookie" /> con i <see cref="P:System.Net.Cookie.Name" /> e <see cref="P:System.Net.Cookie.Value" /> specificati.</summary>
+      <param name="name">Il nome di un <see cref="T:System.Net.Cookie" />.All'interno di <paramref name="name" /> non è possibile utilizzare i caratteri seguenti: segno di uguale, punto e virgola, virgola, nuova riga (\n), ritorno a capo (\r), tabulazione (\t) e spazio.Il simbolo del dollaro ("$") non può trovarsi in prima posizione.</param>
+      <param name="value">Valore di un <see cref="T:System.Net.Cookie" />.All'interno di <paramref name="value" /> non è possibile utilizzare i caratteri indicati di seguito: punto e virgola, virgola.</param>
+      <exception cref="T:System.Net.CookieException">Il parametro <paramref name="name" /> è null. - oppure - La lunghezza del parametro <paramref name="name" /> è zero. - oppure - Il parametro <paramref name="name" /> contiene un carattere non valido.- oppure - Il parametro <paramref name="value" /> è null.-oppure- Il parametro <paramref name="value" /> contiene una stringa non racchiusa tra virgolette che contiene un carattere non valido. </exception>
+    </member>
+    <member name="M:System.Net.Cookie.#ctor(System.String,System.String,System.String)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Net.Cookie" /> con un <see cref="P:System.Net.Cookie.Name" />, un <see cref="P:System.Net.Cookie.Value" /> e un <see cref="P:System.Net.Cookie.Path" /> specificati.</summary>
+      <param name="name">Il nome di un <see cref="T:System.Net.Cookie" />.All'interno di <paramref name="name" /> non è possibile utilizzare i caratteri seguenti: segno di uguale, punto e virgola, virgola, nuova riga (\n), ritorno a capo (\r), tabulazione (\t) e spazio.Il simbolo del dollaro ("$") non può trovarsi in prima posizione.</param>
+      <param name="value">Valore di un <see cref="T:System.Net.Cookie" />.All'interno di <paramref name="value" /> non è possibile utilizzare i caratteri indicati di seguito: punto e virgola, virgola.</param>
+      <param name="path">Il sottoinsieme di URI sul server di origine al quale si applica questo <see cref="T:System.Net.Cookie" />.Il valore predefinito è "/".</param>
+      <exception cref="T:System.Net.CookieException">Il parametro <paramref name="name" /> è null. - oppure - La lunghezza del parametro <paramref name="name" /> è zero. - oppure - Il parametro <paramref name="name" /> contiene un carattere non valido.- oppure - Il parametro <paramref name="value" /> è null.-oppure- Il parametro <paramref name="value" /> contiene una stringa non racchiusa tra virgolette che contiene un carattere non valido.</exception>
+    </member>
+    <member name="M:System.Net.Cookie.#ctor(System.String,System.String,System.String,System.String)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Net.Cookie" /> con un <see cref="P:System.Net.Cookie.Name" />, un <see cref="P:System.Net.Cookie.Value" />, un <see cref="P:System.Net.Cookie.Path" /> e un <see cref="P:System.Net.Cookie.Domain" /> specificati.</summary>
+      <param name="name">Il nome di un <see cref="T:System.Net.Cookie" />.All'interno di <paramref name="name" /> non è possibile utilizzare i caratteri seguenti: segno di uguale, punto e virgola, virgola, nuova riga (\n), ritorno a capo (\r), tabulazione (\t) e spazio.Il simbolo del dollaro ("$") non può trovarsi in prima posizione.</param>
+      <param name="value">Il valore dell'oggetto <see cref="T:System.Net.Cookie" />.All'interno di <paramref name="value" /> non è possibile utilizzare i caratteri indicati di seguito: punto e virgola, virgola.</param>
+      <param name="path">Il sottoinsieme di URI sul server di origine al quale si applica questo <see cref="T:System.Net.Cookie" />.Il valore predefinito è "/".</param>
+      <param name="domain">Il dominio Internet facoltativo per il quale è valido questo <see cref="T:System.Net.Cookie" />.Il valore predefinito è l'host dal quale è stato ricevuto questo <see cref="T:System.Net.Cookie" />.</param>
+      <exception cref="T:System.Net.CookieException">Il parametro <paramref name="name" /> è null. - oppure - La lunghezza del parametro <paramref name="name" /> è zero. - oppure - Il parametro <paramref name="name" /> contiene un carattere non valido.- oppure - Il parametro <paramref name="value" /> è null.-oppure- Il parametro <paramref name="value" /> contiene una stringa non racchiusa tra virgolette che contiene un carattere non valido.</exception>
+    </member>
+    <member name="P:System.Net.Cookie.Comment">
+      <summary>Ottiene o imposta un commento che il server può aggiungere a un <see cref="T:System.Net.Cookie" />.</summary>
+      <returns>Commento facoltativo per l'utilizzo del documento di questo <see cref="T:System.Net.Cookie" />.</returns>
+    </member>
+    <member name="P:System.Net.Cookie.CommentUri">
+      <summary>Ottiene o imposta un commento URI che il server può fornire con un <see cref="T:System.Net.Cookie" />.</summary>
+      <returns>Commento facoltativo che rappresenta l'utilizzo previsto del riferimento URI per questo <see cref="T:System.Net.Cookie" />.Il valore deve essere compatibile con il formato degli URI.</returns>
+    </member>
+    <member name="P:System.Net.Cookie.Discard">
+      <summary>Ottiene o imposta il flag di eliminazione impostato dal server.</summary>
+      <returns>true se il client deve scartare il <see cref="T:System.Net.Cookie" /> al termine della sessione corrente. In caso contrario, false.Il valore predefinito è false.</returns>
+    </member>
+    <member name="P:System.Net.Cookie.Domain">
+      <summary>Ottiene o imposta l'URI per il quale è valido il <see cref="T:System.Net.Cookie" />.</summary>
+      <returns>URI per il quale è valido il <see cref="T:System.Net.Cookie" />.</returns>
+    </member>
+    <member name="M:System.Net.Cookie.Equals(System.Object)">
+      <summary>Esegue l'override del metodo <see cref="M:System.Object.Equals(System.Object)" />.</summary>
+      <returns>Restituisce true se il <see cref="T:System.Net.Cookie" /> è uguale a <paramref name="comparand" />.Due istanze di <see cref="T:System.Net.Cookie" /> sono uguali se le relative proprietà <see cref="P:System.Net.Cookie.Name" />, <see cref="P:System.Net.Cookie.Value" />, <see cref="P:System.Net.Cookie.Path" />, <see cref="P:System.Net.Cookie.Domain" /> e <see cref="P:System.Net.Cookie.Version" /> sono uguali.I confronti di stringhe <see cref="P:System.Net.Cookie.Name" /> e <see cref="P:System.Net.Cookie.Domain" /> vengono eseguiti senza distinzione tra maiuscole e minuscole.</returns>
+      <param name="comparand">Riferimento a una classe <see cref="T:System.Net.Cookie" />. </param>
+    </member>
+    <member name="P:System.Net.Cookie.Expired">
+      <summary>Ottiene o imposta lo stato corrente del <see cref="T:System.Net.Cookie" />.</summary>
+      <returns>true se il <see cref="T:System.Net.Cookie" /> è scaduto. In caso contrario, false.Il valore predefinito è false.</returns>
+    </member>
+    <member name="P:System.Net.Cookie.Expires">
+      <summary>Ottiene o imposta la data e l'ora di scadenza del <see cref="T:System.Net.Cookie" /> come <see cref="T:System.DateTime" />.</summary>
+      <returns>La data e l'ora di scadenza per il <see cref="T:System.Net.Cookie" /> come istanza di <see cref="T:System.DateTime" />.</returns>
+    </member>
+    <member name="M:System.Net.Cookie.GetHashCode">
+      <summary>Esegue l'override del metodo <see cref="M:System.Object.GetHashCode" />.</summary>
+      <returns>Il codice hash di interi con segno a 32 bit per questa istanza.</returns>
+    </member>
+    <member name="P:System.Net.Cookie.HttpOnly">
+      <summary>Determina se per uno script di pagina o un altro contenuto attivo è possibile accedere a questo cookie.</summary>
+      <returns>Valore booleano che consente di determinare se per uno script di pagina o un altro contenuto attivo è possibile accedere a questo cookie.</returns>
+    </member>
+    <member name="P:System.Net.Cookie.Name">
+      <summary>Ottiene o imposta il nome per il <see cref="T:System.Net.Cookie" />.</summary>
+      <returns>Nome del <see cref="T:System.Net.Cookie" />.</returns>
+      <exception cref="T:System.Net.CookieException">Il valore specificato per un'operazione Set è null o la stringa vuota.-oppure-Il valore specificato per un'operazione Set contiene un carattere non valido.Nella proprietà <see cref="P:System.Net.Cookie.Name" /> non è possibile utilizzare i caratteri seguenti: segno di uguale, punto e virgola, virgola, nuova riga (\n), ritorno a capo (\r), tabulazione (\t) e spazio.Il simbolo del dollaro ("$") non può trovarsi in prima posizione.</exception>
+    </member>
+    <member name="P:System.Net.Cookie.Path">
+      <summary>Ottiene o imposta gli URI ai quali si applica il <see cref="T:System.Net.Cookie" />.</summary>
+      <returns>URI ai quali si applica il <see cref="T:System.Net.Cookie" />.</returns>
+    </member>
+    <member name="P:System.Net.Cookie.Port">
+      <summary>Ottiene o imposta un elenco di porte TCP alle quali si applica il <see cref="T:System.Net.Cookie" />.</summary>
+      <returns>Elenco di porte TCP alle quale si applica il <see cref="T:System.Net.Cookie" />.</returns>
+      <exception cref="T:System.Net.CookieException">Il valore specificato per un'operazione di impostazione non può essere analizzato o non è racchiuso tra virgolette doppie. </exception>
+    </member>
+    <member name="P:System.Net.Cookie.Secure">
+      <summary>Ottiene o imposta il livello di sicurezza di un <see cref="T:System.Net.Cookie" />.</summary>
+      <returns>true se il client restituisce solo il cookie nelle richieste successive qualora tali richieste utilizzino Secure Hypertext Transfer Protocol (HTTPS); in caso contrario, false.Il valore predefinito è false.</returns>
+    </member>
+    <member name="P:System.Net.Cookie.TimeStamp">
+      <summary>Ottiene l'ora di emissione del cookie come <see cref="T:System.DateTime" />.</summary>
+      <returns>L'ora di emissione del cookie come <see cref="T:System.DateTime" />.</returns>
+    </member>
+    <member name="M:System.Net.Cookie.ToString">
+      <summary>Esegue l'override del metodo <see cref="M:System.Object.ToString" />.</summary>
+      <returns>Restituisce una rappresentazione in forma di stringa di questo oggetto <see cref="T:System.Net.Cookie" /> per l'inclusione in Cookie HTTP: intestazione di richiesta.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Net.Cookie.Value">
+      <summary>Ottiene o imposta la proprietà <see cref="P:System.Net.Cookie.Value" /> per la classe <see cref="T:System.Net.Cookie" />.</summary>
+      <returns>Oggetto <see cref="P:System.Net.Cookie.Value" /> per l'oggetto <see cref="T:System.Net.Cookie" />.</returns>
+    </member>
+    <member name="P:System.Net.Cookie.Version">
+      <summary>Ottiene o imposta la versione della manutenzione dello stato HTTP a cui è conforme il cookie.</summary>
+      <returns>Versione della manutenzione dello stato HTTP a cui è conforme il cookie.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il valore specificato per una versione non è consentito. </exception>
+    </member>
+    <member name="T:System.Net.CookieCollection">
+      <summary>Fornisce un contenitore di insiemi per le istanze della classe <see cref="T:System.Net.Cookie" />.</summary>
+    </member>
+    <member name="M:System.Net.CookieCollection.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Net.CookieCollection" />.</summary>
+    </member>
+    <member name="M:System.Net.CookieCollection.Add(System.Net.Cookie)">
+      <summary>Aggiunge una classe <see cref="T:System.Net.Cookie" /> a un controllo <see cref="T:System.Net.CookieCollection" />.</summary>
+      <param name="cookie">Classe <see cref="T:System.Net.Cookie" /> da aggiungere a un oggetto <see cref="T:System.Net.CookieCollection" /></param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="cookie" /> è null. </exception>
+    </member>
+    <member name="M:System.Net.CookieCollection.Add(System.Net.CookieCollection)">
+      <summary>Aggiunge il contenuto di un <see cref="T:System.Net.CookieCollection" /> all'istanza corrente.</summary>
+      <param name="cookies">Oggetto <see cref="T:System.Net.CookieCollection" /> da aggiungere. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="cookies" /> è null. </exception>
+    </member>
+    <member name="P:System.Net.CookieCollection.Count">
+      <summary>Ottiene il numero di cookie contenuti in un <see cref="T:System.Net.CookieCollection" />.</summary>
+      <returns>Numero di cookie contenuto in un oggetto <see cref="T:System.Net.CookieCollection" /></returns>
+    </member>
+    <member name="M:System.Net.CookieCollection.GetEnumerator">
+      <summary>Ottiene un enumeratore che itera in un <see cref="T:System.Net.CookieCollection" />.</summary>
+      <returns>Istanza di un'implementazione di un'interfaccia <see cref="T:System.Collections.IEnumerator" /> in grado di scorrere un oggetto <see cref="T:System.Net.CookieCollection" />.</returns>
+    </member>
+    <member name="P:System.Net.CookieCollection.Item(System.String)">
+      <summary>Ottiene il <see cref="T:System.Net.Cookie" /> con uno specifico nome da un <see cref="T:System.Net.CookieCollection" />.</summary>
+      <returns>
+        <see cref="T:System.Net.Cookie" /> con uno specifico nome da un <see cref="T:System.Net.CookieCollection" />.</returns>
+      <param name="name">Nome della classe <see cref="T:System.Net.Cookie" /> da ricercare. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> è null. </exception>
+    </member>
+    <member name="M:System.Net.CookieCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>[Supportati in.NET Framework 4.5.1 e versioni successive] Per una descrizione di questo membro, vedere <see cref="M:System.Collections.ICollection.CopyTo(System.Array,System.Int32)" />.</summary>
+      <param name="array">Matrice unidimensionale che rappresenta la destinazione degli elementi copiati dalla raccolta.L'indicizzazione della matrice deve essere in base zero.</param>
+      <param name="index">Indice in base zero della matrice specificata nel parametro <paramref name="array" /> in corrispondenza del quale ha inizio la copia.</param>
+    </member>
+    <member name="P:System.Net.CookieCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>[Supportati in.NET Framework 4.5.1 e versioni successive] Per una descrizione di questo membro, vedere <see cref="P:System.Collections.ICollection.IsSynchronized" />.</summary>
+      <returns>true se l'accesso alla raccolta è sincronizzato (thread-safe), altrimenti false.</returns>
+    </member>
+    <member name="P:System.Net.CookieCollection.System#Collections#ICollection#SyncRoot">
+      <summary>[Supportati in.NET Framework 4.5.1 e versioni successive] Per una descrizione di questo membro, vedere <see cref="P:System.Collections.ICollection.SyncRoot" />.</summary>
+      <returns>Oggetto che può essere utilizzato per sincronizzare l'accesso alla raccolta.</returns>
+    </member>
+    <member name="T:System.Net.CookieContainer">
+      <summary>Fornisce un contenitore per una raccolta di oggetti <see cref="T:System.Net.CookieCollection" />.</summary>
+    </member>
+    <member name="M:System.Net.CookieContainer.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Net.CookieContainer" />.</summary>
+    </member>
+    <member name="M:System.Net.CookieContainer.Add(System.Uri,System.Net.Cookie)">
+      <summary>Aggiunge un <see cref="T:System.Net.Cookie" /> al <see cref="T:System.Net.CookieContainer" /> per un determinato URI.</summary>
+      <param name="uri">L'URI del <see cref="T:System.Net.Cookie" /> da aggiungere al <see cref="T:System.Net.CookieContainer" />. </param>
+      <param name="cookie">L'oggetto <see cref="T:System.Net.Cookie" /> da aggiungere a <see cref="T:System.Net.CookieContainer" />. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="uri" /> è null oppure <paramref name="cookie" /> è null. </exception>
+      <exception cref="T:System.Net.CookieException">
+        <paramref name="cookie" /> è maggiore di <paramref name="maxCookieSize" />. - oppure - Il dominio per <paramref name="cookie" /> non è un URI valido. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.CookieContainer.Add(System.Uri,System.Net.CookieCollection)">
+      <summary>Aggiunge il contenuto di un <see cref="T:System.Net.CookieCollection" /> al <see cref="T:System.Net.CookieContainer" /> per un determinato URI.</summary>
+      <param name="uri">L'URI del <see cref="T:System.Net.CookieCollection" /> da aggiungere al <see cref="T:System.Net.CookieContainer" />. </param>
+      <param name="cookies">L'oggetto <see cref="T:System.Net.CookieCollection" /> da aggiungere a <see cref="T:System.Net.CookieContainer" />. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="cookies" /> è null. </exception>
+      <exception cref="T:System.ArgumentException">Il dominio di uno dei cookie in <paramref name="cookies" /> è null. </exception>
+      <exception cref="T:System.Net.CookieException">Uno dei cookie in <paramref name="cookies" /> contiene un dominio non valido. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Net.CookieContainer.Capacity">
+      <summary>Ottiene e imposta il numero di istanze di <see cref="T:System.Net.Cookie" /> che possono essere contenute in <see cref="T:System.Net.CookieContainer" />.</summary>
+      <returns>Numero di istanze di <see cref="T:System.Net.Cookie" /> che possono essere contenute in un <see cref="T:System.Net.CookieContainer" />.Questo è un limite che non può essere superato aggiungendo un <see cref="T:System.Net.Cookie" />.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="Capacity" /> è minore o uguale a zero o (valore minore di <see cref="P:System.Net.CookieContainer.PerDomainCapacity" /> e <see cref="P:System.Net.CookieContainer.PerDomainCapacity" /> diverso da <see cref="F:System.Int32.MaxValue" /> ). </exception>
+    </member>
+    <member name="P:System.Net.CookieContainer.Count">
+      <summary>Ottiene il numero di istanze di <see cref="T:System.Net.Cookie" /> contenute attualmente in un <see cref="T:System.Net.CookieContainer" />.</summary>
+      <returns>Il numero di istanze di <see cref="T:System.Net.Cookie" /> che possono essere contenute attualmente nel <see cref="T:System.Net.CookieContainer" />.Questo valore è il totale delle istanze di <see cref="T:System.Net.Cookie" /> in tutti i domini.</returns>
+    </member>
+    <member name="F:System.Net.CookieContainer.DefaultCookieLengthLimit">
+      <summary>Rappresenta la dimensione massima predefinita, espressa in byte, delle istanze di <see cref="T:System.Net.Cookie" /> che possono essere contenute nel <see cref="T:System.Net.CookieContainer" />.Il campo è costante.</summary>
+    </member>
+    <member name="F:System.Net.CookieContainer.DefaultCookieLimit">
+      <summary>Rappresenta il numero massimo predefinito di istanze di <see cref="T:System.Net.Cookie" /> che possono essere contenute nel <see cref="T:System.Net.CookieContainer" />.Il campo è costante.</summary>
+    </member>
+    <member name="F:System.Net.CookieContainer.DefaultPerDomainCookieLimit">
+      <summary>Rappresenta il numero massimo predefinito di istanze di <see cref="T:System.Net.Cookie" /> a cui è possibile che un <see cref="T:System.Net.CookieContainer" /> faccia riferimento per ogni dominio.Il campo è costante.</summary>
+    </member>
+    <member name="M:System.Net.CookieContainer.GetCookieHeader(System.Uri)">
+      <summary>Ottiene l'intestazione HTTP del cookie che contiene i cookie HTTP che rappresentano le istanze di <see cref="T:System.Net.Cookie" /> associate a uno specifico URI.</summary>
+      <returns>Un'intestazione HTTP del cookie, con stringhe che rappresentano le istanze di <see cref="T:System.Net.Cookie" /> delimitate da punti e virgola.</returns>
+      <param name="uri">L'URI delle istanze di <see cref="T:System.Net.Cookie" /> desiderate. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="uri" /> è null. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.CookieContainer.GetCookies(System.Uri)">
+      <summary>Ottiene un <see cref="T:System.Net.CookieCollection" /> in cui sono contenute le istanze di <see cref="T:System.Net.Cookie" /> associate a un URI specifico.</summary>
+      <returns>Ottiene un <see cref="T:System.Net.CookieCollection" /> in cui sono contenute le istanze di <see cref="T:System.Net.Cookie" /> associate a un URI specifico.</returns>
+      <param name="uri">L'URI delle istanze di <see cref="T:System.Net.Cookie" /> desiderate. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="uri" /> è null. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Net.CookieContainer.MaxCookieSize">
+      <summary>Rappresenta la lunghezza massima consentita di un <see cref="T:System.Net.Cookie" />.</summary>
+      <returns>La lunghezza massima ammessa, espressa in byte, di un <see cref="T:System.Net.Cookie" />.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="MaxCookieSize" /> è minore o uguale a zero. </exception>
+    </member>
+    <member name="P:System.Net.CookieContainer.PerDomainCapacity">
+      <summary>Ottiene e imposta il numero di istanze di <see cref="T:System.Net.Cookie" /> che possono essere contenute in un <see cref="T:System.Net.CookieContainer" /> per dominio.</summary>
+      <returns>Numero di istanze di <see cref="T:System.Net.Cookie" /> consentite per ogni dominio.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="PerDomainCapacity" /> è minore o uguale a zero. - oppure - <paramref name="(PerDomainCapacity" /> è maggiore del numero massimo consentito di istanze di cookie, 300, ed è diverso da <see cref="F:System.Int32.MaxValue" />) </exception>
+    </member>
+    <member name="M:System.Net.CookieContainer.SetCookies(System.Uri,System.String)">
+      <summary>Aggiunge le istanze di <see cref="T:System.Net.Cookie" /> per uno o più cookie da un'intestazione HTTP al <see cref="T:System.Net.CookieContainer" /> per uno specifico URI.</summary>
+      <param name="uri">URI di <see cref="T:System.Net.CookieCollection" />. </param>
+      <param name="cookieHeader">Il contenuto di un'intestazione HTTP del cookie, così come viene restituito da un server HTTP, con le istanze di <see cref="T:System.Net.Cookie" /> delimitate da virgole. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="uri" /> è null. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="cookieHeader" /> è null. </exception>
+      <exception cref="T:System.Net.CookieException">Uno dei cookie non è valido. - oppure - Si è verificato un errore durante l'aggiunta di uno dei cookie al contenitore. </exception>
+    </member>
+    <member name="T:System.Net.CookieException">
+      <summary>L'eccezione che viene generata quando si verifica un errore nell'aggiunta di un <see cref="T:System.Net.Cookie" /> a un <see cref="T:System.Net.CookieContainer" />.</summary>
+    </member>
+    <member name="M:System.Net.CookieException.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Net.CookieException" />.</summary>
+    </member>
+    <member name="T:System.Net.CredentialCache">
+      <summary>Fornisce l'archiviazione per più credenziali.</summary>
+    </member>
+    <member name="M:System.Net.CredentialCache.#ctor">
+      <summary>Crea una nuova istanza della classe <see cref="T:System.Net.CredentialCache" />.</summary>
+    </member>
+    <member name="M:System.Net.CredentialCache.Add(System.String,System.Int32,System.String,System.Net.NetworkCredential)">
+      <summary>Aggiunge un'istanza <see cref="T:System.Net.NetworkCredential" /> da utilizzare con SMTP alla cache delle credenziali e la associa a un computer host, a una porta e a un protocollo di autenticazione.Le credenziali aggiunte con questo metodo sono valide solo per SMTP.Questo metodo non funziona per le richieste HTTP o FTP.</summary>
+      <param name="host">Oggetto <see cref="T:System.String" /> che identifica il computer host.</param>
+      <param name="port">Oggetto <see cref="T:System.Int32" /> che specifica la porta per connettersi a un <paramref name="host" />.</param>
+      <param name="authenticationType">Oggetto <see cref="T:System.String" /> che identifica lo schema di autenticazione utilizzato in caso di connessione a <paramref name="host" /> mediante <paramref name="cred" />.Vedere la sezione Osservazioni.</param>
+      <param name="credential">La <see cref="T:System.Net.NetworkCredential" /> da aggiungere alla cache delle credenziali. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="host" /> è null. - oppure -<paramref name="authType" /> è null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="authType" /> non è un valore accettato.Vedere la sezione Osservazioni.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="port" /> è minore di zero.</exception>
+    </member>
+    <member name="M:System.Net.CredentialCache.Add(System.Uri,System.String,System.Net.NetworkCredential)">
+      <summary>Aggiunge un'istanza di <see cref="T:System.Net.NetworkCredential" /> alla cache delle credenziali da utilizzare con protocolli diversi da SMTP e la associa a un prefisso URI (Uniform Resource Identifier) e a un protocollo di autenticazione. </summary>
+      <param name="uriPrefix">Un <see cref="T:System.Uri" /> che specifica il prefisso URI delle risorse a cui la credenziale concede l'accesso. </param>
+      <param name="authType">Lo schema di autenticazione utilizzato dalla risorsa specificata in <paramref name="uriPrefix" />. </param>
+      <param name="cred">La <see cref="T:System.Net.NetworkCredential" /> da aggiungere alla cache delle credenziali. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="uriPrefix" /> è null. - oppure - <paramref name="authType" /> è null. </exception>
+      <exception cref="T:System.ArgumentException">Le stesse credenziali vengono aggiunte più volte. </exception>
+    </member>
+    <member name="P:System.Net.CredentialCache.DefaultCredentials">
+      <summary>Recupera le credenziali di sistema dell'applicazione.</summary>
+      <returns>
+        <see cref="T:System.Net.ICredentials" /> che rappresenta le credenziali di sistema dell'applicazione.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="USERNAME" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Net.CredentialCache.DefaultNetworkCredentials">
+      <summary>Ottiene le credenziali di rete del contesto di sicurezza corrente.</summary>
+      <returns>Classe <see cref="T:System.Net.NetworkCredential" /> che rappresenta le credenziali di rete dell'utente corrente o dell'applicazione.</returns>
+    </member>
+    <member name="M:System.Net.CredentialCache.GetCredential(System.String,System.Int32,System.String)">
+      <summary>Restituisce l'istanza di <see cref="T:System.Net.NetworkCredential" /> associata all'host, alla porta e al protocollo di autenticazione specificati.</summary>
+      <returns>Una <see cref="T:System.Net.NetworkCredential" /> oppure null se non esistono credenziali corrispondenti nella cache.</returns>
+      <param name="host">Oggetto <see cref="T:System.String" /> che identifica il computer host.</param>
+      <param name="port">Oggetto <see cref="T:System.Int32" /> che specifica la porta per connettersi a un <paramref name="host" />.</param>
+      <param name="authenticationType">Oggetto <see cref="T:System.String" /> che identifica lo schema di autenticazione utilizzato durante la connessione a <paramref name="host" />.Vedere la sezione Osservazioni.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="host" /> è null. - oppure - <paramref name="authType" /> è null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="authType" /> non è un valore accettato.Vedere la sezione Osservazioni.- oppure -<paramref name="host" /> è uguale alla stringa vuota ("").</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="port" /> è minore di zero.</exception>
+    </member>
+    <member name="M:System.Net.CredentialCache.GetCredential(System.Uri,System.String)">
+      <summary>Restituisce l'istanza <see cref="T:System.Net.NetworkCredential" /> associata al tipo di autenticazione e all'URI specificati.</summary>
+      <returns>Una <see cref="T:System.Net.NetworkCredential" /> oppure null se non esistono credenziali corrispondenti nella cache.</returns>
+      <param name="uriPrefix">Un <see cref="T:System.Uri" /> che specifica il prefisso URI delle risorse a cui la credenziale concede l'accesso. </param>
+      <param name="authType">Lo schema di autenticazione utilizzato dalla risorsa specificata in <paramref name="uriPrefix" />. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="uriPrefix" /> o <paramref name="authType" /> è null. </exception>
+    </member>
+    <member name="M:System.Net.CredentialCache.GetEnumerator">
+      <summary>Restituisce un enumeratore che consente di scorrere l'istanza di <see cref="T:System.Net.CredentialCache" />.</summary>
+      <returns>
+        <see cref="T:System.Collections.IEnumerator" /> per la <see cref="T:System.Net.CredentialCache" />.</returns>
+    </member>
+    <member name="M:System.Net.CredentialCache.Remove(System.String,System.Int32,System.String)">
+      <summary>Elimina un'istanza di <see cref="T:System.Net.NetworkCredential" /> dalla cache se associata all'host, alla porta e al protocollo di autenticazione specificati.</summary>
+      <param name="host">Oggetto <see cref="T:System.String" /> che identifica il computer host.</param>
+      <param name="port">Oggetto <see cref="T:System.Int32" /> che specifica la porta per connettersi a un <paramref name="host" />.</param>
+      <param name="authenticationType">Oggetto <see cref="T:System.String" /> che identifica lo schema di autenticazione utilizzato durante la connessione a <paramref name="host" />.Vedere la sezione Osservazioni.</param>
+    </member>
+    <member name="M:System.Net.CredentialCache.Remove(System.Uri,System.String)">
+      <summary>Elimina un'istanza <see cref="T:System.Net.NetworkCredential" /> dalla cache se associata al prefisso dell'URI e al protocollo di autenticazione specificati.</summary>
+      <param name="uriPrefix">Un <see cref="T:System.Uri" /> che specifica il prefisso URI delle risorse per le quali è utilizzata la credenziale. </param>
+      <param name="authType">Lo schema di autenticazione utilizzato dall'host specificato in <paramref name="uriPrefix" />. </param>
+    </member>
+    <member name="T:System.Net.DecompressionMethods">
+      <summary>Rappresenta il formato di codifica di compressione e decompressione dei file da utilizzare per comprimere i dati ricevuti in seguito a una richiesta <see cref="T:System.Net.HttpWebRequest" />.</summary>
+    </member>
+    <member name="F:System.Net.DecompressionMethods.Deflate">
+      <summary>Utilizza l'algoritmo di riduzione di compressione-decompressione.</summary>
+    </member>
+    <member name="F:System.Net.DecompressionMethods.GZip">
+      <summary>Utilizza l'algoritmo gZip di compressione-decompressione.</summary>
+    </member>
+    <member name="F:System.Net.DecompressionMethods.None">
+      <summary>Non utilizza la compressione.</summary>
+    </member>
+    <member name="T:System.Net.DnsEndPoint">
+      <summary>Rappresenta un endpoint di rete come nome host o rappresentazione di stringa di un indirizzo IP e un numero di porta.</summary>
+    </member>
+    <member name="M:System.Net.DnsEndPoint.#ctor(System.String,System.Int32)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Net.DnsEndPoint" /> con il nome host o la rappresentazione di stringa di un indirizzo IP e un numero di porta.</summary>
+      <param name="host">Nome host o rappresentazione di stringa dell'indirizzo IP.</param>
+      <param name="port">Numero di porta associato all'indirizzo oppure 0 per specificare qualsiasi porta disponibile.<paramref name="port" /> nell'ordine dell'host.</param>
+      <exception cref="T:System.ArgumentException">Il parametro <paramref name="host" /> contiene una stringa vuota.</exception>
+      <exception cref="T:System.ArgumentNullException">Il parametro <paramref name="host" /> è null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="port" /> è minore di <see cref="F:System.Net.IPEndPoint.MinPort" />.- oppure - <paramref name="port" /> è maggiore di <see cref="F:System.Net.IPEndPoint.MaxPort" />. </exception>
+    </member>
+    <member name="M:System.Net.DnsEndPoint.#ctor(System.String,System.Int32,System.Net.Sockets.AddressFamily)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Net.DnsEndPoint" /> con il nome host o la rappresentazione di stringa di un indirizzo IP, un numero di porta e una famiglia di indirizzi.</summary>
+      <param name="host">Nome host o rappresentazione di stringa dell'indirizzo IP.</param>
+      <param name="port">Numero di porta associato all'indirizzo oppure 0 per specificare qualsiasi porta disponibile.<paramref name="port" /> nell'ordine dell'host.</param>
+      <param name="addressFamily">Uno dei valori di <see cref="T:System.Net.Sockets.AddressFamily" />.</param>
+      <exception cref="T:System.ArgumentException">Il parametro <paramref name="host" /> contiene una stringa vuota.- oppure - <paramref name="addressFamily" /> è <see cref="F:System.Net.Sockets.AddressFamily.Unknown" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Il parametro <paramref name="host" /> è null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="port" /> è minore di <see cref="F:System.Net.IPEndPoint.MinPort" />.- oppure - <paramref name="port" /> è maggiore di <see cref="F:System.Net.IPEndPoint.MaxPort" />.</exception>
+    </member>
+    <member name="P:System.Net.DnsEndPoint.AddressFamily">
+      <summary>Ottiene la famiglia di indirizzi IP (Internet Protocol).</summary>
+      <returns>Uno dei valori di <see cref="T:System.Net.Sockets.AddressFamily" />.</returns>
+    </member>
+    <member name="M:System.Net.DnsEndPoint.Equals(System.Object)">
+      <summary>Confronta due oggetti <see cref="T:System.Net.DnsEndPoint" />.</summary>
+      <returns>true se le due istanze della classe <see cref="T:System.Net.DnsEndPoint" /> sono uguali. In caso contrario, false.</returns>
+      <param name="comparand">Istanza di <see cref="T:System.Net.DnsEndPoint" /> da confrontare con l'istanza corrente.</param>
+    </member>
+    <member name="M:System.Net.DnsEndPoint.GetHashCode">
+      <summary>Restituisce un valore hash per <see cref="T:System.Net.DnsEndPoint" />.</summary>
+      <returns>Valore hash integer per <see cref="T:System.Net.DnsEndPoint" />.</returns>
+    </member>
+    <member name="P:System.Net.DnsEndPoint.Host">
+      <summary>Ottiene il nome host o la rappresentazione di stringa dell'indirizzo IP (Internet Protocol) dell'host.</summary>
+      <returns>Nome host o rappresentazione di stringa di un indirizzo IP.</returns>
+    </member>
+    <member name="P:System.Net.DnsEndPoint.Port">
+      <summary>Ottiene il numero di porta di <see cref="T:System.Net.DnsEndPoint" />.</summary>
+      <returns>Valore intero nell'intervallo compreso tra 0 e 0xffff che indica il numero di porta di <see cref="T:System.Net.DnsEndPoint" />.</returns>
+    </member>
+    <member name="M:System.Net.DnsEndPoint.ToString">
+      <summary>Restituisce il nome host o la rappresentazione di stringa dell'indirizzo IP e il numero di porta di <see cref="T:System.Net.DnsEndPoint" />.</summary>
+      <returns>Stringa contenente la famiglia di indirizzi, il nome host o la stringa dell'indirizzo IP e il numero di porta dell'oggetto <see cref="T:System.Net.DnsEndPoint" /> specificato.</returns>
+    </member>
+    <member name="T:System.Net.EndPoint">
+      <summary>Identifica un indirizzo di rete.Questa è una classe abstract.</summary>
+    </member>
+    <member name="M:System.Net.EndPoint.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Net.EndPoint" />. </summary>
+    </member>
+    <member name="P:System.Net.EndPoint.AddressFamily">
+      <summary>Ottiene il gruppo di indirizzi a cui appartiene l'endpoint.</summary>
+      <returns>Uno dei valori di <see cref="T:System.Net.Sockets.AddressFamily" />.</returns>
+      <exception cref="T:System.NotImplementedException">Qualsiasi tentativo di ottenere o impostare la proprietà viene effettuato quando questa non è sottoposta a override in una classe derivata. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.EndPoint.Create(System.Net.SocketAddress)">
+      <summary>Crea un'istanza di <see cref="T:System.Net.EndPoint" /> da un'istanza di <see cref="T:System.Net.SocketAddress" />.</summary>
+      <returns>Nuova istanza di <see cref="T:System.Net.EndPoint" /> inizializzata dall'istanza di <see cref="T:System.Net.SocketAddress" /> specificata.</returns>
+      <param name="socketAddress">Indirizzo socket che funge da endpoint per una connessione. </param>
+      <exception cref="T:System.NotImplementedException">Qualsiasi tentativo di accedere al metodo viene effettuato quando questo non è sottoposto a override in una classe derivata. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.EndPoint.Serialize">
+      <summary>Serializza le informazioni di endpoint in un'istanza di <see cref="T:System.Net.SocketAddress" />.</summary>
+      <returns>Istanza di <see cref="T:System.Net.SocketAddress" /> in cui sono contenute le informazioni di endpoint.</returns>
+      <exception cref="T:System.NotImplementedException">Qualsiasi tentativo di accedere al metodo viene effettuato quando questo non è sottoposto a override in una classe derivata. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Net.HttpStatusCode">
+      <summary>Contiene i valori dei codici di stato definiti per il protocollo HTTP.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Accepted">
+      <summary>Equivalente allo stato HTTP 202.<see cref="F:System.Net.HttpStatusCode.Accepted" /> indica che la richiesta è stata accettata per un'ulteriore elaborazione.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Ambiguous">
+      <summary>Equivalente allo stato HTTP 300.<see cref="F:System.Net.HttpStatusCode.Ambiguous" /> indica che le informazioni richieste dispongono di più rappresentazioni.L'operazione predefinita consiste nel trattare questo stato come reindirizzamento e nel seguire il contenuto dell'intestazione Location associata alla risposta.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.BadGateway">
+      <summary>Equivalente allo stato HTTP 502.<see cref="F:System.Net.HttpStatusCode.BadGateway" /> indica che un server proxy intermedio ha ricevuto una risposta errata da un altro proxy o dal server di origine.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.BadRequest">
+      <summary>Equivalente allo stato HTTP 400.<see cref="F:System.Net.HttpStatusCode.BadRequest" /> indica che la richiesta non è stata compresa dal server.<see cref="F:System.Net.HttpStatusCode.BadRequest" /> viene inviato quando nessun altro errore è applicabile o se l'errore esatto è sconosciuto o non presenta un relativo codice di errore.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Conflict">
+      <summary>Equivalente allo stato HTTP 409.<see cref="F:System.Net.HttpStatusCode.Conflict" /> indica che la richiesta non è stata eseguita a causa di un conflitto nel server.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Continue">
+      <summary>Equivalente allo stato HTTP 100.<see cref="F:System.Net.HttpStatusCode.Continue" /> indica che il client può proseguire con la richiesta.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Created">
+      <summary>Equivalente allo stato HTTP 201.<see cref="F:System.Net.HttpStatusCode.Created" /> indica che la richiesta ha determinato la creazione di una nuova risorsa prima dell'invio della risposta.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.ExpectationFailed">
+      <summary>Equivalente allo stato HTTP 417.<see cref="F:System.Net.HttpStatusCode.ExpectationFailed" /> indica che una previsione fornita in un'intestazione Expect non può essere soddisfatta dal server.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Forbidden">
+      <summary>Equivalente allo stato HTTP 403.<see cref="F:System.Net.HttpStatusCode.Forbidden" /> indica che il server rifiuta di soddisfare la richiesta.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Found">
+      <summary>Equivalente allo stato HTTP 302.<see cref="F:System.Net.HttpStatusCode.Found" /> indica che le informazioni richieste si trovano nell'URI specificato nell'intestazione Location.Alla ricezione dello stato, l'azione predefinita consiste nel seguire l'intestazione Location associata alla risposta.Quando il metodo di richiesta originale è POST, la richiesta reindirizzata utilizza il metodo GET.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.GatewayTimeout">
+      <summary>Equivalente allo stato HTTP 504.<see cref="F:System.Net.HttpStatusCode.GatewayTimeout" /> indica che si è verificato il timeout di un server proxy intermedio durante l'attesa di una risposta da un altro proxy o dal server di origine.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Gone">
+      <summary>Equivalente allo stato HTTP 410.<see cref="F:System.Net.HttpStatusCode.Gone" /> indica che la risorsa richiesta non è più disponibile.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.HttpVersionNotSupported">
+      <summary>Equivalente allo stato HTTP 505.<see cref="F:System.Net.HttpStatusCode.HttpVersionNotSupported" /> indica che la versione HTTP richiesta non è supportata dal server.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.InternalServerError">
+      <summary>Equivalente allo stato HTTP 500.<see cref="F:System.Net.HttpStatusCode.InternalServerError" /> indica che si è verificato un errore generico del server.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.LengthRequired">
+      <summary>Equivalente allo stato HTTP 411.<see cref="F:System.Net.HttpStatusCode.LengthRequired" /> indica che l'intestazione Content-length necessaria è mancante.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.MethodNotAllowed">
+      <summary>Equivalente allo stato HTTP 405.<see cref="F:System.Net.HttpStatusCode.MethodNotAllowed" /> indica che il metodo di richiesta (POST o GET) non è consentito sulla risorsa richiesta.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Moved">
+      <summary>Equivalente allo stato HTTP 301.<see cref="F:System.Net.HttpStatusCode.Moved" /> indica che le informazioni richieste sono state spostate nell'URI specificato nell'intestazione Location.Alla ricezione dello stato, l'azione predefinita consiste nel seguire l'intestazione Location associata alla risposta.Quando il metodo di richiesta originale è POST, la richiesta reindirizzata utilizza il metodo GET.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.MovedPermanently">
+      <summary>Equivalente allo stato HTTP 301.<see cref="F:System.Net.HttpStatusCode.MovedPermanently" /> indica che le informazioni richieste sono state spostate nell'URI specificato nell'intestazione Location.Alla ricezione dello stato, l'azione predefinita consiste nel seguire l'intestazione Location associata alla risposta.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.MultipleChoices">
+      <summary>Equivalente allo stato HTTP 300.<see cref="F:System.Net.HttpStatusCode.MultipleChoices" /> indica che le informazioni richieste dispongono di più rappresentazioni.L'operazione predefinita consiste nel trattare questo stato come reindirizzamento e nel seguire il contenuto dell'intestazione Location associata alla risposta.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.NoContent">
+      <summary>Equivalente allo stato HTTP 204.<see cref="F:System.Net.HttpStatusCode.NoContent" /> indica che la richiesta è stata elaborata correttamente e che la risposta è intenzionalmente vuota.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.NonAuthoritativeInformation">
+      <summary>Equivalente allo stato HTTP 203.<see cref="F:System.Net.HttpStatusCode.NonAuthoritativeInformation" /> indica che le metainformazioni restituite provengono da una copia nella cache invece che dal server di origine, pertanto possono essere errate.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.NotAcceptable">
+      <summary>Equivalente allo stato HTTP 406.<see cref="F:System.Net.HttpStatusCode.NotAcceptable" /> indica che il client ha segnalato mediante intestazioni Accept che non accetterà alcuna delle rappresentazioni disponibili della risorsa.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.NotFound">
+      <summary>Equivalente allo stato HTTP 404.<see cref="F:System.Net.HttpStatusCode.NotFound" /> indica che la risorsa richiesta non esiste sul server.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.NotImplemented">
+      <summary>Equivalente allo stato HTTP 501.<see cref="F:System.Net.HttpStatusCode.NotImplemented" /> indica che il server non supporta la funzione richiesta.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.NotModified">
+      <summary>Equivalente allo stato HTTP 304.<see cref="F:System.Net.HttpStatusCode.NotModified" /> indica che la copia del client memorizzata nella cache è aggiornata.Il contenuto della risorsa non viene trasferito.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.OK">
+      <summary>Equivalente allo stato HTTP 200.<see cref="F:System.Net.HttpStatusCode.OK" /> indica che la richiesta è riuscita e le informazioni richieste sono presenti nella risposta.Questo è il codice di stato ricevuto frequentemente.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.PartialContent">
+      <summary>Equivalente allo stato HTTP 206.<see cref="F:System.Net.HttpStatusCode.PartialContent" /> indica che la risposta è parziale, come richiesto da una richiesta GET che include un intervallo di byte.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.PaymentRequired">
+      <summary>Equivalente allo stato HTTP 402.<see cref="F:System.Net.HttpStatusCode.PaymentRequired" /> è riservato per un utilizzo futuro.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.PreconditionFailed">
+      <summary>Equivalente allo stato HTTP 412.<see cref="F:System.Net.HttpStatusCode.PreconditionFailed" /> indica che una condizione impostata per questa richiesta non è riuscita e la richiesta non può essere eseguita.Le condizioni sono impostate con intestazioni di richiesta condizionale, quali If-Match, If-None-Match o If-Unmodified-Since.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.ProxyAuthenticationRequired">
+      <summary>Equivalente allo stato HTTP 407.<see cref="F:System.Net.HttpStatusCode.ProxyAuthenticationRequired" /> indica che per il proxy richiesto è necessaria l'autenticazione.L'intestazione Proxy-authenticate contiene i dettagli su come eseguire l'autenticazione.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Redirect">
+      <summary>Equivalente allo stato HTTP 302.<see cref="F:System.Net.HttpStatusCode.Redirect" /> indica che le informazioni richieste si trovano nell'URI specificato nell'intestazione Location.Alla ricezione dello stato, l'azione predefinita consiste nel seguire l'intestazione Location associata alla risposta.Quando il metodo di richiesta originale è POST, la richiesta reindirizzata utilizza il metodo GET.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.RedirectKeepVerb">
+      <summary>Equivalente allo stato HTTP 307.<see cref="F:System.Net.HttpStatusCode.RedirectKeepVerb" /> indica che le informazioni della richiesta si trovano nell'URI specificato nell'intestazione Location.Alla ricezione dello stato, l'azione predefinita consiste nel seguire l'intestazione Location associata alla risposta.Quando il metodo di richiesta originale è POST, anche la richiesta reindirizzata utilizza il metodo POST.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.RedirectMethod">
+      <summary>Equivalente allo stato HTTP 303.<see cref="F:System.Net.HttpStatusCode.RedirectMethod" /> reindirizza automaticamente il client all'URI specificato nell'intestazione Location come risultato di un POST.La richiesta alla risorsa specificata dall'intestazione Location verrà effettuata con un GET.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.RequestedRangeNotSatisfiable">
+      <summary>Equivalente allo stato HTTP 416.<see cref="F:System.Net.HttpStatusCode.RequestedRangeNotSatisfiable" /> indica che l'intervallo di dati richiesti dalla risorsa non può essere restituito poiché l'inizio dell'intervallo è anteriore all'inizio della risorsa o poiché la fine dell'intervallo è posteriore alla fine della risorsa.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.RequestEntityTooLarge">
+      <summary>Equivalente allo stato HTTP 413.<see cref="F:System.Net.HttpStatusCode.RequestEntityTooLarge" /> indica che la richiesta è troppo grande per essere elaborata dal server.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.RequestTimeout">
+      <summary>Equivalente allo stato HTTP 408.<see cref="F:System.Net.HttpStatusCode.RequestTimeout" /> indica che il client non ha inviato una richiesta nel tempo in cui tale richiesta era attesa dal server.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.RequestUriTooLong">
+      <summary>Equivalente allo stato HTTP 414.<see cref="F:System.Net.HttpStatusCode.RequestUriTooLong" /> indica che l'URI è troppo lungo.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.ResetContent">
+      <summary>Equivalente allo stato HTTP 205.<see cref="F:System.Net.HttpStatusCode.ResetContent" /> indica che il client deve reimpostare (non ricaricare) la risorsa corrente.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.SeeOther">
+      <summary>Equivalente allo stato HTTP 303.<see cref="F:System.Net.HttpStatusCode.SeeOther" /> reindirizza automaticamente il client all'URI specificato nell'intestazione Location come risultato di un POST.La richiesta alla risorsa specificata dall'intestazione Location verrà effettuata con un GET.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.ServiceUnavailable">
+      <summary>Equivalente allo stato HTTP 503.<see cref="F:System.Net.HttpStatusCode.ServiceUnavailable" /> indica che il server è temporaneamente non disponibile, in genere a causa del carico elevato o per motivi di manutenzione.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.SwitchingProtocols">
+      <summary>Equivalente allo stato HTTP 101.<see cref="F:System.Net.HttpStatusCode.SwitchingProtocols" /> indica che la versione del protocollo o il protocollo viene modificato.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.TemporaryRedirect">
+      <summary>Equivalente allo stato HTTP 307.<see cref="F:System.Net.HttpStatusCode.TemporaryRedirect" /> indica che le informazioni della richiesta si trovano nell'URI specificato nell'intestazione Location.Alla ricezione dello stato, l'azione predefinita consiste nel seguire l'intestazione Location associata alla risposta.Quando il metodo di richiesta originale è POST, anche la richiesta reindirizzata utilizza il metodo POST.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Unauthorized">
+      <summary>Equivalente allo stato HTTP 401.<see cref="F:System.Net.HttpStatusCode.Unauthorized" /> indica che per la risorsa richiesta è necessaria l'autenticazione.L'intestazione WWW-Authenticate contiene i dettagli su come eseguire l'autenticazione.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.UnsupportedMediaType">
+      <summary>Equivalente allo stato HTTP 415.<see cref="F:System.Net.HttpStatusCode.UnsupportedMediaType" /> indica che la richiesta è un tipo non supportato.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Unused">
+      <summary>Equivalente allo stato HTTP 306.<see cref="F:System.Net.HttpStatusCode.Unused" /> è un'estensione proposta alla specifica HTTP/1.1 non completamente definita.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.UpgradeRequired">
+      <summary>Equivalente allo stato HTTP 426.<see cref="F:System.Net.HttpStatusCode.UpgradeRequired" /> indica che il client deve passare a un protocollo diverso come TLS/1.0.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.UseProxy">
+      <summary>Equivalente allo stato HTTP 305.<see cref="F:System.Net.HttpStatusCode.UseProxy" /> indica che per la richiesta deve essere utilizzato il server proxy nell'URI specificato nell'intestazione Location.</summary>
+    </member>
+    <member name="T:System.Net.ICredentials">
+      <summary>Fornisce l'interfaccia di autenticazione di base per recuperare le credenziali per l'autenticazione del client Web.</summary>
+    </member>
+    <member name="M:System.Net.ICredentials.GetCredential(System.Uri,System.String)">
+      <summary>Restituisce un oggetto <see cref="T:System.Net.NetworkCredential" /> associato all'URI specificato e al tipo di autenticazione.</summary>
+      <returns>Oggetto <see cref="T:System.Net.NetworkCredential" /> associato all'URI specificato e al tipo di autenticazione oppure, se non è disponibile alcuna credenziale, null .</returns>
+      <param name="uri">L'<see cref="T:System.Uri" /> per il quale il client fornisce l'autenticazione. </param>
+      <param name="authType">Il tipo di autenticazione così come è definito nella proprietà <see cref="P:System.Net.IAuthenticationModule.AuthenticationType" />. </param>
+    </member>
+    <member name="T:System.Net.ICredentialsByHost">
+      <summary>Fornisce l'interfaccia per il recupero delle credenziali di un host, di una porta e di un tipo di autenticazione.</summary>
+    </member>
+    <member name="M:System.Net.ICredentialsByHost.GetCredential(System.String,System.Int32,System.String)">
+      <summary>Restituisce le credenziali per l'host, la porta e il protocollo di autenticazione specificati.</summary>
+      <returns>Classe <see cref="T:System.Net.NetworkCredential" /> per l'host, la porta e il protocollo di autenticazione specificati oppure null se non sono disponibili le credenziali per l'host, la porta e il protocollo di autenticazione specificati.</returns>
+      <param name="host">Il computer host che sta eseguendo l'autenticazione del client.</param>
+      <param name="port">La porta dell'<paramref name="host " />che sarà utilizzata dal client per le comunicazioni.</param>
+      <param name="authenticationType">Protocollo di autenticazione.</param>
+    </member>
+    <member name="T:System.Net.IPAddress">
+      <summary>Fornisce un indirizzo IP (Internet Protocol).</summary>
+    </member>
+    <member name="M:System.Net.IPAddress.#ctor(System.Byte[])">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Net.IPAddress" /> con l'indirizzo specificato come matrice <see cref="T:System.Byte" />.</summary>
+      <param name="address">Valore della matrice di byte dell'indirizzo IP. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="address" /> è null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="address" /> contiene un indirizzo IP errato. </exception>
+    </member>
+    <member name="M:System.Net.IPAddress.#ctor(System.Byte[],System.Int64)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Net.IPAddress" /> con l'indirizzo specificato come matrice <see cref="T:System.Byte" /> e l'identificatore di ambito specificato.</summary>
+      <param name="address">Valore della matrice di byte dell'indirizzo IP. </param>
+      <param name="scopeid">Valore long dell'identificatore di ambito. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="address" /> è null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="address" /> contiene un indirizzo IP errato. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="scopeid" /> &lt; 0 oppure <paramref name="scopeid" /> &gt; 0x00000000FFFFFFFF </exception>
+    </member>
+    <member name="M:System.Net.IPAddress.#ctor(System.Int64)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Net.IPAddress" /> con l'indirizzo specificato struttura <see cref="T:System.Int64" />.</summary>
+      <param name="newAddress">Valore long dell'indirizzo IP.Ad esempio, il valore 0x2414188f in formato big-endian corrisponde all'indirizzo IP "143.24.20.36".</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="newAddress" /> &lt; 0 oppure <paramref name="newAddress" /> &gt; 0x00000000FFFFFFFF </exception>
+    </member>
+    <member name="P:System.Net.IPAddress.AddressFamily">
+      <summary>Ottiene la famiglia di indirizzi dell'indirizzo IP.</summary>
+      <returns>Restituisce l'enumerazione <see cref="F:System.Net.Sockets.AddressFamily.InterNetwork" /> per IPv4 o <see cref="F:System.Net.Sockets.AddressFamily.InterNetworkV6" /> per IPv6.</returns>
+    </member>
+    <member name="F:System.Net.IPAddress.Any">
+      <summary>Fornisce un indirizzo IP che indica che il server deve attendere l'attività dei client su tutte le interfacce di rete.Questo è un campo di sola lettura.</summary>
+    </member>
+    <member name="F:System.Net.IPAddress.Broadcast">
+      <summary>Fornisce l'indirizzo di broadcast IP.Questo è un campo di sola lettura.</summary>
+    </member>
+    <member name="M:System.Net.IPAddress.Equals(System.Object)">
+      <summary>Confronta due indirizzi IP.</summary>
+      <returns>true se i due indirizzi sono uguali. In caso contrario, false.</returns>
+      <param name="comparand">Un'istanza di <see cref="T:System.Net.IPAddress" /> da confrontare con l'istanza corrente. </param>
+    </member>
+    <member name="M:System.Net.IPAddress.GetAddressBytes">
+      <summary>Fornisce una copia della classe <see cref="T:System.Net.IPAddress" /> come una matrice di byte.</summary>
+      <returns>Matrice <see cref="T:System.Byte" />.</returns>
+    </member>
+    <member name="M:System.Net.IPAddress.GetHashCode">
+      <summary>Restituisce un valore hash per un indirizzo IP.</summary>
+      <returns>Valore hash intero.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.IPAddress.HostToNetworkOrder(System.Int16)">
+      <summary>Converte un valore short dall'ordine dei byte dell'host a quello della rete.</summary>
+      <returns>Un valore short espresso nell'ordine dei byte della rete.</returns>
+      <param name="host">Il numero da convertire espresso nell'ordine dei byte dell'host. </param>
+    </member>
+    <member name="M:System.Net.IPAddress.HostToNetworkOrder(System.Int32)">
+      <summary>Converte un valore intero dall'ordine dei byte dell'host a quello della rete.</summary>
+      <returns>Valore intero espresso nell'ordine dei byte della rete.</returns>
+      <param name="host">Il numero da convertire espresso nell'ordine dei byte dell'host. </param>
+    </member>
+    <member name="M:System.Net.IPAddress.HostToNetworkOrder(System.Int64)">
+      <summary>Converte un valore long dall'ordine dei byte dell'host a quello della rete.</summary>
+      <returns>Un valore long espresso nell'ordine dei byte della rete.</returns>
+      <param name="host">Il numero da convertire espresso nell'ordine dei byte dell'host. </param>
+    </member>
+    <member name="F:System.Net.IPAddress.IPv6Any">
+      <summary>Il metodo <see cref="M:System.Net.Sockets.Socket.Bind(System.Net.EndPoint)" /> utilizza il campo <see cref="F:System.Net.IPAddress.IPv6Any" /> per indicare che una classe <see cref="T:System.Net.Sockets.Socket" /> deve attendere l'attività dei client su tutte le interfacce di rete.</summary>
+    </member>
+    <member name="F:System.Net.IPAddress.IPv6Loopback">
+      <summary>Fornisce l'indirizzo di loopback IP.Proprietà di sola lettura.</summary>
+    </member>
+    <member name="F:System.Net.IPAddress.IPv6None">
+      <summary>Fornisce un indirizzo IP che indica che non deve essere utilizzata alcuna interfaccia di rete.Proprietà di sola lettura.</summary>
+    </member>
+    <member name="P:System.Net.IPAddress.IsIPv4MappedToIPv6">
+      <summary>Ottiene se l'indirizzo IP è di tipo IPv6 mappato IPv4.</summary>
+      <returns>Restituisca il valore <see cref="T:System.Boolean" />.true se l'indirizzo IP è un indirizzo IPv6 mappato IPv4; in caso contrario, false.</returns>
+    </member>
+    <member name="P:System.Net.IPAddress.IsIPv6LinkLocal">
+      <summary>Ottiene se l'indirizzo è di tipo link-local IPv6.</summary>
+      <returns>true se l'indirizzo è di tipo link-local IPv6; in caso contrario, false.</returns>
+    </member>
+    <member name="P:System.Net.IPAddress.IsIPv6Multicast">
+      <summary>Ottiene se l'indirizzo è di tipo multicast globale IPv6.</summary>
+      <returns>true se l'indirizzo è di tipo multicast globale IPv6; in caso contrario, false.</returns>
+    </member>
+    <member name="P:System.Net.IPAddress.IsIPv6SiteLocal">
+      <summary>Ottiene se l'indirizzo è di tipo site-local IPv6.</summary>
+      <returns>true se l'indirizzo è di tipo site-local IPv6; in caso contrario, false.</returns>
+    </member>
+    <member name="P:System.Net.IPAddress.IsIPv6Teredo">
+      <summary>Ottiene un valore che indica se l'indirizzo è di tipo Teredo IPv6.</summary>
+      <returns>true se l'indirizzo IP è di tipo Teredo IPv6. In caso contrario, false.</returns>
+    </member>
+    <member name="M:System.Net.IPAddress.IsLoopback(System.Net.IPAddress)">
+      <summary>Indica se l'indirizzo IP specificato è quello di loopback.</summary>
+      <returns>true se <paramref name="address" /> è l'indirizzo di loopback. In caso contrario, false.</returns>
+      <param name="address">Indirizzo IP. </param>
+    </member>
+    <member name="F:System.Net.IPAddress.Loopback">
+      <summary>Fornisce l'indirizzo di loopback IP.Questo è un campo di sola lettura.</summary>
+    </member>
+    <member name="M:System.Net.IPAddress.MapToIPv4">
+      <summary>Esegue il mapping dell'oggetto <see cref="T:System.Net.IPAddress" /> a un indirizzo IPv4.</summary>
+      <returns>Restituisca il valore <see cref="T:System.Net.IPAddress" />.Indirizzo IPv4.</returns>
+    </member>
+    <member name="M:System.Net.IPAddress.MapToIPv6">
+      <summary>Esegue il mapping dell'oggetto <see cref="T:System.Net.IPAddress" /> a un indirizzo IPv6.</summary>
+      <returns>Restituisca il valore <see cref="T:System.Net.IPAddress" />.Indirizzo IPv6.</returns>
+    </member>
+    <member name="M:System.Net.IPAddress.NetworkToHostOrder(System.Int16)">
+      <summary>Converte un valore short dall'ordine dei byte della rete a quello dell'host.</summary>
+      <returns>Un valore short espresso nell'ordine dei byte dell'host.</returns>
+      <param name="network">Il numero da convertire espresso nell'ordine dei byte della rete. </param>
+    </member>
+    <member name="M:System.Net.IPAddress.NetworkToHostOrder(System.Int32)">
+      <summary>Converte un valore intero dall'ordine dei byte della rete a quello dell'host.</summary>
+      <returns>Valore intero espresso nell'ordine dei byte dell'host.</returns>
+      <param name="network">Il numero da convertire espresso nell'ordine dei byte della rete. </param>
+    </member>
+    <member name="M:System.Net.IPAddress.NetworkToHostOrder(System.Int64)">
+      <summary>Converte un valore long dall'ordine dei byte della rete a quello dell'host.</summary>
+      <returns>Un valore long espresso nell'ordine dei byte dell'host.</returns>
+      <param name="network">Il numero da convertire espresso nell'ordine dei byte della rete. </param>
+    </member>
+    <member name="F:System.Net.IPAddress.None">
+      <summary>Fornisce un indirizzo IP che indica che non deve essere utilizzata alcuna interfaccia di rete.Questo è un campo di sola lettura.</summary>
+    </member>
+    <member name="M:System.Net.IPAddress.Parse(System.String)">
+      <summary>Converte una stringa di indirizzi IP in un'istanza di <see cref="T:System.Net.IPAddress" />.</summary>
+      <returns>Istanza di <see cref="T:System.Net.IPAddress" />.</returns>
+      <param name="ipString">Stringa contenente un indirizzo IP nella notazione a quattro numeri separati da punti per IPv4 e nella notazione a cifre esadecimali separate da due punti per IPv6. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="ipString" /> è null. </exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="ipString" /> non è un indirizzo IP valido. </exception>
+    </member>
+    <member name="P:System.Net.IPAddress.ScopeId">
+      <summary>Ottiene o imposta l'identificatore di ambito dell'indirizzo IPv6.</summary>
+      <returns>Valore long integer che specifica l’ambito dell'indirizzo.</returns>
+      <exception cref="T:System.Net.Sockets.SocketException">AddressFamily = InterNetwork. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="scopeId" /> &lt; 0- oppure -<paramref name="scopeId" /> &gt; 0x00000000FFFFFFFF  </exception>
+    </member>
+    <member name="M:System.Net.IPAddress.ToString">
+      <summary>Converte un indirizzo Internet nella relativa notazione standard.</summary>
+      <returns>Stringa contenente un indirizzo IP espresso nella notazione IPv4 a quattro numeri separati da punti e nella notazione IPv6 a cifre esadecimali separate da due punti.</returns>
+      <exception cref="T:System.Net.Sockets.SocketException">La famiglia degli indirizzi è <see cref="F:System.Net.Sockets.AddressFamily.InterNetworkV6" /> e l'indirizzo non è corretto. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.IPAddress.TryParse(System.String,System.Net.IPAddress@)">
+      <summary>Determina se una stringa è un indirizzo IP valido.</summary>
+      <returns>true se <paramref name="ipString" /> è un indirizzo IP valido; in caso contrario, false.</returns>
+      <param name="ipString">Stringa da convalidare.</param>
+      <param name="address">Versione <see cref="T:System.Net.IPAddress" /> della stringa.</param>
+    </member>
+    <member name="T:System.Net.IPEndPoint">
+      <summary>Rappresenta un endpoint della rete come indirizzo IP e numero di porta.</summary>
+    </member>
+    <member name="M:System.Net.IPEndPoint.#ctor(System.Int64,System.Int32)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Net.IPEndPoint" /> con il numero di porta e l'indirizzo specificati.</summary>
+      <param name="address">L'indirizzo IP dell'host Internet. </param>
+      <param name="port">Numero di porta associato a <paramref name="address" /> oppure 0 per specificare qualsiasi porta disponibile.<paramref name="port" /> nell'ordine dell'host.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="port" /> è minore di <see cref="F:System.Net.IPEndPoint.MinPort" />.- oppure - <paramref name="port" /> è maggiore di <see cref="F:System.Net.IPEndPoint.MaxPort" />.- oppure - <paramref name="address" /> è minore di 0 o maggiore di 0x00000000FFFFFFFF. </exception>
+    </member>
+    <member name="M:System.Net.IPEndPoint.#ctor(System.Net.IPAddress,System.Int32)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Net.IPEndPoint" /> con il numero di porta e l'indirizzo specificati.</summary>
+      <param name="address">Oggetto <see cref="T:System.Net.IPAddress" />. </param>
+      <param name="port">Numero di porta associato a <paramref name="address" /> oppure 0 per specificare qualsiasi porta disponibile.<paramref name="port" /> nell'ordine dell'host.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="address" /> è null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="port" /> è minore di <see cref="F:System.Net.IPEndPoint.MinPort" />.- oppure - <paramref name="port" /> è maggiore di <see cref="F:System.Net.IPEndPoint.MaxPort" />.- oppure - <paramref name="address" /> è minore di 0 o maggiore di 0x00000000FFFFFFFF. </exception>
+    </member>
+    <member name="P:System.Net.IPEndPoint.Address">
+      <summary>Ottiene o imposta l'indirizzo IP dell'endpoint.</summary>
+      <returns>Istanza di <see cref="T:System.Net.IPAddress" /> contenente l'indirizzo IP dell'endpoint.</returns>
+    </member>
+    <member name="P:System.Net.IPEndPoint.AddressFamily">
+      <summary>Ottiene la famiglia di indirizzi IP (Internet Protocol).</summary>
+      <returns>Restituisce <see cref="F:System.Net.Sockets.AddressFamily.InterNetwork" />.</returns>
+    </member>
+    <member name="M:System.Net.IPEndPoint.Create(System.Net.SocketAddress)">
+      <summary>Crea un endpoint da un indirizzo socket.</summary>
+      <returns>Un'istanza di <see cref="T:System.Net.EndPoint" /> che utilizza l'indirizzo del socket specificato.</returns>
+      <param name="socketAddress">Il <see cref="T:System.Net.SocketAddress" /> da utilizzare per l'endpoint. </param>
+      <exception cref="T:System.ArgumentException">La AddressFamily di <paramref name="socketAddress" /> è diversa dall'AddressFamily dell'istanza corrente.- oppure - <paramref name="socketAddress" /> .Dimensione &lt; 8. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.IPEndPoint.Equals(System.Object)">
+      <summary>Determina se l'oggetto <see cref="T:System.Object" /> specificato è uguale all'istanza <see cref="T:System.Net.IPEndPoint" /> corrente.</summary>
+      <returns>true se l'oggetto specificato è uguale all'oggetto corrente; in caso contrario, false.</returns>
+      <param name="comparand">L'oggetto <see cref="T:System.Object" /> specificato da confrontare con l'istanza <see cref="T:System.Net.IPEndPoint" /> corrente.</param>
+    </member>
+    <member name="M:System.Net.IPEndPoint.GetHashCode">
+      <summary>Restituisce un valore hash per un'istanza di <see cref="T:System.Net.IPEndPoint" />.</summary>
+      <returns>Valore hash intero.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="F:System.Net.IPEndPoint.MaxPort">
+      <summary>Specifica il valore massimo che può essere assegnato alla proprietà <see cref="P:System.Net.IPEndPoint.Port" />.Il valore MaxPort è impostato su 0x0000FFFF.Questo è un campo di sola lettura.</summary>
+    </member>
+    <member name="F:System.Net.IPEndPoint.MinPort">
+      <summary>Specifica il valore minimo che può essere assegnato alla proprietà <see cref="P:System.Net.IPEndPoint.Port" />.Questo è un campo di sola lettura.</summary>
+    </member>
+    <member name="P:System.Net.IPEndPoint.Port">
+      <summary>Ottiene o imposta il numero di porta dell'endpoint.</summary>
+      <returns>Valore intero nell'intervallo compreso tra <see cref="F:System.Net.IPEndPoint.MinPort" /> e <see cref="F:System.Net.IPEndPoint.MaxPort" /> indicante il numero di porta dell'endpoint.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il valore specificato per un'operazione SET è minore di <see cref="F:System.Net.IPEndPoint.MinPort" /> o maggiore di <see cref="F:System.Net.IPEndPoint.MaxPort" />. </exception>
+    </member>
+    <member name="M:System.Net.IPEndPoint.Serialize">
+      <summary>Serializza le informazioni di endpoint in un'istanza di <see cref="T:System.Net.SocketAddress" />.</summary>
+      <returns>Un'istanza di <see cref="T:System.Net.SocketAddress" /> contenente l'indirizzo del socket per l'endpoint.</returns>
+    </member>
+    <member name="M:System.Net.IPEndPoint.ToString">
+      <summary>Restituisce l'indirizzo IP e il numero della porta dell'endpoint specificato.</summary>
+      <returns>Stringa contenente l'indirizzo IP e il numero della porta dell'endpoint specificato, ad esempio 192.168.1.2:80.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Net.IWebProxy">
+      <summary>Fornisce l'interfaccia di base per l'implementazione dell'accesso proxy per la classe <see cref="T:System.Net.WebRequest" />.</summary>
+    </member>
+    <member name="P:System.Net.IWebProxy.Credentials">
+      <summary>Le credenziali da inviare al server proxy per l'autenticazione.</summary>
+      <returns>Istanza di <see cref="T:System.Net.ICredentials" /> in cui sono contenute le credenziali necessarie per autenticare una richiesta al server proxy.</returns>
+    </member>
+    <member name="M:System.Net.IWebProxy.GetProxy(System.Uri)">
+      <summary>Restituisce l'URI di un proxy.</summary>
+      <returns>Istanza di <see cref="T:System.Uri" /> in cui è contenuto l'URI del proxy utilizzato per contattare <paramref name="destination" />.</returns>
+      <param name="destination">Oggetto <see cref="T:System.Uri" /> che specifica la risorsa Internet richiesta. </param>
+    </member>
+    <member name="M:System.Net.IWebProxy.IsBypassed(System.Uri)">
+      <summary>Indica che il proxy non deve essere utilizzato per l'host specificato.</summary>
+      <returns>true se il server proxy non deve essere utilizzato per <paramref name="host" />. In caso contrario, false.</returns>
+      <param name="host">L'<see cref="T:System.Uri" /> dell'host di cui verificare l'utilizzo del proxy. </param>
+    </member>
+    <member name="T:System.Net.NetworkCredential">
+      <summary>Fornisce le credenziali per gli schemi di autenticazione basati su password, come l'autenticazione di base, classificata, NTLM e Kerberos.</summary>
+    </member>
+    <member name="M:System.Net.NetworkCredential.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Net.NetworkCredential" />.</summary>
+    </member>
+    <member name="M:System.Net.NetworkCredential.#ctor(System.String,System.String)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Net.NetworkCredential" /> con il nome utente e la password specificati.</summary>
+      <param name="userName">Il nome utente associato alle credenziali. </param>
+      <param name="password">La password per il nome utente associato alle credenziali. </param>
+    </member>
+    <member name="M:System.Net.NetworkCredential.#ctor(System.String,System.String,System.String)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Net.NetworkCredential" /> con il nome utente, la password e il dominio specificati.</summary>
+      <param name="userName">Il nome utente associato alle credenziali. </param>
+      <param name="password">La password per il nome utente associato alle credenziali. </param>
+      <param name="domain">Il dominio associato alle credenziali. </param>
+    </member>
+    <member name="P:System.Net.NetworkCredential.Domain">
+      <summary>Recupera o imposta il dominio o il nome del computer che verifica le credenziali.</summary>
+      <returns>Nome del dominio associato alle credenziali.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Net.NetworkCredential.GetCredential(System.String,System.Int32,System.String)">
+      <summary>Restituisce un'istanza della classe <see cref="T:System.Net.NetworkCredential" /> per l'host, la porta e il tipo di autenticazione specificati.</summary>
+      <returns>Classe <see cref="T:System.Net.NetworkCredential" /> per l'host, la porta e il protocollo di autenticazione specificati oppure null se non sono disponibili le credenziali per l'host, la porta e il protocollo di autenticazione specificati.</returns>
+      <param name="host">Computer host che autentica il client.</param>
+      <param name="port">Porta dell'<paramref name="host" /> tramite la quale comunica il client.</param>
+      <param name="authenticationType">Il tipo di autenticazione richiesto così come è definito nella proprietà <see cref="P:System.Net.IAuthenticationModule.AuthenticationType" />. </param>
+    </member>
+    <member name="M:System.Net.NetworkCredential.GetCredential(System.Uri,System.String)">
+      <summary>Restituisce un'istanza della classe <see cref="T:System.Net.NetworkCredential" /> per l'URI (Uniform Resource Identifier) e il tipo di autenticazione specificati.</summary>
+      <returns>Oggetto <see cref="T:System.Net.NetworkCredential" />.</returns>
+      <param name="uri">L'URI per il quale il client fornisce l'autenticazione. </param>
+      <param name="authType">Il tipo di autenticazione richiesto così come è definito nella proprietà <see cref="P:System.Net.IAuthenticationModule.AuthenticationType" />. </param>
+    </member>
+    <member name="P:System.Net.NetworkCredential.Password">
+      <summary>Recupera o imposta la password per il nome utente associato alle credenziali.</summary>
+      <returns>Password associata alle credenziali.Se questa istanza di <see cref="T:System.Net.NetworkCredential" /> è stata inizializzata con il parametro <paramref name="password" /> impostato su null, la proprietà <see cref="P:System.Net.NetworkCredential.Password" /> restituirà una stringa vuota.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Net.NetworkCredential.UserName">
+      <summary>Recupera o imposta il nome utente associato alle credenziali.</summary>
+      <returns>Il nome utente associato alle credenziali.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Net.SocketAddress">
+      <summary>Archivia le informazioni serializzate dalla classi derivate <see cref="T:System.Net.EndPoint" />.</summary>
+    </member>
+    <member name="M:System.Net.SocketAddress.#ctor(System.Net.Sockets.AddressFamily)">
+      <summary>Crea una nuova istanza della classe <see cref="T:System.Net.SocketAddress" /> per la determinata famiglia di indirizzi.</summary>
+      <param name="family">Valore enumerato di <see cref="T:System.Net.Sockets.AddressFamily" />. </param>
+    </member>
+    <member name="M:System.Net.SocketAddress.#ctor(System.Net.Sockets.AddressFamily,System.Int32)">
+      <summary>Crea una nuova istanza della classe <see cref="T:System.Net.SocketAddress" /> utilizzando la famiglia di indirizzi e la dimensione del buffer specificati.</summary>
+      <param name="family">Valore enumerato di <see cref="T:System.Net.Sockets.AddressFamily" />. </param>
+      <param name="size">Il numero di byte da allocare per il buffer sottostante. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="size" /> è minore di 2.Questi due byte sono necessari per archiviare <paramref name="family" />.</exception>
+    </member>
+    <member name="M:System.Net.SocketAddress.Equals(System.Object)">
+      <summary>Determina se l'oggetto <see cref="T:System.Object" /> specificato è uguale all'istanza corrente di <see cref="T:System.Net.SocketAddress" />.</summary>
+      <returns>true se l'oggetto specificato è uguale all'oggetto corrente; in caso contrario, false.</returns>
+      <param name="comparand">L'oggetto <see cref="T:System.Object" /> specificato da confrontare con l'istanza <see cref="T:System.Net.SocketAddress" /> corrente.</param>
+    </member>
+    <member name="P:System.Net.SocketAddress.Family">
+      <summary>Recupera il valore enumerato di <see cref="T:System.Net.Sockets.AddressFamily" /> del <see cref="T:System.Net.SocketAddress" /> corrente.</summary>
+      <returns>Uno dei valori enumerati di <see cref="T:System.Net.Sockets.AddressFamily" />.</returns>
+    </member>
+    <member name="M:System.Net.SocketAddress.GetHashCode">
+      <summary>Viene utilizzato come funzione hash per un tipo particolare, adatto per l'utilizzo in algoritmi hash e in strutture di dati quali una tabella hash.</summary>
+      <returns>Codice hash per l'oggetto corrente.</returns>
+    </member>
+    <member name="P:System.Net.SocketAddress.Item(System.Int32)">
+      <summary>Recupera o imposta l'elemento indice specificato nel buffer sottostante.</summary>
+      <returns>Il valore dell'elemento indice specificato nel buffer sottostante.</returns>
+      <param name="offset">Elemento dell'indice della matrice delle informazioni desiderate. </param>
+      <exception cref="T:System.IndexOutOfRangeException">L'indice specificato non esiste nel buffer. </exception>
+    </member>
+    <member name="P:System.Net.SocketAddress.Size">
+      <summary>Recupera la dimensione del buffer sottostante di <see cref="T:System.Net.SocketAddress" />.</summary>
+      <returns>La dimensione del buffer sottostante di <see cref="T:System.Net.SocketAddress" />.</returns>
+    </member>
+    <member name="M:System.Net.SocketAddress.ToString">
+      <summary>Restituisce le informazioni sull'indirizzo socket.</summary>
+      <returns>Stringa in cui sono contenute informazioni sul <see cref="T:System.Net.SocketAddress" />.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Net.TransportContext">
+      <summary>La classe <see cref="T:System.Net.TransportContext" /> fornisce contesto aggiuntivo sul livello di trasporto sottostante.</summary>
+    </member>
+    <member name="M:System.Net.TransportContext.#ctor">
+      <summary>Crea una nuova istanza della classe <see cref="T:System.Net.TransportContext" />.</summary>
+    </member>
+    <member name="M:System.Net.TransportContext.GetChannelBinding(System.Security.Authentication.ExtendedProtection.ChannelBindingKind)">
+      <summary>Recupera l'associazione di canale richiesta. </summary>
+      <returns>Oggetto <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding" /> richiesto oppure null se l'associazione di canale non è supportata dal trasporto corrente o dal sistema operativo.</returns>
+      <param name="kind">Tipo di associazione di canale da recuperare.</param>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="kind" /> deve essere <see cref="F:System.Security.Authentication.ExtendedProtection.ChannelBindingKind.Endpoint" /> per l'utilizzo con <see cref="T:System.Net.TransportContext" /> recuperato dalla proprietà <see cref="P:System.Net.HttpListenerRequest.TransportContext" />.</exception>
+    </member>
+    <member name="T:System.Net.NetworkInformation.IPAddressCollection">
+      <summary>Memorizza un insieme di tipi <see cref="T:System.Net.IPAddress" />.</summary>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Net.NetworkInformation.IPAddressCollection" />.</summary>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.Add(System.Net.IPAddress)">
+      <summary>Genera un'eccezione <see cref="T:System.NotSupportedException" /> dal momento che questa operazione non è supportata per questo insieme.</summary>
+      <param name="address">L'oggetto da aggiungere all'insieme.</param>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.Clear">
+      <summary>Genera un'eccezione <see cref="T:System.NotSupportedException" /> dal momento che questa operazione non è supportata per questo insieme.</summary>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.Contains(System.Net.IPAddress)">
+      <summary>Consente di verificare se l'insieme contiene l'oggetto <see cref="T:System.Net.IPAddress" /> specificato.</summary>
+      <returns>true se l'oggetto <see cref="T:System.Net.IPAddress" /> esiste nell'insieme; in caso contrario, false.</returns>
+      <param name="address">Oggetto <see cref="T:System.Net.IPAddress" /> da cercare nell'insieme.</param>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.CopyTo(System.Net.IPAddress[],System.Int32)">
+      <summary>Copia gli elementi di questo insieme in una matrice unidimensionale di tipo <see cref="T:System.Net.IPAddress" />.</summary>
+      <param name="array">Matrice unidimensionale in cui viene effettuata la copia dell'insieme.</param>
+      <param name="offset">Indice in base zero della matrice indicata nel parametro <paramref name="array" /> in corrispondenza del quale ha inizio la copia.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> è null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="offset" /> è minore di zero. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> è multidimensionale.- oppure - Il numero degli elementi di questo oggetto <see cref="T:System.Net.NetworkInformation.IPAddressCollection" /> è maggiore dello spazio disponibile tra <paramref name="offset" /> e la fine della <paramref name="array" /> di destinazione. </exception>
+      <exception cref="T:System.InvalidCastException">Non è possibile eseguire automaticamente il cast degli elementi di questo oggetto <see cref="T:System.Net.NetworkInformation.IPAddressCollection" /> nel tipo della <paramref name="array" /> di destinazione. </exception>
+    </member>
+    <member name="P:System.Net.NetworkInformation.IPAddressCollection.Count">
+      <summary>Ottiene il numero dei tipi <see cref="T:System.Net.IPAddress" /> nell'insieme.</summary>
+      <returns>Valore <see cref="T:System.Int32" /> contenente il numero di tipi <see cref="T:System.Net.IPAddress" /> nell'insieme.</returns>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.GetEnumerator">
+      <summary>Restituisce un oggetto che può essere utilizzato per scorrere l'insieme.</summary>
+      <returns>Oggetto che implementa l'interfaccia <see cref="T:System.Collections.IEnumerator" /> e fornisce accesso ai tipi <see cref="T:System.Net.NetworkInformation.IPAddressCollection" /> in questo insieme.</returns>
+    </member>
+    <member name="P:System.Net.NetworkInformation.IPAddressCollection.IsReadOnly">
+      <summary>Ottiene un valore che indica se l'accesso all'insieme è in sola lettura.</summary>
+      <returns>true in tutti i casi.</returns>
+    </member>
+    <member name="P:System.Net.NetworkInformation.IPAddressCollection.Item(System.Int32)">
+      <summary>Ottiene l'oggetto <see cref="T:System.Net.IPAddress" /> dell'insieme in corrispondenza dell'indice specificato.</summary>
+      <returns>Oggetto <see cref="T:System.Net.IPAddress" /> contenuto nell'insieme in corrispondenza dell'indice specificato.</returns>
+      <param name="index">Indice desiderato.</param>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.Remove(System.Net.IPAddress)">
+      <summary>Genera un'eccezione <see cref="T:System.NotSupportedException" /> dal momento che questa operazione non è supportata per questo insieme.</summary>
+      <returns>Genera sempre un'eccezione <see cref="T:System.NotSupportedException" />.</returns>
+      <param name="address">Oggetto da rimuovere.</param>
+    </member>
+    <member name="M:System.Net.NetworkInformation.IPAddressCollection.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Restituisce un oggetto che può essere utilizzato per scorrere l'insieme.</summary>
+      <returns>Oggetto che implementa l'interfaccia <see cref="T:System.Collections.IEnumerator" /> e fornisce accesso ai tipi <see cref="T:System.Net.NetworkInformation.IPAddressCollection" /> in questo insieme.</returns>
+    </member>
+    <member name="T:System.Net.Security.AuthenticationLevel">
+      <summary>Specifica i requisiti client per l'autenticazione e la rappresentazione quando si utilizza la classe <see cref="T:System.Net.WebRequest" /> e le classi derivate per richiedere una risorsa.</summary>
+    </member>
+    <member name="F:System.Net.Security.AuthenticationLevel.MutualAuthRequested">
+      <summary>Il client e il server devono essere autenticati.Se il server non viene autenticato, la richiesta ha esito negativo.Per determinare se si è verificata l'autenticazione reciproca, controllare il valore della proprietà <see cref="P:System.Net.WebResponse.IsMutuallyAuthenticated" />.</summary>
+    </member>
+    <member name="F:System.Net.Security.AuthenticationLevel.MutualAuthRequired">
+      <summary>Il client e il server devono essere autenticati.Se il server non viene autenticato, l'applicazione riceverà una classe <see cref="T:System.IO.IOException" /> con un'eccezione interna <see cref="T:System.Net.ProtocolViolationException" /> indicante che l'autenticazione reciproca ha avuto esito negativo.</summary>
+    </member>
+    <member name="F:System.Net.Security.AuthenticationLevel.None">
+      <summary>Non è necessaria alcuna autenticazione per il client e il server.</summary>
+    </member>
+    <member name="T:System.Net.Security.SslPolicyErrors">
+      <summary>Enumera gli errori dei criteri SSL (Secure Socket Layer).</summary>
+    </member>
+    <member name="F:System.Net.Security.SslPolicyErrors.None">
+      <summary>Nessun errore dei criteri SSL.</summary>
+    </member>
+    <member name="F:System.Net.Security.SslPolicyErrors.RemoteCertificateChainErrors">
+      <summary>
+        <see cref="P:System.Security.Cryptography.X509Certificates.X509Chain.ChainStatus" /> ha restituito una matrice non vuota.</summary>
+    </member>
+    <member name="F:System.Net.Security.SslPolicyErrors.RemoteCertificateNameMismatch">
+      <summary>Mancata corrispondenza nel nome del certificato.</summary>
+    </member>
+    <member name="F:System.Net.Security.SslPolicyErrors.RemoteCertificateNotAvailable">
+      <summary>Certificato non disponibile.</summary>
+    </member>
+    <member name="T:System.Net.Sockets.AddressFamily">
+      <summary>Specifica lo schema di indirizzamento utilizzabile da un'istanza della classe <see cref="T:System.Net.Sockets.Socket" />.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.AppleTalk">
+      <summary>Indirizzo AppleTalk.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Atm">
+      <summary>Indirizzo dei servizi ATM nativi.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Banyan">
+      <summary>Indirizzo Banyan.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Ccitt">
+      <summary>Indirizzi per protocolli CCITT, ad esempio X.25.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Chaos">
+      <summary>Indirizzo per protocolli MIT CHAOS.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Cluster">
+      <summary>Indirizzo per prodotti Microsoft Cluster.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.DataKit">
+      <summary>Indirizzo per protocolli Datakit.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.DataLink">
+      <summary>Indirizzo dell'interfaccia a collegamento dati diretto.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.DecNet">
+      <summary>Indirizzo DECnet.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Ecma">
+      <summary>Indirizzo ECMA (European Computer Manufacturers Association).</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.FireFox">
+      <summary>Indirizzo FireFox.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.HyperChannel">
+      <summary>Indirizzo NSC Hyperchannel.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Ieee12844">
+      <summary>Indirizzo per gruppo di lavoro IEEE 1284.4.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.ImpLink">
+      <summary>Indirizzo ARPANET IMP.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.InterNetwork">
+      <summary>Indirizzo per IP versione 4.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.InterNetworkV6">
+      <summary>Indirizzo per IP versione 6.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Ipx">
+      <summary>Indirizzo IPX o SPX.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Irda">
+      <summary>Indirizzo IrDA.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Iso">
+      <summary>Indirizzo per protocolli ISO.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Lat">
+      <summary>Indirizzo LAT.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.NetBios">
+      <summary>Indirizzo NetBios.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.NetworkDesigners">
+      <summary>Indirizzo per protocolli con funzionalità di gateway OSI Network Designers.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.NS">
+      <summary>Indirizzo per protocolli NS Xerox.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Osi">
+      <summary>Indirizzo per protocolli OSI.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Pup">
+      <summary>Indirizzo per protocolli PUP.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Sna">
+      <summary>Indirizzo SNA IBM.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Unix">
+      <summary>Indirizzo Unix da locale a host.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Unknown">
+      <summary>Famiglia di indirizzi sconosciuta.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.Unspecified">
+      <summary>Famiglia di indirizzi non specificata.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.AddressFamily.VoiceView">
+      <summary>Indirizzo VoiceView.</summary>
+    </member>
+    <member name="T:System.Net.Sockets.SocketError">
+      <summary>Definisce i codici di errore per la classe <see cref="T:System.Net.Sockets.Socket" />.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.AccessDenied">
+      <summary>Si è tentato di accedere a un oggetto <see cref="T:System.Net.Sockets.Socket" /> secondo modalità non consentite dalle relative autorizzazioni di accesso.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.AddressAlreadyInUse">
+      <summary>Di norma è consentito utilizzare un indirizzo una sola volta.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.AddressFamilyNotSupported">
+      <summary>La famiglia di indirizzi specificata non è supportata.Questo errore viene restituito se è stata specificata la famiglia di indirizzi IPv6 e lo stack IPv6 non è installato nel computer locale.Questo errore viene restituito se è stata specificata la famiglia di indirizzi IPv4 e lo stack IPv4 non è installato nel computer locale.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.AddressNotAvailable">
+      <summary>L'indirizzo IP selezionato non è valido in questo contesto.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.AlreadyInProgress">
+      <summary>È già in corso un'operazione per l'oggetto <see cref="T:System.Net.Sockets.Socket" /> non bloccante.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ConnectionAborted">
+      <summary>La connessione è stata interrotta da .NET Framework o dal provider del socket sottostante.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ConnectionRefused">
+      <summary>La connessione viene rifiutata in maniera persistente dall'host remoto.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ConnectionReset">
+      <summary>La connessione è stata ripristinata dal peer remoto.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.DestinationAddressRequired">
+      <summary>È stato omesso un indirizzo richiesto in un'operazione su un oggetto <see cref="T:System.Net.Sockets.Socket" />.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.Disconnecting">
+      <summary>È in corso un arresto di tipo graceful.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.Fault">
+      <summary>L'indirizzo del puntatore rilevato dal provider del socket sottostante non è valido.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.HostDown">
+      <summary>L'operazione non è stata completata perché l'host remoto è inattivo.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.HostNotFound">
+      <summary>L'host è sconosciuto.Il nome specificato non è un nome né un alias di host ufficiale.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.HostUnreachable">
+      <summary>Non esiste una route di rete per l'host specificato.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.InProgress">
+      <summary>È in corso un'operazione di blocco.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.Interrupted">
+      <summary>È stata annullata una chiamata all'oggetto <see cref="T:System.Net.Sockets.Socket" /> bloccante.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.InvalidArgument">
+      <summary>È stato fornito un argomento non valido a un membro <see cref="T:System.Net.Sockets.Socket" />.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.IOPending">
+      <summary>È stata avviata un'operazione sovrapposta che non è possibile completare immediatamente.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.IsConnected">
+      <summary>L'oggetto <see cref="T:System.Net.Sockets.Socket" /> è già connesso.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.MessageSize">
+      <summary>Il datagramma è troppo lungo.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NetworkDown">
+      <summary>La rete non è disponibile.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NetworkReset">
+      <summary>L'applicazione ha tentato di impostare <see cref="F:System.Net.Sockets.SocketOptionName.KeepAlive" /> su una connessione già scaduta.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NetworkUnreachable">
+      <summary>Non esiste una route per l'host remoto.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NoBufferSpaceAvailable">
+      <summary>Non è disponibile spazio libero nel buffer per un'operazione <see cref="T:System.Net.Sockets.Socket" />.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NoData">
+      <summary>Nel server dei nomi non sono stati trovati il nome o l'indirizzo IP richiesto.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NoRecovery">
+      <summary>L'errore è irreversibile oppure non è possibile individuare il database richiesto.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NotConnected">
+      <summary>L'applicazione ha tentato di inviare o ricevere dati, ma l'oggetto <see cref="T:System.Net.Sockets.Socket" /> non è connesso.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NotInitialized">
+      <summary>Il provider del socket sottostante non è stato inizializzato.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.NotSocket">
+      <summary>È stata tentata un'operazione <see cref="T:System.Net.Sockets.Socket" /> su un non-socket.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.OperationAborted">
+      <summary>L'operazione sovrapposta è stata annullata a causa della chiusura dell'oggetto <see cref="T:System.Net.Sockets.Socket" />.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.OperationNotSupported">
+      <summary>La famiglia di indirizzi non è supportata dalla famiglia di protocolli.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ProcessLimit">
+      <summary>Il provider del socket sottostante è utilizzato da troppi processi.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ProtocolFamilyNotSupported">
+      <summary>La famiglia di protocolli non è implementata oppure non è stata configurata.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ProtocolNotSupported">
+      <summary>Il protocollo non è implementato oppure non è stato configurato.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ProtocolOption">
+      <summary>È stata utilizzata un'opzione o un livello sconosciuto, non valido o non supportato insieme all'oggetto <see cref="T:System.Net.Sockets.Socket" />.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.ProtocolType">
+      <summary>Il tipo di protocollo non è corretto per questo oggetto <see cref="T:System.Net.Sockets.Socket" />.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.Shutdown">
+      <summary>La richiesta di invio o ricezione di dati è stata annullata in quanto l'oggetto <see cref="T:System.Net.Sockets.Socket" /> è già stato chiuso.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.SocketError">
+      <summary>Si è verificato un errore non specificato relativo all'oggetto <see cref="T:System.Net.Sockets.Socket" />.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.SocketNotSupported">
+      <summary>Il supporto per il tipo di socket specificato non esiste in questa famiglia di indirizzi.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.Success">
+      <summary>L'operazione <see cref="T:System.Net.Sockets.Socket" /> ha avuto esito positivo.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.SystemNotReady">
+      <summary>Il sottosistema di rete non è disponibile.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.TimedOut">
+      <summary>Timeout del tentativo di connessione oppure l'host connesso non ha risposto.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.TooManyOpenSockets">
+      <summary>Nel provider del socket sottostante sono presenti troppi socket aperti.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.TryAgain">
+      <summary>Non è stato possibile risolvere il nome dell'host.Riprovare in un secondo tempo.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.TypeNotFound">
+      <summary>La classe specificata non è stata trovata.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.VersionNotSupported">
+      <summary>La versione del provider del socket sottostante non è compresa nell'intervallo.</summary>
+    </member>
+    <member name="F:System.Net.Sockets.SocketError.WouldBlock">
+      <summary>Non è possibile completare immediatamente un'operazione su un socket non bloccante.</summary>
+    </member>
+    <member name="T:System.Net.Sockets.SocketException">
+      <summary>Eccezione generata quando si verifica un errore socket.</summary>
+    </member>
+    <member name="M:System.Net.Sockets.SocketException.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Net.Sockets.SocketException" /> con l'ultimo codice errore del sistema operativo.</summary>
+    </member>
+    <member name="M:System.Net.Sockets.SocketException.#ctor(System.Int32)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Net.Sockets.SocketException" /> con il codice errore specificato.</summary>
+      <param name="errorCode">Codice errore indicante l'errore che si è verificato. </param>
+    </member>
+    <member name="P:System.Net.Sockets.SocketException.Message">
+      <summary>Ottiene il messaggio di errore associato all'eccezione.</summary>
+      <returns>Stringa che contiene il messaggio di errore. </returns>
+    </member>
+    <member name="P:System.Net.Sockets.SocketException.SocketErrorCode">
+      <summary>Ottiene il codice errore associato a questa eccezione.</summary>
+      <returns>Codice errore rappresentato da un numero intero associato a questa eccezione.</returns>
+    </member>
+    <member name="T:System.Security.Authentication.CipherAlgorithmType">
+      <summary>Definisce i possibili algoritmi di crittografia per la classe <see cref="T:System.Net.Security.SslStream" />.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Aes">
+      <summary>Algoritmo AES (Advanced Encryption Standard).</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Aes128">
+      <summary>Algoritmo AES (Advanced Encryption Standard) con chiave a 128 bit.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Aes192">
+      <summary>Algoritmo AES (Advanced Encryption Standard) con chiave a 192 bit.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Aes256">
+      <summary>Algoritmo AES (Advanced Encryption Standard) con chiave a 256 bit.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Des">
+      <summary>Algoritmo DES (Data Encryption Standard).</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.None">
+      <summary>Nessun algoritmo di crittografia utilizzato.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Null">
+      <summary>Un algoritmo Null non utilizza alcuna crittografia. </summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Rc2">
+      <summary>Algoritmo RC2 (Rivest's Code 2).</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.Rc4">
+      <summary>Algoritmo RC4 (Rivest's Code 4).</summary>
+    </member>
+    <member name="F:System.Security.Authentication.CipherAlgorithmType.TripleDes">
+      <summary>Algoritmo 3DES (Triple Data Encryption Standard).</summary>
+    </member>
+    <member name="T:System.Security.Authentication.ExchangeAlgorithmType">
+      <summary>Specifica l'algoritmo utilizzato per creare chiavi condivise dal client e dal server.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExchangeAlgorithmType.DiffieHellman">
+      <summary>Algoritmo effimero di scambio delle chiavi Diffie-Hellman.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExchangeAlgorithmType.None">
+      <summary>Nessun algoritmo di scambio delle chiavi utilizzato.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExchangeAlgorithmType.RsaKeyX">
+      <summary>Algoritmo di scambio della chiave pubblica RSA.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExchangeAlgorithmType.RsaSign">
+      <summary>Algoritmo di firma della chiave pubblica RSA.</summary>
+    </member>
+    <member name="T:System.Security.Authentication.HashAlgorithmType">
+      <summary>Specifica l'algoritmo utilizzato per generare codici MAC (Message Authentication Code).</summary>
+    </member>
+    <member name="F:System.Security.Authentication.HashAlgorithmType.Md5">
+      <summary>Algoritmo di hash MD5 (Message Digest 5).</summary>
+    </member>
+    <member name="F:System.Security.Authentication.HashAlgorithmType.None">
+      <summary>Nessun algoritmo di hash utilizzato.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.HashAlgorithmType.Sha1">
+      <summary>Algoritmo di hash SHA1 (Secure Hashing Algorithm).</summary>
+    </member>
+    <member name="T:System.Security.Authentication.SslProtocols">
+      <summary>Definisce le possibili versioni della classe <see cref="T:System.Security.Authentication.SslProtocols" />.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.SslProtocols.None">
+      <summary>Non è specificato alcun protocollo SSL.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.SslProtocols.Ssl2">
+      <summary>Specifica il protocollo SSL 2.0.SSL 2.0 è stato sostituito dal protocollo TLS e viene fornito solo per mantenere la compatibilità con le versioni precedenti.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.SslProtocols.Ssl3">
+      <summary>Specifica il protocollo SSL 3.0.SSL 3.0 è stato sostituito dal protocollo TLS e viene fornito solo per mantenere la compatibilità con le versioni precedenti.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.SslProtocols.Tls">
+      <summary>Specifica il protocollo di sicurezza TLS 1.0.Il protocollo TLS è definito nella specifica IETF RFC 2246.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.SslProtocols.Tls11">
+      <summary>Specifica il protocollo di sicurezza TLS 1.1.Il protocollo TLS è definito nella specifica IETF RFC 4346.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.SslProtocols.Tls12">
+      <summary>Specifica il protocollo di sicurezza TLS 1.2.Il protocollo TLS è definito nella specifica IETF RFC 5246.</summary>
+    </member>
+    <member name="T:System.Security.Authentication.ExtendedProtection.ChannelBinding">
+      <summary>La classe <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding" /> incapsula un puntatore ai dati opachi utilizzato per associare una transazione autenticata a un canale sicuro.</summary>
+    </member>
+    <member name="M:System.Security.Authentication.ExtendedProtection.ChannelBinding.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding" />.</summary>
+    </member>
+    <member name="M:System.Security.Authentication.ExtendedProtection.ChannelBinding.#ctor(System.Boolean)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding" />.</summary>
+      <param name="ownsHandle">Valore booleano che indica se l'applicazione possiede l'handle Safe di un'area di memoria nativa che contiene i dati sulle dimensioni in byte che sarebbero passati alle chiamate native che forniscono protezione estesa per l'autenticazione integrata di Windows.</param>
+    </member>
+    <member name="P:System.Security.Authentication.ExtendedProtection.ChannelBinding.Size">
+      <summary>La proprietà <see cref="P:System.Security.Authentication.ExtendedProtection.ChannelBinding.Size" /> ottiene la dimensione, espressa in byte, del token di associazione di canale associato all'istanza di <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding" />.</summary>
+      <returns>Dimensione, espressa in byte, del token di associazione di canale nell'istanza di <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding" />.</returns>
+    </member>
+    <member name="T:System.Security.Authentication.ExtendedProtection.ChannelBindingKind">
+      <summary>L'enumerazione <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBindingKind" /> rappresenta i tipi di associazioni di canale su cui è possibile eseguire query dai canali sicuri.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExtendedProtection.ChannelBindingKind.Endpoint">
+      <summary>Associazione di canale univoca per un endpoint specificato, ad esempio un certificato server TLS.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExtendedProtection.ChannelBindingKind.Unique">
+      <summary>Associazione di canale completamente univoca per un canale specificato, ad esempio una chiave di sessione TLS.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExtendedProtection.ChannelBindingKind.Unknown">
+      <summary>Tipo di associazione di canale sconosciuto.</summary>
+    </member>
+  </members>
+</doc>

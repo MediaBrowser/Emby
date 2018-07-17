@@ -516,13 +516,13 @@ namespace MediaBrowser.Providers.Manager
 
             if (!item.LockedFields.Contains(MetadataFields.Genres))
             {
-                var currentList = item.Genres.ToList();
+                var currentList = item.Genres;
 
                 item.Genres = children.SelectMany(i => i.Genres)
                     .Distinct(StringComparer.OrdinalIgnoreCase)
-                    .ToList();
+                    .ToArray();
 
-                if (currentList.Count != item.Genres.Count || !currentList.OrderBy(i => i).SequenceEqual(item.Genres.OrderBy(i => i), StringComparer.OrdinalIgnoreCase))
+                if (currentList.Length != item.Genres.Length || !currentList.OrderBy(i => i).SequenceEqual(item.Genres.OrderBy(i => i), StringComparer.OrdinalIgnoreCase))
                 {
                     updateType = updateType | ItemUpdateType.MetadataEdit;
                 }
@@ -809,7 +809,7 @@ namespace MediaBrowser.Providers.Manager
                 await RunCustomProvider(provider, item, logName, options, refreshResult, cancellationToken).ConfigureAwait(false);
             }
 
-            ImportUserData(item, userDataList, cancellationToken);
+            //ImportUserData(item, userDataList, cancellationToken);
 
             return refreshResult;
         }
@@ -822,14 +822,6 @@ namespace MediaBrowser.Providers.Manager
             }
 
             return true;
-        }
-
-        private void ImportUserData(TItemType item, List<UserItemData> userDataList, CancellationToken cancellationToken)
-        {
-            foreach (var userData in userDataList)
-            {
-                UserDataManager.SaveUserData(userData.UserId, item, userData, UserDataSaveReason.Import, cancellationToken);
-            }
         }
 
         private async Task RunCustomProvider(ICustomMetadataProvider<TItemType> provider, TItemType item, string logName, MetadataRefreshOptions options, RefreshResult refreshResult, CancellationToken cancellationToken)

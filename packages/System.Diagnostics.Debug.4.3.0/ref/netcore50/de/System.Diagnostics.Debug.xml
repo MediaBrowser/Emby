@@ -1,0 +1,376 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Diagnostics.Debug</name>
+  </assembly>
+  <members>
+    <member name="T:System.Diagnostics.Debug">
+      <summary>Stellt eine Reihe von Methoden und Eigenschaften zum Debuggen von Code bereit.Diese Klasse kann nicht vererbt werden.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Assert(System.Boolean)">
+      <summary>Überprüft eine Bedingung. Wenn die Bedingung false ist, wird ein Meldungsfeld mit der Aufrufliste angezeigt.</summary>
+      <param name="condition">Der bedingte Ausdruck, der ausgewertet werden soll.Wenn die Bedingung true ist, wird keine Fehlermeldung gesendet und kein Meldungsfeld angezeigt.</param>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Assert(System.Boolean,System.String)">
+      <summary>Überprüft eine Bedingung. Wenn die Bedingung false ist, wird eine bestimmte Meldung ausgegeben, und ein Meldungsfeld mit der Aufrufliste wird angezeigt.</summary>
+      <param name="condition">Der bedingte Ausdruck, der ausgewertet werden soll.Wenn die Bedingung true ist, wird keine Meldung gesendet und kein Meldungsfeld angezeigt.</param>
+      <param name="message">Die Nachricht, die an die <see cref="P:System.Diagnostics.Trace.Listeners" />-Auflistung gesendet werden soll. </param>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Assert(System.Boolean,System.String,System.String)">
+      <summary>Überprüft eine Bedingung. Wenn die Bedingung false ist, werden zwei angegebene Meldungen ausgegeben, und ein Meldungsfeld mit der Aufrufliste wird angezeigt.</summary>
+      <param name="condition">Der bedingte Ausdruck, der ausgewertet werden soll.Wenn die Bedingung true ist, werden die angegebenen Meldungen nicht gesendet, und das Meldungsfeld wird nicht angezeigt.</param>
+      <param name="message">Die Nachricht, die an die <see cref="P:System.Diagnostics.Trace.Listeners" />-Auflistung gesendet werden soll. </param>
+      <param name="detailMessage">Die detaillierte Nachricht, die an die <see cref="P:System.Diagnostics.Trace.Listeners" />-Auflistung gesendet werden soll. </param>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Assert(System.Boolean,System.String,System.String,System.Object[])">
+      <summary>Überprüft eine Bedingung. Wenn die Bedingung false ist, werden zwei angegebene Meldungen (einfach und formatiert) ausgegeben, und ein Meldungsfeld mit der Aufrufliste wird angezeigt.</summary>
+      <param name="condition">Der bedingte Ausdruck, der ausgewertet werden soll.Wenn die Bedingung true ist, werden die angegebenen Meldungen nicht gesendet, und das Meldungsfeld wird nicht angezeigt.</param>
+      <param name="message">Die Nachricht, die an die <see cref="P:System.Diagnostics.Trace.Listeners" />-Auflistung gesendet werden soll. </param>
+      <param name="detailMessageFormat">Die zusammengesetzte Formatzeichenfolge (siehe "Hinweise"), die an die <see cref="P:System.Diagnostics.Trace.Listeners" />-Auflistung gesendet werden soll.Diese Meldung enthält Text und optional ein oder mehrere Formatelemente, die Objekten im <paramref name="args" />-Array entsprechen.</param>
+      <param name="args">Ein Objektarray mit 0 (null) oder mehr zu formatierenden Objekten.</param>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Fail(System.String)">
+      <summary>Gibt die angegebene Fehlermeldung aus.</summary>
+      <param name="message">Eine auszugebende Meldung. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Fail(System.String,System.String)">
+      <summary>Gibt eine Fehlermeldung und eine detaillierte Fehlermeldung aus.</summary>
+      <param name="message">Eine auszugebende Meldung. </param>
+      <param name="detailMessage">Eine detaillierte Meldung, die ausgegeben werden soll. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Write(System.Object)">
+      <summary>Schreibt den Wert der <see cref="M:System.Object.ToString" />-Methode des Objekts in die Ablaufverfolgungswachungen in der <see cref="P:System.Diagnostics.Debug.Listeners" />-Auflistung.</summary>
+      <param name="value">Ein Objekt, dessen Name an die <see cref="P:System.Diagnostics.Debug.Listeners" /> gesendet wird. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Write(System.Object,System.String)">
+      <summary>Schreibt einen Kategorienamen und den Wert der <see cref="M:System.Object.ToString" />-Methode des Objekts in die Ablaufverfolgungsüberwachungen in der <see cref="P:System.Diagnostics.Debug.Listeners" />-Auflistung.</summary>
+      <param name="value">Ein Objekt, dessen Name an die <see cref="P:System.Diagnostics.Debug.Listeners" /> gesendet wird. </param>
+      <param name="category">Ein Kategoriename für die Anordnung der Ausgabe. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Write(System.String)">
+      <summary>Schreibt eine Meldung in die Ablaufverfolgungsüberwachungen in der <see cref="P:System.Diagnostics.Debug.Listeners" />-Auflistung.</summary>
+      <param name="message">Eine zu schreibende Meldung. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.Write(System.String,System.String)">
+      <summary>Schreibt einen Kategorienamen und eine Meldung in die Ablaufverfolgungsüberwachungen in der <see cref="P:System.Diagnostics.Debug.Listeners" />-Auflistung.</summary>
+      <param name="message">Eine zu schreibende Meldung. </param>
+      <param name="category">Ein Kategoriename für die Anordnung der Ausgabe. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteIf(System.Boolean,System.Object)">
+      <summary>Schreibt den Wert der <see cref="M:System.Object.ToString" />-Methode des Objekts in die Ablaufverfolgungslistener in der <see cref="P:System.Diagnostics.Debug.Listeners" />-Auflistung, wenn eine Bedingung true ist.</summary>
+      <param name="condition">Der bedingte Ausdruck, der ausgewertet werden soll.Wenn die Bedingung true ist, wird der Wert in die Ablaufverfolgungslistener in der Auflistung geschrieben.</param>
+      <param name="value">Ein Objekt, dessen Name an die <see cref="P:System.Diagnostics.Debug.Listeners" /> gesendet wird. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteIf(System.Boolean,System.Object,System.String)">
+      <summary>Schreibt einen Kategorienamen und den Wert der <see cref="M:System.Object.ToString" />-Methode des Objekts in die Ablaufverfolgungslistener in der <see cref="P:System.Diagnostics.Debug.Listeners" />-Auflistung, wenn eine Bedingung true ist.</summary>
+      <param name="condition">Der bedingte Ausdruck, der ausgewertet werden soll.Wenn die Bedingung true ist, werden der Kategoriename und der Wert in die Ablaufverfolgungslistener in der Auflistung geschrieben.</param>
+      <param name="value">Ein Objekt, dessen Name an die <see cref="P:System.Diagnostics.Debug.Listeners" /> gesendet wird. </param>
+      <param name="category">Ein Kategoriename für die Anordnung der Ausgabe. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteIf(System.Boolean,System.String)">
+      <summary>Schreibt eine Meldung in die Ablaufverfolgungslistener in der <see cref="P:System.Diagnostics.Debug.Listeners" />-Auflistung, wenn eine Bedingung true ist.</summary>
+      <param name="condition">Der bedingte Ausdruck, der ausgewertet werden soll.Wenn die Bedingung true ist, wird die Meldung in die Ablaufverfolgungslistener in der Auflistung geschrieben.</param>
+      <param name="message">Eine zu schreibende Meldung. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteIf(System.Boolean,System.String,System.String)">
+      <summary>Schreibt einen Kategorienamen und eine Meldung in die Ablaufverfolgungslistener in der <see cref="P:System.Diagnostics.Debug.Listeners" />-Auflistung, wenn eine Bedingung true ist.</summary>
+      <param name="condition">Der bedingte Ausdruck, der ausgewertet werden soll.Wenn die Bedingung true ist, werden der Kategoriename und die Meldung in die Ablaufverfolgungslistener in der Auflistung geschrieben.</param>
+      <param name="message">Eine zu schreibende Meldung. </param>
+      <param name="category">Ein Kategoriename für die Anordnung der Ausgabe. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLine(System.Object)">
+      <summary>Schreibt den Wert der <see cref="M:System.Object.ToString" />-Methode des Objekts in die Ablaufverfolgungswachungen in der <see cref="P:System.Diagnostics.Debug.Listeners" />-Auflistung.</summary>
+      <param name="value">Ein Objekt, dessen Name an die <see cref="P:System.Diagnostics.Debug.Listeners" /> gesendet wird. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLine(System.Object,System.String)">
+      <summary>Schreibt einen Kategorienamen und den Wert der <see cref="M:System.Object.ToString" />-Methode des Objekts in die Ablaufverfolgungsüberwachungen in der <see cref="P:System.Diagnostics.Debug.Listeners" />-Auflistung.</summary>
+      <param name="value">Ein Objekt, dessen Name an die <see cref="P:System.Diagnostics.Debug.Listeners" /> gesendet wird. </param>
+      <param name="category">Ein Kategoriename für die Anordnung der Ausgabe. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLine(System.String)">
+      <summary>Schreibt eine Meldung, gefolgt von einem Zeilenabschluss, in die Ablaufverfolgungsüberwachungen in der <see cref="P:System.Diagnostics.Debug.Listeners" />-Auflistung.</summary>
+      <param name="message">Eine zu schreibende Meldung. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLine(System.String,System.Object[])">
+      <summary>Schreibt eine formatierte Meldung, gefolgt von einem Zeilenabschluss, in die Ablaufverfolgungslistener in der <see cref="P:System.Diagnostics.Debug.Listeners" />-Auflistung.</summary>
+      <param name="format">Eine zusammengesetzte Formatzeichenfolge (siehe Hinweise) mit Text, der 0 oder mehr Formatelemente enthält, die Objekten im <paramref name="args" />-Array entsprechen.</param>
+      <param name="args">Ein Objektarray mit 0 (null) oder mehr zu formatierenden Objekten. </param>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLine(System.String,System.String)">
+      <summary>Schreibt einen Kategorienamen und eine Meldung in die Ablaufverfolgungsüberwachungen in der <see cref="P:System.Diagnostics.Debug.Listeners" />-Auflistung.</summary>
+      <param name="message">Eine zu schreibende Meldung. </param>
+      <param name="category">Ein Kategoriename für die Anordnung der Ausgabe. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLineIf(System.Boolean,System.Object)">
+      <summary>Schreibt den Wert der <see cref="M:System.Object.ToString" />-Methode des Objekts in die Ablaufverfolgungslistener in der <see cref="P:System.Diagnostics.Debug.Listeners" />-Auflistung, wenn eine Bedingung true ist.</summary>
+      <param name="condition">Der bedingte Ausdruck, der ausgewertet werden soll.Wenn die Bedingung true ist, wird der Wert in die Ablaufverfolgungslistener in der Auflistung geschrieben.</param>
+      <param name="value">Ein Objekt, dessen Name an die <see cref="P:System.Diagnostics.Debug.Listeners" /> gesendet wird. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLineIf(System.Boolean,System.Object,System.String)">
+      <summary>Schreibt einen Kategorienamen und den Wert der <see cref="M:System.Object.ToString" />-Methode des Objekts in die Ablaufverfolgungslistener in der <see cref="P:System.Diagnostics.Debug.Listeners" />-Auflistung, wenn eine Bedingung true ist.</summary>
+      <param name="condition">Der bedingte Ausdruck, der ausgewertet werden soll.Wenn die Bedingung true ist, werden der Kategoriename und der Wert in die Ablaufverfolgungslistener in der Auflistung geschrieben.</param>
+      <param name="value">Ein Objekt, dessen Name an die <see cref="P:System.Diagnostics.Debug.Listeners" /> gesendet wird. </param>
+      <param name="category">Ein Kategoriename für die Anordnung der Ausgabe. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLineIf(System.Boolean,System.String)">
+      <summary>Schreibt eine Meldung in die Ablaufverfolgungslistener in der <see cref="P:System.Diagnostics.Debug.Listeners" />-Auflistung, wenn eine Bedingung true ist.</summary>
+      <param name="condition">Der bedingte Ausdruck, der ausgewertet werden soll.Wenn die Bedingung true ist, wird die Meldung in die Ablaufverfolgungslistener in der Auflistung geschrieben.</param>
+      <param name="message">Eine zu schreibende Meldung. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.Debug.WriteLineIf(System.Boolean,System.String,System.String)">
+      <summary>Schreibt einen Kategorienamen und eine Meldung in die Ablaufverfolgungslistener in der <see cref="P:System.Diagnostics.Debug.Listeners" />-Auflistung, wenn eine Bedingung true ist.</summary>
+      <param name="condition">true, damit eine Meldung geschrieben wird, andernfalls false. </param>
+      <param name="message">Eine zu schreibende Meldung. </param>
+      <param name="category">Ein Kategoriename für die Anordnung der Ausgabe. </param>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Diagnostics.Debugger">
+      <summary>Ermöglicht die Kommunikation mit einem Debugger.Diese Klasse kann nicht vererbt werden.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Debugger.Break">
+      <summary>Signalisiert einem angefügten Debugger einen Haltepunkt.</summary>
+      <exception cref="T:System.Security.SecurityException">
+        <see cref="T:System.Security.Permissions.UIPermission" /> ist für das Anhalten des Debuggers nicht festgelegt. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.Debugger.IsAttached">
+      <summary>Ruft einen Wert ab, der angibt, ob ein Debugger an den Prozess angefügt ist.</summary>
+      <returns>true, wenn ein Debugger angefügt ist, andernfalls false.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Debugger.Launch">
+      <summary>Startet einen Debugger und fügt diesen an den Prozess an.</summary>
+      <returns>true, wenn der Debugger erfolgreich gestartet wurde oder der Debugger bereits angefügt ist, andernfalls false.</returns>
+      <exception cref="T:System.Security.SecurityException">
+        <see cref="T:System.Security.Permissions.UIPermission" /> ist für das Starten des Debuggers nicht festgelegt. </exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.UIPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerBrowsableAttribute">
+      <summary>Bestimmt, ob und wie ein Member in den variablen Debugfenstern angezeigt wird.Diese Klasse kann nicht vererbt werden.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerBrowsableAttribute.#ctor(System.Diagnostics.DebuggerBrowsableState)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Diagnostics.DebuggerBrowsableAttribute" />-Klasse. </summary>
+      <param name="state">Einer der <see cref="T:System.Diagnostics.DebuggerBrowsableState" />-Werte, der angibt, wie der Member angezeigt werden soll.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="state" /> ist keiner der <see cref="T:System.Diagnostics.DebuggerBrowsableState" />-Werte.</exception>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerBrowsableAttribute.State">
+      <summary>Ruft den Anzeigezustand für das Attribut ab.</summary>
+      <returns>Einer der <see cref="T:System.Diagnostics.DebuggerBrowsableState" />-Werte.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerBrowsableState">
+      <summary>Stellt Anzeigeanweisungen für den Debugger bereit.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Diagnostics.DebuggerBrowsableState.Collapsed">
+      <summary>Zeigen Sie das Element reduziert an.</summary>
+    </member>
+    <member name="F:System.Diagnostics.DebuggerBrowsableState.Never">
+      <summary>Zeigen Sie das Element nie an.</summary>
+    </member>
+    <member name="F:System.Diagnostics.DebuggerBrowsableState.RootHidden">
+      <summary>Zeigen Sie das Stammelement nicht an, sondern zeigen Sie die untergeordneten Elemente an, wenn es sich bei dem Element um eine Auflistung oder ein Array von Elementen handelt.</summary>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerDisplayAttribute">
+      <summary>Bestimmt, wie eine Klasse oder ein Feld in den variablen Fenstern des Debuggers angezeigt wird.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerDisplayAttribute.#ctor(System.String)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Diagnostics.DebuggerDisplayAttribute" />-Klasse. </summary>
+      <param name="value">Die in der Wertespalte für Instanzen des Typs anzuzeigende Zeichenfolge. Bei einer leeren Zeichenfolge ("") wird die Wertespalte ausgeblendet.</param>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerDisplayAttribute.Name">
+      <summary>Ruft den Namen ab, der in den variablen Debugfensters angezeigt werden soll, oder legt diesen fest.</summary>
+      <returns>Der Name, der in den variablen Debugfenstern angezeigt werden soll.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerDisplayAttribute.Target">
+      <summary>Ruft den Typ des Attributziels ab oder legt diesen fest.</summary>
+      <returns>Der Zieltyp des Attributs.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <see cref="P:System.Diagnostics.DebuggerDisplayAttribute.Target" /> ist auf null festgelegt.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerDisplayAttribute.TargetTypeName">
+      <summary>Ruft den Typnamen des Attributziels ab oder legt diesen fest.</summary>
+      <returns>Der Name des Attributzieltyps.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerDisplayAttribute.Type">
+      <summary>Ruft die Zeichenfolge ab, die in den variablen Debugfenstern in der Typspalte angezeigt werden soll, oder legt diese fest.</summary>
+      <returns>Die Zeichenfolge, die in den variablen Debugfenster in der Typspalte angezeigt werden soll.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerDisplayAttribute.Value">
+      <summary>Ruft die Zeichenfolge ab, die in den variablen Debugfenstern in der Wertspalte angezeigt werden soll.</summary>
+      <returns>Die Zeichenfolge, die in der Wertspalte der Debuggervariable angezeigt werden soll.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerHiddenAttribute">
+      <summary>Gibt das <see cref="T:System.Diagnostics.DebuggerHiddenAttribute" /> an.Diese Klasse kann nicht vererbt werden.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerHiddenAttribute.#ctor">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Diagnostics.DebuggerHiddenAttribute" />-Klasse. </summary>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerNonUserCodeAttribute">
+      <summary>Bezeichnet einen Typ oder einen Member, der nicht Teil des Benutzercodes einer Anwendung ist.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerNonUserCodeAttribute.#ctor">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Diagnostics.DebuggerNonUserCodeAttribute" />-Klasse. </summary>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerStepThroughAttribute">
+      <summary>Weist den Debugger an, den Code automatisch im Prozedurschritt und nicht im Einzelschritt zu durchlaufen.Diese Klasse kann nicht vererbt werden.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerStepThroughAttribute.#ctor">
+      <summary>Initialisiert eine neue Instanz der<see cref="T:System.Diagnostics.DebuggerStepThroughAttribute" />-Klasse. </summary>
+    </member>
+    <member name="T:System.Diagnostics.DebuggerTypeProxyAttribute">
+      <summary>Gibt den Anzeigeproxy für einen Typ an.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerTypeProxyAttribute.#ctor(System.String)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Diagnostics.DebuggerTypeProxyAttribute" />-Klasse unter Verwendung des Typnamens des Proxys. </summary>
+      <param name="typeName">Der Typname des Proxytyps.</param>
+    </member>
+    <member name="M:System.Diagnostics.DebuggerTypeProxyAttribute.#ctor(System.Type)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Diagnostics.DebuggerTypeProxyAttribute" />-Klasse unter Verwendung des Proxytyps. </summary>
+      <param name="type">Der Proxytyp.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="type" /> ist null.</exception>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerTypeProxyAttribute.ProxyTypeName">
+      <summary>Ruft den Typnamen des Proxytyps ab. </summary>
+      <returns>Der Typname des Proxytyps.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerTypeProxyAttribute.Target">
+      <summary>Ruft den Zieltyp für das Attribut ab oder legt dieses fest.</summary>
+      <returns>Der Zieltyp für das Attribut.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <see cref="P:System.Diagnostics.DebuggerTypeProxyAttribute.Target" /> ist auf null festgelegt.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DebuggerTypeProxyAttribute.TargetTypeName">
+      <summary>Ruft den Namen des Zieltyps ab oder legt diesen fest.</summary>
+      <returns>Der Name des Zieltyps.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+  </members>
+</doc>

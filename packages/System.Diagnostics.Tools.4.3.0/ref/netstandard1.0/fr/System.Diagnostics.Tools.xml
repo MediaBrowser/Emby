@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Diagnostics.Tools</name>
+  </assembly>
+  <members>
+    <member name="T:System.CodeDom.Compiler.GeneratedCodeAttribute">
+      <summary>Identifie le code généré par un outil.Cette classe ne peut pas être héritée.</summary>
+    </member>
+    <member name="M:System.CodeDom.Compiler.GeneratedCodeAttribute.#ctor(System.String,System.String)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.CodeDom.Compiler.GeneratedCodeAttribute" /> spécifiant le nom et la version de l'outil qui a généré le code.</summary>
+      <param name="tool">Nom de l'outil qui a généré le code.</param>
+      <param name="version">Version de l'outil qui a généré le code.</param>
+    </member>
+    <member name="P:System.CodeDom.Compiler.GeneratedCodeAttribute.Tool">
+      <summary>Obtient le nom de l'outil qui a généré le code.</summary>
+      <returns>Nom de l'outil qui a généré le code.</returns>
+    </member>
+    <member name="P:System.CodeDom.Compiler.GeneratedCodeAttribute.Version">
+      <summary>Obtient la version de l'outil qui a généré le code.</summary>
+      <returns>Version de l'outil qui a généré le code.</returns>
+    </member>
+    <member name="T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute">
+      <summary>Supprime le signalement de la violation d'une règle d'outil d'analyse statique spécifique, en autorisant plusieurs suppressions sur un artefact de code unique.</summary>
+    </member>
+    <member name="M:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.#ctor(System.String,System.String)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute" />, ce qui indique la catégorie de l'outil d'analyse statique et l'identificateur d'une règle d'analyse. </summary>
+      <param name="category">Catégorie de l'attribut.</param>
+      <param name="checkId">Identificateur de la règle d'outil d'analyse à laquelle l'attribut s'applique.</param>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Category">
+      <summary>Obtient la catégorie qui identifie la classification de l'attribut.</summary>
+      <returns>Catégorie qui identifie l'attribut.</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.CheckId">
+      <summary>Obtient l'identificateur de la règle d'outil d'analyse statique à supprimer.</summary>
+      <returns>Identificateur de la règle d'outil d'analyse statique à supprimer.</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Justification">
+      <summary>Obtient ou définit la justification pour supprimer le message d'analyse du code.</summary>
+      <returns>Justification pour supprimer le message.</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.MessageId">
+      <summary>Obtient ou définit un argument facultatif qui se développe sur des critères d'exclusion.</summary>
+      <returns>Chaîne qui contient les critères d'exclusion développés.</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Scope">
+      <summary>Obtient ou définit la portée du code concernant l'attribut.</summary>
+      <returns>Portée du code concernant l'attribut.</returns>
+    </member>
+    <member name="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Target">
+      <summary>Obtient ou définit un chemin d'accès qualifié complet qui représente la cible de l'attribut.</summary>
+      <returns>Chemin d'accès qualifié complet qui représente la cible de l'attribut.</returns>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,849 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Text.RegularExpressions</name>
+  </assembly>
+  <members>
+    <member name="T:System.Text.RegularExpressions.Capture">
+      <summary>表示来自单个成功的子表达式捕获的结果。</summary>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Capture.Index">
+      <summary>原始字符串中发现捕获的子字符串的第一个字符的位置。</summary>
+      <returns>原始字符串中发现捕获的子字符串的从零开始的起始位置。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Capture.Length">
+      <summary>获取捕获的子字符串的长度。</summary>
+      <returns>捕获的子字符串的长度。</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Capture.ToString">
+      <summary>通过调用 <see cref="P:System.Text.RegularExpressions.Capture.Value" /> 属性，从输入字符串检索捕获的子字符串。</summary>
+      <returns>通过匹配捕获的子字符串。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Capture.Value">
+      <summary>从输入字符串中获取捕获的子字符串。</summary>
+      <returns>通过匹配捕获的子字符串。</returns>
+    </member>
+    <member name="T:System.Text.RegularExpressions.CaptureCollection">
+      <summary>表示一个捕获组做出的捕获的集合。</summary>
+    </member>
+    <member name="P:System.Text.RegularExpressions.CaptureCollection.Count">
+      <summary>获取由该组捕获的子字符串数。</summary>
+      <returns>
+        <see cref="T:System.Text.RegularExpressions.CaptureCollection" /> 中的项数。</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.CaptureCollection.GetEnumerator">
+      <summary>提供一个循环访问集合的枚举数。</summary>
+      <returns>包含 <see cref="T:System.Text.RegularExpressions.CaptureCollection" /> 中所有 <see cref="T:System.Text.RegularExpressions.Capture" /> 对象的对象。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.CaptureCollection.Item(System.Int32)">
+      <summary>获取该集合的单个成员。</summary>
+      <returns>位于集合中 <paramref name="i" /> 位置的捕获子字符串。</returns>
+      <param name="i">捕获集合中的索引。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="i" /> 小于 0 或大于 <see cref="P:System.Text.RegularExpressions.CaptureCollection.Count" />。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.CaptureCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>将集合的所有元素复制到给定数组中（从给定索引处开始）。</summary>
+      <param name="array">该集合要被复制入的该一维数组。</param>
+      <param name="arrayIndex">目标数组中将开始复制的位置的从零开始的索引。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="arrayIndex" /> 在 <paramref name="array" /> 的界限外。- 或 -<paramref name="arrayIndex" /> 以及 <see cref="P:System.Text.RegularExpressions.CaptureCollection.Count" /> 在 <paramref name="array" /> 的界限外。</exception>
+    </member>
+    <member name="P:System.Text.RegularExpressions.CaptureCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>获取一个值，该值指示对集合的访问是否同步（线程安全）。</summary>
+      <returns>所有情况下均为 false。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.CaptureCollection.System#Collections#ICollection#SyncRoot">
+      <summary>获取可用于同步对集合的访问的对象。</summary>
+      <returns>可用于同步集合访问的对象。</returns>
+    </member>
+    <member name="T:System.Text.RegularExpressions.Group">
+      <summary>表示来自单个捕获组的结果。</summary>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Group.Captures">
+      <summary>按从里到外、从左到右的顺序获取由捕获组匹配的所有捕获的集合（如果正则表达式用 <see cref="F:System.Text.RegularExpressions.RegexOptions.RightToLeft" /> 选项修改了，则顺序为按从里到外、从右到左）。该集合可以有零个或更多的项。</summary>
+      <returns>由该组匹配的子字符串的集合。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Group.Success">
+      <summary>获取一个值，该值指示匹配是否成功。</summary>
+      <returns>如果匹配成功，则为 true；否则为 false。</returns>
+    </member>
+    <member name="T:System.Text.RegularExpressions.GroupCollection">
+      <summary>返回一次匹配中捕获的组的集。</summary>
+    </member>
+    <member name="P:System.Text.RegularExpressions.GroupCollection.Count">
+      <summary>返回集合中的组数。</summary>
+      <returns>集合中的组数。</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.GroupCollection.GetEnumerator">
+      <summary>提供一个循环访问集合的枚举器。</summary>
+      <returns>一个枚举器，其中包含 <see cref="T:System.Text.RegularExpressions.GroupCollection" /> 中的所有 <see cref="T:System.Text.RegularExpressions.Group" /> 对象。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.GroupCollection.Item(System.Int32)">
+      <summary>允许通过整数索引访问集合成员。</summary>
+      <returns>由 <paramref name="groupnum" /> 指定的集合的成员。</returns>
+      <param name="groupnum">要检索的集合成员的索引（从零开始）。</param>
+    </member>
+    <member name="P:System.Text.RegularExpressions.GroupCollection.Item(System.String)">
+      <summary>允许通过字符串索引访问集合成员。</summary>
+      <returns>由 <paramref name="groupname" /> 指定的集合的成员。</returns>
+      <param name="groupname">捕获组的名称。</param>
+    </member>
+    <member name="M:System.Text.RegularExpressions.GroupCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>将集合的所有元素复制到指定的数组中（从指定索引处开始）。</summary>
+      <param name="array">集合要被复制到的一维数组。</param>
+      <param name="arrayIndex">目标数组中将开始复制的位置的从零开始的索引。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> 为 null。</exception>
+      <exception cref="T:System.IndexOutOfRangeException">
+        <paramref name="arrayIndex" /> 在 <paramref name="array" /> 的界限外。- 或 -<paramref name="arrayIndex" /> 以及 <see cref="P:System.Text.RegularExpressions.GroupCollection.Count" /> 在 <paramref name="array" /> 的界限外。</exception>
+    </member>
+    <member name="P:System.Text.RegularExpressions.GroupCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>获取一个值，该值指示对集合的访问是否同步（线程安全）。</summary>
+      <returns>在所有情况下均为 false。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.GroupCollection.System#Collections#ICollection#SyncRoot">
+      <summary>获取可用于同步对集合的访问的对象。</summary>
+      <returns>可用于同步集合访问的对象。</returns>
+    </member>
+    <member name="T:System.Text.RegularExpressions.Match">
+      <summary>表示单个正则表达式匹配的结果。</summary>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Match.Empty">
+      <summary>获取空组。所有失败的匹配都返回此空匹配。</summary>
+      <returns>空匹配。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Match.Groups">
+      <summary>获取由正则表达式匹配的组的集合。</summary>
+      <returns>由模式匹配的字符组。</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Match.NextMatch">
+      <summary>从上一个匹配结束的位置（即在上一个匹配字符之后的字符）开始返回一个包含下一个匹配结果的新 <see cref="T:System.Text.RegularExpressions.Match" /> 对象。</summary>
+      <returns>下一个正则表达式匹配。</returns>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Match.Result(System.String)">
+      <summary>返回对指定替换模式的扩展。</summary>
+      <returns>
+        <paramref name="replacement" /> 参数的扩展版本。</returns>
+      <param name="replacement">要使用的替换模式。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="replacement" /> 为 null。</exception>
+      <exception cref="T:System.NotSupportedException">不允许对此模式进行扩展。</exception>
+    </member>
+    <member name="T:System.Text.RegularExpressions.MatchCollection">
+      <summary>表示通过以迭代方式将正则表达式模式应用于输入字符串所找到的成功匹配的集合。</summary>
+    </member>
+    <member name="P:System.Text.RegularExpressions.MatchCollection.Count">
+      <summary>获取匹配项的数目。</summary>
+      <returns>匹配项的数目。</returns>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.MatchCollection.GetEnumerator">
+      <summary>提供一个循环访问集合的枚举器。</summary>
+      <returns>包含 <see cref="T:System.Text.RegularExpressions.MatchCollection" /> 中所有 <see cref="T:System.Text.RegularExpressions.Match" /> 对象的对象。</returns>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。</exception>
+    </member>
+    <member name="P:System.Text.RegularExpressions.MatchCollection.Item(System.Int32)">
+      <summary>获取该集合的单个成员。</summary>
+      <returns>位于集合中 <paramref name="i" /> 位置的捕获子字符串。</returns>
+      <param name="i">
+        <see cref="T:System.Text.RegularExpressions.Match" /> 集合中的索引。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="i" /> 小于 0，或者大于或等于 <see cref="P:System.Text.RegularExpressions.MatchCollection.Count" />。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.MatchCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>从指定索引处开始，将集合中的所有元素复制到指定的数组。</summary>
+      <param name="array">集合要被复制到的一维数组。</param>
+      <param name="arrayIndex">数组中将开始复制的位置的从零开始的索引。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> 是一个多维数组。</exception>
+      <exception cref="T:System.IndexOutOfRangeException">
+        <paramref name="arrayIndex" /> 在数组边界外。- 或 -<paramref name="arrayIndex" /> 以及 <see cref="P:System.Text.RegularExpressions.MatchCollection.Count" /> 在 <paramref name="array" /> 的界限外。</exception>
+    </member>
+    <member name="P:System.Text.RegularExpressions.MatchCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>获取一个值，该值指示对集合的访问是否同步（线程安全）。</summary>
+      <returns>在所有情况下均为 false。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.MatchCollection.System#Collections#ICollection#SyncRoot">
+      <summary>获取可用于同步对集合的访问的对象。</summary>
+      <returns>可用于同步集合访问的对象。此属性始终返回对象本身。</returns>
+    </member>
+    <member name="T:System.Text.RegularExpressions.MatchEvaluator">
+      <summary>表示在 <see cref="Overload:System.Text.RegularExpressions.Regex.Replace" /> 方法操作过程中每当找到正则表达式匹配时都调用的方法。</summary>
+      <returns>由 <see cref="T:System.Text.RegularExpressions.MatchEvaluator" /> 委托表示的方法返回的字符串。</returns>
+      <param name="match">
+        <see cref="T:System.Text.RegularExpressions.Match" /> 对象，表示 <see cref="Overload:System.Text.RegularExpressions.Regex.Replace" /> 方法操作过程中的单个正则表达式匹配。</param>
+    </member>
+    <member name="T:System.Text.RegularExpressions.Regex">
+      <summary>表示不可变的正则表达式。若要浏览此类型的.NET Framework 源代码，请参阅参考源。</summary>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.#ctor">
+      <summary>初始化 <see cref="T:System.Text.RegularExpressions.Regex" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.#ctor(System.String)">
+      <summary>针对指定的正则表达式初始化 <see cref="T:System.Text.RegularExpressions.Regex" /> 类的新实例。</summary>
+      <param name="pattern">要匹配的正则表达式模式。</param>
+      <exception cref="T:System.ArgumentException">出现正则表达式分析错误。 </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="pattern" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.#ctor(System.String,System.Text.RegularExpressions.RegexOptions)">
+      <summary>用修改模式的选项为指定的正则表达式初始化并编译 <see cref="T:System.Text.RegularExpressions.Regex" /> 类的一个新实例。</summary>
+      <param name="pattern">要匹配的正则表达式模式。</param>
+      <param name="options">修改正则表达式的枚举值的按位组合。</param>
+      <exception cref="T:System.ArgumentException">出现正则表达式分析错误。 </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="pattern" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 包含无效标志。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.#ctor(System.String,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>用修改模式的选项和指定在超时前多久应进行匹配尝试的模式匹配方法值的指定正则表达式来初始化 <see cref="T:System.Text.RegularExpressions.Regex" /> 类的新实例。</summary>
+      <param name="pattern">要匹配的正则表达式模式。</param>
+      <param name="options">修改正则表达式的枚举值的按位组合。</param>
+      <param name="matchTimeout">超时间隔，或 <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" /> 指示该方法不应超时。</param>
+      <exception cref="T:System.ArgumentException">出现正则表达式分析错误。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="pattern" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 不是有效的 <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 值。- 或 -<paramref name="matchTimeout" /> 为负、零或大于约 24 天。</exception>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Regex.CacheSize">
+      <summary>获取或设置已编译的正则表达式的当前静态缓存中的最大项数。</summary>
+      <returns>静态缓存中的最大项数。</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">Set 操作中的值小于零。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Escape(System.String)">
+      <summary>通过替换为转义码来转义最小的字符集（\、*、+、?、|、{、[、(、)、^、$、.、# 和空白）。这将指示正则表达式引擎按原义解释这些字符而不是解释为元字符。</summary>
+      <returns>由转换为转义形式的元字符组成的字符串。</returns>
+      <param name="str">包含要转换的文本的输入字符串。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> 为 null。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.GetGroupNames">
+      <summary>返回正则表达式的捕获组名数组。</summary>
+      <returns>组名的字符串数组。</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.GetGroupNumbers">
+      <summary>返回与数组中的组名相对应的捕获组号的数组。</summary>
+      <returns>组号的整数数组。</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.GroupNameFromNumber(System.Int32)">
+      <summary>获取与指定组号相对应的组名。</summary>
+      <returns>包含与指定组号关联的组名的字符串。如果没有与 <paramref name="i" /> 对应的组名，此方法将返回 <see cref="F:System.String.Empty" />。</returns>
+      <param name="i">要转换为相应组名的组号。</param>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.GroupNumberFromName(System.String)">
+      <summary>返回与指定组名相对应的组号。</summary>
+      <returns>与指定组名相对应的组号，如果 <paramref name="name" /> 不是有效组名，则为 -1。</returns>
+      <param name="name">要转换为相应组号的组名。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> 为 null。</exception>
+    </member>
+    <member name="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout">
+      <summary>指定模式匹配操作不应超时。</summary>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.IsMatch(System.String)">
+      <summary>指示 <see cref="T:System.Text.RegularExpressions.Regex" /> 构造函数中指定的正则表达式在指定的输入字符串中是否找到了匹配项。</summary>
+      <returns>如果正则表达式找到匹配项，则为 true；否则，为 false。</returns>
+      <param name="input">要搜索匹配项的字符串。 </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 为 null。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.Int32)">
+      <summary>指示 <see cref="T:System.Text.RegularExpressions.Regex" /> 构造函数中指定的正则表达式在指定的输入字符串中，从该字符串中的指定起始位置开始是否找到了匹配项。</summary>
+      <returns>如果正则表达式找到匹配项，则为 true；否则，为 false。</returns>
+      <param name="input">要搜索匹配项的字符串。</param>
+      <param name="startat">开始搜索的字符位置。 </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startat" /> 小于零，或者大于 <paramref name="input" /> 的长度。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.String)">
+      <summary>指示所指定的正则表达式在指定的输入字符串中是否找到了匹配项。</summary>
+      <returns>如果正则表达式找到匹配项，则为 true；否则，为 false。</returns>
+      <param name="input">要搜索匹配项的字符串。</param>
+      <param name="pattern">要匹配的正则表达式模式。 </param>
+      <exception cref="T:System.ArgumentException">出现正则表达式分析错误。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="pattern" /> 为 null。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.String,System.Text.RegularExpressions.RegexOptions)">
+      <summary>指示所指定的正则表达式是否使用指定的匹配选项在指定的输入字符串中找到了匹配项。</summary>
+      <returns>如果正则表达式找到匹配项，则为 true；否则，为 false。</returns>
+      <param name="input">要搜索匹配项的字符串。</param>
+      <param name="pattern">要匹配的正则表达式模式。</param>
+      <param name="options">枚举值的一个按位组合，这些枚举值提供匹配选项。 </param>
+      <exception cref="T:System.ArgumentException">出现正则表达式分析错误。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="pattern" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 不是有效的 <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 值。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.String,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>指示所指定的正则表达式是否使用指定的匹配选项和超时间隔在指定的输入字符串中找到了匹配项。</summary>
+      <returns>如果正则表达式找到匹配项，则为 true；否则，为 false。</returns>
+      <param name="input">要搜索匹配项的字符串。</param>
+      <param name="pattern">要匹配的正则表达式模式。</param>
+      <param name="options">枚举值的一个按位组合，这些枚举值提供匹配选项。</param>
+      <param name="matchTimeout">超时间隔，或 <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" /> 指示该方法不应超时。</param>
+      <exception cref="T:System.ArgumentException">出现正则表达式分析错误。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="pattern" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 不是有效的 <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 值。- 或 -<paramref name="matchTimeout" /> 为负、零或大于约 24 天。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Match(System.String)">
+      <summary>在指定的输入字符串中搜索 <see cref="T:System.Text.RegularExpressions.Regex" /> 构造函数中指定的正则表达式的第一个匹配项。</summary>
+      <returns>一个包含有关匹配的信息的对象。</returns>
+      <param name="input">要搜索匹配项的字符串。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 为 null。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32)">
+      <summary>从输入字符串中的指定起始位置开始，在该字符串中搜索正则表达式的第一个匹配项。</summary>
+      <returns>一个包含有关匹配的信息的对象。</returns>
+      <param name="input">要搜索匹配项的字符串。</param>
+      <param name="startat">开始搜索的字符位置（从零开始）。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startat" /> 小于零，或者大于 <paramref name="input" /> 的长度。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32,System.Int32)">
+      <summary>从指定的起始位置开始，在输入字符串中搜索正则表达式的第一个匹配项，并且仅搜索指定数量的字符。</summary>
+      <returns>一个包含有关匹配的信息的对象。</returns>
+      <param name="input">要搜索匹配项的字符串。</param>
+      <param name="beginning">输入字符串中开始搜索的最左侧的位置（从零开始）。</param>
+      <param name="length">子字符串中包含在搜索中的字符数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="beginning" /> 小于零，或者大于 <paramref name="input" /> 的长度。- 或 -<paramref name="length" /> 小于零，或者大于 <paramref name="input" /> 的长度。- 或 -<paramref name="beginning" />+<paramref name="length" />– 1 identifies a position that is outside the range of <paramref name="input" />.</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Match(System.String,System.String)">
+      <summary>在指定的输入字符串中搜索指定的正则表达式的第一个匹配项。</summary>
+      <returns>一个包含有关匹配的信息的对象。</returns>
+      <param name="input">要搜索匹配项的字符串。</param>
+      <param name="pattern">要匹配的正则表达式模式。</param>
+      <exception cref="T:System.ArgumentException">出现正则表达式分析错误。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="pattern" /> 为 null。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Match(System.String,System.String,System.Text.RegularExpressions.RegexOptions)">
+      <summary>使用指定的匹配选项在输入字符串中搜索指定的正则表达式的第一个匹配项。</summary>
+      <returns>一个包含有关匹配的信息的对象。</returns>
+      <param name="input">要搜索匹配项的字符串。</param>
+      <param name="pattern">要匹配的正则表达式模式。</param>
+      <param name="options">枚举值的一个按位组合，这些枚举值提供匹配选项。</param>
+      <exception cref="T:System.ArgumentException">出现正则表达式分析错误。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="pattern" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 不是 <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 值的有效按位组合。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Match(System.String,System.String,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>使用指定的匹配选项和超时间隔在输入字符串中搜索指定的正则表达式的第一个匹配项。</summary>
+      <returns>一个包含有关匹配的信息的对象。</returns>
+      <param name="input">要搜索匹配项的字符串。</param>
+      <param name="pattern">要匹配的正则表达式模式。</param>
+      <param name="options">枚举值的一个按位组合，这些枚举值提供匹配选项。</param>
+      <param name="matchTimeout">超时间隔，或 <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" /> 指示该方法不应超时。</param>
+      <exception cref="T:System.ArgumentException">出现正则表达式分析错误。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="pattern" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 不是 <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 值的有效按位组合。- 或 -<paramref name="matchTimeout" /> 为负、零或大于约 24 天。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Matches(System.String)">
+      <summary>在指定的输入字符串中搜索正则表达式的所有匹配项。</summary>
+      <returns>搜索操作找到的 <see cref="T:System.Text.RegularExpressions.Match" /> 对象的集合。如果未找到匹配项，则此方法将返回一个空集合对象。</returns>
+      <param name="input">要搜索匹配项的字符串。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 为 null。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.Int32)">
+      <summary>从字符串中的指定起始位置开始，在指定的输入字符串中搜索正则表达式的所有匹配项。</summary>
+      <returns>搜索操作找到的 <see cref="T:System.Text.RegularExpressions.Match" /> 对象的集合。如果未找到匹配项，则此方法将返回一个空集合对象。</returns>
+      <param name="input">要搜索匹配项的字符串。</param>
+      <param name="startat">在输入字符串中开始搜索的字符位置。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startat" /> 小于零，或者大于 <paramref name="input" /> 的长度。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.String)">
+      <summary>在指定的输入字符串中搜索指定的正则表达式的所有匹配项。</summary>
+      <returns>搜索操作找到的 <see cref="T:System.Text.RegularExpressions.Match" /> 对象的集合。如果未找到匹配项，则此方法将返回一个空集合对象。</returns>
+      <param name="input">要搜索匹配项的字符串。</param>
+      <param name="pattern">要匹配的正则表达式模式。</param>
+      <exception cref="T:System.ArgumentException">出现正则表达式分析错误。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="pattern" /> 为 null。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.String,System.Text.RegularExpressions.RegexOptions)">
+      <summary>使用指定的匹配选项在指定的输入字符串中搜索指定的正则表达式的所有匹配项。</summary>
+      <returns>搜索操作找到的 <see cref="T:System.Text.RegularExpressions.Match" /> 对象的集合。如果未找到匹配项，则此方法将返回一个空集合对象。</returns>
+      <param name="input">要搜索匹配项的字符串。</param>
+      <param name="pattern">要匹配的正则表达式模式。</param>
+      <param name="options">枚举值的按位组合，这些枚举值指定用于匹配的选项。</param>
+      <exception cref="T:System.ArgumentException">出现正则表达式分析错误。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="pattern" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 不是 <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 值的有效按位组合。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.String,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>使用指定的匹配选项和超时间隔在指定的输入字符串中搜索指定的正则表达式的所有匹配项。</summary>
+      <returns>搜索操作找到的 <see cref="T:System.Text.RegularExpressions.Match" /> 对象的集合。如果未找到匹配项，则此方法将返回一个空集合对象。</returns>
+      <param name="input">要搜索匹配项的字符串。</param>
+      <param name="pattern">要匹配的正则表达式模式。</param>
+      <param name="options">枚举值的按位组合，这些枚举值指定用于匹配的选项。</param>
+      <param name="matchTimeout">超时间隔，或 <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" /> 指示该方法不应超时。</param>
+      <exception cref="T:System.ArgumentException">出现正则表达式分析错误。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="pattern" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 不是 <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 值的有效按位组合。- 或 -<paramref name="matchTimeout" /> 为负、零或大于约 24 天。</exception>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Regex.MatchTimeout">
+      <summary>获取当前实例的超时间隔。</summary>
+      <returns>在 <see cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException" /> 引发之前或如果时间超期被禁用 <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" /> ，在样式匹配操作符中可以经过的最长时间间隔。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Regex.Options">
+      <summary>获取传递给 <see cref="T:System.Text.RegularExpressions.Regex" /> 构造函数的异常。</summary>
+      <returns>
+        <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 枚举 的一个或多个成员表示传递至 <see cref="T:System.Text.RegularExpressions.Regex" /> 构造函数的选项。</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String)">
+      <summary>在指定的输入字符串内，使用指定的替换字符串替换与某个正则表达式模式匹配的所有的字符串。</summary>
+      <returns>一个与输入字符串基本相同的新字符串，唯一的差别在于，其中的每个匹配字符串已被替换字符串代替。如果正则表达式模式与当前实例不匹配，则此方法返回未更改的当前实例。</returns>
+      <param name="input">要搜索匹配项的字符串。</param>
+      <param name="replacement">替换字符串。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="replacement" /> 为 null。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32)">
+      <summary>在指定输入字符串内，使用指定替换字符串替换与某个正则表达式模式匹配的字符串（其数目为指定的最大数目）。</summary>
+      <returns>一个与输入字符串基本相同的新字符串，唯一的差别在于，其中的每个匹配字符串已被替换字符串代替。如果正则表达式模式与当前实例不匹配，则此方法返回未更改的当前实例。</returns>
+      <param name="input">要搜索匹配项的字符串。</param>
+      <param name="replacement">替换字符串。</param>
+      <param name="count">可进行替换的最大次数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="replacement" /> 为 null。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32,System.Int32)">
+      <summary>在指定输入子字符串内，使用指定替换字符串替换与某个正则表达式模式匹配的字符串（其数目为指定的最大数目）。</summary>
+      <returns>一个与输入字符串基本相同的新字符串，唯一的差别在于，其中的每个匹配字符串已被替换字符串代替。如果正则表达式模式与当前实例不匹配，则此方法返回未更改的当前实例。</returns>
+      <param name="input">要搜索匹配项的字符串。</param>
+      <param name="replacement">替换字符串。</param>
+      <param name="count">可进行替换的最大次数。</param>
+      <param name="startat">输入字符串中开始执行搜索的字符位置。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="replacement" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startat" /> 小于零，或者大于 <paramref name="input" /> 的长度。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.String)">
+      <summary>在指定的输入字符串内，使用指定的替换字符串替换与指定正则表达式匹配的所有字符串。</summary>
+      <returns>一个与输入字符串基本相同的新字符串，唯一的差别在于，其中的每个匹配字符串已被替换字符串代替。如果 <paramref name="pattern" /> 与当前实例不匹配，则此方法返回未更改的当前实例。</returns>
+      <param name="input">要搜索匹配项的字符串。</param>
+      <param name="pattern">要匹配的正则表达式模式。</param>
+      <param name="replacement">替换字符串。</param>
+      <exception cref="T:System.ArgumentException">出现正则表达式分析错误。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" />、<paramref name="pattern" /> 或 <paramref name="replacement" /> 为 null。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.String,System.Text.RegularExpressions.RegexOptions)">
+      <summary>在指定的输入字符串内，使用指定的替换字符串替换与指定正则表达式匹配的所有字符串。指定的选项将修改匹配操作。</summary>
+      <returns>一个与输入字符串基本相同的新字符串，唯一的差别在于，其中的每个匹配字符串已被替换字符串代替。如果 <paramref name="pattern" /> 与当前实例不匹配，则此方法返回未更改的当前实例。</returns>
+      <param name="input">要搜索匹配项的字符串。</param>
+      <param name="pattern">要匹配的正则表达式模式。</param>
+      <param name="replacement">替换字符串。</param>
+      <param name="options">枚举值的一个按位组合，这些枚举值提供匹配选项。</param>
+      <exception cref="T:System.ArgumentException">出现正则表达式分析错误。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" />、<paramref name="pattern" /> 或 <paramref name="replacement" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 不是 <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 值的有效按位组合。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.String,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>在指定的输入字符串内，使用指定的替换字符串替换与指定正则表达式匹配的所有字符串。如果未找到匹配项，则其他参数指定修改匹配操作的选项和超时间隔。</summary>
+      <returns>一个与输入字符串基本相同的新字符串，唯一的差别在于，其中的每个匹配字符串已被替换字符串代替。如果 <paramref name="pattern" /> 与当前实例不匹配，则此方法返回未更改的当前实例。</returns>
+      <param name="input">要搜索匹配项的字符串。</param>
+      <param name="pattern">要匹配的正则表达式模式。</param>
+      <param name="replacement">替换字符串。</param>
+      <param name="options">枚举值的一个按位组合，这些枚举值提供匹配选项。</param>
+      <param name="matchTimeout">超时间隔，或 <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" /> 指示该方法不应超时。</param>
+      <exception cref="T:System.ArgumentException">出现正则表达式分析错误。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" />、<paramref name="pattern" /> 或 <paramref name="replacement" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 不是 <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 值的有效按位组合。- 或 -<paramref name="matchTimeout" /> 为负、零或大于约 24 天。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Text.RegularExpressions.MatchEvaluator)">
+      <summary>在指定的输入字符串内，使用 <see cref="T:System.Text.RegularExpressions.MatchEvaluator" /> 委托返回的字符串替换与指定正则表达式匹配的所有字符串。</summary>
+      <returns>一个与输入字符串基本相同的新字符串，唯一的差别在于，其中的每个匹配字符串已被一个替换字符串代替。如果 <paramref name="pattern" /> 与当前实例不匹配，则此方法返回未更改的当前实例。</returns>
+      <param name="input">要搜索匹配项的字符串。</param>
+      <param name="pattern">要匹配的正则表达式模式。</param>
+      <param name="evaluator">一个自定义方法，该方法检查每个匹配项，然后返回原始的匹配字符串或替换字符串。</param>
+      <exception cref="T:System.ArgumentException">出现正则表达式分析错误。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" />、<paramref name="pattern" /> 或 <paramref name="evaluator" /> 为 null。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Text.RegularExpressions.MatchEvaluator,System.Text.RegularExpressions.RegexOptions)">
+      <summary>在指定的输入字符串内，使用 <see cref="T:System.Text.RegularExpressions.MatchEvaluator" /> 委托返回的字符串替换与指定正则表达式匹配的所有字符串。指定的选项将修改匹配操作。</summary>
+      <returns>一个与输入字符串基本相同的新字符串，唯一的差别在于，其中的每个匹配字符串已被一个替换字符串代替。如果 <paramref name="pattern" /> 与当前实例不匹配，则此方法返回未更改的当前实例。</returns>
+      <param name="input">要搜索匹配项的字符串。</param>
+      <param name="pattern">要匹配的正则表达式模式。</param>
+      <param name="evaluator">一个自定义方法，该方法检查每个匹配项，然后返回原始的匹配字符串或替换字符串。</param>
+      <param name="options">枚举值的一个按位组合，这些枚举值提供匹配选项。</param>
+      <exception cref="T:System.ArgumentException">出现正则表达式分析错误。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" />、<paramref name="pattern" /> 或 <paramref name="evaluator" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 不是 <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 值的有效按位组合。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Text.RegularExpressions.MatchEvaluator,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>在指定的输入字符串内，使用 <see cref="T:System.Text.RegularExpressions.MatchEvaluator" /> 委托返回的字符串替换与指定正则表达式匹配的所有字符串。如果未找到匹配项，则其他参数指定修改匹配操作的选项和超时间隔。</summary>
+      <returns>一个与输入字符串基本相同的新字符串，唯一的差别在于，其中的每个匹配字符串已被替换字符串代替。如果 <paramref name="pattern" /> 与当前实例不匹配，则此方法返回未更改的当前实例。</returns>
+      <param name="input">要搜索匹配项的字符串。</param>
+      <param name="pattern">要匹配的正则表达式模式。</param>
+      <param name="evaluator">一个自定义方法，该方法检查每个匹配项，然后返回原始的匹配字符串或替换字符串。</param>
+      <param name="options">枚举值的一个按位组合，这些枚举值提供匹配选项。</param>
+      <param name="matchTimeout">超时间隔，或 <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" /> 指示该方法不应超时。</param>
+      <exception cref="T:System.ArgumentException">出现正则表达式分析错误。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" />、<paramref name="pattern" /> 或 <paramref name="evaluator" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 不是 <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 值的有效按位组合。- 或 -<paramref name="matchTimeout" /> 为负、零或大于约 24 天。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator)">
+      <summary>在指定的输入字符串内，使用 <see cref="T:System.Text.RegularExpressions.MatchEvaluator" /> 委托返回的字符串替换与指定正则表达式匹配的所有字符串。</summary>
+      <returns>一个与输入字符串基本相同的新字符串，唯一的差别在于，其中的每个匹配字符串已被一个替换字符串代替。如果正则表达式模式与当前实例不匹配，则此方法返回未更改的当前实例。</returns>
+      <param name="input">要搜索匹配项的字符串。</param>
+      <param name="evaluator">一个自定义方法，该方法检查每个匹配项，然后返回原始的匹配字符串或替换字符串。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="evaluator" /> 为 null。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32)">
+      <summary>在指定的输入字符串内，使用 <see cref="T:System.Text.RegularExpressions.MatchEvaluator" /> 委托返回的字符串替换与某个正则表达式模式匹配的字符串（其数目为指定的最大数目）。</summary>
+      <returns>一个与输入字符串基本相同的新字符串，唯一的差别在于，其中的每个匹配字符串已被一个替换字符串代替。如果正则表达式模式与当前实例不匹配，则此方法返回未更改的当前实例。</returns>
+      <param name="input">要搜索匹配项的字符串。</param>
+      <param name="evaluator">一个自定义方法，该方法检查每个匹配项，然后返回原始的匹配字符串或替换字符串。</param>
+      <param name="count">进行替换的最大次数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="evaluator" /> 为 null。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32,System.Int32)">
+      <summary>在指定的输入子字符串内，使用 <see cref="T:System.Text.RegularExpressions.MatchEvaluator" /> 委托返回的字符串替换与某个正则表达式模式匹配的字符串（其数目为指定的最大数目）。</summary>
+      <returns>一个与输入字符串基本相同的新字符串，唯一的差别在于，其中的每个匹配字符串已被一个替换字符串代替。如果正则表达式模式与当前实例不匹配，则此方法返回未更改的当前实例。</returns>
+      <param name="input">要搜索匹配项的字符串。</param>
+      <param name="evaluator">一个自定义方法，该方法检查每个匹配项，然后返回原始的匹配字符串或替换字符串。</param>
+      <param name="count">进行替换的最大次数。</param>
+      <param name="startat">输入字符串中开始执行搜索的字符位置。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="evaluator" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startat" /> 小于零，或者大于 <paramref name="input" /> 的长度。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Text.RegularExpressions.Regex.RightToLeft">
+      <summary>获取一个值，该值指示正则表达式是否从右向左进行搜索。</summary>
+      <returns>如果正则表达式从右向左进行搜索，则为 true；否则为 false。</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Split(System.String)">
+      <summary>在由 <see cref="T:System.Text.RegularExpressions.Regex" /> 构造函数指定的正则表达式模式所定义的位置，将输入字符串拆分为子字符串数组。</summary>
+      <returns>字符串数组。</returns>
+      <param name="input">要拆分的字符串。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 为 null。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32)">
+      <summary>在由 <see cref="T:System.Text.RegularExpressions.Regex" /> 构造函数中指定的正则表达式定义的位置，将输入字符串拆分为子字符串数组指定的最大次数。</summary>
+      <returns>字符串数组。</returns>
+      <param name="input">要拆分的字符串。</param>
+      <param name="count">可拆分的最大次数。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 为 null。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32,System.Int32)">
+      <summary>在由 <see cref="T:System.Text.RegularExpressions.Regex" /> 构造函数中指定的正则表达式定义的位置，将输入字符串拆分为子字符串数组指定的最大次数。从输入字符串的指定字符位置开始搜索正则表达式模式。</summary>
+      <returns>字符串数组。</returns>
+      <param name="input">要拆分的字符串。</param>
+      <param name="count">可拆分的最大次数。</param>
+      <param name="startat">输入字符串中将开始搜索的字符位置。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startat" /> 小于零，或者大于 <paramref name="input" /> 的长度。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Split(System.String,System.String)">
+      <summary>在由正则表达式模式定义的位置将输入字符串拆分为一个子字符串数组。</summary>
+      <returns>字符串数组。</returns>
+      <param name="input">要拆分的字符串。</param>
+      <param name="pattern">要匹配的正则表达式模式。</param>
+      <exception cref="T:System.ArgumentException">出现正则表达式分析错误。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="pattern" /> 为 null。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Split(System.String,System.String,System.Text.RegularExpressions.RegexOptions)">
+      <summary>在由指定正则表达式模式定义的位置将输入字符串拆分为一个子字符串数组。指定的选项将修改匹配操作。</summary>
+      <returns>字符串数组。</returns>
+      <param name="input">要拆分的字符串。</param>
+      <param name="pattern">要匹配的正则表达式模式。</param>
+      <param name="options">枚举值的一个按位组合，这些枚举值提供匹配选项。</param>
+      <exception cref="T:System.ArgumentException">出现正则表达式分析错误。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="pattern" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 不是 <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 值的有效按位组合。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Split(System.String,System.String,System.Text.RegularExpressions.RegexOptions,System.TimeSpan)">
+      <summary>在由指定正则表达式模式定义的位置将输入字符串拆分为一个子字符串数组。如果未找到匹配项，则其他参数指定修改匹配操作的选项和超时间隔。</summary>
+      <returns>字符串数组。</returns>
+      <param name="input">要拆分的字符串。</param>
+      <param name="pattern">要匹配的正则表达式模式。</param>
+      <param name="options">枚举值的一个按位组合，这些枚举值提供匹配选项。</param>
+      <param name="matchTimeout">超时间隔，或 <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" /> 指示该方法不应超时。</param>
+      <exception cref="T:System.ArgumentException">出现正则表达式分析错误。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="input" /> 或 <paramref name="pattern" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> 不是 <see cref="T:System.Text.RegularExpressions.RegexOptions" /> 值的有效按位组合。- 或 -<paramref name="matchTimeout" /> 为负、零或大于约 24 天。</exception>
+      <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">发生超时。有关超时的更多信息，请参见“备注”节。</exception>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.ToString">
+      <summary>返回传入 Regex 构造函数的正则表达式模式。</summary>
+      <returns>传入 Regex 构造函数的 <paramref name="pattern" /> 参数。</returns>
+    </member>
+    <member name="M:System.Text.RegularExpressions.Regex.Unescape(System.String)">
+      <summary>转换输入字符串中的任何转义字符。</summary>
+      <returns>包含任何转换为非转义形式的转义字符的字符串。</returns>
+      <param name="str">包含要转换的文本的输入字符串。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="str" /> 包括无法识别的转义序列。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="str" /> 为 null。</exception>
+    </member>
+    <member name="T:System.Text.RegularExpressions.RegexMatchTimeoutException">
+      <summary>当一个正则表达式模式匹配方法执行时间超过超时间隔引发的异常。</summary>
+    </member>
+    <member name="M:System.Text.RegularExpressions.RegexMatchTimeoutException.#ctor">
+      <summary>使用系统提供的消息初始化 <see cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Text.RegularExpressions.RegexMatchTimeoutException.#ctor(System.String)">
+      <summary>使用指定的消息字符串初始化 <see cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException" /> 类的新实例。</summary>
+      <param name="message">描述异常的字符串。</param>
+    </member>
+    <member name="M:System.Text.RegularExpressions.RegexMatchTimeoutException.#ctor(System.String,System.Exception)">
+      <summary>使用指定错误消息和对作为此异常原因的内部异常的引用来初始化 <see cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException" /> 类的新实例。</summary>
+      <param name="message">描述异常的字符串。</param>
+      <param name="inner">导致当前异常的异常。</param>
+    </member>
+    <member name="M:System.Text.RegularExpressions.RegexMatchTimeoutException.#ctor(System.String,System.String,System.TimeSpan)">
+      <summary>用有关正则表达式模式、输入文本和超时间隔的信息初始化 <see cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException" /> 类的新实例。</summary>
+      <param name="regexInput">当发生超时时由正则表达式引擎处理的输入文本。</param>
+      <param name="regexPattern">当发生超时时由正则表达式引擎使用的模式。</param>
+      <param name="matchTimeout">超时间隔。</param>
+    </member>
+    <member name="P:System.Text.RegularExpressions.RegexMatchTimeoutException.Input">
+      <summary>获取当发生超时发生时正则表达式引擎正在处理的输入文本。</summary>
+      <returns>正则表达式输入文本。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.RegexMatchTimeoutException.MatchTimeout">
+      <summary>获取正则表达式匹配的超时间隔。</summary>
+      <returns>超时间隔。</returns>
+    </member>
+    <member name="P:System.Text.RegularExpressions.RegexMatchTimeoutException.Pattern">
+      <summary>获取超时值发生时使用于匹配操作的正则表达式模式。</summary>
+      <returns>正则表达式模式。</returns>
+    </member>
+    <member name="T:System.Text.RegularExpressions.RegexOptions">
+      <summary>提供用于设置正则表达式选项的枚举值。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.Compiled">
+      <summary>指定将正则表达式编译为程序集。这会产生更快的执行速度，但会增加启动时间。在调用 <see cref="M:System.Text.RegularExpressions.Regex.CompileToAssembly(System.Text.RegularExpressions.RegexCompilationInfo[],System.Reflection.AssemblyName)" /> 方法时，不应将此值分配给 <see cref="P:System.Text.RegularExpressions.RegexCompilationInfo.Options" /> 属性。有关详细信息，请参见 正则表达式选项 主题中的“已编译的正则表达式”。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.CultureInvariant">
+      <summary>指定忽略语言中的区域性差异。有关详细信息，请参见 正则表达式选项 主题中的“使用固定区域性比较”部分。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.ECMAScript">
+      <summary>为表达式启用符合 ECMAScript 的行为。该值只能与 <see cref="F:System.Text.RegularExpressions.RegexOptions.IgnoreCase" />、<see cref="F:System.Text.RegularExpressions.RegexOptions.Multiline" /> 和 <see cref="F:System.Text.RegularExpressions.RegexOptions.Compiled" /> 值一起使用。该值与其他任何值一起使用均将导致异常。有关 <see cref="F:System.Text.RegularExpressions.RegexOptions.ECMAScript" /> 选项的详细信息，请参见 正则表达式选项 主题中的“ECMAScript 匹配行为”。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.ExplicitCapture">
+      <summary>指定唯一有效的捕获是显式命名或编号的 (?&lt;name&gt;…) 形式的组。这使未命名的圆括号可以充当非捕获组，并且不会使表达式的语法 (?:...) 显得笨拙。有关详细信息，请参见 正则表达式选项 主题中的“仅显式捕获”。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.IgnoreCase">
+      <summary>指定不区分大小写的匹配。有关详细信息，请参见 正则表达式选项 主题中的“不区分大小写的匹配”部分。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.IgnorePatternWhitespace">
+      <summary>消除模式中的非转义空白并启用由 # 标记的注释。但是，此值不影响或消除标记单独的正则表达式语言元素的开头的字符类、数值量词或令牌中的空白。有关详细信息，请参见 正则表达式选项 主题中的“忽略空白”部分。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.Multiline">
+      <summary>多行模式。更改 ^ 和 $ 的含义，使它们分别在任意一行的行首和行尾匹配，而不仅仅在整个字符串的开头和结尾匹配。有关详细信息，请参见 正则表达式选项 主题中的“多行模式”部分。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.None">
+      <summary>指定不设置任何选项。有关正则表达式引擎的默认行为的详细信息，请参见 正则表达式选项 主题的“默认选项”部分。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.RightToLeft">
+      <summary>指定搜索从右向左而不是从左向右进行。有关详细信息，请参见 正则表达式选项 主题中的“从右到左模式”部分。</summary>
+    </member>
+    <member name="F:System.Text.RegularExpressions.RegexOptions.Singleline">
+      <summary>指定单行模式。更改点 (.) 的含义，以使它与每个字符（而不是除 \n 之外的所有字符）匹配。有关详细信息，请参见 正则表达式选项 主题中的“单行模式”部分。</summary>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Threading.Timer</name>
+  </assembly>
+  <members>
+    <member name="T:System.Threading.Timer">
+      <summary>지정된 간격으로 메서드를 실행하는 메커니즘을 제공합니다.이 클래스는 상속될 수 없습니다.이 유형에 대한 .NET Framework 소스 코드를 검색하려면 참조 소스를 참조하세요.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Timer.#ctor(System.Threading.TimerCallback,System.Object,System.Int32,System.Int32)">
+      <summary>부호 있는 32비트 정수로 시간 간격을 지정하여 Timer 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="callback">실행할 메서드를 나타내는 <see cref="T:System.Threading.TimerCallback" /> 대리자입니다. </param>
+      <param name="state">콜백 메서드에서 사용할 정보가 포함된 개체를 반환하거나 null을 반환합니다. </param>
+      <param name="dueTime">
+        <paramref name="callback" />이 호출되기 전에 지연할 시간(밀리초)입니다.타이머가 시작되지 않도록 하려면 <see cref="F:System.Threading.Timeout.Infinite" />를 지정합니다.타이머를 즉시 시작하려면 0을 지정합니다.</param>
+      <param name="period">
+        <paramref name="callback" /> 호출 사이의 시간 간격(밀리초)입니다.정기적으로 신호를 보내지 않도록 하려면 <see cref="F:System.Threading.Timeout.Infinite" />를 지정합니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter is negative and is not equal to <see cref="F:System.Threading.Timeout.Infinite" />. </exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="callback" /> parameter is null. </exception>
+    </member>
+    <member name="M:System.Threading.Timer.#ctor(System.Threading.TimerCallback,System.Object,System.TimeSpan,System.TimeSpan)">
+      <summary>
+        <see cref="T:System.TimeSpan" /> 값을 사용하여 시간 간격을 측정하여 Timer 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="callback">실행할 메서드를 나타내는 대리자입니다. </param>
+      <param name="state">콜백 메서드에서 사용할 정보가 포함된 개체를 반환하거나 null을 반환합니다. </param>
+      <param name="dueTime">
+        <paramref name="callback" /> 매개 변수에서 해당 메서드를 호출하기 전에 지연될 시간입니다.타이머가 시작되지 않게 하려면 -1밀리초를 지정합니다.타이머를 즉시 시작하려면 0을 지정합니다.</param>
+      <param name="period">
+        <paramref name="callback" />에서 참조하는 메서드 호출 사이의 시간 간격입니다.정기적으로 신호를 보내지 않도록 하려면 -1밀리초를 지정합니다.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The number of milliseconds in the value of <paramref name="dueTime" /> or <paramref name="period" /> is negative and not equal to <see cref="F:System.Threading.Timeout.Infinite" />, or is greater than <see cref="F:System.Int32.MaxValue" />. </exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="callback" /> parameter is null. </exception>
+    </member>
+    <member name="M:System.Threading.Timer.Change(System.Int32,System.Int32)">
+      <summary>부호 있는 32비트 정수로 시간 간격을 측정하여 타이머 시작 시간 및 메서드 호출 사이의 간격을 변경합니다.</summary>
+      <returns>타이머가 성공적으로 업데이트되었으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="dueTime">
+        <see cref="T:System.Threading.Timer" />가 구성될 때 지정되는 콜백 메서드를 호출하기 전의 지연 시간(밀리초)입니다.타이머가 다시 시작되지 않도록 하려면 <see cref="F:System.Threading.Timeout.Infinite" />를 지정합니다.타이머를 즉시 시작하려면 0을 지정합니다.</param>
+      <param name="period">
+        <see cref="T:System.Threading.Timer" />가 생성되었을 때 지정된 콜백 메서드 호출 사이의 간격(밀리초)입니다.정기적으로 신호를 보내지 않도록 하려면 <see cref="F:System.Threading.Timeout.Infinite" />를 지정합니다.</param>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.Timer" /> has already been disposed. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter is negative and is not equal to <see cref="F:System.Threading.Timeout.Infinite" />. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.Timer.Change(System.TimeSpan,System.TimeSpan)">
+      <summary>
+        <see cref="T:System.TimeSpan" /> 값으로 시간 간격을 측정하여 타이머 시작 시간 및 메서드 호출 사이의 간격을 변경합니다.</summary>
+      <returns>타이머가 업데이트되었으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="dueTime">
+        <see cref="T:System.Threading.Timer" />가 구성될 때 지정되는 콜백 메서드를 호출하기 전의 지연 시간을 나타내는 <see cref="T:System.TimeSpan" />입니다.타이머가 다시 시작되지 않게 하려면 -1밀리초를 지정합니다.타이머를 즉시 시작하려면 0을 지정합니다.</param>
+      <param name="period">
+        <see cref="T:System.Threading.Timer" />가 생성되었을 때 지정된 콜백 메서드 호출 사이의 간격입니다.정기적으로 신호를 보내지 않도록 하려면 -1밀리초를 지정합니다.</param>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.Timer" /> has already been disposed. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter, in milliseconds, is less than -1. </exception>
+      <exception cref="T:System.NotSupportedException">The <paramref name="dueTime" /> or <paramref name="period" /> parameter, in milliseconds, is greater than 4294967294. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.Timer.Dispose">
+      <summary>
+        <see cref="T:System.Threading.Timer" />의 현재 인스턴스에서 사용하는 모든 리소스를 해제합니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.TimerCallback">
+      <summary>
+        <see cref="T:System.Threading.Timer" />의 호출을 처리하는 메서드를 나타냅니다.</summary>
+      <param name="state">이 대리자에서 호출한 메서드와 관련된 응용 프로그램 관련 정보를 포함하는 개체 또는 null입니다. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+  </members>
+</doc>

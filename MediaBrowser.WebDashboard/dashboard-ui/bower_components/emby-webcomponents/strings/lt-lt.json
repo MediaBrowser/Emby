@@ -1,4 +1,6 @@
 {
+    "PlaybackSettings": "Playback settings",
+    "SubtitleSettings": "Subtitle settings",
     "MessageUnlockAppWithPurchaseOrSupporter": "Atrakinkite \u0161i\u0105 funkcij\u0105 nedideliu vienkartiniu mokes\u010diu arba \u012fsigij\u0119 Emby Premiere prenumerat\u0105.",
     "MessageUnlockAppWithSupporter": "Atrakinkite \u0161i\u0105 funkcij\u0105 \u012fsigij\u0119 Emby Premiere prenumerat\u0105.",
     "MessageToValidateSupporter": "Jei turite aktyvi\u0105 Emby Premiere prenumerat\u0105, sutvarkykite Emby Premiere savo Emby Serverio skydelyje. Tai galite atlikti paspaud\u0117 Emby Premiere u\u017era\u0161\u0105 pagrindiniame meniu.",
@@ -33,6 +35,7 @@
     "HeaderWakeServer": "Wake Server",
     "AttemptingWakeServer": "Attempting to wake server. Please wait...",
     "WakeServerSuccess": "Success!",
+    "HeaderCustomizeHomeScreen": "Customize Home Screen",
     "WakeServerError": "Wake On LAN packets were sent to your server machine, but we're unable to connect to your Emby Server. Your machine may need a little more time to wake, or Emby Server may not be actively running on the machine.",
     "Sunday": "Sekmadienis",
     "Monday": "Pirmadienis",
@@ -47,6 +50,7 @@
     "LabelSortOrder": "Sort order:",
     "HeaderPhotoAlbums": "Photo Albums",
     "Photos": "Photos",
+    "HeaderAppearsOn": "Appears On",
     "List": "List",
     "RecordSeries": "\u012era\u0161yti laid\u0105",
     "HeaderCinemaMode": "Kinoteatro re\u017eimas",
@@ -306,7 +310,8 @@
     "ConfirmDeleteItems": "Tai atlikus \u0161ie elementai bus i\u0161trinti ir i\u0161 bibliotekos, ir i\u0161 fail\u0173 sistemos. Ar tikrai norite t\u0119sti?",
     "PleaseRestartServerName": "Pra\u0161au paleisti Emby Server\u012f i\u0161 naujo - {0}.",
     "LabelSyncJobName": "Sinchronizavimo darbo pavadinimas:",
-    "SyncJobCreated": "Sync job created",
+    "SyncingDots": "Syncing...",
+    "ConvertingDots": "Converting...",
     "LabelQuality": "Kokyb\u0117:",
     "LabelSyncNoTargetsHelp": "It looks like you don't currently have any apps that support offline downloading.",
     "DownloadingDots": "Downloading...",
@@ -547,6 +552,7 @@
     "Absolute": "Absolute",
     "Smart": "Smart",
     "Small": "Small",
+    "Smaller": "Smaller",
     "Medium": "Medium",
     "Large": "Large",
     "ExtraLarge": "Extra large",
@@ -677,5 +683,7 @@
     "ColorSpace": "Color space",
     "ColorTransfer": "Color transfer",
     "VideoRange": "Video range",
-    "SeriesDisplayOrderHelp": "Order episodes by air date, dvd order, or absolute numbering."
+    "SeriesDisplayOrderHelp": "Order episodes by air date, dvd order, or absolute numbering.",
+    "PlaybackSettingsIntro": "To configure default playback settings, stop video playback, then click your user icon in the top right section of the app.",
+    "SubtitleSettingsIntro": "To configure default subtitle appearance and language settings, stop video playback, then click your user icon in the top right section of the app."
 }

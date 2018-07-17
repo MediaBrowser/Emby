@@ -9,6 +9,7 @@ using MediaBrowser.Controller.Sync;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.System;
+using Emby.Server.Implementations.HttpServer;
 
 namespace MediaBrowser.Server.Mono
 {
@@ -30,11 +31,6 @@ namespace MediaBrowser.Server.Mono
         protected override IConnectManager CreateConnectManager()
         {
             return new ConnectManager();
-        }
-
-        protected override ISyncManager CreateSyncManager()
-        {
-            return new SyncManager();
         }
 
         protected override void RestartInternal()
@@ -64,6 +60,20 @@ namespace MediaBrowser.Server.Mono
             {
                 return true;
             }
+        }
+
+        protected override IHttpListener CreateHttpListener()
+        {
+            return new EmbyServer.SocketSharp.WebSocketSharpListener(LogManager.GetLogger("HttpServer"),
+                Certificate,
+                StreamHelper,
+                TextEncoding,
+                NetworkManager,
+                SocketFactory,
+                CryptographyProvider,
+                SupportsDualModeSockets,
+                FileSystemManager,
+                EnvironmentInfo);
         }
     }
 }

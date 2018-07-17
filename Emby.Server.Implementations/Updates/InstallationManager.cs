@@ -190,7 +190,7 @@ namespace Emby.Server.Implementations.Updates
                     {
                         cancellationToken.ThrowIfCancellationRequested();
 
-                        var packages = _jsonSerializer.DeserializeFromStream<PackageInfo[]>(json);
+                        var packages = await _jsonSerializer.DeserializeFromStreamAsync<PackageInfo[]>(json).ConfigureAwait(false);
 
                         return FilterPackages(packages, packageType, applicationVersion);
                     }
@@ -203,8 +203,6 @@ namespace Emby.Server.Implementations.Updates
                 return FilterPackages(packages, packageType, applicationVersion);
             }
         }
-
-        private readonly SemaphoreSlim _updateSemaphore = new SemaphoreSlim(1, 1);
 
         /// <summary>
         /// Gets all available packages.
@@ -219,14 +217,13 @@ namespace Emby.Server.Implementations.Updates
                 CancellationToken = cancellationToken,
                 Progress = new SimpleProgress<Double>(),
                 CacheLength = GetCacheLength(),
-                CacheMode = CacheMode.Unconditional,
-                ResourcePool = _updateSemaphore
+                CacheMode = CacheMode.Unconditional
 
             }, "GET").ConfigureAwait(false))
             {
                 using (var stream = response.Content)
                 {
-                    return FilterPackages(_jsonSerializer.DeserializeFromStream<PackageInfo[]>(stream));
+                    return FilterPackages(await _jsonSerializer.DeserializeFromStreamAsync<PackageInfo[]>(stream).ConfigureAwait(false));
                 }
             }
         }
@@ -437,7 +434,7 @@ namespace Emby.Server.Implementations.Updates
 
             var installationInfo = new InstallationInfo
             {
-                Id = Guid.NewGuid().ToString("N"),
+                Id = Guid.NewGuid(),
                 Name = package.name,
                 AssemblyGuid = package.guid,
                 UpdateClass = package.classification,

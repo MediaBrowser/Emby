@@ -12,24 +12,21 @@ using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.System;
 using MediaBrowser.Model.LiveTv;
 using System.Linq;
+using MediaBrowser.Controller.Library;
 
 namespace Emby.Server.Implementations.LiveTv.TunerHosts
 {
     public class LiveStream : ILiveStream
     {
         public MediaSourceInfo OriginalMediaSource { get; set; }
-        public MediaSourceInfo OpenedMediaSource { get; set; }
-        public int ConsumerCount
-        {
-            get { return SharedStreamIds.Count; }
-        }
+        public MediaSourceInfo MediaSource { get; set; }
+
+        public int ConsumerCount { get; set; }
 
         public string OriginalStreamId { get; set; }
         public bool EnableStreamSharing { get; set; }
         public string UniqueId { get; private set; }
 
-        public List<string> SharedStreamIds { get; private set; }
-        protected readonly IEnvironmentInfo Environment;
         protected readonly IFileSystem FileSystem;
         protected readonly IServerApplicationPaths AppPaths;
 
@@ -38,27 +35,28 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
         protected readonly CancellationTokenSource LiveStreamCancellationTokenSource = new CancellationTokenSource();
 
         public string TunerHostId { get; private set; }
-        public string TunerHostDeviceId { get; private set; }
 
         public DateTime DateOpened { get; protected set; }
 
-        public Action<LiveStream> OnClose { get; set; }
+        public Func<Task> OnClose { get; set; }
 
-        public LiveStream(MediaSourceInfo mediaSource, TunerHostInfo tuner, IEnvironmentInfo environment, IFileSystem fileSystem, ILogger logger, IServerApplicationPaths appPaths)
+        public LiveStream(MediaSourceInfo mediaSource, TunerHostInfo tuner, IFileSystem fileSystem, ILogger logger, IServerApplicationPaths appPaths)
         {
             OriginalMediaSource = mediaSource;
-            Environment = environment;
             FileSystem = fileSystem;
-            OpenedMediaSource = mediaSource;
+            MediaSource = mediaSource;
             Logger = logger;
             EnableStreamSharing = true;
-            SharedStreamIds = new List<string>();
             UniqueId = Guid.NewGuid().ToString("N");
-            TunerHostId = tuner.Id;
-            TunerHostDeviceId = tuner.DeviceId;
+
+            if (tuner != null)
+            {
+                TunerHostId = tuner.Id;
+            }
 
             AppPaths = appPaths;
 
+            ConsumerCount = 1;
             SetTempFilePath("ts");
         }
 
@@ -70,25 +68,34 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
         public virtual Task Open(CancellationToken openCancellationToken)
         {
             DateOpened = DateTime.UtcNow;
-            return Task.FromResult(true);
+            return Task.CompletedTask;
         }
 
-        public void Close()
+        public Task Close()
         {
             EnableStreamSharing = false;
 
             Logger.Info("Closing " + GetType().Name);
 
-            CloseInternal();
-        }
-
-        protected virtual void CloseInternal()
-        {
             LiveStreamCancellationTokenSource.Cancel();
 
             if (OnClose != null)
             {
-                OnClose(this);
+                return CloseWithExternalFn();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        private async Task CloseWithExternalFn()
+        {
+            try
+            {
+                await OnClose().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Logger.ErrorException("Error closing live stream", ex);
             }
         }
 
@@ -153,7 +160,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
         {
             cancellationToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, LiveStreamCancellationTokenSource.Token).Token;
 
-            var allowAsync = false;//Environment.OperatingSystem != MediaBrowser.Model.System.OperatingSystem.Windows;
+            var allowAsync = false;
             // use non-async filestream along with read due to https://github.com/dotnet/corefx/issues/6039
 
             bool seekFile = (DateTime.UtcNow - DateOpened).TotalSeconds > 10;
@@ -206,7 +213,7 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
                     TrySeek(inputStream, -20000);
                 }
 
-                await CopyTo(inputStream, stream, 81920, emptyReadLimit, cancellationToken).ConfigureAwait(false);
+                await ApplicationHost.StreamHelper.CopyToAsync(inputStream, stream, 81920, emptyReadLimit, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -215,46 +222,6 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts
             get
             {
                 return 1000;
-            }
-        }
-
-        private async Task CopyTo(Stream source, Stream destination, int bufferSize, int emptyReadLimit, CancellationToken cancellationToken)
-        {
-            byte[] buffer = new byte[bufferSize];
-
-            if (emptyReadLimit <= 0)
-            {
-                int read;
-                while ((read = source.Read(buffer, 0, buffer.Length)) != 0)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    destination.Write(buffer, 0, read);
-                }
-
-                return;
-            }
-
-            var eofCount = 0;
-
-            while (eofCount < emptyReadLimit)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                var bytesRead = source.Read(buffer, 0, buffer.Length);
-
-                if (bytesRead == 0)
-                {
-                    eofCount++;
-                    await Task.Delay(50, cancellationToken).ConfigureAwait(false);
-                }
-                else
-                {
-                    eofCount = 0;
-
-                    //await destination.WriteAsync(buffer, 0, read).ConfigureAwait(false);
-                    destination.Write(buffer, 0, bytesRead);
-                }
             }
         }
 

@@ -304,7 +304,7 @@ namespace Emby.Server.Implementations.LiveTv.Listings
                 IsMovie = IsMovie(details),
                 Etag = programInfo.md5,
                 IsLive = string.Equals(programInfo.liveTapeDelay, "live", StringComparison.OrdinalIgnoreCase),
-                IsPremiere = programInfo.premiere
+                IsPremiere = programInfo.premiere || (programInfo.isPremiereOrFinale ?? string.Empty).IndexOf("premiere", StringComparison.OrdinalIgnoreCase) != -1
             };
 
             var showId = programId;
@@ -521,8 +521,8 @@ namespace Emby.Server.Implementations.LiveTv.Listings
             {
                 using (var innerResponse2 = await Post(httpOptions, true, info).ConfigureAwait(false))
                 {
-                    return _jsonSerializer.DeserializeFromStream<List<ScheduleDirect.ShowImages>>(
-                        innerResponse2.Content);
+                    return await _jsonSerializer.DeserializeFromStreamAsync<List<ScheduleDirect.ShowImages>>(
+                        innerResponse2.Content).ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
@@ -560,7 +560,7 @@ namespace Emby.Server.Implementations.LiveTv.Listings
                 {
                     using (Stream responce = httpResponse.Content)
                     {
-                        var root = _jsonSerializer.DeserializeFromStream<List<ScheduleDirect.Headends>>(responce);
+                        var root = await _jsonSerializer.DeserializeFromStreamAsync<List<ScheduleDirect.Headends>>(responce).ConfigureAwait(false);
 
                         if (root != null)
                         {
@@ -755,7 +755,7 @@ namespace Emby.Server.Implementations.LiveTv.Listings
 
             using (var responce = await Post(httpOptions, false, null).ConfigureAwait(false))
             {
-                var root = _jsonSerializer.DeserializeFromStream<ScheduleDirect.Token>(responce.Content);
+                var root = await _jsonSerializer.DeserializeFromStreamAsync<ScheduleDirect.Token>(responce.Content).ConfigureAwait(false);
                 if (root.message == "OK")
                 {
                     _logger.Info("Authenticated with Schedules Direct token: " + root.token);
@@ -841,7 +841,7 @@ namespace Emby.Server.Implementations.LiveTv.Listings
                 {
                     using (var response = httpResponse.Content)
                     {
-                        var root = _jsonSerializer.DeserializeFromStream<ScheduleDirect.Lineups>(response);
+                        var root = await _jsonSerializer.DeserializeFromStreamAsync<ScheduleDirect.Lineups>(response).ConfigureAwait(false);
 
                         return root.lineups.Any(i => string.Equals(info.ListingsId, i.lineup, StringComparison.OrdinalIgnoreCase));
                     }
@@ -926,7 +926,7 @@ namespace Emby.Server.Implementations.LiveTv.Listings
             {
                 using (var response = httpResponse.Content)
                 {
-                    var root = _jsonSerializer.DeserializeFromStream<ScheduleDirect.Channel>(response);
+                    var root = await _jsonSerializer.DeserializeFromStreamAsync<ScheduleDirect.Channel>(response).ConfigureAwait(false);
                     _logger.Info("Found " + root.map.Count + " channels on the lineup on ScheduleDirect");
                     _logger.Info("Mapping Stations to Channel");
 
@@ -1129,6 +1129,7 @@ namespace Emby.Server.Implementations.LiveTv.Listings
                 public string liveTapeDelay { get; set; }
                 public bool premiere { get; set; }
                 public bool repeat { get; set; }
+                public string isPremiereOrFinale { get; set; }
             }
 
 

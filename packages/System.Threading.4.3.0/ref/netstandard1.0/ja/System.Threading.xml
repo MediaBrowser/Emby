@@ -1,0 +1,1950 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Threading</name>
+  </assembly>
+  <members>
+    <member name="T:System.Threading.AbandonedMutexException">
+      <summary>スレッドが、別のスレッドが解放せずに終了することによって放棄した <see cref="T:System.Threading.Mutex" /> オブジェクトを取得したときにスローされる例外。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor">
+      <summary>
+        <see cref="T:System.Threading.AbandonedMutexException" /> クラスの新しいインスタンスを既定値で初期化します。</summary>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.Int32,System.Threading.WaitHandle)">
+      <summary>放棄されたミューテックスのインデックスを指定する場合はそのインデックスと、ミューテックスを表す <see cref="T:System.Threading.Mutex" /> オブジェクトを指定して、<see cref="T:System.Threading.AbandonedMutexException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="location">
+        <see cref="Overload:System.Threading.WaitHandle.WaitAny" /> メソッドで例外がスローされる場合は、待機ハンドルの配列内における放棄されたミューテックスのインデックス。<see cref="Overload:System.Threading.WaitHandle.WaitOne" /> メソッドまたは <see cref="Overload:System.Threading.WaitHandle.WaitAll" /> メソッドで例外がスローされる場合は -1。</param>
+      <param name="handle">放棄されたミューテックスを表す <see cref="T:System.Threading.Mutex" /> オブジェクト。</param>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.String)">
+      <summary>指定したエラー メッセージを使用して、<see cref="T:System.Threading.AbandonedMutexException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">例外の原因を説明するエラー メッセージ。</param>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.String,System.Exception)">
+      <summary>
+        <see cref="T:System.Threading.AbandonedMutexException" /> クラスの新しいインスタンスを、指定したエラー メッセージと内部例外を使用して初期化します。</summary>
+      <param name="message">例外の原因を説明するエラー メッセージ。</param>
+      <param name="inner">現在の例外の原因である例外。<paramref name="inner" /> パラメーターが null ではない場合、現在の例外は内部例外を処理する catch ブロックで発生します。</param>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.String,System.Exception,System.Int32,System.Threading.WaitHandle)">
+      <summary>エラー メッセージ、内部例外、放棄されたミューテックスのインデックスを指定する場合はそのインデックス、およびミューテックスを表す <see cref="T:System.Threading.Mutex" /> オブジェクトを指定して、<see cref="T:System.Threading.AbandonedMutexException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">例外の原因を説明するエラー メッセージ。</param>
+      <param name="inner">現在の例外の原因である例外。<paramref name="inner" /> パラメーターが null ではない場合、現在の例外は内部例外を処理する catch ブロックで発生します。</param>
+      <param name="location">
+        <see cref="Overload:System.Threading.WaitHandle.WaitAny" /> メソッドで例外がスローされる場合は、待機ハンドルの配列における放棄されたミューテックスのインデックス。<see cref="Overload:System.Threading.WaitHandle.WaitOne" /> メソッドまたは <see cref="Overload:System.Threading.WaitHandle.WaitAll" /> メソッドで例外がスローされる場合は -1。</param>
+      <param name="handle">放棄されたミューテックスを表す <see cref="T:System.Threading.Mutex" /> オブジェクト。</param>
+    </member>
+    <member name="M:System.Threading.AbandonedMutexException.#ctor(System.String,System.Int32,System.Threading.WaitHandle)">
+      <summary>エラー メッセージ、放棄されたミューテックスのインデックスを指定する場合はそのインデックス、および放棄されたミューテックスを指定して、<see cref="T:System.Threading.AbandonedMutexException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">例外の原因を説明するエラー メッセージ。</param>
+      <param name="location">
+        <see cref="Overload:System.Threading.WaitHandle.WaitAny" /> メソッドで例外がスローされる場合は、待機ハンドルの配列における放棄されたミューテックスのインデックス。<see cref="Overload:System.Threading.WaitHandle.WaitOne" /> メソッドまたは <see cref="Overload:System.Threading.WaitHandle.WaitAll" /> メソッドで例外がスローされる場合は -1。</param>
+      <param name="handle">放棄されたミューテックスを表す <see cref="T:System.Threading.Mutex" /> オブジェクト。</param>
+    </member>
+    <member name="P:System.Threading.AbandonedMutexException.Mutex">
+      <summary>例外の原因となった、放棄されたミューテックスがわかっている場合は、そのミューテックスを取得します。</summary>
+      <returns>放棄されたミューテックスを表す <see cref="T:System.Threading.Mutex" /> オブジェクト。放棄されたミューテックスを識別できなかった場合は null。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Threading.AbandonedMutexException.MutexIndex">
+      <summary>例外の原因となった、放棄されたミューテックスがわかっている場合は、そのミューテックスのインデックスを取得します。</summary>
+      <returns>放棄されたミューテックスを表す <see cref="T:System.Threading.Mutex" /> オブジェクトの、<see cref="Overload:System.Threading.WaitHandle.WaitAny" /> メソッドに渡された待機ハンドルの配列内でのインデックス。放棄されたミューテックスのインデックスが識別できなかった場合は –1。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.AsyncLocal`1">
+      <summary>非同期メソッドなど、特定の非同期制御フローに対してローカルなアンビエント データを表します。</summary>
+      <typeparam name="T">アンビエント データの型。</typeparam>
+    </member>
+    <member name="M:System.Threading.AsyncLocal`1.#ctor">
+      <summary>変更通知を受信しない <see cref="T:System.Threading.AsyncLocal`1" /> インスタンスをインスタンス生成します。</summary>
+    </member>
+    <member name="M:System.Threading.AsyncLocal`1.#ctor(System.Action{System.Threading.AsyncLocalValueChangedArgs{`0}})">
+      <summary>変更通知を受信する <see cref="T:System.Threading.AsyncLocal`1" /> ローカル インスタンスをインスタンス生成します。</summary>
+      <param name="valueChangedHandler">どのスレッド上であっても現在の値が変更されたなら必ず呼び出されるデリゲート。</param>
+    </member>
+    <member name="P:System.Threading.AsyncLocal`1.Value">
+      <summary>アンビエント データの値を取得または設定します。</summary>
+      <returns>アンビエント データの値。</returns>
+    </member>
+    <member name="T:System.Threading.AsyncLocalValueChangedArgs`1">
+      <summary>変更通知のために登録する <see cref="T:System.Threading.AsyncLocal`1" /> インスタンスに対するデータ変更情報を提供するクラス。</summary>
+      <typeparam name="T">データの型。</typeparam>
+    </member>
+    <member name="P:System.Threading.AsyncLocalValueChangedArgs`1.CurrentValue">
+      <summary>データの現在の値を取得します。</summary>
+      <returns>データの現在の値。</returns>
+    </member>
+    <member name="P:System.Threading.AsyncLocalValueChangedArgs`1.PreviousValue">
+      <summary>データの前の値を取得します。</summary>
+      <returns>データの前の値。</returns>
+    </member>
+    <member name="P:System.Threading.AsyncLocalValueChangedArgs`1.ThreadContextChanged">
+      <summary>実行コンテキストの変更が原因で値が変更されたかどうかを示す値を返します。</summary>
+      <returns>実行コンテキストの変更が原因で値が変更された場合は true、それ以外の場合は false。</returns>
+    </member>
+    <member name="T:System.Threading.AutoResetEvent">
+      <summary>イベントが発生したことを待機中のスレッドに通知します。このクラスは継承できません。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.AutoResetEvent.#ctor(System.Boolean)">
+      <summary>初期状態をシグナル状態に設定するかどうかを示すブール値を使用して、<see cref="T:System.Threading.AutoResetEvent" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="initialState">
+初期状態をシグナル状態に設定する場合は true。初期状態を非シグナル状態に設定する場合は false。</param>
+    </member>
+    <member name="T:System.Threading.Barrier">
+      <summary>複数のタスクが、複数のフェーズを通じて 1 つのアルゴリズムで並行して協調的に動作できるようにします。</summary>
+    </member>
+    <member name="M:System.Threading.Barrier.#ctor(System.Int32)">
+      <summary>
+        <see cref="T:System.Threading.Barrier" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="participantCount">参加しているスレッドの数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="participantCount" /> が 0 より小さいか、または 32,767 を超えています。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.#ctor(System.Int32,System.Action{System.Threading.Barrier})">
+      <summary>
+        <see cref="T:System.Threading.Barrier" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="participantCount">参加しているスレッドの数。</param>
+      <param name="postPhaseAction">各フェーズ後に実行する <see cref="T:System.Action`1" />。null (Visual Basic の場合は Nothing) は操作が行われないことを示すために渡されることがあります。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="participantCount" /> が 0 より小さいか、または 32,767 を超えています。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.AddParticipant">
+      <summary>参加要素が 1 つ追加されることを <see cref="T:System.Threading.Barrier" /> に通知します。</summary>
+      <returns>新しい参加要素が最初に参加するバリアのフェーズ番号。</returns>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">参加要素を追加すると、バリアの参加要素数が 32,767 を超えます。またはメソッドは、フェーズ後アクション内から呼び出されました。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.AddParticipants(System.Int32)">
+      <summary>複数の参加要素が追加されることを <see cref="T:System.Threading.Barrier" /> に通知します。</summary>
+      <returns>新しい参加要素が最初に参加するバリアのフェーズ番号。</returns>
+      <param name="participantCount">バリアに追加する追加の参加要素の数。</param>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="participantCount" /> が 0 未満です。または<paramref name="participantCount" /> 参加要素を追加すると、バリアの参加要素数が 32,767 を超えます。</exception>
+      <exception cref="T:System.InvalidOperationException">メソッドは、フェーズ後アクション内から呼び出されました。</exception>
+    </member>
+    <member name="P:System.Threading.Barrier.CurrentPhaseNumber">
+      <summary>バリアの現在のフェーズの番号を取得します。</summary>
+      <returns>バリアの現在のフェーズの番号を返します。</returns>
+    </member>
+    <member name="M:System.Threading.Barrier.Dispose">
+      <summary>
+        <see cref="T:System.Threading.Barrier" /> クラスの現在のインスタンスによって使用されているすべてのリソースを解放します。</summary>
+      <exception cref="T:System.InvalidOperationException">メソッドは、フェーズ後アクション内から呼び出されました。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.Dispose(System.Boolean)">
+      <summary>
+        <see cref="T:System.Threading.Barrier" /> によって使用されているアンマネージ リソースを解放し、オプションでマネージ リソースも解放します。</summary>
+      <param name="disposing">マネージ リソースとアンマネージ リソースの両方を解放する場合は true。アンマネージ リソースだけを解放する場合は false。</param>
+    </member>
+    <member name="P:System.Threading.Barrier.ParticipantCount">
+      <summary>バリア内の参加要素の合計数を取得します。</summary>
+      <returns>バリア内の参加要素の合計数を返します。</returns>
+    </member>
+    <member name="P:System.Threading.Barrier.ParticipantsRemaining">
+      <summary>現在のフェーズでまだ通知していないバリア内の参加要素の数を取得します。</summary>
+      <returns>現在のフェーズでまだ通知していないバリア内の参加要素の数を返します。</returns>
+    </member>
+    <member name="M:System.Threading.Barrier.RemoveParticipant">
+      <summary>参加要素が 1 つ削除されることを <see cref="T:System.Threading.Barrier" /> に通知します。</summary>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">バリアでは、既に 0 個の参加要素があります。またはメソッドは、フェーズ後アクション内から呼び出されました。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.RemoveParticipants(System.Int32)">
+      <summary>複数の参加要素が削除されることを <see cref="T:System.Threading.Barrier" /> に通知します。</summary>
+      <param name="participantCount">バリアから削除する追加の参加要素の数。</param>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="participantCount" /> が 0 未満です。</exception>
+      <exception cref="T:System.InvalidOperationException">バリアでは、既に 0 個の参加要素があります。またはメソッドは、フェーズ後アクション内から呼び出されました。 または現在の参加要素数が、指定された participantCount より小さい値です</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">参加要素の総数が、指定した <paramref name=" participantCount" /> より小さくなっています。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait">
+      <summary>参加要素がバリアに到達し、他のすべての参加要素もバリアに到達するまで待機することを通知します。</summary>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">メソッドがフェーズ後アクション内から呼び出されたか、バリア内に参加要素が含まれていないか、または参加要素として登録されているよりも多くのスレッドによってバリアがシグナル状態です。</exception>
+      <exception cref="T:System.Threading.BarrierPostPhaseException">すべての参加しているスレッドが SignalAndWait を呼び出した後に、バリアのフェーズ後のアクションから例外がスローされた場合、その例外は BarrierPostPhaseException にラップされ、参加しているすべてのスレッドでスローされます。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.Int32)">
+      <summary>32 ビット符号付き整数を使用してタイムアウトを計測し、参加要素がバリアに到達し、他のすべての参加要素もバリアに到達するまで待機することを通知します。</summary>
+      <returns>指定した時間内にすべての参加要素がバリアに到達した場合は true。それ以外の場合は false。</returns>
+      <param name="millisecondsTimeout">待機するミリ秒数。無制限に待機する場合は <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> が -1 以外の負数です。-1 は無制限のタイムアウトを表します。</exception>
+      <exception cref="T:System.InvalidOperationException">メソッドがフェーズ後アクション内から呼び出されたか、バリア内に参加要素が含まれていないか、または参加要素として登録されているよりも多くのスレッドによってバリアがシグナル状態です。</exception>
+      <exception cref="T:System.Threading.BarrierPostPhaseException">すべての参加しているスレッドが SignalAndWait を呼び出した後に、バリアのフェーズ後のアクションから例外がスローされた場合、その例外は BarrierPostPhaseException にラップされ、参加しているすべてのスレッドでスローされます。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.Int32,System.Threading.CancellationToken)">
+      <summary>取り消しトークンを観察すると同時に、32 ビット符号付き整数を使用してタイムアウトを計測し、参加要素がバリアに到達し、他のすべての参加要素もバリアに到達するまで待機することを通知します。</summary>
+      <returns>指定した時間内にすべての参加要素がバリアに到達した場合は true。それ以外の場合は false。</returns>
+      <param name="millisecondsTimeout">待機するミリ秒数。無制限に待機する場合は <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <param name="cancellationToken">観察する <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> が取り消されました。</exception>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> が -1 以外の負数です。-1 は無制限のタイムアウトを表します。</exception>
+      <exception cref="T:System.InvalidOperationException">メソッドがフェーズ後アクション内から呼び出されたか、バリア内に参加要素が含まれていないか、または参加要素として登録されているよりも多くのスレッドによってバリアがシグナル状態です。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.Threading.CancellationToken)">
+      <summary>取り消しトークンを観察すると同時に、参加要素がバリアに到達し、他のすべての参加要素がバリアに到達するまで待機することを通知します。</summary>
+      <param name="cancellationToken">観察する <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> が取り消されました。</exception>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">メソッドがフェーズ後アクション内から呼び出されたか、バリア内に参加要素が含まれていないか、または参加要素として登録されているよりも多くのスレッドによってバリアがシグナル状態です。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.TimeSpan)">
+      <summary>
+        <see cref="T:System.TimeSpan" /> オブジェクトを使用して時間間隔を計測し、参加要素がバリアに到達し、他のすべての参加要素もバリアに到達するまで待機することを通知します。</summary>
+      <returns>他のすべての参加要素がバリアに到達した場合は true。それ以外の場合は false。</returns>
+      <param name="timeout">待機するミリ秒数を表す <see cref="T:System.TimeSpan" />。無制限に待機する場合は、-1 ミリ秒を表す <see cref="T:System.TimeSpan" />。</param>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> が -1 ミリ秒以外の負数です。-1 は無制限のタイムアウトを表します。または、タイムアウトが 32,767 を超えています。</exception>
+      <exception cref="T:System.InvalidOperationException">メソッドがフェーズ後アクション内から呼び出されたか、バリア内に参加要素が含まれていないか、または参加要素として登録されているよりも多くのスレッドによってバリアがシグナル状態です。</exception>
+    </member>
+    <member name="M:System.Threading.Barrier.SignalAndWait(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>取り消しトークンを観察すると同時に、<see cref="T:System.TimeSpan" /> オブジェクトを使用して時間間隔を計測し、参加要素がバリアに到達し、他のすべての参加要素もバリアに到達するまで待機することを通知します。</summary>
+      <returns>他のすべての参加要素がバリアに到達した場合は true。それ以外の場合は false。</returns>
+      <param name="timeout">待機するミリ秒数を表す <see cref="T:System.TimeSpan" />。無制限に待機する場合は、-1 ミリ秒を表す <see cref="T:System.TimeSpan" />。</param>
+      <param name="cancellationToken">観察する <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> が取り消されました。</exception>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> が -1 ミリ秒以外の負数です。-1 は無制限のタイムアウトを表します。</exception>
+      <exception cref="T:System.InvalidOperationException">メソッドがフェーズ後アクション内から呼び出されたか、バリア内に参加要素が含まれていないか、または参加要素として登録されているよりも多くのスレッドによってバリアがシグナル状態です。</exception>
+    </member>
+    <member name="T:System.Threading.BarrierPostPhaseException">
+      <summary>
+        <see cref="T:System.Threading.Barrier" /> のフェーズ後アクションに失敗したときにスローされる例外。</summary>
+    </member>
+    <member name="M:System.Threading.BarrierPostPhaseException.#ctor">
+      <summary>エラーを説明するシステム提供のメッセージを使用して、<see cref="T:System.Threading.BarrierPostPhaseException" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Threading.BarrierPostPhaseException.#ctor(System.Exception)">
+      <summary>指定した内部例外を使用して、<see cref="T:System.Threading.BarrierPostPhaseException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="innerException">現在の例外の原因である例外。</param>
+    </member>
+    <member name="M:System.Threading.BarrierPostPhaseException.#ctor(System.String)">
+      <summary>エラーを説明する指定したメッセージを使用して、<see cref="T:System.Threading.BarrierPostPhaseException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">例外を説明するメッセージ。このコンストラクターの呼び出し元では、この文字列が現在のシステムのカルチャに合わせてローカライズ済みであることを確認しておく必要があります。</param>
+    </member>
+    <member name="M:System.Threading.BarrierPostPhaseException.#ctor(System.String,System.Exception)">
+      <summary>指定したエラー メッセージと、この例外の原因である内部例外への参照を使用して、<see cref="T:System.Threading.BarrierPostPhaseException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">例外を説明するメッセージ。このコンストラクターの呼び出し元では、この文字列が現在のシステムのカルチャに合わせてローカライズ済みであることを確認しておく必要があります。</param>
+      <param name="innerException">現在の例外の原因である例外。<paramref name="innerException" /> パラメーターが null でない場合は、内部例外を処理する catch ブロックで現在の例外が発生します。</param>
+    </member>
+    <member name="T:System.Threading.ContextCallback">
+      <summary>新しいコンテキスト内で呼び出すメソッドを表します。</summary>
+      <param name="state">コールバック メソッドが実行されるたびに使用する情報を格納したオブジェクト。</param>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.CountdownEvent">
+      <summary>カウントが 0 になったときに通知される同期プリミティブを表します。</summary>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.#ctor(System.Int32)">
+      <summary>指定されたカウントを使用して <see cref="T:System.Threading.CountdownEvent" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="initialCount">
+        <see cref="T:System.Threading.CountdownEvent" /> の設定に最初に必要な通知の数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="initialCount" /> が 0 未満です。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.AddCount">
+      <summary>
+        <see cref="T:System.Threading.CountdownEvent" /> の現在のカウントを 1 つインクリメントします。</summary>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">現在のインスタンスは既に設定されています。または<see cref="P:System.Threading.CountdownEvent.CurrentCount" /> が <see cref="F:System.Int32.MaxValue" /> 以上です。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.AddCount(System.Int32)">
+      <summary>
+        <see cref="T:System.Threading.CountdownEvent" /> の現在のカウントを指定された値だけインクリメントします。</summary>
+      <param name="signalCount">
+        <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> を増やす値。</param>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="signalCount" /> が 0 以下です。</exception>
+      <exception cref="T:System.InvalidOperationException">現在のインスタンスは既に設定されています。またはカウントが <paramref name="signalCount." /> ずつインクリメントされた後、<see cref="P:System.Threading.CountdownEvent.CurrentCount" /> が <see cref="F:System.Int32.MaxValue" /> 以上です</exception>
+    </member>
+    <member name="P:System.Threading.CountdownEvent.CurrentCount">
+      <summary>イベントの設定に必要な残りの通知の数を取得します。</summary>
+      <returns> イベントの設定に必要な残りの通知の数。</returns>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Dispose">
+      <summary>
+        <see cref="T:System.Threading.CountdownEvent" /> クラスの現在のインスタンスによって使用されているすべてのリソースを解放します。</summary>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Dispose(System.Boolean)">
+      <summary>
+        <see cref="T:System.Threading.CountdownEvent" /> によって使用されているアンマネージ リソースを解放し、オプションでマネージ リソースも解放します。</summary>
+      <param name="disposing">マネージ リソースとアンマネージ リソースの両方を解放する場合は true。アンマネージ リソースだけを解放する場合は false。</param>
+    </member>
+    <member name="P:System.Threading.CountdownEvent.InitialCount">
+      <summary>イベントの設定に最初に必要な通知の数を取得します。</summary>
+      <returns> イベントの設定に最初に必要な通知の数。</returns>
+    </member>
+    <member name="P:System.Threading.CountdownEvent.IsSet">
+      <summary>イベントが設定されているかどうかを判断します。</summary>
+      <returns>イベントが設定されている場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Reset">
+      <summary>
+        <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> を <see cref="P:System.Threading.CountdownEvent.InitialCount" /> の値にリセットします。</summary>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Reset(System.Int32)">
+      <summary>
+        <see cref="P:System.Threading.CountdownEvent.InitialCount" /> プロパティを指定した値にリセットします。</summary>
+      <param name="count">
+        <see cref="T:System.Threading.CountdownEvent" /> の設定に必要な通知の数。</param>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="count" /> が 0 未満です。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Signal">
+      <summary>通知を <see cref="T:System.Threading.CountdownEvent" /> に登録して、<see cref="P:System.Threading.CountdownEvent.CurrentCount" /> の値をデクリメントします。</summary>
+      <returns>通知によってカウントが 0 になり、イベントが設定された場合は true。それ以外の場合は false。</returns>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">現在のインスタンスは既に設定されています。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Signal(System.Int32)">
+      <summary>複数の通知を <see cref="T:System.Threading.CountdownEvent" /> に登録して、<see cref="P:System.Threading.CountdownEvent.CurrentCount" /> の値を指定された量だけデクリメントします。</summary>
+      <returns>通知によってカウントが 0 になり、イベントが設定された場合は true。それ以外の場合は false。</returns>
+      <param name="signalCount">登録する通知の数。</param>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="signalCount" /> が 1 未満です。</exception>
+      <exception cref="T:System.InvalidOperationException">現在のインスタンスは既に設定されています。-または- または、<paramref name="signalCount" /> が <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> より大きいです。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.TryAddCount">
+      <summary>
+        <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> を 1 つインクリメントすることを試みます。</summary>
+      <returns>インクリメントが正常に行われた場合は true。それ以外の場合は false。<see cref="P:System.Threading.CountdownEvent.CurrentCount" /> が既に 0 の場合、このメソッドは false を返します。</returns>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> と <see cref="F:System.Int32.MaxValue" /> が等価です。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.TryAddCount(System.Int32)">
+      <summary>
+        <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> を指定した値だけインクリメントすることを試みます。</summary>
+      <returns>インクリメントが正常に行われた場合は true。それ以外の場合は false。<see cref="P:System.Threading.CountdownEvent.CurrentCount" /> が既に 0 の場合、これは false を返します。</returns>
+      <param name="signalCount">
+        <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> を増やす値。</param>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="signalCount" /> が 0 以下です。</exception>
+      <exception cref="T:System.InvalidOperationException">現在のインスタンスは既に設定されています。または<see cref="P:System.Threading.CountdownEvent.CurrentCount" /> + <paramref name="signalCount" /> は、<see cref="F:System.Int32.MaxValue" /> 以上です。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait">
+      <summary>
+        <see cref="T:System.Threading.CountdownEvent" /> が設定されるまで、現在のスレッドをブロックします。</summary>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.Int32)">
+      <summary>32 ビット符号付き整数を使用してタイムアウトを計測し、<see cref="T:System.Threading.CountdownEvent" /> が設定されるまで、現在のスレッドをブロックします。</summary>
+      <returns>
+        <see cref="T:System.Threading.CountdownEvent" /> が設定された場合は true。それ以外の場合は false。</returns>
+      <param name="millisecondsTimeout">待機するミリ秒数。無制限に待機する場合は <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> が -1 以外の負数です。-1 は無制限のタイムアウトを表します。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.Int32,System.Threading.CancellationToken)">
+      <summary>
+        <see cref="T:System.Threading.CancellationToken" /> を観察すると同時に、32 ビット符号付き整数を使用してタイムアウトを計測し、現在の <see cref="T:System.Threading.CountdownEvent" /> が設定されるまで、現在のスレッドをブロックします。</summary>
+      <returns>
+        <see cref="T:System.Threading.CountdownEvent" /> が設定された場合は true。それ以外の場合は false。</returns>
+      <param name="millisecondsTimeout">待機するミリ秒数。無制限に待機する場合は <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <param name="cancellationToken">観察する <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> が取り消されました。</exception>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。または、<paramref name="cancellationToken" /> を作成した <see cref="T:System.Threading.CancellationTokenSource" /> が破棄されています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> が -1 以外の負数です。-1 は無制限のタイムアウトを表します。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.Threading.CancellationToken)">
+      <summary>
+        <see cref="T:System.Threading.CancellationToken" /> を観察すると同時に、<see cref="T:System.Threading.CountdownEvent" /> が設定されるまで、現在のスレッドをブロックします。</summary>
+      <param name="cancellationToken">観察する <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> が取り消されました。</exception>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。または、<paramref name="cancellationToken" /> を作成した <see cref="T:System.Threading.CancellationTokenSource" /> が破棄されています。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.TimeSpan)">
+      <summary>
+        <see cref="T:System.TimeSpan" /> を使用してタイムアウトを計測し、<see cref="T:System.Threading.CountdownEvent" /> が設定されるまで、現在のスレッドをブロックします。</summary>
+      <returns>
+        <see cref="T:System.Threading.CountdownEvent" /> が設定された場合は true。それ以外の場合は false。</returns>
+      <param name="timeout">待機するミリ秒数を表す <see cref="T:System.TimeSpan" />。無制限に待機する場合は、-1 ミリ秒を表す <see cref="T:System.TimeSpan" />。</param>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> が -1 ミリ秒以外の負数です。-1 は無制限のタイムアウトを表します。または、タイムアウトが <see cref="F:System.Int32.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="M:System.Threading.CountdownEvent.Wait(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>
+        <see cref="T:System.Threading.CancellationToken" /> を観察すると同時に、<see cref="T:System.TimeSpan" /> を使用してタイムアウトを計測し、<see cref="T:System.Threading.CountdownEvent" /> が設定されるまで、現在のスレッドをブロックします。</summary>
+      <returns>
+        <see cref="T:System.Threading.CountdownEvent" /> が設定された場合は true。それ以外の場合は false。</returns>
+      <param name="timeout">待機するミリ秒数を表す <see cref="T:System.TimeSpan" />。無制限に待機する場合は、-1 ミリ秒を表す <see cref="T:System.TimeSpan" />。</param>
+      <param name="cancellationToken">観察する <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> が取り消されました。</exception>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。または、<paramref name="cancellationToken" /> を作成した <see cref="T:System.Threading.CancellationTokenSource" /> が破棄されています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> が -1 ミリ秒以外の負数です。-1 は無制限のタイムアウトを表します。または、タイムアウトが <see cref="F:System.Int32.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="P:System.Threading.CountdownEvent.WaitHandle">
+      <summary>イベントの設定を待機するために使用する <see cref="T:System.Threading.WaitHandle" /> を取得します。</summary>
+      <returns>イベントの設定を待機するために使用する <see cref="T:System.Threading.WaitHandle" />。</returns>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+    </member>
+    <member name="T:System.Threading.EventResetMode">
+      <summary>シグナルを受信した後で <see cref="T:System.Threading.EventWaitHandle" /> が自動的にリセットされるか、または手動でリセットされるかを示します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Threading.EventResetMode.AutoReset">
+      <summary>シグナルを受信すると、<see cref="T:System.Threading.EventWaitHandle" /> は 1 つのスレッドを解放した後で自動的にリセットされます。待機しているスレッドがない場合、<see cref="T:System.Threading.EventWaitHandle" /> はスレッドがブロックされるまでシグナル状態のままとなり、そのスレッドを解放した後でリセットされます。</summary>
+    </member>
+    <member name="F:System.Threading.EventResetMode.ManualReset">
+      <summary>シグナルを受信すると、<see cref="T:System.Threading.EventWaitHandle" /> は待機しているスレッドをすべて解放し、手動でリセットされるまでシグナル状態のままとなります。</summary>
+    </member>
+    <member name="T:System.Threading.EventWaitHandle">
+      <summary>スレッドの同期イベントを表します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.#ctor(System.Boolean,System.Threading.EventResetMode)">
+      <summary>待機ハンドルの初期状態をシグナル状態に設定するかどうか、および、待機ハンドルが自動的にリセットされるかまたは手動でリセットされるかを指定して、<see cref="T:System.Threading.EventWaitHandle" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="initialState">初期状態をシグナル状態に設定する場合は true。非シグナル状態に設定する場合は false。</param>
+      <param name="mode">イベントが自動的にリセットされるかまたは手動でリセットされるかを指定する <see cref="T:System.Threading.EventResetMode" /> 値の 1 つ。</param>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.#ctor(System.Boolean,System.Threading.EventResetMode,System.String)">
+      <summary>この呼び出しの結果として待機ハンドルが作成された場合に待機ハンドルの初期状態をシグナル状態に設定するかどうか、待機ハンドルが自動的にリセットされるかまたは手動でリセットされるか、およびシステムの同期イベントの名前を指定して、<see cref="T:System.Threading.EventWaitHandle" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="initialState">この呼び出しの結果として名前付きイベントが作成された場合に初期状態をシグナル状態に設定する場合は true。非シグナル状態に設定する場合は false。</param>
+      <param name="mode">イベントが自動的にリセットされるかまたは手動でリセットされるかを指定する <see cref="T:System.Threading.EventResetMode" /> 値の 1 つ。</param>
+      <param name="name">システム全体で有効な同期イベントの名前。</param>
+      <exception cref="T:System.IO.IOException">Win32 エラーが発生しました。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">アクセス制御セキュリティを使用した名前付きイベントが存在しますが、ユーザーに <see cref="F:System.Security.AccessControl.EventWaitHandleRights.FullControl" /> がありません。</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">名前付きイベントを作成できません。別の型の待機ハンドルに同じ名前が付けられていることが原因として考えられます。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> が 260 文字を超えています。</exception>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.#ctor(System.Boolean,System.Threading.EventResetMode,System.String,System.Boolean@)">
+      <summary>この呼び出しの結果として待機ハンドルが作成された場合に待機ハンドルの初期状態をシグナル状態に設定するかどうか、待機ハンドルが自動的にリセットされるかまたは手動でリセットされるか、システム同期イベントの名前、および、呼び出し後の値によって名前付きイベントが作成されたかどうかを示すブール変数を指定して、<see cref="T:System.Threading.EventWaitHandle" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="initialState">この呼び出しの結果として名前付きイベントが作成された場合に初期状態をシグナル状態に設定する場合は true。非シグナル状態に設定する場合は false。</param>
+      <param name="mode">イベントが自動的にリセットされるかまたは手動でリセットされるかを指定する <see cref="T:System.Threading.EventResetMode" /> 値の 1 つ。</param>
+      <param name="name">システム全体で有効な同期イベントの名前。</param>
+      <param name="createdNew">このメソッドから制御が戻るときに、ローカル イベントが作成された場合 (<paramref name="name" /> が null または空の文字列の場合)、または指定した名前付きシステム イベントが作成された場合は true が格納されます。指定した名前付きシステム イベントが既に存在する場合は false が格納されます。このパラメーターは初期化せずに渡されます。</param>
+      <exception cref="T:System.IO.IOException">Win32 エラーが発生しました。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">アクセス制御セキュリティを使用した名前付きイベントが存在しますが、ユーザーに <see cref="F:System.Security.AccessControl.EventWaitHandleRights.FullControl" /> がありません。</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">名前付きイベントを作成できません。別の型の待機ハンドルに同じ名前が付けられていることが原因として考えられます。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> が 260 文字を超えています。</exception>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.OpenExisting(System.String)">
+      <summary>既に存在する場合は、指定した名前付き同期イベントを開きます。</summary>
+      <returns>名前付きシステム イベントを表すオブジェクト。</returns>
+      <param name="name">開くシステム同期イベントの名前。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> が空の文字列です。または<paramref name="name" /> が 260 文字を超えています。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> は null なので、</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">名前付きシステム イベントが存在しません。</exception>
+      <exception cref="T:System.IO.IOException">Win32 エラーが発生しました。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">名前付きイベントは存在しますが、それを使用するために必要なセキュリティ アクセスがユーザーにありません。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.Reset">
+      <summary>イベントの状態を非シグナル状態に設定し、スレッドをブロックします。</summary>
+      <returns>正常に操作できた場合は true。それ以外の場合は false。</returns>
+      <exception cref="T:System.ObjectDisposedException">この <see cref="T:System.Threading.EventWaitHandle" /> で <see cref="M:System.Threading.EventWaitHandle.Close" /> メソッドが既に呼び出されています。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.Set">
+      <summary>イベントの状態をシグナル状態に設定し、待機している 1 つ以上のスレッドが進行できるようにします。</summary>
+      <returns>正常に操作できた場合は true。それ以外の場合は false。</returns>
+      <exception cref="T:System.ObjectDisposedException">この <see cref="T:System.Threading.EventWaitHandle" /> で <see cref="M:System.Threading.EventWaitHandle.Close" /> メソッドが既に呼び出されています。</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.EventWaitHandle.TryOpenExisting(System.String,System.Threading.EventWaitHandle@)">
+      <summary>既に存在する場合は、指定した名前付き同期イベントを開き操作が成功したかどうかを示す値を返します。</summary>
+      <returns>名前付きの同期イベントが正常に開かれた場合は true。それ以外の場合は false。</returns>
+      <param name="name">開くシステム同期イベントの名前。</param>
+      <param name="result">このメソッドから制御が戻るときに、呼び出しに成功した場合は名前付き同期イベントを表す <see cref="T:System.Threading.EventWaitHandle" /> オブジェクトが格納されます。呼び出しに失敗した場合は null が格納されます。このパラメーターは初期化前として処理されます。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> が空の文字列です。または<paramref name="name" /> が 260 文字を超えています。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> は null なので、</exception>
+      <exception cref="T:System.IO.IOException">Win32 エラーが発生しました。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">名前付きイベントは存在しますが、必要なセキュリティ アクセスがユーザーにありません。</exception>
+    </member>
+    <member name="T:System.Threading.ExecutionContext">
+      <summary>現在のスレッドの実行コンテキストを管理します。このクラスは継承できません。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.ExecutionContext.Capture">
+      <summary>現在のスレッドから実行コンテキストをキャプチャします。</summary>
+      <returns>現在のスレッドの実行コンテキストを表す <see cref="T:System.Threading.ExecutionContext" /> オブジェクト。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.ExecutionContext.Run(System.Threading.ExecutionContext,System.Threading.ContextCallback,System.Object)">
+      <summary>現在のスレッドで指定した実行コンテキストを使用してメソッドを実行します。</summary>
+      <param name="executionContext">設定する <see cref="T:System.Threading.ExecutionContext" />。</param>
+      <param name="callback">指定した実行コンテキストで実行するメソッドを表す <see cref="T:System.Threading.ContextCallback" /> デリゲート。</param>
+      <param name="state">コールバック メソッドに渡すオブジェクト。</param>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="executionContext" /> は null なので、またはキャプチャ操作で <paramref name="executionContext" /> が取得されませんでした。または<paramref name="executionContext" /> は、<see cref="M:System.Threading.ExecutionContext.Run(System.Threading.ExecutionContext,System.Threading.ContextCallback,System.Object)" /> 呼び出しの引数として既に使用されています。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="Infrastructure" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Threading.Interlocked">
+      <summary>複数のスレッドで共有される変数に分割不可能な操作を提供します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Add(System.Int32@,System.Int32)">
+      <summary>分割不可能な操作として、2 つの 32 ビット整数を加算し、最初の整数を合計で置き換えます。</summary>
+      <returns>
+        <paramref name="location1" /> に格納された新しい値。</returns>
+      <param name="location1">加算する最初の値を含む変数。2 つの値の合計は、<paramref name="location1" /> に格納されます。</param>
+      <param name="value">
+        <paramref name="location1" /> にある整数に加算する値。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Add(System.Int64@,System.Int64)">
+      <summary>分割不可能な操作として、2 つの 64 ビット整数を加算し、最初の整数を合計で置き換えます。</summary>
+      <returns>
+        <paramref name="location1" /> に格納された新しい値。</returns>
+      <param name="location1">加算する最初の値を含む変数。2 つの値の合計は、<paramref name="location1" /> に格納されます。</param>
+      <param name="value">
+        <paramref name="location1" /> にある整数に加算する値。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Double@,System.Double,System.Double)">
+      <summary>2 つの倍精度浮動小数点数が等しいかどうかを比較します。等しい場合は、最初の値を置き換えます。</summary>
+      <returns>
+        <paramref name="location1" /> の元の値。</returns>
+      <param name="location1">値を <paramref name="comparand" /> と比較し、場合によっては置き換える比較先。</param>
+      <param name="value">比較した結果が等しい場合に比較先の値を置き換える値。</param>
+      <param name="comparand">
+        <paramref name="location1" /> にある値と比較する値。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Int32@,System.Int32,System.Int32)">
+      <summary>2 つの 32 ビット符号付き整数が等しいかどうかを比較します。等しい場合は、最初の値を置き換えます。</summary>
+      <returns>
+        <paramref name="location1" /> の元の値。</returns>
+      <param name="location1">値を <paramref name="comparand" /> と比較し、場合によっては置き換える比較先。</param>
+      <param name="value">比較した結果が等しい場合に比較先の値を置き換える値。</param>
+      <param name="comparand">
+        <paramref name="location1" /> にある値と比較する値。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Int64@,System.Int64,System.Int64)">
+      <summary>2 つの 64 ビット符号付き整数が等しいかどうかを比較します。等しい場合は、最初の値を置き換えます。</summary>
+      <returns>
+        <paramref name="location1" /> の元の値。</returns>
+      <param name="location1">値を <paramref name="comparand" /> と比較し、場合によっては置き換える比較先。</param>
+      <param name="value">比較した結果が等しい場合に比較先の値を置き換える値。</param>
+      <param name="comparand">
+        <paramref name="location1" /> にある値と比較する値。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.IntPtr@,System.IntPtr,System.IntPtr)">
+      <summary>2 つのプラットフォーム固有のハンドルまたはポインターが等しいかどうかを比較します。等しい場合は、最初の 1 つを置き換えます。</summary>
+      <returns>
+        <paramref name="location1" /> の元の値。</returns>
+      <param name="location1">値を <paramref name="comparand" /> の値と比較し、場合によっては <paramref name="value" /> によって置き換える、比較先の <see cref="T:System.IntPtr" />。</param>
+      <param name="value">比較した結果が等しい場合に比較先の値を置き換える <see cref="T:System.IntPtr" />。</param>
+      <param name="comparand">
+        <paramref name="location1" /> にある値と比較する <see cref="T:System.IntPtr" />。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Object@,System.Object,System.Object)">
+      <summary>2 つのオブジェクトの参照が等値であるかどうかを比較します。等しい場合は、最初のオブジェクトを置き換えます。</summary>
+      <returns>
+        <paramref name="location1" /> の元の値。</returns>
+      <param name="location1">
+        <paramref name="comparand" /> と比較し、場合によっては置き換える比較先のオブジェクト。</param>
+      <param name="value">比較した結果が等しい場合に比較先のオブジェクトを置き換えるオブジェクト。</param>
+      <param name="comparand">
+        <paramref name="location1" /> にあるオブジェクトと比較するオブジェクト。</param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange(System.Single@,System.Single,System.Single)">
+      <summary>2 つの単精度浮動小数点数が等しいかどうかを比較します。等しい場合は、最初の値を置き換えます。</summary>
+      <returns>
+        <paramref name="location1" /> の元の値。</returns>
+      <param name="location1">値を <paramref name="comparand" /> と比較し、場合によっては置き換える比較先。</param>
+      <param name="value">比較した結果が等しい場合に比較先の値を置き換える値。</param>
+      <param name="comparand">
+        <paramref name="location1" /> にある値と比較する値。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.CompareExchange``1(``0@,``0,``0)">
+      <summary>指定した参照型 <paramref name="T" /> の 2 つのインスタンスが等しいかどうかを比較します。等しい場合は、最初の 1 つを置き換えます。</summary>
+      <returns>
+        <paramref name="location1" /> の元の値。</returns>
+      <param name="location1">値を <paramref name="comparand" /> と比較し、場合によっては置き換える比較先。これは参照パラメーターです (C# では ref、Visual Basic では ByRef)。</param>
+      <param name="value">比較した結果が等しい場合に比較先の値を置き換える値。</param>
+      <param name="comparand">
+        <paramref name="location1" /> にある値と比較する値。</param>
+      <typeparam name="T">
+        <paramref name="location1" />、<paramref name="value" />、および <paramref name="comparand" /> に使用する型。この型は、参照型である必要があります。</typeparam>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+    </member>
+    <member name="M:System.Threading.Interlocked.Decrement(System.Int32@)">
+      <summary>分割不可能な操作として、指定した変数をデクリメントし、結果を格納します。</summary>
+      <returns>デクリメントされた値。</returns>
+      <param name="location">値がデクリメントされる変数。</param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Decrement(System.Int64@)">
+      <summary>分割不可能な操作として、指定した変数をデクリメントしてその結果を格納します。</summary>
+      <returns>デクリメントされた値。</returns>
+      <param name="location">値がデクリメントされる変数。</param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Double@,System.Double)">
+      <summary>分割不可能な操作として、指定した値を倍精度浮動小数点数として設定し、元の値を返します。</summary>
+      <returns>
+        <paramref name="location1" /> の元の値。</returns>
+      <param name="location1">指定した値に設定する変数。</param>
+      <param name="value">
+        <paramref name="location1" /> パラメーターに設定される値。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Int32@,System.Int32)">
+      <summary>分割不可能な操作として、指定した値を 32 ビット符号付き整数として設定し、元の値を返します。</summary>
+      <returns>
+        <paramref name="location1" /> の元の値。</returns>
+      <param name="location1">指定した値に設定する変数。</param>
+      <param name="value">
+        <paramref name="location1" /> パラメーターに設定される値。</param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Int64@,System.Int64)">
+      <summary>分割不可能な操作として、指定した値を 64 ビット符号付き整数として設定し、元の値を返します。</summary>
+      <returns>
+        <paramref name="location1" /> の元の値。</returns>
+      <param name="location1">指定した値に設定する変数。</param>
+      <param name="value">
+        <paramref name="location1" /> パラメーターに設定される値。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.IntPtr@,System.IntPtr)">
+      <summary>分割不可能な操作として、プラットフォーム固有のハンドルまたはポインターに指定した値を設定し、元の値を返します。</summary>
+      <returns>
+        <paramref name="location1" /> の元の値。</returns>
+      <param name="location1">指定した値に設定する変数。</param>
+      <param name="value">
+        <paramref name="location1" /> パラメーターに設定される値。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Object@,System.Object)">
+      <summary>分割不可能な操作として、指定した値をオブジェクトとして設定し、元のオブジェクトへの参照を返します。</summary>
+      <returns>
+        <paramref name="location1" /> の元の値。</returns>
+      <param name="location1">指定した値に設定する変数。</param>
+      <param name="value">
+        <paramref name="location1" /> パラメーターに設定される値。</param>
+      <exception cref="T:System.ArgumentNullException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange(System.Single@,System.Single)">
+      <summary>分割不可能な操作として、指定した値を単精度浮動小数点数として設定し、元の値を返します。</summary>
+      <returns>
+        <paramref name="location1" /> の元の値。</returns>
+      <param name="location1">指定した値に設定する変数。</param>
+      <param name="value">
+        <paramref name="location1" /> パラメーターに設定される値。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Exchange``1(``0@,``0)">
+      <summary>分割不可能な操作として、指定した型 <paramref name="T" /> の変数に指定した値を設定し、元の値を返します。</summary>
+      <returns>
+        <paramref name="location1" /> の元の値。</returns>
+      <param name="location1">指定した値に設定する変数。これは参照パラメーターです (C# では ref、Visual Basic では ByRef)。</param>
+      <param name="value">
+        <paramref name="location1" /> パラメーターに設定される値。</param>
+      <typeparam name="T">
+        <paramref name="location1" />、および <paramref name="value" /> に使用する型。この型は、参照型である必要があります。</typeparam>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location1" /> is a null pointer. </exception>
+    </member>
+    <member name="M:System.Threading.Interlocked.Increment(System.Int32@)">
+      <summary>分割不可能な操作として、指定した変数をインクリメントし、結果を格納します。</summary>
+      <returns>インクリメントされた値。</returns>
+      <param name="location">値がインクリメントされる変数。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.Increment(System.Int64@)">
+      <summary>分割不可能な操作として、指定した変数をインクリメントし、結果を格納します。</summary>
+      <returns>インクリメントされた値。</returns>
+      <param name="location">値がインクリメントされる変数。</param>
+      <exception cref="T:System.NullReferenceException">The address of <paramref name="location" /> is a null pointer. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Interlocked.MemoryBarrier">
+      <summary>メモリ アクセスを同期します。現在のスレッドを実行中のプロセッサは、<see cref="M:System.Threading.Interlocked.MemoryBarrier" /> を呼び出す前のメモリ アクセスを <see cref="M:System.Threading.Interlocked.MemoryBarrier" /> の呼び出し後のメモリ アクセスより後に実行するように命令を並べ替えることはできなくなります。</summary>
+    </member>
+    <member name="M:System.Threading.Interlocked.Read(System.Int64@)">
+      <summary>分割不可能な操作として 64 ビット値を読み込んで返します。</summary>
+      <returns>読み込まれた値。</returns>
+      <param name="location">読み込む 64 ビット値。</param>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.LazyInitializer">
+      <summary>限定的な初期化ルーチンを提供します。</summary>
+    </member>
+    <member name="M:System.Threading.LazyInitializer.EnsureInitialized``1(``0@)">
+      <summary>まだ初期化されていない場合、型の既定のコンストラクターを使用してターゲット参照型を初期化します。</summary>
+      <returns>型 <paramref name="T" /> の初期化された参照。</returns>
+      <param name="target">まだ初期化されていない場合は、初期化する型 <paramref name="T" /> の参照。</param>
+      <typeparam name="T">初期化される参照の型。</typeparam>
+      <exception cref="T:System.MemberAccessException">型 <paramref name="T" /> のコンストラクターにアクセスするためのアクセス許可がありませんでした。</exception>
+      <exception cref="T:System.MissingMemberException">型 <paramref name="T" /> には既定のコンストラクターがありません。</exception>
+    </member>
+    <member name="M:System.Threading.LazyInitializer.EnsureInitialized``1(``0@,System.Boolean@,System.Object@)">
+      <summary>まだ初期化されていない場合、既定のコンストラクターを使用してターゲット参照または値型を初期化します。</summary>
+      <returns>型 <paramref name="T" /> の初期化された値。</returns>
+      <param name="target">まだ初期化されていない場合は、初期化する型 <paramref name="T" /> の参照または値。</param>
+      <param name="initialized">ターゲットが既に初期化されているかどうかを判断するブール値への参照。</param>
+      <param name="syncLock">
+        <paramref name="target" /> を初期化するために相互排他的ロックとして使用されるオブジェクトへの参照。<paramref name="syncLock" /> が null の場合、新しいオブジェクトがインスタンス化されます。</param>
+      <typeparam name="T">初期化される参照の型。</typeparam>
+      <exception cref="T:System.MemberAccessException">型 <paramref name="T" /> のコンストラクターにアクセスするためのアクセス許可がありませんでした。</exception>
+      <exception cref="T:System.MissingMemberException">型 <paramref name="T" /> には既定のコンストラクターがありません。</exception>
+    </member>
+    <member name="M:System.Threading.LazyInitializer.EnsureInitialized``1(``0@,System.Boolean@,System.Object@,System.Func{``0})">
+      <summary>まだ初期化されていない場合、指定された関数を使用してターゲット参照または値型を初期化します。</summary>
+      <returns>型 <paramref name="T" /> の初期化された値。</returns>
+      <param name="target">まだ初期化されていない場合は、初期化する型 <paramref name="T" /> の参照または値。</param>
+      <param name="initialized">ターゲットが既に初期化されているかどうかを判断するブール値への参照。</param>
+      <param name="syncLock">
+        <paramref name="target" /> を初期化するために相互排他的ロックとして使用されるオブジェクトへの参照。<paramref name="syncLock" /> が null の場合、新しいオブジェクトがインスタンス化されます。</param>
+      <param name="valueFactory">参照または値を初期化するために呼び出される関数。</param>
+      <typeparam name="T">初期化される参照の型。</typeparam>
+      <exception cref="T:System.MemberAccessException">型 <paramref name="T" /> のコンストラクターにアクセスするためのアクセス許可がありませんでした。</exception>
+      <exception cref="T:System.MissingMemberException">型 <paramref name="T" /> には既定のコンストラクターがありません。</exception>
+    </member>
+    <member name="M:System.Threading.LazyInitializer.EnsureInitialized``1(``0@,System.Func{``0})">
+      <summary>まだ初期化されていない場合、指定された関数を使用してターゲット参照型を初期化します。</summary>
+      <returns>型 <paramref name="T" /> の初期化された値。</returns>
+      <param name="target">まだ初期化されていない場合は、初期化する型 <paramref name="T" /> の参照。</param>
+      <param name="valueFactory">参照を初期化するために呼び出される関数。</param>
+      <typeparam name="T">初期化される参照の参照型。</typeparam>
+      <exception cref="T:System.MissingMemberException">型 <paramref name="T" /> には既定のコンストラクターがありません。</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="valueFactory" />null (Visual Basic の場合は Nothing) を返しました。</exception>
+    </member>
+    <member name="T:System.Threading.LockRecursionException">
+      <summary>再帰的にロックに入る処理が、ロックの再帰ポリシーと互換性がない場合にスローされる例外です。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.LockRecursionException.#ctor">
+      <summary>エラーを説明するシステム提供のメッセージを使用して、<see cref="T:System.Threading.LockRecursionException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.LockRecursionException.#ctor(System.String)">
+      <summary>エラーを説明する指定したメッセージを使用して、<see cref="T:System.Threading.LockRecursionException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">例外を説明するメッセージ。このコンストラクターの呼び出し元は、この文字列が現在のシステムのカルチャに合わせてローカライズ済みであることを確認しておく必要があります。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.LockRecursionException.#ctor(System.String,System.Exception)">
+      <summary>指定したエラー メッセージと、この例外の原因である内部例外への参照を使用して、<see cref="T:System.Threading.LockRecursionException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">例外を説明するメッセージ。このコンストラクターの呼び出し元は、この文字列が現在のシステムのカルチャに合わせてローカライズ済みであることを確認しておく必要があります。</param>
+      <param name="innerException">現在の例外を引き起こした例外。<paramref name="innerException" /> パラメーターが null でない場合は、内部例外を処理する catch ブロックで現在の例外が発生します。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.LockRecursionPolicy">
+      <summary>同じスレッドが複数回ロックに入れるかどうかを指定します。</summary>
+    </member>
+    <member name="F:System.Threading.LockRecursionPolicy.NoRecursion">
+      <summary>スレッドが、再帰的にロックに入ろうとすると、例外がスローされます。クラスによっては、この設定が適用されている場合に、特定の再帰が認められることがあります。</summary>
+    </member>
+    <member name="F:System.Threading.LockRecursionPolicy.SupportsRecursion">
+      <summary>スレッドが再帰的にロックに入ることができます。クラスによっては、この機能が制限されていることがあります。</summary>
+    </member>
+    <member name="T:System.Threading.ManualResetEvent">
+      <summary>イベントが発生したことを、1 つ以上の待機中のスレッドに通知します。このクラスは継承できません。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.ManualResetEvent.#ctor(System.Boolean)">
+      <summary>初期状態をシグナル状態に設定するかどうかを示す Boolean 型の値を使用して、<see cref="T:System.Threading.ManualResetEvent" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="initialState">初期状態をシグナル状態に設定する場合は true。初期状態を非シグナル状態に設定する場合は false。</param>
+    </member>
+    <member name="T:System.Threading.ManualResetEventSlim">
+      <summary>
+        <see cref="T:System.Threading.ManualResetEvent" /> の規模を小さくしたバージョンを提供します。</summary>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.#ctor">
+      <summary>初期状態を非シグナル状態にして、<see cref="T:System.Threading.ManualResetEventSlim" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.#ctor(System.Boolean)">
+      <summary>初期状態をシグナル状態に設定するかどうかを示すブール値を使用して、<see cref="T:System.Threading.ManualResetEventSlim" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="initialState">初期状態をシグナル状態に設定する場合は true。初期状態を非シグナル状態に設定する場合は false。</param>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.#ctor(System.Boolean,System.Int32)">
+      <summary>初期状態をシグナル状態に設定するかどうかを示すブール値および指定されたスピン カウントを使用して、<see cref="T:System.Threading.ManualResetEventSlim" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="initialState">初期状態をシグナル状態に設定する場合は true。初期状態を非シグナル状態に設定する場合は false。</param>
+      <param name="spinCount">カーネル ベースの待機操作に戻る前に発生するスピン待機の数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="spinCount" /> is less than 0 or greater than the maximum allowed value.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Dispose">
+      <summary>
+        <see cref="T:System.Threading.ManualResetEventSlim" /> クラスの現在のインスタンスによって使用されているすべてのリソースを解放します。</summary>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Dispose(System.Boolean)">
+      <summary>
+        <see cref="T:System.Threading.ManualResetEventSlim" /> によって使用されているアンマネージ リソースを解放し、オプションでマネージ リソースも解放します。</summary>
+      <param name="disposing">マネージ リソースとアンマネージ リソースの両方を解放する場合は true、アンマネージ リソースだけを解放する場合は false。</param>
+    </member>
+    <member name="P:System.Threading.ManualResetEventSlim.IsSet">
+      <summary>イベントが設定されているかどうかを取得します。</summary>
+      <returns>イベントが設定されている場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Reset">
+      <summary>イベントの状態を非シグナル状態に設定し、スレッドをブロックします。</summary>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Set">
+      <summary>イベントの状態をシグナル状態に設定して、イベント上で待機している 1 つ以上のスレッドが進行できるようにします。</summary>
+    </member>
+    <member name="P:System.Threading.ManualResetEventSlim.SpinCount">
+      <summary>カーネル ベースの待機操作に戻る前に発生するスピン待機の数を取得します。</summary>
+      <returns>カーネル ベースの待機操作に戻る前に発生するスピン待機の数を返します。</returns>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait">
+      <summary>現在の <see cref="T:System.Threading.ManualResetEventSlim" /> が設定されるまで、現在のスレッドをブロックします。</summary>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.Int32)">
+      <summary>32 ビット符号付き整数を使用して時間間隔を計測し、現在の <see cref="T:System.Threading.ManualResetEventSlim" /> が設定されるまで、現在のスレッドをブロックします。</summary>
+      <returns>
+        <see cref="T:System.Threading.ManualResetEventSlim" /> が設定されている場合は true。それ以外の場合は false。</returns>
+      <param name="millisecondsTimeout">待機するミリ秒数。無制限に待機する場合は <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> is a negative number other than -1, which represents an infinite time-out.</exception>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.Int32,System.Threading.CancellationToken)">
+      <summary>
+        <see cref="T:System.Threading.CancellationToken" /> を観察すると同時に、32 ビット符号付き整数を使用して時間間隔を計測し、現在の <see cref="T:System.Threading.ManualResetEventSlim" /> が設定されるまで、現在のスレッドをブロックします。</summary>
+      <returns>
+        <see cref="T:System.Threading.ManualResetEventSlim" /> が設定されている場合は true。それ以外の場合は false。</returns>
+      <param name="millisecondsTimeout">待機するミリ秒数。無制限に待機する場合は <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <param name="cancellationToken">観察する <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> was canceled.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> is a negative number other than -1, which represents an infinite time-out.</exception>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed or the <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.Threading.CancellationToken)">
+      <summary>
+        <see cref="T:System.Threading.CancellationToken" /> を観察すると同時に、現在の <see cref="T:System.Threading.ManualResetEventSlim" /> が信号を受信するまで、現在のスレッドをブロックします。</summary>
+      <param name="cancellationToken">観察する <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> was canceled.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed or the <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.TimeSpan)">
+      <summary>
+        <see cref="T:System.TimeSpan" /> を使用して時間間隔を計測し、現在の <see cref="T:System.Threading.ManualResetEventSlim" /> が設定されるまで、現在のスレッドをブロックします。</summary>
+      <returns>
+        <see cref="T:System.Threading.ManualResetEventSlim" /> が設定されている場合は true。それ以外の場合は false。</returns>
+      <param name="timeout">待機するミリ秒数を表す <see cref="T:System.TimeSpan" />。無制限に待機する場合は、-1 ミリ秒を表す <see cref="T:System.TimeSpan" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> is a negative number other than -1 milliseconds, which represents an infinite time-out. -or-The number of milliseconds in <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" />. </exception>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed.</exception>
+    </member>
+    <member name="M:System.Threading.ManualResetEventSlim.Wait(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>
+        <see cref="T:System.Threading.CancellationToken" /> を観察すると同時に、<see cref="T:System.TimeSpan" /> を使用して時間間隔を計測し、現在の <see cref="T:System.Threading.ManualResetEventSlim" /> が設定されるまで、現在のスレッドをブロックします。</summary>
+      <returns>
+        <see cref="T:System.Threading.ManualResetEventSlim" /> が設定されている場合は true。それ以外の場合は false。</returns>
+      <param name="timeout">待機するミリ秒数を表す <see cref="T:System.TimeSpan" />。無制限に待機する場合は、-1 ミリ秒を表す <see cref="T:System.TimeSpan" />。</param>
+      <param name="cancellationToken">観察する <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> was canceled.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> is a negative number other than -1 milliseconds, which represents an infinite time-out. -or-The number of milliseconds in <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" />. </exception>
+      <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded. </exception>
+      <exception cref="T:System.ObjectDisposedException">The object has already been disposed or the <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has been disposed.</exception>
+    </member>
+    <member name="P:System.Threading.ManualResetEventSlim.WaitHandle">
+      <summary>この <see cref="T:System.Threading.ManualResetEventSlim" /> の <see cref="T:System.Threading.WaitHandle" /> オブジェクトを取得します。</summary>
+      <returns>この <see cref="T:System.Threading.ManualResetEventSlim" /> の基になる <see cref="T:System.Threading.WaitHandle" /> イベント オブジェクト。</returns>
+    </member>
+    <member name="T:System.Threading.Monitor">
+      <summary>オブジェクトへのアクセスを同期する機構を提供します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.Enter(System.Object)">
+      <summary>指定したオブジェクトの排他ロックを取得します。</summary>
+      <param name="obj">モニター ロックを取得する対象となるオブジェクト。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> パラメーターが null です。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.Enter(System.Object,System.Boolean@)">
+      <summary>指定したオブジェクトの排他ロックを取得し、ロックが取得されたかどうかを示す値をアトミックに設定します。</summary>
+      <param name="obj">待機を行うオブジェクト。</param>
+      <param name="lockTaken">ロックを取得しようとした結果で、参照渡しです。入力は false でなければなりません。ロックが取得された場合、出力は true になります。それ以外の場合、出力は false です。ロックを取得しようとしている間に例外が発生した場合でも、出力は設定されます。メモ   例外が発生しない場合、このメソッドの出力は常に true です。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="lockTaken" /> への入力は true です。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Threading.Monitor.Exit(System.Object)">
+      <summary>指定したオブジェクトの排他ロックを解放します。</summary>
+      <param name="obj">ロックを解放する対象となるオブジェクト。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> パラメーターが null です。</exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">現在のスレッドが、指定したオブジェクトのロックを所有していません。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.IsEntered(System.Object)">
+      <summary>現在のスレッドが指定したオブジェクトのロックを保持しているかどうかを判断します。</summary>
+      <returns>現在のスレッドが <paramref name="obj" /> のロックを保持している場合は true。それ以外の場合は false。</returns>
+      <param name="obj">テストするオブジェクト。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> は null です。</exception>
+    </member>
+    <member name="M:System.Threading.Monitor.Pulse(System.Object)">
+      <summary>ロックされたオブジェクトの状態が変更されたことを、待機キュー内のスレッドに通知します。</summary>
+      <param name="obj">スレッドが待機するオブジェクト。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> パラメーターが null です。</exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">呼び出し元のスレッドは、指定したオブジェクトのロックを所有していません。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.PulseAll(System.Object)">
+      <summary>オブジェクトの状態が変更されたことを、待機中のすべてのスレッドに通知します。</summary>
+      <param name="obj">パルスを送るオブジェクト。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> パラメーターが null です。</exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">呼び出し元のスレッドは、指定したオブジェクトのロックを所有していません。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object)">
+      <summary>指定したオブジェクトの排他ロックの取得を試みます。</summary>
+      <returns>現在のスレッドがロックを取得した場合は true。それ以外の場合は false。</returns>
+      <param name="obj">ロックの取得が行われるオブジェクト。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> パラメーターが null です。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.Boolean@)">
+      <summary>指定したオブジェクトの排他ロックの取得を試み、ロックが取得されたかどうかを示す値をアトミックに設定します。</summary>
+      <param name="obj">ロックの取得が行われるオブジェクト。</param>
+      <param name="lockTaken">ロックを取得しようとした結果で、参照渡しです。入力は false でなければなりません。ロックが取得された場合、出力は true になります。それ以外の場合、出力は false です。ロックを取得しようとしている間に例外が発生した場合でも、出力は設定されます。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="lockTaken" /> への入力は true です。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> パラメーターが null です。</exception>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.Int32)">
+      <summary>指定したミリ秒間に、指定したオブジェクトの排他ロックの取得を試みます。</summary>
+      <returns>現在のスレッドがロックを取得した場合は true。それ以外の場合は false。</returns>
+      <param name="obj">ロックの取得が行われるオブジェクト。</param>
+      <param name="millisecondsTimeout">ロックを待機するミリ秒単位の時間。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> パラメーターが null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> が負で、<see cref="F:System.Threading.Timeout.Infinite" /> と等価でありません。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.Int32,System.Boolean@)">
+      <summary>指定したオブジェクトの排他ロックの取得を指定したミリ秒間試み、ロックが取得されたかどうかを示す値をアトミックに設定します。</summary>
+      <param name="obj">ロックの取得が行われるオブジェクト。</param>
+      <param name="millisecondsTimeout">ロックを待機するミリ秒単位の時間。</param>
+      <param name="lockTaken">ロックを取得しようとした結果で、参照渡しです。入力は false でなければなりません。ロックが取得された場合、出力は true になります。それ以外の場合、出力は false です。ロックを取得しようとしている間に例外が発生した場合でも、出力は設定されます。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="lockTaken" /> への入力は true です。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> パラメーターが null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> が負で、<see cref="F:System.Threading.Timeout.Infinite" /> と等価でありません。</exception>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.TimeSpan)">
+      <summary>指定した時間内に、指定したオブジェクトの排他ロックの取得を試みます。</summary>
+      <returns>現在のスレッドがロックを取得した場合は true。それ以外の場合は false。</returns>
+      <param name="obj">ロックの取得が行われるオブジェクト。</param>
+      <param name="timeout">ロックを待機する時間を表す <see cref="T:System.TimeSpan" />。–1 ミリ秒という値は、無期限の待機を指定します。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> パラメーターが null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> の値 (ミリ秒) が負で、かつ <see cref="F:System.Threading.Timeout.Infinite" /> (-1 ミリ秒) と等価でありません。または <see cref="F:System.Int32.MaxValue" /> より大きい値です。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.TryEnter(System.Object,System.TimeSpan,System.Boolean@)">
+      <summary>指定したオブジェクトの排他ロックの取得を指定した時間にわたって試み、ロックが取得されたかどうかを示す値をアトミックに設定します。</summary>
+      <param name="obj">ロックの取得が行われるオブジェクト。</param>
+      <param name="timeout">ロックを待機する時間。–1 ミリ秒という値は、無期限の待機を指定します。</param>
+      <param name="lockTaken">ロックを取得しようとした結果で、参照渡しです。入力は false でなければなりません。ロックが取得された場合、出力は true になります。それ以外の場合、出力は false です。ロックを取得しようとしている間に例外が発生した場合でも、出力は設定されます。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="lockTaken" /> への入力は true です。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> パラメーターが null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> の値 (ミリ秒) が負で、かつ <see cref="F:System.Threading.Timeout.Infinite" /> (-1 ミリ秒) と等価でありません。または <see cref="F:System.Int32.MaxValue" /> より大きい値です。</exception>
+    </member>
+    <member name="M:System.Threading.Monitor.Wait(System.Object)">
+      <summary>オブジェクトのロックを解放し、現在のスレッドがロックを再取得するまでそのスレッドをブロックします。</summary>
+      <returns>指定したオブジェクトのロックを呼び出し元が再取得したために、呼び出しが戻った場合は true。このメソッドは、ロックが再取得されないと制御を戻しません。</returns>
+      <param name="obj">待機を行うオブジェクト。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> パラメーターが null です。</exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">呼び出し元のスレッドは、指定したオブジェクトのロックを所有していません。</exception>
+      <exception cref="T:System.Threading.ThreadInterruptedException">Wait を呼び出したスレッドは、後で待機中の状態を中断されます。これは、別のスレッドがこのスレッドの <see cref="M:System.Threading.Thread.Interrupt" /> メソッドを呼び出すと発生します。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.Wait(System.Object,System.Int32)">
+      <summary>オブジェクトのロックを解放し、現在のスレッドがロックを再取得するまでそのスレッドをブロックします。指定されたタイムアウト期限を過ぎると、スレッドは実行待ちキューに入ります。</summary>
+      <returns>指定した時間が経過する前にロックが再取得された場合は true。指定した時間が経過した後にロックが再取得された場合は false。このメソッドは、ロックが再取得されるまで制御を戻しません。</returns>
+      <param name="obj">待機を行うオブジェクト。</param>
+      <param name="millisecondsTimeout">スレッドが実行待ちキューに入るまでの待機時間 (ミリ秒)。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> パラメーターが null です。</exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">呼び出し元のスレッドは、指定したオブジェクトのロックを所有していません。</exception>
+      <exception cref="T:System.Threading.ThreadInterruptedException">Wait を呼び出したスレッドは、後で待機中の状態を中断されます。これは、別のスレッドがこのスレッドの <see cref="M:System.Threading.Thread.Interrupt" /> メソッドを呼び出すと発生します。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> パラメーターの値が負で、<see cref="F:System.Threading.Timeout.Infinite" /> と等しくありません。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Monitor.Wait(System.Object,System.TimeSpan)">
+      <summary>オブジェクトのロックを解放し、現在のスレッドがロックを再取得するまでそのスレッドをブロックします。指定されたタイムアウト期限を過ぎると、スレッドは実行待ちキューに入ります。</summary>
+      <returns>指定した時間が経過する前にロックが再取得された場合は true。指定した時間が経過した後にロックが再取得された場合は false。このメソッドは、ロックが再取得されるまで制御を戻しません。</returns>
+      <param name="obj">待機を行うオブジェクト。</param>
+      <param name="timeout">スレッドが実行待ちキューに入るまでの時間を表す <see cref="T:System.TimeSpan" />。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="obj" /> パラメーターが null です。</exception>
+      <exception cref="T:System.Threading.SynchronizationLockException">呼び出し元のスレッドは、指定したオブジェクトのロックを所有していません。</exception>
+      <exception cref="T:System.Threading.ThreadInterruptedException">Wait を呼び出したスレッドは、後で待機中の状態を中断されます。これは、別のスレッドがこのスレッドの <see cref="M:System.Threading.Thread.Interrupt" /> メソッドを呼び出すと発生します。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> パラメーターのミリ秒単位の値が負で、かつ <see cref="F:System.Threading.Timeout.Infinite" /> (–1 ミリ秒) ではありません。または <see cref="F:System.Int32.MaxValue" /> より大きい値です。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.Mutex">
+      <summary>同期プリミティブは、プロセス間の同期にも使用できます。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Mutex.#ctor">
+      <summary>
+        <see cref="T:System.Threading.Mutex" /> クラスの新しいインスタンスを、既定のプロパティを使用して初期化します。</summary>
+    </member>
+    <member name="M:System.Threading.Mutex.#ctor(System.Boolean)">
+      <summary>呼び出し元のスレッドにミューテックスの初期所有権があるかどうかを示すブール値を使用して、<see cref="T:System.Threading.Mutex" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="initiallyOwned">呼び出し元スレッドにミューテックスの初期所有権を与える場合は true。それ以外の場合は false。</param>
+    </member>
+    <member name="M:System.Threading.Mutex.#ctor(System.Boolean,System.String)">
+      <summary>呼び出し元のスレッドにミューテックスの初期所有権があるかどうかを示すブール値と、ミューテックスの名前を表す文字列を使用して、<see cref="T:System.Threading.Mutex" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="initiallyOwned">この呼び出しの結果として名前付きシステム ミューテックスが作成された場合に、呼び出し元スレッドに名前付きシステム ミューテックスの初期所有権を付与する場合は true。それ以外の場合は false。</param>
+      <param name="name">
+        <see cref="T:System.Threading.Mutex" /> の名前。値が null の場合、<see cref="T:System.Threading.Mutex" /> は無名になります。</param>
+      <exception cref="T:System.UnauthorizedAccessException">アクセス制御セキュリティを使用した名前付きミューテックスが存在しますが、ユーザーに <see cref="F:System.Security.AccessControl.MutexRights.FullControl" /> がありません。</exception>
+      <exception cref="T:System.IO.IOException">Win32 エラーが発生しました。</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">名前付きミューテックスを作成できません。別の型の待機ハンドルに同じ名前が付けられていることが原因として考えられます。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 260 文字を超えています。</exception>
+    </member>
+    <member name="M:System.Threading.Mutex.#ctor(System.Boolean,System.String,System.Boolean@)">
+      <summary>呼び出し元のスレッドにミューテックスの初期所有権があるかどうかを示すブール値、ミューテックスの名前を表す文字列、およびメソッドから戻るときにミューテックスの初期所有権が呼び出し元のスレッドに付与されたかどうかを示すブール値を指定して、<see cref="T:System.Threading.Mutex" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="initiallyOwned">この呼び出しの結果として名前付きシステム ミューテックスが作成された場合に、呼び出し元スレッドに名前付きシステム ミューテックスの初期所有権を付与する場合は true。それ以外の場合は false。</param>
+      <param name="name">
+        <see cref="T:System.Threading.Mutex" /> の名前。値が null の場合、<see cref="T:System.Threading.Mutex" /> は無名になります。</param>
+      <param name="createdNew">このメソッドから制御が戻るとき、ローカル ミューテックスが作成された場合 (つまり <paramref name="name" /> が null または空の文字列の場合) または指定した名前付きシステム ミューテックスが作成された場合は、ブール値 true が格納されます。指定した名前付きシステム ミューテックスが既に存在する場合は false が格納されます。このパラメーターは初期化せずに渡されます。</param>
+      <exception cref="T:System.UnauthorizedAccessException">アクセス制御セキュリティを使用した名前付きミューテックスが存在しますが、ユーザーに <see cref="F:System.Security.AccessControl.MutexRights.FullControl" /> がありません。</exception>
+      <exception cref="T:System.IO.IOException">Win32 エラーが発生しました。</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">名前付きミューテックスを作成できません。別の型の待機ハンドルに同じ名前が付けられていることが原因として考えられます。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> 260 文字を超えています。</exception>
+    </member>
+    <member name="M:System.Threading.Mutex.OpenExisting(System.String)">
+      <summary>既に存在する場合は、指定した名前付きミューテックスを開きます。</summary>
+      <returns>名前付きシステム ミューテックスを表すオブジェクト。</returns>
+      <param name="name">開くシステム ミューテックスの名前。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> が空の文字列です。または<paramref name="name" /> 260 文字を超えています。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> は null です。</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">名前付きミューテックスが存在しません。</exception>
+      <exception cref="T:System.IO.IOException">Win32 エラーが発生しました。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">名前付きミューテックスは存在しますが、それを使用するために必要なセキュリティ アクセスがユーザーにありません。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Threading.Mutex.ReleaseMutex">
+      <summary>
+        <see cref="T:System.Threading.Mutex" /> を一度解放します。</summary>
+      <exception cref="T:System.ApplicationException">呼び出し元のスレッドはミューテックスを所有していません。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Mutex.TryOpenExisting(System.String,System.Threading.Mutex@)">
+      <summary>既に存在する場合は、指定した名前付きミューテックスを開き操作が成功したかどうかを示す値を返します。</summary>
+      <returns>名前付きミューテックスが正常に開かれた場合は true。それ以外の場合は false。</returns>
+      <param name="name">開くシステム ミューテックスの名前。</param>
+      <param name="result">このメソッドから戻るときに、呼び出しに成功した場合は名前付きミューテックスを表す <see cref="T:System.Threading.Mutex" /> オブジェクトが格納されます。呼び出しに失敗した場合は null が格納されます。このパラメーターは初期化前として処理されます。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> が空の文字列です。または<paramref name="name" /> 260 文字を超えています。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> は null です。</exception>
+      <exception cref="T:System.IO.IOException">Win32 エラーが発生しました。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">名前付きミューテックスは存在しますが、それを使用するために必要なセキュリティ アクセスがユーザーにありません。</exception>
+    </member>
+    <member name="T:System.Threading.ReaderWriterLockSlim">
+      <summary>リソースへのアクセス管理に使用するロックを表し、複数のスレッドによる読み取りや排他アクセスでの書き込みを実現します。</summary>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.#ctor">
+      <summary>
+        <see cref="T:System.Threading.ReaderWriterLockSlim" /> クラスの新しいインスタンスを既定のプロパティ値で初期化します。</summary>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.#ctor(System.Threading.LockRecursionPolicy)">
+      <summary>ロック再帰ポリシーを指定して、<see cref="T:System.Threading.ReaderWriterLockSlim" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="recursionPolicy">ロック再帰ポリシーを指定する列挙値のいずれか。</param>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.CurrentReadCount">
+      <summary>読み取りモードでロックに入った一意のスレッドの総数を取得します。</summary>
+      <returns>読み取りモードでロックに入った一意のスレッドの数。</returns>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.Dispose">
+      <summary>
+        <see cref="T:System.Threading.ReaderWriterLockSlim" /> クラスの現在のインスタンスによって使用されているすべてのリソースを解放します。</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">
+        <see cref="P:System.Threading.ReaderWriterLockSlim.WaitingReadCount" /> is greater than zero. -or-<see cref="P:System.Threading.ReaderWriterLockSlim.WaitingUpgradeCount" /> is greater than zero. -or-<see cref="P:System.Threading.ReaderWriterLockSlim.WaitingWriteCount" /> is greater than zero. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.EnterReadLock">
+      <summary>読み取りモードでロックに入ることを試みます。</summary>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered read mode. -or-The current thread may not acquire the read lock when it already holds the write lock. -or-The recursion number would exceed the capacity of the counter.This limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.EnterUpgradeableReadLock">
+      <summary>アップグレード可能モードでロックに入ることを試みます。</summary>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock in any mode. -or-The current thread has entered read mode, so trying to enter upgradeable mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.EnterWriteLock">
+      <summary>書き込みモードでロックに入ることを試みます。</summary>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock in any mode. -or-The current thread has entered read mode, so trying to enter the lock in write mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.ExitReadLock">
+      <summary>読み取りモードの再帰カウントを減らし、結果のカウントが 0 (ゼロ) の場合には読み取りモードを終了します。</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">The current thread has not entered the lock in read mode. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.ExitUpgradeableReadLock">
+      <summary>アップグレード可能モードの再帰カウントを減らし、結果のカウントが 0 (ゼロ) の場合にはアップグレード可能モードを終了します。</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">The current thread has not entered the lock in upgradeable mode.</exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.ExitWriteLock">
+      <summary>書き込みモードの再帰カウントを減らし、結果のカウントが 0 (ゼロ) の場合には書き込みモードを終了します。</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">The current thread has not entered the lock in write mode.</exception>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.IsReadLockHeld">
+      <summary>現在のスレッドが読み取りモードでロックに入ったかどうかを示す値を取得します。</summary>
+      <returns>現在のスレッドが読み取りモードに入った場合は true、それ以外の場合は false。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.IsUpgradeableReadLockHeld">
+      <summary>現在のスレッドがアップグレード可能モードでロックに入ったかどうかを示す値を取得します。</summary>
+      <returns>現在のスレッドがアップグレード可能モードに入った場合は true、それ以外の場合は false。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.IsWriteLockHeld">
+      <summary>現在のスレッドが書き込みモードでロックに入ったかどうかを示す値を取得します。</summary>
+      <returns>現在のスレッドが書き込みモードに入った場合は true、それ以外の場合は false。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy">
+      <summary>現在の <see cref="T:System.Threading.ReaderWriterLockSlim" /> オブジェクトの再帰ポリシーを示す値を取得します。</summary>
+      <returns>ロック再帰ポリシーを指定する列挙値のいずれか。</returns>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.RecursiveReadCount">
+      <summary>現在のスレッドが読み取りモードでロックに入った回数を、再帰を示す値として取得します。</summary>
+      <returns>0 (ゼロ) の場合、現在のスレッドは読み取りモードに入っていません。1 の場合、現在のスレッドは読み取りモードに入ったが、再帰はしていません。n の場合、現在のスレッドは再帰的に n - 1 回ロックに入りました。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.RecursiveUpgradeCount">
+      <summary>現在のスレッドがアップグレード可能モードでロックに入った回数を、再帰を示す値として取得します。</summary>
+      <returns>0 (ゼロ) の場合、現在のスレッドはアップグレード可能モードに入っていません。1 の場合、現在のスレッドはアップグレード可能モードに入ったが、再帰はしていません。n の場合、現在のスレッドは再帰的に n - 1 回アップグレード可能モードに入りました。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.RecursiveWriteCount">
+      <summary>現在のスレッドが書き込みモードでロックに入った回数を、再帰を示す値として取得します。</summary>
+      <returns>0 (ゼロ) の場合、現在のスレッドは書き込みモードに入っていません。1 の場合、現在のスレッドは書き込みモードに入ったが、再帰はしていません。n の場合、現在のスレッドは再帰的に n - 1 回書き込みモードに入りました。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterReadLock(System.Int32)">
+      <summary>オプションのタイムアウトを表す整数を指定して、読み取りモードでロックに入ることを試みます。</summary>
+      <returns>呼び出し元のスレッドが読み取りモードに入った場合は true、それ以外の場合は false。</returns>
+      <param name="millisecondsTimeout">待機するミリ秒数。無制限に待機する場合は <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="millisecondsTimeout" /> is negative, but it is not equal to <see cref="F:System.Threading.Timeout.Infinite" /> (-1), which is the only negative value allowed. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterReadLock(System.TimeSpan)">
+      <summary>オプションのタイムアウトを指定して、読み取りモードでロックに入ることを試みます。</summary>
+      <returns>呼び出し元のスレッドが読み取りモードに入った場合は true、それ以外の場合は false。</returns>
+      <param name="timeout">待機する間隔。無制限に待機する場合は -1 ミリ秒。</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="timeout" /> is negative, but it is not equal to -1 milliseconds, which is the only negative value allowed.-or-The value of <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" /> milliseconds. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterUpgradeableReadLock(System.Int32)">
+      <summary>オプションのタイムアウトを指定して、アップグレード可能モードでロックに入ることを試みます。</summary>
+      <returns>呼び出し元のスレッドがアップグレード可能モードに入った場合は true、それ以外の場合は false。</returns>
+      <param name="millisecondsTimeout">待機するミリ秒数。無制限に待機する場合は <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The current thread initially entered the lock in read mode, and therefore trying to enter upgradeable mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="millisecondsTimeout" /> is negative, but it is not equal to <see cref="F:System.Threading.Timeout.Infinite" /> (-1), which is the only negative value allowed. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterUpgradeableReadLock(System.TimeSpan)">
+      <summary>オプションのタイムアウトを指定して、アップグレード可能モードでロックに入ることを試みます。</summary>
+      <returns>呼び出し元のスレッドがアップグレード可能モードに入った場合は true、それ以外の場合は false。</returns>
+      <param name="timeout">待機する間隔。無制限に待機する場合は -1 ミリ秒。</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The current thread initially entered the lock in read mode, and therefore trying to enter upgradeable mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="timeout" /> is negative, but it is not equal to -1 milliseconds, which is the only negative value allowed.-or-The value of <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" /> milliseconds. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterWriteLock(System.Int32)">
+      <summary>オプションのタイムアウトを指定して、書き込みモードでロックに入ることを試みます。</summary>
+      <returns>呼び出し元のスレッドが書き込みモードに入った場合は true、それ以外の場合は false。</returns>
+      <param name="millisecondsTimeout">待機するミリ秒数。無制限に待機する場合は <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The current thread initially entered the lock in read mode, and therefore trying to enter write mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="millisecondsTimeout" /> is negative, but it is not equal to <see cref="F:System.Threading.Timeout.Infinite" /> (-1), which is the only negative value allowed. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterWriteLock(System.TimeSpan)">
+      <summary>オプションのタイムアウトを指定して、書き込みモードでロックに入ることを試みます。</summary>
+      <returns>呼び出し元のスレッドが書き込みモードに入った場合は true、それ以外の場合は false。</returns>
+      <param name="timeout">待機する間隔。無制限に待機する場合は -1 ミリ秒。</param>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock. -or-The current thread initially entered the lock in read mode, and therefore trying to enter write mode would create the possibility of a deadlock. -or-The recursion number would exceed the capacity of the counter.The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="timeout" /> is negative, but it is not equal to -1 milliseconds, which is the only negative value allowed.-or-The value of <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" /> milliseconds. </exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed. </exception>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.WaitingReadCount">
+      <summary>読み取りモードでロックに入るのを待機しているスレッドの総数を取得します。</summary>
+      <returns>読み取りモードに入るのを待機しているスレッドの総数。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.WaitingUpgradeCount">
+      <summary>アップグレード可能モードでロックに入るのを待機しているスレッドの総数を取得します。</summary>
+      <returns>アップグレード可能モードに入るのを待機しているスレッドの総数。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.ReaderWriterLockSlim.WaitingWriteCount">
+      <summary>書き込みモードでロックに入るのを待機しているスレッドの総数を取得します。</summary>
+      <returns>書き込みモードに入るのを待機しているスレッドの総数。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.Semaphore">
+      <summary>リソースまたはリソースのプールに同時にアクセスできるスレッドの数を制限します。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Semaphore.#ctor(System.Int32,System.Int32)">
+      <summary>エントリ数の初期値と同時実行エントリの最大数を指定して、<see cref="T:System.Threading.Semaphore" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="initialCount">同時に許可されるセマフォの要求の初期数。</param>
+      <param name="maximumCount">同時に許可されるセマフォの要求の最大数。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="initialCount" /> が <paramref name="maximumCount" /> より大きくなっています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="maximumCount" /> 1 より小さい値です。または<paramref name="initialCount" /> が 0 未満です。</exception>
+    </member>
+    <member name="M:System.Threading.Semaphore.#ctor(System.Int32,System.Int32,System.String)">
+      <summary>エントリ数の初期値と同時実行エントリの最大数を指定し、オプションでシステム セマフォ オブジェクトの名前を指定して、<see cref="T:System.Threading.Semaphore" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="initialCount">同時に許可されるセマフォの要求の初期数。</param>
+      <param name="maximumCount">同時に許可されるセマフォの要求の最大数。</param>
+      <param name="name">名前付きシステム セマフォ オブジェクトの名前。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="initialCount" /> が <paramref name="maximumCount" /> より大きくなっています。または<paramref name="name" /> 260 文字を超えています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="maximumCount" /> 1 より小さい値です。または<paramref name="initialCount" /> が 0 未満です。</exception>
+      <exception cref="T:System.IO.IOException">Win32 エラーが発生しました。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">アクセス制御セキュリティを使用した名前付きセマフォが存在しており、ユーザーに <see cref="F:System.Security.AccessControl.SemaphoreRights.FullControl" /> がありません。</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">名前付きセマフォを作成できません。別の型の待機ハンドルに同じ名前が付けられていることが原因として考えられます。</exception>
+    </member>
+    <member name="M:System.Threading.Semaphore.#ctor(System.Int32,System.Int32,System.String,System.Boolean@)">
+      <summary>エントリ数の初期値と同時実行エントリの最大数を指定し、オプションでシステム セマフォ オブジェクトの名前を指定し、新しいシステム セマフォが作成されたかどうかを示す値を受け取る変数を指定して、<see cref="T:System.Threading.Semaphore" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="initialCount">同時に満たされるセマフォの要求の初期数。</param>
+      <param name="maximumCount">同時に満たされるセマフォの要求の最大数。</param>
+      <param name="name">名前付きシステム セマフォ オブジェクトの名前。</param>
+      <param name="createdNew">このメソッドから制御が戻るときに、ローカル セマフォが作成された場合 (<paramref name="name" /> が null または空の文字列の場合)、または指定した名前付きシステム セマフォが作成された場合は true が格納されます。指定した名前付きシステム セマフォが既に存在する場合は false が格納されます。このパラメーターは初期化せずに渡されます。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="initialCount" /> が <paramref name="maximumCount" /> より大きくなっています。または<paramref name="name" /> 260 文字を超えています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="maximumCount" /> 1 より小さい値です。または<paramref name="initialCount" /> が 0 未満です。</exception>
+      <exception cref="T:System.IO.IOException">Win32 エラーが発生しました。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">アクセス制御セキュリティを使用した名前付きセマフォが存在しており、ユーザーに <see cref="F:System.Security.AccessControl.SemaphoreRights.FullControl" /> がありません。</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">名前付きセマフォを作成できません。別の型の待機ハンドルに同じ名前が付けられていることが原因として考えられます。</exception>
+    </member>
+    <member name="M:System.Threading.Semaphore.OpenExisting(System.String)">
+      <summary>既に存在する場合は、指定した名前付きセマフォを開きます。</summary>
+      <returns>名前付きシステム セマフォを表すオブジェクト。</returns>
+      <param name="name">開くシステム セマフォの名前。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> が空の文字列です。または<paramref name="name" /> 260 文字を超えています。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> は null です。</exception>
+      <exception cref="T:System.Threading.WaitHandleCannotBeOpenedException">名前付きセマフォが存在しません。</exception>
+      <exception cref="T:System.IO.IOException">Win32 エラーが発生しました。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">名前付きセマフォは存在しますが、それを使用するために必要なセキュリティ アクセスがユーザーにありません。</exception>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Threading.Semaphore.Release">
+      <summary>セマフォから出て、前のカウントを返します。</summary>
+      <returns>
+        <see cref="Overload:System.Threading.Semaphore.Release" /> メソッドが呼び出される前のセマフォのカウント。</returns>
+      <exception cref="T:System.Threading.SemaphoreFullException">セマフォのカウントは既に最大値です。</exception>
+      <exception cref="T:System.IO.IOException">名前付きセマフォで Win32 エラーが発生しました。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">現在のセマフォは名前付きシステム セマフォを表していますが、ユーザーに <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" /> がありません。または現在のセマフォは名前付きシステム セマフォを表していますが、<see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" /> で開かれませんでした。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Semaphore.Release(System.Int32)">
+      <summary>指定した回数だけセマフォから出て、前のカウントを返します。</summary>
+      <returns>
+        <see cref="Overload:System.Threading.Semaphore.Release" /> メソッドが呼び出される前のセマフォのカウント。</returns>
+      <param name="releaseCount">セマフォから出る回数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="releaseCount" /> 1 より小さい値です。</exception>
+      <exception cref="T:System.Threading.SemaphoreFullException">セマフォのカウントは既に最大値です。</exception>
+      <exception cref="T:System.IO.IOException">名前付きセマフォで Win32 エラーが発生しました。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">現在のセマフォは名前付きシステム セマフォを表していますが、ユーザーに <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" /> 権限がありません。または現在のセマフォは名前付きシステム セマフォを表していますが、<see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" /> 権限で開かれませんでした。</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Semaphore.TryOpenExisting(System.String,System.Threading.Semaphore@)">
+      <summary>既に存在する場合は、指定した名前付きセマフォを開き操作が成功したかどうかを示す値を返します。</summary>
+      <returns>名前付きのセマフォが正常に開かれた場合は true。それ以外の場合は false。</returns>
+      <param name="name">開くシステム セマフォの名前。</param>
+      <param name="result">このメソッドから制御が戻るときに、呼び出しに成功した場合は名前付きセマフォを表す <see cref="T:System.Threading.Semaphore" /> オブジェクトが格納されます。呼び出しに失敗した場合は null が格納されます。このパラメーターは初期化前として処理されます。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="name" /> が空の文字列です。または<paramref name="name" /> 260 文字を超えています。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> は null です。</exception>
+      <exception cref="T:System.IO.IOException">Win32 エラーが発生しました。</exception>
+      <exception cref="T:System.UnauthorizedAccessException">名前付きセマフォは存在しますが、それを使用するために必要なセキュリティ アクセスがユーザーにありません。</exception>
+    </member>
+    <member name="T:System.Threading.SemaphoreFullException">
+      <summary>カウントが既に最大値であるセマフォに対して <see cref="Overload:System.Threading.Semaphore.Release" /> メソッドが呼び出された場合にスローされる例外。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SemaphoreFullException.#ctor">
+      <summary>
+        <see cref="T:System.Threading.SemaphoreFullException" /> クラスの新しいインスタンスを既定値で初期化します。</summary>
+    </member>
+    <member name="M:System.Threading.SemaphoreFullException.#ctor(System.String)">
+      <summary>指定したエラー メッセージを使用して、<see cref="T:System.Threading.SemaphoreFullException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">例外の原因を説明するエラー メッセージ。</param>
+    </member>
+    <member name="M:System.Threading.SemaphoreFullException.#ctor(System.String,System.Exception)">
+      <summary>指定したエラー メッセージと、この例外の原因である内部例外への参照を使用して、<see cref="T:System.Threading.SemaphoreFullException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">例外の原因を説明するエラー メッセージ。</param>
+      <param name="innerException">現在の例外の原因である例外。<paramref name="innerException" /> パラメーターが null でない場合は、内部例外を処理する catch ブロックで現在の例外が発生します。</param>
+    </member>
+    <member name="T:System.Threading.SemaphoreSlim">
+      <summary>リソースまたはリソースのプールに同時にアクセスできるスレッドの数を制限する <see cref="T:System.Threading.Semaphore" /> の軽量版を表します。</summary>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.#ctor(System.Int32)">
+      <summary>同時に許可される要求の初期数を指定して、<see cref="T:System.Threading.SemaphoreSlim" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="initialCount">同時に許可されるセマフォの要求の初期数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="initialCount" /> が 0 未満です。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.#ctor(System.Int32,System.Int32)">
+      <summary>同時に許可される要求の初期数および最大数を指定して、<see cref="T:System.Threading.SemaphoreSlim" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="initialCount">同時に許可されるセマフォの要求の初期数。</param>
+      <param name="maxCount">同時に許可されるセマフォの要求の最大数。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="initialCount" /> が 0 より小さいか、<paramref name="initialCount" /> が <paramref name="maxCount" /> を超えているか、または <paramref name="maxCount" /> が 0 以下です。</exception>
+    </member>
+    <member name="P:System.Threading.SemaphoreSlim.AvailableWaitHandle">
+      <summary>セマフォの待機に使用できる <see cref="T:System.Threading.WaitHandle" /> を返します。</summary>
+      <returns>セマフォの待機に使用できる <see cref="T:System.Threading.WaitHandle" /> です。</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Threading.SemaphoreSlim" /> は破棄されています。</exception>
+    </member>
+    <member name="P:System.Threading.SemaphoreSlim.CurrentCount">
+      <summary>
+        <see cref="T:System.Threading.SemaphoreSlim" /> オブジェクトに入る、残りのスレッド数を取得します。</summary>
+      <returns>セマフォに入る、残りのスレッド数。</returns>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Dispose">
+      <summary>
+        <see cref="T:System.Threading.SemaphoreSlim" /> クラスの現在のインスタンスによって使用されているすべてのリソースを解放します。</summary>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Dispose(System.Boolean)">
+      <summary>
+        <see cref="T:System.Threading.SemaphoreSlim" /> が使用しているアンマネージ リソースを解放します。オプションとして、マネージ リソースを解放することもできます。</summary>
+      <param name="disposing">マネージ リソースとアンマネージ リソースの両方を解放する場合は true。アンマネージ リソースだけを解放する場合は false。</param>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Release">
+      <summary>
+        <see cref="T:System.Threading.SemaphoreSlim" /> のオブジェクトを一度解放します。</summary>
+      <returns>
+        <see cref="T:System.Threading.SemaphoreSlim" /> の前のカウント。</returns>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+      <exception cref="T:System.Threading.SemaphoreFullException">
+        <see cref="T:System.Threading.SemaphoreSlim" /> は、既にその最大サイズに達しました。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Release(System.Int32)">
+      <summary>指定された回数だけ、<see cref="T:System.Threading.SemaphoreSlim" /> オブジェクトを解放します。</summary>
+      <returns>
+        <see cref="T:System.Threading.SemaphoreSlim" /> の前のカウント。</returns>
+      <param name="releaseCount">セマフォから出る回数。</param>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="releaseCount" /> 1 より小さい値です。</exception>
+      <exception cref="T:System.Threading.SemaphoreFullException">
+        <see cref="T:System.Threading.SemaphoreSlim" /> は、既にその最大サイズに達しました。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait">
+      <summary>
+        <see cref="T:System.Threading.SemaphoreSlim" /> に入れるようになるまで、現在のスレッドをブロックします。</summary>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.Int32)">
+      <summary>タイムアウト値を 32 ビット符号付き整数で指定して、<see cref="T:System.Threading.SemaphoreSlim" /> に入れるようになるまで、現在のスレッドをブロックします。</summary>
+      <returns>現在のスレッドが <see cref="T:System.Threading.SemaphoreSlim" /> に正常に入った場合は true。それ以外の場合は false。</returns>
+      <param name="millisecondsTimeout">待機するミリ秒数。無制限に待機する場合は <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> が -1 以外の負数です。-1 は無制限のタイムアウトを表します。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.Int32,System.Threading.CancellationToken)">
+      <summary>
+        <see cref="T:System.Threading.CancellationToken" /> を観察すると同時に、タイムアウト値を 32 ビット符号付き整数で指定して、<see cref="T:System.Threading.SemaphoreSlim" /> に入れるようになるまで、現在のスレッドをブロックします。</summary>
+      <returns>現在のスレッドが <see cref="T:System.Threading.SemaphoreSlim" /> に正常に入った場合は true。それ以外の場合は false。</returns>
+      <param name="millisecondsTimeout">待機するミリ秒数。無制限に待機する場合は <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <param name="cancellationToken">観察する <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> が取り消されました。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> が -1 以外の負数です。-1 は無制限のタイムアウトを表します。</exception>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Threading.SemaphoreSlim" /> インスタンスが破棄されている、または <see cref="T:System.Threading.CancellationTokenSource" /> 作成 <paramref name="cancellationToken" /> 破棄されています。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.Threading.CancellationToken)">
+      <summary>
+        <see cref="T:System.Threading.CancellationToken" /> を観察すると同時に、<see cref="T:System.Threading.SemaphoreSlim" /> に入れるようになるまで、現在のスレッドをブロックします。</summary>
+      <param name="cancellationToken">観察する <see cref="T:System.Threading.CancellationToken" /> トークン。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> が取り消されました。</exception>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。または<see cref="T:System.Threading.CancellationTokenSource" /> 作成<paramref name=" cancellationToken" /> 既に破棄されています。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.TimeSpan)">
+      <summary>
+        <see cref="T:System.TimeSpan" /> を使用してタイムアウトを指定し、<see cref="T:System.Threading.SemaphoreSlim" /> に入れるようになるまで、現在のスレッドをブロックします。</summary>
+      <returns>現在のスレッドが <see cref="T:System.Threading.SemaphoreSlim" /> に正常に入った場合は true。それ以外の場合は false。</returns>
+      <param name="timeout">待機するミリ秒数を表す <see cref="T:System.TimeSpan" />。無制限に待機する場合は、-1 ミリ秒を表す <see cref="T:System.TimeSpan" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> が -1 ミリ秒以外の負数です。-1 は無制限のタイムアウトを表します。または、タイムアウトが <see cref="F:System.Int32.MaxValue" /> を超えています。</exception>
+      <exception cref="T:System.ObjectDisposedException">semaphoreSlim インスタンスが破棄されました。<paramref name="." /></exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.Wait(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>
+        <see cref="T:System.Threading.CancellationToken" /> を観察すると同時に、タイムアウトを指定する <see cref="T:System.TimeSpan" /> を使用して、<see cref="T:System.Threading.SemaphoreSlim" /> に入れるようになるまで、現在のスレッドをブロックします。</summary>
+      <returns>現在のスレッドが <see cref="T:System.Threading.SemaphoreSlim" /> に正常に入った場合は true。それ以外の場合は false。</returns>
+      <param name="timeout">待機するミリ秒数を表す <see cref="T:System.TimeSpan" />。無制限に待機する場合は、-1 ミリ秒を表す <see cref="T:System.TimeSpan" />。</param>
+      <param name="cancellationToken">観察する <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> が取り消されました。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> が -1 ミリ秒以外の負数です。-1 は無制限のタイムアウトを表します。または、タイムアウトが <see cref="F:System.Int32.MaxValue" /> を超えています。</exception>
+      <exception cref="T:System.ObjectDisposedException">semaphoreSlim インスタンスが破棄されました。<paramref name="." /><paramref name="-or-" /><see cref="T:System.Threading.CancellationTokenSource" /> を作成した <paramref name="cancellationToken" /> は既に破棄されています。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync">
+      <summary>
+        <see cref="T:System.Threading.SemaphoreSlim" /> に移行するために非同期に待機します。</summary>
+      <returns>セマフォに入っているときに完了するタスク。</returns>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.Int32)">
+      <summary>32 ビット符号付き整数を使用して時間間隔を測定しながら、<see cref="T:System.Threading.SemaphoreSlim" /> に移行するために非同期に待機します。</summary>
+      <returns>現在のスレッドが正常に <see cref="T:System.Threading.SemaphoreSlim" /> を入力した場合は true、それ以外の場合は false で完了するタスク。</returns>
+      <param name="millisecondsTimeout">待機するミリ秒数。無制限に待機する場合は <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> が -1 以外の負数です。-1 は無制限のタイムアウトを表します。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.Int32,System.Threading.CancellationToken)">
+      <summary>32 ビット符号付き整数を使用して時間間隔を測定しながら、<see cref="T:System.Threading.CancellationToken" /> を観察すると同時に、<see cref="T:System.Threading.SemaphoreSlim" /> に移行するために非同期に待機します。</summary>
+      <returns>現在のスレッドが正常に <see cref="T:System.Threading.SemaphoreSlim" /> を入力した場合は true、それ以外の場合は false で完了するタスク。</returns>
+      <param name="millisecondsTimeout">待機するミリ秒数。無制限に待機する場合は <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <param name="cancellationToken">観察する <see cref="T:System.Threading.CancellationToken" />。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> が -1 以外の負数です。-1 は無制限のタイムアウトを表します。</exception>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> が取り消されました。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.Threading.CancellationToken)">
+      <summary>
+        <see cref="T:System.Threading.CancellationToken" /> を観察すると同時に、<see cref="T:System.Threading.SemaphoreSlim" /> に移行するために非同期に待機します。</summary>
+      <returns>セマフォに入っているときに完了するタスク。</returns>
+      <param name="cancellationToken">観察する <see cref="T:System.Threading.CancellationToken" /> トークン。</param>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> が取り消されました。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.TimeSpan)">
+      <summary>
+        <see cref="T:System.TimeSpan" /> を使用して時間間隔を測定しながら、<see cref="T:System.Threading.SemaphoreSlim" /> に移行するために非同期に待機します。</summary>
+      <returns>現在のスレッドが正常に <see cref="T:System.Threading.SemaphoreSlim" /> を入力した場合は true、それ以外の場合は false で完了するタスク。</returns>
+      <param name="timeout">待機するミリ秒数を表す <see cref="T:System.TimeSpan" />。無制限に待機する場合は、-1 ミリ秒を表す <see cref="T:System.TimeSpan" />。</param>
+      <exception cref="T:System.ObjectDisposedException">現在のインスタンスは既に破棄されています。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> が -1 以外の負数です。-1 は無制限のタイムアウトを表します または タイムアウトは <see cref="F:System.Int32.MaxValue" /> より大きい値です。</exception>
+    </member>
+    <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.TimeSpan,System.Threading.CancellationToken)">
+      <summary>
+        <see cref="T:System.TimeSpan" /> を使用して時間間隔を測定しながら、<see cref="T:System.Threading.CancellationToken" /> を観察すると同時に、<see cref="T:System.Threading.SemaphoreSlim" /> に移行するために非同期に待機します。</summary>
+      <returns>現在のスレッドが正常に <see cref="T:System.Threading.SemaphoreSlim" /> を入力した場合は true、それ以外の場合は false で完了するタスク。</returns>
+      <param name="timeout">待機するミリ秒数を表す <see cref="T:System.TimeSpan" />。無制限に待機する場合は、-1 ミリ秒を表す <see cref="T:System.TimeSpan" />。</param>
+      <param name="cancellationToken">観察する <see cref="T:System.Threading.CancellationToken" /> トークン。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> が -1 以外の負数です。-1 は無制限のタイムアウトを表しますまたはタイムアウトは <see cref="F:System.Int32.MaxValue" /> より大きい値です。</exception>
+      <exception cref="T:System.OperationCanceledException">
+        <paramref name="cancellationToken" /> が取り消されました。</exception>
+    </member>
+    <member name="T:System.Threading.SendOrPostCallback">
+      <summary>メッセージを同期コンテキストにディスパッチするときに呼び出すメソッドを表します。</summary>
+      <param name="state">デリゲートに渡されたオブジェクト。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.SpinLock">
+      <summary>ロックが使用可能になるまで、ロックを取得しようとするスレッドがループの繰り返しチェック内で待機する相互排他ロック プリミティブを提供します。</summary>
+    </member>
+    <member name="M:System.Threading.SpinLock.#ctor(System.Boolean)">
+      <summary>デバッグを向上させるためにスレッド ID を追跡するオプションを使用して、<see cref="T:System.Threading.SpinLock" /> 構造体の新しいインスタンスを初期化します。</summary>
+      <param name="enableThreadOwnerTracking">デバッグのためにスレッド ID をキャプチャして使用するかどうか。</param>
+    </member>
+    <member name="M:System.Threading.SpinLock.Enter(System.Boolean@)">
+      <summary>メソッド呼び出し内で例外が発生した場合でも、<paramref name="lockTaken" /> を確実に確認して、ロックが取得されたかどうかを判断できるような信頼性の高い方法で、ロックを取得します。</summary>
+      <param name="lockTaken">ロックが取得された場合は true。それ以外の場合は false。このメソッドを呼び出す前に、<paramref name="lockTaken" /> を false に初期化する必要があります。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="lockTaken" /> 引数は、Enter を呼び出す前に false に初期化する必要があります。</exception>
+      <exception cref="T:System.Threading.LockRecursionException">スレッドの所有権の追跡が有効で、現在のスレッドは既にこのロックを取得しています。</exception>
+    </member>
+    <member name="M:System.Threading.SpinLock.Exit">
+      <summary>ロックを解放します。</summary>
+      <exception cref="T:System.Threading.SynchronizationLockException">スレッドの所有権の追跡が有効で、現在のスレッドはこのロックの所有者ではありません。</exception>
+    </member>
+    <member name="M:System.Threading.SpinLock.Exit(System.Boolean)">
+      <summary>ロックを解放します。</summary>
+      <param name="useMemoryBarrier">終了操作を他のスレッドに直ちに発行するためにメモリ フェンスを発行する必要があるかどうかを示すブール値。</param>
+      <exception cref="T:System.Threading.SynchronizationLockException">スレッドの所有権の追跡が有効で、現在のスレッドはこのロックの所有者ではありません。</exception>
+    </member>
+    <member name="P:System.Threading.SpinLock.IsHeld">
+      <summary>ロックが現在いずれかのスレッドによって保持されているかどうかを取得します。</summary>
+      <returns>ロックが現在いずれかのスレッドによって保持されている場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="P:System.Threading.SpinLock.IsHeldByCurrentThread">
+      <summary>ロックが現在のスレッドによって保持されているかどうかを取得します。</summary>
+      <returns>ロックが現在のスレッドによって保持されている場合は true。それ以外の場合は false。</returns>
+      <exception cref="T:System.InvalidOperationException">スレッドの所有権の追跡が無効です。</exception>
+    </member>
+    <member name="P:System.Threading.SpinLock.IsThreadOwnerTrackingEnabled">
+      <summary>このインスタンスに対してスレッド所有権の追跡が有効になっているかどうかを取得します。</summary>
+      <returns>このインスタンスに対してスレッド所有権の追跡が有効になっている場合は true。それ以外の場合は false。</returns>
+    </member>
+    <member name="M:System.Threading.SpinLock.TryEnter(System.Boolean@)">
+      <summary>メソッド呼び出し内で例外が発生した場合でも、<paramref name="lockTaken" /> を確実に確認して、ロックが取得されたかどうかを判断できるような信頼性の高い方法で、ロックの取得を試みます。</summary>
+      <param name="lockTaken">ロックが取得された場合は true。それ以外の場合は false。このメソッドを呼び出す前に、<paramref name="lockTaken" /> を false に初期化する必要があります。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="lockTaken" /> 引数は、TryEnter を呼び出す前に false に初期化する必要があります。</exception>
+      <exception cref="T:System.Threading.LockRecursionException">スレッドの所有権の追跡が有効で、現在のスレッドは既にこのロックを取得しています。</exception>
+    </member>
+    <member name="M:System.Threading.SpinLock.TryEnter(System.Int32,System.Boolean@)">
+      <summary>メソッド呼び出し内で例外が発生した場合でも、<paramref name="lockTaken" /> を確実に確認して、ロックが取得されたかどうかを判断できるような信頼性の高い方法で、ロックの取得を試みます。</summary>
+      <param name="millisecondsTimeout">待機するミリ秒数。無制限に待機する場合は <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <param name="lockTaken">ロックが取得された場合は true。それ以外の場合は false。このメソッドを呼び出す前に、<paramref name="lockTaken" /> を false に初期化する必要があります。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> が -1 以外の負数です。-1 は無制限のタイムアウトを表します。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="lockTaken" /> 引数は、TryEnter を呼び出す前に false に初期化する必要があります。</exception>
+      <exception cref="T:System.Threading.LockRecursionException">スレッドの所有権の追跡が有効で、現在のスレッドは既にこのロックを取得しています。</exception>
+    </member>
+    <member name="M:System.Threading.SpinLock.TryEnter(System.TimeSpan,System.Boolean@)">
+      <summary>メソッド呼び出し内で例外が発生した場合でも、<paramref name="lockTaken" /> を確実に確認して、ロックが取得されたかどうかを判断できるような信頼性の高い方法で、ロックの取得を試みます。</summary>
+      <param name="timeout">待機するミリ秒数を表す <see cref="T:System.TimeSpan" />。無制限に待機する場合は、-1 ミリ秒を表す <see cref="T:System.TimeSpan" />。</param>
+      <param name="lockTaken">ロックが取得された場合は true。それ以外の場合は false。このメソッドを呼び出す前に、<paramref name="lockTaken" /> を false に初期化する必要があります。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> が -1 ミリ秒以外の負数です。-1 は無制限のタイムアウトを表します。または、タイムアウトが <see cref="F:System.Int32.MaxValue" /> ミリ秒を超えています。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="lockTaken" /> 引数は、TryEnter を呼び出す前に false に初期化する必要があります。</exception>
+      <exception cref="T:System.Threading.LockRecursionException">スレッドの所有権の追跡が有効で、現在のスレッドは既にこのロックを取得しています。</exception>
+    </member>
+    <member name="T:System.Threading.SpinWait">
+      <summary>スピンベースの待機のサポートを提供します。</summary>
+    </member>
+    <member name="P:System.Threading.SpinWait.Count">
+      <summary>このインスタンスで <see cref="M:System.Threading.SpinWait.SpinOnce" /> が呼び出された回数を取得します。</summary>
+      <returns>このインスタンスで <see cref="M:System.Threading.SpinWait.SpinOnce" /> が呼び出された回数を表す整数を返します。</returns>
+    </member>
+    <member name="P:System.Threading.SpinWait.NextSpinWillYield">
+      <summary>次に <see cref="M:System.Threading.SpinWait.SpinOnce" /> を呼び出したときにプロセッサが生成され、強制的にコンテキストが切り替えられるかどうかを取得します。</summary>
+      <returns>次に <see cref="M:System.Threading.SpinWait.SpinOnce" /> を呼び出したときにプロセッサが生成され、強制的にコンテキストが切り替えられるかどうか。</returns>
+    </member>
+    <member name="M:System.Threading.SpinWait.Reset">
+      <summary>スピン カウンターをリセットします。</summary>
+    </member>
+    <member name="M:System.Threading.SpinWait.SpinOnce">
+      <summary>単一のスピンを実行します。</summary>
+    </member>
+    <member name="M:System.Threading.SpinWait.SpinUntil(System.Func{System.Boolean})">
+      <summary>指定した条件が満たされるまで回転します。</summary>
+      <param name="condition">true を返すまで繰り返し実行されるデリゲート。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="condition" /> 引数が null です。</exception>
+    </member>
+    <member name="M:System.Threading.SpinWait.SpinUntil(System.Func{System.Boolean},System.Int32)">
+      <summary>指定した条件が満たされるか、指定したタイムアウトが経過するまで回転します。</summary>
+      <returns>タイムアウト内に条件が満たされた場合は true。それ以外の場合は false。</returns>
+      <param name="condition">true を返すまで繰り返し実行されるデリゲート。</param>
+      <param name="millisecondsTimeout">待機するミリ秒数。無制限に待機する場合は <see cref="F:System.Threading.Timeout.Infinite" /> (-1)。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="condition" /> 引数が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="millisecondsTimeout" /> が -1 以外の負数です。-1 は無制限のタイムアウトを表します。</exception>
+    </member>
+    <member name="M:System.Threading.SpinWait.SpinUntil(System.Func{System.Boolean},System.TimeSpan)">
+      <summary>指定した条件が満たされるか、指定したタイムアウトが経過するまで回転します。</summary>
+      <returns>タイムアウト内に条件が満たされた場合は true。それ以外の場合は false。</returns>
+      <param name="condition">true を返すまで繰り返し実行されるデリゲート。</param>
+      <param name="timeout">待機するミリ秒数を表す <see cref="T:System.TimeSpan" />。無制限に待機する場合は、-1 ミリ秒を表す TimeSpan。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="condition" /> 引数が null です。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="timeout" /> が -1 ミリ秒以外の負数です。-1 は無制限のタイムアウトを表します。または、タイムアウトが <see cref="F:System.Int32.MaxValue" /> を超えています。</exception>
+    </member>
+    <member name="T:System.Threading.SynchronizationContext">
+      <summary>同期コンテキストをさまざまな同期モデルに反映させるための基本機能を提供します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.#ctor">
+      <summary>
+        <see cref="T:System.Threading.SynchronizationContext" /> クラスの新しいインスタンスを作成します。</summary>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.CreateCopy">
+      <summary>派生クラスでオーバーライドされた場合、同期コンテキストのコピーを作成します。 </summary>
+      <returns>新しい <see cref="T:System.Threading.SynchronizationContext" /> オブジェクト。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Threading.SynchronizationContext.Current">
+      <summary>現在のスレッドの同期コンテキストを取得します。</summary>
+      <returns>現在の同期コンテキストを表す <see cref="T:System.Threading.SynchronizationContext" /> オブジェクト。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.OperationCompleted">
+      <summary>派生クラスでオーバーライドされた場合、操作の完了を伝える通知に応答します。</summary>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.OperationStarted">
+      <summary>派生クラスでオーバーライドされた場合、操作の開始を伝える通知に応答します。</summary>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.Post(System.Threading.SendOrPostCallback,System.Object)">
+      <summary>派生クラスでオーバーライドされた場合、非同期メッセージを同期コンテキストにディスパッチします。</summary>
+      <param name="d">呼び出す <see cref="T:System.Threading.SendOrPostCallback" /> デリゲート。</param>
+      <param name="state">デリゲートに渡されたオブジェクト。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.Send(System.Threading.SendOrPostCallback,System.Object)">
+      <summary>派生クラスでオーバーライドされた場合、同期メッセージを同期コンテキストにディスパッチします。</summary>
+      <param name="d">呼び出す <see cref="T:System.Threading.SendOrPostCallback" /> デリゲート。</param>
+      <param name="state">デリゲートに渡されたオブジェクト。</param>
+      <exception cref="T:System.NotSupportedException">The method was called in a Windows Store app.The implementation of <see cref="T:System.Threading.SynchronizationContext" /> for Windows Store apps does not support the <see cref="M:System.Threading.SynchronizationContext.Send(System.Threading.SendOrPostCallback,System.Object)" /> method.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationContext.SetSynchronizationContext(System.Threading.SynchronizationContext)">
+      <summary>現在の同期コンテキストを設定します。</summary>
+      <param name="syncContext">設定する <see cref="T:System.Threading.SynchronizationContext" /> オブジェクト</param>
+      <filterpriority>1</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="ControlEvidence, ControlPolicy" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Threading.SynchronizationLockException">
+      <summary>指定した Monitor でロックを所有していることが呼び出し元の条件となるメソッドを、そのロックを所有していない呼び出し元が呼び出した場合にスローされる例外です。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.SynchronizationLockException.#ctor">
+      <summary>
+        <see cref="T:System.Threading.SynchronizationLockException" /> クラスの新しいインスタンスを既定のプロパティを使用して初期化します。</summary>
+    </member>
+    <member name="M:System.Threading.SynchronizationLockException.#ctor(System.String)">
+      <summary>指定したエラー メッセージを使用して、<see cref="T:System.Threading.SynchronizationLockException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">例外の原因を説明するエラー メッセージ。</param>
+    </member>
+    <member name="M:System.Threading.SynchronizationLockException.#ctor(System.String,System.Exception)">
+      <summary>指定したエラー メッセージと、この例外の原因である内部例外への参照を使用して、<see cref="T:System.Threading.SynchronizationLockException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">例外の原因を説明するエラー メッセージ。</param>
+      <param name="innerException">現在の例外の原因である例外。<paramref name="innerException" /> パラメーターが null でない場合は、内部例外を処理する catch ブロックで現在の例外が発生します。</param>
+    </member>
+    <member name="T:System.Threading.ThreadLocal`1">
+      <summary>データのスレッド ローカル ストレージを提供します。</summary>
+      <typeparam name="T">スレッド単位で格納されるデータの型を指定します。</typeparam>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.#ctor">
+      <summary>
+        <see cref="T:System.Threading.ThreadLocal`1" /> インスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.#ctor(System.Boolean)">
+      <summary>
+        <see cref="T:System.Threading.ThreadLocal`1" /> インスタンスを初期化します。</summary>
+      <param name="trackAllValues">インスタンスに設定されているすべての値を追跡し、それらの値を <see cref="P:System.Threading.ThreadLocal`1.Values" /> プロパティを通じて公開するかどうか。</param>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.#ctor(System.Func{`0})">
+      <summary>
+        <paramref name="valueFactory" /> 関数を指定して、<see cref="T:System.Threading.ThreadLocal`1" /> インスタンスを初期化します。</summary>
+      <param name="valueFactory">前もって初期化せずに <see cref="P:System.Threading.ThreadLocal`1.Value" /> を取得しようとすると、後で初期化された値を生成するために <see cref="T:System.Func`1" /> が呼び出されます。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="valueFactory" /> が null 参照 (Visual Basic の場合は Nothing) です。</exception>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.#ctor(System.Func{`0},System.Boolean)">
+      <summary>
+        <paramref name="valueFactory" /> 関数を指定して、<see cref="T:System.Threading.ThreadLocal`1" /> インスタンスを初期化します。</summary>
+      <param name="valueFactory">前もって初期化せずに <see cref="P:System.Threading.ThreadLocal`1.Value" /> を取得しようとすると、後で初期化された値を生成するために <see cref="T:System.Func`1" /> が呼び出されます。</param>
+      <param name="trackAllValues">インスタンスに設定されているすべての値を追跡し、それらの値を <see cref="P:System.Threading.ThreadLocal`1.Values" /> プロパティを通じて公開するかどうか。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="valueFactory" /> が null 参照 (Visual Basic の場合は Nothing) です。</exception>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.Dispose">
+      <summary>
+        <see cref="T:System.Threading.ThreadLocal`1" /> クラスの現在のインスタンスによって使用されているすべてのリソースを解放します。</summary>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.Dispose(System.Boolean)">
+      <summary>この <see cref="T:System.Threading.ThreadLocal`1" /> インスタンスによって使用されているリソースを解放します。</summary>
+      <param name="disposing">
+        <see cref="M:System.Threading.ThreadLocal`1.Dispose" /> が呼び出されたことが原因でこのメソッドが呼び出されているかどうかを示すブール値。</param>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.Finalize">
+      <summary>この <see cref="T:System.Threading.ThreadLocal`1" /> インスタンスによって使用されているリソースを解放します。</summary>
+    </member>
+    <member name="P:System.Threading.ThreadLocal`1.IsValueCreated">
+      <summary>現在のスレッドで <see cref="P:System.Threading.ThreadLocal`1.Value" /> が初期化されているかどうかを取得します。</summary>
+      <returns>
+        <see cref="P:System.Threading.ThreadLocal`1.Value" /> が現在のスレッドで初期化される場合は true。それ以外の場合は false。</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Threading.ThreadLocal`1" /> インスタンスは破棄されています。</exception>
+    </member>
+    <member name="M:System.Threading.ThreadLocal`1.ToString">
+      <summary>現在のスレッドのこのインスタンスの文字列形式を作成して返します。</summary>
+      <returns>
+        <see cref="P:System.Threading.ThreadLocal`1.Value" /> で <see cref="M:System.Object.ToString" /> を呼び出した結果。</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Threading.ThreadLocal`1" /> インスタンスは破棄されています。</exception>
+      <exception cref="T:System.NullReferenceException">現在のスレッドの <see cref="P:System.Threading.ThreadLocal`1.Value" /> は null 参照 (Visual Basic での Nothing) です。</exception>
+      <exception cref="T:System.InvalidOperationException">初期化関数が、<see cref="P:System.Threading.ThreadLocal`1.Value" /> を再帰的に参照しようとしました。</exception>
+      <exception cref="T:System.MissingMemberException">既定のコンストラクターが指定されず、値ファクトリが指定されていません。</exception>
+    </member>
+    <member name="P:System.Threading.ThreadLocal`1.Value">
+      <summary>現在のスレッドのこのインスタンスの値を取得または設定します。</summary>
+      <returns>この ThreadLocal が初期化するオブジェクトのインスタンスを返します。</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Threading.ThreadLocal`1" /> インスタンスは破棄されています。</exception>
+      <exception cref="T:System.InvalidOperationException">初期化関数が、<see cref="P:System.Threading.ThreadLocal`1.Value" /> を再帰的に参照しようとしました。</exception>
+      <exception cref="T:System.MissingMemberException">既定のコンストラクターが指定されず、値ファクトリが指定されていません。</exception>
+    </member>
+    <member name="P:System.Threading.ThreadLocal`1.Values">
+      <summary>このインスタンスにアクセスした全スレッドによって現在格納されているすべての値のリストを取得します。</summary>
+      <returns>このインスタンスにアクセスした全スレッドによって現在格納されているすべての値のリスト。</returns>
+      <exception cref="T:System.ObjectDisposedException">
+        <see cref="T:System.Threading.ThreadLocal`1" /> インスタンスは破棄されています。</exception>
+    </member>
+    <member name="T:System.Threading.Volatile">
+      <summary>不揮発性メモリの操作を実行するためのメソッドが含まれます。</summary>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Boolean@)">
+      <summary>指定されたフィールドの値を読み取ります。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの後に読み取りまたは書き込みが配置されている場合、プロセッサはその操作をこのメソッドの前へ移動できなくなります。</summary>
+      <returns>読み取られた値。この値は、プロセッサの数やプロセッサ キャッシュの状態にかかわらず、コンピューター内のいずれかのプロセッサによって書き込まれた最新の値です。</returns>
+      <param name="location">読み取るフィールド。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Byte@)">
+      <summary>指定されたフィールドの値を読み取ります。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの後に読み取りまたは書き込みが配置されている場合、プロセッサはその操作をこのメソッドの前へ移動できなくなります。</summary>
+      <returns>読み取られた値。この値は、プロセッサの数やプロセッサ キャッシュの状態にかかわらず、コンピューター内のいずれかのプロセッサによって書き込まれた最新の値です。</returns>
+      <param name="location">読み取るフィールド。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Double@)">
+      <summary>指定されたフィールドの値を読み取ります。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの後に読み取りまたは書き込みが配置されている場合、プロセッサはその操作をこのメソッドの前へ移動できなくなります。</summary>
+      <returns>読み取られた値。この値は、プロセッサの数やプロセッサ キャッシュの状態にかかわらず、コンピューター内のいずれかのプロセッサによって書き込まれた最新の値です。</returns>
+      <param name="location">読み取るフィールド。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Int16@)">
+      <summary>指定されたフィールドの値を読み取ります。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの後に読み取りまたは書き込みが配置されている場合、プロセッサはその操作をこのメソッドの前へ移動できなくなります。</summary>
+      <returns>読み取られた値。この値は、プロセッサの数やプロセッサ キャッシュの状態にかかわらず、コンピューター内のいずれかのプロセッサによって書き込まれた最新の値です。</returns>
+      <param name="location">読み取るフィールド。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Int32@)">
+      <summary>指定されたフィールドの値を読み取ります。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの後に読み取りまたは書き込みが配置されている場合、プロセッサはその操作をこのメソッドの前へ移動できなくなります。</summary>
+      <returns>読み取られた値。この値は、プロセッサの数やプロセッサ キャッシュの状態にかかわらず、コンピューター内のいずれかのプロセッサによって書き込まれた最新の値です。</returns>
+      <param name="location">読み取るフィールド。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Int64@)">
+      <summary>指定されたフィールドの値を読み取ります。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの後に読み取りまたは書き込みが配置されている場合、プロセッサはその操作をこのメソッドの前へ移動できなくなります。</summary>
+      <returns>読み取られた値。この値は、プロセッサの数やプロセッサ キャッシュの状態にかかわらず、コンピューター内のいずれかのプロセッサによって書き込まれた最新の値です。</returns>
+      <param name="location">読み取るフィールド。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.IntPtr@)">
+      <summary>指定されたフィールドの値を読み取ります。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの後に読み取りまたは書き込みが配置されている場合、プロセッサはその操作をこのメソッドの前へ移動できなくなります。</summary>
+      <returns>読み取られた値。この値は、プロセッサの数やプロセッサ キャッシュの状態にかかわらず、コンピューター内のいずれかのプロセッサによって書き込まれた最新の値です。</returns>
+      <param name="location">読み取るフィールド。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.SByte@)">
+      <summary>指定されたフィールドの値を読み取ります。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの後に読み取りまたは書き込みが配置されている場合、プロセッサはその操作をこのメソッドの前へ移動できなくなります。</summary>
+      <returns>読み取られた値。この値は、プロセッサの数やプロセッサ キャッシュの状態にかかわらず、コンピューター内のいずれかのプロセッサによって書き込まれた最新の値です。</returns>
+      <param name="location">読み取るフィールド。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.Single@)">
+      <summary>指定されたフィールドの値を読み取ります。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの後に読み取りまたは書き込みが配置されている場合、プロセッサはその操作をこのメソッドの前へ移動できなくなります。</summary>
+      <returns>読み取られた値。この値は、プロセッサの数やプロセッサ キャッシュの状態にかかわらず、コンピューター内のいずれかのプロセッサによって書き込まれた最新の値です。</returns>
+      <param name="location">読み取るフィールド。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.UInt16@)">
+      <summary>指定されたフィールドの値を読み取ります。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの後に読み取りまたは書き込みが配置されている場合、プロセッサはその操作をこのメソッドの前へ移動できなくなります。</summary>
+      <returns>読み取られた値。この値は、プロセッサの数やプロセッサ キャッシュの状態にかかわらず、コンピューター内のいずれかのプロセッサによって書き込まれた最新の値です。</returns>
+      <param name="location">読み取るフィールド。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.UInt32@)">
+      <summary>指定されたフィールドの値を読み取ります。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの後に読み取りまたは書き込みが配置されている場合、プロセッサはその操作をこのメソッドの前へ移動できなくなります。</summary>
+      <returns>読み取られた値。この値は、プロセッサの数やプロセッサ キャッシュの状態にかかわらず、コンピューター内のいずれかのプロセッサによって書き込まれた最新の値です。</returns>
+      <param name="location">読み取るフィールド。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.UInt64@)">
+      <summary>指定されたフィールドの値を読み取ります。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの後に読み取りまたは書き込みが配置されている場合、プロセッサはその操作をこのメソッドの前へ移動できなくなります。</summary>
+      <returns>読み取られた値。この値は、プロセッサの数やプロセッサ キャッシュの状態にかかわらず、コンピューター内のいずれかのプロセッサによって書き込まれた最新の値です。</returns>
+      <param name="location">読み取るフィールド。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read(System.UIntPtr@)">
+      <summary>指定されたフィールドの値を読み取ります。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの後に読み取りまたは書き込みが配置されている場合、プロセッサはその操作をこのメソッドの前へ移動できなくなります。</summary>
+      <returns>読み取られた値。この値は、プロセッサの数やプロセッサ キャッシュの状態にかかわらず、コンピューター内のいずれかのプロセッサによって書き込まれた最新の値です。</returns>
+      <param name="location">読み取るフィールド。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Read``1(``0@)">
+      <summary>指定したフィールドからオブジェクト参照を読み取ります。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの後に読み取りまたは書き込みが配置されている場合、プロセッサはその操作をこのメソッドの前へ移動できなくなります。</summary>
+      <returns>読み取られた <paramref name="T" /> への参照。この参照は、プロセッサの数やプロセッサ キャッシュの状態にかかわらず、コンピューター内のいずれかのプロセッサによって書き込まれた最新の値です。</returns>
+      <param name="location">読み取るフィールド。</param>
+      <typeparam name="T">読み取るフィールドの型。この型は、値型ではなく、参照型である必要があります。</typeparam>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Boolean@,System.Boolean)">
+      <summary>指定した値を指定したフィールドに書き込みます。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの前に読み取りまたは書き込みが配置されている場合、プロセッサはその操作をこのメソッドの後へ移動できなくなります。</summary>
+      <param name="location">値を書き込むフィールド。</param>
+      <param name="value">書き込む値。値は即座に書き込まれるため、コンピューター内のすべてのプロセッサに対して可視になります。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Byte@,System.Byte)">
+      <summary>指定した値を指定したフィールドに書き込みます。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの前に読み取りまたは書き込みが配置されている場合、プロセッサはその操作をこのメソッドの後へ移動できなくなります。</summary>
+      <param name="location">値を書き込むフィールド。</param>
+      <param name="value">書き込む値。値は即座に書き込まれるため、コンピューター内のすべてのプロセッサに対して可視になります。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Double@,System.Double)">
+      <summary>指定した値を指定したフィールドに書き込みます。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの前に読み取りまたは書き込みが配置されている場合、プロセッサはその操作をこのメソッドの後へ移動できなくなります。</summary>
+      <param name="location">値を書き込むフィールド。</param>
+      <param name="value">書き込む値。値は即座に書き込まれるため、コンピューター内のすべてのプロセッサに対して可視になります。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Int16@,System.Int16)">
+      <summary>指定した値を指定したフィールドに書き込みます。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの前に読み取りまたは書き込みが配置されている場合、プロセッサはその操作をこのメソッドの後へ移動できなくなります。</summary>
+      <param name="location">値を書き込むフィールド。</param>
+      <param name="value">書き込む値。値は即座に書き込まれるため、コンピューター内のすべてのプロセッサに対して可視になります。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Int32@,System.Int32)">
+      <summary>指定した値を指定したフィールドに書き込みます。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの前に読み取りまたは書き込みが配置されている場合、プロセッサはその操作をこのメソッドの後へ移動できなくなります。</summary>
+      <param name="location">値を書き込むフィールド。</param>
+      <param name="value">書き込む値。値は即座に書き込まれるため、コンピューター内のすべてのプロセッサに対して可視になります。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Int64@,System.Int64)">
+      <summary>指定した値を指定したフィールドに書き込みます。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの前にメモリ操作が配置されている場合、プロセッサはその操作をこのメソッドの後へ移動できなくなります。</summary>
+      <param name="location">値を書き込むフィールド。</param>
+      <param name="value">書き込む値。値は即座に書き込まれるため、コンピューター内のすべてのプロセッサに対して可視になります。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.IntPtr@,System.IntPtr)">
+      <summary>指定した値を指定したフィールドに書き込みます。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの前に読み取りまたは書き込みが配置されている場合、プロセッサはその操作をこのメソッドの後へ移動できなくなります。</summary>
+      <param name="location">値を書き込むフィールド。</param>
+      <param name="value">書き込む値。値は即座に書き込まれるため、コンピューター内のすべてのプロセッサに対して可視になります。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.SByte@,System.SByte)">
+      <summary>指定した値を指定したフィールドに書き込みます。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの前に読み取りまたは書き込みが配置されている場合、プロセッサはその操作をこのメソッドの後へ移動できなくなります。</summary>
+      <param name="location">値を書き込むフィールド。</param>
+      <param name="value">書き込む値。値は即座に書き込まれるため、コンピューター内のすべてのプロセッサに対して可視になります。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.Single@,System.Single)">
+      <summary>指定した値を指定したフィールドに書き込みます。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの前に読み取りまたは書き込みが配置されている場合、プロセッサはその操作をこのメソッドの後へ移動できなくなります。</summary>
+      <param name="location">値を書き込むフィールド。</param>
+      <param name="value">書き込む値。値は即座に書き込まれるため、コンピューター内のすべてのプロセッサに対して可視になります。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.UInt16@,System.UInt16)">
+      <summary>指定した値を指定したフィールドに書き込みます。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの前に読み取りまたは書き込みが配置されている場合、プロセッサはその操作をこのメソッドの後へ移動できなくなります。</summary>
+      <param name="location">値を書き込むフィールド。</param>
+      <param name="value">書き込む値。値は即座に書き込まれるため、コンピューター内のすべてのプロセッサに対して可視になります。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.UInt32@,System.UInt32)">
+      <summary>指定した値を指定したフィールドに書き込みます。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの前に読み取りまたは書き込みが配置されている場合、プロセッサはその操作をこのメソッドの後へ移動できなくなります。</summary>
+      <param name="location">値を書き込むフィールド。</param>
+      <param name="value">書き込む値。値は即座に書き込まれるため、コンピューター内のすべてのプロセッサに対して可視になります。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.UInt64@,System.UInt64)">
+      <summary>指定した値を指定したフィールドに書き込みます。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの前に読み取りまたは書き込みが配置されている場合、プロセッサはその操作をこのメソッドの後へ移動できなくなります。</summary>
+      <param name="location">値を書き込むフィールド。</param>
+      <param name="value">書き込む値。値は即座に書き込まれるため、コンピューター内のすべてのプロセッサに対して可視になります。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write(System.UIntPtr@,System.UIntPtr)">
+      <summary>指定した値を指定したフィールドに書き込みます。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの前に読み取りまたは書き込みが配置されている場合、プロセッサはその操作をこのメソッドの後へ移動できなくなります。</summary>
+      <param name="location">値を書き込むフィールド。</param>
+      <param name="value">書き込む値。値は即座に書き込まれるため、コンピューター内のすべてのプロセッサに対して可視になります。</param>
+    </member>
+    <member name="M:System.Threading.Volatile.Write``1(``0@,``0)">
+      <summary>指定したオブジェクト参照を指定したフィールドに書き込みます。これが求められるシステムにおいて、プロセッサがメモリ操作を並べ替えるのを防止するメモリ バリアを挿入します。つまり、コード内でこのメソッドの前に読み取りまたは書き込みが配置されている場合、プロセッサはその操作をこのメソッドの後へ移動できなくなります。</summary>
+      <param name="location">オブジェクト参照を書き込むフィールド。</param>
+      <param name="value">書き込むオブジェクト参照。参照は即座に書き込まれるため、コンピューター内のすべてのプロセッサに対して可視になります。</param>
+      <typeparam name="T">書き込むフィールドの型。この型は、値型ではなく、参照型である必要があります。</typeparam>
+    </member>
+    <member name="T:System.Threading.WaitHandleCannotBeOpenedException">
+      <summary>存在しないシステム ミューテックスまたはシステム セマフォを開こうとしたときにスローされる例外。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.WaitHandleCannotBeOpenedException.#ctor">
+      <summary>
+        <see cref="T:System.Threading.WaitHandleCannotBeOpenedException" /> クラスの新しいインスタンスを既定値で初期化します。</summary>
+    </member>
+    <member name="M:System.Threading.WaitHandleCannotBeOpenedException.#ctor(System.String)">
+      <summary>指定したエラー メッセージを使用して、<see cref="T:System.Threading.WaitHandleCannotBeOpenedException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">例外の原因を説明するエラー メッセージ。</param>
+    </member>
+    <member name="M:System.Threading.WaitHandleCannotBeOpenedException.#ctor(System.String,System.Exception)">
+      <summary>指定したエラー メッセージと、この例外の原因である内部例外への参照を使用して、<see cref="T:System.Threading.WaitHandleCannotBeOpenedException" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="message">例外の原因を説明するエラー メッセージ。</param>
+      <param name="innerException">現在の例外の原因である例外。<paramref name="innerException" /> パラメーターが null でない場合は、内部例外を処理する catch ブロックで現在の例外が発生します。</param>
+    </member>
+  </members>
+</doc>

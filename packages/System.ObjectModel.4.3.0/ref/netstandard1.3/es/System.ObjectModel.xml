@@ -1,0 +1,726 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.ObjectModel</name>
+  </assembly>
+  <members>
+    <member name="T:System.Collections.ObjectModel.KeyedCollection`2">
+      <summary>Proporciona la clase base abstracta para una colección en la que sus claves están incrustadas en los valores.</summary>
+      <typeparam name="TKey">Tipo de claves de la colección.</typeparam>
+      <typeparam name="TItem">Tipo de elementos de la colección.</typeparam>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> que utiliza el comparador de igualdad predeterminado.</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.#ctor(System.Collections.Generic.IEqualityComparer{`0})">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> que utiliza el comparador de igualdad especificado.</summary>
+      <param name="comparer">Implementación de la interfaz genérica <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> que se va a usar al comparar claves, o null para usar el comparador de igualdad predeterminado para el tipo de clave, que se obtiene de <see cref="P:System.Collections.Generic.EqualityComparer`1.Default" />.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.#ctor(System.Collections.Generic.IEqualityComparer{`0},System.Int32)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> que utiliza el comparador de igualdad especificado y crea un diccionario de búsqueda cuando se supera el umbral especificado.</summary>
+      <param name="comparer">Implementación de la interfaz genérica <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> que se va a usar al comparar claves, o null para usar el comparador de igualdad predeterminado para el tipo de clave, que se obtiene de <see cref="P:System.Collections.Generic.EqualityComparer`1.Default" />.</param>
+      <param name="dictionaryCreationThreshold">Número de elementos que puede contener la colección sin crear un diccionario de búsqueda (0 crea el diccionario de búsqueda al agregar el primer elemento), o –1 para especificar que nunca se crea un diccionario de búsqueda.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="dictionaryCreationThreshold" /> is less than –1.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.ChangeItemKey(`1,`0)">
+      <summary>Cambia la clave asociada al elemento especificado en el diccionario de búsqueda.</summary>
+      <param name="item">Elemento cuya clave se va a cambiar.</param>
+      <param name="newKey">Nueva clave para <paramref name="item" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="item" /> is null.-or-<paramref name="key" /> is null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="item" /> is not found.-or-<paramref name="key" /> already exists in the <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.ClearItems">
+      <summary>Quita todos los elementos de <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />.</summary>
+    </member>
+    <member name="P:System.Collections.ObjectModel.KeyedCollection`2.Comparer">
+      <summary>Obtiene el comparador de igualdad genérico que se utiliza para determinar la igualdad de claves en la colección.</summary>
+      <returns>Implementación de la interfaz genérica <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> que se utiliza para determinar la igualdad de claves en la colección.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.Contains(`0)">
+      <summary>Determina si la colección contiene un elemento con la clave especificada.</summary>
+      <returns>true si la colección <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" /> contiene un elemento con la clave especificada; en caso contrario, false.</returns>
+      <param name="key">Clave que se buscará en la interfaz <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> is null.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.KeyedCollection`2.Dictionary">
+      <summary>Obtiene el diccionario de búsqueda de <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />.</summary>
+      <returns>Diccionario de búsqueda de <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />, si existe; de lo contrario, null.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.GetKeyForItem(`1)">
+      <summary>Cuando se implementa en una clase derivada, extrae la clave del elemento especificado.</summary>
+      <returns>Clave para el elemento especificado.</returns>
+      <param name="item">Elemento del que se va a extraer la clave.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.InsertItem(System.Int32,`1)">
+      <summary>Inserta un elemento en <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />, en el índice especificado.</summary>
+      <param name="index">Índice basado en cero en el que debe insertarse <paramref name="item" />.</param>
+      <param name="item">Objeto que se va a insertar.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> is less than 0.-or-<paramref name="index" /> is greater than <see cref="P:System.Collections.ObjectModel.Collection`1.Count" />.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.KeyedCollection`2.Item(`0)">
+      <summary>Obtiene el elemento con la clave especificada. </summary>
+      <returns>El elemento con la clave especificada.Si no se encuentra un elemento con la clave especificada, se produce una excepción.</returns>
+      <param name="key">Clave del elemento que se va a obtener.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> is null.</exception>
+      <exception cref="T:System.Collections.Generic.KeyNotFoundException">An element with the specified key does not exist in the collection.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.Remove(`0)">
+      <summary>Quita el elemento con la clave especificada de la interfaz <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />.</summary>
+      <returns>Es true si el elemento se quita correctamente; en caso contrario, es false.Este método también devuelve false si no se encuentra <paramref name="key" /> en <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />.</returns>
+      <param name="key">Clave del elemento que se va a quitar.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> is null.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.RemoveItem(System.Int32)">
+      <summary>Quita el elemento situado en el índice especificado de <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />.</summary>
+      <param name="index">Índice del elemento que se va a quitar.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.KeyedCollection`2.SetItem(System.Int32,`1)">
+      <summary>Reemplaza el elemento situado en el índice determinado con el elemento especificado.</summary>
+      <param name="index">Índice de base cero del elemento que se va a reemplazar.</param>
+      <param name="item">Nuevo elemento.</param>
+    </member>
+    <member name="T:System.Collections.ObjectModel.ObservableCollection`1">
+      <summary>Representa una colección de datos dinámicos que proporciona notificaciones cuando se agregan o se quitan elementos o cuando se actualiza toda la lista.</summary>
+      <typeparam name="T">Tipo de los elementos de la colección.</typeparam>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Collections.ObjectModel.ObservableCollection`1" />.</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Collections.ObjectModel.ObservableCollection`1" /> que contiene los elementos copiados de la colección especificada.</summary>
+      <param name="collection">Colección desde la que se copian los elementos.</param>
+      <exception cref="T:System.ArgumentNullException">El parámetro <paramref name="collection" /> no puede ser null.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.BlockReentrancy">
+      <summary>No permite intentos reentrantes por cambiar esta colección.</summary>
+      <returns>Objeto <see cref="T:System.IDisposable" /> que se puede usar para eliminar el objeto.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.CheckReentrancy">
+      <summary>Comprueba si se producen intentos reentrantes por cambiar esta colección.</summary>
+      <exception cref="T:System.InvalidOperationException">Se inicia esta excepción si se ha producido una llamada a <see cref="M:System.Collections.ObjectModel.ObservableCollection`1.BlockReentrancy" /> cuyo valor devuelto <see cref="T:System.IDisposable" /> aún no se ha eliminado.Normalmente, esto significa que se inicia cuando se producen intentos adicionales por cambiar esta colección durante un evento <see cref="E:System.Collections.ObjectModel.ObservableCollection`1.CollectionChanged" />.Sin embargo, depende de cuándo las clases derivadas decidan llamar a <see cref="M:System.Collections.ObjectModel.ObservableCollection`1.BlockReentrancy" />.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.ClearItems">
+      <summary>Quita todos los elementos de la colección.</summary>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ObservableCollection`1.CollectionChanged">
+      <summary>Se produce cuando se agrega, quita, cambia, mueve un elemento o se actualiza la lista completa.</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.InsertItem(System.Int32,`0)">
+      <summary>Inserta un elemento en el índice especificado de la colección.</summary>
+      <param name="index">Índice basado en cero en el que debe insertarse <paramref name="item" />.</param>
+      <param name="item">Objeto que se va a insertar.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.Move(System.Int32,System.Int32)">
+      <summary>Mueve el elemento situado en el índice especificado a una nueva ubicación en la colección.</summary>
+      <param name="oldIndex">Índice de base cero que especifica la ubicación del elemento que se va a mover.</param>
+      <param name="newIndex">Índice de base cero que especifica la nueva ubicación del elemento.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.MoveItem(System.Int32,System.Int32)">
+      <summary>Mueve el elemento situado en el índice especificado a una nueva ubicación en la colección.</summary>
+      <param name="oldIndex">Índice de base cero que especifica la ubicación del elemento que se va a mover.</param>
+      <param name="newIndex">Índice de base cero que especifica la nueva ubicación del elemento.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+      <summary>Genera el evento <see cref="E:System.Collections.ObjectModel.ObservableCollection`1.CollectionChanged" /> con los argumentos proporcionados.</summary>
+      <param name="e">Argumentos del evento que se provoca.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs)">
+      <summary>Genera el evento <see cref="E:System.Collections.ObjectModel.ObservableCollection`1.PropertyChanged" /> con los argumentos proporcionados.</summary>
+      <param name="e">Argumentos del evento que se provoca.</param>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ObservableCollection`1.PropertyChanged">
+      <summary>Tiene lugar cuando cambia un valor de propiedad.</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.RemoveItem(System.Int32)">
+      <summary>Quita de la colección el elemento situado en el índice especificado.</summary>
+      <param name="index">Índice de base cero del elemento que se va a quitar.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ObservableCollection`1.SetItem(System.Int32,`0)">
+      <summary>Reemplaza el elemento del índice especificado.</summary>
+      <param name="index">Índice de base cero del elemento que se va a reemplazar.</param>
+      <param name="item">Nuevo valor para el elemento del índice especificado.</param>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ObservableCollection`1.System#ComponentModel#INotifyPropertyChanged#PropertyChanged">
+      <summary>Tiene lugar cuando cambia un valor de propiedad.</summary>
+    </member>
+    <member name="T:System.Collections.ObjectModel.ReadOnlyDictionary`2">
+      <summary>Representa una colección genérica de solo lectura de pares clave-valor.</summary>
+      <typeparam name="TKey">Tipo de claves del diccionario.</typeparam>
+      <typeparam name="TValue">Tipo de valores del diccionario.</typeparam>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.#ctor(System.Collections.Generic.IDictionary{`0,`1})">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" /> que es un contenedor para el diccionario especificado.</summary>
+      <param name="dictionary">Diccionario que se va a ajustar.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ContainsKey(`0)">
+      <summary>Determina si el diccionario contiene un elemento con la clave especificada.</summary>
+      <returns>Es true si el diccionario contiene un elemento con la clave especificada; en caso contrario, es false.</returns>
+      <param name="key">Clave que se debe buscar en el diccionario.</param>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.Count">
+      <summary>Obtiene el número de elementos del diccionario.</summary>
+      <returns>Número de elementos del diccionario.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.Dictionary">
+      <summary>Obtiene el diccionario que está encapsulado por este objeto <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" />.</summary>
+      <returns>Diccionario que está contenido por este objeto.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.GetEnumerator">
+      <summary>Devuelve un enumerador que recorre en iteración la colección <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" />.</summary>
+      <returns>Enumerador que puede usarse para recorrer en iteración la colección.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.Item(`0)">
+      <summary>Obtiene el elemento que tiene la clave especificada.</summary>
+      <returns>El elemento que tiene la clave especificada.</returns>
+      <param name="key">Clave del elemento que se va a obtener.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> es null.</exception>
+      <exception cref="T:System.Collections.Generic.KeyNotFoundException">La propiedad se recupera, pero <paramref name="key" /> no se encuentra.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.Keys">
+      <summary>Obtiene una colección de claves que contiene las claves del diccionario.</summary>
+      <returns>Colección de claves que contiene las claves del diccionario.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#Add(System.Collections.Generic.KeyValuePair{`0,`1})">
+      <summary>Produce una excepción <see cref="T:System.NotSupportedException" /> en todos los casos.</summary>
+      <param name="item">Objeto que se agrega al diccionario.</param>
+      <exception cref="T:System.NotSupportedException">En todos los casos.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#Clear">
+      <summary>Produce una excepción <see cref="T:System.NotSupportedException" /> en todos los casos.</summary>
+      <exception cref="T:System.NotSupportedException">En todos los casos.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#Contains(System.Collections.Generic.KeyValuePair{`0,`1})">
+      <summary>Determina si el diccionario contiene un valor específico.</summary>
+      <returns>true si el objeto <paramref name="item" /> está en el diccionario; en caso contrario, false.</returns>
+      <param name="item">Objeto que se va a buscar en el diccionario.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#CopyTo(System.Collections.Generic.KeyValuePair{`0,`1}[],System.Int32)">
+      <summary>Copia los elementos del diccionario en una matriz, comenzando en el índice especificado de la matriz.</summary>
+      <param name="array">Matriz unidimensional que constituye el destino de los elementos copiados desde el diccionario.La matriz debe tener una indización de base cero.</param>
+      <param name="arrayIndex">Índice de base cero de <paramref name="array" /> en el que empieza la operación de copia.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="arrayIndex" /> es menor que 0.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> es multidimensional.O bienEl número de elementos del diccionario de origen es mayor que el espacio disponible de <paramref name="arrayIndex" /> hasta el final del objeto <paramref name="array" /> de destino.O bienEl tipo <paramref name="T" /> no puede convertirse automáticamente al tipo del parámetro <paramref name="array" /> de destino.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#IsReadOnly">
+      <summary>Obtiene un valor que indica si el diccionario es de solo lectura.</summary>
+      <returns>true en todos los casos.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#ICollection{T}#Remove(System.Collections.Generic.KeyValuePair{`0,`1})">
+      <summary>Produce una excepción <see cref="T:System.NotSupportedException" /> en todos los casos.</summary>
+      <returns>Produce una excepción <see cref="T:System.NotSupportedException" /> en todos los casos.</returns>
+      <param name="item">Objeto que se va a quitar del diccionario.</param>
+      <exception cref="T:System.NotSupportedException">En todos los casos.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Add(`0,`1)">
+      <summary>Produce una excepción <see cref="T:System.NotSupportedException" /> en todos los casos.</summary>
+      <param name="key">Objeto que se va a utilizar como clave del elemento que se va a agregar.</param>
+      <param name="value">Objeto que se va a utilizar como valor del elemento que se va a agregar.</param>
+      <exception cref="T:System.NotSupportedException">En todos los casos.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Item(`0)">
+      <summary>Obtiene el elemento que tiene la clave especificada.</summary>
+      <returns>El elemento que tiene la clave especificada.</returns>
+      <param name="key">Clave del elemento que se obtiene o establece.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> es null.</exception>
+      <exception cref="T:System.Collections.Generic.KeyNotFoundException">La propiedad se recupera, pero <paramref name="key" /> no se encuentra.</exception>
+      <exception cref="T:System.NotSupportedException">La propiedad está establecida.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Keys">
+      <summary>Obtiene una colección que contiene las claves del diccionario.</summary>
+      <returns>Colección que contiene las claves del objeto que implementa la interfaz <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" />.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Remove(`0)">
+      <summary>Produce una excepción <see cref="T:System.NotSupportedException" /> en todos los casos.</summary>
+      <returns>Produce una excepción <see cref="T:System.NotSupportedException" /> en todos los casos.</returns>
+      <param name="key">Clave del elemento que se va a quitar.</param>
+      <exception cref="T:System.NotSupportedException">En todos los casos.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IDictionary{TKey@TValue}#Values">
+      <summary>Obtiene una colección que contiene los valores del diccionario.</summary>
+      <returns>Colección que contiene los valores del objeto que implementa la interfaz <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" />.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey@TValue}#Keys">
+      <summary>Obtiene una colección enumerable que contiene las claves del diccionario de solo lectura. </summary>
+      <returns>Una colección enumerable que contiene las claves del diccionario de solo lectura.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey@TValue}#Values">
+      <summary>Obtiene una colección enumerable que contiene los valores del diccionario de solo lectura.</summary>
+      <returns>Una colección enumerable que contiene los valores del diccionario de solo lectura.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>Copia los elementos del diccionario en una matriz, comenzando en el índice especificado de la matriz.</summary>
+      <param name="array">Matriz unidimensional que constituye el destino de los elementos copiados desde el diccionario.La matriz debe tener una indización de base cero.</param>
+      <param name="index">Índice de base cero de <paramref name="array" /> en el que empieza la operación de copia. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> es null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> es menor que cero. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> es multidimensional.O bien El número de elementos del diccionario de origen es mayor que el espacio disponible de <paramref name="index" /> hasta el final del objeto <paramref name="array" /> de destino.O bien El tipo del diccionario de origen no puede convertirse automáticamente en el tipo de <paramref name="array" /> de destino<paramref name="." /></exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#ICollection#IsSynchronized">
+      <summary>Obtiene un valor que indica si el acceso al diccionario está sincronizado (es seguro para la ejecución de subprocesos).</summary>
+      <returns>Es true si el acceso al diccionario está sincronizado (es seguro para la ejecución de subprocesos); en caso contrario, es false.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#ICollection#SyncRoot">
+      <summary>Obtiene un objeto que se puede utilizar para sincronizar el acceso al diccionario.</summary>
+      <returns>Objeto que se puede utilizar para sincronizar el acceso al diccionario.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Add(System.Object,System.Object)">
+      <summary>Produce una excepción <see cref="T:System.NotSupportedException" /> en todos los casos.</summary>
+      <param name="key">Clave del elemento que se va a agregar. </param>
+      <param name="value">Valor del elemento que se va a agregar. </param>
+      <exception cref="T:System.NotSupportedException">En todos los casos.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Clear">
+      <summary>Produce una excepción <see cref="T:System.NotSupportedException" /> en todos los casos.</summary>
+      <exception cref="T:System.NotSupportedException">En todos los casos.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Contains(System.Object)">
+      <summary>Determina si el diccionario contiene un elemento con la clave especificada.</summary>
+      <returns>Es true si el diccionario contiene un elemento con la clave especificada; en caso contrario, es false.</returns>
+      <param name="key">Clave que se debe buscar en el diccionario.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> es null. </exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#GetEnumerator">
+      <summary>Devuelve un enumerador para el diccionario.</summary>
+      <returns>Enumerador del diccionario.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#IsFixedSize">
+      <summary>Obtiene un valor que indica si el diccionario tiene un tamaño fijo.</summary>
+      <returns>Es true si el diccionario tiene un tamaño fijo; de lo contrario, es false.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#IsReadOnly">
+      <summary>Obtiene un valor que indica si el diccionario es de solo lectura.</summary>
+      <returns>true en todos los casos.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Item(System.Object)">
+      <summary>Obtiene el elemento que tiene la clave especificada.</summary>
+      <returns>El elemento que tiene la clave especificada.</returns>
+      <param name="key">Clave del elemento que se obtiene o establece. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> es null. </exception>
+      <exception cref="T:System.NotSupportedException">La propiedad está establecida.O bien La propiedad está establecida, <paramref name="key" /> no existe en la colección y el diccionario tiene un tamaño fijo. </exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Keys">
+      <summary>Obtiene una colección que contiene las claves del diccionario.</summary>
+      <returns>Colección que contiene las claves del diccionario.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Remove(System.Object)">
+      <summary>Produce una excepción <see cref="T:System.NotSupportedException" /> en todos los casos.</summary>
+      <param name="key">Clave del elemento que se va a quitar. </param>
+      <exception cref="T:System.NotSupportedException">En todos los casos.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Values">
+      <summary>Obtiene una colección que contiene los valores del diccionario.</summary>
+      <returns>Colección que contiene los valores del diccionario.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Devuelve un enumerador que recorre en iteración una colección.</summary>
+      <returns>Enumerador que puede usarse para recorrer en iteración la colección.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.TryGetValue(`0,`1@)">
+      <summary>Recupera el valor que está asociado a la clave especificada.</summary>
+      <returns>Es true si el objeto que implementa <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" /> contiene un elemento con la clave especificada; en caso contrario, es false.</returns>
+      <param name="key">Clave cuyo valor se va a recuperar.</param>
+      <param name="value">Cuando este método devuelve el resultado, el valor asociado a la clave especificada, si se encuentra la clave; en caso contrario, el valor predeterminado para el tipo del parámetro <paramref name="value" />.Este parámetro se pasa sin inicializar.</param>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.Values">
+      <summary>Obtiene una colección que contiene los valores del diccionario.</summary>
+      <returns>Colección que contiene los valores del objeto que implementa la interfaz <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" />.</returns>
+    </member>
+    <member name="T:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection">
+      <summary>Representa una colección de solo lectura de las claves de un objeto <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" />.</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.CopyTo(`0[],System.Int32)">
+      <summary>Copia los elementos de la colección en una matriz, que empieza en un índice de matriz específico.</summary>
+      <param name="array">Matriz unidimensional que constituye el destino de los elementos copiados de la colección.La matriz debe tener una indización de base cero.</param>
+      <param name="arrayIndex">Índice de base cero de <paramref name="array" /> en el que empieza la operación de copia.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="arrayIndex" /> es menor que 0.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> es multidimensional.O bienEl número de elementos de la colección de origen es mayor que el espacio disponible en <paramref name="arrayIndex" /> hasta el final del objeto <paramref name="array" /> de destino.O bienEl tipo <paramref name="T" /> no puede convertirse automáticamente al tipo del parámetro <paramref name="array" /> de destino.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.Count">
+      <summary>Obtiene el número de elementos de la colección.</summary>
+      <returns>Número de elementos de la colección.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.GetEnumerator">
+      <summary>Devuelve un enumerador que recorre en iteración la colección.</summary>
+      <returns>Enumerador que puede usarse para recorrer en iteración la colección.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#Generic#ICollection{T}#Add(`0)">
+      <summary>Produce una excepción <see cref="T:System.NotSupportedException" /> en todos los casos.</summary>
+      <param name="item">Objeto que se agrega a la colección.</param>
+      <exception cref="T:System.NotSupportedException">En todos los casos.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#Generic#ICollection{T}#Clear">
+      <summary>Produce una excepción <see cref="T:System.NotSupportedException" /> en todos los casos.</summary>
+      <exception cref="T:System.NotSupportedException">En todos los casos.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#Generic#ICollection{T}#Contains(`0)">
+      <summary>Determina si la colección contiene un valor específico.</summary>
+      <returns>true si <paramref name="item" /> se encuentra en la colección; de lo contrario, false.</returns>
+      <param name="item">Objeto que se va a buscar en la colección.</param>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#Generic#ICollection{T}#IsReadOnly">
+      <summary>Obtiene un valor que indica si la colección es de solo lectura.</summary>
+      <returns>true en todos los casos.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#Generic#ICollection{T}#Remove(`0)">
+      <summary>Produce una excepción <see cref="T:System.NotSupportedException" /> en todos los casos.</summary>
+      <returns>Es true si <paramref name="item" /> se quitó correctamente de la colección; de lo contrario, es false.Este método también devuelve false si <paramref name="item" /> no se encuentra en la colección original.</returns>
+      <param name="item">Objeto que se va a quitar de la colección.</param>
+      <exception cref="T:System.NotSupportedException">En todos los casos.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>Copia los elementos de la colección en una matriz, que empieza en un índice de matriz específico.</summary>
+      <param name="array">Matriz unidimensional que constituye el destino de los elementos copiados de la colección.La matriz debe tener una indización de base cero.</param>
+      <param name="index">Índice de base cero de <paramref name="array" /> en el que empieza la operación de copia.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="index" /> es menor que 0.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> es multidimensional.O bienEl número de elementos de la colección de origen es mayor que el espacio disponible en <paramref name="index" /> hasta el final del objeto <paramref name="array" /> de destino.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>Obtiene un valor que indica si el acceso a la colección está sincronizado. Es decir, es seguro para la ejecución de subprocesos.</summary>
+      <returns>Es true si el acceso a la colección está sincronizado (es seguro para la ejecución de subprocesos); en caso contrario, es false.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#ICollection#SyncRoot">
+      <summary>Obtiene un objeto que se puede utilizar para sincronizar el acceso a la colección.</summary>
+      <returns>Objeto que se puede utilizar para sincronizar el acceso a la colección.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Devuelve un enumerador que recorre en iteración la colección.</summary>
+      <returns>Enumerador que puede usarse para recorrer en iteración la colección.</returns>
+    </member>
+    <member name="T:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection">
+      <summary>Representa una colección de solo lectura de los valores de un objeto <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2" />.</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.CopyTo(`1[],System.Int32)">
+      <summary>Copia los elementos de la colección en una matriz, que empieza en un índice de matriz específico.</summary>
+      <param name="array">Matriz unidimensional que constituye el destino de los elementos copiados de la colección.La matriz debe tener una indización de base cero.</param>
+      <param name="arrayIndex">Índice de base cero de <paramref name="array" /> en el que empieza la operación de copia.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="arrayIndex" /> es menor que 0.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> es multidimensional.O bienEl número de elementos de la colección de origen es mayor que el espacio disponible en <paramref name="arrayIndex" /> hasta el final del objeto <paramref name="array" /> de destino.O bienEl tipo <paramref name="T" /> no puede convertirse automáticamente al tipo del parámetro <paramref name="array" /> de destino.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.Count">
+      <summary>Obtiene el número de elementos de la colección.</summary>
+      <returns>Número de elementos de la colección.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.GetEnumerator">
+      <summary>Devuelve un enumerador que recorre en iteración la colección.</summary>
+      <returns>Enumerador que puede usarse para recorrer en iteración la colección.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#Generic#ICollection{T}#Add(`1)">
+      <summary>Produce una excepción <see cref="T:System.NotSupportedException" /> en todos los casos.</summary>
+      <param name="item">Objeto que se agrega a la colección.</param>
+      <exception cref="T:System.NotSupportedException">En todos los casos.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#Generic#ICollection{T}#Clear">
+      <summary>Produce una excepción <see cref="T:System.NotSupportedException" /> en todos los casos.</summary>
+      <exception cref="T:System.NotSupportedException">En todos los casos.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#Generic#ICollection{T}#Contains(`1)">
+      <summary>Determina si la colección contiene un valor específico.</summary>
+      <returns>true si <paramref name="item" /> se encuentra en la colección; de lo contrario, false.</returns>
+      <param name="item">Objeto que se va a buscar en la colección.</param>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#Generic#ICollection{T}#IsReadOnly">
+      <summary>Obtiene un valor que indica si la colección es de solo lectura.</summary>
+      <returns>true en todos los casos.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#Generic#ICollection{T}#Remove(`1)">
+      <summary>Produce una excepción <see cref="T:System.NotSupportedException" /> en todos los casos.</summary>
+      <returns>Es true si <paramref name="item" /> se quitó correctamente de la colección; de lo contrario, es false.Este método también devuelve false si <paramref name="item" /> no se encuentra en la colección original.</returns>
+      <param name="item">Objeto que se va a quitar de la colección.</param>
+      <exception cref="T:System.NotSupportedException">En todos los casos.</exception>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>Copia los elementos de la colección en una matriz, que empieza en un índice de matriz específico.</summary>
+      <param name="array">Matriz unidimensional que constituye el destino de los elementos copiados de la colección.La matriz debe tener una indización de base cero.</param>
+      <param name="index">Índice de base cero de <paramref name="array" /> en el que empieza la operación de copia.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> es null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">El valor de <paramref name="index" /> es menor que 0.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> es multidimensional.O bienEl número de elementos de la colección de origen es mayor que el espacio disponible en <paramref name="index" /> hasta el final del objeto <paramref name="array" /> de destino.</exception>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>Obtiene un valor que indica si el acceso a la colección está sincronizado. Es decir, es seguro para la ejecución de subprocesos.</summary>
+      <returns>Es true si el acceso a la colección está sincronizado (es seguro para la ejecución de subprocesos); en caso contrario, es false.</returns>
+    </member>
+    <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#ICollection#SyncRoot">
+      <summary>Obtiene un objeto que se puede utilizar para sincronizar el acceso a la colección.</summary>
+      <returns>Objeto que se puede utilizar para sincronizar el acceso a la colección.</returns>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Devuelve un enumerador que recorre en iteración la colección.</summary>
+      <returns>Enumerador que puede usarse para recorrer en iteración la colección.</returns>
+    </member>
+    <member name="T:System.Collections.ObjectModel.ReadOnlyObservableCollection`1">
+      <summary>Representa un objeto <see cref="T:System.Collections.ObjectModel.ObservableCollection`1" /> de solo lectura.</summary>
+      <typeparam name="T">Tipo de los elementos de la colección.</typeparam>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.#ctor(System.Collections.ObjectModel.ObservableCollection{`0})">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Collections.ObjectModel.ReadOnlyObservableCollection`1" /> que actúa de contenedor para el objeto <see cref="T:System.Collections.ObjectModel.ObservableCollection`1" /> especificado.</summary>
+      <param name="list">
+        <see cref="T:System.Collections.ObjectModel.ObservableCollection`1" /> con el que se crea esta instancia de la clase <see cref="T:System.Collections.ObjectModel.ReadOnlyObservableCollection`1" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="list" /> es null.</exception>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.CollectionChanged">
+      <summary>Se produce cuando se agrega o se quita un elemento.</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+      <summary>Provoca el evento <see cref="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.CollectionChanged" /> utilizando los argumentos proporcionados.</summary>
+      <param name="args">Argumentos del evento que se provoca.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs)">
+      <summary>Provoca el evento <see cref="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.PropertyChanged" /> utilizando los argumentos proporcionados.</summary>
+      <param name="args">Argumentos del evento que se provoca.</param>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.PropertyChanged">
+      <summary>Tiene lugar cuando cambia un valor de propiedad.</summary>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.System#Collections#Specialized#INotifyCollectionChanged#CollectionChanged">
+      <summary>Se produce cuando cambia la colección.</summary>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.System#ComponentModel#INotifyPropertyChanged#PropertyChanged">
+      <summary>Tiene lugar cuando cambia un valor de propiedad.</summary>
+    </member>
+    <member name="T:System.Collections.Specialized.INotifyCollectionChanged">
+      <summary>Notifica a los agentes de escucha si se realizan cambios dinámicos como, por ejemplo, cuando se agregan o se quitan elementos o cuando se actualiza toda la lista.</summary>
+    </member>
+    <member name="E:System.Collections.Specialized.INotifyCollectionChanged.CollectionChanged">
+      <summary>Se produce cuando cambia la colección.</summary>
+    </member>
+    <member name="T:System.Collections.Specialized.NotifyCollectionChangedAction">
+      <summary>Describe la acción que generó un evento <see cref="E:System.Collections.Specialized.INotifyCollectionChanged.CollectionChanged" />. </summary>
+    </member>
+    <member name="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add">
+      <summary>Se agregaron uno o varios elementos a la colección.</summary>
+    </member>
+    <member name="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move">
+      <summary>Se movieron uno o varios elementos dentro de la colección.</summary>
+    </member>
+    <member name="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove">
+      <summary>Se quitaron uno o varios elementos de la colección.</summary>
+    </member>
+    <member name="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace">
+      <summary>Se reemplazaron uno o varios elementos de la colección.</summary>
+    </member>
+    <member name="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset">
+      <summary>El contenido de la colección ha cambiado significativamente.</summary>
+    </member>
+    <member name="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs">
+      <summary>Proporciona datos para el evento <see cref="E:System.Collections.Specialized.INotifyCollectionChanged.CollectionChanged" />.</summary>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> que describe un cambio <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />.</summary>
+      <param name="action">Acción que provocó el evento.Debe establecerse en <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />.</param>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Collections.IList)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> que describe un cambio de varios elementos.</summary>
+      <param name="action">Acción que provocó el evento.Puede establecerse en <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />, <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add" /> o <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove" />.</param>
+      <param name="changedItems">Elementos a los que afecta el cambio.</param>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Collections.IList,System.Collections.IList)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> que describe un cambio <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" /> de varios elementos.</summary>
+      <param name="action">Acción que provocó el evento.Sólo puede establecerse en <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" />.</param>
+      <param name="newItems">Nuevos elementos por los que se reemplazan los elementos originales.</param>
+      <param name="oldItems">Elementos originales reemplazados.</param>
+      <exception cref="T:System.ArgumentException">Si el valor de <paramref name="action" /> no es Replace.</exception>
+      <exception cref="T:System.ArgumentNullException">Si <paramref name="oldItems" /> o <paramref name="newItems" /> es null.</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Collections.IList,System.Collections.IList,System.Int32)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> que describe un cambio <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" /> de varios elementos.</summary>
+      <param name="action">Acción que provocó el evento.Sólo puede establecerse en <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" />.</param>
+      <param name="newItems">Nuevos elementos por los que se reemplazan los elementos originales.</param>
+      <param name="oldItems">Elementos originales reemplazados.</param>
+      <param name="startingIndex">Índice del primer elemento de los elementos reemplazados.</param>
+      <exception cref="T:System.ArgumentException">Si el valor de <paramref name="action" /> no es Replace.</exception>
+      <exception cref="T:System.ArgumentNullException">Si <paramref name="oldItems" /> o <paramref name="newItems" /> es null.</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Collections.IList,System.Int32)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> que describe un cambio de varios elementos o un cambio de <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />.</summary>
+      <param name="action">Acción que provocó el evento.Puede establecerse en <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />, <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add" /> o <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove" />.</param>
+      <param name="changedItems">Elementos a los que afecta el cambio.</param>
+      <param name="startingIndex">Índice donde se produjo el cambio.</param>
+      <exception cref="T:System.ArgumentException">Si <paramref name="action" /> no es Reset, Add o Remove, si <paramref name="action" /> es Reset y <paramref name="changedItems" /> no es null o <paramref name="startingIndex" /> no es –1, o si la acción es Add o Remove y <paramref name="startingIndex" /> es menor que -1.</exception>
+      <exception cref="T:System.ArgumentNullException">Si <paramref name="action" /> es Add o Remove y <paramref name="changedItems" /> es null.</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Collections.IList,System.Int32,System.Int32)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> que describe un cambio <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" /> de varios elementos.</summary>
+      <param name="action">Acción que provocó el evento.Sólo puede establecerse en <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" />.</param>
+      <param name="changedItems">Elementos a los que afecta el cambio.</param>
+      <param name="index">Nuevo índice de los elementos modificados.</param>
+      <param name="oldIndex">Índice anterior de los elementos modificados.</param>
+      <exception cref="T:System.ArgumentException">Si <paramref name="action" /> no es Move o <paramref name="index" /> es menor que 0.</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Object)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> que describe un cambio de un elemento.</summary>
+      <param name="action">Acción que provocó el evento.Puede establecerse en <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />, <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add" /> o <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove" />.</param>
+      <param name="changedItem">Elemento al que afecta el cambio.</param>
+      <exception cref="T:System.ArgumentException">Si <paramref name="action" /> no es Reset, Add o Remove, o si <paramref name="action" /> es Reset y <paramref name="changedItem" /> no es null.</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Object,System.Int32)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> que describe un cambio de un elemento.</summary>
+      <param name="action">Acción que provocó el evento.Puede establecerse en <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" />, <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add" /> o <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove" />.</param>
+      <param name="changedItem">Elemento al que afecta el cambio.</param>
+      <param name="index">Índice donde se produjo el cambio.</param>
+      <exception cref="T:System.ArgumentException">Si <paramref name="action" /> no es Reset, Add o Remove, o si <paramref name="action" /> es Reset y <paramref name="changedItems" /> no es null o <paramref name="index" /> no es -1.</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Object,System.Int32,System.Int32)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> que describe un cambio <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" /> de un elemento.</summary>
+      <param name="action">Acción que provocó el evento.Sólo puede establecerse en <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" />.</param>
+      <param name="changedItem">Elemento al que afecta el cambio.</param>
+      <param name="index">Nuevo índice del elemento modificado.</param>
+      <param name="oldIndex">Índice anterior del elemento modificado.</param>
+      <exception cref="T:System.ArgumentException">Si <paramref name="action" /> no es Move o <paramref name="index" /> es menor que 0.</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Object,System.Object)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> que describe un cambio <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" /> de un elemento.</summary>
+      <param name="action">Acción que provocó el evento.Sólo puede establecerse en <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" />.</param>
+      <param name="newItem">Nuevo elemento por el que se reemplaza el elemento original.</param>
+      <param name="oldItem">Elemento original reemplazado.</param>
+      <exception cref="T:System.ArgumentException">Si el valor de <paramref name="action" /> no es Replace.</exception>
+    </member>
+    <member name="M:System.Collections.Specialized.NotifyCollectionChangedEventArgs.#ctor(System.Collections.Specialized.NotifyCollectionChangedAction,System.Object,System.Object,System.Int32)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs" /> que describe un cambio <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" /> de un elemento.</summary>
+      <param name="action">Acción que provocó el evento.Puede establecerse en <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" />.</param>
+      <param name="newItem">Nuevo elemento por el que se reemplaza el elemento original.</param>
+      <param name="oldItem">Elemento original reemplazado.</param>
+      <param name="index">Índice del elemento reemplazado.</param>
+      <exception cref="T:System.ArgumentException">Si el valor de <paramref name="action" /> no es Replace.</exception>
+    </member>
+    <member name="P:System.Collections.Specialized.NotifyCollectionChangedEventArgs.Action">
+      <summary>Obtiene la acción que provocó el evento. </summary>
+      <returns>Valor <see cref="T:System.Collections.Specialized.NotifyCollectionChangedAction" /> que describe la acción que provocó el evento.</returns>
+    </member>
+    <member name="P:System.Collections.Specialized.NotifyCollectionChangedEventArgs.NewItems">
+      <summary>Obtiene la lista de nuevos elementos implicados en el cambio.</summary>
+      <returns>Lista de nuevos elementos implicados en el cambio.</returns>
+    </member>
+    <member name="P:System.Collections.Specialized.NotifyCollectionChangedEventArgs.NewStartingIndex">
+      <summary>Obtiene el índice donde se produjo el cambio.</summary>
+      <returns>Índice de base cero donde se produjo el cambio.</returns>
+    </member>
+    <member name="P:System.Collections.Specialized.NotifyCollectionChangedEventArgs.OldItems">
+      <summary>Obtiene la lista de elementos a los que afecta la acción <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" />, Remove o Move.</summary>
+      <returns>Lista de elementos a los que afecta la acción <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Replace" />, Remove o Move.</returns>
+    </member>
+    <member name="P:System.Collections.Specialized.NotifyCollectionChangedEventArgs.OldStartingIndex">
+      <summary>Obtiene el índice donde se produjo la acción <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" />, Remove o Replace.</summary>
+      <returns>Índice de base cero donde se produjo la acción <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Move" />, Remove o Replace.</returns>
+    </member>
+    <member name="T:System.Collections.Specialized.NotifyCollectionChangedEventHandler">
+      <summary>Representa el método que controla el evento <see cref="E:System.Collections.Specialized.INotifyCollectionChanged.CollectionChanged" />. </summary>
+      <param name="sender">Objeto que generó el evento.</param>
+      <param name="e">Información acerca del evento.</param>
+    </member>
+    <member name="T:System.ComponentModel.DataErrorsChangedEventArgs">
+      <summary>Proporciona datos para el evento <see cref="E:System.ComponentModel.INotifyDataErrorInfo.ErrorsChanged" />.</summary>
+    </member>
+    <member name="M:System.ComponentModel.DataErrorsChangedEventArgs.#ctor(System.String)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.ComponentModel.DataErrorsChangedEventArgs" />.</summary>
+      <param name="propertyName">El nombre de la propiedad que tiene un error. null o <see cref="F:System.String.Empty" /> si el error es del nivel de objeto.</param>
+    </member>
+    <member name="P:System.ComponentModel.DataErrorsChangedEventArgs.PropertyName">
+      <summary>Obtiene el nombre de la propiedad que tiene un error.</summary>
+      <returns>Nombre de la propiedad que tiene un error.null o <see cref="F:System.String.Empty" /> si el error es de nivel de objeto.</returns>
+    </member>
+    <member name="T:System.ComponentModel.INotifyDataErrorInfo">
+      <summary>Define los miembros que las clases de entidad de datos pueden implementar para proporcionar compatibilidad con la validación sincrónica y asincrónica personalizada.</summary>
+    </member>
+    <member name="E:System.ComponentModel.INotifyDataErrorInfo.ErrorsChanged">
+      <summary>Se produce cuando cambian los errores de validación de una propiedad o de la entidad completa. </summary>
+    </member>
+    <member name="M:System.ComponentModel.INotifyDataErrorInfo.GetErrors(System.String)">
+      <summary>Obtiene los errores de validación de la propiedad especificada o de la entidad completa.</summary>
+      <returns>Errores de validación de la propiedad o de la entidad.</returns>
+      <param name="propertyName">Nombre de la propiedad cuyos errores de validación se van a recuperar; null o <see cref="F:System.String.Empty" /> para recuperar los errores del nivel de entidad.</param>
+    </member>
+    <member name="P:System.ComponentModel.INotifyDataErrorInfo.HasErrors">
+      <summary>Obtiene un valor que indica si la entidad tiene errores de validación. </summary>
+      <returns>Es true si la entidad tiene errores de validación; de lo contrario, es false.</returns>
+    </member>
+    <member name="T:System.ComponentModel.INotifyPropertyChanged">
+      <summary>Notifica a los clientes que un valor de propiedad ha cambiado.</summary>
+    </member>
+    <member name="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged">
+      <summary>Tiene lugar cuando cambia un valor de propiedad.</summary>
+    </member>
+    <member name="T:System.ComponentModel.INotifyPropertyChanging">
+      <summary>Notifica a los clientes que un valor de propiedad está cambiando.</summary>
+    </member>
+    <member name="E:System.ComponentModel.INotifyPropertyChanging.PropertyChanging">
+      <summary>Se produce cuando un valor de propiedad está cambiando.</summary>
+    </member>
+    <member name="T:System.ComponentModel.PropertyChangedEventArgs">
+      <summary>Proporciona datos para el evento <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged" />.</summary>
+    </member>
+    <member name="M:System.ComponentModel.PropertyChangedEventArgs.#ctor(System.String)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.ComponentModel.PropertyChangedEventArgs" />.</summary>
+      <param name="propertyName">Nombre de la propiedad modificada. </param>
+    </member>
+    <member name="P:System.ComponentModel.PropertyChangedEventArgs.PropertyName">
+      <summary>Obtiene el nombre de la propiedad modificada.</summary>
+      <returns>Nombre de la propiedad modificada.</returns>
+    </member>
+    <member name="T:System.ComponentModel.PropertyChangedEventHandler">
+      <summary>Representa el método que controlará al evento <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged" /> que se provoque cuando cambie una propiedad en un componente.</summary>
+      <param name="sender">Origen del evento. </param>
+      <param name="e">Objeto <see cref="T:System.ComponentModel.PropertyChangedEventArgs" /> que contiene los datos del evento. </param>
+    </member>
+    <member name="T:System.ComponentModel.PropertyChangingEventArgs">
+      <summary>Proporciona datos para el evento <see cref="E:System.ComponentModel.INotifyPropertyChanging.PropertyChanging" />. </summary>
+    </member>
+    <member name="M:System.ComponentModel.PropertyChangingEventArgs.#ctor(System.String)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.ComponentModel.PropertyChangingEventArgs" />. </summary>
+      <param name="propertyName">Nombre de la propiedad cuyo valor está cambiando.</param>
+    </member>
+    <member name="P:System.ComponentModel.PropertyChangingEventArgs.PropertyName">
+      <summary>Obtiene el nombre de la propiedad cuyo valor está cambiando.</summary>
+      <returns>Nombre de la propiedad cuyo valor está cambiando.</returns>
+    </member>
+    <member name="T:System.ComponentModel.PropertyChangingEventHandler">
+      <summary>Representa el método que controlará el evento <see cref="E:System.ComponentModel.INotifyPropertyChanging.PropertyChanging" /> de una interfaz <see cref="T:System.ComponentModel.INotifyPropertyChanging" />. </summary>
+      <param name="sender">Origen del evento. </param>
+      <param name="e">Objeto <see cref="T:System.ComponentModel.PropertyChangingEventArgs" /> que contiene los datos del evento.</param>
+    </member>
+    <member name="T:System.Windows.Input.ICommand">
+      <summary>Define un comando.</summary>
+    </member>
+    <member name="M:System.Windows.Input.ICommand.CanExecute(System.Object)">
+      <summary>Define el método que determina si el comando puede ejecutarse en su estado actual.</summary>
+      <returns>true si se puede ejecutar este comando; de lo contrario, false.</returns>
+      <param name="parameter">Datos que usa el comando.Si el comando no exige pasar los datos, se puede establecer este objeto en null.</param>
+    </member>
+    <member name="E:System.Windows.Input.ICommand.CanExecuteChanged">
+      <summary>Se produce cuando hay cambios que influyen en si el comando debería ejecutarse o no.</summary>
+    </member>
+    <member name="M:System.Windows.Input.ICommand.Execute(System.Object)">
+      <summary>Define el método al que se llamará cuando se invoque el comando.</summary>
+      <param name="parameter">Datos que usa el comando.Si el comando no exige pasar los datos, se puede establecer este objeto en null.</param>
+    </member>
+  </members>
+</doc>

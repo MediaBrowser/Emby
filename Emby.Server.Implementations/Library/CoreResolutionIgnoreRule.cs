@@ -22,10 +22,12 @@ namespace Emby.Server.Implementations.Library
         private readonly ILibraryManager _libraryManager;
         private readonly ILogger _logger;
 
+        private bool _ignoreDotPrefix;
+
         /// <summary>
         /// Any folder named in this list will be ignored - can be added to at runtime for extensibility
         /// </summary>
-        public static readonly List<string> IgnoreFolders = new List<string>
+        public static readonly Dictionary<string, string> IgnoreFolders = new List<string>
         {
                 "metadata",
                 "ps3_update",
@@ -44,15 +46,21 @@ namespace Emby.Server.Implementations.Library
                 "@Recycle",
                 ".@__thumb",
                 "$RECYCLE.BIN",
-                "System Volume Information"
+                "System Volume Information",
+                ".grab",
 
-        };
-        
+                // macos
+                ".AppleDouble"
+
+        }.ToDictionary(i => i, StringComparer.OrdinalIgnoreCase);
+
         public CoreResolutionIgnoreRule(IFileSystem fileSystem, ILibraryManager libraryManager, ILogger logger)
         {
             _fileSystem = fileSystem;
             _libraryManager = libraryManager;
             _logger = logger;
+
+            _ignoreDotPrefix = Environment.OSVersion.Platform != PlatformID.Win32NT;
         }
 
         /// <summary>
@@ -74,9 +82,12 @@ namespace Emby.Server.Implementations.Library
 
             // Handle mac .DS_Store
             // https://github.com/MediaBrowser/MediaBrowser/issues/427
-            if (filename.IndexOf("._", StringComparison.OrdinalIgnoreCase) == 0)
+            if (_ignoreDotPrefix)
             {
-                return true;
+                if (filename.IndexOf('.') == 0)
+                {
+                    return true;
+                }
             }
 
             // Ignore hidden files and folders
@@ -108,7 +119,7 @@ namespace Emby.Server.Implementations.Library
             if (fileInfo.IsDirectory)
             {
                 // Ignore any folders in our list
-                if (IgnoreFolders.Contains(filename, StringComparer.OrdinalIgnoreCase))
+                if (IgnoreFolders.ContainsKey(filename))
                 {
                     return true;
                 }

@@ -253,18 +253,6 @@ namespace MediaBrowser.LocalMetadata.Parsers
                         break;
                     }
 
-                case "Website":
-                    {
-                        var val = reader.ReadElementContentAsString();
-
-                        if (!string.IsNullOrWhiteSpace(val))
-                        {
-                            item.HomePageUrl = val;
-                        }
-
-                        break;
-                    }
-
                 case "LockedFields":
                     {
                         var val = reader.ReadElementContentAsString();
@@ -462,13 +450,9 @@ namespace MediaBrowser.LocalMetadata.Parsers
                     {
                         var val = reader.ReadElementContentAsString();
 
-                        var hasTrailers = item as IHasTrailers;
-                        if (hasTrailers != null)
+                        if (!string.IsNullOrWhiteSpace(val))
                         {
-                            if (!string.IsNullOrWhiteSpace(val))
-                            {
-                                hasTrailers.AddTrailerUrl(val);
-                            }
+                            item.AddTrailerUrl(val);
                         }
                         break;
                     }
@@ -494,11 +478,7 @@ namespace MediaBrowser.LocalMetadata.Parsers
                         {
                             using (var subtree = reader.ReadSubtree())
                             {
-                                var hasTrailers = item as IHasTrailers;
-                                if (hasTrailers != null)
-                                {
-                                    FetchDataFromTrailersNode(subtree, hasTrailers);
-                                }
+                                FetchDataFromTrailersNode(subtree, item);
                             }
                         }
                         else
@@ -1019,7 +999,7 @@ namespace MediaBrowser.LocalMetadata.Parsers
             }
         }
 
-        private void FetchDataFromTrailersNode(XmlReader reader, IHasTrailers item)
+        private void FetchDataFromTrailersNode(XmlReader reader, T item)
         {
             reader.MoveToContent();
             reader.Read();
@@ -1289,7 +1269,7 @@ namespace MediaBrowser.LocalMetadata.Parsers
 
             value = value.Trim().Trim(separator);
 
-            return string.IsNullOrWhiteSpace(value) ? new string[] { } : Split(value, separator, StringSplitOptions.RemoveEmptyEntries);
+            return string.IsNullOrWhiteSpace(value) ? Array.Empty<string>() : Split(value, separator, StringSplitOptions.RemoveEmptyEntries);
         }
 
         /// <summary>

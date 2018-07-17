@@ -240,7 +240,7 @@ namespace MediaBrowser.Api
                 }
             }
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         /// <summary>
@@ -269,7 +269,7 @@ namespace MediaBrowser.Api
                 SupporterKey = _securityManager.SupporterKey
             };
 
-            return ToOptimizedSerializedResultUsingCache(result);
+            return ToOptimizedResult(result);
         }
 
         /// <summary>
@@ -295,7 +295,7 @@ namespace MediaBrowser.Api
         /// Posts the specified request.
         /// </summary>
         /// <param name="request">The request.</param>
-        public void Post(UpdatePluginConfiguration request)
+        public async Task Post(UpdatePluginConfiguration request)
         {
             // We need to parse this manually because we told service stack not to with IRequiresRequestStream
             // https://code.google.com/p/servicestack/source/browse/trunk/Common/ServiceStack.Text/ServiceStack.Text/Controller/PathInfo.cs
@@ -308,7 +308,7 @@ namespace MediaBrowser.Api
                 throw new FileNotFoundException();
             }
 
-            var configuration = _jsonSerializer.DeserializeFromStream(request.RequestStream, plugin.ConfigurationType) as BasePluginConfiguration;
+            var configuration = (await _jsonSerializer.DeserializeFromStreamAsync(request.RequestStream, plugin.ConfigurationType).ConfigureAwait(false)) as BasePluginConfiguration;
 
             plugin.UpdateConfiguration(configuration);
         }

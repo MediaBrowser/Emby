@@ -1,0 +1,1362 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Reflection.Primitives</name>
+  </assembly>
+  <members>
+    <member name="T:System.Reflection.CallingConventions">
+      <summary>メソッドに対して有効な呼び出し規約を定義します。</summary>
+    </member>
+    <member name="F:System.Reflection.CallingConventions.Any">
+      <summary>Standard または VarArgs のいずれかの呼び出し規約を使用することを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.CallingConventions.ExplicitThis">
+      <summary>シグネチャが、インスタンスまたは仮想メソッド (非静的メソッド) への呼び出しを表す関数ポインター シグネチャであることを示します。ExplicitThis が設定されている場合は HasThis も設定する必要があります。呼び出されるメソッドに渡される最初の引数は this ポインターのままですが、その引数の型は不明になります。したがって、this ポインターの型 (またはクラス) を記述するトークンが、そのメタデータ シグネチャに明示的に格納されます。</summary>
+    </member>
+    <member name="F:System.Reflection.CallingConventions.HasThis">
+      <summary>インスタンスまたは仮想メソッド (非静的メソッド) を指定します。実行時に、呼び出されるメソッドに、目的のオブジェクトへのポインターが最初の引数 (this ポインター) として渡されます。メタデータに格納されているシグネチャには、この最初の引数の型は含まれていません。メソッドが明らかに指定されており、そのメソッドを所有するクラスをメタデータから確認できるためです。</summary>
+    </member>
+    <member name="F:System.Reflection.CallingConventions.Standard">
+      <summary>共通言語ランタイムで決定されている既定の呼び出し規約を指定します。この静的メソッドの呼び出し規約を使用します。インスタンスや仮想メソッドには、HasThis を使用します。</summary>
+    </member>
+    <member name="F:System.Reflection.CallingConventions.VarArgs">
+      <summary>引数の数が変化するメソッドの呼び出し規約を指定します。</summary>
+    </member>
+    <member name="T:System.Reflection.EventAttributes">
+      <summary>イベントの属性を指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.EventAttributes.None">
+      <summary>イベントに属性がないことを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.EventAttributes.RTSpecialName">
+      <summary>共通言語ランタイムが名前のエンコード方式をチェックする必要があることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.EventAttributes.SpecialName">
+      <summary>イベントが特別であることを、名前で示すという方法で指定します。</summary>
+    </member>
+    <member name="T:System.Reflection.FieldAttributes">
+      <summary>フィールドの属性を記述するフラグを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Assembly">
+      <summary>アセンブリ全体からフィールドにアクセスできることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.FamANDAssem">
+      <summary>このアセンブリのサブタイプだけがフィールドにアクセスできることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Family">
+      <summary>型およびサブタイプだけがフィールドにアクセスできることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.FamORAssem">
+      <summary>あらゆる場所にあるサブタイプ、およびアセンブリ全体からフィールドにアクセスできることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.FieldAccessMask">
+      <summary>指定されているフィールドのアクセス レベルを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.HasDefault">
+      <summary>フィールドが既定値を持つことを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.HasFieldMarshal">
+      <summary>フィールドがマーシャリング情報を持つことを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.HasFieldRVA">
+      <summary>フィールドが RVA (Relative Virtual Address) を持つことを指定します。RVA は、現在のイメージ内のメソッド本体の場所を、メソッドが存在するイメージ ファイルの先頭からの相対アドレスで表した値です。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.InitOnly">
+      <summary>フィールドについて、初期化のみを行い、コンストラクターの本体でしか設定できないように指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Literal">
+      <summary>フィールドの値がコンパイル時 (静的バインディングまたは事前バインディング) 定数であることを指定します。設定しようとすると、<see cref="T:System.FieldAccessException" /> がスローされます。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.NotSerialized">
+      <summary>型をリモート処理するときに、フィールドをシリアル化する必要がないことを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.PinvokeImpl">
+      <summary>将来使用するために予約されています。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Private">
+      <summary>親の型だけがフィールドにアクセスできることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.PrivateScope">
+      <summary>フィールドを参照できないことを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Public">
+      <summary>このスコープが可視である任意のメンバーがフィールドにアクセスできることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.RTSpecialName">
+      <summary>共通言語ランタイム (メタデータ内部 API) が名前のエンコードをチェックする必要があることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.SpecialName">
+      <summary>特別なメソッドを指定します。メソッドが特別である理由は名前で説明します。</summary>
+    </member>
+    <member name="F:System.Reflection.FieldAttributes.Static">
+      <summary>フィールドが定義済みの型を表すことを指定します。それ以外の場合は、フィールドが表す型はインスタンスごとに異なります。</summary>
+    </member>
+    <member name="T:System.Reflection.GenericParameterAttributes">
+      <summary>ジェネリック型またはジェネリック メソッドのジェネリック型パラメーターに関する制約について説明します。</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.Contravariant">
+      <summary>ジェネリック型パラメーターが反変の型パラメーターです。反変の型パラメーターは、メソッドのシグネチャのパラメーター型として現れます。</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.Covariant">
+      <summary>ジェネリック型パラメーターが共変の型パラメーターです。共変の型パラメーターは、メソッドの結果型、読み取り専用フィールドの型、宣言された基本型、または実装されたインターフェイスとして現れます。</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.DefaultConstructorConstraint">
+      <summary>型がパラメーターなしのコンストラクターを持つ場合のみ、その型をジェネリック型パラメーターの代わりに使用できます。</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.None">
+      <summary>特別なフラグはありません。</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.NotNullableValueTypeConstraint">
+      <summary>型が値型で null 許容でない場合のみ、その型をジェネリック型パラメーターの代わりに使用できます。</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.ReferenceTypeConstraint">
+      <summary>型が参照型である場合のみ、その型をジェネリック型パラメーターの代わりに使用できます。</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.SpecialConstraintMask">
+      <summary>すべての特殊な制約フラグの組み合わせを選択します。この値は、論理 OR を使用して <see cref="F:System.Reflection.GenericParameterAttributes.DefaultConstructorConstraint" /> フラグ、<see cref="F:System.Reflection.GenericParameterAttributes.ReferenceTypeConstraint" /> フラグ、および <see cref="F:System.Reflection.GenericParameterAttributes.NotNullableValueTypeConstraint" /> フラグを組み合わせた結果です。</summary>
+    </member>
+    <member name="F:System.Reflection.GenericParameterAttributes.VarianceMask">
+      <summary>すべての変性フラグの組み合わせを選択します。この値は、論理 OR を使用して <see cref="F:System.Reflection.GenericParameterAttributes.Contravariant" /> フラグと <see cref="F:System.Reflection.GenericParameterAttributes.Covariant" /> フラグを組み合わせた結果です。</summary>
+    </member>
+    <member name="T:System.Reflection.MethodAttributes">
+      <summary>メソッドの属性について使用するフラグを指定します。これらのフラグは corhdr.h ファイルで定義されています。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Abstract">
+      <summary>クラスがこのメソッドの実装を提供しないことを示します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Assembly">
+      <summary>このアセンブリのすべてのクラスがメソッドにアクセスできることを示します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.CheckAccessOnOverride">
+      <summary>アクセス可能な場合に限りオーバーライドできるメソッドであることを示します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.FamANDAssem">
+      <summary>この型と、このアセンブリ内の派生した型のメンバーだけが、メソッドにアクセスできることを示します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Family">
+      <summary>このクラスとこのクラスの派生クラスのメンバーだけがメソッドにアクセスできることを示します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.FamORAssem">
+      <summary>このアセンブリ内のすべてのクラスと、任意の場所にある派生クラスからメソッドにアクセスできることを示します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Final">
+      <summary>メソッドをオーバーライドできないことを示します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.HasSecurity">
+      <summary>メソッドにセキュリティが関連付けられていることを示します。Runtime 専用に予約されているフラグです。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.HideBySig">
+      <summary>メソッドが名前とシグネチャで隠ぺいされることを示します。このフラグが設定されていない場合は、メソッドは名前だけで隠ぺいされます。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.MemberAccessMask">
+      <summary>アクセシビリティに関する情報を取得します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.NewSlot">
+      <summary>メソッドが vtable で必ず新しいスロットを取得することを示します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.PinvokeImpl">
+      <summary>メソッドの実装が PInvoke (Platform Invocation Services) を通じて転送されることを示します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Private">
+      <summary>現在のクラスだけからメソッドにアクセスできることを示します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.PrivateScope">
+      <summary>メンバーを参照できないことを示します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Public">
+      <summary>このオブジェクトがスコープ内に入っている全オブジェクトからメソッドにアクセスできることを示します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.RequireSecObject">
+      <summary>メソッドが、セキュリティ コードを含んでいる別のメソッドを呼び出すことを示します。Runtime 専用に予約されているフラグです。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.ReuseSlot">
+      <summary>メソッドが、vtable の既存のスロットを再利用することを示します。これが既定の動作です。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.RTSpecialName">
+      <summary>共通言語ランタイムが名前のエンコーディングを確認することを示します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.SpecialName">
+      <summary>メソッドが特別であることを示します。メソッドが特別である理由は名前で説明します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Static">
+      <summary>メソッドが型で定義されていることを示します。このフラグが設定されていない場合、メソッドはインスタンスごとに定義されます。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.UnmanagedExport">
+      <summary>マネージ メソッドが、サンクによってアンマネージ コードにエクスポートされることを示します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.Virtual">
+      <summary>メソッドが仮想メソッドであることを示します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodAttributes.VtableLayoutMask">
+      <summary>vtable 属性を取得します。</summary>
+    </member>
+    <member name="T:System.Reflection.MethodImplAttributes">
+      <summary>メソッド実装の属性について使用するフラグを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.AggressiveInlining">
+      <summary>可能な場所ではどこでもメソッドをインライン展開する必要があることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.CodeTypeMask">
+      <summary>コード型に関するフラグを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.ForwardRef">
+      <summary>メソッドが定義されていないことを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.IL">
+      <summary>メソッド実装が MSIL (Microsoft Intermediate Language) で記述されていることを示します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.InternalCall">
+      <summary>内部呼び出しを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.Managed">
+      <summary>マネージ コードとしてメソッドを実装することを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.ManagedMask">
+      <summary>メソッドをマネージ コードまたはアンマネージ コードのどちらで実装するかを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.Native">
+      <summary>メソッド実装がネイティブであることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.NoInlining">
+      <summary>メソッドをインライン展開できないことを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.NoOptimization">
+      <summary>コード生成の問題をデバッグする場合に、メソッドを最適化するために Just-In-Time (JIT) コンパイラまたはネイティブ コードによる生成を使用しないことを指定します (Ngen.exe を参照)。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.OPTIL">
+      <summary>メソッド実装が OPTIL (Optimized Intermediate Language) で記述されていることを示します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.PreserveSig">
+      <summary>メソッド シグネチャが宣言どおりにエクスポートされることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.Runtime">
+      <summary>メソッド実装が Runtime で提供されることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.Synchronized">
+      <summary>メソッドが、本体を通じてシングルスレッドであることを指定します。静的メソッド (Visual Basic の Shared) は型をロックし、インスタンス メソッドはインスタンスをロックします。この目的のためには、C# の lock ステートメントまたは Visual Basic の SyncLock ステートメントを使用することもできます。</summary>
+    </member>
+    <member name="F:System.Reflection.MethodImplAttributes.Unmanaged">
+      <summary>アンマネージ コードとしてメソッドを実装することを指定します。</summary>
+    </member>
+    <member name="T:System.Reflection.ParameterAttributes">
+      <summary>パラメーターに関連付けることができる属性を定義します。これらの属性は CorHdr.h で定義されています。</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.HasDefault">
+      <summary>パラメーターが既定の値を使用することを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.HasFieldMarshal">
+      <summary>パラメーターがフィールド マーシャリング情報を持つことを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.In">
+      <summary>パラメーターが入力パラメーターであることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.Lcid">
+      <summary>パラメーターがロケール識別子 (LCID: LoCale Identifier) であることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.None">
+      <summary>パラメーター属性がないことを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.Optional">
+      <summary>パラメーターが省略可能であることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.Out">
+      <summary>パラメーターが出力パラメーターであることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.ParameterAttributes.Retval">
+      <summary>パラメーターが戻り値を持つことを指定します。</summary>
+    </member>
+    <member name="T:System.Reflection.PropertyAttributes">
+      <summary>プロパティに関連付けることができる属性を定義します。これらの属性値は corhdr.h で定義されています。</summary>
+    </member>
+    <member name="F:System.Reflection.PropertyAttributes.HasDefault">
+      <summary>プロパティが既定値を持つことを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.PropertyAttributes.None">
+      <summary>プロパティに関連付ける属性がないことを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.PropertyAttributes.RTSpecialName">
+      <summary>メタデータ内部 API が名前のエンコーディングを確認することを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.PropertyAttributes.SpecialName">
+      <summary>プロパティが特別であることを指定します。プロパティが特別である理由は名前で説明します。</summary>
+    </member>
+    <member name="T:System.Reflection.TypeAttributes">
+      <summary>型属性を指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Abstract">
+      <summary>型が抽象的であることを示します。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.AnsiClass">
+      <summary>LPTSTR は ANSI として解釈されます。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.AutoClass">
+      <summary>LPTSTR は自動的に解釈されます。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.AutoLayout">
+      <summary>クラス フィールドが共通言語ランタイムによって自動的にレイアウトされることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.BeforeFieldInit">
+      <summary>型の静的なメソッドを呼び出しても、システムによって型が強制的に初期化されることはないことを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Class">
+      <summary>型がクラスであることを示します。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.ClassSemanticsMask">
+      <summary>クラスのセマンティクス情報を指定します。現在のクラスはコンテキスト バインド クラスです (そうでない場合は非バインド クラス)。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.CustomFormatClass">
+      <summary>LPSTR は、<see cref="T:System.NotSupportedException" /> のスローを含め、実装に固有の手段で解釈されます。Microsoft 実装の .NET Framework では使用されません。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.CustomFormatMask">
+      <summary>標準以外のエンコーディング情報を取得し、ネイティブな相互運用性を実現するために使用されます。2 ビットの値が持つ意味は指定されていません。Microsoft 実装の .NET Framework では使用されません。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.ExplicitLayout">
+      <summary>クラス フィールドが指定されたオフセットでレイアウトされることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.HasSecurity">
+      <summary>型にセキュリティが関連付けられています。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Import">
+      <summary>クラスまたはインターフェイスが別のモジュールからインポートされることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Interface">
+      <summary>型がインターフェイスであることを示します。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.LayoutMask">
+      <summary>クラス レイアウト情報を指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedAssembly">
+      <summary>クラスが、アセンブリ参照可能範囲の中にネストしているため、そのアセンブリ内のメソッドだけからアクセスできることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedFamANDAssem">
+      <summary>クラスがアセンブリおよびファミリの参照可能範囲内でネストしていることを指定します。この結果、そのファミリとアセンブリの積集合にあるメソッドだけからアクセスできます。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedFamily">
+      <summary>クラスがファミリ参照可能範囲内にネストしていることを指定します。この結果、そのファミリの独自の型および派生型のメソッドだけからアクセスできます。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedFamORAssem">
+      <summary>クラスがファミリまたはアセンブリの参照可能範囲内でネストしていることを指定します。この結果、そのファミリとアセンブリの和集合にあるメソッドだけからアクセスできます。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedPrivate">
+      <summary>クラスが、プライベートな参照可能範囲の中にネストしていることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NestedPublic">
+      <summary>クラスが、パブリックな参照可能範囲の中でネストしていることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.NotPublic">
+      <summary>クラスがパブリックでないことを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Public">
+      <summary>クラスがパブリックであることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.RTSpecialName">
+      <summary>ランタイムは名前のエンコード方式を確認する必要があります。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Sealed">
+      <summary>クラスが具象クラスで、拡張できないことを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.SequentialLayout">
+      <summary>クラス フィールドが、メタデータに生成された順序で連続的にレイアウトされることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.Serializable">
+      <summary>クラスをシリアル化できることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.SpecialName">
+      <summary>名前で説明するという方法で、クラスが特別であることを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.StringFormatMask">
+      <summary>ネイティブな相互運用性を得るための文字列情報の取得に使用されます。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.UnicodeClass">
+      <summary>LPTSTR は UNICODE として解釈されます。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.VisibilityMask">
+      <summary>型の参照可能範囲情報を指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.TypeAttributes.WindowsRuntime">
+      <summary>Windows ランタイム 型を指定します。</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.FlowControl">
+      <summary>命令によって制御フローを変更する方法を記述します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Branch">
+      <summary>分岐命令。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Break">
+      <summary>中断命令。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Call">
+      <summary>呼び出し命令。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Cond_Branch">
+      <summary>条件分岐命令。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Meta">
+      <summary>後続の命令に関する情報を提供します。たとえば、Reflection.Emit.Opcodes の Unaligned 命令には FlowControl.Meta があり、後続のポインター命令では整列を行わなくてもよいことを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Next">
+      <summary>通常の制御フロー。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Return">
+      <summary>戻り命令。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.FlowControl.Throw">
+      <summary>例外スロー命令。</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.OpCode">
+      <summary>IL (中間言語、Intermediate Language) 命令を記述します。</summary>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.Equals(System.Object)">
+      <summary>指定したオブジェクトがこの Opcode と等しいかどうかをテストします。</summary>
+      <returns>true if <paramref name="obj" /> is an instance of Opcode and is equal to this object; otherwise, false.</returns>
+      <param name="obj">このオブジェクトと比較するオブジェクト。 </param>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.Equals(System.Reflection.Emit.OpCode)">
+      <summary>現在のインスタンスが指定した <see cref="T:System.Reflection.Emit.OpCode" /> と等しいかどうかを示します。</summary>
+      <returns>
+        <paramref name="obj" /> の値が現在のインスタンスの値に等しい場合は true。それ以外の場合は false。</returns>
+      <param name="obj">現在のインスタンスと比較する <see cref="T:System.Reflection.Emit.OpCode" />。</param>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.FlowControl">
+      <summary>IL (中間言語、Intermediate Language) 命令のフロー制御特性。</summary>
+      <returns>読み取り専用です。制御フローの型。</returns>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.GetHashCode">
+      <summary>この Opcode に生成されたハッシュ コードを返します。</summary>
+      <returns>このインスタンスのハッシュ コードを返します。</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.Name">
+      <summary>IL (中間言語、Intermediate Language) 命令の名前。</summary>
+      <returns>読み取り専用です。IL 命令の名前。</returns>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.op_Equality(System.Reflection.Emit.OpCode,System.Reflection.Emit.OpCode)">
+      <summary>2 つの <see cref="T:System.Reflection.Emit.OpCode" /> 構造体が等しいかどうかを示します。</summary>
+      <returns>
+        <paramref name="a" /> が <paramref name="b" /> に等しい場合は true。それ以外の場合は false。</returns>
+      <param name="a">
+        <paramref name="b" /> と比較する <see cref="T:System.Reflection.Emit.OpCode" />。</param>
+      <param name="b">
+        <paramref name="a" /> と比較する <see cref="T:System.Reflection.Emit.OpCode" />。</param>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.op_Inequality(System.Reflection.Emit.OpCode,System.Reflection.Emit.OpCode)">
+      <summary>2 つの <see cref="T:System.Reflection.Emit.OpCode" /> 構造体が等しくないかどうかを示します。</summary>
+      <returns>
+        <paramref name="a" /> が <paramref name="b" /> と等しくない場合は true。それ以外の場合は false。</returns>
+      <param name="a">
+        <paramref name="b" /> と比較する <see cref="T:System.Reflection.Emit.OpCode" />。</param>
+      <param name="b">
+        <paramref name="a" /> と比較する <see cref="T:System.Reflection.Emit.OpCode" />。</param>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.OpCodeType">
+      <summary>IL (Intermediate Language) 命令の型。</summary>
+      <returns>読み取り専用です。IL (Intermediate Language) 命令の型。</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.OperandType">
+      <summary>IL (中間言語、Intermediate Language) 命令のオペランド型。</summary>
+      <returns>読み取り専用です。IL 命令のオペランド型。</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.Size">
+      <summary>IL (中間言語、Intermediate Language) 命令のサイズ。</summary>
+      <returns>読み取り専用です。IL 命令のサイズ。</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.StackBehaviourPop">
+      <summary>IL (中間言語、Intermediate Language) 命令がスタックをポップする方法を取得します。</summary>
+      <returns>読み取り専用です。IL 命令がスタックをポップする方法。</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.StackBehaviourPush">
+      <summary>IL (中間言語、Intermediate Language) 命令がオペランドをスタックにプッシュする方法を取得します。</summary>
+      <returns>読み取り専用です。IL 命令がオペランドをスタックにプッシュする方法。</returns>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCode.ToString">
+      <summary>この Opcode を <see cref="T:System.String" /> として返します。</summary>
+      <returns>この Opcode の名前を格納している <see cref="T:System.String" /> を返します。</returns>
+    </member>
+    <member name="P:System.Reflection.Emit.OpCode.Value">
+      <summary>IL (Intermediate Language) 命令の数値を取得します。</summary>
+      <returns>読み取り専用です。IL 命令の数値。</returns>
+    </member>
+    <member name="T:System.Reflection.Emit.OpCodes">
+      <summary>
+        <see cref="T:System.Reflection.Emit.ILGenerator" /> クラス メンバー (<see cref="M:System.Reflection.Emit.ILGenerator.Emit(System.Reflection.Emit.OpCode)" /> など) による出力に対する MSIL (Microsoft Intermediate Language) 命令のフィールド表現を提供します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Add">
+      <summary>2 つの値を加算し、結果を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Add_Ovf">
+      <summary>2 つの整数値を加算し、オーバーフロー チェックを実行し、結果を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Add_Ovf_Un">
+      <summary>2 つの符号なし整数値を加算し、オーバーフロー チェックを実行し、結果を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.And">
+      <summary>2 つの値のビットごとの AND を計算し、結果を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Arglist">
+      <summary>現在のメソッドの引数リストへのアンマネージ ポインターを返します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Beq">
+      <summary>2 つの値が等しい場合は、ターゲット命令に制御を転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Beq_S">
+      <summary>2 つの値が等しい場合は、ターゲット命令 (短い形式) に制御を転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bge">
+      <summary>最初の値が 2 番目の値以上の場合は、ターゲット命令に制御を転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bge_S">
+      <summary>最初の値が 2 番目の値以上の場合は、ターゲット命令 (短い形式) に制御を転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bge_Un">
+      <summary>符号なし整数値または順序なし float 値を比較したとき、最初の値が 2 番目の値を超える場合は、ターゲット命令に制御を転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bge_Un_S">
+      <summary>符号なし整数値または順序なし float 値を比較したとき、最初の値が 2 番目の値を超える場合は、ターゲット命令 (短い形式) に制御を転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bgt">
+      <summary>最初の値が 2 番目の値を超える場合は、ターゲット命令に制御を転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bgt_S">
+      <summary>最初の値が 2 番目の値を超える場合は、ターゲット命令 (短い形式) に制御を転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bgt_Un">
+      <summary>符号なし整数値または順序なし float 値を比較したとき、最初の値が 2 番目の値を超える場合は、ターゲット命令に制御を転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bgt_Un_S">
+      <summary>符号なし整数値または順序なし float 値を比較したとき、最初の値が 2 番目の値を超える場合は、ターゲット命令 (短い形式) に制御を転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ble">
+      <summary>最初の値が 2 番目の値以下の場合は、ターゲット命令に制御を転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ble_S">
+      <summary>最初の値が 2 番目の値以下の場合は、ターゲット命令 (短い形式) に制御を転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ble_Un">
+      <summary>符号なし整数値または順序なし float 値を比較したとき、最初の値が 2 番目の値以下の場合は、ターゲット命令に制御を転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ble_Un_S">
+      <summary>符号なし整数値または順序なし float 値を比較したとき、最初の値が 2 番目の値以下の場合は、ターゲット命令 (短い形式) に制御を転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Blt">
+      <summary>最初の値が 2 番目の値より小さい場合は、ターゲット命令に制御を転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Blt_S">
+      <summary>最初の値が 2 番目の値より小さい場合は、ターゲット命令 (短い形式) に制御を転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Blt_Un">
+      <summary>符号なし整数値または順序なし float 値を比較したとき、最初の値が 2 番目の値より小さい場合は、ターゲット命令に制御を転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Blt_Un_S">
+      <summary>符号なし整数値または順序なし float 値を比較したとき、最初の値が 2 番目の値より小さい場合は、ターゲット命令 (短い形式) に制御を転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bne_Un">
+      <summary>2 つの符号なし整数値または順序なし float 値が等しくない場合は、ターゲット命令に制御を転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Bne_Un_S">
+      <summary>2 つの符号なし整数値または順序なし float 値が等しくない場合は、ターゲット命令 (短い形式) に制御を転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Box">
+      <summary>値型をオブジェクト参照 (O 型) に変換します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Br">
+      <summary>無条件でターゲット命令に制御を転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Br_S">
+      <summary>無条件でターゲット命令に制御を転送します (短い形式)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Break">
+      <summary>ブレークポイントがトリップしたことをデバッガーに通知するように、共通言語基盤 (CLI) に通知します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Brfalse">
+      <summary>
+        <paramref name="value" /> が false、null 参照 (Visual Basic の場合は Nothing)、または 0 の場合は、ターゲット命令に制御を転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Brfalse_S">
+      <summary>
+        <paramref name="value" /> が false、null 参照または 0 の場合は、ターゲット命令に制御を転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Brtrue">
+      <summary>
+        <paramref name="value" /> が true、null 以外、または 0 以外の場合は、ターゲット命令に制御を転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Brtrue_S">
+      <summary>
+        <paramref name="value" /> が true、null 以外、または 0 以外の場合は、ターゲット命令 (短い形式) に制御を転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Call">
+      <summary>渡されたメソッド記述子によって示されているメソッドを呼び出します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Calli">
+      <summary>呼び出し規約によって記述されている引数を使用して、評価スタックで (エントリ ポイントへのポインターとして) 指定されているメソッドを呼び出します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Callvirt">
+      <summary>オブジェクト上で遅延バインディング メソッドを呼び出し、戻り値を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Castclass">
+      <summary>指定したクラスへの参照により渡されたオブジェクトをキャストしようとします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ceq">
+      <summary>2 つの値を比較します。2 つの値が等しい場合は、整数 1 (int32) が評価スタックにプッシュされます。それ以外の場合は、0 (int32) が評価スタックにプッシュされます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Cgt">
+      <summary>2 つの値を比較します。最初の値が 2 番目の値を超える場合は、整数 1 (int32) が評価スタックにプッシュされます。それ以外の場合は、0 (int32) が評価スタックにプッシュされます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Cgt_Un">
+      <summary>2 つの符号なしの値または順序なしの値を比較します。最初の値が 2 番目の値を超える場合は、整数 1 (int32) が評価スタックにプッシュされます。それ以外の場合は、0 (int32) が評価スタックにプッシュされます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ckfinite">
+      <summary>値が有限数ではない場合は、<see cref="T:System.ArithmeticException" /> をスローします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Clt">
+      <summary>2 つの値を比較します。最初の値が 2 番目の値より小さい場合は、整数 1 (int32) が評価スタックにプッシュされます。それ以外の場合は、0 (int32) が評価スタックにプッシュされます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Clt_Un">
+      <summary>符号なしの値または順序なしの値である <paramref name="value1" /> と <paramref name="value2" /> を比較します。<paramref name="value1" /> が <paramref name="value2" /> より小さい場合は、整数値 1 (int32) が評価スタックにプッシュされます。それ以外の場合は、0 (int32) が評価スタックにプッシュされます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Constrained">
+      <summary>仮想メソッド呼び出しをする対象の型を制約します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_I">
+      <summary>評価スタックの一番上の値を native int に変換します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_I1">
+      <summary>評価スタックの一番上の値を int8 に変換し、int32 への拡張 (埋め込み) を行います。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_I2">
+      <summary>評価スタックの一番上の値を int16 に変換し、int32 への拡張 (埋め込み) を行います。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_I4">
+      <summary>評価スタックの一番上の値を int32 に変換します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_I8">
+      <summary>評価スタックの一番上の値を int64 に変換します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I">
+      <summary>評価スタックの一番上にある符号付きの値を符号付き native int に変換し、オーバーフローについては <see cref="T:System.OverflowException" /> をスローします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I_Un">
+      <summary>評価スタックの一番上にある符号なしの値を符号付き native int に変換し、オーバーフローについては <see cref="T:System.OverflowException" /> をスローします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I1">
+      <summary>評価スタックの一番上にある符号付きの値を符号付き int8 に変換し、その値を int32 に拡張し、オーバーフローについては <see cref="T:System.OverflowException" /> をスローします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I1_Un">
+      <summary>評価スタックの一番上にある符号なしの値を符号付き int8 に変換し、その値を int32 に拡張し、オーバーフローについては <see cref="T:System.OverflowException" /> をスローします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I2">
+      <summary>評価スタックの一番上にある符号付きの値を符号付き int16 に変換し、その値を int32 に拡張し、オーバーフローについては <see cref="T:System.OverflowException" /> をスローします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I2_Un">
+      <summary>評価スタックの一番上にある符号なしの値を符号付き int16 に変換し、その値を int32 に拡張し、オーバーフローについては <see cref="T:System.OverflowException" /> をスローします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I4">
+      <summary>評価スタックの一番上にある符号付きの値を符号付き int32 に変換し、オーバーフローについては <see cref="T:System.OverflowException" /> をスローします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I4_Un">
+      <summary>評価スタックの一番上にある符号なしの値を符号付き int32 に変換し、オーバーフローについては <see cref="T:System.OverflowException" /> をスローします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I8">
+      <summary>評価スタックの一番上にある符号付きの値を符号付き int64 に変換し、オーバーフローについては <see cref="T:System.OverflowException" /> をスローします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_I8_Un">
+      <summary>評価スタックの一番上にある符号なしの値を符号付き int64 に変換し、オーバーフローについては <see cref="T:System.OverflowException" /> をスローします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U">
+      <summary>評価スタックの一番上にある符号付きの値を unsigned native int に変換し、オーバーフローについては <see cref="T:System.OverflowException" /> をスローします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U_Un">
+      <summary>評価スタックの一番上にある符号なしの値を unsigned native int に変換し、オーバーフローについては <see cref="T:System.OverflowException" /> をスローします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U1">
+      <summary>評価スタックの一番上にある符号付きの値を unsigned int8 に変換し、その値を int32 に拡張し、オーバーフローについては <see cref="T:System.OverflowException" /> をスローします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U1_Un">
+      <summary>評価スタックの一番上にある符号なしの値を unsigned int8 に変換し、その値を int32 に拡張し、オーバーフローについては <see cref="T:System.OverflowException" /> をスローします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U2">
+      <summary>評価スタックの一番上にある符号付きの値を unsigned int16 に変換し、その値を int32 に拡張し、オーバーフローについては <see cref="T:System.OverflowException" /> をスローします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U2_Un">
+      <summary>評価スタックの一番上にある符号なしの値を unsigned int16 に変換し、その値を int32 に拡張し、オーバーフローについては <see cref="T:System.OverflowException" /> をスローします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U4">
+      <summary>評価スタックの一番上にある符号付きの値を unsigned int32 に変換し、オーバーフローについては <see cref="T:System.OverflowException" /> をスローします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U4_Un">
+      <summary>評価スタックの一番上にある符号なしの値を unsigned int32 に変換し、オーバーフローについては <see cref="T:System.OverflowException" /> をスローします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U8">
+      <summary>評価スタックの一番上にある符号付きの値を unsigned int64 に変換し、オーバーフローについては <see cref="T:System.OverflowException" /> をスローします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_Ovf_U8_Un">
+      <summary>評価スタックの一番上にある符号なしの値を unsigned int64 に変換し、オーバーフローについては <see cref="T:System.OverflowException" /> をスローします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_R_Un">
+      <summary>評価スタックの一番上の符号なし整数値を float32 に変換します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_R4">
+      <summary>評価スタックの一番上の値を float32 に変換します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_R8">
+      <summary>評価スタックの一番上の値を float64 に変換します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_U">
+      <summary>評価スタックの一番上の値を unsigned native int に変換し、その値を native int に拡張します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_U1">
+      <summary>評価スタックの一番上の値を unsigned int8 に変換し、その値を int32 に拡張します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_U2">
+      <summary>評価スタックの一番上の値を unsigned int16 に変換し、その値を int32 に拡張します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_U4">
+      <summary>評価スタックの一番上の値を unsigned int32 に変換し、その値を int32 に拡張します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Conv_U8">
+      <summary>評価スタックの一番上の値を unsigned int64 に変換し、その値を int64 に拡張します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Cpblk">
+      <summary>ソース アドレスから指定した数のバイトを宛先アドレスにコピーします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Cpobj">
+      <summary>オブジェクトのアドレス (&amp;、*、または native int の各型) にある値型をコピー先のオブジェクトのアドレス (&amp;、*、または native int の各型) にコピーします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Div">
+      <summary>2 つの値の除算を実行し、結果を浮動小数点値 (F 型) または商 (int32 型) として評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Div_Un">
+      <summary>2 つの符号なし整数値を除算し、結果 (int32) を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Dup">
+      <summary>現在評価スタックの一番上にある値をコピーし、そのコピーを評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Endfilter">
+      <summary>例外の filter 句から共通言語基盤 (CLI) 例外ハンドラーに制御を転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Endfinally">
+      <summary>例外ブロックの fault 句または finally 句から共通言語基盤 (CLI) 例外ハンドラーに制御を転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Initblk">
+      <summary>特定のアドレスの指定したメモリ ブロックを、指定のサイズと初期値に初期化します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Initobj">
+      <summary>指定したアドレスにある値型の各フィールドを null 参照または適切なプリミティブ型の 0 に初期化します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Isinst">
+      <summary>オブジェクト参照 (O 型) が特定のクラスのインスタンスかどうかをテストします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Jmp">
+      <summary>現在のメソッドを終了し、指定したメソッドにジャンプします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg">
+      <summary>指定したインデックス値によって参照される引数をスタックに読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg_0">
+      <summary>インデックス 0 の引数を評価スタックに読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg_1">
+      <summary>インデックス 1 の引数を評価スタックに読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg_2">
+      <summary>インデックス 2 の引数を評価スタックに読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg_3">
+      <summary>インデックス 3 の引数を評価スタックに読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarg_S">
+      <summary>指定した短い形式のインデックスによって参照される引数を評価スタックに読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarga">
+      <summary>引数アドレスを評価スタックに読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldarga_S">
+      <summary>引数アドレス (短い形式) を評価スタックに読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4">
+      <summary>提供された int32 型の値を int32 として評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_0">
+      <summary>整数値 0 を int32 として評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_1">
+      <summary>整数値 1 を int32 として評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_2">
+      <summary>整数値 2 を int32 として評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_3">
+      <summary>整数値 3 を int32 として評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_4">
+      <summary>整数値 4 を int32 として評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_5">
+      <summary>整数値 5 を int32 として評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_6">
+      <summary>整数値 6 を int32 として評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_7">
+      <summary>整数値 7 を int32 として評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_8">
+      <summary>整数値 8 を int32 として評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_M1">
+      <summary>整数値 -1 を int32 として評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I4_S">
+      <summary>提供された int8 値を int32 として評価スタックにプッシュします (短い形式)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_I8">
+      <summary>提供された int64 型の値を int64 として評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_R4">
+      <summary>提供された float32 型の値を F (float) 型として評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldc_R8">
+      <summary>提供された float64 型の値を F (float) 型として評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem">
+      <summary>指定した配列インデックスの要素を命令で指定された型として評価スタックの一番上に読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_I">
+      <summary>指定した配列インデックスの native int 型の要素を native int として評価スタックの一番上に読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_I1">
+      <summary>指定した配列インデックスの int8 型の要素を int32 として評価スタックの一番上に読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_I2">
+      <summary>指定した配列インデックスの int16 型の要素を int32 として評価スタックの一番上に読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_I4">
+      <summary>指定した配列インデックスの int32 型の要素を int32 として評価スタックの一番上に読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_I8">
+      <summary>指定した配列インデックスの int64 型の要素を int64 として評価スタックの一番上に読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_R4">
+      <summary>指定した配列インデックスの float32 型の要素を F (float) 型として評価スタックの一番上に読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_R8">
+      <summary>指定した配列インデックスの float64 型の要素を F (float) 型として評価スタックの一番上に読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_Ref">
+      <summary>指定した配列インデックスのオブジェクト参照を格納している要素を O 型 (オブジェクト参照) として評価スタックの一番上に読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_U1">
+      <summary>指定した配列インデックスの unsigned int8 型の要素を int32 として評価スタックの一番上に読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_U2">
+      <summary>指定した配列インデックスの unsigned int16 型の要素を int32 として評価スタックの一番上に読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelem_U4">
+      <summary>指定した配列インデックスの unsigned int32 型の要素を int32 として評価スタックの一番上に読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldelema">
+      <summary>指定した配列インデックスにある配列要素のアドレスを &amp; 型 (マネージ ポインター) として評価スタックの一番上に読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldfld">
+      <summary>参照が現在評価スタック上にあるオブジェクト内のフィールドの値を検索します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldflda">
+      <summary>参照が現在評価スタック上にあるオブジェクト内のフィールドのアドレスを検索します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldftn">
+      <summary>特定のメソッドを実装しているネイティブ コードへのアンマネージ ポインター (native int 型) を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_I">
+      <summary>native int 型の値を native int として評価スタックに間接的に読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_I1">
+      <summary>int8 型の値を int32 として評価スタックに間接的に読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_I2">
+      <summary>int16 型の値を int32 として評価スタックに間接的に読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_I4">
+      <summary>int32 型の値を int32 として評価スタックに間接的に読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_I8">
+      <summary>int64 型の値を int64 として評価スタックに間接的に読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_R4">
+      <summary>float32 型の値を F (float) 型として評価スタックに間接的に読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_R8">
+      <summary>float64 型の値を F (float) 型として評価スタックに間接的に読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_Ref">
+      <summary>オブジェクト参照を O 型 (オブジェクト参照) として評価スタックに間接的に読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_U1">
+      <summary>unsigned int8 型の値を int32 として評価スタックに間接的に読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_U2">
+      <summary>unsigned int16 型の値を int32 として評価スタックに間接的に読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldind_U4">
+      <summary>unsigned int32 型の値を int32 として評価スタックに間接的に読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldlen">
+      <summary>インデックス番号が 0 から始まる 1 次元配列の要素数を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc">
+      <summary>特定のインデックスのローカル変数を評価スタックに読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc_0">
+      <summary>インデックス 0 のローカル変数を評価スタックに読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc_1">
+      <summary>インデックス 1 のローカル変数を評価スタックに読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc_2">
+      <summary>インデックス 2 のローカル変数を評価スタックに読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc_3">
+      <summary>インデックス 3 のローカル変数を評価スタックに読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloc_S">
+      <summary>特定のインデックスのローカル変数を評価スタックに読み込みます (短い形式)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloca">
+      <summary>特定のインデックスのローカル変数のアドレスを評価スタックに読み込みます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldloca_S">
+      <summary>特定のインデックスのローカル変数のアドレスを評価スタックに読み込みます (短い形式)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldnull">
+      <summary>null 参照 (O 型) を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldobj">
+      <summary>アドレスが指す値型オブジェクトを評価スタックの一番上にコピーします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldsfld">
+      <summary>静的フィールドの値を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldsflda">
+      <summary>静的フィールドのアドレスを評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldstr">
+      <summary>メタデータに格納されているリテラル文字列への新しいオブジェクト参照をプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldtoken">
+      <summary>メタデータ トークンをそのランタイム表現に変換し、評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ldvirtftn">
+      <summary>指定したオブジェクトに関連付けられた特定の仮想メソッドを実装しているネイティブ コードへのアンマネージ ポインター (native int 型) を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Leave">
+      <summary>コードの保護領域を終了し、制御を特定のターゲット命令に無条件で転送します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Leave_S">
+      <summary>コードの保護領域を終了し、制御をターゲット命令に無条件で転送します (短い形式)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Localloc">
+      <summary>ローカル動的メモリ プールから特定のバイト数を割り当て、最初に割り当てたバイトのアドレス (一時ポインター、* 型) を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Mkrefany">
+      <summary>特定の型のインスタンスへの型指定された参照を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Mul">
+      <summary>2 つの値を乗算し、結果を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Mul_Ovf">
+      <summary>2 つの整数値を乗算し、オーバーフロー チェックを実行し、結果を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Mul_Ovf_Un">
+      <summary>2 つの符号なし整数値を乗算し、オーバーフロー チェックを実行し、結果を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Neg">
+      <summary>値を無効にし、結果を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Newarr">
+      <summary>特定の型の要素を持つ、インデックス番号が 0 から始まる新しい 1 次元配列へのオブジェクト参照を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Newobj">
+      <summary>新しいオブジェクトまたは値型の新しいインスタンスを作成し、オブジェクト参照 (O 型) を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Nop">
+      <summary>オペコードがパッチされている場合は、領域を補完します。循環参照の処理を利用することはできますが、意味のある演算は実行されません。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Not">
+      <summary>スタックの一番上にある整数値のビットごとの補数を計算し、結果を同じ型として評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Or">
+      <summary>スタックの一番上にある 2 つの整数値のビットごとの補数を計算し、結果を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Pop">
+      <summary>現在評価スタックの一番上にある値を削除します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix1">
+      <summary>これは予約済みの命令です。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix2">
+      <summary>これは予約済みの命令です。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix3">
+      <summary>これは予約済みの命令です。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix4">
+      <summary>これは予約済みの命令です。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix5">
+      <summary>これは予約済みの命令です。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix6">
+      <summary>これは予約済みの命令です。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefix7">
+      <summary>これは予約済みの命令です。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Prefixref">
+      <summary>これは予約済みの命令です。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Readonly">
+      <summary>以降の配列アドレス演算で、実行時に型チェックを実行しないこと、および変更可能性が制限されたマネージ ポインターを返すことを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Refanytype">
+      <summary>型指定された参照に埋め込まれている型トークンを取得します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Refanyval">
+      <summary>型指定された参照に埋め込まれているアドレス (&amp; 型) を取得します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Rem">
+      <summary>2 つの値を除算し、剰余を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Rem_Un">
+      <summary>2 つの符号なしの値を除算し、剰余を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Ret">
+      <summary>現在のメソッドから戻り、呼び出し先の評価スタックから呼び出し元の評価スタックに戻り値 (存在する場合) をプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Rethrow">
+      <summary>現在の例外を再スローします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Shl">
+      <summary>整数値を指定したビット数だけ、0 を使用して左にシフトし、結果を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Shr">
+      <summary>整数値を指定したビット数だけ、符号を付けて右にシフトし、結果を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Shr_Un">
+      <summary>符号なし整数値を指定したビット数だけ、0 を使用して右にシフトし、結果を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Sizeof">
+      <summary>提供された値型のサイズ (バイト単位) を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Starg">
+      <summary>評価スタックの一番上にある値を指定したインデックスの引数スロットに格納します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Starg_S">
+      <summary>評価スタックの一番上にある値を指定したインデックスの引数スロットに格納します (短い形式)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem">
+      <summary>指定のインデックス位置にある配列要素を評価スタックの、命令で指定された型の値に置き換えます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_I">
+      <summary>指定のインデックス位置にある配列要素を評価スタックの native int 値に置き換えます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_I1">
+      <summary>指定のインデックス位置にある配列要素を評価スタックの int8 値に置き換えます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_I2">
+      <summary>指定のインデックス位置にある配列要素を評価スタックの int16 値に置き換えます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_I4">
+      <summary>指定のインデックス位置にある配列要素を評価スタックの int32 値に置き換えます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_I8">
+      <summary>指定のインデックス位置にある配列要素を評価スタックの int64 値に置き換えます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_R4">
+      <summary>指定のインデックス位置にある配列要素を評価スタックの float32 値に置き換えます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_R8">
+      <summary>指定のインデックス位置にある配列要素を評価スタックの float64 値に置き換えます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stelem_Ref">
+      <summary>指定のインデックス位置にある配列要素をオブジェクト参照値 (O 型) に置き換えます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stfld">
+      <summary>オブジェクト参照またはポインターのフィールドに格納された値を新しい値に置き換えます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_I">
+      <summary>提供されたアドレスに native int 型の値を格納します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_I1">
+      <summary>提供されたアドレスに int8 型の値を格納します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_I2">
+      <summary>提供されたアドレスに int16 型の値を格納します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_I4">
+      <summary>提供されたアドレスに int32 型の値を格納します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_I8">
+      <summary>提供されたアドレスに int64 型の値を格納します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_R4">
+      <summary>提供されたアドレスに float32 型の値を格納します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_R8">
+      <summary>提供されたアドレスに float64 型の値を格納します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stind_Ref">
+      <summary>提供されたアドレスにオブジェクト参照値を格納します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc">
+      <summary>評価スタックの一番上から現在の値をポップし、指定したインデックスのローカル変数リストに格納します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc_0">
+      <summary>評価スタックの一番上から現在の値をポップし、インデックス 0 のローカル変数リストに格納します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc_1">
+      <summary>評価スタックの一番上から現在の値をポップし、インデックス 1 のローカル変数リストに格納します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc_2">
+      <summary>評価スタックの一番上から現在の値をポップし、インデックス 2 のローカル変数リストに格納します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc_3">
+      <summary>評価スタックの一番上から現在の値をポップし、インデックス 3 のローカル変数リストに格納します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stloc_S">
+      <summary>評価スタックの一番上から現在の値をポップし、<paramref name="index" /> のローカル変数リストに格納します (短い形式)。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stobj">
+      <summary>評価スタックから提供されたメモリ アドレスに、指定した型の値をコピーします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Stsfld">
+      <summary>静的フィールドの値を評価スタックの値に置き換えます。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Sub">
+      <summary>ある値から別の値を減算し、結果を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Sub_Ovf">
+      <summary>ある整数値を別の整数値から減算し、オーバーフロー チェックを実行し、結果を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Sub_Ovf_Un">
+      <summary>ある符号なし整数値を別の符号なし整数値から減算し、オーバーフロー チェックを実行し、結果を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Switch">
+      <summary>ジャンプ テーブルを実装します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Tailcall">
+      <summary>実際の呼び出し命令が実行される前に、現在のメソッドのスタック フレームが削除されるように、後置のメソッド呼び出し命令を実行します。</summary>
+    </member>
+    <member name="M:System.Reflection.Emit.OpCodes.TakesSingleByteArgument(System.Reflection.Emit.OpCode)">
+      <summary>提供されたオペコードが 1 バイト引数をとる場合は、true または false を返します。</summary>
+      <returns>True または false。</returns>
+      <param name="inst">Opcode オブジェクトのインスタンス。 </param>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Throw">
+      <summary>現在評価スタックにある例外オブジェクトをスローします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Unaligned">
+      <summary>現在評価スタックの一番上にあるアドレスが、直後の ldind、stind、ldfld、stfld、ldobj、stobj、initblk または cpblk の各命令の通常サイズに合わせて配置されていない可能性があることを示します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Unbox">
+      <summary>値型のボックス化変換された形式をボックス化が解除された形式に変換します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Unbox_Any">
+      <summary>命令で指定された型のボックス化変換された形式を、ボックス化が解除された形式に変換します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Volatile">
+      <summary>現在評価スタックの一番上にあるアドレスが揮発性である可能性があるため、この位置の読み取り結果をキャッシュできないこと、またはこの位置への複数の格納を中止できないことを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodes.Xor">
+      <summary>評価スタックの一番上にある 2 つの値のビットごとの XOR を計算し、結果を評価スタックにプッシュします。</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.OpCodeType">
+      <summary>MSIL (Microsoft Intermediate Language) 命令の型を記述します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodeType.Macro">
+      <summary>これらは、その他の MSIL 命令のシノニムとして使用される MSIL 命令です。たとえば、ldarg.0 は、引数に 0 が指定された ldarg 命令を表します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodeType.Nternal">
+      <summary>予約済み MSIL 命令を記述します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodeType.Objmodel">
+      <summary>オブジェクトに適用する MSIL 命令を記述します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodeType.Prefix">
+      <summary>以下の命令の動作を変更するプリフィックス命令を記述します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OpCodeType.Primitive">
+      <summary>組み込み命令を記述します。</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.OperandType">
+      <summary>MSIL (Microsoft Intermediate Language) 命令のオペランド型を記述します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineBrTarget">
+      <summary>オペランドは 32 ビット整数の分岐のターゲットです。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineField">
+      <summary>オペランドは 32 ビット メタデータ トークンです。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineI">
+      <summary>オペランドは 32 ビット整数です。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineI8">
+      <summary>オペランドは 64 ビット整数です。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineMethod">
+      <summary>オペランドは 32 ビット メタデータ トークンです。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineNone">
+      <summary>オペランドなし。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineR">
+      <summary>オペランドは 64 ビット IEEE 浮動小数点数です。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineSig">
+      <summary>オペランドは 32 ビット メタデータのシグネチャ トークンです。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineString">
+      <summary>オペランドは 32 ビット メタデータの文字列トークンです。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineSwitch">
+      <summary>オペランドは switch 命令の 32 ビット整数引数です。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineTok">
+      <summary>オペランドは FieldRef、MethodRef、または TypeRef のトークンです。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineType">
+      <summary>オペランドは 32 ビット メタデータ トークンです。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.InlineVar">
+      <summary>オペランドは、ローカル変数または引数の序数を含んだ 16 ビット整数です。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.ShortInlineBrTarget">
+      <summary>オペランドは 8 ビット整数の分岐のターゲットです。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.ShortInlineI">
+      <summary>オペランドは 8 ビット整数です。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.ShortInlineR">
+      <summary>オペランドは 32 ビット IEEE 浮動小数点数です。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.OperandType.ShortInlineVar">
+      <summary>オペランドは、ローカル変数または引数の序数を含んだ 8 ビット整数です。</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.PackingSize">
+      <summary>型をマーシャリングするときのフィールドのメモリ アライメントを規定する 2 つの要素のうち、1 つを指定します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size1">
+      <summary>パッキング サイズは 1 バイトです。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size128">
+      <summary>パッキング サイズは 128 バイトです。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size16">
+      <summary>パッキング サイズは 16 バイトです。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size2">
+      <summary>パッキング サイズは 2 バイトです。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size32">
+      <summary>パッキング サイズは 32 バイトです。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size4">
+      <summary>パッキング サイズは 4 バイトです。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size64">
+      <summary>パッキング サイズは 64 バイトです。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Size8">
+      <summary>パッキング サイズは 8 バイトです。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.PackingSize.Unspecified">
+      <summary>パッキング サイズは指定されていません。</summary>
+    </member>
+    <member name="T:System.Reflection.Emit.StackBehaviour">
+      <summary>値をスタックにプッシュする方法、またはスタックからポップする方法を記述します。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pop0">
+      <summary>値をスタックからポップしません。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pop1">
+      <summary>1 つの値をスタックからポップします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pop1_pop1">
+      <summary>最初のオペランドとして 1 つの値をスタックからポップし、2 番目のオペランドとして 1 つの値をスタックからポップします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi">
+      <summary>32 ビット整数をスタックからポップします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_pop1">
+      <summary>最初のオペランドとして 32 ビット整数をスタックからポップし、2 番目のオペランドとして値をスタックからポップします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_popi">
+      <summary>最初のオペランドとして 32 ビット整数をスタックからポップし、2 番目のオペランドとして 32 ビット整数をスタックからポップします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_popi_popi">
+      <summary>最初のオペランドとして 32 ビット整数をスタックからポップし、2 番目のオペランドとして 32 ビット整数をスタックからポップし、3 番目のオペランドとして 32 ビット整数をスタックからポップします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_popi8">
+      <summary>最初のオペランドとして 32 ビット整数をスタックからポップし、2 番目のオペランドとして 64 ビット整数をスタックからポップします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_popr4">
+      <summary>最初のオペランドとして 32 ビット整数をスタックからポップし、2 番目のオペランドとして 32 ビット浮動小数点数をスタックからポップします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popi_popr8">
+      <summary>最初のオペランドとして 32 ビット整数をスタックからポップし、2 番目のオペランドとして 64 ビット浮動小数点数をスタックからポップします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref">
+      <summary>参照をスタックからポップします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_pop1">
+      <summary>最初のオペランドとして参照をスタックからポップし、2 番目のオペランドとして値をスタックからポップします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi">
+      <summary>最初のオペランドとして参照をスタックからポップし、2 番目のオペランドとして 32 ビット整数をスタックからポップします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_pop1">
+      <summary>最初のオペランドとして参照をスタックからポップし、2 番目のオペランドとして値をスタックからポップし、3 番目のオペランドとして 32 ビット整数をスタックからポップします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_popi">
+      <summary>最初のオペランドとして参照をスタックからポップし、2 番目のオペランドとして値をスタックからポップし、3 番目のオペランドとして値をスタックからポップします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_popi8">
+      <summary>最初のオペランドとして参照をスタックからポップし、2 番目のオペランドとして値をスタックからポップし、3 番目のオペランドとして 64 ビット整数をスタックからポップします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_popr4">
+      <summary>最初のオペランドとして参照をスタックからポップし、2 番目のオペランドとして値をスタックからポップし、3 番目のオペランドとして 32 ビット整数をスタックからポップします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_popr8">
+      <summary>最初のオペランドとして参照をスタックからポップし、2 番目のオペランドとして値をスタックからポップし、3 番目のオペランドとして 64 ビット浮動小数点数をスタックからポップします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Popref_popi_popref">
+      <summary>最初のオペランドとして参照をスタックからポップし、2 番目のオペランドとして値をスタックからポップし、3 番目のオペランドとして参照をスタックからポップします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Push0">
+      <summary>値をスタックにプッシュしません。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Push1">
+      <summary>1 つの値をスタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Push1_push1">
+      <summary>最初のオペランドとして 1 つの値をスタックにプッシュし、2 番目のオペランドとして 1 つの値をスタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pushi">
+      <summary>32 ビット整数をスタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pushi8">
+      <summary>64 ビット整数をスタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pushr4">
+      <summary>32 ビット浮動小数点数をスタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pushr8">
+      <summary>64 ビット浮動小数点数をスタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Pushref">
+      <summary>参照をスタックにプッシュします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Varpop">
+      <summary>変数をスタックからポップします。</summary>
+    </member>
+    <member name="F:System.Reflection.Emit.StackBehaviour.Varpush">
+      <summary>変数をスタックにプッシュします。</summary>
+    </member>
+  </members>
+</doc>
