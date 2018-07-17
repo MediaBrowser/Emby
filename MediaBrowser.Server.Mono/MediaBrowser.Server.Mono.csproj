@@ -10,7 +10,7 @@
     <RootNamespace>MediaBrowser.Server.Mono</RootNamespace>
     <AssemblyName>MediaBrowser.Server.Mono</AssemblyName>
     <StartupObject>MediaBrowser.Server.Mono.MainClass</StartupObject>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <TargetFrameworkProfile />
     <NuGetPackageImportStamp>
@@ -47,36 +47,75 @@
     <Reference Include="Emby.Server.Sync">
       <HintPath>..\ThirdParty\emby\Emby.Server.Sync.dll</HintPath>
     </Reference>
-    <Reference Include="Emby.XmlTv, Version=1.0.6604.28157, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Emby.XmlTv.1.0.14\lib\portable-net45+netstandard2.0+win8\Emby.XmlTv.dll</HintPath>
+    <Reference Include="Emby.XmlTv, Version=1.0.6700.31789, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Emby.XmlTv.1.0.15\lib\portable-net45+netstandard2.0+win8\Emby.XmlTv.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Text, Version=4.5.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ServiceStack.Text.4.5.8\lib\net45\ServiceStack.Text.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="MediaBrowser.Common, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaBrowser.Common.3.5.0\lib\netstandard2.0\MediaBrowser.Common.dll</HintPath>
     </Reference>
-    <Reference Include="SharpCompress, Version=0.18.2.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpCompress.0.18.2\lib\net45\SharpCompress.dll</HintPath>
+    <Reference Include="MediaBrowser.Controller, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaBrowser.Server.Core.3.5.0\lib\netstandard2.0\MediaBrowser.Controller.dll</HintPath>
     </Reference>
-    <Reference Include="SimpleInjector, Version=4.0.12.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
-      <HintPath>..\packages\SimpleInjector.4.0.12\lib\net45\SimpleInjector.dll</HintPath>
+    <Reference Include="MediaBrowser.Model, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaBrowser.Common.3.5.0\lib\netstandard2.0\MediaBrowser.Model.dll</HintPath>
     </Reference>
-    <Reference Include="SkiaSharp, Version=1.58.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkiaSharp.1.58.1\lib\net45\SkiaSharp.dll</HintPath>
+    <Reference Include="ServiceStack.Text, Version=5.0.0.0, Culture=neutral, PublicKeyToken=02c12cbda47e6587, processorArchitecture=MSIL">
+      <HintPath>..\packages\ServiceStack.Text.5.1.0\lib\net45\ServiceStack.Text.dll</HintPath>
     </Reference>
-    <Reference Include="SQLitePCLRaw.core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1488e028ca7ab535, processorArchitecture=MSIL">
-      <HintPath>..\packages\SQLitePCLRaw.core.1.1.8\lib\net45\SQLitePCLRaw.core.dll</HintPath>
+    <Reference Include="SharpCompress, Version=0.21.1.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpCompress.0.21.1\lib\net45\SharpCompress.dll</HintPath>
     </Reference>
-    <Reference Include="SQLitePCLRaw.provider.sqlite3, Version=1.0.0.0, Culture=neutral, PublicKeyToken=62684c7b4f184e3f, processorArchitecture=MSIL">
-      <HintPath>..\packages\SQLitePCLRaw.provider.sqlite3.net45.1.1.8\lib\net45\SQLitePCLRaw.provider.sqlite3.dll</HintPath>
+    <Reference Include="SimpleInjector, Version=4.3.0.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleInjector.4.3.0\lib\net45\SimpleInjector.dll</HintPath>
+    </Reference>
+    <Reference Include="SkiaSharp, Version=1.60.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkiaSharp.1.60.0\lib\net45\SkiaSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="SQLitePCL.pretty, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SQLitePCL.pretty.1.1.0\lib\portable-net45+netcore45+wpa81+wp8\SQLitePCL.pretty.dll</HintPath>
+    </Reference>
+    <Reference Include="SQLitePCLRaw.core, Version=1.1.11.121, Culture=neutral, PublicKeyToken=1488e028ca7ab535, processorArchitecture=MSIL">
+      <HintPath>..\packages\SQLitePCLRaw.core.1.1.11\lib\net45\SQLitePCLRaw.core.dll</HintPath>
+    </Reference>
+    <Reference Include="SQLitePCLRaw.provider.sqlite3, Version=1.1.11.121, Culture=neutral, PublicKeyToken=62684c7b4f184e3f, processorArchitecture=MSIL">
+      <HintPath>..\packages\SQLitePCLRaw.provider.sqlite3.net45.1.1.11\lib\net45\SQLitePCLRaw.provider.sqlite3.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Memory, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.1\lib\netstandard2.0\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.1\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\MediaBrowser.ServerApplication\SocketSharp\RequestMono.cs">
+      <Link>SocketSharp\RequestMono.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.ServerApplication\SocketSharp\SharpWebSocket.cs">
+      <Link>SocketSharp\SharpWebSocket.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.ServerApplication\SocketSharp\WebSocketSharpListener.cs">
+      <Link>SocketSharp\WebSocketSharpListener.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.ServerApplication\SocketSharp\WebSocketSharpRequest.cs">
+      <Link>SocketSharp\WebSocketSharpRequest.cs</Link>
+    </Compile>
+    <Compile Include="..\MediaBrowser.ServerApplication\SocketSharp\WebSocketSharpResponse.cs">
+      <Link>SocketSharp\WebSocketSharpResponse.cs</Link>
+    </Compile>
     <Compile Include="..\SharedVersion.cs">
       <Link>Properties\SharedVersion.cs</Link>
     </Compile>
@@ -129,18 +168,6 @@
       <Project>{442B5058-DCAF-4263-BB6A-F21E31120A1B}</Project>
       <Name>MediaBrowser.Providers</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MediaBrowser.Model\MediaBrowser.Model.csproj">
-      <Project>{7EEEB4BB-F3E8-48FC-B4C5-70F0FFF8329B}</Project>
-      <Name>MediaBrowser.Model</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MediaBrowser.Controller\MediaBrowser.Controller.csproj">
-      <Project>{17E1F4E6-8ABD-4FE5-9ECF-43D4B6087BA2}</Project>
-      <Name>MediaBrowser.Controller</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MediaBrowser.Common\MediaBrowser.Common.csproj">
-      <Project>{9142EEFA-7570-41E1-BFCC-468BB571AF2F}</Project>
-      <Name>MediaBrowser.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MediaBrowser.Api\MediaBrowser.Api.csproj">
       <Project>{4FD51AC5-2C16-4308-A993-C3A84F3B4582}</Project>
       <Name>MediaBrowser.Api</Name>
@@ -160,6 +187,10 @@
     <ProjectReference Include="..\RSSDP\RSSDP.csproj">
       <Project>{21002819-c39a-4d3e-be83-2a276a77fb1f}</Project>
       <Name>RSSDP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SocketHttpListener\SocketHttpListener.csproj">
+      <Project>{1d74413b-e7cf-455b-b021-f52bdf881542}</Project>
+      <Name>SocketHttpListener</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
