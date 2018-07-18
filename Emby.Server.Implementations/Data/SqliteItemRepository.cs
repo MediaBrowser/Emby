@@ -2575,11 +2575,11 @@ namespace Emby.Server.Implementations.Data
                 var builder = new StringBuilder();
                 builder.Append("(");
 
-                builder.Append("((Name like @SearchTermStartsWith or OriginalTitle like @SearchTermStartsWith) * 10)");
+                builder.Append("((CleanName like @SearchTermStartsWith or OriginalTitle like @SearchTermStartsWith) * 10)");
 
                 if (query.SearchTerm.Length > 1)
                 {
-                    builder.Append("+ ((Name like @SearchTermContains) * 10 or OriginalTitle like @SearchTermContains)");
+                    builder.Append("+ ((CleanName like @SearchTermContains) * 10 or OriginalTitle like @SearchTermContains)");
                 }
 
                 builder.Append(") as SearchScore");
