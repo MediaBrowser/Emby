@@ -1924,7 +1924,8 @@ namespace Emby.Server.Implementations
                 "MediaBrowser.Plugins.ITV.dll",
                 "MediaBrowser.Plugins.Lastfm.dll",
                 "ServerRestart.dll",
-                "MediaBrowser.Plugins.NotifyMyAndroidNotifications.dll"
+                "MediaBrowser.Plugins.NotifyMyAndroidNotifications.dll",
+                "MetadataViewer.dll"
             };
 
             return !exclude.Contains(filename ?? string.Empty, StringComparer.OrdinalIgnoreCase);
