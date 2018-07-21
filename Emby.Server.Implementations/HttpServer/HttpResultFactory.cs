@@ -131,7 +131,7 @@ namespace Emby.Server.Implementations.HttpServer
             }
             else
             {
-                result = GetCompressedResult(content, compressionType, responseHeaders, isHeadRequest, contentType);
+                result = GetCompressedResult(requestContext, content, compressionType, responseHeaders, isHeadRequest, contentType);
             }
 
             if (responseHeaders == null)
@@ -176,7 +176,7 @@ namespace Emby.Server.Implementations.HttpServer
             }
             else
             {
-                result = GetCompressedResult(bytes, compressionType, responseHeaders, isHeadRequest, contentType);
+                result = GetCompressedResult(requestContext, bytes, compressionType, responseHeaders, isHeadRequest, contentType);
             }
 
             if (responseHeaders == null)
@@ -248,8 +248,8 @@ namespace Emby.Server.Implementations.HttpServer
 
             if (acceptEncoding != null)
             {
-                //if (_brotliCompressor != null && acceptEncoding.IndexOf("br", StringComparison.OrdinalIgnoreCase) != -1)
-                //    return "br";
+                if (_brotliCompressor != null && acceptEncoding.IndexOf("br", StringComparison.OrdinalIgnoreCase) != -1)
+                    return "br";
 
                 if (acceptEncoding.IndexOf("deflate", StringComparison.OrdinalIgnoreCase) != -1)
                     return "deflate";
@@ -311,7 +311,7 @@ namespace Emby.Server.Implementations.HttpServer
             return GetHttpResult(request, ms, contentType, true, responseHeaders);
         }
 
-        private IHasHeaders GetCompressedResult(byte[] content,
+        private IHasHeaders GetCompressedResult(IRequest requestContext, byte[] content,
             string requestedCompressionType,
             IDictionary<string, string> responseHeaders,
             bool isHeadRequest,
@@ -322,8 +322,18 @@ namespace Emby.Server.Implementations.HttpServer
                 responseHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             }
 
-            content = Compress(content, requestedCompressionType);
-            responseHeaders["Content-Encoding"] = requestedCompressionType;
+            try
+            {
+                content = Compress(content, requestedCompressionType);
+                responseHeaders["Content-Encoding"] = requestedCompressionType;
+
+                //var url = requestContext == null ? string.Empty : requestContext.RawUrl;
+                //_logger.Debug("Compressed to {0} {1}!", requestedCompressionType, url);
+            }
+            catch (Exception ex)
+            {
+                //_logger.Error("Error compressing: " + ex.Message);
+            }
 
             responseHeaders["Vary"] = "Accept-Encoding";
 
@@ -346,7 +356,7 @@ namespace Emby.Server.Implementations.HttpServer
         private byte[] Compress(byte[] bytes, string compressionType)
         {
             if (string.Equals(compressionType, "br", StringComparison.OrdinalIgnoreCase))
-                return CompressBrotli(bytes);
+                return _brotliCompressor.Compress(bytes).ToArray();
 
             if (string.Equals(compressionType, "deflate", StringComparison.OrdinalIgnoreCase))
                 return Deflate(bytes);
@@ -355,11 +365,6 @@ namespace Emby.Server.Implementations.HttpServer
                 return GZip(bytes);
 
             throw new NotSupportedException(compressionType);
-        }
-
-        private byte[] CompressBrotli(byte[] bytes)
-        {
-            return _brotliCompressor.Compress(bytes);
         }
 
         private byte[] Deflate(byte[] bytes)
@@ -789,6 +794,6 @@ namespace Emby.Server.Implementations.HttpServer
 
     public interface IBrotliCompressor
     {
-        byte[] Compress(byte[] content);
+        Span<byte> Compress(Span<byte> content);
     }
 }

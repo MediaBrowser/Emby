@@ -36,19 +36,6 @@ namespace Rssdp
 		#region Public Properties
 
 		/// <summary>
-		/// Specifies how long clients can cache this device's details for. Optional but defaults to <see cref="TimeSpan.Zero"/> which means no-caching. Recommended value is half an hour.
-		/// </summary>
-		/// <remarks>
-		/// <para>Specifiy <see cref="TimeSpan.Zero"/> to indicate no caching allowed.</para>
-		/// <para>Also used to specify how often to rebroadcast alive notifications.</para>
-		/// <para>The UPnP/SSDP specifications indicate this should not be less than 1800 seconds (half an hour), but this is not enforced by this library.</para>
-		/// </remarks>
-		public TimeSpan CacheLifetime
-		{
-			get; set;
-		}
-
-		/// <summary>
 		/// Gets or sets the URL used to retrieve the description document for this device/tree. Required.
 		/// </summary>
 		public Uri Location { get; set; }

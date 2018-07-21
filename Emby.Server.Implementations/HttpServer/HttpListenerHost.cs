@@ -53,8 +53,6 @@ namespace Emby.Server.Implementations.HttpServer
         private readonly IXmlSerializer _xmlSerializer;
         private readonly Func<Type, Func<string, object>> _funcParseFn;
 
-        public Action<IRequest, IResponse, object>[] ResponseFilters { get; set; }
-
         private readonly Dictionary<Type, Type> ServiceOperationsMap = new Dictionary<Type, Type>();
         public static HttpListenerHost Instance { get; protected set; }
 
@@ -78,8 +76,6 @@ namespace Emby.Server.Implementations.HttpServer
 
             _logger = logger;
             _funcParseFn = funcParseFn;
-
-            ResponseFilters = new Action<IRequest, IResponse, object>[] { };
         }
 
         public string GlobalResponse { get; set; }
@@ -496,7 +492,7 @@ namespace Emby.Server.Implementations.HttpServer
         /// </summary>
         protected async Task RequestHandler(IHttpRequest httpReq, string urlString, string host, string localPath, CancellationToken cancellationToken)
         {
-            var date = DateTime.Now;
+            var date = DateTime.UtcNow;
             var httpRes = httpReq.Response;
             bool enableLog = false;
             bool logHeaders = false;
@@ -633,11 +629,13 @@ namespace Emby.Server.Implementations.HttpServer
                     if (localPath.EndsWith("web/dashboard.html", StringComparison.OrdinalIgnoreCase))
                     {
                         RedirectToUrl(httpRes, "index.html#!/dashboard.html");
+                        return;
                     }
 
                     if (localPath.EndsWith("web/home.html", StringComparison.OrdinalIgnoreCase))
                     {
                         RedirectToUrl(httpRes, "index.html");
+                        return;
                     }
                 }
 
@@ -698,7 +696,7 @@ namespace Emby.Server.Implementations.HttpServer
                 {
                     var statusCode = httpRes.StatusCode;
 
-                    var duration = DateTime.Now - date;
+                    var duration = DateTime.UtcNow - date;
 
                     LoggerUtils.LogResponse(_logger, statusCode, urlToLog, remoteIp, duration, logHeaders ? httpRes.Headers : null);
                 }
@@ -788,11 +786,6 @@ namespace Emby.Server.Implementations.HttpServer
             var types = services.Select(r => r.GetType()).ToArray();
 
             ServiceController.Init(this, types);
-
-            ResponseFilters = new Action<IRequest, IResponse, object>[]
-            {
-                new ResponseFilter(_logger).FilterResponse
-            };
         }
 
         public RouteAttribute[] GetRouteAttributes(Type requestType)

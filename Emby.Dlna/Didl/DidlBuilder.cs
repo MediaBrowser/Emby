@@ -235,8 +235,7 @@ namespace Emby.Dlna.Didl
                 streamInfo.TargetRefFrames,
                 streamInfo.TargetVideoStreamCount,
                 streamInfo.TargetAudioStreamCount,
-                streamInfo.TargetVideoCodecTag,
-                streamInfo.IsTargetAVC);
+                streamInfo.TargetVideoCodecTag);
 
             foreach (var contentFeature in contentFeatureList)
             {
@@ -376,8 +375,7 @@ namespace Emby.Dlna.Didl
                 streamInfo.TargetRefFrames,
                 streamInfo.TargetVideoStreamCount,
                 streamInfo.TargetAudioStreamCount,
-                streamInfo.TargetVideoCodecTag,
-                streamInfo.IsTargetAVC);
+                streamInfo.TargetVideoCodecTag);
 
             var filename = url.Substring(0, url.IndexOf('?'));
 

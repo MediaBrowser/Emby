@@ -146,7 +146,7 @@ namespace SocketHttpListener.Net
             if (raw_uri != null)
                 host = raw_uri.Host;
 
-            int colon = host.IndexOf(':');
+            int colon = host.IndexOf(']') == -1 ? host.IndexOf(':') : host.LastIndexOf(':');
             if (colon >= 0)
                 host = host.Substring(0, colon);
 

@@ -30,24 +30,6 @@ namespace Rssdp
 
         #endregion
 
-        #region Events
-
-        /// <summary>
-        /// Raised when a new child device is added.
-        /// </summary>
-        /// <seealso cref="AddDevice"/>
-        /// <seealso cref="DeviceAdded"/>
-        public event EventHandler<DeviceEventArgs> DeviceAdded;
-
-        /// <summary>
-        /// Raised when a child device is removed.
-        /// </summary>
-        /// <seealso cref="RemoveDevice"/>
-        /// <seealso cref="DeviceRemoved"/>
-        public event EventHandler<DeviceEventArgs> DeviceRemoved;
-
-        #endregion
-
         #region Constructors
 
         /// <summary>
@@ -285,16 +267,11 @@ namespace Rssdp
             if (device.RootDevice != null && device.RootDevice != this.ToRootDevice()) throw new InvalidOperationException("This device is already associated with a different root device (has been added as a child in another branch).");
             if (device == this) throw new InvalidOperationException("Can't add device to itself.");
 
-            bool wasAdded = false;
             lock (_Devices)
             {
                 device.RootDevice = this.ToRootDevice();
                 _Devices.Add(device);
-                wasAdded = true;
             }
-
-            if (wasAdded)
-                OnDeviceAdded(device);
         }
 
         /// <summary>
@@ -311,44 +288,14 @@ namespace Rssdp
         {
             if (device == null) throw new ArgumentNullException("device");
 
-            bool wasRemoved = false;
             lock (_Devices)
             {
-                wasRemoved = _Devices.Remove(device);
+                var wasRemoved = _Devices.Remove(device);
                 if (wasRemoved)
                 {
                     device.RootDevice = null;
                 }
             }
-
-            if (wasRemoved)
-                OnDeviceRemoved(device);
-        }
-
-        /// <summary>
-        /// Raises the <see cref="DeviceAdded"/> event.
-        /// </summary>
-        /// <param name="device">The <see cref="SsdpEmbeddedDevice"/> instance added to the <see cref="Devices"/> collection.</param>
-        /// <seealso cref="AddDevice"/>
-        /// <seealso cref="DeviceAdded"/>		
-        protected virtual void OnDeviceAdded(SsdpEmbeddedDevice device)
-        {
-            var handlers = this.DeviceAdded;
-            if (handlers != null)
-                handlers(this, new DeviceEventArgs(device));
-        }
-
-        /// <summary>
-        /// Raises the <see cref="DeviceRemoved"/> event.
-        /// </summary>
-        /// <param name="device">The <see cref="SsdpEmbeddedDevice"/> instance removed from the <see cref="Devices"/> collection.</param>
-        /// <seealso cref="RemoveDevice"/>
-        /// <see cref="DeviceRemoved"/>
-        protected virtual void OnDeviceRemoved(SsdpEmbeddedDevice device)
-        {
-            var handlers = this.DeviceRemoved;
-            if (handlers != null)
-                handlers(this, new DeviceEventArgs(device));
         }
 
         #endregion

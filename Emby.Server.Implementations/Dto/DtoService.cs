@@ -100,11 +100,10 @@ namespace Emby.Server.Implementations.Dto
             var channelTuples = new List<Tuple<BaseItemDto, LiveTvChannel>>();
 
             var index = 0;
-            var allCollectionFolders = _libraryManager.GetUserRootFolder().Children.OfType<Folder>().ToList();
 
             foreach (var item in items)
             {
-                var dto = GetBaseItemDtoInternal(item, options, allCollectionFolders, user, owner);
+                var dto = GetBaseItemDtoInternal(item, options, user, owner);
 
                 var tvChannel = item as LiveTvChannel;
                 if (tvChannel != null)
@@ -114,25 +113,6 @@ namespace Emby.Server.Implementations.Dto
                 else if (item is LiveTvProgram)
                 {
                     programTuples.Add(new Tuple<BaseItem, BaseItemDto>(item, dto));
-                }
-
-                var byName = item as IItemByName;
-
-                if (byName != null)
-                {
-                    if (options.ContainsField(ItemFields.ItemCounts))
-                    {
-                        var libraryItems = byName.GetTaggedItems(new InternalItemsQuery(user)
-                        {
-                            Recursive = true,
-                            DtoOptions = new DtoOptions(false)
-                            {
-                                EnableImages = false
-                            }
-                        });
-
-                        SetItemByNameInfo(item, dto, libraryItems, user);
-                    }
                 }
 
                 returnItems[index] = dto;
@@ -155,8 +135,7 @@ namespace Emby.Server.Implementations.Dto
 
         public BaseItemDto GetBaseItemDto(BaseItem item, DtoOptions options, User user = null, BaseItem owner = null)
         {
-            var allCollectionFolders = _libraryManager.GetUserRootFolder().Children.OfType<Folder>().ToList();
-            var dto = GetBaseItemDtoInternal(item, options, allCollectionFolders, user, owner);
+            var dto = GetBaseItemDtoInternal(item, options, user, owner);
             var tvChannel = item as LiveTvChannel;
             if (tvChannel != null)
             {
@@ -168,22 +147,6 @@ namespace Emby.Server.Implementations.Dto
                 var list = new List<Tuple<BaseItem, BaseItemDto>> { new Tuple<BaseItem, BaseItemDto>(item, dto) };
                 var task = _livetvManager().AddInfoToProgramDto(list, options.Fields, user);
                 Task.WaitAll(task);
-            }
-
-            var byName = item as IItemByName;
-
-            if (byName != null)
-            {
-                if (options.ContainsField(ItemFields.ItemCounts))
-                {
-                    SetItemByNameInfo(item, dto, GetTaggedItems(byName, user, new DtoOptions(false)
-                    {
-                        EnableImages = false
-
-                    }), user);
-                }
-
-                return dto;
             }
 
             return dto;
@@ -199,7 +162,7 @@ namespace Emby.Server.Implementations.Dto
             });
         }
 
-        private BaseItemDto GetBaseItemDtoInternal(BaseItem item, DtoOptions options, List<Folder> allCollectionFolders, User user = null, BaseItem owner = null)
+        private BaseItemDto GetBaseItemDtoInternal(BaseItem item, DtoOptions options, User user = null, BaseItem owner = null)
         {
             var dto = new BaseItemDto
             {
@@ -318,15 +281,11 @@ namespace Emby.Server.Implementations.Dto
                     path = Path.GetExtension(path);
                     if (!string.IsNullOrEmpty(path))
                     {
-                        path = Path.GetExtension(path);
-                        if (!string.IsNullOrEmpty(path))
-                        {
-                            path = path.TrimStart('.');
-                        }
-                        if (!string.IsNullOrEmpty(path) && containers.Contains(path, StringComparer.OrdinalIgnoreCase))
-                        {
-                            fileExtensionContainer = path;
-                        }
+                        path = path.TrimStart('.');
+                    }
+                    if (!string.IsNullOrEmpty(path) && containers.Contains(path, StringComparer.OrdinalIgnoreCase))
+                    {
+                        fileExtensionContainer = path;
                     }
                 }
 
@@ -334,55 +293,9 @@ namespace Emby.Server.Implementations.Dto
             }
         }
 
-        public BaseItemDto GetItemByNameDto(BaseItem item, DtoOptions options, List<BaseItem> taggedItems, User user = null)
+        public BaseItemDto GetItemByNameDto(BaseItem item, DtoOptions options, User user = null)
         {
-            var allCollectionFolders = _libraryManager.GetUserRootFolder().Children.OfType<Folder>().ToList();
-            var dto = GetBaseItemDtoInternal(item, options, allCollectionFolders, user);
-
-            if (taggedItems != null && options.ContainsField(ItemFields.ItemCounts))
-            {
-                SetItemByNameInfo(item, dto, taggedItems, user);
-            }
-
-            return dto;
-        }
-
-        private void SetItemByNameInfo(BaseItem item, BaseItemDto dto, IList<BaseItem> taggedItems, User user = null)
-        {
-            if (item is MusicArtist)
-            {
-                dto.AlbumCount = taggedItems.Count(i => i is MusicAlbum);
-                dto.MusicVideoCount = taggedItems.Count(i => i is MusicVideo);
-                dto.SongCount = taggedItems.Count(i => i is Audio);
-            }
-            else if (item is MusicGenre)
-            {
-                dto.ArtistCount = taggedItems.Count(i => i is MusicArtist);
-                dto.AlbumCount = taggedItems.Count(i => i is MusicAlbum);
-                dto.MusicVideoCount = taggedItems.Count(i => i is MusicVideo);
-                dto.SongCount = taggedItems.Count(i => i is Audio);
-            }
-            else if (item is GameGenre)
-            {
-                dto.GameCount = taggedItems.Count(i => i is Game);
-            }
-            else
-            {
-                // This populates them all and covers Genre, Person, Studio, Year
-
-                dto.ArtistCount = taggedItems.Count(i => i is MusicArtist);
-                dto.AlbumCount = taggedItems.Count(i => i is MusicAlbum);
-                dto.EpisodeCount = taggedItems.Count(i => i is Episode);
-                dto.GameCount = taggedItems.Count(i => i is Game);
-                dto.MovieCount = taggedItems.Count(i => i is Movie);
-                dto.TrailerCount = taggedItems.Count(i => i is Trailer);
-                dto.MusicVideoCount = taggedItems.Count(i => i is MusicVideo);
-                dto.SeriesCount = taggedItems.Count(i => i is Series);
-                dto.ProgramCount = taggedItems.Count(i => i is LiveTvProgram);
-                dto.SongCount = taggedItems.Count(i => i is Audio);
-            }
-
-            dto.ChildCount = taggedItems.Count;
+            return GetBaseItemDtoInternal(item, options, user);
         }
 
         /// <summary>
