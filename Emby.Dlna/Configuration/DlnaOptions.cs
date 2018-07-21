@@ -8,7 +8,7 @@ namespace Emby.Dlna.Configuration
         public bool EnableDebugLog { get; set; }
         public bool BlastAliveMessages { get; set; }
         public int ClientDiscoveryIntervalSeconds { get; set; }
-        public int BlastAliveMessageIntervalSeconds { get; set; }
+        public int AliveMessageIntervalSeconds { get; set; }
         public string DefaultUserId { get; set; }
 
         public DlnaOptions()
@@ -17,7 +17,7 @@ namespace Emby.Dlna.Configuration
             EnableServer = true;
             BlastAliveMessages = true;
             ClientDiscoveryIntervalSeconds = 60;
-            BlastAliveMessageIntervalSeconds = 30;
+            AliveMessageIntervalSeconds = 1800;
         }
     }
 }

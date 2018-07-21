@@ -510,10 +510,6 @@ namespace Emby.Dlna.ContentDirectory
                     return GetTvFolders(item, user, stubType, sort, startIndex, limit);
                 }
 
-                if (collectionFolder != null && string.Equals(CollectionType.Folders, collectionFolder.CollectionType, StringComparison.OrdinalIgnoreCase))
-                {
-                    return GetFolders(item, user, stubType, sort, startIndex, limit);
-                }
                 if (collectionFolder != null && string.Equals(CollectionType.LiveTv, collectionFolder.CollectionType, StringComparison.OrdinalIgnoreCase))
                 {
                     return GetLiveTvChannels(item, user, stubType, sort, startIndex, limit);
@@ -756,23 +752,6 @@ namespace Emby.Dlna.ContentDirectory
             {
                 Items = list.ToArray(list.Count),
                 TotalRecordCount = list.Count
-            };
-        }
-
-        private QueryResult<ServerItem> GetFolders(BaseItem item, User user, StubType? stubType, SortCriteria sort, int? startIndex, int? limit)
-        {
-            var folders = _libraryManager.GetUserRootFolder().GetChildren(user, true)
-                .OrderBy(i => i.SortName)
-                .Select(i => new ServerItem(i)
-                {
-                    StubType = StubType.Folder
-                })
-                .ToArray();
-
-            return new QueryResult<ServerItem>
-            {
-                Items = folders,
-                TotalRecordCount = folders.Length
             };
         }
 

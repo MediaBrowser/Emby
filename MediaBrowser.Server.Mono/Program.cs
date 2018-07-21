@@ -93,9 +93,6 @@ namespace MediaBrowser.Server.Mono
 
         private static void RunApplication(ServerApplicationPaths appPaths, ILogManager logManager, StartupOptions options)
         {
-            // Allow all https requests
-            ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(delegate { return true; });
-
             var environmentInfo = GetEnvironmentInfo(options);
 
             var fileSystem = new ManagedFileSystem(logManager.GetLogger("FileSystem"), environmentInfo, null, appPaths.TempDirectory, true);
@@ -127,10 +124,9 @@ namespace MediaBrowser.Server.Mono
 
                 Console.WriteLine("Running startup tasks");
 
-                var task = appHost.RunStartupTasks();
-                Task.WaitAll(task);
+                appHost.RunStartupTasks();
 
-                task = ApplicationTaskCompletionSource.Task;
+                var task = ApplicationTaskCompletionSource.Task;
 
                 Task.WaitAll(task);
             }

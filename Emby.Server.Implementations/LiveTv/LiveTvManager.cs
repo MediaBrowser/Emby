@@ -277,7 +277,17 @@ namespace Emby.Server.Implementations.LiveTv
                 var openedId = info.Id;
                 Func<Task> closeFn = () => service.CloseLiveStream(openedId, CancellationToken.None);
 
-                liveStream = new ExclusiveLiveStream(info, closeFn);
+                if (info.Protocol == MediaBrowser.Model.MediaInfo.MediaProtocol.Http)
+                {
+                    liveStream = new TunerHosts.SharedHttpStream(info, null, null, _fileSystem, _httpClient, _logger, _config.ApplicationPaths, _appHost)
+                    {
+                        OnClose = closeFn
+                    };
+                }
+                else
+                {
+                    liveStream = new ExclusiveLiveStream(info, closeFn);
+                }
 
                 var startTime = DateTime.UtcNow;
                 await liveStream.Open(cancellationToken).ConfigureAwait(false);
@@ -552,6 +562,12 @@ namespace Emby.Server.Implementations.LiveTv
             var isNew = false;
             var forceUpdate = false;
 
+            var etag = info.Etag;
+            if (!string.IsNullOrEmpty(info.Etag))
+            {
+                etag += "1";
+            }
+
             if (item == null)
             {
                 isNew = true;
@@ -563,9 +579,9 @@ namespace Emby.Server.Implementations.LiveTv
                     DateModified = DateTime.UtcNow
                 };
 
-                if (!string.IsNullOrEmpty(info.Etag))
+                if (!string.IsNullOrEmpty(etag))
                 {
-                    item.SetProviderId(EtagKey, info.Etag);
+                    item.SetProviderId(EtagKey, etag);
                 }
             }
 
@@ -634,6 +650,10 @@ namespace Emby.Server.Implementations.LiveTv
             {
                 tags.Add("Repeat");
             }
+            if (info.IsNew)
+            {
+                tags.Add("New");
+            }
             if (info.IsMovie)
             {
                 tags.Add("Movie");
@@ -647,7 +667,12 @@ namespace Emby.Server.Implementations.LiveTv
 
             item.Genres = info.Genres.ToArray();
 
-            if (info.IsHD ?? false)
+            if (info.Height.HasValue && info.Width.HasValue)
+            {
+                item.Width = info.Width.Value;
+                item.Height = info.Height.Value;
+            }
+            else if (info.IsHD ?? false)
             {
                 item.Width = 1280;
                 item.Height = 720;
@@ -758,19 +783,14 @@ namespace Emby.Server.Implementations.LiveTv
             if (isNew)
             {
             }
-            else if (forceUpdate || string.IsNullOrWhiteSpace(info.Etag))
+            else if (forceUpdate || string.IsNullOrEmpty(etag))
             {
                 isUpdated = true;
             }
-            else
+            else if (!string.Equals(etag, item.GetProviderId(EtagKey), StringComparison.OrdinalIgnoreCase))
             {
-                var etag = info.Etag;
-
-                if (!string.Equals(etag, item.GetProviderId(EtagKey), StringComparison.OrdinalIgnoreCase))
-                {
-                    item.SetProviderId(EtagKey, etag);
-                    isUpdated = true;
-                }
+                item.SetProviderId(EtagKey, etag);
+                isUpdated = true;
             }
 
             if (isNew || isUpdated)
@@ -1503,6 +1523,10 @@ namespace Emby.Server.Implementations.LiveTv
                 {
                     dto.IsRepeat = program.IsRepeat;
                 }
+                if (program.IsNew)
+                {
+                    dto.IsNew = program.IsNew;
+                }
                 if (program.IsMovie)
                 {
                     dto.IsMovie = program.IsMovie;
@@ -1585,6 +1609,7 @@ namespace Emby.Server.Implementations.LiveTv
             dto.EndDate = endDate;
             dto.Status = info.Status.ToString();
             dto.IsRepeat = info.IsRepeat;
+            dto.IsNew = info.IsNew;
             dto.EpisodeTitle = info.EpisodeTitle;
             dto.IsMovie = info.IsMovie;
             dto.IsSeries = info.IsSeries;
@@ -2066,12 +2091,15 @@ namespace Emby.Server.Implementations.LiveTv
                     Genres = program.Genres.ToList(),
                     Id = program.ExternalId,
                     IsHD = program.IsHD,
+                    Width = program.Width,
+                    Height = program.Height,
                     IsKids = program.IsKids,
                     IsLive = program.IsLive,
                     IsMovie = program.IsMovie,
                     IsNews = program.IsNews,
                     IsPremiere = program.IsPremiere,
                     IsRepeat = program.IsRepeat,
+                    IsNew = program.IsNew,
                     IsSeries = program.IsSeries,
                     IsSports = program.IsSports,
                     OriginalAirDate = program.PremiereDate,

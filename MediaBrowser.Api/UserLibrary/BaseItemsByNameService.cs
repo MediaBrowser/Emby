@@ -195,13 +195,7 @@ namespace MediaBrowser.Api.UserLibrary
 
             var dtos = result.Items.Select(i =>
             {
-                var dto = DtoService.GetItemByNameDto(i.Item1, dtoOptions, null, user);
-
-                if (!string.IsNullOrWhiteSpace(request.IncludeItemTypes))
-                {
-                    SetItemCounts(dto, i.Item2);
-                }
-                return dto;
+                return DtoService.GetItemByNameDto(i.Item1, dtoOptions, user);
             });
 
             return new QueryResult<BaseItemDto>
@@ -214,20 +208,6 @@ namespace MediaBrowser.Api.UserLibrary
         protected virtual QueryResult<Tuple<BaseItem, ItemCounts>> GetItems(GetItemsByName request, InternalItemsQuery query)
         {
             return new QueryResult<Tuple<BaseItem, ItemCounts>>();
-        }
-
-        private void SetItemCounts(BaseItemDto dto, ItemCounts counts)
-        {
-            dto.ChildCount = counts.ItemCount;
-            dto.ProgramCount = counts.ProgramCount;
-            dto.SeriesCount = counts.SeriesCount;
-            dto.EpisodeCount = counts.EpisodeCount;
-            dto.MovieCount = counts.MovieCount;
-            dto.TrailerCount = counts.TrailerCount;
-            dto.AlbumCount = counts.AlbumCount;
-            dto.SongCount = counts.SongCount;
-            dto.GameCount = counts.GameCount;
-            dto.ArtistCount = counts.ArtistCount;
         }
 
         /// <summary>
@@ -317,9 +297,7 @@ namespace MediaBrowser.Api.UserLibrary
 
             }
 
-            var tuples = ibnItems.Select(i => new Tuple<BaseItem, List<BaseItem>>(i, new List<BaseItem>()));
-
-            var dtos = tuples.Select(i => DtoService.GetItemByNameDto(i.Item1, dtoOptions, i.Item2, user));
+            var dtos = ibnItems.Select(i => DtoService.GetItemByNameDto(i, dtoOptions, user));
 
             result.Items = dtos.Where(i => i != null).ToArray();
 

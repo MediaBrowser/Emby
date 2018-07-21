@@ -94,12 +94,6 @@ namespace Emby.Server.Implementations.Library
                 }
             }
 
-            if (_config.Configuration.EnableFolderView)
-            {
-                var name = _localizationManager.GetLocalizedString("Folders");
-                list.Add(_libraryManager.GetNamedView(name, CollectionType.Folders, string.Empty));
-            }
-
             if (query.IncludeExternalContent)
             {
                 var channelResult = _channelManager.GetChannelsInternal(new ChannelQuery
