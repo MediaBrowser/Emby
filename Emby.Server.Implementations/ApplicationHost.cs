@@ -931,7 +931,7 @@ namespace Emby.Server.Implementations
 
             RegisterSingleInstance<IXmlReaderSettingsFactory>(new XmlReaderSettingsFactory());
 
-            UserDataManager = new UserDataManager(LogManager, ServerConfigurationManager, ()=> UserManager);
+            UserDataManager = new UserDataManager(LogManager, ServerConfigurationManager, () => UserManager);
             RegisterSingleInstance(UserDataManager);
 
             UserRepository = GetUserRepository();
@@ -1875,8 +1875,7 @@ namespace Emby.Server.Implementations
         {
             try
             {
-                return Directory.EnumerateFiles(path, "*.dll", SearchOption.TopDirectoryOnly)
-                    .Where(EnablePlugin)
+                return FilterAssembliesToLoad(Directory.EnumerateFiles(path, "*.dll", SearchOption.TopDirectoryOnly))
                     .Select(LoadAssembly)
                     .Where(a => a != null)
                     .ToList();
@@ -1887,9 +1886,8 @@ namespace Emby.Server.Implementations
             }
         }
 
-        private bool EnablePlugin(string path)
+        private IEnumerable<string> FilterAssembliesToLoad(IEnumerable<string> paths)
         {
-            var filename = Path.GetFileName(path);
 
             var exclude = new[]
             {
@@ -1928,7 +1926,43 @@ namespace Emby.Server.Implementations
                 "MetadataViewer.dll"
             };
 
-            return !exclude.Contains(filename ?? string.Empty, StringComparer.OrdinalIgnoreCase);
+            var minRequiredVersions = new Dictionary<string, Version>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "GameBrowser.dll", new Version(3, 1) },
+                { "moviethemesongs.dll", new Version(1, 6) },
+                { "themesongs.dll", new Version(1, 2) }
+            };
+
+            return paths.Where(path =>
+            {
+                var filename = Path.GetFileName(path);
+                if (exclude.Contains(filename ?? string.Empty, StringComparer.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+
+                Version minRequiredVersion;
+                if (minRequiredVersions.TryGetValue(filename, out minRequiredVersion))
+                {
+                    try
+                    {
+                        var version = Version.Parse(FileVersionInfo.GetVersionInfo(path).FileVersion);
+
+                        if (version < minRequiredVersion)
+                        {
+                            Logger.Info("Not loading {0} {1} because the minimum supported version is {2}. Please update to the newer version", filename, version, minRequiredVersion);
+                            return false;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.ErrorException("Error getting version number from {0}", ex, path);
+
+                        return false;
+                    }
+                }
+                return true;
+            });
         }
 
         /// <summary>

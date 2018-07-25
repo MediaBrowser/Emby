@@ -9,7 +9,6 @@ using Emby.Server.Implementations;
 using Emby.Server.Implementations.EntryPoints;
 using Emby.Server.Implementations.FFMpeg;
 using Emby.Server.Implementations.IO;
-using Emby.Server.Sync;
 using MediaBrowser.Controller.Connect;
 using MediaBrowser.Controller.Sync;
 using MediaBrowser.Model.IO;
@@ -50,7 +49,6 @@ namespace MediaBrowser.ServerApplication
             var list = new List<Assembly>();
 
             list.Add(typeof(ConnectManager).Assembly);
-            list.Add(typeof(SyncManager).Assembly);
             list.Add(GetType().Assembly);
 
             return list;

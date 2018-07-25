@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using Emby.Server.Connect;
 using Emby.Server.Implementations;
-using Emby.Server.Sync;
 using MediaBrowser.Controller.Connect;
 using MediaBrowser.Controller.Sync;
 using MediaBrowser.Model.IO;
@@ -44,7 +43,6 @@ namespace MediaBrowser.Server.Mono
 
             list.Add(GetType().Assembly);
             list.Add(typeof(ConnectManager).Assembly);
-            list.Add(typeof(SyncManager).Assembly);
 
             return list;
         }

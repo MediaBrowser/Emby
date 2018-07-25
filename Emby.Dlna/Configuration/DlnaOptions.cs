@@ -17,7 +17,7 @@ namespace Emby.Dlna.Configuration
             EnableServer = true;
             BlastAliveMessages = true;
             ClientDiscoveryIntervalSeconds = 60;
-            BlastAliveMessageIntervalSeconds = 30;
+            BlastAliveMessageIntervalSeconds = 1800;
         }
     }
 }

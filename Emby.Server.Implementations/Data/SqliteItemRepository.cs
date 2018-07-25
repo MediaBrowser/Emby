@@ -2575,11 +2575,11 @@ namespace Emby.Server.Implementations.Data
                 var builder = new StringBuilder();
                 builder.Append("(");
 
-                builder.Append("((CleanName like @SearchTermStartsWith or OriginalTitle like @SearchTermStartsWith) * 10)");
+                builder.Append("((CleanName like @SearchTermStartsWith or (OriginalTitle not null and OriginalTitle like @SearchTermStartsWith)) * 10)");
 
                 if (query.SearchTerm.Length > 1)
                 {
-                    builder.Append("+ ((CleanName like @SearchTermContains) * 10 or OriginalTitle like @SearchTermContains)");
+                    builder.Append("+ ((CleanName like @SearchTermContains or (OriginalTitle not null and OriginalTitle like @SearchTermContains)) * 10)");
                 }
 
                 builder.Append(") as SearchScore");
@@ -3824,8 +3824,8 @@ namespace Emby.Server.Implementations.Data
 
             if (!string.IsNullOrWhiteSpace(query.Path))
             {
-                whereClauses.Add("(Path=@Path COLLATE NOCASE)");
-                //whereClauses.Add("Path=@Path");
+                //whereClauses.Add("(Path=@Path COLLATE NOCASE)");
+                whereClauses.Add("Path=@Path");
                 if (statement != null)
                 {
                     statement.TryBind("@Path", GetPathToSave(query.Path));
@@ -4046,7 +4046,8 @@ namespace Emby.Server.Implementations.Data
                 {
                     var paramName = "@PersonId" + index;
 
-                    clauses.Add("(select Name from TypedBaseItems where guid=" + paramName + ") in (select Name from People where ItemId=Guid)");
+                    clauses.Add("(guid in (select itemid from People where Name = (select Name from TypedBaseItems where guid=" + paramName + ")))");
+
                     if (statement != null)
                     {
                         statement.TryBind(paramName, personId.ToGuidBlob());
@@ -4257,7 +4258,7 @@ namespace Emby.Server.Implementations.Data
                 {
                     var paramName = "@ArtistIds" + index;
 
-                    clauses.Add("(select CleanName from TypedBaseItems where guid=" + paramName + ") in (select CleanValue from itemvalues where ItemId=Guid and Type<=1)");
+                    clauses.Add("(guid in (select itemid from itemvalues where CleanValue = (select CleanName from TypedBaseItems where guid=" + paramName + ") and Type<=1))");
                     if (statement != null)
                     {
                         statement.TryBind(paramName, artistId.ToGuidBlob());
@@ -4276,7 +4277,7 @@ namespace Emby.Server.Implementations.Data
                 {
                     var paramName = "@ArtistIds" + index;
 
-                    clauses.Add("(select CleanName from TypedBaseItems where guid=" + paramName + ") in (select CleanValue from itemvalues where ItemId=Guid and Type=1)");
+                    clauses.Add("(guid in (select itemid from itemvalues where CleanValue = (select CleanName from TypedBaseItems where guid=" + paramName + ") and Type=1))");
                     if (statement != null)
                     {
                         statement.TryBind(paramName, artistId.ToGuidBlob());
@@ -4333,7 +4334,7 @@ namespace Emby.Server.Implementations.Data
                 {
                     var paramName = "@ExcludeArtistId" + index;
 
-                    clauses.Add("(select CleanName from TypedBaseItems where guid=" + paramName + ") not in (select CleanValue from itemvalues where ItemId=Guid and Type<=1)");
+                    clauses.Add("(guid not in (select itemid from itemvalues where CleanValue = (select CleanName from TypedBaseItems where guid=" + paramName + ") and Type<=1))");
                     if (statement != null)
                     {
                         statement.TryBind(paramName, artistId.ToGuidBlob());
@@ -4352,7 +4353,7 @@ namespace Emby.Server.Implementations.Data
                 {
                     var paramName = "@GenreId" + index;
 
-                    clauses.Add("(select CleanName from TypedBaseItems where guid=" + paramName + ") in (select CleanValue from itemvalues where ItemId=Guid and Type=2)");
+                    clauses.Add("(guid in (select itemid from itemvalues where CleanValue = (select CleanName from TypedBaseItems where guid=" + paramName + ") and Type=2))");
                     if (statement != null)
                     {
                         statement.TryBind(paramName, genreId.ToGuidBlob());
@@ -4422,7 +4423,8 @@ namespace Emby.Server.Implementations.Data
                 {
                     var paramName = "@StudioId" + index;
 
-                    clauses.Add("(select CleanName from TypedBaseItems where guid=" + paramName + ") in (select CleanValue from itemvalues where ItemId=Guid and Type=3)");
+                    clauses.Add("(guid in (select itemid from itemvalues where CleanValue = (select CleanName from TypedBaseItems where guid=" + paramName + ") and Type=3))");
+
                     if (statement != null)
                     {
                         statement.TryBind(paramName, studioId.ToGuidBlob());
@@ -5611,18 +5613,13 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
             var columns = _retriveItemColumns.ToList();
             columns.AddRange(itemCountColumns.Select(i => i.Item2).ToArray());
 
-            columns = GetFinalColumnsToSelect(query, columns.ToArray()).ToList();
-
-            var commandText = "select " + string.Join(",", columns.ToArray()) + GetFromText();
-            commandText += GetJoinUserDataText(query);
-
+            // do this first before calling GetFinalColumnsToSelect, otherwise ExcludeItemIds will be set by SimilarTo
             var innerQuery = new InternalItemsQuery(query.User)
             {
                 ExcludeItemTypes = query.ExcludeItemTypes,
                 IncludeItemTypes = query.IncludeItemTypes,
                 MediaTypes = query.MediaTypes,
                 AncestorIds = query.AncestorIds,
-                ExcludeItemIds = query.ExcludeItemIds,
                 ItemIds = query.ItemIds,
                 TopParentIds = query.TopParentIds,
                 ParentId = query.ParentId,
@@ -5634,6 +5631,11 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
                 IsNews = query.IsNews,
                 IsSeries = query.IsSeries
             };
+
+            columns = GetFinalColumnsToSelect(query, columns.ToArray()).ToList();
+
+            var commandText = "select " + string.Join(",", columns.ToArray()) + GetFromText();
+            commandText += GetJoinUserDataText(query);
 
             var innerWhereClauses = GetWhereClauses(innerQuery, null);
 
@@ -5668,7 +5670,9 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
                 Genres = query.Genres,
                 Years = query.Years,
                 NameContains = query.NameContains,
-                SearchTerm = query.SearchTerm
+                SearchTerm = query.SearchTerm,
+                SimilarTo = query.SimilarTo,
+                ExcludeItemIds = query.ExcludeItemIds
             };
 
             var outerWhereClauses = GetWhereClauses(outerQuery, null);
@@ -5681,7 +5685,14 @@ where AncestorIdText not null and ItemValues.Value not null and ItemValues.Type 
             commandText += whereText;
             commandText += " group by PresentationUniqueKey";
 
-            commandText += " order by SortName";
+            if (query.SimilarTo != null || !string.IsNullOrEmpty(query.SearchTerm))
+            {
+                commandText += GetOrderByText(query);
+            }
+            else
+            {
+                commandText += " order by SortName";
+            }
 
             if (query.Limit.HasValue || query.StartIndex.HasValue)
             {
