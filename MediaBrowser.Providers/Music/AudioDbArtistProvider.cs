@@ -28,7 +28,7 @@ namespace MediaBrowser.Providers.Music
         public static AudioDbArtistProvider Current;
 
         private const string ApiKey = "49jhsf8248yfahka89724011";
-        public const string BaseUrl = "http://www.theaudiodb.com/api/v1/json/" + ApiKey;
+        public const string BaseUrl = "https://www.theaudiodb.com/api/v1/json/" + ApiKey;
 
         public AudioDbArtistProvider(IServerConfigurationManager config, IFileSystem fileSystem, IHttpClient httpClient, IJsonSerializer json)
         {
@@ -75,7 +75,7 @@ namespace MediaBrowser.Providers.Music
 
             if (!string.IsNullOrEmpty(result.strGenre))
             {
-                item.Genres = new [] { result.strGenre };
+                item.Genres = new[] { result.strGenre };
             }
 
             item.SetProviderId(MetadataProviders.AudioDbArtist, result.idArtist);
