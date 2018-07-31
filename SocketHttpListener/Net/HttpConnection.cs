@@ -186,12 +186,12 @@ namespace SocketHttpListener.Net
             {
                 if (_reuses == 1)
                     _timeout = 15000;
-                _timer.Change(_timeout, Timeout.Infinite);
+                //_timer.Change(_timeout, Timeout.Infinite);
                 _stream.BeginRead(_buffer, 0, BufferSize, s_onreadCallback, this);
             }
             catch
             {
-                _timer.Change(Timeout.Infinite, Timeout.Infinite);
+                //_timer.Change(Timeout.Infinite, Timeout.Infinite);
                 CloseSocket();
                 Unbind();
             }
@@ -238,7 +238,7 @@ namespace SocketHttpListener.Net
 
         private void OnReadInternal(IAsyncResult ares)
         {
-            _timer.Change(Timeout.Infinite, Timeout.Infinite);
+            //_timer.Change(Timeout.Infinite, Timeout.Infinite);
             int nread = -1;
             try
             {
