@@ -41,6 +41,9 @@
     <Reference Include="Emby.Server.Connect">
       <HintPath>..\ThirdParty\emby\Emby.Server.Connect.dll</HintPath>
     </Reference>
+    <Reference Include="Emby.Server.Sync">
+      <HintPath>..\ThirdParty\emby\Emby.Server.Sync.dll</HintPath>
+    </Reference>
     <Reference Include="Emby.XmlTv, Version=1.0.6700.31789, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Emby.XmlTv.1.0.15\lib\portable-net45+netstandard2.0+win8\Emby.XmlTv.dll</HintPath>
     </Reference>

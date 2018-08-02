@@ -43,6 +43,7 @@ namespace MediaBrowser.Server.Mono
 
             list.Add(GetType().Assembly);
             list.Add(typeof(ConnectManager).Assembly);
+            list.Add(typeof(Emby.Server.Sync.SyncManager).Assembly);
 
             return list;
         }
