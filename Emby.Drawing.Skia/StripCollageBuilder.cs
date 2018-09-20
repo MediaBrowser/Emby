@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using MediaBrowser.Model.IO;
 using System.Collections.Generic;
+using MediaBrowser.Model.Logging;
 
 namespace Emby.Drawing.Skia
 {
@@ -11,11 +12,13 @@ namespace Emby.Drawing.Skia
     {
         private readonly IApplicationPaths _appPaths;
         private readonly IFileSystem _fileSystem;
+        private readonly ILogger _logger;
 
-        public StripCollageBuilder(IApplicationPaths appPaths, IFileSystem fileSystem)
+        public StripCollageBuilder(IApplicationPaths appPaths, IFileSystem fileSystem, ILogger logger)
         {
             _appPaths = appPaths;
             _fileSystem = fileSystem;
+            _logger = logger;
         }
 
         public static SKEncodedImageFormat GetEncodedFormat(string outputPath)
@@ -173,7 +176,7 @@ namespace Emby.Drawing.Skia
                 }
 
                 SKCodecOrigin origin;
-                bitmap = SkiaEncoder.Decode(paths[currentIndex], false, _fileSystem, null, out origin);
+                bitmap = SkiaEncoder.Decode(paths[currentIndex], false, _fileSystem, _logger, null, out origin);
 
                 imagesTested[currentIndex] = 0;
 

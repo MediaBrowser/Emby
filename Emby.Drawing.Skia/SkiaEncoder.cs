@@ -184,7 +184,12 @@ namespace Emby.Drawing.Skia
 
         public ImageSize GetImageSize(string path)
         {
-            using (var s = new SKFileStream(path))
+            if (!_fileSystem.FileExists(path))
+            {
+                throw new FileNotFoundException("File not found", path);
+            }
+
+            using (var s = new SKFileStream(NormalizePath(path, _fileSystem)))
             {
                 using (var codec = SKCodec.Create(s))
                 {
@@ -263,7 +268,7 @@ namespace Emby.Drawing.Skia
         }
 
         private static string[] TransparentImageTypes = new string[] { ".png", ".gif", ".webp" };
-        internal static SKBitmap Decode(string path, bool forceCleanBitmap, IFileSystem fileSystem, ImageOrientation? orientation, out SKCodecOrigin origin)
+        internal static SKBitmap Decode(string path, bool forceCleanBitmap, IFileSystem fileSystem, ILogger logger, ImageOrientation? orientation, out SKCodecOrigin origin)
         {
             if (!fileSystem.FileExists(path))
             {
@@ -272,9 +277,12 @@ namespace Emby.Drawing.Skia
 
             var requiresTransparencyHack = TransparentImageTypes.Contains(Path.GetExtension(path) ?? string.Empty);
 
+            var normalizedPath = NormalizePath(path, fileSystem);
+
             if (requiresTransparencyHack || forceCleanBitmap)
             {
-                using (var stream = new SKFileStream(NormalizePath(path, fileSystem)))
+                //logger.Debug("Opening {0} for decoding with forceCleanBitmap", normalizedPath);
+                using (var stream = new SKFileStream(normalizedPath))
                 {
                     using (var codec = SKCodec.Create(stream))
                     {
@@ -287,11 +295,17 @@ namespace Emby.Drawing.Skia
                         // create the bitmap
                         var bitmap = new SKBitmap(codec.Info.Width, codec.Info.Height, !requiresTransparencyHack);
 
-                        if (bitmap != null)
+                        if (bitmap != null && !bitmap.IsNull && !bitmap.IsEmpty)
                         {
                             // decode
-                            codec.GetPixels(bitmap.Info, bitmap.GetPixels());
-                            
+                            var result = codec.GetPixels(bitmap.Info, bitmap.GetPixels());
+
+                            if (result != SKCodecResult.Success)
+                            {
+                                origin = GetSKCodecOrigin(orientation);
+                                return null;
+                            }
+
                             origin = codec.Origin;
                         }
                         else
@@ -304,11 +318,18 @@ namespace Emby.Drawing.Skia
                 }
             }
 
-            var resultBitmap = SKBitmap.Decode(NormalizePath(path, fileSystem));
+            //logger.Debug("Opening {0} for decoding without forceCleanBitmap", normalizedPath);
+            var resultBitmap = SKBitmap.Decode(normalizedPath);
 
-            if (resultBitmap == null)
+            if (resultBitmap == null || resultBitmap.IsNull || resultBitmap.IsEmpty)
             {
-                return Decode(path, true, fileSystem, orientation, out origin);
+                return Decode(path, true, fileSystem, logger, orientation, out origin);
+            }
+
+            if (resultBitmap.IsNull || resultBitmap.IsEmpty)
+            {
+                origin = GetSKCodecOrigin(orientation);
+                return null;
             }
 
             // If we have to resize these they often end up distorted
@@ -316,7 +337,7 @@ namespace Emby.Drawing.Skia
             {
                 using (resultBitmap)
                 {
-                    return Decode(path, true, fileSystem, orientation, out origin);
+                    return Decode(path, true, fileSystem, logger, orientation, out origin);
                 }
             }
 
@@ -328,13 +349,13 @@ namespace Emby.Drawing.Skia
         {
             if (cropWhitespace)
             {
-                using (var bitmap = Decode(path, forceAnalyzeBitmap, _fileSystem, orientation, out origin))
+                using (var bitmap = Decode(path, forceAnalyzeBitmap, _fileSystem, _logger, orientation, out origin))
                 {
                     return CropWhiteSpace(bitmap);
                 }
             }
 
-            return Decode(path, forceAnalyzeBitmap, _fileSystem, orientation, out origin);
+            return Decode(path, forceAnalyzeBitmap, _fileSystem, _logger, orientation, out origin);
         }
 
         private SKBitmap GetBitmap(string path, bool cropWhitespace, bool autoOrient, ImageOrientation? orientation)
@@ -633,16 +654,16 @@ namespace Emby.Drawing.Skia
 
             if (ratio >= 1.4)
             {
-                new StripCollageBuilder(_appPaths, _fileSystem).BuildThumbCollage(options.InputPaths, options.OutputPath, options.Width, options.Height);
+                new StripCollageBuilder(_appPaths, _fileSystem, _logger).BuildThumbCollage(options.InputPaths, options.OutputPath, options.Width, options.Height);
             }
             else if (ratio >= .9)
             {
-                new StripCollageBuilder(_appPaths, _fileSystem).BuildSquareCollage(options.InputPaths, options.OutputPath, options.Width, options.Height);
+                new StripCollageBuilder(_appPaths, _fileSystem, _logger).BuildSquareCollage(options.InputPaths, options.OutputPath, options.Width, options.Height);
             }
             else
             {
                 // @todo create Poster collage capability
-                new StripCollageBuilder(_appPaths, _fileSystem).BuildSquareCollage(options.InputPaths, options.OutputPath, options.Width, options.Height);
+                new StripCollageBuilder(_appPaths, _fileSystem, _logger).BuildSquareCollage(options.InputPaths, options.OutputPath, options.Width, options.Height);
             }
         }
 
