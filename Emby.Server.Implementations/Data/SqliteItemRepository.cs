@@ -2579,7 +2579,7 @@ namespace Emby.Server.Implementations.Data
 
                 if (query.SearchTerm.Length > 1)
                 {
-                    builder.Append("+ ((CleanName like @SearchTermContains or (OriginalTitle not null and OriginalTitle like @SearchTermContains)) * 10)");
+                    builder.Append("+ ((CleanName like @SearchTermContains or Tags like @SearchTermContains or (OriginalTitle not null and OriginalTitle like @SearchTermContains)) * 10)");
                 }
 
                 builder.Append(") as SearchScore");
