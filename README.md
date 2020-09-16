@@ -1,3 +1,5 @@
+ [![Dependency](https://img.shields.io/librariesio/github/MediaBrowser/Emby)](https://libraries.io/github/MediaBrowser/Emby)
+
 Emby Server
 ============
 
