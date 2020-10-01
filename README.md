@@ -39,8 +39,7 @@ http://emby.media/community
 
 ## Images
 
-![Android](https://dl.dropboxusercontent.com/u/4038856/android1.png)
-![Android](https://dl.dropboxusercontent.com/u/4038856/android2.png)
+![Android](https://raw.githubusercontent.com/MediaBrowser/Emby.Resources/master/apps/android.png)
 ![Html5](https://github.com/MediaBrowser/MediaBrowser.Resources/raw/master/apps/html5.png)
 ![iOS](https://github.com/MediaBrowser/MediaBrowser.Resources/raw/master/apps/ios_1.jpg)
 ![iOS](https://raw.github.com/MediaBrowser/MediaBrowser.Resources/master/apps/ios_2.jpg)
