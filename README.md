@@ -1,9 +1,9 @@
 Emby Server
 ============
 
-Emby Server is a personal media server with apps on just about every device.
+Emby Server is a personal media server with apps on just about every device. It is a media server designed to organize, play, and stream audio and video to a variety of devices.
 
-It features a REST-based API with built-in documention to facilitate client development. We also have client libraries for our API to enable rapid development.
+It features a REST-based API with built-in documentation to facilitate client development. We also have client libraries for our API to enable rapid development.
 
 ## Emby Apps
 
@@ -36,6 +36,27 @@ If you're a new user looking to install Emby Server, please head over to [emby.m
 ## Visit our community: ##
 
 http://emby.media/community
+
+## Tutorial to setup and use emby ##
+1. Create and host a server by downloading the emby software as per your system requirement from [here](https://emby.media/download.html)
+2. After hosting the server you need to connect to the server. 
+Go to the [sign page](http://app.emby.media/#!/startup/connectlogin.html)
+Provide your username and password. If you don’t have an account on emby create one by clicking on the sign up button.
+3. After signing in you need to connect to the server you hosted. Click on the Add server button and provide the server address in the host field.
+4. After connecting to the server you need to sign in again with the account you created and you are done.
+5. Your setup is now done. Now you can upload your files on your Emby server. 
+   1. For uploading your media files click on the hamburger menu and click on Library. 
+   2. Click on the new library to create your new folder. You can choose the content type as per the files you are uploading and give a display name which will be displayed on the home page.
+   3. Say you want to upload your music files. Click on the + button besides folder and add the file path to your folder. 
+   4. Scroll down and give your library settings like Preferred metadata language, Country, etc and then click ok. You have now created a folder.
+6. Click on the home button in the hamburger menu and you will find your uploaded folder there.
+7. Emby will categorize the music files according to the artists, genres, albums(For Music). Now you can select your favourite music you want to listen to.
+8. You can also create different users.
+9. For full tutorial with screenshots click [here](https://github.com/Abhinav7076/Emby/blob/master/Tutorial.pdf)
+
+## Feedback ##
+- General Discussion [here](https://emby.media/community/index.php?/forum/15-general-discussion/)
+- Report Bugs [here](https://emby.media/community/index.php?/topic/89846-147-0-bugs/) 
 
 ## Images
 
