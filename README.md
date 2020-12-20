@@ -52,6 +52,7 @@ Provide your username and password. If you don’t have an account on emby creat
 6. Click on the home button in the hamburger menu and you will find your uploaded folder there.
 7. Emby will categorize the music files according to the artists, genres, albums(For Music). Now you can select your favourite music you want to listen to.
 8. You can also create different users.
+9. For full tutorial with screenshots click [here](https://github.com/Abhinav7076/Emby/blob/master/Tutorial.pdf)
 
 ## Feedback ##
 - General Discussion [here](https://emby.media/community/index.php?/forum/15-general-discussion/)
