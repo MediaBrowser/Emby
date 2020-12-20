@@ -38,9 +38,9 @@ If you're a new user looking to install Emby Server, please head over to [emby.m
 http://emby.media/community
 
 ## Tutorial to setup and use emby ##
-1. Create and host a server by downloading the emby software as per your system requirement from https://emby.media/download.html
+1. Create and host a server by downloading the emby software as per your system requirement from [here](https://emby.media/download.html)
 2. After hosting the server you need to connect to the server. 
-Go to the sign page http://app.emby.media/#!/startup/connectlogin.html
+Go to the [sign page](http://app.emby.media/#!/startup/connectlogin.html)
 Provide your username and password. If you don’t have an account on emby create one by clicking on the sign up button.
 3. After signing in you need to connect to the server you hosted. Click on the Add server button and provide the server address in the host field.
 4. After connecting to the server you need to sign in again with the account you created and you are done.
