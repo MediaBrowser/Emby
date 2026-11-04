@@ -26,6 +26,10 @@ It features a REST-based API with built-in documention to facilitate client deve
 
 If you're a new user looking to install Emby Server, please head over to [emby.media](http://www.emby.media/ "emby.media")
 
+## One-Click Deploy ##
+
+[![Deploy on RepoCloud](https://d16t0pc4846x52.cloudfront.net/deploylobe.svg)](https://repocloud.io/details/Emby/)
+
 ## Developer Info ##
 
 [Api Docs](https://github.com/MediaBrowser/MediaBrowser/wiki "Api Workflow")
